@@ -5,15 +5,16 @@ minipolars::import_polars_as_("pl")
 pl::col("blop")$sum()$over(c("hej","du","der"))
 
 
-#build series
+#build df from mixed Rseries and vectors
 values = list (
-  a = pl::series(1:5),
-  b = pl::series((1:5) * 5),
-  c = pl::series(letters[1:5])
+  newname = pl::series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
+  pl::series((1:5) * 5,"a"),
+  pl::series(letters[1:5],"b"),
+  c(5,4,3,2,1), #unnamed vector
+  named_vector = c(15,14,13,12,11) #named provide
 )
-#clone into dataframe
+#clone into dataframe and change one name
 pl::df(values)
-
 
 
 #build dataframe directly from inheriting data.frame

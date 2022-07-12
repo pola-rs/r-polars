@@ -63,8 +63,10 @@ pub fn robjname2series(x: Robj, name: &str) -> pl::Series {
 
 #[extendr]
 impl Rseries {
-    pub fn new(x: Robj) -> Self {
-        Rseries { s: robj2series(x) }
+    pub fn new(x: Robj, name: &str) -> Self {
+        Rseries {
+            s: robjname2series(x, name),
+        }
     }
 
     pub fn print(&self) {

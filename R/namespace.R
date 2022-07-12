@@ -9,30 +9,69 @@
 #' @importFrom rlang abort
 #'
 #' @examples
-new_df = function(...) {
+new_df = function(data) {
 
-  values = as.list(...)
-  keys = names(values)
-  unname(values)
 
-  #pass entire dataframe from to rust side to convert
-  if (!any(sapply(values,inherits,"Rseries"))) {
-    return(minipolars:::Rdataframe$new(values))
+  keys = names(data)
+
+  #make sure keys(names) are defined or at least defined unspecified (NA)
+  if(length(keys)==0) keys = rep(NA_character_, length(data))
+
+  #on rust side replace undefined column name with newcolumn_[i]
+  #if already series reuse that name
+  make_column_name_gen = function() {
+    col_counter = 0
+    column_name_gen = function(x) {
+        col_counter <<- col_counter +1
+        paste0("newcolumn_",col_counter)
+    }
+  }
+  name_generator = make_column_name_gen()
+
+
+  if (inherits(data,"data.frame")) {
+    return(minipolars:::Rdataframe$new(data))
+  }
+
+  ## if data.frame or list of something build directly into data.frme
+  if (
+      !is.list(data) ||
+      !all(sapply(data,function(x) is.vector(x) || inherits(x,"Rseries")))
+  ) {
+    abort("data arg must inherit from data.frame or be a mixed list of vector and Rseries")
+  }
+
+  #all are vectors
+  if (all(sapply(data,function(x) is.vector(x)))) {
+    return(minipolars:::Rdataframe$new(data))
+  }
+
+  #if mixed Rseries and vectors
+  if (any(sapply(data,function(x) is.vector(x)))) {
+
+    #convert all non Rseries into Rseries
+    for (i in seq_along(data)) {
+      if(!inherits(data[[i]], "Rseries")) {
+        key = keys[i]
+        if(is.na(key) || nchar(key)==0) key = name_generator()
+        data[[i]] = minipolars:::Rseries$new(
+          x = data[[i]],
+          key
+        )
+      }
+    }
+
   }
 
 
-  #already series? send series mem pointers to rust
-  pos_arg = 0
-  ptr_adrs = mapply(val=values, key=keys, FUN = function(key, val) {
-    pos_arg <<- pos_arg + 1
-    if(is.na(key) || nchar(key)==0) abort(paste("column no.",pos_arg, "is not named"))
-    if(!inherits(val,"Rseries")) {
-      abort(paste("column '",key, "' is not an Rseries"))
-    }
-    xptr::xptr_address(val)
-  })
+  #get pointers to Rseries objects
+  ptr_adrs = sapply(data, xptr::xptr_address)
 
-  minipolars:::Rdataframe$from_series(ptr_adrs,ptr_adrs)
+  #reenocde unspecified name as ""
+  keys_rustside = sapply(keys, function(x) if(is.na(x)) "" else x)
+
+  #clone series, potential rename if key specified,  build dataframe from series
+  minipolars:::Rdataframe$from_series(ptr_adrs, keys_rustside)
 
 }
 

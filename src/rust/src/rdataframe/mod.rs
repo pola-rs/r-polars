@@ -36,15 +36,18 @@ impl Rdataframe {
         Ok(Rdataframe { d: df })
     }
 
-    fn from_series(ptr_adrs: Vec<String>, names: Vec<String>) -> Result<Self, Error> {
+    fn from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
         let mut rsers = Vec::new();
-        for (ptr, _) in ptr_adrs.iter().zip(names.iter()) {
+        for (ptr, name) in ptr_adrs.iter().zip(col_names.iter()) {
             let without_prefix = ptr.trim_start_matches("0x");
             let z = usize::from_str_radix(without_prefix, 16)
                 .map_err(|e| Error::Other(e.to_string()))?;
             unsafe {
-                let y = &mut *(z as *mut Rseries);
-                rsers.push(y.s.clone())
+                let mut s = (&mut *(z as *mut Rseries)).s.clone();
+                if name.len() > 0 {
+                    s.rename(name);
+                }
+                rsers.push(s)
             };
         }
 

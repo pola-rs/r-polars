@@ -12,7 +12,7 @@ Rdataframe <- new.env(parent = emptyenv())
 
 Rdataframe$new <- function(x) .Call(wrap__Rdataframe__new, x)
 
-Rdataframe$from_series <- function(ptr_adrs, names) .Call(wrap__Rdataframe__from_series, ptr_adrs, names)
+Rdataframe$from_series <- function(ptr_adrs, col_names) .Call(wrap__Rdataframe__from_series, ptr_adrs, col_names)
 
 Rdataframe$print <- function() invisible(.Call(wrap__Rdataframe__print, self))
 
@@ -54,7 +54,7 @@ Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
 
 Rseries <- new.env(parent = emptyenv())
 
-Rseries$new <- function(x) .Call(wrap__Rseries__new, x)
+Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
 Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 

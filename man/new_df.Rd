@@ -4,7 +4,7 @@
 \alias{new_df}
 \title{Title}
 \usage{
-new_df(...)
+new_df(data)
 }
 \arguments{
 \item{...}{}
