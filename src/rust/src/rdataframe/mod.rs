@@ -5,8 +5,8 @@ use std::result::Result;
 pub mod rexpr;
 pub mod rseries;
 
-use rexpr::{get_rexpr_metadata, Rexpr};
-use rseries::{get_rseries_metadata, robjname2series, Rseries};
+use rexpr::*;
+use rseries::*;
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -27,7 +27,7 @@ fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {
 
 #[extendr]
 impl Rdataframe {
-    fn new(x: List) -> Result<Self, Error> {
+    fn new_from_vectors(x: List) -> Result<Self, Error> {
         let s: Vec<pl::Series> = x
             .iter()
             .map(|(name, robj)| robjname2series(robj, name))
@@ -36,7 +36,9 @@ impl Rdataframe {
         Ok(Rdataframe { d: df })
     }
 
-    fn from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
+    //hey wait what! ptr_adrs's are strings.
+    //Yeah R is 32bit friendly and 64bit integers are not available in R::base
+    fn new_from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
         let mut rsers = Vec::new();
         for (ptr, name) in ptr_adrs.iter().zip(col_names.iter()) {
             let without_prefix = ptr.trim_start_matches("0x");
@@ -64,11 +66,29 @@ impl Rdataframe {
         self.d.to_string()
     }
 
-    fn select(&mut self, expr_strs: Vec<String>) -> Rdataframe {
-        let exprs: Vec<pl::Expr> = expr_strs
+    // fn unsafe_select(&mut self, expr_strs: Vec<String>) -> Rdataframe {
+    //     let exprs: Vec<pl::Expr> = expr_strs
+    //         .iter()
+    //         .map(|x| strpointer_to_rexpr(x).unwrap())
+    //         .map(|x| x.e.clone())
+    //         .collect();
+
+    //     let new_df = self
+    //         .clone()
+    //         .d
+    //         .lazy()
+    //         .select(exprs)
+    //         .collect()
+    //         .expect("selct did not work");
+
+    //     Rdataframe { d: new_df }
+    // }
+
+    fn select(&mut self, exprs: &ProtoRexprArray) -> Rdataframe {
+        let exprs: Vec<pl::Expr> = exprs
+            .a
             .iter()
-            .map(|x| strpointer_to_rexpr(x).unwrap())
-            .map(|x| x.e.clone())
+            .map(|protoexpr| protoexpr.to_rexpr("select").e)
             .collect();
 
         let new_df = self

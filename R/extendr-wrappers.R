@@ -10,15 +10,15 @@ NULL
 
 Rdataframe <- new.env(parent = emptyenv())
 
-Rdataframe$new <- function(x) .Call(wrap__Rdataframe__new, x)
+Rdataframe$new_from_vectors <- function(x) .Call(wrap__Rdataframe__new_from_vectors, x)
 
-Rdataframe$from_series <- function(ptr_adrs, col_names) .Call(wrap__Rdataframe__from_series, ptr_adrs, col_names)
+Rdataframe$new_from_series <- function(ptr_adrs, col_names) .Call(wrap__Rdataframe__new_from_series, ptr_adrs, col_names)
 
 Rdataframe$print <- function() invisible(.Call(wrap__Rdataframe__print, self))
 
 Rdataframe$name <- function() .Call(wrap__Rdataframe__name, self)
 
-Rdataframe$select <- function(expr_strs) .Call(wrap__Rdataframe__select, self, expr_strs)
+Rdataframe$select <- function(exprs) .Call(wrap__Rdataframe__select, self, exprs)
 
 #' @export
 `$.Rdataframe` <- function (self, name) { func <- Rdataframe[[name]]; environment(func) <- environment(); func }
@@ -27,6 +27,8 @@ Rdataframe$select <- function(expr_strs) .Call(wrap__Rdataframe__select, self, e
 `[[.Rdataframe` <- `$.Rdataframe`
 
 Rexpr <- new.env(parent = emptyenv())
+
+Rexpr$col <- function(name) .Call(wrap__Rexpr__col, name)
 
 Rexpr$abs <- function() .Call(wrap__Rexpr__abs, self)
 
@@ -37,8 +39,6 @@ Rexpr$alias <- function(s) .Call(wrap__Rexpr__alias, self, s)
 Rexpr$all <- function() .Call(wrap__Rexpr__all, self)
 
 Rexpr$any <- function() .Call(wrap__Rexpr__any, self)
-
-Rexpr$col <- function(name) .Call(wrap__Rexpr__col, name)
 
 Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
 
@@ -51,6 +51,36 @@ Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
 
 #' @export
 `[[.Rexpr` <- `$.Rexpr`
+
+ProtoRexprArray <- new.env(parent = emptyenv())
+
+ProtoRexprArray$new <- function() .Call(wrap__ProtoRexprArray__new)
+
+ProtoRexprArray$push_back_str <- function(s) invisible(.Call(wrap__ProtoRexprArray__push_back_str, self, s))
+
+ProtoRexprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__ProtoRexprArray__push_back_rexpr, self, r))
+
+ProtoRexprArray$pop_front_rexpr <- function(context) .Call(wrap__ProtoRexprArray__pop_front_rexpr, self, context)
+
+ProtoRexprArray$print <- function() invisible(.Call(wrap__ProtoRexprArray__print, self))
+
+ProtoRexprArray$add_context <- function(context) .Call(wrap__ProtoRexprArray__add_context, self, context)
+
+#' @export
+`$.ProtoRexprArray` <- function (self, name) { func <- ProtoRexprArray[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.ProtoRexprArray` <- `$.ProtoRexprArray`
+
+RexprArray <- new.env(parent = emptyenv())
+
+RexprArray$print <- function() invisible(.Call(wrap__RexprArray__print, self))
+
+#' @export
+`$.RexprArray` <- function (self, name) { func <- RexprArray[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RexprArray` <- `$.RexprArray`
 
 Rseries <- new.env(parent = emptyenv())
 

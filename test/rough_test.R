@@ -14,8 +14,14 @@ values = list (
   named_vector = c(15,14,13,12,11) #named provide
 )
 #clone into dataframe and change one name
-pl::df(values)
+df = pl::df(values)
 
+
+pra = minipolars:::ProtoRexprArray$new()
+pra$push_back_str("a")
+
+
+df$select(pra)
 
 #build dataframe directly from inheriting data.frame
 pl::df(iris)
