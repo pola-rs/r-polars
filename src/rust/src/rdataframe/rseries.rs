@@ -1,6 +1,5 @@
-use extendr_api::{extendr, prelude::*, Deref, DerefMut, Error, List, Rinternals};
-use polars::prelude::{self as pl, IntoLazy, NamedFrom};
-use std::result::Result;
+use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
+use polars::prelude::{self as pl, NamedFrom};
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -11,7 +10,7 @@ pub struct Rseries {
 //R garbage collect drops series
 impl Drop for Rseries {
     fn drop(&mut self) {
-        println!("> a series was dropped");
+        rprintln!("> a series was dropped");
     }
 }
 
@@ -37,7 +36,7 @@ pub fn robjname2series(x: Robj, name: &str) -> pl::Series {
             let int_slice = x.as_integer_slice().unwrap();
 
             if inherits(&x, "factor") {
-                println!("it is a factor");
+                rprintln!("it is a factor");
                 let levels = x.get_attrib("levels").expect("factor has no levels");
                 let levels_vec = levels.as_str_vector().unwrap();
 
@@ -70,7 +69,7 @@ impl Rseries {
     }
 
     pub fn print(&self) {
-        println!("{:#?}", self.s);
+        rprintln!("{:#?}", self.s);
     }
 
     pub fn cumsum(&mut self) {

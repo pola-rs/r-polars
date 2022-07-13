@@ -1,4 +1,4 @@
-use extendr_api::{extendr, prelude::*, Error, List, Rinternals};
+use extendr_api::{extendr, prelude::*, rprintln, Error, List, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
@@ -14,16 +14,16 @@ struct Rdataframe {
     pub d: pl::DataFrame,
 }
 
-//this function is also unsafe
-fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {
-    let without_prefix = raw.trim_start_matches("0x");
-    let z = usize::from_str_radix(without_prefix, 16).map_err(|e| Error::Other(e.to_string()))?;
+// //this function is also unsafe
+// fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {
+//     let without_prefix = raw.trim_start_matches("0x");
+//     let z = usize::from_str_radix(without_prefix, 16).map_err(|e| Error::Other(e.to_string()))?;
 
-    unsafe {
-        let y = &mut *(z as *mut Rexpr);
-        return Ok(y);
-    };
-}
+//     unsafe {
+//         let y = &mut *(z as *mut Rexpr);
+//         return Ok(y);
+//     };
+// }
 
 #[extendr]
 impl Rdataframe {
@@ -59,7 +59,7 @@ impl Rdataframe {
     }
 
     fn print(&self) {
-        println!("{:#?}", self.d);
+        rprintln!("{:#?}", self.d);
     }
 
     fn name(&self) -> String {

@@ -15,7 +15,7 @@ values = list (
 )
 #clone into dataframe and change one name
 df = pl::df(values)
-
+df
 
 pra = minipolars:::ProtoRexprArray$new()
 pra$push_back_str("a")

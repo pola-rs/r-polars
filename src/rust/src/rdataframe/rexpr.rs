@@ -1,6 +1,6 @@
-use extendr_api::{extendr, prelude::*, Deref, DerefMut, Error, List, Rinternals};
-use polars::prelude::{self as pl, IntoLazy, NamedFrom};
-use std::{collections::VecDeque, result::Result};
+use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+use polars::prelude::{self as pl};
+use std::collections::VecDeque;
 
 #[derive(Clone, Debug)]
 #[extendr]
@@ -18,7 +18,7 @@ pub struct OptRexpr {
 #[extendr]
 impl OptRexpr {
     fn print(&self) {
-        println!("{:?}", self);
+        rprintln!("{:?}", self);
     }
 }
 
@@ -93,7 +93,7 @@ impl Rexpr {
     }
 
     pub fn print(&self) {
-        println!("{:#?}", self.e);
+        rprintln!("{:#?}", self.e);
     }
 
     pub fn sum(&self) -> Rexpr {
@@ -133,7 +133,7 @@ impl ProtoRexpr {
     }
 
     fn print(&self) {
-        println!("{:?}", self);
+        rprintln!("{:?}", self);
     }
 }
 
@@ -163,7 +163,7 @@ impl ProtoRexprArray {
     }
 
     pub fn print(&self) {
-        println!("{:?}", self)
+        rprintln!("{:?}", self);
     }
 
     pub fn add_context(&self, context: &str) -> RexprArray {
@@ -186,7 +186,7 @@ pub struct RexprArray {
 #[extendr]
 impl RexprArray {
     fn print(&self) {
-        println!("{:?}", self);
+        rprintln!("{:?}", self);
     }
 }
 
