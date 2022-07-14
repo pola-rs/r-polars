@@ -36,7 +36,6 @@ pub fn robjname2series(x: Robj, name: &str) -> pl::Series {
             let int_slice = x.as_integer_slice().unwrap();
 
             if inherits(&x, "factor") {
-                rprintln!("it is a factor");
                 let levels = x.get_attrib("levels").expect("factor has no levels");
                 let levels_vec = levels.as_str_vector().unwrap();
 

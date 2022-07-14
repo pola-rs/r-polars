@@ -18,7 +18,9 @@ import_polars_as_ <- function(name = "pl") {
     list(
       #map the following class constructors
       col = minipolars:::Rexpr$col, #Rexpr
-      df  = minipolars:::new_df,    #Rdataframe
+      df  = minipolars:::new_pf,    #Rdataframe, low-level interface
+      pf = function(data) minipolars:::polar_frame$new(data),
+      #polar_Frame, R6 interface
       series = minipolars:::Rseries$new #Rseries
 
 

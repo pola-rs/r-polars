@@ -7,6 +7,7 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
+library(minipolars)
 minipolars:::import_polars_as_("pl")
 
 test_check("minipolars")

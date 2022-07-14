@@ -12,11 +12,17 @@ Rdataframe <- new.env(parent = emptyenv())
 
 Rdataframe$new_from_vectors <- function(x) .Call(wrap__Rdataframe__new_from_vectors, x)
 
+Rdataframe$clone_extendr <- function() .Call(wrap__Rdataframe__clone_extendr, self)
+
 Rdataframe$new_from_series <- function(ptr_adrs, col_names) .Call(wrap__Rdataframe__new_from_series, ptr_adrs, col_names)
 
 Rdataframe$print <- function() invisible(.Call(wrap__Rdataframe__print, self))
 
 Rdataframe$name <- function() .Call(wrap__Rdataframe__name, self)
+
+Rdataframe$colnames <- function() .Call(wrap__Rdataframe__colnames, self)
+
+Rdataframe$as_rlist_of_vectors <- function() .Call(wrap__Rdataframe__as_rlist_of_vectors, self)
 
 Rdataframe$select <- function(exprs) .Call(wrap__Rdataframe__select, self, exprs)
 

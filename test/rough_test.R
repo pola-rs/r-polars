@@ -1,4 +1,32 @@
 minipolars::import_polars_as_("pl")
+pf = pl::pf(iris)
+
+print(pl::col("Sepal.Width")$sum()$over("Species")$alias("miah"))
+
+df = pf$select(
+  pl::col("Sepal.Width")$sum()$over("Species")$alias("miah"),
+  pl::col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
+  "Petal.Length"
+)$as_data_frame()
+df
+
+
+
+
+pf$select("Sepal.Width","Sepal.Length")$as_data_frame()
+df
+df$.__enclos_env__$private$pf$as_rlist_of_vectors()
+
+pf$select("Sepal.Width","Sepal.Length")$.__enclos_env__$private$pf$as_rlist_of_vectors()
+
+pf2 = pf$clone(deep = TRUE)
+library(xptr)
+xptr::xptr_address(pf$.__enclos_env__$private$pf)
+xptr::xptr_address(pf2$.__enclos_env__$private$pf)
+
+
+pf$.__enclos_env__$private$pf
+
 
 
 #chain expression
@@ -24,5 +52,10 @@ pra$push_back_str("a")
 df$select(pra)
 
 #build dataframe directly from inheriting data.frame
-pl::df(iris)
+pf = pl::pf(iris)
+
+
+#polar_frame from iris
+
+
 
