@@ -1,4 +1,6 @@
-use extendr_api::prelude::*;
+//simple utility to wrap any Error that has Display into extendr_api::Error::Other(string)
+
+use extendr_api;
 use std::fmt::Display;
 
 pub struct WrapError<T>
@@ -14,12 +16,6 @@ where
 {
     WrapError::<T> { e: e }
 }
-
-// impl From<WrapPolarsError> for extendr_api::Error {
-//     fn from(e: WrapPolarsError) -> Self {
-//         extendr_api::Error::Other(e.e.to_string())
-//     }
-// }
 
 impl<T> From<WrapError<T>> for extendr_api::Error
 where

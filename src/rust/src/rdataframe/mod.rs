@@ -2,10 +2,12 @@ use extendr_api::{extendr, prelude::*, rprintln, Error, List, Rinternals};
 use polars::prelude::{self as pl, DataFrame, IntoLazy};
 use std::result::Result;
 
+pub mod read_csv;
 pub mod rexpr;
 pub mod rseries;
 pub mod wrap_errors;
 
+use read_csv::*;
 use rexpr::*;
 use rseries::*;
 use wrap_errors::*;

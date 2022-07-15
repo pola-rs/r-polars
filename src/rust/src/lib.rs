@@ -1,6 +1,7 @@
 use extendr_api::prelude::*;
 
 pub mod rdataframe;
+pub mod utils;
 
 use rdataframe::get_rdataframe_metadata;
 
