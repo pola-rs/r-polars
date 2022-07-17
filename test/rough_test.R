@@ -16,8 +16,8 @@ pf$select(
 
 
 #datatypes
-pl::datatype("logical")
-pl::datatype("Boolean")
+pl::datatype("logical") #r lingo
+pl::datatype("Boolean") #polars lingo for same type
 pl::datatype("double")
 pl::datatype("character")
 

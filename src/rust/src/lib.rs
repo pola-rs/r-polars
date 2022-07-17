@@ -1,5 +1,6 @@
 use extendr_api::prelude::*;
 
+pub mod datatype;
 pub mod rdataframe;
 pub mod utils;
 

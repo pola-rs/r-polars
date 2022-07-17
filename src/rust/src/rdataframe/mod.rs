@@ -6,6 +6,7 @@ pub mod read_csv;
 pub mod rexpr;
 pub mod rseries;
 pub mod wrap_errors;
+pub use crate::datatype::*;
 
 use read_csv::*;
 use rexpr::*;
@@ -134,5 +135,6 @@ extendr_module! {
     use rexpr;
     use rseries;
     use read_csv;
+    use rdatatype;
     impl Rdataframe;
 }
