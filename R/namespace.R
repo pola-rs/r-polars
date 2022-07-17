@@ -21,7 +21,8 @@ import_polars_as_ <- function(name = "pl") {
       df  = minipolars:::new_pf,    #Rdataframe, low-level interface
       pf = function(data) minipolars:::polar_frame$new(data),
       #polar_Frame, R6 interface
-      series = minipolars:::Rseries$new #Rseries
+      series = minipolars:::Rseries$new, #Rseries
+      datatype = minipolars:::Rdatatype$new
 
 
       #methods do not need mapping, as they should be access directly from instances
@@ -48,6 +49,19 @@ print_Rseries = function(x) {
   cat("polars_series: ")
   x$print()
 }
+
+print_Rdatatype = function(x) {
+  cat("polars_datatype: ")
+  x$print()
+}
+
+print_Rdatatype = function(x) {
+  cat("polars_datatype_vector: ")
+  x$print()
+}
+
 .S3method("print", "Rexpr", print_Rexpr)
 .S3method("print", "Rdataframe", print_Rdataframe)
 .S3method("print", "Rseries", print_Rseries)
+.S3method("print", "Rdatatype", print_Rseries)
+.S3method("print", "Rdatatype_vector", print_Rseries)

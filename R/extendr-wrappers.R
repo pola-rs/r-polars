@@ -8,6 +8,8 @@
 #' @useDynLib minipolars, .registration = TRUE
 NULL
 
+new_csv_r <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype) invisible(.Call(wrap__new_csv_r, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype))
+
 Rdataframe <- new.env(parent = emptyenv())
 
 Rdataframe$new_from_vectors <- function(x) .Call(wrap__Rdataframe__new_from_vectors, x)
@@ -103,4 +105,30 @@ Rseries$cumsum123 <- function() invisible(.Call(wrap__Rseries__cumsum123, self))
 
 #' @export
 `[[.Rseries` <- `$.Rseries`
+
+Rdatatype <- new.env(parent = emptyenv())
+
+Rdatatype$new <- function(s) .Call(wrap__Rdatatype__new, s)
+
+Rdatatype$print <- function() invisible(.Call(wrap__Rdatatype__print, self))
+
+#' @export
+`$.Rdatatype` <- function (self, name) { func <- Rdatatype[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Rdatatype` <- `$.Rdatatype`
+
+Rdatatype_vector <- new.env(parent = emptyenv())
+
+Rdatatype_vector$new <- function() .Call(wrap__Rdatatype_vector__new)
+
+Rdatatype_vector$push <- function(colname, datatype) invisible(.Call(wrap__Rdatatype_vector__push, self, colname, datatype))
+
+Rdatatype_vector$print <- function() invisible(.Call(wrap__Rdatatype_vector__print, self))
+
+#' @export
+`$.Rdatatype_vector` <- function (self, name) { func <- Rdatatype_vector[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Rdatatype_vector` <- `$.Rdatatype_vector`
 

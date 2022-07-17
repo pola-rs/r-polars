@@ -133,5 +133,6 @@ extendr_module! {
     mod rdataframe;
     use rexpr;
     use rseries;
+    use read_csv;
     impl Rdataframe;
 }
