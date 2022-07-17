@@ -6,7 +6,7 @@ pub mod read_csv;
 pub mod rexpr;
 pub mod rseries;
 pub mod wrap_errors;
-pub use crate::datatype::*;
+pub use crate::rdatatype::*;
 
 use read_csv::*;
 use rexpr::*;
@@ -32,37 +32,71 @@ struct Rdataframe {
 
 #[extendr]
 impl Rdataframe {
-    fn new_from_vectors(x: List) -> Result<Self, Error> {
-        let s: Vec<pl::Series> = x
-            .iter()
-            .map(|(name, robj)| robjname2series(robj, name))
-            .collect();
-        let df = pl::DataFrame::new(s).map_err(wrap_error)?;
-        Ok(Rdataframe { d: df })
-    }
+    //obsolete
+    // fn new_from_vectors(x: List) -> Result<Self, Error> {
+    //     let s: Vec<pl::Series> = x
+    //         .iter()
+    //         .map(|(name, robj)| robjname2series(robj, name))
+    //         .collect();
+    //     let df = pl::DataFrame::new(s).map_err(wrap_error)?;
+    //     Ok(Rdataframe { d: df })
+    // }
 
     fn clone_extendr(&self) -> Rdataframe {
         self.clone()
     }
 
-    //hey wait what! ptr_adrs's are strings.
-    //Yeah R is 32bit friendly and 64bit integers are not available in R::base
-    fn new_from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
-        let mut rsers = Vec::new();
-        for (ptr, name) in ptr_adrs.iter().zip(col_names.iter()) {
-            let without_prefix = ptr.trim_start_matches("0x");
-            let z = usize::from_str_radix(without_prefix, 16).map_err(wrap_error)?;
-            unsafe {
-                let mut s = (&mut *(z as *mut Rseries)).s.clone();
-                if name.len() > 0 {
-                    s.rename(name);
-                }
-                rsers.push(s)
-            };
-        }
+    // //obsolete
+    // //hey wait what! ptr_adrs's are strings.
+    // //Yeah R is 32bit friendly and 64bit integers are not available in R::base
+    // fn new_from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
+    //     let mut rsers = Vec::new();
+    //     for (ptr, name) in ptr_adrs.iter().zip(col_names.iter()) {
+    //         let without_prefix = ptr.trim_start_matches("0x");
+    //         let z = usize::from_str_radix(without_prefix, 16).map_err(wrap_error)?;
+    //         unsafe {
+    //             let mut s = (&mut *(z as *mut Rseries)).0.clone();
+    //             if name.len() > 0 {
+    //                 s.rename(name);
+    //             }
+    //             rsers.push(s)
+    //         };
+    //     }
 
-        let d = pl::DataFrame::new(rsers).map_err(wrap_error)?;
-        Ok(Rdataframe { d })
+    //     let d = pl::DataFrame::new(rsers).map_err(wrap_error)?;
+    //     Ok(Rdataframe { d })
+    // }
+
+    //obsolete
+    // fn safe_from_series(x: &RseriesVector) -> Result<Self, Error> {
+    //     let d = pl::DataFrame::new(x.clone().0).map_err(wrap_error)?;
+    //     Ok(Rdataframe { d })
+    // }
+
+    fn new() -> Self {
+        let empty_series: Vec<pl::Series> = Vec::new();
+        Rdataframe {
+            d: pl::DataFrame::new(empty_series).unwrap(),
+        }
+    }
+
+    fn new_with_capacity(capacity: i32) -> Self {
+        let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
+        Rdataframe {
+            d: pl::DataFrame::new(empty_series).unwrap(),
+        }
+    }
+
+    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), Error> {
+        let new_series = robjname2series(robj, name);
+        self.d.with_column(new_series).map_err(wrap_error)?;
+        Ok(())
+    }
+
+    fn set_column_from_rseries(&mut self, x: &Rseries) -> Result<(), Error> {
+        let s: pl::Series = x.into(); //implicit clone, cannot move R objects
+        self.d.with_column(s).map_err(wrap_error)?;
+        Ok(())
     }
 
     fn print(&self) {
@@ -92,24 +126,6 @@ impl Rdataframe {
 
         Ok(list)
     }
-
-    // fn unsafe_select(&mut self, expr_strs: Vec<String>) -> Rdataframe {
-    //     let exprs: Vec<pl::Expr> = expr_strs
-    //         .iter()
-    //         .map(|x| strpointer_to_rexpr(x).unwrap())
-    //         .map(|x| x.e.clone())
-    //         .collect();
-
-    //     let new_df = self
-    //         .clone()
-    //         .d
-    //         .lazy()
-    //         .select(exprs)
-    //         .collect()
-    //         .expect("selct did not work");
-
-    //     Rdataframe { d: new_df }
-    // }
 
     fn select(&mut self, exprs: &ProtoRexprArray) -> Result<Rdataframe, Error> {
         let exprs: Vec<pl::Expr> = exprs

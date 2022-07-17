@@ -55,13 +55,13 @@ print_Rdatatype = function(x) {
   x$print()
 }
 
-print_Rdatatype = function(x) {
-  cat("polars_datatype_vector: ")
-  x$print()
-}
+# print_Rdatatype = function(x) {
+#   cat("polars_datatype_vector: ")
+#   x$print()
+# }
 
 .S3method("print", "Rexpr", print_Rexpr)
 .S3method("print", "Rdataframe", print_Rdataframe)
 .S3method("print", "Rseries", print_Rseries)
 .S3method("print", "Rdatatype", print_Rseries)
-.S3method("print", "Rdatatype_vector", print_Rseries)
+# .S3method("print", "Rdatatype_vector", print_Rseries)

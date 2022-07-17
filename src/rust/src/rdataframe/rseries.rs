@@ -3,16 +3,7 @@ use polars::prelude::{self as pl, NamedFrom};
 
 #[extendr]
 #[derive(Debug, Clone)]
-pub struct Rseries {
-    pub s: pl::Series,
-}
-
-//R garbage collect drops series
-impl Drop for Rseries {
-    fn drop(&mut self) {
-        rprintln!("> a series was dropped");
-    }
-}
+pub struct Rseries(pub pl::Series);
 
 pub fn robj2series(x: Robj) -> pl::Series {
     let y = x.rtype();
@@ -43,7 +34,9 @@ pub fn robjname2series(x: Robj, name: &str) -> pl::Series {
                     .iter()
                     .map(|x| {
                         let idx = (x - 1) as usize;
-                        let x = levels_vec.get(idx).expect("factor int out of bound");
+                        let x = levels_vec
+                            .get(idx)
+                            .expect("Corrupt R factor, level integer out of bound");
                         *x
                     })
                     .collect();
@@ -62,25 +55,55 @@ pub fn robjname2series(x: Robj, name: &str) -> pl::Series {
 #[extendr]
 impl Rseries {
     pub fn new(x: Robj, name: &str) -> Self {
-        Rseries {
-            s: robjname2series(x, name),
-        }
+        Rseries(robjname2series(x, name))
+    }
+
+    pub fn rename(&mut self, name: &str) {
+        self.0.rename(name);
+    }
+
+    pub fn name(&mut self) -> &str {
+        self.0.name()
     }
 
     pub fn print(&self) {
-        rprintln!("{:#?}", self.s);
+        rprintln!("{:#?}", self.0);
     }
 
     pub fn cumsum(&mut self) {
-        self.s = self.s.cumsum(false);
-    }
-
-    pub fn cumsum123(&mut self) {
-        self.s = self.s.cumsum(false);
+        self.0 = self.0.cumsum(false);
     }
 }
+
+//clone is needed, no known trivial way (to author) how to take ownership R side objects
+impl From<&Rseries> for pl::Series {
+    fn from(x: &Rseries) -> Self {
+        x.clone().0
+    }
+}
+
+// //obsolete struct, keep for reference
+// #[derive(Debug, Clone)]
+// #[extendr]
+// pub struct RseriesVector(pub Vec<pl::Series>);
+
+// #[extendr]
+// impl RseriesVector {
+//     pub fn new() {
+//         RseriesVector(Vec::new());
+//     }
+
+//     pub fn push(&mut self, x: &Rseries) {
+//         self.0.push(x.into());
+//     }
+
+//     pub fn print(&mut self) {
+//         rprint!("{:?}", self);
+//     }
+// }
 
 extendr_module! {
     mod rseries;
     impl Rseries;
+    //impl RseriesVector;
 }

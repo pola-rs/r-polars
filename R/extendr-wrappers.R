@@ -12,11 +12,15 @@ new_csv_r <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, c
 
 Rdataframe <- new.env(parent = emptyenv())
 
-Rdataframe$new_from_vectors <- function(x) .Call(wrap__Rdataframe__new_from_vectors, x)
-
 Rdataframe$clone_extendr <- function() .Call(wrap__Rdataframe__clone_extendr, self)
 
-Rdataframe$new_from_series <- function(ptr_adrs, col_names) .Call(wrap__Rdataframe__new_from_series, ptr_adrs, col_names)
+Rdataframe$new <- function() .Call(wrap__Rdataframe__new)
+
+Rdataframe$new_with_capacity <- function(capacity) .Call(wrap__Rdataframe__new_with_capacity, capacity)
+
+Rdataframe$set_column_from_robj <- function(robj, name) .Call(wrap__Rdataframe__set_column_from_robj, self, robj, name)
+
+Rdataframe$set_column_from_rseries <- function(x) .Call(wrap__Rdataframe__set_column_from_rseries, self, x)
 
 Rdataframe$print <- function() invisible(.Call(wrap__Rdataframe__print, self))
 
@@ -94,11 +98,13 @@ Rseries <- new.env(parent = emptyenv())
 
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
+Rseries$rename <- function(name) invisible(.Call(wrap__Rseries__rename, self, name))
+
+Rseries$name <- function() .Call(wrap__Rseries__name, self)
+
 Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 
 Rseries$cumsum <- function() invisible(.Call(wrap__Rseries__cumsum, self))
-
-Rseries$cumsum123 <- function() invisible(.Call(wrap__Rseries__cumsum123, self))
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }

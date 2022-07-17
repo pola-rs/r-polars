@@ -2,7 +2,7 @@
 
 use super::wrap_errors::wrap_error;
 
-use crate::datatype::{Rdatatype, Rdatatype_vector};
+use crate::rdatatype::{Rdatatype, Rdatatype_vector};
 use crate::utils::wrappers::Wrap;
 use extendr_api::HashMap;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};

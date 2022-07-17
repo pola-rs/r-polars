@@ -1,3 +1,5 @@
+minipolars:::import_polars_as_("pl")
+
 test_that("create expression and print", {
   expr = pl::col("sweetnes")$sum()$over(c("color","country"))
   testthat::expect_identical(

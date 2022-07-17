@@ -1,3 +1,5 @@
+minipolars:::import_polars_as_("pl")
+
 input_vectors_and_series =
   values = list (
     newname = pl::series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
@@ -108,6 +110,39 @@ test_that("polar_frame, select sum over", {
   testthat::expect_equal(
     df,
     expected_iris_select_df
+  )
+
+})
+
+
+test_that("init identity is shallow copy & deep clone yields new external ptr", {
+  pf = pl::pf(iris)
+
+
+  #pf init also is the identity function and is a shallow copy
+  pf2 = pl::pf(pf)
+  testthat::expect_true(all.equal(pf,pf2))
+  testthat::expect_true(
+    xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
+      xptr::xptr_address(pf2$.__enclos_env__$private$pf)
+  )
+
+
+  #deep copy clone rust side object, hence not same mem address
+  pf3 = pf$clone(deep=TRUE)
+  testthat::expect_true(all.equal(pf,pf3))
+  testthat::expect_true(
+    xptr::xptr_address(pf$.__enclos_env__$private$pf) !=
+      xptr::xptr_address(pf3$.__enclos_env__$private$pf)
+  )
+
+
+  #shallow copy, same mem address
+  pf4 = pf$clone(deep=FALSE)
+  testthat::expect_true(all.equal(pf,pf4))
+  testthat::expect_true(
+    xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
+      xptr::xptr_address(pf4$.__enclos_env__$private$pf)
   )
 
 })

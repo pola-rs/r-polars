@@ -32,25 +32,26 @@ polar_frame = R6::R6Class("polar_frame",
     #' @return A new `polar_frame` object.
     initialize = function(data) {
 
+
+      #pass through init
+      if(is_polar_frame(data)) {
+        private$pf = data$.__enclos_env__$private$pf #shallow
+        return(self)
+      }
+
       #normal initialization from data
       if(is_polar_data_input(data)) {
         private$pf =  minipolars:::new_pf(data)
-        return(invisible(self))
+        return(self)
       }
 
       #lowerlevel through init
       if(identical(class(data),"Rdataframe")) {
         private$pf = data
-        return(invisible(self))
+        return(self)
       }
 
-      #pass through init
-      if(is_polar_frame(data)) {
-        # new_polar_frame = as_polar_frame(data)
-        # private$pf = new_polar_frame$pf
-        #TODO maybe possible to use 'self = new_polar_frame' instead
-        return(invisible(data))
-      }
+
 
       abort(paste("cannot initialize polar_frame with:",class(data)))
     },
@@ -84,30 +85,7 @@ polar_frame = R6::R6Class("polar_frame",
 )
 
 
-#' construct proto Rexpr array from args
-#'
-#' @param ...  any Rexpr or string
-#'
-#' @return ProtoRexprArray object
-#'
-#' @examples construct_ProtoRexprArray(pl::col("Species"),"Sepal.Width")
-construct_ProtoRexprArray = function(...) {
-  pra = minipolars:::ProtoRexprArray$new()
-  args = list(...)
-  for (i in args) {
-    if (is_string(i)) {
-      pra$push_back_str(i) #rust method
-      next
-    }
-    if (inherits(i,"Rexpr")) {
-      pra$push_back_rexpr(i) #rust method
-      next
-    }
-    abort(paste("cannot handle object:", capture.output(str(i))))
-  }
 
-  pra
-}
 
 #' test if suitable to construct polar.frame
 #'
@@ -169,18 +147,20 @@ as_polar_frame = function(x) {
 #' pl::pf(list(some_column_name = c(1,2,3,4,5)))
 new_pf = function(data) {
 
+  if(is_polar_frame(data)) {
+    abort("assertion failed, this function should never handle polar_frame")
+  }
+
   #input guard
   if(!is_polar_data_input(data)) {
     abort("input must inherit data.frame or be a list of vectors and/or  Rseries")
   }
 
+  if (inherits(data,"data.frame")) {
+    data = as.data.frame(data)
+  }
 
-  #make sure keys(column names) are defined or at least defined unspecified (NA)
-  keys = names(data)
-  if(length(keys)==0) keys = rep(NA_character_, length(data))
-
-  #on rust side replace undefined column names with newcolumn_[i]
-  #if already series reuse that name
+  #closure to generate new names
   make_column_name_gen = function() {
     col_counter = 0
     column_name_gen = function(x) {
@@ -190,49 +170,49 @@ new_pf = function(data) {
   }
   name_generator = make_column_name_gen()
 
+  ##step1 handle column names
+  #keys are tentative new column names
+  #fetch keys from names, if missing set as NA
+  keys = names(data)
+  if(length(keys)==0) keys = rep(NA_character_, length(data))
 
-  if (inherits(data,"data.frame")) {
-    return(minipolars:::Rdataframe$new_from_vectors(as.data.frame(data)))
-  }
-
-  ## if data.frame or list of something build directly into data.frme
-  if (
-    !is.list(data) ||
-    !all(sapply(data,function(x) is.vector(x) || inherits(x,"Rseries")))
-  ) {
-    abort("data arg must inherit from data.frame or be a mixed list of vector and Rseries")
-  }
-
-  #all are vectors
-  if (all(sapply(data,function(x) is.vector(x)))) {
-    return(minipolars:::Rdataframe$new_from_vectors(data))
-  }
-
-  #if mixed Rseries and vectors
-  if (any(sapply(data,function(x) is.vector(x)))) {
-
-    #convert all non Rseries into Rseries
-    for (i in seq_along(data)) {
-      if(!inherits(data[[i]], "Rseries")) {
-        key = keys[i]
-        if(is.na(key) || nchar(key)==0) key = name_generator()
-        data[[i]] = minipolars:::Rseries$new(
-          x = data[[i]],
-          key
-        )
+  ##step2
+  #if missing key use series name or generate new
+  keys = mapply(data,keys, FUN = function(column,key) {
+    if(is.na(key) || nchar(key)==0) {
+      if(inherits(column, "Rseries")) {
+        key = column$name()
+      } else {
+        key = name_generator()
       }
     }
+    return(key)
+  })
 
+
+  ##step 3
+  #check for conflicting names, to avoid silent overwrite
+  if(any(duplicated(keys))) {
+    abort(
+      paste(
+        "conflicting column names not allowed:",
+        paste(unique(keys[duplicated(keys)]),collapse=", ")
+      )
+    )
   }
 
+  ##step 4
+  #build polar_frame one column at the time
+  pf = minipolars:::Rdataframe$new_with_capacity(length(data));
+  mapply(data,keys, FUN = function(column, key) {
+    if(inherits(column, "Rseries")) {
+      column$rename(key)
+      pf$set_column_from_rseries(column)
+    } else {
+      pf$set_column_from_robj(column,key)
+    }
+    return(NULL)
+  })
 
-  #get pointers to Rseries objects
-  ptr_adrs = sapply(data, xptr::xptr_address)
-
-  #reenocde unspecified name as ""
-  keys_rustside = sapply(keys, function(x) if(is.na(x)) "" else x)
-
-  #clone series, potential rename if key specified,  build dataframe from series
-  minipolars:::Rdataframe$new_from_series(ptr_adrs, keys_rustside)
-
+  return(pf)
 }
