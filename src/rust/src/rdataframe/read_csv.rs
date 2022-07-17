@@ -1,19 +1,7 @@
 //read csv
 
-use super::wrap_errors::wrap_error;
-
-use crate::rdatatype::{Rdatatype, Rdatatype_vector};
-use crate::utils::wrappers::Wrap;
-use extendr_api::HashMap;
-use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
-use polars::datatypes::DataType;
-use polars::datatypes::Field;
-use polars::error::PolarsError;
-use polars::io::csv::{CsvEncoding, NullValues};
-use polars::io::RowCount;
-use polars::lazy::frame::{AllowedOptimizations, LazyCsvReader, LazyFrame, LazyGroupBy};
-use polars::prelude::IdxSize;
-use polars::prelude::Schema;
+use crate::rdatatype::RdatatypeVector;
+use extendr_api::{extendr, prelude::*, rprintln};
 
 //this function is derived from  polars/py-polars/src/lazy/dataframe.rs new_from_csv
 
@@ -26,18 +14,18 @@ pub fn new_csv_r(
     skip_rows: u32,        //usize
     n_rows: Nullable<u32>, //option usize
     cache: bool,
-    overwrite_dtype: &Rdatatype_vector, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
-                                        // low_memory: bool,
-                                        // comment_char: Option<&str>,
-                                        // quote_char: Option<&str>,
-                                        // null_values: Option<Wrap<NullValues>>,
-                                        // infer_schema_length: Option<usize>,
-                                        // // with_schema_modify: Option<PyObject>,
-                                        // rechunk: bool,
-                                        // skip_rows_after_header: usize,
-                                        // encoding: &str,
-                                        // row_count: Option<(String, IdxSize)>, //replaced IdxSize with usize
-                                        // parse_dates: bool,
+    overwrite_dtype: &RdatatypeVector, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
+                                       // low_memory: bool,
+                                       // comment_char: Option<&str>,
+                                       // quote_char: Option<&str>,
+                                       // null_values: Option<Wrap<NullValues>>,
+                                       // infer_schema_length: Option<usize>,
+                                       // // with_schema_modify: Option<PyObject>,
+                                       // rechunk: bool,
+                                       // skip_rows_after_header: usize,
+                                       // encoding: &str,
+                                       // row_count: Option<(String, IdxSize)>, //replaced IdxSize with usize
+                                       // parse_dates: bool,
 ) {
     let s = format!(
         "path{path},sep{sep},has_header{has_header},ignore_errors{ignore_errors},skip_rows \

@@ -3,7 +3,7 @@ Title: Polars ported to R.
 Version: 0.0.1
 Imports: xptr, rlang, namespace
 Authors@R: 
-    person("Soren", "Welling", , "sorhawell@gmail.com", role = "aut")
+    person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license

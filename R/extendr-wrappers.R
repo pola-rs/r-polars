@@ -72,8 +72,6 @@ ProtoRexprArray$push_back_str <- function(s) invisible(.Call(wrap__ProtoRexprArr
 
 ProtoRexprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__ProtoRexprArray__push_back_rexpr, self, r))
 
-ProtoRexprArray$pop_front_rexpr <- function(context) .Call(wrap__ProtoRexprArray__pop_front_rexpr, self, context)
-
 ProtoRexprArray$print <- function() invisible(.Call(wrap__ProtoRexprArray__print, self))
 
 ProtoRexprArray$add_context <- function(context) .Call(wrap__ProtoRexprArray__add_context, self, context)
@@ -124,17 +122,17 @@ Rdatatype$print <- function() invisible(.Call(wrap__Rdatatype__print, self))
 #' @export
 `[[.Rdatatype` <- `$.Rdatatype`
 
-Rdatatype_vector <- new.env(parent = emptyenv())
+RdatatypeVector <- new.env(parent = emptyenv())
 
-Rdatatype_vector$new <- function() .Call(wrap__Rdatatype_vector__new)
+RdatatypeVector$new <- function() .Call(wrap__RdatatypeVector__new)
 
-Rdatatype_vector$push <- function(colname, datatype) invisible(.Call(wrap__Rdatatype_vector__push, self, colname, datatype))
+RdatatypeVector$push <- function(colname, datatype) invisible(.Call(wrap__RdatatypeVector__push, self, colname, datatype))
 
-Rdatatype_vector$print <- function() invisible(.Call(wrap__Rdatatype_vector__print, self))
-
-#' @export
-`$.Rdatatype_vector` <- function (self, name) { func <- Rdatatype_vector[[name]]; environment(func) <- environment(); func }
+RdatatypeVector$print <- function() invisible(.Call(wrap__RdatatypeVector__print, self))
 
 #' @export
-`[[.Rdatatype_vector` <- `$.Rdatatype_vector`
+`$.RdatatypeVector` <- function (self, name) { func <- RdatatypeVector[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RdatatypeVector` <- `$.RdatatypeVector`
 

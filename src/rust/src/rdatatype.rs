@@ -1,4 +1,3 @@
-
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::datatypes::DataType;
@@ -41,12 +40,12 @@ impl From<Rdatatype> for DataType {
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone)]
 #[extendr]
-pub struct Rdatatype_vector(pub Vec<(Option<String>, DataType)>);
+pub struct RdatatypeVector(pub Vec<(Option<String>, DataType)>);
 
 #[extendr]
-impl Rdatatype_vector {
+impl RdatatypeVector {
     pub fn new() -> Self {
-        Rdatatype_vector(Vec::new())
+        RdatatypeVector(Vec::new())
     }
 
     pub fn push(&mut self, colname: Nullable<String>, datatype: &Rdatatype) {
@@ -61,5 +60,5 @@ impl Rdatatype_vector {
 extendr_module! {
     mod rdatatype;
     impl Rdatatype;
-    impl Rdatatype_vector;
+    impl RdatatypeVector;
 }

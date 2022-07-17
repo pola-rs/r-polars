@@ -82,28 +82,7 @@ impl From<&Rseries> for pl::Series {
     }
 }
 
-// //obsolete struct, keep for reference
-// #[derive(Debug, Clone)]
-// #[extendr]
-// pub struct RseriesVector(pub Vec<pl::Series>);
-
-// #[extendr]
-// impl RseriesVector {
-//     pub fn new() {
-//         RseriesVector(Vec::new());
-//     }
-
-//     pub fn push(&mut self, x: &Rseries) {
-//         self.0.push(x.into());
-//     }
-
-//     pub fn print(&mut self) {
-//         rprint!("{:?}", self);
-//     }
-// }
-
 extendr_module! {
     mod rseries;
     impl Rseries;
-    //impl RseriesVector;
 }

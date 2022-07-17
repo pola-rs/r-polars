@@ -1,5 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln, Error, List, Rinternals};
-use polars::prelude::{self as pl, DataFrame, IntoLazy};
+use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
 pub mod read_csv;
@@ -32,46 +32,9 @@ struct Rdataframe {
 
 #[extendr]
 impl Rdataframe {
-    //obsolete
-    // fn new_from_vectors(x: List) -> Result<Self, Error> {
-    //     let s: Vec<pl::Series> = x
-    //         .iter()
-    //         .map(|(name, robj)| robjname2series(robj, name))
-    //         .collect();
-    //     let df = pl::DataFrame::new(s).map_err(wrap_error)?;
-    //     Ok(Rdataframe { d: df })
-    // }
-
     fn clone_extendr(&self) -> Rdataframe {
         self.clone()
     }
-
-    // //obsolete
-    // //hey wait what! ptr_adrs's are strings.
-    // //Yeah R is 32bit friendly and 64bit integers are not available in R::base
-    // fn new_from_series(ptr_adrs: Vec<String>, col_names: Vec<String>) -> Result<Self, Error> {
-    //     let mut rsers = Vec::new();
-    //     for (ptr, name) in ptr_adrs.iter().zip(col_names.iter()) {
-    //         let without_prefix = ptr.trim_start_matches("0x");
-    //         let z = usize::from_str_radix(without_prefix, 16).map_err(wrap_error)?;
-    //         unsafe {
-    //             let mut s = (&mut *(z as *mut Rseries)).0.clone();
-    //             if name.len() > 0 {
-    //                 s.rename(name);
-    //             }
-    //             rsers.push(s)
-    //         };
-    //     }
-
-    //     let d = pl::DataFrame::new(rsers).map_err(wrap_error)?;
-    //     Ok(Rdataframe { d })
-    // }
-
-    //obsolete
-    // fn safe_from_series(x: &RseriesVector) -> Result<Self, Error> {
-    //     let d = pl::DataFrame::new(x.clone().0).map_err(wrap_error)?;
-    //     Ok(Rdataframe { d })
-    // }
 
     fn new() -> Self {
         let empty_series: Vec<pl::Series> = Vec::new();

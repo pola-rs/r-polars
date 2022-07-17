@@ -8,32 +8,6 @@ pub struct Rexpr {
     pub e: pl::Expr,
 }
 
-//this struct only here to satisfy extendr
-#[derive(Clone, Debug)]
-#[extendr]
-pub struct OptRexpr {
-    pub e: Option<Rexpr>,
-}
-
-#[extendr]
-impl OptRexpr {
-    fn print(&self) {
-        rprintln!("{:?}", self);
-    }
-}
-
-impl From<Option<Rexpr>> for OptRexpr {
-    fn from(e: Option<Rexpr>) -> Self {
-        OptRexpr { e }
-    }
-}
-
-impl From<OptRexpr> for Option<Rexpr> {
-    fn from(e: OptRexpr) -> Self {
-        e.e
-    }
-}
-
 impl Deref for Rexpr {
     type Target = pl::Expr;
     fn deref(&self) -> &pl::Expr {
@@ -156,10 +130,6 @@ impl ProtoRexprArray {
 
     pub fn push_back_rexpr(&mut self, r: &Rexpr) {
         self.a.push_back(ProtoRexpr::new_expr(r));
-    }
-
-    fn pop_front_rexpr(&mut self, context: &str) -> OptRexpr {
-        self.a.pop_front().map(|re| re.to_rexpr(context)).into()
     }
 
     pub fn print(&self) {
