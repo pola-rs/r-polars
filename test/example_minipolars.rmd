@@ -32,9 +32,22 @@ pl::col("hello")$sum()$over(c("world","from"))$alias("polars")
 
 ```
 
-## Now for the rest implemented so far
+## chain 'polar_frame' methods together with chained expressions 
+```{r iris}
+#creating polar_frame  iris, perform selection and convert back to data.frame
+pf = pl::pf(iris)
+
+#make selection with expressions or strings, convert back to data.frame
+pf$select(
+  pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
+  pl::col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
+  "Petal.Width"
+)$as_data_frame() %>% head
+
+```
 
 
+## create 'polar_frame' from mix of series and vectors
 ```{r mix_values}
 #creating polar_frame from mixed columns
 values = list (
@@ -47,27 +60,12 @@ values = list (
 )
 
 pl::pf(values)
-
 ```
 
-
-```{r iris}
-#creating polar_frame  iris, perform selection and convert back to data.frame
-pf = pl::pf(iris)
-
-
-#make selection with expressions or strings, convert back to data.frame
-pf$select(
-  pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
-  pl::col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
-  "Petal.Width"
-)$as_data_frame() %>% head
-
-```
 
 
 ```{r datatypes}
-#creating polar_frame  iris, perform selection and convert back to data.frame
+#datatypes
 pl::datatype("Float64")
 pl::datatype("integer")
 

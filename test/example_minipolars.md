@@ -5,13 +5,12 @@ Søren Welling
 
 ## minipolar
 
-This document demonstrates the feasibility wrapping the excelling data
-table rust library polars <http://pola.rs> in an R package. Spoiler is
-quite possible.
+This document demonstrates the feasibility of wrapping the excellent
+data table library polars <http://pola.rs> in an R package. Spoiler: It
+is quite possible.
 
 Besides polars, this wrapping relies on extendr
-<https://github.com/extendr> which are the R equivalents of pyo3 and
-maturin.
+<https://github.com/extendr> which is the R equivalent to pyo3+maturin.
 
 ``` r
 #loading polars as regular r package would all functions exposed would give a huge name space collision with sum(), col() from base R.
@@ -29,7 +28,29 @@ pl::col("hello")$sum()$over(c("world","from"))$alias("polars")
 
     ## polars_expr: col("hello").sum().over([col("world"), col("from")]).alias("polars")
 
-## Now for the rest implemented so far
+## chain ‘polar\_frame’ methods together with chained expressions
+
+``` r
+#creating polar_frame  iris, perform selection and convert back to data.frame
+pf = pl::pf(iris)
+
+#make selection with expressions or strings, convert back to data.frame
+pf$select(
+  pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
+  pl::col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
+  "Petal.Width"
+)$as_data_frame() %>% head
+```
+
+    ##   sw_sum_over_species sl_sum_over_species Petal.Width
+    ## 1               171.4               250.3         0.2
+    ## 2               171.4               250.3         0.2
+    ## 3               171.4               250.3         0.2
+    ## 4               171.4               250.3         0.2
+    ## 5               171.4               250.3         0.2
+    ## 6               171.4               250.3         0.4
+
+## create ‘polar\_frame’ from mix of series and vectors
 
 ``` r
 #creating polar_frame from mixed columns
@@ -63,28 +84,7 @@ pl::pf(values)
     ## └─────────┴──────┴─────┴─────────────┴──────────────┴─────────────┘
 
 ``` r
-#creating polar_frame  iris, perform selection and convert back to data.frame
-pf = pl::pf(iris)
-
-
-#make selection with expressions or strings, convert back to data.frame
-pf$select(
-  pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
-  pl::col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
-  "Petal.Width"
-)$as_data_frame() %>% head
-```
-
-    ##   sw_sum_over_species sl_sum_over_species Petal.Width
-    ## 1               171.4               250.3         0.2
-    ## 2               171.4               250.3         0.2
-    ## 3               171.4               250.3         0.2
-    ## 4               171.4               250.3         0.2
-    ## 5               171.4               250.3         0.2
-    ## 6               171.4               250.3         0.4
-
-``` r
-#creating polar_frame  iris, perform selection and convert back to data.frame
+#datatypes
 pl::datatype("Float64")
 ```
 
