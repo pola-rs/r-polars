@@ -13,16 +13,16 @@
 #' @examples import_polars_as_("pl")
 #' pl::df(iris)$select(pl::col("Petal.Length")$sum()$over("Species"))
 import_polars_as_ <- function(name = "pl") {
-  fake_package(
+  minipolars:::fake_package(
     name,
     list(
       #map the following class constructors
-      col = minipolars:::Rexpr$col, #Rexpr
+      col = minipolars:::col, #Rexpr
       df  = minipolars:::new_pf,    #Rdataframe, low-level interface
       pf = function(data) minipolars:::polar_frame$new(data),
       #polar_Frame, R6 interface
-      series = minipolars:::Rseries$new, #Rseries
-      datatype = minipolars:::Rdatatype$new
+      series = minipolars:::series, #Rseries
+      datatype = datatype
 
 
       #methods do not need mapping, as they should be access directly from instances
@@ -32,25 +32,75 @@ import_polars_as_ <- function(name = "pl") {
   invisible(NULL)
 }
 
+col = function(...) {
+  do.call(minipolars:::Rexpr$col,list(...))
+}
+
+series = function(...) {
+  do.call(minipolars:::Rseries$new,list(...))
+}
+
+datatype = function(...) {
+  do.call(minipolars:::Rdatatype$new,list(...))
+}
 
 #define print behaviour for minipolars classes
 
-print_Rexpr = function(x) {
+
+#' Title
+#'
+#' @param x
+#' @S3method
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.Rexpr = function(x) {
   cat("polars_expr: ")
   x$print()
 }
 
-print_Rdataframe = function(x) {
+
+#' Title
+#'
+#' @param x
+#' @S3method
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.Rdataframe = function(x) {
   cat("polars_dataframe: ")
   x$print()
 }
 
-print_Rseries = function(x) {
+
+#' Title
+#'
+#' @param x
+#' @S3method
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.Rseries = function(x) {
   cat("polars_series: ")
   x$print()
 }
 
-print_Rdatatype = function(x) {
+#' Title
+#'
+#' @param x
+#' @S3method
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.Rdatatype = function(x) {
   cat("polars_datatype: ")
   x$print()
 }
@@ -60,8 +110,8 @@ print_Rdatatype = function(x) {
 #   x$print()
 # }
 
-.S3method("print", "Rexpr", print_Rexpr)
-.S3method("print", "Rdataframe", print_Rdataframe)
-.S3method("print", "Rseries", print_Rseries)
-.S3method("print", "Rdatatype", print_Rseries)
+# .S3method("print", "Rexpr", print_Rexpr)
+# .S3method("print", "Rdataframe", print_Rdataframe)
+# .S3method("print", "Rseries", print_Rseries)
+# .S3method("print", "Rdatatype", print_Rseries)
 # .S3method("print", "Rdatatype_vector", print_Rseries)

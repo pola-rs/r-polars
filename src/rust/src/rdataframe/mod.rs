@@ -78,10 +78,12 @@ impl Rdataframe {
         let x: Result<Vec<Robj>, Error> = self
             .d
             .iter()
-            .map(|x| {
-                x.f64()
+            .map(|x| match x.dtype() {
+                pl::DataType::Float64 => x
+                    .f64()
                     .map(|ca| ca.into_iter().collect_robj())
-                    .map_err(|e| Error::from(wrap_error(e)))
+                    .map_err(|e| Error::from(wrap_error(e))),
+                _ => panic!("other types than float64 not implemeted so far"),
             })
             .collect();
 
