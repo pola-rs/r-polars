@@ -2,7 +2,7 @@
 title: "minipolars_teaser"
 author: "Søren Welling"
 date: "7/18/2022"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
