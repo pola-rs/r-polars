@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## minipolar
 
-This document demonstrates the feasibility wrapping the excelling data table rust library polars <http://pola.rs> in an R package. Spoiler is quite possible.
+This document demonstrates the feasibility of wrapping the excellent data table library polars <http://pola.rs> in an R package. Spoiler: It is quite possible.
 
-Besides polars, this wrapping relies on extendr <https://github.com/extendr> which are the R equivalents of pyo3 and maturin.
+Besides polars, this wrapping relies on extendr <https://github.com/extendr> which is the R equivalent to pyo3+maturin.
 
 ```{r}
 #loading polars as regular r package would all functions exposed would give a huge name space collision with sum(), col() from base R.
