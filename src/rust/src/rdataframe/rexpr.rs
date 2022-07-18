@@ -1,23 +1,20 @@
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::prelude::{self as pl};
-use std::collections::VecDeque;
 
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct Rexpr {
-    pub e: pl::Expr,
-}
+pub struct Rexpr(pub pl::Expr);
 
 impl Deref for Rexpr {
     type Target = pl::Expr;
     fn deref(&self) -> &pl::Expr {
-        &self.e
+        &self.0
     }
 }
 
 impl DerefMut for Rexpr {
     fn deref_mut(&mut self) -> &mut pl::Expr {
-        &mut self.e
+        &mut self.0
     }
 }
 
@@ -25,55 +22,41 @@ impl DerefMut for Rexpr {
 impl Rexpr {
     //constructors
     pub fn col(name: &str) -> Self {
-        Rexpr { e: pl::col(name) }
+        Rexpr(pl::col(name))
     }
 
     //chaining methods
     pub fn abs(&self) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().abs(),
-        }
+        Rexpr(self.0.clone().abs())
     }
 
     pub fn agg_groups(&self) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().agg_groups(),
-        }
+        Rexpr(self.0.clone().agg_groups())
     }
 
     pub fn alias(&self, s: &str) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().alias(s),
-        }
+        Rexpr(self.0.clone().alias(s))
     }
 
     pub fn all(&self) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().all(),
-        }
+        Rexpr(self.0.clone().all())
     }
     pub fn any(&self) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().any(),
-        }
+        Rexpr(self.0.clone().any())
     }
 
     pub fn over(&self, vs: Vec<String>) -> Rexpr {
         let vs2: Vec<&str> = vs.iter().map(|x| x.as_str()).collect();
 
-        Rexpr {
-            e: self.e.clone().over(vs2),
-        }
+        Rexpr(self.0.clone().over(vs2))
     }
 
     pub fn print(&self) {
-        rprintln!("{:#?}", self.e);
+        rprintln!("{:#?}", self.0);
     }
 
     pub fn sum(&self) -> Rexpr {
-        Rexpr {
-            e: self.e.clone().sum(),
-        }
+        Rexpr(self.0.clone().sum())
     }
 }
 
@@ -114,22 +97,20 @@ impl ProtoRexpr {
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct ProtoRexprArray {
-    pub a: VecDeque<ProtoRexpr>,
-}
+pub struct ProtoRexprArray(pub Vec<ProtoRexpr>);
 
 #[extendr]
 impl ProtoRexprArray {
     pub fn new() -> Self {
-        ProtoRexprArray { a: VecDeque::new() }
+        ProtoRexprArray(Vec::new())
     }
 
     pub fn push_back_str(&mut self, s: &str) {
-        self.a.push_back(ProtoRexpr::new_str(s));
+        self.0.push(ProtoRexpr::new_str(s));
     }
 
     pub fn push_back_rexpr(&mut self, r: &Rexpr) {
-        self.a.push_back(ProtoRexpr::new_expr(r));
+        self.0.push(ProtoRexpr::new_expr(r));
     }
 
     pub fn print(&self) {
@@ -137,21 +118,18 @@ impl ProtoRexprArray {
     }
 
     pub fn add_context(&self, context: &str) -> RexprArray {
-        RexprArray {
-            a: self
-                .a
+        RexprArray(
+            self.0
                 .iter()
                 .map(|re| re.clone().to_rexpr(context))
-                .collect::<VecDeque<Rexpr>>(),
-        }
+                .collect::<Vec<Rexpr>>(),
+        )
     }
 }
 
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct RexprArray {
-    pub a: VecDeque<Rexpr>,
-}
+pub struct RexprArray(pub Vec<Rexpr>);
 
 #[extendr]
 impl RexprArray {

@@ -15,9 +15,7 @@ use wrap_errors::*;
 
 #[extendr]
 #[derive(Debug, Clone)]
-struct Rdataframe {
-    pub d: pl::DataFrame,
-}
+struct Rdataframe(pub pl::DataFrame);
 
 // //this function is also unsafe
 // fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {
@@ -38,52 +36,48 @@ impl Rdataframe {
 
     fn new() -> Self {
         let empty_series: Vec<pl::Series> = Vec::new();
-        Rdataframe {
-            d: pl::DataFrame::new(empty_series).unwrap(),
-        }
+        Rdataframe(pl::DataFrame::new(empty_series).unwrap())
     }
 
     fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
-        Rdataframe {
-            d: pl::DataFrame::new(empty_series).unwrap(),
-        }
+        Rdataframe(pl::DataFrame::new(empty_series).unwrap())
     }
 
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), Error> {
         let new_series = robjname2series(robj, name);
-        self.d.with_column(new_series).map_err(wrap_error)?;
+        self.0.with_column(new_series).map_err(wrap_error)?;
         Ok(())
     }
 
     fn set_column_from_rseries(&mut self, x: &Rseries) -> Result<(), Error> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
-        self.d.with_column(s).map_err(wrap_error)?;
+        self.0.with_column(s).map_err(wrap_error)?;
         Ok(())
     }
 
     fn print(&self) {
-        rprintln!("{:#?}", self.d);
+        rprintln!("{:#?}", self.0);
     }
 
     fn name(&self) -> String {
-        self.d.to_string()
+        self.0.to_string()
     }
 
     fn colnames(&self) -> Vec<String> {
-        self.d.get_column_names_owned()
+        self.0.get_column_names_owned()
     }
 
     fn as_rlist_of_vectors(&self) -> Result<Robj, Error> {
         let x: Result<Vec<Robj>, Error> = self
-            .d
+            .0
             .iter()
             .map(|x| match x.dtype() {
                 pl::DataType::Float64 => x
                     .f64()
                     .map(|ca| ca.into_iter().collect_robj())
                     .map_err(|e| Error::from(wrap_error(e))),
-                _ => panic!("other types than float64 not implemeted so far"),
+                _ => todo!("other types than float64 not implemeted so far"),
             })
             .collect();
 
@@ -94,20 +88,20 @@ impl Rdataframe {
 
     fn select(&mut self, exprs: &ProtoRexprArray) -> Result<Rdataframe, Error> {
         let exprs: Vec<pl::Expr> = exprs
-            .a
+            .0
             .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").e)
+            .map(|protoexpr| protoexpr.to_rexpr("select").0)
             .collect();
 
         let new_df = self
             .clone()
-            .d
+            .0
             .lazy()
             .select(exprs)
             .collect()
             .map_err(wrap_error)?;
 
-        Ok(Rdataframe { d: new_df })
+        Ok(Rdataframe(new_df))
     }
 }
 

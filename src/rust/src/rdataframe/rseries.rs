@@ -5,16 +5,6 @@ use polars::prelude::{self as pl, NamedFrom};
 #[derive(Debug, Clone)]
 pub struct Rseries(pub pl::Series);
 
-pub fn robj2series(x: Robj) -> pl::Series {
-    let y = x.rtype();
-    match y {
-        Rtype::Integers => pl::Series::new("sint", x.as_integer_slice().unwrap()),
-        Rtype::Doubles => pl::Series::new("sreal", x.as_real_slice().unwrap()),
-        Rtype::Strings => pl::Series::new("ser", x.as_str_vector().unwrap()),
-        _ => pl::Series::new("dunno", &[0, 1, 3]),
-    }
-}
-
 pub fn inherits(x: &Robj, class: &str) -> bool {
     let y = x.class().unwrap().collect::<Vec<&str>>();
     y.contains(&class)
