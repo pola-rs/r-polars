@@ -27,3 +27,11 @@ impl<T> From<Wrap<Nullable<T>>> for Option<T> {
         }
     }
 }
+
+pub fn null_to_opt<T>(x: Nullable<T>) -> Option<T> {
+    if let Nullable::NotNull(y) = x {
+        Some(y)
+    } else {
+        None
+    }
+}

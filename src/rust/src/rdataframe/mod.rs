@@ -15,7 +15,7 @@ use wrap_errors::*;
 
 #[extendr]
 #[derive(Debug, Clone)]
-struct Rdataframe(pub pl::DataFrame);
+pub struct Rdataframe(pub pl::DataFrame);
 
 // //this function is also unsafe
 // fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {

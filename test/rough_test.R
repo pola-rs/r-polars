@@ -35,17 +35,32 @@ values = list (
 
 pl::pf(values)
 
-##read a csv file, not finished
-minipolars:::new_csv_r(
-  path = "a path",
+
+
+  ##read a csv file, not finished
+pf = minipolars:::new_csv_r(
+  path = "my.csv",
   sep = ",",
   has_header = TRUE,
   ignore_errors = FALSE,
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  minipolars:::Rdatatype_vector$new()
+  overwrite_dtype = NULL,  #minipolars:::RdatatypeVector$new()$print()
+  low_memory = FALSE,
+  comment_char = NULL,
+  quote_char = '"',
+  null_values = NULL,
+  infer_schema_length = 100,
+  rechunk = TRUE,
+  skip_rows_after_header = 0,
+  encoding = "utf8-lossy",
+  row_count_name = "myrowcounter",
+  row_count_offset = 42,
+  parse_dates = FALSE
 )
+
+minipolars:::Rlazyframe
 
 
 
