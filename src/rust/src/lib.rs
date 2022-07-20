@@ -2,6 +2,7 @@ use extendr_api::prelude::*;
 
 pub mod rdataframe;
 pub mod rdatatype;
+pub mod rlazyframe;
 pub mod utils;
 
 use rdataframe::get_rdataframe_metadata;

@@ -2,13 +2,13 @@
 
 use crate::rdataframe::wrap_errors::wrap_error;
 use crate::rdatatype::RdatatypeVector;
+use crate::rlazyframe::*;
 use crate::utils::wrappers::*;
-use extendr_api::{extendr, prelude::*, rprintln, Error, Rinternals};
+use extendr_api::{extendr, prelude::*, Error, Rinternals};
 use polars::prelude as pl;
 //this function is derived from  polars/py-polars/src/lazy/dataframe.rs new_from_csv
 use std::result::Result;
 
-use crate::rdataframe::Rdataframe;
 //see param, null_values
 #[derive(Clone, Debug)]
 #[extendr]
@@ -39,24 +39,8 @@ impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
     }
 }
 
-#[derive(Clone)]
 #[extendr]
-pub struct Rlazyframe(pl::LazyFrame);
-
-#[extendr]
-impl Rlazyframe {
-    pub fn rprint(&self) {
-        rprintln!("{}", self.0.describe_plan());
-    }
-
-    pub fn collect(&self) -> Result<Rdataframe, Error> {
-        let x = self.clone().0.collect().map_err(wrap_error)?;
-        Ok(Rdataframe(x))
-    }
-}
-
-#[extendr]
-pub fn new_csv_r(
+pub fn rlazy_csv_reader(
     path: String,
     sep: &str,
     has_header: bool,
@@ -78,21 +62,15 @@ pub fn new_csv_r(
     row_count_offset: i32, //replaced IdxSize with usize
     parse_dates: bool,
 ) -> Result<Rlazyframe, Error> {
-    let s = format!(
-        "path{path},sep{sep},has_header{has_header},ignore_errors{ignore_errors},skip_rows \
-        {skip_rows}n_rows{:?},cache{cache},overwrite_dtype{:?}",
-        n_rows, overwrite_dtype
-    );
-    rprintln!("{}", s);
-
+    //construct encoding parameter
     let encoding = match encoding {
         "utf8" => pl::CsvEncoding::Utf8,
         "utf8-lossy" => pl::CsvEncoding::LossyUtf8,
         e => return Err(Error::Other(format!("encoding {} not implemented.", e))),
     };
 
+    //construct optional Schema parameter for overwrite_dtype
     let dtv = null_to_opt(overwrite_dtype).map(|x| x.clone());
-
     let schema = dtv.map(|some_od| {
         let fields = some_od.0.iter().map(|(name, dtype)| {
             if let Some(sname) = name {
@@ -104,6 +82,7 @@ pub fn new_csv_r(
         pl::Schema::from(fields)
     });
 
+    //construct optional RowCount parameter
     let row_count = null_to_opt(row_count_name).map(|name| polars::io::RowCount {
         name,
         offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
@@ -135,7 +114,6 @@ pub fn new_csv_r(
 
 extendr_module! {
     mod read_csv;
-    fn new_csv_r;
-    impl Rlazyframe;
+    fn rlazy_csv_reader;
     impl RNullValues;
 }

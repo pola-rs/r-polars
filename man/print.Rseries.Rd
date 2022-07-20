@@ -2,10 +2,19 @@
 % Please edit documentation in R/namespace.R
 \name{print.Rseries}
 \alias{print.Rseries}
-\title{Title}
+\title{Print rseries}
 \usage{
 \method{print}{Rseries}(x)
 }
+\arguments{
+\item{x}{Rseries}
+}
+\value{
+self
+}
 \description{
-Title
+Print rseries
+}
+\examples{
+pl::series(letters,"lowercase_letters")
 }

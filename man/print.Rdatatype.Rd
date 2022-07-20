@@ -2,10 +2,19 @@
 % Please edit documentation in R/namespace.R
 \name{print.Rdatatype}
 \alias{print.Rdatatype}
-\title{Title}
+\title{print a polars datatype}
 \usage{
 \method{print}{Rdatatype}(x)
 }
+\arguments{
+\item{x}{Rdatatype}
+}
+\value{
+self
+}
 \description{
-Title
+print a polars datatype
+}
+\examples{
+minipolars:::Rdatatype$new("Boolean")
 }

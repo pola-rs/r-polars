@@ -38,7 +38,7 @@ pl::pf(values)
 
 
   ##read a csv file, not finished
-pf = minipolars:::new_csv_r(
+pf = minipolars:::lazy_csv_reader(
   path = "my.csv",
   sep = ",",
   has_header = TRUE,

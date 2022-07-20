@@ -7,6 +7,7 @@ pub mod rexpr;
 pub mod rseries;
 pub mod wrap_errors;
 pub use crate::rdatatype::*;
+pub use crate::rlazyframe::*;
 
 use read_csv::*;
 use rexpr::*;
@@ -16,17 +17,6 @@ use wrap_errors::*;
 #[extendr]
 #[derive(Debug, Clone)]
 pub struct Rdataframe(pub pl::DataFrame);
-
-// //this function is also unsafe
-// fn strpointer_to_rexpr(raw: &str) -> Result<&mut Rexpr, Error> {
-//     let without_prefix = raw.trim_start_matches("0x");
-//     let z = usize::from_str_radix(without_prefix, 16).map_err(|e| Error::Other(e.to_string()))?;
-
-//     unsafe {
-//         let y = &mut *(z as *mut Rexpr);
-//         return Ok(y);
-//     };
-// }
 
 #[extendr]
 impl Rdataframe {
@@ -111,5 +101,6 @@ extendr_module! {
     use rseries;
     use read_csv;
     use rdatatype;
+    use rlazyframe;
     impl Rdataframe;
 }

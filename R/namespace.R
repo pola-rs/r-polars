@@ -47,71 +47,71 @@ datatype = function(...) {
 #define print behaviour for minipolars classes
 
 
-#' Title
+#' Print expr
 #'
-#' @param x
-#' @S3method
+#' @param x Rexpr
 #'
-#' @return
+#' @return self
 #' @export
 #'
-#' @examples
+#' @examples pl::col("some_column")$sum()$over("some_other_column")
 print.Rexpr = function(x) {
-  cat("polars_expr: ")
+  cat("polars expr: ")
   x$print()
 }
 
 
-#' Title
+#' print dataframe
 #'
-#' @param x
-#' @S3method
+#' @param x polar_frame
 #'
-#' @return
+#' @return self
 #' @export
 #'
-#' @examples
+#' @examples pl::pf(iris)
 print.Rdataframe = function(x) {
-  cat("polars_dataframe: ")
+  cat("polars dataframe: ")
   x$print()
 }
 
 
-#' Title
+#' Print rseries
 #'
-#' @param x
-#' @S3method
+#' @param x Rseries
+
 #'
-#' @return
+#' @return self
 #' @export
 #'
-#' @examples
+#' @examples pl::series(letters,"lowercase_letters")
 print.Rseries = function(x) {
-  cat("polars_series: ")
+  cat("polars series: ")
   x$print()
 }
 
-#' Title
+#' print a polars datatype
 #'
-#' @param x
-#' @S3method
+#' @param x Rdatatype
 #'
-#' @return
+#' @return self
 #' @export
 #'
-#' @examples
+#' @examples minipolars:::Rdatatype$new("Boolean")
 print.Rdatatype = function(x) {
-  cat("polars_datatype: ")
+  cat("polars datatype: ")
   x$print()
 }
 
-# print_Rdatatype = function(x) {
-#   cat("polars_datatype_vector: ")
-#   x$print()
-# }
+#' print polars polars_lazy_frame
+#'
+#' @param x Rlazyfrane
+#'
+#' @return self
+#' @export
+#'
+#' @examples #TODO give example
+print.Rlazyfrane = function(x) {
+  cat("polars lazyframe: ")
+  x$rprint()
+}
 
-# .S3method("print", "Rexpr", print_Rexpr)
-# .S3method("print", "Rdataframe", print_Rdataframe)
-# .S3method("print", "Rseries", print_Rseries)
-# .S3method("print", "Rdatatype", print_Rseries)
-# .S3method("print", "Rdatatype_vector", print_Rseries)

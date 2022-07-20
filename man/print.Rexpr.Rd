@@ -2,10 +2,19 @@
 % Please edit documentation in R/namespace.R
 \name{print.Rexpr}
 \alias{print.Rexpr}
-\title{Title}
+\title{Print expr}
 \usage{
 \method{print}{Rexpr}(x)
 }
+\arguments{
+\item{x}{Rexpr}
+}
+\value{
+self
+}
 \description{
-Title
+Print expr
+}
+\examples{
+pl::col("some_column")$sum()$over("some_other_column")
 }

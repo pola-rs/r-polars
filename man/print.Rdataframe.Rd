@@ -2,10 +2,19 @@
 % Please edit documentation in R/namespace.R
 \name{print.Rdataframe}
 \alias{print.Rdataframe}
-\title{Title}
+\title{print dataframe}
 \usage{
 \method{print}{Rdataframe}(x)
 }
+\arguments{
+\item{x}{polar_frame}
+}
+\value{
+self
+}
 \description{
-Title
+print dataframe
+}
+\examples{
+pl::pf(iris)
 }

@@ -8,7 +8,7 @@
 #' @useDynLib minipolars, .registration = TRUE
 NULL
 
-new_csv_r <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__new_csv_r, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
+rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 Rdataframe <- new.env(parent = emptyenv())
 
@@ -110,18 +110,6 @@ Rseries$cumsum <- function() invisible(.Call(wrap__Rseries__cumsum, self))
 #' @export
 `[[.Rseries` <- `$.Rseries`
 
-Rlazyframe <- new.env(parent = emptyenv())
-
-Rlazyframe$rprint <- function() invisible(.Call(wrap__Rlazyframe__rprint, self))
-
-Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
-
-#' @export
-`$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.Rlazyframe` <- `$.Rlazyframe`
-
 RNullValues <- new.env(parent = emptyenv())
 
 RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
@@ -161,4 +149,16 @@ RdatatypeVector$print <- function() invisible(.Call(wrap__RdatatypeVector__print
 
 #' @export
 `[[.RdatatypeVector` <- `$.RdatatypeVector`
+
+Rlazyframe <- new.env(parent = emptyenv())
+
+Rlazyframe$rprint <- function() invisible(.Call(wrap__Rlazyframe__rprint, self))
+
+Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
+
+#' @export
+`$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Rlazyframe` <- `$.Rlazyframe`
 
