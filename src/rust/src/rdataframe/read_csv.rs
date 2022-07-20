@@ -137,4 +137,5 @@ extendr_module! {
     mod read_csv;
     fn new_csv_r;
     impl Rlazyframe;
+    impl RNullValues;
 }

@@ -122,6 +122,20 @@ Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
 #' @export
 `[[.Rlazyframe` <- `$.Rlazyframe`
 
+RNullValues <- new.env(parent = emptyenv())
+
+RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
+
+RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
+
+RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
+
+#' @export
+`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RNullValues` <- `$.RNullValues`
+
 Rdatatype <- new.env(parent = emptyenv())
 
 Rdatatype$new <- function(s) .Call(wrap__Rdatatype__new, s)

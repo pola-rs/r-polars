@@ -39,3 +39,21 @@ fake_package <- function(name, exported = NULL, unexported = NULL, attach = TRUE
   }
   invisible()
 }
+
+
+
+check_no_missing_args = function(
+  fun, args, warn =TRUE
+) {
+
+  expected_args = names(formals(fun))
+  missing_args = expected_args[!expected_args %in% names(args)]
+  if(length(missing_args)) {
+    if(warn) warning(paste(
+      "Internally following arguments are not exposed:",
+      paste(missing_args,collapse=", ")
+    ))
+    return(FALSE)
+  }
+  return(TRUE)
+}

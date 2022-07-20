@@ -60,7 +60,8 @@ pf = minipolars:::new_csv_r(
   parse_dates = FALSE
 )
 
-minipolars:::Rlazyframe
+pf$collect()$print()
+
 
 
 
