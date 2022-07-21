@@ -10,7 +10,7 @@ pub struct Rlazyframe(pub pl::LazyFrame);
 
 #[extendr]
 impl Rlazyframe {
-    pub fn rprint(&self) {
+    pub fn print(&self) {
         rprintln!("{}", self.0.describe_plan());
     }
 

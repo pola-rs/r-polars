@@ -3,7 +3,7 @@
 
 
 
-#' read csv lazuliy
+#' Read csv lazily
 #'
 #' @param path string, Path to a file
 #' @param sep Single char to use as delimiter in the file.
@@ -57,7 +57,7 @@
 #' lazy_frame = minipolars:::lazy_csv_reader(path="my.csv")
 #' lazyframe$collect()
 lazy_csv_reader = function(
-  path = "my.csv",
+  path,
   sep = ",",
   has_header = TRUE,
   ignore_errors = FALSE,
@@ -137,5 +137,17 @@ lazy_csv_reader = function(
 
   ##call low level function with args
   check_no_missing_args(minipolars:::rlazy_csv_reader,args)
-  do.call(minipolars:::rlazy_csv_reader,args)
+  lower_level_rlazy_frame = do.call(minipolars:::rlazy_csv_reader,args)
+
+  #wrap in R6 class
+  lazy_polar_frame$new(lower_level_rlazy_frame)
+}
+#' Read csv to Rdataframe
+#' @rdname lazy_csv_reader
+#' @usage csv_reader(...) #any param passed directly to lazy_csv_reader
+#' @return RDataframe
+#' @export
+csv_reader = function(...) {
+  lazy_frame = minipolars::: lazy_csv_reader(...)$collect()
+  minipolars:::polar_frame$new(lazy_frame)
 }

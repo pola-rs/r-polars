@@ -2,10 +2,11 @@
 % Please edit documentation in R/csv.R
 \name{lazy_csv_reader}
 \alias{lazy_csv_reader}
-\title{read csv lazuliy}
+\alias{csv_reader}
+\title{Read csv lazily}
 \usage{
 lazy_csv_reader(
-  path = "my.csv",
+  path,
   sep = ",",
   has_header = TRUE,
   ignore_errors = FALSE,
@@ -25,6 +26,8 @@ lazy_csv_reader(
   row_count_offset = 0,
   parse_dates = FALSE
 )
+
+csv_reader(...) #any param passed directly to lazy_csv_reader
 }
 \arguments{
 \item{path}{string, Path to a file}
@@ -87,9 +90,13 @@ be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
 }
 \value{
 lazyframe
+
+RDataframe
 }
 \description{
-read csv lazuliy
+Read csv lazily
+
+Read csv to Rdataframe
 }
 \details{
 Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names

@@ -152,7 +152,7 @@ RdatatypeVector$print <- function() invisible(.Call(wrap__RdatatypeVector__print
 
 Rlazyframe <- new.env(parent = emptyenv())
 
-Rlazyframe$rprint <- function() invisible(.Call(wrap__Rlazyframe__rprint, self))
+Rlazyframe$print <- function() invisible(.Call(wrap__Rlazyframe__print, self))
 
 Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
 

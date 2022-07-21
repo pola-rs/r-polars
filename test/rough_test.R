@@ -59,9 +59,9 @@ pf = minipolars:::lazy_csv_reader(
   row_count_offset = 42,
   parse_dates = FALSE
 )
-
-pf$collect()$print()
-
+class(pf)
+df = pf$collect()
+class(df)
 
 
 
