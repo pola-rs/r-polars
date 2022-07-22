@@ -67,7 +67,17 @@ class(df)
 
 
 
+#using iris.csv as example
+write.csv(iris, "iris.csv",row.names = FALSE)
 
+minipolars::import_polars_as_()
+#read csv into a lazy_polar_frame and compute sum of Sepal.Width over Species
+lpf = minipolars::lazy_csv_reader("iris.csv")
+lpf = lpf$select(
+    pl::col("Sepal.Width")$sum()
+  )
+lpf
+lpf$describe_optimized_plan()
 
-
-
+#this lazy frame
+print(lpf)

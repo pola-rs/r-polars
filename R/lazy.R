@@ -24,6 +24,22 @@ lazy_polar_frame <- R6::R6Class(
     ##collect lazy_polar_frame and return polar_frame
     collect = function() {
       polar_frame$new(private$pf$collect())
+    },
+
+    select = function(...) {
+      #construct on rust side array of expressions and strings (not yet interpreted as exprs)
+      pra = construct_ProtoRexprArray(...)
+
+      #perform eager selection and return new polar_frame
+      minipolars:::lazy_polar_frame$new(private$pf$select(pra))
+    },
+
+    describe_optimized_plan = function() {
+      private$pf$describe_optimized_plan()
+    },
+
+    describe_plan = function() {
+      print(self)
     }
 
 

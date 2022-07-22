@@ -19,10 +19,16 @@ import_polars_as_ <- function(name = "pl") {
       #map the following class constructors
       col = minipolars:::col, #Rexpr
       df  = minipolars:::new_pf,    #Rdataframe, low-level interface
-      pf = function(data) minipolars:::polar_frame$new(data),
+      pf = function(data) minipolars:::polar_frame$new(data), ##deprecated
+      polars_frame = function(data) minipolars:::polar_frame$new(data), ##deprecated
+
       #polar_Frame, R6 interface
       series = minipolars:::series, #Rseries
-      datatype = datatype
+      datatype = datatype,
+
+      #functions
+      lazy_csv_reader = minipolars:::lazy_csv_reader,
+      csv_reader = minipolars:::csv_reader
 
 
       #methods do not need mapping, as they should be access directly from instances
@@ -112,6 +118,6 @@ print.Rdatatype = function(x) {
 #' @examples #TODO give example
 print.Rlazyfrane = function(x) {
   cat("polars lazyframe: ")
-  x$rprint()
+  x$print()
 }
 

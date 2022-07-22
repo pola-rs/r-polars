@@ -136,7 +136,7 @@ lazy_csv_reader = function(
   }
 
   ##call low level function with args
-  check_no_missing_args(minipolars:::rlazy_csv_reader,args)
+  minipolars:::check_no_missing_args(minipolars:::rlazy_csv_reader,args)
   lower_level_rlazy_frame = do.call(minipolars:::rlazy_csv_reader,args)
 
   #wrap in R6 class

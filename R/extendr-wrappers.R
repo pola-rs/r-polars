@@ -154,7 +154,11 @@ Rlazyframe <- new.env(parent = emptyenv())
 
 Rlazyframe$print <- function() invisible(.Call(wrap__Rlazyframe__print, self))
 
+Rlazyframe$describe_optimized_plan <- function() .Call(wrap__Rlazyframe__describe_optimized_plan, self)
+
 Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
+
+Rlazyframe$select <- function(exprs) .Call(wrap__Rlazyframe__select, self, exprs)
 
 #' @export
 `$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }
