@@ -28,7 +28,8 @@ import_polars_as_ <- function(name = "pl") {
 
       #functions
       lazy_csv_reader = minipolars:::lazy_csv_reader,
-      csv_reader = minipolars:::csv_reader
+      csv_reader = minipolars:::csv_reader,
+      read_csv = minipolars:::read_csv_
 
 
       #methods do not need mapping, as they should be access directly from instances

@@ -147,7 +147,65 @@ lazy_csv_reader = function(
 #' @usage csv_reader(...) #any param passed directly to lazy_csv_reader
 #' @return RDataframe
 #' @export
+
 csv_reader = function(...) {
-  lazy_frame = minipolars::: lazy_csv_reader(...)$collect()
+  lazy_frame = minipolars:::lazy_csv_reader(...)$collect()
   minipolars:::polar_frame$new(lazy_frame)
 }
+
+
+#' high level csv_reader, will download if path is url
+#'
+#' @param path file or url
+#' @param ...
+#'
+#' @return polars_dataframe or polars_lazy_dataframe
+#' @export
+#'
+#' @examples df = read_csv("https://j.mp/iriscsv")
+read_csv_ = function(path, lazy= FALSE, reuse_downloaded = TRUE,  ...) {
+
+  # check if path is a existing file, or else try if url to download
+  if(!file.exists(path)) {
+    con = NULL
+
+    #check if possible to open url connection
+    assumed_schemas = c("","https://","http://","ftp://")
+    for(i_schema in assumed_schemas) {
+      if(!is.null(con)) break
+      actual_url = paste0(i_schema,path)
+      suppressWarnings(
+        tryCatch(
+          {con = url(actual_url,open = "rt")},
+          error = function(e) {}
+        )
+      )
+    }
+
+    #try download file if valid url
+    if(!is.null(con)) {
+      close(con)
+      tmp_file = paste0(tempdir(),"/",make.names(actual_url))
+      if( isFALSE(reuse_downloaded) || isFALSE(file.exists(tmp_file))) {
+        download.file(url = actual_url, destfile = tmp_file)
+        message(paste("tmp file placed in \n",tmp_file))
+      }
+
+      path = tmp_file #redirect path to tmp downloaded file
+    } else {
+
+      #do nothing let path fail on rust side
+    }
+
+  }
+
+  #read csv
+  if(lazy) {
+    lazy_csv_reader(path,...)
+  } else {
+    csv_reader(path,...)
+  }
+
+}
+
+
