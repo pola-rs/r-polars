@@ -1,22 +1,26 @@
-test_that("user_guide", {
+test_that("user_guide 101", {
 
   suppressMessages(
     {df = pl::read_csv("https://j.mp/iriscsv")}
   )
 
-
-  testthat::expect_equal(
-    object = df$select(
-        pl::col("sepal_length")$sum()
-      )
-      $as_data_frame(),
-
-    expected = structure(list(
-      sepal_length = 876.5),
-      class = "data.frame",
-      row.names = c(NA,-1L)
-    )
+  three_sums = sort(
+    df$filter(pl::col("sepal_length") > pl::lit(5))
+    $groupby("species")
+    $agg(pl::all()$sum())
+    $select("sepal_length")
+    $as_data_frame()
+    $sepal_length
   )
+
+  #TODO sorting is not retained
+  testthat::expect_equal(
+    object = three_sums,
+    expected = c(116.9, 281.9, 324.5)
+  )
+
+
+
 
 
 })

@@ -36,6 +36,11 @@ impl Rlazyframe {
 
         Rlazyframe(new_df)
     }
+
+    fn filter(&mut self, expr: &Rexpr) -> Rlazyframe {
+        let new_df = self.clone().0.filter(expr.0.clone());
+        Rlazyframe(new_df)
+    }
 }
 
 extendr_module! {

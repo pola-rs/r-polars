@@ -8,6 +8,7 @@ polar_frame = R6::R6Class("polar_frame",
   private = list(
     # pf lower level extendr object that interfaces with polars in rust.
     pf = NULL,
+    groupby_input = NULL,
 
     deep_clone = function(name, value) {
       #low level call rust side deep clone
@@ -60,7 +61,6 @@ polar_frame = R6::R6Class("polar_frame",
     #' select on polar_Frame.
     #' @param ... any Rexpr or any strings naming any_column (translated into Rexpr col(any_colum)))
     #' @return A new `polar_frame` object with applied selection.
-    #' @importFrom rlang is_string
     select = function(...) {
 
       #construct on rust side array of expressions and strings (not yet interpreted as exprs)
@@ -68,6 +68,47 @@ polar_frame = R6::R6Class("polar_frame",
 
       #perform eager selection and return new polar_frame
       polar_frame$new(private$pf$select(pra))
+    },
+
+    #' @description
+    #' select on polar_Frame.
+    #' @param rexpr any single Rexpr
+    #' @return A new `polar_frame` object with applied filter.
+    filter = function(rexpr) {
+
+      #perform eager filtering
+      new_df = private$pf$lazy()$filter(rexpr)$collect()
+
+      #and return new polar_frame
+      polar_frame$new(new_df)
+    },
+
+    #' @description
+    #' groupby on polar_Frame.
+    #' @param ... any Rexpr or string to groupby
+    #' @return A new `polar_frame` object with applied filter.
+    groupby = function(...) {
+      out = polar_frame$new(private$pf)
+      out$.__enclos_env__$private$groupby_input =  construct_ProtoRexprArray(...)
+
+      out
+    },
+
+    #' @description
+    #' groupby on polar_Frame.
+    #' @param ... any Rexpr to aggregate with
+    #' @return A new `polar_frame` object with applied aggregation.
+    agg = function(...) {
+
+      agg_input = construct_ProtoRexprArray(...)
+
+      new_df = private$pf$groupby_agg(
+        private$groupby_input,
+        agg_input
+      )
+
+      #and return new polar_frame
+      polar_frame$new(new_df)
     },
 
     #' @description

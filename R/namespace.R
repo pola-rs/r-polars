@@ -17,7 +17,12 @@ import_polars_as_ <- function(name = "pl") {
     name,
     list(
       #map the following class constructors
-      col = minipolars:::col, #Rexpr
+      lit = minipolars:::rlit,
+
+      col = minipolars:::rcol, #Rexpr
+      all = minipolars:::rall,
+
+
       df  = minipolars:::new_pf,    #Rdataframe, low-level interface
       pf = function(data) minipolars:::polar_frame$new(data), ##deprecated
       polars_frame = function(data) minipolars:::polar_frame$new(data), ##deprecated
@@ -37,10 +42,6 @@ import_polars_as_ <- function(name = "pl") {
     attach=FALSE
   )
   invisible(NULL)
-}
-
-col = function(...) {
-  do.call(minipolars:::Rexpr$col,list(...))
 }
 
 series = function(...) {

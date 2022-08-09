@@ -45,6 +45,41 @@ impl Rexpr {
         Rexpr(self.0.clone().any())
     }
 
+    pub fn sum(&self) -> Rexpr {
+        Rexpr(self.0.clone().sum())
+    }
+
+    //unary
+    pub fn not(&self) -> Rexpr {
+        Rexpr(self.0.clone().not())
+    }
+
+    //expr binary comparisons
+    pub fn gt(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().gt(other.0.clone()))
+    }
+
+    pub fn gt_eq(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().gt_eq(other.0.clone()))
+    }
+
+    pub fn lt(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().lt(other.0.clone()))
+    }
+
+    pub fn lt_eq(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().lt_eq(other.0.clone()))
+    }
+
+    pub fn neq(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().neq(other.0.clone()))
+    }
+
+    pub fn eq(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().eq(other.0.clone()))
+    }
+
+    //expr "funnies"
     pub fn over(&self, vs: Vec<String>) -> Rexpr {
         let vs2: Vec<&str> = vs.iter().map(|x| x.as_str()).collect();
 
@@ -53,10 +88,6 @@ impl Rexpr {
 
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
-    }
-
-    pub fn sum(&self) -> Rexpr {
-        Rexpr(self.0.clone().sum())
     }
 }
 
@@ -138,9 +169,36 @@ impl RexprArray {
     }
 }
 
+#[extendr]
+pub fn rlit(robj: Robj) -> Rexpr {
+    let rtype = robj.rtype();
+    let rlen = robj.len();
+    let expr = match (rtype, rlen) {
+        (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap() as i64),
+        (Rtype::Doubles, 1) => pl::lit(robj.as_real().unwrap()),
+        (_, 1) => panic!("dunno what literal to make out of this"),
+        (_, _) => panic!("literal length must currently be one, so no c(1,2,3) allowed yet"),
+    };
+
+    Rexpr(expr)
+}
+
+#[extendr]
+pub fn rall() -> Rexpr {
+    Rexpr(pl::all())
+}
+
+#[extendr]
+pub fn rcol(name: &str) -> Rexpr {
+    Rexpr(pl::col(name))
+}
+
 extendr_module! {
     mod rexpr;
     impl Rexpr;
     impl ProtoRexprArray;
     impl RexprArray;
+    fn rlit;
+    fn rall;
+    fn rcol;
 }

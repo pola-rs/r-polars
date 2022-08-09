@@ -8,6 +8,12 @@
 #' @useDynLib minipolars, .registration = TRUE
 NULL
 
+rlit <- function(robj) .Call(wrap__rlit, robj)
+
+rall <- function() .Call(wrap__rall)
+
+rcol <- function(name) .Call(wrap__rcol, name)
+
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 Rdataframe <- new.env(parent = emptyenv())
@@ -15,6 +21,8 @@ Rdataframe <- new.env(parent = emptyenv())
 Rdataframe$clone_extendr <- function() .Call(wrap__Rdataframe__clone_extendr, self)
 
 Rdataframe$new <- function() .Call(wrap__Rdataframe__new)
+
+Rdataframe$lazy <- function() .Call(wrap__Rdataframe__lazy, self)
 
 Rdataframe$new_with_capacity <- function(capacity) .Call(wrap__Rdataframe__new_with_capacity, capacity)
 
@@ -31,6 +39,8 @@ Rdataframe$colnames <- function() .Call(wrap__Rdataframe__colnames, self)
 Rdataframe$as_rlist_of_vectors <- function() .Call(wrap__Rdataframe__as_rlist_of_vectors, self)
 
 Rdataframe$select <- function(exprs) .Call(wrap__Rdataframe__select, self, exprs)
+
+Rdataframe$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__Rdataframe__groupby_agg, self, group_exprs, agg_exprs)
 
 #' @export
 `$.Rdataframe` <- function (self, name) { func <- Rdataframe[[name]]; environment(func) <- environment(); func }
@@ -52,11 +62,25 @@ Rexpr$all <- function() .Call(wrap__Rexpr__all, self)
 
 Rexpr$any <- function() .Call(wrap__Rexpr__any, self)
 
+Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
+
+Rexpr$not <- function() .Call(wrap__Rexpr__not, self)
+
+Rexpr$gt <- function(other) .Call(wrap__Rexpr__gt, self, other)
+
+Rexpr$gt_eq <- function(other) .Call(wrap__Rexpr__gt_eq, self, other)
+
+Rexpr$lt <- function(other) .Call(wrap__Rexpr__lt, self, other)
+
+Rexpr$lt_eq <- function(other) .Call(wrap__Rexpr__lt_eq, self, other)
+
+Rexpr$neq <- function(other) .Call(wrap__Rexpr__neq, self, other)
+
+Rexpr$eq <- function(other) .Call(wrap__Rexpr__eq, self, other)
+
 Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
 
 Rexpr$print <- function() invisible(.Call(wrap__Rexpr__print, self))
-
-Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
 
 #' @export
 `$.Rexpr` <- function (self, name) { func <- Rexpr[[name]]; environment(func) <- environment(); func }
@@ -159,6 +183,8 @@ Rlazyframe$describe_optimized_plan <- function() .Call(wrap__Rlazyframe__describ
 Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
 
 Rlazyframe$select <- function(exprs) .Call(wrap__Rlazyframe__select, self, exprs)
+
+Rlazyframe$filter <- function(expr) .Call(wrap__Rlazyframe__filter, self, expr)
 
 #' @export
 `$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }

@@ -29,6 +29,10 @@ impl Rdataframe {
         Rdataframe(pl::DataFrame::new(empty_series).unwrap())
     }
 
+    fn lazy(&self) -> Rlazyframe {
+        Rlazyframe(self.0.clone().lazy())
+    }
+
     fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
         Rdataframe(pl::DataFrame::new(empty_series).unwrap())
@@ -88,6 +92,35 @@ impl Rdataframe {
             .0
             .lazy()
             .select(exprs)
+            .collect()
+            .map_err(wrap_error)?;
+
+        Ok(Rdataframe(new_df))
+    }
+
+    fn groupby_agg(
+        &mut self,
+        group_exprs: &ProtoRexprArray,
+        agg_exprs: &ProtoRexprArray,
+    ) -> Result<Rdataframe, Error> {
+        let group_exprs: Vec<pl::Expr> = group_exprs
+            .0
+            .iter()
+            .map(|protoexpr| protoexpr.to_rexpr("select").0)
+            .collect();
+
+        let agg_exprs: Vec<pl::Expr> = agg_exprs
+            .0
+            .iter()
+            .map(|protoexpr| protoexpr.to_rexpr("select").0)
+            .collect();
+
+        let new_df = self
+            .clone()
+            .0
+            .lazy()
+            .groupby(group_exprs)
+            .agg(agg_exprs)
             .collect()
             .map_err(wrap_error)?;
 

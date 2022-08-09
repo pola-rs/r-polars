@@ -22,3 +22,37 @@ construct_ProtoRexprArray = function(...) {
 
   pra
 }
+
+#' @export
+"!.Rexpr" <- function(e1,e2) e1$not()
+
+#' @export
+"<.Rexpr" <- function(e1,e2) e1$lt(e2)
+
+#' @export
+">.Rexpr" <- function(e1,e2) e1$gt(e2)
+
+#' @export
+"==.Rexpr" <- function(e1,e2) e1$eq(e2)
+
+#' @export
+"!=.Rexpr" <- function(e1,e2) e1$neq(e2)
+
+#' @export
+"<=.Rexpr" <- function(e1,e2) e1$lt_eq(e2)
+
+#' @export
+">=.Rexpr" <- function(e1,e2) e1$gt_eq(e2)
+
+
+#' polars literal
+#'
+#' @param x any R expression yielding an integer or float
+#'
+#' @return Rexpr, literal of that value
+#'
+#' @examples pl::lit(42L)
+lit = function(x) {
+  minipolars:::rlit(x)
+}
+

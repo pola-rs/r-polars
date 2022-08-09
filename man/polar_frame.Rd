@@ -17,6 +17,9 @@ It's real
 \item \href{#method-polar_frame-print}{\code{polar_frame$print()}}
 \item \href{#method-polar_frame-new}{\code{polar_frame$new()}}
 \item \href{#method-polar_frame-select}{\code{polar_frame$select()}}
+\item \href{#method-polar_frame-filter}{\code{polar_frame$filter()}}
+\item \href{#method-polar_frame-groupby}{\code{polar_frame$groupby()}}
+\item \href{#method-polar_frame-agg}{\code{polar_frame$agg()}}
 \item \href{#method-polar_frame-as_data_frame}{\code{polar_frame$as_data_frame()}}
 \item \href{#method-polar_frame-clone}{\code{polar_frame$clone()}}
 }
@@ -72,6 +75,66 @@ select on polar_Frame.
 }
 \subsection{Returns}{
 A new \code{polar_frame} object with applied selection.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-polar_frame-filter"></a>}}
+\if{latex}{\out{\hypertarget{method-polar_frame-filter}{}}}
+\subsection{Method \code{filter()}}{
+select on polar_Frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{polar_frame$filter(rexpr)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{rexpr}}{any single Rexpr}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{polar_frame} object with applied filter.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-polar_frame-groupby"></a>}}
+\if{latex}{\out{\hypertarget{method-polar_frame-groupby}{}}}
+\subsection{Method \code{groupby()}}{
+groupby on polar_Frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{polar_frame$groupby(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{any Rexpr or string to groupby}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{polar_frame} object with applied filter.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-polar_frame-agg"></a>}}
+\if{latex}{\out{\hypertarget{method-polar_frame-agg}{}}}
+\subsection{Method \code{agg()}}{
+groupby on polar_Frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{polar_frame$agg(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{any Rexpr to aggregate with}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A new \code{polar_frame} object with applied aggregation.
 }
 }
 \if{html}{\out{<hr>}}
