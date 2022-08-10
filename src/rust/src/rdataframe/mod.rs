@@ -67,12 +67,13 @@ impl Rdataframe {
             .0
             .iter()
             .map(|x| match x.dtype() {
-                pl::DataType::Float64 => x
-                    .f64()
-                    .map(|ca| ca.into_iter().collect_robj())
-                    .map_err(|e| Error::from(wrap_error(e))),
-                _ => todo!("other types than float64 not implemeted so far"),
+                pl::DataType::Float64 => x.f64().map(|ca| ca.into_iter().collect_robj()),
+                pl::DataType::Int32 => x.i32().map(|ca| ca.into_iter().collect_robj()),
+                pl::DataType::Int64 => x.i64().map(|ca| ca.into_iter().collect_robj()),
+                pl::DataType::Utf8 => x.utf8().map(|ca| ca.into_iter().collect_robj()),
+                _ => todo!("only exports so far, f32/64,i32/64,utf8"),
             })
+            .map(|x| x.map_err(|e| Error::from(wrap_error(e))))
             .collect();
 
         let list = r!(List::from_values(x?));
@@ -81,11 +82,7 @@ impl Rdataframe {
     }
 
     fn select(&mut self, exprs: &ProtoRexprArray) -> Result<Rdataframe, Error> {
-        let exprs: Vec<pl::Expr> = exprs
-            .0
-            .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").0)
-            .collect();
+        let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
 
         let new_df = self
             .clone()
@@ -103,17 +100,8 @@ impl Rdataframe {
         group_exprs: &ProtoRexprArray,
         agg_exprs: &ProtoRexprArray,
     ) -> Result<Rdataframe, Error> {
-        let group_exprs: Vec<pl::Expr> = group_exprs
-            .0
-            .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").0)
-            .collect();
-
-        let agg_exprs: Vec<pl::Expr> = agg_exprs
-            .0
-            .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").0)
-            .collect();
+        let group_exprs: Vec<pl::Expr> = pra_to_vec(group_exprs, "select");
+        let agg_exprs: Vec<pl::Expr> = pra_to_vec(agg_exprs, "select");
 
         let new_df = self
             .clone()

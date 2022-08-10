@@ -2,6 +2,8 @@
 #'
 #' @param ...  any Rexpr or string
 #'
+#' @importFrom rlang is_string
+#'
 #' @return ProtoRexprArray object
 #'
 #' @examples construct_ProtoRexprArray(pl::col("Species"),"Sepal.Width")

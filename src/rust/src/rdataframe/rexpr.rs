@@ -152,10 +152,15 @@ impl ProtoRexprArray {
         RexprArray(
             self.0
                 .iter()
-                .map(|re| re.clone().to_rexpr(context))
+                .map(|re| re.to_rexpr(context))
                 .collect::<Vec<Rexpr>>(),
         )
     }
+}
+
+//external function as extendr-api do not allow methods returning unwrapped structs
+pub fn pra_to_vec(pra: &ProtoRexprArray, context: &str) -> Vec<pl::Expr> {
+    pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }
 
 #[derive(Clone, Debug)]

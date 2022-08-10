@@ -50,6 +50,8 @@
 #' @return lazyframe
 #' @export
 #'
+#' @importFrom rlang is_string
+#'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #'
 #' @examples
