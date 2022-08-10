@@ -23,7 +23,7 @@ polar_frame = R6::R6Class("polar_frame",
     #' print
     #' @return self `polar_frame` object.
     print = function() {
-      private$pf$print()
+      print(private$pf)
       invisible(self)
     },
 
@@ -55,6 +55,14 @@ polar_frame = R6::R6Class("polar_frame",
 
 
       abort(paste("cannot initialize polar_frame with:",class(data)))
+    },
+
+    #' @description
+    #'polar_frame to lazy polar_frame.
+
+    #' @return A new `lazy_frame` object with applied selection.
+    lazy = function() {
+      lazy_polar_frame$new(private$pf$lazy())
     },
 
     #' @description

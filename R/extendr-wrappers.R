@@ -186,9 +186,27 @@ Rlazyframe$select <- function(exprs) .Call(wrap__Rlazyframe__select, self, exprs
 
 Rlazyframe$filter <- function(expr) .Call(wrap__Rlazyframe__filter, self, expr)
 
+Rlazyframe$groupby <- function(exprs) .Call(wrap__Rlazyframe__groupby, self, exprs)
+
 #' @export
 `$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.Rlazyframe` <- `$.Rlazyframe`
+
+Rlazygroupby <- new.env(parent = emptyenv())
+
+Rlazygroupby$print <- function() invisible(.Call(wrap__Rlazygroupby__print, self))
+
+Rlazygroupby$agg <- function(exprs) .Call(wrap__Rlazygroupby__agg, self, exprs)
+
+Rlazygroupby$head <- function(n) .Call(wrap__Rlazygroupby__head, self, n)
+
+Rlazygroupby$tail <- function(n) .Call(wrap__Rlazygroupby__tail, self, n)
+
+#' @export
+`$.Rlazygroupby` <- function (self, name) { func <- Rlazygroupby[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Rlazygroupby` <- `$.Rlazygroupby`
 

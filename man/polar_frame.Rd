@@ -16,6 +16,7 @@ It's real
 \itemize{
 \item \href{#method-polar_frame-print}{\code{polar_frame$print()}}
 \item \href{#method-polar_frame-new}{\code{polar_frame$new()}}
+\item \href{#method-polar_frame-lazy}{\code{polar_frame$lazy()}}
 \item \href{#method-polar_frame-select}{\code{polar_frame$select()}}
 \item \href{#method-polar_frame-filter}{\code{polar_frame$filter()}}
 \item \href{#method-polar_frame-groupby}{\code{polar_frame$groupby()}}
@@ -55,6 +56,19 @@ Create a new polar_frame
 }
 \subsection{Returns}{
 A new \code{polar_frame} object.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-polar_frame-lazy"></a>}}
+\if{latex}{\out{\hypertarget{method-polar_frame-lazy}{}}}
+\subsection{Method \code{lazy()}}{
+polar_frame to lazy polar_frame.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{polar_frame$lazy()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A new \code{lazy_frame} object with applied selection.
 }
 }
 \if{html}{\out{<hr>}}

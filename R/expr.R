@@ -25,26 +25,38 @@ construct_ProtoRexprArray = function(...) {
   pra
 }
 
+#' wrap as literal
+#'
+#' @param e an Rexpr(polars) or any R expression
+#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
+#'
+#' @return Rexpr
+#'
+#' @examples pl::col("foo") < 5
+wrap_e = function(e) {
+  if(inherits(e,"Rexpr")) e else rlit(e)
+}
+
 #' @export
 "!.Rexpr" <- function(e1,e2) e1$not()
 
 #' @export
-"<.Rexpr" <- function(e1,e2) e1$lt(e2)
+"<.Rexpr" <- function(e1,e2) e1$lt(wrap_e(e2))
 
 #' @export
-">.Rexpr" <- function(e1,e2) e1$gt(e2)
+">.Rexpr" <- function(e1,e2) e1$gt(wrap_e(e2))
 
 #' @export
-"==.Rexpr" <- function(e1,e2) e1$eq(e2)
+"==.Rexpr" <- function(e1,e2) e1$eq(wrap_e(e2))
 
 #' @export
-"!=.Rexpr" <- function(e1,e2) e1$neq(e2)
+"!=.Rexpr" <- function(e1,e2) e1$neq(wrap_e(e2))
 
 #' @export
-"<=.Rexpr" <- function(e1,e2) e1$lt_eq(e2)
+"<=.Rexpr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
 
 #' @export
-">=.Rexpr" <- function(e1,e2) e1$gt_eq(e2)
+">=.Rexpr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
 
 
 #' polars literal

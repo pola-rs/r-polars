@@ -11,7 +11,7 @@ input_vectors_and_series =
   )
 
 expected_mixed_print =
-  c("shape: (5, 6)", "┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐",
+  c("polars dataframe: shape: (5, 6)", "┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐",
     "│ newname ┆ a    ┆ b   ┆ newcolumn_1 ┆ named_vector ┆ newcolumn_2 │",
     "│ ---     ┆ ---  ┆ --- ┆ ---         ┆ ---          ┆ ---         │",
     "│ f64     ┆ f64  ┆ str ┆ f64         ┆ f64          ┆ f64         │",

@@ -118,8 +118,21 @@ print.Rdatatype = function(x) {
 #' @export
 #'
 #' @examples #TODO give example
-print.Rlazyfrane = function(x) {
-  cat("polars lazyframe: ")
+print.Rlazyframe = function(x) {
+  cat("polars lazyframe: \n")
+  x$print()
+}
+
+#' print polars polars_lazy_frame
+#'
+#' @param x Rlazyfrane
+#'
+#' @return self
+#' @export
+#'
+#' @examples #TODO give example
+print.Rlazygroupby = function(x) {
+  cat("polars lazy groupby: \n")
   x$print()
 }
 
