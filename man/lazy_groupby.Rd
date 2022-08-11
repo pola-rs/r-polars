@@ -127,10 +127,14 @@ A new \code{lazy_polar_frame} object.
 \if{html}{\out{<a id="method-lazy_polar_groupby-print"></a>}}
 \if{latex}{\out{\hypertarget{method-lazy_polar_groupby-print}{}}}
 \subsection{Method \code{print()}}{
+prints opague groupby, not much to show
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{lazy_groupby$print()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+NULL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-lazy_polar_groupby-clone"></a>}}

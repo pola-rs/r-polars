@@ -109,7 +109,7 @@ groupby on lazy_polar_frame.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{rexpr}}{any single Rexpr}
+\item{\code{...}}{any single Rexpr or string naming a column}
 }
 \if{html}{\out{</div>}}
 }
