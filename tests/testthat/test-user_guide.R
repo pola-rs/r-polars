@@ -1,4 +1,7 @@
-test_that("user_guide 101", {
+##these tests are literal  run all examples of py-polars user guide
+
+
+test_that("user_guide 101 // csv-lazy-groupby", {
 
   suppressMessages(
     {df = pl::read_csv("https://j.mp/iriscsv")}
@@ -37,7 +40,7 @@ test_that("user_guide 101", {
 
 
 
-test_that("Expression examples", {
+test_that("Expression examples // types/NAS in-out", {
 
   #verify NA's and null goes in and out correctly
 
@@ -60,7 +63,30 @@ test_that("Expression examples", {
 
   expect_equal(df_in,df_out)
 
+  pl::col("names")$unique()$count()$alias("unique_names_2")$add(pl::lit(42L))
+
+  pl::col("names")$unique()$count()$alias("unique_names_2") + pl::lit(42L)
+
+  pl::col("names")$unique()$count()$alias("unique_names_2") + 42L
+
+
+  pf2 = pf$select(
+      pl::col("names")$n_unique()$alias("unique_names_1"),
+      pl::col("names")$unique()$count()$alias("unique_names_2"),
+      pl::col("names")$unique()$count()$alias("unique_names_3_overflow") + .Machine$integer.max
+  )
+
+  ##u32 type is converted to R real which gracefully avoids overflow u32->i32
+  ## however it is a bit silly to perform a count a get a double as result
+  ## but that's R ;)
+  three_counts = as.list(pf2$as_data_frame())
+
+  expect_equal(  three_counts, list(
+    unique_names_1 = 5,
+    unique_names_2 = 5,
+    unique_names_3_overflow = 5 + .Machine$integer.max
+  ))
+
+  expect_true(rlang::is_integerish(three_counts$unique_names_3_overflow))
+
 })
-
-
-

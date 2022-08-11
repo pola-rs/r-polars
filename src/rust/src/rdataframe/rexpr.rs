@@ -1,5 +1,6 @@
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::prelude::{self as pl};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Clone, Debug)]
 #[extendr]
@@ -20,40 +21,6 @@ impl DerefMut for Rexpr {
 
 #[extendr]
 impl Rexpr {
-    //constructors
-    pub fn col(name: &str) -> Self {
-        Rexpr(pl::col(name))
-    }
-
-    //chaining methods
-    pub fn abs(&self) -> Rexpr {
-        Rexpr(self.0.clone().abs())
-    }
-
-    pub fn agg_groups(&self) -> Rexpr {
-        Rexpr(self.0.clone().agg_groups())
-    }
-
-    pub fn alias(&self, s: &str) -> Rexpr {
-        Rexpr(self.0.clone().alias(s))
-    }
-
-    pub fn all(&self) -> Rexpr {
-        Rexpr(self.0.clone().all())
-    }
-    pub fn any(&self) -> Rexpr {
-        Rexpr(self.0.clone().any())
-    }
-
-    pub fn sum(&self) -> Rexpr {
-        Rexpr(self.0.clone().sum())
-    }
-
-    //unary
-    pub fn not(&self) -> Rexpr {
-        Rexpr(self.0.clone().not())
-    }
-
     //expr binary comparisons
     pub fn gt(&self, other: &Rexpr) -> Rexpr {
         Rexpr(self.0.clone().gt(other.0.clone()))
@@ -77,6 +44,113 @@ impl Rexpr {
 
     pub fn eq(&self, other: &Rexpr) -> Rexpr {
         Rexpr(self.0.clone().eq(other.0.clone()))
+    }
+
+    //in order
+
+    pub fn alias(&self, s: &str) -> Rexpr {
+        Rexpr(self.0.clone().alias(s))
+    }
+
+    pub fn is_null(&self) -> Rexpr {
+        Rexpr(self.0.clone().is_null())
+    }
+
+    pub fn is_not_null(&self) -> Rexpr {
+        Rexpr(self.0.clone().is_not_null())
+    }
+
+    pub fn drop_nulls(&self) -> Rexpr {
+        Rexpr(self.0.clone().drop_nulls())
+    }
+
+    pub fn drop_nans(&self) -> Rexpr {
+        Rexpr(self.0.clone().drop_nans())
+    }
+
+    pub fn min(&self) -> Rexpr {
+        Rexpr(self.0.clone().min())
+    }
+
+    pub fn max(&self) -> Rexpr {
+        Rexpr(self.0.clone().max())
+    }
+
+    pub fn mean(&self) -> Rexpr {
+        Rexpr(self.0.clone().mean())
+    }
+
+    pub fn meadian(&self) -> Rexpr {
+        Rexpr(self.0.clone().median())
+    }
+
+    pub fn sum(&self) -> Rexpr {
+        Rexpr(self.0.clone().sum())
+    }
+
+    pub fn n_unique(&self) -> Rexpr {
+        Rexpr(self.0.clone().n_unique())
+    }
+
+    pub fn first(&self) -> Rexpr {
+        Rexpr(self.0.clone().first())
+    }
+
+    pub fn last(&self) -> Rexpr {
+        Rexpr(self.0.clone().last())
+    }
+
+    //constructors
+    pub fn col(name: &str) -> Self {
+        Rexpr(pl::col(name))
+    }
+
+    //chaining methods
+
+    pub fn unique(&self) -> Rexpr {
+        Rexpr(self.0.clone().unique())
+    }
+
+    pub fn abs(&self) -> Rexpr {
+        Rexpr(self.0.clone().abs())
+    }
+
+    pub fn agg_groups(&self) -> Rexpr {
+        Rexpr(self.0.clone().agg_groups())
+    }
+
+    pub fn all(&self) -> Rexpr {
+        Rexpr(self.0.clone().all())
+    }
+    pub fn any(&self) -> Rexpr {
+        Rexpr(self.0.clone().any())
+    }
+
+    pub fn count(&self) -> Rexpr {
+        Rexpr(self.0.clone().count())
+    }
+
+    //binary arithmetic expressions
+    pub fn add(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().add(other.0.clone()))
+    }
+
+    //binary arithmetic expressions
+    pub fn sub(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().sub(other.0.clone()))
+    }
+
+    pub fn mul(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().mul(other.0.clone()))
+    }
+
+    pub fn div(&self, other: &Rexpr) -> Rexpr {
+        Rexpr(self.0.clone().div(other.0.clone()))
+    }
+
+    //unary
+    pub fn not(&self) -> Rexpr {
+        Rexpr(self.0.clone().not())
     }
 
     //expr "funnies"

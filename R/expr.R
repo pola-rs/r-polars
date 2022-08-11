@@ -58,6 +58,19 @@ wrap_e = function(e) {
 #' @export
 ">=.Rexpr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
 
+#' @export
+"+.Rexpr" <- function(e1,e2) e1$add(wrap_e(e2))
+
+#' @export
+"-.Rexpr" <- function(e1,e2) e1$sub(wrap_e(e2))
+
+#' @export
+"/.Rexpr" <- function(e1,e2) e1$div(wrap_e(e2))
+
+#' @export
+"*.Rexpr" <- function(e1,e2) e1$mul(wrap_e(e2))
+
+
 
 #' polars literal
 #'

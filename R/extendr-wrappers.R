@@ -50,22 +50,6 @@ Rdataframe$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__Rdatafram
 
 Rexpr <- new.env(parent = emptyenv())
 
-Rexpr$col <- function(name) .Call(wrap__Rexpr__col, name)
-
-Rexpr$abs <- function() .Call(wrap__Rexpr__abs, self)
-
-Rexpr$agg_groups <- function() .Call(wrap__Rexpr__agg_groups, self)
-
-Rexpr$alias <- function(s) .Call(wrap__Rexpr__alias, self, s)
-
-Rexpr$all <- function() .Call(wrap__Rexpr__all, self)
-
-Rexpr$any <- function() .Call(wrap__Rexpr__any, self)
-
-Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
-
-Rexpr$not <- function() .Call(wrap__Rexpr__not, self)
-
 Rexpr$gt <- function(other) .Call(wrap__Rexpr__gt, self, other)
 
 Rexpr$gt_eq <- function(other) .Call(wrap__Rexpr__gt_eq, self, other)
@@ -77,6 +61,56 @@ Rexpr$lt_eq <- function(other) .Call(wrap__Rexpr__lt_eq, self, other)
 Rexpr$neq <- function(other) .Call(wrap__Rexpr__neq, self, other)
 
 Rexpr$eq <- function(other) .Call(wrap__Rexpr__eq, self, other)
+
+Rexpr$alias <- function(s) .Call(wrap__Rexpr__alias, self, s)
+
+Rexpr$is_null <- function() .Call(wrap__Rexpr__is_null, self)
+
+Rexpr$is_not_null <- function() .Call(wrap__Rexpr__is_not_null, self)
+
+Rexpr$drop_nulls <- function() .Call(wrap__Rexpr__drop_nulls, self)
+
+Rexpr$drop_nans <- function() .Call(wrap__Rexpr__drop_nans, self)
+
+Rexpr$min <- function() .Call(wrap__Rexpr__min, self)
+
+Rexpr$max <- function() .Call(wrap__Rexpr__max, self)
+
+Rexpr$mean <- function() .Call(wrap__Rexpr__mean, self)
+
+Rexpr$meadian <- function() .Call(wrap__Rexpr__meadian, self)
+
+Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
+
+Rexpr$n_unique <- function() .Call(wrap__Rexpr__n_unique, self)
+
+Rexpr$first <- function() .Call(wrap__Rexpr__first, self)
+
+Rexpr$last <- function() .Call(wrap__Rexpr__last, self)
+
+Rexpr$col <- function(name) .Call(wrap__Rexpr__col, name)
+
+Rexpr$unique <- function() .Call(wrap__Rexpr__unique, self)
+
+Rexpr$abs <- function() .Call(wrap__Rexpr__abs, self)
+
+Rexpr$agg_groups <- function() .Call(wrap__Rexpr__agg_groups, self)
+
+Rexpr$all <- function() .Call(wrap__Rexpr__all, self)
+
+Rexpr$any <- function() .Call(wrap__Rexpr__any, self)
+
+Rexpr$count <- function() .Call(wrap__Rexpr__count, self)
+
+Rexpr$add <- function(other) .Call(wrap__Rexpr__add, self, other)
+
+Rexpr$sub <- function(other) .Call(wrap__Rexpr__sub, self, other)
+
+Rexpr$mul <- function(other) .Call(wrap__Rexpr__mul, self, other)
+
+Rexpr$div <- function(other) .Call(wrap__Rexpr__div, self, other)
+
+Rexpr$not <- function() .Call(wrap__Rexpr__not, self)
 
 Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
 
