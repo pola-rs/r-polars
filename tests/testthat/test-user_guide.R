@@ -24,7 +24,7 @@ test_that("user_guide 101", {
   l = l$filter(pl::col("sepal_length") > 5)
   l = l$groupby("species")
   l = l$agg(pl::col("sepal_length")$sum())
-  l$describe_optimized_plan()
+  capture.output(l$describe_optimized_plan())
   df = l$collect()
   three_lazy_sums = sort(df$as_data_frame()$sepal_length)
 
@@ -37,16 +37,30 @@ test_that("user_guide 101", {
 
 
 
-  l = pl::read_csv("https://j.mp/iriscsv",lazy = TRUE)
-  print(l)
-  l = l$filter(pl::col("sepal_length") > 5)
-  print(l)
-  l = l$groupby("species")
-  print(l)
-  l = l$agg(pl::col("sepal_length")$sum())
-  print(l)
-  l$describe_optimized_plan()
-  df = l$collect()
-  sort(df$as_data_frame()$sepal_length)
+test_that("Expression examples", {
+
+  #verify NA's and null goes in and out correctly
+
+  set.seed(12)
+  df_in =  data.frame(
+   "nrs"    =  as.integer(c(1L, 2L, 3L, NA, 5L)),
+   "nrs2"   = 1:5,
+   "nrs3"   = c(1L,2L,3L,4L,5L),
+   "names"  =  c("foo", "ham", "spam", "egg", NA), #oups NA becomes "NA"
+   "random" = c(1.1,NaN,NA,Inf,-Inf),
+   "rando2" = rep(5.0,5),
+   "groups" =  c("A", "A", "B", "C", "B")
+  )
+  pf = pl::polars_frame(df_in)
+  df_out = pf$as_data_frame()
+
+  pf
+  df_in
+  df_out
+
+  expect_equal(df_in,df_out)
+
+})
+
 
 

@@ -39,7 +39,7 @@ impl Rdataframe {
     }
 
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), Error> {
-        let new_series = robjname2series(robj, name);
+        let new_series = robjname2series(&robj, name);
         self.0.with_column(new_series).map_err(wrap_error)?;
         Ok(())
     }
