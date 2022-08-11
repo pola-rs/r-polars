@@ -51,7 +51,7 @@ lazy_polar_frame <- R6::R6Class(
 
     #' @description
     #' groupby on lazy_polar_frame.
-    #' @param rexpr any single Rexpr
+    #' @param ... any single Rexpr or string naming a column
     #' @return A new `lazy_polar_frame` object with applied filter.
     groupby = function(...) {
       pra = construct_ProtoRexprArray(...)
@@ -142,6 +142,9 @@ lazy_groupby <- R6::R6Class(
       lazy_polar_frame$new(private$pf$agg(pra))
     },
 
+    #' @description
+    #' prints opague groupby, not much to show
+    #' @return NULL
     print = function() {
       print(private$pf)
       invisible(self)
