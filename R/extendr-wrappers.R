@@ -164,8 +164,6 @@ Rseries$cumsum <- function() .Call(wrap__Rseries__cumsum, self)
 
 Rseries$apply <- function(robj, rdatatype) .Call(wrap__Rseries__apply, self, robj, rdatatype)
 
-Rseries$map <- function(robj, rdatatype) .Call(wrap__Rseries__map, self, robj, rdatatype)
-
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }
 
