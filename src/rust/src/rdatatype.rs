@@ -5,7 +5,7 @@ use polars::datatypes::DataType;
 //expose polars DateType in R
 #[extendr]
 #[derive(Debug, Clone)]
-pub struct Rdatatype(DataType);
+pub struct Rdatatype(pub DataType);
 
 #[extendr]
 impl Rdatatype {

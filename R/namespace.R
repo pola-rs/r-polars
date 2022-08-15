@@ -93,7 +93,7 @@ print.Rdataframe = function(x) {
 #'
 #' @examples pl::series(letters,"lowercase_letters")
 print.Rseries = function(x) {
-  cat("polars series: ")
+  cat("polars Rseries: ")
   x$print()
 }
 

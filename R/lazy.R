@@ -1,7 +1,3 @@
-##notice here lazy_polar_frame inherits from polar_frame
-# in rust code, both lazy and non lazy have the trait 'frame' I think ...
-# maybe at some time the R6 class structure have to be refactored into a super class 'frame'
-# where both lazy and non lazy polar frame inherits from
 #' R6 Class polar_lazy_frame
 #'
 #' high-level wrapper class for Rpolarframe
@@ -118,19 +114,24 @@ lazy_groupby <- R6::R6Class(
 
     #' @description
     #' one day this will apply
-    #' @param ... not used
+    #' @param f lambda function to apply
     #' @return A new `lazy_polar_frame` object.
-    apply = function(...) {
-      abort("not implemented yet")
+    apply = function(f) {
+
+      abort("this function is not yet implemented")
+
+      if(!is.function(f)) abort("apply takes only a function as argument")
+      lazy_polar_frame$new(private$pf$apply(fun))
     },
 
     #' @description
     #' get n rows of head of group
     #' @param n integer number of rows to get
+    #' @importFrom rlang is_integerish
     #' @return A new `lazy_polar_frame` object.
     head = function(n=1L) {
-      pra = construct_ProtoRexprArray(...)
-      lazy_polar_frame$new(private$pf$agg(pra))
+      if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
+      lazy_polar_frame$new(private$pf$head(n))
     },
 
     #' @description
@@ -138,8 +139,8 @@ lazy_groupby <- R6::R6Class(
     #' @param n integer number of rows to get
     #' @return A new `lazy_polar_frame` object.
     tail = function(n = 1L) {
-      pra = construct_ProtoRexprArray(...)
-      lazy_polar_frame$new(private$pf$agg(pra))
+      if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
+      lazy_polar_frame$new(private$pf$tail(n))
     },
 
     #' @description

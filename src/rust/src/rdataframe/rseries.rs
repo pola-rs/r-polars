@@ -1,5 +1,10 @@
+use crate::rdatatype::Rdatatype;
+use crate::utils::wrappers::null_to_opt;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
-use polars::prelude::{self as pl, NamedFrom};
+use polars::prelude::IntoSeries;
+use polars::prelude::{self as pl, ChunkApply, NamedFrom};
+
+const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -82,7 +87,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
                 s
             }
         }
-        _ => pl::Series::new("dunno", &[0, 1, 3]),
+        _ => todo!("this input type is not implemented yet"),
     }
 }
 
@@ -92,11 +97,13 @@ impl Rseries {
         Rseries(robjname2series(&x, name))
     }
 
-    pub fn rename(&mut self, name: &str) {
-        self.0.rename(name);
+    pub fn rename(&self, name: &str) -> Rseries {
+        let mut s = self.0.clone();
+        s.rename(name);
+        Rseries(s)
     }
 
-    pub fn name(&mut self) -> &str {
+    pub fn name(&self) -> &str {
         self.0.name()
     }
 
@@ -104,8 +111,147 @@ impl Rseries {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cumsum(&mut self) {
-        self.0 = self.0.cumsum(false);
+    pub fn cumsum(&self) -> Rseries {
+        Rseries(self.0.clone().cumsum(false))
+    }
+
+    //apply fun to each element of series
+    pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
+        //input/output types and the r-function
+        let rfun = robj
+            .as_function()
+            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
+        let inp_type = self.0.dtype().clone();
+        let out_type = null_to_opt(rdatatype.clone())
+            .map_or_else(|| self.0.dtype().clone(), |rdt| rdt.0.clone());
+
+        //match type case, and perform apply
+        let s = match (inp_type, out_type) {
+            (pl::DataType::Float64, pl::DataType::Float64) => {
+                let f = |y: f64| -> f64 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_real()
+                        .expect("rfun failed to yield a f64, set output datatype")
+                };
+                Rseries(self.0.f64().unwrap().apply(f).into_series())
+            }
+            (pl::DataType::Int32, pl::DataType::Int32) => {
+                let f = |y: i32| -> i32 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_integer()
+                        .expect("rfun failed to yield an i32, set output datatype")
+                };
+                Rseries(self.0.i32().unwrap().apply(f).into_series())
+            }
+            (pl::DataType::Float64, pl::DataType::Int32) => {
+                let f = |y: f64| -> i32 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_integer()
+                        .expect("rfun failed to yield an i32, set output datatype")
+                };
+                Rseries(
+                    self.0
+                        .f64()
+                        .unwrap()
+                        .apply_cast_numeric::<_, pl::datatypes::Int32Type>(f)
+                        .into_series(),
+                )
+            }
+            (pl::DataType::Int32, pl::DataType::Float64) => {
+                let f = |y: i32| -> f64 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_real()
+                        .expect("rfun failed to yield an f64, set output datatype")
+                };
+                Rseries(
+                    self.0
+                        .i32()
+                        .unwrap()
+                        .apply_cast_numeric::<_, pl::datatypes::Float64Type>(f)
+                        .into_series(),
+                )
+            }
+            (_, _) => panic!("dont know what to do here"),
+        };
+
+        s
+    }
+
+    pub fn map(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
+        //input/output types and the r-function
+        let rfun = robj
+            .as_function()
+            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
+        let inp_type = self.0.dtype().clone();
+        let out_type = null_to_opt(rdatatype.clone())
+            .map_or_else(|| self.0.dtype().clone(), |rdt| rdt.0.clone());
+
+        //match type case, and perform apply
+        let s = match (inp_type, out_type) {
+            (pl::DataType::Float64, pl::DataType::Float64) => {
+                rprintln!("float");
+                let f = |y: f64| -> f64 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_real()
+                        .expect("rfun failed to yield a f64, set output datatype")
+                };
+                Rseries(self.0.f64().unwrap().apply(f).into_series())
+            }
+            (pl::DataType::Int32, pl::DataType::Int32) => {
+                let f = |y: Option<i32>| -> Option<i32> {
+                    let y = y.or_else(|| Some(R_INT_NA_ENC)).unwrap();
+                    let robj = rfun.call(pairlist!(x = y)).expect("rfun failed evaluation");
+
+                    let x = robj.as_integers().expect("failed to get int");
+                    let val = x.iter().next().expect("failed int in another way").0;
+
+                    if val == R_INT_NA_ENC {
+                        None
+                    } else {
+                        Some(val)
+                    }
+                };
+                Rseries(self.0.i32().unwrap().apply_on_opt(f).into_series())
+            }
+            (pl::DataType::Float64, pl::DataType::Int32) => {
+                let f = |y: f64| -> i32 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_integer()
+                        .expect("rfun failed to yield an i32, set output datatype")
+                };
+                Rseries(
+                    self.0
+                        .f64()
+                        .unwrap()
+                        .apply_cast_numeric::<_, pl::datatypes::Int32Type>(f)
+                        .into_series(),
+                )
+            }
+            (pl::DataType::Int32, pl::DataType::Float64) => {
+                let f = |y: i32| -> f64 {
+                    rfun.call(pairlist!(x = y))
+                        .expect("rfun failed evaluation")
+                        .as_real()
+                        .expect("rfun failed to yield an f64, set output datatype")
+                };
+                Rseries(
+                    self.0
+                        .i32()
+                        .unwrap()
+                        .apply_cast_numeric::<_, pl::datatypes::Float64Type>(f)
+                        .into_series(),
+                )
+            }
+            (_, _) => panic!("dont know what to do here"),
+        };
+
+        s
     }
 }
 

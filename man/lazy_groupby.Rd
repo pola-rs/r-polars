@@ -69,13 +69,13 @@ A new \code{lazy_polar_frame} object.
 \subsection{Method \code{apply()}}{
 one day this will apply
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{lazy_groupby$apply(...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{lazy_groupby$apply(f)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{not used}
+\item{\code{f}}{lambda function to apply}
 }
 \if{html}{\out{</div>}}
 }

@@ -34,6 +34,12 @@ polar_frame = R6::R6Class("polar_frame",
     initialize = function(data) {
 
 
+      #polar frame
+      if(isFALSE(data)) {
+        private$pf = FALSE #shallow
+        return(self)
+      }
+
       #pass through init
       if(is_polar_frame(data)) {
         private$pf = data$.__enclos_env__$private$pf #shallow

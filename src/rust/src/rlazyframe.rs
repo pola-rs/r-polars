@@ -70,6 +70,10 @@ impl Rlazygroupby {
     fn tail(&self, n: i32) -> Rlazyframe {
         Rlazyframe(self.0.clone().tail(Some(n as usize)))
     }
+
+    // fn apply(&self, robj: Robj, val: f64) -> Robj {
+    //     todo!("not done");
+    // }
 }
 
 extendr_module! {

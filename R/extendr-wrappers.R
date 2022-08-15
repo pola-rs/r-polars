@@ -154,13 +154,17 @@ Rseries <- new.env(parent = emptyenv())
 
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
-Rseries$rename <- function(name) invisible(.Call(wrap__Rseries__rename, self, name))
+Rseries$rename <- function(name) .Call(wrap__Rseries__rename, self, name)
 
 Rseries$name <- function() .Call(wrap__Rseries__name, self)
 
 Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 
-Rseries$cumsum <- function() invisible(.Call(wrap__Rseries__cumsum, self))
+Rseries$cumsum <- function() .Call(wrap__Rseries__cumsum, self)
+
+Rseries$apply <- function(robj, rdatatype) .Call(wrap__Rseries__apply, self, robj, rdatatype)
+
+Rseries$map <- function(robj, rdatatype) .Call(wrap__Rseries__map, self, robj, rdatatype)
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }
