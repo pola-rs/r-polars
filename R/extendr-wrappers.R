@@ -154,15 +154,25 @@ Rseries <- new.env(parent = emptyenv())
 
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
+Rseries$rename_mut <- function(name) invisible(.Call(wrap__Rseries__rename_mut, self, name))
+
 Rseries$rename <- function(name) .Call(wrap__Rseries__rename, self, name)
 
 Rseries$name <- function() .Call(wrap__Rseries__name, self)
 
+Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
+
+Rseries$sum_as_series <- function() .Call(wrap__Rseries__sum_as_series, self)
+
+Rseries$ceil <- function() .Call(wrap__Rseries__ceil, self)
+
 Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 
-Rseries$cumsum <- function() .Call(wrap__Rseries__cumsum, self)
+Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
 
 Rseries$apply <- function(robj, rdatatype) .Call(wrap__Rseries__apply, self, robj, rdatatype)
+
+Rseries$apply_mac <- function(robj, rdatatype) .Call(wrap__Rseries__apply_mac, self, robj, rdatatype)
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }

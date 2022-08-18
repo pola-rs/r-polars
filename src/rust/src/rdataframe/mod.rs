@@ -8,7 +8,6 @@ pub mod rseries;
 pub mod wrap_errors;
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
-pub mod apply;
 
 use read_csv::*;
 use rexpr::*;

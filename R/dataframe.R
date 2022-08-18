@@ -201,7 +201,6 @@ as_polar_frame = function(x) {
 #' pl::pf(iris)
 #' pl::pf(list(some_column_name = c(1,2,3,4,5)))
 new_pf = function(data) {
-
   if(is_polar_frame(data)) {
     abort("assertion failed, this function should never handle polar_frame")
   }
@@ -243,7 +242,6 @@ new_pf = function(data) {
     }
     return(key)
   })
-
 
   ##step 3
   #check for conflicting names, to avoid silent overwrite
