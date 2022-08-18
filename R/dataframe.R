@@ -261,7 +261,7 @@ new_pf = function(data) {
   pf = minipolars:::Rdataframe$new_with_capacity(length(data));
   mapply(data,keys, FUN = function(column, key) {
     if(inherits(column, "Rseries")) {
-      column$rename(key)
+      column$rename_mut(key)
       pf$set_column_from_rseries(column)
     } else {
       pf$set_column_from_robj(column,key)

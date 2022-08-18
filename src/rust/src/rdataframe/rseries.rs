@@ -97,6 +97,11 @@ impl Rseries {
         Rseries(robjname2series(&x, name))
     }
 
+    //any mut method exposed in R suffixed _mut
+    pub fn rename_mut(&mut self, name: &str) {
+        self.0.rename(name);
+    }
+
     pub fn rename(&self, name: &str) -> Rseries {
         let mut s = self.0.clone();
         s.rename(name);
