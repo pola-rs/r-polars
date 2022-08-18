@@ -1,5 +1,5 @@
 //use crate::apply;
-use crate::apply_cn;
+use crate::apply_input;
 use crate::apply_opt_cast;
 use crate::make_r_na_fun;
 use crate::rdatatype::Rdatatype;
@@ -217,100 +217,6 @@ impl Rseries {
         s
     }
 
-    // //apply fun to each element of series, experiemental2
-    // //handle input/out type with AnyValR wrapper + dynamic closures
-    // //total cases = n_input * c1 + n_iuput *c2 + n_input*n_output * c3
-    // //hopefullly the c3 time cost is much lower than c1 and c2, njah
-    // //final wrapp
-    // enum AnyValR {
-    //     I32(Option<i32>),
-    //     F64(Option<f64>),
-    // }
-    // pub fn apply_dynamic(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
-    //     //input/output types and the r-function
-    //     let rfun = robj
-    //         .as_function()
-    //         .unwrap_or_else(|| panic!("hey you promised me a function!!"));
-    //     let inp_type = self.0.dtype().clone();
-    //     let out_type = null_to_opt(rdatatype.clone())
-    //         .map_or_else(|| self.0.dtype().clone(), |rdt| rdt.0.clone());
-
-    //     //handle input
-    //     let blop: Box<dyn Fn(AnyValR) -> Robj> = match inp_type {
-    //         pl::DataType::Int32 => {
-    //             let f = |y: AnyValR| {
-    //                 if let AnyValR::I32(y) = y {
-    //                     let y = y.or_else(|| Some(R_INT_NA_ENC)).unwrap();
-    //                     rfun.call(pairlist!(x = y))
-    //                         .expect("R function failed evaluation")
-    //                 } else {
-    //                     panic!("wrong type")
-    //                 }
-    //             };
-    //             Box::new(f)
-    //         }
-    //         pl::DataType::Float32 => {
-    //             let f = |y: AnyValR| {
-    //                 if let AnyValR::F64(y) = y {
-    //                     let y = y.unwrap();
-    //                     rfun.call(pairlist!(x = y))
-    //                         .expect("R function failed evaluation")
-    //                 } else {
-    //                     panic!("wrong type")
-    //                 }
-    //             };
-    //             Box::new(f)
-    //         }
-
-    //         _ => todo!("in not covered yet"),
-    //     };
-
-    //     //handle output
-    //     let foo: Box<dyn Fn(AnyValR) -> AnyValR> = match out_type {
-    //         pl::DataType::Int32 => {
-    //             let f = |x: AnyValR| -> AnyValR {
-    //                 let robj = blop(x);
-    //                 let x = robj.as_integers().expect("only returning int allowed");
-    //                 let val = x.iter().next().expect("zero length int not allowed").0;
-
-    //                 if val == R_INT_NA_ENC {
-    //                     AnyValR::I32(None)
-    //                 } else {
-    //                     AnyValR::I32(Some(val))
-    //                 }
-    //             };
-
-    //             Box::new(f)
-    //         }
-    //         pl::DataType::Float64 => {
-    //             let f = |x: AnyValR| -> AnyValR {
-    //                 let robj = blop(x);
-    //                 let x = robj.as_real().expect("only real allowed");
-    //                 AnyValR::F64(Some(x))
-    //             };
-
-    //             Box::new(f)
-    //         }
-    //         _ => todo!("out not covered yet"),
-    //     };
-
-    //     //wrap input/output-handler
-    //     let s = match (&inp_type, &out_type) {
-    //         (pl::DataType::Float64, pl::DataType::Float64) => {
-    //             let f = |x: Option<f64>| {
-    //                 if let AnyValR::F64(out) = foo(AnyValR::F64(x)) {
-    //                     out
-    //                 } else {
-    //                     todo!("woups");
-    //                 }
-    //             };
-    //             Rseries(self.0.f64().unwrap().apply_on_opt(f).into_series())
-    //         }
-    //         (_, _) => todo!("in/out not covered yet"),
-    //     };
-    //     s
-    // }
-
     pub fn apply_mac(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
         let rfun = robj
             .as_function()
@@ -336,6 +242,38 @@ impl Rseries {
         };
 
         s
+    }
+
+    pub fn apply_mac2(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
+        let rfun = robj
+            .as_function()
+            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
+
+        let mut na_fun = R!("function(x) x #placeholder function")
+            .unwrap()
+            .as_function()
+            .unwrap();
+
+        let inp_type = self.0.dtype();
+        let out_type = null_to_opt(rdatatype).map_or_else(|| self.0.dtype(), |rdt| &rdt.0);
+
+        let r_iter: Box<dyn Iterator<Item = Robj>> = match (inp_type) {
+            (pl::DataType::Float64) => Box::new(apply_input!(self.0, f64, rfun, na_fun)),
+            (pl::DataType::Float32) => Box::new(apply_input!(self.0, f32, rfun, na_fun)),
+            (pl::DataType::Int64) => Box::new(apply_input!(self.0, i64, rfun, na_fun)),
+            (pl::DataType::Int32) => Box::new(apply_input!(self.0, i32, rfun, na_fun)),
+            (pl::DataType::Int16) => Box::new(apply_input!(self.0, i16, rfun, na_fun)),
+            (pl::DataType::Int8) => Box::new(apply_input!(self.0, i8, rfun, na_fun)),
+            (pl::DataType::Utf8) => Box::new(apply_input!(self.0, utf8, rfun, na_fun)),
+            (_) => todo!("not all type handled"),
+        };
+
+        // let s: Series = match (out_type) {
+        //     (pl::DataType::Float64) => {}
+        //     (_) => todo!("not all type handled"),
+        // };
+
+        todo!()
     }
 }
 //fn _get_supertype polars_core/utils/mod.rs.html#331

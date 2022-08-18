@@ -43,18 +43,26 @@ use extendr_api::prelude::*;
 
 #[macro_export]
 macro_rules! make_r_na_fun {
+
     (f64 $rfun:expr) => {
         R!("function(f) {function() f(NA_real_)}")
             .unwrap()
             .as_function()
             .expect("failed to make function");
     };
+    (f32 $rfun:expr) => {make_r_na_fun!(f64 $rfun)};
+
     (i32 $rfun:expr) => {
         R!("function(f) {function() f(NA_integer_)}")
             .unwrap()
             .as_function()
             .expect("failed to make function");
     };
+    (i64 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
+    (i16 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
+    (i8 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
+    (f32 $rfun:expr) => {make_r_na_fun!(f64 $rfun)};
+
     (utf8 $rfun:expr) => {
         R!("function(f) {function() f(NA_character_)}")
             .unwrap()
@@ -173,6 +181,68 @@ macro_rules! apply_opt_cast {
                 .into_series(),
         )
     }};
+}
+
+#[macro_export]
+macro_rules! apply_input {
+    ($self:expr, $ca_method_and_inp_type:ident, $rfun:expr, $na_fun:expr) => {
+        {
+            //wrap lambda in a function passing the corrosponding R NAtype if polars null
+            //assumes mut na_fun: Function (extendr_api struct) is present invoked scope
+            //needs to live there as match_arm life-time is too short for iterator
+                $na_fun =
+                    make_r_na_fun!($ca_method_and_inp_type rfun)
+                    .call(pairlist!(f = $rfun.clone()))
+                    .expect("failed eval wrap")
+                    .as_function()
+                    .expect("failed ret wrap");
+
+            // produce iterator which yield returns from the lambda
+                $self
+                    .$ca_method_and_inp_type() //to chunkedarray(ca)
+                    .unwrap()
+                    .into_iter()
+                    .map(|opt| {
+                        let rval: Robj = opt.
+                        map_or_else(
+                            ||  $na_fun.call(pairlist!()),
+                            |x| $rfun.call(pairlist!(x = x))
+                        ).expect("fail r eval");
+                        rval
+                    })
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! apply_output {
+    ($out_chunk_type:ident) => {
+        {
+            //wrap lambda in a function passing the corrosponding R NAtype if polars null
+            //assumes mut na_fun: Function (extendr_api struct) is present invoked scope
+            //needs to live there as match_arm life-time is too short for iterator
+                $na_fun =
+                    make_r_na_fun!($ca_method_and_inp_type rfun)
+                    .call(pairlist!(f = $rfun.clone()))
+                    .expect("failed eval wrap")
+                    .as_function()
+                    .expect("failed ret wrap");
+
+            // produce iterator which yield returns from the lambda
+                $self
+                    .$ca_method_and_inp_type() //to chunkedarray(ca)
+                    .unwrap()
+                    .into_iter()
+                    .map(|opt| {
+                        let rval: Robj = opt.
+                        map_or_else(
+                            ||  $na_fun.call(pairlist!()),
+                            |x| $rfun.call(pairlist!(x = x))
+                        ).expect("fail r eval");
+                        rval
+                    })
+        }
+    };
 }
 
 #[macro_export]
