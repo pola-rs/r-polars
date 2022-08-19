@@ -154,6 +154,8 @@ Rseries <- new.env(parent = emptyenv())
 
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
+Rseries$to_r_vector <- function() .Call(wrap__Rseries__to_r_vector, self)
+
 Rseries$rename_mut <- function(name) invisible(.Call(wrap__Rseries__rename_mut, self, name))
 
 Rseries$rename <- function(name) .Call(wrap__Rseries__rename, self, name)
@@ -173,6 +175,8 @@ Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
 Rseries$apply <- function(robj, rdatatype) .Call(wrap__Rseries__apply, self, robj, rdatatype)
 
 Rseries$apply_mac <- function(robj, rdatatype) .Call(wrap__Rseries__apply_mac, self, robj, rdatatype)
+
+Rseries$apply_mac2 <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply_mac2, self, robj, rdatatype, strict)
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }

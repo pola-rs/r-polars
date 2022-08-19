@@ -39,16 +39,21 @@ macro_rules! apply_cn {
 }
 //const RFUN_FAILED_EVALUATION: &'static str = "rfun_FAILED_EVALUATION";
 //const RFUN_FAILED_OUTPUT: &'static str = "rfun failed to yield correct output type";
-use extendr_api::prelude::*;
 
 #[macro_export]
 macro_rules! make_r_na_fun {
 
+    (bool $rfun:expr) => {
+        R!("function(f) {function() f(NA)}")
+            .unwrap()
+            .as_function()
+            .expect("failed to make function")
+    };
     (f64 $rfun:expr) => {
         R!("function(f) {function() f(NA_real_)}")
             .unwrap()
             .as_function()
-            .expect("failed to make function");
+            .expect("failed to make function")
     };
     (f32 $rfun:expr) => {make_r_na_fun!(f64 $rfun)};
 
@@ -56,7 +61,7 @@ macro_rules! make_r_na_fun {
         R!("function(f) {function() f(NA_integer_)}")
             .unwrap()
             .as_function()
-            .expect("failed to make function");
+            .expect("failed to make function")
     };
     (i64 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
     (i16 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
@@ -67,7 +72,7 @@ macro_rules! make_r_na_fun {
         R!("function(f) {function() f(NA_character_)}")
             .unwrap()
             .as_function()
-            .expect("failed to make function");
+            .expect("failed to make function")
     };
 }
 
@@ -190,14 +195,15 @@ macro_rules! apply_input {
             //wrap lambda in a function passing the corrosponding R NAtype if polars null
             //assumes mut na_fun: Function (extendr_api struct) is present invoked scope
             //needs to live there as match_arm life-time is too short for iterator
-                $na_fun =
-                    make_r_na_fun!($ca_method_and_inp_type rfun)
-                    .call(pairlist!(f = $rfun.clone()))
-                    .expect("failed eval wrap")
-                    .as_function()
-                    .expect("failed ret wrap");
+            $na_fun =
+                make_r_na_fun!($ca_method_and_inp_type rfun)
+                .call(pairlist!(f = $rfun.clone()))
+                .expect("failed eval wrap")
+                .as_function()
+                .expect("failed ret wrap");
 
             // produce iterator which yield returns from the lambda
+            Box::new(
                 $self
                     .$ca_method_and_inp_type() //to chunkedarray(ca)
                     .unwrap()
@@ -210,38 +216,138 @@ macro_rules! apply_input {
                         ).expect("fail r eval");
                         rval
                     })
+            )
         }
     };
 }
 
 #[macro_export]
 macro_rules! apply_output {
-    ($out_chunk_type:ident) => {
-        {
-            //wrap lambda in a function passing the corrosponding R NAtype if polars null
-            //assumes mut na_fun: Function (extendr_api struct) is present invoked scope
-            //needs to live there as match_arm life-time is too short for iterator
-                $na_fun =
-                    make_r_na_fun!($ca_method_and_inp_type rfun)
-                    .call(pairlist!(f = $rfun.clone()))
-                    .expect("failed eval wrap")
-                    .as_function()
-                    .expect("failed ret wrap");
+    (int_special: $r_iter:expr, $out_chunk_type:ty, $strict_downcast:expr) => {
+        Rseries(
+            $r_iter
+                .map(|robj: Robj| {
+                    let opt_rint = robj.as_integers();
 
-            // produce iterator which yield returns from the lambda
-                $self
-                    .$ca_method_and_inp_type() //to chunkedarray(ca)
-                    .unwrap()
-                    .into_iter()
-                    .map(|opt| {
-                        let rval: Robj = opt.
-                        map_or_else(
-                            ||  $na_fun.call(pairlist!()),
-                            |x| $rfun.call(pairlist!(x = x))
-                        ).expect("fail r eval");
-                        rval
-                    })
-        }
+                    //failed to downcast
+                    if opt_rint.is_none() {
+                        if $strict_downcast {
+                            panic!(
+                                "a lambda returned a non int, try strict=FALSE or rewrite lambda"
+                            )
+                        } else {
+                            //return null to polars
+                            return None;
+                        }
+                    }
+
+                    //downcast worked, get first val
+                    let val = opt_rint
+                        .unwrap()
+                        .iter()
+                        .next()
+                        .expect("zero length int not allowed")
+                        .0;
+                    //ignoring following integers, maybe should fail
+
+                    //handle R encoding
+                    if val == R_INT_NA_ENC {
+                        None
+                    } else {
+                        Some(val)
+                    }
+                })
+                .collect::<$out_chunk_type>()
+                .into_series(),
+        )
+    };
+    (float_special: $r_iter:expr, $out_chunk_type:ty, $strict_downcast:expr) => {
+        Rseries(
+            $r_iter
+                .map(|robj: Robj| {
+                    let opt_rint: Option<Doubles> = robj.try_into().ok();
+
+                    //failed to downcast
+                    if opt_rint.is_none() {
+                        if $strict_downcast {
+                            panic!(
+                                "a lambda returned a non int, try strict=FALSE or rewrite lambda"
+                            )
+                        } else {
+                            //return null to polars
+                            return None;
+                        }
+                    }
+
+                    //downcast worked, get first val
+                    let d = opt_rint
+                        .unwrap()
+                        .iter()
+                        .next()
+                        .expect("zero length int not allowed");
+                    //ignoring following integers, maybe should fail
+
+                    //handle R encoding
+                    if d.is_na() {
+                        None
+                    } else {
+                        Some(d.0)
+                    }
+                })
+                .collect::<$out_chunk_type>()
+                .into_series(),
+        )
+    };
+    (string_special: $r_iter:expr, $out_chunk_type:ty, $strict_downcast:expr) => {
+        Rseries(
+            $r_iter
+                .map(|robj: Robj| {
+                    let opt_rint: Option<&Rstr> = robj.try_into().ok();
+
+                    //failed to downcast
+                    if opt_rint.is_none() {
+                        if $strict_downcast {
+                            panic!(
+                                "a lambda returned a non int, try strict=FALSE or rewrite lambda"
+                            )
+                        } else {
+                            //return null to polars
+                            return None;
+                        }
+                    }
+
+                    //downcast worked, get first val
+                    let d = opt_rint
+                        .unwrap()
+                        .iter()
+                        .next()
+                        .expect("zero length int not allowed");
+                    //ignoring following integers, maybe should fail
+
+                    //handle R encoding
+                    if d.is_na() {
+                        None
+                    } else {
+                        d.0
+                    }
+                })
+                .collect::<$out_chunk_type>()
+                .into_series(),
+        )
+    };
+    ($r_iter:expr, $out_chunk_type:ty, $extendr_downcast_method:ident, $strict_downcast:expr) => {
+        Rseries(
+            $r_iter
+                .map(|robj: Robj| {
+                    let opt_val = robj.$extendr_downcast_method();
+                    if $strict_downcast & opt_val.is_none() {
+                        panic!("lambda failed to return correct type");
+                    }
+                    opt_val
+                })
+                .collect::<$out_chunk_type>()
+                .into_series(),
+        )
     };
 }
 

@@ -1,4 +1,4 @@
-use extendr_api::{extendr, prelude::*, rprintln, Error, List, Rinternals};
+use extendr_api::{extendr, prelude::*, rprintln, Error, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
@@ -66,26 +66,11 @@ impl Rdataframe {
         let x: Result<Vec<Robj>, Error> = self
             .0
             .iter()
-            .map(|x| {
-                match x.dtype() {
-                    pl::DataType::Float64 => x.f64().map(|ca| ca.into_iter().collect_robj()),
-                    pl::DataType::Int32 => x.i32().map(|ca| ca.into_iter().collect_robj()),
-                    pl::DataType::Int64 => x.i64().map(|ca| ca.into_iter().collect_robj()),
-                    pl::DataType::Utf8 => x.utf8().map(|ca| ca.into_iter().collect_robj()),
-                    //TODO, how to handle u32->i32 overflow? extendr converts to real which will yield a unique psedo int for all u32
-                    //alternatively try i32, handle overflow?, or convert to bit64
-                    pl::DataType::UInt32 => x.u32().map(|ca| ca.into_iter().collect_robj()),
-                    _ => {
-                        todo!("hey only exports so far, f32/64,u32,i32/64,utf8 {:?}", x);
-                    }
-                }
-            })
+            .map(series_to_r_vector_pl_result)
             .map(|x| x.map_err(|e| Error::from(wrap_error(e))))
             .collect();
 
-        let list = r!(List::from_values(x?));
-
-        Ok(list)
+        Ok(r!(extendr_api::prelude::List::from_values(x?)))
     }
 
     fn select(&mut self, exprs: &ProtoRexprArray) -> Result<Rdataframe, Error> {
