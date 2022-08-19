@@ -1,6 +1,5 @@
 //use crate::apply;
 use crate::apply_input;
-use crate::apply_opt_cast;
 use crate::apply_output;
 use crate::make_r_na_fun;
 use crate::rdataframe::wrap_error;
@@ -10,7 +9,7 @@ use crate::utils::wrappers::null_to_opt;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::datatypes::*;
 use polars::prelude::IntoSeries;
-use polars::prelude::{self as pl, ChunkApply, NamedFrom};
+use polars::prelude::{self as pl, NamedFrom};
 
 const R_INT_NA_ENC: i32 = -2147483648;
 
@@ -174,111 +173,7 @@ impl Rseries {
         Rseries(self.0.clone().cumsum(reverse))
     }
 
-    //apply fun to each element of series, experiemental
-    //handle input/out type with one HUGE match statement
-    pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
-        //input/output types and the r-function
-        let rfun = robj
-            .as_function()
-            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
-        let inp_type = self.0.dtype().clone();
-        let out_type = null_to_opt(rdatatype.clone())
-            .map_or_else(|| self.0.dtype().clone(), |rdt| rdt.0.clone());
-
-        //match type case, and perform apply
-        let s = match (inp_type, out_type) {
-            (pl::DataType::Float64, pl::DataType::Float64) => {
-                let f = |y: f64| -> f64 {
-                    rfun.call(pairlist!(x = y))
-                        .expect("rfun failed evaluation")
-                        .as_real()
-                        .expect("rfun failed to yield a f64, set output datatype")
-                };
-
-                Rseries(self.0.f64().unwrap().apply(f).into_series())
-            }
-            (pl::DataType::Int32, pl::DataType::Int32) => {
-                let f = |y: Option<i32>| -> Option<i32> {
-                    let y = y.or_else(|| Some(R_INT_NA_ENC)).unwrap();
-                    let robj = rfun
-                        .call(pairlist!(x = y))
-                        .expect("R function failed evaluation");
-
-                    let x = robj.as_integers().expect("only returning int allowed");
-                    let val = x.iter().next().expect("zero length int not allowed").0;
-
-                    if val == R_INT_NA_ENC {
-                        None
-                    } else {
-                        Some(val)
-                    }
-                };
-                Rseries(self.0.i32().unwrap().apply_on_opt(f).into_series())
-            }
-            (pl::DataType::Float64, pl::DataType::Int32) => {
-                let f = |y: f64| -> i32 {
-                    rfun.call(pairlist!(x = y))
-                        .expect("rfun failed evaluation")
-                        .as_integer()
-                        .expect("rfun failed to yield an i32, set output datatype")
-                };
-                Rseries(
-                    self.0
-                        .f64()
-                        .unwrap()
-                        .apply_cast_numeric::<_, pl::datatypes::Int32Type>(f)
-                        .into_series(),
-                )
-            }
-            (pl::DataType::Int32, pl::DataType::Float64) => {
-                let f = |y: i32| -> f64 {
-                    rfun.call(pairlist!(x = y))
-                        .expect("rfun failed evaluation")
-                        .as_real()
-                        .expect("rfun failed to yield an f64, set output datatype")
-                };
-                Rseries(
-                    self.0
-                        .i32()
-                        .unwrap()
-                        .apply_cast_numeric::<_, pl::datatypes::Float64Type>(f)
-                        .into_series(),
-                )
-            }
-            (_, _) => panic!("dont know what to do here"),
-        };
-
-        s
-    }
-
-    pub fn apply_mac(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>) -> Rseries {
-        let rfun = robj
-            .as_function()
-            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
-        let inp_type = self.0.dtype().clone();
-        let out_type = null_to_opt(rdatatype.clone())
-            .map_or_else(|| self.0.dtype().clone(), |rdt| rdt.0.clone());
-
-        let s = match (&inp_type, &out_type) {
-            (pl::DataType::Float64, pl::DataType::Float64) => {
-                apply_opt_cast!(self.0, f64, Float64Chunked, f64, rfun, as_real)
-            }
-            (pl::DataType::Int32, pl::DataType::Int32) => {
-                apply_opt_cast!(integer_in_out, self.0, rfun)
-            }
-            (pl::DataType::Int32, pl::DataType::Float64) => {
-                apply_opt_cast!(integer_in, self.0, Float64Chunked, f64, rfun, as_real)
-            }
-            (pl::DataType::Float64, pl::DataType::Int32) => {
-                apply_opt_cast!(integer_out, self.0, f64, rfun)
-            }
-            (_, _) => todo!("not all type handled"),
-        };
-
-        s
-    }
-
-    pub fn apply_mac2(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>, strict: bool) -> Rseries {
+    pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>, strict: bool) -> Rseries {
         //prepare lamda function from R side
         let rfun = robj
             .as_function()
@@ -296,6 +191,7 @@ impl Rseries {
         let inp_type = self.0.dtype();
         let out_type = null_to_opt(rdatatype).map_or_else(|| self.0.dtype(), |rdt| &rdt.0);
 
+        //handle any input type to lambda, make iterator which yields lambda returns as Robj's
         use pl::DataType::*;
         let r_iter: Box<dyn Iterator<Item = Robj>> = match inp_type {
             Float64 => apply_input!(self.0, f64, rfun, na_fun),
@@ -306,50 +202,23 @@ impl Rseries {
             Int8 => apply_input!(self.0, i8, rfun, na_fun),
             Utf8 => apply_input!(self.0, utf8, rfun, na_fun),
             Boolean => apply_input!(self.0, bool, rfun, na_fun),
-
             _ => todo!("this input type is not implemented"),
         };
 
+        //handle any return type from R and collect into Series
         let mut s = match out_type {
             Boolean => apply_output!(r_iter, BooleanChunked, as_bool, strict),
             Float64 => apply_output!(float_special: r_iter, Float64Chunked, strict),
             Int32 => apply_output!(int_special: r_iter, Int32Chunked, strict), //handle R special NA encoding
-            Utf8 => {
-                let s = r_iter
-                    .map(|x| {
-                        rprintln!("rtype is {:?}", x.rtype());
-
-                        //failed to downcast
-                        if !(x.rtype() == Rtype::Strings) {
-                            if strict {
-                                panic!(
-                                    "a lambda returned a Rstr, try strict=FALSE or rewrite lambda"
-                                )
-                            } else {
-                                //return null to polars
-                                None
-                            }
-                        } else {
-                            //handle R encoding
-                            if x.is_na() {
-                                None
-                            } else {
-                                Some(x.as_str().unwrap())
-                            }
-                        }
-                    })
-                    .collect::<Utf8Chunked>()
-                    .into_series();
-                Rseries(s)
-            } //apply_output!(string_special: r_iter, Utf8Chunked, strict),
+            Utf8 => apply_output!(string_special: r_iter, Utf8Chunked, strict),
             _ => todo!("this output type is not implemented"),
         };
+
+        //name new series
         s.0.rename(&format!("{}_apply", self.0.name()));
         s
     }
 }
-//fn _get_supertype polars_core/utils/mod.rs.html#331
-// table of what to cast each type to
 
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
 impl From<&Rseries> for pl::Series {

@@ -172,11 +172,7 @@ Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 
 Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
 
-Rseries$apply <- function(robj, rdatatype) .Call(wrap__Rseries__apply, self, robj, rdatatype)
-
-Rseries$apply_mac <- function(robj, rdatatype) .Call(wrap__Rseries__apply_mac, self, robj, rdatatype)
-
-Rseries$apply_mac2 <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply_mac2, self, robj, rdatatype, strict)
+Rseries$apply <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict)
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }

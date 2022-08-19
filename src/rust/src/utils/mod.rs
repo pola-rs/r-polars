@@ -301,34 +301,24 @@ macro_rules! apply_output {
     (string_special: $r_iter:expr, $out_chunk_type:ty, $strict_downcast:expr) => {
         Rseries(
             $r_iter
-                .map(|robj: Robj| {
-                    let opt_rint: Option<&Rstr> = robj.try_into().ok();
+                .map(|x| {
+                    rprintln!("rtype is {:?}", x.rtype());
 
                     //failed to downcast
-                    if opt_rint.is_none() {
+                    if !(x.rtype() == Rtype::Strings) {
                         if $strict_downcast {
-                            panic!(
-                                "a lambda returned a non int, try strict=FALSE or rewrite lambda"
-                            )
+                            panic!("a lambda returned a Rstr, try strict=FALSE or rewrite lambda")
                         } else {
                             //return null to polars
-                            return None;
+                            None
                         }
-                    }
-
-                    //downcast worked, get first val
-                    let d = opt_rint
-                        .unwrap()
-                        .iter()
-                        .next()
-                        .expect("zero length int not allowed");
-                    //ignoring following integers, maybe should fail
-
-                    //handle R encoding
-                    if d.is_na() {
-                        None
                     } else {
-                        d.0
+                        //handle R encoding
+                        if x.is_na() {
+                            None
+                        } else {
+                            Some(x.as_str().unwrap())
+                        }
                     }
                 })
                 .collect::<$out_chunk_type>()
