@@ -344,10 +344,15 @@ macro_rules! apply_output {
 #[macro_export]
 macro_rules! Rseries_chain_methods {
     ($self:ident, ) => {};
-    ($self:ident, $name:ident $($tail:tt)*) => {
-        pub fn $name(&$self) -> Rseries {
-            Rseries($self.0.clone().$name())
-        }
-        Rseries_chain_methods![$self, $($tail)*];
+    ($self:ident, $struct:ident, $($name:ident)*) => {
+
+            #[extendr]
+            impl $struct {
+                $(
+                    pub fn $name(&$self) -> $struct {
+                        Rseries($self.0.clone().$name())
+                    }
+                )*
+            }
     };
 }

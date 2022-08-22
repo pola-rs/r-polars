@@ -126,8 +126,13 @@ use std::result::Result;
 
 #[extendr]
 impl Rseries {
+    //utility methods
     pub fn new(x: Robj, name: &str) -> Self {
         Rseries(robjname2series(&x, name))
+    }
+
+    pub fn clone(&self) -> Rseries {
+        Rseries(self.0.clone())
     }
 
     pub fn to_r_vector(&self) -> Result<Robj, Error> {
@@ -139,20 +144,68 @@ impl Rseries {
         self.0.rename(name);
     }
 
-    pub fn rename(&self, name: &str) -> Rseries {
+    //any other method or trait method in alphabetical order
+    pub fn abs(&self) -> std::result::Result<Rseries, Error> {
+        Ok(Rseries(self.0.clone().abs().map_err(wrap_error)?))
+    }
+
+    pub fn alias(&self, name: &str) -> Rseries {
         let mut s = self.0.clone();
         s.rename(name);
         Rseries(s)
     }
 
+    pub fn all(&self) -> std::result::Result<bool, Error> {
+        use polars::prelude::*;
+        if *self.0.dtype() == DataType::Boolean {
+            let mut one_not_true = false;
+
+            for i in self.0.bool().unwrap().into_iter() {
+                if let Some(b) = i {
+                    if b {
+                        continue;
+                    }
+                }
+                one_not_true = true;
+                break;
+            }
+
+            Ok(!one_not_true)
+        } else {
+            Err(extendr_api::error::Error::Other("not a bool".to_string()))
+        }
+    }
+
+    pub fn any(&self) -> std::result::Result<bool, Error> {
+        use polars::prelude::*;
+        if *self.0.dtype() == DataType::Boolean {
+            let mut one_seen_true = false;
+
+            let iter = self.0.bool().unwrap().into_iter();
+
+            for i in iter {
+                if let Some(b) = i {
+                    if b {
+                        one_seen_true = true;
+                        break;
+                    }
+                }
+            }
+
+            Ok(one_seen_true)
+        } else {
+            Err(extendr_api::error::Error::Other("not a bool".to_string()))
+        }
+    }
+
+    pub fn append_mut(&mut self, other: &Rseries) -> Result<(), Error> {
+        self.0.append(&other.0).map_err(wrap_error)?;
+        Ok(())
+    }
+
     pub fn name(&self) -> &str {
         self.0.name()
     }
-
-    //tried to auto implement methods with macros
-    //but this is expanded after #extendr macro, so will not be exported to R
-    //pub fn $name(&$self) -> Rseries {...}
-    //Rseries_chain_methods![self, mean_as_series sum_as_series];
 
     pub fn mean_as_series(&self) -> Rseries {
         Rseries(self.0.clone().mean_as_series())
@@ -171,6 +224,16 @@ impl Rseries {
 
     pub fn cumsum(&self, reverse: bool) -> Rseries {
         Rseries(self.0.clone().cumsum(reverse))
+    }
+
+    pub fn is_unique(&self) -> Result<Rseries, Error> {
+        Ok(Rseries(
+            self.0
+                .clone()
+                .is_unique()
+                .map_err(wrap_error)?
+                .into_series(),
+        ))
     }
 
     pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>, strict: bool) -> Rseries {

@@ -154,11 +154,21 @@ Rseries <- new.env(parent = emptyenv())
 
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
+Rseries$clone <- function() .Call(wrap__Rseries__clone, self)
+
 Rseries$to_r_vector <- function() .Call(wrap__Rseries__to_r_vector, self)
 
 Rseries$rename_mut <- function(name) invisible(.Call(wrap__Rseries__rename_mut, self, name))
 
-Rseries$rename <- function(name) .Call(wrap__Rseries__rename, self, name)
+Rseries$abs <- function() .Call(wrap__Rseries__abs, self)
+
+Rseries$alias <- function(name) .Call(wrap__Rseries__alias, self, name)
+
+Rseries$all <- function() .Call(wrap__Rseries__all, self)
+
+Rseries$any <- function() .Call(wrap__Rseries__any, self)
+
+Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, other)
 
 Rseries$name <- function() .Call(wrap__Rseries__name, self)
 
@@ -171,6 +181,8 @@ Rseries$ceil <- function() .Call(wrap__Rseries__ceil, self)
 Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 
 Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
+
+Rseries$is_unique <- function() .Call(wrap__Rseries__is_unique, self)
 
 Rseries$apply <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict)
 

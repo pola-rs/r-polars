@@ -25,20 +25,71 @@ polars_series = \(x, name=NULL) {
 
 
   #make structure
+  wrap = function(f) function(...) polars_series(f(...))
+
   l = list()
   l$private = private
   l$print   = private$print
   l$name    = private$name
-  l$rename  = private$rename
-  l$cumsum  = \() polars_series(private$cumsum())
-  l$apply   = function(fun, datatype=NULL) {
-    if(is_string(datatype)) datatype = Rdatatype(datatype)
-    polars_series(private$apply(fun,datatype))
+  l$to_r_vector = private$to_r_vector
+  l$clone = wrap(private$clone)
+  l$abs     = wrap(private$abs)
+  l$alias   = wrap(private$alias)
+  l$all     = wrap(private$all)
+  l$any     = wrap(private$any)
+  l$append_mut   = function(other) {
+    private$append_mut(other$private)
+    invisible(NULL)
   }
+  l$is_unique = wrap(private$is_unique)
+  l$cumsum  = \() polars_series(private$cumsum())
+  l$apply   = \(fun, datatype=NULL, strict_return_type = TRUE) {
+    if(!is.function(fun)) abort("fun arg must be a function")
+    internal_datatype = (function(){
+      if(is.null(datatype)) return(datatype) #same as lambda input
+      if(inherits(datatype,"Rdatatype")) return(datatype)
+      if(is.character(datatype)) return(minipolars:::Rdatatype$new("Utf8"))
+      if(is.logical(datatype)) return(minipolars:::Rdatatype$new("Boolean"))
+      if(is.integer(datatype)) return(minipolars:::Rdatatype$new("Int32"))
+      if(is.double(datatype)) return(minipolars:::Rdatatype$new("Float64"))
+      abort(paste("failed to interpret datatype arg:",datatype()))
+    })()
+    polars_series(private$apply(fun,internal_datatype,strict_return_type))
+  }
+
 
   class(l) <- "polars_series"
   l
 }
+
+#' @export
+c.polars_series = \(x,...) {
+  l = list(...)
+  x = x$clone() #clone to retain an immutable api, append_mut is not mutable
+
+  #get append function from either polars_series or Rseries
+  fx = (function() {
+    if(inherits(x,"polars_series")) return(x$private$append_mut)
+    if(inherits(x,"Rseries")) return(x$append_mut)
+    abort("internal error failed to disbatch append method")
+  })()
+
+  #append each element of i being either polars_series, Rseries or likely a vector
+  for(i in l) {
+    rser = (function() {
+      if(inherits(i,"polars_series")) return(i$private)
+      if(inherits(i,"Rseries")) return(i)
+      minipolars:::Rseries$new(i,"anyname")
+    })()
+    fx(rser)
+  }
+
+  x
+}
+
+#' @export
+c.Rseries = c.polars_series
+
 
 #' Print rseries
 #'
