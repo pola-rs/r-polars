@@ -166,6 +166,14 @@ is_polar_frame = function(x) {
   identical(class(x), c("polar_frame","R6"))
 }
 
+#' @export
+as.data.frame.polar_frame <- function(x) x$as_data_frame()
+
+#' @export
+plot.polar_frame <- function(x,...) {
+  plot(x$as_data_frame(),...)
+}
+
 as_polar_frame = function(x) {
 
   #pass through
