@@ -1,10 +1,10 @@
-use crate::utils::wrappers::Wrap;
+use crate::{rdataframe::rseries::Rseries, utils::wrappers::Wrap};
 use extendr_api::prelude::*;
 use polars::datatypes::DataType;
 
 //expose polars DateType in R
 #[extendr]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Rdatatype(pub DataType);
 
 #[extendr]
@@ -25,6 +25,14 @@ impl Rdatatype {
 
     pub fn print(&self) {
         rprintln!("{:?}", self.0);
+    }
+
+    pub fn eq(&self, other: &Rdatatype) -> bool {
+        self.0.eq(&other.0)
+    }
+
+    pub fn ne(&self, other: &Rdatatype) -> bool {
+        self.0.ne(&other.0)
     }
 }
 

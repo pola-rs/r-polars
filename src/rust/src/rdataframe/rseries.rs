@@ -4,6 +4,7 @@ use crate::apply_output;
 use crate::make_r_na_fun;
 use crate::rdataframe::wrap_error;
 use crate::rdatatype::Rdatatype;
+use crate::utils::r_unwrap;
 
 use crate::utils::wrappers::null_to_opt;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
@@ -122,7 +123,6 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
         }
     }
 }
-use std::result::Result;
 
 #[extendr]
 impl Rseries {
@@ -135,8 +135,9 @@ impl Rseries {
         Rseries(self.0.clone())
     }
 
-    pub fn to_r_vector(&self) -> Result<Robj, Error> {
-        series_to_r_vector_pl_result(&self.0).map_err(|e| Error::from(wrap_error(e)))
+    pub fn to_r_vector(&self) -> Robj {
+        let x = series_to_r_vector_pl_result(&self.0);
+        r_unwrap(x)
     }
 
     //any mut method exposed in R suffixed _mut
@@ -145,8 +146,31 @@ impl Rseries {
     }
 
     //any other method or trait method in alphabetical order
-    pub fn abs(&self) -> std::result::Result<Rseries, Error> {
-        Ok(Rseries(self.0.clone().abs().map_err(wrap_error)?))
+
+    //skip arr, cat, dt namespace methods
+
+    pub fn dtype(&self) -> Rdatatype {
+        Rdatatype(self.0.dtype().clone())
+    }
+
+    //wait inner_dtype until list supported
+
+    pub fn name(&self) -> &str {
+        self.0.name()
+    }
+    //wait to_arriow
+
+    //skip str namespace
+    //wait time_unit
+    //flags in docs not in python api
+
+    pub fn shape(&self) -> Robj {
+        r!([self.0.len() as i32, 1])
+    }
+
+    pub fn abs(&self) -> Rseries {
+        let x = self.0.clone().abs().map(|x| Rseries(x));
+        r_unwrap(x)
     }
 
     pub fn alias(&self, name: &str) -> Rseries {
@@ -155,28 +179,21 @@ impl Rseries {
         Rseries(s)
     }
 
-    pub fn all(&self) -> std::result::Result<bool, Error> {
-        use polars::prelude::*;
-        if *self.0.dtype() == DataType::Boolean {
-            let mut one_not_true = false;
-
-            for i in self.0.bool().unwrap().into_iter() {
-                if let Some(b) = i {
-                    if b {
-                        continue;
-                    }
+    pub fn all(&self) -> bool {
+        let mut one_not_true = false;
+        for i in r_unwrap(self.0.bool()).into_iter() {
+            if let Some(b) = i {
+                if b {
+                    continue;
                 }
-                one_not_true = true;
-                break;
             }
-
-            Ok(!one_not_true)
-        } else {
-            Err(extendr_api::error::Error::Other("not a bool".to_string()))
+            one_not_true = true;
+            break;
         }
+        !one_not_true
     }
 
-    pub fn any(&self) -> std::result::Result<bool, Error> {
+    pub fn any(&self) -> Result<bool> {
         use polars::prelude::*;
         if *self.0.dtype() == DataType::Boolean {
             let mut one_seen_true = false;
@@ -198,42 +215,9 @@ impl Rseries {
         }
     }
 
-    pub fn append_mut(&mut self, other: &Rseries) -> Result<(), Error> {
+    pub fn append_mut(&mut self, other: &Rseries) -> Result<()> {
         self.0.append(&other.0).map_err(wrap_error)?;
         Ok(())
-    }
-
-    pub fn name(&self) -> &str {
-        self.0.name()
-    }
-
-    pub fn mean_as_series(&self) -> Rseries {
-        Rseries(self.0.clone().mean_as_series())
-    }
-    pub fn sum_as_series(&self) -> Rseries {
-        Rseries(self.0.clone().sum_as_series())
-    }
-
-    pub fn ceil(&self) -> Rseries {
-        Rseries(self.0.clone().ceil().unwrap())
-    }
-
-    pub fn print(&self) {
-        rprintln!("{:#?}", self.0);
-    }
-
-    pub fn cumsum(&self, reverse: bool) -> Rseries {
-        Rseries(self.0.clone().cumsum(reverse))
-    }
-
-    pub fn is_unique(&self) -> Result<Rseries, Error> {
-        Ok(Rseries(
-            self.0
-                .clone()
-                .is_unique()
-                .map_err(wrap_error)?
-                .into_series(),
-        ))
     }
 
     pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>, strict: bool) -> Rseries {
@@ -281,8 +265,36 @@ impl Rseries {
         s.0.rename(&format!("{}_apply", self.0.name()));
         s
     }
-}
 
+    pub fn mean_as_series(&self) -> Rseries {
+        Rseries(self.0.clone().mean_as_series())
+    }
+    pub fn sum_as_series(&self) -> Rseries {
+        Rseries(self.0.clone().sum_as_series())
+    }
+
+    pub fn ceil(&self) -> Rseries {
+        Rseries(self.0.clone().ceil().unwrap())
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:#?}", self.0);
+    }
+
+    pub fn cumsum(&self, reverse: bool) -> Rseries {
+        Rseries(self.0.clone().cumsum(reverse))
+    }
+
+    pub fn is_unique(&self) -> Result<Rseries> {
+        Ok(Rseries(
+            self.0
+                .clone()
+                .is_unique()
+                .map_err(wrap_error)?
+                .into_series(),
+        ))
+    }
+}
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
 impl From<&Rseries> for pl::Series {
     fn from(x: &Rseries) -> Self {

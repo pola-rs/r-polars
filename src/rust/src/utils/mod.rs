@@ -341,18 +341,27 @@ macro_rules! apply_output {
     };
 }
 
-#[macro_export]
-macro_rules! Rseries_chain_methods {
-    ($self:ident, ) => {};
-    ($self:ident, $struct:ident, $($name:ident)*) => {
+// #[macro_export]
+// macro_rules! Rseries_chain_methods {
+//     ($self:ident, ) => {};
+//     ($self:ident, $struct:ident, $($name:ident)*) => {
 
-            #[extendr]
-            impl $struct {
-                $(
-                    pub fn $name(&$self) -> $struct {
-                        Rseries($self.0.clone().$name())
-                    }
-                )*
-            }
-    };
+//             #[extendr]
+//             impl $struct {
+//                 $(
+//                     pub fn $name(&$self) -> $struct {
+//                         Rseries($self.0.clone().$name())
+//                     }
+//                 )*
+//             }
+//     };
+// }
+
+pub fn r_unwrap<T, E>(x: Result<T, E>) -> T
+where
+    T: std::fmt::Debug,
+    E: std::fmt::Debug + std::fmt::Display,
+{
+    x.map_err(|err| extendr_api::throw_r_error(err.to_string()))
+        .unwrap()
 }

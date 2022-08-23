@@ -17,7 +17,7 @@ polars_series = \(x, name=NULL) {
   private = (\(){
     if(inherits(x,"Rseries")) return(x)
     if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x)) {
-      if(is.null(name)) name = "newname"
+      if(is.null(name)) name = ""
       return(minipolars:::Rseries$new(x,name))
     }
     abort("failed to initialize series")
@@ -31,9 +31,11 @@ polars_series = \(x, name=NULL) {
   l$private = private
   l$print   = private$print
   l$name    = private$name
+  l$dtype   = private$dtype #R6 property feature is more suited
+  l$shape   = private$shape
   l$to_r_vector = private$to_r_vector
   l$clone = wrap(private$clone)
-  l$abs     = wrap(private$abs)
+  l$abs     = \() polars_series(private$abs())
   l$alias   = wrap(private$alias)
   l$all     = wrap(private$all)
   l$any     = wrap(private$any)
@@ -41,6 +43,7 @@ polars_series = \(x, name=NULL) {
     private$append_mut(other$private)
     invisible(NULL)
   }
+
   l$is_unique = wrap(private$is_unique)
   l$cumsum  = \() polars_series(private$cumsum())
   l$apply   = \(fun, datatype=NULL, strict_return_type = TRUE) {

@@ -190,6 +190,13 @@ test_that("all any", {
     polars_series(c(F,F,NA))$any()$to_r_vector()
   )
 
+  #wrong type
+
+  expect_error(
+    polars_series(1:3)$all()$to_r_vector()
+  )
+
+
 })
 
 
@@ -232,3 +239,28 @@ test_that("clone", {
 
 
 })
+
+test_that("dtype and equality", {
+  expect_true (polars_series(1:3)$dtype()==pl::datatype("Int32"))
+  expect_false(polars_series(1:3)$dtype()!=pl::datatype("Int32"))
+  expect_true (polars_series(1.0)$dtype()==pl::datatype("Float64"))
+  expect_false(polars_series(1.0)$dtype()!=pl::datatype("Float64"))
+  expect_true (polars_series(1:3)$dtype()!=pl::datatype("Float64"))
+  expect_false(polars_series(1:3)$dtype()==pl::datatype("Float64"))
+})
+
+
+test_that("shape", {
+  expect_identical(
+    polars_series(1:3)$shape(),
+    c(3L,1L)
+  )
+
+  expect_identical(
+    minipolars:::Rseries$new(integer(),"")$shape(),
+    c(0L,1L)
+  )
+
+})
+
+

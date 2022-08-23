@@ -160,6 +160,12 @@ Rseries$to_r_vector <- function() .Call(wrap__Rseries__to_r_vector, self)
 
 Rseries$rename_mut <- function(name) invisible(.Call(wrap__Rseries__rename_mut, self, name))
 
+Rseries$dtype <- function() .Call(wrap__Rseries__dtype, self)
+
+Rseries$name <- function() .Call(wrap__Rseries__name, self)
+
+Rseries$shape <- function() .Call(wrap__Rseries__shape, self)
+
 Rseries$abs <- function() .Call(wrap__Rseries__abs, self)
 
 Rseries$alias <- function(name) .Call(wrap__Rseries__alias, self, name)
@@ -170,7 +176,7 @@ Rseries$any <- function() .Call(wrap__Rseries__any, self)
 
 Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, other)
 
-Rseries$name <- function() .Call(wrap__Rseries__name, self)
+Rseries$apply <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict)
 
 Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
 
@@ -183,8 +189,6 @@ Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
 Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
 
 Rseries$is_unique <- function() .Call(wrap__Rseries__is_unique, self)
-
-Rseries$apply <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict)
 
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }
@@ -211,6 +215,10 @@ Rdatatype <- new.env(parent = emptyenv())
 Rdatatype$new <- function(s) .Call(wrap__Rdatatype__new, s)
 
 Rdatatype$print <- function() invisible(.Call(wrap__Rdatatype__print, self))
+
+Rdatatype$eq <- function(other) .Call(wrap__Rdatatype__eq, self, other)
+
+Rdatatype$ne <- function(other) .Call(wrap__Rdatatype__ne, self, other)
 
 #' @export
 `$.Rdatatype` <- function (self, name) { func <- Rdatatype[[name]]; environment(func) <- environment(); func }

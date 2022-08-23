@@ -51,6 +51,11 @@ series = function(...) {
 datatype = function(...) {
   do.call(minipolars:::Rdatatype$new,list(...))
 }
+#' @export
+"==.Rdatatype" <- function(e1,e2) e1$eq(e2)
+#' @export
+"!=.Rdatatype" <- function(e1,e2) e1$ne(e2)
+
 
 #define print behaviour for minipolars classes
 
