@@ -69,7 +69,7 @@ datatype = function(...) {
 #'
 #' @examples pl::col("some_column")$sum()$over("some_other_column")
 print.Rexpr = function(x) {
-  cat("polars expr: ")
+  cat("polars Rexpr: ")
   x$print()
 }
 
@@ -83,7 +83,7 @@ print.Rexpr = function(x) {
 #'
 #' @examples pl::pf(iris)
 print.Rdataframe = function(x) {
-  cat("polars dataframe: ")
+  cat("polars Rdataframe: ")
   x$print()
 }
 
@@ -111,7 +111,7 @@ print.Rseries = function(x) {
 #'
 #' @examples minipolars:::Rdatatype$new("Boolean")
 print.Rdatatype = function(x) {
-  cat("polars datatype: ")
+  cat("polars Rdatatype: ")
   x$print()
 }
 
@@ -124,7 +124,7 @@ print.Rdatatype = function(x) {
 #'
 #' @examples #TODO give example
 print.Rlazyframe = function(x) {
-  cat("polars lazyframe: \n")
+  cat("polars Rlazyframe: \n")
   x$print()
 }
 
@@ -137,7 +137,7 @@ print.Rlazyframe = function(x) {
 #'
 #' @examples #TODO give example
 print.Rlazygroupby = function(x) {
-  cat("polars lazy groupby: \n")
+  cat("polars Rlazygroupby: \n")
   x$print()
 }
 

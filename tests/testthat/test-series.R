@@ -264,3 +264,22 @@ test_that("shape", {
 })
 
 
+test_that("to_frame", {
+
+  #high level
+  expect_identical(
+    polars_series(1:3,"foo")$to_frame()$as_data_frame(),
+    data.frame(foo = 1:3)
+  )
+
+  #low level test
+  rdf = minipolars:::Rdataframe$new_with_capacity(1L);
+  rdf$set_column_from_robj(1:3, "foo")
+  expect_identical(
+    minipolars:::Rseries$new(1:3,"foo")$to_frame()$as_rlist_of_vectors(),
+    rdf$as_rlist_of_vectors()
+  )
+
+})
+
+

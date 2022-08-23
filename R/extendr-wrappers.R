@@ -190,6 +190,8 @@ Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
 
 Rseries$is_unique <- function() .Call(wrap__Rseries__is_unique, self)
 
+Rseries$to_frame <- function() .Call(wrap__Rseries__to_frame, self)
+
 #' @export
 `$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }
 

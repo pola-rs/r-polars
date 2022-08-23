@@ -1,4 +1,4 @@
-use crate::{rdataframe::rseries::Rseries, utils::wrappers::Wrap};
+use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::datatypes::DataType;
 

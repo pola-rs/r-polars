@@ -23,7 +23,8 @@ polar_frame = R6::R6Class("polar_frame",
     #' print
     #' @return self `polar_frame` object.
     print = function() {
-      print(private$pf)
+      cat("polars dataframe: ")
+      private$pf$print()
       invisible(self)
     },
 
@@ -153,7 +154,10 @@ is_polar_data_input = function(x) {
   inherits(x,"data.frame") ||
     (
       is.list(x) ||
-        all(sapply(data,function(x) is.vector(x) || inherits(x,"Rseries")))
+        all(sapply(data,function(x) is.vector(x) ||
+                     inherits(x,"Rseries") ||
+                     inherits(x,"polars_series")
+        ))
     )
 
 }
@@ -173,6 +177,7 @@ as_polar_frame = function(x) {
   if (is_polar_data_input(x)) {
     return(polar_frame$new(x))
   }
+
 
   #sub class conversion
   if (inherits(x,"polar_frame")) {
@@ -224,6 +229,11 @@ new_pf = function(data) {
   }
   name_generator = make_column_name_gen()
 
+  #step 0, downcast any polars_series to Rseries
+  data = lapply(data, function(x) {
+    if(inherits(x,"polars_series")) x$private else x
+  })
+
   ##step1 handle column names
   #keys are tentative new column names
   #fetch keys from names, if missing set as NA
@@ -233,6 +243,7 @@ new_pf = function(data) {
   ##step2
   #if missing key use series name or generate new
   keys = mapply(data,keys, FUN = function(column,key) {
+
     if(is.na(key) || nchar(key)==0) {
       if(inherits(column, "Rseries")) {
         key = column$name()

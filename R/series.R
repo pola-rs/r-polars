@@ -59,6 +59,7 @@ polars_series = \(x, name=NULL) {
     })()
     polars_series(private$apply(fun,internal_datatype,strict_return_type))
   }
+  l$to_frame = function() polar_frame$new(private$to_frame())
 
 
   class(l) <- "polars_series"
@@ -108,3 +109,4 @@ print.polars_series = \(x) {
   x$print()
   x
 }
+

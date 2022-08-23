@@ -12,6 +12,8 @@ use polars::datatypes::*;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
 
+use super::Rdataframe;
+
 const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
@@ -293,6 +295,13 @@ impl Rseries {
                 .map_err(wrap_error)?
                 .into_series(),
         ))
+    }
+
+    pub fn to_frame(&self) -> Rdataframe {
+        let mut df = Rdataframe::new_with_capacity(1);
+        df.set_column_from_rseries(&self)
+            .expect("spank developer if ever failing"); //cannot fail because size mismatch not possible
+        df
     }
 }
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
