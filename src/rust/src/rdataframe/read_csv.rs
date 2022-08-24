@@ -17,10 +17,10 @@ pub struct RNullValues(pl::NullValues);
 #[extendr]
 impl RNullValues {
     pub fn new_all_columns(x: String) -> Self {
-        RNullValues(pl::NullValues::AllColumns(x))
+        RNullValues(pl::NullValues::AllColumnsSingle(x))
     }
     pub fn new_columns(x: Vec<String>) -> Self {
-        RNullValues(pl::NullValues::Columns(x))
+        RNullValues(pl::NullValues::AllColumns(x))
     }
     pub fn new_named(robj: Robj) -> Self {
         let null_markers = robj.as_str_iter().expect("must be str");

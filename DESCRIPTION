@@ -8,7 +8,7 @@ Description: This package aims to port the fast data table Polars to R.
 License: use_mit_license()
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests: 
     testthat (>= 3.0.0), rextendr, xptr
 Config/testthat/edition: 3

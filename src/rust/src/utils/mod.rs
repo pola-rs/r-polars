@@ -302,7 +302,6 @@ macro_rules! apply_output {
         Rseries(
             $r_iter
                 .map(|x| {
-                    rprintln!("rtype is {:?}", x.rtype());
 
                     //failed to downcast
                     if !(x.rtype() == Rtype::Strings) {

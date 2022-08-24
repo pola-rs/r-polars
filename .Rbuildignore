@@ -1,2 +1,4 @@
+^renv$
+^renv\.lock$
 ^minipolars\.Rproj$
 ^\.Rproj\.user$

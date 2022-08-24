@@ -12,13 +12,5 @@ minipolars::import_polars_as_()
 
 test_check("minipolars")
 
-#' more strict than expect_identical
-expect_strictly_identical = function(object,expected,...) {
-  testthat::expect(identical(object,expected),
-         failure_message  = paste(
-           "not identical\n object:",capture_output(str(object)),
-           "\n expected:",capture_output(str(expected))),
-         ...
-  )
-}
+
 

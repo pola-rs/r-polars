@@ -8,4 +8,4 @@ crate-type = [ 'staticlib' ]
 
 [dependencies]
 extendr-api = '*'
-polars = {version = "0.22.8", features = ["abs","cum_agg","lazy","abs","round_series"]}
+polars = {version = "0.23.2", features = ["abs","cum_agg","lazy","abs","round_series","csv-file","serde"]}

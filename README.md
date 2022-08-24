@@ -2,11 +2,15 @@
 Use awesome polars dataframe library from R!
 
 # build
-build package with `rextender::document()` or `R CMD INSTALL --no-multiarch --with-keep.source minipolars`
-rust nightly toolchain required.
 
-#example
-see example in "./test/rough_test.R"
+  install rust + set buildchain to nightly
+
+ - clone repo
+ - `source("./renv/activate.R")` to install and set up R packages (likely automatically triggered by .Rprofile)
+ - `rextendr::document()` to compile rust code and quick build package
+ -  or `R CMD INSTALL --no-multiarch --with-keep.source minipolars` to build final package
+ - `devtools::test()` to run all unit tests.
+
 
 
 minipolars\_teaser
