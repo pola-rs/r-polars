@@ -1,10 +1,11 @@
 //use crate::apply;
 use crate::apply_input;
 use crate::apply_output;
+use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdataframe::wrap_error;
 use crate::rdatatype::Rdatatype;
-use crate::utils::r_unwrap;
+use crate::utils::{r_result_list, r_unwrap};
 
 use crate::utils::wrappers::null_to_opt;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
@@ -126,6 +127,26 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
     }
 }
 
+// pub fn my_test_fun() -> Result<i32> {
+//     let v = vec![2,3,4,5];
+
+//     v.iter().map(|i| {
+//         let res_i = if i%2==0 {
+//             Ok(i)
+//         } else {
+//             Err("oups")
+//         };
+//         res_i
+//     }).map(|x| {
+//         res_i.map(|i| {
+//             i<=3 {Ok(i)} else {Err("oups2")}
+//         });
+
+//     });
+
+//     Ok(42)
+// }
+
 #[extendr]
 impl Rseries {
     //utility methods
@@ -137,9 +158,9 @@ impl Rseries {
         Rseries(self.0.clone())
     }
 
-    pub fn to_r_vector(&self) -> Robj {
+    pub fn to_r_vector(&self) -> list::List {
         let x = series_to_r_vector_pl_result(&self.0);
-        r_unwrap(x)
+        r_result_list(x)
     }
 
     //any mut method exposed in R suffixed _mut
@@ -170,9 +191,14 @@ impl Rseries {
         r!([self.0.len() as i32, 1])
     }
 
-    pub fn abs(&self) -> Rseries {
+    pub fn abs_unsafe(&self) -> Rseries {
         let x = self.0.clone().abs().map(|x| Rseries(x));
-        r_unwrap(x)
+        unsafe { r_unwrap(x) }
+    }
+
+    pub fn abs(&self) -> list::List {
+        let x = self.0.clone().abs().map(|x| Rseries(x));
+        r_result_list(x)
     }
 
     pub fn alias(&self, name: &str) -> Rseries {
@@ -183,14 +209,16 @@ impl Rseries {
 
     pub fn all(&self) -> bool {
         let mut one_not_true = false;
-        for i in r_unwrap(self.0.bool()).into_iter() {
-            if let Some(b) = i {
-                if b {
-                    continue;
+        unsafe {
+            for i in r_unwrap(self.0.bool()).into_iter() {
+                if let Some(b) = i {
+                    if b {
+                        continue;
+                    }
                 }
+                one_not_true = true;
+                break;
             }
-            one_not_true = true;
-            break;
         }
         !one_not_true
     }
@@ -222,7 +250,13 @@ impl Rseries {
         Ok(())
     }
 
-    pub fn apply(&self, robj: Robj, rdatatype: Nullable<&Rdatatype>, strict: bool) -> Rseries {
+    pub fn apply(
+        &self,
+        robj: Robj,
+        rdatatype: Nullable<&Rdatatype>,
+        strict: bool,
+        allow_fail_eval: bool,
+    ) -> list::List {
         //prepare lamda function from R side
         let rfun = robj
             .as_function()
@@ -242,7 +276,7 @@ impl Rseries {
 
         //handle any input type to lambda, make iterator which yields lambda returns as Robj's
         use pl::DataType::*;
-        let r_iter: Box<dyn Iterator<Item = Robj>> = match inp_type {
+        let r_iter: Box<dyn Iterator<Item = Option<Robj>>> = match inp_type {
             Float64 => apply_input!(self.0, f64, rfun, na_fun),
             Float32 => apply_input!(self.0, f32, rfun, na_fun),
             Int64 => apply_input!(self.0, i64, rfun, na_fun),
@@ -255,17 +289,22 @@ impl Rseries {
         };
 
         //handle any return type from R and collect into Series
-        let mut s = match out_type {
-            Boolean => apply_output!(r_iter, BooleanChunked, as_bool, strict),
-            Float64 => apply_output!(float_special: r_iter, Float64Chunked, strict),
-            Int32 => apply_output!(int_special: r_iter, Int32Chunked, strict), //handle R special NA encoding
-            Utf8 => apply_output!(string_special: r_iter, Utf8Chunked, strict),
+        let s: Result<Rseries> = match out_type {
+            Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
+            Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
+            Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
+            Boolean => apply_output!(r_iter, strict, allow_fail_eval, Logicals, BooleanChunked),
+
             _ => todo!("this output type is not implemented"),
         };
 
-        //name new series
-        s.0.rename(&format!("{}_apply", self.0.name()));
-        s
+        let s = s.map(move |mut x| {
+            x.rename_mut(&format!("{}_apply", &self.name()));
+            x
+        });
+
+        //if ok rename with prefix apply, convert Result<Rseries> in r_result_list
+        r_result_list(s)
     }
 
     pub fn mean_as_series(&self) -> Rseries {

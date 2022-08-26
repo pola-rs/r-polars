@@ -62,9 +62,39 @@ check_no_missing_args = function(
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
                    failure_message  = paste(
-                     "not identical\n object:",capture_output(str(object)),
-                     "\n expected:",capture_output(str(expected))),
+                     "not identical\n object:",testthat::capture_output(str(object)),
+                     "\n expected:",testthat::capture_output(str(expected))),
                    ...
   )
 }
+
+#rust like unwrapping of result. Useful to keep error handling on the R side.
+unwrap = function(result,class="my_error_class",call=sys.call(1L),...) {
+
+  #if not a result
+  if(!is.list(result)) {
+    abort("internal error: cannot unwrap non result",.internal = TRUE)
+  }
+
+  #if result is ok
+  if(!is.null(result$ok) && is.null(result$err)) {
+    return(result$ok)
+  }
+
+  #if result is error
+  if( is.null(result$ok) && !is.null(result$err)) {
+    return(abort(
+      result$err,
+      class = class,
+      call=NULL,
+      footer=paste(
+        "when calling:\n",
+        paste(capture.output(print(call)),collapse="\n"))
+      ))
+  }
+
+  #if not ok XOR error, then roll over
+  abort("internal error: result object corrupted",.internal = TRUE)
+}
+
 

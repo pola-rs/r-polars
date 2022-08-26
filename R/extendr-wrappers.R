@@ -166,6 +166,8 @@ Rseries$name <- function() .Call(wrap__Rseries__name, self)
 
 Rseries$shape <- function() .Call(wrap__Rseries__shape, self)
 
+Rseries$abs_unsafe <- function() .Call(wrap__Rseries__abs_unsafe, self)
+
 Rseries$abs <- function() .Call(wrap__Rseries__abs, self)
 
 Rseries$alias <- function(name) .Call(wrap__Rseries__alias, self, name)
@@ -176,7 +178,7 @@ Rseries$any <- function() .Call(wrap__Rseries__any, self)
 
 Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, other)
 
-Rseries$apply <- function(robj, rdatatype, strict) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict)
+Rseries$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict, allow_fail_eval)
 
 Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
 

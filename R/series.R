@@ -33,9 +33,12 @@ polars_series = \(x, name=NULL) {
   l$name    = private$name
   l$dtype   = private$dtype #R6 property feature is more suited
   l$shape   = private$shape
-  l$to_r_vector = private$to_r_vector
+  l$to_r_vector = \() unwrap(private$to_r_vector())
   l$clone = wrap(private$clone)
-  l$abs     = \() polars_series(private$abs())
+  l$abs        = \() polars_series(unwrap(private$abs()))
+  l$abs_unsafe = \() {
+    polars_series(private$abs_unsafe()) #might leak alot
+  }
   l$alias   = wrap(private$alias)
   l$all     = wrap(private$all)
   l$any     = wrap(private$any)
@@ -46,7 +49,7 @@ polars_series = \(x, name=NULL) {
 
   l$is_unique = wrap(private$is_unique)
   l$cumsum  = \() polars_series(private$cumsum())
-  l$apply   = \(fun, datatype=NULL, strict_return_type = TRUE) {
+  l$apply   = \(fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
     if(!is.function(fun)) abort("fun arg must be a function")
     internal_datatype = (function(){
       if(is.null(datatype)) return(datatype) #same as lambda input
@@ -57,7 +60,10 @@ polars_series = \(x, name=NULL) {
       if(is.double(datatype)) return(minipolars:::Rdatatype$new("Float64"))
       abort(paste("failed to interpret datatype arg:",datatype()))
     })()
-    polars_series(private$apply(fun,internal_datatype,strict_return_type))
+
+    result = private$apply(fun,internal_datatype,strict_return_type, allow_fail_eval)
+    Rseries = unwrap(result)
+    polars_series(Rseries)
   }
   l$to_frame = function() polar_frame$new(private$to_frame())
 
