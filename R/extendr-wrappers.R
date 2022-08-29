@@ -78,7 +78,7 @@ Rexpr$max <- function() .Call(wrap__Rexpr__max, self)
 
 Rexpr$mean <- function() .Call(wrap__Rexpr__mean, self)
 
-Rexpr$meadian <- function() .Call(wrap__Rexpr__meadian, self)
+Rexpr$median <- function() .Call(wrap__Rexpr__median, self)
 
 Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
 

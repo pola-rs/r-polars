@@ -80,7 +80,7 @@ impl Rexpr {
         Rexpr(self.0.clone().mean())
     }
 
-    pub fn meadian(&self) -> Rexpr {
+    pub fn median(&self) -> Rexpr {
         Rexpr(self.0.clone().median())
     }
 
