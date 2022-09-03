@@ -116,6 +116,8 @@ Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
 
 Rexpr$print <- function() invisible(.Call(wrap__Rexpr__print, self))
 
+Rexpr$map <- function(lambda, output_type, agg_list) .Call(wrap__Rexpr__map, self, lambda, output_type, agg_list)
+
 #' @export
 `$.Rexpr` <- function (self, name) { func <- Rexpr[[name]]; environment(func) <- environment(); func }
 
@@ -179,6 +181,8 @@ Rseries$any <- function() .Call(wrap__Rseries__any, self)
 Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, other)
 
 Rseries$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict, allow_fail_eval)
+
+Rseries$apply2 <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply2, self, robj, rdatatype, strict, allow_fail_eval)
 
 Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
 

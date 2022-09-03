@@ -8,6 +8,7 @@ pub mod rseries;
 pub mod wrap_errors;
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
+use crate::CONFIG;
 
 use read_csv::*;
 use rexpr::*;
@@ -74,15 +75,20 @@ impl Rdataframe {
     }
 
     fn select(&mut self, exprs: &ProtoRexprArray) -> Result<Rdataframe, Error> {
+        use crate::utils::extendr_concurrent::concurrent_handler;
+
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
 
-        let new_df = self
-            .clone()
-            .0
-            .lazy()
-            .select(exprs)
-            .collect()
-            .map_err(wrap_error)?;
+        let self_df = self.clone();
+        let new_df = concurrent_handler(
+            move |_tc| self_df.0.lazy().select(exprs).collect().map_err(wrap_error),
+            |s: String| -> pl::Series {
+                let robj = extendr_api::eval_string(&s).unwrap();
+                let s: pl::Series = robj.as_real_vector().unwrap().iter().collect();
+                s
+            },
+            &CONFIG,
+        )?;
 
         Ok(Rdataframe(new_df))
     }

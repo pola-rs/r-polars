@@ -1,6 +1,13 @@
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
-use polars::prelude::{self as pl};
+use polars::{
+    prelude::{self as pl, Int32Chunked},
+    series::IntoSeries,
+};
 use std::ops::{Add, Div, Mul, Sub};
+
+use crate::CONFIG;
+
+use super::Rdatatype;
 
 #[derive(Clone, Debug)]
 #[extendr]
@@ -162,6 +169,44 @@ impl Rexpr {
 
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
+    }
+
+    pub fn map(&self, lambda: Robj, output_type: &Rdatatype, agg_list: bool) -> Rexpr {
+        rprintln!(
+            "lambda: {:?} datatype{:?} agg_list:{:?}",
+            lambda,
+            output_type,
+            agg_list
+        );
+
+        let rtxt = lambda.clone().as_str().unwrap().to_string();
+        dbg!(&rtxt);
+        let f = move |s: pl::Series| {
+            let thread_com = CONFIG
+                .get()
+                .read()
+                .expect("failded to restore thread_com")
+                .clone();
+
+            thread_com.send(rtxt.to_string());
+            let s = thread_com.recv();
+            dbg!(&s);
+
+            // let out = rs.apply2(lambda.clone(), rdt, true, false);
+            //let s2 = s * 2;
+            Ok(s)
+        };
+        dbg!("here");
+        let ot = Some(output_type.0.clone());
+
+        use pl::{Field, GetOutput};
+        dbg!("here");
+        let output_map = GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => Field::new(fld.name(), dt.clone()),
+            None => fld.clone(),
+        });
+
+        Rexpr(self.clone().0.map(f, output_map))
     }
 }
 

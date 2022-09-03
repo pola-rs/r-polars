@@ -1,3 +1,5 @@
+pub mod extendr_concurrent;
+
 pub mod wrappers;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
