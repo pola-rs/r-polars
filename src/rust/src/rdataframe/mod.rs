@@ -8,6 +8,7 @@ pub mod rseries;
 pub mod wrap_errors;
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
+use crate::utils::extendr_concurrent::ParRObj;
 use crate::CONFIG;
 
 use read_csv::*;
@@ -80,11 +81,20 @@ impl Rdataframe {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
 
         let self_df = self.clone();
+
         let new_df = concurrent_handler(
+            //call this polars code
             move |_tc| self_df.0.lazy().select(exprs).collect().map_err(wrap_error),
-            |s: String| -> pl::Series {
-                let robj = extendr_api::eval_string(&s).unwrap();
+            //out of hot loop call this R code, just retrieve high-level function wrapper from package
+            || extendr_api::eval_string("minipolars::polars_series").unwrap(),
+            //pass any concurrent 'lambda' call from polars to R via main thread
+            |(probj, s): (ParRObj, pl::Series), robj: Robj| -> pl::Series {
+                let opt_f = probj.0.as_function(); //user defined function
+                let polars_series_wrapper = robj.as_function().unwrap();
+                let ps = polars_series_wrapper.call(pairlist!(x = Rseries(s)));
+                let robj = opt_f.unwrap().call(pairlist!(s = ps)).unwrap();
                 let s: pl::Series = robj.as_real_vector().unwrap().iter().collect();
+
                 s
             },
             &CONFIG,

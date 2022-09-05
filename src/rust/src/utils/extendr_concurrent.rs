@@ -10,7 +10,8 @@ use flume::{Receiver, Sender};
 pub use state::Storage;
 
 //shamelessly make Robj send + sync
-//no crashes so far the 'data'-SEXPS as Vectors, lists, pairlists
+//no crashes so far for the 'data'-SEXPS as Vectors, lists, pairlists
+//mainly for debug should not be used in production
 //CLOSEXP crashes every time
 #[derive(Clone, Debug)]
 pub struct ParRObj(pub Robj);
@@ -23,7 +24,13 @@ impl From<Robj> for ParRObj {
     }
 }
 
-//ThreadCom allow any sub thread to request main thread to e.g. run R code
+impl std::fmt::Display for ParRObj {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:?}", self.0)
+    }
+}
+
+//ThreadCom allow any subthread to request main thread to e.g. run R code
 //main thread handles requests sequentially and return answer to the specific requestee thread
 #[derive(Debug)]
 pub struct ThreadCom<S, R> {
@@ -34,6 +41,7 @@ pub struct ThreadCom<S, R> {
 
 impl<S, R> ThreadCom<S, R> {
     //return tupple with ThreadCom for child thread and m_rx to stay in main_thread
+
     pub fn create() -> (Self, Receiver<(S, Sender<R>)>) {
         let (m_tx, m_rx) = flume::unbounded::<(S, Sender<R>)>();
         let (c_tx, c_rx) = flume::unbounded::<R>();
@@ -47,22 +55,6 @@ impl<S, R> ThreadCom<S, R> {
             m_rx,
         )
     }
-
-    // pub fn from_main_sender(
-    //     mc: (Sender<(S, Sender<R>)>, Receiver<(S, Sender<R>)>),
-    // ) -> (Self, flume::Receiver<(S, flume::Sender<R>)>) {
-    //     let (m_tx, m_rx) = (mc.0, mc.1);
-    //     let (c_tx, c_rx) = flume::unbounded::<R>();
-
-    //     (
-    //         ThreadCom {
-    //             mains_tx: m_tx,
-    //             child_tx: c_tx,
-    //             child_rx: c_rx,
-    //         },
-    //         m_rx,
-    //     )
-    // }
 
     //send request to main thread
     pub fn send(&self, s: S) {
@@ -85,13 +77,38 @@ impl<S, R> ThreadCom<S, R> {
     }
 }
 
-pub fn concurrent_handler<F, I, R, S, T>(f: F, i: I, conf: &Storage<RwLock<ThreadCom<S, R>>>) -> T
+//thread did not get a channels from parent thread? that's ok, it can use this function to clone the global channels
+pub fn tc_from_global<S, R>(config: &Storage<RwLock<ThreadCom<S, R>>>) -> ThreadCom<S, R>
+where
+    S: Send + Sync,
+    R: Send + Sync,
+{
+    let thread_com = config
+        .get()
+        .read()
+        .expect("failded to restore thread_com")
+        .clone();
+
+    thread_com
+}
+
+//start serving requests from child threads.
+//f is closure of child threads to start, child thread takes an ThreadCom argument
+//i is the closure which handles incomming request e.g. execute commands in R interpreter
+//conf is a global storage where thread can recover a ThreadCom object from.
+pub fn concurrent_handler<F, I, R, S, T, Y>(
+    f: F,
+    y: Y,
+    i: I,
+    conf: &Storage<RwLock<ThreadCom<S, R>>>,
+) -> T
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
-    I: Fn(S) -> R + Send + 'static,
+    I: Fn(S, Robj) -> R + Send + 'static,
     R: Send + 'static,
-    S: Send + 'static + std::fmt::Display,
+    S: Send + 'static,
     T: Send + 'static,
+    Y: FnOnce() -> Robj,
 {
     //start cßom unboundeds
 
@@ -115,19 +132,27 @@ where
     let mut before = std::time::Instant::now();
     let mut planned_sleep = std::time::Duration::from_micros(2);
     let mut loop_counter = 0u64;
+
+    let robj = y();
+
     loop {
         loop_counter += 1;
         let now = std::time::Instant::now();
         let duration = now - before;
         before = std::time::Instant::now();
         dbg!(duration, loop_counter);
+
+        if loop_counter >= 1000 {
+            panic!("loop 1000+!")
+        }
+
         //look for
         let any_new_msg = main_rx.try_recv();
 
         //avoid using unwrap/unwrap_err if msg is Debug
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
-            let answer = i(s); //handle requst with g closure
+            let answer = i(s, robj.clone()); //handle requst with g closure
             let _send_result = c_tx.send(answer).unwrap();
 
             //stuff to do!! sleep less if ever idle

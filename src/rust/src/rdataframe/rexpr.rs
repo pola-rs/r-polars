@@ -1,10 +1,8 @@
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
-use polars::{
-    prelude::{self as pl, Int32Chunked},
-    series::IntoSeries,
-};
+use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
+use crate::utils::extendr_concurrent::{tc_from_global, ParRObj};
 use crate::CONFIG;
 
 use super::Rdatatype;
@@ -172,28 +170,27 @@ impl Rexpr {
     }
 
     pub fn map(&self, lambda: Robj, output_type: &Rdatatype, agg_list: bool) -> Rexpr {
-        rprintln!(
-            "lambda: {:?} datatype{:?} agg_list:{:?}",
-            lambda,
-            output_type,
-            agg_list
-        );
+        //assume string
+        // let rtxt = lambda.clone().as_str().unwrap().to_string();
+        // dbg!(&rtxt);
 
-        let rtxt = lambda.clone().as_str().unwrap().to_string();
-        dbg!(&rtxt);
+        //unsafe {
+        let probj = ParRObj(lambda);
+        //}
+
         let f = move |s: pl::Series| {
-            let thread_com = CONFIG
-                .get()
-                .read()
-                .expect("failded to restore thread_com")
-                .clone();
+            //acquire channel to R via main thread
+            let thread_com = tc_from_global(&CONFIG);
+            dbg!(&thread_com);
 
-            thread_com.send(rtxt.to_string());
+            //send request to run in R
+            thread_com.send((probj.clone(), s));
+
+            //recieve answer
             let s = thread_com.recv();
             dbg!(&s);
 
-            // let out = rs.apply2(lambda.clone(), rdt, true, false);
-            //let s2 = s * 2;
+            //wrap as series
             Ok(s)
         };
         dbg!("here");

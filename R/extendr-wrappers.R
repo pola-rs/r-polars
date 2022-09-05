@@ -182,8 +182,6 @@ Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, oth
 
 Rseries$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict, allow_fail_eval)
 
-Rseries$apply2 <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply2, self, robj, rdatatype, strict, allow_fail_eval)
-
 Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
 
 Rseries$sum_as_series <- function() .Call(wrap__Rseries__sum_as_series, self)
