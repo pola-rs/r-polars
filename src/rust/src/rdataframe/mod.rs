@@ -39,23 +39,21 @@ fn handle_thread_r_requests(
             let opt_f = probj.0.as_function().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!("this is not a function: {:?}", probj.0))
             }); //user defined function
-            dbg!(&opt_f);
+
             let f = opt_f?;
-            dbg!(&f);
+
             let series_udf_handler = robj.as_function().ok_or_else(|| {
                 extendr_api::error::Error::Other("this is not a function".to_string())
             })?;
-            dbg!(&series_udf_handler);
+
             let rseries_ptr = series_udf_handler.call(pairlist!(f = f, rs = Rseries(s)))?;
 
-            dbg!(&rseries_ptr);
             let rseries_ptr_str = rseries_ptr.as_str().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!(
                     "failed to run user function because: {:?}",
                     rseries_ptr
                 ))
             })?;
-            dbg!(rseries_ptr_str);
 
             //safety relies on private minipolars:::series_udf_handler only passes Rseries pointers.
             let x = unsafe {
@@ -63,7 +61,6 @@ fn handle_thread_r_requests(
                 x
             };
 
-            dbg!(&x);
             //try into cast robj into point to expected type
 
             //unwrap to series
@@ -73,11 +70,10 @@ fn handle_thread_r_requests(
         },
         &CONFIG,
     );
-    dbg!(res_res_df.is_err());
 
     let res_df = res_res_df
         .and_then(|ok| ok.map_err(|_err| extendr_api::Error::Other("some polars error".into())));
-    dbg!(&res_df);
+
     let new_df = res_df?;
     Ok(Rdataframe(new_df))
 }

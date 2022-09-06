@@ -3,9 +3,16 @@
 .onLoad <- function(libname, pkgname) {
 
   print("modifying Rextendr bindings")
-  print(minipolars:::Rexpr)
-  Rexpr_env = minipolars:::Rexpr
+
+
   Rexpr$map=  minipolars:::Rexpr.map
+
+
+  Rseries$to_r_vector = minipolars:::Rseries_to_r_vector
+  Rseries$to_r        = minipolars:::Rseries_to_r_vector
+  Rseries$abs         = minipolars:::Rseries_abs
+  Rseries$apply       = minipolars:::Rseries_apply
+
 
   invisible()
 }

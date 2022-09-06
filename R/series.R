@@ -132,14 +132,35 @@ series_udf_wrapper= function(f) {
 }
 
 series_udf_handler = function(f,rs) {
-  print(rs)
+
   ps = polars_series(rs)
-  print(ps)
+
   fps = f(ps)
-  print(fps)
+
   rs = polars_series_unwrap(fps)
-  print(rs)
+
   rs_ptr_adr = xptr::xptr_address(rs)
-  print(rs_ptr_adr)
+
   rs_ptr_adr
 }
+
+
+
+Rseries_to_r_vector = \() unwrap(.Call(wrap__Rseries__to_r_vector, self))
+Rseries_abs         = \() unwrap(.Call(wrap__Rseries__abs, self))
+Rseries_apply   = \(fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
+  if(!is.function(fun)) abort("fun arg must be a function")
+  internal_datatype = (\(){
+    if(is.null(datatype)) return(datatype) #same as lambda input
+    if(inherits(datatype,"Rdatatype")) return(datatype)
+    if(is.character(datatype)) return(minipolars:::Rdatatype$new("Utf8"))
+    if(is.logical(datatype)) return(minipolars:::Rdatatype$new("Boolean"))
+    if(is.integer(datatype)) return(minipolars:::Rdatatype$new("Int32"))
+    if(is.double(datatype)) return(minipolars:::Rdatatype$new("Float64"))
+    abort(paste("failed to interpret datatype arg:",datatype()))
+  })()
+
+  unwrap(.Call(wrap__Rseries__apply, self, fun, datatype, strict_return_type, allow_fail_eval))
+
+}
+

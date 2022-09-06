@@ -153,9 +153,9 @@ where
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
             let answer = i(s, robj.clone()); //handle requst with g closure
-            dbg!(&answer);
+
             let a = answer?;
-            dbg!(&a);
+
             let _send_result = c_tx.send(a).unwrap();
 
             //stuff to do!! sleep less if ever idle

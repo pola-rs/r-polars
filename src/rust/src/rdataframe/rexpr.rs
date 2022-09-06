@@ -26,9 +26,6 @@ impl DerefMut for Rexpr {
 
 #[extendr]
 impl Rexpr {
-    pub fn debug(&self) {
-        dbg!(&self);
-    }
     //expr binary comparisons
     pub fn gt(&self, other: &Rexpr) -> Rexpr {
         Rexpr(self.0.clone().gt(other.0.clone()))

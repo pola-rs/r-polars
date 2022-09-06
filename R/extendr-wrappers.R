@@ -50,8 +50,6 @@ Rdataframe$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__Rdatafram
 
 Rexpr <- new.env(parent = emptyenv())
 
-Rexpr$debug <- function() invisible(.Call(wrap__Rexpr__debug, self))
-
 Rexpr$gt <- function(other) .Call(wrap__Rexpr__gt, self, other)
 
 Rexpr$gt_eq <- function(other) .Call(wrap__Rexpr__gt_eq, self, other)
