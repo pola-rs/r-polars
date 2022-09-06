@@ -115,8 +115,60 @@ test_that("polar_frame, select sum over", {
 })
 
 
-test_that("init identity is shallow copy & deep clone yields new external ptr", {
+test_that("map unity", {
+
+  ## float is preserved
+  expect_identical(
+    pl::pf(iris)$select(pl::col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
+    iris[,1,drop=FALSE]
+  )
+
+  ##int is preseved
+  int_iris = iris
+  int_iris[] = lapply(iris,as.integer)
+  expect_identical(
+    pl::pf(int_iris)$select(pl::col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
+    int_iris[,1,drop=FALSE]
+  )
+
+  ## factor is not preserved in polars
+  expect_failure(expect_identical(
+    pl::pf(iris)$select(pl::col("Species")$map(\(s) s))$as_data_frame()[,1],
+    iris[,1,drop=FALSE]
+  ))
+
+  ## factor is not preserved in polars
+  str_iris = iris
+  str_iris$Species = as.character(iris$Species)
+  expect_identical(
+    pl::pf(iris)$select(pl::col("Species")$map(\(s) s))$as_data_frame(),
+    str_iris[,5,drop=FALSE]
+  )
+
+
+})
+
+test_that("map type", {
+
+  int_iris = iris
+  int_iris[] = lapply(iris,as.integer)
+
+  ## auto new type allowed if return is R vector
+  expect_identical(
+    pl::pf(iris)$select(pl::col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
+    int_iris[,1,drop=FALSE]
+  )
+
+})
+
+
+
+
+test_that("user defined function", {
+
   pf = pl::pf(iris)
+
+  pf$select(pl::col("Sepal.Length")$map(function(s) s$to_r()*5 ))
 
 
   #pf init also is the identity function and is a shallow copy

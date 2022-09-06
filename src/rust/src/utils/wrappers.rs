@@ -35,3 +35,15 @@ pub fn null_to_opt<T>(x: Nullable<T>) -> Option<T> {
         None
     }
 }
+
+//yikes, currently needed as I don't know how to transform Robj external_pointer back into any non native Extendr-type
+pub unsafe fn strpointer_to_<T>(raw: &str) -> extendr_api::Result<&mut T> {
+    let without_prefix = raw.trim_start_matches("0x");
+    let z = usize::from_str_radix(without_prefix, 16)
+        .map_err(|e| extendr_api::Error::Other(e.to_string()))?;
+
+    //unsafe {
+    let y = &mut *(z as *mut T);
+    return Ok(y);
+    //};
+}

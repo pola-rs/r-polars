@@ -81,8 +81,11 @@ polar_frame = R6::R6Class("polar_frame",
       #construct on rust side array of expressions and strings (not yet interpreted as exprs)
       pra = construct_ProtoRexprArray(...)
 
-      #perform eager selection and return new polar_frame
-      polar_frame$new(private$pf$select(pra))
+      #perform eager selection and unwrap result
+      Rdataframe = unwrap(private$pf$select(pra))
+
+      #wrap in high-level polars_frame and return
+      polar_frame$new(Rdataframe)
     },
 
     #' @description

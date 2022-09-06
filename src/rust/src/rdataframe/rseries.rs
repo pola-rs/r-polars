@@ -158,6 +158,11 @@ impl Rseries {
         Rseries(self.0.clone())
     }
 
+    //used to acquire result from a R function in with deref raw pointer
+    pub fn from_clone(s: &Rseries) -> Rseries {
+        s.clone()
+    }
+
     pub fn to_r_vector(&self) -> list::List {
         let x = series_to_r_vector_pl_result(&self.0);
         r_result_list(x)

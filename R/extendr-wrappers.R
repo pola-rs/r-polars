@@ -50,6 +50,8 @@ Rdataframe$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__Rdatafram
 
 Rexpr <- new.env(parent = emptyenv())
 
+Rexpr$debug <- function() invisible(.Call(wrap__Rexpr__debug, self))
+
 Rexpr$gt <- function(other) .Call(wrap__Rexpr__gt, self, other)
 
 Rexpr$gt_eq <- function(other) .Call(wrap__Rexpr__gt_eq, self, other)
@@ -116,7 +118,7 @@ Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
 
 Rexpr$print <- function() invisible(.Call(wrap__Rexpr__print, self))
 
-Rexpr$map <- function(lambda, output_type, agg_list) .Call(wrap__Rexpr__map, self, lambda, output_type, agg_list)
+Rexpr$map <- function(lambda, output_type, `_agg_list`) .Call(wrap__Rexpr__map, self, lambda, output_type, `_agg_list`)
 
 #' @export
 `$.Rexpr` <- function (self, name) { func <- Rexpr[[name]]; environment(func) <- environment(); func }
@@ -157,6 +159,8 @@ Rseries <- new.env(parent = emptyenv())
 Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
 
 Rseries$clone <- function() .Call(wrap__Rseries__clone, self)
+
+Rseries$from_clone <- function(s) .Call(wrap__Rseries__from_clone, s)
 
 Rseries$to_r_vector <- function() .Call(wrap__Rseries__to_r_vector, self)
 

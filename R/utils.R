@@ -97,4 +97,15 @@ unwrap = function(result,class="my_error_class",call=sys.call(1L),...) {
   abort("internal error: result object corrupted",.internal = TRUE)
 }
 
+#
+# register_minipolars = function() {
+#
+#   rextendr::register_extendr(force = TRUE)
+#
+#   extendr_wrap_file = "./R/extendr_wrappers.R"
+#   readLines("./R/")
+#
+#
+# }
+
 

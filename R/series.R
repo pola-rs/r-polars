@@ -23,7 +23,6 @@ polars_series = \(x, name=NULL) {
     abort("failed to initialize series")
   })()
 
-
   #make structure
   wrap = function(f) function(...) polars_series(f(...))
 
@@ -34,6 +33,7 @@ polars_series = \(x, name=NULL) {
   l$dtype   = private$dtype #R6 property feature is more suited
   l$shape   = private$shape
   l$to_r_vector = \() unwrap(private$to_r_vector())
+  l$to_r        = \() unwrap(private$to_r_vector())
   l$clone = wrap(private$clone)
   l$abs        = \() polars_series(unwrap(private$abs()))
   l$abs_unsafe = \() {
@@ -116,4 +116,30 @@ print.polars_series = \(x) {
   x
 }
 
+polars_series_unwrap = function(x) {
+  if(!inherits(x,"polars_series")) {
+    if(inherits(x,"Rseries")) {
+      return(x)
+    } else {
+      return(minipolars:::Rseries$new(x,""))
+    }
+  }
+  x$private
+}
 
+series_udf_wrapper= function(f) {
+  function(rs) polars_series_unwrap(f(polars_series(rs)))
+}
+
+series_udf_handler = function(f,rs) {
+  print(rs)
+  ps = polars_series(rs)
+  print(ps)
+  fps = f(ps)
+  print(fps)
+  rs = polars_series_unwrap(fps)
+  print(rs)
+  rs_ptr_adr = xptr::xptr_address(rs)
+  print(rs_ptr_adr)
+  rs_ptr_adr
+}

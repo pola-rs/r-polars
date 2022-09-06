@@ -101,11 +101,11 @@ pub fn concurrent_handler<F, I, R, S, T, Y>(
     y: Y,
     i: I,
     conf: &Storage<RwLock<ThreadCom<S, R>>>,
-) -> T
+) -> std::result::Result<T, extendr_api::error::Error>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
-    I: Fn(S, Robj) -> R + Send + 'static,
-    R: Send + 'static,
+    I: Fn(S, Robj) -> Result<R> + Send + 'static,
+    R: Send + 'static + std::fmt::Debug,
     S: Send + 'static,
     T: Send + 'static,
     Y: FnOnce() -> Robj,
@@ -116,7 +116,7 @@ where
 
     //set or update global thread_com
     let conf_status = conf.set(RwLock::new(thread_com.clone()));
-    dbg!(conf_status);
+    //dbg!(conf_status);
     if !conf_status {
         let mut gtc = conf
             .get()
@@ -140,7 +140,7 @@ where
         let now = std::time::Instant::now();
         let duration = now - before;
         before = std::time::Instant::now();
-        dbg!(duration, loop_counter);
+        //dbg!(duration, loop_counter);
 
         if loop_counter >= 1000 {
             panic!("loop 1000+!")
@@ -153,19 +153,22 @@ where
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
             let answer = i(s, robj.clone()); //handle requst with g closure
-            let _send_result = c_tx.send(answer).unwrap();
+            dbg!(&answer);
+            let a = answer?;
+            dbg!(&a);
+            let _send_result = c_tx.send(a).unwrap();
 
             //stuff to do!! sleep less if ever idle
             planned_sleep =
                 std::time::Duration::max(planned_sleep / 4, std::time::Duration::from_nanos(100));
         } else {
             if let Err(recv_err) = any_new_msg {
-                dbg!(recv_err);
+                //dbg!(recv_err);
                 match recv_err {
                     //no connections left, shut down loop, does not happen after one global tx always exists
                     //in theory a thread or main could destroy global thread_com to terminate this way
                     flume::TryRecvError::Disconnected => {
-                        dbg!(&recv_err);
+                        //dbg!(&recv_err);
                         break;
                     }
                     //idling, sleep double as long as last time
@@ -184,13 +187,13 @@ where
 
                         //check if spawned thread has ended, then stop. (most normal end)
                         if handle.is_finished() {
-                            dbg!(&handle);
+                            //dbg!(&handle);
                             break;
                         }
 
                         //sleep thead takes 50-100 micros also
                         if planned_sleep > std::time::Duration::from_micros(60) {
-                            dbg!(planned_sleep);
+                            //dbg!(planned_sleep);
                             thread::sleep(planned_sleep);
                         }
 
@@ -208,5 +211,5 @@ where
 
     let thread_return_value = handle.join().unwrap();
 
-    thread_return_value
+    Ok(thread_return_value)
 }

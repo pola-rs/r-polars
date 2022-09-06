@@ -26,6 +26,9 @@ impl DerefMut for Rexpr {
 
 #[extendr]
 impl Rexpr {
+    pub fn debug(&self) {
+        dbg!(&self);
+    }
     //expr binary comparisons
     pub fn gt(&self, other: &Rexpr) -> Rexpr {
         Rexpr(self.0.clone().gt(other.0.clone()))
@@ -169,37 +172,37 @@ impl Rexpr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(&self, lambda: Robj, output_type: &Rdatatype, agg_list: bool) -> Rexpr {
-        //assume string
-        // let rtxt = lambda.clone().as_str().unwrap().to_string();
-        // dbg!(&rtxt);
+    pub fn map(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&Rdatatype>,
+        _agg_list: Nullable<bool>,
+    ) -> Rexpr {
+        use crate::utils::wrappers::null_to_opt;
 
-        //unsafe {
+        //find a way not to push lambda everytime to main thread handler
+        //unsafe { //safety only accessed in main thread
         let probj = ParRObj(lambda);
         //}
 
         let f = move |s: pl::Series| {
-            //acquire channel to R via main thread
+            //acquire channel to R via main thread handler
             let thread_com = tc_from_global(&CONFIG);
-            dbg!(&thread_com);
 
             //send request to run in R
             thread_com.send((probj.clone(), s));
 
             //recieve answer
             let s = thread_com.recv();
-            dbg!(&s);
 
             //wrap as series
             Ok(s)
         };
-        dbg!("here");
-        let ot = Some(output_type.0.clone());
 
-        use pl::{Field, GetOutput};
-        dbg!("here");
-        let output_map = GetOutput::map_field(move |fld| match ot {
-            Some(ref dt) => Field::new(fld.name(), dt.clone()),
+        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+
+        let output_map = pl::GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
             None => fld.clone(),
         });
 

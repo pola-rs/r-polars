@@ -1,4 +1,16 @@
 
+# remap extendr wrappers to costuomized versions
+.onLoad <- function(libname, pkgname) {
+
+  print("modifying Rextendr bindings")
+  print(minipolars:::Rexpr)
+  Rexpr_env = minipolars:::Rexpr
+  Rexpr$map=  minipolars:::Rexpr.map
+
+  invisible()
+}
+
+
 
 #' Bind polars function to a namespace object pl
 #'
@@ -15,12 +27,16 @@
 import_polars_as_ <- function(name = "pl") {
   minipolars:::fake_package(
     name,
-    list(
-      #map the following class constructors
-      lit = minipolars:::rlit,
 
-      col = minipolars:::rcol, #Rexpr
-      all = minipolars:::rall,
+list(
+      #map the following class constructors
+
+
+      col = function(robj) .Call(minipolars:::wrap__rcol,robj), #Rexpr
+
+      lit = function(robj) .Call(minipolars:::wrap__rlit,robj),
+
+      all = function() .Call(minipolars:::wrap__rall),
 
 
       df  = minipolars:::new_pf,    #Rdataframe, low-level interface
@@ -43,6 +59,9 @@ import_polars_as_ <- function(name = "pl") {
   )
   invisible(NULL)
 }
+
+
+rrcol = minipolars:::rcol
 
 series = function(...) {
   do.call(minipolars:::Rseries$new,list(...))

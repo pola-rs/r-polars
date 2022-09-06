@@ -83,3 +83,10 @@ lit = function(x) {
   minipolars:::rlit(x)
 }
 
+
+
+
+Rexpr.map = function(lambda, output_type=NULL, `_agg_list`=NULL) .Call(wrap__Rexpr__map, self, lambda, output_type, `_agg_list`)
+
+
+
