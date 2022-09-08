@@ -69,7 +69,7 @@ minipolars:::new_csv_r(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  minipolars:::Rdatatype_vector$new()
+  minipolars:::DataType_vector$new()
 )
 
 

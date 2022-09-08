@@ -4,7 +4,7 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdataframe::wrap_error;
-use crate::rdatatype::Rdatatype;
+use crate::rdatatype::DataType;
 use crate::utils::{r_result_list, r_unwrap};
 
 use crate::utils::wrappers::null_to_opt;
@@ -13,13 +13,20 @@ use polars::datatypes::*;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
 
-use super::Rdataframe;
+use super::DataFrame;
 
 const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
 #[derive(Debug, Clone)]
-pub struct Rseries(pub pl::Series);
+pub struct Series(pub pl::Series);
+
+/// Return string `"Hello world!"` to R.
+/// @export
+#[extendr]
+pub fn inherits2(_class: &str) -> bool {
+    true
+}
 
 pub fn inherits(x: &Robj, class: &str) -> bool {
     let opt_class_attr = x.class();
@@ -148,18 +155,18 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
 // }
 
 #[extendr]
-impl Rseries {
+impl Series {
     //utility methods
     pub fn new(x: Robj, name: &str) -> Self {
-        Rseries(robjname2series(&x, name))
+        Series(robjname2series(&x, name))
     }
 
-    pub fn clone(&self) -> Rseries {
-        Rseries(self.0.clone())
+    pub fn clone(&self) -> Series {
+        Series(self.0.clone())
     }
 
     //used to acquire result from a R function in with deref raw pointer
-    pub fn from_clone(s: &Rseries) -> Rseries {
+    pub fn from_clone(s: &Series) -> Series {
         s.clone()
     }
 
@@ -177,8 +184,8 @@ impl Rseries {
 
     //skip arr, cat, dt namespace methods
 
-    pub fn dtype(&self) -> Rdatatype {
-        Rdatatype(self.0.dtype().clone())
+    pub fn dtype(&self) -> DataType {
+        DataType(self.0.dtype().clone())
     }
 
     //wait inner_dtype until list supported
@@ -196,20 +203,20 @@ impl Rseries {
         r!([self.0.len() as i32, 1])
     }
 
-    pub fn abs_unsafe(&self) -> Rseries {
-        let x = self.0.clone().abs().map(|x| Rseries(x));
+    pub fn abs_unsafe(&self) -> Series {
+        let x = self.0.clone().abs().map(|x| Series(x));
         unsafe { r_unwrap(x) }
     }
 
     pub fn abs(&self) -> list::List {
-        let x = self.0.clone().abs().map(|x| Rseries(x));
+        let x = self.0.clone().abs().map(|x| Series(x));
         r_result_list(x)
     }
 
-    pub fn alias(&self, name: &str) -> Rseries {
+    pub fn alias(&self, name: &str) -> Series {
         let mut s = self.0.clone();
         s.rename(name);
-        Rseries(s)
+        Series(s)
     }
 
     pub fn all(&self) -> bool {
@@ -250,7 +257,7 @@ impl Rseries {
         }
     }
 
-    pub fn append_mut(&mut self, other: &Rseries) -> Result<()> {
+    pub fn append_mut(&mut self, other: &Series) -> Result<()> {
         self.0.append(&other.0).map_err(wrap_error)?;
         Ok(())
     }
@@ -258,7 +265,7 @@ impl Rseries {
     pub fn apply(
         &self,
         robj: Robj,
-        rdatatype: Nullable<&Rdatatype>,
+        rdatatype: Nullable<&DataType>,
         strict: bool,
         allow_fail_eval: bool,
     ) -> list::List {
@@ -294,7 +301,7 @@ impl Rseries {
         };
 
         //handle any return type from R and collect into Series
-        let s: Result<Rseries> = match out_type {
+        let s: Result<Series> = match out_type {
             Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
             Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
             Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
@@ -308,31 +315,31 @@ impl Rseries {
             x
         });
 
-        //if ok rename with prefix apply, convert Result<Rseries> in r_result_list
+        //if ok rename with prefix apply, convert Result<Series> in r_result_list
         r_result_list(s)
     }
 
-    pub fn mean_as_series(&self) -> Rseries {
-        Rseries(self.0.clone().mean_as_series())
+    pub fn mean_as_series(&self) -> Series {
+        Series(self.0.clone().mean_as_series())
     }
-    pub fn sum_as_series(&self) -> Rseries {
-        Rseries(self.0.clone().sum_as_series())
+    pub fn sum_as_series(&self) -> Series {
+        Series(self.0.clone().sum_as_series())
     }
 
-    pub fn ceil(&self) -> Rseries {
-        Rseries(self.0.clone().ceil().unwrap())
+    pub fn ceil(&self) -> Series {
+        Series(self.0.clone().ceil().unwrap())
     }
 
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cumsum(&self, reverse: bool) -> Rseries {
-        Rseries(self.0.clone().cumsum(reverse))
+    pub fn cumsum(&self, reverse: bool) -> Series {
+        Series(self.0.clone().cumsum(reverse))
     }
 
-    pub fn is_unique(&self) -> Result<Rseries> {
-        Ok(Rseries(
+    pub fn is_unique(&self) -> Result<Series> {
+        Ok(Series(
             self.0
                 .clone()
                 .is_unique()
@@ -341,21 +348,22 @@ impl Rseries {
         ))
     }
 
-    pub fn to_frame(&self) -> Rdataframe {
-        let mut df = Rdataframe::new_with_capacity(1);
+    pub fn to_frame(&self) -> DataFrame {
+        let mut df = DataFrame::new_with_capacity(1);
         df.set_column_from_rseries(&self)
             .expect("spank developer if ever failing"); //cannot fail because size mismatch not possible
         df
     }
 }
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
-impl From<&Rseries> for pl::Series {
-    fn from(x: &Rseries) -> Self {
+impl From<&Series> for pl::Series {
+    fn from(x: &Series) -> Self {
         x.clone().0
     }
 }
 
 extendr_module! {
     mod rseries;
-    impl Rseries;
+    impl Series;
+    fn inherits2;
 }

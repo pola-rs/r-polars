@@ -7,10 +7,10 @@
 wrap_e(e)
 }
 \arguments{
-\item{e}{an Rexpr(polars) or any R expression}
+\item{e}{an Expr(polars) or any R expression}
 }
 \value{
-Rexpr
+Expr
 }
 \description{
 wrap as literal

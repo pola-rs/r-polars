@@ -91,12 +91,12 @@ be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
 \value{
 lazyframe
 
-RDataframe
+DataFrame
 }
 \description{
 Read csv lazily
 
-Read csv to Rdataframe
+Read csv to DataFrame
 }
 \details{
 Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names

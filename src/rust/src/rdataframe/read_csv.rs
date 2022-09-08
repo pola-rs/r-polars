@@ -1,12 +1,14 @@
 //read csv
 
 use crate::rdataframe::wrap_errors::wrap_error;
-use crate::rdatatype::RdatatypeVector;
-use crate::rlazyframe::*;
-use crate::utils::wrappers::*;
+use crate::rdatatype::DataTypeVector;
+
+use crate::rlazyframe::LazyFrame;
+//use crate::utils::wrappers::*;
+use crate::utils::wrappers::{null_to_opt, Wrap};
 use extendr_api::{extendr, prelude::*, Error, Rinternals};
 use polars::prelude as pl;
-//this function is derived from  polars/py-polars/src/lazy/dataframe.rs new_from_csv
+//this function is derived from  polars/py-polars/src/lazy/DataFrame.rs new_from_csv
 use std::result::Result;
 
 //see param, null_values
@@ -48,7 +50,7 @@ pub fn rlazy_csv_reader(
     skip_rows: i32,        //usize
     n_rows: Nullable<i32>, //option usize
     cache: bool,
-    overwrite_dtype: Nullable<&RdatatypeVector>, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
+    overwrite_dtype: Nullable<&DataTypeVector>, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
     low_memory: bool,
     comment_char: Nullable<&str>,
     quote_char: Nullable<&str>,
@@ -61,7 +63,7 @@ pub fn rlazy_csv_reader(
     row_count_name: Nullable<String>,
     row_count_offset: i32, //replaced IdxSize with usize
     parse_dates: bool,
-) -> Result<Rlazyframe, Error> {
+) -> Result<LazyFrame, Error> {
     //construct encoding parameter
     let encoding = match encoding {
         "utf8" => pl::CsvEncoding::Utf8,
@@ -109,7 +111,7 @@ pub fn rlazy_csv_reader(
 
     let x = r.finish().map_err(wrap_error)?;
 
-    Ok(Rlazyframe(x))
+    Ok(LazyFrame(x))
 }
 
 extendr_module! {

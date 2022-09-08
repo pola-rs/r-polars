@@ -66,7 +66,7 @@ lazy_csv_reader = function(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  overwrite_dtype = NULL,  #minipolars:::RdatatypeVector$new()$print()
+  overwrite_dtype = NULL,  #minipolars:::DataTypeVector$new()$print()
   low_memory = FALSE,
   comment_char = NULL,
   quote_char = '"',
@@ -83,14 +83,14 @@ lazy_csv_reader = function(
   #capture all args and modify some to match lower level function
   args = as.list(environment())
 
-  #overwrite_dtype: convert named list of Rdatatype's to RdatatypeVector obj
+  #overwrite_dtype: convert named list of DataType's to DataTypeVector obj
   if(!is.null(args$overwrite_dtype)) {
     owdtype = args$overwrite_dtype
     ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
     if( !is.list(owdtype) || !rlang::is_named(owdtype)) {
-      abort("could not interpret overwrite_dtype, must be a named list of Rdatatypes")
+      abort("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
-    datatype_vector = minipolars:::RdatatypeVector$new() #mutable
+    datatype_vector = minipolars:::DataTypeVector$new() #mutable
     mapply(
       name = names(owdtype),
       type = unname(owdtype),
@@ -98,9 +98,9 @@ lazy_csv_reader = function(
 
         #convert possible string to datatype
         if(is_string(type)) {
-          type = minipolars:::Rdatatype$new(type)
+          type = minipolars:::DataType$new(type)
         }
-        if(!inherits(type,"Rdatatype")) {
+        if(!inherits(type,"DataType")) {
           abort("arg overwrite_dtype must be a named list of dtypes or dtype names")
         }
         datatype_vector$push(name,type)
@@ -144,10 +144,10 @@ lazy_csv_reader = function(
   #wrap in R6 class
   lazy_polar_frame$new(lower_level_rlazy_frame)
 }
-#' Read csv to Rdataframe
+#' Read csv to DataFrame
 #' @rdname lazy_csv_reader
 #' @usage csv_reader(...) #any param passed directly to lazy_csv_reader
-#' @return RDataframe
+#' @return DataFrame
 #' @export
 
 csv_reader = function(...) {
@@ -161,7 +161,7 @@ csv_reader = function(...) {
 #' @param path file or url
 #' @param ...
 #'
-#' @return polars_dataframe or polars_lazy_dataframe
+#' @return polars_DataFrame or polars_lazy_DataFrame
 #' @export
 #'
 #' @examples df = read_csv("https://j.mp/iriscsv")

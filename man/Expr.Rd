@@ -2,19 +2,20 @@
 % Please edit documentation in R/expr.R
 \name{lit}
 \alias{lit}
+\alias{Expr.map}
 \title{polars literal}
 \usage{
-lit(x)
+Expr.map(lambda, output_type = NULL, `_agg_list` = NULL)
 }
 \arguments{
-\item{x}{any R expression yielding an integer or float}
+\item{x}{any R expression yielding an integer, float or bool}
 }
 \value{
-Rexpr, literal of that value
+Expr, literal of that value
 }
 \description{
 polars literal
 }
 \examples{
-pl::lit(42L)
+pl$col("some_column") / pl$lit(42)
 }

@@ -12,7 +12,7 @@ read_csv_(path, lazy = FALSE, reuse_downloaded = TRUE, ...)
 \item{...}{}
 }
 \value{
-polars_dataframe or polars_lazy_dataframe
+polars_DataFrame or polars_lazy_DataFrame
 }
 \description{
 high level csv_reader, will download if path is url

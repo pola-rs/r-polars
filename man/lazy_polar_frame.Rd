@@ -28,7 +28,7 @@ high-level wrapper class for Rpolarframe
 \if{html}{\out{<a id="method-lazy_polar_frame-new"></a>}}
 \if{latex}{\out{\hypertarget{method-lazy_polar_frame-new}{}}}
 \subsection{Method \code{new()}}{
-wrap low-level Rlazyframe in new R6 lazy_polar_frame object.
+wrap low-level LazyFrame in new R6 lazy_polar_frame object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{lazy_polar_frame$new(data)}\if{html}{\out{</div>}}
 }
@@ -36,7 +36,7 @@ wrap low-level Rlazyframe in new R6 lazy_polar_frame object.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{data}}{Rlazyframe}
+\item{\code{data}}{LazyFrame}
 }
 \if{html}{\out{</div>}}
 }
@@ -69,7 +69,7 @@ select on lazy_polar_frame.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{any  Rexprs or strings}
+\item{\code{...}}{any  Exprs or strings}
 }
 \if{html}{\out{</div>}}
 }
@@ -89,7 +89,7 @@ filter on lazy_polar_frame.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{rexpr}}{any single Rexpr}
+\item{\code{rexpr}}{any single Expr}
 }
 \if{html}{\out{</div>}}
 }
@@ -109,7 +109,7 @@ groupby on lazy_polar_frame.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{any single Rexpr or string naming a column}
+\item{\code{...}}{any single Expr or string naming a column}
 }
 \if{html}{\out{</div>}}
 }

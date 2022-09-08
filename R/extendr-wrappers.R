@@ -8,139 +8,141 @@
 #' @useDynLib minipolars, .registration = TRUE
 NULL
 
-rlit <- function(robj) .Call(wrap__rlit, robj)
-
-rall <- function() .Call(wrap__rall)
-
-rcol <- function(name) .Call(wrap__rcol, name)
+#' Return string `"Hello world!"` to R.
+#' @export
+inherits2 <- function(`_class`) .Call(wrap__inherits2, `_class`)
 
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
-Rdataframe <- new.env(parent = emptyenv())
+DataFrame <- new.env(parent = emptyenv())
 
-Rdataframe$clone_extendr <- function() .Call(wrap__Rdataframe__clone_extendr, self)
+DataFrame$clone_extendr <- function() .Call(wrap__DataFrame__clone_extendr, self)
 
-Rdataframe$new <- function() .Call(wrap__Rdataframe__new)
+DataFrame$new <- function() .Call(wrap__DataFrame__new)
 
-Rdataframe$lazy <- function() .Call(wrap__Rdataframe__lazy, self)
+DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
 
-Rdataframe$new_with_capacity <- function(capacity) .Call(wrap__Rdataframe__new_with_capacity, capacity)
+DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_with_capacity, capacity)
 
-Rdataframe$set_column_from_robj <- function(robj, name) .Call(wrap__Rdataframe__set_column_from_robj, self, robj, name)
+DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__set_column_from_robj, self, robj, name)
 
-Rdataframe$set_column_from_rseries <- function(x) .Call(wrap__Rdataframe__set_column_from_rseries, self, x)
+DataFrame$set_column_from_rseries <- function(x) .Call(wrap__DataFrame__set_column_from_rseries, self, x)
 
-Rdataframe$print <- function() invisible(.Call(wrap__Rdataframe__print, self))
+DataFrame$print <- function() invisible(.Call(wrap__DataFrame__print, self))
 
-Rdataframe$name <- function() .Call(wrap__Rdataframe__name, self)
+DataFrame$name <- function() .Call(wrap__DataFrame__name, self)
 
-Rdataframe$colnames <- function() .Call(wrap__Rdataframe__colnames, self)
+DataFrame$colnames <- function() .Call(wrap__DataFrame__colnames, self)
 
-Rdataframe$as_rlist_of_vectors <- function() .Call(wrap__Rdataframe__as_rlist_of_vectors, self)
+DataFrame$as_rlist_of_vectors <- function() .Call(wrap__DataFrame__as_rlist_of_vectors, self)
 
-Rdataframe$select <- function(exprs) .Call(wrap__Rdataframe__select, self, exprs)
+DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
-Rdataframe$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__Rdataframe__groupby_agg, self, group_exprs, agg_exprs)
-
-#' @export
-`$.Rdataframe` <- function (self, name) { func <- Rdataframe[[name]]; environment(func) <- environment(); func }
+DataFrame$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__DataFrame__groupby_agg, self, group_exprs, agg_exprs)
 
 #' @export
-`[[.Rdataframe` <- `$.Rdataframe`
-
-Rexpr <- new.env(parent = emptyenv())
-
-Rexpr$gt <- function(other) .Call(wrap__Rexpr__gt, self, other)
-
-Rexpr$gt_eq <- function(other) .Call(wrap__Rexpr__gt_eq, self, other)
-
-Rexpr$lt <- function(other) .Call(wrap__Rexpr__lt, self, other)
-
-Rexpr$lt_eq <- function(other) .Call(wrap__Rexpr__lt_eq, self, other)
-
-Rexpr$neq <- function(other) .Call(wrap__Rexpr__neq, self, other)
-
-Rexpr$eq <- function(other) .Call(wrap__Rexpr__eq, self, other)
-
-Rexpr$alias <- function(s) .Call(wrap__Rexpr__alias, self, s)
-
-Rexpr$is_null <- function() .Call(wrap__Rexpr__is_null, self)
-
-Rexpr$is_not_null <- function() .Call(wrap__Rexpr__is_not_null, self)
-
-Rexpr$drop_nulls <- function() .Call(wrap__Rexpr__drop_nulls, self)
-
-Rexpr$drop_nans <- function() .Call(wrap__Rexpr__drop_nans, self)
-
-Rexpr$min <- function() .Call(wrap__Rexpr__min, self)
-
-Rexpr$max <- function() .Call(wrap__Rexpr__max, self)
-
-Rexpr$mean <- function() .Call(wrap__Rexpr__mean, self)
-
-Rexpr$median <- function() .Call(wrap__Rexpr__median, self)
-
-Rexpr$sum <- function() .Call(wrap__Rexpr__sum, self)
-
-Rexpr$n_unique <- function() .Call(wrap__Rexpr__n_unique, self)
-
-Rexpr$first <- function() .Call(wrap__Rexpr__first, self)
-
-Rexpr$last <- function() .Call(wrap__Rexpr__last, self)
-
-Rexpr$col <- function(name) .Call(wrap__Rexpr__col, name)
-
-Rexpr$unique <- function() .Call(wrap__Rexpr__unique, self)
-
-Rexpr$abs <- function() .Call(wrap__Rexpr__abs, self)
-
-Rexpr$agg_groups <- function() .Call(wrap__Rexpr__agg_groups, self)
-
-Rexpr$all <- function() .Call(wrap__Rexpr__all, self)
-
-Rexpr$any <- function() .Call(wrap__Rexpr__any, self)
-
-Rexpr$count <- function() .Call(wrap__Rexpr__count, self)
-
-Rexpr$add <- function(other) .Call(wrap__Rexpr__add, self, other)
-
-Rexpr$sub <- function(other) .Call(wrap__Rexpr__sub, self, other)
-
-Rexpr$mul <- function(other) .Call(wrap__Rexpr__mul, self, other)
-
-Rexpr$div <- function(other) .Call(wrap__Rexpr__div, self, other)
-
-Rexpr$not <- function() .Call(wrap__Rexpr__not, self)
-
-Rexpr$over <- function(vs) .Call(wrap__Rexpr__over, self, vs)
-
-Rexpr$print <- function() invisible(.Call(wrap__Rexpr__print, self))
-
-Rexpr$map <- function(lambda, output_type, `_agg_list`) .Call(wrap__Rexpr__map, self, lambda, output_type, `_agg_list`)
+`$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`$.Rexpr` <- function (self, name) { func <- Rexpr[[name]]; environment(func) <- environment(); func }
+`[[.DataFrame` <- `$.DataFrame`
+
+Expr <- new.env(parent = emptyenv())
+
+Expr$col <- function(name) .Call(wrap__Expr__col, name)
+
+Expr$lit <- function(robj) .Call(wrap__Expr__lit, robj)
+
+Expr$all_constructor <- function() .Call(wrap__Expr__all_constructor)
+
+Expr$gt <- function(other) .Call(wrap__Expr__gt, self, other)
+
+Expr$gt_eq <- function(other) .Call(wrap__Expr__gt_eq, self, other)
+
+Expr$lt <- function(other) .Call(wrap__Expr__lt, self, other)
+
+Expr$lt_eq <- function(other) .Call(wrap__Expr__lt_eq, self, other)
+
+Expr$neq <- function(other) .Call(wrap__Expr__neq, self, other)
+
+Expr$eq <- function(other) .Call(wrap__Expr__eq, self, other)
+
+Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
+
+Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
+
+Expr$is_not_null <- function() .Call(wrap__Expr__is_not_null, self)
+
+Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
+
+Expr$drop_nans <- function() .Call(wrap__Expr__drop_nans, self)
+
+Expr$min <- function() .Call(wrap__Expr__min, self)
+
+Expr$max <- function() .Call(wrap__Expr__max, self)
+
+Expr$mean <- function() .Call(wrap__Expr__mean, self)
+
+Expr$median <- function() .Call(wrap__Expr__median, self)
+
+Expr$sum <- function() .Call(wrap__Expr__sum, self)
+
+Expr$n_unique <- function() .Call(wrap__Expr__n_unique, self)
+
+Expr$first <- function() .Call(wrap__Expr__first, self)
+
+Expr$last <- function() .Call(wrap__Expr__last, self)
+
+Expr$unique <- function() .Call(wrap__Expr__unique, self)
+
+Expr$abs <- function() .Call(wrap__Expr__abs, self)
+
+Expr$agg_groups <- function() .Call(wrap__Expr__agg_groups, self)
+
+Expr$all <- function() .Call(wrap__Expr__all, self)
+
+Expr$any <- function() .Call(wrap__Expr__any, self)
+
+Expr$count <- function() .Call(wrap__Expr__count, self)
+
+Expr$add <- function(other) .Call(wrap__Expr__add, self, other)
+
+Expr$sub <- function(other) .Call(wrap__Expr__sub, self, other)
+
+Expr$mul <- function(other) .Call(wrap__Expr__mul, self, other)
+
+Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
+
+Expr$not <- function() .Call(wrap__Expr__not, self)
+
+Expr$over <- function(vs) .Call(wrap__Expr__over, self, vs)
+
+Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
+
+Expr$map <- function(lambda, output_type, `_agg_list`) .Call(wrap__Expr__map, self, lambda, output_type, `_agg_list`)
 
 #' @export
-`[[.Rexpr` <- `$.Rexpr`
-
-ProtoRexprArray <- new.env(parent = emptyenv())
-
-ProtoRexprArray$new <- function() .Call(wrap__ProtoRexprArray__new)
-
-ProtoRexprArray$push_back_str <- function(s) invisible(.Call(wrap__ProtoRexprArray__push_back_str, self, s))
-
-ProtoRexprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__ProtoRexprArray__push_back_rexpr, self, r))
-
-ProtoRexprArray$print <- function() invisible(.Call(wrap__ProtoRexprArray__print, self))
-
-ProtoRexprArray$add_context <- function(context) .Call(wrap__ProtoRexprArray__add_context, self, context)
+`$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`$.ProtoRexprArray` <- function (self, name) { func <- ProtoRexprArray[[name]]; environment(func) <- environment(); func }
+`[[.Expr` <- `$.Expr`
+
+ProtoExprArray <- new.env(parent = emptyenv())
+
+ProtoExprArray$new <- function() .Call(wrap__ProtoExprArray__new)
+
+ProtoExprArray$push_back_str <- function(s) invisible(.Call(wrap__ProtoExprArray__push_back_str, self, s))
+
+ProtoExprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__ProtoExprArray__push_back_rexpr, self, r))
+
+ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, self))
+
+ProtoExprArray$add_context <- function(context) .Call(wrap__ProtoExprArray__add_context, self, context)
 
 #' @export
-`[[.ProtoRexprArray` <- `$.ProtoRexprArray`
+`$.ProtoExprArray` <- function (self, name) { func <- ProtoExprArray[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.ProtoExprArray` <- `$.ProtoExprArray`
 
 RexprArray <- new.env(parent = emptyenv())
 
@@ -152,57 +154,57 @@ RexprArray$print <- function() invisible(.Call(wrap__RexprArray__print, self))
 #' @export
 `[[.RexprArray` <- `$.RexprArray`
 
-Rseries <- new.env(parent = emptyenv())
+Series <- new.env(parent = emptyenv())
 
-Rseries$new <- function(x, name) .Call(wrap__Rseries__new, x, name)
+Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
 
-Rseries$clone <- function() .Call(wrap__Rseries__clone, self)
+Series$clone <- function() .Call(wrap__Series__clone, self)
 
-Rseries$from_clone <- function(s) .Call(wrap__Rseries__from_clone, s)
+Series$from_clone <- function(s) .Call(wrap__Series__from_clone, s)
 
-Rseries$to_r_vector <- function() .Call(wrap__Rseries__to_r_vector, self)
+Series$to_r_vector <- function() .Call(wrap__Series__to_r_vector, self)
 
-Rseries$rename_mut <- function(name) invisible(.Call(wrap__Rseries__rename_mut, self, name))
+Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
 
-Rseries$dtype <- function() .Call(wrap__Rseries__dtype, self)
+Series$dtype <- function() .Call(wrap__Series__dtype, self)
 
-Rseries$name <- function() .Call(wrap__Rseries__name, self)
+Series$name <- function() .Call(wrap__Series__name, self)
 
-Rseries$shape <- function() .Call(wrap__Rseries__shape, self)
+Series$shape <- function() .Call(wrap__Series__shape, self)
 
-Rseries$abs_unsafe <- function() .Call(wrap__Rseries__abs_unsafe, self)
+Series$abs_unsafe <- function() .Call(wrap__Series__abs_unsafe, self)
 
-Rseries$abs <- function() .Call(wrap__Rseries__abs, self)
+Series$abs <- function() .Call(wrap__Series__abs, self)
 
-Rseries$alias <- function(name) .Call(wrap__Rseries__alias, self, name)
+Series$alias <- function(name) .Call(wrap__Series__alias, self, name)
 
-Rseries$all <- function() .Call(wrap__Rseries__all, self)
+Series$all <- function() .Call(wrap__Series__all, self)
 
-Rseries$any <- function() .Call(wrap__Rseries__any, self)
+Series$any <- function() .Call(wrap__Series__any, self)
 
-Rseries$append_mut <- function(other) .Call(wrap__Rseries__append_mut, self, other)
+Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
 
-Rseries$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Rseries__apply, self, robj, rdatatype, strict, allow_fail_eval)
+Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
 
-Rseries$mean_as_series <- function() .Call(wrap__Rseries__mean_as_series, self)
+Series$mean_as_series <- function() .Call(wrap__Series__mean_as_series, self)
 
-Rseries$sum_as_series <- function() .Call(wrap__Rseries__sum_as_series, self)
+Series$sum_as_series <- function() .Call(wrap__Series__sum_as_series, self)
 
-Rseries$ceil <- function() .Call(wrap__Rseries__ceil, self)
+Series$ceil <- function() .Call(wrap__Series__ceil, self)
 
-Rseries$print <- function() invisible(.Call(wrap__Rseries__print, self))
+Series$print <- function() invisible(.Call(wrap__Series__print, self))
 
-Rseries$cumsum <- function(reverse) .Call(wrap__Rseries__cumsum, self, reverse)
+Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
 
-Rseries$is_unique <- function() .Call(wrap__Rseries__is_unique, self)
+Series$is_unique <- function() .Call(wrap__Series__is_unique, self)
 
-Rseries$to_frame <- function() .Call(wrap__Rseries__to_frame, self)
-
-#' @export
-`$.Rseries` <- function (self, name) { func <- Rseries[[name]]; environment(func) <- environment(); func }
+Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
 #' @export
-`[[.Rseries` <- `$.Rseries`
+`$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Series` <- `$.Series`
 
 RNullValues <- new.env(parent = emptyenv())
 
@@ -218,69 +220,69 @@ RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj
 #' @export
 `[[.RNullValues` <- `$.RNullValues`
 
-Rdatatype <- new.env(parent = emptyenv())
+DataType <- new.env(parent = emptyenv())
 
-Rdatatype$new <- function(s) .Call(wrap__Rdatatype__new, s)
+DataType$new <- function(s) .Call(wrap__DataType__new, s)
 
-Rdatatype$print <- function() invisible(.Call(wrap__Rdatatype__print, self))
+DataType$print <- function() invisible(.Call(wrap__DataType__print, self))
 
-Rdatatype$eq <- function(other) .Call(wrap__Rdatatype__eq, self, other)
+DataType$eq <- function(other) .Call(wrap__DataType__eq, self, other)
 
-Rdatatype$ne <- function(other) .Call(wrap__Rdatatype__ne, self, other)
-
-#' @export
-`$.Rdatatype` <- function (self, name) { func <- Rdatatype[[name]]; environment(func) <- environment(); func }
+DataType$ne <- function(other) .Call(wrap__DataType__ne, self, other)
 
 #' @export
-`[[.Rdatatype` <- `$.Rdatatype`
-
-RdatatypeVector <- new.env(parent = emptyenv())
-
-RdatatypeVector$new <- function() .Call(wrap__RdatatypeVector__new)
-
-RdatatypeVector$push <- function(colname, datatype) invisible(.Call(wrap__RdatatypeVector__push, self, colname, datatype))
-
-RdatatypeVector$print <- function() invisible(.Call(wrap__RdatatypeVector__print, self))
+`$.DataType` <- function (self, name) { func <- DataType[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`$.RdatatypeVector` <- function (self, name) { func <- RdatatypeVector[[name]]; environment(func) <- environment(); func }
+`[[.DataType` <- `$.DataType`
+
+DataTypeVector <- new.env(parent = emptyenv())
+
+DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
+
+DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
+
+DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
 
 #' @export
-`[[.RdatatypeVector` <- `$.RdatatypeVector`
-
-Rlazyframe <- new.env(parent = emptyenv())
-
-Rlazyframe$print <- function() invisible(.Call(wrap__Rlazyframe__print, self))
-
-Rlazyframe$describe_optimized_plan <- function() .Call(wrap__Rlazyframe__describe_optimized_plan, self)
-
-Rlazyframe$collect <- function() .Call(wrap__Rlazyframe__collect, self)
-
-Rlazyframe$select <- function(exprs) .Call(wrap__Rlazyframe__select, self, exprs)
-
-Rlazyframe$filter <- function(expr) .Call(wrap__Rlazyframe__filter, self, expr)
-
-Rlazyframe$groupby <- function(exprs) .Call(wrap__Rlazyframe__groupby, self, exprs)
+`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`$.Rlazyframe` <- function (self, name) { func <- Rlazyframe[[name]]; environment(func) <- environment(); func }
+`[[.DataTypeVector` <- `$.DataTypeVector`
+
+LazyFrame <- new.env(parent = emptyenv())
+
+LazyFrame$print <- function() invisible(.Call(wrap__LazyFrame__print, self))
+
+LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+
+LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+
+LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
+
+LazyFrame$groupby <- function(exprs) .Call(wrap__LazyFrame__groupby, self, exprs)
 
 #' @export
-`[[.Rlazyframe` <- `$.Rlazyframe`
-
-Rlazygroupby <- new.env(parent = emptyenv())
-
-Rlazygroupby$print <- function() invisible(.Call(wrap__Rlazygroupby__print, self))
-
-Rlazygroupby$agg <- function(exprs) .Call(wrap__Rlazygroupby__agg, self, exprs)
-
-Rlazygroupby$head <- function(n) .Call(wrap__Rlazygroupby__head, self, n)
-
-Rlazygroupby$tail <- function(n) .Call(wrap__Rlazygroupby__tail, self, n)
+`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 
 #' @export
-`$.Rlazygroupby` <- function (self, name) { func <- Rlazygroupby[[name]]; environment(func) <- environment(); func }
+`[[.LazyFrame` <- `$.LazyFrame`
+
+LazyGroupBy <- new.env(parent = emptyenv())
+
+LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
+
+LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
+
+LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
 
 #' @export
-`[[.Rlazygroupby` <- `$.Rlazygroupby`
+`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyGroupBy` <- `$.LazyGroupBy`
 

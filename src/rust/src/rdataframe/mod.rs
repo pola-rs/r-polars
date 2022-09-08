@@ -23,12 +23,12 @@ use crate::utils::wrappers::strpointer_to_;
 
 #[extendr]
 #[derive(Debug, Clone)]
-pub struct Rdataframe(pub pl::DataFrame);
+pub struct DataFrame(pub pl::DataFrame);
 
 fn handle_thread_r_requests(
-    self_df: Rdataframe,
+    self_df: DataFrame,
     exprs: Vec<pl::Expr>,
-) -> extendr_api::Result<Rdataframe> {
+) -> extendr_api::Result<DataFrame> {
     let res_res_df = concurrent_handler(
         //call this polars code
         move |_tc| self_df.0.lazy().select(exprs).collect().map_err(wrap_error),
@@ -46,7 +46,7 @@ fn handle_thread_r_requests(
                 extendr_api::error::Error::Other("this is not a function".to_string())
             })?;
 
-            let rseries_ptr = series_udf_handler.call(pairlist!(f = f, rs = Rseries(s)))?;
+            let rseries_ptr = series_udf_handler.call(pairlist!(f = f, rs = Series(s)))?;
 
             let rseries_ptr_str = rseries_ptr.as_str().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!(
@@ -55,9 +55,9 @@ fn handle_thread_r_requests(
                 ))
             })?;
 
-            //safety relies on private minipolars:::series_udf_handler only passes Rseries pointers.
+            //safety relies on private minipolars:::series_udf_handler only passes Series pointers.
             let x = unsafe {
-                let x: &mut Rseries = strpointer_to_(rseries_ptr_str)?;
+                let x: &mut Series = strpointer_to_(rseries_ptr_str)?;
                 x
             };
 
@@ -75,27 +75,27 @@ fn handle_thread_r_requests(
         .and_then(|ok| ok.map_err(|_err| extendr_api::Error::Other("some polars error".into())));
 
     let new_df = res_df?;
-    Ok(Rdataframe(new_df))
+    Ok(DataFrame(new_df))
 }
 
 #[extendr]
-impl Rdataframe {
-    fn clone_extendr(&self) -> Rdataframe {
+impl DataFrame {
+    fn clone_extendr(&self) -> DataFrame {
         self.clone()
     }
 
     fn new() -> Self {
         let empty_series: Vec<pl::Series> = Vec::new();
-        Rdataframe(pl::DataFrame::new(empty_series).unwrap())
+        DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
-    fn lazy(&self) -> Rlazyframe {
-        Rlazyframe(self.0.clone().lazy())
+    fn lazy(&self) -> LazyFrame {
+        LazyFrame(self.0.clone().lazy())
     }
 
     fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
-        Rdataframe(pl::DataFrame::new(empty_series).unwrap())
+        DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), Error> {
@@ -104,7 +104,7 @@ impl Rdataframe {
         Ok(())
     }
 
-    fn set_column_from_rseries(&mut self, x: &Rseries) -> Result<(), Error> {
+    fn set_column_from_rseries(&mut self, x: &Series) -> Result<(), Error> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
         self.0.with_column(s).map_err(wrap_error)?;
         Ok(())
@@ -133,7 +133,7 @@ impl Rdataframe {
         Ok(r!(extendr_api::prelude::List::from_values(x?)))
     }
 
-    fn select(&mut self, exprs: &ProtoRexprArray) -> list::List {
+    fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
         let self_df = self.clone();
         let res_df = handle_thread_r_requests(self_df, exprs);
@@ -142,9 +142,9 @@ impl Rdataframe {
 
     fn groupby_agg(
         &mut self,
-        group_exprs: &ProtoRexprArray,
-        agg_exprs: &ProtoRexprArray,
-    ) -> Result<Rdataframe, Error> {
+        group_exprs: &ProtoExprArray,
+        agg_exprs: &ProtoExprArray,
+    ) -> Result<DataFrame, Error> {
         let group_exprs: Vec<pl::Expr> = pra_to_vec(group_exprs, "select");
         let agg_exprs: Vec<pl::Expr> = pra_to_vec(agg_exprs, "select");
 
@@ -157,7 +157,7 @@ impl Rdataframe {
             .collect()
             .map_err(wrap_error)?;
 
-        Ok(Rdataframe(new_df))
+        Ok(DataFrame(new_df))
     }
 }
 
@@ -168,5 +168,5 @@ extendr_module! {
     use read_csv;
     use rdatatype;
     use rlazyframe;
-    impl Rdataframe;
+    impl DataFrame;
 }

@@ -5,164 +5,183 @@ use std::ops::{Add, Div, Mul, Sub};
 use crate::utils::extendr_concurrent::{tc_from_global, ParRObj};
 use crate::CONFIG;
 
-use super::Rdatatype;
+use super::DataType;
 
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct Rexpr(pub pl::Expr);
+pub struct Expr(pub pl::Expr);
 
-impl Deref for Rexpr {
+impl Deref for Expr {
     type Target = pl::Expr;
     fn deref(&self) -> &pl::Expr {
         &self.0
     }
 }
 
-impl DerefMut for Rexpr {
+impl DerefMut for Expr {
     fn deref_mut(&mut self) -> &mut pl::Expr {
         &mut self.0
     }
 }
 
 #[extendr]
-impl Rexpr {
+impl Expr {
+    //constructors
+
+    pub fn col(name: &str) -> Self {
+        Expr(pl::col(name))
+    }
+
+    pub fn lit(robj: Robj) -> Expr {
+        let rtype = robj.rtype();
+        let rlen = robj.len();
+        let expr = match (rtype, rlen) {
+            (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap() as i64),
+            (Rtype::Doubles, 1) => pl::lit(robj.as_real().unwrap()),
+            (_, 1) => panic!("dunno what literal to make out of this"),
+            (_, _) => panic!("literal length must currently be one, so no c(1,2,3) allowed yet"),
+        };
+
+        Expr(expr)
+    }
+
+    //suffix constructor if method by same name
+    pub fn all_constructor() -> Expr {
+        Expr(pl::all())
+    }
+
     //expr binary comparisons
-    pub fn gt(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().gt(other.0.clone()))
+    pub fn gt(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().gt(other.0.clone()))
     }
 
-    pub fn gt_eq(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().gt_eq(other.0.clone()))
+    pub fn gt_eq(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().gt_eq(other.0.clone()))
     }
 
-    pub fn lt(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().lt(other.0.clone()))
+    pub fn lt(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().lt(other.0.clone()))
     }
 
-    pub fn lt_eq(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().lt_eq(other.0.clone()))
+    pub fn lt_eq(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().lt_eq(other.0.clone()))
     }
 
-    pub fn neq(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().neq(other.0.clone()))
+    pub fn neq(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().neq(other.0.clone()))
     }
 
-    pub fn eq(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().eq(other.0.clone()))
+    pub fn eq(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().eq(other.0.clone()))
     }
 
     //in order
 
-    pub fn alias(&self, s: &str) -> Rexpr {
-        Rexpr(self.0.clone().alias(s))
+    pub fn alias(&self, s: &str) -> Expr {
+        Expr(self.0.clone().alias(s))
     }
 
-    pub fn is_null(&self) -> Rexpr {
-        Rexpr(self.0.clone().is_null())
+    pub fn is_null(&self) -> Expr {
+        Expr(self.0.clone().is_null())
     }
 
-    pub fn is_not_null(&self) -> Rexpr {
-        Rexpr(self.0.clone().is_not_null())
+    pub fn is_not_null(&self) -> Expr {
+        Expr(self.0.clone().is_not_null())
     }
 
-    pub fn drop_nulls(&self) -> Rexpr {
-        Rexpr(self.0.clone().drop_nulls())
+    pub fn drop_nulls(&self) -> Expr {
+        Expr(self.0.clone().drop_nulls())
     }
 
-    pub fn drop_nans(&self) -> Rexpr {
-        Rexpr(self.0.clone().drop_nans())
+    pub fn drop_nans(&self) -> Expr {
+        Expr(self.0.clone().drop_nans())
     }
 
-    pub fn min(&self) -> Rexpr {
-        Rexpr(self.0.clone().min())
+    pub fn min(&self) -> Expr {
+        Expr(self.0.clone().min())
     }
 
-    pub fn max(&self) -> Rexpr {
-        Rexpr(self.0.clone().max())
+    pub fn max(&self) -> Expr {
+        Expr(self.0.clone().max())
     }
 
-    pub fn mean(&self) -> Rexpr {
-        Rexpr(self.0.clone().mean())
+    pub fn mean(&self) -> Expr {
+        Expr(self.0.clone().mean())
     }
 
-    pub fn median(&self) -> Rexpr {
-        Rexpr(self.0.clone().median())
+    pub fn median(&self) -> Expr {
+        Expr(self.0.clone().median())
     }
 
-    pub fn sum(&self) -> Rexpr {
-        Rexpr(self.0.clone().sum())
+    pub fn sum(&self) -> Expr {
+        Expr(self.0.clone().sum())
     }
 
-    pub fn n_unique(&self) -> Rexpr {
-        Rexpr(self.0.clone().n_unique())
+    pub fn n_unique(&self) -> Expr {
+        Expr(self.0.clone().n_unique())
     }
 
-    pub fn first(&self) -> Rexpr {
-        Rexpr(self.0.clone().first())
+    pub fn first(&self) -> Expr {
+        Expr(self.0.clone().first())
     }
 
-    pub fn last(&self) -> Rexpr {
-        Rexpr(self.0.clone().last())
-    }
-
-    //constructors
-    pub fn col(name: &str) -> Self {
-        Rexpr(pl::col(name))
+    pub fn last(&self) -> Expr {
+        Expr(self.0.clone().last())
     }
 
     //chaining methods
 
-    pub fn unique(&self) -> Rexpr {
-        Rexpr(self.0.clone().unique())
+    pub fn unique(&self) -> Expr {
+        Expr(self.0.clone().unique())
     }
 
-    pub fn abs(&self) -> Rexpr {
-        Rexpr(self.0.clone().abs())
+    pub fn abs(&self) -> Expr {
+        Expr(self.0.clone().abs())
     }
 
-    pub fn agg_groups(&self) -> Rexpr {
-        Rexpr(self.0.clone().agg_groups())
+    pub fn agg_groups(&self) -> Expr {
+        Expr(self.0.clone().agg_groups())
     }
 
-    pub fn all(&self) -> Rexpr {
-        Rexpr(self.0.clone().all())
+    pub fn all(&self) -> Expr {
+        Expr(self.0.clone().all())
     }
-    pub fn any(&self) -> Rexpr {
-        Rexpr(self.0.clone().any())
-    }
-
-    pub fn count(&self) -> Rexpr {
-        Rexpr(self.0.clone().count())
+    pub fn any(&self) -> Expr {
+        Expr(self.0.clone().any())
     }
 
-    //binary arithmetic expressions
-    pub fn add(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().add(other.0.clone()))
+    pub fn count(&self) -> Expr {
+        Expr(self.0.clone().count())
     }
 
     //binary arithmetic expressions
-    pub fn sub(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().sub(other.0.clone()))
+    pub fn add(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().add(other.0.clone()))
     }
 
-    pub fn mul(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().mul(other.0.clone()))
+    //binary arithmetic expressions
+    pub fn sub(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().sub(other.0.clone()))
     }
 
-    pub fn div(&self, other: &Rexpr) -> Rexpr {
-        Rexpr(self.0.clone().div(other.0.clone()))
+    pub fn mul(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().mul(other.0.clone()))
+    }
+
+    pub fn div(&self, other: &Expr) -> Expr {
+        Expr(self.0.clone().div(other.0.clone()))
     }
 
     //unary
-    pub fn not(&self) -> Rexpr {
-        Rexpr(self.0.clone().not())
+    pub fn not(&self) -> Expr {
+        Expr(self.0.clone().not())
     }
 
     //expr "funnies"
-    pub fn over(&self, vs: Vec<String>) -> Rexpr {
+    pub fn over(&self, vs: Vec<String>) -> Expr {
         let vs2: Vec<&str> = vs.iter().map(|x| x.as_str()).collect();
 
-        Rexpr(self.0.clone().over(vs2))
+        Expr(self.0.clone().over(vs2))
     }
 
     pub fn print(&self) {
@@ -172,9 +191,9 @@ impl Rexpr {
     pub fn map(
         &self,
         lambda: Robj,
-        output_type: Nullable<&Rdatatype>,
+        output_type: Nullable<&DataType>,
         _agg_list: Nullable<bool>,
-    ) -> Rexpr {
+    ) -> Expr {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler
@@ -203,7 +222,7 @@ impl Rexpr {
             None => fld.clone(),
         });
 
-        Rexpr(self.clone().0.map(f, output_map))
+        Expr(self.clone().0.map(f, output_map))
     }
 }
 
@@ -212,7 +231,7 @@ impl Rexpr {
 #[derive(Clone, Debug)]
 #[extendr]
 pub enum ProtoRexpr {
-    Rexpr(Rexpr),
+    Expr(Expr),
     String(String),
 }
 
@@ -222,15 +241,15 @@ impl ProtoRexpr {
         ProtoRexpr::String(s.to_owned())
     }
 
-    pub fn new_expr(r: &Rexpr) -> Self {
-        ProtoRexpr::Rexpr(r.clone())
+    pub fn new_expr(r: &Expr) -> Self {
+        ProtoRexpr::Expr(r.clone())
     }
 
-    pub fn to_rexpr(&self, context: &str) -> Rexpr {
+    pub fn to_rexpr(&self, context: &str) -> Expr {
         match self {
-            ProtoRexpr::Rexpr(r) => r.clone(),
+            ProtoRexpr::Expr(r) => r.clone(),
             ProtoRexpr::String(s) => match context {
-                "select" => Rexpr::col(&s),
+                "select" => Expr::col(&s),
                 _ => panic!("unknown context"),
             },
         }
@@ -244,19 +263,19 @@ impl ProtoRexpr {
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct ProtoRexprArray(pub Vec<ProtoRexpr>);
+pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
 
 #[extendr]
-impl ProtoRexprArray {
+impl ProtoExprArray {
     pub fn new() -> Self {
-        ProtoRexprArray(Vec::new())
+        ProtoExprArray(Vec::new())
     }
 
     pub fn push_back_str(&mut self, s: &str) {
         self.0.push(ProtoRexpr::new_str(s));
     }
 
-    pub fn push_back_rexpr(&mut self, r: &Rexpr) {
+    pub fn push_back_rexpr(&mut self, r: &Expr) {
         self.0.push(ProtoRexpr::new_expr(r));
     }
 
@@ -269,19 +288,19 @@ impl ProtoRexprArray {
             self.0
                 .iter()
                 .map(|re| re.to_rexpr(context))
-                .collect::<Vec<Rexpr>>(),
+                .collect::<Vec<Expr>>(),
         )
     }
 }
 
 //external function as extendr-api do not allow methods returning unwrapped structs
-pub fn pra_to_vec(pra: &ProtoRexprArray, context: &str) -> Vec<pl::Expr> {
+pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }
 
 #[derive(Clone, Debug)]
 #[extendr]
-pub struct RexprArray(pub Vec<Rexpr>);
+pub struct RexprArray(pub Vec<Expr>);
 
 #[extendr]
 impl RexprArray {
@@ -290,36 +309,9 @@ impl RexprArray {
     }
 }
 
-#[extendr]
-pub fn rlit(robj: Robj) -> Rexpr {
-    let rtype = robj.rtype();
-    let rlen = robj.len();
-    let expr = match (rtype, rlen) {
-        (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap() as i64),
-        (Rtype::Doubles, 1) => pl::lit(robj.as_real().unwrap()),
-        (_, 1) => panic!("dunno what literal to make out of this"),
-        (_, _) => panic!("literal length must currently be one, so no c(1,2,3) allowed yet"),
-    };
-
-    Rexpr(expr)
-}
-
-#[extendr]
-pub fn rall() -> Rexpr {
-    Rexpr(pl::all())
-}
-
-#[extendr]
-pub fn rcol(name: &str) -> Rexpr {
-    Rexpr(pl::col(name))
-}
-
 extendr_module! {
     mod rexpr;
-    impl Rexpr;
-    impl ProtoRexprArray;
+    impl Expr;
+    impl ProtoExprArray;
     impl RexprArray;
-    fn rlit;
-    fn rall;
-    fn rcol;
 }

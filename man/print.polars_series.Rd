@@ -7,7 +7,7 @@
 \method{print}{polars_series}(x)
 }
 \arguments{
-\item{x}{Rseries}
+\item{x}{Series}
 }
 \value{
 selfie

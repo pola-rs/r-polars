@@ -27,7 +27,7 @@ high-level wrapper class for Rpolarsgroupby
 \if{html}{\out{<a id="method-lazy_polar_groupby-new"></a>}}
 \if{latex}{\out{\hypertarget{method-lazy_polar_groupby-new}{}}}
 \subsection{Method \code{new()}}{
-wrap low-level Rlazygroupby in new R6 lazy_goupby object.
+wrap low-level LazyGroupBy in new R6 lazy_goupby object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{lazy_groupby$new(data)}\if{html}{\out{</div>}}
 }
@@ -35,7 +35,7 @@ wrap low-level Rlazygroupby in new R6 lazy_goupby object.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{data}}{Rlazygroupby}
+\item{\code{data}}{LazyGroupBy}
 }
 \if{html}{\out{</div>}}
 }
@@ -55,7 +55,7 @@ aggregate a polar_lazy_groupby
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{any Rexpr or string}
+\item{\code{...}}{any Expr or string}
 }
 \if{html}{\out{</div>}}
 }

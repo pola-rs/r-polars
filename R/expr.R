@@ -1,21 +1,24 @@
-#' construct proto Rexpr array from args
+
+
+
+#' construct proto Expr array from args
 #'
-#' @param ...  any Rexpr or string
+#' @param ...  any Expr or string
 #'
 #' @importFrom rlang is_string
 #'
-#' @return ProtoRexprArray object
+#' @return ProtoExprArray object
 #'
-#' @examples construct_ProtoRexprArray(pl::col("Species"),"Sepal.Width")
-construct_ProtoRexprArray = function(...) {
-  pra = minipolars:::ProtoRexprArray$new()
+#' @examples construct_ProtoExprArray(pl::col("Species"),"Sepal.Width")
+construct_ProtoExprArray = function(...) {
+  pra = minipolars:::ProtoExprArray$new()
   args = list(...)
   for (i in args) {
     if (is_string(i)) {
       pra$push_back_str(i) #rust method
       next
     }
-    if (inherits(i,"Rexpr")) {
+    if (inherits(i,"Expr")) {
       pra$push_back_rexpr(i) #rust method
       next
     }
@@ -27,66 +30,64 @@ construct_ProtoRexprArray = function(...) {
 
 #' wrap as literal
 #'
-#' @param e an Rexpr(polars) or any R expression
+#' @param e an Expr(polars) or any R expression
 #' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
 #'
-#' @return Rexpr
+#' @return Expr
 #'
 #' @examples pl::col("foo") < 5
 wrap_e = function(e) {
-  if(inherits(e,"Rexpr")) e else rlit(e)
+  if(inherits(e,"Expr")) e else Expr$lit(e)
 }
 
 #' @export
-"!.Rexpr" <- function(e1,e2) e1$not()
+"!.Expr" <- function(e1,e2) e1$not()
 
 #' @export
-"<.Rexpr" <- function(e1,e2) e1$lt(wrap_e(e2))
+"<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
 
 #' @export
-">.Rexpr" <- function(e1,e2) e1$gt(wrap_e(e2))
+">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
 
 #' @export
-"==.Rexpr" <- function(e1,e2) e1$eq(wrap_e(e2))
+"==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
 
 #' @export
-"!=.Rexpr" <- function(e1,e2) e1$neq(wrap_e(e2))
+"!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
 
 #' @export
-"<=.Rexpr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
+"<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
 
 #' @export
-">=.Rexpr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
+">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
 
 #' @export
-"+.Rexpr" <- function(e1,e2) e1$add(wrap_e(e2))
+"+.Expr" <- function(e1,e2) e1$add(wrap_e(e2))
 
 #' @export
-"-.Rexpr" <- function(e1,e2) e1$sub(wrap_e(e2))
+"-.Expr" <- function(e1,e2) e1$sub(wrap_e(e2))
 
 #' @export
-"/.Rexpr" <- function(e1,e2) e1$div(wrap_e(e2))
+"/.Expr" <- function(e1,e2) e1$div(wrap_e(e2))
 
 #' @export
-"*.Rexpr" <- function(e1,e2) e1$mul(wrap_e(e2))
+"*.Expr" <- function(e1,e2) e1$mul(wrap_e(e2))
 
 
 
 #' polars literal
 #'
-#' @param x any R expression yielding an integer or float
-#'
-#' @return Rexpr, literal of that value
-#'
-#' @examples pl::lit(42L)
-lit = function(x) {
-  minipolars:::rlit(x)
-}
+#' @param x any R expression yielding an integer, float or bool
+#' @rdname Expr
+#' @return Expr, literal of that value
+#' @aliases lit
+#' @name lit
+#' @examples pl$col("some_column") / pl$lit(42)
 
 
 
 
-Rexpr.map = function(lambda, output_type=NULL, `_agg_list`=NULL) .Call(wrap__Rexpr__map, self, lambda, output_type, `_agg_list`)
+Expr.map = function(lambda, output_type=NULL, `_agg_list`=NULL) .Call(wrap__Expr__map, self, lambda, output_type, `_agg_list`)
 
 
 

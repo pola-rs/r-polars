@@ -1,32 +1,32 @@
-minipolars:::import_polars_as_("pl")
+
 
 input_vectors_and_series =
   values = list (
-    newname = pl::series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
-    pl::series((1:5) * 5,"a"),
-    pl::series(letters[1:5],"b"),
+    newname = pl$series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
+    pl$series((1:5) * 5,"a"),
+    pl$series(letters[1:5],"b"),
     c(5,4,3,2,1), #unnamed vector
     named_vector = c(15,14,13,12,11) ,#named provide
     c(5,4,3,2,0)
   )
 
 expected_mixed_print =
-  c("polars dataframe: shape: (5, 6)", "┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐",
-    "│ newname ┆ a    ┆ b   ┆ newcolumn_1 ┆ named_vector ┆ newcolumn_2 │",
-    "│ ---     ┆ ---  ┆ --- ┆ ---         ┆ ---          ┆ ---         │",
-    "│ f64     ┆ f64  ┆ str ┆ f64         ┆ f64          ┆ f64         │",
-    "╞═════════╪══════╪═════╪═════════════╪══════════════╪═════════════╡",
-    "│ 1.0     ┆ 5.0  ┆ a   ┆ 5.0         ┆ 15.0         ┆ 5.0         │",
-    "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
-    "│ 2.0     ┆ 10.0 ┆ b   ┆ 4.0         ┆ 14.0         ┆ 4.0         │",
-    "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
-    "│ 3.0     ┆ 15.0 ┆ c   ┆ 3.0         ┆ 13.0         ┆ 3.0         │",
-    "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
-    "│ 4.0     ┆ 20.0 ┆ d   ┆ 2.0         ┆ 12.0         ┆ 2.0         │",
-    "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
-    "│ 5.0     ┆ 25.0 ┆ e   ┆ 1.0         ┆ 11.0         ┆ 0.0         │",
-    "└─────────┴──────┴─────┴─────────────┴──────────────┴─────────────┘"
-  )
+c("polars DataFrame: shape: (5, 6)", "┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐",
+  "│ newname ┆ a    ┆ b   ┆ newcolumn_1 ┆ named_vector ┆ newcolumn_2 │",
+  "│ ---     ┆ ---  ┆ --- ┆ ---         ┆ ---          ┆ ---         │",
+  "│ f64     ┆ f64  ┆ str ┆ f64         ┆ f64          ┆ f64         │",
+  "╞═════════╪══════╪═════╪═════════════╪══════════════╪═════════════╡",
+  "│ 1.0     ┆ 5.0  ┆ a   ┆ 5.0         ┆ 15.0         ┆ 5.0         │",
+  "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
+  "│ 2.0     ┆ 10.0 ┆ b   ┆ 4.0         ┆ 14.0         ┆ 4.0         │",
+  "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
+  "│ 3.0     ┆ 15.0 ┆ c   ┆ 3.0         ┆ 13.0         ┆ 3.0         │",
+  "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
+  "│ 4.0     ┆ 20.0 ┆ d   ┆ 2.0         ┆ 12.0         ┆ 2.0         │",
+  "├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤",
+  "│ 5.0     ┆ 25.0 ┆ e   ┆ 1.0         ┆ 11.0         ┆ 0.0         │",
+  "└─────────┴──────┴─────┴─────────────┴──────────────┴─────────────┘"
+)
 
 expected_iris_select_df = structure(list(miah = c(171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
@@ -81,29 +81,29 @@ expected_iris_select_df = structure(list(miah = c(171.4, 171.4, 171.4, 171.4, 17
 
 
 
-test_that("polar_frame, mixed input, create and print", {
-  #clone into dataframe and change one name
-  df = pl::pf(input_vectors_and_series)
+test_that("DataFrame, mixed input, create and print", {
+  #clone into DataFrame and change one name
+  df = pl$DataFrame(input_vectors_and_series)
   testthat::expect_identical(
-    capture.output(df$print()),
+    capture.output(print(df)),
     expected_mixed_print
   )
 })
 
 
 test_that("polar_frame, mixed input, create and print", {
-  #clone into dataframe and change one name
-  df = pl::pf(input_vectors_and_series)
+  #clone into DataFrame and change one name
+  df = pl$DataFrame(input_vectors_and_series)
   testthat::expect_identical(
-    capture.output(df$print()),
+    capture.output(print(df)),
     expected_mixed_print
   )
 })
 
 test_that("polar_frame, select sum over", {
-  df = pl::pf(iris)$select(
-    pl::col("Sepal.Width")$sum()$over("Species")$alias("miah"),
-    pl::col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
+  df = pl$DataFrame(iris)$select(
+    pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),
+    pl$col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
     "Petal.Length"
   )$as_data_frame()
 
@@ -119,7 +119,7 @@ test_that("map unity", {
 
   ## float is preserved
   expect_identical(
-    pl::pf(iris)$select(pl::col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
+    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
     iris[,1,drop=FALSE]
   )
 
@@ -127,13 +127,13 @@ test_that("map unity", {
   int_iris = iris
   int_iris[] = lapply(iris,as.integer)
   expect_identical(
-    pl::pf(int_iris)$select(pl::col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
+    pl$DataFrame(int_iris)$select(pl$col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
     int_iris[,1,drop=FALSE]
   )
 
   ## factor is not preserved in polars
   expect_failure(expect_identical(
-    pl::pf(iris)$select(pl::col("Species")$map(\(s) s))$as_data_frame()[,1],
+    pl$DataFrame(iris)$select(pl$col("Species")$map(\(s) s))$as_data_frame()[,1],
     iris[,1,drop=FALSE]
   ))
 
@@ -141,7 +141,7 @@ test_that("map unity", {
   str_iris = iris
   str_iris$Species = as.character(iris$Species)
   expect_identical(
-    pl::pf(iris)$select(pl::col("Species")$map(\(s) s))$as_data_frame(),
+    pl$DataFrame(iris)$select(pl$col("Species")$map(\(s) s))$as_data_frame(),
     str_iris[,5,drop=FALSE]
   )
 
@@ -155,7 +155,7 @@ test_that("map type", {
 
   ## auto new type allowed if return is R vector
   expect_identical(
-    pl::pf(iris)$select(pl::col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
+    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
     int_iris[,1,drop=FALSE]
   )
 
@@ -166,13 +166,13 @@ test_that("map type", {
 
 test_that("user defined function", {
 
-  pf = pl::pf(iris)
+  pf = pl$DataFrame(iris)
 
-  pf$select(pl::col("Sepal.Length")$map(function(s) s$to_r()*5 ))
+
 
 
   #pf init also is the identity function and is a shallow copy
-  pf2 = pl::pf(pf)
+  pf2 = pl$DataFrame(pf)
   testthat::expect_true(all.equal(pf,pf2))
   testthat::expect_true(
     xptr::xptr_address(pf$.__enclos_env__$private$pf) ==

@@ -1,8 +1,11 @@
-  test_that("csv read iris", {
+test_that("csv read iris", {
+  import_polars_as_("pl")
+
+
   write.csv(iris, "my.csv",row.names = FALSE)
   lazy_frame = minipolars::lazy_csv_reader("my.csv")
   testthat::expect_equal(
-    c("polars Rlazyframe: ","CSV SCAN my.csv; PROJECT */5 COLUMNS; SELECTION: None"),
+    c("polars LazyFrame: ","CSV SCAN my.csv; PROJECT */5 COLUMNS; SELECTION: None"),
     capture.output(lazy_frame$print())
   )
   df =  pl::pf(lazy_frame$collect())

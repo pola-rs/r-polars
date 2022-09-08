@@ -9,12 +9,12 @@ lazy_polar_frame <- R6::R6Class(
   public = list(
 
     #' @description
-    #' wrap low-level Rlazyframe in new R6 lazy_polar_frame object.
-    #' @param data Rlazyframe
+    #' wrap low-level LazyFrame in new R6 lazy_polar_frame object.
+    #' @param data LazyFrame
     #' @return A new `lazy_polar_frame` object.
     initialize = function(data) {
       #lowerlevel through init
-      if(identical(class(data),"Rlazyframe")) {
+      if(identical(class(data),"LazyFrame")) {
         private$pf = data
         return(self)
       }
@@ -30,16 +30,16 @@ lazy_polar_frame <- R6::R6Class(
 
     #' @description
     #' select on lazy_polar_frame.
-    #' @param ... any  Rexprs or strings
+    #' @param ... any  Exprs or strings
     #' @return A new `lazy_polar_frame` object with selection.
     select = function(...) {
-      pra = construct_ProtoRexprArray(...) #construct on rust side array of expressions and strings (not yet interpreted as exprs)
+      pra = construct_ProtoExprArray(...) #construct on rust side array of expressions and strings (not yet interpreted as exprs)
       lazy_polar_frame$new(private$pf$select(pra)) #perform eager selection and return new polar_frame
     },
 
     #' @description
     #' filter on lazy_polar_frame.
-    #' @param rexpr any single Rexpr
+    #' @param rexpr any single Expr
     #' @return A new `lazy_polar_frame` object with applied filter.
     filter = function(rexpr) {
       lazy_polar_frame$new(private$pf$filter(rexpr))
@@ -47,10 +47,10 @@ lazy_polar_frame <- R6::R6Class(
 
     #' @description
     #' groupby on lazy_polar_frame.
-    #' @param ... any single Rexpr or string naming a column
+    #' @param ... any single Expr or string naming a column
     #' @return A new `lazy_polar_frame` object with applied filter.
     groupby = function(...) {
-      pra = construct_ProtoRexprArray(...)
+      pra = construct_ProtoExprArray(...)
       lazy_groupby$new(private$pf$groupby(pra))
     },
 
@@ -88,13 +88,13 @@ lazy_groupby <- R6::R6Class(
   public = list(
 
     #' @description
-    #' wrap low-level Rlazygroupby in new R6 lazy_goupby object.
-    #' @param data Rlazygroupby
+    #' wrap low-level LazyGroupBy in new R6 lazy_goupby object.
+    #' @param data LazyGroupBy
     #' @return A new `lazy_groupby` object.
     initialize = function(data) {
 
       #lowerlevel through init
-      if(identical(class(data),"Rlazygroupby")) {
+      if(identical(class(data),"LazyGroupBy")) {
         private$pf = data
         return(self)
       }
@@ -105,10 +105,10 @@ lazy_groupby <- R6::R6Class(
 
     #' @description
     #' aggregate a polar_lazy_groupby
-    #' @param ... any Rexpr or string
+    #' @param ... any Expr or string
     #' @return A new `lazy_polar_frame` object.
     agg = function(...) {
-      pra = construct_ProtoRexprArray(...)
+      pra = construct_ProtoExprArray(...)
       lazy_polar_frame$new(private$pf$agg(pra))
     },
 

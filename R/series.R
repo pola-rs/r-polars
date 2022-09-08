@@ -15,10 +15,10 @@ polars_series = \(x, name=NULL) {
   if(!is.null(name) && !is_string(name)) abort("name must be a string")
 
   private = (\(){
-    if(inherits(x,"Rseries")) return(x)
+    if(inherits(x,"Series")) return(x)
     if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x)) {
       if(is.null(name)) name = ""
-      return(minipolars:::Rseries$new(x,name))
+      return(minipolars:::Series$new(x,name))
     }
     abort("failed to initialize series")
   })()
@@ -53,17 +53,17 @@ polars_series = \(x, name=NULL) {
     if(!is.function(fun)) abort("fun arg must be a function")
     internal_datatype = (function(){
       if(is.null(datatype)) return(datatype) #same as lambda input
-      if(inherits(datatype,"Rdatatype")) return(datatype)
-      if(is.character(datatype)) return(minipolars:::Rdatatype$new("Utf8"))
-      if(is.logical(datatype)) return(minipolars:::Rdatatype$new("Boolean"))
-      if(is.integer(datatype)) return(minipolars:::Rdatatype$new("Int32"))
-      if(is.double(datatype)) return(minipolars:::Rdatatype$new("Float64"))
+      if(inherits(datatype,"DataType")) return(datatype)
+      if(is.character(datatype)) return(minipolars:::DataType$new("Utf8"))
+      if(is.logical(datatype)) return(minipolars:::DataType$new("Boolean"))
+      if(is.integer(datatype)) return(minipolars:::DataType$new("Int32"))
+      if(is.double(datatype)) return(minipolars:::DataType$new("Float64"))
       abort(paste("failed to interpret datatype arg:",datatype()))
     })()
 
     result = private$apply(fun,internal_datatype,strict_return_type, allow_fail_eval)
-    Rseries = unwrap(result)
-    polars_series(Rseries)
+    Series = unwrap(result)
+    polars_series(Series)
   }
   l$to_frame = function() polar_frame$new(private$to_frame())
 
@@ -77,19 +77,19 @@ c.polars_series = \(x,...) {
   l = list(...)
   x = x$clone() #clone to retain an immutable api, append_mut is not mutable
 
-  #get append function from either polars_series or Rseries
+  #get append function from either polars_series or Series
   fx = (function() {
     if(inherits(x,"polars_series")) return(x$private$append_mut)
-    if(inherits(x,"Rseries")) return(x$append_mut)
+    if(inherits(x,"Series")) return(x$append_mut)
     abort("internal error failed to disbatch append method")
   })()
 
-  #append each element of i being either polars_series, Rseries or likely a vector
+  #append each element of i being either polars_series, Series or likely a vector
   for(i in l) {
     rser = (function() {
       if(inherits(i,"polars_series")) return(i$private)
-      if(inherits(i,"Rseries")) return(i)
-      minipolars:::Rseries$new(i,"anyname")
+      if(inherits(i,"Series")) return(i)
+      minipolars:::Series$new(i,"anyname")
     })()
     fx(rser)
   }
@@ -98,12 +98,12 @@ c.polars_series = \(x,...) {
 }
 
 #' @export
-c.Rseries = c.polars_series
+c.Series = c.polars_series
 
 
 #' Print rseries
 #'
-#' @param x Rseries
+#' @param x Series
 
 #'
 #' @return selfie
@@ -118,10 +118,10 @@ print.polars_series = \(x) {
 
 polars_series_unwrap = function(x) {
   if(!inherits(x,"polars_series")) {
-    if(inherits(x,"Rseries")) {
+    if(inherits(x,"Series")) {
       return(x)
     } else {
-      return(minipolars:::Rseries$new(x,""))
+      return(minipolars:::Series$new(x,""))
     }
   }
   x$private
@@ -132,35 +132,50 @@ series_udf_wrapper= function(f) {
 }
 
 series_udf_handler = function(f,rs) {
-
-  ps = polars_series(rs)
-
-  fps = f(ps)
-
-  rs = polars_series_unwrap(fps)
-
+  fps = f(rs)
   rs_ptr_adr = xptr::xptr_address(rs)
-
   rs_ptr_adr
 }
 
 
+#' onstructor to tempoariliy replace polars_series
+#'
+#' @param x any vector
+#' @param name string
+#'
+#' @return Series
+#' @importFrom  rlang is_string
+#' @export
+#'
+#' @examples Series(1:4)
+series =  function(x, name=NULL){
+  if(inherits(x,"Series")) return(x)
+  if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x)) {
+    if(is.null(name)) name = ""
+    if(!is_string(name)) abort("name must be NULL or a string")
+    return(minipolars:::Series$new(x,name))
+  }
+  abort("x must be a double, interger, char, or logical vector")
+}
 
-Rseries_to_r_vector = \() unwrap(.Call(wrap__Rseries__to_r_vector, self))
-Rseries_abs         = \() unwrap(.Call(wrap__Rseries__abs, self))
-Rseries_apply   = \(fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
+Series_to_r_vector = \() unwrap(.Call(wrap__Series__to_r_vector, self))
+Series_abs         = \() unwrap(.Call(wrap__Series__abs, self))
+Series_apply   = \(fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
   if(!is.function(fun)) abort("fun arg must be a function")
   internal_datatype = (\(){
     if(is.null(datatype)) return(datatype) #same as lambda input
-    if(inherits(datatype,"Rdatatype")) return(datatype)
-    if(is.character(datatype)) return(minipolars:::Rdatatype$new("Utf8"))
-    if(is.logical(datatype)) return(minipolars:::Rdatatype$new("Boolean"))
-    if(is.integer(datatype)) return(minipolars:::Rdatatype$new("Int32"))
-    if(is.double(datatype)) return(minipolars:::Rdatatype$new("Float64"))
+    if(inherits(datatype,"DataType")) return(datatype)
+    if(is.character(datatype)) return(minipolars:::DataType$new("Utf8"))
+    if(is.logical(datatype)) return(minipolars:::DataType$new("Boolean"))
+    if(is.integer(datatype)) return(minipolars:::DataType$new("Int32"))
+    if(is.double(datatype)) return(minipolars:::DataType$new("Float64"))
     abort(paste("failed to interpret datatype arg:",datatype()))
   })()
 
-  unwrap(.Call(wrap__Rseries__apply, self, fun, datatype, strict_return_type, allow_fail_eval))
-
+  unwrap(.Call(
+    wrap__Series__apply,
+    self, fun, datatype, strict_return_type, allow_fail_eval
+  ))
 }
+
 

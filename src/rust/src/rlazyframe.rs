@@ -1,16 +1,16 @@
 use crate::rdataframe::rexpr::*;
 use crate::rdataframe::wrap_errors::*;
-use crate::rdataframe::Rdataframe;
+use crate::rdataframe::DataFrame;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use std::result::Result;
 
 #[derive(Clone)]
 #[extendr]
-pub struct Rlazyframe(pub pl::LazyFrame);
+pub struct LazyFrame(pub pl::LazyFrame);
 
 #[extendr]
-impl Rlazyframe {
+impl LazyFrame {
     pub fn print(&self) {
         rprintln!("{}", self.0.describe_plan());
     }
@@ -20,12 +20,12 @@ impl Rlazyframe {
         Ok(())
     }
 
-    pub fn collect(&self) -> Result<Rdataframe, Error> {
+    pub fn collect(&self) -> Result<DataFrame, Error> {
         let x = self.clone().0.collect().map_err(wrap_error)?;
-        Ok(Rdataframe(x))
+        Ok(DataFrame(x))
     }
 
-    fn select(&self, exprs: &ProtoRexprArray) -> Rlazyframe {
+    fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
         let exprs: Vec<pl::Expr> = exprs
             .0
             .iter()
@@ -34,41 +34,41 @@ impl Rlazyframe {
 
         let new_df = self.clone().0.select(exprs);
 
-        Rlazyframe(new_df)
+        LazyFrame(new_df)
     }
 
-    fn filter(&self, expr: &Rexpr) -> Rlazyframe {
+    fn filter(&self, expr: &Expr) -> LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
-        Rlazyframe(new_df)
+        LazyFrame(new_df)
     }
 
-    fn groupby(&self, exprs: &ProtoRexprArray) -> Rlazygroupby {
+    fn groupby(&self, exprs: &ProtoExprArray) -> LazyGroupBy {
         let expr_vec = pra_to_vec(exprs, "select");
-        Rlazygroupby(self.0.clone().groupby(expr_vec))
+        LazyGroupBy(self.0.clone().groupby(expr_vec))
     }
 }
 
 #[derive(Clone)]
 #[extendr]
-pub struct Rlazygroupby(pub pl::LazyGroupBy);
+pub struct LazyGroupBy(pub pl::LazyGroupBy);
 
 #[extendr]
-impl Rlazygroupby {
+impl LazyGroupBy {
     fn print(&self) {
         rprintln!(" The insides of this object is a mystery, inspect the lazyframe instead.");
     }
 
-    fn agg(&self, exprs: &ProtoRexprArray) -> Rlazyframe {
+    fn agg(&self, exprs: &ProtoExprArray) -> LazyFrame {
         let expr_vec = pra_to_vec(exprs, "select");
-        Rlazyframe(self.0.clone().agg(expr_vec))
+        LazyFrame(self.0.clone().agg(expr_vec))
     }
 
-    fn head(&self, n: i32) -> Rlazyframe {
-        Rlazyframe(self.0.clone().head(Some(n as usize)))
+    fn head(&self, n: i32) -> LazyFrame {
+        LazyFrame(self.0.clone().head(Some(n as usize)))
     }
 
-    fn tail(&self, n: i32) -> Rlazyframe {
-        Rlazyframe(self.0.clone().tail(Some(n as usize)))
+    fn tail(&self, n: i32) -> LazyFrame {
+        LazyFrame(self.0.clone().tail(Some(n as usize)))
     }
 
     // fn apply(&self, robj: Robj, val: f64) -> Robj {
@@ -78,6 +78,6 @@ impl Rlazygroupby {
 
 extendr_module! {
     mod rlazyframe;
-    impl Rlazyframe;
-    impl Rlazygroupby;
+    impl LazyFrame;
+    impl LazyGroupBy;
 }

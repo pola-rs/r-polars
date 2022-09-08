@@ -1,5 +1,5 @@
 # minipolars
-Use awesome polars dataframe library from R!
+Use awesome polars DataFrame library from R!
 
 # build
 

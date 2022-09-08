@@ -1,43 +1,43 @@
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::datatypes::DataType;
+use polars::prelude as pl;
 
 //expose polars DateType in R
 #[extendr]
 #[derive(Debug, Clone, PartialEq)]
-pub struct Rdatatype(pub DataType);
+pub struct DataType(pub pl::DataType);
 
 #[extendr]
-impl Rdatatype {
-    pub fn new(s: &str) -> Rdatatype {
+impl DataType {
+    pub fn new(s: &str) -> DataType {
         //2nd naming is R suggested equivalent
-        let datatype = match s {
-            "Boolean" | "logical" => DataType::Boolean,
-            "Float32" | "double" => DataType::Float32,
-            "Float64" | "float64" => DataType::Float64,
-            "Int32" | "integer" => DataType::Int32,
-            "Int64" | "integer64" => DataType::Int64,
-            "Utf8" | "character" => DataType::Utf8,
+        let pl_datatype = match s {
+            "Boolean" | "logical" => pl::DataType::Boolean,
+            "Float32" | "double" => pl::DataType::Float32,
+            "Float64" | "float64" => pl::DataType::Float64,
+            "Int32" | "integer" => pl::DataType::Int32,
+            "Int64" | "integer64" => pl::DataType::Int64,
+            "Utf8" | "character" => pl::DataType::Utf8,
             _ => panic!("data type not recgnized"),
         };
-        Rdatatype(datatype)
+        DataType(pl_datatype)
     }
 
     pub fn print(&self) {
         rprintln!("{:?}", self.0);
     }
 
-    pub fn eq(&self, other: &Rdatatype) -> bool {
+    pub fn eq(&self, other: &DataType) -> bool {
         self.0.eq(&other.0)
     }
 
-    pub fn ne(&self, other: &Rdatatype) -> bool {
+    pub fn ne(&self, other: &DataType) -> bool {
         self.0.ne(&other.0)
     }
 }
 
-impl From<Rdatatype> for DataType {
-    fn from(x: Rdatatype) -> Self {
+impl From<DataType> for pl::DataType {
+    fn from(x: DataType) -> Self {
         x.0
     }
 }
@@ -48,15 +48,15 @@ impl From<Rdatatype> for DataType {
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone)]
 #[extendr]
-pub struct RdatatypeVector(pub Vec<(Option<String>, DataType)>);
+pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
-impl RdatatypeVector {
+impl DataTypeVector {
     pub fn new() -> Self {
-        RdatatypeVector(Vec::new())
+        DataTypeVector(Vec::new())
     }
 
-    pub fn push(&mut self, colname: Nullable<String>, datatype: &Rdatatype) {
+    pub fn push(&mut self, colname: Nullable<String>, datatype: &DataType) {
         self.0.push((Wrap(colname).into(), datatype.clone().into()));
     }
 
@@ -67,6 +67,6 @@ impl RdatatypeVector {
 
 extendr_module! {
     mod rdatatype;
-    impl Rdatatype;
-    impl RdatatypeVector;
+    impl DataType;
+    impl DataTypeVector;
 }

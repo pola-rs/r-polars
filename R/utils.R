@@ -109,3 +109,22 @@ unwrap = function(result,class="my_error_class",call=sys.call(1L),...) {
 # }
 
 
+
+#' extendr methods into pure functions
+#' @description self is a global of extendr wrapper methods
+#' this function copies the function into a new environment and
+#' modify formals to have a self argument
+#'
+#' @return env of pure function calls to rust
+#'
+extendr_method_to_pure_functions = function(env) {
+  as.environment(lapply(env,function(f) {
+    if(!is.function(f)) return(f)
+    if("self" %in% codetools::findGlobals(f)) {
+      formals(f) <- c(alist(self=),formals(f))
+    }
+    f
+  }))
+}
+
+

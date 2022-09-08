@@ -198,7 +198,7 @@ macro_rules! apply_output {
     //         .collect::<Result<$ca_type>>()
     //         //if all ok collect into serias and rename
     //         .map(|ca| {
-    //             Rseries(ca.into_series())
+    //             Series(ca.into_series())
     //         })
     // };
 
@@ -253,7 +253,7 @@ macro_rules! apply_output {
             .collect::<Result<$ca_type>>()
             //if all ok collect into serias and rename
             .map(|ca| {
-                Rseries(ca.into_series())
+                Series(ca.into_series())
             })
     };
 }
