@@ -48,7 +48,6 @@
 #' @param parse_dates bool Try to automatically parse dates. If this does not succeed, the column remains of data type pl.Utf8.
 #'
 #' @return lazyframe
-#' @export
 #'
 #' @importFrom rlang is_string
 #'
@@ -139,20 +138,15 @@ lazy_csv_reader = function(
 
   ##call low level function with args
   minipolars:::check_no_missing_args(minipolars:::rlazy_csv_reader,args)
-  lower_level_rlazy_frame = do.call(minipolars:::rlazy_csv_reader,args)
-
-  #wrap in R6 class
-  lazy_polar_frame$new(lower_level_rlazy_frame)
+  do.call(minipolars:::rlazy_csv_reader,args)
 }
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader
 #' @usage csv_reader(...) #any param passed directly to lazy_csv_reader
 #' @return DataFrame
 #' @export
-
 csv_reader = function(...) {
-  lazy_frame = minipolars:::lazy_csv_reader(...)$collect()
-  minipolars:::polar_frame$new(lazy_frame)
+  minipolars:::lazy_csv_reader(...)$collect()
 }
 
 

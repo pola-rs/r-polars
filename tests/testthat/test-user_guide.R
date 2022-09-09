@@ -54,20 +54,10 @@ test_that("Expression examples // types/NAS in-out", {
    "rando2" = rep(5.0,5),
    "groups" =  c("A", "A", "B", "C", "B")
   )
-  pf = pl$polars_frame(df_in)
+  pf = pl$DataFrame(df_in)
   df_out = pf$as_data_frame()
 
-  pf
-  df_in
-  df_out
-
   expect_equal(df_in,df_out)
-
-  pl$col("names")$unique()$count()$alias("unique_names_2")$add(pl$lit(42L))
-
-  pl$col("names")$unique()$count()$alias("unique_names_2") + pl$lit(42L)
-
-  pl$col("names")$unique()$count()$alias("unique_names_2") + 42L
 
 
   pf2 = pf$select(

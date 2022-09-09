@@ -10,11 +10,11 @@ test_that("create expression and print", {
 
 
 test_that("create pl$Series and print", {
-  pl$Series = pl$Series(c(1,2,3,4,5),"sweetnes")
+  df = pl$Series(c(1,2,3,4,5),"sweetnes")
   testthat::expect_identical(
-    capture.output(pl$Series$print()),
-    c("shape: (5,)", "Series: 'sweetnes' [f64]", "[", "\t1.0", "\t2.0",
-      "\t3.0", "\t4.0", "\t5.0", "]")
+    capture.output(df),
+    c("polars Series: shape: (5,)", "Series: 'sweetnes' [f64]",
+      "[", "\t1.0", "\t2.0", "\t3.0", "\t4.0", "\t5.0", "]")
   )
 })
 

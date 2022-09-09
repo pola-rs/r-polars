@@ -11,7 +11,7 @@ env$to_r_vector = Series_to_r_vector
 env$to_r        = Series_to_r_vector
 env$abs         = Series_abs
 env$apply       = Series_apply
-rm(env)
+
 
 #modify some Dataframe bindings
 env = minipolars:::DataFrame
@@ -20,7 +20,7 @@ env$as_data_frame = DataFrame_as_data_frame
 env$groupby = DataFrame_groupby
 env$select = DataFrame_select
 env$filter = DataFrame_filter
-# rm(env)
+
 
 
 env = minipolars:::Expr
@@ -85,7 +85,7 @@ pl$read_csv = minipolars:::read_csv_
     Boolean = DataType$new("Boolean"),
     Utf8 = DataType$new("Utf8")
   )
+  lockEnvironment(pl,bindings = TRUE)
 }
-
 
 

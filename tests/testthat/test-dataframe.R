@@ -155,7 +155,7 @@ test_that("map type", {
 
   ## auto new type allowed if return is R vector
   expect_identical(
-    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {print(s);as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
+    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
     int_iris[,1,drop=FALSE]
   )
 
