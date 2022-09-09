@@ -12,3 +12,15 @@ RoxygenNote: 7.2.1
 Suggests: 
     testthat (>= 3.0.0), rextendr, xptr
 Config/testthat/edition: 3
+Collate: 
+    'extendr-wrappers.R'
+    'aaa.R'
+    'csv.R'
+    'dataframe.R'
+    'datatype.R'
+    'expr.R'
+    'lazy.R'
+    'namespace.R'
+    'series.R'
+    'utils.R'
+    'zzz.R'

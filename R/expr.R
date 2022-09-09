@@ -9,7 +9,7 @@
 #'
 #' @return ProtoExprArray object
 #'
-#' @examples construct_ProtoExprArray(pl::col("Species"),"Sepal.Width")
+#' @examples construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
   pra = minipolars:::ProtoExprArray$new()
   args = list(...)
@@ -35,7 +35,7 @@ construct_ProtoExprArray = function(...) {
 #'
 #' @return Expr
 #'
-#' @examples pl::col("foo") < 5
+#' @examples pl$col("foo") < 5
 wrap_e = function(e) {
   if(inherits(e,"Expr")) e else Expr$lit(e)
 }
@@ -87,7 +87,9 @@ wrap_e = function(e) {
 
 
 
-Expr.map = function(lambda, output_type=NULL, `_agg_list`=NULL) .Call(wrap__Expr__map, self, lambda, output_type, `_agg_list`)
+Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
+  .pr$Expr$map(self,lambda,output_type,`_agg_list`)
+}
 
 
 

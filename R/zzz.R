@@ -1,15 +1,32 @@
-#
-#' @title polars-API: internal extendr bindings to polars
-#' @description `.pr`
-#' Contains original rextendr bindings to polars
-#' @aliases  .pr
-#' @usage not for public use
-.pr           = new.env(parent=emptyenv())
-.pr$Series    = extendr_method_to_pure_functions(minipolars:::Series)
-.pr$DataFrame = extendr_method_to_pure_functions(minipolars:::DataFrame)
-.pr$DataType  = extendr_method_to_pure_functions(minipolars:::DataType)
 
 
+print(paste(
+  "Modifying extendr bindings,",
+  "originals converted to pure functions and saved to minipolars:::.pr"
+))
+
+#modify some Series bindings
+env = minipolars:::Series
+env$to_r_vector = Series_to_r_vector
+env$to_r        = Series_to_r_vector
+env$abs         = Series_abs
+env$apply       = Series_apply
+rm(env)
+
+#modify some Dataframe bindings
+env = minipolars:::DataFrame
+env$agg      = DataFrame_agg
+env$as_data_frame = DataFrame_as_data_frame
+env$groupby = DataFrame_groupby
+env$select = DataFrame_select
+env$filter = DataFrame_filter
+# rm(env)
+
+
+env = minipolars:::Expr
+env$map = Expr_map
+env=""
+rm(env)
 
 
 
@@ -32,36 +49,6 @@
 pl = new.env(parent=emptyenv())
 
 
-print("modifying extendr bindings, original saved in minipolars:::.pr")
-env = minipolars:::Series
-env$to_r_vector = Series_to_r_vector
-env$to_r        = Series_to_r_vector
-env$abs         = Series_abs
-env$apply       = Series_apply
-rm(env)
-
-
-env = minipolars:::DataFrame
-env$agg      = DataFrame_agg
-env$as_data_frame = DataFrame_as_data_frame
-env$groupby = DataFrame_groupby
-env$select = DataFrame_select
-env$filter = DataFrame_filter
-# rm(env)
-env=""
-rm(env)
-
-#
-#' @title DataTypes polars types
-#'
-#' @name DataType
-#' @description `DataType` are any types available in polars
-.spoof_datatype = function(){}
-
-
-
-
-
 
 #expression constructors
 pl$col = Expr$col
@@ -71,8 +58,8 @@ pl$all = Expr$all_constructor #different from Expr$all (method)
 #DataFrame
 pl$DataFrame = minipolars:::DataFrame_constructor
 
-#series
-pl$series    = minipolars:::series
+#pl$Series
+pl$Series    = minipolars:::Series_constructor
 
 
 int_env = as.environment(minipolars:::DataType)

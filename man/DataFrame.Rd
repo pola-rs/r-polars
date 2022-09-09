@@ -20,7 +20,7 @@ x$filter(...) -> DataFrame
 \arguments{
 \item{...}{any expressions or strings}
 
-\item{bool_expr}{Polars expression which will evaluate to a bool series}
+\item{bool_expr}{Polars expression which will evaluate to a bool pl$Series}
 
 \item{data}{object inheriting data.frame or list of equal length vectors and/or Series.}
 }
@@ -77,8 +77,8 @@ abort(paste("class:",class(x)), "cannot be converted to polar_frame")
 #' @examples
 #' minipolars:::new_pf(iris)
 #' #with namespace
-#' pl::pf(iris)
-#' pl::pf(list(some_column_name = c(1,2,3,4,5)))
+#' pl$DataFrame(iris)
+#' pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
 #' new_pf = function(data) {
 #'   if(is_polar_frame(data)) {
 #'     abort("assertion failed, this function should never handle polar_frame")
@@ -103,9 +103,9 @@ abort(paste("class:",class(x)), "cannot be converted to polar_frame")
 #'   }
 #'   name_generator = make_column_name_gen()
 #'
-#'   #step 0, downcast any polars_series to Series
+#'   #step 0, downcast any polars_pl$Series to Series
 #'   data = lapply(data, function(x) {
-#'     if(inherits(x,"polars_series")) x$private else x
+#'     if(inherits(x,"polars_pl$Series")) x$private else x
 #'   })
 #'
 #'   ##step1 handle column names
@@ -115,7 +115,7 @@ abort(paste("class:",class(x)), "cannot be converted to polar_frame")
 #'   if(length(keys)==0) keys = rep(NA_character_, length(data))
 #'
 #'   ##step2
-#'   #if missing key use series name or generate new
+#'   #if missing key use pl$Series name or generate new
 #'   keys = mapply(data,keys, FUN = function(column,key) {
 #'
 #'     if(is.na(key) || nchar(key)==0) {
@@ -145,7 +145,7 @@ abort(paste("class:",class(x)), "cannot be converted to polar_frame")
 #'   mapply(data,keys, FUN = function(column, key) {
 #'     if(inherits(column, "Series")) {
 #'       column$rename_mut(key)
-#'       pf$set_column_from_rseries(column)
+#'       pf$set_column_from_rpl$Series(column)
 #'     } else {
 #'       pf$set_column_from_robj(column,key)
 #'     }
@@ -157,7 +157,7 @@ abort(paste("class:",class(x)), "cannot be converted to polar_frame")
 42
 }
 \examples{
-df$lazy()$lazy()$filter(pl::col("Sepal.Length") > 5)$collect()
+df$lazy()$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
 
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
 }

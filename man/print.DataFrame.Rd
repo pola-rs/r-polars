@@ -16,5 +16,5 @@ self
 print DataFrame
 }
 \examples{
-pl::pf(iris)
+pl$DataFrame(iris)
 }

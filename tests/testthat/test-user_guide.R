@@ -4,14 +4,14 @@
 test_that("user_guide 101 // csv-lazy-groupby", {
 
   suppressMessages(
-    {df = pl::read_csv("https://j.mp/iriscsv")}
+    {df = pl$read_csv("https://j.mp/iriscsv")}
   )
 
   #TODO sorting is not retained in groupby
   three_sums = sort(
-    df$filter(pl::col("sepal_length") > pl::lit(5))
+    df$filter(pl$col("sepal_length") > pl$lit(5))
     $groupby("species")
-    $agg(pl::all()$sum())
+    $agg(pl$all()$sum())
     $as_data_frame()
     $sepal_length
   )
@@ -23,10 +23,10 @@ test_that("user_guide 101 // csv-lazy-groupby", {
   )
 
 
-  l = pl::read_csv("https://j.mp/iriscsv",lazy = FALSE)$lazy()
-  l = l$filter(pl::col("sepal_length") > 5)
+  l = pl$read_csv("https://j.mp/iriscsv",lazy = FALSE)$lazy()
+  l = l$filter(pl$col("sepal_length") > 5)
   l = l$groupby("species")
-  l = l$agg(pl::col("sepal_length")$sum())
+  l = l$agg(pl$col("sepal_length")$sum())
   capture.output(l$describe_optimized_plan())
   df = l$collect()
   three_lazy_sums = sort(df$as_data_frame()$sepal_length)
@@ -54,7 +54,7 @@ test_that("Expression examples // types/NAS in-out", {
    "rando2" = rep(5.0,5),
    "groups" =  c("A", "A", "B", "C", "B")
   )
-  pf = pl::polars_frame(df_in)
+  pf = pl$polars_frame(df_in)
   df_out = pf$as_data_frame()
 
   pf
@@ -63,17 +63,17 @@ test_that("Expression examples // types/NAS in-out", {
 
   expect_equal(df_in,df_out)
 
-  pl::col("names")$unique()$count()$alias("unique_names_2")$add(pl::lit(42L))
+  pl$col("names")$unique()$count()$alias("unique_names_2")$add(pl$lit(42L))
 
-  pl::col("names")$unique()$count()$alias("unique_names_2") + pl::lit(42L)
+  pl$col("names")$unique()$count()$alias("unique_names_2") + pl$lit(42L)
 
-  pl::col("names")$unique()$count()$alias("unique_names_2") + 42L
+  pl$col("names")$unique()$count()$alias("unique_names_2") + 42L
 
 
   pf2 = pf$select(
-      pl::col("names")$n_unique()$alias("unique_names_1"),
-      pl::col("names")$unique()$count()$alias("unique_names_2"),
-      pl::col("names")$unique()$count()$alias("unique_names_3_overflow") + .Machine$integer.max
+      pl$col("names")$n_unique()$alias("unique_names_1"),
+      pl$col("names")$unique()$count()$alias("unique_names_2"),
+      pl$col("names")$unique()$count()$alias("unique_names_3_overflow") + .Machine$integer.max
   )
 
   ##u32 type is converted to R real which gracefully avoids overflow u32->i32

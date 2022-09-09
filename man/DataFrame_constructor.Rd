@@ -18,6 +18,6 @@ create new DataFrame
 \examples{
 minipolars:::new_pf(iris)
 #with namespace
-pl::pf(iris)
-pl::pf(list(some_column_name = c(1,2,3,4,5)))
+pl$DataFrame(iris)
+pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
 }

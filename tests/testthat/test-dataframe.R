@@ -1,10 +1,9 @@
 
 
-input_vectors_and_series =
-  values = list (
-    newname = pl$series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
-    pl$series((1:5) * 5,"a"),
-    pl$series(letters[1:5],"b"),
+input_vectors_and_series = list (
+    newname = pl$Series(c(1,2,3,4,5),name = "b"), #overwrite name b with newname
+    pl$Series((1:5) * 5,"a"),
+    pl$Series(letters[1:5],"b"),
     c(5,4,3,2,1), #unnamed vector
     named_vector = c(15,14,13,12,11) ,#named provide
     c(5,4,3,2,0)
@@ -115,6 +114,7 @@ test_that("polar_frame, select sum over", {
 })
 
 
+
 test_that("map unity", {
 
   ## float is preserved
@@ -155,7 +155,7 @@ test_that("map type", {
 
   ## auto new type allowed if return is R vector
   expect_identical(
-    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
+    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {print(s);as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
     int_iris[,1,drop=FALSE]
   )
 
@@ -164,37 +164,19 @@ test_that("map type", {
 
 
 
-test_that("user defined function", {
+test_that("cloning", {
 
   pf = pl$DataFrame(iris)
 
-
-
-
-  #pf init also is the identity function and is a shallow copy
+  #shallow copy, same external pointer
   pf2 = pl$DataFrame(pf)
   testthat::expect_true(all.equal(pf,pf2))
-  testthat::expect_true(
-    xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
-      xptr::xptr_address(pf2$.__enclos_env__$private$pf)
-  )
-
+  testthat::expect_true(xptr::xptr_address(pf) == xptr::xptr_address(pf2))
 
   #deep copy clone rust side object, hence not same mem address
-  pf3 = pf$clone(deep=TRUE)
+  pf3 = pf$clone_extendr()
   testthat::expect_true(all.equal(pf,pf3))
-  testthat::expect_true(
-    xptr::xptr_address(pf$.__enclos_env__$private$pf) !=
-      xptr::xptr_address(pf3$.__enclos_env__$private$pf)
-  )
+  testthat::expect_true(xptr::xptr_address(pf) != xptr::xptr_address(pf3))
 
-
-  #shallow copy, same mem address
-  pf4 = pf$clone(deep=FALSE)
-  testthat::expect_true(all.equal(pf,pf4))
-  testthat::expect_true(
-    xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
-      xptr::xptr_address(pf4$.__enclos_env__$private$pf)
-  )
 
 })

@@ -1,5 +1,5 @@
 test_that("csv read iris", {
-  import_polars_as_("pl")
+
 
 
   write.csv(iris, "my.csv",row.names = FALSE)
@@ -8,8 +8,8 @@ test_that("csv read iris", {
     c("polars LazyFrame: ","CSV SCAN my.csv; PROJECT */5 COLUMNS; SELECTION: None"),
     capture.output(lazy_frame$print())
   )
-  df =  pl::pf(lazy_frame$collect())
-  Sepal_Length = df$select(pl::col("Sepal.Length"))$as_data_frame()[[1]]
+  df =  pl$DataFrame(lazy_frame$collect())
+  Sepal_Length = df$select(pl$col("Sepal.Length"))$as_data_frame()[[1]]
   testthat::expect_equal(
     Sepal_Length,
     iris$Sepal.Length

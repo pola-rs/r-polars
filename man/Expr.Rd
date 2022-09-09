@@ -2,10 +2,10 @@
 % Please edit documentation in R/expr.R
 \name{lit}
 \alias{lit}
-\alias{Expr.map}
+\alias{Expr_map}
 \title{polars literal}
 \usage{
-Expr.map(lambda, output_type = NULL, `_agg_list` = NULL)
+Expr_map(lambda, output_type = NULL, `_agg_list` = NULL)
 }
 \arguments{
 \item{x}{any R expression yielding an integer, float or bool}

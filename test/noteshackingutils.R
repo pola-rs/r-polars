@@ -73,7 +73,7 @@ rc.options("custom.completer" = function(x) {
 })
 rcstat
 library(minipolars)
-s = series(1:4)
+s = pl$Series(1:4)
 
 rcs2 = rc.status()
 identical(rcs$comps, rcs2$comps)

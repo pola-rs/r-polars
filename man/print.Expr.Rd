@@ -16,5 +16,5 @@ self
 Print expr
 }
 \examples{
-pl::col("some_column")$sum()$over("some_other_column")
+pl$col("some_column")$sum()$over("some_other_column")
 }

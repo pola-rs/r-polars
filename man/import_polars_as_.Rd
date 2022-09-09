@@ -17,5 +17,5 @@ is that in R \code{$} is used as method operator instead of \code{.}.
 }
 \examples{
 import_polars_as_("pl")
-pl::df(iris)$select(pl::col("Petal.Length")$sum()$over("Species"))
+pl$df(iris)$select(pl$col("Petal.Length")$sum()$over("Species"))
 }

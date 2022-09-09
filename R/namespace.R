@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples import_polars_as_("pl")
-#' pl::df(iris)$select(pl::col("Petal.Length")$sum()$over("Species"))
+#' pl$df(iris)$select(pl$col("Petal.Length")$sum()$over("Species"))
 import_polars_as_ <- function(name = "pl") {
   minipolars:::fake_package(
     name,
@@ -22,9 +22,6 @@ import_polars_as_ <- function(name = "pl") {
 }
 
 
-series = function(...) {
-  do.call(minipolars:::Series$new,list(...))
-}
 
 datatype = function(...) {
   do.call(minipolars:::DataType$new,list(...))
@@ -45,7 +42,7 @@ datatype = function(...) {
 #' @return self
 #' @export
 #'
-#' @examples pl::col("some_column")$sum()$over("some_other_column")
+#' @examples pl$col("some_column")$sum()$over("some_other_column")
 print.Expr = function(x) {
   cat("polars Expr: ")
   x$print()
@@ -59,14 +56,14 @@ print.Expr = function(x) {
 #' @return self
 #' @export
 #'
-#' @examples pl::pf(iris)
+#' @examples pl$DataFrame(iris)
 print.DataFrame = function(x) {
   cat("polars DataFrame: ")
   x$print()
 }
 
 
-#' Print rseries
+#' Print rpl$Series
 #'
 #' @param x Series
 
@@ -74,7 +71,7 @@ print.DataFrame = function(x) {
 #' @return self
 #' @export
 #'
-#' @examples pl::series(letters,"lowercase_letters")
+#' @examples pl$Series(letters,"lowercase_letters")
 print.Series = function(x) {
   cat("polars Series: ")
   x$print()

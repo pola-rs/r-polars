@@ -33,7 +33,7 @@ fn handle_thread_r_requests(
         //call this polars code
         move |_tc| self_df.0.lazy().select(exprs).collect().map_err(wrap_error),
         //out of hot loop call this R code, just retrieve high-level function wrapper from package
-        || extendr_api::eval_string("minipolars:::series_udf_handler").unwrap(),
+        || extendr_api::eval_string("minipolars:::Series_udf_handler").unwrap(),
         //pass any concurrent 'lambda' call from polars to R via main thread
         |(probj, s): (ParRObj, pl::Series), robj: Robj| -> Result<pl::Series, extendr_api::Error> {
             let opt_f = probj.0.as_function().ok_or_else(|| {

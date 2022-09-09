@@ -218,8 +218,8 @@ is_DataFrame_data_input = function(x) {
 #' #' @examples
 #' #' minipolars:::new_pf(iris)
 #' #' #with namespace
-#' #' pl::pf(iris)
-#' #' pl::pf(list(some_column_name = c(1,2,3,4,5)))
+#' #' pl$DataFrame(iris)
+#' #' pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
 #' #' new_pf = function(data) {
 #' #'   if(is_polar_frame(data)) {
 #' #'     abort("assertion failed, this function should never handle polar_frame")
@@ -244,9 +244,9 @@ is_DataFrame_data_input = function(x) {
 #' #'   }
 #' #'   name_generator = make_column_name_gen()
 #' #'
-#' #'   #step 0, downcast any polars_series to Series
+#' #'   #step 0, downcast any polars_pl$Series to Series
 #' #'   data = lapply(data, function(x) {
-#' #'     if(inherits(x,"polars_series")) x$private else x
+#' #'     if(inherits(x,"polars_pl$Series")) x$private else x
 #' #'   })
 #' #'
 #' #'   ##step1 handle column names
@@ -256,7 +256,7 @@ is_DataFrame_data_input = function(x) {
 #' #'   if(length(keys)==0) keys = rep(NA_character_, length(data))
 #' #'
 #' #'   ##step2
-#' #'   #if missing key use series name or generate new
+#' #'   #if missing key use pl$Series name or generate new
 #' #'   keys = mapply(data,keys, FUN = function(column,key) {
 #' #'
 #' #'     if(is.na(key) || nchar(key)==0) {
@@ -286,7 +286,7 @@ is_DataFrame_data_input = function(x) {
 #' #'   mapply(data,keys, FUN = function(column, key) {
 #' #'     if(inherits(column, "Series")) {
 #' #'       column$rename_mut(key)
-#' #'       pf$set_column_from_rseries(column)
+#' #'       pf$set_column_from_rpl$Series(column)
 #' #'     } else {
 #' #'       pf$set_column_from_robj(column,key)
 #' #'     }
@@ -310,7 +310,7 @@ is_DataFrame_data_input = function(x) {
 # #
 #'
 #' @examples
-#' df$lazy()$lazy()$filter(pl::col("Sepal.Length") > 5)$collect()
+#' df$lazy()$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
 42
 
 #' create new DataFrame
@@ -324,8 +324,8 @@ is_DataFrame_data_input = function(x) {
 #' @examples
 #' minipolars:::new_pf(iris)
 #' #with namespace
-#' pl::pf(iris)
-#' pl::pf(list(some_column_name = c(1,2,3,4,5)))
+#' pl$DataFrame(iris)
+#' pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
 DataFrame_constructor = function(data) {
 
   #TODO remove when polar_frame is removed from lib
@@ -350,9 +350,9 @@ DataFrame_constructor = function(data) {
   }
   name_generator = make_column_name_gen()
 
-  #step 0, downcast any polars_series to Series
+  #step 0, downcast any polars_pl$Series to Series
   data = lapply(data, function(x) {
-    if(inherits(x,"polars_series")) x$private else x
+    if(inherits(x,"polars_pl$Series")) x$private else x
   })
 
   ##step1 handle column names
@@ -362,7 +362,7 @@ DataFrame_constructor = function(data) {
   if(length(keys)==0) keys = rep(NA_character_, length(data))
 
   ##step2
-  #if missing key use series name or generate new
+  #if missing key use pl$Series name or generate new
   keys = mapply(data,keys, FUN = function(column,key) {
 
     if(is.na(key) || nchar(key)==0) {
@@ -388,18 +388,18 @@ DataFrame_constructor = function(data) {
 
   ##step 4
   #build polar_frame one column at the time
-  pf = minipolars:::DataFrame$new_with_capacity(length(data));
+  df = .pr$DataFrame$new_with_capacity(length(data))
   mapply(data,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
       column$rename_mut(key)
-      pf$set_column_from_rseries(column)
+      df$set_column_from_rseries(column)
     } else {
-      pf$set_column_from_robj(column,key)
+      df$set_column_from_robj(column,key)
     }
     return(NULL)
   })
 
-  return(pf)
+  return(df)
 }
 
 
@@ -428,7 +428,7 @@ DataFrame_select = function(...) {
 #' @rdname DataFrame
 #' @aliases filter
 #' @usage  x$filter(...) -> DataFrame
-#' @param bool_expr Polars expression which will evaluate to a bool series
+#' @param bool_expr Polars expression which will evaluate to a bool pl$Series
 DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }
@@ -446,8 +446,9 @@ DataFrame_agg = function(...) {
 
   agg_input = construct_ProtoExprArray(...)
 
-  new_df = private$pf$groupby_agg(
-    private$groupby_input,
+  new_df = .pr$DataFrame$groupby_agg(
+    self,
+    private$groupby_input,##TODO groupby did have state!
     agg_input
   )
 
@@ -458,8 +459,8 @@ DataFrame_agg = function(...) {
 
 DataFrame_as_data_frame = function(...) {
   as.data.frame(
-    x = private$pf$as_rlist_of_vectors(),
-    col.names = private$pf$colnames(),
+    x = .pr$DataFrame$as_rlist_of_vectors(self),
+    col.names = .pr$DataFrame$colnames(self),
     ...
   )
 }
