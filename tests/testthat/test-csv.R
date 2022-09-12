@@ -3,7 +3,7 @@ test_that("csv read iris", {
   write.csv(iris, "my.csv",row.names = FALSE)
   lf = pl$lazy_csv_reader("my.csv")
 
-  df = lazy_frame$collect()
+  df = lf$collect()
 
   iris_char = iris
   iris_char$Species = as.character(iris$Species)
