@@ -70,6 +70,14 @@ GroupBy_agg = function(...) {
 }
 
 
+#' convert to data.frame
+#'
+#' @param ... any opt param passed to R as.data.frame
+#'
+#' @return R data.frame
+#' @export
+#'
+#' @examples pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
 GroupBy_as_data_frame = function(...) {
   as.data.frame(
     x = .pr$DataFrame$as_rlist_of_vectors(self),
