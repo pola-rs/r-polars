@@ -12,11 +12,11 @@ Use awesome polars DataFrame library from R!
  - `devtools::test()` to run all unit tests.
 
 
-
 minipolars\_teaser
 ================
 Søren Welling
-7/22/2022
+12/09/2022
+
 
 ## What is minipolars
 
@@ -46,24 +46,20 @@ from R and the reverse.
 #loading the package minipolars only exposes a few functions 
 library(minipolars)
 
-#The full polars api exposed would lead to a huge namespace collision with base R.
-
-#Instead the api is reached by importing the functions into a namespace, e.g. named pl.
-minipolars::import_polars_as_("pl")
-
+#all constructors are accessed via pl
 
 #Here we go, Hello world written with polars expressions
-pl::col("hello")$sum()$over(c("world","from"))$alias("polars")
+pl$col("hello")$sum()$over(c("world","from"))$alias("polars")
 ```
 
-    ## polars expr: col("hello").sum().over([col("world"), col("from")]).alias("polars")
+    ## polars Expr: col("hello").sum().over([col("world"), col("from")]).alias("polars")
 
 ## Typical ussage
 
-Method chaining, instead of `dplyr` `%>%`-piping or \``data.table`
-`[,]`-indexing is the bread and butter syntax of polars. For now the
-best learning material to understand the syntax and the power of polars
-is the [official user guide for
+Where `dplyr` has `%>%`-piping and \``data.table` has `[,]`-indexing,
+method chaining `object$m1()$m2()` is the bread and butter syntax of
+polars. For now the best learning material to understand the syntax and
+the power of polars is the [official user guide for
 python](https://pola-rs.github.io/polars-book/user-guide/). As
 minipolars syntax is the same ( except `$` instead of `.`) the guide
 should be quite useful. The following example shows a typical
@@ -71,13 +67,13 @@ should be quite useful. The following example shows a typical
 
 ``` r
 #create polar_frames from iris
-pf = pl::polars_frame(iris)
+df = pl$DataFrame(iris)
 
 #make selection (similar to dplyr mutute() and data.table [,.()] ) and use expressions or strings.
 
-pf = pf$select(
-  pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
-  pl::col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
+df = df$select(
+  pl$col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
+  pl$col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
   "Petal.Width"
 )
 
@@ -87,14 +83,10 @@ pf = pf$select(
 #2 sum it...
 #3 over(by) the column  Species
 #4 rename/alias to sw_sum_over_species
-pl::col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species")
-```
 
-    ## polars expr: col("Sepal.Width").sum().over([col("Species")]).alias("sw_sum_over_species")
 
-``` r
 #convert back to data.frame
-head(pf$as_data_frame())
+head(df$as_data_frame())
 ```
 
     ##   sw_sum_over_species sl_sum_over_species Petal.Width
@@ -109,10 +101,10 @@ head(pf$as_data_frame())
 
 ``` r
 #a single column outside a polars_frame is called a series
-pl::series((1:5) * 5,"my_series")
+pl$Series((1:5) * 5,"my_series")
 ```
 
-    ## polars series: shape: (5,)
+    ## polars Series: shape: (5,)
     ## Series: 'my_series' [f64]
     ## [
     ##  5.0
@@ -125,18 +117,18 @@ pl::series((1:5) * 5,"my_series")
 ``` r
 #Create polar_From  from a list of series and/or plain R vectors.
 values = list (
-  newname = pl::series(c(1,2,3,4,5),name = "b"), #overwrite name b with 'newname'
-  pl::series((1:5) * 5,"a"),
-  pl::series(letters[1:5],"b"),
+  newname = pl$Series(c(1,2,3,4,5),name = "b"), #overwrite name b with 'newname'
+  pl$Series((1:5) * 5,"a"),
+  pl$Series(letters[1:5],"b"),
   c(5,4,3,2,1), #unnamed vector
   named_vector = c(15,14,13,12,11) ,#named provide
   c(5,4,3,2,0)
 )
 
-pl::polars_frame(values)
+pl$DataFrame(values)
 ```
 
-    ## shape: (5, 6)
+    ## polars DataFrame: shape: (5, 6)
     ## ┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐
     ## │ newname ┆ a    ┆ b   ┆ newcolumn_1 ┆ named_vector ┆ newcolumn_2 │
     ## │ ---     ┆ ---  ┆ --- ┆ ---         ┆ ---          ┆ ---         │
@@ -157,16 +149,22 @@ pl::polars_frame(values)
 
 ``` r
 #polars is strongly typed. Data-types can be created like this:
-pl::datatype("Float64")
+pl$dtypes$Float64
 ```
 
-    ## polars datatype: Float64
+    ## polars DataType: Float64
 
 ``` r
-pl::datatype("integer")
+pl$dtypes$Int32
 ```
 
-    ## polars datatype: Int32
+    ## polars DataType: Int32
+
+``` r
+pl$dtypes$Int64 #not R native type
+```
+
+    ## polars DataType: Int64
 
 # Read csv and the `polars_lazy_frame`
 
@@ -175,14 +173,15 @@ pl::datatype("integer")
   write.csv(iris, "iris.csv",row.names = FALSE)
 
   #read csv into a lazy_polar_frame and compute sum of Sepal.Width over Species
-  lpf = lazy_csv_reader("iris.csv")$select(
-    pl::col("Sepal.Width")$sum()$over("Species")
+  lpf = pl$lazy_csv_reader("iris.csv")$select(
+    pl$col("Sepal.Width")$sum()$over("Species")
   )
   
   #a lazy frame is only a tree of instructions
   print(lpf) #same as lpf$describe_plan()
 ```
 
+    ## [1] "polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)"
     ## SELECT 1 COLUMNS: [col("Sepal.Width").sum().over([col("Species")])]
     ## FROM
     ## CSV SCAN iris.csv; PROJECT */5 COLUMNS; SELECTION: None
@@ -212,7 +211,7 @@ pl::datatype("integer")
   lpf$collect()
 ```
 
-    ## shape: (150, 1)
+    ## polars DataFrame: shape: (150, 1)
     ## ┌─────────────┐
     ## │ Sepal.Width │
     ## │ ---         │
@@ -236,3 +235,31 @@ pl::datatype("integer")
     ## ├╌╌╌╌╌╌╌╌╌╌╌╌╌┤
     ## │ 148.7       │
     ## └─────────────┘
+
+## User pass user defined functions to polars
+
+It is possible to mix R code with polars by passing user defined
+functions to polars. User defined functions are slower. Use native polar
+functions/expressions where possible.
+
+``` r
+    pl$DataFrame(iris)$select(
+      pl$col("Sepal.Length")$map(\(s) {
+        x = s$to_r_vector() #convert from Series to a native R vector
+        x[x>=5] = 10
+        x[1:10] # if return is R vector, it will automatically be converted to Series again
+      })
+    )$as_data_frame()
+```
+
+    ##    Sepal.Length
+    ## 1          10.0
+    ## 2           4.9
+    ## 3           4.7
+    ## 4           4.6
+    ## 5          10.0
+    ## 6          10.0
+    ## 7           4.6
+    ## 8          10.0
+    ## 9           4.4
+    ## 10          4.9
