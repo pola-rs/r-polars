@@ -4,7 +4,7 @@
 \alias{Lazy_groupby}
 \title{Lazy_groupby}
 \usage{
-Lazy_groupby(...)
+Lazy_groupby(..., maintain_order = FALSE)
 }
 \arguments{
 \item{...}{any single Expr or string naming a column}

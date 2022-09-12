@@ -29,9 +29,9 @@ Lazy_select = function(...) {
 #' groupby on lazy_polar_frame.
 #' @param ... any single Expr or string naming a column
 #' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_groupby = function(...) {
+Lazy_groupby = function(..., maintain_order = FALSE) {
   pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$groupby(self,pra)
+  .pr$LazyFrame$groupby(self,pra,maintain_order)
 }
 
 

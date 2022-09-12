@@ -42,9 +42,13 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
-    fn groupby(&self, exprs: &ProtoExprArray) -> LazyGroupBy {
+    fn groupby(&self, exprs: &ProtoExprArray, maintain_order: bool) -> LazyGroupBy {
         let expr_vec = pra_to_vec(exprs, "select");
-        LazyGroupBy(self.0.clone().groupby(expr_vec))
+        if maintain_order {
+            LazyGroupBy(self.0.clone().groupby_stable(expr_vec))
+        } else {
+            LazyGroupBy(self.0.clone().groupby(expr_vec))
+        }
     }
 }
 
