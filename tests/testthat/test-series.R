@@ -152,18 +152,8 @@ test_that("pl$Series_combine_c", {
     s2$to_r_vector(),
     s3$to_r_vector()
   )
-  inherits(s2,"pl$Series")
+  expect_true(inherits(s2,"Series"))
 
-
-  s = minipolars:::Series$new(1:3,"foo")
-  s2 = c(s,s,1:3)
-  s3 = minipolars:::Series$new(c(1:3,1:3,1:3),"bar")
-
-  expect_identical(
-    s2$to_r_vector(),
-    s3$to_r_vector()
-  )
-  inherits(s2,"Series")
 
 })
 

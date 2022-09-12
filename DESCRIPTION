@@ -1,7 +1,7 @@
 Package: minipolars
 Title: Polars ported to R. 
 Version: 0.0.1
-Imports: xptr, rlang, namespace, R6
+Imports: xptr, rlang, namespace
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
@@ -19,6 +19,7 @@ Collate:
     'dataframe.R'
     'datatype.R'
     'expr.R'
+    'groupby.R'
     'lazy.R'
     'namespace.R'
     'series.R'

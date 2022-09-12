@@ -36,7 +36,7 @@ impl Expr {
         let rtype = robj.rtype();
         let rlen = robj.len();
         let expr = match (rtype, rlen) {
-            (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap() as i64),
+            (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap()),
             (Rtype::Doubles, 1) => pl::lit(robj.as_real().unwrap()),
             (_, 1) => panic!("dunno what literal to make out of this"),
             (_, _) => panic!("literal length must currently be one, so no c(1,2,3) allowed yet"),

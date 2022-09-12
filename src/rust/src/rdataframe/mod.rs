@@ -140,22 +140,24 @@ impl DataFrame {
         r_result_list(res_df)
     }
 
-    fn groupby_agg(
+    fn by_agg(
         &mut self,
         group_exprs: &ProtoExprArray,
         agg_exprs: &ProtoExprArray,
+        maintain_order: bool,
     ) -> Result<DataFrame, Error> {
         let group_exprs: Vec<pl::Expr> = pra_to_vec(group_exprs, "select");
         let agg_exprs: Vec<pl::Expr> = pra_to_vec(agg_exprs, "select");
 
-        let new_df = self
-            .clone()
-            .0
-            .lazy()
-            .groupby(group_exprs)
-            .agg(agg_exprs)
-            .collect()
-            .map_err(wrap_error)?;
+        let lazy_df = self.clone().0.lazy();
+
+        let gb = if maintain_order {
+            lazy_df.groupby_stable(group_exprs)
+        } else {
+            lazy_df.groupby(group_exprs)
+        };
+
+        let new_df = gb.agg(agg_exprs).collect().map_err(wrap_error)?;
 
         Ok(DataFrame(new_df))
     }

@@ -42,21 +42,15 @@ c.Series = \(x,...) {
   l = list(...)
   x = x$clone() #clone to retain an immutable api, append_mut is not mutable
 
-  #get append function from either polars_pl$Series or Series
-  fx = (function() {
-    if(inherits(x,"polars_pl$Series")) return(x$private$append_mut)
-    if(inherits(x,"Series")) return(x$append_mut)
-    abort("internal error failed to disbatch append method")
-  })()
+  #append each element of i being either Series or R vector
+  for(i in seq_along(l)) {
+    other = l[[i]]
 
-  #append each element of i being either polars_pl$Series, Series or likely a vector
-  for(i in l) {
-    rser = (function() {
-      if(inherits(i,"polars_pl$Series")) return(i$private)
-      if(inherits(i,"Series")) return(i)
-      minipolars:::Series$new(i,"anyname")
-    })()
-    fx(rser)
+    #wrap in Series
+    if(!inherits(other,"Series")) {
+      other = pl$Series(other)
+    }
+    .pr$Series$append_mut(x,other)
   }
 
   x

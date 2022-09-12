@@ -90,31 +90,7 @@ print.DataType = function(x) {
   x$print()
 }
 
-#' print polars polars_lazy_frame
-#'
-#' @param x Rlazyfrane
-#'
-#' @return self
-#' @export
-#'
-#' @examples #TODO give example
-print.LazyFrame = function(x) {
-  cat("polars LazyFrame: \n")
-  x$print()
-}
 
-#' print polars polars_lazy_frame
-#'
-#' @param x Rlazyfrane
-#'
-#' @return self
-#' @export
-#'
-#' @examples #TODO give example
-print.LazyGroupBy = function(x) {
-  cat("polars LazyGroupBy: \n")
-  x$print()
-}
 
 #' @export
 .DollarNames.Series = function(x, pattern = "") {
@@ -130,4 +106,5 @@ print.LazyGroupBy = function(x) {
 .DollarNames.DataFrame = function(x, pattern = "") {
   paste0(ls(minipolars:::DataFrame),"()")
 }
+
 

@@ -38,7 +38,7 @@ DataFrame$as_rlist_of_vectors <- function() .Call(wrap__DataFrame__as_rlist_of_v
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
-DataFrame$groupby_agg <- function(group_exprs, agg_exprs) .Call(wrap__DataFrame__groupby_agg, self, group_exprs, agg_exprs)
+DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__DataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
 
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }

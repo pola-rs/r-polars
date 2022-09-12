@@ -15,11 +15,29 @@ env$apply       = Series_apply
 
 #modify some Dataframe bindings
 env = minipolars:::DataFrame
-env$agg      = DataFrame_agg
 env$as_data_frame = DataFrame_as_data_frame
 env$groupby = DataFrame_groupby
 env$select = DataFrame_select
 env$filter = DataFrame_filter
+env$groupby_agg = NULL
+
+
+env = minipolars:::GroupBy
+env$agg = GroupBy_agg
+env$as_data_frame = GroupBy_as_data_frame
+
+
+env = minipolars:::LazyFrame
+env$select = Lazy_select
+env$groupby = Lazy_groupby
+
+env = minipolars:::LazyGroupBy
+env$agg = LazyGroupBy_agg
+env$apply = LazyGroupBy_apply
+env$head = LazyGroupBy_head
+env$tail  = LazyGroupBy_tail
+
+
 
 
 
