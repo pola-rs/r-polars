@@ -236,7 +236,7 @@ pl$dtypes$Int64 #not R native type
     ## │ 148.7       │
     ## └─────────────┘
 
-## User pass user defined functions to polars
+# Pass user defined functions to polars
 
 It is possible to mix R code with polars by passing user defined
 functions to polars. User defined functions are slower. Use native polar
