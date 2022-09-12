@@ -57,7 +57,7 @@ rm(env)
 #' @title The complete minipolars public API.
 #' @description `pl`-object is a list of all public functions and class constructors
 #' public functions are not exported as a normal package as it would be huge namespace
-#' collision with base:: and other functions. All object-methods are accesed with $
+#' collision with base:: and other functions. All object-methods are accesed with object$method
 #' via the constructed objects.
 #'
 #' Having all functions in an namespace is similar to the rust- and python- polars api.
