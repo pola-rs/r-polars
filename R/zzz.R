@@ -16,6 +16,14 @@ env$abs         = Series_abs
 env$apply       = Series_apply
 
 
+#rewrite all binary operators to accept something that can turn into a Series
+#to allow something like s$add(1:5)
+Series_operators = c("add","sum","div","sub","rem")
+lapply(Series_operators, \(so) {env[[so]] =
+  eval(parse(text=paste0("function(other) .Call(wrap__Series__",so,", self, wrap_s(other))")))
+  invisible(NULL)
+})
+
 # modify these Dataframe methods
 env = minipolars:::DataFrame
 env$as_data_frame = DataFrame_as_data_frame

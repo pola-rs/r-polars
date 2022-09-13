@@ -74,6 +74,30 @@ print.Series = \(x) {
   x
 }
 
+#' wrap as literal
+#'
+#' @param e an Expr(polars) or any R expression
+#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
+#'
+#' @return Expr
+#'
+#' @examples pl$col("foo") < 5
+wrap_s = function(x) {
+  if(inherits(x,"Series")) x else pl$Series(x)
+}
+
+#' @export
+"+.Series" <- function(s1,s2) wrap_s(s1)$add(s2)
+#' @export
+"-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2)
+#' @export
+"/.Series" <- function(s1,s2) wrap_s(s1)$div(s2)
+#' @export
+"*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
+#' @export
+"%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2)
+
+
 
 
 Series_udf_handler = function(f,rs) {

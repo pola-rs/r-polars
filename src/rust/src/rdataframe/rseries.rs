@@ -153,6 +153,11 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
 
 //     Ok(42)
 // }
+impl From<polars::prelude::Series> for Series {
+    fn from(pls: polars::prelude::Series) -> Self {
+        Series(pls)
+    }
+}
 
 #[extendr]
 impl Series {
@@ -255,6 +260,26 @@ impl Series {
         } else {
             Err(extendr_api::error::Error::Other("not a bool".to_string()))
         }
+    }
+
+    pub fn add(&self, other: &Series) -> Self {
+        (&self.0 + &other.0).into()
+    }
+
+    pub fn sub(&self, other: &Series) -> Self {
+        (&self.0 - &other.0).into()
+    }
+
+    pub fn mul(&self, other: &Series) -> Self {
+        (&self.0 * &other.0).into()
+    }
+
+    pub fn div(&self, other: &Series) -> Self {
+        (&self.0 / &other.0).into()
+    }
+
+    pub fn rem(&self, other: &Series) -> Self {
+        (&self.0 % &other.0).into()
     }
 
     pub fn append_mut(&mut self, other: &Series) -> Result<()> {

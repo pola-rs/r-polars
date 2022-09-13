@@ -182,6 +182,16 @@ Series$all <- function() .Call(wrap__Series__all, self)
 
 Series$any <- function() .Call(wrap__Series__any, self)
 
+Series$add <- function(other) .Call(wrap__Series__add, self, other)
+
+Series$sub <- function(other) .Call(wrap__Series__sub, self, other)
+
+Series$mul <- function(other) .Call(wrap__Series__mul, self, other)
+
+Series$div <- function(other) .Call(wrap__Series__div, self, other)
+
+Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
+
 Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
 
 Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
