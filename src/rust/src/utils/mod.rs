@@ -284,3 +284,23 @@ where
         extendr_api::prelude::list!(ok = extendr_api::NULL, err = x.unwrap_err().to_string())
     }
 }
+
+pub fn r_result_list_no_debug<T, E>(x: Result<T, E>) -> extendr_api::prelude::list::List
+where
+    T: IntoRobj,
+    E: std::fmt::Display,
+{
+    if x.is_ok() {
+        if let Ok(okx) = x {
+            extendr_api::prelude::list!(ok = okx.into_robj(), err = extendr_api::NULL)
+        } else {
+            unreachable!()
+        }
+    } else {
+        if let Err(errx) = x {
+            extendr_api::prelude::list!(ok = extendr_api::NULL, err = errx.to_string())
+        } else {
+            unreachable!()
+        }
+    }
+}

@@ -3,6 +3,7 @@ use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
 pub mod read_csv;
+pub mod read_parquet;
 pub mod rexpr;
 pub mod rseries;
 pub mod wrap_errors;
@@ -13,6 +14,7 @@ use crate::utils::extendr_concurrent::ParRObj;
 use crate::CONFIG;
 
 use read_csv::*;
+use read_parquet::*;
 use rexpr::*;
 use rseries::*;
 use wrap_errors::*;
@@ -168,6 +170,7 @@ extendr_module! {
     use rexpr;
     use rseries;
     use read_csv;
+    use read_parquet;
     use rdatatype;
     use rlazyframe;
     impl DataFrame;

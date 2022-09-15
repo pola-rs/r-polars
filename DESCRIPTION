@@ -22,6 +22,7 @@ Collate:
     'groupby.R'
     'lazy.R'
     'namespace.R'
+    'parquet.R'
     'series.R'
     'utils.R'
     'zzz.R'
