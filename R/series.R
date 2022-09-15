@@ -86,18 +86,26 @@ wrap_s = function(x) {
   if(inherits(x,"Series")) x else pl$Series(x)
 }
 
-#' @export
-"+.Series" <- function(s1,s2) wrap_s(s1)$add(s2)
-#' @export
-"-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2)
-#' @export
-"/.Series" <- function(s1,s2) wrap_s(s1)$div(s2)
-#' @export
-"*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
-#' @export
-"%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2)
 
+##make list of methods, which should be modified from Series as input
+# to any type which can be converted into a series, see use of Series_ops in zzz.R
+Series_ops = character(0)
+Series_ops_add = function(name) {
+  append(Series_ops,name)
+}
 
+#' @export
+"+.Series" <- function(s1,s2) wrap_s(s1)$add(s2); Series_ops_add("add")
+#' @export
+"-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2); Series_ops_add("sub")
+#' @export
+"/.Series" <- function(s1,s2) wrap_s(s1)$div(s2); Series_ops_add("div")
+#' @export
+"*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2); Series_ops_add("mul")
+#' @export
+"%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2); Series_ops_add("rem")
+
+`[.Series` <- function(x,idx) {}
 
 
 Series_udf_handler = function(f,rs) {
@@ -110,9 +118,37 @@ Series_udf_handler = function(f,rs) {
 
 #modified Series bindings
 
-
 Series_to_r_vector = \() unwrap(.pr$Series$to_r_vector(self))
 Series_abs         = \() unwrap(.pr$Series$abs(self))
+Series_value_counts =\(sorted=TRUE, multithreaded=FALSE) {
+  unwrap(.pr$Series$value_counts(self, multithreaded, sorted))
+}
+Series_repeat = \(name, val, n, dtype=NULL) {
+
+  # auto choose dtype given val
+  if(is.null(dtype)) {
+    dtype = choose(
+      is.integer(val),   pl$dtypes$Int32,
+      is.double(val),    pl$dtypes$Float64,
+      is.character(val), pl$dtypes$Utf8,
+      is.logical(val),   pl$dtypes$Boolean,
+      or_else = abort(paste("must specify dtype for val: ",str(val)))
+    )
+  }
+
+  #any conversion of val given dtype
+  val = choose(
+    # spoof int64 by setting val to float64, correct until 2^52 or so
+    dtype == pl$dtypes$Int64, (\() as.double(val))(),
+    or_else = val
+  )
+
+
+  .pr$Series$repeat_(name,val,n,dtype)
+}
+
+
+
 Series_apply   = \(
   fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE
 ) {

@@ -233,3 +233,69 @@ test_that("to_frame", {
 })
 
 
+test_that("is_sorted", {
+  s = pl$Series(c(2,1,3))
+  expect_true(s$sort(reverse = FALSE)$is_sorted_flag())
+  expect_true(s$sort(reverse = TRUE)$is_sorted_reverse_flag())
+})
+
+test_that("value counts", {
+  s = pl$Series(c(1,4,4,4,4,3,3,3,2,2,NA))
+  s_st = s$value_counts(sorted = TRUE, multithreaded = FALSE)
+  s_mt = s$value_counts(sorted = TRUE, multithreaded = FALSE)
+  df_st = s_st$as_data_frame()
+  df_mt = s_st$as_data_frame()
+
+  expect_strictly_identical(df_st[[1]],c(4,3,2,1,NA))
+  expect_strictly_identical(df_mt[[1]],c(4,3,2,1,NA))
+
+  #notice counts are mapped to numeric
+  expect_strictly_identical(df_st[[2]],c(4,3,2,1,1))
+  expect_strictly_identical(df_mt[[2]],c(4,3,2,1,1))
+
+})
+
+test_that("arg minmax", {
+  s1 = pl$Series(c(NA,3,1,2))
+  s2 = pl$Series(c(NA,NA))
+  expect_equal(s1$arg_max(),2)
+  expect_equal(s1$arg_min(),1) #polars define NULL as smallest value
+
+
+})
+
+
+test_that("repeat", {
+
+  expect_identical(
+    Series_repeat("bob",42,3)$to_r(),
+    rep(42,3)
+  )
+
+  expect_identical(
+    Series_repeat("bob",42L,3)$to_r(),
+    rep(42L,3)
+  )
+
+  #it is possible to make Int64 but return will be a numeric
+  expect_identical(
+    Series_repeat("bob",42L,3,pl$dtypes$Int64)$to_r(),
+    rep(42,3)
+  )
+
+  expect_identical(
+    Series_repeat("bob","cheese",3,dtype = pl$dtypes$Utf8)$to_r(),
+    rep("cheese",3)
+  )
+
+  expect_identical(
+    Series_repeat("bob",FALSE,3)$to_r(),
+    rep(FALSE,3)
+  )
+
+  #TODO NA repeats are not currently supported
+  #Series_repeat("bob",NA,3)$to_r()
+
+})
+
+

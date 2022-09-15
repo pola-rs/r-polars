@@ -7,13 +7,13 @@ use crate::rdataframe::wrap_error;
 use crate::rdatatype::DataType;
 use crate::utils::{r_result_list, r_unwrap};
 
+use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
+use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
-
-use super::DataFrame;
 
 const R_INT_NA_ENC: i32 = -2147483648;
 
@@ -198,11 +198,74 @@ impl Series {
     pub fn name(&self) -> &str {
         self.0.name()
     }
-    //wait to_arriow
 
-    //skip str namespace
-    //wait time_unit
-    //flags in docs not in python api
+    pub fn sort(&mut self, reverse: bool) -> Self {
+        Series(self.0.sort(reverse))
+    }
+
+    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> List {
+        let res = || -> extendr_api::Result<DataFrame> {
+            let df = self
+                .0
+                .value_counts(multithreaded, sorted)
+                .map_err(wrap_error)?;
+            Ok(DataFrame(df))
+        };
+        r_result_list(res())
+    }
+
+    pub fn arg_min(&self) -> Option<usize> {
+        self.0.arg_min().map(|x| x + 1)
+    }
+
+    pub fn arg_max(&self) -> Option<usize> {
+        self.0.arg_max().map(|x| x + 1)
+    }
+
+    pub fn is_sorted_flag(&self) -> bool {
+        matches!(self.0.is_sorted(), polars::series::IsSorted::Ascending)
+    }
+    pub fn is_sorted_reverse_flag(&self) -> bool {
+        matches!(self.0.is_sorted(), polars::series::IsSorted::Descending)
+    }
+
+    pub fn repeat_(name: &str, robj: Robj, n: i32, dtype: &DataType) -> Self {
+        match &dtype.0 {
+            pl::DataType::Utf8 => {
+                let val = robj.as_str().unwrap();
+                let mut s: pl::Series = (0..n).map(|_| val).collect();
+                s.rename(name);
+                Series(s)
+            }
+            pl::DataType::Int64 => {
+                let val = robj.as_real().unwrap() as i64;
+                let mut s: pl::Series = (0..n).map(|_| val).collect();
+                s.rename(name);
+                Series(s)
+            }
+            pl::DataType::Int32 => {
+                let val = robj.as_integer().unwrap();
+                let mut s: pl::Series = (0..n).map(|_| val).collect();
+                s.rename(name);
+                Series(s)
+            }
+            pl::DataType::Float64 => {
+                let val = robj.as_real().unwrap();
+                let mut s: pl::Series = (0..n).map(|_| val).collect();
+                s.rename(name);
+                Series(s)
+            }
+            pl::DataType::Boolean => {
+                let val = robj.as_bool().unwrap();
+                let mut s: pl::Series = (0..n).map(|_| val).collect();
+                s.rename(name);
+                Series(s)
+            }
+            dt => {
+                panic!("cannot create repeat with dtype: {:?}", dt);
+            }
+        }
+    }
 
     pub fn shape(&self) -> Robj {
         r!([self.0.len() as i32, 1])

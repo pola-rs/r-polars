@@ -68,8 +68,18 @@ expect_strictly_identical = function(object,expected,...) {
   )
 }
 
-#rust like unwrapping of result. Useful to keep error handling on the R side.
-unwrap = function(result,class="my_error_class",call=sys.call(1L),...) {
+#' rust-like unwrapping of result. Useful to keep error handling on the R side.
+#'
+#' @param result a list here either element ok or err is NULL
+#' @param class class of thrown error
+#' @param call context of error
+#' @param ... not used
+#'
+#' @return the ok-element of list , or a error will be thrown
+#' @export
+#'
+#' @examples unwrap(list(ok="foo",err=NULL))
+unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 
   #if not a result
   if(!is.list(result)) {
@@ -97,17 +107,34 @@ unwrap = function(result,class="my_error_class",call=sys.call(1L),...) {
   abort("internal error: result object corrupted",.internal = TRUE)
 }
 
-#
-# register_minipolars = function() {
-#
-#   rextendr::register_extendr(force = TRUE)
-#
-#   extendr_wrap_file = "./R/extendr_wrappers.R"
-#   readLines("./R/")
-#
-#
-# }
 
+
+#' Simple match/switch handler
+#'
+#' @param ... odd arugments are bool statements, a next even is returned if prior bool statement is the first true
+#' @param or_else return this if no bool statements were true
+#'
+#' @return any return given first true bool statement otherwise value of or_else
+#' @export
+#'
+#' @examples
+#' n=5
+#'choose(
+#'  n<5,"nope",
+#'  n>6,"yeah",
+#'  or_else = abort(paste("failed to have a case for n=",n))
+#')
+choose = function(...,or_else = NULL) {
+  #get unevaluated args except header-function-name and or_else
+  l = head(tail(as.list(sys.call()),-1),-1)
+  #evaluate the odd args, if TRUE, evaluate and return the next even arg
+  for ( i in seq_len(length(l)/2)) {
+    if(isTRUE(eval(l[[i*2-1]],envir = parent.frame()))) {
+      return(eval(l[[i*2]],envir = parent.frame()))
+    }
+  }
+  or_else
+}
 
 
 

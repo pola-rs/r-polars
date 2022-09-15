@@ -170,6 +170,20 @@ Series$dtype <- function() .Call(wrap__Series__dtype, self)
 
 Series$name <- function() .Call(wrap__Series__name, self)
 
+Series$sort <- function(reverse) .Call(wrap__Series__sort, self, reverse)
+
+Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
+
+Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
+
+Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
+
+Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
+
+Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
+
+Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, name, robj, n, dtype)
+
 Series$shape <- function() .Call(wrap__Series__shape, self)
 
 Series$abs_unsafe <- function() .Call(wrap__Series__abs_unsafe, self)
