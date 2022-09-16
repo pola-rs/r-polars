@@ -240,9 +240,10 @@ impl Series {
     pub fn compare(&self, other: &Series, op: String) -> List {
         //try cast other to self, downcast(dc) to chunkedarray and compare with operator(op) elementwise
         macro_rules! comp {
-            ($self:expr,$other:expr,$dtype:expr,$dc:ident, $op:expr) => {{
+            ($self:expr, $other:expr, $dc:ident, $op:expr) => {{
+                let dtype = self.0.dtype();
                 let lhs = $self.0.$dc().unwrap().clone();
-                let casted_series = $other.0.cast($dtype).map_err(|err| err.to_string())?;
+                let casted_series = $other.0.cast(dtype).map_err(|err| err.to_string())?;
                 let rhs = casted_series.$dc().map_err(|err| err.to_string())?;
 
                 let ca_bool = match $op.as_str() {
@@ -263,21 +264,21 @@ impl Series {
         let dtype = self.0.dtype();
         use pl::DataType::*;
         let res = (|| match dtype {
-            Int32 => comp!(self, other, dtype, i32, op),
-            Int64 => comp!(self, other, dtype, i64, op),
-            Float64 => comp!(self, other, dtype, f64, op),
-            Boolean => comp!(self, other, dtype, bool, op),
-            Utf8 => comp!(self, other, dtype, utf8, op),
-            _ => Err(format!("this type: {} is not supported yet", dtype)),
+            Int32 => comp!(self, other, i32, op),
+            Int64 => comp!(self, other, i64, op),
+            Float64 => comp!(self, other, f64, op),
+            Boolean => comp!(self, other, bool, op),
+            Utf8 => comp!(self, other, utf8, op),
+            _ => Err(format!(
+                "oups this type: {} is not supported yet, but easily could be",
+                dtype
+            )),
         })();
         r_result_list(res)
     }
 
-    // pub fn eq_missing(&self, other: &Series) -> bool {
-    //     self.0.eq_missing(&other.0)
-    // }
-
     pub fn repeat_(name: &str, robj: Robj, n: i32, dtype: &DataType) -> Self {
+        //TODO rewrite with macro
         match &dtype.0 {
             pl::DataType::Utf8 => {
                 let val = robj.as_str().unwrap();
