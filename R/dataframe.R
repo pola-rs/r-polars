@@ -160,7 +160,9 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
   self
 }
 
-
+DataFrame_get_column = function(name) {
+  unwrap(.pr$DataFrame$get_column(self,name))
+}
 
 
 

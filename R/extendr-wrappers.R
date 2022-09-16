@@ -36,6 +36,10 @@ DataFrame$name <- function() .Call(wrap__DataFrame__name, self)
 
 DataFrame$colnames <- function() .Call(wrap__DataFrame__colnames, self)
 
+DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, name)
+
+DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
+
 DataFrame$as_rlist_of_vectors <- function() .Call(wrap__DataFrame__as_rlist_of_vectors, self)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
@@ -183,6 +187,12 @@ Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
 Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
 
 Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
+
+Series$series_equal <- function(other) .Call(wrap__Series__series_equal, self, other)
+
+Series$series_equal_missing <- function(other) .Call(wrap__Series__series_equal_missing, self, other)
+
+Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 
 Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, name, robj, n, dtype)
 

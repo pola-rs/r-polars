@@ -89,9 +89,12 @@ wrap_s = function(x) {
 
 ##make list of methods, which should be modified from Series as input
 # to any type which can be converted into a series, see use of Series_ops in zzz.R
-Series_ops = character(0)
-Series_ops_add = function(name) {
-  append(Series_ops,name)
+Series_ops = list()
+Series_ops_add = function(name, more_args=NULL) {
+  if(!is.null(more_args)) {
+    attr(name,"more_args") = more_args
+  }
+  Series_ops <<- c(Series_ops,list(name))
 }
 
 #' @export
@@ -105,7 +108,20 @@ Series_ops_add = function(name) {
 #' @export
 "%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2); Series_ops_add("rem")
 
-`[.Series` <- function(x,idx) {}
+
+Series_ops_add("compare",more_args = "op")
+#' @export
+"==.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"equal"))
+#' @export
+"!=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"not_equal"))
+#' @export
+"<.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"lt"))
+#' @export
+">.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"gt"))
+#' @export
+"<=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"lt_eq"))
+#' @export
+">=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"gt_eq"))
 
 
 Series_udf_handler = function(f,rs) {

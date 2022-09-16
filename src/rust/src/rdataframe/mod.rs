@@ -124,6 +124,20 @@ impl DataFrame {
         self.0.get_column_names_owned()
     }
 
+    fn get_column(&self, name: &str) -> List {
+        let res_series = self
+            .0
+            .select([name])
+            .map(|df| Series(df.iter().next().unwrap().clone()));
+        r_result_list(res_series)
+    }
+
+    fn get_columns(&self) -> List {
+        let mut l = List::from_values(self.0.get_columns().iter().map(|x| Series(x.clone())));
+        l.set_names(self.0.get_column_names()).unwrap();
+        l
+    }
+
     fn as_rlist_of_vectors(&self) -> Result<Robj, Error> {
         let x: Result<Vec<Robj>, Error> = self
             .0

@@ -18,8 +18,13 @@ env$value_counts= Series_value_counts
 
 
 #rewrite all binary operators or other methods to accept something that can turn into a Series
-lapply(Series_ops, \(so) {env[[so]] =
-  eval(parse(text=paste0("function(other) .Call(wrap__Series__",so,", self, wrap_s(other))")))
+lapply(Series_ops, \(so) {
+  more_args = attr(so,"more_args")
+  if(!is.null(more_args)) more_args = paste0(", ",more_args,collapse=", ")
+
+  env[[so]] =eval(parse(text=paste0(
+    "function(other",more_args,") .Call(wrap__Series__",so,", self, wrap_s(other)",more_args,")"
+  )))
   invisible(NULL)
 })
 
@@ -30,6 +35,7 @@ env$groupby = DataFrame_groupby
 env$select = DataFrame_select
 env$filter = DataFrame_filter
 env$groupby_agg = NULL #this method belongs to GroupBy
+env$get_column = DataFrame_get_column
 
 # GroupBy
 env = minipolars:::GroupBy

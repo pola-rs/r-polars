@@ -263,6 +263,33 @@ test_that("arg minmax", {
 
 
 })
+test_that("series comparison", {
+  expect_true((pl$Series(1:4) == pl$Series(1:4))$all())
+  expect_true((pl$Series(1:4) == 1:4)$all())
+  expect_true((pl$Series(letters) == pl$Series(letters))$all())
+  expect_true((pl$Series(letters) == letters)$all())
+  expect_true(!(pl$Series(letters) == LETTERS)$any())
+  expect_true((pl$Series(1:4,"foo") == pl$Series(1:4,"foo"))$all())
+
+  expect_true(!(pl$Series(1:4) != pl$Series(1:4))$any())
+  expect_true(!(pl$Series(letters) != pl$Series(letters))$any())
+  expect_true((pl$Series(1:4,"foo") == pl$Series(1:4,"bar"))$all())
+
+  expect_true( (pl$Series(1) != pl$Series(NA_integer_))$all())
+  expect_true(!(pl$Series(1) == pl$Series(NA_integer_))$all())
+  expect_true((pl$Series(5L) == pl$Series(5.0))$all())
+
+  expect_true((pl$Series(5) < 6)$all())
+  expect_true((pl$Series(5) <= 6)$all())
+  expect_false((pl$Series(6) < 5)$all())
+  expect_false((pl$Series(6) <= 5)$all())
+
+  expect_true((pl$Series("a") > 5)$all())
+  expect_true((pl$Series("a") < "ab")$all())
+  expect_true((pl$Series("ab") == "ab")$all())
+  expect_true((pl$Series("true") == TRUE)$all())
+})
+
 
 
 test_that("repeat", {

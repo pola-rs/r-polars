@@ -180,3 +180,51 @@ test_that("cloning", {
 
 
 })
+
+
+test_that("get coloumn(s)", {
+
+  char_iris = iris
+  char_iris$Species = as.character(iris$Species)
+
+  df = pl$DataFrame(iris)
+  expected_list_of_series = {
+    expected = lapply(
+      1:5,
+      function(i) pl$Series(char_iris[[i]],names(iris)[i])
+    )
+    names(expected) = names(iris)
+    expected
+  }
+  actual_list_of_series = df$get_columns()
+  for (i in 1:5) {
+    is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
+    if (!is_equal) {
+      testthat::fail("series are not equal according to polars internal check")
+    }
+  }
+
+
+  list_of_vectors = lapply(actual_list_of_series, function(x) x$to_r_vector())
+  expect_identical(
+    list_of_vectors,
+    lapply(iris, as.vector)
+  )
+
+})
+
+
+test_that("get coloumn", {
+  expect_true(
+    pl$DataFrame(iris)
+      $get_column("Sepal.Length")
+      $series_equal(
+        pl$Series(iris$Sepal.Length,"Sepal.Length")
+      )
+  )
+
+  expect_error(
+    pl$DataFrame(iris)
+      $get_column("wrong_name")
+  )
+})

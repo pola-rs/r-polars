@@ -229,6 +229,54 @@ impl Series {
         matches!(self.0.is_sorted(), polars::series::IsSorted::Descending)
     }
 
+    pub fn series_equal(&self, other: &Series) -> bool {
+        self.0.series_equal(&other.0)
+    }
+
+    pub fn series_equal_missing(&self, other: &Series) -> bool {
+        self.0.series_equal_missing(&other.0)
+    }
+
+    pub fn compare(&self, other: &Series, op: String) -> List {
+        //try cast other to self, downcast(dc) to chunkedarray and compare with operator(op) elementwise
+        macro_rules! comp {
+            ($self:expr,$other:expr,$dtype:expr,$dc:ident, $op:expr) => {{
+                let lhs = $self.0.$dc().unwrap().clone();
+                let casted_series = $other.0.cast($dtype).map_err(|err| err.to_string())?;
+                let rhs = casted_series.$dc().map_err(|err| err.to_string())?;
+
+                let ca_bool = match $op.as_str() {
+                    "eq_missing" => lhs.eq_missing(rhs),
+                    "equal" => lhs.equal(rhs),
+                    "not_equal" => lhs.not_equal(rhs),
+                    "gt" => lhs.gt(rhs),
+                    "gt_eq" => lhs.gt_eq(rhs),
+                    "lt" => lhs.lt(rhs),
+                    "lt_eq" => lhs.lt_eq(rhs),
+                    _ => panic!("not supported operator"),
+                };
+                Ok(Series(ca_bool.into_series()))
+            }};
+        }
+
+        use polars::prelude::ChunkCompare;
+        let dtype = self.0.dtype();
+        use pl::DataType::*;
+        let res = (|| match dtype {
+            Int32 => comp!(self, other, dtype, i32, op),
+            Int64 => comp!(self, other, dtype, i64, op),
+            Float64 => comp!(self, other, dtype, f64, op),
+            Boolean => comp!(self, other, dtype, bool, op),
+            Utf8 => comp!(self, other, dtype, utf8, op),
+            _ => Err(format!("this type: {} is not supported yet", dtype)),
+        })();
+        r_result_list(res)
+    }
+
+    // pub fn eq_missing(&self, other: &Series) -> bool {
+    //     self.0.eq_missing(&other.0)
+    // }
+
     pub fn repeat_(name: &str, robj: Robj, n: i32, dtype: &DataType) -> Self {
         match &dtype.0 {
             pl::DataType::Utf8 => {
