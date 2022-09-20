@@ -9,13 +9,9 @@
 \alias{DataFrame_filter}
 \title{Polars DataFrame}
 \usage{
-DataFrame(data) -> DataFrame
+DataFrame_select(...)
 
-x$lazy() -> LazyFrame
-
-x$select(...) -> DataFrame
-
-x$filter(...) -> DataFrame
+DataFrame_filter(bool_expr)
 }
 \arguments{
 \item{...}{any expressions or strings}

@@ -62,13 +62,12 @@ c.Series = \(x,...) {
 #' Print rpl$Series
 #'
 #' @param x Series
-
 #'
 #' @return selfie
 #' @export
 #'
 #' @examples pl$Series(letters,"lowercase_letters")
-print.Series = \(x) {
+print.Series = function(x) {
   cat("polars Series: ")
   x$print()
   x

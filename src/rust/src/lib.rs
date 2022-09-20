@@ -1,3 +1,12 @@
+//! Fast and easy queue abstraction.
+//!
+//! Provides an abstraction over a queue.  When the abstraction is used
+//! there are these advantages:
+//! - Fast
+//! - [`Easy`]
+//!
+//! [`Easy`]: http://thatwaseasy.example.com
+
 #![feature(once_cell)]
 
 use extendr_api::prelude::*;

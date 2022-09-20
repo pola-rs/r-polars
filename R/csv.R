@@ -142,7 +142,6 @@ lazy_csv_reader = function(
 }
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader
-#' @usage csv_reader(...) #any param passed directly to lazy_csv_reader
 #' @return DataFrame
 #' @export
 csv_reader = function(...) {

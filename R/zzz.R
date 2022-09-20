@@ -79,7 +79,6 @@ rm(env)
 #' @rdname pl
 #' @name pl
 #' @aliases pl
-#' @usage
 #'
 #' pl$col("colname")$sum() / pl$lit()  #expression ~ chain-method / literal-expression
 #' @export

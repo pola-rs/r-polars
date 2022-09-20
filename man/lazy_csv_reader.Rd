@@ -27,7 +27,7 @@ lazy_csv_reader(
   parse_dates = FALSE
 )
 
-csv_reader(...) #any param passed directly to lazy_csv_reader
+csv_reader(...)
 }
 \arguments{
 \item{path}{string, Path to a file}

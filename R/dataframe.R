@@ -29,8 +29,6 @@ is_DataFrame_data_input = function(x) {
 #' @description `DataFrame`-object is an `externalptr` to rust polars DataFrame with $methods() exposed.
 #' Most methods return another `DataFrame`-class instance or similar which allows for method chaining.
 #' [Commonmark web site](http://commonmark.org/help)
-
-#' @usage DataFrame(data) -> DataFrame
 # #
 #'
 #' @examples
@@ -125,7 +123,6 @@ DataFrame_constructor = function(data) {
 
 #' @name lazy
 #' @rdname DataFrame
-#' @usage x$lazy() -> LazyFrame
 #' @examples
 #'
 #' pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
@@ -135,7 +132,6 @@ DataFrame_constructor = function(data) {
 #' @name select
 #' @rdname DataFrame
 #' @aliases select
-#' @usage  x$select(...) -> DataFrame
 #' @param ... any expressions or strings
 DataFrame_select = function(...) {
   exprs = construct_ProtoExprArray(...)
@@ -146,7 +142,6 @@ DataFrame_select = function(...) {
 #' @name filter
 #' @rdname DataFrame
 #' @aliases filter
-#' @usage  x$filter(...) -> DataFrame
 #' @param bool_expr Polars expression which will evaluate to a bool pl$Series
 DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()

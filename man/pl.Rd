@@ -3,12 +3,19 @@
 \docType{data}
 \name{pl}
 \alias{pl}
+\alias{pl$col("colname")$sum()}
+\alias{/}
+\alias{pl$lit()}
+\alias{#expression}
+\alias{~}
+\alias{chain-method}
+\alias{literal-expression}
 \title{The complete minipolars public API.}
 \format{
 An object of class \code{environment} of length 9.
 }
 \usage{
-pl$col("colname")$sum() / pl$lit()  #expression ~ chain-method / literal-expression
+pl
 }
 \description{
 \code{pl}-object is a list of all public functions and class constructors
