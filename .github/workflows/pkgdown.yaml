@@ -48,7 +48,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
-          Ncpus: 4
+          install-r : false
 
 
       - uses: r-lib/actions/setup-r-dependencies@v2
