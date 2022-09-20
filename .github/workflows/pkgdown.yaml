@@ -26,7 +26,7 @@ jobs:
       matrix:
         config:
 #          - {os: windows-latest, r: 'release', rust-version: 'nightly'}  #skip windows fails nightly
-          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+#          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           - {os: ubuntu-latest,  r: 'release', rust-version: 'nightly'}
 
     env:
