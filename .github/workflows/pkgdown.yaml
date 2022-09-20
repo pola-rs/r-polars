@@ -68,3 +68,5 @@ jobs:
           clean: false
           branch: gh-pages
           folder: docs
+          repository-name: sorhawell.github.io
+
