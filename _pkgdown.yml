@@ -1,4 +1,16 @@
 url: ~
 template:
   bootstrap: 5
-
+  navbar:
+    structure:
+      left:
+      - intro
+      - reference
+      - articles
+      - tutorials
+      - news
+      right: github
+    components:
+      reference:
+        text: Reference
+        href: reference/index.html
