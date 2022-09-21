@@ -25,13 +25,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-#          - {os: windows-latest, r: 'release', rust-version: 'nightly'}  #skip windows fails nightly
-#          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
+#         - {os: windows-latest, r: 'release', rust-version: 'nightly'}  #skip windows fails nightly
+         - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
           - {os: ubuntu-latest,  r: 'release', rust-version: 'nightly'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_COMPILE_AND_INSTALL_PACKAGES: never
 
     steps:
       - uses: actions/checkout@v3
@@ -53,21 +54,30 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages:  any::pkgdown, local::.
+          extra-packages: local::., devtools
           cache: true
           cache-version: 1
 
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, examples=FALSE)
-        shell: Rscript {0}
 
-      - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          clean: false
-          branch: gh-pages
-          folder: docs
-          repository-name: sorhawell/sorhawell.github.io
+      # - name: Documents
+      #   run: devtools::document(roclets = c('rd', 'collate', 'namespace'))
+      #   shell: Rscript {0}
+      #
+      # - name: build binary
+      #   run: devtools::build(binary = TRUE, args = c('--preclean'))
+      #   shell: Rscript {0}
+
+      # - name: Build site
+      #   run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, examples=FALSE)
+      #   shell: Rscript {0}
+      #
+      # - name: Deploy to GitHub pages 🚀
+      #   if: github.event_name != 'pull_request'
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     clean: false
+      #     branch: gh-pages
+      #     folder: docs
+      #     repository-name: sorhawell/sorhawell.github.io
 
 
