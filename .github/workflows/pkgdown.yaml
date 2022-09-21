@@ -65,7 +65,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: runner.os != 'macOS'
         with:
-          extra-packages: local::., any::pkgdown
+          extra-packages: any::pkgdown, local::., devtools
           cache: true
           cache-version: 1
 
