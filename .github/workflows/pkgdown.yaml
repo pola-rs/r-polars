@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release', rust-version: 'nightly'}
-          - {os: ubuntu-latest,  r: 'release', rust-version: 'nightly'}
+          - { os: macOS-latest, r: "release", rust-version: "nightly" }
+          - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
           #         - {os: windows-latest, r: 'release', rust-version: 'nightly'}  #skip windows fails nightly
 
     env:
@@ -48,15 +48,33 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
-          install-r : false
-
+          install-r: false
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages:  any::pkgdown, local::.
+          extra-packages: local::., any::pkgdown
           cache: true
           cache-version: 1
 
+      # - name: Documents
+      #   run: devtools::document(roclets = c('rd', 'collate', 'namespace'))
+      #   shell: Rscript {0}
+      #
+      # - name: build binary
+      #   run: devtools::build(binary = TRUE, args = c('--preclean'))
+      #   shell: Rscript {0}
+      #
+      # - name: print files
+      #   run: print(list.files(recursive = TRUE))
+      #   shell: Rscript {0}
+
+      # - name: Documents
+      #   run: devtools::document(roclets = c('rd', 'collate', 'namespace'))
+      #   shell: Rscript {0}
+      #
+      # - name: build binary
+      #   run: devtools::build(binary = TRUE, args = c('--preclean'))
+      #   shell: Rscript {0}
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, examples=FALSE)
@@ -71,19 +89,3 @@ jobs:
           folder: docs
           repository-name: sorhawell/sorhawell.github.io
           token: ${{ secrets.GITHUB_TOKEN }}
-
-
-     - name: Documents
-       run: devtools::document(roclets = c('rd', 'collate', 'namespace'))
-       shell: Rscript {0}
-
-     - name: build binary
-       run: devtools::build(binary = TRUE, args = c('--preclean'))
-       shell: Rscript {0}
-
-     - name: print files
-       run: print(list.files(recursive = TRUE))
-       shell: Rscript {0}
-
-
-
