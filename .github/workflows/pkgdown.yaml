@@ -31,7 +31,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
 
     steps:
       - uses: actions/checkout@v3
@@ -100,4 +100,4 @@ jobs:
           branch: gh-pages
           folder: docs
           repository-name: sorhawell/sorhawell.github.io
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
