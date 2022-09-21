@@ -56,7 +56,13 @@ jobs:
           use-public-rspm: false
           install-r: false
 
+      - uses: r-lib/actions/setup-renv@v2
+        if: runner.os == 'macOS'
+        with:
+          cache-version: 2
+
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: runner.os != 'macOS'
         with:
           extra-packages: local::., any::pkgdown
           cache: true
