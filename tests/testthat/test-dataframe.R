@@ -155,8 +155,15 @@ test_that("map type", {
 
   ## auto new type allowed if return is R vector
   expect_identical(
-    pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(s) {as.integer(s$to_r())}))$as_data_frame()[,1,drop=FALSE],
-    int_iris[,1,drop=FALSE]
+    pl$DataFrame(iris)
+      $select(
+        pl$col("Sepal.Length")
+          $map(\(s) {as.integer(s$to_r())})
+          $map(\(s) {s*25L})
+          $map(\(s) {s/4})
+      )
+      $as_data_frame()[,1,drop=FALSE],
+    int_iris[,1,drop=FALSE]*25L/4L
   )
 
 })

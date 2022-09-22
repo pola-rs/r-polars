@@ -39,7 +39,11 @@ pub struct ThreadCom<S, R> {
     child_tx: Sender<R>,
 }
 
-impl<S, R> ThreadCom<S, R> {
+impl<S, R> ThreadCom<S, R>
+where
+    S: Send,
+    R: Send,
+{
     //return tupple with ThreadCom for child thread and m_rx to stay in main_thread
 
     pub fn create() -> (Self, Receiver<(S, Sender<R>)>) {
@@ -75,21 +79,47 @@ impl<S, R> ThreadCom<S, R> {
             child_tx: tx,
         }
     }
-}
 
-//thread did not get a channels from parent thread? that's ok, it can use this function to clone the global channels
-pub fn tc_from_global<S, R>(config: &Storage<RwLock<ThreadCom<S, R>>>) -> ThreadCom<S, R>
-where
-    S: Send + Sync,
-    R: Send + Sync,
-{
-    let thread_com = config
-        .get()
-        .read()
-        .expect("failded to restore thread_com")
-        .clone();
+    pub fn update_global(&self, conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>)
+    where
+        S: Send,
+        R: Send,
+    {
+        //set or update global thread_com
+        let conf_status = conf.set(RwLock::new(Some(self.clone())));
+        //dbg!(conf_status);
+        if !conf_status {
+            let mut gtc = conf
+                .get()
+                .write()
+                .expect("failed to modify GLOBAL therad_com");
+            *gtc = Some(self.clone());
+        }
+    }
 
-    thread_com
+    pub fn kill_global(conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>) {
+        let mut val = conf
+            .get()
+            .write()
+            .expect("another thread crashed while touching CONFIG");
+        *val = None;
+    }
+
+    pub fn from_global(config: &Storage<RwLock<Option<ThreadCom<S, R>>>>) -> Self
+    where
+        S: Send,
+        R: Send,
+    {
+        let thread_com = config
+            .get()
+            .read()
+            .expect("failded to restore thread_com")
+            .as_ref()
+            .unwrap()
+            .clone();
+
+        thread_com
+    }
 }
 
 //start serving requests from child threads.
@@ -100,7 +130,7 @@ pub fn concurrent_handler<F, I, R, S, T, Y>(
     f: F,
     y: Y,
     i: I,
-    conf: &Storage<RwLock<ThreadCom<S, R>>>,
+    conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>,
 ) -> std::result::Result<T, extendr_api::error::Error>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
@@ -110,97 +140,66 @@ where
     T: Send + 'static,
     Y: FnOnce() -> Robj,
 {
-    //start cßom unboundeds
-
+    //start new com and clone to global
     let (thread_com, main_rx) = ThreadCom::create();
+    thread_com.update_global(conf);
 
-    //set or update global thread_com
-    let conf_status = conf.set(RwLock::new(thread_com.clone()));
-    //dbg!(conf_status);
-    if !conf_status {
-        let mut gtc = conf
-            .get()
-            .write()
-            .expect("failed to modify GLOBAL therad_com");
-        *gtc = thread_com.clone();
-    }
-
-    //start child thread(s)
+    //execute main closure on first child thread
     let handle = thread::spawn(move || f(thread_com));
 
-    //serve any request from child threads until all child_phones are dropped or R interrupt
-    let mut before = std::time::Instant::now();
-    let mut planned_sleep = std::time::Duration::from_micros(2);
-    let mut loop_counter = 0u64;
-
+    //get R wrapper function of polars user defined function
+    //will not be needed when extendr_api
     let robj = y();
 
+    //only for performance diagnostics
+    //let mut before = std::time::Instant::now();
+    //let start_time = std::time::Instant::now();
+    //let mut loop_counter = 0u64;
+
+    //serve any request from child threads until all child_phones are dropped or R interrupt
     loop {
-        loop_counter += 1;
-        let now = std::time::Instant::now();
-        let duration = now - before;
-        before = std::time::Instant::now();
+        //loop_counter += 1;
+        //let now = std::time::Instant::now();
+        //let duration = now - before;
+        //before = std::time::Instant::now();
         //dbg!(duration, loop_counter);
 
-        if loop_counter >= 1000 {
-            panic!("loop 1000+!")
-        }
-
         //look for
-        let any_new_msg = main_rx.try_recv();
+        let any_new_msg = main_rx.recv_timeout(std::time::Duration::from_millis(1000));
 
         //avoid using unwrap/unwrap_err if msg is Debug
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
             let answer = i(s, robj.clone()); //handle requst with g closure
-
             let a = answer?;
 
             let _send_result = c_tx.send(a).unwrap();
-
-            //stuff to do!! sleep less if ever idle
-            planned_sleep =
-                std::time::Duration::max(planned_sleep / 4, std::time::Duration::from_nanos(100));
         } else {
             if let Err(recv_err) = any_new_msg {
-                //dbg!(recv_err);
+                //dbg!(&recv_err);
                 match recv_err {
-                    //no connections left, shut down loop, does not happen after one global tx always exists
-                    //in theory a thread or main could destroy global thread_com to terminate this way
-                    flume::TryRecvError::Disconnected => {
-                        //dbg!(&recv_err);
+                    //no threadcoms connections left, new request impossible, shut down loop,
+                    flume::RecvTimeoutError::Disconnected => {
                         break;
                     }
-                    //idling, sleep double as long as last time
-                    flume::TryRecvError::Empty => {
-                        //check for R user interrupt with Sys.sleep(0) every 1 second if not serving a thread.
 
-                        if duration >= std::time::Duration::from_secs(1) {
-                            before = now;
-                            let res_res =
-                                extendr_api::eval_string(&"print('check user');Sys.sleep(0)");
-                            if res_res.is_err() {
-                                rprintln!("user interrupt");
-                                break;
-                            }
-                        }
-
-                        //check if spawned thread has ended, then stop. (most normal end)
-                        if handle.is_finished() {
-                            //dbg!(&handle);
+                    //waking up with on request since last
+                    flume::RecvTimeoutError::Timeout => {
+                        //check for user interrupts in R
+                        let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
+                        if res_res.is_err() {
+                            rprintln!("R user interrupt");
                             break;
                         }
 
-                        //sleep thead takes 50-100 micros also
-                        if planned_sleep > std::time::Duration::from_micros(60) {
-                            //dbg!(planned_sleep);
-                            thread::sleep(planned_sleep);
+                        //check if spawned thread has ended, first child thread should have
+                        //dropped the last ThreadComs, so more likely waking up to a disconnect
+                        if handle.is_finished() {
+                            rprintln!(
+                                "warning: concurrent_extendr terminated with open ThreadComs"
+                            );
+                            break;
                         }
-
-                        planned_sleep = std::time::Duration::min(
-                            planned_sleep * 4 / 3,
-                            std::time::Duration::from_millis(5),
-                        );
                     }
                 }
             } else {
@@ -210,6 +209,9 @@ where
     }
 
     let thread_return_value = handle.join().unwrap();
+
+    //let run_time = std::time::Instant::now() - start_time;
+    //dbg!(run_time);
 
     Ok(thread_return_value)
 }

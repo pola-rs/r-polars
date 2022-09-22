@@ -11,6 +11,7 @@ pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
 use crate::utils::extendr_concurrent::ParRObj;
 
+use crate::utils::extendr_concurrent::ThreadCom;
 use crate::CONFIG;
 
 use read_csv::*;
@@ -33,7 +34,21 @@ fn handle_thread_r_requests(
 ) -> extendr_api::Result<DataFrame> {
     let res_res_df = concurrent_handler(
         //call this polars code
-        move |_tc| self_df.0.lazy().select(exprs).collect().map_err(wrap_error),
+        move |tc| {
+            //use polars and R functions concurrently
+            let retval = self_df.0.lazy().select(exprs).collect().map_err(wrap_error);
+
+            //drop global ThreadCom clone
+            ThreadCom::kill_global(&CONFIG);
+
+            //local threadcom will also be dropped (likely the last tc, unless some polars thread crashed)
+            drop(tc);
+
+            //no more tc's, main thread should wake up now by recieving a Disconnect error signal
+
+            //tada return value
+            retval
+        },
         //out of hot loop call this R code, just retrieve high-level function wrapper from package
         || extendr_api::eval_string("minipolars:::Series_udf_handler").unwrap(),
         //pass any concurrent 'lambda' call from polars to R via main thread

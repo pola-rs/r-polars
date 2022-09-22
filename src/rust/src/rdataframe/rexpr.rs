@@ -2,7 +2,7 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
-use crate::utils::extendr_concurrent::{tc_from_global, ParRObj};
+use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 
 use super::DataType;
@@ -203,7 +203,7 @@ impl Expr {
 
         let f = move |s: pl::Series| {
             //acquire channel to R via main thread handler
-            let thread_com = tc_from_global(&CONFIG);
+            let thread_com = ThreadCom::from_global(&CONFIG);
 
             //send request to run in R
             thread_com.send((probj.clone(), s));

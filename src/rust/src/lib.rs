@@ -7,8 +7,6 @@
 //!
 //! [`Easy`]: http://thatwaseasy.example.com
 
-#![feature(once_cell)]
-
 use extendr_api::prelude::*;
 pub mod rdataframe;
 pub mod rdatatype;
@@ -23,7 +21,8 @@ use polars::prelude::Series;
 //public channel to locate main thread from any sub thread
 use crate::utils::extendr_concurrent::{Storage, ThreadCom};
 
-static CONFIG: Storage<std::sync::RwLock<ThreadCom<(ParRObj, Series), Series>>> = Storage::new();
+static CONFIG: Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>> =
+    Storage::new();
 
 // impl std::fmt::Display for (ParRObj, polars::prelude::Series) {
 //     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
