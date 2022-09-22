@@ -26,7 +26,7 @@ Most methods return another \code{DataFrame}-class instance or similar which all
 \href{http://commonmark.org/help}{Commonmark web site}
 }
 \examples{
-df$lazy()$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
-
+pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+#use of lazy method
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
 }

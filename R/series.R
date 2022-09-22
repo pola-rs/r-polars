@@ -66,7 +66,6 @@ c.Series = \(x,...) {
 #' @return selfie
 #' @export
 #'
-#' @examples pl$Series(letters,"lowercase_letters")
 print.Series = function(x) {
   cat("polars Series: ")
   x$print()
@@ -140,9 +139,9 @@ Series_value_counts =\(sorted=TRUE, multithreaded=FALSE) {
 }
 Series_repeat = \(name, val, n, dtype=NULL) {
 
-  # auto choose dtype given val
+  # choose dtype given val
   if(is.null(dtype)) {
-    dtype = choose(
+    dtype = pcase(
       is.integer(val),   pl$dtypes$Int32,
       is.double(val),    pl$dtypes$Float64,
       is.character(val), pl$dtypes$Utf8,
@@ -152,8 +151,8 @@ Series_repeat = \(name, val, n, dtype=NULL) {
   }
 
   #any conversion of val given dtype
-  val = choose(
-    # spoof int64 by setting val to float64, correct until 2^52 or so
+  val = pcase(
+    # spoof int64 by setting val to float64, correct until 2^52 or so, that's how we (R)oll
     dtype == pl$dtypes$Int64, (\() as.double(val))(),
     or_else = val
   )

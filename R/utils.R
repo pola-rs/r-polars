@@ -109,7 +109,9 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 
 
 
-#' Simple match/switch handler
+#' Simple SQL CASE WHEN implementation for R
+#'
+#' @description Inspired by data.table::fcase + dplyr::case_when. Used instead of base::switch internally.
 #'
 #' @param ... odd arugments are bool statements, a next even is returned if prior bool statement is the first true
 #' @param or_else return this if no bool statements were true
@@ -119,12 +121,12 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 #'
 #' @examples
 #' n=5
-#'choose(
+#' pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
 #'  or_else = abort(paste("failed to have a case for n=",n))
 #')
-choose = function(...,or_else = NULL) {
+pcase = function(..., or_else = NULL) {
   #get unevaluated args except header-function-name and or_else
   l = head(tail(as.list(sys.call()),-1),-1)
   #evaluate the odd args, if TRUE, evaluate and return the next even arg

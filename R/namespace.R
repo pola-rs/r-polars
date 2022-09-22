@@ -63,19 +63,7 @@ print.DataFrame = function(x) {
 }
 
 
-#' Print rpl$Series
-#'
-#' @param x Series
 
-#'
-#' @return self
-#' @export
-#'
-#' @examples pl$Series(letters,"lowercase_letters")
-print.Series = function(x) {
-  cat("polars Series: ")
-  x$print()
-}
 
 #' print a polars datatype
 #'

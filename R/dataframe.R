@@ -1,13 +1,14 @@
-
-
-
-#' test if suitable to construct polar.frame
+#' Validate data input for Dataframe_constructor
 #'
 #' @param robj any R object to test
 #'
-#' @return bool
+#' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
-#' @examples is_polar_data_input(iris)
+#' @return bool
+#' @export
+#'
+#' @examples is_DataFrame_data_input(iris)
+#' is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x,"data.frame") ||
     (
@@ -32,7 +33,7 @@ is_DataFrame_data_input = function(x) {
 # #
 #'
 #' @examples
-#' df$lazy()$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+#' pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
 42
 
 #' create new DataFrame
@@ -124,7 +125,7 @@ DataFrame_constructor = function(data) {
 #' @name lazy
 #' @rdname DataFrame
 #' @examples
-#'
+#' #use of lazy method
 #' pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
 42
 

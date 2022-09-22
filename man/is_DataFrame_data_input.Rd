@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe.R
 \name{is_DataFrame_data_input}
 \alias{is_DataFrame_data_input}
-\title{test if suitable to construct polar.frame}
+\title{Validate data input for Dataframe_constructor}
 \usage{
 is_DataFrame_data_input(x)
 }
@@ -13,8 +13,9 @@ is_DataFrame_data_input(x)
 bool
 }
 \description{
-test if suitable to construct polar.frame
+The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 }
 \examples{
-is_polar_data_input(iris)
+is_DataFrame_data_input(iris)
+is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 }
