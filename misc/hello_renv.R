@@ -2,3 +2,4 @@
 
 ## add any package below, the sxript will never be actually run
 library(devtools)
+library(pkgdown)
