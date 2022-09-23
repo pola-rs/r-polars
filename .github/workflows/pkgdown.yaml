@@ -54,6 +54,7 @@ jobs:
       - name: Install ubntu SYSTEM REQUIREMENTS
         if: runner.os == 'Linux'
         run: |
+          sudo su -
           apt-get install -y libfontconfig1-dev
           apt-get install -y libfreetype6-dev
           apt-get install -y libfribidi-dev
