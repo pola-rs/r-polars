@@ -89,20 +89,8 @@ jobs:
           cache-version: 2
 
 
-
-
-
-      #fail to make pak use cache, pak reinstalls rust, pandoc, cargo and so on
-      # - uses: r-lib/actions/setup-r-dependencies@v2
-      #   if: runner.os != 'macOS'
-      #   with:
-      #     extra-packages: any::pkgdown, devtools
-      #     cache: true
-      #     cache-version: 1
-
-      - name: Documents
-        run: devtools::document(roclets = c('rd', 'collate', 'namespace'))
-        shell: Rscript {0}
+      - name: build package
+        shell: R CMD INSTALL --no-multiarch --with-keep.source minipolars
 
       - name: build binary
         run: devtools::build(binary = TRUE, args = c('--preclean'))
@@ -113,7 +101,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, examples=FALSE)
+        run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
