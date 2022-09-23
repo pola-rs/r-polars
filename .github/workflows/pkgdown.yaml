@@ -52,7 +52,7 @@ jobs:
           brew install harfbuzz fribidi
 
       - name: Install ubntu SYSTEM REQUIREMENTS
-        if: runner.os == 'ubuntu'
+        if: runner.os == 'Linux'
         run: |
           apt-get install -y libfontconfig1-dev
           apt-get install -y libfreetype6-dev
