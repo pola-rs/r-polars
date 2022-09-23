@@ -83,6 +83,8 @@ jobs:
 
       - name: show rustup targets
         run: |
+          rustup target add x86_64-pc-windows-gnu --toolchain nightly
+          rustup target add i686-pc-windows-gnu --toolchain nightly
           rustup show
 
 
