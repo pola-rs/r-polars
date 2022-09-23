@@ -90,7 +90,8 @@ jobs:
 
 
       - name: build package
-        run: R CMD INSTALL --no-multiarch --with-keep.source minipolars
+        run: devtools::install(quick = TRUE)
+        shell: Rscript {0}
 
 
       - name: build binary
@@ -102,10 +103,12 @@ jobs:
         shell: Rscript {0}
 
       - name: Build site
+        if: runner.os == 'Linux'
         run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
+        if: runner.os == 'Linux'
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
