@@ -108,8 +108,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
-        if: runner.os == 'Linux'
-        if: github.event_name != 'pull_request'
+        if: runner.os == 'Linux' && github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false
