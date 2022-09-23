@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          #- { os: macOS-latest, r: "release", rust-version: "nightly" }
-          #- { os: ubuntu-latest, r: "release", rust-version: "nightly" }
+          - { os: macOS-latest, r: "release", rust-version: "nightly" }
+          - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
           - {os: windows-latest, r: 'release', rust-version: 'nightly'}  #skip windows fails nightly
 
     env:
@@ -41,6 +41,14 @@ jobs:
           profile: minimal
           toolchain: nightly
           default: true
+
+
+      - name: show rustup targets
+        if: runner.os == 'Windows'
+        run: |
+          rustup target add x86_64-pc-windows-gnu --toolchain nightly
+          rustup target add i686-pc-windows-gnu --toolchain nightly
+          rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -81,11 +89,7 @@ jobs:
           cache-version: 2
 
 
-      - name: show rustup targets
-        run: |
-          rustup target add x86_64-pc-windows-gnu --toolchain nightly
-          rustup target add i686-pc-windows-gnu --toolchain nightly
-          rustup show
+
 
 
       #fail to make pak use cache, pak reinstalls rust, pandoc, cargo and so on
