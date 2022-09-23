@@ -90,7 +90,8 @@ jobs:
 
 
       - name: build package
-        shell: R CMD INSTALL --no-multiarch --with-keep.source minipolars
+        run: R CMD INSTALL --no-multiarch --with-keep.source minipolars
+
 
       - name: build binary
         run: devtools::build(binary = TRUE, args = c('--preclean'))
