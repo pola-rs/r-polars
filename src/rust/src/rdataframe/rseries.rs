@@ -117,7 +117,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
     }
 }
 
-pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
+pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
     match s.dtype() {
         Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
@@ -128,9 +128,12 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::Result<Robj> {
         //alternatively try i32, handle overflow?, or convert to bit64
         UInt32 => s.u32().map(|ca| ca.into_iter().collect_robj()),
         Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
-        _ => {
-            todo!("hey only exports so far, f32/64,u32,i32/64,utf8 {:?}", s);
-        }
+        _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
+            format!(
+                "sorry minipolars has not yet implemented R conversion for Series.dtype: {}",
+                s.dtype()
+            ),
+        ))),
     }
 }
 

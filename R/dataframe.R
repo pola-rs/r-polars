@@ -164,7 +164,7 @@ DataFrame_get_column = function(name) {
 
 DataFrame_as_data_frame = function(...) {
   as.data.frame(
-    x = .pr$DataFrame$as_rlist_of_vectors(self),
+    x = unwrap(.pr$DataFrame$as_rlist_of_vectors(self)),
     col.names = .pr$DataFrame$colnames(self),
     ...
   )

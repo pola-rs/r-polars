@@ -153,15 +153,19 @@ impl DataFrame {
         l
     }
 
-    fn as_rlist_of_vectors(&self) -> Result<Robj, Error> {
-        let x: Result<Vec<Robj>, Error> = self
+    fn as_rlist_of_vectors(&self) -> List {
+        //convert DataFrame to Result of to R vectors, error if DataType is not supported
+        let robj_vec_res: Result<Vec<Robj>, Error> = self
             .0
             .iter()
             .map(series_to_r_vector_pl_result)
             .map(|x| x.map_err(|e| Error::from(wrap_error(e))))
             .collect();
 
-        Ok(r!(extendr_api::prelude::List::from_values(x?)))
+        //rewrap Ok(Vec<Robj>) as R list
+        let robj_list_res2 = robj_vec_res.map(|ok| r!(extendr_api::prelude::List::from_values(ok)));
+
+        r_result_list(robj_list_res2)
     }
 
     fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
