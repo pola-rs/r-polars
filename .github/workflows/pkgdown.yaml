@@ -46,8 +46,9 @@ jobs:
       - name: show rustup targets
         if: runner.os == 'Windows'
         run: |
-          rustup target add x86_64-pc-windows-gnu --toolchain nightly
-          rustup target add i686-pc-windows-gnu --toolchain nightly
+          rustup target add nightly-x86_64-pc-windows-gnu
+          rustup target add nightly-i686-pc-windows-gnu
+          rustup default nightly
           rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2

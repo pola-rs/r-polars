@@ -8,10 +8,7 @@ edition = '2021'
 crate-type = [ 'staticlib' ]
 
 [dependencies]
-extendr-api = "*"
+extendr-api = { git = "https://github.com/extendr/extendr"} 
 polars = {version = "0.24.0", features = ["abs","cum_agg","lazy","abs","round_series","csv-file","serde","parquet","object"]}
 flume = "*"
 state = "*"
-#extendr-api = {path = "../../../extendr/extendr-api"}
-#extendr-engine = { path = "../../../extendr/extendr-engine"}
-
