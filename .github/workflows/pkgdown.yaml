@@ -84,6 +84,9 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
           install-r: false
+          tools-version: "42"
+          update-rtools: true
+          Ncpus: 2
 
       - uses: r-lib/actions/setup-renv@v2
         with:
