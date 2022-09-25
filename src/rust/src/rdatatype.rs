@@ -65,6 +65,18 @@ impl DataTypeVector {
     }
 }
 
+pub fn new_join_type(s: &str) -> pl::JoinType {
+    match s {
+        "cross" => pl::JoinType::Cross,
+        "inner" => pl::JoinType::Inner,
+        "left" => pl::JoinType::Left,
+        "outer" => pl::JoinType::Outer,
+        "semi" => pl::JoinType::Semi,
+        "anti" => pl::JoinType::Anti,
+        _ => panic!("minipolars internal error: jointype not recognized"),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;

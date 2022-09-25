@@ -18,6 +18,12 @@ print.LazyFrame= function(x) {
   invisible(x)
 }
 
+
+#' @title Lazy_select
+#' @description select on a lazy DataFrame
+#'
+#' @param ... any single Expr or string naming a column
+#' @return A new `lazy_polar_frame` object with applied filter.
 Lazy_select = function(...) {
   pra = construct_ProtoExprArray(...)
   .pr$LazyFrame$select(self,pra)
@@ -32,6 +38,60 @@ Lazy_select = function(...) {
 Lazy_groupby = function(..., maintain_order = FALSE) {
   pra = construct_ProtoExprArray(...)
   .pr$LazyFrame$groupby(self,pra,maintain_order)
+}
+
+
+#' @param other LazyFrame
+#' @param on named columns as char vector of named columns, or list of expressions and/or strings.
+#' @param left_on names of columns in self LazyFrame, order should match. Type, see on param.
+#' @param right_on names of columns in other LazyFrame, order should match. Type, see on param.
+#' @param how a string selecting one of the following methods: inner, left, outer, semi, anti, cross
+#' @param suffix name to added right table
+#' @param allow_parallel bool
+#' @param force_parallel bool
+#'
+#' @title LazyFrame join
+#' @description join a lazy DataFrame
+#'
+#' @return A new `lazy_polar_frame` object with applied join.
+Lazy_join = function(
+  other,#: LazyFrame,
+  left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  how = c("inner", 'left', 'outer', 'semi', 'anti', 'cross'),
+  suffix = "_right",
+  allow_parallel = TRUE,
+  force_parallel  = FALSE
+  ) {
+
+  if(!inherits(other, "LazyFrame")) {
+    abort(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+  }
+
+  how_opts = c('inner', 'left', 'outer', 'semi', 'anti', 'cross')
+  how = match.arg(how[1],how_opts)
+
+  if(how == "cross") {
+    abort("not implemented how == cross")
+  }
+
+  if(!is.null(on)) {
+    rexprs = do.call(construct_ProtoExprArray,as.list(on))
+    rexprs_left  = rexprs
+    rexprs_right = rexprs
+  } else if ((!is.null(left_on) && !is.null(right_on))) {
+    rexprs_left  = do.call(construct_ProtoExprArray, as.list(left_on))
+    rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
+  } else {
+    abort("must specify `on` OR (  `left_on` AND `right_on` ) ")
+  }
+
+  .pr$LazyFrame$join(
+    self, other, rexprs_left, rexprs_right,
+    how, suffix, allow_parallel, force_parallel
+  )
+
 }
 
 

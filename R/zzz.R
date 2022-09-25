@@ -46,6 +46,7 @@ env$as_data_frame = GroupBy_as_data_frame
 env = minipolars:::LazyFrame
 env$select = Lazy_select
 env$groupby = Lazy_groupby
+env$join    = Lazy_join
 
 # LazyGroupBy
 env = minipolars:::LazyGroupBy

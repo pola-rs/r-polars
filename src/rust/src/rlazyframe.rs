@@ -1,7 +1,9 @@
 use crate::rdataframe::rexpr::*;
 use crate::rdataframe::wrap_errors::*;
 use crate::rdataframe::DataFrame;
+use crate::rdatatype::new_join_type;
 use extendr_api::prelude::*;
+
 use polars::prelude as pl;
 use std::result::Result;
 
@@ -49,6 +51,35 @@ impl LazyFrame {
         } else {
             LazyGroupBy(self.0.clone().groupby(expr_vec))
         }
+    }
+
+    fn join(
+        &self,
+        other: &LazyFrame,
+        left_on: &ProtoExprArray,
+        right_on: &ProtoExprArray,
+        how: &str,
+        suffix: &str,
+        allow_parallel: bool,
+        force_parallel: bool,
+    ) -> LazyFrame {
+        let ldf = self.0.clone();
+        let other = other.0.clone();
+        let left_on = pra_to_vec(left_on, "select");
+        let right_on = pra_to_vec(right_on, "select");
+        let how = new_join_type(how);
+
+        LazyFrame(
+            ldf.join_builder()
+                .with(other)
+                .left_on(left_on)
+                .right_on(right_on)
+                .allow_parallel(allow_parallel)
+                .force_parallel(force_parallel)
+                .how(how)
+                .suffix(suffix)
+                .finish(),
+        )
     }
 }
 

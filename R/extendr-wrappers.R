@@ -300,6 +300,8 @@ LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
+LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 
