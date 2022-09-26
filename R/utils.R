@@ -108,6 +108,36 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 }
 
 
+#' Verify user selected method/attribute exists
+#' @description internal function to check method call of env_classes
+#'
+#' @param Class_env env_class object (the classes created by extendr-wrappers.R)
+#' @param Method_name name of method requested by user
+#' @param call context to throw user error, just use default
+#'
+#' @return invisible(NULL)
+#'
+#' @examples unwrap(list(ok="foo",err=NULL))
+verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
+
+  if(!Method_name %in% names(Class_env)) {
+    abort(
+      paste(
+        Method_name,"is not a method/attribute of the class",
+        as.character(as.list(match.call())$Class_env)
+      ),
+      class = "syntax error",
+      call=NULL,
+      footer=paste(
+        "when calling:\n",
+        paste(capture.output(print(call)),collapse="\n")
+      )
+    )
+  }
+  invisible(NULL)
+}
+
+
 
 #' Simple SQL CASE WHEN implementation for R
 #'

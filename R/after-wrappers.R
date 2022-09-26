@@ -35,3 +35,42 @@ extendr_method_to_pure_functions = function(env) {
 .pr$Expr       = extendr_method_to_pure_functions(minipolars:::Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(minipolars:::ProtoExprArray)
 #TODO remove export
+
+
+
+
+##this macro must be defined now
+
+#' @title add syntax verification to class
+#'
+#' @param Class_name string name of env class
+#'
+#' @return dollarsign method with syntax verification
+#'
+#' @details this function overrides dollarclass method of a extendr env_class
+#' to run first verify_method_call() to check for syntax error and return
+#' more user friendly error if issues
+#'
+#' @examples macro_add_verify_to_class("DataFrame")
+macro_add_syntax_check_to_class = function(Class_name) {
+  tokens = paste0(
+    "`$.",Class_name,"` <- function (self, name) {\n",
+    "  verify_method_call(",Class_name,",name)\n",
+    "  func <- ",Class_name,"[[name]]\n",
+    "  environment(func) <- environment()\n",
+    "  func\n",
+    "}"
+  )
+
+  eval(parse(text = tokens), envir = parent.frame())
+}
+
+##modify classes to perform syntax cheking
+print("add syntax checking to env_classes")
+is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
+env_class_names = names(is_env_class)[is_env_class]
+for (i_class in env_class_names) {
+  if(!exists(paste0("$.",i_class))) abort("internal assertion failed, env class without a dollarsign method")
+  macro_add_syntax_check_to_class(i_class)
+}
+

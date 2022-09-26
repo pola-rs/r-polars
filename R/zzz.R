@@ -28,7 +28,9 @@ lapply(Series_ops, \(so) {
   invisible(NULL)
 })
 
+
 # modify these Dataframe methods
+macro_add_syntax_check_to_class("DataFrame")
 env = minipolars:::DataFrame
 env$as_data_frame = DataFrame_as_data_frame
 env$groupby = DataFrame_groupby
@@ -38,18 +40,26 @@ env$groupby_agg = NULL #this method belongs to GroupBy
 env$get_column = DataFrame_get_column
 env$join = DataFrame_join
 
+
+
+
+
 # GroupBy
+macro_add_syntax_check_to_class("GroupBy")
 env = minipolars:::GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
 
+
 # LazyFrame
+macro_add_syntax_check_to_class ("LazyFrame")
 env = minipolars:::LazyFrame
 env$select = Lazy_select
 env$groupby = Lazy_groupby
 env$join    = Lazy_join
 
 # LazyGroupBy
+macro_add_syntax_check_to_class("LazyGroupBy")
 env = minipolars:::LazyGroupBy
 env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
@@ -57,6 +67,7 @@ env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
 
 # Expr
+macro_add_syntax_check_to_class("Expr")
 env = minipolars:::Expr
 env$map = Expr_map
 env=""
