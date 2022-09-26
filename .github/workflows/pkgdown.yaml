@@ -86,11 +86,6 @@ jobs:
           update-rtools: true
           Ncpus: 2
 
-      - name: check rtools
-        run: |
-          install.packages("pkgbuild")
-          print(pkgbuild::rtools_path())
-
       - uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 2

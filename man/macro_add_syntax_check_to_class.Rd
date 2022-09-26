@@ -23,3 +23,6 @@ more user friendly error if issues
 \examples{
 macro_add_verify_to_class("DataFrame")
 }
+\seealso{
+verify_method_call
+}

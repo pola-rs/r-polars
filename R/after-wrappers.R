@@ -51,6 +51,8 @@ extendr_method_to_pure_functions = function(env) {
 #' to run first verify_method_call() to check for syntax error and return
 #' more user friendly error if issues
 #'
+#' @seealso verify_method_call
+#'
 #' @examples macro_add_verify_to_class("DataFrame")
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
@@ -66,6 +68,8 @@ macro_add_syntax_check_to_class = function(Class_name) {
 }
 
 ##modify classes to perform syntax cheking
+##this relies on no envrionment other than env_classes has been defined when macro called
+##this mod should be run immediately after extendr-wrappers.R are sourced
 print("add syntax checking to env_classes")
 is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
 env_class_names = names(is_env_class)[is_env_class]
