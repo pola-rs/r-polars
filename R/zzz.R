@@ -36,6 +36,7 @@ env$select = DataFrame_select
 env$filter = DataFrame_filter
 env$groupby_agg = NULL #this method belongs to GroupBy
 env$get_column = DataFrame_get_column
+env$join = DataFrame_join
 
 # GroupBy
 env = minipolars:::GroupBy

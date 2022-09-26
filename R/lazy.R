@@ -55,7 +55,7 @@ Lazy_groupby = function(..., maintain_order = FALSE) {
 #'
 #' @return A new `lazy_polar_frame` object with applied join.
 Lazy_join = function(
-  other,#: LazyFrame,
+  other,#: LazyFrame or DataFrame,
   left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
   right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
   on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -65,7 +65,11 @@ Lazy_join = function(
   force_parallel  = FALSE
   ) {
 
-  if(!inherits(other, "LazyFrame")) {
+  if (inherits(other, "LazyFrame")) {
+    #nothing
+  } else if (inherits(other, "DataFrame")){
+    other = other$lazy()
+  } else {
     abort(paste("Expected a `LazyFrame` as join table, got ", class(other)))
   }
 

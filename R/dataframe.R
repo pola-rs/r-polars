@@ -169,3 +169,23 @@ DataFrame_as_data_frame = function(...) {
     ...
   )
 }
+
+
+DataFrame_join = function(
+  other,#: LazyFrame or DataFrame,
+  left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+  how = c("inner", 'left', 'outer', 'semi', 'anti', 'cross'),
+  suffix = "_right",
+  allow_parallel = TRUE,
+  force_parallel  = FALSE
+) {
+
+  self$lazy()$join(
+    other = other$lazy(), left_on = left_on, right_on = right_on,
+    on=on,how=how, suffix=suffix, allow_parallel = allow_parallel,
+    force_parallel = force_parallel
+  )$collect()
+
+}
