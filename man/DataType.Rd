@@ -4,5 +4,18 @@
 \alias{DataType}
 \title{DataTypes polars types}
 \description{
-\code{DataType} are any types available in polars
+\code{DataType} any polars type (ported so far)
+}
+\examples{
+print(ls(pl$dtypes))
+pl$dtypes$Float64
+pl$dtypes$Utf8
+
+# Some DataType use case, this user lambda/function fails because....
+\dontrun{
+ pl$Series(1:4)$apply(\(x) letters[x])
+}
+#The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
+#specifying the output DataType: Utf8 solves the problem
+pl$Series(1:4)$apply(\(x) letters[x],datatype = pl$dtypes$Utf8)
 }

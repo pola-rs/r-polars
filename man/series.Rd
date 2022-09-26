@@ -21,5 +21,8 @@ Polars pl$Series
 found in api as pl$Series named Series_constructor internally
 }
 \examples{
-Series(1:4)
+{
+browser()
+pl$Series(1:4)
+}
 }

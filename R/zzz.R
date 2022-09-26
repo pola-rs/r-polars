@@ -42,8 +42,6 @@ env$join = DataFrame_join
 
 
 
-
-
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
 env = minipolars:::GroupBy
@@ -98,9 +96,8 @@ rm(env)
 pl = new.env(parent=emptyenv())
 
 #expression constructors
-pl$col = Expr$col
-pl$lit = Expr$lit
-pl$all = Expr$all_constructor #different from Expr$all (method)
+move_env_elements(Expr,pl,c("col","lit",all="all_constructor"), remove=  FALSE)
+#TODO decide on namespace rules, should there be a env for methods only?
 
 #DataFrame
 pl$DataFrame = minipolars:::DataFrame_constructor

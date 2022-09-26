@@ -2,31 +2,35 @@
 % Please edit documentation in R/dataframe.R
 \name{DataFrame}
 \alias{DataFrame}
-\alias{lazy}
+\alias{print()}
+\alias{print.DataFrame}
+\alias{DataFrame_lazy}
 \alias{select}
 \alias{DataFrame_select}
-\alias{filter}
-\alias{DataFrame_filter}
 \title{Polars DataFrame}
 \usage{
-DataFrame_select(...)
+\method{print}{DataFrame}(x)
 
-DataFrame_filter(bool_expr)
+select(...)
 }
 \arguments{
+\item{x}{DataFrame}
+
 \item{...}{any expressions or strings}
 
-\item{bool_expr}{Polars expression which will evaluate to a bool pl$Series}
-
 \item{data}{object inheriting data.frame or list of equal length vectors and/or Series.}
+}
+\value{
+self
 }
 \description{
 \code{DataFrame}-object is an \code{externalptr} to rust polars DataFrame with $methods() exposed.
 Most methods return another \code{DataFrame}-class instance or similar which allows for method chaining.
-\href{http://commonmark.org/help}{Commonmark web site}
 }
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+pl$DataFrame(iris)
 #use of lazy method
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
 }
+\keyword{DataFrame}

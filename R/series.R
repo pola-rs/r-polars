@@ -1,4 +1,21 @@
-#s3 wrapper for Series
+
+#' Print Series
+#'
+#' @param x Series
+#'
+#' @return selfie
+#' @export
+#'
+print.Series = function(x) {
+  cat("polars Series: ")
+  x$print()
+  invisible(x)
+}
+
+#' @export
+.DollarNames.Series = function(x, pattern = "") {
+  paste0(ls(minipolars:::Series),"()")
+}
 
 #' Series
 #'
@@ -24,7 +41,9 @@
 #' @export
 #' @aliases Series
 #'
-#' @examples Series(1:4)
+#' @examples {
+#' pl$Series(1:4)
+#' }
 Series_constructor =  function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
   if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x)) {
@@ -59,18 +78,8 @@ c.Series = \(x,...) {
 
 
 
-#' Print rpl$Series
-#'
-#' @param x Series
-#'
-#' @return selfie
-#' @export
-#'
-print.Series = function(x) {
-  cat("polars Series: ")
-  x$print()
-  x
-}
+
+
 
 #' wrap as literal
 #'

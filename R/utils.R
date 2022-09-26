@@ -169,4 +169,33 @@ pcase = function(..., or_else = NULL) {
 }
 
 
+#' Move environment element from one env to another
+#'
+#' @param from_env env from
+#' @param element_names names of elements to move, if named names, then name of name is to_env name
+#' @param remove bool, actually remove element in from_env
+#' @param to_env env to
+#'
+#' @details envs are mutable
+#' @return NULL
+#'
+move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 
+  names_from = element_names
+  names_to = if(is.null(names(element_names))) {
+    #no names defined use same name in from and to
+    names_from
+  } else {
+    #one or more names defined, use if named else use names_from
+    ifelse(nchar(names(element_names))>0L,names(element_names),names_from)
+  }
+
+  for (i in seq_along(element_names)) {
+    name_to = names_to[i]
+    name_from = names_from[i]
+    to_env[[name_to]] = from_env[[name_from]]
+    if(remove) rm(list = name_from, envir = from_env)
+  }
+
+  invisible(NULL)
+}

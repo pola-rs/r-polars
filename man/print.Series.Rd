@@ -2,7 +2,7 @@
 % Please edit documentation in R/series.R
 \name{print.Series}
 \alias{print.Series}
-\title{Print rpl$Series}
+\title{Print Series}
 \usage{
 \method{print}{Series}(x)
 }
@@ -13,5 +13,5 @@
 selfie
 }
 \description{
-Print rpl$Series
+Print Series
 }

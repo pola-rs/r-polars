@@ -1,4 +1,40 @@
+#' @title Polars Expr
+#'
+#' @description Polars pl$Expr
+#' @rdname Expr
+#' @name Expr
+#'
+#' @aliases Expr
+#'
+#' @examples
+#' #Expr has the following methods/constructors
+#' ls(minipolars:::Expr)
+#'
+#' pl$col("this_column")$sum()$over("that_column")
+42
 
+
+#' Print expr
+#'
+#' @param x Expr
+#' @rdname Expr
+#'
+#' @return self
+#' @export
+#'
+#' @examples pl$col("some_column")$sum()$over("some_other_column")
+print.Expr = function(x) {
+  cat("polars Expr: ")
+  x$print()
+  invisible(x)
+}
+
+
+
+#' @export
+.DollarNames.Expr = function(x, pattern = "") {
+  paste0(ls(minipolars:::Expr),"()")
+}
 
 
 #' construct proto Expr array from args
@@ -83,10 +119,6 @@ wrap_e = function(e) {
 #' @aliases lit
 #' @name lit
 #' @examples pl$col("some_column") / pl$lit(42)
-
-
-
-
 Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
   .pr$Expr$map(self,lambda,output_type,`_agg_list`)
 }

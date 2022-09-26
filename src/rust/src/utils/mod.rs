@@ -223,13 +223,13 @@ macro_rules! apply_output {
                     |robj| {
 
                         //downcast into expected type
-                        let opt_vals: Option<$dc_type> = robj.try_into().ok();
+                        let opt_vals: Option<$dc_type> = robj.clone().try_into().ok();
 
                         //check if successful downcast
                         if opt_vals.is_none() {
                             if $strict_downcast {
                                 return Err(extendr_api::Error::Other(
-                                    format!("a lambda returned {} and not the expected {} .  Try strict=FALSE, or change expected output type or rewrite lambda", "print rtype".to_string() ,stringify!($dc_type))
+                                    format!("a lambda returned {:?} and not the expected {} .  Try strict=FALSE, or change expected output type or rewrite lambda", robj.rtype() ,stringify!($dc_type))
                                 ))
                             } else {
                                 //return null to polars

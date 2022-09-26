@@ -13,6 +13,26 @@ local({
 
 
 
+unlockBinding("parse_usage",env=environment(pkgdown:::parse_usage))
+
+local(
+  {parse_usage = function (x) {
+
+    #print("nope")
+
+    y = usage_code(x)
+    print(y)
+    if(length(y)==0) return(list())
+    list(
+      list(
+        type = "data",
+        name = y
+      )
+    )
+    list(list())
+  }},
+  envir=environment(pkgdown:::parse_usage)
+)
 
 
 

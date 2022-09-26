@@ -1,3 +1,13 @@
 url: https://github.com/sorhawell/minipolars/
+reference:
+  # NSE
 
-
+  - title: minipolars classes
+    desc: >
+      The different class of minipolars are presented here.
+  - subtitle: DataFrame
+    contents:
+      - has_keyword("DataFrame")
+  - title: everything else
+    contents:
+      - -has_keyword("DataFrame")
