@@ -4,12 +4,12 @@
 \alias{Expr}
 \alias{print.Expr}
 \alias{lit}
-\alias{Expr_map}
+\alias{Expr_lit}
 \title{Polars Expr}
 \usage{
 \method{print}{Expr}(x)
 
-Expr_map(lambda, output_type = NULL, `_agg_list` = NULL)
+Expr_lit(x)
 }
 \arguments{
 \item{x}{any R expression yielding an integer, float or bool}

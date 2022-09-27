@@ -111,6 +111,23 @@ wrap_e = function(e) {
 
 
 
+#' polars map
+#'
+#' @param lambda r function mapping a series
+#' @param output_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#' @param `_agg_list` #not implemented yet
+#'
+#' @rdname Expr_map
+#' @return Expr
+#' @aliases Expr_map
+#' @details in minipolars lambda return should be a series or any R vector convertable into a Series. In PyPolars likely return must be Series.
+#' @name Expr_map
+#' @examples pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) paste("cheese",as.character(x$to_r_vector())),pl$dtypes$Utf8))
+Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
+  .pr$Expr$map(self,lambda,output_type,`_agg_list`)
+}
+
+
 #' polars literal
 #'
 #' @param x any R expression yielding an integer, float or bool
@@ -119,9 +136,7 @@ wrap_e = function(e) {
 #' @aliases lit
 #' @name lit
 #' @examples pl$col("some_column") / pl$lit(42)
-Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
-  .pr$Expr$map(self,lambda,output_type,`_agg_list`)
+Expr_lit = function(x) {
+  unwrap(.pr$Expr$lit(x))
 }
-
-
 

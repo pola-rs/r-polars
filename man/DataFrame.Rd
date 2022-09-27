@@ -15,9 +15,9 @@
 \usage{
 \method{print}{DataFrame}(x)
 
-select(...)
+DataFrame_select(...)
 
-select(...)
+DataFrame_with_columns(...)
 
 select(...)
 }

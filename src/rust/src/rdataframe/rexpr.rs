@@ -6,6 +6,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 
 use super::DataType;
+use crate::utils::r_result_list;
 
 #[derive(Clone, Debug)]
 #[extendr]
@@ -32,17 +33,43 @@ impl Expr {
         Expr(pl::col(name))
     }
 
-    pub fn lit(robj: Robj) -> Expr {
+    pub fn lit(robj: Robj) -> List {
         let rtype = robj.rtype();
         let rlen = robj.len();
-        let expr = match (rtype, rlen) {
-            (Rtype::Integers, 1) => pl::lit(robj.as_integer().unwrap()),
-            (Rtype::Doubles, 1) => pl::lit(robj.as_real().unwrap()),
-            (_, 1) => panic!("dunno what literal to make out of this"),
-            (_, _) => panic!("literal length must currently be one, so no c(1,2,3) allowed yet"),
-        };
 
-        Expr(expr)
+        fn lit_no_none<T>(x: Option<T>) -> std::result::Result<pl::Expr, String>
+        where
+            T: pl::Literal,
+        {
+            x.ok_or("NA not allowed use NULL".into())
+                .map(|ok| pl::lit(ok))
+        }
+
+        let expr = match (rtype, rlen) {
+            (Rtype::Null, _) => Ok(pl::lit(pl::NULL)),
+            (Rtype::Integers, 1) => lit_no_none(robj.as_integer()),
+            (Rtype::Doubles, 1) => lit_no_none(robj.as_real()),
+            (Rtype::Strings, 1) => {
+                if robj.is_na() {
+                    let none_str: Option<&str> = None;
+                    lit_no_none(none_str)
+                } else {
+                    lit_no_none(robj.as_str())
+                }
+            }
+            (Rtype::Logicals, 1) => lit_no_none(robj.as_bool()),
+            (x, 1) => Err(format!(
+                "$lit(val): minipolars not yet support rtype {:?}",
+                x
+            )),
+            (_, n) => Err(format!(
+                "$lit(val), literals mush have length one, not length: {:?}",
+                n
+            )),
+        }
+        .map(|ok| Expr(ok));
+
+        r_result_list(expr)
     }
 
     //suffix constructor if method by same name

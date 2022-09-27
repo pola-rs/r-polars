@@ -72,6 +72,7 @@ env$tail  = LazyGroupBy_tail
 macro_add_syntax_check_to_class("Expr")
 env = minipolars:::Expr
 env$map = Expr_map
+env$lit = Expr_lit
 env=""
 
 

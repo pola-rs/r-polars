@@ -39,7 +39,9 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
-    fn limit(&self, n: i64) -> LazyFrame {
+    fn limit(&self, n: u32) -> LazyFrame {
+        // from R side passed n rlang::is_integerish() and within [0;2^32-1]
+        // and therefore fully contained in u32. extendr auto converts if f64 or i32
         LazyFrame(self.0.clone().limit(n as u32))
     }
 
