@@ -8,9 +8,14 @@
 \alias{DataFrame_select}
 \alias{select}
 \alias{DataFrame_with_columns}
+\alias{with_columns}
+\alias{DataFrame_limit}
+\alias{limit}
 \title{Polars DataFrame}
 \usage{
 \method{print}{DataFrame}(x)
+
+select(...)
 
 select(...)
 
@@ -21,14 +26,25 @@ select(...)
 
 \item{...}{any expressions or strings}
 
+\item{n}{positive numeric or integer number not larger than 2^32}
+
 \item{data}{object inheriting data.frame or list of equal length vectors and/or Series.}
 }
 \value{
 self
+
+DataFrame
+
+DataFrame
 }
 \description{
 \code{DataFrame}-object is an \code{externalptr} to rust polars DataFrame with $methods() exposed.
 Most methods return another \code{DataFrame}-class instance or similar which allows for method chaining.
+
+take limit of n rows of query
+}
+\details{
+any number will converted to u32. Negative raises error
 }
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()

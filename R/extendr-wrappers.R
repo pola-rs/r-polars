@@ -296,6 +296,8 @@ LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
+LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
+
 LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)

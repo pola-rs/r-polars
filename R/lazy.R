@@ -39,6 +39,22 @@ Lazy_with_columns = function(...) {
   .pr$LazyFrame$with_columns(self,pra)
 }
 
+#' @title Lazy_limit
+#' @description take limit of n rows of query
+#'
+#' @param n positive numeric or integer number not larger than 2^32
+#' @importFrom  rlang is_scalar_integerish
+#'
+#' @details any number will converted to u32. Negative raises error
+#'
+#' @return A new `lazy_polar_frame` object with applied filter.
+Lazy_limit = function(n) {
+  if(!is_scalar_integerish(n) || n>2^32-1 || n<0) {
+    unwrap(list(err=paste("in LazyFrame$limit(n): n must be integerish within the bounds [0; 2^32-1]. n was:",n)))
+  }
+  .pr$LazyFrame$limit(self,n)
+}
+
 
 #' @title Lazy_groupby
 #' @description

@@ -40,6 +40,7 @@ env$filter = DataFrame_filter
 env$groupby_agg = NULL #this method belongs to GroupBy
 env$get_column = DataFrame_get_column
 env$join = DataFrame_join
+env$limit = DataFrame_limit
 
 
 
@@ -57,6 +58,7 @@ env$select = Lazy_select
 env$with_columns = Lazy_with_columns
 env$groupby = Lazy_groupby
 env$join    = Lazy_join
+env$limit   = Lazy_limit
 
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")

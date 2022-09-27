@@ -39,6 +39,10 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
+    fn limit(&self, n: i64) -> LazyFrame {
+        LazyFrame(self.0.clone().limit(n as u32))
+    }
+
     fn filter(&self, expr: &Expr) -> LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         LazyFrame(new_df)

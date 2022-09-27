@@ -166,12 +166,28 @@ DataFrame_select = function(...) {
 
 #' @name DataFrame_with_columns
 #' @rdname DataFrame
-#' @aliases select
+#' @aliases with_columns
 #' @param ... any expressions or strings
 #' @keywords  DataFrame
 #' @usage select(...)
+#' @return DataFrame
 DataFrame_with_columns = function(...) {
   self$lazy()$with_columns(...)$collect()
+}
+
+#' @name DataFrame_limit
+#' @description take limit of n rows of query
+#' @rdname DataFrame
+#' @aliases limit
+#' @param n positive numeric or integer number not larger than 2^32
+#' @importFrom  rlang is_scalar_integerish
+#'
+#' @details any number will converted to u32. Negative raises error
+#' @keywords  DataFrame
+#' @usage select(...)
+#' @return DataFrame
+DataFrame_limit = function(n) {
+  self$lazy()$limit(n)$collect()
 }
 
 

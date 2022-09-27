@@ -276,3 +276,39 @@ test_that("with_columns lazy/eager", {
   )
 
 })
+
+
+test_that("limit lazy/eager", {
+
+  l = list(
+    a = 1:4,
+    b = c(.5,4,10,13),
+    c = c(T,T,F,T)
+  )
+  df = pl$DataFrame(l)
+  ldf = df$lazy()
+
+  expect_identical(
+    df$limit(2)$as_data_frame(),
+    rdf[1:2,]
+  )
+
+  expect_identical(
+    ldf$limit(2)$collect()$as_data_frame(),
+    rdf[1:2,]
+  )
+
+
+  #lazy bounds
+  expect_identical(df$limit(0)$as_data_frame(),rdf[integer(),])
+  expect_error(ldf$limit(-1))
+  expect_error(ldf$limit(2^32))
+  expect_identical(ldf$limit(2^32-1)$collect()$as_data_frame(),rdf)
+
+  #eager bounds
+  expect_identical(ldf$limit(0)$collect()$as_data_frame(),rdf[integer(),])
+  expect_error(df$limit(-1))
+  expect_error(df$limit(2^32))
+  expect_identical(df$limit(2^32-1)$as_data_frame(),rdf)
+
+})
