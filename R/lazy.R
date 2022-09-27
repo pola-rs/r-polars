@@ -29,6 +29,16 @@ Lazy_select = function(...) {
   .pr$LazyFrame$select(self,pra)
 }
 
+#' @title Lazy_with_columns
+#' @description add or replace columns of lazy DataFrame
+#'
+#' @param ... any single Expr or string naming a column
+#' @return A new `lazy_polar_frame` object with applied filter.
+Lazy_with_columns = function(...) {
+  pra = construct_ProtoExprArray(...)
+  .pr$LazyFrame$with_columns(self,pra)
+}
+
 
 #' @title Lazy_groupby
 #' @description

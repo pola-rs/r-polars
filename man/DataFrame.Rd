@@ -5,11 +5,14 @@
 \alias{print()}
 \alias{print.DataFrame}
 \alias{DataFrame_lazy}
-\alias{select}
 \alias{DataFrame_select}
+\alias{select}
+\alias{DataFrame_with_columns}
 \title{Polars DataFrame}
 \usage{
 \method{print}{DataFrame}(x)
+
+select(...)
 
 select(...)
 }

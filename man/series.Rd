@@ -22,7 +22,6 @@ found in api as pl$Series named Series_constructor internally
 }
 \examples{
 {
-browser()
 pl$Series(1:4)
 }
 }

@@ -53,6 +53,14 @@ impl LazyFrame {
         }
     }
 
+    fn with_columns(&self, exprs: &ProtoExprArray) -> LazyFrame {
+        LazyFrame(self.0.clone().with_columns(pra_to_vec(exprs, "select")))
+    }
+
+    fn with_column(&self, expr: &Expr) -> LazyFrame {
+        LazyFrame(self.0.clone().with_column(expr.0.clone()))
+    }
+
     fn join(
         &self,
         other: &LazyFrame,

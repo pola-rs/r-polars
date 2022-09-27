@@ -35,6 +35,7 @@ env = minipolars:::DataFrame
 env$as_data_frame = DataFrame_as_data_frame
 env$groupby = DataFrame_groupby
 env$select = DataFrame_select
+env$with_columns = DataFrame_with_columns
 env$filter = DataFrame_filter
 env$groupby_agg = NULL #this method belongs to GroupBy
 env$get_column = DataFrame_get_column
@@ -53,6 +54,7 @@ env$as_data_frame = GroupBy_as_data_frame
 macro_add_syntax_check_to_class ("LazyFrame")
 env = minipolars:::LazyFrame
 env$select = Lazy_select
+env$with_columns = Lazy_with_columns
 env$groupby = Lazy_groupby
 env$join    = Lazy_join
 

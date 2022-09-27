@@ -235,3 +235,44 @@ test_that("get coloumn", {
       $get_column("wrong_name")
   )
 })
+
+
+
+test_that("with_columns lazy/eager", {
+
+  l = list(
+    a = 1:4,
+    b = c(.5,4,10,13),
+    c = c(T,T,F,T)
+  )
+  df = pl$DataFrame(l)
+  ldf = df$lazy()
+
+  df_actual = df$with_columns(
+    (pl$col("a")*2)$alias("a*2"),
+    (pl$col("b")/2)$alias("b/2"),
+    (!pl$col("c"))$alias("not c")
+  )
+  ldf_actual = ldf$with_columns(
+    (pl$col("a")*2)$alias("a*2"),
+    (pl$col("b")/2)$alias("b/2"),
+    (!pl$col("c"))$alias("not c")
+  )
+
+  rdf = do.call(data.frame,l)
+  rdf$`a*2` = rdf$a * 2
+  rdf$`b/2` = rdf$b / 2
+  rdf$`not c` = !rdf$c
+
+
+  expect_identical(
+    df_actual$as_data_frame(check.names = FALSE),
+    rdf
+  )
+
+  expect_identical(
+    ldf_actual$collect()$as_data_frame(check.names = FALSE),
+    rdf
+  )
+
+})

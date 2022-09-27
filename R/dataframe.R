@@ -153,7 +153,7 @@ DataFrame_constructor = function(data) {
 42
 
 
-#' @name select
+#' @name DataFrame_select
 #' @rdname DataFrame
 #' @aliases select
 #' @param ... any expressions or strings
@@ -162,6 +162,16 @@ DataFrame_constructor = function(data) {
 DataFrame_select = function(...) {
   exprs = construct_ProtoExprArray(...)
   unwrap(.pr$DataFrame$select(self,exprs))
+}
+
+#' @name DataFrame_with_columns
+#' @rdname DataFrame
+#' @aliases select
+#' @param ... any expressions or strings
+#' @keywords  DataFrame
+#' @usage select(...)
+DataFrame_with_columns = function(...) {
+  self$lazy()$with_columns(...)$collect()
 }
 
 
