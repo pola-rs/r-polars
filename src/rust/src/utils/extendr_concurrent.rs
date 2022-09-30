@@ -62,12 +62,16 @@ where
 
     //send request to main thread
     pub fn send(&self, s: S) {
-        self.mains_tx.send((s, self.child_tx.clone())).unwrap()
+        self.mains_tx
+            .send((s, self.child_tx.clone()))
+            .expect("thread failed send, likely a user interrupt")
     }
 
     //wait to recieve answer from main thread
     pub fn recv(&self) -> R {
-        self.child_rx.recv().unwrap()
+        self.child_rx
+            .recv()
+            .expect("thread failed recieve, likely a user interrupt")
     }
 
     //clone only main unbounded, create new unique child unbounded (such that each thread has unique comminucation when main)
@@ -189,7 +193,7 @@ where
                         let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
                         if res_res.is_err() {
                             rprintln!("R user interrupt");
-                            break;
+                            return Err("interupt by user".into());
                         }
 
                         //check if spawned thread has ended, first child thread should have
