@@ -31,12 +31,12 @@ pub struct DataFrame(pub pl::DataFrame);
 fn handle_thread_r_requests(
     self_df: DataFrame,
     exprs: Vec<pl::Expr>,
-) -> extendr_api::Result<DataFrame> {
+) -> std::result::Result<DataFrame, Box<dyn std::error::Error>> {
     let res_res_df = concurrent_handler(
         //call this polars code
         move |tc| {
             //use polars and R functions concurrently
-            let retval = self_df.0.lazy().select(exprs).collect().map_err(wrap_error);
+            let retval = self_df.0.lazy().select(exprs).collect();
 
             //drop global ThreadCom clone
             ThreadCom::kill_global(&CONFIG);
@@ -88,10 +88,9 @@ fn handle_thread_r_requests(
         &CONFIG,
     );
 
-    let res_df = res_res_df
-        .and_then(|ok| ok.map_err(|_err| extendr_api::Error::Other("some polars error".into())));
+    let res_df = res_res_df?;
 
-    let new_df = res_df?;
+    let new_df = res_df.map_err(|err| err.to_string())?;
     Ok(DataFrame(new_df))
 }
 

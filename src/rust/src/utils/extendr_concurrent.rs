@@ -135,7 +135,7 @@ pub fn concurrent_handler<F, I, R, S, T, Y>(
     y: Y,
     i: I,
     conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>,
-) -> std::result::Result<T, extendr_api::error::Error>
+) -> std::result::Result<T, Box<dyn std::error::Error>>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
     I: Fn(S, Robj) -> Result<R> + Send + 'static,
@@ -174,8 +174,9 @@ where
         //avoid using unwrap/unwrap_err if msg is Debug
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
-            let answer = i(s, robj.clone()); //handle requst with g closure
-            let a = answer?;
+            let answer = i(s, robj.clone()); //handle requst with i closure
+            let a = answer
+                .map_err(|err| format!("user function raised an error: {:?} \n {}", robj, err))?;
 
             let _send_result = c_tx.send(a).unwrap();
         } else {
