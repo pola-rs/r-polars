@@ -32,16 +32,27 @@ lapply(Series_ops, \(so) {
 
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
+#browser()
 env = minipolars:::DataFrame
-env$as_data_frame = DataFrame_as_data_frame
-env$groupby = DataFrame_groupby
-env$select = DataFrame_select
-env$with_columns = DataFrame_with_columns
-env$filter = DataFrame_filter
-env$groupby_agg = NULL #this method belongs to GroupBy
-env$get_column = DataFrame_get_column
-env$join = DataFrame_join
-env$limit = DataFrame_limit
+rm(list=ls(env),envir = env)
+impl_methods_DataFrame = ls(pattern="DataFrame_")
+name_methods_DataFrame = sub("^DataFrame_","",impl_methods_DataFrame)
+
+for(i in seq_along(impl_methods_DataFrame)) {
+  env[[name_methods_DataFrame[i]]] = get(impl_methods_DataFrame[i])
+}
+#local(env,rm(list=ls()))
+#browser()
+# env$as_data_frame = DataFrame_as_data_frame
+# env$groupby = DataFrame_groupby
+# env$select = DataFrame_select
+# env$with_columns = DataFrame_with_columns
+# env$filter = DataFrame_filter
+# #env$groupby_agg = NULL #this method belongs to GroupBy
+# env$get_column = DataFrame_get_column
+# env$join = DataFrame_join
+# env$limit = DataFrame_limit
+# env$shap
 
 
 

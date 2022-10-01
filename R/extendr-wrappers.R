@@ -18,7 +18,9 @@ new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, r
 
 DataFrame <- new.env(parent = emptyenv())
 
-DataFrame$clone_extendr <- function() .Call(wrap__DataFrame__clone_extendr, self)
+DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
+
+DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
 
 DataFrame$new <- function() .Call(wrap__DataFrame__new)
 
@@ -32,15 +34,13 @@ DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_colum
 
 DataFrame$print <- function() invisible(.Call(wrap__DataFrame__print, self))
 
-DataFrame$name <- function() .Call(wrap__DataFrame__name, self)
-
-DataFrame$colnames <- function() .Call(wrap__DataFrame__colnames, self)
+DataFrame$columns <- function() .Call(wrap__DataFrame__columns, self)
 
 DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, name)
 
 DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
 
-DataFrame$as_rlist_of_vectors <- function() .Call(wrap__DataFrame__as_rlist_of_vectors, self)
+DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 

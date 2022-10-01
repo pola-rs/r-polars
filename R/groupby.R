@@ -82,8 +82,8 @@ GroupBy_agg = function(...) {
 #' @examples pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
 GroupBy_as_data_frame = function(...) {
   as.data.frame(
-    x = unwrap(.pr$DataFrame$as_rlist_of_vectors(self)),
-    col.names = .pr$DataFrame$colnames(self),
+    x = unwrap(.pr$DataFrame$to_list(self)),
+    col.names = .pr$DataFrame$columns(self),
     ...
   )
 }

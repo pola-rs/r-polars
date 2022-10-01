@@ -13,7 +13,7 @@ DataFrame
   paste0(ls(minipolars:::DataFrame),"()")
 }
 
-#' print DataFrame
+#' s3 method print DataFrame
 #'
 #' @param x DataFrame
 #' @rdname DataFrame
@@ -29,8 +29,21 @@ print.DataFrame = function(x) {
   invisible(x)
 }
 
+#' internal method print DataFrame
+#'
+#' @param x DataFrame
+#' @rdname DataFrame
+#' @name print()
+#'
+#' @return self
+#' @export
+#'
+#' @examples pl$DataFrame(iris)
+DataFrame_print = function(x) {
+  .pr$DataFrame$print(self)
+}
 
-
+##"Class methods"
 
 #' Validate data input for Dataframe_constructor
 #'
@@ -55,7 +68,117 @@ is_DataFrame_data_input = function(x) {
 }
 
 
+##"properties"
 
+
+#' @name DataFrame_shape
+#' @description Get shape of DataFrame
+#' @rdname DataFrame
+#' @return two length numeric vector of shape
+#' @aliases shape
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$shape()
+#'
+DataFrame_shape = function() {
+  .pr$DataFrame$shape(self)
+}
+
+#' @name DataFrame_height
+#' @description Get height(nrow) of DataFrame
+#' @rdname DataFrame
+#' @return height as numeric
+#' @aliases height, nrow
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$height()
+#'
+DataFrame_height = function() {
+  .pr$DataFrame$shape(self)[1]
+}
+
+
+#' @name DataFrame_width
+#' @description Get width(ncol) of DataFrame
+#' @rdname DataFrame
+#' @return width as numeric
+#' @aliases width, nrow
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$width()
+#'
+DataFrame_width = function() {
+  .pr$DataFrame$shape(self)[2]
+}
+
+#' @name DataFrame_lazy
+#' @description DataFrame to LazyFrame
+#' @rdname DataFrame
+#' @return LazyFrame
+#' @aliases lazy
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$lazy()
+#'
+DataFrame_lazy = function() {
+  .pr$DataFrame$lazy(self)
+}
+
+#' @name DataFrame_clone
+#' @description clone DataFrame
+#' @rdname DataFrame
+#' @return DataFrame
+#' @aliases clone
+#' @keywords  DataFrame
+#' @examples
+#' df1 = pl$DataFrame(iris);
+#' df2 =  df1$clone();
+#' df3 = df1
+#' xptr::xptr_address(df1) != xptr::xptr_address(df2)
+#' xptr::xptr_address(df1) == xptr::xptr_address(df3)
+#'
+DataFrame_clone = function() {
+  .pr$DataFrame$clone_see_me_macro(self)
+}
+
+#' @name DataFrame_get_columns
+#' @description get columns as list of series
+#' @rdname DataFrame
+#' @return list of series
+#' @aliases get_columns
+#' @keywords  DataFrame
+#' @examples
+#' df = pl$DataFrame(iris[1,])
+#' df$get_columns()
+DataFrame_get_columns = function() {
+  .pr$DataFrame$get_columns(self)
+}
+
+#' @name DataFrame_get_column
+#' @description get one column by name as series
+#' @rdname DataFrame
+#' @return Series
+#' @aliases get_column
+#' @keywords  DataFrame
+#' @examples
+#' df = pl$DataFrame(iris[1,])
+#' df$get_column("Species")
+DataFrame_get_column = function(name) {
+  unwrap(.pr$DataFrame$get_column(self, name))
+}
+
+#' @name to_list
+#' @description DataFrame to R list of vectors
+#' @rdname DataFrame
+#' @return R list of vectors
+#' @aliases to_list
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$to_list()
+#'
+DataFrame_to_list = function() {
+  unwrap(.pr$DataFrame$to_list())
+}
 
 
 
@@ -129,18 +252,19 @@ DataFrame_constructor = function(data) {
 
   ##step 4
   #buildDataFrameone column at the time
-  df = .pr$DataFrame$new_with_capacity(length(data))
+  self = .pr$DataFrame$new_with_capacity(length(data))
   mapply(data,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
       column$rename_mut(key)
-      unwrap(df$set_column_from_series(column))
+
+      unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {
-      unwrap(df$set_column_from_robj(column,key))
+      unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
     }
     return(NULL)
   })
 
-  return(df)
+  return(self)
 }
 
 
@@ -231,6 +355,18 @@ DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self,name))
 }
 
+#' column names
+#' @description get column names as DataFrames
+#'
+#' @return char vec of column names
+#' @export
+#' @keywords DataFrame
+#'
+#' @examples pl$DataFrame(iris)$columns()
+DataFrame_columns = function() {
+  .pr$DataFrame$columns(self)
+}
+
 
 
 #' return polars DataFrame as R data.frame
@@ -244,26 +380,25 @@ DataFrame_get_column = function(name) {
 #' @examples pl$DataFrame(iris)$as_data_frame()
 DataFrame_as_data_frame = function(...) {
   as.data.frame(
-    x = unwrap(.pr$DataFrame$as_rlist_of_vectors(self)),
-    col.names = .pr$DataFrame$colnames(self),
+    x = unwrap(.pr$DataFrame$to_list(self)),
+    col.names = .pr$DataFrame$columns(self),
     ...
   )
 }
 
+#' return polars DataFrame as R lit of vectors
+#' @name to_list
+#' @rdname DataFrame
+#'
+#' @return R list of vectors
+#' @export
+#' @keywords DataFrame
+#' @examples pl$DataFrame(iris)$as_data_frame()
+DataFrame_to_list = function() {
+  unwrap(.pr$DataFrame$to_list(self))
+}
 
-#
-##' add/modify a series of DataFrame
-##'
-##' @param series passed to dataframe
-##'
-##' @return data.frame
-##' @export
-##' @keywords DataFrame
-##' @examples pl$DataFrame(iris)$set_column_from_series(Series(1:150,"ints"))
-#DataFrame_set_column_from_series = function(series) {
-#  unwrap(.pr$set_column_from_series(series))
-#}
-#
+
 
 #' join DataFrame with other DataFrame
 #'
@@ -280,12 +415,10 @@ DataFrame_as_data_frame = function(...) {
 #' @export
 #' @keywords DataFrame
 #' @examples
-#'pl$DataFrame(
-#'  list(key=1:3,payload=c("f","i",NA))
-#')$join(
-#'  other = pl$DataFrame(list(key=c(3L,4L,5L,NA))),
-#'  on = "key"
-#')
+#'
+#' print(df1 <- pl$DataFrame(list(key=1:3,payload=c('f','i',NA))))
+#' print(df2 <- pl$DataFrame(list(key=c(3L,4L,5L,NA_integer_))))
+#' df1$join(other = df2,on = 'key')
 DataFrame_join = function(
   other,#: LazyFrame or DataFrame,
   left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -297,7 +430,7 @@ DataFrame_join = function(
   force_parallel  = FALSE
 ) {
 
-  self$lazy()$join(
+  .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
     on=on,how=how, suffix=suffix, allow_parallel = allow_parallel,
     force_parallel = force_parallel
