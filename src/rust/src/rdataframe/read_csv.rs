@@ -112,8 +112,8 @@ pub fn rlazy_csv_reader(
         .with_null_values(Wrap(null_values).into());
 
     let result = r.finish().map(|ldf| LazyFrame(ldf));
-    use crate::utils::r_result_list_no_debug;
-    r_result_list_no_debug(result)
+
+    r_result_list(result)
 }
 
 extendr_module! {

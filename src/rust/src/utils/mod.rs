@@ -1,6 +1,7 @@
 pub mod extendr_concurrent;
 
 pub mod wrappers;
+use extendr_api::prelude::IntoRobj;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
 #[macro_export]
@@ -258,34 +259,7 @@ macro_rules! apply_output {
     };
 }
 
-//Unwrap result and throw r error instead of panic!. This leaks memory big time.
-//panic! unwinds all objects, throwing R error will most times result in leaving behind
-//rust 'instance' with all allocated mem unrecoverable.
-pub unsafe fn r_unwrap<T, E>(x: Result<T, E>) -> T
-where
-    T: std::fmt::Debug,
-    E: std::fmt::Debug + std::fmt::Display,
-{
-    x.map_err(|err| extendr_api::throw_r_error(err.to_string()))
-        .unwrap()
-}
-
-//convert rust Result into either list(ok=ok_value,err=NULL) or list(ok=NULL,err=err_string)
-//use custom unwrap-function on R side or any custom code to read results and/or throw errors.
-use extendr_api::prelude::IntoRobj;
 pub fn r_result_list<T, E>(x: Result<T, E>) -> extendr_api::prelude::list::List
-where
-    T: std::fmt::Debug + IntoRobj,
-    E: std::fmt::Debug + std::fmt::Display,
-{
-    if x.is_ok() {
-        extendr_api::prelude::list!(ok = x.unwrap().into_robj(), err = extendr_api::NULL)
-    } else {
-        extendr_api::prelude::list!(ok = extendr_api::NULL, err = x.unwrap_err().to_string())
-    }
-}
-
-pub fn r_result_list_no_debug<T, E>(x: Result<T, E>) -> extendr_api::prelude::list::List
 where
     T: IntoRobj,
     E: std::fmt::Display,

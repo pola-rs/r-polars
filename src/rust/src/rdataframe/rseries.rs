@@ -4,7 +4,7 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::DataType;
-use crate::utils::{r_result_list, r_unwrap};
+use crate::utils::r_result_list;
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
@@ -136,25 +136,6 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::PolarsResult<Robj> {
     }
 }
 
-// pub fn my_test_fun() -> Result<i32> {
-//     let v = vec![2,3,4,5];
-
-//     v.iter().map(|i| {
-//         let res_i = if i%2==0 {
-//             Ok(i)
-//         } else {
-//             Err("oups")
-//         };
-//         res_i
-//     }).map(|x| {
-//         res_i.map(|i| {
-//             i<=3 {Ok(i)} else {Err("oups2")}
-//         });
-
-//     });
-
-//     Ok(42)
-// }
 impl From<polars::prelude::Series> for Series {
     fn from(pls: polars::prelude::Series) -> Self {
         Series(pls)
@@ -319,11 +300,6 @@ impl Series {
         r!([self.0.len() as i32, 1])
     }
 
-    pub fn abs_unsafe(&self) -> Series {
-        let x = self.0.clone().abs().map(|x| Series(x));
-        unsafe { r_unwrap(x) }
-    }
-
     pub fn abs(&self) -> list::List {
         let x = self.0.clone().abs().map(|x| Series(x));
         r_result_list(x)
@@ -335,10 +311,10 @@ impl Series {
         Series(s)
     }
 
-    pub fn all(&self) -> bool {
+    pub fn all(&self) -> List {
         let mut one_not_true = false;
-        unsafe {
-            for i in r_unwrap(self.0.bool()).into_iter() {
+        let result = || -> std::result::Result<bool, Box<dyn std::error::Error>> {
+            for i in self.0.bool()?.into_iter() {
                 if let Some(b) = i {
                     if b {
                         continue;
@@ -347,8 +323,9 @@ impl Series {
                 one_not_true = true;
                 break;
             }
-        }
-        !one_not_true
+            Ok(!one_not_true)
+        }();
+        r_result_list(result)
     }
 
     pub fn any(&self) -> Result<bool> {

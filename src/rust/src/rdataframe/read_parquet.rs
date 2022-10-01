@@ -1,4 +1,4 @@
-use crate::utils::r_result_list_no_debug;
+use crate::utils::r_result_list;
 
 use crate::rlazyframe::LazyFrame;
 
@@ -44,7 +44,7 @@ pub fn new_from_parquet(
     let lf_result = pl::LazyFrame::scan_parquet(path, args)
         .map_err(|x| x.to_string())
         .map(|lf| LazyFrame(lf));
-    r_result_list_no_debug(lf_result)
+    r_result_list(lf_result)
 }
 
 extendr_module! {

@@ -198,8 +198,6 @@ Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, na
 
 Series$shape <- function() .Call(wrap__Series__shape, self)
 
-Series$abs_unsafe <- function() .Call(wrap__Series__abs_unsafe, self)
-
 Series$abs <- function() .Call(wrap__Series__abs, self)
 
 Series$alias <- function(name) .Call(wrap__Series__alias, self, name)

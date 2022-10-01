@@ -195,14 +195,27 @@ Series_apply   = \(
 }
 
 
-#' is_unique
+#' Series_is_unique
 #'
 #'
 #' @return Series
-#' @example pl$Series(c(1:2,2L))$is_unique()
+#' @examples
+#' pl$Series(c(1:2,2L))$is_unique()
 #'
 Series_is_unique = function() {
   unwrap(.pr$Series$is_unique(self))
+}
+
+
+#' Series_all
+#'
+#'
+#' @return bool
+#' @examples
+#' pl$Series(1:10)$is_unique()$all()
+#'
+Series_all = function() {
+  unwrap(.pr$Series$all(self))
 }
 
 

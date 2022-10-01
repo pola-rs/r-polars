@@ -16,7 +16,7 @@ env$abs         = Series_abs
 env$apply       = Series_apply
 env$value_counts= Series_value_counts
 env$is_unique   = Series_is_unique
-
+env$all         = Series_all
 
 #rewrite all binary operators or other methods to accept something that can turn into a Series
 lapply(Series_ops, \(so) {
