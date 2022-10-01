@@ -17,7 +17,7 @@ Collate:
     'extendr-wrappers.R'
     'after-wrappers.R'
     'csv.R'
-    'dataframe.R'
+    'dataframe_frame.R'
     'datatype.R'
     'expr.R'
     'groupby.R'

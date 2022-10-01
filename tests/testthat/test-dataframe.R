@@ -181,7 +181,7 @@ test_that("cloning", {
   testthat::expect_true(xptr::xptr_address(pf) == xptr::xptr_address(pf2))
 
   #deep copy clone rust side object, hence not same mem address
-  pf3 = pf$clone_extendr()
+  pf3 = pf$clone()
   testthat::expect_true(all.equal(pf,pf3))
   testthat::expect_true(xptr::xptr_address(pf) != xptr::xptr_address(pf3))
 
@@ -313,3 +313,4 @@ test_that("limit lazy/eager", {
   expect_identical(df$limit(2^32-1)$as_data_frame(),rdf)
 
 })
+

@@ -95,10 +95,17 @@ fn handle_thread_r_requests(
 
 #[extendr]
 impl DataFrame {
-    fn clone_extendr(&self) -> DataFrame {
+    pub fn shape(&self) -> Robj {
+        let shp = self.0.shape();
+        r!([shp.0, shp.1])
+    }
+
+    //renamed back to clone
+    fn clone_see_me_macro(&self) -> DataFrame {
         self.clone()
     }
 
+    //internal use
     fn new() -> Self {
         let empty_series: Vec<pl::Series> = Vec::new();
         DataFrame(pl::DataFrame::new(empty_series).unwrap())
@@ -108,16 +115,19 @@ impl DataFrame {
         LazyFrame(self.0.clone().lazy())
     }
 
+    //internal use
     fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
         DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
+    //internal use
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> List {
         let new_series = robjname2series(&robj, name);
         r_result_list(self.0.with_column(new_series).map(|_| ()))
     }
 
+    //internal use
     fn set_column_from_series(&mut self, x: &Series) -> List {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
         r_result_list(self.0.with_column(s).map(|_| ()))
@@ -126,12 +136,8 @@ impl DataFrame {
     fn print(&self) {
         rprintln!("{:#?}", self.0);
     }
-
-    fn name(&self) -> String {
-        self.0.to_string()
-    }
-
-    fn colnames(&self) -> Vec<String> {
+    //ping
+    fn columns(&self) -> Vec<String> {
         self.0.get_column_names_owned()
     }
 
@@ -149,7 +155,7 @@ impl DataFrame {
         l
     }
 
-    fn as_rlist_of_vectors(&self) -> List {
+    fn to_list(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> =
             self.0.iter().map(series_to_r_vector_pl_result).collect();
@@ -167,6 +173,7 @@ impl DataFrame {
         r_result_list(res_df)
     }
 
+    //used in GroupBy, not DataFrame
     fn by_agg(
         &mut self,
         group_exprs: &ProtoExprArray,

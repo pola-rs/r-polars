@@ -223,11 +223,10 @@ test_that("to_frame", {
   )
 
   #low level test
-  rdf = minipolars:::DataFrame$new_with_capacity(1L);
-  unwrap(rdf$set_column_from_robj(1:3, "foo"))
+  rdf = pl$DataFrame(list(foo=1:3))
   expect_identical(
-    unwrap(minipolars:::Series$new(1:3,"foo")$to_frame()$as_rlist_of_vectors()),
-    unwrap(rdf$as_rlist_of_vectors())
+    unwrap(minipolars:::Series$new(1:3,"foo")$to_frame()$to_list()),
+    unwrap(rdf$to_list())
   )
 
 })
