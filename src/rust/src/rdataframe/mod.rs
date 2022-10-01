@@ -1,4 +1,4 @@
-use extendr_api::{extendr, prelude::*, rprintln, Error, Rinternals};
+use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
@@ -6,7 +6,7 @@ pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
 pub mod rseries;
-pub mod wrap_errors;
+
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
 use crate::utils::extendr_concurrent::ParRObj;
@@ -18,7 +18,6 @@ use read_csv::*;
 use read_parquet::*;
 use rexpr::*;
 use rseries::*;
-use wrap_errors::*;
 
 use crate::utils::extendr_concurrent::concurrent_handler;
 use crate::utils::r_result_list;
@@ -114,16 +113,14 @@ impl DataFrame {
         DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
-    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), Error> {
+    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> List {
         let new_series = robjname2series(&robj, name);
-        self.0.with_column(new_series).map_err(wrap_error)?;
-        Ok(())
+        r_result_list(self.0.with_column(new_series).map(|_| ()))
     }
 
-    fn set_column_from_rseries(&mut self, x: &Series) -> Result<(), Error> {
+    fn set_column_from_series(&mut self, x: &Series) -> List {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
-        self.0.with_column(s).map_err(wrap_error)?;
-        Ok(())
+        r_result_list(self.0.with_column(s).map(|_| ()))
     }
 
     fn print(&self) {
@@ -154,17 +151,13 @@ impl DataFrame {
 
     fn as_rlist_of_vectors(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, Error> = self
-            .0
-            .iter()
-            .map(series_to_r_vector_pl_result)
-            .map(|x| x.map_err(|e| Error::from(wrap_error(e))))
-            .collect();
+        let robj_vec_res: Result<Vec<Robj>, _> =
+            self.0.iter().map(series_to_r_vector_pl_result).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res2 = robj_vec_res.map(|ok| r!(extendr_api::prelude::List::from_values(ok)));
+        let robj_list_res = robj_vec_res.map(|ok| r!(extendr_api::prelude::List::from_values(ok)));
 
-        r_result_list(robj_list_res2)
+        r_result_list(robj_list_res)
     }
 
     fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
@@ -179,7 +172,7 @@ impl DataFrame {
         group_exprs: &ProtoExprArray,
         agg_exprs: &ProtoExprArray,
         maintain_order: bool,
-    ) -> Result<DataFrame, Error> {
+    ) -> List {
         let group_exprs: Vec<pl::Expr> = pra_to_vec(group_exprs, "select");
         let agg_exprs: Vec<pl::Expr> = pra_to_vec(agg_exprs, "select");
 
@@ -191,9 +184,9 @@ impl DataFrame {
             lazy_df.groupby(group_exprs)
         };
 
-        let new_df = gb.agg(agg_exprs).collect().map_err(wrap_error)?;
+        let new_df = gb.agg(agg_exprs).collect().map(|df| DataFrame(df));
 
-        Ok(DataFrame(new_df))
+        r_result_list(new_df)
     }
 }
 

@@ -138,7 +138,7 @@ lazy_csv_reader = function(
 
   ##call low level function with args
   minipolars:::check_no_missing_args(minipolars:::rlazy_csv_reader,args)
-  do.call(minipolars:::rlazy_csv_reader,args)
+  unwrap(do.call(minipolars:::rlazy_csv_reader,args))
 }
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader

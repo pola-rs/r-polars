@@ -287,6 +287,7 @@ test_that("limit lazy/eager", {
   )
   df = pl$DataFrame(l)
   ldf = df$lazy()
+  rdf = df$as_data_frame()
 
   expect_identical(
     df$limit(2)$as_data_frame(),

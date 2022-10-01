@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe.R
 \name{DataFrame_join}
 \alias{DataFrame_join}
-\title{join DataFrame with other DataFrame}
+\title{add/modify a series of DataFrame}
 \usage{
 DataFrame_join(
   other,
@@ -31,14 +31,22 @@ DataFrame_join(
 \item{allow_parallel}{bool}
 
 \item{force_parallel}{bool}
+
+\item{series}{passed to dataframe}
 }
 \value{
+data.frame
+
 DataFrame
 }
 \description{
-join DataFrame with other DataFrame
+add/modify a series of DataFrame
 }
 \examples{
+pl$DataFrame(iris)$set_column_from_series(Series(1:150,"ints"))
+join DataFrame with other DataFrame
+
+
 pl$DataFrame(
  list(key=1:3,payload=c("f","i",NA))
 )$join(

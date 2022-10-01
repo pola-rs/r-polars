@@ -7,7 +7,7 @@
 unwrap(result, class = "rust result error", call = sys.call(1L), ...)
 }
 \arguments{
-\item{result}{a list here either element ok or err is NULL}
+\item{result}{a list here either element ok or err is NULL, or both if ok is litteral NULL}
 
 \item{class}{class of thrown error}
 

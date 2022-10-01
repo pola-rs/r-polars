@@ -61,11 +61,13 @@ print.GroupBy = function(x) {
 #' )
 #'
 GroupBy_agg = function(...) {
-  .pr$DataFrame$by_agg(
-    self = self,
-    group_exprs = attr(self,"private")$groupby_input,
-    agg_exprs   = construct_ProtoExprArray(...),
-    maintain_order = attr(self,"private")$maintain_order
+  unwrap(
+    .pr$DataFrame$by_agg(
+      self = self,
+      group_exprs = attr(self,"private")$groupby_input,
+      agg_exprs   = construct_ProtoExprArray(...),
+      maintain_order = attr(self,"private")$maintain_order
+    )
   )
 }
 
@@ -80,7 +82,7 @@ GroupBy_agg = function(...) {
 #' @examples pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
 GroupBy_as_data_frame = function(...) {
   as.data.frame(
-    x = .pr$DataFrame$as_rlist_of_vectors(self),
+    x = unwrap(.pr$DataFrame$as_rlist_of_vectors(self)),
     col.names = .pr$DataFrame$colnames(self),
     ...
   )

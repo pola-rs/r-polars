@@ -69,7 +69,7 @@ c.Series = \(x,...) {
     if(!inherits(other,"Series")) {
       other = pl$Series(other)
     }
-    .pr$Series$append_mut(x,other)
+    unwrap(.pr$Series$append_mut(x,other))
   }
 
   x
@@ -192,6 +192,17 @@ Series_apply   = \(
     self, fun, datatype, strict_return_type, allow_fail_eval
   ))
 
+}
+
+
+#' is_unique
+#'
+#'
+#' @return Series
+#' @example pl$Series(c(1:2,2L))$is_unique()
+#'
+Series_is_unique = function() {
+  unwrap(.pr$Series$is_unique(self))
 }
 
 

@@ -124,7 +124,7 @@ test_that("pl$Series_append", {
   s = pl$Series(letters,"foo")
   s2 = s
   S = pl$Series(LETTERS,"bar")
-  s$append_mut(S)
+  unwrap(s$append_mut(S))
 
   expect_identical(
     s$to_r_vector(),
@@ -224,10 +224,10 @@ test_that("to_frame", {
 
   #low level test
   rdf = minipolars:::DataFrame$new_with_capacity(1L);
-  rdf$set_column_from_robj(1:3, "foo")
+  unwrap(rdf$set_column_from_robj(1:3, "foo"))
   expect_identical(
-    minipolars:::Series$new(1:3,"foo")$to_frame()$as_rlist_of_vectors(),
-    rdf$as_rlist_of_vectors()
+    unwrap(minipolars:::Series$new(1:3,"foo")$to_frame()$as_rlist_of_vectors()),
+    unwrap(rdf$as_rlist_of_vectors())
   )
 
 })

@@ -28,7 +28,7 @@ DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_wit
 
 DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__set_column_from_robj, self, robj, name)
 
-DataFrame$set_column_from_rseries <- function(x) .Call(wrap__DataFrame__set_column_from_rseries, self, x)
+DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_column_from_series, self, x)
 
 DataFrame$print <- function() invisible(.Call(wrap__DataFrame__print, self))
 

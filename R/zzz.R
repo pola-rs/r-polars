@@ -15,6 +15,7 @@ env$to_r        = Series_to_r_vector
 env$abs         = Series_abs
 env$apply       = Series_apply
 env$value_counts= Series_value_counts
+env$is_unique   = Series_is_unique
 
 
 #rewrite all binary operators or other methods to accept something that can turn into a Series
@@ -44,6 +45,7 @@ env$limit = DataFrame_limit
 
 
 
+
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
 env = minipolars:::GroupBy
@@ -54,11 +56,14 @@ env$as_data_frame = GroupBy_as_data_frame
 # LazyFrame
 macro_add_syntax_check_to_class ("LazyFrame")
 env = minipolars:::LazyFrame
+env$collect = Lazy_collect
 env$select = Lazy_select
 env$with_columns = Lazy_with_columns
 env$groupby = Lazy_groupby
 env$join    = Lazy_join
 env$limit   = Lazy_limit
+env$Lazy_describe_optimized_plan = Lazy_describe_optimized_plan
+
 
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")

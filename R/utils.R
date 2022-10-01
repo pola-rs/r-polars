@@ -70,7 +70,7 @@ expect_strictly_identical = function(object,expected,...) {
 
 #' rust-like unwrapping of result. Useful to keep error handling on the R side.
 #'
-#' @param result a list here either element ok or err is NULL
+#' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
 #' @param class class of thrown error
 #' @param call context of error
 #' @param ... not used
@@ -82,12 +82,12 @@ expect_strictly_identical = function(object,expected,...) {
 unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 
   #if not a result
-  if(!is.list(result)) {
+  if(!is.list(result) || !all(names(result) %in% c("ok","err"))) {
     abort("internal error: cannot unwrap non result",.internal = TRUE)
   }
 
-  #if result is ok
-  if(!is.null(result$ok) && is.null(result$err)) {
+  #if result is ok (ok can be be valid null, hence OK if both ok and err is null)
+  if(is.null(result$err)) {
     return(result$ok)
   }
 

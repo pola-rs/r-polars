@@ -133,9 +133,9 @@ DataFrame_constructor = function(data) {
   mapply(data,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
       column$rename_mut(key)
-      df$set_column_from_rseries(column)
+      unwrap(df$set_column_from_series(column))
     } else {
-      df$set_column_from_robj(column,key)
+      unwrap(df$set_column_from_robj(column,key))
     }
     return(NULL)
   })
@@ -250,6 +250,20 @@ DataFrame_as_data_frame = function(...) {
   )
 }
 
+
+#
+##' add/modify a series of DataFrame
+##'
+##' @param series passed to dataframe
+##'
+##' @return data.frame
+##' @export
+##' @keywords DataFrame
+##' @examples pl$DataFrame(iris)$set_column_from_series(Series(1:150,"ints"))
+#DataFrame_set_column_from_series = function(series) {
+#  unwrap(.pr$set_column_from_series(series))
+#}
+#
 
 #' join DataFrame with other DataFrame
 #'

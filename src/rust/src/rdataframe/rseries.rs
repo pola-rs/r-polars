@@ -3,7 +3,6 @@ use crate::apply_input;
 use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
-use crate::rdataframe::wrap_error;
 use crate::rdatatype::DataType;
 use crate::utils::{r_result_list, r_unwrap};
 
@@ -207,14 +206,11 @@ impl Series {
     }
 
     pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> List {
-        let res = || -> extendr_api::Result<DataFrame> {
-            let df = self
-                .0
-                .value_counts(multithreaded, sorted)
-                .map_err(wrap_error)?;
-            Ok(DataFrame(df))
-        };
-        r_result_list(res())
+        let res = self
+            .0
+            .value_counts(multithreaded, sorted)
+            .map(|df| DataFrame(df));
+        r_result_list(res)
     }
 
     pub fn arg_min(&self) -> Option<usize> {
@@ -397,9 +393,8 @@ impl Series {
         (&self.0 % &other.0).into()
     }
 
-    pub fn append_mut(&mut self, other: &Series) -> Result<()> {
-        self.0.append(&other.0).map_err(wrap_error)?;
-        Ok(())
+    pub fn append_mut(&mut self, other: &Series) -> List {
+        r_result_list(self.0.append(&other.0).map(|_| ()))
     }
 
     pub fn apply(
@@ -478,20 +473,19 @@ impl Series {
         Series(self.0.clone().cumsum(reverse))
     }
 
-    pub fn is_unique(&self) -> Result<Series> {
-        Ok(Series(
-            self.0
-                .clone()
-                .is_unique()
-                .map_err(wrap_error)?
-                .into_series(),
-        ))
+    pub fn is_unique(&self) -> List {
+        let res_ser = self
+            .0
+            .clone()
+            .is_unique()
+            .map(|ca| Series(ca.into_series()));
+        r_result_list(res_ser)
     }
 
     pub fn to_frame(&self) -> DataFrame {
         let mut df = DataFrame::new_with_capacity(1);
-        df.set_column_from_rseries(&self)
-            .expect("spank developer if ever failing"); //cannot fail because size mismatch not possible
+        df.set_column_from_series(&self);
+
         df
     }
 }
