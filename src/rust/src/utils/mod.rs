@@ -1,6 +1,7 @@
 pub mod extendr_concurrent;
 
 pub mod wrappers;
+use extendr_api::prelude::list;
 use extendr_api::prelude::IntoRobj;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -151,59 +152,6 @@ macro_rules! handle_type {
 #[macro_export]
 macro_rules! apply_output {
 
-    // (str_spec: $r_iter:expr, $strict_downcast:expr, $allow_fail_eval:expr, $dc_type:ident, $ca_type:ty) => {
-    //     //across all inputs
-    //     $r_iter
-    //         .map(|res_robj: Option<Robj>| {
-
-    //             //for those with non failed R evaluation
-    //             res_robj.map_or_else(
-    //                 || {
-    //                     if($allow_fail_eval) {
-    //                         Ok(None)
-    //                     } else {
-    //                         Err(extendr_api::Error::Other("minipolars fail because lambda evaluation failed".to_string()))
-    //                     }
-
-    //                 },
-
-    //                 //unpack a return value from R
-    //                 |robj| {
-
-    //                     //downcast into expected type
-    //                     let opt_vals: Option<Rstr> = robj.try_into().ok();
-
-    //                     //check if successful downcast
-    //                     if opt_vals.is_none() {
-    //                         if $strict_downcast {
-    //                             return Err(extendr_api::Error::Other(
-    //                                 format!("a lambda returned {} and not the expected {} .  Try strict=FALSE, or change expected output type or rewrite lambda", "print rtype".to_string() ,stringify!($dc_type))
-    //                             ))
-    //                         } else {
-    //                             //return null to polars
-    //                             return Ok(None);
-    //                         }
-    //                     }
-
-    //                     let rstr = opt_vals.unwrap();
-    //                     if rstr.is_na() {
-    //                         Ok(None)
-    //                     } else {
-    //                         Ok(Some(rstr.as_str().to_string()))
-    //                     }
-
-    //                 }
-    //             )
-    //         })
-    //         //collect evaluation return on first error or all values ok
-    //         .collect::<Result<$ca_type>>()
-    //         //if all ok collect into serias and rename
-    //         .map(|ca| {
-    //             Series(ca.into_series())
-    //         })
-    // };
-
-
     ($r_iter:expr, $strict_downcast:expr, $allow_fail_eval:expr, $dc_type:ident, $ca_type:ty) => {
         //across all inputs
         $r_iter
@@ -259,22 +207,13 @@ macro_rules! apply_output {
     };
 }
 
-pub fn r_result_list<T, E>(x: Result<T, E>) -> extendr_api::prelude::list::List
+pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
     T: IntoRobj,
     E: std::fmt::Display,
 {
-    if x.is_ok() {
-        if let Ok(okx) = x {
-            extendr_api::prelude::list!(ok = okx.into_robj(), err = extendr_api::NULL)
-        } else {
-            unreachable!()
-        }
-    } else {
-        if let Err(errx) = x {
-            extendr_api::prelude::list!(ok = extendr_api::NULL, err = errx.to_string())
-        } else {
-            unreachable!()
-        }
+    match result {
+        Ok(x) => list!(ok = x.into_robj(), err = extendr_api::NULL),
+        Err(x) => list!(ok = extendr_api::NULL, err = x.to_string()),
     }
 }
