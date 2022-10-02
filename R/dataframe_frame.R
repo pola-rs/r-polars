@@ -36,20 +36,20 @@
 #' #use a private method, which has mutability
 #' result = minipolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
 #'
-#' #column exists in both dataframes now, as they are just pointers to the same object
+#' #column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
 #' df$columns()
 #' df2$columns()
 #'
 #' # set_column_from_robj-method is fallible and returned a result which could be ok or an err.
 #' # This is the same idea as output from functions decorated with purrr::safely.
-#' # To use results on R side, these must be unwrapped first which
-#' # potentially errors can be thrown unwrap(result). unwrap() is a way to
+#' # To use results on R side, these must be unwrapped first such
+#' # potentially errors can be thrown. unwrap(result) is a way to
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
 #' # would case some unneccesary confusing and verbose error messages on the inner workings of rust.
-#' unwrap(result) #in this case no error, just a NULL because mutable method do not return anything
+#' unwrap(result) #in this case no error, just a NULL because this mutable method do not return anything
 #'
-#' #try unwrapping an error from polars do to unmatchin column lengths
+#' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = minipolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
 #' tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
 DataFrame
