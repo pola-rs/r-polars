@@ -2,17 +2,25 @@
 % Please edit documentation in R/dataframe_frame.R
 \name{DataFrame_columns}
 \alias{DataFrame_columns}
+\alias{assing_columns}
 \title{column names}
 \usage{
-DataFrame_columns()
+DataFrame_columns
+
+property_setters2
 }
 \value{
+char vec of column names
+
 char vec of column names
 }
 \description{
 get column names as DataFrames
+
+set column names as DataFrames
 }
 \examples{
+pl$DataFrame(iris)$columns()
 pl$DataFrame(iris)$columns()
 }
 \keyword{DataFrame}

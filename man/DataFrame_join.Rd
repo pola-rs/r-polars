@@ -39,7 +39,6 @@ DataFrame
 join DataFrame with other DataFrame
 }
 \examples{
-
 print(df1 <- pl$DataFrame(list(key=1:3,payload=c('f','i',NA))))
 print(df2 <- pl$DataFrame(list(key=c(3L,4L,5L,NA_integer_))))
 df1$join(other = df2,on = 'key')

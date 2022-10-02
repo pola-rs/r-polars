@@ -136,9 +136,14 @@ impl DataFrame {
     fn print(&self) {
         rprintln!("{:#?}", self.0);
     }
-    //ping
+
     fn columns(&self) -> Vec<String> {
         self.0.get_column_names_owned()
+    }
+
+    fn set_column_names_mut(&mut self, names: Vec<String>) -> List {
+        let res = self.0.set_column_names(&names[..]);
+        r_result_list(res)
     }
 
     fn get_column(&self, name: &str) -> List {

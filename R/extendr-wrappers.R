@@ -36,6 +36,8 @@ DataFrame$print <- function() invisible(.Call(wrap__DataFrame__print, self))
 
 DataFrame$columns <- function() .Call(wrap__DataFrame__columns, self)
 
+DataFrame$set_column_names_mut <- function(names) .Call(wrap__DataFrame__set_column_names_mut, self, names)
+
 DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, name)
 
 DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)

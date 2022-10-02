@@ -62,7 +62,9 @@ DataFrame
 
 #' create new DataFrame
 #' @name DataFrame
+#'
 #' @param data a data.frame or list of mixed vectors and Series of equal length.
+#' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
 #' @importFrom xptr xptr_address
@@ -71,13 +73,10 @@ DataFrame
 #' @keywords DataFrame
 #'
 #' @examples
-#' minipolars:::new_pf(iris)
-#' #with namespace
 #' pl$DataFrame(iris)
-#' pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
-DataFrame_constructor = function(data) {
+#' pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
+DataFrame_constructor = function(data, make_names_unique= TRUE) {
 
-  #TODO remove whenDataFrameis removed from lib
   if(inherits(data,"DataFrame")) return(data)
 
   #input guard
@@ -89,15 +88,7 @@ DataFrame_constructor = function(data) {
     data = as.data.frame(data)
   }
 
-  #closure to generate new names
-  make_column_name_gen = function() {
-    col_counter = 0
-    column_name_gen = function(x) {
-      col_counter <<- col_counter +1
-      paste0("newcolumn_",col_counter)
-    }
-  }
-  name_generator = make_column_name_gen()
+
 
   ##step1 handle column names
   #keys are tentative new column names
@@ -113,7 +104,7 @@ DataFrame_constructor = function(data) {
       if(inherits(column, "Series")) {
         key = column$name()
       } else {
-        key = name_generator()
+        key = "new_column"
       }
     }
     return(key)
@@ -122,12 +113,16 @@ DataFrame_constructor = function(data) {
   ##step 3
   #check for conflicting names, to avoid silent overwrite
   if(any(duplicated(keys))) {
-    abort(
-      paste(
-        "conflicting column names not allowed:",
-        paste(unique(keys[duplicated(keys)]),collapse=", ")
+    if(make_names_unique) {
+      keys = make.unique(keys, sep = "_")
+    } else {
+      abort(
+        paste(
+          "conflicting column names not allowed:",
+          paste(unique(keys[duplicated(keys)]),collapse=", ")
+        )
       )
-    )
+    }
   }
 
   ##step 4
@@ -246,6 +241,28 @@ DataFrame_height = function() {
 DataFrame_width = function() {
   .pr$DataFrame$shape(self)[2]
 }
+
+
+
+#' Width of DataFrame
+#' @name DataFrame_width
+#' @description Get width(ncol) of DataFrame
+#'
+#' @return width as numeric scalar
+#' @aliases width, nrow
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$width()
+#'
+DataFrame_set_names = function() {
+
+  .pr$DataFrame$shape(self)[2]
+}
+
+
+
+
+
 
 #' DataFrame to LazyFrame
 #' @name DataFrame_lazy
@@ -389,29 +406,51 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
   self
 }
 
-#' get column as Series from DataFrame
-#'
-#' @param name name of column to get as series
-#'
-#' @return a Series
-#' @keywords DataFrame
-#'
-#' @examples pl$DataFrame(iris)$get_column("Species")
-DataFrame_get_column = function(name) {
-  unwrap(.pr$DataFrame$get_column(self,name))
-}
+
 
 #' column names
 #' @description get column names as DataFrames
+#' @rdname columns
 #'
 #' @return char vec of column names
 #' @keywords DataFrame
+#' @usage DataFrame_columns
 #'
 #' @examples pl$DataFrame(iris)$columns()
 DataFrame_columns = function() {
   .pr$DataFrame$columns(self)
 }
+class(DataFrame_columns) = c("property","function")
 
+DataFrame.property_setters = new.env(parent = emptyenv())
+
+#' column names set
+#' @description set column names as DataFrames
+#' @rdname columns
+#' @name assing_columns
+#' @usage property_setters2
+#'
+#' @return char vec of column names
+#' @keywords DataFrame
+#'
+#' @examples pl$DataFrame(iris)$columns()
+DataFrame.property_setters$columns = function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
+
+
+#' generic setter method
+#' @description set value of properties of DataFrames
+#'
+#' @return value
+#' @keywords DataFrame
+#' @export
+#' @examples pl$DataFrame(iris)$columns()
+"$<-.DataFrame" = function(self, name, value) {
+  func = DataFrame.property_setters[[name]]
+  if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
+  self = self$clone()
+  func(self,value)
+  self
+}
 
 
 #' return polars DataFrame as R data.frame
@@ -471,7 +510,6 @@ DataFrame_to_list = function() {
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
-#'
 #' print(df1 <- pl$DataFrame(list(key=1:3,payload=c('f','i',NA))))
 #' print(df2 <- pl$DataFrame(list(key=c(3L,4L,5L,NA_integer_))))
 #' df1$join(other = df2,on = 'key')

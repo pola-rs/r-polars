@@ -9,6 +9,8 @@ DataFrame(data)
 }
 \arguments{
 \item{data}{a data.frame or list of mixed vectors and Series of equal length.}
+
+\item{make_names_unique}{default TRUE, any duplicated names will be prefixed a running number}
 }
 \value{
 DataFrame
@@ -17,9 +19,7 @@ DataFrame
 create new DataFrame
 }
 \examples{
-minipolars:::new_pf(iris)
-#with namespace
 pl$DataFrame(iris)
-pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
+pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
 }
 \keyword{DataFrame}

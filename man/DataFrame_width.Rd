@@ -4,17 +4,26 @@
 \alias{DataFrame_width}
 \alias{width,}
 \alias{nrow}
+\alias{DataFrame_set_names}
 \title{Width of DataFrame}
 \usage{
 DataFrame_width()
+
+DataFrame_set_names()
 }
 \value{
+width as numeric scalar
+
 width as numeric scalar
 }
 \description{
 Get width(ncol) of DataFrame
+
+Get width(ncol) of DataFrame
 }
 \examples{
+pl$DataFrame(iris)$width()
+
 pl$DataFrame(iris)$width()
 
 }
