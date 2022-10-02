@@ -2,149 +2,24 @@
 % Please edit documentation in R/dataframe_frame.R
 \name{DataFrame}
 \alias{DataFrame}
-\alias{print()}
-\alias{print.DataFrame}
-\alias{DataFrame_print}
-\alias{DataFrame_shape}
-\alias{shape}
-\alias{DataFrame_height}
-\alias{height,}
-\alias{nrow}
-\alias{DataFrame_width}
-\alias{width,}
-\alias{DataFrame_lazy}
-\alias{lazy}
-\alias{DataFrame_clone}
-\alias{clone}
-\alias{DataFrame_get_columns}
-\alias{get_columns}
-\alias{DataFrame_get_column}
-\alias{get_column}
-\alias{to_list}
-\alias{DataFrame_to_list}
-\alias{DataFrame_select}
-\alias{select}
-\alias{DataFrame_with_columns}
-\alias{with_columns}
-\alias{DataFrame_limit}
-\alias{limit}
-\title{Polars DataFrame}
+\alias{DataFrame_constructor}
+\title{create new DataFrame}
 \usage{
-\method{print}{DataFrame}(x)
-
-DataFrame_print(x)
-
-DataFrame_shape()
-
-DataFrame_height()
-
-DataFrame_width()
-
-DataFrame_lazy()
-
-DataFrame_clone()
-
-DataFrame_get_columns()
-
-DataFrame_get_column(name)
-
-DataFrame_to_list()
-
-DataFrame_select(...)
-
-DataFrame_with_columns(...)
-
-select(...)
-
-DataFrame_to_list()
+DataFrame(data)
 }
 \arguments{
-\item{x}{DataFrame}
-
-\item{...}{any expressions or strings}
-
-\item{n}{positive numeric or integer number not larger than 2^32}
-
-\item{data}{object inheriting data.frame or list of equal length vectors and/or Series.}
+\item{data}{a data.frame or list of mixed vectors and Series of equal length.}
 }
 \value{
-self
-
-self
-
-two length numeric vector of shape
-
-height as numeric
-
-width as numeric
-
-LazyFrame
-
 DataFrame
-
-list of series
-
-Series
-
-R list of vectors
-
-DataFrame
-
-DataFrame
-
-R list of vectors
 }
 \description{
-\code{DataFrame}-object is an \code{externalptr} to rust polars DataFrame with $methods() exposed.
-Most methods return another \code{DataFrame}-class instance or similar which allows for method chaining.
-
-Get shape of DataFrame
-
-Get height(nrow) of DataFrame
-
-Get width(ncol) of DataFrame
-
-DataFrame to LazyFrame
-
-clone DataFrame
-
-get columns as list of series
-
-get one column by name as series
-
-DataFrame to R list of vectors
-
-take limit of n rows of query
-}
-\details{
-any number will converted to u32. Negative raises error
+create new DataFrame
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+minipolars:::new_pf(iris)
+#with namespace
 pl$DataFrame(iris)
-pl$DataFrame(iris)
-pl$DataFrame(iris)$shape()
-
-pl$DataFrame(iris)$height()
-
-pl$DataFrame(iris)$width()
-
-pl$DataFrame(iris)$lazy()
-
-df1 = pl$DataFrame(iris);
-df2 =  df1$clone();
-df3 = df1
-xptr::xptr_address(df1) != xptr::xptr_address(df2)
-xptr::xptr_address(df1) == xptr::xptr_address(df3)
-
-df = pl$DataFrame(iris[1,])
-df$get_columns()
-df = pl$DataFrame(iris[1,])
-df$get_column("Species")
-pl$DataFrame(iris)$to_list()
-
-#use of lazy method
-pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
-pl$DataFrame(iris)$as_data_frame()
+pl$DataFrame(list(some_column_name = c(1,2,3,4,5)))
 }
 \keyword{DataFrame}

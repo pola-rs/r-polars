@@ -2,20 +2,27 @@
 % Please edit documentation in R/dataframe_frame.R
 \name{DataFrame_get_column}
 \alias{DataFrame_get_column}
-\title{get column as Series from DataFrame}
+\alias{get_column}
+\title{Get Column}
 \usage{
+DataFrame_get_column(name)
+
 DataFrame_get_column(name)
 }
 \arguments{
 \item{name}{name of column to get as series}
 }
 \value{
+Series
+
 a Series
 }
 \description{
-get column as Series from DataFrame
+get one column by name as series
 }
 \examples{
+df = pl$DataFrame(iris[1,])
+df$get_column("Species")
 pl$DataFrame(iris)$get_column("Species")
 }
 \keyword{DataFrame}

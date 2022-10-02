@@ -104,10 +104,15 @@ test_that("polar_frame, select sum over", {
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),
     pl$col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
     "Petal.Length"
-  )$as_data_frame()
+  )
 
   testthat::expect_equal(
-    df,
+    df$as_data_frame(),
+    expected_iris_select_df
+  )
+
+  testthat::expect_equal(
+    as.data.frame(df),
     expected_iris_select_df
   )
 
