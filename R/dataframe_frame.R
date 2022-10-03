@@ -447,7 +447,7 @@ DataFrame.property_setters$columns = function(self, names) unwrap(.pr$DataFrame$
 "$<-.DataFrame" = function(self, name, value) {
   func = DataFrame.property_setters[[name]]
   if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
-  self = self$clone()
+  if (minipolars_optenv$strictly_immutable) self = self$clone()
   func(self,value)
   self
 }

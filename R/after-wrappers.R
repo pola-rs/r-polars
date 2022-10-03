@@ -71,20 +71,6 @@ macro_add_syntax_check_to_class = function(Class_name) {
   eval(parse(text = tokens), envir = parent.frame())
 }
 
-#' @export
-`$.DataFrame` <- function (self, name) {
-  print("hej")
-  browser()
-  func <- DataFrame[[name]]
-  environment(func) <- environment()
-
-  if(inherits(func,"property")) {
-    func()
-  } else {
-
-    func
-  }
-}
 
 ##modify classes to perform syntax cheking
 ##this relies on no envrionment other than env_classes has been defined when macro called
