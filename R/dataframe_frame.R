@@ -209,7 +209,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @return value
 #' @keywords DataFrame
 #' @export
-#' @examples pl$DataFrame(iris)$columns()
+#' @examples pl$DataFrame(iris)$columns
 "$<-.DataFrame" = function(self, name, value) {
   func = DataFrame.property_setters[[name]]
   if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
@@ -229,10 +229,10 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @usage DataFrame_columns
 #'
 #' @examples
-#' df = pl$DataFrame(iris)$columns()
-#' df$columns()
+#' df = pl$DataFrame(iris)$columns
+#' df$columns
 #' df$columns = letters[1:5]
-#' df$columns()
+#' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
 })
@@ -266,7 +266,7 @@ DataFrame_shape = method_as_property(function() {
 #' @aliases height nrow
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(iris)$height()
+#' pl$DataFrame(iris)$height
 #'
 DataFrame_height = method_as_property(function() {
   .pr$DataFrame$shape(self)[1]
@@ -282,7 +282,7 @@ DataFrame_height = method_as_property(function() {
 #' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(iris)$width()
+#' pl$DataFrame(iris)$width
 #'
 DataFrame_width = method_as_property(function() {
     .pr$DataFrame$shape(self)[2]
@@ -300,7 +300,7 @@ DataFrame_width = method_as_property(function() {
 #' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(iris)$dtypes()
+#' pl$DataFrame(iris)$dtypes
 #'
 DataFrame_dtypes = method_as_property(function() {
   .pr$DataFrame$dtypes(self)
@@ -316,7 +316,7 @@ DataFrame_dtypes = method_as_property(function() {
 #' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(iris)$schema)
+#' pl$DataFrame(iris)$schema
 #'
 DataFrame_schema = method_as_property(function() {
   .pr$DataFrame$schema(self)
