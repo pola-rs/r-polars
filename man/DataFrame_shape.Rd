@@ -14,7 +14,7 @@ two length numeric vector of c(nrows,ncols)
 Get shape/dimensions of DataFrame
 }
 \examples{
-pl$DataFrame(iris)$shape()
+df = pl$DataFrame(iris)$shape
 
 }
 \keyword{DataFrame}

@@ -99,6 +99,50 @@ test_that("polar_frame, mixed input, create and print", {
   )
 })
 
+test_that("get set properties", {
+
+  df = pl$DataFrame(list(a=1:5,b=rep(TRUE,5)))
+  expect_equal(
+    df$columns,
+    c("a","b")
+  )
+
+  df2 = df
+  df2$columns <- c("alice","bob")
+  expect_equal(
+    df2$columns,
+    c("alice","bob")
+  )
+
+  #immutable by default see strictly_immutable option
+  expect_true(
+   !identical(
+     df2$columns,
+     df$columns)
+  )
+
+  #cannot set property without setter method
+  expect_error(
+    {df$height = 10}
+  )
+
+  #other getable properties
+  expect_equal(df$height,5L)
+  expect_equal(df$width,2L)
+  expect_equal(df$shape,c(5L,2L))
+
+  #dtypes from object are as expected
+  expect_true(
+    all(mapply(
+      df$dtypes,
+      pl$dtypes[c("Int32","Boolean")],
+      FUN = "==")
+    )
+  )
+
+
+})
+
 test_that("polar_frame, select sum over", {
   df = pl$DataFrame(iris)$select(
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),

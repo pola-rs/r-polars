@@ -33,8 +33,8 @@ ls(minipolars:::.pr$DataFrame)
 #make an object
 df = pl$DataFrame(iris)
 
-#use a public method
-df$shape()
+#use a public method/property
+df$shape
 df2 = df
 #use a private method, which has mutability
 result = minipolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")

@@ -30,8 +30,8 @@
 #' #make an object
 #' df = pl$DataFrame(iris)
 #'
-#' #use a public method
-#' df$shape()
+#' #use a public method/property
+#' df$shape
 #' df2 = df
 #' #use a private method, which has mutability
 #' result = minipolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
@@ -58,6 +58,8 @@ DataFrame
 .DollarNames.DataFrame = function(x, pattern = "") {
   paste0(ls(minipolars:::DataFrame),"()")
 }
+
+
 
 
 #' create new DataFrame
@@ -196,7 +198,48 @@ is_DataFrame_data_input = function(x) {
 }
 
 
-##"properties"
+#"properties"
+
+##internal bookkeeping of methods which should behave as properties
+DataFrame.property_setters = new.env(parent = emptyenv())
+
+#' generic setter method
+#' @description set value of properties of DataFrames
+#'
+#' @return value
+#' @keywords DataFrame
+#' @export
+#' @examples pl$DataFrame(iris)$columns()
+"$<-.DataFrame" = function(self, name, value) {
+  func = DataFrame.property_setters[[name]]
+  if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
+  if (minipolars_optenv$strictly_immutable) self = self$clone()
+  func(self,value)
+  self
+}
+
+
+#' columns, names columns
+#' @description get column names as DataFrames
+#' @rdname columns
+#'
+#' @return char vec of column names
+#' @keywords DataFrame
+#' @usage DataFrame_columns
+#'
+#' @examples
+#' df = pl$DataFrame(iris)$columns()
+#' df$columns()
+#' df$columns = letters[1:5]
+#' df$columns()
+DataFrame_columns = function() {
+  .pr$DataFrame$columns(self)
+}
+class(DataFrame_columns) = c("property","function")
+DataFrame.property_setters$columns = function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
+
+
+
 
 
 #' Shape of  DataFrame
@@ -207,18 +250,20 @@ is_DataFrame_data_input = function(x) {
 #' @aliases shape
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(iris)$shape()
+#' df = pl$DataFrame(iris)$shape
 #'
 DataFrame_shape = function() {
   .pr$DataFrame$shape(self)
 }
+class(DataFrame_shape) = c("property","function")
+
 
 #' Height of DataFrame
 #' @name DataFrame_height
 #' @description Get height(nrow) of DataFrame
 #'
 #' @return height as numeric
-#' @aliases height, nrow
+#' @aliases height nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height()
@@ -226,6 +271,7 @@ DataFrame_shape = function() {
 DataFrame_height = function() {
   .pr$DataFrame$shape(self)[1]
 }
+class(DataFrame_height) = c("property","function")
 
 
 #' Width of DataFrame
@@ -241,12 +287,14 @@ DataFrame_height = function() {
 DataFrame_width = function() {
   .pr$DataFrame$shape(self)[2]
 }
+class(DataFrame_width) = c("property","function")
 
 
 
-#' Width of DataFrame
-#' @name DataFrame_width
-#' @description Get width(ncol) of DataFrame
+#' DataFrame dtypes
+#' @name DataFrame_dtypes
+#' @description Get dtypes of columns in DataFrame.
+#' Dtypes can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
 #' @aliases width, nrow
@@ -254,11 +302,10 @@ DataFrame_width = function() {
 #' @examples
 #' pl$DataFrame(iris)$width()
 #'
-DataFrame_set_names = function() {
-
-  .pr$DataFrame$shape(self)[2]
+DataFrame_dtypes = function() {
+  .pr$DataFrame$dtypes(self)
 }
-
+class(DataFrame_dtypes) = c("property","function")
 
 
 
@@ -407,50 +454,6 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 }
 
 
-
-#' column names
-#' @description get column names as DataFrames
-#' @rdname columns
-#'
-#' @return char vec of column names
-#' @keywords DataFrame
-#' @usage DataFrame_columns
-#'
-#' @examples pl$DataFrame(iris)$columns()
-DataFrame_columns = function() {
-  .pr$DataFrame$columns(self)
-}
-class(DataFrame_columns) = c("property","function")
-
-DataFrame.property_setters = new.env(parent = emptyenv())
-
-#' column names set
-#' @description set column names as DataFrames
-#' @rdname columns
-#' @name assing_columns
-#' @usage property_setters2
-#'
-#' @return char vec of column names
-#' @keywords DataFrame
-#'
-#' @examples pl$DataFrame(iris)$columns()
-DataFrame.property_setters$columns = function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
-
-
-#' generic setter method
-#' @description set value of properties of DataFrames
-#'
-#' @return value
-#' @keywords DataFrame
-#' @export
-#' @examples pl$DataFrame(iris)$columns()
-"$<-.DataFrame" = function(self, name, value) {
-  func = DataFrame.property_setters[[name]]
-  if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
-  if (minipolars_optenv$strictly_immutable) self = self$clone()
-  func(self,value)
-  self
-}
 
 
 #' return polars DataFrame as R data.frame

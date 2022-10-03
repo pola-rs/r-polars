@@ -8,10 +8,6 @@
 #' @useDynLib minipolars, .registration = TRUE
 NULL
 
-#' Return string `"Hello world!"` to R.
-#' @export
-inherits2 <- function(`_class`) .Call(wrap__inherits2, `_class`)
-
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
@@ -41,6 +37,8 @@ DataFrame$set_column_names_mut <- function(names) .Call(wrap__DataFrame__set_col
 DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, name)
 
 DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
+
+DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
 
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
 

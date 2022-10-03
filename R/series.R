@@ -26,7 +26,10 @@ print.Series = function(x) {
 #' @export
 #' @aliases Series
 #'
-42
+Series
+
+
+
 
 #' Series constructor
 #'
@@ -130,6 +133,17 @@ Series_ops_add("compare",more_args = "op")
 #' @export
 ">=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"gt_eq"))
 
+
+#' Shape of series
+#'
+#' @return dimension vector of Series
+#' @export
+#'
+#' @examples identical(pl$Series(1:2)$shape, 2:1)
+Series_shape = function() {
+  .pr$Series$shape(self)
+}
+class(Series_shape) = c("property","function")
 
 Series_udf_handler = function(f,rs) {
   fps = Series_constructor(f(rs))

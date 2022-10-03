@@ -202,12 +202,12 @@ test_that("dtype and equality", {
 
 test_that("shape", {
   expect_identical(
-    pl$Series(1:3)$shape(),
+    pl$Series(1:3)$shape,
     c(3L,1L)
   )
 
   expect_identical(
-    minipolars:::Series$new(integer(),"")$shape(),
+    minipolars:::Series$new(integer(),"")$shape,
     c(0L,1L)
   )
 

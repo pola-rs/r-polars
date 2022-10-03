@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe_frame.R
 \name{DataFrame_height}
 \alias{DataFrame_height}
-\alias{height,}
+\alias{height}
 \alias{nrow}
 \title{Height of DataFrame}
 \usage{
