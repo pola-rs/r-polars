@@ -83,3 +83,12 @@ for (i_class in env_class_names) {
   macro_add_syntax_check_to_class(i_class)
 }
 
+
+#' Give a class method property behavior
+#' @description Internal function, see use in source
+#' @param f a function
+#' @return function subclassed into c("property","function")
+method_as_property = function(f) {
+  class(f) = c("property","function")
+  f
+}

@@ -40,6 +40,8 @@ DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
 
 DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
 
+DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
+
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)

@@ -4,19 +4,29 @@
 \alias{DataFrame_dtypes}
 \alias{width,}
 \alias{nrow}
+\alias{DataFrame_schema}
 \title{DataFrame dtypes}
 \usage{
 DataFrame_dtypes()
+
+DataFrame_schema()
 }
 \value{
+width as numeric scalar
+
 width as numeric scalar
 }
 \description{
 Get dtypes of columns in DataFrame.
 Dtypes can also be found in column headers when printing the DataFrame.
+
+Get dtypes of columns in DataFrame.
+Dtypes can also be found in column headers when printing the DataFrame.
 }
 \examples{
-pl$DataFrame(iris)$width()
+pl$DataFrame(iris)$dtypes()
+
+pl$DataFrame(iris)$schema)
 
 }
 \keyword{DataFrame}

@@ -199,3 +199,5 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 
   invisible(NULL)
 }
+
+

@@ -93,7 +93,11 @@ impl DataFrame {
 
     fn dtypes(&self) -> List {
         let iter = self.0.iter().map(|s| DataType(s.dtype().clone()));
-        let mut l = List::from_values(iter);
+        List::from_values(iter)
+    }
+
+    fn schema(&self) -> List {
+        let mut l = self.dtypes();
         l.set_names(self.0.get_column_names()).unwrap();
         l
     }

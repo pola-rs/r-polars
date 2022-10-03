@@ -139,6 +139,20 @@ test_that("get set properties", {
       FUN = "==")
     )
   )
+  expect_true(is.null(names(df$dtypes)))
+
+  expect_true(
+    all(mapply(
+      df$schema,
+      pl$dtypes[c("Int32","Boolean")],
+      FUN = "==")
+    )
+  )
+
+  expect_equal(
+    df$columns,
+    names(df$schema)
+  )
 
 
 })
