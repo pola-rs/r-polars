@@ -20,13 +20,6 @@ const R_INT_NA_ENC: i32 = -2147483648;
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
 
-/// Return string `"Hello world!"` to R.
-/// @export
-#[extendr]
-pub fn inherits2(_class: &str) -> bool {
-    true
-}
-
 pub fn inherits(x: &Robj, class: &str) -> bool {
     let opt_class_attr = x.class();
     if let Some(class_attr) = opt_class_attr {
@@ -476,5 +469,4 @@ impl From<&Series> for pl::Series {
 extendr_module! {
     mod rseries;
     impl Series;
-    fn inherits2;
 }
