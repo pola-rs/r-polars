@@ -1,9 +1,23 @@
 # minipolars
 Use awesome polars DataFrame library from R!
 
+# install (BETA)
+
+ - Macbbook x86_64
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/0.0.1_x86_64-apple-darwin17/minipolars_0.0.1_x86_64-apple-darwin17.0.tgz")`
+ 
+ - Other targets to come
+ 
+# Latest documentation found at:
+  [here](https://sorhawell.github.io/reference/index.html)
+  
+
 # build
 
-  install rust + set buildchain to nightly
+  install rust + set buildchain to nightly + more
+  
+  see installation in  workflows/pkgdown.yaml for linux and mac.
+  Windows install workflow is pending some updates in extendr to use latest Rtools4.2.
 
  - clone repo
  - `source("./renv/activate.R")` to install and set up R packages (likely automatically triggered by .Rprofile)
@@ -21,8 +35,9 @@ Søren Welling
 ## What is minipolars
 
 Minipolars is an unofficial porting of polars (pola-rs) in to an R
-package. I aim to finish the project in 2022. Beta should be ready by
-the end of September 2022.
+package. I aim to finish the project in 2022.
+You can 
+
 
 [Polars](http://pola.rs) is the
 [fastest](https://h2oai.github.io/db-benchmark/) data table query
