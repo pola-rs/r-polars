@@ -13,8 +13,15 @@ Expr_alias(name)
 Expr
 }
 \description{
-Rename the output of an expression.
+Rename Expr output
 }
 \examples{
 pl$col("bob")$alias("alice")
 }
+\keyword{Expr}
+\keyword{Rename}
+\keyword{an}
+\keyword{expression.}
+\keyword{of}
+\keyword{output}
+\keyword{the}

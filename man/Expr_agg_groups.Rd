@@ -10,8 +10,7 @@ Expr_agg_groups()
 Exprs
 }
 \description{
-Get the group indexes of the group by operation.
-Should be used in aggregation context only.
+aggregate groups
 }
 \examples{
 df = pl$DataFrame(list(
@@ -20,3 +19,18 @@ df = pl$DataFrame(list(
 ))
 df$groupby("group", maintain_order=TRUE)$agg(pl$col("value")$agg_groups())
 }
+\keyword{Expr}
+\keyword{Get}
+\keyword{Should}
+\keyword{aggregation}
+\keyword{be}
+\keyword{by}
+\keyword{context}
+\keyword{group}
+\keyword{in}
+\keyword{indexes}
+\keyword{of}
+\keyword{only.}
+\keyword{operation.}
+\keyword{the}
+\keyword{used}

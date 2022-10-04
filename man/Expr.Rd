@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr}
 \alias{Expr}
-\alias{print.Expr}
 \alias{lit}
 \alias{Expr_lit}
 \alias{suffix}
@@ -13,8 +12,6 @@
 \alias{reverse}
 \title{Polars Expr}
 \usage{
-\method{print}{Expr}(x)
-
 Expr_lit(x)
 
 Expr_suffix(suffix)
@@ -31,8 +28,6 @@ Expr_reverse()
 \item{prefix}{string suffix to be added to a name}
 }
 \value{
-self
-
 Expr, literal of that value
 
 Expr
@@ -49,9 +44,9 @@ Polars pl$Expr
 ls(minipolars:::Expr)
 
 pl$col("this_column")$sum()$over("that_column")
-pl$col("some_column")$sum()$over("some_other_column")
 pl$col("some_column") / pl$lit(42)
 pl$col("some")$suffix("_column")
 pl$col("some")$suffix("_column")
 pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())
 }
+\keyword{Expr}

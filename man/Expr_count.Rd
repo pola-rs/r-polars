@@ -10,9 +10,21 @@ Expr_count()
 Expr
 }
 \description{
-Count the number of values in this expression.
-Similar to R length()
+Count values
 }
 \examples{
 pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
 }
+\keyword{Count}
+\keyword{Expr}
+\keyword{R}
+\keyword{Similar}
+\keyword{expression.}
+\keyword{in}
+\keyword{length()}
+\keyword{number}
+\keyword{of}
+\keyword{the}
+\keyword{this}
+\keyword{to}
+\keyword{values}

@@ -25,3 +25,4 @@ in minipolars lambda return should be a series or any R vector convertable into 
 \examples{
 pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) paste("cheese",as.character(x$to_r_vector())),pl$dtypes$Utf8))
 }
+\keyword{Expr}

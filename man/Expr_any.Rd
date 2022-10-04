@@ -10,8 +10,20 @@ Expr_any()
 Boolean literal
 }
 \description{
-Check if any boolean value in a Boolean column is \code{TRUE}.
+Any (is true)
 }
 \examples{
 pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
 }
+\keyword{Boolean}
+\keyword{Check}
+\keyword{Expr}
+\keyword{`TRUE`.}
+\keyword{a}
+\keyword{any}
+\keyword{boolean}
+\keyword{column}
+\keyword{if}
+\keyword{in}
+\keyword{is}
+\keyword{value}

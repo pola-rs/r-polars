@@ -18,3 +18,4 @@ construct proto Expr array from args
 \examples{
 construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 }
+\keyword{Expr}

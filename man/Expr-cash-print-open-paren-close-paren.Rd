@@ -13,3 +13,4 @@ internal method print Expr
 \examples{
 pl$DataFrame(iris)
 }
+\keyword{Expr}

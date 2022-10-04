@@ -10,7 +10,7 @@ Expr_all()
 Boolean literal
 }
 \description{
-Check if all boolean values in a Boolean column are \code{TRUE}.
+All (is true)
 }
 \details{
 last \code{all()} in example is this Expr method, the first \code{pl$all()} refers
@@ -19,3 +19,15 @@ to "all-columns" and is an expression constructor
 \examples{
 pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
 }
+\keyword{Boolean}
+\keyword{Check}
+\keyword{Expr}
+\keyword{`TRUE`.}
+\keyword{a}
+\keyword{all}
+\keyword{are}
+\keyword{boolean}
+\keyword{column}
+\keyword{if}
+\keyword{in}
+\keyword{values}

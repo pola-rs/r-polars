@@ -8,6 +8,10 @@ reference:
   - subtitle: DataFrame
     contents:
       - has_keyword("DataFrame")
-  - title: everything else
+  - subtitle: Expr
+    contents:
+      - has_keyword("Expr")
+  - subtitle: everything else
     contents:
       - -has_keyword("DataFrame")
+      - -has_keyword("Expr")

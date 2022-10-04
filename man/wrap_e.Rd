@@ -21,3 +21,4 @@ tiny wrapper to allow skipping calling lit on rhs of binary operator
 \examples{
 pl$col("foo") < 5
 }
+\keyword{Expr}

@@ -3,6 +3,7 @@
 #' @description Polars pl$Expr
 #' @rdname Expr
 #' @name Expr
+#' @keywords Expr
 #'
 #' @aliases Expr
 #'
@@ -17,7 +18,7 @@
 #' Print expr
 #'
 #' @param x Expr
-#' @rdname Expr
+#' @keywords Expr
 #'
 #' @return self
 #' @export
@@ -31,6 +32,7 @@ print.Expr = function(x) {
 
 #' internal method print Expr
 #' @name Expr$print()
+#' @keywords Expr
 #' @examples pl$DataFrame(iris)
 Expr_print = function() {
   .pr$Expr$print(self)
@@ -48,6 +50,7 @@ Expr_print = function() {
 
 #' Abs
 #' @description Compute absolute values
+#' @keywords Expr
 #' @return Exprs abs
 #' @examples
 #' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
@@ -58,6 +61,7 @@ Expr_abs = function() {
 
 #' Add
 #' @description Addition
+#' @keywords Expr
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
 #' @examples
@@ -71,6 +75,7 @@ Expr_add = function(other) {
 
 #' aggregate groups
 #' @description
+#' @keywords Expr
 #' Get the group indexes of the group by operation.
 #' Should be used in aggregation context only.
 #' @return Exprs
@@ -88,6 +93,7 @@ Expr_agg_groups = function() {
 
 #' Rename Expr output
 #' @description
+#' @keywords Expr
 #' Rename the output of an expression.
 #' @param string new name of output
 #' @return Expr
@@ -98,6 +104,7 @@ Expr_alias = function(name) {
 
 #' All (is true)
 #' @description
+#' @keywords Expr
 #'Check if all boolean values in a Boolean column are `TRUE`.
 # This method is an expression - not to be confused with
 #:`pl$all` which is a function to select all columns.
@@ -113,6 +120,7 @@ Expr_all = function() {
 
 #' Any (is true)
 #' @description
+#' @keywords Expr
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
 #' @examples
@@ -124,6 +132,7 @@ Expr_any = function() {
 
 #' Count values
 #' @description
+#' @keywords Expr
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
@@ -140,6 +149,8 @@ Expr_count = function() {
 #' @param ...  any Expr or string
 #'
 #' @importFrom rlang is_string
+#'
+#' @keywords Expr
 #'
 #' @return ProtoExprArray object
 #'
@@ -165,6 +176,7 @@ construct_ProtoExprArray = function(...) {
 #' wrap as literal
 #' @param e an Expr(polars) or any R expression
 #' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
+#' @keywords Expr
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e = function(e) {
@@ -207,6 +219,7 @@ wrap_e = function(e) {
 
 
 #' polars map
+#' @keywords Expr
 #'
 #' @param lambda r function mapping a series
 #' @param output_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
@@ -224,6 +237,7 @@ Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
 
 
 #' polars literal
+#' @keywords Expr
 #'
 #' @param x any R expression yielding an integer, float or bool
 #' @rdname Expr
@@ -236,6 +250,7 @@ Expr_lit = function(x) {
 }
 
 #' polars suffix
+#' @keywords Expr
 #'
 #' @param suffix string suffix to be added to a name
 #' @rdname Expr
@@ -248,6 +263,7 @@ Expr_suffix = function(suffix) {
 }
 
 #' polars prefix
+#' @keywords Expr
 #'
 #' @param prefix string suffix to be added to a name
 #' @rdname Expr
@@ -260,6 +276,7 @@ Expr_prefix = function(prefix) {
 }
 
 #' polars reverse
+#' @keywords Expr
 #' @rdname Expr
 #' @return Expr
 #' @aliases reverse
