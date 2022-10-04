@@ -200,4 +200,28 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
   invisible(NULL)
 }
 
+##internal function to convert a list of dataframes into a rust VecDataFrame
+l_to_vdf = function(l) {
+  if(!length(l)) abort("cannot concat empty list l")
+  do_inherit_DataFrame = sapply(l,inherits,"DataFrame")
+  if(!all(do_inherit_DataFrame)) {
+    abort(paste(
+      "element no(s) of concat param l:",
+      paste(
+        which(!do_inherit_DataFrame),
+        collapse = ", "
+      ),
+      "are not minipolars DataFrame(s)"
+    ))
+  }
+
+  vdf = .pr$VecDataFrame$with_capacity(length(l))
+  errors = NULL
+  for (item in l) {
+    tryCatch(vdf$push(item),error = function(e) {errors <<- as.character(e)})
+    if(!is.null(errors)) abort(errors)
+  }
+
+  vdf
+}
 

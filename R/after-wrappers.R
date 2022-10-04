@@ -34,6 +34,7 @@ extendr_method_to_pure_functions = function(env) {
 .pr$DataType   = extendr_method_to_pure_functions(minipolars:::DataType)
 .pr$Expr       = extendr_method_to_pure_functions(minipolars:::Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(minipolars:::ProtoExprArray)
+.pr$VecDataFrame = extendr_method_to_pure_functions(minipolars:::VecDataFrame)
 #TODO remove export
 
 

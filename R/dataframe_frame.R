@@ -59,6 +59,11 @@ DataFrame
   paste0(ls(minipolars:::DataFrame),"()")
 }
 
+#' @export
+.DollarNames.VecDataFrame = function(x, pattern = "") {
+  paste0(ls(minipolars:::VecDataFrame),"()")
+}
+
 
 
 
@@ -324,6 +329,36 @@ DataFrame_schema = method_as_property(function() {
 
 
 
+#
+DataFrameCompareToOtherDF = function(self, other, op) {
+
+  abort("not done yet")
+#    """Compare a DataFrame with another DataFrame."""
+  if (!identical(self$columns,other$columns)) abort("DataFrame columns do not match")
+  if (!identical(self$shape, other$shape)) abort("DataFrame dimensions do not match")
+
+  suffix = "__POLARS_CMP_OTHER"
+  other_renamed = other$select(pl$all()$suffix(suffix))
+  #combined = concat([self, other_renamed], how="horizontal")
+
+  # if op == "eq":
+  #   expr = [pli.col(n) == pli.col(f"{n}{suffix}") for n in self.columns]
+  # elif op == "neq":
+  #   expr = [pli.col(n) != pli.col(f"{n}{suffix}") for n in self.columns]
+  # elif op == "gt":
+  #   expr = [pli.col(n) > pli.col(f"{n}{suffix}") for n in self.columns]
+  # elif op == "lt":
+  #   expr = [pli.col(n) < pli.col(f"{n}{suffix}") for n in self.columns]
+  # elif op == "gt_eq":
+  #   expr = [pli.col(n) >= pli.col(f"{n}{suffix}") for n in self.columns]
+  # elif op == "lt_eq":
+  #   expr = [pli.col(n) <= pli.col(f"{n}{suffix}") for n in self.columns]
+  # else:
+  #   raise ValueError(f"got unexpected comparison operator: {op}")
+  #
+  # return combined.select(expr)
+
+}
 
 
 

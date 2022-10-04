@@ -14,6 +14,10 @@ new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, r
 
 concat_df <- function(vdf) .Call(wrap__concat_df, vdf)
 
+hor_concat_df <- function(dfs) .Call(wrap__hor_concat_df, dfs)
+
+diag_concat_df <- function(dfs) .Call(wrap__diag_concat_df, dfs)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

@@ -135,6 +135,9 @@ pl$lazy_csv_reader = minipolars:::lazy_csv_reader
 pl$csv_reader = minipolars:::csv_reader
 pl$read_csv = minipolars:::read_csv_
 
+#functions
+pl$concat = minipolars:::concat
+
 #TODO simplify maybe datatype should not be generated from strings
 .onLoad <- function(libname, pkgname){
   pl$dtypes = list(

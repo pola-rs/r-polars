@@ -6,11 +6,13 @@ pub mod concurrent;
 pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
+
 pub mod rseries;
 
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
 
+use super::rlib::*;
 use read_csv::*;
 use read_parquet::*;
 use rexpr::*;
@@ -102,6 +104,10 @@ impl DataFrame {
         l
     }
 
+    // fn compare_other_(&self) -> bool {
+    //     self.0.compare
+    // }
+
     fn to_list(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> =
@@ -144,6 +150,32 @@ impl DataFrame {
     }
 }
 
+//TODO VecDataFrame requires one extra cheap clone. Which is not the worst.
+// When externdr_api extptr downcast https://github.com/extendr/extendr/issues/431
+// is resolved an R list of DataFrame can just be passed directly to e.g. concat_df
+#[derive(Clone, Debug)]
+#[extendr]
+pub struct VecDataFrame(pub Vec<pl::DataFrame>);
+
+#[extendr]
+impl VecDataFrame {
+    pub fn new() -> Self {
+        VecDataFrame(Vec::new())
+    }
+
+    pub fn with_capacity(n: i32) -> Self {
+        VecDataFrame(Vec::with_capacity(n as usize))
+    }
+
+    pub fn push(&mut self, df: &DataFrame) {
+        self.0.push(df.0.clone());
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:?}", self);
+    }
+}
+
 extendr_module! {
     mod rdataframe;
     use rexpr;
@@ -152,5 +184,7 @@ extendr_module! {
     use read_parquet;
     use rdatatype;
     use rlazyframe;
+    use rlib;
     impl DataFrame;
+    impl VecDataFrame;
 }

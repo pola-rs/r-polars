@@ -12,7 +12,7 @@
 \alias{literal-expression}
 \title{The complete minipolars public API.}
 \format{
-An object of class \code{environment} of length 9.
+An object of class \code{environment} of length 10.
 }
 \usage{
 pl
