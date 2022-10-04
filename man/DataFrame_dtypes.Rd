@@ -24,9 +24,9 @@ Get dtypes of columns in DataFrame.
 Dtypes can also be found in column headers when printing the DataFrame.
 }
 \examples{
-pl$DataFrame(iris)$dtypes()
+pl$DataFrame(iris)$dtypes
 
-pl$DataFrame(iris)$schema)
+pl$DataFrame(iris)$schema
 
 }
 \keyword{DataFrame}

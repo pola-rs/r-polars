@@ -12,6 +12,8 @@ rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_
 
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
 
+concat_df <- function(vdf) .Call(wrap__concat_df, vdf)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
@@ -53,6 +55,22 @@ DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap_
 
 #' @export
 `[[.DataFrame` <- `$.DataFrame`
+
+VecDataFrame <- new.env(parent = emptyenv())
+
+VecDataFrame$new <- function() .Call(wrap__VecDataFrame__new)
+
+VecDataFrame$with_capacity <- function(n) .Call(wrap__VecDataFrame__with_capacity, n)
+
+VecDataFrame$push <- function(df) invisible(.Call(wrap__VecDataFrame__push, self, df))
+
+VecDataFrame$print <- function() invisible(.Call(wrap__VecDataFrame__print, self))
+
+#' @export
+`$.VecDataFrame` <- function (self, name) { func <- VecDataFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.VecDataFrame` <- `$.VecDataFrame`
 
 Expr <- new.env(parent = emptyenv())
 
@@ -100,6 +118,8 @@ Expr$first <- function() .Call(wrap__Expr__first, self)
 
 Expr$last <- function() .Call(wrap__Expr__last, self)
 
+Expr$reverse <- function() .Call(wrap__Expr__reverse, self)
+
 Expr$unique <- function() .Call(wrap__Expr__unique, self)
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
@@ -127,6 +147,10 @@ Expr$over <- function(vs) .Call(wrap__Expr__over, self, vs)
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
 Expr$map <- function(lambda, output_type, `_agg_list`) .Call(wrap__Expr__map, self, lambda, output_type, `_agg_list`)
+
+Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
+
+Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

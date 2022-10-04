@@ -156,6 +156,10 @@ impl Expr {
         Expr(self.0.clone().last())
     }
 
+    pub fn reverse(&self) -> Expr {
+        Expr(self.0.clone().reverse())
+    }
+
     //chaining methods
 
     pub fn unique(&self) -> Expr {
@@ -250,6 +254,14 @@ impl Expr {
         });
 
         Expr(self.clone().0.map(f, output_map))
+    }
+
+    fn suffix(&self, suffix: String) -> Expr {
+        Expr(self.0.clone().suffix(suffix.as_str()))
+    }
+
+    fn prefix(&self, prefix: String) -> Expr {
+        Expr(self.0.clone().prefix(prefix.as_str()))
     }
 }
 

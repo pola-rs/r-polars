@@ -5,19 +5,41 @@
 \alias{print.Expr}
 \alias{lit}
 \alias{Expr_lit}
+\alias{suffix}
+\alias{Expr_suffix}
+\alias{prefix}
+\alias{Expr_prefix}
+\alias{Expr_reverse}
+\alias{reverse}
 \title{Polars Expr}
 \usage{
 \method{print}{Expr}(x)
 
 Expr_lit(x)
+
+Expr_suffix(suffix)
+
+Expr_prefix(prefix)
+
+Expr_reverse()
 }
 \arguments{
 \item{x}{any R expression yielding an integer, float or bool}
+
+\item{suffix}{string suffix to be added to a name}
+
+\item{prefix}{string suffix to be added to a name}
 }
 \value{
 self
 
 Expr, literal of that value
+
+Expr
+
+Expr
+
+Expr
 }
 \description{
 Polars pl$Expr
@@ -29,4 +51,7 @@ ls(minipolars:::Expr)
 pl$col("this_column")$sum()$over("that_column")
 pl$col("some_column")$sum()$over("some_other_column")
 pl$col("some_column") / pl$lit(42)
+pl$col("some")$suffix("_column")
+pl$col("some")$suffix("_column")
+pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())
 }

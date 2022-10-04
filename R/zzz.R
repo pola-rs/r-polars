@@ -90,6 +90,9 @@ macro_add_syntax_check_to_class("Expr")
 env = minipolars:::Expr
 env$map = Expr_map
 env$lit = Expr_lit
+env$prefix = Expr_prefix
+env$suffix = Expr_suffix
+env$reverse = Expr_reverse
 env=""
 
 

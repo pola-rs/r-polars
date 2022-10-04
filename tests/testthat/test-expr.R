@@ -37,3 +37,38 @@ test_that("lit expr", {
   )
 
 })
+
+test_that("prefix suffix reverse", {
+  df = pl$DataFrame(list(
+    A = c(1, 2, 3, 4, 5),
+    fruits = c("banana", "banana", "apple", "apple", "banana"),
+    B = c(5, 4, 3, 2, 1),
+    cars = c("beetle", "audi", "beetle", "beetle", "beetle")
+  ))
+
+  df2 = df$select(
+    pl$all(),
+    pl$all()$reverse()$suffix("_reverse")
+  )
+  expect_equal(
+    df2$columns,
+    c(df$columns,paste0(df$columns,"_reverse"))
+  )
+
+  df3 = df$select(
+    pl$all(),
+    pl$all()$reverse()$prefix("reverse_")
+  )
+  expect_equal(
+    df3$columns,
+    c(df$columns,paste0("reverse_",df$columns))
+  )
+
+  expect_equal(
+    df2$get_column("A_reverse")$to_r(),
+    rev(df2$get_column("A")$to_r())
+  )
+
+
+
+})

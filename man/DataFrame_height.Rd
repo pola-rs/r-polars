@@ -15,7 +15,7 @@ height as numeric
 Get height(nrow) of DataFrame
 }
 \examples{
-pl$DataFrame(iris)$height()
+pl$DataFrame(iris)$height
 
 }
 \keyword{DataFrame}

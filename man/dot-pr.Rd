@@ -5,7 +5,7 @@
 \alias{.pr}
 \title{polars-API: internal extendr bindings to polars}
 \format{
-An object of class \code{environment} of length 8.
+An object of class \code{environment} of length 9.
 }
 \usage{
 .pr

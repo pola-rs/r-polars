@@ -13,9 +13,9 @@ char vec of column names
 get column names as DataFrames
 }
 \examples{
-df = pl$DataFrame(iris)$columns()
-df$columns()
+df = pl$DataFrame(iris)$columns
+df$columns
 df$columns = letters[1:5]
-df$columns()
+df$columns
 }
 \keyword{DataFrame}

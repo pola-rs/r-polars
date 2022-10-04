@@ -13,6 +13,6 @@ value
 set value of properties of DataFrames
 }
 \examples{
-pl$DataFrame(iris)$columns()
+pl$DataFrame(iris)$columns
 }
 \keyword{DataFrame}

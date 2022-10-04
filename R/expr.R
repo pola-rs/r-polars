@@ -140,3 +140,36 @@ Expr_lit = function(x) {
   unwrap(.pr$Expr$lit(x))
 }
 
+#' polars suffix
+#'
+#' @param suffix string suffix to be added to a name
+#' @rdname Expr
+#' @return Expr
+#' @aliases suffix
+#' @name suffix
+#' @examples pl$col("some")$suffix("_column")
+Expr_suffix = function(suffix) {
+  .pr$Expr$suffix(self, suffix)
+}
+
+#' polars prefix
+#'
+#' @param prefix string suffix to be added to a name
+#' @rdname Expr
+#' @return Expr
+#' @aliases prefix
+#' @name prefix
+#' @examples pl$col("some")$suffix("_column")
+Expr_prefix = function(prefix) {
+  .pr$Expr$prefix(self, prefix)
+}
+
+#' polars reverse
+#' @rdname Expr
+#' @return Expr
+#' @aliases reverse
+#' @name prefix
+#' @examples pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())
+Expr_reverse = function() {
+  .pr$Expr$reverse(self)
+}

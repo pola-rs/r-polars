@@ -15,7 +15,7 @@ width as numeric scalar
 Get width(ncol) of DataFrame
 }
 \examples{
-pl$DataFrame(iris)$width()
+pl$DataFrame(iris)$width
 
 }
 \keyword{DataFrame}
