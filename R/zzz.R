@@ -33,27 +33,12 @@ lapply(Series_ops, \(so) {
 
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
-#browser()
-env = minipolars:::DataFrame
-rm(list=ls(env),envir = env)
-impl_methods_DataFrame = ls(pattern="DataFrame_")
-name_methods_DataFrame = sub("^DataFrame_","",impl_methods_DataFrame)
+replace_private_with_pub_methods( minipolars:::DataFrame, "^DataFrame_")
 
-for(i in seq_along(impl_methods_DataFrame)) {
-  env[[name_methods_DataFrame[i]]] = get(impl_methods_DataFrame[i])
-}
-#local(env,rm(list=ls()))
-#browser()
-# env$as_data_frame = DataFrame_as_data_frame
-# env$groupby = DataFrame_groupby
-# env$select = DataFrame_select
-# env$with_columns = DataFrame_with_columns
-# env$filter = DataFrame_filter
-# #env$groupby_agg = NULL #this method belongs to GroupBy
-# env$get_column = DataFrame_get_column
-# env$join = DataFrame_join
-# env$limit = DataFrame_limit
-# env$shap
+
+
+
+
 
 
 
@@ -86,14 +71,18 @@ env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
 
 # Expr
+
+temp_keepers = c(
+    "div", "drop_nans", "drop_nulls", "eq", "first", "gt",
+    "gt_eq", "is_not_null", "is_null", "last", "lt", "lt_eq", "max",
+    "mean", "median", "min", "mul", "n_unique", "neq", "not", "over",
+    "sub", "sum", "unique"
+)
 macro_add_syntax_check_to_class("Expr")
-env = minipolars:::Expr
-env$map = Expr_map
-env$lit = Expr_lit
-env$prefix = Expr_prefix
-env$suffix = Expr_suffix
-env$reverse = Expr_reverse
-env=""
+replace_private_with_pub_methods(
+  minipolars:::Expr, "^Expr_",
+  keep  = temp_keepers
+)
 
 
 
@@ -103,29 +92,12 @@ rm(env)
 
 
 
-#' @title The complete minipolars public API.
-#' @description `pl`-object is a list of all public functions and class constructors
-#' public functions are not exported as a normal package as it would be huge namespace
-#' collision with base:: and other functions. All object-methods are accesed with object$method
-#' via the constructed objects.
-#'
-#' Having all functions in an namespace is similar to the rust- and python- polars api.
-#' Speaking of namespace this pl can be converted into and actual namespace by calling
-#' import_polars_as_("pl"), but this not recemmended.
-#' @rdname pl
-#' @name pl
-#' @aliases pl
-#'
-#' pl$col("colname")$sum() / pl$lit()  #expression ~ chain-method / literal-expression
-#' @export
-pl = new.env(parent=emptyenv())
+
+#TODO add to pl directly at source
 
 #expression constructors
-move_env_elements(Expr,pl,c("col","lit",all="all_constructor"), remove=  FALSE)
+move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 #TODO decide on namespace rules, should there be a env for methods only?
-
-#DataFrame
-pl$DataFrame = minipolars:::DataFrame_constructor
 
 #pl$Series
 pl$Series    = minipolars:::Series_constructor
@@ -137,6 +109,8 @@ pl$read_csv = minipolars:::read_csv_
 
 #functions
 pl$concat = minipolars:::concat
+
+#lazy_functions
 
 #TODO simplify maybe datatype should not be generated from strings
 .onLoad <- function(libname, pkgname){

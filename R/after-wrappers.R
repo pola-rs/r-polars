@@ -40,6 +40,8 @@ extendr_method_to_pure_functions = function(env) {
 
 
 
+
+
 ##this macro must be defined now
 
 #' @title add syntax verification to class
@@ -93,3 +95,21 @@ method_as_property = function(f) {
   class(f) = c("property","function")
   f
 }
+
+
+#' @title The complete minipolars public API.
+#' @description `pl`-object is a list of all public functions and class constructors
+#' public functions are not exported as a normal package as it would be huge namespace
+#' collision with base:: and other functions. All object-methods are accesed with object$method
+#' via the constructed objects.
+#'
+#' Having all functions in an namespace is similar to the rust- and python- polars api.
+#' Speaking of namespace this pl can be converted into and actual namespace by calling
+#' import_polars_as_("pl"), but this not recemmended.
+#' @rdname pl
+#' @name pl
+#' @aliases pl
+#'
+#' pl$col("colname")$sum() / pl$lit()  #expression ~ chain-method / literal-expression
+#' @export
+pl = new.env(parent=emptyenv())

@@ -72,11 +72,6 @@ impl Expr {
         r_result_list(expr)
     }
 
-    //suffix constructor if method by same name
-    pub fn all_constructor() -> Expr {
-        Expr(pl::all())
-    }
-
     //expr binary comparisons
     pub fn gt(&self, other: &Expr) -> Expr {
         Expr(self.0.clone().gt(other.0.clone()))

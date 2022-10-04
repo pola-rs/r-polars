@@ -82,7 +82,7 @@ DataFrame
 #' @examples
 #' pl$DataFrame(iris)
 #' pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
-DataFrame_constructor = function(data, make_names_unique= TRUE) {
+pl$DataFrame = function(data, make_names_unique= TRUE) {
 
   if(inherits(data,"DataFrame")) return(data)
 
@@ -168,20 +168,20 @@ print.DataFrame = function(x) {
 
 #' internal method print DataFrame
 #'
-#' @param x DataFrame
 #'
 #' @name print()
 #'
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
-DataFrame_print = function(x) {
+DataFrame_print = function() {
   .pr$DataFrame$print(self)
+  invisible(self)
 }
 
 ##"Class methods"
 
-#' Validate data input for Dataframe_constructor
+#' Validate data input for create Dataframe with pl$DataFrame
 #'
 #' @param robj any R object to test
 #'

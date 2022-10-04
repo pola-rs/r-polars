@@ -225,3 +225,25 @@ l_to_vdf = function(l) {
   vdf
 }
 
+
+#' remove private method
+#'
+#' @description  extendr places the naked internal calls to rust in env-classes. This function
+#' can be used to delete them and replaces them with the public methods. Which are any function
+#' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
+#' zzz.R
+#' @param env class envrionment to modify. Envs are mutable so return needed
+#' @param class_pattern a regex string matching declared public functions of that class
+#'
+#' @examples
+#' replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
+replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
+  remove_these = setdiff(ls(env),keep)
+  rm(list=remove_these,envir = env)
+  impl_methods_DataFrame = ls(parent.frame(), pattern = class_pattern)
+  name_methods_DataFrame = sub(class_pattern, "", impl_methods_DataFrame)
+  for(i in seq_along(impl_methods_DataFrame)) {
+    env[[name_methods_DataFrame[i]]] = get(impl_methods_DataFrame[i])
+  }
+  invisible(NULL)
+}

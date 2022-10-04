@@ -29,12 +29,110 @@ print.Expr = function(x) {
   invisible(x)
 }
 
+#' internal method print Expr
+#' @name Expr$print()
+#' @examples pl$DataFrame(iris)
+Expr_print = function() {
+  .pr$Expr$print(self)
+  invisible(self)
+}
+
 
 
 #' @export
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(minipolars:::Expr),"()")
 }
+
+
+
+#' Abs
+#' @description Compute absolute values
+#' @return Exprs abs
+#' @examples
+#' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
+Expr_abs = function() {
+  .pr$Expr$abs(self)
+}
+
+
+#' Add
+#' @description Addition
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #three syntaxes same result
+#' pl$lit(5) + 10
+#' pl$lit(5) + pl$lit(10)
+#' pl$lit(5)$add(pl$lit(10))
+Expr_add = function(other) {
+  .pr$Expr$add(self, other)
+}
+
+#' aggregate groups
+#' @description
+#' Get the group indexes of the group by operation.
+#' Should be used in aggregation context only.
+#' @return Exprs
+#' @export
+#' @examples
+#' df = pl$DataFrame(list(
+#'   group = c("one","one","one","two","two","two"),
+#'   value =  c(94, 95, 96, 97, 97, 99)
+#' ))
+#' df$groupby("group", maintain_order=TRUE)$agg(pl$col("value")$agg_groups())
+Expr_agg_groups = function() {
+  .pr$Expr$agg_groups(self)
+}
+
+
+#' Rename Expr output
+#' @description
+#' Rename the output of an expression.
+#' @param string new name of output
+#' @return Expr
+#' @examples pl$col("bob")$alias("alice")
+Expr_alias = function(name) {
+  .pr$Expr$alias(self, name)
+}
+
+#' All (is true)
+#' @description
+#'Check if all boolean values in a Boolean column are `TRUE`.
+# This method is an expression - not to be confused with
+#:`pl$all` which is a function to select all columns.
+#'
+#' @return Boolean literal
+#' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
+#' to "all-columns" and is an expression constructor
+#' @examples
+#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
+Expr_all = function() {
+  .pr$Expr$all(self)
+}
+
+#' Any (is true)
+#' @description
+#' Check if any boolean value in a Boolean column is `TRUE`.
+#' @return Boolean literal
+#' @examples
+#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
+Expr_any = function() {
+  .pr$Expr$any(self)
+}
+
+
+#' Count values
+#' @description
+#' Count the number of values in this expression.
+#' Similar to R length()
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
+Expr_count = function() {
+  .pr$Expr$count(self)
+}
+
 
 
 #' construct proto Expr array from args
@@ -65,12 +163,9 @@ construct_ProtoExprArray = function(...) {
 }
 
 #' wrap as literal
-#'
 #' @param e an Expr(polars) or any R expression
 #' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
-#'
 #' @return Expr
-#'
 #' @examples pl$col("foo") < 5
 wrap_e = function(e) {
   if(inherits(e,"Expr")) e else Expr$lit(e)

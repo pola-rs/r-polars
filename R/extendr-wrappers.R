@@ -82,8 +82,6 @@ Expr$col <- function(name) .Call(wrap__Expr__col, name)
 
 Expr$lit <- function(robj) .Call(wrap__Expr__lit, robj)
 
-Expr$all_constructor <- function() .Call(wrap__Expr__all_constructor)
-
 Expr$gt <- function(other) .Call(wrap__Expr__gt, self, other)
 
 Expr$gt_eq <- function(other) .Call(wrap__Expr__gt_eq, self, other)
