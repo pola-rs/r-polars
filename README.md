@@ -1,6 +1,32 @@
 # minipolars
 Use awesome polars DataFrame library from R!
 
+## What is minipolars
+
+Minipolars is an unofficial porting of polars (pola-rs) in to an R
+package. I aim to finish the project in 2022.
+
+ - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise minipolars is going to perform just as fast pypolars.
+
+
+[Polars](http://pola.rs) is the
+[fastest](https://h2oai.github.io/db-benchmark/) data table query
+library. The syntax is related to Spark, but column oriented and not row
+oriented. All R libraries are also column oriented so this should feel
+familiar. Unlike Spark, polars is natively multithreaded instead of
+multinode(d). This make polars simple to install and use as any other R
+package. Like Spark and SQL-variants polars optimizes queries for memory
+consuption and speed so you don’t have to. Expect 5-10 speedup compared
+to dplyr on simple transformations from &gt;500Mb data. When chaining
+many operations the speedup due to optimization can be even higher.
+Polars is built on the apache-arrow memory model.
+
+This port relies on extendr <https://github.com/extendr> which is the R
+equivalent to pyo3+maturin. Extendr is very convenient for calling rust
+from R and the reverse.
+
+
+
 # install (BETA)
 
  - Macbbook x86_64
@@ -32,28 +58,7 @@ Søren Welling
 12/09/2022
 
 
-## What is minipolars
 
-Minipolars is an unofficial porting of polars (pola-rs) in to an R
-package. I aim to finish the project in 2022.
-You can 
-
-
-[Polars](http://pola.rs) is the
-[fastest](https://h2oai.github.io/db-benchmark/) data table query
-library. The syntax is related to Spark, but column oriented and not row
-oriented. All R libraries are also column oriented so this should feel
-familiar. Unlike Spark, polars is natively multithreaded instead of
-multinode(d). This make polars simple to install and use as any other R
-package. Like Spark and SQL-variants polars optimizes queries for memory
-consuption and speed so you don’t have to. Expect 5-10 speedup compared
-to dplyr on simple transformations from &gt;500Mb data. When chaining
-many operations the speedup due to optimization can be even higher.
-Polars is built on the apache-arrow memory model.
-
-This port relies on extendr <https://github.com/extendr> which is the R
-equivalent to pyo3+maturin. Extendr is very convenient for calling rust
-from R and the reverse.
 
 ## Hello world
 
