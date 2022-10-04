@@ -11,12 +11,17 @@ use extendr_api::prelude::*;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlazyframe;
+pub mod rlib;
 pub mod utils;
 
 use rdataframe::get_rdataframe_metadata;
 use utils::extendr_concurrent::ParRObj;
 
 use polars::prelude::Series;
+
+pub use polars_core;
+
+//pub use polars_core;
 
 //public channel to locate main thread from any sub thread
 use crate::utils::extendr_concurrent::{Storage, ThreadCom};
