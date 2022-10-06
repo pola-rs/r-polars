@@ -238,12 +238,33 @@ l_to_vdf = function(l) {
 #' @examples
 #' replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
 replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
-  remove_these = setdiff(ls(env),keep)
+
+  #get these
+  class_methods = ls(parent.frame(), pattern = class_pattern)
+  names(class_methods) = sub(class_pattern, "", class_methods)
+  #name_methods_DataFrame = sub(class_pattern, "", class_methods)
+
+  #any NULL signals use internal extendr implementation directly
+  use_internal_bools = sapply(class_methods, function(method)  {
+    x = get(method)
+    if(is_string(x)) if(x=="use_extendr_wrapper") return(TRUE) else warning(paste("unknown flag for",method,x))
+    FALSE
+  })
+
+  #keep internals flagged with "use_internal_method"
+  null_keepers = names(class_methods)[use_internal_bools]
+
+  #remove any internal method from class, not to keep
+  remove_these = setdiff(ls(env),c(keep,null_keepers))
   rm(list=remove_these,envir = env)
-  impl_methods_DataFrame = ls(parent.frame(), pattern = class_pattern)
-  name_methods_DataFrame = sub(class_pattern, "", impl_methods_DataFrame)
-  for(i in seq_along(impl_methods_DataFrame)) {
-    env[[name_methods_DataFrame[i]]] = get(impl_methods_DataFrame[i])
+
+  #write any all class methods, where not using internal directly
+  for(i in which(!use_internal_bools)) {
+    method = class_methods[i]
+    env[[names(method)]] = get(method)
   }
   invisible(NULL)
 }
+
+
+

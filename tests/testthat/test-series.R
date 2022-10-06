@@ -222,13 +222,6 @@ test_that("to_frame", {
     data.frame(foo = 1:3)
   )
 
-  #low level test
-  rdf = pl$DataFrame(list(foo=1:3))
-  expect_identical(
-    unwrap(minipolars:::Series$new(1:3,"foo")$to_frame()$to_list()),
-    unwrap(rdf$to_list())
-  )
-
 })
 
 

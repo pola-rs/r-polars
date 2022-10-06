@@ -39,13 +39,20 @@ Expr_print = function() {
   invisible(self)
 }
 
-
-
 #' @export
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(minipolars:::Expr),"()")
 }
 
+#' wrap as literal
+#' @param e an Expr(polars) or any R expression
+#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
+#' @keywords Expr
+#' @return Expr
+#' @examples pl$col("foo") < 5
+wrap_e = function(e) {
+  if(inherits(e,"Expr")) e else Expr$lit(e)
+}
 
 
 #' Abs
@@ -54,14 +61,12 @@ Expr_print = function() {
 #' @return Exprs abs
 #' @examples
 #' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
-Expr_abs = function() {
-  .pr$Expr$abs(self)
-}
+Expr_abs = "use_extendr_wrapper"
 
 
 #' Add
 #' @description Addition
-#' @keywords Expr
+#' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
 #' @examples
@@ -69,13 +74,157 @@ Expr_abs = function() {
 #' pl$lit(5) + 10
 #' pl$lit(5) + pl$lit(10)
 #' pl$lit(5)$add(pl$lit(10))
-Expr_add = function(other) {
-  .pr$Expr$add(self, other)
-}
+Expr_add = "use_extendr_wrapper"
+#' @export
+"+.Expr" <- function(e1,e2) e1$add(wrap_e(e2))
+
+#' Div
+#' @description Divide
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #three syntaxes same result
+#' pl$lit(5) / 10
+#' pl$lit(5) / pl$lit(10)
+#' pl$lit(5)$div(pl$lit(10))
+Expr_div = "use_extendr_wrapper"
+#' @export
+"/.Expr" <- function(e1,e2) e1$div(wrap_e(e2))
+
+#' Sub
+#' @description Substract
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #three syntaxes same result
+#' pl$lit(5) - 10
+#' pl$lit(5) - pl$lit(10)
+#' pl$lit(5)$sub(pl$lit(10))
+Expr_sub = "use_extendr_wrapper"
+#' @export
+"-.Expr" <- function(e1,e2) e1$sub(wrap_e(e2))
+
+#' Mul *
+#' @description Multiplication
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #three syntaxes same result
+#' pl$lit(5) * 10
+#' pl$lit(5) * pl$lit(10)
+#' pl$lit(5)$mul(pl$lit(10))
+Expr_mul = "use_extendr_wrapper"
+#' @export
+"*.Expr" <- function(e1,e2) e1$mul(wrap_e(e2))
+
+
+#' Not !
+#' @description not method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #two syntaxes same result
+#' pl$lit(TRUE)$not()
+#' !pl$lit(TRUE)
+Expr_not = "use_extendr_wrapper"
+#' @export
+"!.Expr" <- function(e1,e2) e1$not()
+
+#' Less Than <
+#' @description lt method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(5) < 10
+#' pl$lit(5) < pl$lit(10)
+#' pl$lit(5)$lt(pl$lit(10))
+Expr_lt = "use_extendr_wrapper"
+#' @export
+"<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
+
+#' GreaterThan <
+#' @description gt method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(2) > 1
+#' pl$lit(2) > pl$lit(1)
+#' pl$lit(2)$gt(pl$lit(1))
+Expr_gt = "use_extendr_wrapper"
+#' @export
+">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
+
+#' Equal ==
+#' @description eq method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(2) == 2
+#' pl$lit(2) ==  pl$lit(2)
+#' pl$lit(2)$eq(pl$lit(2))
+Expr_eq = "use_extendr_wrapper"
+#' @export
+"==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
+
+
+#' Not Equal !=
+#' @description neq method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(1) != 2
+#' pl$lit(1) !=  pl$lit(2)
+#' pl$lit(1)$neq(pl$lit(2))
+Expr_neq = "use_extendr_wrapper"
+#' @export
+"!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
+
+#' Less Than Or Equal <=
+#' @description lt_eq method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(2) <= 2
+#' pl$lit(2) <=  pl$lit(2)
+#' pl$lit(2)$lt_eq(pl$lit(2))
+Expr_lt_eq = "use_extendr_wrapper"
+#' @export
+"<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
+
+
+#' Greater Than Or Equal <=
+#' @description gt_eq method and operator
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' #' #three syntaxes same result
+#' pl$lit(2) >= 2
+#' pl$lit(2) >=  pl$lit(2)
+#' pl$lit(2)$gt_eq(pl$lit(2))
+Expr_gt_eq = "use_extendr_wrapper"
+#' @export
+">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
+
+
 
 #' aggregate groups
-#' @description
 #' @keywords Expr
+#' @description
 #' Get the group indexes of the group by operation.
 #' Should be used in aggregation context only.
 #' @return Exprs
@@ -86,25 +235,21 @@ Expr_add = function(other) {
 #'   value =  c(94, 95, 96, 97, 97, 99)
 #' ))
 #' df$groupby("group", maintain_order=TRUE)$agg(pl$col("value")$agg_groups())
-Expr_agg_groups = function() {
-  .pr$Expr$agg_groups(self)
-}
+Expr_agg_groups = "use_extendr_wrapper"
 
 
 #' Rename Expr output
-#' @description
 #' @keywords Expr
+#' @description
 #' Rename the output of an expression.
-#' @param string new name of output
+#' @param name string new name of output
 #' @return Expr
 #' @examples pl$col("bob")$alias("alice")
-Expr_alias = function(name) {
-  .pr$Expr$alias(self, name)
-}
+Expr_alias = "use_extendr_wrapper"
 
 #' All (is true)
-#' @description
 #' @keywords Expr
+#' @description
 #'Check if all boolean values in a Boolean column are `TRUE`.
 # This method is an expression - not to be confused with
 #:`pl$all` which is a function to select all columns.
@@ -114,33 +259,29 @@ Expr_alias = function(name) {
 #' to "all-columns" and is an expression constructor
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
-Expr_all = function() {
-  .pr$Expr$all(self)
-}
+Expr_all = "use_extendr_wrapper"
 
 #' Any (is true)
-#' @description
 #' @keywords Expr
+#' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
-Expr_any = function() {
-  .pr$Expr$any(self)
-}
+Expr_any = "use_extendr_wrapper"
 
 
 #' Count values
-#' @description
 #' @keywords Expr
+#' @description
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
-Expr_count = function() {
-  .pr$Expr$count(self)
-}
+Expr_count = "use_extendr_wrapper"
+
+
 
 
 
@@ -173,48 +314,9 @@ construct_ProtoExprArray = function(...) {
   pra
 }
 
-#' wrap as literal
-#' @param e an Expr(polars) or any R expression
-#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
-#' @keywords Expr
-#' @return Expr
-#' @examples pl$col("foo") < 5
-wrap_e = function(e) {
-  if(inherits(e,"Expr")) e else Expr$lit(e)
-}
 
-#' @export
-"!.Expr" <- function(e1,e2) e1$not()
 
-#' @export
-"<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
 
-#' @export
-">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
-
-#' @export
-"==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
-
-#' @export
-"!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
-
-#' @export
-"<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
-
-#' @export
-">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
-
-#' @export
-"+.Expr" <- function(e1,e2) e1$add(wrap_e(e2))
-
-#' @export
-"-.Expr" <- function(e1,e2) e1$sub(wrap_e(e2))
-
-#' @export
-"/.Expr" <- function(e1,e2) e1$div(wrap_e(e2))
-
-#' @export
-"*.Expr" <- function(e1,e2) e1$mul(wrap_e(e2))
 
 
 

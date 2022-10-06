@@ -114,7 +114,12 @@ impl DataFrame {
             self.0.iter().map(series_to_r_vector_pl_result).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|ok| r!(extendr_api::prelude::List::from_values(ok)));
+        let robj_list_res = robj_vec_res.map(|ok| {
+            r!(extendr_api::prelude::List::from_names_and_values(
+                self.columns(),
+                ok
+            ))
+        });
 
         r_result_list(robj_list_res)
     }

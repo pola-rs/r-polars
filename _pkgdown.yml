@@ -11,7 +11,7 @@ reference:
   - subtitle: Expr
     contents:
       - has_keyword("Expr")
-  - subtitle: everything else
+  - title: everything else
     contents:
       - -has_keyword("DataFrame")
       - -has_keyword("Expr")
