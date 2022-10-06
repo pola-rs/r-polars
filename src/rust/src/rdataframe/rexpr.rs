@@ -1,11 +1,12 @@
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+use polars::lazy::dsl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
+use crate::rdatatype::{dtv_to_vec, DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 
-use super::DataType;
 use crate::utils::r_result_list;
 
 #[derive(Clone, Debug)]
@@ -33,6 +34,7 @@ impl Expr {
         Expr(pl::col(name))
     }
 
+    //TODO expand usecases to series and datatime
     pub fn lit(robj: Robj) -> List {
         let rtype = robj.rtype();
         let rlen = robj.len();
@@ -151,6 +153,14 @@ impl Expr {
         Expr(self.0.clone().last())
     }
 
+    pub fn head(&self, n: i64) -> Expr {
+        Expr(self.0.clone().head(Some(n as usize)))
+    }
+
+    pub fn tail(&self, n: i64) -> Expr {
+        Expr(self.0.clone().tail(Some(n as usize)))
+    }
+
     pub fn reverse(&self) -> Expr {
         Expr(self.0.clone().reverse())
     }
@@ -159,6 +169,10 @@ impl Expr {
 
     pub fn unique(&self) -> Expr {
         Expr(self.0.clone().unique())
+    }
+
+    pub fn unique_stable(&self) -> Expr {
+        Expr(self.0.clone().unique_stable())
     }
 
     pub fn abs(&self) -> Expr {
@@ -204,10 +218,13 @@ impl Expr {
     }
 
     //expr "funnies"
-    pub fn over(&self, vs: Vec<String>) -> Expr {
-        let vs2: Vec<&str> = vs.iter().map(|x| x.as_str()).collect();
+    pub fn over(&self, proto_exprs: &ProtoExprArray) -> Expr {
+        let ve = pra_to_vec(proto_exprs, "select");
+        Expr(self.0.clone().over(ve))
+    }
 
-        Expr(self.0.clone().over(vs2))
+    pub fn dtype_cols(dtypes: &DataTypeVector) -> Expr {
+        Expr(dsl::dtype_cols(dtv_to_vec(dtypes)))
     }
 
     pub fn print(&self) {

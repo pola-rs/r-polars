@@ -282,6 +282,216 @@ Expr_any = "use_extendr_wrapper"
 Expr_count = "use_extendr_wrapper"
 
 
+#' get unqie values
+#' @keywords Expr
+#' @description
+#'  Get unique values of this expression.
+#' Similar to R unique()
+#' @param maintain_order bool, if TRUE guranteed same order, if FALSE maybe
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$unique())
+Expr_unique = function(maintain_order = FALSE) {
+  if(!is_bool(maintain_order)) abort("param maintain_order must be a bool")
+  if(maintain_order) {
+    .pr$Expr$unique_stable(self)
+  } else {
+    .pr$Expr$unique(self)
+  }
+}
+
+#' Count number of unique values
+#' @keywords Expr
+#' @description
+#' Count number of unique values.
+#' Similar to R length(unique(x))
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
+Expr_n_unique = "use_extendr_wrapper"
+
+#' Drop null(s)
+#' @keywords Expr
+#' @description
+#' Drop null values.
+#' Similar to R syntax x[!(is.na(x) & !is.nan(x))]
+#' @return Expr
+#' @examples
+#'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nulls())
+Expr_drop_nulls = "use_extendr_wrapper"
+
+#' Drop NaN(s)
+#' @keywords Expr
+#' @description
+#' Drop floating point NaN values.
+#' Similar to R syntax x[!is.nan(x)]
+#' @details
+#'
+#'  Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
+#'  To drop null values, use method `drop_nulls`.
+#'
+#' @return Expr
+#' @examples
+#'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nans())
+Expr_drop_nans = "use_extendr_wrapper"
+
+#' First
+#' @keywords Expr
+#' @description
+#' Get the first value.
+#' Similar to R head(x,1)
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
+Expr_first= "use_extendr_wrapper"
+
+#' Last
+#' @keywords Expr
+#' @description
+#' Get the lastvalue.
+#' Similar to R syntax tail(x,1)
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
+Expr_last = "use_extendr_wrapper"
+
+
+
+#' Head
+#' @keywords Expr
+#' @description
+#' Get the head n elements.
+#' Similar to R head(x)
+#' @param n numeric number of elements to select from head
+#' @return Expr
+#' @examples
+#' #get 3 first elements
+#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
+Expr_head = function(n=10) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  .pr$Expr$head(self,n=n)
+}
+
+#' Tail
+#' @keywords Expr
+#' @description
+#' Get the tail n elements.
+#' Similar to R tail(x)
+#' @param n numeric number of elements to select from tail
+#' @return Expr
+#' @examples
+#' #get 3 last elements
+#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
+Expr_tail = function(n=10) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  .pr$Expr$tail(self,n=n)
+}
+
+
+#' is_null
+#' @keywords Expr
+#' @description
+#' Returns a boolean Series indicating which values are null.
+#' Similar to R syntax is.na(x)
+#' null polars about the same as R NA
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_null())
+Expr_is_null = "use_extendr_wrapper"
+
+#' is_not_null
+#' @keywords Expr
+#' @description
+#' Returns a boolean Series indicating which values are not null.
+#' Similar to R syntax !is.na(x)
+#' null polars about the same as R NA
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_not_null())
+Expr_is_not_null = "use_extendr_wrapper"
+
+
+#' max
+#' @keywords Expr
+#' @description
+#' Get maximum value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
+Expr_max = "use_extendr_wrapper"
+
+#' min
+#' @keywords Expr
+#' @description
+#' Get minimum value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$min()== 1 ) #is true
+Expr_min = "use_extendr_wrapper"
+
+#' mean
+#' @keywords Expr
+#' @description
+#' Get mean value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$mean()==2) #is true
+Expr_mean = "use_extendr_wrapper"
+
+#' median
+#' @keywords Expr
+#' @description
+#' Get median value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
+Expr_mean = "use_extendr_wrapper"
+
+
+#' sum
+#' @keywords Expr
+#' @description
+#' Get sum value
+#'
+#' @details
+#  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+# Int64 before summing to prevent overflow issues.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1L,NA,2L)))$select(pl$col("x")$sum())#is i32 3 (Int32 not casted)
+Expr_sum = "use_extendr_wrapper"
+
+
+
+#' over
+#' @keywords Expr
+#' @description
+
+#'Apply window function over a subgroup.
+#'This is similar to a groupby + aggregation + self join.
+#'Or similar to `window functions in Postgres
+#'<https://www.postgresql.org/docs/current/tutorial-window.html>`_.
+#' @param ... of strings or columns to group by
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
+Expr_over = function(...) {
+
+  #combine arguments in proto expression array
+  pra = construct_protoArrayExpr(list(...))
+
+  #pass to over
+  .pr$Expr$over(self,pra)
+
+}
+
+
 
 
 

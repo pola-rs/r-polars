@@ -267,4 +267,46 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 }
 
 
+#' construct protoArrayExpr
+#'
+#' @param l list of Expr or string
+#'
+#' @return extptr to ProtoExprArray with all exprs or strings
+#'
+#' @examples construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+construct_protoArrayExpr = function(l) {
+  pra = minipolars:::ProtoExprArray$new()
+  for (i  in l) {
+    if(is_string(i)) {
+      pra$push_back_str(i)
+      next
+    }
+    if(inherits(i,"Expr")) {
+      pra$push_back_rexpr(i)
+      next
+    }
+    abort(paste("element:",i, "is neither string nor expr"))
+  }
+  pra
+}
+
+#' construct protoArrayExpr
+#'
+#' @param l list of Expr or string
+#'
+#' @return extptr to ProtoExprArray with all exprs or strings
+#'
+#' @examples construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+construct_DataTypeVector = function(l) {
+  dtv = minipolars:::DataTypeVector$new()
+
+  for (i  in seq_along(l)) {
+    if(inherits(l[[i]],"DataType")) {
+      dtv$push(names(l)[i],l[[i]])
+      next
+    }
+    abort(paste("element:",i, "is not a DateType"))
+  }
+  dtv
+}
 

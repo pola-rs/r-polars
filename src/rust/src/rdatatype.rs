@@ -65,6 +65,11 @@ impl DataTypeVector {
     }
 }
 
+pub fn dtv_to_vec(dtv: &DataTypeVector) -> Vec<pl::DataType> {
+    let v: Vec<_> = dtv.0.iter().map(|(_, dt)| dt.clone()).collect();
+    v
+}
+
 pub fn new_join_type(s: &str) -> pl::JoinType {
     match s {
         "cross" => pl::JoinType::Cross,

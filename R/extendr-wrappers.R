@@ -120,9 +120,15 @@ Expr$first <- function() .Call(wrap__Expr__first, self)
 
 Expr$last <- function() .Call(wrap__Expr__last, self)
 
+Expr$head <- function(n) .Call(wrap__Expr__head, self, n)
+
+Expr$tail <- function(n) .Call(wrap__Expr__tail, self, n)
+
 Expr$reverse <- function() .Call(wrap__Expr__reverse, self)
 
 Expr$unique <- function() .Call(wrap__Expr__unique, self)
+
+Expr$unique_stable <- function() .Call(wrap__Expr__unique_stable, self)
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
@@ -144,7 +150,9 @@ Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 
 Expr$not <- function() .Call(wrap__Expr__not, self)
 
-Expr$over <- function(vs) .Call(wrap__Expr__over, self, vs)
+Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
+
+Expr$dtype_cols <- function(dtypes) .Call(wrap__Expr__dtype_cols, dtypes)
 
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
