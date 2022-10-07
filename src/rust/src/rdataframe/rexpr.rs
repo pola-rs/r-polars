@@ -1,11 +1,11 @@
+use super::DataFrame;
+use crate::rdatatype::{dtv_to_vec, DataType, DataTypeVector};
+use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::lazy::dsl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
-
-use crate::rdatatype::{dtv_to_vec, DataType, DataTypeVector};
-use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
-use crate::CONFIG;
 
 use crate::utils::r_result_list;
 
@@ -274,6 +274,13 @@ impl Expr {
 
     fn prefix(&self, prefix: String) -> Expr {
         Expr(self.0.clone().prefix(prefix.as_str()))
+    }
+
+    fn to_field(&self, df: &DataFrame) {
+        let ctxt = polars::prelude::Context::Default;
+        let res = self.0.to_field(&df.0.schema(), ctxt);
+        dbg!(&res);
+        res.unwrap();
     }
 }
 

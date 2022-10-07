@@ -3,17 +3,28 @@
 \name{DataFrame_with_columns}
 \alias{DataFrame_with_columns}
 \alias{with_columns}
-\title{with columns}
+\title{modify/append columns to DataFrame}
 \usage{
 DataFrame_with_columns(...)
 }
 \arguments{
-\item{...}{any expressions or strings}
+\item{...}{any expressions or strings defining}
 }
 \value{
 DataFrame
+pl$DataFrame(iris)$with_columns(
+pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+(pl$col("Sepal.Length")+2)$alias("add_2_SL")
+)
+
+#rename columns by naming expression is concidered experimental
+Currently requires minipolars::set_minipolars_options(named_exprs = TRUE)
+pl$DataFrame(iris)$with_columns(
+pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
+SW_add_2 = (pl$col("Sepal.Width")+2)
+)
 }
 \description{
-with columns
+Like dplyr \code{mutate()} as it keeps unmentioned columns unlike data.table \code{.()}.
 }
 \keyword{DataFrame}

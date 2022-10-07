@@ -11,6 +11,11 @@ DataFrame_select(...)
 \item{...}{expresssions or strings defining columns to select(keep) in context the DataFrame}
 }
 \description{
-related to dplyr \verb{mutate()`` and data.table }.()`.
+related to dplyr \code{mutate()} However discards unmentioned columns as data.table \code{.()}.
 }
+\keyword{#'}
+\keyword{(pl$col("Sepal.Length")+2)$alias("add_2_SL")}
+\keyword{)}
 \keyword{DataFrame}
+\keyword{pl$DataFrame(iris)$select(}
+\keyword{pl$col("Sepal.Length")$abs()$alias("abs_SL"),}

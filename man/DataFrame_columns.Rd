@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_columns}
 \alias{DataFrame_columns}
-\title{columns, names columns}
+\title{get/set columns (the names columns)}
 \usage{
 DataFrame_columns
 }
@@ -10,12 +10,16 @@ DataFrame_columns
 char vec of column names
 }
 \description{
-get column names as DataFrames
+get/set column names of DataFrame object
 }
 \examples{
-df = pl$DataFrame(iris)$columns
+df = pl$DataFrame(iris)
+
+#get values
 df$columns
-df$columns = letters[1:5]
+
+#set + get values
+df$columns = letters[1:5] #<- is fine too
 df$columns
 }
 \keyword{DataFrame}

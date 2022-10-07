@@ -249,7 +249,11 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
   #any NULL signals use internal extendr implementation directly
   use_internal_bools = sapply(class_methods, function(method)  {
     x = get(method)
-    if(is_string(x)) if(x=="use_extendr_wrapper") return(TRUE) else warning(paste("unknown flag for",method,x))
+
+    if(is_string(x)) {
+      if(x=="use_extendr_wrapper") return(TRUE)
+      warning(paste("unknown flag for",method,x))
+    }
     FALSE
   })
 

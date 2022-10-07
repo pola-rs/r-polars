@@ -13,6 +13,18 @@ value
 set value of properties of DataFrames
 }
 \examples{
-pl$DataFrame(iris)$columns
+#For internal use
+#is only activated for following methods of DataFrame
+ls(minipolars:::DataFrame.property_setters)
+
+#specific use case for one object property 'columns' (names)
+df = pl$DataFrame(iris)
+
+#get values
+df$columns
+
+#set + get values
+df$columns = letters[1:5] #<- is fine too
+df$columns
 }
 \keyword{DataFrame}

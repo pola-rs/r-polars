@@ -162,6 +162,8 @@ Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 
 Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
 
+Expr$to_field <- function(df) invisible(.Call(wrap__Expr__to_field, self, df))
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

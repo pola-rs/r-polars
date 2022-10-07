@@ -3,7 +3,7 @@
 \name{DataFrame_get_column}
 \alias{DataFrame_get_column}
 \alias{get_column}
-\title{Get Column}
+\title{Get Column (as one Series)}
 \usage{
 DataFrame_get_column(name)
 }

@@ -285,10 +285,9 @@ test_that("get coloumn(s)", {
 
 
 test_that("get coloumn", {
+
   expect_true(
-    pl$DataFrame(iris)
-      $get_column("Sepal.Length")
-      $series_equal(
+    pl$DataFrame(iris)$get_column("Sepal.Length")$series_equal(
         pl$Series(iris$Sepal.Length,"Sepal.Length")
       )
   )
@@ -335,6 +334,21 @@ test_that("with_columns lazy/eager", {
 
   expect_identical(
     ldf_actual$collect()$as_data_frame(check.names = FALSE),
+    rdf
+  )
+
+
+  #check
+  set_minipolars_options(named_exprs = TRUE)
+  ldf_actual_kwarg_named = ldf$with_columns(
+    "a*2" = (pl$col("a")*2),
+    "b/2" = (pl$col("b")/2),
+    "not c" = (!pl$col("c"))
+  )
+  reset_minipolars_options()
+
+  expect_identical(
+    ldf_actual_kwarg_named$collect()$as_data_frame(check.names = FALSE),
     rdf
   )
 

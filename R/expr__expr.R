@@ -504,19 +504,51 @@ Expr_over = function(...) {
 #'
 #' @examples construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
+
+
   pra = minipolars:::ProtoExprArray$new()
   args = list(...)
-  for (i in args) {
-    if (is_string(i)) {
-      pra$push_back_str(i) #rust method
-      next
+  arg_names = names(args)
+
+
+  # if args not named load in Expr and string
+  if(is.null(arg_names)) {
+    for (i in args) {
+      if (is_string(i)) {
+        pra$push_back_str(i) #rust method
+        next
+      }
+      if (inherits(i,"Expr")) {
+        pra$push_back_rexpr(i) #rust method
+        next
+      }
+      abort(paste("cannot handle object:", capture.output(str(i))))
     }
-    if (inherits(i,"Expr")) {
-      pra$push_back_rexpr(i) #rust method
-      next
+
+  #if args named, convert string to col and alias any column by name if a name
+  } else {
+
+    if(!minipolars:::minipolars_optenv$named_exprs) {
+      abort("not allowed naming expressions, use `set_minipolars_options(named_exprs = TRUE)` to enable column naming by expression")
     }
-    abort(paste("cannot handle object:", capture.output(str(i))))
+
+    for (i in seq_along(args)) {
+      arg = args[[i]]
+      name = arg_names[i]
+      if (is_string(arg)) {
+        arg = pl$col(arg)
+      }
+      if (inherits(arg,"Expr")) {
+        if(nchar(name)>=1L) {
+          arg = arg$alias(name)
+        }
+        pra$push_back_rexpr(arg) #rust method
+        next
+      }
+      abort(paste("cannot handle object:", capture.output(str(arg))))
+    }
   }
+
 
   pra
 }

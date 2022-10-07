@@ -214,7 +214,20 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @return value
 #' @keywords DataFrame
 #' @export
-#' @examples pl$DataFrame(iris)$columns
+#' @examples
+#' #For internal use
+#' #is only activated for following methods of DataFrame
+#' ls(minipolars:::DataFrame.property_setters)
+#'
+#' #specific use case for one object property 'columns' (names)
+#' df = pl$DataFrame(iris)
+#'
+#' #get values
+#' df$columns
+#'
+#' #set + get values
+#' df$columns = letters[1:5] #<- is fine too
+#' df$columns
 "$<-.DataFrame" = function(self, name, value) {
   func = DataFrame.property_setters[[name]]
   if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
@@ -225,23 +238,30 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
 
 
-#' columns, names columns
-#' @description get column names as DataFrames
-#' @rdname columns
+#' get/set columns (the names columns)
+#' @description get/set column names of DataFrame object
+#' @name DataFrame_columns
+#' @rdname DataFrame_columns
 #'
 #' @return char vec of column names
 #' @keywords DataFrame
 #' @usage DataFrame_columns
 #'
 #' @examples
-#' df = pl$DataFrame(iris)$columns
+#' df = pl$DataFrame(iris)
+#'
+#' #get values
 #' df$columns
-#' df$columns = letters[1:5]
+#'
+#' #set + get values
+#' df$columns = letters[1:5] #<- is fine too
 #' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
 })
-DataFrame.property_setters$columns = function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
+#allow user to set property
+DataFrame.property_setters$columns =
+  function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
 
 
@@ -372,9 +392,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #' @examples
 #' pl$DataFrame(iris)$lazy()
 #'
-DataFrame_lazy = function() {
-  .pr$DataFrame$lazy(self)
-}
+DataFrame_lazy = "use_extendr_wrapper"
 
 #' Clone a DataFrame
 #' @name DataFrame_clone
@@ -395,7 +413,7 @@ DataFrame_clone = function() {
   .pr$DataFrame$clone_see_me_macro(self)
 }
 
-#' Extract columns
+#' Get columns (as Series)
 #' @name DataFrame_get_columns
 #' @description get columns as list of series
 #'
@@ -405,11 +423,9 @@ DataFrame_clone = function() {
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()
-DataFrame_get_columns = function() {
-  .pr$DataFrame$get_columns(self)
-}
+DataFrame_get_columns = "use_extendr_wrapper"
 
-#' Get Column
+#' Get Column (as one Series)
 #' @name DataFrame_get_column
 #' @description get one column by name as series
 #'
@@ -438,26 +454,55 @@ DataFrame_get_column = function(name) {
 
 #' perform select on DataFrame
 #' @name DataFrame_select
-#' @description  related to dplyr `mutate()`` and data.table `.()`.
+#' @description  related to dplyr `mutate()` However discards unmentioned columns as data.table `.()`.
 #'
 #' @param ... expresssions or strings defining columns to select(keep) in context the DataFrame
 #'
 #' @aliases select
 #' @keywords  DataFrame
+#' #' pl$DataFrame(iris)$select(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+#' )
 DataFrame_select = function(...) {
   exprs = construct_ProtoExprArray(...)
-  unwrap(.pr$DataFrame$select(self,exprs))
+  df = unwrap(.pr$DataFrame$select(self,exprs))
+
+  expr_names = names(list(...))
+  if(!is.null(expr_names)) {
+    old_names = df$columns
+    new_names = old_names
+    has_expr_name = nchar(expr_names)>=1L
+    new_names[has_expr_name] = expr_names[has_expr_name]
+    df$columns = new_names
+  }
+  df
 }
 
-#' with columns
+#' modify/append columns to DataFrame
+#' @description  Like dplyr `mutate()` as it keeps unmentioned columns unlike data.table `.()`.
 #' @name DataFrame_with_columns
 #' @aliases with_columns
-#' @param ... any expressions or strings
+#' @param ... any expressions or strings defining
 #' @keywords  DataFrame
 #' @return DataFrame
+#' pl$DataFrame(iris)$with_columns(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+#' )
+#'
+#' #rename columns by naming expression is concidered experimental
+#'  Currently requires minipolars::set_minipolars_options(named_exprs = TRUE)
+#' pl$DataFrame(iris)$with_columns(
+#'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
+#'   SW_add_2 = (pl$col("Sepal.Width")+2)
+#' )
 DataFrame_with_columns = function(...) {
-  self$lazy()$with_columns(...)$collect()
+  df = self$lazy()$with_columns(...)$collect()
+  df
 }
+
+
 
 #' Limit a DataFrame
 #' @name DataFrame_limit
