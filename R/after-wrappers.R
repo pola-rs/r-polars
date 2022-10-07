@@ -78,13 +78,15 @@ macro_add_syntax_check_to_class = function(Class_name) {
 ##modify classes to perform syntax cheking
 ##this relies on no envrionment other than env_classes has been defined when macro called
 ##this mod should be run immediately after extendr-wrappers.R are sourced
-print("add syntax checking to env_classes")
 is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
 env_class_names = names(is_env_class)[is_env_class]
+cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
+  cat(i_class,", ",sep="")
   if(!exists(paste0("$.",i_class))) abort("internal assertion failed, env class without a dollarsign method")
   macro_add_syntax_check_to_class(i_class)
 }
+cat("\n")
 
 
 #' Give a class method property behavior

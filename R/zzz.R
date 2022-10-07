@@ -37,12 +37,6 @@ replace_private_with_pub_methods( minipolars:::DataFrame, "^DataFrame_")
 
 
 
-
-
-
-
-
-
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
 env = minipolars:::GroupBy
@@ -71,11 +65,7 @@ env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
 
 # Expr
-
-temp_keepers = c("drop_nans", "drop_nulls", "first", "is_not_null", "is_null",
-                 "last", "max", "mean", "median", "min", "n_unique", "over", "sum",
-                 "unique")
-#temp_keepers = character()
+temp_keepers = character()
 macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(
   minipolars:::Expr, "^Expr_",

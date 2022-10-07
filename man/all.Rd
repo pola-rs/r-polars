@@ -8,6 +8,7 @@
 \item a single column by a string
 \item all columns by using a wildcard \code{"*"}
 \item column by regular expression if the regex starts with \code{^} and ends with \code{$}
+\item a single DataType or a list of DataType, select any column of any such DataType
 }}
 }
 \value{

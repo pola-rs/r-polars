@@ -239,6 +239,8 @@ l_to_vdf = function(l) {
 #' replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
 replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 
+  cat("\n\n setting public methods for ",class_pattern)
+
   #get these
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
@@ -253,14 +255,17 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 
   #keep internals flagged with "use_internal_method"
   null_keepers = names(class_methods)[use_internal_bools]
+  cat("\n reuse internal method :\n",paste(null_keepers,collapse=", "))
 
   #remove any internal method from class, not to keep
   remove_these = setdiff(ls(env),c(keep,null_keepers))
   rm(list=remove_these,envir = env)
 
   #write any all class methods, where not using internal directly
+  cat("\n insert derived methods:\n")
   for(i in which(!use_internal_bools)) {
     method = class_methods[i]
+    cat(method,", ")
     env[[names(method)]] = get(method)
   }
   invisible(NULL)

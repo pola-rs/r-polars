@@ -449,7 +449,7 @@ Expr_mean = "use_extendr_wrapper"
 #' @return Expr
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
-Expr_mean = "use_extendr_wrapper"
+Expr_median = "use_extendr_wrapper"
 
 
 #' sum
@@ -458,8 +458,8 @@ Expr_mean = "use_extendr_wrapper"
 #' Get sum value
 #'
 #' @details
-#  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
-# Int64 before summing to prevent overflow issues.
+#'  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
 #'
 #' @return Expr
 #' @examples
@@ -471,7 +471,6 @@ Expr_sum = "use_extendr_wrapper"
 #' over
 #' @keywords Expr
 #' @description
-
 #'Apply window function over a subgroup.
 #'This is similar to a groupby + aggregation + self join.
 #'Or similar to `window functions in Postgres
@@ -490,8 +489,6 @@ Expr_over = function(...) {
   .pr$Expr$over(self,pra)
 
 }
-
-
 
 
 
