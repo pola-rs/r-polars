@@ -139,10 +139,10 @@
     },
     "crayon": {
       "Package": "crayon",
-      "Version": "1.5.1",
+      "Version": "1.5.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "8dc45fd8a1ee067a92b85ef274e66d6a",
+      "Hash": "e8a1e41acf02548751f45c718d55aa6a",
       "Requirements": []
     },
     "credentials": {
@@ -777,10 +777,15 @@
     },
     "rextendr": {
       "Package": "rextendr",
-      "Version": "0.2.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "263ea7f967bf5edbd55e7062fe7b99bc",
+      "Version": "0.2.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "rextendr",
+      "RemoteUsername": "extendr",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "0b81dacbe6f5a72b9924afd65d0715030fd08350",
+      "Hash": "2bbb262bbcf72bebf729c2578c4834b0",
       "Requirements": [
         "brio",
         "callr",
@@ -788,8 +793,9 @@
         "desc",
         "dplyr",
         "glue",
+        "jsonlite",
         "pkgbuild",
-        "pkgload",
+        "processx",
         "purrr",
         "rlang",
         "rprojroot",
@@ -1104,10 +1110,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.4.1",
+      "Version": "0.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "8b54f22e2a58c4f275479c92ce041a57",
+      "Hash": "0e3dfc070b2a8f0478fcdf86fb33355d",
       "Requirements": [
         "cli",
         "glue",
