@@ -271,6 +271,8 @@ Expr_all = "use_extendr_wrapper"
 Expr_any = "use_extendr_wrapper"
 
 
+
+
 #' Count values
 #' @keywords Expr
 #' @description
@@ -492,6 +494,8 @@ Expr_over = function(...) {
 
 
 
+
+
 #' construct proto Expr array from args
 #'
 #' @param ...  any Expr or string
@@ -559,12 +563,11 @@ construct_ProtoExprArray = function(...) {
 
 
 
-#' polars map
+#' Expr_map
 #' @keywords Expr
 #'
 #' @param lambda r function mapping a series
 #' @param output_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
-#' @param `_agg_list` #not implemented yet
 #'
 #' @rdname Expr_map
 #' @return Expr
@@ -572,8 +575,78 @@ construct_ProtoExprArray = function(...) {
 #' @details in minipolars lambda return should be a series or any R vector convertable into a Series. In PyPolars likely return must be Series.
 #' @name Expr_map
 #' @examples pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) paste("cheese",as.character(x$to_r_vector())),pl$dtypes$Utf8))
-Expr_map = function(lambda, output_type=NULL, `_agg_list`=NULL) {
-  .pr$Expr$map(self,lambda,output_type,`_agg_list`)
+Expr_map = function(lambda, output_type=NULL) {
+  .pr$Expr$map(self,lambda,output_type, agg_list = FALSE)
+}
+
+#' Expr_apply
+#' @keywords Expr
+#'
+#' @description
+#'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
+#'Depending on the context it has the following behavior:
+#' -Selection
+#'
+#'
+#' @details
+#' Copied from pypolars (revise)
+#'Expects f to be of type Callable[[Any], Any]. Applies a python function over each individual value in the column.
+#'
+#'GroupBy
+#'
+#'Expects f to be of type Callable[[Series], Series]. Applies a python function over each group.
+#'
+#'Implementing logic using a Python function is almost always _significantly_ slower and more memory intensive than implementing the same logic using the native expression API because:
+#'
+#'  The native expression engine runs in Rust; UDFs run in Python.
+#'
+#'Use of Python UDFs forces the DataFrame to be materialized in memory.
+#'
+#'Polars-native expressions can be parallelised (UDFs cannot).
+#'
+#'Polars-native expressions can be logically optimised (UDFs cannot).
+#'
+#'Wherever possible you should strongly prefer the native expression API to achieve the best performance. @description
+#'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
+#'
+#'Depending on the context it has the following behavior:
+
+#'  Selection
+#' Expects f to be of type Callable[[Any], Any]. Applies a python function over each individual value in the column.
+#'GroupBy
+#'
+#'Expects f to be of type Callable[[Series], Series]. Applies a python function over each group.
+#'
+#'Implementing logic using a Python function is almost always _significantly_ slower and more memory intensive than implementing the same logic using the native expression API because:
+#'
+#'The native expression engine runs in Rust; UDFs run in Python.
+#'Use of Python UDFs forces the DataFrame to be materialized in memory.
+#'Polars-native expressions can be parallelised (UDFs cannot).
+#'Polars-native expressions can be logically optimised (UDFs cannot).
+#'Wherever possible you should strongly prefer the native expression API to achieve the best performance.
+#' @param f r function mapping a series
+#' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#'
+#' @return Expr
+#' @aliases Expr_apply
+#' @name Expr_apply
+#' @examples 2+2
+Expr_apply = function(f, return_type = NULL) {
+
+  #inner loop for each group, run user function, re-wrap(if not alrady) in Series, return pointer
+  fw = function(rs) {
+    #browser()
+    xptr::xptr_address(Series_constructor(f(rs)))
+  }
+
+  #for Series containing list of groups use Series_apply -method (which has a special case for lists)
+  wrap_f = function(s) {
+    #browser()
+    s$apply(fw, datatype = return_type)
+  }
+
+  .pr$Expr$map(self, lambda=wrap_f, output_type=return_type, agg_list= TRUE)
+
 }
 
 

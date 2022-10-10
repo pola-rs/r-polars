@@ -29,6 +29,7 @@ macro_rules! make_r_na_fun {
             .expect("failed to make function")
     };
     (i64 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
+    (list $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
     (i16 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
     (i8 $rfun:expr) => {make_r_na_fun!(i32 $rfun)};
     (f32 $rfun:expr) => {make_r_na_fun!(f64 $rfun)};

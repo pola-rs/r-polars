@@ -1,6 +1,6 @@
 Package: minipolars
 Title: Polars ported to R. 
-Version: 0.0.1
+Version: 0.1.9000
 Imports: xptr, rlang, namespace
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))

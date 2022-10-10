@@ -156,7 +156,7 @@ Expr$dtype_cols <- function(dtypes) .Call(wrap__Expr__dtype_cols, dtypes)
 
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
-Expr$map <- function(lambda, output_type, `_agg_list`) .Call(wrap__Expr__map, self, lambda, output_type, `_agg_list`)
+Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
 
 Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 

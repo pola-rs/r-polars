@@ -1,11 +1,10 @@
 use crate::rdataframe::rexpr::*;
-use crate::rdataframe::DataFrame;
 use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use extendr_api::prelude::*;
 
+use crate::concurrent::handle_thread_r_requests;
 use polars::prelude as pl;
-
 #[derive(Clone)]
 #[extendr]
 pub struct LazyFrame(pub pl::LazyFrame);
@@ -25,7 +24,7 @@ impl LazyFrame {
     }
 
     pub fn collect(&self) -> List {
-        let result = self.clone().0.collect().map(|ok| DataFrame(ok));
+        let result = handle_thread_r_requests(self.clone().0);
         r_result_list(result)
     }
 

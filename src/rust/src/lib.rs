@@ -8,6 +8,7 @@
 //! [`Easy`]: http://thatwaseasy.example.com
 
 use extendr_api::prelude::*;
+pub mod concurrent;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlazyframe;

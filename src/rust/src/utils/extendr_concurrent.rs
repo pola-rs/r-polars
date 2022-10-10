@@ -138,11 +138,11 @@ pub fn concurrent_handler<F, I, R, S, T, Y>(
 ) -> std::result::Result<T, Box<dyn std::error::Error>>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,
-    I: Fn(S, Robj) -> Result<R> + Send + 'static,
+    I: Fn(S, Function) -> std::result::Result<R, Box<dyn std::error::Error>> + Send + 'static,
     R: Send + 'static + std::fmt::Debug,
     S: Send + 'static,
     T: Send + 'static,
-    Y: FnOnce() -> Robj,
+    Y: FnOnce() -> std::result::Result<Function, Box<dyn std::error::Error>>,
 {
     //start new com and clone to global
     let (thread_com, main_rx) = ThreadCom::create();
@@ -153,7 +153,7 @@ where
 
     //get R wrapper function of polars user defined function
     //will not be needed when extendr_api
-    let robj = y();
+    let robj = y()?;
 
     //only for performance diagnostics
     //let mut before = std::time::Instant::now();

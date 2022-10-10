@@ -231,12 +231,7 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(
-        &self,
-        lambda: Robj,
-        output_type: Nullable<&DataType>,
-        _agg_list: Nullable<bool>,
-    ) -> Expr {
+    pub fn map(&self, lambda: Robj, output_type: Nullable<&DataType>, agg_list: bool) -> Expr {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler
@@ -265,7 +260,11 @@ impl Expr {
             None => fld.clone(),
         });
 
-        Expr(self.clone().0.map(f, output_map))
+        if agg_list {
+            Expr(self.clone().0.map_list(f, output_map))
+        } else {
+            Expr(self.clone().0.map(f, output_map))
+        }
     }
 
     fn suffix(&self, suffix: String) -> Expr {

@@ -2,11 +2,9 @@ use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 
-pub mod concurrent;
 pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
-
 pub mod rseries;
 
 pub use crate::rdatatype::*;
@@ -16,11 +14,9 @@ use super::rlib::*;
 use read_csv::*;
 use read_parquet::*;
 use rexpr::*;
-use rseries::*;
+pub use rseries::*;
 
 use crate::utils::r_result_list;
-
-use concurrent::handle_thread_r_requests;
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -126,9 +122,7 @@ impl DataFrame {
 
     fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
-        let self_df = self.clone();
-        let res_df = handle_thread_r_requests(self_df, exprs);
-        r_result_list(res_df)
+        LazyFrame(self.lazy().0.select(exprs)).collect()
     }
 
     //used in GroupBy, not DataFrame
@@ -149,9 +143,7 @@ impl DataFrame {
             lazy_df.groupby(group_exprs)
         };
 
-        let new_df = gb.agg(agg_exprs).collect().map(|df| DataFrame(df));
-
-        r_result_list(new_df)
+        LazyFrame(gb.agg(agg_exprs)).collect()
     }
 }
 

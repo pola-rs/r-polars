@@ -264,6 +264,10 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
   #remove any internal method from class, not to keep
   remove_these = setdiff(ls(env),c(keep,null_keepers))
   rm(list=remove_these,envir = env)
+  cat(
+    "\nInternal methods not in use or replaced :\n",
+    paste(setdiff(remove_these,names(class_methods)),collapse=", ")
+  )
 
   #write any all class methods, where not using internal directly
   cat("\n insert derived methods:\n")

@@ -8,13 +8,14 @@ use crate::utils::r_result_list;
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
+use crate::utils::wrappers::strpointer_to_;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
 
-const R_INT_NA_ENC: i32 = -2147483648;
+pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -402,18 +403,87 @@ impl Series {
             Int8 => apply_input!(self.0, i8, rfun, na_fun),
             Utf8 => apply_input!(self.0, utf8, rfun, na_fun),
             Boolean => apply_input!(self.0, bool, rfun, na_fun),
-            _ => todo!("this input type is not implemented"),
+            //List(..) => apply_input!(self.0, list, rfun, na_fun),
+            List(..) => {
+                let ca_list = self.0.list().unwrap();
+
+                // let res_r_udf_handler = extendr_api::eval_string("minipolars:::Series_udf_handler")
+                //     .and_then(|x: Robj| {
+                //         x.as_function().ok_or_else(|| {
+                //             extendr_api::error::Error::Other(
+                //                 "failed to get udf_handler".to_string(),
+                //             )
+                //         })
+                //     });
+                // if res_r_udf_handler.is_err() {
+                //     return r_result_list(res_r_udf_handler);
+                // };
+                // let r_udf_handler = res_r_udf_handler.unwrap();
+
+                let y = ca_list.into_iter().map(|opt_ser| {
+                    let opt_robj = if let Some(ser) = opt_ser {
+                        let out = rfun.call(pairlist!(Series(ser))).ok();
+                        out
+                    } else {
+                        panic!("oh that was possible to get a None Series");
+                    };
+                    opt_robj
+                });
+
+                Box::new(y)
+            }
+            x => {
+                dbg!(x);
+                todo!("this input type is not implemented")
+            }
         };
 
         //handle any return type from R and collect into Series
-        let s: Result<Series> = match out_type {
-            Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
-            Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
-            Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
-            Boolean => apply_output!(r_iter, strict, allow_fail_eval, Logicals, BooleanChunked),
+        let s: Result<Series> = || -> Result<Series> {
+            match out_type {
+                Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
+                Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
+                Utf8 => apply_output!(r_iter, strict, allow_fail_eval, Strings, Utf8Chunked),
+                Boolean => apply_output!(r_iter, strict, allow_fail_eval, Logicals, BooleanChunked),
+                List(..) => {
+                    //ierate over R return values, opt if never run (no values), err if fail
+                    let mut all_length_one = true;
+                    let xx = r_iter.map(|opt_r| -> pl::PolarsResult<_> {
+                        if let Some(robj) = opt_r {
+                            //wrap result of udf to return pointer to a Series
 
-            _ => todo!("this output type is not implemented"),
-        };
+                            //safety robj contains a valid ptr to a Series, ensured by minipolars:::Series_udf_handler
+                            let s = unsafe { ptr_str_to_rseries(robj) }.map_err(|err| {
+                                //convert any error from R to a polars error
+                                pl::PolarsError::ComputeError(polars::error::ErrString::Owned(
+                                    err.to_string(),
+                                ))
+                            })?; //bubble if casting failed, e.g. if robj was something else than a ptr, that would be an internal error
+
+                            if s.0.len() > 1 {
+                                all_length_one = false;
+                            }
+
+                            Ok(Some(s.0)) //return Ok some polars series if success
+                        } else {
+                            Ok(None) //return Ok None if computation never took place
+                        }
+                    });
+
+                    let lc_res: pl::PolarsResult<ListChunked> = xx.collect::<pl::PolarsResult<_>>();
+
+                    let s: Result<Series> = lc_res
+                        .map(|lc| lc.into_series())
+                        .and_then(|s| if all_length_one { s.explode() } else { Ok(s) })
+                        .map(|s| Series(s))
+                        .map_err(|e| extendr_api::error::Error::Other(e.to_string()));
+
+                    s
+                }
+
+                _ => todo!("this output type is not implemented"),
+            }
+        }();
 
         let s = s.map(move |mut x| {
             x.rename_mut(&format!("{}_apply", &self.name()));
@@ -470,3 +540,23 @@ extendr_module! {
     mod rseries;
     impl Series;
 }
+
+pub unsafe fn ptr_str_to_rseries(
+    robj_extptr: Robj,
+) -> std::result::Result<Series, Box<dyn std::error::Error>> {
+    let rseries_ptr_str = robj_extptr.as_str().ok_or_else(|| {
+        extendr_api::error::Error::Other(format!(
+            "fail, user function did not a return a ptr but a: {:?}",
+            robj_extptr
+        ))
+    })?;
+
+    let x = unsafe {
+        let x: &mut Series = strpointer_to_(rseries_ptr_str)?;
+        x
+    };
+
+    Ok(x.clone())
+}
+
+//safety relies on private minipolars:::series_udf_handler only passes Series pointers.

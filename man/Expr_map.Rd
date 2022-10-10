@@ -2,22 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_map}
 \alias{Expr_map}
-\title{polars map}
+\title{Expr_map}
 \usage{
-Expr_map(lambda, output_type = NULL, `_agg_list` = NULL)
+Expr_map(lambda, output_type = NULL)
 }
 \arguments{
 \item{lambda}{r function mapping a series}
 
 \item{output_type}{NULL or one of pl$dtypes, the output datatype, NULL is the same as input.}
-
-\item{`_agg_list`}{#not implemented yet}
 }
 \value{
 Expr
 }
 \description{
-polars map
+Expr_map
 }
 \details{
 in minipolars lambda return should be a series or any R vector convertable into a Series. In PyPolars likely return must be Series.
