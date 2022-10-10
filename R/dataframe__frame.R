@@ -543,10 +543,11 @@ DataFrame_filter = function(bool_expr) {
 #' @return GroupBy (subclass of DataFrame)
 #'
 DataFrame_groupby = function(..., maintain_order = FALSE) {
-  attr(self,"private")$groupby_input =  construct_ProtoExprArray(...)
-  attr(self,"private")$maintain_order = maintain_order
-  class(self) = "GroupBy"
-  self
+  self_copy = self$clone()
+  attr(self_copy,"private")$groupby_input =  construct_ProtoExprArray(...)
+  attr(self_copy,"private")$maintain_order = maintain_order
+  class(self_copy) = "GroupBy"
+  self_copy
 }
 
 
