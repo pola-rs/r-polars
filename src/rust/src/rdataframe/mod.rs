@@ -147,9 +147,6 @@ impl DataFrame {
     }
 }
 
-//TODO VecDataFrame requires one extra cheap clone. Which is not the worst.
-// When externdr_api extptr downcast https://github.com/extendr/extendr/issues/431
-// is resolved an R list of DataFrame can just be passed directly to e.g. concat_df
 #[derive(Clone, Debug)]
 #[extendr]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);

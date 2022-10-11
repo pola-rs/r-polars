@@ -8,7 +8,7 @@ use crate::utils::r_result_list;
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
-use crate::utils::wrappers::strpointer_to_;
+
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -453,12 +453,12 @@ impl Series {
                             //wrap result of udf to return pointer to a Series
 
                             //safety robj contains a valid ptr to a Series, ensured by minipolars:::Series_udf_handler
-                            let s = unsafe { ptr_str_to_rseries(robj) }.map_err(|err| {
+                            let s = Series::inner_from_robj_clone(&robj).map_err(|err| {
                                 //convert any error from R to a polars error
                                 pl::PolarsError::ComputeError(polars::error::ErrString::Owned(
                                     err.to_string(),
                                 ))
-                            })?; //bubble if casting failed, e.g. if robj was something else than a ptr, that would be an internal error
+                            })?;
 
                             if s.0.len() > 1 {
                                 all_length_one = false;
@@ -529,6 +529,19 @@ impl Series {
         df
     }
 }
+
+//inner_from_robj only when used within Series
+impl Series {
+    pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
+        if robj.check_external_ptr("Series") {
+            let x: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+            Ok(x)
+        } else {
+            Err("expected Series")
+        }
+    }
+}
+
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
 impl From<&Series> for pl::Series {
     fn from(x: &Series) -> Self {
@@ -540,23 +553,3 @@ extendr_module! {
     mod rseries;
     impl Series;
 }
-
-pub unsafe fn ptr_str_to_rseries(
-    robj_extptr: Robj,
-) -> std::result::Result<Series, Box<dyn std::error::Error>> {
-    let rseries_ptr_str = robj_extptr.as_str().ok_or_else(|| {
-        extendr_api::error::Error::Other(format!(
-            "fail, user function did not a return a ptr but a: {:?}",
-            robj_extptr
-        ))
-    })?;
-
-    let x = unsafe {
-        let x: &mut Series = strpointer_to_(rseries_ptr_str)?;
-        x
-    };
-
-    Ok(x.clone())
-}
-
-//safety relies on private minipolars:::series_udf_handler only passes Series pointers.

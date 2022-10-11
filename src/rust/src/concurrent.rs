@@ -1,4 +1,4 @@
-use crate::rdataframe::rseries::ptr_str_to_rseries;
+//use crate::rdataframe::rseries::ptr_str_to_rseries;
 use crate::rdataframe::DataFrame;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::extendr_concurrent::{concurrent_handler, ThreadCom};
@@ -66,11 +66,10 @@ pub fn handle_thread_r_requests(
             })?;
 
             //run udf via udf_wrapper
-            let rseries_ptr = udf_wrapper.call(pairlist!(f = f, rs = Series(s)))?;
+            let rseries_robj = udf_wrapper.call(pairlist!(f = f, rs = Series(s)))?;
 
-            //safety: minipolars:::Series_udf_handler can only return a valid Rseries ptr as a string (sorry see https://github.com/extendr/extendr/issues/431)
-            let s = unsafe { ptr_str_to_rseries(rseries_ptr).map(|s| s.0) };
-
+            //return may not
+            let s = Series::inner_from_robj_clone(&rseries_robj).map(|s| s.0);
             Ok(s?)
         },
         &CONFIG,

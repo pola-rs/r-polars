@@ -633,20 +633,14 @@ Expr_map = function(lambda, output_type=NULL) {
 #' @examples 2+2
 Expr_apply = function(f, return_type = NULL) {
 
-  #inner loop for each group, run user function, re-wrap(if not alrady) in Series, return pointer
-  fw = function(rs) {
-    #browser()
-    xptr::xptr_address(Series_constructor(f(rs)))
-  }
+  #inner loop for each group, run user function, re-wrap(if not already) in Series
+  wrap_f_one_group = function(rs) Series_constructor(f(rs))
 
-  #for Series containing list of groups use Series_apply -method (which has a special case for lists)
-  wrap_f = function(s) {
-    #browser()
-    s$apply(fw, datatype = return_type)
-  }
+  #for Series containing list of groups the Series_apply -method (which has a special case for lists)
+  wrap_f_groups = function(s) s$apply(wrap_f_one_group, datatype = return_type)
 
-  .pr$Expr$map(self, lambda=wrap_f, output_type=return_type, agg_list= TRUE)
-
+  #return epression from the functions above, activate agg_list (grouped mapping)
+  .pr$Expr$map(self, lambda = wrap_f_groups, output_type = return_type, agg_list = TRUE)
 }
 
 

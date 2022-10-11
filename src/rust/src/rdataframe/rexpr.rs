@@ -235,7 +235,7 @@ impl Expr {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler
-        //unsafe { //safety only accessed in main thread
+        //safety only accessed in main thread, can be temp owned by other threads
         let probj = ParRObj(lambda);
         //}
 

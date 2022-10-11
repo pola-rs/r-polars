@@ -147,8 +147,9 @@ class(Series_shape) = c("property","function")
 
 Series_udf_handler = function(f,rs) {
   fps = Series_constructor(f(rs))
-  rs_ptr_adr = xptr::xptr_address(fps)
-  rs_ptr_adr
+  fps
+  # rs_ptr_adr = xptr::xptr_address(fps)
+  # rs_ptr_adr
 }
 
 
