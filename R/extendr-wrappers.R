@@ -328,6 +328,8 @@ LazyFrame <- new.env(parent = emptyenv())
 
 LazyFrame$print <- function() invisible(.Call(wrap__LazyFrame__print, self))
 
+LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)

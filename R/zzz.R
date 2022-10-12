@@ -56,7 +56,7 @@ env$with_columns = Lazy_with_columns
 env$groupby = Lazy_groupby
 env$join    = Lazy_join
 env$limit   = Lazy_limit
-env$Lazy_describe_optimized_plan = Lazy_describe_optimized_plan
+env$describe_optimized_plan = Lazy_describe_optimized_plan
 
 
 # LazyGroupBy

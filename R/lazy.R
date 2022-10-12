@@ -25,8 +25,8 @@ print.LazyFrame= function(x) {
 #'
 #' @param ... any single Expr or string naming a column
 #' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_describe_optimized_plan  = function(...) {
-  unwrap(.pr$LazyFrame$describe_optimized_plan(self,pra))
+Lazy_describe_optimized_plan  = function() {
+  unwrap(.pr$LazyFrame$describe_optimized_plan(self))
 }
 
 #' @title Lazy_select

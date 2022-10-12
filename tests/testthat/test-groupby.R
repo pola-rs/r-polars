@@ -17,8 +17,9 @@ test_that("multiplication works", {
       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 2.0 │",
       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ one ┆ 4.0 │",
       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 1.0 │",
-      "└─────┴─────┘", "groups: ProtoExprArray([String(\"foo\")])",
-      "maintain order:  TRUE")
+      "└─────┴─────┘", "groups: ProtoExprArray(",
+      "    [", "        String(", "            \"foo\",", "        ),",
+      "    ],", ")", "maintain order:  TRUE")
   )
 
 

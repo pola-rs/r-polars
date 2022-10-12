@@ -166,7 +166,7 @@ impl VecDataFrame {
     }
 
     pub fn print(&self) {
-        rprintln!("{:?}", self);
+        rprintln!("{:#?}", self);
     }
 }
 

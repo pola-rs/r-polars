@@ -24,7 +24,7 @@ impl DataType {
     }
 
     pub fn print(&self) {
-        rprintln!("{:?}", self.0);
+        rprintln!("{:#?}", self.0);
     }
 
     pub fn eq(&self, other: &DataType) -> bool {
@@ -61,7 +61,7 @@ impl DataTypeVector {
     }
 
     pub fn print(&self) {
-        rprintln!("{:?}", self.0);
+        rprintln!("{:#?}", self.0);
     }
 }
 

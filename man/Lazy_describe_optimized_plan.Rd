@@ -4,7 +4,7 @@
 \alias{Lazy_describe_optimized_plan}
 \title{Lazy_select}
 \usage{
-Lazy_describe_optimized_plan(...)
+Lazy_describe_optimized_plan()
 }
 \arguments{
 \item{...}{any single Expr or string naming a column}

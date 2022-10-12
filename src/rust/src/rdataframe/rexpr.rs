@@ -312,7 +312,7 @@ impl ProtoRexpr {
     }
 
     fn print(&self) {
-        rprintln!("{:?}", self);
+        rprintln!("{:#?}", self);
     }
 }
 
@@ -336,7 +336,7 @@ impl ProtoExprArray {
     }
 
     pub fn print(&self) {
-        rprintln!("{:?}", self);
+        rprintln!("{:#?}", self);
     }
 
     pub fn add_context(&self, context: &str) -> RexprArray {
@@ -361,7 +361,7 @@ pub struct RexprArray(pub Vec<Expr>);
 #[extendr]
 impl RexprArray {
     fn print(&self) {
-        rprintln!("{:?}", self);
+        rprintln!("{:#?}", self);
     }
 }
 
