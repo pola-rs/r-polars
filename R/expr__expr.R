@@ -635,10 +635,8 @@ Expr_map = function(lambda, output_type=NULL) {
 #' # s is a series of all values for one column within group, here Species
 #'e_all =pl$all() #perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
 #'e_sum  = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
-#'e_head2 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum1")
-#'e_head3 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum2")
-#'e_head4 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum3")
-#'pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head2,e_head3, e_head4)
+#'e_head = e_all$apply(\(s) head(s$to_r(),2))$suffix("_head")
+#'pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
 #'
 #'
 #' #apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
