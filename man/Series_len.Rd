@@ -2,17 +2,17 @@
 % Please edit documentation in R/series.R
 \name{Series_len}
 \alias{Series_len}
-\title{Series_all}
+\title{Series_len}
 \usage{
 Series_len()
 }
 \value{
-bool
+numeric
 }
 \description{
-Series_all
+Length of this Series.
 }
 \examples{
-pl$Series(1:10)$is_unique()$all()
+pl$Series(1:10)$len()
 
 }

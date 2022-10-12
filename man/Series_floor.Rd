@@ -2,17 +2,17 @@
 % Please edit documentation in R/series.R
 \name{Series_floor}
 \alias{Series_floor}
-\title{Series_all}
+\title{Series_floor}
 \usage{
 Series_floor()
 }
 \value{
-bool
+numeric
 }
 \description{
-Series_all
+Floor of this Series
 }
 \examples{
-pl$Series(1:10)$is_unique()$all()
+pl$Series(c(.5,1.999))$floor()
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/series.R
 \name{Series_ceil}
 \alias{Series_ceil}
-\title{Series_all}
+\title{Series_ceil}
 \usage{
 Series_ceil()
 }
@@ -10,9 +10,9 @@ Series_ceil()
 bool
 }
 \description{
-Series_all
+Ceil of this Series
 }
 \examples{
-pl$Series(1:10)$is_unique()$all()
+pl$Series(c(.5,1.999))$ceil()
 
 }
