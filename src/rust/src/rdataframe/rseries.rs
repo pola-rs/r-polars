@@ -67,7 +67,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
             }
         }
         Rtype::Doubles => {
-            let rdouble: Doubles = x.clone().try_into().unwrap();
+            let rdouble: Doubles = x.try_into().unwrap();
 
             //likely never real altrep, yields NA_Rbool, yields false
             if rdouble.no_na().is_true() {
@@ -83,7 +83,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
             }
         }
         Rtype::Strings => {
-            let rstrings: Strings = x.clone().try_into().unwrap();
+            let rstrings: Strings = x.try_into().unwrap();
 
             //likely never real altrep, yields NA_Rbool, yields false
             if rstrings.no_na().is_true() {
@@ -99,7 +99,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
             }
         }
         Rtype::Logicals => {
-            let logicals: Logicals = x.clone().try_into().unwrap();
+            let logicals: Logicals = x.try_into().unwrap();
             let s: Vec<Option<bool>> = logicals
                 .iter()
                 .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
@@ -145,11 +145,6 @@ impl Series {
 
     pub fn clone(&self) -> Series {
         Series(self.0.clone())
-    }
-
-    //used to acquire result from a R function in with deref raw pointer
-    pub fn from_clone(s: &Series) -> Series {
-        s.clone()
     }
 
     pub fn to_r_vector(&self) -> list::List {
@@ -482,7 +477,7 @@ impl Series {
         Series(self.0.clone().mean_as_series())
     }
     pub fn sum_as_series(&self) -> Series {
-        Series(self.0.clone().sum_as_series())
+        Series(self.0.sum_as_series())
     }
 
     pub fn ceil(&self) -> List {
@@ -498,15 +493,11 @@ impl Series {
     }
 
     pub fn cumsum(&self, reverse: bool) -> Series {
-        Series(self.0.clone().cumsum(reverse))
+        Series(self.0.cumsum(reverse))
     }
 
     pub fn is_unique(&self) -> List {
-        let res_ser = self
-            .0
-            .clone()
-            .is_unique()
-            .map(|ca| Series(ca.into_series()));
+        let res_ser = self.0.is_unique().map(|ca| Series(ca.into_series()));
         r_result_list(res_ser)
     }
 
