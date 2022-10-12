@@ -236,6 +236,8 @@ Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, na
 
 Series$shape <- function() .Call(wrap__Series__shape, self)
 
+Series$len <- function() .Call(wrap__Series__len, self)
+
 Series$abs <- function() .Call(wrap__Series__abs, self)
 
 Series$alias <- function(name) .Call(wrap__Series__alias, self, name)
@@ -263,6 +265,8 @@ Series$mean_as_series <- function() .Call(wrap__Series__mean_as_series, self)
 Series$sum_as_series <- function() .Call(wrap__Series__sum_as_series, self)
 
 Series$ceil <- function() .Call(wrap__Series__ceil, self)
+
+Series$floor <- function() .Call(wrap__Series__floor, self)
 
 Series$print <- function() invisible(.Call(wrap__Series__print, self))
 

@@ -18,6 +18,9 @@ env$value_counts= Series_value_counts
 env$is_unique   = Series_is_unique
 env$all         = Series_all
 env$shape       = Series_shape
+env$len         = Series_len
+env$ceil        = Series_ceil
+env$floor       = Series_floor
 
 #rewrite all binary operators or other methods to accept something that can turn into a Series
 lapply(Series_ops, \(so) {

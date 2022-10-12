@@ -233,4 +233,38 @@ Series_all = function() {
   unwrap(.pr$Series$all(self))
 }
 
+#' Series_len
+#' @description Length of this Series.
+#'
+#'
+#' @return numeric
+#' @examples
+#' pl$Series(1:10)$len()
+#'
+Series_len = function() {
+  .pr$Series$len(self)
+}
+
+#' Series_floor
+#' @description Floor of this Series
+#'
+#' @return numeric
+#' @examples
+#' pl$Series(c(.5,1.999))$floor()
+#'
+Series_floor = function() {
+  unwrap(.pr$Series$floor(self))
+}
+
+#' Series_ceil
+#' @description Ceil of this Series
+#'
+#' @return bool
+#' @examples
+#' pl$Series(c(.5,1.999))$ceil()
+#'
+Series_ceil = function() {
+  unwrap(.pr$Series$ceil(self))
+}
+
 

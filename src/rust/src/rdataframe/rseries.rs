@@ -291,7 +291,11 @@ impl Series {
     }
 
     pub fn shape(&self) -> Robj {
-        r!([self.0.len() as i32, 1])
+        r!([self.0.len() as f64, 1.0])
+    }
+
+    pub fn len(&self) -> f64 {
+        self.0.len() as f64
     }
 
     pub fn abs(&self) -> list::List {
@@ -481,8 +485,12 @@ impl Series {
         Series(self.0.clone().sum_as_series())
     }
 
-    pub fn ceil(&self) -> Series {
-        Series(self.0.clone().ceil().unwrap())
+    pub fn ceil(&self) -> List {
+        r_result_list(self.0.ceil().map(|s| Series(s)))
+    }
+
+    pub fn floor(&self) -> List {
+        r_result_list(self.0.floor().map(|s| Series(s)))
     }
 
     pub fn print(&self) {

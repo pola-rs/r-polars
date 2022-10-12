@@ -200,17 +200,26 @@ test_that("dtype and equality", {
 })
 
 
-test_that("shape", {
+test_that("shape and len", {
   expect_identical(
     pl$Series(1:3)$shape,
-    c(3L,1L)
+    c(3,1)
   )
 
   expect_identical(
-    minipolars:::Series$new(integer(),"")$shape,
-    c(0L,1L)
+    pl$Series(integer())$shape,
+    c(0,1)
   )
 
+  expect_identical(pl$Series(integer())$len(),0)
+  expect_identical(pl$Series(1:3)$len(),3)
+
+
+})
+
+test_that("floor & ceil", {
+  expect_identical(pl$Series(c(1.5,.5,-.5,NA_real_, NaN))$floor()$to_r(),c(1,0,-1,NA_real_, NaN))
+  expect_identical(pl$Series(c(1.5,.5,-.5,NA_real_, NaN))$ceil()$to_r(),c(2,1,0,NA_real_,NaN))
 })
 
 
