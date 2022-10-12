@@ -67,7 +67,7 @@ macro_rules! apply_input {
                         let rval: Result<Robj> = opt.
                         map_or_else(
                             ||  $na_fun.call(pairlist!()),
-                            |x| $rfun.call(pairlist!(x = x))
+                            |x| $rfun.call(pairlist!(x))
                         );//.expect("fail r eval");
                         let y = rval.ok();
                         y

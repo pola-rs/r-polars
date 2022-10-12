@@ -9,11 +9,8 @@ test_that("Expr_apply works", {
   df$groupby("b")$agg(pl$col("a")$sum())
  # df$groupby("b")$agg(pl$col("a")$apply(function(s) {print("hej");(s*2)}))
   rdf = df$groupby("b",maintain_order = TRUE)$agg(pl$col("a")$apply(function(s) {
-    #browser()
     v = (s*2)$to_r()
     which.max(v)
-
-
   }))
   rdf
 
@@ -22,7 +19,10 @@ test_that("Expr_apply works", {
     data.frame(b = c("a","b","c","d"),a_apply=c(1L,1L,2L,NA_integer_))
   )
 
-
+  #TODO write test for apply in select context
 
 
 })
+
+
+

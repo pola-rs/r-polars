@@ -218,10 +218,9 @@ test_that("map type", {
 
   ## auto new type allowed if return is R vector
   expect_identical(
-    pl$DataFrame(iris)
-      $select(
+    pl$DataFrame(iris)$select(
         pl$col("Sepal.Length")
-          $map(\(s) {as.integer(s$to_r())})
+          $map(\(s) {as.integer(s$to_r())}) #ok to return R vector also, will be converted back to series named ""
           $map(\(s) {s*25L})
           $map(\(s) {s/4})
       )

@@ -278,7 +278,6 @@ impl Expr {
     fn to_field(&self, df: &DataFrame) {
         let ctxt = polars::prelude::Context::Default;
         let res = self.0.to_field(&df.0.schema(), ctxt);
-        dbg!(&res);
         res.unwrap();
     }
 }

@@ -41,22 +41,12 @@ pub fn handle_thread_r_requests(
         //closure 2:
         //out of hot loop call this R code, just retrieve high-level function wrapper from package
         //This wrapper Series_udf_handler only sends a valid series pointer
-        || {
-            let x = extendr_api::eval_string("minipolars:::Series_udf_handler")?
-                .as_function()
-                .ok_or_else(|| {
-                    extendr_api::error::Error::Other(
-                        "internal error: series_udf_handler not a function".to_string(),
-                    )
-                })?;
-            Ok(x)
-        },
+
         //closure 3
         //how should the R serving mainthread handle a user function requst?
         //spoiler alert:: run the function, return the answer.
-        |(probj, s): (ParRObj, pl::Series),
-         udf_wrapper: Function|
-         -> Result<pl::Series, Box<dyn std::error::Error>> {
+        |(probj, s): (ParRObj, pl::Series)| -> Result<pl::Series, Box<dyn std::error::Error>> {
+            //
             //get user defined function
             let f = probj.0.as_function().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!(
@@ -65,11 +55,11 @@ pub fn handle_thread_r_requests(
                 ))
             })?;
 
-            //run udf via udf_wrapper
-            let rseries_robj = udf_wrapper.call(pairlist!(f = f, rs = Series(s)))?;
+            //run call udf with Series as input, return Robj (likeliy as Series)
+            let rseries_robj = f.call(pairlist!(Series(s)))?;
 
             //return may not
-            let s = Series::inner_from_robj_clone(&rseries_robj).map(|s| s.0);
+            let s = Series::any_robj_to_pl_series_result(&rseries_robj);
             Ok(s?)
         },
         &CONFIG,

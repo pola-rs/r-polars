@@ -630,17 +630,68 @@ Expr_map = function(lambda, output_type=NULL) {
 #' @return Expr
 #' @aliases Expr_apply
 #' @name Expr_apply
-#' @examples 2+2
-Expr_apply = function(f, return_type = NULL) {
+#' @examples
+#' #apply over groups - normal usage
+#' # s is a series of all values for one column within group, here Species
+#'e_all =pl$all() #perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
+#'e_sum  = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
+#'e_head2 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum1")
+#'e_head3 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum2")
+#'e_head4 = e_all$apply(\(s) head(s$to_r(),2))$suffix("_cum3")
+#'pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head2,e_head3, e_head4)
+#'
+#'
+#' #apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
+#' #x is an R scalar
+#'e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#'e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
+#' #quite silly index into alphabet(letters) by ceil of float value
+#' #must set return_type as not the same as input
+#' e_letter = e_all$apply(\(x) letters[ceiling(x)], return_type = pl$dtypes$Utf8)$suffix("_letter")
+#' pl$DataFrame(iris)$select(e_add10,e_letter)
+#'
+#'
+#' ##timing "slow" apply in select /with_columns context, this makes apply
+#' n = 1000000L
+#' set.seed(1)
+#' df = pl$DataFrame(list(
+#'   a = 1:n,
+#'   b = sample(letters,n,replace=TRUE)
+#'  ))
+#'
+#' print("apply over 1 million values takes ~2.5 sec on 2015 MacBook Pro")
+#'system.time({
+#'   rdf = df$with_columns(
+#'     pl$col("a")$apply(\(x) {
+#'      x*2L
+#'    })$alias("bob")
+#'  )
+#'})
+#'
+#'print("R lapply 1 million values take ~1sec on 2015 MacBook Pro")
+#'system.time({
+#'  lapply(df$get_column("a")$to_r(),\(x) x*2L )
+#'})
+#'print("using polars syntax takes ~1ms")
+#'system.time({
+#'  (df$get_column("a") * 2L)
+#'})
+#'
+#'
+#'print("using R vector syntax takes ~4ms")
+#'r_vec = df$get_column("a")$to_r()
+#'system.time({
+#'  r_vec * 2L
+#'})
+Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
 
-  #inner loop for each group, run user function, re-wrap(if not already) in Series
-  wrap_f_one_group = function(rs) Series_constructor(f(rs))
-
-  #for Series containing list of groups the Series_apply -method (which has a special case for lists)
-  wrap_f_groups = function(s) s$apply(wrap_f_one_group, datatype = return_type)
+  #use series apply
+  wrap_f = function(s) {
+    s$apply(f, return_type, strict_return_type, allow_fail_eval)
+  }
 
   #return epression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map(self, lambda = wrap_f_groups, output_type = return_type, agg_list = TRUE)
+  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE)
 }
 
 

@@ -407,19 +407,6 @@ impl Series {
             List(..) => {
                 let ca_list = self.0.list().unwrap();
 
-                // let res_r_udf_handler = extendr_api::eval_string("minipolars:::Series_udf_handler")
-                //     .and_then(|x: Robj| {
-                //         x.as_function().ok_or_else(|| {
-                //             extendr_api::error::Error::Other(
-                //                 "failed to get udf_handler".to_string(),
-                //             )
-                //         })
-                //     });
-                // if res_r_udf_handler.is_err() {
-                //     return r_result_list(res_r_udf_handler);
-                // };
-                // let r_udf_handler = res_r_udf_handler.unwrap();
-
                 let y = ca_list.into_iter().map(|opt_ser| {
                     let opt_robj = if let Some(ser) = opt_ser {
                         let out = rfun.call(pairlist!(Series(ser))).ok();
@@ -450,21 +437,14 @@ impl Series {
                     let mut all_length_one = true;
                     let xx = r_iter.map(|opt_r| -> pl::PolarsResult<_> {
                         if let Some(robj) = opt_r {
-                            //wrap result of udf to return pointer to a Series
+                            //convert Robj of Series or something "into series" to pl Series
+                            let s = Series::any_robj_to_pl_series_result(&robj)?;
 
-                            //safety robj contains a valid ptr to a Series, ensured by minipolars:::Series_udf_handler
-                            let s = Series::inner_from_robj_clone(&robj).map_err(|err| {
-                                //convert any error from R to a polars error
-                                pl::PolarsError::ComputeError(polars::error::ErrString::Owned(
-                                    err.to_string(),
-                                ))
-                            })?;
-
-                            if s.0.len() > 1 {
+                            if s.len() > 1 {
                                 all_length_one = false;
                             }
 
-                            Ok(Some(s.0)) //return Ok some polars series if success
+                            Ok(Some(s)) //return Ok some polars series if success
                         } else {
                             Ok(None) //return Ok None if computation never took place
                         }
@@ -539,6 +519,20 @@ impl Series {
         } else {
             Err("expected Series")
         }
+    }
+
+    pub fn any_robj_to_pl_series_result(robj: &Robj) -> pl::PolarsResult<pl::Series> {
+        let s = if !&robj.inherits("Series") {
+            robjname2series(&robj, &"")
+        } else {
+            Series::inner_from_robj_clone(&robj)
+                .map_err(|err| {
+                    //convert any error from R to a polars error
+                    pl::PolarsError::ComputeError(polars::error::ErrString::Owned(err.to_string()))
+                })?
+                .0
+        };
+        Ok(s)
     }
 }
 
