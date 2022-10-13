@@ -34,7 +34,7 @@ DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__se
 
 DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_column_from_series, self, x)
 
-DataFrame$print <- function() invisible(.Call(wrap__DataFrame__print, self))
+DataFrame$print <- function() .Call(wrap__DataFrame__print, self)
 
 DataFrame$columns <- function() .Call(wrap__DataFrame__columns, self)
 
@@ -334,7 +334,7 @@ DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, 
 
 LazyFrame <- new.env(parent = emptyenv())
 
-LazyFrame$print <- function() invisible(.Call(wrap__LazyFrame__print, self))
+LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
 
 LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
 

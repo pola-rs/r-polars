@@ -14,8 +14,8 @@
 #' @examples pl$DataFrame(iris)$groupby("Species")
 print.LazyFrame= function(x) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
-  x$print()
-  invisible(x)
+  cloned_x = x$print()
+  invisible(cloned_x)
 }
 
 
