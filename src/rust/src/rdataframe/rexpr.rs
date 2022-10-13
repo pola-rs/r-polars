@@ -38,15 +38,6 @@ impl Expr {
     pub fn lit(robj: Robj) -> List {
         let rtype = robj.rtype();
         let rlen = robj.len();
-
-        fn lit_no_none<T>(x: Option<T>) -> std::result::Result<pl::Expr, String>
-        where
-            T: pl::Literal,
-        {
-            x.ok_or("NA not allowed use NULL".into())
-                .map(|ok| pl::lit(ok))
-        }
-
         let err_msg = "NA not allowed use NULL";
         let expr_result = match (rtype, rlen) {
             (Rtype::Null, _) => Ok(pl::lit(pl::NULL)),
