@@ -28,7 +28,7 @@ library(minipolars)
 #all constructors are accessed via pl
 
 #Here we go, Hello world written with polars expressions
-pl$col("hello")$sum()$over(c("world","from"))$alias("polars")
+pl$col("hello")$sum()$over("world","from")$alias("polars")
 
 ```
 

@@ -1,4 +1,4 @@
-minipolars\_teaser
+minipolars_teaser
 ================
 Søren Welling
 7/22/2022
@@ -17,9 +17,9 @@ familiar. Unlike Spark, polars is natively multithreaded instead of
 multinode(d). This make polars simple to install and use as any other R
 package. Like Spark and SQL-variants polars optimizes queries for memory
 consuption and speed so you don’t have to. Expect 5-10 speedup compared
-to dplyr on simple transformations from &gt;500Mb data. When chaining
-many operations the speedup due to optimization can be even higher.
-Polars is built on the apache-arrow memory model.
+to dplyr on simple transformations from \>500Mb data. When chaining many
+operations the speedup due to optimization can be even higher. Polars is
+built on the apache-arrow memory model.
 
 This port relies on extendr <https://github.com/extendr> which is the R
 equivalent to pyo3+maturin. Extendr is very convenient for calling rust
@@ -34,7 +34,7 @@ library(minipolars)
 #all constructors are accessed via pl
 
 #Here we go, Hello world written with polars expressions
-pl$col("hello")$sum()$over(c("world","from"))$alias("polars")
+pl$col("hello")$sum()$over("world","from")$alias("polars")
 ```
 
     ## polars Expr: col("hello").sum().over([col("world"), col("from")]).alias("polars")
@@ -48,7 +48,7 @@ the power of polars is the [official user guide for
 python](https://pola-rs.github.io/polars-book/user-guide/). As
 minipolars syntax is the same ( except `$` instead of `.`) the guide
 should be quite useful. The following example shows a typical
-‘polar\_frame’ method together with chained expressions.
+‘polar_frame’ method together with chained expressions.
 
 ``` r
 #create polar_frames from iris
@@ -114,21 +114,21 @@ pl$DataFrame(values)
 ```
 
     ## polars DataFrame: shape: (5, 6)
-    ## ┌─────────┬──────┬─────┬─────────────┬──────────────┬─────────────┐
-    ## │ newname ┆ a    ┆ b   ┆ newcolumn_1 ┆ named_vector ┆ newcolumn_2 │
-    ## │ ---     ┆ ---  ┆ --- ┆ ---         ┆ ---          ┆ ---         │
-    ## │ f64     ┆ f64  ┆ str ┆ f64         ┆ f64          ┆ f64         │
-    ## ╞═════════╪══════╪═════╪═════════════╪══════════════╪═════════════╡
-    ## │ 1.0     ┆ 5.0  ┆ a   ┆ 5.0         ┆ 15.0         ┆ 5.0         │
-    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-    ## │ 2.0     ┆ 10.0 ┆ b   ┆ 4.0         ┆ 14.0         ┆ 4.0         │
-    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-    ## │ 3.0     ┆ 15.0 ┆ c   ┆ 3.0         ┆ 13.0         ┆ 3.0         │
-    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-    ## │ 4.0     ┆ 20.0 ┆ d   ┆ 2.0         ┆ 12.0         ┆ 2.0         │
-    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌┤
-    ## │ 5.0     ┆ 25.0 ┆ e   ┆ 1.0         ┆ 11.0         ┆ 0.0         │
-    ## └─────────┴──────┴─────┴─────────────┴──────────────┴─────────────┘
+    ## ┌─────────┬──────┬─────┬────────────┬──────────────┬──────────────┐
+    ## │ newname ┆ a    ┆ b   ┆ new_column ┆ named_vector ┆ new_column_1 │
+    ## │ ---     ┆ ---  ┆ --- ┆ ---        ┆ ---          ┆ ---          │
+    ## │ f64     ┆ f64  ┆ str ┆ f64        ┆ f64          ┆ f64          │
+    ## ╞═════════╪══════╪═════╪════════════╪══════════════╪══════════════╡
+    ## │ 1.0     ┆ 5.0  ┆ a   ┆ 5.0        ┆ 15.0         ┆ 5.0          │
+    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+    ## │ 2.0     ┆ 10.0 ┆ b   ┆ 4.0        ┆ 14.0         ┆ 4.0          │
+    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+    ## │ 3.0     ┆ 15.0 ┆ c   ┆ 3.0        ┆ 13.0         ┆ 3.0          │
+    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+    ## │ 4.0     ┆ 20.0 ┆ d   ┆ 2.0        ┆ 12.0         ┆ 2.0          │
+    ## ├╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌┼╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┼╌╌╌╌╌╌╌╌╌╌╌╌╌╌┤
+    ## │ 5.0     ┆ 25.0 ┆ e   ┆ 1.0        ┆ 11.0         ┆ 0.0          │
+    ## └─────────┴──────┴─────┴────────────┴──────────────┴──────────────┘
 
 # Data types
 
@@ -167,9 +167,8 @@ pl$dtypes$Int64 #not R native type
 ```
 
     ## [1] "polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)"
-    ## SELECT 1 COLUMNS: [col("Sepal.Width").sum().over([col("Species")])]
-    ## FROM
-    ## CSV SCAN iris.csv; PROJECT */5 COLUMNS; SELECTION: None
+    ##    SELECT [col("Sepal.Width").sum().over([col("Species")])] FROM
+    ##     CSV SCAN iris.csv; PROJECT */5 COLUMNS; SELECTION: None
 
 ``` r
   #read plan from bottom to top, says:  "read entire csv, then compute sum x over y"
@@ -179,9 +178,8 @@ pl$dtypes$Int64 #not R native type
   lpf$describe_optimized_plan()
 ```
 
-    ## SELECT 1 COLUMNS: [col("Sepal.Width").sum().over([col("Species")])]
-    ## FROM
-    ## CSV SCAN iris.csv; PROJECT 2/5 COLUMNS; SELECTION: None
+    ##    SELECT [col("Sepal.Width").sum().over([col("Species")])] FROM
+    ##     CSV SCAN iris.csv; PROJECT 2/5 COLUMNS; SELECTION: None
 
     ## NULL
 
