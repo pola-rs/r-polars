@@ -92,9 +92,14 @@ cat("\n")
 #' Give a class method property behavior
 #' @description Internal function, see use in source
 #' @param f a function
-#' @return function subclassed into c("property","function")
-method_as_property = function(f) {
-  class(f) = c("property","function")
+#' @param setter bool, if true a property method can be modified by user
+#' @return function subclassed into c("property","function") or c("setter","property","function")
+method_as_property = function(f, setter=FALSE) {
+  class(f) = if(setter) {
+    c("setter","property","function")
+  } else {
+    c("property","function")
+  }
   f
 }
 

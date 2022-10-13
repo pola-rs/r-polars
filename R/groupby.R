@@ -15,13 +15,16 @@ GroupBy <- new.env(parent = emptyenv())
 `[[.GroupBy` <- `$.GroupBy`
 
 #' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords GroupBy
 .DollarNames.GroupBy = function(x, pattern = "") {
-  paste0(ls(minipolars:::GroupBy),"()")
+  paste0(ls(minipolars:::GroupBy, pattern = pattern ),"()")
 }
 
 #' print GroupBy
 #'
-#' @param x polar_frame
+#' @param x DataFrame
 #'
 #' @return self
 #' @export

@@ -238,7 +238,6 @@ l_to_vdf = function(l) {
 #' @examples
 #' replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
 replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
-
   cat("\n\n setting public methods for ",class_pattern)
 
   #get these
@@ -323,3 +322,31 @@ construct_DataTypeVector = function(l) {
   dtv
 }
 
+#' Generate autocompletion suggestions for object
+#'
+#' @param env environment to extract usages from
+#' @param pattern string passed to ls(pattern) to subset methods by pattern
+#' @importFrom rlang is_function
+#' @details used internally for auto completion in .DollarNames methods
+#' @return method usages
+#'
+#' @examples get_method_usages(minipolars:::DataFrame, pattern="col")
+get_method_usages = function(env,pattern="") {
+
+  found_names = ls(env,pattern=pattern)
+  objects = mget(found_names,envir = env)
+
+  facts = list(
+    is_property = sapply(objects,\(x) inherits(x,"property")),
+    is_setter = sapply(objects,\(x) inherits(x,"setter")),
+    is_method = sapply(objects,\(x)  !inherits(x,"property") & is_function(x))
+  )
+
+  suggestions = sort(c(
+    found_names[facts$is_property],
+    paste0(found_names[facts$is_setter],"<-"),
+    paste0(found_names[facts$is_method],"()")
+  ))
+
+  suggestions
+}

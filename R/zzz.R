@@ -49,14 +49,15 @@ env$as_data_frame = GroupBy_as_data_frame
 
 # LazyFrame
 macro_add_syntax_check_to_class ("LazyFrame")
-env = minipolars:::LazyFrame
-env$collect = Lazy_collect
-env$select = Lazy_select
-env$with_columns = Lazy_with_columns
-env$groupby = Lazy_groupby
-env$join    = Lazy_join
-env$limit   = Lazy_limit
-env$describe_optimized_plan = Lazy_describe_optimized_plan
+replace_private_with_pub_methods( minipolars:::LazyFrame, "^LazyFrame_")
+# env = minipolars:::LazyFrame
+# env$collect = Lazy_collect
+# env$select = Lazy_select
+# env$with_columns = Lazy_with_columns
+# env$groupby = Lazy_groupby
+# env$join    = Lazy_join
+# env$limit   = Lazy_limit
+# env$describe_optimized_plan = Lazy_describe_optimized_plan
 
 
 # LazyGroupBy

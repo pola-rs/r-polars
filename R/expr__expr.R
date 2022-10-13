@@ -40,8 +40,11 @@ Expr_print = function() {
 }
 
 #' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords Expr
 .DollarNames.Expr = function(x, pattern = "") {
-  paste0(ls(minipolars:::Expr),"()")
+  paste0(ls(minipolars:::Expr, pattern = pattern ),"()")
 }
 
 #' wrap as literal
@@ -746,45 +749,45 @@ Expr_reverse = function() {
 
 
 #' And
-#' @description Divide
+#' @description combine to boolean exprresions with AND
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' @return Expr
 #' @examples
 #' pl$lit(TRUE) & TRUE
-#' pl$lit(TRUE).and(pl$lit(TRUE))
+#' pl$lit(TRUE)$and(pl$lit(TRUE))
 Expr_and = "use_extendr_wrapper"
 #' @export
 "&.Expr" <- function(e1,e2) e1$and(wrap_e(e2))
 
 
 #' Or
-#' @description Divide
+#' @description combine to boolean expresions with OR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' @return Expr
 #' @examples
 #' pl$lit(TRUE) | FALSE
-#' pl$lit(TRUE).or(pl$lit(TRUE))
+#' pl$lit(TRUE)$or(pl$lit(TRUE))
 Expr_or = "use_extendr_wrapper"
 #' @export
 "|.Expr" <- function(e1,e2) e1$or(wrap_e(e2))
 
 
 #' Xor
-#' @description Divide
+#' @description combine to boolean expresions with XOR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' @return Expr
 #' @examples
-#' pl$lit(TRUE).xor(pl$lit(FALES))
+#' pl$lit(TRUE)$xor(pl$lit(FALES))
 Expr_xor = "use_extendr_wrapper"
 
 #' is_in
-#' @description Divide
+#' @description combine to boolean expresions with similar to `%in%`
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' @return Expr
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)

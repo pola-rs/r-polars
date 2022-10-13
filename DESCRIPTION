@@ -24,6 +24,7 @@ Collate:
     'groupby.R'
     'lazy.R'
     'lazy_functions.R'
+    'lazy_groupby.R'
     'namespace.R'
     'options.R'
     'parquet.R'

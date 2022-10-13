@@ -14,13 +14,13 @@ Expr_xor
 \item{other}{literal or Robj which can become a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-Divide
+combine to boolean expresions with XOR
 }
 \examples{
-pl$lit(TRUE).xor(pl$lit(FALES))
+pl$lit(TRUE)$xor(pl$lit(FALES))
 }
 \keyword{Expr}
 \keyword{Expr_operators}

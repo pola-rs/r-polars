@@ -14,14 +14,14 @@ Expr_and
 \item{other}{literal or Robj which can become a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-Divide
+combine to boolean exprresions with AND
 }
 \examples{
 pl$lit(TRUE) & TRUE
-pl$lit(TRUE).and(pl$lit(TRUE))
+pl$lit(TRUE)$and(pl$lit(TRUE))
 }
 \keyword{Expr}
 \keyword{Expr_operators}

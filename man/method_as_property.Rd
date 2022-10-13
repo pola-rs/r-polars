@@ -4,13 +4,15 @@
 \alias{method_as_property}
 \title{Give a class method property behavior}
 \usage{
-method_as_property(f)
+method_as_property(f, setter = FALSE)
 }
 \arguments{
 \item{f}{a function}
+
+\item{setter}{bool, if true a property method can be modified by user}
 }
 \value{
-function subclassed into c("property","function")
+function subclassed into c("property","function") or c("setter","property","function")
 }
 \description{
 Internal function, see use in source

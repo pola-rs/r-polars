@@ -98,3 +98,6 @@ test_that("lazy filter", {
 
 
 })
+
+
+#TODO complete tests for lazy

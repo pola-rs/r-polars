@@ -8,6 +8,9 @@ reference:
   - subtitle: DataFrame
     contents:
       - has_keyword("DataFrame")
+  - subtitle: LazyFrame
+    contents:
+      - has_keyword("LazyFrame")
   - subtitle: Expr
     contents:
       - has_keyword("Expr")

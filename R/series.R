@@ -13,8 +13,11 @@ print.Series = function(x) {
 }
 
 #' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords Series
 .DollarNames.Series = function(x, pattern = "") {
-  paste0(ls(minipolars:::Series),"()")
+  paste0(ls(minipolars:::Series, pattern = pattern ),"()")
 }
 
 #' Series

@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{concat}
 \alias{concat}
-\title{concat polar objects}
+\title{concat polars objects}
 \usage{
 concat(
   l,
@@ -24,7 +24,7 @@ concat(
 DataFrame, or Series, LazyFrame or Expr
 }
 \description{
-concat polar objects
+concat polars objects
 }
 \examples{
 #vertical

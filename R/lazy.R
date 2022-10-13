@@ -1,73 +1,116 @@
+#TODO document LazyFrame class as DataFrame has been
 
 #' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords LazyFrame
+#' @examples
+#' e = pl$lit("any polars object")$
+#' e$ #place cursor after $ this line and press tab
+#'
+#' #manually call like this (should never be needed)
+#' .DollarNames.Expr
 .DollarNames.LazyFrame = function(x, pattern = "") {
-  paste0(ls(minipolars:::LazyFrame),"()")
+  paste0(ls(minipolars:::LazyFrame, pattern = pattern ),"()")
 }
 
-#' print GroupBy
-#'
-#' @param x polar_frame
+#' print LazyFrame s3 method
+#' @keywords LazyFrame
+#' @param x DataFrame
+#' @keywords LazyFrame
 #'
 #' @return self
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$groupby("Species")
-print.LazyFrame= function(x) {
+#' @examples print(pl$DataFrame(iris)$lazy())
+print.LazyFrame = function(x) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
-  cloned_x = x$print()
+  cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
 }
 
-
-
-#' @title Lazy_select
-#' @description select on a lazy DataFrame
+#' print LazyFrame internal method
+#' @description can be used i the middle of a method chain
+#' @param x LazyFrame
+#' @keywords LazyFrame
 #'
-#' @param ... any single Expr or string naming a column
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_describe_optimized_plan  = function() {
+#' @return self
+#' @export
+#'
+#' @examples  pl$DataFrame(iris)$lazy()$print()
+LazyFrame_print = "use_extendr_wrapper"
+
+#TODO write missing examples in this file
+
+#' @title Print the optmized plan of LazyFrame
+#' @description select on a LazyFrame
+#' @keywords LazyFrame
+#'
+LazyFrame_describe_optimized_plan  = function() {
   unwrap(.pr$LazyFrame$describe_optimized_plan(self))
 }
 
+#' @title Print the non-optimized plan plan of LazyFrame
+#' @description select on a LazyFrame
+#' @keywords LazyFrame
+LazyFrame_describe_plan  = "use_extendr_wrapper"
+
 #' @title Lazy_select
-#' @description select on a lazy DataFrame
+#' @description select on a LazyFrame
+#' @keywords LazyFrame
 #'
 #' @param ... any single Expr or string naming a column
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_select = function(...) {
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_select = function(...) {
   pra = construct_ProtoExprArray(...)
   .pr$LazyFrame$select(self,pra)
 }
 
-#' @title Lazy_with_columns
-#' @description add or replace columns of lazy DataFrame
+#' @title Lazy with columns
+#' @description add or replace columns of LazyFrame
+#' @keywords LazyFrame
 #'
 #' @param ... any single Expr or string naming a column
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_with_columns = function(...) {
+#' @return A new `LazyFrame` object with added/modified columns.
+LazyFrame_with_columns = function(...) {
   pra = construct_ProtoExprArray(...)
   .pr$LazyFrame$with_columns(self,pra)
 }
 
-#' @title Lazy_with_columns
-#' @description add or replace columns of lazy DataFrame
-#'
-#' @param ... any single Expr or string naming a column
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_collect = function() {
+#' @title Lazy with column
+#' @description add or replace columns of LazyFrame
+#' @keywords LazyFrame
+#' @param expr one Expr or string naming a column
+#' @return A new `LazyFrame` object with add/modified column.
+LazyFrame_with_column = "use_extendr_wrapper"
+
+#' @title Apply filter to LazyFrame
+#' @description Filter rows with an Expression definining a boolean column
+#' @keywords LazyFrame
+#' @param expr one Expr or string naming a column
+#' @return A new `LazyFrame` object with add/modified column.
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+LazyFrame_filter = "use_extendr_wrapper"
+
+#' @title LazyFrame collect
+#' @description collect DataFrame by lazy query
+#' @keywords LazyFrame
+#' @return collected `DataFrame`
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+LazyFrame_collect = function() {
   unwrap(.pr$LazyFrame$collect(self))
 }
 
-#' @title Lazy_limit
+#' @title Limits
 #' @description take limit of n rows of query
-#'
+#' @keywords LazyFrame
 #' @param n positive numeric or integer number not larger than 2^32
 #' @importFrom  rlang is_scalar_integerish
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_limit = function(n) {
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_limit = function(n) {
   if(!is_scalar_integerish(n) || n>2^32-1 || n<0) {
     unwrap(list(err=paste("in LazyFrame$limit(n): n must be integerish within the bounds [0; 2^32-1]. n was:",n)))
   }
@@ -76,16 +119,22 @@ Lazy_limit = function(n) {
 
 
 #' @title Lazy_groupby
-#' @description
-#' groupby on lazy_polar_frame.
+#' @description apply groupby on LazyFrame, return LazyGroupBy
+#' @keywords LazyFrame
+#' groupby on LazyFrame.
+#'
 #' @param ... any single Expr or string naming a column
-#' @return A new `lazy_polar_frame` object with applied filter.
-Lazy_groupby = function(..., maintain_order = FALSE) {
+#' @param maintain_order bool should an aggregate of groupby retain order of groups or FALSE = random, slightly faster?
+#'
+#' @return A new `LazyGroupBy` object with applied groups.
+LazyFrame_groupby = function(..., maintain_order = FALSE) {
   pra = construct_ProtoExprArray(...)
   .pr$LazyFrame$groupby(self,pra,maintain_order)
 }
 
-
+#' @title LazyFrame join
+#' @description join a LazyFrame
+#' @keywords LazyFrame
 #' @param other LazyFrame
 #' @param on named columns as char vector of named columns, or list of expressions and/or strings.
 #' @param left_on names of columns in self LazyFrame, order should match. Type, see on param.
@@ -95,11 +144,8 @@ Lazy_groupby = function(..., maintain_order = FALSE) {
 #' @param allow_parallel bool
 #' @param force_parallel bool
 #'
-#' @title LazyFrame join
-#' @description join a lazy DataFrame
-#'
-#' @return A new `lazy_polar_frame` object with applied join.
-Lazy_join = function(
+#' @return A new `LazyFrame` object with applied join.
+LazyFrame_join = function(
   other,#: LazyFrame or DataFrame,
   left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
   right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -144,71 +190,6 @@ Lazy_join = function(
 }
 
 
-## ----- LazyGroupBy
-
-
-#' print LazyGroupBy
-#'
-#' @param x LazyGroupBy
-#'
-#' @return self
-#' @export
-#'
-print.LazyGroupBy = function(x) {
-  cat("polars LazyGroupBy: \n")
-  x$print()
-}
-
-#' @title LazyGroupBy_agg
-#' @description
-#' aggregate a polar_lazy_groupby
-#' @param ... any Expr or string
-#' @return A new `lazy_polar_frame` object.
-LazyGroupBy_agg = agg = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyGroupBy$agg(self,pra)
-}
-
-#' @title LazyGroupBy_apply
-#' @description
-#' one day this will apply
-#' @param f lambda function to apply
-#' @return A new `lazy_polar_frame` object.
-LazyGroupBy_apply = function(f) {
-  abort("this function is not yet implemented")
-}
-
-#' @title LazyGroupBy_head
-#' @description
-#' get n rows of head of group
-#' @param n integer number of rows to get
-#' @importFrom rlang is_integerish
-#' @return A new `lazy_polar_frame` object.
-LazyGroupBy_head = function(n=1L) {
-  if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
-  .pr$LazyGroupBy$head(n)
-}
-
-
-#' @title LazyGroupBy_tail
-#' @description
-#' get n tail rows of group
-#' @param n integer number of rows to get
-#' @return A new `lazy_polar_frame` object.
-LazyGroupBy_tail = function(n = 1L) {
-  if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
-  .pr$LazyGroupBy$tail(n)
-}
-
-
-#' @title LazyGroupBy_print
-#' @description
-#' prints opague groupby, not much to show
-#' @return NULL
-LazyGroupBy_print = function() {
-  .pr$LazyGroupBy$print(self)
-  invisible(self)
-}
 
 
 

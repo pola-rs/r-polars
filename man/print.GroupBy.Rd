@@ -7,7 +7,7 @@
 \method{print}{GroupBy}(x)
 }
 \arguments{
-\item{x}{polar_frame}
+\item{x}{DataFrame}
 }
 \value{
 self

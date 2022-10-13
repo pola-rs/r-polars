@@ -2,19 +2,20 @@
 % Please edit documentation in R/lazy.R
 \name{print.LazyFrame}
 \alias{print.LazyFrame}
-\title{print GroupBy}
+\title{print LazyFrame s3 method}
 \usage{
 \method{print}{LazyFrame}(x)
 }
 \arguments{
-\item{x}{polar_frame}
+\item{x}{DataFrame}
 }
 \value{
 self
 }
 \description{
-print GroupBy
+print LazyFrame s3 method
 }
 \examples{
-pl$DataFrame(iris)$groupby("Species")
+print(pl$DataFrame(iris)$lazy())
 }
+\keyword{LazyFrame}

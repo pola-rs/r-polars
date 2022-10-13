@@ -90,7 +90,7 @@ test_that("DataFrame, mixed input, create and print", {
 })
 
 
-test_that("polar_frame, mixed input, create and print", {
+test_that("DataFrame, mixed input, create and print", {
   #clone into DataFrame and change one name
   df = pl$DataFrame(input_vectors_and_series)
   testthat::expect_identical(
@@ -157,7 +157,7 @@ test_that("get set properties", {
 
 })
 
-test_that("polar_frame, select sum over", {
+test_that("DataFrame, select sum over", {
   df = pl$DataFrame(iris)$select(
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),
     pl$col("Sepal.Length")$sum()$over("Species")$alias("miah2"),

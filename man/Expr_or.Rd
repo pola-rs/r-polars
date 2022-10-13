@@ -14,14 +14,14 @@ Expr_or
 \item{other}{literal or Robj which can become a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-Divide
+combine to boolean expresions with OR
 }
 \examples{
 pl$lit(TRUE) | FALSE
-pl$lit(TRUE).or(pl$lit(TRUE))
+pl$lit(TRUE)$or(pl$lit(TRUE))
 }
 \keyword{Expr}
 \keyword{Expr_operators}

@@ -54,14 +54,25 @@
 #' tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
 DataFrame
 
-#' @export
-.DollarNames.DataFrame = function(x, pattern = "") {
-  paste0(ls(minipolars:::DataFrame),"()")
-}
+
+
 
 #' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords DataFrame
+.DollarNames.DataFrame = function(x, pattern = "") {
+  get_method_usages(minipolars:::DataFrame,pattern = pattern)
+}
+
+
+#' @export
+#' @title auto complete $-access into object
+#' @description called by the interactive R session internally
+#' @keywords VecDataFrame
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-  paste0(ls(minipolars:::VecDataFrame),"()")
+
+  paste0(ls(minipolars:::VecDataFrame, pattern = pattern ),"()")
 }
 
 
@@ -213,6 +224,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return value
 #' @keywords DataFrame
+#' @details settable minipolars object properties may appear to be R objects, but they are not. See [[method_name]] example
+#'
 #' @export
 #' @examples
 #' #For internal use
@@ -228,10 +241,38 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' #set + get values
 #' df$columns = letters[1:5] #<- is fine too
 #' df$columns
+#'
+#' # Rstudio is not using the standard R code completion tool
+#' # and it will backtick any special characters. It is possible
+#' # to completely customize the R / Rstudio code completion except
+#' # it will trigger Rstudio to backtick any completion! Also R does
+#' # not support package isolated customization.
+#'
+#'
+#' #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
+#' #however Rstudio backticks it into df$`columns<-`
+#' #to make life simple, this is valid minipolars syntax also, and can be used in fast scripting
+#' df$`columns<-` = letters[5:1]
+#'
+#' #for stable code prefer e.g.  df$columns = letters[5:1]
+#'
+#' #to see inside code of a property use the [[]] syntax instead
+#' df[["columns"]] # to see property code, .pr is the internal minipolars api into rust polars
+#' minipolars:::DataFrame.property_setters$columns #and even more obscure to see setter code
+#'
+#'
 "$<-.DataFrame" = function(self, name, value) {
-  func = DataFrame.property_setters[[name]]
-  if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
+
+  name = sub("<-$","",name)
+
+  #stop if method is not a setter
+  if(!inherits(self[[name]],"setter")) {
+    unwrap(list(err= paste("no setter method for",name)))
+  }
+
+  # if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
   if (minipolars_optenv$strictly_immutable) self = self$clone()
+  func = DataFrame.property_setters[[name]]
   func(self,value)
   self
 }
@@ -258,8 +299,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
-})
-#allow user to set property
+},setter = TRUE)
+#define setter function
 DataFrame.property_setters$columns =
   function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
