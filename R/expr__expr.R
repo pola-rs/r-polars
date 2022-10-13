@@ -742,3 +742,59 @@ Expr_prefix = function(prefix) {
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
+
+
+
+#' And
+#' @description Divide
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' pl$lit(TRUE) & TRUE
+#' pl$lit(TRUE).and(pl$lit(TRUE))
+Expr_and = "use_extendr_wrapper"
+#' @export
+"&.Expr" <- function(e1,e2) e1$and(wrap_e(e2))
+
+
+#' Or
+#' @description Divide
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' pl$lit(TRUE) | FALSE
+#' pl$lit(TRUE).or(pl$lit(TRUE))
+Expr_or = "use_extendr_wrapper"
+#' @export
+"|.Expr" <- function(e1,e2) e1$or(wrap_e(e2))
+
+
+#' Xor
+#' @description Divide
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#' pl$lit(TRUE).xor(pl$lit(FALES))
+Expr_xor = "use_extendr_wrapper"
+
+#' is_in
+#' @description Divide
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Exprs
+#' @examples
+#'
+#' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
+#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]]
+#'
+#'
+#'
+Expr_is_in= "use_extendr_wrapper"
+
+
+
+
+

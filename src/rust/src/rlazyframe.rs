@@ -11,8 +11,9 @@ pub struct LazyFrame(pub pl::LazyFrame);
 
 #[extendr]
 impl LazyFrame {
-    pub fn print(&self) {
+    fn print(&self) -> Self {
         rprintln!("{}", self.0.describe_plan());
+        self.clone()
     }
 
     pub fn describe_plan(&self) {

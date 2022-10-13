@@ -188,7 +188,7 @@ test_that("map unity", {
 
   ##int is preseved
   int_iris = iris
-  int_iris[] = lapply(iris,as.integer)
+  int_iris[,1:4] = lapply(iris[,1:4],as.integer)
   expect_identical(
     pl$DataFrame(int_iris)$select(pl$col("Sepal.Length")$map(\(s) s))$as_data_frame()[,1,drop=FALSE],
     int_iris[,1,drop=FALSE]

@@ -94,6 +94,14 @@ Expr$neq <- function(other) .Call(wrap__Expr__neq, self, other)
 
 Expr$eq <- function(other) .Call(wrap__Expr__eq, self, other)
 
+Expr$and <- function(other) .Call(wrap__Expr__and, self, other)
+
+Expr$or <- function(other) .Call(wrap__Expr__or, self, other)
+
+Expr$xor <- function(other) .Call(wrap__Expr__xor, self, other)
+
+Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
+
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)

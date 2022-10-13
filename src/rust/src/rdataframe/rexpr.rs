@@ -47,19 +47,57 @@ impl Expr {
                 .map(|ok| pl::lit(ok))
         }
 
-        let expr = match (rtype, rlen) {
+        let err_msg = "NA not allowed use NULL";
+        let expr_result = match (rtype, rlen) {
             (Rtype::Null, _) => Ok(pl::lit(pl::NULL)),
-            (Rtype::Integers, 1) => lit_no_none(robj.as_integer()),
-            (Rtype::Doubles, 1) => lit_no_none(robj.as_real()),
-            (Rtype::Strings, 1) => {
-                if robj.is_na() {
-                    let none_str: Option<&str> = None;
-                    lit_no_none(none_str)
+            (Rtype::Integers, 1) => {
+                let opt_val = robj.as_integer();
+                if let Some(val) = opt_val.clone() {
+                    Ok(pl::lit(val))
                 } else {
-                    lit_no_none(robj.as_str())
+                    if robj.is_na() {
+                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Int32))
+                    } else {
+                        Err(err_msg.into())
+                    }
                 }
             }
-            (Rtype::Logicals, 1) => lit_no_none(robj.as_bool()),
+            (Rtype::Doubles, 1) => {
+                let opt_val = robj.as_real();
+                if let Some(val) = opt_val.clone() {
+                    Ok(pl::lit(val))
+                } else {
+                    if robj.is_na() {
+                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Float64))
+                    } else {
+                        Err(err_msg.into())
+                    }
+                }
+            }
+            (Rtype::Strings, 1) => {
+                let opt_val = robj.as_str();
+                if let Some(val) = opt_val.clone() {
+                    Ok(pl::lit(val))
+                } else {
+                    if robj.is_na() {
+                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Utf8))
+                    } else {
+                        Err(err_msg.into())
+                    }
+                }
+            }
+            (Rtype::Logicals, 1) => {
+                let opt_val = robj.as_bool();
+                if let Some(val) = opt_val.clone() {
+                    Ok(pl::lit(val))
+                } else {
+                    if robj.is_na() {
+                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Boolean))
+                    } else {
+                        Err(err_msg.into())
+                    }
+                }
+            }
             (x, 1) => Err(format!(
                 "$lit(val): minipolars not yet support rtype {:?}",
                 x
@@ -71,7 +109,7 @@ impl Expr {
         }
         .map(|ok| Expr(ok));
 
-        r_result_list(expr)
+        r_result_list(expr_result)
     }
 
     //expr binary comparisons
@@ -97,6 +135,23 @@ impl Expr {
 
     pub fn eq(&self, other: &Expr) -> Expr {
         Expr(self.0.clone().eq(other.0.clone()))
+    }
+
+    //logical operators
+    fn and(&self, other: &Expr) -> Self {
+        Expr(self.0.clone().and(other.0.clone()))
+    }
+
+    fn or(&self, other: &Expr) -> Self {
+        Expr(self.0.clone().or(other.0.clone()))
+    }
+
+    fn xor(&self, other: &Expr) -> Self {
+        Expr(self.0.clone().xor(other.0.clone()))
+    }
+
+    fn is_in(&self, other: &Expr) -> Self {
+        Expr(self.0.clone().is_in(other.0.clone()))
     }
 
     //in order

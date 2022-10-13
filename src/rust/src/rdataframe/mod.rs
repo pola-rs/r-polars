@@ -62,8 +62,9 @@ impl DataFrame {
         r_result_list(self.0.with_column(s).map(|_| ()))
     }
 
-    fn print(&self) {
+    fn print(&self) -> Self {
         rprintln!("{:#?}", self.0);
+        self.clone()
     }
 
     fn columns(&self) -> Vec<String> {

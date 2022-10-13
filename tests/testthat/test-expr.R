@@ -219,8 +219,6 @@ test_that("col DataType", {
 
 
 test_that("lit expr", {
-  expect_error(pl$lit(NA_character_))
-  expect_error(pl$lit(NA))
 
   expect_identical(
     pl$DataFrame(list(a = 1:4))$filter(pl$col("a")>2L)$as_data_frame()$a,
@@ -268,6 +266,68 @@ test_that("prefix suffix reverse", {
   expect_equal(
     df2$get_column("A_reverse")$to_r(),
     rev(df2$get_column("A")$to_r())
+  )
+
+
+
+})
+
+test_that("and or is_in xor", {
+  df = pl$DataFrame(list())
+  expect_true( df$select(pl$lit(T)&T)$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(T)&F)$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(F)&T)$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(F)&F)$as_data_frame()[[1]])
+
+  expect_true( df$select(pl$lit(T)|T)$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(T)|F)$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(F)|T)$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(F)|F)$as_data_frame()[[1]])
+
+  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(T)$xor(pl$lit(F)))$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(F)$xor(pl$lit(T)))$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$as_data_frame()[[1]])
+
+  df = pl$DataFrame(list(a=c(1:3,NA_integer_)))
+  expect_true( df$select(pl$lit(1L)$is_in(pl$col("a")))$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$as_data_frame()[[1]])
+
+
+  #NA_int == NA_int
+  expect_identical(
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_integer_)))$as_data_frame()[[1]],
+    c(1:4,NA_integer_) %in% NA_real_
+  )
+
+  #both R and polars aliases NA_int_ with NA_real_ in comparisons
+  expect_identical(
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]],
+    c(1:4,NA_integer_) %in% NA_real_
+  )
+
+
+
+  #not sure if polars have a good consistant logical system, anyways here are some statements which were true when writing this
+  #TODO discuss with polars team
+  expect_true(
+    pl$DataFrame(list())$select(
+      #nothing is nothing
+      pl$lit(NULL) == pl$lit(NULL)$alias("NULL is NULL"),
+
+      #nothing is typed nothing
+      pl$lit(NULL) == pl$lit(NA_real_)$alias("NULL is NULL_real"),
+
+      #typed nothing is typed nothing
+      pl$lit(NA_real_) == pl$lit(NA_real_)$alias("NULL_eral is NULL_real"),
+
+      #type nothing is IN nothing
+      pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
+
+      #neither typed nor untyped NULL is IN NULL
+      pl$lit(NA_real_)$is_in(pl$lit(NULL))$not()$alias("NULL typed is in NULL, NOT"),
+      pl$lit(NULL)$is_in(pl$lit(NULL))$not()$alias("NULL is in NULL, NOY")
+    )$as_data_frame() |> unlist() |> all()
   )
 
 
