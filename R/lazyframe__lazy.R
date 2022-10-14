@@ -14,8 +14,10 @@
 #' as pure functions solved/simplified self-referential complications.
 #'
 #' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use `DataFrame_object$lazy() -> LazyFrame_object` and
-#' `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax using package dplyr to
-#' interact with database connections such as SQL variants.
+#' `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax of the dplyrpackage to
+#' interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
+#' as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
+#' and other data sources such parquet files simultanously. (#TODO implement minipolars SQL ;)
 #'
 #' @details Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
 #' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted

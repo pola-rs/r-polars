@@ -13,12 +13,14 @@ Most methods return another \code{LazyFrame}-class instance or similar which all
 This class system in lack of a better name could be called "environment classes" and is the same class
 system extendr provides, except here there is both a public and private set of methods. For implementation
 reasons, the private methods are external and must be called from minipolars:::.pr.$LazyFrame$methodname(), also
-all private methods must take self as an argument, thus they are pure functions. Having the private methods
+all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 
 \code{DataFrame} and \code{LazyFrame} can both be said to be a \code{Frame}. To convert use \code{DataFrame_object$lazy() -> LazyFrame_object} and
-\code{LazyFrame_object$collect() -> DataFrame_object}. This is quite similar to the lazy-collect syntax using package dplyr to
-interact with database connections such as SQL variants.
+\code{LazyFrame_object$collect() -> DataFrame_object}. This is quite similar to the lazy-collect syntax of the dplyrpackage to
+interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
+as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
+and other data sources such parquet files simultanously. (#TODO implement minipolars SQL ;)
 }
 \details{
 Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
