@@ -200,19 +200,42 @@ test_that("over", {
 
 })
 
-test_that("col DataType", {
+test_that("col DataType + col(s) + col regex", {
 
+  #one Datatype
   expect_equal(
     pl$DataFrame(iris)$select(pl$col(pl$dtypes$Float64))$as_data_frame(),
     iris[,sapply(iris,is.numeric)]
   )
 
+  #multiple
   iris_str = iris
   iris_str$Species = as.character(iris$Species)
   expect_equal(
     pl$DataFrame(iris)$select(pl$col(list(pl$dtypes$Float64,pl$dtypes$Utf8)))$as_data_frame(),
     iris_str
   )
+
+  #multiple cols
+  Names = c("Sepal.Length","Sepal.Width")
+  expect_equal(
+    pl$DataFrame(iris)$select(pl$col(Names))$as_data_frame(),
+    iris[,Names]
+  )
+
+  #regex
+  expect_equal(
+    pl$DataFrame(iris)$select(pl$col("^Sepal.*$"))$as_data_frame(),
+    iris[,Names]
+  )
+
+  #warn no multiple regex
+
+  expect_warning(
+    pl$col(c("^Sepal.*$","Species"))
+  )
+
+  pl$DataFrame(iris)$select(    pl$col(c("^Sepal.*$","Species")))$as_data_frame()
 
 })
 

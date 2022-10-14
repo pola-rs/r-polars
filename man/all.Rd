@@ -2,37 +2,18 @@
 % Please edit documentation in R/lazy_functions.R
 \name{all}
 \alias{all}
-\title{All columns}
-\arguments{
-\item{name}{\itemize{
-\item a single column by a string
-\item all columns by using a wildcard \code{"*"}
-\item column by regular expression if the regex starts with \code{^} and ends with \code{$}
-\item a single DataType or a list of DataType, select any column of any such DataType
-}}
-}
+\title{New Expr referring to all columns}
 \value{
-Boolean literal
-
 Boolean literal
 }
 \description{
-Check if all boolean values in a Boolean column are \code{TRUE}.
-This method is an expression - not to be confused with
-\code{pl$all} which is a function to select all columns.
-
-Return an expression representing a column in a DataFrame.
+Not to mix up with \code{Expr_object$all()} which is a 'reduce Boolean columns by AND' method.
 }
 \details{
 last \code{all()} in example is this Expr method, the first \code{pl$all()} refers
 to "all-columns" and is an expression constructor
-
-last \code{all()} in example is this Expr method, the first \code{pl$all()} refers
-to "all-columns" and is an expression constructor
 }
 \examples{
-
-pl$DataFrame(list(all=c(TRUE,TRUE),some=c(TRUE,FALSE)))$select(pl$all()$all())
-
 pl$DataFrame(list(all=c(TRUE,TRUE),some=c(TRUE,FALSE)))$select(pl$all()$all())
 }
+\keyword{Expr}

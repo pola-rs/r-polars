@@ -80,6 +80,10 @@ Expr <- new.env(parent = emptyenv())
 
 Expr$col <- function(name) .Call(wrap__Expr__col, name)
 
+Expr$dtype_cols <- function(dtypes) .Call(wrap__Expr__dtype_cols, dtypes)
+
+Expr$cols <- function(names) .Call(wrap__Expr__cols, names)
+
 Expr$lit <- function(robj) .Call(wrap__Expr__lit, robj)
 
 Expr$gt <- function(other) .Call(wrap__Expr__gt, self, other)
@@ -159,8 +163,6 @@ Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 Expr$not <- function() .Call(wrap__Expr__not, self)
 
 Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
-
-Expr$dtype_cols <- function(dtypes) .Call(wrap__Expr__dtype_cols, dtypes)
 
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 

@@ -29,9 +29,18 @@ impl DerefMut for Expr {
 #[extendr]
 impl Expr {
     //constructors
-
     pub fn col(name: &str) -> Self {
-        Expr(pl::col(name))
+        Expr(dsl::col(name))
+    }
+
+    //via col
+    pub fn dtype_cols(dtypes: &DataTypeVector) -> Self {
+        Expr(dsl::dtype_cols(dtv_to_vec(dtypes)))
+    }
+
+    //via col
+    pub fn cols(names: Vec<String>) -> Self {
+        Expr(dsl::cols(names).into())
     }
 
     //TODO expand usecases to series and datatime
@@ -40,14 +49,14 @@ impl Expr {
         let rlen = robj.len();
         let err_msg = "NA not allowed use NULL";
         let expr_result = match (rtype, rlen) {
-            (Rtype::Null, _) => Ok(pl::lit(pl::NULL)),
+            (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
             (Rtype::Integers, 1) => {
                 let opt_val = robj.as_integer();
                 if let Some(val) = opt_val.clone() {
-                    Ok(pl::lit(val))
+                    Ok(dsl::lit(val))
                 } else {
                     if robj.is_na() {
-                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Int32))
+                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
                     } else {
                         Err(err_msg.into())
                     }
@@ -56,10 +65,10 @@ impl Expr {
             (Rtype::Doubles, 1) => {
                 let opt_val = robj.as_real();
                 if let Some(val) = opt_val.clone() {
-                    Ok(pl::lit(val))
+                    Ok(dsl::lit(val))
                 } else {
                     if robj.is_na() {
-                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Float64))
+                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
                     } else {
                         Err(err_msg.into())
                     }
@@ -68,10 +77,10 @@ impl Expr {
             (Rtype::Strings, 1) => {
                 let opt_val = robj.as_str();
                 if let Some(val) = opt_val.clone() {
-                    Ok(pl::lit(val))
+                    Ok(dsl::lit(val))
                 } else {
                     if robj.is_na() {
-                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Utf8))
+                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
                     } else {
                         Err(err_msg.into())
                     }
@@ -80,10 +89,10 @@ impl Expr {
             (Rtype::Logicals, 1) => {
                 let opt_val = robj.as_bool();
                 if let Some(val) = opt_val.clone() {
-                    Ok(pl::lit(val))
+                    Ok(dsl::lit(val))
                 } else {
                     if robj.is_na() {
-                        Ok(pl::lit(pl::NULL).cast(pl::DataType::Boolean))
+                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
                     } else {
                         Err(err_msg.into())
                     }
@@ -267,10 +276,6 @@ impl Expr {
     pub fn over(&self, proto_exprs: &ProtoExprArray) -> Expr {
         let ve = pra_to_vec(proto_exprs, "select");
         Expr(self.0.clone().over(ve))
-    }
-
-    pub fn dtype_cols(dtypes: &DataTypeVector) -> Expr {
-        Expr(dsl::dtype_cols(dtv_to_vec(dtypes)))
     }
 
     pub fn print(&self) {
