@@ -16,6 +16,6 @@ Contains original rextendr bindings to polars
 }
 \examples{
 #.pr$DataFrame$print() is an external function where self is passed as arg
-minipolars:::.pr$DataFrame$print(self = DataFrame(iris))
+minipolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
 }
 \keyword{datasets}
