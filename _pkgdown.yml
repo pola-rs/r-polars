@@ -3,20 +3,7 @@ reference:
   # NSE
 
 
-  - title: Minipolars API and namespace
-    desc: >
-      Minipolars api's is not exported in NAMESPACE, because it would collide badly with base R
-      and other popular functions. As minipolars strive to mimic the syntax and behavior
-      of py-polars, vast majority of methods are internal accessed with `$`-operator.
-      `pl` is the public api of functions and class constructors. All functions, objects and methods
-      needed to interact with polars are accessed via `pl$` or `object$method()`.
-      `.pr` the private class methods, which always are calls to rust-polars.
-      Also `minipolars:::` have lots of private R functions.
 
-    contents:
-      - has_keyword("api")
-      - has_keyword("api_object")
-      - has_keyword("api_private")
   - title: Minipolars classes
     desc: >
       Are a classsystem that extends the extendr class system (let's call it "environment classes").
@@ -33,9 +20,26 @@ reference:
     contents:
       - has_keyword("Expr_new")
       - has_keyword("Expr")
+
+ - title: Minipolars API and namespace
+    desc: >
+      Minipolars api's is not exported in NAMESPACE, because it would collide badly with base R
+      and other popular functions. As minipolars strive to mimic the syntax and behavior
+      of py-polars, vast majority of methods are internal accessed with `$`-operator.
+      `pl` is the public api of functions and class constructors. All functions, objects and methods
+      needed to interact with polars are accessed via `pl$` or `object$method()`.
+      `.pr` the private class methods, which always are calls to rust-polars.
+      Also `minipolars:::` have lots of private R functions.
+
+    contents:
+      - has_keyword("api")
+      - has_keyword("api_object")
+      - has_keyword("api_private")
   - title: everything else
     contents:
       - -has_keyword("api")
+      - -has_keyword("api_object")
+      - -has_keyword("api_private")
       - -has_keyword("DataFrame_new")
       - -has_keyword("DataFrame")
       - -has_keyword("LazyFrame_new")
