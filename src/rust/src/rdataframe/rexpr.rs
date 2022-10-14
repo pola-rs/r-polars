@@ -26,21 +26,27 @@ impl DerefMut for Expr {
     }
 }
 
+impl From<pl::Expr> for Expr {
+    fn from(expr: pl::Expr) -> Self {
+        Expr(expr)
+    }
+}
+
 #[extendr]
 impl Expr {
     //constructors
     pub fn col(name: &str) -> Self {
-        Expr(dsl::col(name))
+        dsl::col(name).into()
     }
 
     //via col
     pub fn dtype_cols(dtypes: &DataTypeVector) -> Self {
-        Expr(dsl::dtype_cols(dtv_to_vec(dtypes)))
+        dsl::dtype_cols(dtv_to_vec(dtypes)).into()
     }
 
     //via col
     pub fn cols(names: Vec<String>) -> Self {
-        Expr(dsl::cols(names).into())
+        dsl::cols(names).into()
     }
 
     //TODO expand usecases to series and datatime
@@ -113,176 +119,190 @@ impl Expr {
     }
 
     //expr binary comparisons
-    pub fn gt(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().gt(other.0.clone()))
+    pub fn gt(&self, other: &Expr) -> Self {
+        self.0.clone().gt(other.0.clone()).into()
     }
 
-    pub fn gt_eq(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().gt_eq(other.0.clone()))
+    pub fn gt_eq(&self, other: &Expr) -> Self {
+        self.0.clone().gt_eq(other.0.clone()).into()
     }
 
-    pub fn lt(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().lt(other.0.clone()))
+    pub fn lt(&self, other: &Expr) -> Self {
+        self.0.clone().lt(other.0.clone()).into()
     }
 
-    pub fn lt_eq(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().lt_eq(other.0.clone()))
+    pub fn lt_eq(&self, other: &Expr) -> Self {
+        self.0.clone().lt_eq(other.0.clone()).into()
     }
 
-    pub fn neq(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().neq(other.0.clone()))
+    pub fn neq(&self, other: &Expr) -> Self {
+        self.0.clone().neq(other.0.clone()).into()
     }
 
-    pub fn eq(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().eq(other.0.clone()))
+    pub fn eq(&self, other: &Expr) -> Self {
+        self.0.clone().eq(other.0.clone()).into()
     }
 
     //logical operators
     fn and(&self, other: &Expr) -> Self {
-        Expr(self.0.clone().and(other.0.clone()))
+        self.0.clone().and(other.0.clone()).into()
     }
 
     fn or(&self, other: &Expr) -> Self {
-        Expr(self.0.clone().or(other.0.clone()))
+        self.0.clone().or(other.0.clone()).into()
     }
 
     fn xor(&self, other: &Expr) -> Self {
-        Expr(self.0.clone().xor(other.0.clone()))
+        self.0.clone().xor(other.0.clone()).into()
     }
 
     fn is_in(&self, other: &Expr) -> Self {
-        Expr(self.0.clone().is_in(other.0.clone()))
+        self.0.clone().is_in(other.0.clone()).into()
+    }
+
+    //any not translated expr from expr/expr.py
+    pub fn to_physical(&self) -> Self {
+        use polars::prelude::GetOutput;
+
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.to_physical_repr().into_owned()),
+                GetOutput::map_dtype(|dt| dt.to_physical()),
+            )
+            .with_fmt("to_physical")
+            .into()
     }
 
     //in order
 
-    pub fn alias(&self, s: &str) -> Expr {
-        Expr(self.0.clone().alias(s))
+    pub fn alias(&self, s: &str) -> Self {
+        self.0.clone().alias(s).into()
     }
 
-    pub fn is_null(&self) -> Expr {
-        Expr(self.0.clone().is_null())
+    pub fn is_null(&self) -> Self {
+        self.0.clone().is_null().into()
     }
 
-    pub fn is_not_null(&self) -> Expr {
-        Expr(self.0.clone().is_not_null())
+    pub fn is_not_null(&self) -> Self {
+        self.0.clone().is_not_null().into()
     }
 
-    pub fn drop_nulls(&self) -> Expr {
-        Expr(self.0.clone().drop_nulls())
+    pub fn drop_nulls(&self) -> Self {
+        self.0.clone().drop_nulls().into()
     }
 
-    pub fn drop_nans(&self) -> Expr {
-        Expr(self.0.clone().drop_nans())
+    pub fn drop_nans(&self) -> Self {
+        self.0.clone().drop_nans().into()
     }
 
-    pub fn min(&self) -> Expr {
-        Expr(self.0.clone().min())
+    pub fn min(&self) -> Self {
+        self.0.clone().min().into()
     }
 
-    pub fn max(&self) -> Expr {
-        Expr(self.0.clone().max())
+    pub fn max(&self) -> Self {
+        self.0.clone().max().into()
     }
 
-    pub fn mean(&self) -> Expr {
-        Expr(self.0.clone().mean())
+    pub fn mean(&self) -> Self {
+        self.0.clone().mean().into()
     }
 
-    pub fn median(&self) -> Expr {
-        Expr(self.0.clone().median())
+    pub fn median(&self) -> Self {
+        self.0.clone().median().into()
     }
 
-    pub fn sum(&self) -> Expr {
-        Expr(self.0.clone().sum())
+    pub fn sum(&self) -> Self {
+        self.0.clone().sum().into()
     }
 
-    pub fn n_unique(&self) -> Expr {
-        Expr(self.0.clone().n_unique())
+    pub fn n_unique(&self) -> Self {
+        self.0.clone().n_unique().into()
     }
 
-    pub fn first(&self) -> Expr {
-        Expr(self.0.clone().first())
+    pub fn first(&self) -> Self {
+        self.0.clone().first().into()
     }
 
-    pub fn last(&self) -> Expr {
-        Expr(self.0.clone().last())
+    pub fn last(&self) -> Self {
+        self.0.clone().last().into()
     }
 
-    pub fn head(&self, n: i64) -> Expr {
-        Expr(self.0.clone().head(Some(n as usize)))
+    pub fn head(&self, n: i64) -> Self {
+        self.0.clone().head(Some(n as usize)).into()
     }
 
-    pub fn tail(&self, n: i64) -> Expr {
-        Expr(self.0.clone().tail(Some(n as usize)))
+    pub fn tail(&self, n: i64) -> Self {
+        self.0.clone().tail(Some(n as usize)).into()
     }
 
-    pub fn reverse(&self) -> Expr {
-        Expr(self.0.clone().reverse())
+    pub fn reverse(&self) -> Self {
+        self.0.clone().reverse().into()
     }
 
     //chaining methods
 
-    pub fn unique(&self) -> Expr {
-        Expr(self.0.clone().unique())
+    pub fn unique(&self) -> Self {
+        self.0.clone().unique().into()
     }
 
-    pub fn unique_stable(&self) -> Expr {
-        Expr(self.0.clone().unique_stable())
+    pub fn unique_stable(&self) -> Self {
+        self.0.clone().unique_stable().into()
     }
 
-    pub fn abs(&self) -> Expr {
-        Expr(self.0.clone().abs())
+    pub fn abs(&self) -> Self {
+        self.0.clone().abs().into()
     }
 
-    pub fn agg_groups(&self) -> Expr {
-        Expr(self.0.clone().agg_groups())
+    pub fn agg_groups(&self) -> Self {
+        self.0.clone().agg_groups().into()
     }
 
-    pub fn all(&self) -> Expr {
-        Expr(self.0.clone().all())
+    pub fn all(&self) -> Self {
+        self.0.clone().all().into()
     }
-    pub fn any(&self) -> Expr {
-        Expr(self.0.clone().any())
-    }
-
-    pub fn count(&self) -> Expr {
-        Expr(self.0.clone().count())
+    pub fn any(&self) -> Self {
+        self.0.clone().any().into()
     }
 
-    //binary arithmetic expressions
-    pub fn add(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().add(other.0.clone()))
+    pub fn count(&self) -> Self {
+        self.0.clone().count().into()
     }
 
     //binary arithmetic expressions
-    pub fn sub(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().sub(other.0.clone()))
+    pub fn add(&self, other: &Expr) -> Self {
+        self.0.clone().add(other.0.clone()).into()
     }
 
-    pub fn mul(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().mul(other.0.clone()))
+    //binary arithmetic expressions
+    pub fn sub(&self, other: &Expr) -> Self {
+        self.0.clone().sub(other.0.clone()).into()
     }
 
-    pub fn div(&self, other: &Expr) -> Expr {
-        Expr(self.0.clone().div(other.0.clone()))
+    pub fn mul(&self, other: &Expr) -> Self {
+        self.0.clone().mul(other.0.clone()).into()
+    }
+
+    pub fn div(&self, other: &Expr) -> Self {
+        self.0.clone().div(other.0.clone()).into()
     }
 
     //unary
-    pub fn not(&self) -> Expr {
-        Expr(self.0.clone().not())
+    pub fn not(&self) -> Self {
+        self.0.clone().not().into()
     }
 
     //expr "funnies"
-    pub fn over(&self, proto_exprs: &ProtoExprArray) -> Expr {
+    pub fn over(&self, proto_exprs: &ProtoExprArray) -> Self {
         let ve = pra_to_vec(proto_exprs, "select");
-        Expr(self.0.clone().over(ve))
+        self.0.clone().over(ve).into()
     }
 
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(&self, lambda: Robj, output_type: Nullable<&DataType>, agg_list: bool) -> Expr {
+    pub fn map(&self, lambda: Robj, output_type: Nullable<&DataType>, agg_list: bool) -> Self {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler
@@ -312,18 +332,19 @@ impl Expr {
         });
 
         if agg_list {
-            Expr(self.clone().0.map_list(f, output_map))
+            self.clone().0.map_list(f, output_map)
         } else {
-            Expr(self.clone().0.map(f, output_map))
+            self.clone().0.map(f, output_map)
         }
+        .into()
     }
 
-    fn suffix(&self, suffix: String) -> Expr {
-        Expr(self.0.clone().suffix(suffix.as_str()))
+    fn suffix(&self, suffix: String) -> Self {
+        self.0.clone().suffix(suffix.as_str()).into()
     }
 
-    fn prefix(&self, prefix: String) -> Expr {
-        Expr(self.0.clone().prefix(prefix.as_str()))
+    fn prefix(&self, prefix: String) -> Self {
+        self.0.clone().prefix(prefix.as_str()).into()
     }
 
     fn to_field(&self, df: &DataFrame) {
