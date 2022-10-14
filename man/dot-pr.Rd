@@ -3,7 +3,7 @@
 \docType{data}
 \name{.pr}
 \alias{.pr}
-\title{polars-API: internal extendr bindings to polars}
+\title{polars-API: private calls to rust-polars}
 \format{
 An object of class \code{environment} of length 9.
 }
@@ -12,10 +12,12 @@ An object of class \code{environment} of length 9.
 }
 \description{
 \code{.pr}
-Contains original rextendr bindings to polars
+Original extendr bindings converted into pure functions
 }
 \examples{
 #.pr$DataFrame$print() is an external function where self is passed as arg
 minipolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
+
+minipolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 }
-\keyword{datasets}
+\keyword{api_private}

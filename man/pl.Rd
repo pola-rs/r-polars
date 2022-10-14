@@ -3,13 +3,6 @@
 \docType{data}
 \name{pl}
 \alias{pl}
-\alias{pl$col("colname")$sum()}
-\alias{/}
-\alias{pl$lit()}
-\alias{#expression}
-\alias{~}
-\alias{chain-method}
-\alias{literal-expression}
 \title{The complete minipolars public API.}
 \format{
 An object of class \code{environment} of length 10.
@@ -18,13 +11,25 @@ An object of class \code{environment} of length 10.
 pl
 }
 \description{
-\code{pl}-object is a list of all public functions and class constructors
-public functions are not exported as a normal package as it would be huge namespace
-collision with base:: and other functions. All object-methods are accesed with object$method
-via the constructed objects.
+\code{pl}-object is a environment of all public functions and class constructors.
+Public functions are not exported as a normal package as it would be huge namespace
+collision with base:: and other functions. All object-methods are accessed with object$method()
+via the new class functions.
 
 Having all functions in an namespace is similar to the rust- and python- polars api.
-Speaking of namespace this pl can be converted into and actual namespace by calling
-import_polars_as_("pl"), but this not recemmended.
 }
-\keyword{datasets}
+\details{
+If someone do not particularly like the letter combination \code{pl}, they are free to
+bind the environment to another variable name as \code{simon_says = pl} or even do \code{attach(pl)}
+}
+\examples{
+#how to use polars via `pl`
+pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
+
+#pl inventory
+minipolars:::print_env(pl,"minipolars public functions")
+
+#all accessible classes and their public methods
+minipolars:::print_env(minipolars:::pl_pub_class_env,"minipolars public class methods, access via object$method()")
+}
+\keyword{api}

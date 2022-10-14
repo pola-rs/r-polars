@@ -350,3 +350,40 @@ get_method_usages = function(env,pattern="") {
 
   suggestions
 }
+
+#' print an environment
+#'
+#' @param api env
+#' @param name  name of env
+#'
+#'
+#' @examples
+print_env =  function(api,name,max_depth=10) {
+  indent_count = 1
+  indentation = paste0(rep("  ",indent_count))
+  show_api = function(value,name) {
+
+
+    if(is.environment(value) || is.list(value)) {
+      cat("\n\n",indentation,name,"(",class(value),"):")
+      indent_count <<- indent_count + 1
+      indentation <<- paste0(rep("  ",indent_count))
+      if(indent_count>max_depth) {
+        cat("\n",indentation,"not exploring deeper, increase max_depth or some circular reference?")
+        return()
+      }
+
+      for(name in ls(value))  {
+        show_api(get(name,envir=as.environment(value)),name)
+      }
+      cat("\n")
+      indent_count <<- indent_count - 1
+      indentation <<- paste0(rep("  ",indent_count))
+    } else {
+      cat("\n",indentation,"[",name,";",class(value),"]")
+    }
+
+  }
+  show_api(api,name)
+
+}
