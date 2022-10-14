@@ -2,7 +2,7 @@
 % Please edit documentation in R/parquet.R
 \name{scan_parquet}
 \alias{scan_parquet}
-\title{Scan parquet file}
+\title{new LazyFrame from parquet file}
 \usage{
 scan_parquet(
   file,
@@ -19,6 +19,6 @@ scan_parquet(
 \item{low_memory}{}
 }
 \description{
-new LazyFrame to scan when collect()
+new LazyFrame from parquet file
 }
 \keyword{LazyFrame_new}

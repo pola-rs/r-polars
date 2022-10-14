@@ -182,9 +182,9 @@ LazyFrame_with_column = "use_extendr_wrapper"
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"
 
-#' @title LazyFrame collect
+#' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
-#' @keywords LazyFrame
+#' @keywords LazyFrame DataFrame_new
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 LazyFrame_collect = function() {

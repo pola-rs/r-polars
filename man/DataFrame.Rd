@@ -21,4 +21,4 @@ create new DataFrame
 pl$DataFrame(iris)
 pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
 }
-\keyword{DataFrame}
+\keyword{DataFrame_new}

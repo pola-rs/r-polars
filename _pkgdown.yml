@@ -7,6 +7,7 @@ reference:
       The different class of minipolars are presented here.
   - subtitle: DataFrame
     contents:
+      - has_keyword("DataFrame_new")
       - has_keyword("DataFrame")
   - subtitle: LazyFrame
     contents:
@@ -18,5 +19,7 @@ reference:
       - has_keyword("Expr")
   - title: everything else
     contents:
+      - -has_keyword("DataFrame_new")
       - -has_keyword("DataFrame")
+      - -has_keyword("LazyFrame_new")
       - -has_keyword("Expr")

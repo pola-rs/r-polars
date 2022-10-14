@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_collect}
 \alias{LazyFrame_collect}
-\title{LazyFrame collect}
+\title{New DataFrame from LazyFrame_object$collect()}
 \usage{
 LazyFrame_collect()
 }
@@ -15,4 +15,5 @@ collect DataFrame by lazy query
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 }
+\keyword{DataFrame_new}
 \keyword{LazyFrame}

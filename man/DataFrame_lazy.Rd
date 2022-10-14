@@ -4,7 +4,7 @@
 \name{DataFrame_lazy}
 \alias{DataFrame_lazy}
 \alias{lazy}
-\title{DataFrame to LazyFrame}
+\title{New LazyFrame from DataFrame_object$lazy()}
 \format{
 An object of class \code{character} of length 1.
 }

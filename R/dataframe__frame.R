@@ -42,12 +42,13 @@
 #' df2$columns()
 #'
 #' # set_column_from_robj-method is fallible and returned a result which could be ok or an err.
-#' # This is the same idea as output from functions decorated with purrr::safely.
-#' # To use results on R side, these must be unwrapped first such
+#' # No public method or function will ever return a result.
+#' # The `result` is very close to the same as output from functions decorated with purrr::safely.
+#' # To use results on R side, these must be unwrapped first such that
 #' # potentially errors can be thrown. unwrap(result) is a way to
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
-#' # would case some unneccesary confusing and verbose error messages on the inner workings of rust.
-#' unwrap(result) #in this case no error, just a NULL because this mutable method do not return anything
+#' # would case some unneccesary confusing and  some very verbose error messages on the inner workings of rust.
+#' unwrap(result) #in this case no error, just a NULL because this mutable method do not return any ok-value
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = minipolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
@@ -88,7 +89,7 @@ DataFrame
 #' @importFrom xptr xptr_address
 #' @importFrom rlang abort
 #' @usage DataFrame(data)
-#' @keywords DataFrame
+#' @keywords DataFrame_new
 #'
 #' @examples
 #' pl$DataFrame(iris)
@@ -423,7 +424,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 
 
 
-#' DataFrame to LazyFrame
+#' New LazyFrame from DataFrame_object$lazy()
 #' @name DataFrame_lazy
 #' @description Start a new lazy query from a DataFrame
 #'
