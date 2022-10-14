@@ -106,6 +106,10 @@ Expr$xor <- function(other) .Call(wrap__Expr__xor, self, other)
 
 Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
 
+Expr$to_physical <- function() .Call(wrap__Expr__to_physical, self)
+
+Expr$cast <- function(data_type, strict) .Call(wrap__Expr__cast, self, data_type, strict)
+
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)

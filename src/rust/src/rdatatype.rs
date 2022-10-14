@@ -18,6 +18,7 @@ impl DataType {
             "Int32" | "integer" => pl::DataType::Int32,
             "Int64" | "integer64" => pl::DataType::Int64,
             "Utf8" | "character" => pl::DataType::Utf8,
+            "Categorical" | "factor" => pl::DataType::Categorical(None),
             _ => panic!("data type not recgnized"),
         };
         DataType(pl_datatype)

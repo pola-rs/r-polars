@@ -30,28 +30,51 @@ pub fn inherits(x: &Robj, class: &str) -> bool {
     }
 }
 
-fn factor_to_string_series(x: &Robj, name: &str) -> pl::Series {
-    let int_slice = x.as_integer_slice().unwrap();
-    let levels = x.get_attrib("levels").expect("factor has no levels");
-    let levels_vec = levels.as_str_vector().unwrap();
+// fn factor_to_string_series(x: &Robj, name: &str) -> pl::Series {
+//     let int_slice = x.as_integer_slice().unwrap();
+//     let levels = x.get_attrib("levels").expect("factor has no levels");
+//     let levels_vec = levels.as_str_vector().unwrap();
 
-    let v: Vec<&str> = int_slice
-        .iter()
-        .map(|x| {
-            let idx = (x - 1) as usize;
-            let x = levels_vec
-                .get(idx)
-                .expect("Corrupt R factor, level integer out of bound");
-            *x
-        })
-        .collect();
-    pl::Series::new(name, v.as_slice())
-}
-
+//     let v: Vec<&str> = int_slice
+//         .iter()
+//         .map(|x| {
+//             let idx = (x - 1) as usize;
+//             let x = levels_vec
+//                 .get(idx)
+//                 .expect("Corrupt R factor, level integer out of bound");
+//             *x
+//         })
+//         .collect();
+//     pl::Series::new(name, v.as_slice())
+// }
+//TODO remove unwraps
 pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
     let y = x.rtype();
+
+    //used for string vector and factor
+    fn robj_to_utf8_series(x: &Robj, name: &str) -> pl::Series {
+        let rstrings: Strings = x.try_into().unwrap();
+
+        //likely never real altrep, yields NA_Rbool, yields false
+        if rstrings.no_na().is_true() {
+            pl::Series::new(name, x.as_str_vector().unwrap())
+        } else {
+            //convert R NAs to rust options
+            let s: Vec<Option<&str>> = rstrings
+                .iter()
+                .map(|x| if x.is_na() { None } else { Some(x.as_str()) })
+                .collect();
+            let s = pl::Series::new(name, s);
+            s
+        }
+    }
+
     match y {
-        Rtype::Integers if inherits(&x, "factor") => factor_to_string_series(x, name),
+        Rtype::Integers if inherits(&x, "factor") => {
+            robj_to_utf8_series(&x.as_character_factor(), name)
+                .cast(&pl::DataType::Categorical(None))
+                .unwrap()
+        }
         Rtype::Integers => {
             let rints = x.as_integers().unwrap();
             if rints.no_na().is_true() {
@@ -82,22 +105,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
                 s
             }
         }
-        Rtype::Strings => {
-            let rstrings: Strings = x.try_into().unwrap();
-
-            //likely never real altrep, yields NA_Rbool, yields false
-            if rstrings.no_na().is_true() {
-                pl::Series::new(name, x.as_str_vector().unwrap())
-            } else {
-                //convert R NAs to rust options
-                let s: Vec<Option<&str>> = rstrings
-                    .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.as_str()) })
-                    .collect();
-                let s = pl::Series::new(name, s);
-                s
-            }
-        }
+        Rtype::Strings => robj_to_utf8_series(x, name),
         Rtype::Logicals => {
             let logicals: Logicals = x.try_into().unwrap();
             let s: Vec<Option<bool>> = logicals
@@ -121,6 +129,9 @@ pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::PolarsResult<Robj> {
         //alternatively try i32, handle overflow?, or convert to bit64
         UInt32 => s.u32().map(|ca| ca.into_iter().collect_robj()),
         Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
+        Categorical(_) => s
+            .categorical()
+            .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
             format!(
                 "sorry minipolars has not yet implemented R conversion for Series.dtype: {}",

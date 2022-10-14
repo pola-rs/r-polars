@@ -52,7 +52,7 @@ Series
 #' }
 Series_constructor =  function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
-  if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x)) {
+  if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x) || is.factor(x)) {
     if(is.null(name)) name = ""
     if(!is_string(name)) abort("name must be NULL or a string")
     return(minipolars:::Series$new(x,name))

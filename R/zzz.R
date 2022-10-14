@@ -107,6 +107,7 @@ pl$concat = minipolars:::concat
 #TODO simplify maybe datatype should not be generated from strings
 .onLoad <- function(libname, pkgname){
   pl$dtypes = list(
+    Categorical = DataType$new("Categorical"),
     Float64 = DataType$new("Float64"),
     Float32 = DataType$new("Float32"),
     Int64 = DataType$new("Int64"),
@@ -114,5 +115,8 @@ pl$concat = minipolars:::concat
     Boolean = DataType$new("Boolean"),
     Utf8 = DataType$new("Utf8")
   )
+  #export dtypes directly into pl, because py-polars does that
+  move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
+
   lockEnvironment(pl,bindings = TRUE)
 }

@@ -799,5 +799,43 @@ Expr_is_in= "use_extendr_wrapper"
 
 
 
+#' To physical representation
+#' @description expression request underlying physical base representation
+#' @keywords Expr
+#' @return Expr
+#' @aliases to_physical
+#' @name Expr_to_physical
+#' @examples
+#' pl$DataFrame(
+#'   list(vals = c("a", "x", NA, "a"))
+#' )$with_columns(
+#'   pl$col("vals")$cast(pl$Categorical),
+#'   pl$col("vals")
+#'     $cast(pl$Categorical)
+#'     $to_physical()
+#'     $alias("vals_physical")
+#' )
+Expr_to_physical = "use_extendr_wrapper"
+
+
+#' Cast between DataType(s)
+#' @keywords Expr
+#' @param dtype DataType to cast to.
+#' @param strict bool if true an error will be thrown if cast failed at resolve time.
+#' @return Expr
+#' @aliases cast
+#' @name Expr_cast
+#' @aliases cast
+#' @examples
+#' df = pl$DataFrame(list(a = 1:3, b = 1:3))
+#' df$with_columns(
+#'   pl$col("a")$cast(pl$dtypes$Float64, TRUE),
+#'   pl$col("a")$cast(pl$dtypes$Int32, TRUE)
+#' )
+Expr_cast = function(dtype, strict = TRUE) {
+  .pr$Expr$cast(self, dtype, strict)
+}
+
+
 
 

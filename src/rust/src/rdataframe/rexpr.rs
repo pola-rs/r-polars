@@ -174,6 +174,16 @@ impl Expr {
             .into()
     }
 
+    pub fn cast(&self, data_type: &DataType, strict: bool) -> Self {
+        let dt = data_type.0.clone();
+        if strict {
+            self.0.clone().strict_cast(dt)
+        } else {
+            self.0.clone().cast(dt)
+        }
+        .into()
+    }
+
     //in order
 
     pub fn alias(&self, s: &str) -> Self {

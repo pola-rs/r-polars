@@ -209,11 +209,9 @@ test_that("col DataType + col(s) + col regex", {
   )
 
   #multiple
-  iris_str = iris
-  iris_str$Species = as.character(iris$Species)
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(list(pl$dtypes$Float64,pl$dtypes$Utf8)))$as_data_frame(),
-    iris_str
+    pl$DataFrame(iris)$select(pl$col(list(pl$Float64,pl$Categorical)))$as_data_frame(),
+    iris
   )
 
   #multiple cols
@@ -234,8 +232,6 @@ test_that("col DataType + col(s) + col regex", {
   expect_warning(
     pl$col(c("^Sepal.*$","Species"))
   )
-
-  pl$DataFrame(iris)$select(    pl$col(c("^Sepal.*$","Species")))$as_data_frame()
 
 })
 
