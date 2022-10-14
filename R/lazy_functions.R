@@ -3,7 +3,7 @@
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
 #'
-#' @keywords  Expr
+#' @keywords Expr_new
 #'
 #' @return Boolean literal
 #'
@@ -37,7 +37,7 @@ pl$all = function(name=NULL) {
 #'
 #' @return Column Exprression
 #'
-#' @keywords  Expr
+#' @keywords Expr_new
 #' @examples
 #'
 #' df = pl$DataFrame(list(foo=1, bar=2L,foobar="3"))
@@ -60,6 +60,9 @@ pl$all = function(name=NULL) {
 #'
 #' # ... or an R list of DataTypes, select any column of any such DataType
 #' df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
+#'
+#' # from Series of names
+#' df$select(pl$col(pl$Series(c("bar","foobar"))))
 pl$col = function(name) {
 
   #preconvert Series into char name(s)

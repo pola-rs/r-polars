@@ -3,7 +3,7 @@
 \name{lazy_csv_reader}
 \alias{lazy_csv_reader}
 \alias{csv_reader}
-\title{Read csv lazily}
+\title{new LazyFrame from csv}
 \usage{
 lazy_csv_reader(
   path,
@@ -94,9 +94,7 @@ lazyframe
 DataFrame
 }
 \description{
-Read csv lazily
-
-Read csv to DataFrame
+will scan the csv when collect(), not now
 }
 \details{
 Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
@@ -106,3 +104,4 @@ write.csv(iris,"my.csv")
 lazy_frame = minipolars:::lazy_csv_reader(path="my.csv")
 lazyframe$collect()
 }
+\keyword{LazyFrame_new}

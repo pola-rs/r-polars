@@ -3,8 +3,9 @@
 
 
 
-#' Read csv lazily
-#'
+#' new LazyFrame from csv
+#' @description will scan the csv when collect(), not now
+#' @keywords LazyFrame_new
 #' @param path string, Path to a file
 #' @param sep Single char to use as delimiter in the file.
 #' @param has_header bool, indicate if the first row of dataset is a header or not.

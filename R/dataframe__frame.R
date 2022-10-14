@@ -429,7 +429,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #'
 #' @return a LazyFrame
 #' @aliases lazy
-#' @keywords  DataFrame
+#' @keywords  DataFrame LazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
 #'

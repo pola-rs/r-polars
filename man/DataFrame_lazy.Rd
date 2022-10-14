@@ -24,3 +24,4 @@ pl$DataFrame(iris)$lazy()
 pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
 }
 \keyword{DataFrame}
+\keyword{LazyFrame_new}

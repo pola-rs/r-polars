@@ -10,9 +10,11 @@ reference:
       - has_keyword("DataFrame")
   - subtitle: LazyFrame
     contents:
+      - has_keyword("LazyFrame_new")
       - has_keyword("LazyFrame")
   - subtitle: Expr
     contents:
+      - has_keyword("Expr_new")
       - has_keyword("Expr")
   - title: everything else
     contents:

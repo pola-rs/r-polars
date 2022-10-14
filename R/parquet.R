@@ -1,3 +1,19 @@
+#' new LazyFrame from parquet file
+#' @keywords LazyFrame_new
+#'
+#' @param file
+#' @param n_rows
+#' @param cache
+#' @param parallel
+#' @param rechunk
+#' @param row_count_name
+#' @param row_count_offset
+#' @param low_memory
+#'
+#' @return
+#' @export
+#'
+#' @examples
 scan_parquet = function(
   file,#: str | Path,
   n_rows = NULL,#: int | None = None,

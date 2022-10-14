@@ -16,4 +16,4 @@ to "all-columns" and is an expression constructor
 \examples{
 pl$DataFrame(list(all=c(TRUE,TRUE),some=c(TRUE,FALSE)))$select(pl$all()$all())
 }
-\keyword{Expr}
+\keyword{Expr_new}
