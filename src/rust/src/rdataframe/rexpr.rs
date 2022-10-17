@@ -1,5 +1,5 @@
 use super::DataFrame;
-use crate::rdatatype::{dtv_to_vec, DataType, DataTypeVector};
+use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
@@ -41,7 +41,7 @@ impl Expr {
 
     //via col
     pub fn dtype_cols(dtypes: &DataTypeVector) -> Self {
-        dsl::dtype_cols(dtv_to_vec(dtypes)).into()
+        dsl::dtype_cols(dtypes.dtv_to_vec()).into()
     }
 
     //via col
@@ -204,7 +204,13 @@ impl Expr {
         self.0.clone().exp().into()
     }
 
-    //in order
+    pub fn exclude(&self, columns: Vec<String>) -> Self {
+        self.0.clone().exclude(columns).into()
+    }
+
+    pub fn exclude_dtype(&self, columns: &DataTypeVector) -> Self {
+        self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
+    }
 
     pub fn alias(&self, s: &str) -> Self {
         self.0.clone().alias(s).into()
@@ -440,15 +446,6 @@ impl ProtoExprArray {
     pub fn print(&self) {
         rprintln!("{:#?}", self);
     }
-
-    pub fn add_context(&self, context: &str) -> RexprArray {
-        RexprArray(
-            self.0
-                .iter()
-                .map(|re| re.to_rexpr(context))
-                .collect::<Vec<Expr>>(),
-        )
-    }
 }
 
 //external function as extendr-api do not allow methods returning unwrapped structs
@@ -456,20 +453,9 @@ pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }
 
-#[derive(Clone, Debug)]
-#[extendr]
-pub struct RexprArray(pub Vec<Expr>);
-
-#[extendr]
-impl RexprArray {
-    fn print(&self) {
-        rprintln!("{:#?}", self);
-    }
-}
-
 extendr_module! {
     mod rexpr;
     impl Expr;
     impl ProtoExprArray;
-    impl RexprArray;
+
 }

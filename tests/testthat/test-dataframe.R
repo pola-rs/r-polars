@@ -271,11 +271,11 @@ test_that("get coloumn(s)", {
   # }
 
 
-  list_of_vectors = lapply(actual_list_of_series, function(x) x$to_r_vector())
-  expect_identical(
-    list_of_vectors,
-    as.list(iris)
-  )
+  # list_of_vectors = lapply(actual_list_of_series, function(x) x$to_r_vector())
+  # expect_identical(
+  #   list_of_vectors,
+  #   as.list(iris)
+  # )
 
 })
 

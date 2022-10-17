@@ -36,9 +36,11 @@ extendr_method_to_pure_functions = function(env) {
 .pr$LazyFrame  = extendr_method_to_pure_functions(minipolars:::LazyFrame)
 .pr$LazyGroupBy= extendr_method_to_pure_functions(minipolars:::LazyGroupBy)
 .pr$DataType   = extendr_method_to_pure_functions(minipolars:::DataType)
+.pr$DataTypeVector = extendr_method_to_pure_functions(minipolars:::DataTypeVector)
 .pr$Expr       = extendr_method_to_pure_functions(minipolars:::Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(minipolars:::ProtoExprArray)
 .pr$VecDataFrame = extendr_method_to_pure_functions(minipolars:::VecDataFrame)
+.pr$RNullValues = extendr_method_to_pure_functions(minipolars:::RNullValues)
 #TODO remove export
 
 

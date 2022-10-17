@@ -934,3 +934,54 @@ Expr_log10  = "use_extendr_wrapper"
 #'   exp(1)^log10123
 #' )
 Expr_exp  = "use_extendr_wrapper"
+
+
+#' Exclude certain columns from a wildcard/regex selection.
+#' @description You may also use regexes in the exclude list. They must start with `^` and end with `$`.
+#' @param columns given param type:
+#'  - string: exclude name of column or exclude regex starting with ^and ending with$
+#'  - character vector: exclude all these column names, no regex allowed
+#'  - DataType: Exclude any of this DataType
+#'  - List(DataType): Excldue any of these DataType(s)
+#'
+#' @keywords Expr
+#' @return Expr
+#' @aliases exclude
+#' @name Expr_exclude
+#' @examples
+#'
+#'  #make DataFrame
+#'  df = pl$DataFrame(iris)
+#'
+#'  #by name(s)
+#'  df$select(pl$all()$exclude("Species"))
+#'
+#'  #by type
+#'  df$select(pl$all()$exclude(pl$Categorical))
+#'  df$select(pl$all()$exclude(list(pl$Categorical,pl$Float64)))
+#'
+#'  #by regex
+#'  df$select(pl$all()$exclude("^Sepal.*$"))
+#'
+#'
+Expr_exclude  = function(columns) {
+
+  #handle lists
+  if(is.list(columns)) {
+    columns = pcase(
+      all(sapply(columns,inherits,"DataType")), unwrap(.pr$DataTypeVector$from_rlist(columns)),
+      all(sapply(columns,is_string)), unlist(columns),
+      or_else = unwrap(list(err=  paste0("only lists of pure DataType or String")))
+    )
+  }
+
+  #dispatch exclude call on types
+  pcase(
+    is.character(columns), .pr$Expr$exclude(self, columns),
+    inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self,columns),
+    inherits(columns, "DataType"), .pr$Expr$exclude_dtype(self,unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
+    or_else = unwrap(list(err=  paste0("this type is not supported for Expr_exclude: ", columns)))
+  )
+
+}
+

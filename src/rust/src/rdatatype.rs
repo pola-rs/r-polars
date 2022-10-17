@@ -1,3 +1,4 @@
+use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
@@ -76,11 +77,33 @@ impl DataTypeVector {
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
     }
+
+    pub fn from_rlist(list: List) -> List {
+        let mut dtv = DataTypeVector(Vec::with_capacity(list.len()));
+
+        let result: std::result::Result<(), String> = list
+            .iter()
+            .map(|(name, robj)| -> std::result::Result<(), String> {
+                if !robj.inherits("DataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr {
+                    return Err("Internal error: Object is not a DataType".into());
+                }
+                //safety checks class and type before conversion
+                let dt: DataType = unsafe { &mut *robj.external_ptr_addr::<DataType>() }.clone();
+                let name = extendr_api::Nullable::NotNull(name.to_string());
+                dtv.push(name, &dt);
+                Ok(())
+            })
+            .collect();
+
+        r_result_list(result.map(|_| dtv))
+    }
 }
 
-pub fn dtv_to_vec(dtv: &DataTypeVector) -> Vec<pl::DataType> {
-    let v: Vec<_> = dtv.0.iter().map(|(_, dt)| dt.clone()).collect();
-    v
+impl DataTypeVector {
+    pub fn dtv_to_vec(&self) -> Vec<pl::DataType> {
+        let v: Vec<_> = self.0.iter().map(|(_, dt)| dt.clone()).collect();
+        v
+    }
 }
 
 pub fn new_join_type(s: &str) -> pl::JoinType {

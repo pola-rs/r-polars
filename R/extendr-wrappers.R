@@ -118,6 +118,10 @@ Expr$log <- function(base) .Call(wrap__Expr__log, self, base)
 
 Expr$exp <- function() .Call(wrap__Expr__exp, self)
 
+Expr$exclude <- function(columns) .Call(wrap__Expr__exclude, self, columns)
+
+Expr$exclude_dtype <- function(columns) .Call(wrap__Expr__exclude_dtype, self, columns)
+
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
@@ -202,23 +206,11 @@ ProtoExprArray$push_back_rexpr <- function(r) invisible(.Call(wrap__ProtoExprArr
 
 ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, self))
 
-ProtoExprArray$add_context <- function(context) .Call(wrap__ProtoExprArray__add_context, self, context)
-
 #' @export
 `$.ProtoExprArray` <- function (self, name) { func <- ProtoExprArray[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
-
-RexprArray <- new.env(parent = emptyenv())
-
-RexprArray$print <- function() invisible(.Call(wrap__RexprArray__print, self))
-
-#' @export
-`$.RexprArray` <- function (self, name) { func <- RexprArray[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RexprArray` <- `$.RexprArray`
 
 Series <- new.env(parent = emptyenv())
 
@@ -341,6 +333,8 @@ DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
 DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
 
 DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
+
+DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
 
 #' @export
 `$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }

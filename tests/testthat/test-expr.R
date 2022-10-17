@@ -453,3 +453,61 @@ test_that("pow, rpow, sqrt, log10", {
 
 
 })
+
+
+test_that("exclude" , {
+
+  #string column name
+  df = pl$DataFrame(iris)
+  expect_identical(
+    df$select(pl$all()$exclude("Species"))$columns,
+    c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
+  )
+
+  #string regex
+  expect_identical(
+    df$select( pl$all()$exclude("^Sepal.*$"))$columns,
+    c("Petal.Length", "Petal.Width", "Species")
+  )
+
+  #char vec
+  expect_identical(
+   df$select(pl$all()$exclude(c("Species","Petal.Width")))$columns,
+   c("Sepal.Length", "Sepal.Width", "Petal.Length")
+  )
+
+  #char list
+  expect_identical(
+    df$select(pl$all()$exclude(list("Species","Petal.Width")))$columns,
+    c("Sepal.Length", "Sepal.Width", "Petal.Length")
+  )
+  expect_error(
+    df$select(pl$all()$exclude(list("Species",pl$Boolean)))$columns
+  )
+
+
+  #single DataType
+  expect_identical(
+    df$select(pl$all()$exclude(pl$Categorical))$columns,
+    names(iris)[1:4]
+  )
+  expect_identical(
+    df$select(pl$all()$exclude(pl$Float64))$columns,
+    names(iris)[5]
+  )
+
+  #list DataType
+  expect_identical(
+    df$select(pl$all()$exclude(list(pl$Float64,pl$Categorical)))$columns,
+    names(iris)[c()]
+  )
+
+  #wrong cast is not possible
+  expect_error(
+    unwrap(.pr$DataTypeVector$from_rlist(list(pl$Float64,pl$Categorical,"imNoYourType")))
+  )
+  expect_error(
+    df$select(pl$all()$exclude(list(pl$Float64,pl$Categorical,"bob")))$columns
+  )
+
+})
