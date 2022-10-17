@@ -80,7 +80,7 @@ pub fn rlazy_csv_reader(
             if let Some(sname) = name {
                 pl::Field::new(sname, dtype.clone())
             } else {
-                todo!("missing column name for  dtype not implented");
+                todo!("missing column name for  dtype not implemented");
             }
         });
         pl::Schema::from(fields)

@@ -86,7 +86,7 @@ lazy_csv_reader = function(
   #overwrite_dtype: convert named list of DataType's to DataTypeVector obj
   if(!is.null(args$overwrite_dtype)) {
     owdtype = args$overwrite_dtype
-    ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
+
     if( !is.list(owdtype) || !rlang::is_named(owdtype)) {
       abort("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
