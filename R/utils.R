@@ -351,13 +351,11 @@ get_method_usages = function(env,pattern="") {
   suggestions
 }
 
-#' print an environment
+#' print recursively an environment, used in some documentation
 #'
 #' @param api env
 #' @param name  name of env
 #'
-#'
-#' @examples
 print_env =  function(api,name,max_depth=10) {
   indent_count = 1
   indentation = paste0(rep("  ",indent_count))

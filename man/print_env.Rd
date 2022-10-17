@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{print_env}
 \alias{print_env}
-\title{print an environment}
+\title{print recursively an environment, used in some documentation}
 \usage{
 print_env(api, name, max_depth = 10)
 }
@@ -12,5 +12,5 @@ print_env(api, name, max_depth = 10)
 \item{name}{name of env}
 }
 \description{
-print an environment
+print recursively an environment, used in some documentation
 }
