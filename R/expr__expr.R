@@ -839,3 +839,98 @@ Expr_cast = function(dtype, strict = TRUE) {
 
 
 
+#' Exponentiation `^` or `**`
+#' @description Raise expression to the power of exponent.
+#' @keywords Expr
+#' @param base real value of base
+#' @return Expr
+#' @name Expr_pow
+#' @aliases pow
+#' @examples
+#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ (pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+Expr_pow = function(exponent) {
+  if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
+  .pr$Expr$pow(self,exponent)
+}
+#' @export
+"^.Expr" <- function(e1,e2) e1$pow(e2)
+
+
+#' Reverse exponentiation `%**%`(in R `** == ^`)
+#' @description Raise a base to the power of the expression as exponent.
+#' @keywords Expr
+#' @param base real or Expr, the value of the base, self is the exponent
+#' @return Expr
+#' @name Expr_rpow
+#' @details  do not use `**`, R secretly parses that just as if it was a `^`
+#' @aliases rpow %**%
+#' @examples
+#' pl$DataFrame(list(a = -1:3))$select(
+#'   pl$lit(2)$rpow(pl$col("a"))
+#')$get_column("a")$to_r() ==  (-1:3)^2
+#'
+#' pl$DataFrame(list(a = -1:3))$select(
+#'   pl$lit(2) %**% (pl$col("a"))
+#' )$get_column("a")$to_r() ==  (-1:3)^2
+Expr_rpow = function(base) {
+  if(!inherits(base,"Expr")) base = pl$lit(base)
+  expr = .pr$Expr$pow(base,self)
+
+}
+#' @export
+"%**%" = function(lhs,rhs) rhs^lhs #some default method of what reverse exponentiation is (as python ** operator)
+#' @export
+"%**%.Expr" <- function(e1,e2) e1$rpow(e2)
+
+
+#' Square root
+#' @description  Compute the square root of the elements.
+#' @keywords Expr
+#' @return Expr
+#' @aliases sqrt
+#' @name Expr_sqrt
+#' @examples
+#' pl$DataFrame(list(a = -1:3))$select(pl$col("a")$sqrt())
+Expr_sqrt = function() {
+  self$pow(0.5)
+}
+
+
+#' Natural Log
+#' @description  Compute the base x logarithm of the input array, element-wise.
+#' @keywords Expr
+#' @return Expr
+#' @aliases log
+#' @name Expr_log
+#' @examples
+#' pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
+Expr_log  = function(base = base::exp(1)) {
+  .pr$Expr$log(self, base)
+}
+
+#' 10-base log
+#' @description Compute the base 10 logarithm of the input array, element-wise.
+#' @keywords Expr
+#' @return Expr
+#' @aliases log10
+#' @name Expr_log10
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
+Expr_log10  = "use_extendr_wrapper"
+
+
+#' Compute the exponential, element-wise.
+#' @keywords Expr
+#' @return Expr
+#' @aliases exp
+#' @name Expr_exp
+#' @format a method
+#' @examples
+#' log10123 = suppressWarnings(log(-1:3))
+#' all.equal(
+#'   pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$as_data_frame()$a,
+#'   exp(1)^log10123
+#' )
+Expr_exp  = "use_extendr_wrapper"
