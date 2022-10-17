@@ -24,6 +24,18 @@ impl DataType {
         DataType(pl_datatype)
     }
 
+    pub fn get_all_type_names() -> Vec<String> {
+        vec![
+            "Boolean".into(),
+            "Float32".into(),
+            "Float64".into(),
+            "Int32".into(),
+            "Int64".into(),
+            "Utf8".into(),
+            "Categorical".into(),
+        ]
+    }
+
     pub fn print(&self) {
         rprintln!("{:#?}", self.0);
     }

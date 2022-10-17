@@ -312,6 +312,8 @@ DataType <- new.env(parent = emptyenv())
 
 DataType$new <- function(s) .Call(wrap__DataType__new, s)
 
+DataType$get_all_type_names <- function() .Call(wrap__DataType__get_all_type_names)
+
 DataType$print <- function() invisible(.Call(wrap__DataType__print, self))
 
 DataType$eq <- function(other) .Call(wrap__DataType__eq, self, other)

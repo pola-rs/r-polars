@@ -106,14 +106,13 @@ pl$concat = minipolars:::concat
 
 #TODO simplify maybe datatype should not be generated from strings
 .onLoad <- function(libname, pkgname){
-  pl$dtypes = list(
-    Categorical = DataType$new("Categorical"),
-    Float64 = DataType$new("Float64"),
-    Float32 = DataType$new("Float32"),
-    Int64 = DataType$new("Int64"),
-    Int32 = DataType$new("Int32"),
-    Boolean = DataType$new("Boolean"),
-    Utf8 = DataType$new("Utf8")
+
+  #instanciate one of each DataType (it's just an enum)
+  all_types = .pr$DataType$get_all_type_names()
+  names(all_types) = all_types
+  pl$dtypes = lapply(
+    all_types,
+    .pr$DataType$new
   )
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
