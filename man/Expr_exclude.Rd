@@ -32,6 +32,7 @@ You may also use regexes in the exclude list. They must start with \code{^} and 
 
  #by type
  df$select(pl$all()$exclude(pl$Categorical))
+ df$select(pl$all()$exclude(list(pl$Categorical,pl$Float64)))
 
  #by regex
  df$select(pl$all()$exclude("^Sepal.*$"))

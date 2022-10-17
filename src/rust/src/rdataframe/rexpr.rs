@@ -212,6 +212,10 @@ impl Expr {
         self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
     }
 
+    pub fn keep_name(&self) -> Self {
+        self.0.clone().keep_name().into()
+    }
+
     pub fn alias(&self, s: &str) -> Self {
         self.0.clone().alias(s).into()
     }

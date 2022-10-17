@@ -122,6 +122,8 @@ Expr$exclude <- function(columns) .Call(wrap__Expr__exclude, self, columns)
 
 Expr$exclude_dtype <- function(columns) .Call(wrap__Expr__exclude_dtype, self, columns)
 
+Expr$keep_name <- function() .Call(wrap__Expr__keep_name, self)
+
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)

@@ -985,3 +985,16 @@ Expr_exclude  = function(columns) {
 
 }
 
+
+#TODO contribute pypolars keep_name example does not showcase an example where the name changes
+#' Keep the original root name of the expression.
+#'
+#' @keywords Expr
+#' @return Expr
+#' @aliases keep_name
+#' @name Expr_keep_name
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(alice=1:3))$select(pl$col("a")$alias("bob")$keep_name())
+Expr_keep_name = "use_extendr_wrapper"
+

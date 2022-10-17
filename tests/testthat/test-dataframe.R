@@ -277,6 +277,8 @@ test_that("get coloumn(s)", {
   #   as.list(iris)
   # )
 
+  expect_equal(2+2,4)
+
 })
 
 

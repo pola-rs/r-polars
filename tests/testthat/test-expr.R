@@ -511,3 +511,15 @@ test_that("exclude" , {
   )
 
 })
+
+test_that("keep_name" , {
+  expect_identical(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$alias("bob")$keep_name(),
+      pl$col("alice")$alias("bob")
+    )$columns,
+    c("alice","bob")
+
+  )
+
+})
