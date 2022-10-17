@@ -352,3 +352,64 @@ test_that("and or is_in xor", {
 
 
 })
+
+
+test_that("to_physical + cast", {
+
+  #to_physical and some casting
+  df  = pl$DataFrame(
+    list(vals = c("a", "x", NA, "a"))
+  )$with_columns(
+    pl$col("vals")$cast(pl$Categorical),
+    pl$col("vals")
+      $cast(pl$Categorical)
+      $to_physical()
+      $alias("vals_physical")
+  )
+
+  expect_identical(
+    df$as_data_frame(),
+    data.frame(
+      vals = factor(c("a","x",NA_character_,"a")),
+      vals_physical = c(0:1,NA_real_,0) #u32 casted to real to preserve full range
+    )
+  )
+  df
+
+
+  #cast error raised for Utf8 to Boolean
+  expect_error(
+    pl$DataFrame(iris)$with_columns(
+      pl$col("Species")$cast(pl$dtypes$Utf8)$cast(pl$dtypes$Boolean)
+    )
+  )
+
+
+  #down cast big number
+  df_big_n = pl$DataFrame(list(big = 2^50))$with_columns(pl$col("big")$cast(pl$Int64))
+
+
+  #error overflow, strict TRUE
+  expect_error(df_big_n$with_columns(pl$col("big")$cast(pl$Int32))  )
+
+  #NA_int for strict_
+  expect_identical(
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE))$as_data_frame()$big,
+    NA_integer_
+  )
+
+  #strict = FALSE yield NULL for overflow
+  expect_identical(
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE)$is_null())$as_data_frame()$big,
+    TRUE
+  )
+
+  #no overflow to Int64
+  expect_identical(
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int64)$is_null())$as_data_frame()$big,
+    FALSE
+  )
+
+
+
+})
