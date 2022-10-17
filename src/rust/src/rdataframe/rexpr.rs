@@ -184,6 +184,26 @@ impl Expr {
         .into()
     }
 
+    pub fn pow(&self, exponent: &Expr) -> Self {
+        self.0.clone().pow(exponent.0.clone()).into()
+    }
+
+    pub fn log10(&self) -> Self {
+        self.0.clone().log(10.0).into()
+    }
+
+    // TODO contribute to polars
+    // log/exp only takes float, whereas pow takes Into<Expr>
+    // log takes a base value, whereas exp only is natural log
+
+    pub fn log(&self, base: f64) -> Self {
+        self.0.clone().log(base).into()
+    }
+
+    pub fn exp(&self) -> Self {
+        self.0.clone().exp().into()
+    }
+
     //in order
 
     pub fn alias(&self, s: &str) -> Self {

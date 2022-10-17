@@ -110,6 +110,14 @@ Expr$to_physical <- function() .Call(wrap__Expr__to_physical, self)
 
 Expr$cast <- function(data_type, strict) .Call(wrap__Expr__cast, self, data_type, strict)
 
+Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
+
+Expr$log10 <- function() .Call(wrap__Expr__log10, self)
+
+Expr$log <- function(base) .Call(wrap__Expr__log, self, base)
+
+Expr$exp <- function() .Call(wrap__Expr__exp, self)
+
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)

@@ -413,3 +413,43 @@ test_that("to_physical + cast", {
 
 
 })
+
+
+test_that("pow, rpow, sqrt, log10", {
+
+
+  #pow
+  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
+  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ pl$col("a") )$get_column("literal")$to_r(), 2^(-1:3))
+
+  #rpow
+  expect_identical( pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$rpow(pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
+  expect_identical( pl$DataFrame(list(a = -1:3))$select(pl$lit(2) %**% (pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
+
+
+  #sqrt
+  expect_identical(
+    pl$DataFrame(list(a = -1:3))$select(pl$col("a")$sqrt())$get_column("a")$to_r(),
+    suppressWarnings(sqrt(-1:3))
+  )
+
+  #log10
+  expect_equal(
+    pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())$as_data_frame()$a,
+    -1:3
+  )
+
+  #log
+  expect_equal(pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$as_data_frame()$a,-1:3)
+  expect_equal(pl$DataFrame(list(a = .42^(-1:3)))$select(pl$col("a")$log(0.42))$as_data_frame()$a,-1:3)
+
+  #exp
+  log10123 = suppressWarnings(log(-1:3))
+  expect_equal(
+    pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$as_data_frame()$a,
+    exp(1)^log10123
+  )
+
+
+
+})
