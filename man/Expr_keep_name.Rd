@@ -4,20 +4,27 @@
 \name{Expr_keep_name}
 \alias{Expr_keep_name}
 \alias{keep_name}
+\alias{Expr_map_alias}
+\alias{map_alias}
 \title{Keep the original root name of the expression.}
 \format{
 a method
 }
 \usage{
 Expr_keep_name
+
+Expr_map_alias(fun)
 }
 \value{
 Expr
+
+Expr
 }
 \description{
-Keep the original root name of the expression.
+Rename the output of an expression by mapping a function over the root name.
 }
 \examples{
-pl$DataFrame(list(alice=1:3))$select(pl$col("a")$alias("bob")$keep_name())
+pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
+pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
 }
 \keyword{Expr}
