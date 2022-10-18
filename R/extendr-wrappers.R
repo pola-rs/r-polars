@@ -178,7 +178,7 @@ Expr$mul <- function(other) .Call(wrap__Expr__mul, self, other)
 
 Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 
-Expr$not <- function() .Call(wrap__Expr__not, self)
+Expr$is_not <- function() .Call(wrap__Expr__is_not, self)
 
 Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 

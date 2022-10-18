@@ -14,27 +14,27 @@ test_that("expression boolean operators", {
 
   cmp_operators_df = pl$DataFrame(list())$with_columns(
     (pl$lit(1)<2)$alias("1 lt 2"),
-    (pl$lit(1)<1)$alias("1 lt 1 not")$not(),
+    (pl$lit(1)<1)$alias("1 lt 1 not")$is_not(),
 
     (pl$lit(2)>1)$alias("2 gt 1"),
-    (pl$lit(1)>1)$alias("1 gt 1 not")$not(),
+    (pl$lit(1)>1)$alias("1 gt 1 not")$is_not(),
 
     (pl$lit(1)==1)$alias("1 eq 1"),
-    (pl$lit(1)==2)$alias("1 eq 2 not")$not(),
+    (pl$lit(1)==2)$alias("1 eq 2 not")$is_not(),
 
     (pl$lit(1)<=1)$alias("1 lt_eq 1"),
-    (pl$lit(2)<=1)$alias("2 lt_eq 1 not")$not()$not(), #TODO extra not when polars rust > 24.3
+    (pl$lit(2)<=1)$alias("2 lt_eq 1 not")$is_not()$is_not(), #TODO extra not when polars rust > 24.3
 
     (pl$lit(2)>=2)$alias("2 gt_eq 2"),
-    (pl$lit(1)>=2)$alias("1 gt_eq 2 not")$not(),
+    (pl$lit(1)>=2)$alias("1 gt_eq 2 not")$is_not(),
 
     (pl$lit(2)!=1)$alias("2 not eq 1"),
-    (pl$lit(2)!=2)$alias("2 not eq 1 not")$not(),
+    (pl$lit(2)!=2)$alias("2 not eq 1 not")$is_not(),
 
-    pl$lit(TRUE)$not() == pl$lit(FALSE)$alias("not true == false"),
+    pl$lit(TRUE)$is_not() == pl$lit(FALSE)$alias("not true == false"),
     pl$lit(TRUE) != pl$lit(FALSE)$alias("true != false"),
 
-    (pl$lit(TRUE)$not() == FALSE)$alias("not true == false wrap"),
+    (pl$lit(TRUE)$is_not() == FALSE)$alias("not true == false wrap"),
     (pl$lit(TRUE) != FALSE)$alias("true != false wrap")
   )
 
@@ -163,7 +163,7 @@ test_that("is_null", {
 
   expect_equal(
     df$with_columns(pl$all()$is_not_null()$suffix("_isnull"))$as_data_frame(),
-    df$with_columns(pl$all()$is_null()$not()$suffix("_isnull"))$as_data_frame()
+    df$with_columns(pl$all()$is_null()$is_not()$suffix("_isnull"))$as_data_frame()
   )
 
 })
@@ -344,8 +344,8 @@ test_that("and or is_in xor", {
       pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
 
       #neither typed nor untyped NULL is IN NULL
-      pl$lit(NA_real_)$is_in(pl$lit(NULL))$not()$alias("NULL typed is in NULL, NOT"),
-      pl$lit(NULL)$is_in(pl$lit(NULL))$not()$alias("NULL is in NULL, NOY")
+      pl$lit(NA_real_)$is_in(pl$lit(NULL))$is_not()$alias("NULL typed is in NULL, NOT"),
+      pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
     )$as_data_frame() |> unlist() |> all()
   )
 

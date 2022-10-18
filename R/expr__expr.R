@@ -131,11 +131,11 @@ Expr_mul = "use_extendr_wrapper"
 #' @return Exprs
 #' @examples
 #' #two syntaxes same result
-#' pl$lit(TRUE)$not()
+#' pl$lit(TRUE)$is_not()
 #' !pl$lit(TRUE)
-Expr_not = "use_extendr_wrapper"
+Expr_is_not = "use_extendr_wrapper"
 #' @export
-"!.Expr" <- function(e1,e2) e1$not()
+"!.Expr" <- function(e1,e2) e1$is_not()
 
 #' Less Than <
 #' @description lt method and operator

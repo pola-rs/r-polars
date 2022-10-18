@@ -328,7 +328,7 @@ impl Expr {
     }
 
     //unary
-    pub fn not(&self) -> Self {
+    pub fn is_not(&self) -> Self {
         self.0.clone().not().into()
     }
 
