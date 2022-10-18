@@ -283,6 +283,14 @@ impl Expr {
         self.0.clone().round(decimals).into()
     }
 
+    pub fn dot(&self, other: &Expr) -> Self {
+        self.0.clone().dot(other.0.clone()).into()
+    }
+
+    pub fn mode(&self) -> Self {
+        self.0.clone().mode().into()
+    }
+
     pub fn min(&self) -> Self {
         self.0.clone().min().into()
     }

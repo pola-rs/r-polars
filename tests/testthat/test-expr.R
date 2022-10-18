@@ -739,3 +739,42 @@ test_that("floor ceil round", {
 
 
 })
+
+test_that("mode", {
+
+ df = pl$DataFrame(list(
+   a=1:6,
+   b = c(1L,1L,3L,3L,5L,6L),
+   c = c(1L,1L,2L,2L,3L,3L),
+   d = c(NA,NA,NA,"b","b","b"))
+ )
+ expect_identical( sort(df$select(pl$col("a")$mode())$to_list()$a),1:6)
+ expect_identical( sort(df$select(pl$col("b")$mode())$to_list()$b),c(1L,3L))
+ expect_identical( sort(df$select(pl$col("c")$mode())$to_list()$c),c(1L,2L,3L))
+ expect_identical( sort(df$select(pl$col("d")$mode())$to_list()$d,na.last =TRUE),c("b",NA))
+
+})
+
+#TODO contribute rust, Null does not carry in dot products, NaN do.
+test_that("dot", {
+
+  l = list(a=1:4,b=c(1,2,3,5),c=c(NA_real_,1:3),d=c(6:8,NaN))
+  actual_list = pl$DataFrame(l)$select(
+    pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
+    pl$col("a")$dot(pl$col("a"))$alias("a dot a"),
+    pl$col("a")$dot(pl$col("c"))$alias("a dot c"),
+    pl$col("a")$dot(pl$col("d"))$alias("a dot d")
+  )$to_list()
+
+  expected_list = list(
+    `a dot b` = (l$a %*% l$b)[1],
+    `a dot a` = as.integer((l$a %*% l$a)[1]),
+    `a dot c` = 20, # polars do not carry NA ((l$a %*% l$c)[1]),
+    `a dot d` = ((l$a %*% l$d)[1])
+  )
+
+  expect_identical(
+    actual_list,
+    expected_list
+  )
+})

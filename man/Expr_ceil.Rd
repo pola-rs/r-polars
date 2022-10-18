@@ -11,9 +11,6 @@ a method
 \usage{
 Expr_ceil
 }
-\arguments{
-\item{reverse}{bool, default FALSE, if true roll over vector from back to forth}
-}
 \value{
 Expr
 }

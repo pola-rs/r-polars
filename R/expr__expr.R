@@ -1270,7 +1270,6 @@ Expr_cumcount = function(reverse = FALSE) {
 #' @return Expr
 #' @aliases floor
 #' @name Expr_floor
-#' @details
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(
@@ -1284,12 +1283,9 @@ Expr_floor = "use_extendr_wrapper"
 #' @description Rounds up to the nearest integer value.
 #' Only works on floating point Series.
 #' @keywords Expr
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases ceil
 #' @name Expr_ceil
-#' @details
-
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(
@@ -1306,7 +1302,6 @@ Expr_ceil = "use_extendr_wrapper"
 #' @return Expr
 #' @aliases round
 #' @name Expr_round
-#'
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(
@@ -1315,3 +1310,40 @@ Expr_ceil = "use_extendr_wrapper"
 #'   pl$col("a")$round(0)
 #' )
 Expr_round = "use_extendr_wrapper"
+
+
+#TODO contribute polars, dot product unwraps wrong datatypes
+#' Dot product
+#' @description Compute the dot/inner product between two Expressions.
+#' @keywords Expr
+#' @param other  Exprto compute dot product with.
+#' @return Expr
+#' @aliases dot
+#' @name Expr_dot
+#' @format a method
+#' @examples
+#' l = list(a=1:4,b=c(1,2,3,5),c=c(NA_real_,1:3),d=c(6:8,NaN))
+#' pl$DataFrame(l)$select(
+#'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
+#'   pl$col("a")$dot(pl$col("a"))$alias("a dot a"),
+#'   pl$col("a")$dot(pl$col("c"))$alias("a dot c"),
+#'   pl$col("a")$dot(pl$col("d"))$alias("a dot d")
+#' )
+Expr_dot = function(other) {
+  .pr$Expr$dot(self,wrap_e(other))
+}
+
+
+#' Mode
+#' @description Compute the most occurring value(s). Can return multiple Values.
+#' @keywords Expr
+#' @return Expr
+#' @aliases mode
+#' @name Expr_mode
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(a=1:6,b = c(1L,1L,3L,3L,5L,6L), c = c(1L,1L,2L,2L,3L,3L)))
+#' df$select(pl$col("a")$mode())
+#' df$select(pl$col("b")$mode())
+#' df$select(pl$col("c")$mode())
+Expr_mode = "use_extendr_wrapper"

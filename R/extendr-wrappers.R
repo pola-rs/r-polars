@@ -158,6 +158,10 @@ Expr$ceil <- function() .Call(wrap__Expr__ceil, self)
 
 Expr$round <- function(decimals) .Call(wrap__Expr__round, self, decimals)
 
+Expr$dot <- function(other) .Call(wrap__Expr__dot, self, other)
+
+Expr$mode <- function() .Call(wrap__Expr__mode, self)
+
 Expr$min <- function() .Call(wrap__Expr__min, self)
 
 Expr$max <- function() .Call(wrap__Expr__max, self)
