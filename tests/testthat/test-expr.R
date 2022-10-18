@@ -710,3 +710,32 @@ test_that("cumsum cumprod cummin cummax cumcount", {
 
 
 })
+
+
+test_that("floor ceil round", {
+  l_input = list(
+    a = c(0.33, 1.02, 1.5, NaN , NA, Inf, -Inf)
+  )
+
+  l_actual = pl$DataFrame(l_input)$select(
+    pl$col("a")$floor()$alias("floor"),
+    pl$col("a")$ceil()$alias("ceil"),
+    pl$col("a")$round(0)$alias("round")
+  )$to_list()
+
+  l_expected = list(
+    floor = floor(l_input$a),
+    ceil  = ceiling(l_input$a),
+    round = round(l_input$a)
+  )
+
+  expect_identical(
+    l_actual,
+    l_expected
+  )
+
+  #NOTICE R uses ROUND to even on most OS according to help(round)
+  round(0.5) == 0
+
+
+})

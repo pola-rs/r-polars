@@ -152,6 +152,12 @@ Expr$cummax <- function(reverse) .Call(wrap__Expr__cummax, self, reverse)
 
 Expr$cumcount <- function(reverse) .Call(wrap__Expr__cumcount, self, reverse)
 
+Expr$floor <- function() .Call(wrap__Expr__floor, self)
+
+Expr$ceil <- function() .Call(wrap__Expr__ceil, self)
+
+Expr$round <- function(decimals) .Call(wrap__Expr__round, self, decimals)
+
 Expr$min <- function() .Call(wrap__Expr__min, self)
 
 Expr$max <- function() .Call(wrap__Expr__max, self)

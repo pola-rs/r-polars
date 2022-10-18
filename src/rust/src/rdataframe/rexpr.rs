@@ -271,6 +271,18 @@ impl Expr {
         self.0.clone().cumcount(reverse).into()
     }
 
+    pub fn floor(&self) -> Self {
+        self.0.clone().floor().into()
+    }
+
+    pub fn ceil(&self) -> Self {
+        self.0.clone().ceil().into()
+    }
+
+    pub fn round(&self, decimals: u32) -> Self {
+        self.0.clone().round(decimals).into()
+    }
+
     pub fn min(&self) -> Self {
         self.0.clone().min().into()
     }

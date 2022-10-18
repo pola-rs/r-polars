@@ -1249,6 +1249,9 @@ Expr_cummax = function(reverse = FALSE) {
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
+#'
+#' cumcount does not seem to count within lists.
+#'
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1258,3 +1261,57 @@ Expr_cummax = function(reverse = FALSE) {
 Expr_cumcount = function(reverse = FALSE) {
   .pr$Expr$cumcount(self, reverse)
 }
+
+
+#' Floor
+#' @description Rounds down to the nearest integer value.
+#' Only works on floating point Series.
+#' @keywords Expr
+#' @return Expr
+#' @aliases floor
+#' @name Expr_floor
+#' @details
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(
+#'   a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+#' ))$select(
+#'   pl$col("a")$floor()
+#' )
+Expr_floor = "use_extendr_wrapper"
+
+#' Ceiling
+#' @description Rounds up to the nearest integer value.
+#' Only works on floating point Series.
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases ceil
+#' @name Expr_ceil
+#' @details
+
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(
+#'   a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+#' ))$select(
+#'   pl$col("a")$ceil()
+#' )
+Expr_ceil = "use_extendr_wrapper"
+
+#' round
+#' @description Round underlying floating point data by `decimals` digits.
+#' @keywords Expr
+#' @param decimals  integer Number of decimals to round by.
+#' @return Expr
+#' @aliases round
+#' @name Expr_round
+#'
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(
+#'   a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+#' ))$select(
+#'   pl$col("a")$round(0)
+#' )
+Expr_round = "use_extendr_wrapper"

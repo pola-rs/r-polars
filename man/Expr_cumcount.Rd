@@ -23,6 +23,8 @@ Counting from 0 to len
 \details{
 Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
+
+cumcount does not seem to count within lists.
 }
 \examples{
 pl$DataFrame(list(a=1:4))$select(
