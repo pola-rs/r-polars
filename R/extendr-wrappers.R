@@ -130,6 +130,14 @@ Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
 
 Expr$is_not_null <- function() .Call(wrap__Expr__is_not_null, self)
 
+Expr$is_finite <- function() .Call(wrap__Expr__is_finite, self)
+
+Expr$is_infinite <- function() .Call(wrap__Expr__is_infinite, self)
+
+Expr$is_nan <- function() .Call(wrap__Expr__is_nan, self)
+
+Expr$is_not_nan <- function() .Call(wrap__Expr__is_not_nan, self)
+
 Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
 
 Expr$drop_nans <- function() .Call(wrap__Expr__drop_nans, self)

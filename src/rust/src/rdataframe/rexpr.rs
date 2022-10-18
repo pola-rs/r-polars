@@ -228,6 +228,22 @@ impl Expr {
         self.0.clone().is_not_null().into()
     }
 
+    pub fn is_finite(&self) -> Self {
+        self.0.clone().is_finite().into()
+    }
+
+    pub fn is_infinite(&self) -> Self {
+        self.0.clone().is_infinite().into()
+    }
+
+    pub fn is_nan(&self) -> Self {
+        self.0.clone().is_nan().into()
+    }
+
+    pub fn is_not_nan(&self) -> Self {
+        self.0.clone().is_not_nan().into()
+    }
+
     pub fn drop_nulls(&self) -> Self {
         self.0.clone().drop_nulls().into()
     }

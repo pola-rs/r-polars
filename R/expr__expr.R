@@ -999,12 +999,14 @@ Expr_exclude  = function(columns) {
 Expr_keep_name = "use_extendr_wrapper"
 
 
+
+#TODO contribute polars, map_alias unwrap user function errors instead of passing them back
 #' Map alias of expression with an R function
 #' @description Rename the output of an expression by mapping a function over the root name.
 #' @keywords Expr
 #' @return Expr
 #' @aliases map_alias
-#' @name Expr_keep_name
+#' @name Expr_map_alias
 #' @examples
 #' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
 Expr_map_alias = function(fun) {
@@ -1019,3 +1021,61 @@ Expr_map_alias = function(fun) {
   if(length(formals(fun))==0) unwrap(list(err="alias_map fun must take at least one parameter"), class="not_one_arg")
   .pr$Expr$map_alias(self,fun)
 }
+
+
+
+#' Are elements finite
+#' @description Returns a boolean output indicating which values are finite.
+#'
+#' @keywords Expr
+#' @return Expr
+#' @aliases is_finite
+#' @name Expr_is_finite
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_finite())
+Expr_is_finite = "use_extendr_wrapper"
+
+
+#' Are elements infinite
+#' @description Returns a boolean output indicating which values are infinite.
+#'
+#' @keywords Expr
+#' @return Expr
+#' @aliases is_infinite
+#' @name Expr_is_infinite
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_infinite())
+Expr_is_infinite = "use_extendr_wrapper"
+
+
+
+
+
+#' Are elements NaN's
+#' @description Returns a boolean Series indicating which values are NaN.
+#' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
+#'  NA_real_(R).
+#' @keywords Expr
+#' @return Expr
+#' @aliases is_nan
+#' @name Expr_is_nan
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_nan())
+Expr_is_nan = "use_extendr_wrapper"
+
+
+#' Are elements not NaN's
+#' @description Returns a boolean Series indicating which values are not NaN.
+#' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
+#'  NA_real_(R).
+#' @keywords Expr
+#' @return Expr
+#' @aliases is_not_nan
+#' @name is_not_nan
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_not_nan())
+Expr_is_not_nan = "use_extendr_wrapper"

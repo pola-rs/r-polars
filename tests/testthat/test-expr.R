@@ -566,8 +566,25 @@ test_that("map_alias" , {
     ),
     class = "not_fun"
   )
+})
 
 
+test_that("finite infinte is_nan is_not_nan", {
 
+  #TODO contribute polars NULL behavoir of is_nan and is_not_nan is not documented and not obvious
+  expect_identical(
+    pl$DataFrame(list(a=c(0,NaN,NA,Inf,-Inf)))$select(
+      pl$col("a")$is_finite(  )$alias("is_finite"),
+      pl$col("a")$is_infinite()$alias("is_infinite"),
+      pl$col("a")$is_nan()$alias("is_nan"),
+      pl$col("a")$is_not_nan()$alias("is_not_nan")
+    )$to_list(),
+    list(
+      is_finite   = c(T,F,NA,F,F),
+      is_infinite = c(F,F,NA,T,T),
+      is_nan      = c(F,T,NA,F,F),
+      is_not_nan  = c(T,F,T ,T,T)
+    )
+  )
 
 })
