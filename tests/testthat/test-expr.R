@@ -669,3 +669,44 @@ test_that("Expr_rechunk Series_chunk_lengths", {
     )
   )
 })
+
+test_that("cumsum cumprod cummin cummax cumcount", {
+  l_actual = pl$DataFrame(list(a=1:4))$select(
+    pl$col("a")$cumsum()$alias("cumsum"),
+    pl$col("a")$cumprod()$alias("cumprod"),
+    pl$col("a")$cummin()$alias("cummin"),
+    pl$col("a")$cummax()$alias("cummax"),
+    pl$col("a")$cumcount()$alias("cumcount")
+  )$to_list()
+  l_reference = list(
+    cumsum = cumsum(1:4),
+    cumprod = cumprod(1:4),
+    cummin = cummin(1:4),
+    cummax = cummax(1:4),
+    cumcount = seq_along(1:4)-1
+  )
+  expect_identical(
+    l_actual,l_reference
+  )
+
+  l_actual_rev = pl$DataFrame(list(a=1:4))$select(
+    pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum"),
+    pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod"),
+    pl$col("a")$cummin(reverse = TRUE)$alias("cummin"),
+    pl$col("a")$cummax(reverse = TRUE)$alias("cummax"),
+    pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount")
+  )$to_list()
+
+  expect_identical(
+    l_actual_rev,
+    list(
+      cumsum = rev(cumsum(4:1)),
+      cumprod = rev(cumprod(4:1)),
+      cummin = rev(cummin(4:1)),
+      cummax = rev(cummax(4:1)),
+      cumcount = rev(seq_along(4:1))-1
+    )
+  )
+
+
+})

@@ -7,8 +7,12 @@
 Series_chunk_lengths()
 }
 \value{
-numeric
+numeric vector
 }
 \description{
 Append Series with other Series. Imutable.
+}
+\examples{
+chunked_series = c(pl$Series(1:3),pl$Series(1:10))
+chunked_series$chunk_lengths()
 }

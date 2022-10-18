@@ -251,6 +251,26 @@ impl Expr {
         self.0.clone().drop_nans().into()
     }
 
+    pub fn cumsum(&self, reverse: bool) -> Self {
+        self.0.clone().cumsum(reverse).into()
+    }
+
+    pub fn cumprod(&self, reverse: bool) -> Self {
+        self.0.clone().cumprod(reverse).into()
+    }
+
+    pub fn cummin(&self, reverse: bool) -> Self {
+        self.0.clone().cummin(reverse).into()
+    }
+
+    pub fn cummax(&self, reverse: bool) -> Self {
+        self.0.clone().cummax(reverse).into()
+    }
+
+    pub fn cumcount(&self, reverse: bool) -> Self {
+        self.0.clone().cumcount(reverse).into()
+    }
+
     pub fn min(&self) -> Self {
         self.0.clone().min().into()
     }

@@ -142,6 +142,16 @@ Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
 
 Expr$drop_nans <- function() .Call(wrap__Expr__drop_nans, self)
 
+Expr$cumsum <- function(reverse) .Call(wrap__Expr__cumsum, self, reverse)
+
+Expr$cumprod <- function(reverse) .Call(wrap__Expr__cumprod, self, reverse)
+
+Expr$cummin <- function(reverse) .Call(wrap__Expr__cummin, self, reverse)
+
+Expr$cummax <- function(reverse) .Call(wrap__Expr__cummax, self, reverse)
+
+Expr$cumcount <- function(reverse) .Call(wrap__Expr__cumcount, self, reverse)
+
 Expr$min <- function() .Call(wrap__Expr__min, self)
 
 Expr$max <- function() .Call(wrap__Expr__max, self)

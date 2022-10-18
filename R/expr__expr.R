@@ -1156,3 +1156,105 @@ Expr_append = function(other, upcast=TRUE) {
 #' )$get_columns()
 #' lapply(series_list, \(x) x$chunk_lengths())
 Expr_rechunk = "use_extendr_wrapper"
+
+#' Cumulative sum
+#' @description  Get an array with the cumulative sum computed at every element.
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases cumsum
+#' @name Expr_cumsum
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=1:4))$select(
+#'   pl$col("a")$cumsum()$alias("cumsum"),
+#'   pl$col("a")$cumsum(reverse=TRUE)$alias("cumsum_reversed")
+#' )
+Expr_cumsum = function(reverse = FALSE) {
+  .pr$Expr$cumsum(self, reverse)
+}
+
+
+#' Cumulative product
+#' @description Get an array with the cumulative product computed at every element.
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases cumprod
+#' @name Expr_cumprod
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=1:4))$select(
+#'   pl$col("a")$cumprod()$alias("cumprod"),
+#'   pl$col("a")$cumprod(reverse=TRUE)$alias("cumprod_reversed")
+#' )
+Expr_cumprod = function(reverse = FALSE) {
+  .pr$Expr$cumprod(self, reverse)
+}
+
+#' Cumulative minimum
+#' @description  Get an array with the cumulative min computed at every element.
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases cummin
+#' @name Expr_cummin
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=1:4))$select(
+#'   pl$col("a")$cummin()$alias("cummin"),
+#'   pl$col("a")$cummin(reverse=TRUE)$alias("cummin_reversed")
+#' )
+Expr_cummin = function(reverse = FALSE) {
+  .pr$Expr$cummin(self, reverse)
+}
+
+#' Cumulative maximum
+#' @description Get an array with the cumulative max computed at every element.
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases cummin
+#' @name Expr_cummin
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=1:4))$select(
+#'   pl$col("a")$cummax()$alias("cummux"),
+#'   pl$col("a")$cummax(reverse=TRUE)$alias("cummax_reversed")
+#' )
+Expr_cummax = function(reverse = FALSE) {
+  .pr$Expr$cummax(self, reverse)
+}
+
+#' Cumulative count
+#' @description Get an array with the cumulative count computed at every element.
+#'  Counting from 0 to len
+#' @keywords Expr
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Expr
+#' @aliases cumcount
+#' @name Expr_cumcount
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=1:4))$select(
+#'   pl$col("a")$cumcount()$alias("cumcount"),
+#'   pl$col("a")$cumcount(reverse=TRUE)$alias("cumcount_reversed")
+#' )
+Expr_cumcount = function(reverse = FALSE) {
+  .pr$Expr$cumcount(self, reverse)
+}
