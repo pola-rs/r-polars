@@ -184,6 +184,8 @@ Expr$slice <- function(offset, length) .Call(wrap__Expr__slice, self, offset, le
 
 Expr$append <- function(other, upcast) .Call(wrap__Expr__append, self, other, upcast)
 
+Expr$rechunk <- function() .Call(wrap__Expr__rechunk, self)
+
 Expr$add <- function(other) .Call(wrap__Expr__add, self, other)
 
 Expr$sub <- function(other) .Call(wrap__Expr__sub, self, other)
@@ -267,6 +269,8 @@ Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, na
 Series$shape <- function() .Call(wrap__Series__shape, self)
 
 Series$len <- function() .Call(wrap__Series__len, self)
+
+Series$chunk_lengths <- function() .Call(wrap__Series__chunk_lengths, self)
 
 Series$abs <- function() .Call(wrap__Series__abs, self)
 

@@ -270,4 +270,50 @@ Series_ceil = function() {
   unwrap(.pr$Series$ceil(self))
 }
 
+#' Append two Series
+#' @description Append Series with other Series. Imutable.
+#'
+#' @return numeric vector
+#'
+#' @examples
+#' chunked_series = c(pl$Series(1:3),pl$Series(1:10))
+#' chunked_series$chunk_lengths()
+Series_chunk_lengths = function() {
+  .pr$Series$chunk_lengths(self)
+}
+
+#' append (default immutable)
+#' @description append two Series, see details for mutability
+#' @param other Series to append
+#' @param immutable bool should append be immutable, default TRUE as mutable operations should
+#' be avoided in plain R API's.
+#'
+#' @details if immutable = FLASE, the Series object will not behave as immutable. This mean
+#' appending to this Series will affect any variable pointing to this memory location. This will break
+#' normal scoping rules of R. Polars-clones are cheap. Mutable operations are likely never needed in
+#' any sense.
+#'
+#' @return Series
+#' @examples
+#'
+#' #default immutable behaviour, s_imut and s_imut_copy stay the same
+#' s_imut = pl$Series(1:3)
+#' s_imut_copy = s_imut
+#' s_new = s_imut$append(pl$Series(1:3))
+#' identical(s_imut$to_r_vector(),s_imut_copy$to_r_vector())
+#'
+#' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
+#' s_mut = pl$Series(1:3)
+#' s_mut_copy = s_mut
+#' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
+#' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
+Series_append = function(other, immutable = TRUE) {
+  if(!isFALSE(immutable)) {
+    c(self,other)
+  } else {
+    unwrap(.pr$Series$append_mut(self,other))
+    self
+  }
+}
+
 

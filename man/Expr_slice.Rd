@@ -12,7 +12,7 @@ Expr_slice(offset, length)
 }
 \arguments{
 \item{offset}{numeric or expression, zero-indexed where to start slice
-negative value indicate starting 1-indexed from back}
+negative value indicate starting (one-indexed) from back}
 
 \item{length}{how many elements should slice contain}
 }
@@ -31,7 +31,7 @@ pl$DataFrame(list(a=0:100))$select(
 
 #as tail
 pl$DataFrame(list(a=0:100))$select(
-  pl$all()$slice(-10,6)
+  pl$all()$slice(-6,6)
 )
 }
 \keyword{Expr}

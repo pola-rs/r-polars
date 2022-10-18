@@ -1139,3 +1139,20 @@ Expr_slice = function(offset, length) {
 Expr_append = function(other, upcast=TRUE) {
   .pr$Expr$append(self, wrap_e(other), upcast)
 }
+
+
+#' Rechunk memory layout
+#' @description Create a single chunk of memory for this Series.
+#' @keywords Expr
+#' @return Expr
+#' @aliases rechunk
+#' @name Expr_rechunk
+#' @format a method
+#' @examples
+#' #get chunked lengths with/without rechunk
+#' series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
+#'   pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
+#'   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
+#' )$get_columns()
+#' lapply(series_list, \(x) x$chunk_lengths())
+Expr_rechunk = "use_extendr_wrapper"

@@ -21,6 +21,8 @@ env$shape       = Series_shape
 env$len         = Series_len
 env$ceil        = Series_ceil
 env$floor       = Series_floor
+env$chunk_lengths = Series_chunk_lengths
+env$append      = Series_append
 
 #rewrite all binary operators or other methods to accept something that can turn into a Series
 lapply(Series_ops, \(so) {

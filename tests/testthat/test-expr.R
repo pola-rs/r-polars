@@ -654,3 +654,18 @@ test_that("Expr_append", {
   )
 
 })
+
+
+test_that("Expr_rechunk Series_chunk_lengths", {
+  series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
+    pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
+    pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
+  )$get_columns()
+  expect_identical(
+    lapply(series_list, \(x) x$chunk_lengths()),
+    list(
+      a_chunked = c(3,3),
+      a_rechunked = 6
+    )
+  )
+})

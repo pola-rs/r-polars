@@ -4,6 +4,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::lazy::dsl;
+use polars::prelude::GetOutput;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -162,8 +163,6 @@ impl Expr {
 
     //any not translated expr from expr/expr.py
     pub fn to_physical(&self) -> Self {
-        use polars::prelude::GetOutput;
-
         self.0
             .clone()
             .map(
@@ -338,6 +337,13 @@ impl Expr {
 
     pub fn append(&self, other: &Expr, upcast: bool) -> Expr {
         self.0.clone().append(other.0.clone(), upcast).into()
+    }
+
+    pub fn rechunk(&self) -> Self {
+        self.0
+            .clone()
+            .map(|s| Ok(s.rechunk()), GetOutput::same_type())
+            .into()
     }
 
     //binary arithmetic expressions

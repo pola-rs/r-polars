@@ -119,7 +119,7 @@ test_that("pl$Series_alias", {
 })
 
 
-test_that("pl$Series_append", {
+test_that("Series_append", {
 
   s = pl$Series(letters,"foo")
   s2 = s
@@ -131,12 +131,17 @@ test_that("pl$Series_append", {
     pl$Series(c(letters,LETTERS))$to_r_vector()
   )
 
-  #append_mut cannot be in public api as mutable, this will confuse users
-  # expect_false(identical(
-  #   s$to_r_vector(),s2$to_r_vector()
-  # ))
+  #default immutable behaviour, s_imut and s_imut_copy stay the same
+  s_imut = pl$Series(1:3)
+  s_imut_copy = s_imut
+  s_new = s_imut$append(pl$Series(1:3))
+  expect_identical(s_imut$to_r_vector(),s_imut_copy$to_r_vector())
 
-  #will make combine method instead
+  #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
+  s_mut = pl$Series(1:3)
+  s_mut_copy = s_mut
+  s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
+  expect_identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 
 
 })

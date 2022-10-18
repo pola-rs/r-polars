@@ -304,6 +304,10 @@ impl Series {
         self.0.len() as f64
     }
 
+    pub fn chunk_lengths(&self) -> Vec<f64> {
+        self.0.chunk_lengths().map(|val| val as f64).collect()
+    }
+
     pub fn abs(&self) -> list::List {
         let x = self.0.clone().abs().map(|x| Series(x));
         r_result_list(x)
