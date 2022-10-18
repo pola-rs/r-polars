@@ -623,3 +623,34 @@ test_that("slice", {
   )
 
 })
+
+test_that("Expr_append", {
+  #append bottom to to row
+  df = pl$DataFrame(list(a = 1:3, b = c(NA_real_,4,5)))
+  expect_identical(
+    df$select(pl$all()$head(1)$append(pl$all()$tail(1)))$to_list(),
+    list(a=c(1L,3L), b = c(NA_real_,5))
+  )
+
+  #implicit upcast, when default = TRUE
+  expect_identical(
+    pl$DataFrame(list())$select(pl$lit(42)$append(42L))$to_list(),
+    list(literal = c(42,42))
+  )
+
+  expect_identical(
+    pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))$to_list(),
+    list(literal = c(42,0))
+  )
+
+  expect_identical(
+    pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))$to_list(),
+    list(literal = c("Bob","false"))
+  )
+
+  expect_error(
+    pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE,upcast=FALSE)),
+   "match"
+  )
+
+})

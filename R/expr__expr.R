@@ -1094,6 +1094,11 @@ Expr_is_not_nan = "use_extendr_wrapper"
 
 
 #' Get a slice of this expression.
+#'
+#' @param offset numeric or expression, zero-indexed where to start slice
+#' negative value indicate starting (one-indexed) from back
+#' @param length how many elements should slice contain
+#'
 #' @keywords Expr
 #' @return Expr
 #' @aliases slice
@@ -1108,8 +1113,29 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #'
 #' #as tail
 #' pl$DataFrame(list(a=0:100))$select(
-#'   pl$all()$slice(-10,6)
+#'   pl$all()$slice(-6,6)
 #' )
 Expr_slice = function(offset, length) {
   .pr$Expr$slice(self, wrap_e(offset),wrap_e(length))
+}
+
+
+#' Append expressions
+#' @description This is done by adding the chunks of `other` to this `output`.
+#' @keywords Expr
+#' @return Expr
+#' @aliases append
+#' @name Expr_append
+#' @format a method
+#' @examples
+#' #append bottom to to row
+#' df = pl$DataFrame(list(a = 1:3, b = c(NA_real_,4,5)))
+#' df$select(pl$all()$head(1)$append(pl$all()$tail(1)))
+#'
+#' #implicit upcast, when default = TRUE
+#' pl$DataFrame(list())$select(pl$lit(42)$append(42L))
+#' pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))
+#' pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))
+Expr_append = function(other, upcast=TRUE) {
+  .pr$Expr$append(self, wrap_e(other), upcast)
 }

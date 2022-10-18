@@ -336,6 +336,10 @@ impl Expr {
             .into()
     }
 
+    pub fn append(&self, other: &Expr, upcast: bool) -> Expr {
+        self.0.clone().append(other.0.clone(), upcast).into()
+    }
+
     //binary arithmetic expressions
     pub fn add(&self, other: &Expr) -> Self {
         self.0.clone().add(other.0.clone()).into()

@@ -182,6 +182,8 @@ Expr$len <- function() .Call(wrap__Expr__len, self)
 
 Expr$slice <- function(offset, length) .Call(wrap__Expr__slice, self, offset, length)
 
+Expr$append <- function(other, upcast) .Call(wrap__Expr__append, self, other, upcast)
+
 Expr$add <- function(other) .Call(wrap__Expr__add, self, other)
 
 Expr$sub <- function(other) .Call(wrap__Expr__sub, self, other)

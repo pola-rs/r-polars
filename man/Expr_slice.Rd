@@ -10,6 +10,12 @@ a method
 \usage{
 Expr_slice(offset, length)
 }
+\arguments{
+\item{offset}{numeric or expression, zero-indexed where to start slice
+negative value indicate starting 1-indexed from back}
+
+\item{length}{how many elements should slice contain}
+}
 \value{
 Expr
 }
