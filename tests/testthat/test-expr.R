@@ -70,6 +70,11 @@ test_that("count + unique + n_unique", {
   )
 
   expect_equal(
+    unlist(pl$DataFrame(iris)$select(pl$all()$unique()$len())$as_data_frame()),
+    sapply(iris, \(x) length(unique(x)))
+  )
+
+  expect_equal(
     unlist(pl$DataFrame(iris)$select(pl$all()$n_unique())$as_data_frame()),
     sapply(iris, \(x) length(unique(x)))
   )
@@ -585,6 +590,36 @@ test_that("finite infinte is_nan is_not_nan", {
       is_nan      = c(F,T,NA,F,F),
       is_not_nan  = c(T,F,T ,T,T)
     )
+  )
+
+})
+
+test_that("slice", {
+
+  l = list(a=0:100,b=100:0)
+
+  #as head
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$all()$slice(0,6)
+    )$to_list(),
+    lapply(l,head)
+  )
+
+  #as tail
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$all()$slice(-6,6)
+    )$to_list(),
+    lapply(l,tail)
+  )
+
+  #use expression as input
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$all()$slice(0,pl$col("a")$len()/2)
+    )$to_list(),
+    lapply(l,head,length(l$a)/2)
   )
 
 })

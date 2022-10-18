@@ -276,16 +276,27 @@ Expr_any = "use_extendr_wrapper"
 
 
 
-#' Count values
+#' Count values (len is a alias)
 #' @keywords Expr
+#' @name Expr_count
 #' @description
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
+#' @aliases count
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
 Expr_count = "use_extendr_wrapper"
 
+#' Count values (len is a alias)
+#' @keywords Expr
+#' @rdname Expr_count
+#' @return Expr
+#' @aliases count len
+#' @examples
+#' #same as
+#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
+Expr_len = "use_extendr_wrapper"
 
 #' get unqie values
 #' @keywords Expr
@@ -1074,8 +1085,31 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_not_nan
-#' @name is_not_nan
+#' @name Expr_is_not_nan
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_not_nan())
 Expr_is_not_nan = "use_extendr_wrapper"
+
+
+
+#' Get a slice of this expression.
+#' @keywords Expr
+#' @return Expr
+#' @aliases slice
+#' @name Expr_slice
+#' @format a method
+#' @examples
+#'
+#' #as head
+#' pl$DataFrame(list(a=0:100))$select(
+#'   pl$all()$slice(0,6)
+#' )
+#'
+#' #as tail
+#' pl$DataFrame(list(a=0:100))$select(
+#'   pl$all()$slice(-10,6)
+#' )
+Expr_slice = function(offset, length) {
+  .pr$Expr$slice(self, wrap_e(offset),wrap_e(length))
+}

@@ -325,6 +325,17 @@ impl Expr {
         self.0.clone().count().into()
     }
 
+    pub fn len(&self) -> Self {
+        self.0.clone().count().into()
+    }
+
+    pub fn slice(&self, offset: &Expr, length: &Expr) -> Self {
+        self.0
+            .clone()
+            .slice(offset.0.clone(), length.0.clone())
+            .into()
+    }
+
     //binary arithmetic expressions
     pub fn add(&self, other: &Expr) -> Self {
         self.0.clone().add(other.0.clone()).into()

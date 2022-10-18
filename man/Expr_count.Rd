@@ -3,14 +3,23 @@
 \docType{data}
 \name{Expr_count}
 \alias{Expr_count}
-\title{Count values}
+\alias{count}
+\alias{Expr_len}
+\alias{len}
+\title{Count values (len is a alias)}
 \format{
+An object of class \code{character} of length 1.
+
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_count
+
+Expr_len
 }
 \value{
+Expr
+
 Expr
 }
 \description{
@@ -19,5 +28,7 @@ Similar to R length()
 }
 \examples{
 pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
+#same as
+pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
 }
 \keyword{Expr}
