@@ -379,6 +379,49 @@ impl Expr {
         .into()
     }
 
+    pub fn map_alias(&self, lambda: Robj) -> Self {
+        //find a way not to push lambda everytime to main thread handler
+        //safety only accessed in main thread, can be temp owned by other threads
+        let probj = ParRObj(lambda);
+        //}
+
+        // let f = move |name: &str| -> String {
+        //     //acquire channel to R via main thread handler
+        //     let thread_com = ThreadCom::from_global(&CONFIG);
+
+        //     //place name in Series because current version of ThreadCom only speaks series
+        //     use polars::prelude::NamedFrom;
+        //     let s = pl::Series::new(name, &[0]);
+
+        //     //send request to run in R
+        //     thread_com.send((probj.clone(), s));
+
+        //     //recieve answer
+        //     let s = thread_com.recv();
+
+        //     s.0.name().to_string()
+
+        //     //wrap as series
+        // };
+
+        let f = move |name: &str| -> String {
+            let robj = probj.clone().0;
+            let rfun = robj
+                .as_function()
+                .expect("internal error: this is not an R function");
+
+            let newname_robj = rfun
+                .call(pairlist!(name))
+                .expect("user function raised an error");
+            newname_robj
+                .as_str()
+                .expect("R function return value was not a string")
+                .to_string()
+        };
+
+        self.clone().0.map_alias(f).into()
+    }
+
     fn suffix(&self, suffix: String) -> Self {
         self.0.clone().suffix(suffix.as_str()).into()
     }

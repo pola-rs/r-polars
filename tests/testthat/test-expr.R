@@ -523,3 +523,51 @@ test_that("keep_name" , {
   )
 
 })
+
+
+
+test_that("map_alias" , {
+  df = pl$DataFrame(list(alice=1:3))$select(
+    pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
+  )
+  lf = df$lazy()
+  expect_identical(lf$collect()$columns, "alice_and_bob")
+
+  expect_error(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$map_alias(\(x) 42) #wrong return
+    ),
+    "^select\\ panicked.$"
+  )
+
+  out_error = tryCatch(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$map_alias(\(x) stop("user fun error")) #wrong return
+    ),
+    error = function(e) as.character(e)
+  )
+  expect_identical(
+    out_error,
+    "Error in .pr$DataFrame$select(self, exprs): select panicked.\n",
+
+  )
+
+
+  expect_error(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$map_alias(\() "bob") #missing param
+    ),
+    class = "not_one_arg"
+  )
+
+  expect_error(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$map_alias("not a function") #not a fun
+    ),
+    class = "not_fun"
+  )
+
+
+
+
+})

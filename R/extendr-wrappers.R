@@ -186,6 +186,8 @@ Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
 Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
 
+Expr$map_alias <- function(lambda) .Call(wrap__Expr__map_alias, self, lambda)
+
 Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 
 Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)

@@ -995,6 +995,27 @@ Expr_exclude  = function(columns) {
 #' @name Expr_keep_name
 #' @format a method
 #' @examples
-#' pl$DataFrame(list(alice=1:3))$select(pl$col("a")$alias("bob")$keep_name())
+#' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
 Expr_keep_name = "use_extendr_wrapper"
 
+
+#' Map alias of expression with an R function
+#' @description Rename the output of an expression by mapping a function over the root name.
+#' @keywords Expr
+#' @return Expr
+#' @aliases map_alias
+#' @name Expr_keep_name
+#' @examples
+#' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
+Expr_map_alias = function(fun) {
+  if (!exists(".warn_map_alias")) {
+    .warn_map_alias <<- 1L
+    # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
+    # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
+    # then handle_thread_r_requests should be rewritten to handly any type.
+    message("map_alias function is experimentally without some thread-safeguards, please report any crashes") #TODO resolve
+  }
+  if(!is.function(fun)) unwrap(list(err="alias_map fun must be function"), class="not_fun")
+  if(length(formals(fun))==0) unwrap(list(err="alias_map fun must take at least one parameter"), class="not_one_arg")
+  .pr$Expr$map_alias(self,fun)
+}
