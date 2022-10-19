@@ -45,6 +45,18 @@ minipolars_optreq$named_exprs = list( #set requirement functions of default valu
 )
 
 
+#' @rdname minipolars_options
+#' @name no_messages
+#' @aliases no_messages
+#' @details who likes minipolars package messages? use this option to turn them off.
+#' @param no_messages bool, default = FALSE,
+#' turn of messages
+minipolars_optenv$no_messages = FALSE #set default value
+minipolars_optreq$no_messages = list( #set requirement functions of default value
+  is_bool = rlang::is_bool
+)
+
+
 
 
 ## END OF DEFINED OPTIONS
@@ -165,3 +177,14 @@ reset_minipolars_options = function() {
 get_minipolars_opt_requirements = function() {
   minipolars_optreq
 }
+
+
+#' internal keeping of state at runtime
+#' @name minipolars_runtime_flags
+#' @description This environment is used internally for the package to remember
+#' what has been going on. Currently only used to throw one-time warnings()
+runtime_state = new.env(parent = emptyenv())
+
+
+
+

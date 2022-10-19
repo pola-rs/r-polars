@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_unique}
 \alias{Expr_unique}
-\title{get unqie values}
+\title{get unique values}
 \usage{
 Expr_unique(maintain_order = FALSE)
 }

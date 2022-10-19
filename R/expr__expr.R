@@ -298,7 +298,7 @@ Expr_count = "use_extendr_wrapper"
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
 Expr_len = "use_extendr_wrapper"
 
-#' get unqie values
+#' get unique values
 #' @keywords Expr
 #' @description
 #'  Get unique values of this expression.
@@ -384,7 +384,7 @@ Expr_last = "use_extendr_wrapper"
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
 Expr_head = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is.numeric(n)) abort("$head(n = ?): n must be numeric")
   .pr$Expr$head(self,n=n)
 }
 
@@ -399,7 +399,7 @@ Expr_head = function(n=10) {
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
 Expr_tail = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is.numeric(n)) abort("$tail(n = ?): n must be numeric")
   .pr$Expr$tail(self,n=n)
 }
 
@@ -1021,14 +1021,14 @@ Expr_keep_name = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
 Expr_map_alias = function(fun) {
-  if (!exists(".warn_map_alias")) {
-    .warn_map_alias <<- 1L
+  if (!exists(".warn_map_alias",envir = minipolars:::runtime_state) && !minipolars_optenv$no_messages) {
+    assign(".warn_map_alias",1L,envir = minipolars:::runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
     # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
-    # then handle_thread_r_requests should be rewritten to handly any type.
+    # then handle_thread_r_requests should be rewritten to handle any type.
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") #TODO resolve
   }
-  if(!is.function(fun)) unwrap(list(err="alias_map fun must be function"), class="not_fun")
+  if(!is.function(fun)) unwrap(list(err="alias_map fun must be a function"), class="not_fun")
   if(length(formals(fun))==0) unwrap(list(err="alias_map fun must take at least one parameter"), class="not_one_arg")
   .pr$Expr$map_alias(self,fun)
 }
@@ -1312,22 +1312,19 @@ Expr_ceil = "use_extendr_wrapper"
 Expr_round = "use_extendr_wrapper"
 
 
-#TODO contribute polars, dot product unwraps wrong datatypes
+#TODO contribute polars, dot product unwraps if datatypes, pass Result instead
 #' Dot product
 #' @description Compute the dot/inner product between two Expressions.
 #' @keywords Expr
-#' @param other  Exprto compute dot product with.
+#' @param other Expr to compute dot product with.
 #' @return Expr
 #' @aliases dot
 #' @name Expr_dot
 #' @format a method
 #' @examples
-#' l = list(a=1:4,b=c(1,2,3,5),c=c(NA_real_,1:3),d=c(6:8,NaN))
-#' pl$DataFrame(l)$select(
+#' pl$DataFrame(list(a=1:4,b=c(1,2,3,4),c="bob"),)$select(
 #'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
-#'   pl$col("a")$dot(pl$col("a"))$alias("a dot a"),
-#'   pl$col("a")$dot(pl$col("c"))$alias("a dot c"),
-#'   pl$col("a")$dot(pl$col("d"))$alias("a dot d")
+#'   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 #' )
 Expr_dot = function(other) {
   .pr$Expr$dot(self,wrap_e(other))
@@ -1342,7 +1339,7 @@ Expr_dot = function(other) {
 #' @name Expr_mode
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(a=1:6,b = c(1L,1L,3L,3L,5L,6L), c = c(1L,1L,2L,2L,3L,3L)))
+#' df =pl$DataFrame(list(a=1:6,b = c(1L,1L,3L,3L,5L,6L), c = c(1L,1L,2L,2L,3L,3L)))
 #' df$select(pl$col("a")$mode())
 #' df$select(pl$col("b")$mode())
 #' df$select(pl$col("c")$mode())

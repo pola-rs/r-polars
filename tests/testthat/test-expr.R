@@ -532,6 +532,11 @@ test_that("keep_name" , {
 
 
 test_that("map_alias" , {
+
+
+  #skip map_alias thread-guard message
+  set_minipolars_options(no_messages = TRUE)
+
   df = pl$DataFrame(list(alice=1:3))$select(
     pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
   )
@@ -571,6 +576,9 @@ test_that("map_alias" , {
     ),
     class = "not_fun"
   )
+
+
+  reset_minipolars_options()
 })
 
 
@@ -756,6 +764,7 @@ test_that("mode", {
 })
 
 #TODO contribute rust, Null does not carry in dot products, NaN do.
+#cumsum does not carry Null either. Maybe it is by design.
 test_that("dot", {
 
   l = list(a=1:4,b=c(1,2,3,5),c=c(NA_real_,1:3),d=c(6:8,NaN))

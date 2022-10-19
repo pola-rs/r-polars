@@ -3,6 +3,7 @@
 \name{strictly_immutable}
 \alias{strictly_immutable}
 \alias{named_exprs}
+\alias{no_messages}
 \alias{get_minipolars_options}
 \alias{minipolars_options}
 \alias{set_minipolars_options}
@@ -32,6 +33,9 @@ a named expresion will be extended with $alias(name)
 wildcards or expression producing multiple are problematic due to name collision
 the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
 and only allow named exprs in with_columns (or potentially any method derived there of)}
+
+\item{no_messages}{bool, default = FALSE,
+turn of messages}
 }
 \value{
 current settings as list
@@ -44,6 +48,8 @@ list named by options of requirement function input must satisfy
 get, set, reset minipolars options
 }
 \details{
+who likes minipolars package messages? use this option to turn them off.
+
 modifing list takes no effect, pass it to set_minipolars_options
 get/set/resest interact with internal env \code{minipolars:::minipolars_optenv}
 

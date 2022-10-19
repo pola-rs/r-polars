@@ -11,7 +11,7 @@ a method
 Expr_dot(other)
 }
 \arguments{
-\item{other}{Exprto compute dot product with.}
+\item{other}{Expr to compute dot product with.}
 }
 \value{
 Expr
@@ -20,12 +20,9 @@ Expr
 Compute the dot/inner product between two Expressions.
 }
 \examples{
-l = list(a=1:4,b=c(1,2,3,5),c=c(NA_real_,1:3),d=c(6:8,NaN))
-pl$DataFrame(l)$select(
+pl$DataFrame(list(a=1:4,b=c(1,2,3,4),c="bob"),)$select(
   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
-  pl$col("a")$dot(pl$col("a"))$alias("a dot a"),
-  pl$col("a")$dot(pl$col("c"))$alias("a dot c"),
-  pl$col("a")$dot(pl$col("d"))$alias("a dot d")
+  pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 )
 }
 \keyword{Expr}
