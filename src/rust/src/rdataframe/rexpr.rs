@@ -194,8 +194,25 @@ impl Expr {
             .into()
     }
 
+    pub fn arg_sort(&self, descending: bool, nulls_last: bool) -> Self {
+        self.clone()
+            .0
+            .arg_sort(SortOptions {
+                descending,
+                nulls_last,
+            })
+            .into()
+    }
+
     pub fn top_k(&self, k: f64, reverse: bool) -> Self {
         self.0.clone().top_k(k as usize, reverse).into()
+    }
+
+    pub fn arg_max(&self) -> Expr {
+        self.clone().0.arg_max().into()
+    }
+    pub fn arg_min(&self) -> Expr {
+        self.clone().0.arg_min().into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

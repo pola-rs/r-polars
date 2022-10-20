@@ -11,6 +11,8 @@ a method
 Expr_top_k(k, reverse = FALSE)
 }
 \arguments{
+\item{k}{numeric k top values to get}
+
 \item{reverse}{bool if true then k smallest values}
 }
 \value{
@@ -26,6 +28,6 @@ This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 \examples{
 df = pl$DataFrame(list(
   a = c(6, 1, 0, NA, Inf, NaN),
-))$select(pl$top_k(5)$sort())
+))$select(pl$top_k(5))
 }
 \keyword{Expr}

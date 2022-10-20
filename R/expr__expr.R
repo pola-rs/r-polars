@@ -1346,12 +1346,12 @@ Expr_dot = function(other) {
 Expr_mode = "use_extendr_wrapper"
 
 
-#TODO contribute polars, add arguments for Null/NaN/inf last/first
 #' Expr_sort
 #' @description Sort this column. In projection/ selection context the whole column is sorted.
 #' If used in a groupby context, the groups are sorted.
 #' @keywords Expr
-#' @param reverse
+#' @param reverse bool default FALSE, reverses sort
+#' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases sort
 #' @name Expr_sort
@@ -1371,6 +1371,7 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' If 'reverse=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #' @keywords Expr
+#' @param k numeric k top values to get
 #' @param reverse bool if true then k smallest values
 #' @return Expr
 #' @aliases top_k
@@ -1379,9 +1380,62 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' @examples
 #' df = pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN),
-#' ))$select(pl$top_k(5)$sort())
+#' ))$select(pl$top_k(5))
 Expr_top_k = function(k , reverse = FALSE) {
   if(!is.numeric(k) || k<0) abort("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self,k , reverse)
 }
+
+
+
+#' Index of a sort
+#' @description Get the index values that would sort this column.
+#' If 'reverse=True` the smallest elements will be given.
+#' @keywords Expr
+#' @param reverse bool default FALSE, reverses sort
+#' @param nulls_last bool, default FALSE, place Nulls last
+#' @return Expr
+#' @aliases arg_sort
+#' @name Expr_arg_sort
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' ))$select(pl$arg_sort())
+Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
+  .pr$Expr$arg_sort(self, reverse, nulls_last)
+}
+
+
+#' Index of min value
+#' @description  Get the index of the minimal value.
+#' @keywords Expr
+#' @return Expr
+#' @aliases arg_min
+#' @name Expr_arg_min
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' ))$select(pl$arg_min())
+Expr_arg_min = "use_extendr_wrapper"
+
+#' Index of min value
+#' @description  Get the index of the minimal value.
+#' @keywords Expr
+#' @return Expr
+#' @aliases arg_max
+#' @name Expr_arg_max
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' ))$select(pl$arg_max())
+Expr_arg_max = "use_extendr_wrapper"
+
+
+
+
+
+
 

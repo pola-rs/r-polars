@@ -837,3 +837,55 @@ test_that("Expr_k_top", {
 
 })
 
+
+#TODO contribute polars $arg_max() is not the same as arg_sort()$tail(1)
+test_that("arg_min arg_max arg_sort", {
+
+  #current arg_min arg_max and arg_sort are not internally concistent
+  # so this testing is just tracking if the behavior it how it used to be
+
+  l = list(a = c(6, 1, 0, Inf,-Inf, NaN,NA))
+
+
+  get_arg_min_max = function(l) {pl$DataFrame(l)$select(
+    pl$col("a")$arg_min()$alias("arg_min"),
+    pl$col("a")$arg_max()$alias("arg_max"),
+    pl$col("a")$arg_sort()$head(1)$alias("arg_sort_head_1"),
+    pl$col("a")$arg_sort()$tail(1)$alias("arg_sort_tail_1")
+  )$to_list()
+  }
+
+  #it seems Null/NA is smallest value (arg_min)
+  #it seems Inf is largest value to (arg_max)
+  #however it seems NaN (arg_sort().tail(1))
+  lapply(get_arg_min_max(l), function(idx) l$a[idx+1])
+
+  expect_identical(
+    get_arg_min_max(l),
+    list(arg_min = 6, arg_max = 3, arg_sort_head_1 = 6, arg_sort_tail_1 = 5)
+  )
+
+  l_actual = pl$DataFrame(l)$select(
+    pl$col("a")$arg_sort()$alias("arg_sort default"),
+    pl$col("a")$arg_sort(reverse=TRUE)$alias("arg_sort rev"),
+    pl$col("a")$arg_sort(reverse=TRUE, nulls_last = TRUE)$alias("arg_sort rev nulls_last")
+  )$to_list()
+
+  #it seems Null/NA is not sorted and just placed first or last given null_lasts
+  #it seems NaN is a value larger than Inf
+  lapply(l_actual, function(idx) l$a[idx+1])
+
+
+  expect_identical(
+    l_actual,
+    list(
+      `arg_sort default` = c(6, 4, 2, 1, 0, 3, 5),
+      `arg_sort rev` = c(5, 3, 0, 1, 2, 4, 6),
+      `arg_sort rev nulls_last` = c(5, 3, 0, 1, 2, 4, 6)
+    )
+  )
+
+
+
+})
+

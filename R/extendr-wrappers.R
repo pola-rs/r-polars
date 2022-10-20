@@ -112,7 +112,13 @@ Expr$cast <- function(data_type, strict) .Call(wrap__Expr__cast, self, data_type
 
 Expr$sort <- function(descending, nulls_last) .Call(wrap__Expr__sort, self, descending, nulls_last)
 
+Expr$arg_sort <- function(descending, nulls_last) .Call(wrap__Expr__arg_sort, self, descending, nulls_last)
+
 Expr$top_k <- function(k, reverse) .Call(wrap__Expr__top_k, self, k, reverse)
+
+Expr$arg_max <- function() .Call(wrap__Expr__arg_max, self)
+
+Expr$arg_min <- function() .Call(wrap__Expr__arg_min, self)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
