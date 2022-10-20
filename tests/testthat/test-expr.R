@@ -787,3 +787,53 @@ test_that("dot", {
     expected_list
   )
 })
+
+
+test_that("Expr_sort", {
+
+  l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
+
+  l_actual = pl$DataFrame(l)$select(
+    pl$col("a")$sort()$alias("sort"),
+    pl$col("a")$sort(nulls_last=TRUE)$alias("sort_nulls_last"),
+    pl$col("a")$sort(reverse=TRUE)$alias("sort_reverse"),
+    pl$col("a")$sort(reverse=TRUE,nulls_last=TRUE)$alias("sort_reverse_nulls_last")
+  )$to_list()
+
+
+  #TODO contribute polars in Expr_sort NaN is a value above Inf, but NaN > Inf is false.
+  #more correct use of nan would be slower though
+  expect_identical(
+    l_actual,
+    list(
+      sort = c(NA, -Inf, 0, 1, 6, Inf, NaN),
+      sort_nulls_last = c(-Inf,0, 1, 6, Inf, NaN, NA),
+      sort_reverse = c(NA, NaN, Inf, 6, 1, 0, -Inf),
+      sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA)
+      )
+  )
+
+})
+
+
+test_that("Expr_k_top", {
+
+  l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
+
+  #TODO contribute polars k_top always places NaN first no matter reverse,
+  # this behavour does not match Expr_sort
+  l_actual = pl$DataFrame(l)$select(
+    pl$col("a")$top_k(3)$alias("k_top"),
+    pl$col("a")$top_k(3,reverse=TRUE)$alias("k_top_rev")
+  )$to_list()
+
+  expect_identical(
+    l_actual,
+    list(
+      k_top = c(NaN, Inf,6),
+      k_top_rev = c(NaN,-Inf,0) #NaN lower and higher than any value
+    )
+  )
+
+})
+

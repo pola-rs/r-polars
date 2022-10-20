@@ -298,7 +298,7 @@ Expr_count = "use_extendr_wrapper"
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
 Expr_len = "use_extendr_wrapper"
 
-#' get unique values
+#' get unqie values
 #' @keywords Expr
 #' @description
 #'  Get unique values of this expression.
@@ -384,7 +384,7 @@ Expr_last = "use_extendr_wrapper"
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
 Expr_head = function(n=10) {
-  if(!is.numeric(n)) abort("$head(n = ?): n must be numeric")
+  if(!is.numeric(n)) abort("n must be numeric")
   .pr$Expr$head(self,n=n)
 }
 
@@ -399,7 +399,7 @@ Expr_head = function(n=10) {
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
 Expr_tail = function(n=10) {
-  if(!is.numeric(n)) abort("$tail(n = ?): n must be numeric")
+  if(!is.numeric(n)) abort("n must be numeric")
   .pr$Expr$tail(self,n=n)
 }
 
@@ -1021,7 +1021,7 @@ Expr_keep_name = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
 Expr_map_alias = function(fun) {
-  if (!exists(".warn_map_alias",envir = minipolars:::runtime_state) && !minipolars_optenv$no_messages) {
+  if (!exists(".warn_map_alias",envir = minipolars:::runtime_state)) {
     assign(".warn_map_alias",1L,envir = minipolars:::runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
     # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
@@ -1344,3 +1344,44 @@ Expr_dot = function(other) {
 #' df$select(pl$col("b")$mode())
 #' df$select(pl$col("c")$mode())
 Expr_mode = "use_extendr_wrapper"
+
+
+#TODO contribute polars, add arguments for Null/NaN/inf last/first
+#' Expr_sort
+#' @description Sort this column. In projection/ selection context the whole column is sorted.
+#' If used in a groupby context, the groups are sorted.
+#' @keywords Expr
+#' @param reverse
+#' @return Expr
+#' @aliases sort
+#' @name Expr_sort
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' ))$select(pl$col("a")$sort())
+Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
+  .pr$Expr$sort(self, reverse, nulls_last)
+}
+
+
+#TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
+#' Top k values
+#' @description  Return the `k` largest elements.
+#' If 'reverse=True` the smallest elements will be given.
+#' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
+#' @keywords Expr
+#' @param reverse bool if true then k smallest values
+#' @return Expr
+#' @aliases top_k
+#' @name Expr_top_k
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' ))$select(pl$top_k(5)$sort())
+Expr_top_k = function(k , reverse = FALSE) {
+  if(!is.numeric(k) || k<0) abort("k must be numeric and positive, prefereably integerish")
+  .pr$Expr$top_k(self,k , reverse)
+}
+

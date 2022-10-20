@@ -3,6 +3,7 @@ use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude::GetOutput;
 use polars::prelude::{self as pl};
@@ -181,6 +182,20 @@ impl Expr {
             self.0.clone().cast(dt)
         }
         .into()
+    }
+
+    pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
+        self.clone()
+            .0
+            .sort_with(SortOptions {
+                descending,
+                nulls_last,
+            })
+            .into()
+    }
+
+    pub fn top_k(&self, k: f64, reverse: bool) -> Self {
+        self.0.clone().top_k(k as usize, reverse).into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
