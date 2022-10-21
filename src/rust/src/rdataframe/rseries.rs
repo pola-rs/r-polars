@@ -159,7 +159,7 @@ impl Series {
         self.0.name()
     }
 
-    pub fn sort(&mut self, reverse: bool) -> Self {
+    pub fn sort_mut(&mut self, reverse: bool) -> Self {
         Series(self.0.sort(reverse))
     }
 
@@ -186,12 +186,14 @@ impl Series {
         matches!(self.0.is_sorted(), polars::series::IsSorted::Descending)
     }
 
-    pub fn series_equal(&self, other: &Series) -> bool {
-        self.0.series_equal(&other.0)
-    }
-
-    pub fn series_equal_missing(&self, other: &Series) -> bool {
-        self.0.series_equal_missing(&other.0)
+    pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {
+        if strict {
+            self.0.eq(&other.0)
+        } else if null_equal {
+            self.0.series_equal_missing(&other.0)
+        } else {
+            self.0.series_equal(&other.0)
+        }
     }
 
     pub fn compare(&self, other: &Series, op: String) -> List {

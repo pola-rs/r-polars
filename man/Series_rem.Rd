@@ -3,12 +3,9 @@
 \name{Series_rem}
 \alias{Series_rem}
 \alias{rem}
-\alias{*.Series}
 \title{rem Series}
 \usage{
 Series_rem(other)
-
-\method{*}{Series}(s1, s2)
 }
 \value{
 Series
@@ -20,7 +17,5 @@ Series arithmetics, remainder
 pl$Series(1:4)$rem(2L)
 pl$Series(1:3)$rem(pl$Series(11:13))
 pl$Series(1:3)$rem(1L)
-1L + pl$Series(1:3)
-pl$Series(1:3) + 1L
 }
 \keyword{Series}

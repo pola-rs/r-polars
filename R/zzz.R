@@ -25,8 +25,6 @@ print(paste(
 # env$chunk_lengths = Series_chunk_lengths
 # env$append      = Series_append
 
-macro_add_syntax_check_to_class("Series")
-replace_private_with_pub_methods( minipolars:::Series, "^Series_")
 
 
 # #rewrite all binary operators or other methods to accept something that can turn into a Series
@@ -74,6 +72,7 @@ env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
 env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
+rm(env)
 
 # Expr
 temp_keepers = character()
@@ -85,8 +84,9 @@ replace_private_with_pub_methods(
 
 
 
-#clean up
-rm(env)
+macro_add_syntax_check_to_class("Series")
+replace_private_with_pub_methods( minipolars:::Series, "^Series_")
+
 
 
 
@@ -113,7 +113,7 @@ pl$concat = minipolars:::concat
 
 #TODO simplify maybe datatype should not be generated from strings
 .onLoad <- function(libname, pkgname){
-
+  print(".onload")
   #instanciate one of each DataType (it's just an enum)
   all_types = .pr$DataType$get_all_type_names()
   names(all_types) = all_types
@@ -125,4 +125,8 @@ pl$concat = minipolars:::concat
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
 
   lockEnvironment(pl,bindings = TRUE)
+  print("done onload")
 }
+
+print("")
+print("done source")

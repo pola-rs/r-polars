@@ -278,7 +278,7 @@ Series$dtype <- function() .Call(wrap__Series__dtype, self)
 
 Series$name <- function() .Call(wrap__Series__name, self)
 
-Series$sort <- function(reverse) .Call(wrap__Series__sort, self, reverse)
+Series$sort_mut <- function(reverse) .Call(wrap__Series__sort_mut, self, reverse)
 
 Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
 
@@ -290,9 +290,7 @@ Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
 
 Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
 
-Series$series_equal <- function(other) .Call(wrap__Series__series_equal, self, other)
-
-Series$series_equal_missing <- function(other) .Call(wrap__Series__series_equal_missing, self, other)
+Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
 
 Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 

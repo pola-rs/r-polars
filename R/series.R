@@ -185,8 +185,8 @@ Series_add = function(other) {
 #' pl$Series(1:3)$sub(11:13)
 #' pl$Series(1:3)$sub(pl$Series(11:13))
 #' pl$Series(1:3)$sub(1L)
-#' 1L + pl$Series(1:3)
-#' pl$Series(1:3) + 1L
+#' 1L - pl$Series(1:3)
+#' pl$Series(1:3) - 1L
 Series_sub = function(other) {
   .pr$Series$sub(self, wrap_s(other))
 }
@@ -204,8 +204,8 @@ Series_sub = function(other) {
 #' pl$Series(1:3)$div(11:13)
 #' pl$Series(1:3)$div(pl$Series(11:13))
 #' pl$Series(1:3)$div(1L)
-#' 1L + pl$Series(1:3)
-#' pl$Series(1:3) + 1L
+#' 2L / pl$Series(1:3)
+#' pl$Series(1:3) / 2L
 Series_div = function(other) {
   .pr$Series$div(self, wrap_s(other))
 }
@@ -223,8 +223,8 @@ Series_div = function(other) {
 #' pl$Series(1:3)$mul(11:13)
 #' pl$Series(1:3)$mul(pl$Series(11:13))
 #' pl$Series(1:3)$mul(1L)
-#' 1L + pl$Series(1:3)
-#' pl$Series(1:3) + 1L
+#' 2L * pl$Series(1:3)
+#' pl$Series(1:3) * 2L
 Series_mul = function(other) {
   .pr$Series$mul(self, wrap_s(other))
 }
@@ -242,14 +242,9 @@ Series_mul = function(other) {
 #' pl$Series(1:4)$rem(2L)
 #' pl$Series(1:3)$rem(pl$Series(11:13))
 #' pl$Series(1:3)$rem(1L)
-#' 1L + pl$Series(1:3)
-#' pl$Series(1:3) + 1L
 Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
-#' @export
-#' @rdname Series_rem
-"*.Series" <- function(s1,s2) wrap_s(s1)$rem(s2)
 
 
 #TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
@@ -528,6 +523,12 @@ Series_append = function(other, immutable = TRUE) {
   if(!isFALSE(immutable)) {
     c(self,other)
   } else {
+    if(minipolars_optenv$strictly_immutable) {
+      abort(paste(
+        "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
+        "`set_minipolars_options(strictly_immutable = F)`"
+      ))
+    }
     unwrap(.pr$Series$append_mut(self,other))
     self
   }
@@ -601,5 +602,133 @@ Series_arg_max = "use_extendr_wrapper"
 #' @examples
 #' pl$Series(c(5,1))$arg_min()
 Series_arg_min = "use_extendr_wrapper"
+
+
+#' Clone a Series
+#' @name Series_clone
+#' @description Rarely useful as Series are nearly 100% immutable
+#' Any modification of a Series should lead to a clone anyways.
+#'
+#' @return Series
+#' @aliases clone
+#' @keywords  Series
+#' @examples
+#' s1 = pl$Series(1:3);
+#' s2 =  s1$clone();
+#' s3 = s1
+#' xptr::xptr_address(s1) != xptr::xptr_address(s2)
+#' xptr::xptr_address(s1) == xptr::xptr_address(s3)
+#'
+Series_clone = function() {
+  .pr$Series$clone(self)
+}
+
+#' Cumulative sum
+#' @description  Get an array with the cumulative sum computed at every element.
+#' @keywords Series
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Series
+#' @aliases cumsum
+#' @name Series_cumsum
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$cumsum()
+#' pl$Series(c(1:2,NA,3,Inf,4,-Inf,5))$cumsum()
+Series_cumsum = function(reverse = FALSE) {
+  .pr$Series$cumsum(self, reverse)
+}
+
+#' Get data type of Series
+#' @keywords Series
+#' @aliases Series
+#' @return DataType
+#' @aliases dtype
+#' @name Series_dtype
+#' @examples
+#' pl$Series(1:4)$dtype
+#' pl$Series(c(1,2))$dtype
+#' pl$Series(letters)$dtype
+Series_dtype = method_as_property(function() {
+  .pr$Series$dtype(self)
+})
+
+#' Get data type of Series
+#' @keywords Series
+#' @aliases Series
+#' @return DataType
+#' @aliases dtype
+#' @name Series_dtype
+#' @examples
+#' pl$Series(1:4)$sort()$flags()
+Series_flags = method_as_property(function() {
+  list(
+    "SORTED_ASC" =  .pr$Series$is_sorted_flag(self),
+    "SORTED_DESC" =  .pr$Series$is_sorted_reverse_flag(self)
+
+  )
+})
+
+
+#TODO contribute polars, Series.sort() has an * arg input which is unused
+#TODO contribute polars, Series.sort() is missing nulls_last option, that Expr_sort has
+#' Sort this Series
+#' @keywords Series
+#' @aliases Series
+#' @param reverse bool reverse(descending) sort
+#' @param in_place bool sort mutable in-place, breaks immutability
+#' If true will throw an error unless this option has been set:
+#' `set_minipolars_options(strictly_immutable = F)`
+#'
+#' @return Series
+#'
+#' @examples
+#' set_minipolars_options(strictly_immutable = F)
+#' pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
+Series_sort = function(reverse = FALSE, in_place = FALSE) {
+  if(in_place && minipolars_optenv$strictly_immutable) {
+    abort(paste(
+      "in_place sort breaks immutability, to enable mutable features run:\n",
+      "`set_minipolars_options(strictly_immutable = F)`"
+    ))
+  } else {
+    self = self$clone()
+  }
+  .pr$Series$sort_mut(self,reverse)
+}
+
+
+#' Series to DataFrame
+#' @name Series_to_frames
+#' @return Series
+#' @keywords Series
+#' @aliases Series
+#' @format method
+#'
+#' @examples
+#' pl$Series(1:4,"bob")$to_frame()
+Series_to_frame = "use_extendr_wrapper"
+
+
+#' Are Series's equal?
+#'
+#' @param other Series to compare with
+#' @param null_equal bool if TRUE, (Null==Null) is true and not Null/NA. Overridden by strict.
+#' @param strict bool if TRUE, do not allow similar DataType comparison. Overrides null_equal.
+#'
+#' @description  Check if series is equal with another Series.
+#' @name Series_series_equal
+#' @return bool
+#' @keywords Series
+#' @aliases series_equal
+#' @format method
+#'
+#' @examples
+#' pl$Series(1:4,"bob")$series_equal(pl$Series(1:4))
+Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
+  .pr$Series$series_equal(self, other, null_equal, strict)
+}
+#TODO add Series_cast and show examples of strict and null_equals
 
 

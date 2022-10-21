@@ -121,7 +121,7 @@ pl$DataFrame = function(data, make_names_unique= TRUE) {
 
     if(is.na(key) || nchar(key)==0) {
       if(inherits(column, "Series")) {
-        key = column$name()
+        key = column$name
       } else {
         key = "new_column"
       }
@@ -149,7 +149,7 @@ pl$DataFrame = function(data, make_names_unique= TRUE) {
   self = .pr$DataFrame$new_with_capacity(length(data))
   mapply(data,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
-      column$rename_mut(key)
+      .pr$Series$rename_mut(column, key)
 
       unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {

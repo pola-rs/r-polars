@@ -20,7 +20,7 @@ Series arithmetics
 pl$Series(1:3)$div(11:13)
 pl$Series(1:3)$div(pl$Series(11:13))
 pl$Series(1:3)$div(1L)
-1L + pl$Series(1:3)
-pl$Series(1:3) + 1L
+2L / pl$Series(1:3)
+pl$Series(1:3) / 2L
 }
 \keyword{Series}

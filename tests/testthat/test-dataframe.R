@@ -298,6 +298,9 @@ test_that("get coloumn", {
 
 
 
+#TODO implement series cast and test Series_equal
+
+
 test_that("with_columns lazy/eager", {
 
   l = list(

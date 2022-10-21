@@ -120,11 +120,12 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
+  set_minipolars_options(strictly_immutable = F)
 
   s = pl$Series(letters,"foo")
   s2 = s
   S = pl$Series(LETTERS,"bar")
-  unwrap(s$append_mut(S))
+  unwrap(.pr$Series$append_mut(s,S))
 
   expect_identical(
     s$to_r_vector(),
@@ -144,6 +145,7 @@ test_that("Series_append", {
   expect_identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 
 
+  reset_minipolars_options()
 })
 
 
@@ -196,12 +198,12 @@ test_that("clone", {
 })
 
 test_that("dtype and equality", {
-  expect_true (pl$Series(1:3)$dtype()==pl$dtypes$Int32)
-  expect_false(pl$Series(1:3)$dtype()!=pl$dtypes$Int32)
-  expect_true (pl$Series(1.0)$dtype()==pl$dtypes$Float64)
-  expect_false(pl$Series(1.0)$dtype()!=pl$dtypes$Float64)
-  expect_true (pl$Series(1:3)$dtype()!=pl$dtypes$Float64)
-  expect_false(pl$Series(1:3)$dtype()==pl$dtypes$Float64)
+  expect_true (pl$Series(1:3)$dtype==pl$dtypes$Int32)
+  expect_false(pl$Series(1:3)$dtype!=pl$dtypes$Int32)
+  expect_true (pl$Series(1.0)$dtype==pl$dtypes$Float64)
+  expect_false(pl$Series(1.0)$dtype!=pl$dtypes$Float64)
+  expect_true (pl$Series(1:3)$dtype!=pl$dtypes$Float64)
+  expect_false(pl$Series(1:3)$dtype==pl$dtypes$Float64)
 })
 
 
@@ -239,10 +241,28 @@ test_that("to_frame", {
 })
 
 
-test_that("is_sorted", {
+test_that("sorted flags, sort", {
   s = pl$Series(c(2,1,3))
-  expect_true(s$sort(reverse = FALSE)$is_sorted_flag())
-  expect_true(s$sort(reverse = TRUE)$is_sorted_reverse_flag())
+  expect_true(s$sort(reverse = FALSE)$flags$SORTED_ASC)
+  expect_true(s$sort(reverse = TRUE)$flags$SORTED_DESC)
+  expect_false(any(unlist(pl$Series(1:4)$flags)))
+
+
+  #Compare performance with Expr
+  l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
+  s  = pl$Series(l$a,"a")
+  l_actual_expr_sort = pl$DataFrame(l)$select(
+    pl$col("a")$sort()$alias("sort"),
+    pl$col("a")$sort(reverse=TRUE)$alias("sort_reverse")
+  )$to_list()
+
+  expect_identical(
+    l_actual_expr_sort,
+    list(
+      sort = s$sort()$to_r(),
+      sort_reverse = s$sort(reverse = TRUE)$to_r()
+    )
+  )
 })
 
 test_that("value counts", {
