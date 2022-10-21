@@ -218,3 +218,10 @@ where
         Err(x) => list!(ok = extendr_api::NULL, err = x.to_string()),
     }
 }
+
+pub fn r_error_list<E>(err: E) -> list::List
+where
+    E: std::fmt::Display,
+{
+    list!(ok = extendr_api::NULL, err = err.to_string())
+}

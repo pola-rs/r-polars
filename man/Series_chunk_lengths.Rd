@@ -5,14 +5,22 @@
 \title{Append two Series}
 \usage{
 Series_chunk_lengths()
+
+Series_chunk_lengths()
 }
 \value{
+numeric vector
+
 numeric vector
 }
 \description{
 Append Series with other Series. Imutable.
+
+Append Series with other Series. Imutable.
 }
 \examples{
+chunked_series = c(pl$Series(1:3),pl$Series(1:10))
+chunked_series$chunk_lengths()
 chunked_series = c(pl$Series(1:3),pl$Series(1:10))
 chunked_series$chunk_lengths()
 }

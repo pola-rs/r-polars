@@ -1435,6 +1435,16 @@ Expr_arg_max = "use_extendr_wrapper"
 
 
 
+#' Wrap column in list
+#' @description  Aggregate to list.
+#' @keywords Expr
+#' @return Expr
+#' @aliases list
+#' @name Expr_list
+#' @format a method
+Expr_list = "use_extendr_wrapper"
+
+
 
 
 

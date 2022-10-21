@@ -198,6 +198,8 @@ Expr$unique <- function() .Call(wrap__Expr__unique, self)
 
 Expr$unique_stable <- function() .Call(wrap__Expr__unique_stable, self)
 
+Expr$list <- function() .Call(wrap__Expr__list, self)
+
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
 Expr$agg_groups <- function() .Call(wrap__Expr__agg_groups, self)
@@ -268,7 +270,7 @@ Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
 
 Series$clone <- function() .Call(wrap__Series__clone, self)
 
-Series$to_r_vector <- function() .Call(wrap__Series__to_r_vector, self)
+Series$to_r <- function() .Call(wrap__Series__to_r, self)
 
 Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
 

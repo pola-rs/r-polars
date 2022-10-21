@@ -118,29 +118,6 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
     }
 }
 
-pub fn series_to_r_vector_pl_result(s: &pl::Series) -> pl::PolarsResult<Robj> {
-    use pl::DataType::*;
-    match s.dtype() {
-        Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
-        Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-        Int64 => s.i64().map(|ca| ca.into_iter().collect_robj()),
-        Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
-        //TODO, how to handle u32->i32 overflow? extendr converts to real which will yield a unique psedo int for all u32
-        //alternatively try i32, handle overflow?, or convert to bit64
-        UInt32 => s.u32().map(|ca| ca.into_iter().collect_robj()),
-        Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
-        Categorical(_) => s
-            .categorical()
-            .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
-        _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-            format!(
-                "sorry minipolars has not yet implemented R conversion for Series.dtype: {}",
-                s.dtype()
-            ),
-        ))),
-    }
-}
-
 impl From<polars::prelude::Series> for Series {
     fn from(pls: polars::prelude::Series) -> Self {
         Series(pls)
@@ -158,9 +135,9 @@ impl Series {
         Series(self.0.clone())
     }
 
-    pub fn to_r_vector(&self) -> list::List {
-        let x = series_to_r_vector_pl_result(&self.0);
-        r_result_list(x)
+    pub fn to_r(&self) -> list::List {
+        let robj_result = pl_series_to_list(&self.0);
+        r_result_list(robj_result)
     }
 
     //any mut method exposed in R suffixed _mut
@@ -555,6 +532,59 @@ impl From<&Series> for pl::Series {
     fn from(x: &Series) -> Self {
         x.clone().0
     }
+}
+
+pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
+    use pl::DataType::*;
+    fn to_list_recursive(s: &pl::Series) -> pl::PolarsResult<Robj> {
+        match s.dtype() {
+            Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
+            Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
+            Int64 => s.i64().map(|ca| ca.into_iter().collect_robj()),
+            Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
+
+            //map u32 to f64
+            UInt32 => s.u32().map(|ca| {
+                ca.into_iter()
+                    .map(|u32opt| u32opt.map(|u32val| u32val as f64))
+                    .collect_robj()
+            }),
+            Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
+            Categorical(_) => s
+                .categorical()
+                .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
+            List(_) => {
+                let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
+                let ca = s.list().unwrap();
+
+                for opt_s in ca.amortized_iter() {
+                    match opt_s {
+                        Some(s) => {
+                            let s_ref = s.as_ref();
+                            let inner_val = to_list_recursive(s_ref)?;
+                            v.push(inner_val);
+                        }
+
+                        None => {
+                            v.push(r!(extendr_api::NULL));
+                        }
+                    }
+                }
+                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
+                //or take ownership of vector
+                let l = extendr_api::List::from_iter(v.iter());
+                Ok(l.into_robj())
+            }
+            _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
+                format!(
+                    "sorry minipolars has not yet implemented R conversion for Series.dtype: {}",
+                    s.dtype()
+                ),
+            ))),
+        }
+    }
+
+    to_list_recursive(series)
 }
 
 extendr_module! {

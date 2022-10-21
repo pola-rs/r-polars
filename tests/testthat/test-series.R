@@ -332,3 +332,26 @@ test_that("repeat", {
 })
 
 
+test_that("Series list", {
+
+  series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
+    pl$col("a")$list()$list()$append(
+      (
+        pl$col("a")$head(2)$list()$append(
+          pl$col("a")$tail(1)$list()
+        )
+      )$list()
+    )
+  )$get_column("a") # get series from DataFrame
+
+  expected_list = list(list(c(1L, 2L, 3L, 4L, 5L, NA)), list(1:2, NA_integer_))
+  expect_identical(series_list$to_r(), expected_list)
+  expect_identical(series_list$to_r_list(), expected_list)
+  expect_identical(series_list$to_r_vector(), unlist(expected_list))
+
+  series_vec = pl$Series(1:5)
+  expect_identical(series_vec$to_r(), 1:5)
+  expect_identical(series_vec$to_r_vector(), 1:5)
+  expect_identical(series_vec$to_r_list(), as.list(1:5))
+
+})

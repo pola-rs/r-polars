@@ -159,7 +159,71 @@ Series_udf_handler = function(f,rs) {
 
 #modified Series bindings
 
-Series_to_r_vector = \() unwrap(.pr$Series$to_r_vector(self))
+
+#' Get r vector/list
+#' @description return R list (if polars Series is list)  or vector (any other polars Series type)
+#' @name Series_to_r
+#' @rdname Series_to_r
+#' @return R list or vector
+#' @keywords Series
+#' @aliases to_r
+#' @details
+#' Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
+#' Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.
+#'
+#' @examples
+#'
+#' #make polars Series_Utf8
+#' series_vec = pl$Series(letters[1:3])
+#'
+#' #Series_non_list
+#' series_vec$to_r() #as vector because Series DataType is not list (is Utf8)
+#' series_vec$to_r_list() #implicit call as.list(), convert to list
+#' series_vec$to_r_vector() #implicit call unlist(), same as to_r() as already vector
+#'
+#'
+#' #make nested Series_list of Series_list of Series_Int32
+#' #using Expr syntax because currently more complete translated
+#' series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
+#'   pl$col("a")$list()$list()$append(
+#'     (
+#'       pl$col("a")$head(2)$list()$append(
+#'         pl$col("a")$tail(1)$list()
+#'       )
+#'     )$list()
+#'   )
+#' )$get_column("a") # get series from DataFrame
+#'
+#' #Series_list
+#' series_list$to_r() #as list because Series DataType is list
+#' series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
+#' series_list$to_r_vector() #implicit call unlist(), append into a vector
+Series_to_r = \() {
+  unwrap(.pr$Series$to_r(self))
+}
+#TODO replace list example with Series only syntax
+
+#' @rdname Series_to_r
+#' @name Series_to_r_vector
+#' @description return R vector (implicit unlist)
+#' @return R vector
+#' @aliases to_r_vector
+#' @keywords Series
+Series_to_r_vector = \() {
+  unlist(unwrap(.pr$Series$to_r(self)))
+}
+
+#' @rdname Series_to_r
+#' @name Series_to_r_list
+#' @description return R list (implicit as.list)
+#' @return R list
+#' @aliases to_r_list
+#' @keywords Series
+Series_to_r_list = \() {
+  as.list(unwrap(.pr$Series$to_r(self)))
+}
+
+
 Series_abs         = \() unwrap(.pr$Series$abs(self))
 Series_value_counts =\(sorted=TRUE, multithreaded=FALSE) {
   unwrap(.pr$Series$value_counts(self, multithreaded, sorted))
@@ -316,4 +380,14 @@ Series_append = function(other, immutable = TRUE) {
   }
 }
 
-
+#' To list
+#' @description Append Series with other Series. Imutable.
+#'
+#' @return numeric vector
+#'
+#' @examples
+#' chunked_series = c(pl$Series(1:3),pl$Series(1:10))
+#' chunked_series$chunk_lengths()
+Series_chunk_lengths = function() {
+  .pr$Series$chunk_lengths(self)
+}

@@ -10,8 +10,9 @@ print(paste(
 
 ## modify these Series methods
 env = minipolars:::Series
+env$to_r        = Series_to_r
 env$to_r_vector = Series_to_r_vector
-env$to_r        = Series_to_r_vector
+env$to_r_list   = Series_to_r_list
 env$abs         = Series_abs
 env$apply       = Series_apply
 env$value_counts= Series_value_counts

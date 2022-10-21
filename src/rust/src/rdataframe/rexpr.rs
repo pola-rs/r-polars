@@ -377,6 +377,10 @@ impl Expr {
         self.0.clone().unique_stable().into()
     }
 
+    pub fn list(&self) -> Expr {
+        self.clone().0.list().into()
+    }
+
     pub fn abs(&self) -> Self {
         self.0.clone().abs().into()
     }

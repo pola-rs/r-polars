@@ -107,14 +107,13 @@ impl DataFrame {
 
     fn to_list(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> =
-            self.0.iter().map(series_to_r_vector_pl_result).collect();
+        let robj_vec_res: Result<Vec<Robj>, _> = self.0.iter().map(pl_series_to_list).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|ok| {
+        let robj_list_res = robj_vec_res.map(|vec_robj| {
             r!(extendr_api::prelude::List::from_names_and_values(
                 self.columns(),
-                ok
+                vec_robj
             ))
         });
 
