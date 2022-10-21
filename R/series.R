@@ -544,3 +544,28 @@ Series_append = function(other, immutable = TRUE) {
 Series_chunk_lengths = function() {
   .pr$Series$chunk_lengths(self)
 }
+
+#' Alias
+#' @description Change name of Series
+#'
+#' @param name a String as the new name
+#' @return Series
+#'
+#' @examples
+#' pl$Series(1:3,name = "alice")$alias("bob")
+Series_alias = function(name) {
+  .pr$Series$alias(self, name)
+}
+
+#' Property: Name
+#' @description Get name of Series
+#'
+#' @return String the name
+#'
+#' @examples
+#' pl$Series(1:3,name = "alice")$name
+Series_name = method_as_property(function() {
+  .pr$Series$name(self)
+})
+
+

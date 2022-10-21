@@ -79,7 +79,7 @@ DataFrame
 
 
 
-#' create new DataFrame
+#' Create new DataFrame
 #' @name DataFrame
 #'
 #' @param data a data.frame or list of mixed vectors and Series of equal length.
@@ -180,8 +180,6 @@ print.DataFrame = function(x) {
 
 #' internal method print DataFrame
 #'
-#'
-#' @name print()
 #'
 #' @return self
 #'

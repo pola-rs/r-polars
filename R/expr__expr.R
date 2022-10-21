@@ -79,6 +79,7 @@ Expr_abs = "use_extendr_wrapper"
 #' pl$lit(5)$add(pl$lit(10))
 Expr_add = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_add
 "+.Expr" <- function(e1,e2) e1$add(wrap_e(e2))
 
 #' Div
@@ -93,6 +94,7 @@ Expr_add = "use_extendr_wrapper"
 #' pl$lit(5)$div(pl$lit(10))
 Expr_div = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_div
 "/.Expr" <- function(e1,e2) e1$div(wrap_e(e2))
 
 #' Sub
@@ -107,6 +109,7 @@ Expr_div = "use_extendr_wrapper"
 #' pl$lit(5)$sub(pl$lit(10))
 Expr_sub = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_sub
 "-.Expr" <- function(e1,e2) e1$sub(wrap_e(e2))
 
 #' Mul *
@@ -121,6 +124,7 @@ Expr_sub = "use_extendr_wrapper"
 #' pl$lit(5)$mul(pl$lit(10))
 Expr_mul = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_mul
 "*.Expr" <- function(e1,e2) e1$mul(wrap_e(e2))
 
 
@@ -135,6 +139,7 @@ Expr_mul = "use_extendr_wrapper"
 #' !pl$lit(TRUE)
 Expr_is_not = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_is_not
 "!.Expr" <- function(e1,e2) e1$is_not()
 
 #' Less Than <
@@ -149,6 +154,7 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5)$lt(pl$lit(10))
 Expr_lt = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_lt
 "<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
 
 #' GreaterThan <
@@ -163,6 +169,7 @@ Expr_lt = "use_extendr_wrapper"
 #' pl$lit(2)$gt(pl$lit(1))
 Expr_gt = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_gt
 ">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
 
 #' Equal ==
@@ -177,6 +184,7 @@ Expr_gt = "use_extendr_wrapper"
 #' pl$lit(2)$eq(pl$lit(2))
 Expr_eq = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_eq
 "==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
 
 
@@ -192,6 +200,7 @@ Expr_eq = "use_extendr_wrapper"
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_neq
 "!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
 
 #' Less Than Or Equal <=
@@ -206,6 +215,7 @@ Expr_neq = "use_extendr_wrapper"
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_lt_eq
 "<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
 
 
@@ -221,6 +231,7 @@ Expr_lt_eq = "use_extendr_wrapper"
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_gt_eq
 ">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
 
 
@@ -760,6 +771,7 @@ Expr_reverse = function() {
 
 
 #' And
+#' @name Expr_and
 #' @description combine to boolean exprresions with AND
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
@@ -769,10 +781,12 @@ Expr_reverse = function() {
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
 Expr_and = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_and
 "&.Expr" <- function(e1,e2) e1$and(wrap_e(e2))
 
 
 #' Or
+#' @name Expr_or
 #' @description combine to boolean expresions with OR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
@@ -782,10 +796,12 @@ Expr_and = "use_extendr_wrapper"
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
 Expr_or = "use_extendr_wrapper"
 #' @export
+#' @rdname Expr_or
 "|.Expr" <- function(e1,e2) e1$or(wrap_e(e2))
 
 
 #' Xor
+#' @name Expr_xor
 #' @description combine to boolean expresions with XOR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
@@ -795,6 +811,7 @@ Expr_or = "use_extendr_wrapper"
 Expr_xor = "use_extendr_wrapper"
 
 #' is_in
+#' @name Expr_is_in
 #' @description combine to boolean expresions with similar to `%in%`
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal

@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_eq}
 \alias{Expr_eq}
+\alias{==.Expr}
 \title{Equal ==}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_eq
+
+\method{==}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

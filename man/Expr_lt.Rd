@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_lt}
 \alias{Expr_lt}
+\alias{<.Expr}
 \title{Less Than <}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_lt
+
+\method{<}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

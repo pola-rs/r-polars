@@ -60,5 +60,7 @@ series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
 series_list$to_r() #as list because Series DataType is list
 series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
 series_list$to_r_vector() #implicit call unlist(), append into a vector
+ #
+ #
 }
 \keyword{Series}

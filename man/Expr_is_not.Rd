@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_is_not}
 \alias{Expr_is_not}
+\alias{!.Expr}
 \title{Not !}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_is_not
+
+\method{!}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

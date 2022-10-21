@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_neq}
 \alias{Expr_neq}
+\alias{!=.Expr}
 \title{Not Equal !=}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_neq
+
+\method{!=}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

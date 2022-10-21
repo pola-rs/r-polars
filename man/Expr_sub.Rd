@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_sub}
 \alias{Expr_sub}
+\alias{-.Expr}
 \title{Sub}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_sub
+
+\method{-}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

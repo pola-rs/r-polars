@@ -114,8 +114,8 @@ test_that("pl$Series_abs", {
 test_that("pl$Series_alias", {
   s = pl$Series(letters,"foo")
   s2 = s$alias("bar")
-  expect_identical(s$name(),"foo")
-  expect_identical(s2$name(),"bar")
+  expect_identical(s$name,"foo")
+  expect_identical(s2$name,"bar")
 })
 
 

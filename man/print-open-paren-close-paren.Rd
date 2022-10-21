@@ -3,27 +3,19 @@
 \name{print()}
 \alias{print()}
 \alias{print.DataFrame}
-\alias{DataFrame_print}
 \title{s3 method print DataFrame}
 \usage{
 \method{print}{DataFrame}(x)
-
-DataFrame_print()
 }
 \arguments{
 \item{x}{DataFrame}
 }
 \value{
 self
-
-self
 }
 \description{
 s3 method print DataFrame
-
-internal method print DataFrame
 }
 \examples{
-pl$DataFrame(iris)
 pl$DataFrame(iris)
 }

@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_and}
 \alias{Expr_and}
+\alias{&.Expr}
 \title{And}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_and
+
+\method{&}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

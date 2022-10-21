@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_lt_eq}
 \alias{Expr_lt_eq}
+\alias{<=.Expr}
 \title{Less Than Or Equal <=}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_lt_eq
+
+\method{<=}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

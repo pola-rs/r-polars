@@ -9,32 +9,36 @@ print(paste(
 
 
 ## modify these Series methods
-env = minipolars:::Series
-env$to_r        = Series_to_r
-env$to_r_vector = Series_to_r_vector
-env$to_r_list   = Series_to_r_list
-env$abs         = Series_abs
-env$apply       = Series_apply
-env$value_counts= Series_value_counts
-env$is_unique   = Series_is_unique
-env$all         = Series_all
-env$shape       = Series_shape
-env$len         = Series_len
-env$ceil        = Series_ceil
-env$floor       = Series_floor
-env$chunk_lengths = Series_chunk_lengths
-env$append      = Series_append
+# env = minipolars:::Series
+# env$to_r        = Series_to_r
+# env$to_r_vector = Series_to_r_vector
+# env$to_r_list   = Series_to_r_list
+# env$abs         = Series_abs
+# env$apply       = Series_apply
+# env$value_counts= Series_value_counts
+# env$is_unique   = Series_is_unique
+# env$all         = Series_all
+# env$shape       = Series_shape
+# env$len         = Series_len
+# env$ceil        = Series_ceil
+# env$floor       = Series_floor
+# env$chunk_lengths = Series_chunk_lengths
+# env$append      = Series_append
 
-#rewrite all binary operators or other methods to accept something that can turn into a Series
-lapply(Series_ops, \(so) {
-  more_args = attr(so,"more_args")
-  if(!is.null(more_args)) more_args = paste0(", ",more_args,collapse=", ")
+macro_add_syntax_check_to_class("Series")
+replace_private_with_pub_methods( minipolars:::Series, "^Series_")
 
-  env[[so]] =eval(parse(text=paste0(
-    "function(other",more_args,") .Call(wrap__Series__",so,", self, wrap_s(other)",more_args,")"
-  )))
-  invisible(NULL)
-})
+
+# #rewrite all binary operators or other methods to accept something that can turn into a Series
+# lapply(Series_ops, \(so) {
+#   more_args = attr(so,"more_args")
+#   if(!is.null(more_args)) more_args = paste0(", ",more_args,collapse=", ")
+#
+#   env[[so]] =eval(parse(text=paste0(
+#     "function(other",more_args,") .Call(wrap__Series__",so,", self, wrap_s(other)",more_args,")"
+#   )))
+#   invisible(NULL)
+# })
 
 
 # modify these Dataframe methods
@@ -94,8 +98,8 @@ rm(env)
 move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 #TODO decide on namespace rules, should there be a env for methods only?
 
-#pl$Series
-pl$Series    = minipolars:::Series_constructor
+
+
 
 #pl$[readers]
 pl$lazy_csv_reader = minipolars:::lazy_csv_reader

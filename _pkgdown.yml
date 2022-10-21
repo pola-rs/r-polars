@@ -18,6 +18,10 @@ reference:
     contents:
       - has_keyword("Expr_new")
       - has_keyword("Expr")
+  - subtitle: Series
+    contents:
+      - has_keyword("Series_new")
+      - has_keyword("Series")
 
   - title: Minipolars API and namespace
     desc: >

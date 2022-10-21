@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame}
 \alias{DataFrame}
-\title{create new DataFrame}
+\title{Create new DataFrame}
 \usage{
 DataFrame(data)
 }
@@ -15,7 +15,7 @@ DataFrame(data)
 DataFrame
 }
 \description{
-create new DataFrame
+Create new DataFrame
 }
 \examples{
 pl$DataFrame(iris)

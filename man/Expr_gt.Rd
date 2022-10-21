@@ -3,12 +3,15 @@
 \docType{data}
 \name{Expr_gt}
 \alias{Expr_gt}
+\alias{>.Expr}
 \title{GreaterThan <}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_gt
+
+\method{>}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

@@ -2,11 +2,7 @@
 % Please edit documentation in R/series.R
 \name{Series}
 \alias{Series}
-\alias{Series_constructor}
-\title{Series}
-\usage{
-Series_constructor(x, name = NULL)
-}
+\title{Create new Series}
 \arguments{
 \item{x}{any vector}
 
@@ -16,8 +12,6 @@ Series_constructor(x, name = NULL)
 Series
 }
 \description{
-Polars pl$Series
-
 found in api as pl$Series named Series_constructor internally
 }
 \examples{
@@ -25,3 +19,4 @@ found in api as pl$Series named Series_constructor internally
 pl$Series(1:4)
 }
 }
+\keyword{Series_new}
