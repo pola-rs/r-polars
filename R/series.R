@@ -568,4 +568,38 @@ Series_name = method_as_property(function() {
   .pr$Series$name(self)
 })
 
+#' Reduce Boolean Series with ANY
+#'
+#' @return bool
+#'
+#' @examples
+#' pl$Series(c(TRUE,FALSE,NA))$any()
+Series_any = "use_extendr_wrapper"
+
+#' Reduce Boolean Series with ALL
+#'
+#' @return bool
+#'
+#' @examples
+#' pl$Series(c(TRUE,TRUE,NA))$all()
+Series_all = function() {
+  unwrap(.pr$Series$all(self))
+}
+
+#' idx to max value
+#'
+#' @return bool
+#'
+#' @examples
+#' pl$Series(c(5,1))$arg_max()
+Series_arg_max = "use_extendr_wrapper"
+
+#' idx to min value
+#'
+#' @return bool
+#'
+#' @examples
+#' pl$Series(c(5,1))$arg_min()
+Series_arg_min = "use_extendr_wrapper"
+
 

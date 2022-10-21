@@ -172,11 +172,11 @@ impl Series {
     }
 
     pub fn arg_min(&self) -> Option<usize> {
-        self.0.arg_min().map(|x| x + 1)
+        self.0.arg_min()
     }
 
     pub fn arg_max(&self) -> Option<usize> {
-        self.0.arg_max().map(|x| x + 1)
+        self.0.arg_max()
     }
 
     pub fn is_sorted_flag(&self) -> bool {

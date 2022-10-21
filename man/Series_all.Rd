@@ -5,14 +5,21 @@
 \title{Series_all}
 \usage{
 Series_all()
+
+Series_all()
 }
 \value{
+bool
+
 bool
 }
 \description{
 Series_all
+
+Reduce Boolean Series with ALL
 }
 \examples{
 pl$Series(1:10)$is_unique()$all()
 
+pl$Series(c(TRUE,TRUE,NA))$all()
 }
