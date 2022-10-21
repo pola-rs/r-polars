@@ -1,3 +1,47 @@
+#' @title Inner workings of the Series-class
+#'
+#' @name Series_class
+#' @description The `Series`-class is simply two environments of respectively
+#' the public and private methods/function calls to the minipolars rust side. The instanciated
+#' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
+#' is the only statefullness of the Series object on the R side. Any other state resides on the
+#' rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object.
+#' Most methods return another `Series`-class instance or similar which allows for method chaining.
+#' This class system in lack of a better name could be called "environment classes" and is the same class
+#' system extendr provides, except here there is both a public and private set of methods. For implementation
+#' reasons, the private methods are external and must be called from minipolars:::.pr.$Series$methodname(), also
+#' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
+#' as pure functions solved/simplified self-referential complications.
+#'
+#' @details Check out the source code in R/Series_frame.R how public methods are derived from private methods.
+#' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
+#' into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
+#' are removed and replaced by any function prefixed `Series_`.
+#'
+#' @keywords Series
+#' @examples
+#' #see all exported methods
+#' ls(minipolars:::Series)
+#'
+#' #see all private methods (not intended for regular use)
+#' ls(minipolars:::.pr$Series)
+#'
+#'
+#' #make an object
+#' s = pl$Series(1:3)
+#'
+#' #use a public method/property
+#' s$shape
+#'
+#'
+#' #use a private method (mutable append not allowed in public api)
+#' s_copy = s
+#' .pr$Series$append_mut(s, pl$Series(5:1))
+#' identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
+Series
+
+
+
 
 #' Print Series
 #'
@@ -20,42 +64,30 @@ print.Series = function(x) {
   paste0(ls(minipolars:::Series, pattern = pattern ),"()")
 }
 
-#' Series
-#'
-#' @description Polars pl$Series
-#' @rdname Series
+
+
+
+#' Create new Series
 #' @name Series
-#'
-#' @export
-#' @aliases Series
-#'
-Series
-
-
-
-
-#' Series constructor
-#'
 #' @description found in api as pl$Series named Series_constructor internally
 #'
 #' @param x any vector
 #' @param name string
 #' @rdname Series
-#'
+#' @keywords Series_new
 #' @return Series
 #' @importFrom  rlang is_string
-#' @export
 #' @aliases Series
 #'
 #' @examples {
 #' pl$Series(1:4)
 #' }
-Series_constructor =  function(x, name=NULL){
+pl$Series = function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
   if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x) || is.factor(x)) {
     if(is.null(name)) name = ""
     if(!is_string(name)) abort("name must be NULL or a string")
-    return(minipolars:::Series$new(x,name))
+    return(.pr$Series$new(x,name))
   }
   abort("x must be a double, interger, char, or logical vector")
 }
@@ -100,29 +132,45 @@ wrap_s = function(x) {
 }
 
 
-##make list of methods, which should be modified from Series as input
-# to any type which can be converted into a series, see use of Series_ops in zzz.R
-Series_ops = list()
-Series_ops_add = function(name, more_args=NULL) {
-  if(!is.null(more_args)) {
-    attr(name,"more_args") = more_args
-  }
-  Series_ops <<- c(Series_ops,list(name))
+# ##make list of methods, which should be modified from Series as input
+# # to any type which can be converted into a series, see use of Series_ops in zzz.R
+# Series_ops = list()
+# Series_ops_add = function(name, more_args=NULL) {
+#   if(!is.null(more_args)) {
+#     attr(name,"more_args") = more_args
+#   }
+#   Series_ops <<- c(Series_ops,list(name))
+# }
+
+
+
+#' Add Series
+#' @name Series_Add
+#' @description add to one Series with other Series
+#'
+#' @return Series
+#' @aliases add
+#' @keywords  Series
+#' @examples
+#' pl$Series(1:3)$add(11:13)
+#' pl$Series(1:3)$add(pl$Series(11:13))
+#' pl$Series(1:3)$add(1L)
+Series_add = function(other) {
+  .pr$Series$add(self, wrap_s(other))
 }
+#' #' @export
+#' "+.Series" <- function(s1,s2) wrap_s(s1)$add(s2); Series_ops_add("add")
+#' #' @export
+#' "-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2); Series_ops_add("sub")
+#' #' @export
+#' "/.Series" <- function(s1,s2) wrap_s(s1)$div(s2); Series_ops_add("div")
+#' #' @export
+#' "*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2); Series_ops_add("mul")
+#' #' @export
+#' "%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2); Series_ops_add("rem")
 
-#' @export
-"+.Series" <- function(s1,s2) wrap_s(s1)$add(s2); Series_ops_add("add")
-#' @export
-"-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2); Series_ops_add("sub")
-#' @export
-"/.Series" <- function(s1,s2) wrap_s(s1)$div(s2); Series_ops_add("div")
-#' @export
-"*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2); Series_ops_add("mul")
-#' @export
-"%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2); Series_ops_add("rem")
 
-
-Series_ops_add("compare",more_args = "op")
+#Series_ops_add("compare",more_args = "op")
 #' @export
 "==.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"equal"))
 #' @export
@@ -149,7 +197,7 @@ Series_shape = function() {
 class(Series_shape) = c("property","function")
 
 Series_udf_handler = function(f,rs) {
-  fps = Series_constructor(f(rs))
+  fps = pl$Series(f(rs))
   fps
   # rs_ptr_adr = xptr::xptr_address(fps)
   # rs_ptr_adr
@@ -209,6 +257,7 @@ Series_to_r = \() {
 #' @return R vector
 #' @aliases to_r_vector
 #' @keywords Series
+#' @examples  #
 Series_to_r_vector = \() {
   unlist(unwrap(.pr$Series$to_r(self)))
 }
@@ -219,6 +268,7 @@ Series_to_r_vector = \() {
 #' @return R list
 #' @aliases to_r_list
 #' @keywords Series
+#' @examples  #
 Series_to_r_list = \() {
   as.list(unwrap(.pr$Series$to_r(self)))
 }
