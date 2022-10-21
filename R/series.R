@@ -144,10 +144,11 @@ wrap_s = function(x) {
 
 
 
-#' Add Series
-#' @name Series_Add
-#' @description add to one Series with other Series
-#'
+
+
+#' add Series
+#' @name Series_add
+#' @description Series arithmetics
 #' @return Series
 #' @aliases add
 #' @keywords  Series
@@ -155,33 +156,120 @@ wrap_s = function(x) {
 #' pl$Series(1:3)$add(11:13)
 #' pl$Series(1:3)$add(pl$Series(11:13))
 #' pl$Series(1:3)$add(1L)
+#' 1L + pl$Series(1:3)
+#' pl$Series(1:3) + 1L
 Series_add = function(other) {
   .pr$Series$add(self, wrap_s(other))
 }
-#' #' @export
-#' "+.Series" <- function(s1,s2) wrap_s(s1)$add(s2); Series_ops_add("add")
-#' #' @export
-#' "-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2); Series_ops_add("sub")
-#' #' @export
-#' "/.Series" <- function(s1,s2) wrap_s(s1)$div(s2); Series_ops_add("div")
-#' #' @export
-#' "*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2); Series_ops_add("mul")
-#' #' @export
-#' "%%.Series" <- function(s1,s2) wrap_s(s1)$rem(s2); Series_ops_add("rem")
-
-
-#Series_ops_add("compare",more_args = "op")
 #' @export
+#' @rdname Series_add
+"+.Series" <- function(s1,s2) wrap_s(s1)$add(s2)
+
+#' sub Series
+#' @name Series_sub
+#' @description Series arithmetics
+#' @return Series
+#' @aliases sub
+#' @keywords  Series
+#' @examples
+#' pl$Series(1:3)$sub(11:13)
+#' pl$Series(1:3)$sub(pl$Series(11:13))
+#' pl$Series(1:3)$sub(1L)
+#' 1L + pl$Series(1:3)
+#' pl$Series(1:3) + 1L
+Series_sub = function(other) {
+  .pr$Series$sub(self, wrap_s(other))
+}
+#' @export
+#' @rdname Series_sub
+"-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2)
+
+#' div Series
+#' @name Series_div
+#' @description Series arithmetics
+#' @return Series
+#' @aliases div
+#' @keywords  Series
+#' @examples
+#' pl$Series(1:3)$div(11:13)
+#' pl$Series(1:3)$div(pl$Series(11:13))
+#' pl$Series(1:3)$div(1L)
+#' 1L + pl$Series(1:3)
+#' pl$Series(1:3) + 1L
+Series_div = function(other) {
+  .pr$Series$div(self, wrap_s(other))
+}
+#' @export
+#' @rdname Series_div
+"/.Series" <- function(s1,s2) wrap_s(s1)$div(s2)
+
+#' mul Series
+#' @name Series_mul
+#' @description Series arithmetics
+#' @return Series
+#' @aliases mul
+#' @keywords  Series
+#' @examples
+#' pl$Series(1:3)$mul(11:13)
+#' pl$Series(1:3)$mul(pl$Series(11:13))
+#' pl$Series(1:3)$mul(1L)
+#' 1L + pl$Series(1:3)
+#' pl$Series(1:3) + 1L
+Series_mul = function(other) {
+  .pr$Series$mul(self, wrap_s(other))
+}
+#' @export
+#' @rdname Series_mul
+"*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
+
+#' rem Series
+#' @name Series_rem
+#' @description Series arithmetics, remainder
+#' @return Series
+#' @aliases rem
+#' @keywords  Series
+#' @examples
+#' pl$Series(1:4)$rem(2L)
+#' pl$Series(1:3)$rem(pl$Series(11:13))
+#' pl$Series(1:3)$rem(1L)
+#' 1L + pl$Series(1:3)
+#' pl$Series(1:3) + 1L
+Series_rem = function(other) {
+  .pr$Series$rem(self, wrap_s(other))
+}
+#' @export
+#' @rdname Series_rem
+"*.Series" <- function(s1,s2) wrap_s(s1)$rem(s2)
+
+#' Compare Series
+#' @name Series_compare
+#' @description compare two Series
+#' @param other A Series or something a Series can be created from
+#' @param op the chosen operator a String either: 'equal', 'not_equal', 'lt', 'gt', 'lt_eq' or 'gt_eq'
+#' @return Series
+#' @aliases compare
+#' @keywords  Series
+#' @examples
+Series_compare = function(other, op) {
+  unwrap(.pr$Series$compare(self, wrap_s(other), op))
+}
+#' @export
+#' @rdname Series_compare
 "==.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"equal"))
 #' @export
+#' @rdname Series_compare
 "!=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"not_equal"))
 #' @export
+#' @rdname Series_compare
 "<.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"lt"))
 #' @export
+#' @rdname Series_compare
 ">.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"gt"))
 #' @export
+#' @rdname Series_compare
 "<=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"lt_eq"))
 #' @export
+#' @rdname Series_compare
 ">=.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"gt_eq"))
 
 
