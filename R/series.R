@@ -56,6 +56,16 @@ print.Series = function(x) {
   invisible(x)
 }
 
+#' internal method print Series
+#'
+#' @return self
+#'
+#' @examples pl$Series(iris)
+Series_print = function() {
+  .pr$Series$print(self)
+  invisible(self)
+}
+
 #' @export
 #' @title auto complete $-access into object
 #' @description called by the interactive R session internally
@@ -241,6 +251,8 @@ Series_rem = function(other) {
 #' @rdname Series_rem
 "*.Series" <- function(s1,s2) wrap_s(s1)$rem(s2)
 
+
+#TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare
 #' @description compare two Series
@@ -250,8 +262,11 @@ Series_rem = function(other) {
 #' @aliases compare
 #' @keywords  Series
 #' @examples
+#' pl$Series(1:5) == pl$Series(c(1:3,NA_integer_,10L))
 Series_compare = function(other, op) {
-  unwrap(.pr$Series$compare(self, wrap_s(other), op))
+  other_s = wrap_s(other)
+  if(self$len() != other_s$len()) abort("Failed to compare two Series because of differing lengths.")
+  .pr$Series$compare(self, wrap_s(other), op)
 }
 #' @export
 #' @rdname Series_compare
