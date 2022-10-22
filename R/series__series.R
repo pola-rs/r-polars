@@ -286,7 +286,6 @@ Series_compare = function(other, op) {
 #' Shape of series
 #'
 #' @return dimension vector of Series
-#' @export
 #'
 #' @examples identical(pl$Series(1:2)$shape, 2:1)
 Series_shape = function() {
@@ -526,7 +525,7 @@ Series_append = function(other, immutable = TRUE) {
     if(minipolars_optenv$strictly_immutable) {
       abort(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`set_minipolars_options(strictly_immutable = F)`"
+        "`pl$set_minipolars_options(strictly_immutable = F)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self,other))
@@ -679,18 +678,17 @@ Series_flags = method_as_property(function() {
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `set_minipolars_options(strictly_immutable = F)`
+#' `pl$set_minipolars_options(strictly_immutable = F)`
 #'
 #' @return Series
 #'
 #' @examples
-#' set_minipolars_options(strictly_immutable = F)
 #' pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
 Series_sort = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && minipolars_optenv$strictly_immutable) {
     abort(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`set_minipolars_options(strictly_immutable = F)`"
+      "`pl$set_minipolars_options(strictly_immutable = F)`"
     ))
   } else {
     self = self$clone()
@@ -731,4 +729,55 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 }
 #TODO add Series_cast and show examples of strict and null_equals
 
+
+
+#' Rename a series
+#'
+#' @param name string the new name
+#' @param in_place bool rename in-place, breaks immutability
+#' If true will throw an error unless this option has been set:
+#' `pl$set_minipolars_options(strictly_immutable = F)`
+#'
+#' @name Series_rename
+#' @return bool
+#' @keywords Series
+#' @aliases series_rename
+#' @format method
+#'
+#' @examples
+#' pl$Series(1:4,"bob")$rename("alice")
+Series_rename = function(name, in_place = FALSE) {
+  if (identical(self$name,name)) return(self) #no change needed
+  if(in_place && minipolars_optenv$strictly_immutable) {
+    abort(paste(
+      "in_place breaks \"objects are immutable\" which is expected in R.",
+      "To enable mutable features run: `pl$set_minipolars_options(strictly_immutable = F)`"
+    ))
+  } else {
+    self = self$clone() #clone to break mutable behavior
+  }
+  .pr$Series$rename_mut(self, name)
+  self
+}
+
+
+#' duplicate and concatenate a series
+#'
+#' @param n number of times to repeat
+#' @param rechunk bool default true, reallocate object in memory.
+#' If FALSE the Series will take up less space, If TRUE calculations might be faster.
+#' @name Series_rep
+#' @return bool
+#' @keywords Series
+#' @aliases series_rep
+#' @format method
+#' @details  This function in not implemented in pypolars
+#'
+#' @examples
+#' pl$Series(1:2,"bob")$rep(3)
+Series_rep = function(n, rechunk = TRUE) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is_bool(rechunk)) abort("rechunk must be a bool")
+  unwrap(.pr$Series$rep(self, n, rechunk))
+}
 

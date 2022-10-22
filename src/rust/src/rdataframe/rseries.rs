@@ -236,43 +236,30 @@ impl Series {
         r_result_list(res)
     }
 
-    pub fn repeat_(name: &str, robj: Robj, n: i32, dtype: &DataType) -> Self {
-        //TODO rewrite with macro
-        match &dtype.0 {
-            pl::DataType::Utf8 => {
-                let val = robj.as_str().unwrap();
-                let mut s: pl::Series = (0..n).map(|_| val).collect();
-                s.rename(name);
-                Series(s)
+    //names repeat_ as repeat is locked keyword in R
+    pub fn rep(&self, n: f64, rechunk: bool) -> List {
+        let n = n as i64;
+
+        let out: std::result::Result<Series, String> = match n {
+            x if x < 0 => Err("n must be a non-negative number".to_string()),
+            x if x == 0 => Ok(Series(self.clone().0.slice(0, 0))),
+            x if x >= 1 => {
+                let mut s = self.0.clone();
+                if n >= 2 {
+                    for _ in 1..n {
+                        let result = s.append(&self.0);
+                        if result.is_err() {
+                            return r_result_list(result.map(|_| ()));
+                        }
+                    }
+                }
+                Ok(Series(s))
             }
-            pl::DataType::Int64 => {
-                let val = robj.as_real().unwrap() as i64;
-                let mut s: pl::Series = (0..n).map(|_| val).collect();
-                s.rename(name);
-                Series(s)
-            }
-            pl::DataType::Int32 => {
-                let val = robj.as_integer().unwrap();
-                let mut s: pl::Series = (0..n).map(|_| val).collect();
-                s.rename(name);
-                Series(s)
-            }
-            pl::DataType::Float64 => {
-                let val = robj.as_real().unwrap();
-                let mut s: pl::Series = (0..n).map(|_| val).collect();
-                s.rename(name);
-                Series(s)
-            }
-            pl::DataType::Boolean => {
-                let val = robj.as_bool().unwrap();
-                let mut s: pl::Series = (0..n).map(|_| val).collect();
-                s.rename(name);
-                Series(s)
-            }
-            dt => {
-                panic!("cannot create repeat with dtype: {:?}", dt);
-            }
+            _ => unreachable!("yep"),
         }
+        .map(|s| if rechunk { Series(s.0.rechunk()) } else { s });
+
+        r_result_list(out)
     }
 
     pub fn shape(&self) -> Robj {
@@ -467,12 +454,12 @@ impl Series {
         r_result_list(s)
     }
 
-    pub fn mean_as_series(&self) -> Series {
-        Series(self.0.clone().mean_as_series())
-    }
-    pub fn sum_as_series(&self) -> Series {
-        Series(self.0.sum_as_series())
-    }
+    // pub fn mean_as_series(&self) -> Series {
+    //     Series(self.0.clone().mean_as_series())
+    // }
+    // pub fn sum_as_series(&self) -> Series {
+    //     Series(self.0.sum_as_series())
+    // }
 
     pub fn ceil(&self) -> List {
         r_result_list(self.0.ceil().map(|s| Series(s)))

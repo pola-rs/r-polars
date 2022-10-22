@@ -18,7 +18,7 @@ pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 )
 
 #rename columns by naming expression is concidered experimental
-Currently requires minipolars::set_minipolars_options(named_exprs = TRUE)
+Currently requires pl$set_minipolars_options(named_exprs = TRUE)
 pl$DataFrame(iris)$with_columns(
 pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
 SW_add_2 = (pl$col("Sepal.Width")+2)

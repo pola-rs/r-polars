@@ -1,5 +1,5 @@
 test_that("get options", {
-  opts = get_minipolars_options()
+  opts = pl$get_minipolars_options()
   expect_equal(opts,as.list(minipolars:::minipolars_optenv))
 })
 
@@ -8,22 +8,22 @@ test_that("get options", {
 test_that("set wrong options", {
 
   #pass a not defined options
-  expect_error(set_minipolars_options(undefined_opt = 42 , undefined_opt_2 = 214))
+  expect_error(pl$set_minipolars_options(undefined_opt = 42 , undefined_opt_2 = 214))
 
   #pass a not named option
-  expect_error(set_minipolars_options(42))
+  expect_error(pl$set_minipolars_options(42))
 
   #existing option but wrong type
-  expect_error(set_minipolars_options(strictly_immutable = 42))
+  expect_error(pl$set_minipolars_options(strictly_immutable = 42))
 
   #existing option but wrong length
-  expect_error(set_minipolars_options(strictly_immutable = c(TRUE,TRUE)))
+  expect_error(pl$set_minipolars_options(strictly_immutable = c(TRUE,TRUE)))
 
 })
 
 
 test_that("set/get/reset an option", {
-  before_opt = get_minipolars_options()$strictly_immutable
+  before_opt = pl$get_minipolars_options()$strictly_immutable
 
   #check dataframe is immutable by setting
   df = pl$DataFrame(iris)
@@ -32,7 +32,7 @@ test_that("set/get/reset an option", {
   expect_true(all(names(df)!=names(df_immutable_copy)))
 
   #check change setting
-  after_opt = set_minipolars_options(strictly_immutable= FALSE)$strictly_immutable
+  after_opt = pl$set_minipolars_options(strictly_immutable= FALSE)$strictly_immutable
   expect_equal(before_opt, !after_opt)
 
 
@@ -43,7 +43,7 @@ test_that("set/get/reset an option", {
   expect_true(all(names(df)==names(df_mutable_copy)))
 
 
-  reset_minipolars_options()
-  default_opt = get_minipolars_options()$strictly_immutable
+  pl$reset_minipolars_options()
+  default_opt = pl$get_minipolars_options()$strictly_immutable
   expect_equal(before_opt,  default_opt)
 })

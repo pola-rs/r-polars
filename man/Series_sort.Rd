@@ -12,7 +12,7 @@ Series_sort(reverse = FALSE, in_place = FALSE)
 
 \item{in_place}{bool sort mutable in-place, breaks immutability
 If true will throw an error unless this option has been set:
-\code{set_minipolars_options(strictly_immutable = F)}}
+\code{pl$set_minipolars_options(strictly_immutable = F)}}
 }
 \value{
 Series
@@ -21,7 +21,6 @@ Series
 Sort this Series
 }
 \examples{
-set_minipolars_options(strictly_immutable = F)
 pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
 }
 \keyword{Series}

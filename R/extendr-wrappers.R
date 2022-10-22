@@ -294,7 +294,7 @@ Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__s
 
 Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 
-Series$repeat_ <- function(name, robj, n, dtype) .Call(wrap__Series__repeat_, name, robj, n, dtype)
+Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
 
 Series$shape <- function() .Call(wrap__Series__shape, self)
 
@@ -323,10 +323,6 @@ Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
 Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
 
 Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
-
-Series$mean_as_series <- function() .Call(wrap__Series__mean_as_series, self)
-
-Series$sum_as_series <- function() .Call(wrap__Series__sum_as_series, self)
 
 Series$ceil <- function() .Call(wrap__Series__ceil, self)
 

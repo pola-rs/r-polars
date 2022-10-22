@@ -120,7 +120,7 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
-  set_minipolars_options(strictly_immutable = F)
+  pl$set_minipolars_options(strictly_immutable = F)
 
   s = pl$Series(letters,"foo")
   s2 = s
@@ -145,7 +145,7 @@ test_that("Series_append", {
   expect_identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 
 
-  reset_minipolars_options()
+  pl$reset_minipolars_options()
 })
 
 
@@ -319,36 +319,31 @@ test_that("series comparison", {
 
 
 
-test_that("repeat", {
+test_that("rep", {
 
+
+  #rechunk FALSE gives same result
   expect_identical(
-    Series_repeat("bob",42,3)$to_r(),
-    rep(42,3)
+    pl$Series(1:2,"alice")$rep(2, rechunk = FALSE)$to_r(),
+    pl$Series(rep(1:2,2),"alice")$to_r()
   )
 
   expect_identical(
-    Series_repeat("bob",42L,3)$to_r(),
-    rep(42L,3)
-  )
-
-  #it is possible to make Int64 but return will be a numeric
-  expect_identical(
-    Series_repeat("bob",42L,3,pl$dtypes$Int64)$to_r(),
-    rep(42,3)
+    pl$Series(1:2,"alice")$rep(2, rechunk = TRUE)$to_r(),
+    pl$Series(rep(1:2,2),"alice")$to_r()
   )
 
   expect_identical(
-    Series_repeat("bob","cheese",3,dtype = pl$dtypes$Utf8)$to_r(),
-    rep("cheese",3)
+    pl$Series(1:2,"alice")$rep(1)$to_r(),
+    pl$Series(rep(1:2,1),"alice")$to_r()
   )
 
   expect_identical(
-    Series_repeat("bob",FALSE,3)$to_r(),
-    rep(FALSE,3)
+    pl$Series(1:2,"alice")$rep(0)$to_r(),
+    pl$Series(rep(1:2,0),"alice")$to_r()
   )
 
-  #TODO NA repeats are not currently supported
-  #Series_repeat("bob",NA,3)$to_r()
+  expect_error(pl$Series(1:2,"alice")$rep(-1)$to_r())
 
 })
 

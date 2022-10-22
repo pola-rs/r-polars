@@ -535,7 +535,7 @@ test_that("map_alias" , {
 
 
   #skip map_alias thread-guard message
-  set_minipolars_options(no_messages = TRUE)
+  pl$set_minipolars_options(no_messages = TRUE)
 
   df = pl$DataFrame(list(alice=1:3))$select(
     pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
@@ -578,7 +578,7 @@ test_that("map_alias" , {
   )
 
 
-  reset_minipolars_options()
+  pl$reset_minipolars_options()
 })
 
 

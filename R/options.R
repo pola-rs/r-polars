@@ -34,7 +34,7 @@ minipolars_optreq$strictly_immutable = list( #set requirement functions of defau
 #'
 #' @examples
 #' #rename columns by naming expression, experimental requires option named_exprs = TRUE
-#' set_minipolars_options(named_exprs = TRUE)
+#' pl$set_minipolars_options(named_exprs = TRUE)
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width")+2)
@@ -70,39 +70,33 @@ minipolars_optreq$no_messages = list( #set requirement functions of default valu
 #'
 #'
 #' @return current settings as list
-#' @details modifing list takes no effect, pass it to set_minipolars_options
+#' @details modifing list takes no effect, pass it to pl$set_minipolars_options
 #' get/set/resest interact with internal env `minipolars:::minipolars_optenv`
 #'
-#' @export
 #'
-#' @examples  get_minipolars_options()
-get_minipolars_options = function() {
+#' @examples  pl$get_minipolars_options()
+pl$get_minipolars_options = function() {
   as.list(minipolars_optenv)
 }
 
 
 #' @rdname minipolars_options
 #' @name set_minipolars_options
-#'
-#'
 #' @importFrom  rlang is_bool is_function
-#'
 #' @return current settings as list
 #' @details setting an options may be rejected if not passing opt_requirements
-#'
-#' @export
 #' @examples
-#' set_minipolars_options(strictly_immutable = FALSE)
-#' get_minipolars_options()
+#' pl$set_minipolars_options(strictly_immutable = FALSE)
+#' pl$get_minipolars_options()
 #'
 #'
 #' #setting strictly_immutable = 42 will be rejected as
 #' tryCatch(
-#'   set_minipolars_options(strictly_immutable = 42),
+#'   pl$set_minipolars_options(strictly_immutable = 42),
 #'   error= function(e) print(e)
 #' )
 #'
-set_minipolars_options = function(
+pl$set_minipolars_options = function(
   ...
 ) {
 
@@ -140,7 +134,7 @@ set_minipolars_options = function(
   }
 
   #return current option set invisibly
-  invisible(get_minipolars_options())
+  invisible(pl$get_minipolars_options())
 }
 
 
@@ -148,14 +142,10 @@ set_minipolars_options = function(
 minipolars_opts_defaults = as.list(minipolars_optenv)
 #' @rdname minipolars_options
 #' @name reset_minipolars_options
-#'
-#' @export
-#'
 #' @examples
-#'
 #' #reset options like this
-#' reset_minipolars_options()
-reset_minipolars_options = function() {
+#' pl$reset_minipolars_options()
+pl$reset_minipolars_options = function() {
   rm(list=ls(envir = minipolars_optenv),envir = minipolars_optenv)
   for(i in names(minipolars_opts_defaults)) {
     minipolars_optenv[[i]] = minipolars_opts_defaults[[i]]
@@ -166,15 +156,11 @@ reset_minipolars_options = function() {
 
 #' @rdname minipolars_options
 #' @name reset_minipolars_options
-#'
-#'
 #' @return list named by options of requirement function input must satisfy
-#' @export
-#'
 #' @examples
 #' #use get_minipolars_opt_requirements() to requirements
 #' get_minipolars_opt_requirements()
-get_minipolars_opt_requirements = function() {
+pl$get_minipolars_opt_requirements = function() {
   minipolars_optreq
 }
 

@@ -558,7 +558,7 @@ construct_ProtoExprArray = function(...) {
   } else {
 
     if(!minipolars:::minipolars_optenv$named_exprs) {
-      abort("not allowed naming expressions, use `set_minipolars_options(named_exprs = TRUE)` to enable column naming by expression")
+      abort("not allowed naming expressions, use `pl$set_minipolars_options(named_exprs = TRUE)` to enable column naming by expression")
     }
 
     for (i in seq_along(args)) {
