@@ -28,6 +28,6 @@ Collate:
     'namespace.R'
     'options.R'
     'parquet.R'
-    'series.R'
+    'series__series.R'
     'utils.R'
     'zzz.R'
