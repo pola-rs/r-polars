@@ -2,22 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{wrap_s}
 \alias{wrap_s}
-\title{wrap as literal}
+\title{Wrap as Series}
 \usage{
 wrap_s(x)
 }
 \arguments{
-\item{e}{an Expr(polars) or any R expression}
+\item{x}{a Series or something-turned-into-Series}
 }
 \value{
-Expr
+Series
 }
 \description{
-wrap as literal
-}
-\details{
-tiny wrapper to allow skipping calling lit on rhs of binary operator
-}
-\examples{
-pl$col("foo") < 5
+input is either already a Series of will be passed to the Series constructor
 }

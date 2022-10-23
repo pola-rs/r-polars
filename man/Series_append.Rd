@@ -2,6 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_append}
 \alias{Series_append}
+\alias{append}
 \title{append (default immutable)}
 \usage{
 Series_append(other, immutable = TRUE)
@@ -38,3 +39,4 @@ s_mut_copy = s_mut
 s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 }
+\keyword{Series}

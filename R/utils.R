@@ -342,10 +342,21 @@ get_method_usages = function(env,pattern="") {
     is_method = sapply(objects,\(x)  !inherits(x,"property") & is_function(x))
   )
 
+  paste0_len = function(...,collapse=NULL,sep="") {
+    dot_args = list(...)
+    #any has zero length, return zero length
+    if(any(!sapply(dot_args,length))) {
+      character()
+    } else {
+      paste(...,collapse=collapse,sep=sep)
+    }
+
+  }
+
   suggestions = sort(c(
     found_names[facts$is_property],
-    paste0(found_names[facts$is_setter],"<-"),
-    paste0(found_names[facts$is_method],"()")
+    paste0_len(found_names[facts$is_setter],"<-"),
+    paste0_len(found_names[facts$is_method],"()")
   ))
 
   suggestions

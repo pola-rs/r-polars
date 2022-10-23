@@ -43,24 +43,35 @@ Series
 
 
 
+#' Wrap as Series
+#' @description input is either already a Series of will be passed to the Series constructor
+#' @param x a Series or something-turned-into-Series
+#' @return Series
+wrap_s = function(x) {
+  if(inherits(x,"Series")) x else pl$Series(x)
+}
+
+
+
 #' Print Series
-#'
-#' @param x Series
-#'
-#' @return selfie
 #' @export
+#' @param x Series
+#' @keywords Series
+#' @name Series_print
 #'
+#' @return invisible(self)
+#' @examples print(Series(1:3))
 print.Series = function(x) {
   cat("polars Series: ")
   x$print()
   invisible(x)
 }
 
-#' internal method print Series
-#'
+#' Print Series
+#' @rdname Series_pring
 #' @return self
 #'
-#' @examples pl$Series(iris)
+#' @examples pl$Series(1:3)
 Series_print = function() {
   .pr$Series$print(self)
   invisible(self)
@@ -70,10 +81,9 @@ Series_print = function() {
 #' @title auto complete $-access into object
 #' @description called by the interactive R session internally
 #' @keywords Series
-.DollarNames.Series = function(x, pattern = "") {
-  paste0(ls(minipolars:::Series, pattern = pattern ),"()")
+.DollarNames.Series = function(x, pattern= "") {
+  get_method_usages(minipolars:::Series,pattern = pattern)
 }
-
 
 
 
@@ -125,32 +135,6 @@ c.Series = \(x,...) {
 
 
 
-
-
-
-
-#' wrap as literal
-#'
-#' @param e an Expr(polars) or any R expression
-#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
-#'
-#' @return Expr
-#'
-#' @examples pl$col("foo") < 5
-wrap_s = function(x) {
-  if(inherits(x,"Series")) x else pl$Series(x)
-}
-
-
-# ##make list of methods, which should be modified from Series as input
-# # to any type which can be converted into a series, see use of Series_ops in zzz.R
-# Series_ops = list()
-# Series_ops_add = function(name, more_args=NULL) {
-#   if(!is.null(more_args)) {
-#     attr(name,"more_args") = more_args
-#   }
-#   Series_ops <<- c(Series_ops,list(name))
-# }
 
 
 
@@ -233,11 +217,11 @@ Series_mul = function(other) {
 "*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
 
 #' rem Series
-#' @name Series_rem
 #' @description Series arithmetics, remainder
 #' @return Series
+#' @keywords Series
 #' @aliases rem
-#' @keywords  Series
+#' @name Series_rem
 #' @examples
 #' pl$Series(1:4)$rem(2L)
 #' pl$Series(1:3)$rem(pl$Series(11:13))
@@ -286,23 +270,14 @@ Series_compare = function(other, op) {
 #' Shape of series
 #'
 #' @return dimension vector of Series
+#' @keywords Series
+#' @aliases shape
+#' @name Series_shape
 #'
 #' @examples identical(pl$Series(1:2)$shape, 2:1)
-Series_shape = function() {
+Series_shape = method_as_property(function() {
   .pr$Series$shape(self)
-}
-class(Series_shape) = c("property","function")
-
-Series_udf_handler = function(f,rs) {
-  fps = pl$Series(f(rs))
-  fps
-  # rs_ptr_adr = xptr::xptr_address(fps)
-  # rs_ptr_adr
-}
-
-
-
-#modified Series bindings
+})
 
 
 #' Get r vector/list
@@ -371,63 +346,76 @@ Series_to_r_list = \() {
 }
 
 
-Series_abs         = \() unwrap(.pr$Series$abs(self))
-Series_value_counts =\(sorted=TRUE, multithreaded=FALSE) {
+#' Take absolute value of Series
+#'
+#' @return Series
+#' @export
+#' @keywords Series
+#' @aliases abs
+#' @name Series_abs
+#' @examples
+#' pl$Series(-2:2)$abs()
+Series_abs  = function() {
+  unwrap(.pr$Series$abs(self))
+}
+
+
+#' Value Counts as DataFrame
+#'
+#' @param sorted bool, default TRUE: sort table by value; FALSE: random
+#' @param multithreaded bool, default FALSE, process multithreaded. Likely faster
+#' to have TRUE for a big Series. If called within an already multithreaded context
+#' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
+#'
+#' @return DataFrame
+#' @export
+#' @keywords Series
+#' @aliases value_counts
+#' @name Series_value_count
+#' @examples
+#' pl$Series(iris$Species,"flower species")$value_counts()
+Series_value_counts = function(sorted=TRUE, multithreaded=FALSE) {
   unwrap(.pr$Series$value_counts(self, multithreaded, sorted))
 }
-Series_repeat = \(name, val, n, dtype=NULL) {
-
-  # choose dtype given val
-  if(is.null(dtype)) {
-    dtype = pcase(
-      is.integer(val),   pl$dtypes$Int32,
-      is.double(val),    pl$dtypes$Float64,
-      is.character(val), pl$dtypes$Utf8,
-      is.logical(val),   pl$dtypes$Boolean,
-      or_else = abort(paste("must specify dtype for val: ",str(val)))
-    )
-  }
-
-  #any conversion of val given dtype
-  val = pcase(
-    # spoof int64 by setting val to float64, correct until 2^52 or so, that's how we (R)oll
-    dtype == pl$dtypes$Int64, (\() as.double(val))(),
-    or_else = val
-  )
-
-
-  .pr$Series$repeat_(name,val,n,dtype)
-}
 
 
 
-Series_apply   = \(
+
+#' Apply every value with an R fun
+#' @description About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
+#' @param fun r function, should take a scalar value as input and return one.
+#' @param datatype DataType of return value. Default NULL means same as input.
+#' @param strict_return_type bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null
+#' @param allow_fail_eval bool, default FALSE: raise R fun error, TRUE: convert to polars Null
+#'
+#' @return Series
+#' @keywords Series
+#' @aliases apply
+#' @name Series_apply
+#'
+#' @examples
+#' s = pl$Series(letters[1:5],"ltrs")
+#' f = \(x) paste(x,":",as.integer(charToRaw(x)))
+#' s$apply(f,pl$Utf8)
+#'
+#' #same as
+#' pl$Series(sapply(s$to_r(),f),s$name)
+Series_apply   = function(
   fun, datatype=NULL, strict_return_type = TRUE, allow_fail_eval = FALSE
 ) {
-
-  if(!is.function(fun)) abort("fun arg must be a function")
-
-  internal_datatype = (\(){
-    if(is.null(datatype)) return(datatype) #same as lambda input
-    if(inherits(datatype,"DataType")) return(datatype)
-    if(is.character(datatype)) return(pl$dtypes$Utf8)
-    if(is.logical(datatype)) return(pl$dtypes$Boolean)
-    if(is.integer(datatype)) return(pl$dtypes$Int32)
-    if(is.double(datatype)) return(pl$dtypes$Float64)
-    abort(paste("failed to interpret datatype arg:",datatype()))
-  })()
-
   unwrap(.pr$Series$apply(
     self, fun, datatype, strict_return_type, allow_fail_eval
   ))
-
 }
 
 
-#' Series_is_unique
-#'
-#'
+#' Series element(s) is unique
+#' @description return Boolean vector for all elements that occurs only once
 #' @return Series
+#' @keywords Series
+#' @aliases is_unique
+#' @name Series_is_unique
+#'
 #' @examples
 #' pl$Series(c(1:2,2L))$is_unique()
 #'
@@ -436,10 +424,12 @@ Series_is_unique = function() {
 }
 
 
-#' Series_all
-#'
+#' Reduce boolean Series with ALL
 #'
 #' @return bool
+#' @keywords Series
+#' @aliases all
+#' @name Series_all
 #' @examples
 #' pl$Series(1:10)$is_unique()$all()
 #'
@@ -450,19 +440,23 @@ Series_all = function() {
 #' Series_len
 #' @description Length of this Series.
 #'
-#'
 #' @return numeric
+#' @keywords Series
+#' @aliases len
+#' @name Series_len
+#'
 #' @examples
 #' pl$Series(1:10)$len()
 #'
-Series_len = function() {
-  .pr$Series$len(self)
-}
+Series_len = "use_extendr_wrapper"
 
 #' Series_floor
 #' @description Floor of this Series
 #'
 #' @return numeric
+#' @keywords Series
+#' @aliases floor
+#' @name Series_floor
 #' @examples
 #' pl$Series(c(.5,1.999))$floor()
 #'
@@ -470,10 +464,14 @@ Series_floor = function() {
   unwrap(.pr$Series$floor(self))
 }
 
+
 #' Series_ceil
 #' @description Ceil of this Series
 #'
 #' @return bool
+#' @keywords Series
+#' @aliases ceil
+#' @name Series_ceil
 #' @examples
 #' pl$Series(c(.5,1.999))$ceil()
 #'
@@ -481,17 +479,18 @@ Series_ceil = function() {
   unwrap(.pr$Series$ceil(self))
 }
 
-#' Append two Series
-#' @description Append Series with other Series. Imutable.
+#' Lengths of Series memory chunks
+#' @description Get the Lengths of Series memory chunks as vector.
 #'
-#' @return numeric vector
+#' @return numeric vector. Length is number of chunks. Sum of lengths is equal to size of Series.
+#' @keywords Series
+#' @aliases chunk_lengths
+#' @name Series_chunk_lengths
 #'
 #' @examples
 #' chunked_series = c(pl$Series(1:3),pl$Series(1:10))
 #' chunked_series$chunk_lengths()
-Series_chunk_lengths = function() {
-  .pr$Series$chunk_lengths(self)
-}
+Series_chunk_lengths = "use_extendr_wrapper"
 
 #' append (default immutable)
 #' @description append two Series, see details for mutability
@@ -505,6 +504,9 @@ Series_chunk_lengths = function() {
 #' any sense.
 #'
 #' @return Series
+#' @keywords Series
+#' @aliases append
+#' @name Series_append
 #' @examples
 #'
 #' #default immutable behaviour, s_imut and s_imut_copy stay the same
@@ -533,35 +535,25 @@ Series_append = function(other, immutable = TRUE) {
   }
 }
 
-#' To list
-#' @description Append Series with other Series. Imutable.
-#'
-#' @return numeric vector
-#'
-#' @examples
-#' chunked_series = c(pl$Series(1:3),pl$Series(1:10))
-#' chunked_series$chunk_lengths()
-Series_chunk_lengths = function() {
-  .pr$Series$chunk_lengths(self)
-}
-
 #' Alias
 #' @description Change name of Series
 #'
 #' @param name a String as the new name
 #' @return Series
-#'
+#' @keywords Series
+#' @aliases alias
+#' @name Series_alias
 #' @examples
 #' pl$Series(1:3,name = "alice")$alias("bob")
-Series_alias = function(name) {
-  .pr$Series$alias(self, name)
-}
+Series_alias = "use_extendr_wrapper"
 
 #' Property: Name
 #' @description Get name of Series
 #'
 #' @return String the name
-#'
+#' @keywords Series
+#' @aliases name
+#' @name Series_name
 #' @examples
 #' pl$Series(1:3,name = "alice")$name
 Series_name = method_as_property(function() {
@@ -571,7 +563,9 @@ Series_name = method_as_property(function() {
 #' Reduce Boolean Series with ANY
 #'
 #' @return bool
-#'
+#' @keywords Series
+#' @aliases any
+#' @name Series_any
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
 Series_any = "use_extendr_wrapper"
@@ -579,7 +573,9 @@ Series_any = "use_extendr_wrapper"
 #' Reduce Boolean Series with ALL
 #'
 #' @return bool
-#'
+#' @keywords Series
+#' @aliases all
+#' @name Series_all
 #' @examples
 #' pl$Series(c(TRUE,TRUE,NA))$all()
 Series_all = function() {
@@ -589,7 +585,9 @@ Series_all = function() {
 #' idx to max value
 #'
 #' @return bool
-#'
+#' @keywords Series
+#' @aliases arg_max
+#' @name Series_arg_max
 #' @examples
 #' pl$Series(c(5,1))$arg_max()
 Series_arg_max = "use_extendr_wrapper"
@@ -597,7 +595,9 @@ Series_arg_max = "use_extendr_wrapper"
 #' idx to min value
 #'
 #' @return bool
-#'
+#' @keywords Series
+#' @aliases arg_min
+#' @name Series_arg_min
 #' @examples
 #' pl$Series(c(5,1))$arg_min()
 Series_arg_min = "use_extendr_wrapper"
@@ -618,15 +618,13 @@ Series_arg_min = "use_extendr_wrapper"
 #' xptr::xptr_address(s1) != xptr::xptr_address(s2)
 #' xptr::xptr_address(s1) == xptr::xptr_address(s3)
 #'
-Series_clone = function() {
-  .pr$Series$clone(self)
-}
+Series_clone = "use_extendr_wrapper"
 
 #' Cumulative sum
 #' @description  Get an array with the cumulative sum computed at every element.
-#' @keywords Series
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Series
+#' @keywords Series
 #' @aliases cumsum
 #' @name Series_cumsum
 #' @details
@@ -665,7 +663,6 @@ Series_flags = method_as_property(function() {
   list(
     "SORTED_ASC" =  .pr$Series$is_sorted_flag(self),
     "SORTED_DESC" =  .pr$Series$is_sorted_reverse_flag(self)
-
   )
 })
 

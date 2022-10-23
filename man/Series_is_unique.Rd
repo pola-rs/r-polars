@@ -2,7 +2,8 @@
 % Please edit documentation in R/series__series.R
 \name{Series_is_unique}
 \alias{Series_is_unique}
-\title{Series_is_unique}
+\alias{is_unique}
+\title{Series element(s) is unique}
 \usage{
 Series_is_unique()
 }
@@ -10,9 +11,10 @@ Series_is_unique()
 Series
 }
 \description{
-Series_is_unique
+return Boolean vector for all elements that occurs only once
 }
 \examples{
 pl$Series(c(1:2,2L))$is_unique()
 
 }
+\keyword{Series}

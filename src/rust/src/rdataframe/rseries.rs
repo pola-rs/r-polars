@@ -4,7 +4,7 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::DataType;
-use crate::utils::r_result_list;
+use crate::utils::{r_error_list, r_result_list};
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
@@ -356,9 +356,12 @@ impl Series {
         allow_fail_eval: bool,
     ) -> list::List {
         //prepare lamda function from R side
-        let rfun = robj
-            .as_function()
-            .unwrap_or_else(|| panic!("hey you promised me a function!!"));
+
+        let rfun = if let Some(rfun) = robj.as_function() {
+            rfun
+        } else {
+            return r_error_list("fun arg must be a function");
+        };
 
         //function to wrap lambda to only pass the appropiate R NA type when polars null
         #[allow(unused_assignments)] //is actually used via macros
@@ -392,7 +395,7 @@ impl Series {
                         let out = rfun.call(pairlist!(Series(ser))).ok();
                         out
                     } else {
-                        panic!("oh that was possible to get a None Series");
+                        unreachable!("internal error: oh it was possible to get a None Series");
                     };
                     opt_robj
                 });

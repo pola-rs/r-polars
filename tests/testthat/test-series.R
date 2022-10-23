@@ -60,7 +60,7 @@ test_that("pl$Series_apply", {
   minipolars:::expect_strictly_identical(
     c(1, 2, 3, NA),
     (
-      pl$Series(c(1:3,NA_integer_),"integers")
+    pl$Series(c(1:3,NA_integer_),"integers")
       $apply(
         function(x) {if (is.na(x)) NA_real_ else as.double(x)},
         pl$dtypes$Float64,

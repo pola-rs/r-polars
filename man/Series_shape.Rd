@@ -2,6 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_shape}
 \alias{Series_shape}
+\alias{shape}
 \title{Shape of series}
 \usage{
 Series_shape()
@@ -15,3 +16,4 @@ Shape of series
 \examples{
 identical(pl$Series(1:2)$shape, 2:1)
 }
+\keyword{Series}

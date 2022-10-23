@@ -2,6 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_ceil}
 \alias{Series_ceil}
+\alias{ceil}
 \title{Series_ceil}
 \usage{
 Series_ceil()
@@ -16,3 +17,4 @@ Ceil of this Series
 pl$Series(c(.5,1.999))$ceil()
 
 }
+\keyword{Series}

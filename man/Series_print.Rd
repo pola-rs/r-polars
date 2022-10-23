@@ -2,16 +2,21 @@
 % Please edit documentation in R/series__series.R
 \name{Series_print}
 \alias{Series_print}
-\title{internal method print Series}
+\alias{print.Series}
+\title{Print Series}
 \usage{
-Series_print()
+\method{print}{Series}(x)
+}
+\arguments{
+\item{x}{Series}
 }
 \value{
-self
+invisible(self)
 }
 \description{
-internal method print Series
+Print Series
 }
 \examples{
-pl$Series(iris)
+print(Series(1:3))
 }
+\keyword{Series}

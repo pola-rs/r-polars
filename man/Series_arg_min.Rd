@@ -3,6 +3,7 @@
 \docType{data}
 \name{Series_arg_min}
 \alias{Series_arg_min}
+\alias{arg_min}
 \title{idx to min value}
 \format{
 An object of class \code{character} of length 1.
@@ -19,4 +20,4 @@ idx to min value
 \examples{
 pl$Series(c(5,1))$arg_min()
 }
-\keyword{datasets}
+\keyword{Series}

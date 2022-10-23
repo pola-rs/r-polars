@@ -3,6 +3,8 @@ pub mod extendr_concurrent;
 pub mod wrappers;
 use extendr_api::prelude::list;
 use extendr_api::prelude::IntoRobj;
+use extendr_api::Attributes;
+use extendr_api::Conversions;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
 #[macro_export]
@@ -217,6 +219,10 @@ where
         Ok(x) => list!(ok = x.into_robj(), err = extendr_api::NULL),
         Err(x) => list!(ok = extendr_api::NULL, err = x.to_string()),
     }
+    .set_class(&["Result"])
+    .unwrap()
+    .as_list()
+    .unwrap()
 }
 
 pub fn r_error_list<E>(err: E) -> list::List
@@ -224,4 +230,8 @@ where
     E: std::fmt::Display,
 {
     list!(ok = extendr_api::NULL, err = err.to_string())
+        .set_class(&["Result"])
+        .unwrap()
+        .as_list()
+        .unwrap()
 }

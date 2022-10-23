@@ -72,8 +72,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @keywords VecDataFrame
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-
-  paste0(ls(minipolars:::VecDataFrame, pattern = pattern ),"()")
+  get_method_usages(minipolars:::VecDataFrame,pattern = pattern)
 }
 
 
