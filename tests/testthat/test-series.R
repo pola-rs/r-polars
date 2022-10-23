@@ -122,6 +122,9 @@ test_that("pl$Series_alias", {
 test_that("Series_append", {
   pl$set_minipolars_options(strictly_immutable = F)
 
+
+
+
   s = pl$Series(letters,"foo")
   s2 = s
   S = pl$Series(LETTERS,"bar")
