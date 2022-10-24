@@ -5,6 +5,7 @@ use extendr_api::prelude::list;
 use extendr_api::prelude::IntoRobj;
 use extendr_api::Attributes;
 use extendr_api::Conversions;
+use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
 #[macro_export]
@@ -209,6 +210,29 @@ macro_rules! apply_output {
             })
     };
 }
+//from py-polars conversions
+
+pub fn parse_fill_null_strategy(
+    strategy: &str,
+    limit: Option<u32>,
+) -> pl::PolarsResult<pl::FillNullStrategy> {
+    use pl::FillNullStrategy::*;
+    let parsed = match strategy {
+        "forward" => Forward(limit),
+        "backward" => Backward(limit),
+        "min" => Min,
+        "max" => Max,
+        "mean" => Mean,
+        "zero" => Zero,
+        "one" => One,
+        e => {
+            return Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
+                format!("Strategy named not found: {}", e),
+            )))
+        }
+    };
+    Ok(parsed)
+}
 
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
@@ -230,6 +254,17 @@ where
     E: std::fmt::Display,
 {
     list!(ok = extendr_api::NULL, err = err.to_string())
+        .set_class(&["Result"])
+        .unwrap()
+        .as_list()
+        .unwrap()
+}
+
+pub fn r_ok_list<T>(result: T) -> list::List
+where
+    T: IntoRobj,
+{
+    list!(ok = result.into_robj(), err = extendr_api::NULL)
         .set_class(&["Result"])
         .unwrap()
         .as_list()

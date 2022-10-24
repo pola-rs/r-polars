@@ -1,6 +1,10 @@
+use super::rseries::Series;
 use super::DataFrame;
 use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::utils::parse_fill_null_strategy;
+use crate::utils::wrappers::null_to_opt;
+use crate::utils::{r_error_list, r_ok_list, r_result_list};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
@@ -8,8 +12,6 @@ use polars::lazy::dsl;
 use polars::prelude::GetOutput;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
-
-use crate::utils::r_result_list;
 
 #[derive(Clone, Debug)]
 #[extendr]
@@ -106,6 +108,20 @@ impl Expr {
                     }
                 }
             }
+            (Rtype::ExternalPtr, 1) => {
+                let x = match () {
+                    _ if robj.inherits("Series") => {
+                        let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+                        pl::lit(s.0)
+                    }
+                    _ => {
+                        dbg!(&robj);
+                        todo!("cannot yet handle this externalptr");
+                    }
+                };
+                Ok(x)
+            }
+
             (x, 1) => Err(format!(
                 "$lit(val): minipolars not yet support rtype {:?}",
                 x
@@ -213,6 +229,63 @@ impl Expr {
     }
     pub fn arg_min(&self) -> Expr {
         self.clone().0.arg_min().into()
+    }
+
+    pub fn search_sorted(&self, element: &Expr) -> Expr {
+        self.0.clone().search_sorted(element.0.clone()).into()
+    }
+
+    pub fn take(&self, idx: &Expr) -> Expr {
+        self.clone().0.take(idx.0.clone()).into()
+    }
+
+    pub fn sort_by(&self, by: &ProtoExprArray, reverse: Robj) -> List {
+        let rev: Vec<bool> = if let Some(lgl_itr) = reverse.as_logical_iter() {
+            lgl_itr.map(|x| x.is_true()).collect()
+        } else {
+            return r_error_list("reverse argument must be a logical vector");
+        };
+        let by = by.to_vec("select");
+        let expr = Expr(self.clone().0.sort_by(by, rev));
+        r_ok_list(expr)
+    }
+
+    pub fn shift(&self, periods: f64) -> Expr {
+        self.clone().0.shift(periods as i64).into()
+    }
+
+    pub fn shift_and_fill(&self, periods: f64, fill_value: &Expr) -> Expr {
+        self.0
+            .clone()
+            .shift_and_fill(periods as i64, fill_value.0.clone())
+            .into()
+    }
+
+    pub fn fill_null(&self, expr: &Expr) -> Expr {
+        self.0.clone().fill_null(expr.0.clone()).into()
+    }
+
+    pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
+        let x = null_to_opt(limit).map(|x| x as u32);
+
+        let strat_result = parse_fill_null_strategy(strategy, x);
+
+        if let Ok(strat) = strat_result {
+            let result: pl::PolarsResult<Expr> = Ok(self
+                .0
+                .clone()
+                .apply(move |s| s.fill_null(strat), GetOutput::same_type())
+                .with_fmt("fill_null_with_strategy")
+                .into());
+
+            r_result_list(result)
+        } else {
+            if let Err(err) = strat_result {
+                r_error_list(err)
+            } else {
+                unreachable!("yep")
+            }
+        }
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
@@ -608,7 +681,14 @@ impl ProtoExprArray {
     }
 }
 
+impl ProtoExprArray {
+    pub fn to_vec(&self, context: &str) -> Vec<pl::Expr> {
+        self.0.iter().map(|re| re.to_rexpr(context).0).collect()
+    }
+}
+
 //external function as extendr-api do not allow methods returning unwrapped structs
+//deprecate use method instead
 pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
 }

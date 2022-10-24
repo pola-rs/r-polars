@@ -120,6 +120,20 @@ Expr$arg_max <- function() .Call(wrap__Expr__arg_max, self)
 
 Expr$arg_min <- function() .Call(wrap__Expr__arg_min, self)
 
+Expr$search_sorted <- function(element) .Call(wrap__Expr__search_sorted, self, element)
+
+Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
+
+Expr$sort_by <- function(by, reverse) .Call(wrap__Expr__sort_by, self, by, reverse)
+
+Expr$shift <- function(periods) .Call(wrap__Expr__shift, self, periods)
+
+Expr$shift_and_fill <- function(periods, fill_value) .Call(wrap__Expr__shift_and_fill, self, periods, fill_value)
+
+Expr$fill_null <- function(expr) .Call(wrap__Expr__fill_null, self, expr)
+
+Expr$fill_null_with_strategy <- function(strategy, limit) .Call(wrap__Expr__fill_null_with_strategy, self, strategy, limit)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)

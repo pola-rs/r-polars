@@ -288,6 +288,7 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 #' @examples construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_protoArrayExpr = function(l) {
   pra = minipolars:::ProtoExprArray$new()
+  if (!is.list(l)) l = list(l)
   for (i  in l) {
     if(is_string(i)) {
       pra$push_back_str(i)

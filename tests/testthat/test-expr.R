@@ -259,6 +259,20 @@ test_that("lit expr", {
     data.frame(a=character())
   )
 
+
+  #explicit vector to series to literal
+  expect_identical(
+    pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1]],
+   1:4
+  )
+
+  #implicit vector to literal
+  expect_identical(
+    pl$DataFrame(list())$select(pl$lit(24) / 4:1 + 2)$to_list()[[1]],
+    24 / 4:1 + 2
+  )
+
+
 })
 
 test_that("prefix suffix reverse", {
@@ -889,3 +903,186 @@ test_that("arg_min arg_max arg_sort", {
 
 })
 
+test_that("search_sorted", {
+  expect_identical(
+    pl$DataFrame(list(a=0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))$to_list()$a,
+    42
+  )
+  #this test is minimal, if polars give better documentation on behaviour, expand the test.
+})
+
+
+
+test_that("sort_by", {
+    l = list(
+      ab = c(rep("a",6),rep("b",6)),
+      v4 = rep(1:4, 3),
+      v3 = rep(1:3, 4),
+      v2 = rep(1:2,6),
+      v1 = 1:12
+    )
+    df = pl$DataFrame(l)
+
+    expect_identical(
+      df$select(
+        pl$col("ab")$sort_by("v4")$alias("ab4"),
+        pl$col("ab")$sort_by("v3")$alias("ab3"),
+        pl$col("ab")$sort_by("v2")$alias("ab2"),
+        pl$col("ab")$sort_by("v1")$alias("ab1"),
+        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
+        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+      )$to_list(),
+      list(
+        ab4 = l$ab[order(l$v4)],
+        ab3 = l$ab[order(l$v3)],
+        ab2 = l$ab[order(l$v2)],
+        ab1 = l$ab[order(l$v1)],
+        ab13FT= l$ab[order(l$v3,rev(l$v1))],
+        ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+      )
+    )
+
+  #this test is minimal, if polars give better documentation on behaviour, expand the test.
+})
+
+test_that("take that", {
+
+  expect_identical(
+    pl$empty_select(pl$lit(0:10)$take(c(1,3,5,NA)))$to_list()[[1]],
+    c(1L,3L,5L,NA_integer_)
+  )
+
+  expect_error(
+    pl$empty_select(pl$lit(0:10)$take(11))$to_list()[[1]]
+  )
+
+
+  expect_identical(
+    pl$empty_select(pl$lit(0:10)$take(-11))$to_list()[[1]],
+    NA_integer_
+  )
+
+
+})
+
+test_that("shift", {
+
+
+  R_shift = \(x, n){
+    idx = seq_along(x) - n
+    idx[idx<=0] = Inf
+    x[idx]
+  }
+
+  expect_identical(
+    pl$empty_select(
+      pl$lit(0:3)$shift(-2)$alias("sm2"),
+      pl$lit(0:3)$shift(2)$alias("sp2")
+    )$to_list(),
+    list(
+      sm2 = R_shift((0:3),-2),
+      sp2 = R_shift((0:3),2)
+    )
+  )
+
+  R_shift_and_fill = function(x, n, fill_value = NULL){
+    idx = seq_along(x) - n
+    idx[idx<=0] = Inf
+    new_x = x[idx]
+    if(is.null(fill_value)) return(new_x)
+    new_x[is.na(new_x) & !is.na(x)] = fill_value
+    new_x
+  }
+
+  expect_identical(
+    pl$empty_select(
+      pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("sm2"),
+      pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("sp2")
+    )$to_list(),
+    list(
+      sm2 = R_shift_and_fill(0:3,-2,42),
+      sp2 = R_shift_and_fill(0:3, 2,21)
+    )
+  )
+
+
+})
+
+
+test_that("fill_null", {
+
+  l = list(a=c(1L,rep(NA_integer_,3L),10))
+
+  #fiil value
+  expect_identical(
+    pl$DataFrame(l)$select(pl$col("a")$fill_null(42L))$to_list()$a,
+    l$a |> (\(x){x[is.na(x)]<-42L;x})()
+  )
+
+  #forwarnd
+
+  R_fill_fwd = \(x,lim=Inf) {
+    last_seen = NA
+    lim_ct=0L
+    sapply(x, \(this_val) {
+      if(is.na(this_val)) {
+        lim_ct <<- lim_ct + 1L
+        if(lim_ct>lim) {
+          return(this_val) #lim_ct exceed lim since last_seen, return NA
+        } else {
+          return(last_seen) #return last_seen
+        }
+      } else {
+        lim_ct <<- 0L #reset counter
+        last_seen<<-this_val #reset last_seen
+        this_val
+      }
+    })
+  }
+  R_fill_bwd = \(x,lim=Inf)  rev(R_fill_fwd(rev(x),lim=lim))
+  R_replace_na = \(x, y) {x[is.na(x)] <-y;x}
+
+  #TODO let select and other ... functions accept trailing ','
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$fill_null(strategy="forward")$alias("forward"),
+      pl$col("a")$fill_null(strategy="backward")$alias("backward"),
+      pl$col("a")$fill_null(strategy="forward",  limit=1)$alias("forward_lim1"),
+      pl$col("a")$fill_null(strategy="backward", limit=1)$alias("backward_lim1"),
+      pl$col("a")$fill_null(strategy="forward",  limit=0)$alias("forward_lim0"),
+      pl$col("a")$fill_null(strategy="backward", limit=0)$alias("backward_lim0"),
+      pl$col("a")$fill_null(strategy="forward", limit=10)$alias("forward_lim10"),
+      pl$col("a")$fill_null(strategy="backward",limit=10)$alias("backward_lim10")
+
+    )$to_list(),
+   list(
+     forward  = l$a |> R_fill_fwd(),
+     backward = l$a |> R_fill_bwd(),
+     forward_lim1  = l$a |> R_fill_fwd(lim=1),
+     backward_lim1 = l$a |> R_fill_bwd(lim=1),
+     forward_lim0  = l$a |> R_fill_fwd(lim=0),
+     backward_lim0 = l$a |> R_fill_bwd(lim=0),
+     forward_lim10  = l$a |> R_fill_fwd(lim=10),
+     backward_lim10 = l$a |> R_fill_bwd(lim=10)
+  )
+)
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+
+      pl$col("a")$fill_null(strategy="min")$alias("min"),
+      pl$col("a")$fill_null(strategy="max")$alias("max"),
+      pl$col("a")$fill_null(strategy="mean")$alias("mean"),
+      pl$col("a")$fill_null(strategy="zero")$alias("zero"),
+      pl$col("a")$fill_null(strategy="one")$alias("one")
+    )$to_list(),
+    list(
+      min = l$a |> R_replace_na(min(l$a,na.rm = TRUE)),
+      max = l$a |> R_replace_na(max(l$a,na.rm = TRUE)),
+      mean = l$a |> R_replace_na(mean(l$a,na.rm = TRUE)),
+      zero = l$a |> R_replace_na(0),
+      one = l$a |> R_replace_na(1)
+    )
+  )
+
+})

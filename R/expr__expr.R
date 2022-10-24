@@ -721,13 +721,23 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' polars literal
 #' @keywords Expr
 #'
-#' @param x any R expression yielding an integer, float or bool
+#' @param x an R Scalar, or R vector (via Series) into Expr
 #' @rdname Expr
 #' @return Expr, literal of that value
 #' @aliases lit
 #' @name lit
-#' @examples pl$col("some_column") / pl$lit(42)
+#' @examples
+#' #scalars to literal, explit `pl$lit(42)` implicit `+ 2`
+#' pl$col("some_column") / pl$lit(42) + 2
+#'
+#' #vector to literal explicitly via Series and back again
+#' pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1]] #R vector to expression and back again
+#'
+#' #vectors to literal implicitly
+#' (pl$lit(2) + 1:4 ) / 4:1
 Expr_lit = function(x) {
+  if( inherits(x,"Expr")) return(x)
+  if (length(x) > 1L) x = wrap_s(x) #wrap as Series of a vector
   unwrap(.pr$Expr$lit(x))
 }
 
@@ -1463,6 +1473,188 @@ Expr_list = "use_extendr_wrapper"
 
 
 
+#TODO contribute pypolars search_sorted behavior is under-documented, does multiple elements work?
+#' Where to inject element(s) to maintain sorting
+#'
+#' @description  Find indices in self where elements should be inserted into to maintain order.
+#' @keywords Expr
+#' @param element a R value into literal or an expression of an element
+#' @return Expr
+#' @aliases search_sorted
+#' @name Expr_search_sorted
+#' @details This function look up where to insert element if to keep self column sorted.
+#' It is assumed the self column is already sorted ascending, otherwise wrongs answers.
+#' This function is a bit under documented in py-polars.
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a=0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
+Expr_search_sorted = function(element) {
+  .pr$Expr$search_sorted(self, wrap_e(element))
+}
 
 
 
+#' sort column by order of others
+#' @description Sort this column by the ordering of another column, or multiple other columns.
+#' @param by one expression or list expressions and/or strings(interpreted as column names)
+#' @param reverse single bool to boolean vector, any is_TRUE will give reverse sorting of that column
+#' @return Expr
+#' @keywords Expr
+#' @aliases sort_by
+#' @name Expr_sort_by
+#' @details
+#' In projection/ selection context the whole column is sorted.
+#' If used in a groupby context, the groups are sorted.
+#' @format a method
+#' @examples
+#' df = pl$DataFrame(list(
+#'   group = c("a","a","a","b","b","b"),
+#'   value1 = c(98,1,3,2,99,100),
+#'   value2 = c("d","f","b","e","c","a")
+#' ))
+#'
+#' # by one column/expression
+#' df$select(
+#'   pl$col("group")$sort_by("value1")
+#' )
+#'
+#' # by two columns/expressions
+#' df$select(
+#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(T,F))
+#' )
+#'
+#'
+#' # by some expression
+#' df$select(
+#'   pl$col("group")$sort_by(pl$col("value1")$sort(reverse=TRUE))
+#' )
+#'
+#' #quite similar usecase as R function `order()`
+#' l = list(
+#'   ab = c(rep("a",6),rep("b",6)),
+#'   v4 = rep(1:4, 3),
+#'   v3 = rep(1:3, 4),
+#'   v2 = rep(1:2,6),
+#'   v1 = 1:12
+#' )
+#' df = pl$DataFrame(l)
+#'
+#'
+#' #examples of order versus sort_by
+#' all.equal(
+#'   df$select(
+#'     pl$col("ab")$sort_by("v4")$alias("ab4"),
+#'     pl$col("ab")$sort_by("v3")$alias("ab3"),
+#'     pl$col("ab")$sort_by("v2")$alias("ab2"),
+#'     pl$col("ab")$sort_by("v1")$alias("ab1"),
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+#'   )$to_list(),
+#'   list(
+#'     ab4 = l$ab[order(l$v4)],
+#'     ab3 = l$ab[order(l$v3)],
+#'     ab2 = l$ab[order(l$v2)],
+#'     ab1 = l$ab[order(l$v1)],
+#'     ab13FT= l$ab[order(l$v3,rev(l$v1))],
+#'     ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+#'   )
+#' )
+Expr_sort_by = function(by, reverse = FALSE) {
+  pra = construct_protoArrayExpr(by)
+  unwrap(.pr$Expr$sort_by(self, pra, reverse))
+}
+
+
+#TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
+#either it should be error or Null.
+#pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
+#pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
+#pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
+#' Take values by index.
+#' @param indeces R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
+#' @return Expr
+#' @keywords Expr
+#' @aliases take
+#' @name Expr_take
+#' @details
+#' similar to R indexing syntax e.g. `letters[c(1,3,5)]`, however as an expression, not as eager computation
+#' exceeding
+#' @format a method
+#' @examples
+#' pl$empty_select( pl$lit(0:10)$take(c(1,8,0,7)))
+Expr_take = function(indices) {
+  .pr$Expr$take(self, pl$lit(indices))
+}
+
+
+
+#' Shift values
+#' @param periods numeric number of periods to shift, may be negative.
+#' @return Expr
+#' @keywords Expr
+#' @aliases shift
+#' @name Expr_shift
+#' @format a method
+#' @examples
+#' pl$empty_select(
+#'   pl$lit(0:3),
+#'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
+#'   pl$lit(0:3)$shift(2)$alias("shift+2")
+#' )
+Expr_shift = "use_extendr_wrapper"
+
+#' Shift and fill values
+#' @description Shift the values by a given period and fill the resulting null values.
+#'
+#' @param periods numeric number of periods to shift, may be negative.
+#' @param fill_value Fill None values with the result of this expression.
+#' @return Expr
+#' @keywords Expr
+#' @aliases shift_and_fill
+#' @name Expr_shift_and_fill
+#' @format a method
+#' @examples
+#' pl$empty_select(
+#'   pl$lit(0:3),
+#'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+#'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
+#' )
+Expr_shift_and_fill = function(periods, fill_value) {
+  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value))
+}
+
+
+#' Fill Nulls with a value or strategy
+#' @description  Fill null values using the specified value or strategy.
+#'
+#' @param value Expr or `Into<Expr>` to fill Null values with
+#' @param strategy default NULL else 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'
+#' @param limit Number of consecutive null values to fill when using the 'forward' or 'backward' strategy.
+#' @return Expr
+#' @details To interpolate over null values see interpolate.
+#' @keywords Expr
+#' @aliases fill_null
+#' @name Expr_fill_null
+#' @format a method
+#' @examples
+#' pl$empty_select(
+#'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+#'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
+#' )
+Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
+  pcase(
+    #the wrong stuff
+     is.null(value) && is.null(strategy),   abort("must specify either value or strategy"),
+    !is.null(value) && !is.null(strategy),  abort("cannot specify both value and strategy"),
+    !strategy %in% c("forward","backward") && !is.null(limit), abort(
+      "can only specify 'limit' when strategy is set to 'backward' or 'forward'"
+    ),
+
+    #the two use cases
+    !is.null(value), .pr$Expr$fill_null(self, pl$lit(value)),
+     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self, strategy, limit)),
+
+    #catch failed any match
+    or_else = abort("failed to handle user input",.internal = TRUE)
+  )
+}

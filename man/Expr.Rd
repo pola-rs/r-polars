@@ -21,7 +21,7 @@ Expr_prefix(prefix)
 Expr_reverse()
 }
 \arguments{
-\item{x}{any R expression yielding an integer, float or bool}
+\item{x}{an R Scalar, or R vector (via Series) into Expr}
 
 \item{suffix}{string suffix to be added to a name}
 
@@ -44,7 +44,14 @@ Polars pl$Expr
 ls(minipolars:::Expr)
 
 pl$col("this_column")$sum()$over("that_column")
-pl$col("some_column") / pl$lit(42)
+#scalars to literal, explit `pl$lit(42)` implicit `+ 2`
+pl$col("some_column") / pl$lit(42) + 2
+
+#vector to literal explicitly via Series and back again
+pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1]] #R vector to expression and back again
+
+#vectors to literal implicitly
+(pl$lit(2) + 1:4 ) / 4:1
 pl$col("some")$suffix("_column")
 pl$col("some")$suffix("_column")
 pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())

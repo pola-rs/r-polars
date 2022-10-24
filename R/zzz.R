@@ -109,9 +109,12 @@ pl$read_csv = minipolars:::read_csv_
 #functions
 pl$concat = minipolars:::concat
 
+
+
+
 #lazy_functions
 
-#TODO simplify maybe datatype should not be generated from strings
+
 .onLoad <- function(libname, pkgname){
   print(".onload")
   #instanciate one of each DataType (it's just an enum)
@@ -124,9 +127,23 @@ pl$concat = minipolars:::concat
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
 
+
+  #' Select from an empty DataFrame
+  #' @param ... expressions passed to select
+  #' @details experimental
+  #' @name pl_empty_select
+  #' @usage pl_empty_select
+  #' @keywords DataFrame
+  #' @aliases empty_select
+  #' @return DataFrame
+  #'
+  #' @examples pl$empty_select(pl$lit(1:4))
+  pl$empty_select = pl$DataFrame(list())$select
+
   lockEnvironment(pl,bindings = TRUE)
   print("done onload")
 }
 
 print("")
 print("done source")
+
