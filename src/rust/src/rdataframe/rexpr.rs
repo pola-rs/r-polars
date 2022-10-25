@@ -224,18 +224,18 @@ impl Expr {
         self.0.clone().top_k(k as usize, reverse).into()
     }
 
-    pub fn arg_max(&self) -> Expr {
+    pub fn arg_max(&self) -> Self {
         self.clone().0.arg_max().into()
     }
-    pub fn arg_min(&self) -> Expr {
+    pub fn arg_min(&self) -> Self {
         self.clone().0.arg_min().into()
     }
 
-    pub fn search_sorted(&self, element: &Expr) -> Expr {
+    pub fn search_sorted(&self, element: &Expr) -> Self {
         self.0.clone().search_sorted(element.0.clone()).into()
     }
 
-    pub fn take(&self, idx: &Expr) -> Expr {
+    pub fn take(&self, idx: &Expr) -> Self {
         self.clone().0.take(idx.0.clone()).into()
     }
 
@@ -249,19 +249,28 @@ impl Expr {
         let expr = Expr(self.clone().0.sort_by(by, rev));
         r_ok_list(expr)
     }
+    pub fn backward_fill(&self, limit: Nullable<f64>) -> Self {
+        let lmt = null_to_opt(limit).map(|x| x as u32);
+        self.clone().0.backward_fill(lmt).into()
+    }
 
-    pub fn shift(&self, periods: f64) -> Expr {
+    pub fn forward_fill(&self, limit: Nullable<f64>) -> Self {
+        let lmt = null_to_opt(limit).map(|x| x as u32);
+        self.clone().0.forward_fill(lmt).into()
+    }
+
+    pub fn shift(&self, periods: f64) -> Self {
         self.clone().0.shift(periods as i64).into()
     }
 
-    pub fn shift_and_fill(&self, periods: f64, fill_value: &Expr) -> Expr {
+    pub fn shift_and_fill(&self, periods: f64, fill_value: &Expr) -> Self {
         self.0
             .clone()
             .shift_and_fill(periods as i64, fill_value.0.clone())
             .into()
     }
 
-    pub fn fill_null(&self, expr: &Expr) -> Expr {
+    pub fn fill_null(&self, expr: &Expr) -> Self {
         self.0.clone().fill_null(expr.0.clone()).into()
     }
 
@@ -288,7 +297,7 @@ impl Expr {
         }
     }
 
-    pub fn fill_nan(&self, expr: &Expr) -> Expr {
+    pub fn fill_nan(&self, expr: &Expr) -> Self {
         self.0.clone().fill_nan(expr.0.clone()).into()
     }
 
@@ -300,26 +309,36 @@ impl Expr {
         self.0.clone().std(ddof).into()
     }
 
-    pub fn var(&self, ddof: u8) -> Expr {
+    pub fn var(&self, ddof: u8) -> Self {
         self.clone().0.var(ddof).into()
     }
 
-    pub fn is_unique(&self) -> Expr {
-        self.clone().0.is_unique().into()
+    pub fn max(&self) -> Self {
+        self.0.clone().max().into()
     }
 
-    pub fn is_first(&self) -> Expr {
-        self.clone().0.is_first().into()
+    pub fn min(&self) -> Self {
+        self.0.clone().min().into()
     }
 
-    pub fn backward_fill(&self, limit: Nullable<f64>) -> Expr {
-        let lmt = null_to_opt(limit).map(|x| x as u32);
-        self.clone().0.backward_fill(lmt).into()
+    pub fn nan_min(&self) -> Self {
+        self.clone().0.nan_min().into()
     }
 
-    pub fn forward_fill(&self, limit: Nullable<f64>) -> Expr {
-        let lmt = null_to_opt(limit).map(|x| x as u32);
-        self.clone().0.forward_fill(lmt).into()
+    pub fn nan_max(&self) -> Self {
+        self.clone().0.nan_max().into()
+    }
+
+    pub fn mean(&self) -> Self {
+        self.0.clone().mean().into()
+    }
+
+    pub fn median(&self) -> Self {
+        self.0.clone().median().into()
+    }
+
+    pub fn sum(&self) -> Self {
+        self.0.clone().sum().into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
@@ -430,26 +449,6 @@ impl Expr {
         self.0.clone().mode().into()
     }
 
-    pub fn min(&self) -> Self {
-        self.0.clone().min().into()
-    }
-
-    pub fn max(&self) -> Self {
-        self.0.clone().max().into()
-    }
-
-    pub fn mean(&self) -> Self {
-        self.0.clone().mean().into()
-    }
-
-    pub fn median(&self) -> Self {
-        self.0.clone().median().into()
-    }
-
-    pub fn sum(&self) -> Self {
-        self.0.clone().sum().into()
-    }
-
     pub fn n_unique(&self) -> Self {
         self.0.clone().n_unique().into()
     }
@@ -480,7 +479,7 @@ impl Expr {
         self.0.clone().unique_stable().into()
     }
 
-    pub fn list(&self) -> Expr {
+    pub fn list(&self) -> Self {
         self.clone().0.list().into()
     }
 
@@ -514,7 +513,7 @@ impl Expr {
             .into()
     }
 
-    pub fn append(&self, other: &Expr, upcast: bool) -> Expr {
+    pub fn append(&self, other: &Expr, upcast: bool) -> Self {
         self.0.clone().append(other.0.clone(), upcast).into()
     }
 
@@ -593,6 +592,14 @@ impl Expr {
             self.clone().0.map(f, output_map)
         }
         .into()
+    }
+
+    pub fn is_unique(&self) -> Self {
+        self.clone().0.is_unique().into()
+    }
+
+    pub fn is_first(&self) -> Self {
+        self.clone().0.is_first().into()
     }
 
     pub fn map_alias(&self, lambda: Robj) -> Self {

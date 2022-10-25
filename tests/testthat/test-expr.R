@@ -1178,3 +1178,27 @@ test_that("is_unique is_first", {
     )
   )
 })
+
+test_that("nan_min nan_max", {
+
+  l = list(
+    a=c(1,NaN,-Inf,3),
+    b=c(NA,1:3)
+  )
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$nan_min()$suffix("_nan_min"),
+      pl$col("b")$nan_min()$suffix("_nan_min"),
+      pl$col("a")$nan_max()$suffix("_nan_max"),
+      pl$col("b")$nan_max()$suffix("_nan_max"),
+    )$to_list(),
+    list(
+      a_nan_min = min(l$a),
+      b_nan_min = min(l$b,na.rm=TRUE),
+      a_nan_max = max(l$a),
+      b_nan_max = max(l$b,na.rm=TRUE)
+    )
+  )
+
+})

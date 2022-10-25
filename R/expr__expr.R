@@ -459,50 +459,6 @@ Expr_is_null = "use_extendr_wrapper"
 Expr_is_not_null = "use_extendr_wrapper"
 
 
-#' max
-#' @keywords Expr
-#' @description
-#' Get maximum value.
-#'
-#' @return Expr
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
-#' @examples
-#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
-Expr_max = "use_extendr_wrapper"
-
-#' min
-#' @keywords Expr
-#' @description
-#' Get minimum value.
-#'
-#' @return Expr
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
-#' @examples
-#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$min()== 1 ) #is true
-Expr_min = "use_extendr_wrapper"
-
-#' mean
-#' @keywords Expr
-#' @description
-#' Get mean value.
-#'
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$mean()==2) #is true
-Expr_mean = "use_extendr_wrapper"
-
-#' median
-#' @keywords Expr
-#' @description
-#' Get median value.
-#'
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
-Expr_median = "use_extendr_wrapper"
-
 
 #' sum
 #' @keywords Expr
@@ -1817,6 +1773,9 @@ Expr_var = function(ddof = 1) {
   .pr$Expr$var(self, ddof)
 }
 
+
+## --- out of order
+
 #' Get mask of unique values
 #'
 #' @return Expr (boolean)
@@ -1841,4 +1800,79 @@ Expr_is_unique = "use_extendr_wrapper"
 #' pl$empty_select(pl$lit(abs(-2:2))$is_first())
 Expr_is_first = "use_extendr_wrapper"
 
+## ----- back to order
+
+#' max
+#' @keywords Expr
+#' @description
+#' Get maximum value.
+#'
+#' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
+Expr_max = "use_extendr_wrapper"
+
+#' min
+#' @keywords Expr
+#' @description
+#' Get minimum value.
+#'
+#' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$min()== 1 ) #is true
+Expr_min = "use_extendr_wrapper"
+
+
+
+#TODO Contribute polars, nan_max and nan_min poison on NaN. But no method poison on `Null`
+#In R both NA and NaN poisons, but NA has priority which is meaningful, as NA is even less information
+#then NaN.
+
+#' max
+#' @keywords Expr
+#' @description Get maximum value, but propagate/poison encountered `NaN` values.
+#' Get maximum value.
+#' @aliases nan_min
+#' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
+#' @examples
+#' pl$DataFrame(list(x=c(1,NaN,Inf,3)))$select(pl$col("x")$nan_max()$is_nan()) #is true
+Expr_nan_max = "use_extendr_wrapper"
+
+#' min propagate NaN
+#'
+#' @keywords Expr
+#' @description Get minimum value, but propagate/poison encountered `NaN` values.
+#' @return Expr
+#' @aliases nan_min
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#' @examples
+#' pl$DataFrame(list(x=c(1,NaN,-Inf,3)))$select(pl$col("x")$nan_min()$is_nan()) #is true
+Expr_nan_min = "use_extendr_wrapper"
+
+#' mean
+#' @keywords Expr
+#' @description
+#' Get mean value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$mean()==2) #is true
+Expr_mean = "use_extendr_wrapper"
+
+#' median
+#' @keywords Expr
+#' @description
+#' Get median value.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
+Expr_median = "use_extendr_wrapper"
 

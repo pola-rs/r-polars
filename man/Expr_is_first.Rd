@@ -18,6 +18,6 @@ Expr (boolean)
 Get a mask of the first unique value.
 }
 \examples{
-pl$empty_select(pl$lit(abs(-2:2))$first())
+pl$empty_select(pl$lit(abs(-2:2))$is_first())
 }
 \keyword{Expr}

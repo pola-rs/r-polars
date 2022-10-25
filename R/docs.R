@@ -32,7 +32,9 @@
 #' From writing alot of tests for all implementations, it appears polars does not have a
 #' fully consistent nor well documented behavior, when it comes to comparisons and sorting of floats.
 #' Though some general thumb rules do apply:
-#' Polars have chosen to define in sorting that `Null` is a value lower than -Inf.
+#' Polars have chosen to define in sorting that `Null` is a value lower than `-Inf` as in
+#' `Expr.arg_min()` However except when `Null` is ignored `Expr.min()`, there is a `Expr.nan_min()`
+#' but no `Expr.nan_min()`.
 #' `NaN` is sometimes a value higher than Inf and sometimes regarded as a `Null`.
 #' Polars conventions  `NaN` > `Inf` > `99` > `-99` > `-Inf` > `Null`
 #' `Null == Null` yields often times false, sometimes true, sometimes `Null`.

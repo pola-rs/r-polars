@@ -6,22 +6,19 @@
 \format{
 info
 }
-\arguments{
-\item{limit}{Number of consecutive null values to fill. Default R NULL is no limit.}
-}
 \description{
 The meaning and naming differencies of values across languages.
 }
 \details{
-Comments for how R and python world translates into polars:
+#Comments for how the R and python world translates into polars:
 
-R and python are both high-level glue languages great for DataScience.
+R and python are both high-level glue languages great for DataS cience.
 Rust is a pedantic low-level language with similar use cases as C and C++.
 Polars is written in ~100k lines of rust and has a rust API. Py-polars the python API for polars,
 is implemented as an interface with the rust API. Rust is statically typed, and much
 of the 20k py-polars code is about providing the dynamic coding experience of polars.
 Minipolars is very parallel to py-polars except it interfaces with R. The performance and behavior
-are unexpectedly quite similar as the 'engine' is the exact same rust code.
+are unexpectedly quite similar as the 'engine' is the exact same rust code and data structures.
 }
 \section{Translation details}{
 \subsection{Missingness}{
@@ -30,60 +27,58 @@ R has allocated a value in every vector type  to signal missingness, these are c
 Polars uses a bool bitmask to signal \code{NA}-like missing value and it is called \code{Null} and \code{Nulls} in plural.
 Not to confuse with R \code{NULL} (see paragraph below).
 Polars supports missingness for any possible type as it kept separately in the bitmask.
-Inside python lists of values uses the symbol \code{None} as a similar meaning.
-R NA ~ polars Null ~ py-polars \link{None} (in a py list) #any R vector type that has a NA
+In python lists the symbol \code{None} can carry a similar meaning.
+R \code{NA} ~ polars \code{Null} ~ py-polars \verb{\[None\]} (in a py list)
 }
 
 \subsection{Sorting and comparisons}{
 
-Writing Tests for all implemetations have brought me to the conclusions that polars does not have a
-fully concistent nor well documented behavior when it comes to comparisons and sorting of floats.
-Though some genereal thumb rules do apply:
-Polars have chosen to define in sorting that \code{Null} is a value lower than -Inf.
-\code{NaN} is sometimes a value higher than Inf, sometimes regarded as \code{Null} sometimes ignored,
-Polars conventions  NaN > Inf > 99 > -99 > -Inf > Null
+From writing alot of tests for all implementations, it appears polars does not have a
+fully consistent nor well documented behavior, when it comes to comparisons and sorting of floats.
+Though some general thumb rules do apply:
+Polars have chosen to define in sorting that \code{Null} is a value lower than \code{-Inf} as in
+\code{Expr.arg_min()} However except when \code{Null} is ignored \code{Expr.min()}, there is a \code{Expr.nan_min()}
+but no \code{Expr.nan_min()}.
+\code{NaN} is sometimes a value higher than Inf and sometimes regarded as a \code{Null}.
+Polars conventions  \code{NaN} > \code{Inf} > \code{99} > \code{-99} > \code{-Inf} > \code{Null}
 \code{Null == Null} yields often times false, sometimes true, sometimes \code{Null}.
-}
+The documentation or examples do not reveal this variations. The best to do, when in doubt, is  to do
+test sort on a small Series/Column of all values.
 
-\subsection{Floating points}{
+#' R \code{NaN} ~ polars \code{NaN} ~ python \verb{\[float("NaN")\]} #only floats have \code{NaN}s
 
-R NaN is similar to Polars NaN and py-polars float("NaN"). However polars NaN is a part of the
-floating point standard, and is not as fast as the \code{Null}-bitmask, nor is it vsuper concistently implmented
-across polars sorting methods. It is best to minimize use of NaN values for speed and clarity. If you
-decide to use both NaN, just spend the extra time to test-out the NaN-behavior, as the documentation
-will not hint too much. Inf translates quite as is. NaN's are sometimes bigger than Inf, sometimes dropped and
-sometimes something else.
-R NaN ~ polars NaN ~ python \link{float("NaN")} #only in floats
-R Inf ~ polars inf  ~ python \link{float("inf")} #only floats
+R \code{Inf} ~ polars \code{inf}  ~ python \link{float("inf")} #only floats have \code{Inf}
 }
 
 \subsection{NULL IS NOT Null is not NULL}{
 
-The R NULL does not exist inside polars frames and series and so on. It resembles a Option::None in
-the hidden rust code. It resembles the python \code{None}. In all three langues the NULL/None/None
-are used as a function argument to signal default behavior or perhaps a deactivated feature.
-R \code{NULL} is very much NOT like polars \code{Null}.
-R NULL ~ rust-polars Option::None ~ pypolars None  #typically used for function argument
+The R NULL does not exist inside polars frames and series and so on. It resembles the Option::None in
+the hidden rust code. It resembles the python \code{None}. In all three langues the \code{NULL}/\code{None}/\code{None}
+are used in this context as function argument to signal default behavior or perhaps a deactivated feature.
+R \code{NULL} does NOT translate into the polars bitmask \code{Null}, that is \code{NA}.
+R \code{NULL} ~ rust-polars \code{Option::None} ~ pypolars \code{None}  #typically used for function arguments
 }
 
-\subsection{LISTS, FRAMES and DICTs}{
+\subsection{LISTS, FRAMES AND DICTS}{
 
 The following translations are relevant when loading data into polars. The R list appears
-similar to python dictionary, but is implemented more similar to the python list.
-However, in minipolars both lists and data.frame can be used to construct a polars DataFrame, just a
-dictionaries would be used in python.
-R data.frame/list ~ polars DataFrame ~ python dictonary
+similar to python dictionary (hashmap), but is implemented more similar to the python list (array of pointers).
+R list do support string naming elements via a string vector.
+In minipolars both lists (of vectors or series) and data.frames can be used to construct a polars DataFrame, just a
+as dictionaries would be used in python. In terms of loading in/out data the follow tranlation holds:
+R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
 }
 
 \subsection{Series and Vectors}{
 
-The R vector (Integer, Double, Character, ...) resembles the Series as both aew free floating from any
-frame and can be of any length. The implementaion is quite different. E.g. for-loop appending to an R
-is considered quite bad for performance, as the vector will be rewritten in memory for every append.
-The polars Series support chunked memory allocation, which allows any new data to be written only.
-However fragmented memory is not great for fast computations and polars objects have a rechunk()-method,
-to reallocate chunks into one. Rechunk might be called implicitly by polars.
-R vector ~ polars Series/column ~ python list
+The R vector (Integer, Double, Character, ...) resembles the Series as both are external from any
+frame and can be of any length. The implementation is quite different. E.g. \code{for}-loop appending to an R
+vector is considered quite bad for performance. The vector will be fully rewritten in memory for every append.
+The polars Series has chunked memory allocation, which allows any appened data to be written only.
+However fragmented memory is not great for fast computations and polars objects have a \code{rechunk}()-method,
+to reallocate chunks into one. Rechunk might be called implicitly by polars. In the context of constructing
+Series and extracting data , the following translation holds:
+R \code{vector} ~ polars \code{Series}/\code{column} ~ python \code{list}
 }
 
 \subsection{Expressions}{

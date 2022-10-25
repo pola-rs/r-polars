@@ -126,6 +126,10 @@ Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
 
 Expr$sort_by <- function(by, reverse) .Call(wrap__Expr__sort_by, self, by, reverse)
 
+Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
+
+Expr$forward_fill <- function(limit) .Call(wrap__Expr__forward_fill, self, limit)
+
 Expr$shift <- function(periods) .Call(wrap__Expr__shift, self, periods)
 
 Expr$shift_and_fill <- function(periods, fill_value) .Call(wrap__Expr__shift_and_fill, self, periods, fill_value)
@@ -142,13 +146,19 @@ Expr$std <- function(ddof) .Call(wrap__Expr__std, self, ddof)
 
 Expr$var <- function(ddof) .Call(wrap__Expr__var, self, ddof)
 
-Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
+Expr$max <- function() .Call(wrap__Expr__max, self)
 
-Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+Expr$min <- function() .Call(wrap__Expr__min, self)
 
-Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
+Expr$nan_min <- function() .Call(wrap__Expr__nan_min, self)
 
-Expr$forward_fill <- function(limit) .Call(wrap__Expr__forward_fill, self, limit)
+Expr$nan_max <- function() .Call(wrap__Expr__nan_max, self)
+
+Expr$mean <- function() .Call(wrap__Expr__mean, self)
+
+Expr$median <- function() .Call(wrap__Expr__median, self)
+
+Expr$sum <- function() .Call(wrap__Expr__sum, self)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
@@ -202,16 +212,6 @@ Expr$dot <- function(other) .Call(wrap__Expr__dot, self, other)
 
 Expr$mode <- function() .Call(wrap__Expr__mode, self)
 
-Expr$min <- function() .Call(wrap__Expr__min, self)
-
-Expr$max <- function() .Call(wrap__Expr__max, self)
-
-Expr$mean <- function() .Call(wrap__Expr__mean, self)
-
-Expr$median <- function() .Call(wrap__Expr__median, self)
-
-Expr$sum <- function() .Call(wrap__Expr__sum, self)
-
 Expr$n_unique <- function() .Call(wrap__Expr__n_unique, self)
 
 Expr$first <- function() .Call(wrap__Expr__first, self)
@@ -261,6 +261,10 @@ Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
 Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
+
+Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
+
+Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
 Expr$map_alias <- function(lambda) .Call(wrap__Expr__map_alias, self, lambda)
 

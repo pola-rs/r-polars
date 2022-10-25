@@ -83,7 +83,8 @@ features = [
   "arg_where",
   #extra features since copy from node-polars
   "top_k",
-  "search_sorted"
+  "search_sorted",
+  "propagate_nans"
 ]
 git = "https://github.com/pola-rs/polars.git"
 rev = "ee883e0f91fb1c10f7ab56a53ea750c820bc086c"
