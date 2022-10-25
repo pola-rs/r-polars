@@ -116,7 +116,7 @@ pl$Series = function(x, name=NULL){
 
 #' @export
 c.Series = \(x,...) {
-  l = list(...)
+  l = list2(...)
   x = x$clone() #clone to retain an immutable api, append_mut is not mutable
 
   #append each element of i being either Series or R vector

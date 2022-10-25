@@ -101,7 +101,7 @@ pl$set_minipolars_options = function(
 ) {
 
   #check opts
-  opts = list(...)
+  opts = list2(...)
   if(is.null(names(opts)) || !all(nzchar(names(opts)))) abort("all options passed must be named")
   unknown_opts = setdiff(names(opts),names(minipolars_optenv))
   if(length(unknown_opts)) {

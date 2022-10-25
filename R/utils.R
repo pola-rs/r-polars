@@ -344,7 +344,7 @@ get_method_usages = function(env,pattern="") {
   )
 
   paste0_len = function(...,collapse=NULL,sep="") {
-    dot_args = list(...)
+    dot_args = list2(...)
     #any has zero length, return zero length
     if(any(!sapply(dot_args,length))) {
       character()

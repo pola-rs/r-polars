@@ -20,7 +20,7 @@
 
 
 datatype = function(...) {
-  do.call(minipolars:::DataType$new,list(...))
+  do.call(minipolars:::DataType$new,list2(...))
 }
 #' @export
 "==.DataType" <- function(e1,e2) e1$eq(e2)

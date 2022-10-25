@@ -507,7 +507,7 @@ DataFrame_select = function(...) {
   exprs = construct_ProtoExprArray(...)
   df = unwrap(.pr$DataFrame$select(self,exprs))
 
-  expr_names = names(list(...))
+  expr_names = names(list2(...))
   if(!is.null(expr_names)) {
     old_names = df$columns
     new_names = old_names

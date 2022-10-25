@@ -535,7 +535,7 @@ Expr_sum = "use_extendr_wrapper"
 Expr_over = function(...) {
 
   #combine arguments in proto expression array
-  pra = construct_protoArrayExpr(list(...))
+  pra = construct_protoArrayExpr(list2(...))
 
   #pass to over
   .pr$Expr$over(self,pra)
