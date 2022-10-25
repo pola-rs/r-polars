@@ -3,15 +3,12 @@
 \docType{data}
 \name{Expr_or}
 \alias{Expr_or}
-\alias{|.Expr}
 \title{Or}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_or
-
-\method{|}{Expr}(e1, e2)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

@@ -750,7 +750,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' @rdname Expr
 #' @return Expr, literal of that value
 #' @aliases lit
-#' @name lit
+#' @name Expr_lit
 #' @examples
 #' #scalars to literal, explit `pl$lit(42)` implicit `+ 2`
 #' pl$col("some_column") / pl$lit(42) + 2
@@ -773,7 +773,7 @@ Expr_lit = function(x) {
 #' @rdname Expr
 #' @return Expr
 #' @aliases suffix
-#' @name suffix
+#' @name Expr_suffix
 #' @examples pl$col("some")$suffix("_column")
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
@@ -786,7 +786,7 @@ Expr_suffix = function(suffix) {
 #' @rdname Expr
 #' @return Expr
 #' @aliases prefix
-#' @name prefix
+#' @name Expr_prefix
 #' @examples pl$col("some")$suffix("_column")
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)
@@ -797,7 +797,7 @@ Expr_prefix = function(prefix) {
 #' @rdname Expr
 #' @return Expr
 #' @aliases reverse
-#' @name prefix
+#' @name Expr_reverse
 #' @examples pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
@@ -816,7 +816,6 @@ Expr_reverse = function() {
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
 Expr_and = "use_extendr_wrapper"
 #' @export
-#' @rdname Expr_and
 "&.Expr" <- function(e1,e2) e1$and(wrap_e(e2))
 
 
@@ -831,7 +830,6 @@ Expr_and = "use_extendr_wrapper"
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
 Expr_or = "use_extendr_wrapper"
 #' @export
-#' @rdname Expr_or
 "|.Expr" <- function(e1,e2) e1$or(wrap_e(e2))
 
 

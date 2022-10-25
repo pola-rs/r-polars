@@ -2,12 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr}
 \alias{Expr}
-\alias{lit}
 \alias{Expr_lit}
-\alias{suffix}
+\alias{lit}
 \alias{Expr_suffix}
-\alias{prefix}
+\alias{suffix}
 \alias{Expr_prefix}
+\alias{prefix}
 \alias{Expr_reverse}
 \alias{reverse}
 \title{Polars Expr}
