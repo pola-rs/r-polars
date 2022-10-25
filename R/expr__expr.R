@@ -321,24 +321,6 @@ Expr_count = "use_extendr_wrapper"
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
 Expr_len = "use_extendr_wrapper"
 
-#' get unqie values
-#' @keywords Expr
-#' @description
-#'  Get unique values of this expression.
-#' Similar to R unique()
-#' @param maintain_order bool, if TRUE guranteed same order, if FALSE maybe
-#' @return Expr
-#' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$unique())
-Expr_unique = function(maintain_order = FALSE) {
-  if(!is_bool(maintain_order)) abort("param maintain_order must be a bool")
-  if(maintain_order) {
-    .pr$Expr$unique_stable(self)
-  } else {
-    .pr$Expr$unique(self)
-  }
-}
-
 
 
 #' Drop null(s)
@@ -370,26 +352,6 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' @examples
 #'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = "use_extendr_wrapper"
-
-#' First
-#' @keywords Expr
-#' @description
-#' Get the first value.
-#' Similar to R head(x,1)
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
-Expr_first= "use_extendr_wrapper"
-
-#' Last
-#' @keywords Expr
-#' @description
-#' Get the lastvalue.
-#' Similar to R syntax tail(x,1)
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
-Expr_last = "use_extendr_wrapper"
 
 
 
@@ -451,30 +413,6 @@ Expr_is_null = "use_extendr_wrapper"
 Expr_is_not_null = "use_extendr_wrapper"
 
 
-
-
-
-#' over
-#' @keywords Expr
-#' @description
-#'Apply window function over a subgroup.
-#'This is similar to a groupby + aggregation + self join.
-#'Or similar to `window functions in Postgres
-#'<https://www.postgresql.org/docs/current/tutorial-window.html>`_.
-#' @param ... of strings or columns to group by
-#'
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
-Expr_over = function(...) {
-
-  #combine arguments in proto expression array
-  pra = construct_protoArrayExpr(list2(...))
-
-  #pass to over
-  .pr$Expr$over(self,pra)
-
-}
 
 
 
@@ -1752,34 +1690,6 @@ Expr_var = function(ddof = 1) {
 }
 
 
-## --- out of order
-
-#' Get mask of unique values
-#'
-#' @return Expr (boolean)
-#' @keywords Expr
-#' @aliases is_unique
-#' @name Expr_is_unique
-#' @format a method
-#'
-#' @examples
-#' pl$empty_select(pl$lit(abs(-2:2))$is_unique())
-Expr_is_unique = "use_extendr_wrapper"
-
-#' Get a mask of the first unique value.
-#'
-#' @return Expr (boolean)
-#' @keywords Expr
-#' @aliases is_unique
-#' @name Expr_is_first
-#' @format a method
-#'
-#' @examples
-#' pl$empty_select(pl$lit(abs(-2:2))$is_first())
-Expr_is_first = "use_extendr_wrapper"
-
-## ----- back to order
-
 #' max
 #' @keywords Expr
 #' @description
@@ -1914,3 +1824,90 @@ Expr_null_count = "use_extendr_wrapper"
 #' pl$empty_select(pl$lit(c(1:2,1:3))$arg_unique())
 Expr_arg_unique = "use_extendr_wrapper"
 
+
+#' get unqie values
+#' @keywords Expr
+#' @description
+#'  Get unique values of this expression.
+#' Similar to R unique()
+#' @param maintain_order bool, if TRUE guranteed same order, if FALSE maybe
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$unique())
+Expr_unique = function(maintain_order = FALSE) {
+  if(!is_bool(maintain_order)) abort("param maintain_order must be a bool")
+  if(maintain_order) {
+    .pr$Expr$unique_stable(self)
+  } else {
+    .pr$Expr$unique(self)
+  }
+}
+
+#' First
+#' @keywords Expr
+#' @description
+#' Get the first value.
+#' Similar to R head(x,1)
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
+Expr_first= "use_extendr_wrapper"
+
+#' Last
+#' @keywords Expr
+#' @description
+#' Get the lastvalue.
+#' Similar to R syntax tail(x,1)
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
+Expr_last = "use_extendr_wrapper"
+
+
+
+#' over
+#' @keywords Expr
+#' @description
+#'Apply window function over a subgroup.
+#'This is similar to a groupby + aggregation + self join.
+#'Or similar to `window functions in Postgres
+#'<https://www.postgresql.org/docs/current/tutorial-window.html>`_.
+#' @param ... of strings or columns to group by
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
+Expr_over = function(...) {
+
+  #combine arguments in proto expression array
+  pra = construct_protoArrayExpr(list2(...))
+
+  #pass to over
+  .pr$Expr$over(self,pra)
+
+}
+
+
+#' Get mask of unique values
+#'
+#' @return Expr (boolean)
+#' @keywords Expr
+#' @aliases is_unique
+#' @name Expr_is_unique
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(abs(-2:2))$is_unique())
+Expr_is_unique = "use_extendr_wrapper"
+
+#' Get a mask of the first unique value.
+#'
+#' @return Expr (boolean)
+#' @keywords Expr
+#' @aliases is_unique
+#' @name Expr_is_first
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(abs(-2:2))$is_first())
+Expr_is_first = "use_extendr_wrapper"
