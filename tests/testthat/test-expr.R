@@ -1203,7 +1203,7 @@ test_that("nan_min nan_max", {
 
 })
 
-##todo product
+
 test_that("product", {
 
   l = list(
@@ -1222,6 +1222,53 @@ test_that("product", {
      a = prod(l$a),
      b = prod(l$b,na_rm=TRUE),
      c = prod(l$c)
+    )
+  )
+
+})
+
+test_that("null count", {
+
+  l = list(
+    a=c(NA,NaN,NA),
+    b=c(NA,2,NA), #integer32 currently not supported
+    c=c(NaN,NaN,NaN) #integer32 currently not supported
+  )
+
+  is.na_only = \(x) is.na(x) & !is.nan(x)
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$null_count(),
+      pl$col("b")$null_count(),
+      pl$col("c")$null_count(),
+    )$to_list(),
+    list(
+      a = sum(is.na_only(l$a)) * 1.0,
+      b = sum(is.na_only(l$b)) * 1.0,
+      c = sum(is.na_only(l$c)) * 1.0
+    )
+  )
+
+})
+
+test_that("arg_unique", {
+
+  l = list(
+    a=c(1:2,1:3),
+    b=c("a","A","a",NA,"B"), #integer32 currently not supported
+    c=c(NaN,Inf,-Inf,1,NA) #integer32 currently not supported
+  )
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$arg_unique()$list(),
+      pl$col("b")$arg_unique()$list(),
+      pl$col("c")$arg_unique()$list(),
+    )$to_list() |> lapply(unlist),
+    list(
+      a = which(!duplicated(l$a))-1.0,
+      b = which(!duplicated(l$b))-1.0,
+      c = which(!duplicated(l$c))-1.0
     )
   )
 

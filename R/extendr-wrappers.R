@@ -162,6 +162,12 @@ Expr$sum <- function() .Call(wrap__Expr__sum, self)
 
 Expr$product <- function() .Call(wrap__Expr__product, self)
 
+Expr$n_unique <- function() .Call(wrap__Expr__n_unique, self)
+
+Expr$null_count <- function() .Call(wrap__Expr__null_count, self)
+
+Expr$arg_unique <- function() .Call(wrap__Expr__arg_unique, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)
@@ -213,8 +219,6 @@ Expr$round <- function(decimals) .Call(wrap__Expr__round, self, decimals)
 Expr$dot <- function(other) .Call(wrap__Expr__dot, self, other)
 
 Expr$mode <- function() .Call(wrap__Expr__mode, self)
-
-Expr$n_unique <- function() .Call(wrap__Expr__n_unique, self)
 
 Expr$first <- function() .Call(wrap__Expr__first, self)
 

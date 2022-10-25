@@ -17,6 +17,9 @@ Expr
 \description{
 Compute the product of an expression.
 }
+\details{
+does not support integer32 currently, .cast() to f64 or i64 first.
+}
 \examples{
 pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$product()==6) #is true
 }

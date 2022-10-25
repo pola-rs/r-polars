@@ -345,6 +345,18 @@ impl Expr {
         self.clone().0.product().into()
     }
 
+    pub fn n_unique(&self) -> Self {
+        self.0.clone().n_unique().into()
+    }
+
+    pub fn null_count(&self) -> Self {
+        self.0.clone().null_count().into()
+    }
+
+    pub fn arg_unique(&self) -> Self {
+        self.clone().0.arg_unique().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
@@ -451,10 +463,6 @@ impl Expr {
 
     pub fn mode(&self) -> Self {
         self.0.clone().mode().into()
-    }
-
-    pub fn n_unique(&self) -> Self {
-        self.0.clone().n_unique().into()
     }
 
     pub fn first(&self) -> Self {

@@ -20,6 +20,14 @@
 #'
 #' # Translation details
 #'
+#' ## R and the integerish
+#' R only has no native Int32 type, no Uint32, Int64, Uint64 types. These days Int32 is getting a bit small, to
+#' refer to more rows than ~ 2^31-1. There are packages which provide int64, but the most normal 'hack' is to
+#' just use floats as integerish. There is an unique float64 value for every integer up to about 2^52 which is
+#' plenty for all practical concerns. Some minipolars methods may accept or return a float even though an
+#' integer idealy would be more accurate. Most R functions intermix Integer32 (integer) and Float64 (double)
+#' seamlessly.
+#'
 #' ## Missingness
 #' R has allocated a value in every vector type  to signal missingness, these are collectively called `NAs`.
 #' Polars uses a bool bitmask to signal `NA`-like missing value and it is called `Null` and `Nulls` in plural.

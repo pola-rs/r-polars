@@ -339,15 +339,7 @@ Expr_unique = function(maintain_order = FALSE) {
   }
 }
 
-#' Count number of unique values
-#' @keywords Expr
-#' @description
-#' Count number of unique values.
-#' Similar to R length(unique(x))
-#' @return Expr
-#' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
-Expr_n_unique = "use_extendr_wrapper"
+
 
 #' Drop null(s)
 #' @keywords Expr
@@ -1891,3 +1883,34 @@ Expr_median = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$product()==6) #is true
 Expr_product = "use_extendr_wrapper"
+
+
+#' Count number of unique values
+#' @keywords Expr
+#' @description
+#' Count number of unique values.
+#' Similar to R length(unique(x))
+#' @aliases n_unique
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
+Expr_n_unique = "use_extendr_wrapper"
+
+
+
+#' Count `Nulls`
+#' @keywords Expr
+#' @aliases null_count
+#' @return Expr
+#' @examples
+#' pl$empty_select(pl$lit(c(NA,"a",NA,"b"))$null_count())
+Expr_null_count = "use_extendr_wrapper"
+
+#' Index of First Unique Value.
+#' @keywords Expr
+#' @aliases arg_unique
+#' @return Expr
+#' @examples
+#' pl$empty_select(pl$lit(c(1:2,1:3))$arg_unique())
+Expr_arg_unique = "use_extendr_wrapper"
+
