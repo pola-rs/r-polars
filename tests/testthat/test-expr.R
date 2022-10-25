@@ -1133,4 +1133,48 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
 
 })
 
+test_that("std var", {
 
+  expect_identical(
+    pl$empty_select(
+      pl$lit(1:5)$std()$alias("std"),
+      pl$lit(c(NA,1:5))$std()$alias("std_missing"),
+    )$to_list(),
+    list(
+      std = sd(1:5),
+      std_missing = sd(c(NA,1:5),na.rm=TRUE)
+    )
+  )
+  expect_true(pl$empty_select(pl$lit(1:5)$std(3))$to_list()[[1]] != sd(1:5))
+
+
+  expect_identical(
+    pl$empty_select(
+      pl$lit(1:5)$var()$alias("var"),
+      pl$lit(c(NA,1:5))$var()$alias("var_missing"),
+    )$to_list(),
+    list(
+      var = var(1:5),
+      var_missing = var(c(NA,1:5),na.rm=TRUE)
+    )
+  )
+  expect_true(pl$empty_select(pl$lit(1:5)$var(3))$to_list()[[1]] != var(1:5))
+
+
+})
+
+
+test_that("is_unique is_first", {
+  v = c(1,1,2,2,3,NA,NaN,Inf)
+  expect_identical(
+    pl$empty_select(
+      pl$lit(v)$is_unique()$alias("is_unique"),
+      pl$lit(v)$is_first()$alias("is_first")
+    )$to_list(),
+    list(
+      is_unique = !v %in% v[duplicated(v)],
+      is_first  = !duplicated(v)
+
+    )
+  )
+})

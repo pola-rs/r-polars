@@ -1787,4 +1787,58 @@ Expr_fill_nan = function(expr = NULL) {
 }
 
 
+#' Get Standard Deviation
+#'
+#' @param ddof integer in range [0;255] degrees of freedom
+#' @return Expr (f64 scalar)
+#' @keywords Expr
+#' @aliases std
+#' @name Expr_std
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(1:5)$std())
+Expr_std = function(ddof = 1) {
+  .pr$Expr$std(self, ddof)
+}
+
+#' Get Variance
+#'
+#' @param ddof integer in range [0;255] degrees of freedom
+#' @return Expr (f64 scalar)
+#' @keywords Expr
+#' @aliases var
+#' @name Expr_var
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(1:5)$var())
+Expr_var = function(ddof = 1) {
+  .pr$Expr$var(self, ddof)
+}
+
+#' Get mask of unique values
+#'
+#' @return Expr (boolean)
+#' @keywords Expr
+#' @aliases is_unique
+#' @name Expr_is_unique
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(abs(-2:2))$is_unique())
+Expr_is_unique = "use_extendr_wrapper"
+
+#' Get a mask of the first unique value.
+#'
+#' @return Expr (boolean)
+#' @keywords Expr
+#' @aliases is_unique
+#' @name Expr_is_first
+#' @format a method
+#'
+#' @examples
+#' pl$empty_select(pl$lit(abs(-2:2))$is_first())
+Expr_is_first = "use_extendr_wrapper"
+
 

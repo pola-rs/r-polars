@@ -292,6 +292,26 @@ impl Expr {
         self.0.clone().fill_nan(expr.0.clone()).into()
     }
 
+    pub fn reverse(&self) -> Self {
+        self.0.clone().reverse().into()
+    }
+
+    pub fn std(&self, ddof: u8) -> Self {
+        self.0.clone().std(ddof).into()
+    }
+
+    pub fn var(&self, ddof: u8) -> Expr {
+        self.clone().0.var(ddof).into()
+    }
+
+    pub fn is_unique(&self) -> Expr {
+        self.clone().0.is_unique().into()
+    }
+
+    pub fn is_first(&self) -> Expr {
+        self.clone().0.is_first().into()
+    }
+
     pub fn backward_fill(&self, limit: Nullable<f64>) -> Expr {
         let lmt = null_to_opt(limit).map(|x| x as u32);
         self.clone().0.backward_fill(lmt).into()
@@ -448,10 +468,6 @@ impl Expr {
 
     pub fn tail(&self, n: i64) -> Self {
         self.0.clone().tail(Some(n as usize)).into()
-    }
-
-    pub fn reverse(&self) -> Self {
-        self.0.clone().reverse().into()
     }
 
     //chaining methods

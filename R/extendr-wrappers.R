@@ -136,6 +136,16 @@ Expr$fill_null_with_strategy <- function(strategy, limit) .Call(wrap__Expr__fill
 
 Expr$fill_nan <- function(expr) .Call(wrap__Expr__fill_nan, self, expr)
 
+Expr$reverse <- function() .Call(wrap__Expr__reverse, self)
+
+Expr$std <- function(ddof) .Call(wrap__Expr__std, self, ddof)
+
+Expr$var <- function(ddof) .Call(wrap__Expr__var, self, ddof)
+
+Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
+
+Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+
 Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
 
 Expr$forward_fill <- function(limit) .Call(wrap__Expr__forward_fill, self, limit)
@@ -211,8 +221,6 @@ Expr$last <- function() .Call(wrap__Expr__last, self)
 Expr$head <- function(n) .Call(wrap__Expr__head, self, n)
 
 Expr$tail <- function(n) .Call(wrap__Expr__tail, self, n)
-
-Expr$reverse <- function() .Call(wrap__Expr__reverse, self)
 
 Expr$unique <- function() .Call(wrap__Expr__unique, self)
 
