@@ -341,6 +341,10 @@ impl Expr {
         self.0.clone().sum().into()
     }
 
+    pub fn product(&self) -> Self {
+        self.clone().0.product().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

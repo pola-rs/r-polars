@@ -1202,3 +1202,27 @@ test_that("nan_min nan_max", {
   )
 
 })
+
+##todo product
+test_that("product", {
+
+  l = list(
+    a=c(1,NaN,-Inf,3),
+    b=c(NA,1:3)*1, #integer32 currently not supported
+    c=c(1:4)*1 #integer32 currently not supported
+  )
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$product(),
+      pl$col("b")$product(),
+      pl$col("c")$product(),
+    )$to_list(),
+    list(
+     a = prod(l$a),
+     b = prod(l$b,na_rm=TRUE),
+     c = prod(l$c)
+    )
+  )
+
+})

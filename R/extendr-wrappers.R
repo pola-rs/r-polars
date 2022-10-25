@@ -160,6 +160,8 @@ Expr$median <- function() .Call(wrap__Expr__median, self)
 
 Expr$sum <- function() .Call(wrap__Expr__sum, self)
 
+Expr$product <- function() .Call(wrap__Expr__product, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)

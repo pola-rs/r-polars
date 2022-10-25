@@ -460,20 +460,6 @@ Expr_is_not_null = "use_extendr_wrapper"
 
 
 
-#' sum
-#' @keywords Expr
-#' @description
-#' Get sum value
-#'
-#' @details
-#'  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
-#' Int64 before summing to prevent overflow issues.
-#'
-#' @return Expr
-#' @examples
-#' pl$DataFrame(list(x=c(1L,NA,2L)))$select(pl$col("x")$sum())#is i32 3 (Int32 not casted)
-Expr_sum = "use_extendr_wrapper"
-
 
 
 #' over
@@ -1856,6 +1842,24 @@ Expr_nan_max = "use_extendr_wrapper"
 #' pl$DataFrame(list(x=c(1,NaN,-Inf,3)))$select(pl$col("x")$nan_min()$is_nan()) #is true
 Expr_nan_min = "use_extendr_wrapper"
 
+
+
+#' sum
+#' @keywords Expr
+#' @description
+#' Get sum value
+#'
+#' @details
+#'  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before summing to prevent overflow issues.
+#'
+#' @return Expr
+#' @examples
+#' pl$DataFrame(list(x=c(1L,NA,2L)))$select(pl$col("x")$sum())#is i32 3 (Int32 not casted)
+Expr_sum = "use_extendr_wrapper"
+
+
+
 #' mean
 #' @keywords Expr
 #' @description
@@ -1876,3 +1880,14 @@ Expr_mean = "use_extendr_wrapper"
 #' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
 Expr_median = "use_extendr_wrapper"
 
+##TODO contribute polars: product does not support in rust i32
+
+#' Product
+#' @keywords Expr
+#' @description Compute the product of an expression.
+#' @aliases  Product
+#' @return Expr
+#' @details does not support integer32 currently, .cast() to f64 or i64 first.
+#' @examples
+#' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$product()==6) #is true
+Expr_product = "use_extendr_wrapper"
