@@ -17,6 +17,9 @@ Expr
 \description{
 Returns a boolean output indicating which values are infinite.
 }
+\details{
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+}
 \examples{
 pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_infinite())
 }

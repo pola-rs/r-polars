@@ -1009,7 +1009,7 @@ test_that("shift", {
 })
 
 
-test_that("fill_null", {
+test_that("fill_null  + forward backward _fill + fill_nan", {
 
   l = list(a=c(1L,rep(NA_integer_,3L),10))
 
@@ -1040,7 +1040,7 @@ test_that("fill_null", {
     })
   }
   R_fill_bwd = \(x,lim=Inf)  rev(R_fill_fwd(rev(x),lim=lim))
-  R_replace_na = \(x, y) {x[is.na(x)] <-y;x}
+  R_replace_na = \(x, y) {x[is.na( x)] <-y;x}
 
   #TODO let select and other ... functions accept trailing ','
   expect_identical(
@@ -1085,4 +1085,52 @@ test_that("fill_null", {
     )
   )
 
+
+  #forward_fill + backward_fill
+  l = list(a = c(1:2,NA_integer_,NA_integer_,3L))
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$forward_fill(1 )$alias("a_ffill_1"),
+      pl$col("a")$forward_fill(  )$alias("a_ffill_NULL"),
+      pl$col("a")$backward_fill(1)$alias("a_bfill_1"),
+      pl$col("a")$backward_fill( )$alias("a_bfill_NULL")
+    )$to_list(),
+    list(
+      a_ffill_1    = R_fill_fwd(l$a,1),
+      a_ffill_NULL = R_fill_fwd(l$a  ),
+      a_bfill_1    = R_fill_bwd(l$a,1),
+      a_bfill_NULL = R_fill_bwd(l$a  )
+    )
+  )
+
+  #Fill NaN
+  R_replace_nan= \(x, y) {x[is.nan(x)] <-y;x}
+  l = list(a = c(1,NaN,NA,NaN,3))
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$fill_nan()$alias("fnan_NULL"),
+      pl$col("a")$fill_nan(42L)$alias("fnan_int"),
+      pl$col("a")$fill_nan(NA)$alias("fnan_NA"),
+      pl$col("a")$fill_nan("hej")$alias("fnan_str"),
+      pl$col("a")$fill_nan(TRUE)$alias("fnan_bool"),
+      pl$col("a")$fill_nan(pl$lit(10)/2)$alias("fnan_expr"),
+      pl$col("a")$fill_nan(pl$Series(10))$alias("fnan_series")
+    )$to_list(),
+    list(
+      fnan_NULL  = R_replace_nan(l$a,NA_real_),
+      fnan_int   = R_replace_nan(l$a,42L),
+      fnan_NA    = R_replace_nan(l$a,NA),
+      fnan_str   = c("1.0", "hej", "NA", "hej", "3.0"),
+      fnan_bool  = R_replace_nan(l$a,TRUE),
+      fnan_expr  = R_replace_nan(l$a,pl$empty_select(pl$lit(10)/2)$to_list()[[1]]),
+      fnan_series= R_replace_nan(l$a, pl$Series(10)$to_r())
+    )
+  )
+  #series with length not allowed
+  expect_error(
+    pl$DataFrame(l)$select(pl$col("a")$fill_nan(pl$Series(10:11))$alias("fnan_series2"))
+  )
+
 })
+
+

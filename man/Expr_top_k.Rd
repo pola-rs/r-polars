@@ -24,6 +24,8 @@ If 'reverse=True` the smallest elements will be given.
 }
 \details{
 This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
+
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
 df = pl$DataFrame(list(

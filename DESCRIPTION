@@ -19,6 +19,7 @@ Collate:
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'
+    'docs.R'
     'expr__expr.R'
     'functions.R'
     'groupby.R'

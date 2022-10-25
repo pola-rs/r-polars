@@ -4,7 +4,7 @@
 \alias{pl_empty_select}
 \alias{.onLoad}
 \alias{empty_select}
-\title{Select from a empty DataFrame}
+\title{Select from an empty DataFrame}
 \usage{
 pl_empty_select
 }
@@ -15,7 +15,7 @@ pl_empty_select
 DataFrame
 }
 \description{
-Select from a empty DataFrame
+Select from an empty DataFrame
 }
 \details{
 experimental

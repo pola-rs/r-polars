@@ -266,9 +266,9 @@ impl Expr {
     }
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let x = null_to_opt(limit).map(|x| x as u32);
+        let lmt = null_to_opt(limit).map(|x| x as u32);
 
-        let strat_result = parse_fill_null_strategy(strategy, x);
+        let strat_result = parse_fill_null_strategy(strategy, lmt);
 
         if let Ok(strat) = strat_result {
             let result: pl::PolarsResult<Expr> = Ok(self
@@ -286,6 +286,20 @@ impl Expr {
                 unreachable!("yep")
             }
         }
+    }
+
+    pub fn fill_nan(&self, expr: &Expr) -> Expr {
+        self.0.clone().fill_nan(expr.0.clone()).into()
+    }
+
+    pub fn backward_fill(&self, limit: Nullable<f64>) -> Expr {
+        let lmt = null_to_opt(limit).map(|x| x as u32);
+        self.clone().0.backward_fill(lmt).into()
+    }
+
+    pub fn forward_fill(&self, limit: Nullable<f64>) -> Expr {
+        let lmt = null_to_opt(limit).map(|x| x as u32);
+        self.clone().0.forward_fill(lmt).into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

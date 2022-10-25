@@ -134,6 +134,12 @@ Expr$fill_null <- function(expr) .Call(wrap__Expr__fill_null, self, expr)
 
 Expr$fill_null_with_strategy <- function(strategy, limit) .Call(wrap__Expr__fill_null_with_strategy, self, strategy, limit)
 
+Expr$fill_nan <- function(expr) .Call(wrap__Expr__fill_nan, self, expr)
+
+Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
+
+Expr$forward_fill <- function(limit) .Call(wrap__Expr__forward_fill, self, limit)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)

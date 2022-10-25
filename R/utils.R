@@ -158,11 +158,11 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 #')
 pcase = function(..., or_else = NULL) {
   #get unevaluated args except header-function-name and or_else
-  l = head(tail(as.list(sys.call()),-1),-1)
+  l = head(tail(as.list(sys.call()),-1L),-1L)
   #evaluate the odd args, if TRUE, evaluate and return the next even arg
-  for ( i in seq_len(length(l)/2)) {
-    if(isTRUE(eval(l[[i*2-1]],envir = parent.frame()))) {
-      return(eval(l[[i*2]],envir = parent.frame()))
+  for ( i in seq_len(length(l)/2L)) {
+    if(isTRUE(eval(l[[i*2L-1L]],envir = parent.frame()))) {
+      return(eval(l[[i*2L]],envir = parent.frame()))
     }
   }
   or_else

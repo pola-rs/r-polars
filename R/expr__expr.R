@@ -154,6 +154,8 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5)$lt(pl$lit(10))
 Expr_lt = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_lt
 "<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
 
@@ -169,6 +171,8 @@ Expr_lt = "use_extendr_wrapper"
 #' pl$lit(2)$gt(pl$lit(1))
 Expr_gt = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_gt
 ">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
 
@@ -184,6 +188,8 @@ Expr_gt = "use_extendr_wrapper"
 #' pl$lit(2)$eq(pl$lit(2))
 Expr_eq = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_eq
 "==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
 
@@ -200,6 +206,8 @@ Expr_eq = "use_extendr_wrapper"
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_neq
 "!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
 
@@ -215,6 +223,8 @@ Expr_neq = "use_extendr_wrapper"
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_lt_eq
 "<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
 
@@ -231,6 +241,8 @@ Expr_lt_eq = "use_extendr_wrapper"
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = "use_extendr_wrapper"
 #' @export
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @rdname Expr_gt_eq
 ">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
 
@@ -343,6 +355,8 @@ Expr_n_unique = "use_extendr_wrapper"
 #' Drop null values.
 #' Similar to R syntax x[!(is.na(x) & !is.nan(x))]
 #' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = "use_extendr_wrapper"
@@ -356,6 +370,9 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #'
 #'  Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
 #'  To drop null values, use method `drop_nulls`.
+#'
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #'
 #' @return Expr
 #' @examples
@@ -422,6 +439,8 @@ Expr_tail = function(n=10) {
 #' Similar to R syntax is.na(x)
 #' null polars about the same as R NA
 #' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_null())
 Expr_is_null = "use_extendr_wrapper"
@@ -433,6 +452,8 @@ Expr_is_null = "use_extendr_wrapper"
 #' Similar to R syntax !is.na(x)
 #' null polars about the same as R NA
 #' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = "use_extendr_wrapper"
@@ -444,6 +465,8 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' Get maximum value.
 #'
 #' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 Expr_max = "use_extendr_wrapper"
@@ -454,6 +477,8 @@ Expr_max = "use_extendr_wrapper"
 #' Get minimum value.
 #'
 #' @return Expr
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$min()== 1 ) #is true
 Expr_min = "use_extendr_wrapper"
@@ -525,7 +550,7 @@ Expr_over = function(...) {
 #'
 #' @param ...  any Expr or string
 #'
-#' @importFrom rlang is_string
+#' @importFrom rlang is_string list2
 #'
 #' @keywords Expr
 #'
@@ -536,7 +561,7 @@ construct_ProtoExprArray = function(...) {
 
 
   pra = minipolars:::ProtoExprArray$new()
-  args = list(...)
+  args = rlang::list2(...)
   arg_names = names(args)
 
 
@@ -1070,6 +1095,8 @@ Expr_map_alias = function(fun) {
 #' @aliases is_finite
 #' @name Expr_is_finite
 #' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_finite())
 Expr_is_finite = "use_extendr_wrapper"
@@ -1077,7 +1104,8 @@ Expr_is_finite = "use_extendr_wrapper"
 
 #' Are elements infinite
 #' @description Returns a boolean output indicating which values are infinite.
-#'
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_infinite
@@ -1095,10 +1123,12 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' @description Returns a boolean Series indicating which values are NaN.
 #' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
 #'  NA_real_(R).
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_nan
 #' @name Expr_is_nan
+#'
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_nan())
@@ -1112,6 +1142,8 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_not_nan
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @name Expr_is_not_nan
 #' @format a method
 #' @examples
@@ -1175,6 +1207,8 @@ Expr_append = function(other, upcast=TRUE) {
 #' @aliases rechunk
 #' @name Expr_rechunk
 #' @format a method
+#' @details
+#' See rechunk() explained here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' #get chunked lengths with/without rechunk
 #' series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
@@ -1215,6 +1249,7 @@ Expr_cumsum = function(reverse = FALSE) {
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
+#'
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1235,6 +1270,8 @@ Expr_cumprod = function(reverse = FALSE) {
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1255,6 +1292,8 @@ Expr_cummin = function(reverse = FALSE) {
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1381,6 +1420,8 @@ Expr_mode = "use_extendr_wrapper"
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases sort
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @name Expr_sort
 #' @format a method
 #' @examples
@@ -1397,6 +1438,8 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' @description  Return the `k` largest elements.
 #' If 'reverse=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @keywords Expr
 #' @param k numeric k top values to get
 #' @param reverse bool if true then k smallest values
@@ -1423,6 +1466,8 @@ Expr_top_k = function(k , reverse = FALSE) {
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases arg_sort
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @name Expr_arg_sort
 #' @format a method
 #' @examples
@@ -1439,6 +1484,8 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @keywords Expr
 #' @return Expr
 #' @aliases arg_min
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @name Expr_arg_min
 #' @format a method
 #' @examples
@@ -1452,6 +1499,8 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @keywords Expr
 #' @return Expr
 #' @aliases arg_max
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @name Expr_arg_max
 #' @format a method
 #' @examples
@@ -1505,6 +1554,8 @@ Expr_search_sorted = function(element) {
 #' @details
 #' In projection/ selection context the whole column is sorted.
 #' If used in a groupby context, the groups are sorted.
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @format a method
 #' @examples
 #' df = pl$DataFrame(list(
@@ -1579,6 +1630,7 @@ Expr_sort_by = function(by, reverse = FALSE) {
 #' @details
 #' similar to R indexing syntax e.g. `letters[c(1,3,5)]`, however as an expression, not as eager computation
 #' exceeding
+#'
 #' @format a method
 #' @examples
 #' pl$empty_select( pl$lit(0:10)$take(c(1,8,0,7)))
@@ -1595,9 +1647,10 @@ Expr_take = function(indices) {
 #' @aliases shift
 #' @name Expr_shift
 #' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$empty_select(
-#'   pl$lit(0:3),
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
 #'   pl$lit(0:3)$shift(2)$alias("shift+2")
 #' )
@@ -1613,6 +1666,8 @@ Expr_shift = "use_extendr_wrapper"
 #' @aliases shift_and_fill
 #' @name Expr_shift_and_fill
 #' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
 #' pl$empty_select(
 #'   pl$lit(0:3),
@@ -1624,18 +1679,20 @@ Expr_shift_and_fill = function(periods, fill_value) {
 }
 
 
-#' Fill Nulls with a value or strategy
-#' @description  Fill null values using the specified value or strategy.
+#' Fill Nulls with a value or strategy.
+#' @description Shift the values by value or as strategy.
 #'
 #' @param value Expr or `Into<Expr>` to fill Null values with
 #' @param strategy default NULL else 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'
 #' @param limit Number of consecutive null values to fill when using the 'forward' or 'backward' strategy.
 #' @return Expr
-#' @details To interpolate over null values see interpolate.
 #' @keywords Expr
 #' @aliases fill_null
 #' @name Expr_fill_null
 #' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#'
 #' @examples
 #' pl$empty_select(
 #'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
@@ -1643,18 +1700,93 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' )
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
-    #the wrong stuff
+    # the wrong stuff
      is.null(value) && is.null(strategy),   abort("must specify either value or strategy"),
     !is.null(value) && !is.null(strategy),  abort("cannot specify both value and strategy"),
-    !strategy %in% c("forward","backward") && !is.null(limit), abort(
+    !is.null(strategy) && !strategy %in% c("forward","backward") && !is.null(limit), abort(
       "can only specify 'limit' when strategy is set to 'backward' or 'forward'"
     ),
 
-    #the two use cases
+    # the two use cases
     !is.null(value), .pr$Expr$fill_null(self, pl$lit(value)),
-     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self, strategy, limit)),
+     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self , strategy, limit)),
 
-    #catch failed any match
-    or_else = abort("failed to handle user input",.internal = TRUE)
+    # catch failed any match
+    or_else = abort("failed to handle user inputs", .internal = TRUE)
   )
 }
+
+
+#' Fill Nulls Backward
+#' @description Fill missing values with the next to be seen values.
+#'
+#' @param limit Expr or `Into<Expr>`  The number of consecutive null values to backward fill.
+#' @return Expr
+#' @keywords Expr
+#' @aliases backward_fill
+#' @name Expr_backward_fill
+#' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#'
+#' @examples
+#' l = list(a=c(1L,rep(NA_integer_,3L),10))
+#' pl$DataFrame(l)$select(
+#'   pl$col("a")$backward_fill()$alias("bf_null"),
+#'   pl$col("a")$backward_fill(limit = 0)$alias("bf_l0"),
+#'   pl$col("a")$backward_fill(limit = 1)$alias("bf_l1")
+#' )$to_list()
+Expr_backward_fill = function(limit = NULL) {
+  .pr$Expr$backward_fill(self, limit)
+}
+
+#' Fill Nulls Forward
+#' @description Fill missing values with last seen values.
+#'
+#' @param limit Expr or `Into<Expr>`  The number of consecutive null values to forward fill.
+#' @return Expr
+#' @keywords Expr
+#' @aliases forward_fill
+#' @name Expr_forward_fill
+#' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#'
+#' @examples
+#' l = list(a=c(1L,rep(NA_integer_,3L),10))
+#' pl$DataFrame(l)$select(
+#'   pl$col("a")$forward_fill()$alias("ff_null"),
+#'   pl$col("a")$forward_fill(limit = 0)$alias("ff_l0"),
+#'   pl$col("a")$forward_fill(limit = 1)$alias("ff_l1")
+#' )$to_list()
+Expr_forward_fill = function(limit = NULL) {
+  .pr$Expr$forward_fill(self, limit)
+}
+
+
+#' Fill Nulls Forward
+#' @description Fill missing values with last seen values.
+#'
+#' @param expr or `Into<Expr>`  the value to replace NaN with. Default NULL is NA/Null.
+#' @return Expr
+#' @keywords Expr
+#' @aliases fill_nan
+#' @name Expr_fill_nan
+#' @format a method
+#' @details
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+#'
+#' @examples
+#' l = list(a=c(1,NaN,NaN,3))
+#' pl$DataFrame(l)$select(
+#'   pl$col("a")$fill_nan()$alias("fill_default"),
+#'   pl$col("a")$fill_nan(pl$lit(NA))$alias("fill_NA"), #same as default
+#'   pl$col("a")$fill_nan(2)$alias("fill_float2"),
+#'   pl$col("a")$fill_nan("hej")$alias("fill_str") #implicit cast to Utf8
+#' )$to_list()
+Expr_fill_nan = function(expr = NULL) {
+  .pr$Expr$fill_nan(self, wrap_e(expr))
+}
+
+
+

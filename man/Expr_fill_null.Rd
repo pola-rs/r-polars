@@ -3,7 +3,7 @@
 \name{Expr_fill_null}
 \alias{Expr_fill_null}
 \alias{fill_null}
-\title{Fill Nulls with a value or strategy}
+\title{Fill Nulls with a value or strategy.}
 \format{
 a method
 }
@@ -21,10 +21,10 @@ Expr_fill_null(value = NULL, strategy = NULL, limit = NULL)
 Expr
 }
 \description{
-Fill null values using the specified value or strategy.
+Shift the values by value or as strategy.
 }
 \details{
-To interpolate over null values see interpolate.
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
 pl$empty_select(

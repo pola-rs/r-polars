@@ -22,6 +22,9 @@ Expr
 Get the index values that would sort this column.
 If 'reverse=True` the smallest elements will be given.
 }
+\details{
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+}
 \examples{
 df = pl$DataFrame(list(
   a = c(6, 1, 0, NA, Inf, NaN),

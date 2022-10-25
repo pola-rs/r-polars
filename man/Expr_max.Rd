@@ -16,6 +16,9 @@ Expr
 \description{
 Get maximum value.
 }
+\details{
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
+}
 \examples{
 pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 }

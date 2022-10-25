@@ -17,6 +17,9 @@ Expr
 \description{
 Get the index of the minimal value.
 }
+\details{
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+}
 \examples{
 df = pl$DataFrame(list(
   a = c(6, 1, 0, NA, Inf, NaN),

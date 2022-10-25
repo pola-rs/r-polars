@@ -20,6 +20,8 @@ Similar to R syntax x\link{!is.nan(x)}
 \details{
 Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
 To drop null values, use method \code{drop_nulls}.
+
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nans())

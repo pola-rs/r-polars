@@ -22,6 +22,9 @@ Exprs
 \description{
 gt_eq method and operator
 }
+\details{
+See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+}
 \examples{
 #' #three syntaxes same result
 pl$lit(2) >= 2

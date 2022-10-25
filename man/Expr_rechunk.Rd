@@ -17,6 +17,9 @@ Expr
 \description{
 Create a single chunk of memory for this Series.
 }
+\details{
+See rechunk() explained here \code{\link[minipolars]{docs_translations}}
+}
 \examples{
 #get chunked lengths with/without rechunk
 series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
