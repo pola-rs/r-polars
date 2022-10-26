@@ -1897,7 +1897,20 @@ Expr_over = function(...) {
 #' @format a method
 #'
 #' @examples
-#' pl$empty_select(pl$lit(abs(-2:2))$is_unique())
+#' all.equal(
+#'   pl$empty_select(
+#'     pl$lit(v)$is_unique()$alias("is_unique"),
+#'     pl$lit(v)$is_first()$alias("is_first"),
+#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'   )$to_list(),
+#'   list(
+#'     is_unique = !v %in% v[duplicated(v)],
+#'     is_first  = !duplicated(v),
+#'     is_duplicated = v %in% v[duplicated(v)],
+#'     R_duplicated = duplicated(v)
+#'   )
+#' )
 Expr_is_unique = "use_extendr_wrapper"
 
 #' Get a mask of the first unique value.
@@ -1909,5 +1922,68 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @format a method
 #'
 #' @examples
-#' pl$empty_select(pl$lit(abs(-2:2))$is_first())
+#' all.equal(
+#'   pl$empty_select(
+#'     pl$lit(v)$is_unique()$alias("is_unique"),
+#'     pl$lit(v)$is_first()$alias("is_first"),
+#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'   )$to_list(),
+#'   list(
+#'     is_unique = !v %in% v[duplicated(v)],
+#'     is_first  = !duplicated(v),
+#'     is_duplicated = v %in% v[duplicated(v)],
+#'     R_duplicated = duplicated(v)
+#'   )
+#' )
 Expr_is_first = "use_extendr_wrapper"
+
+
+#' Get mask of duplicated values.
+#'
+#' @return Expr (boolean)
+#' @keywords Expr
+#' @aliases is_duplicated
+#' @name Expr_is_duplicated
+#' @format a method
+#' @details  is_duplicated is the opposite of `is_unique()`
+#'  Looking for R like `duplicated()`?, use  `some_expr$is_first()$is_not()`
+#'
+#' @examples
+#' all.equal(
+#'   pl$empty_select(
+#'     pl$lit(v)$is_unique()$alias("is_unique"),
+#'     pl$lit(v)$is_first()$alias("is_first"),
+#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'   )$to_list(),
+#'   list(
+#'     is_unique = !v %in% v[duplicated(v)],
+#'     is_first  = !duplicated(v),
+#'     is_duplicated = v %in% v[duplicated(v)],
+#'     R_duplicated = duplicated(v)
+#'   )
+#' )
+Expr_is_duplicated = "use_extendr_wrapper"
+
+
+#TODO contribute polars, example of where NA/Null is omitted and the smallest value
+#' Get quantile value.
+#'
+#' @param quantile numeric 0.0 to 1.0
+#' @param inerpolation string value from choices "nearest", "higher",
+#' "lower", "mimdpoint", "linear"
+#' @return Expr
+#' @keywords Expr
+#' @aliases quantile
+#' @name Expr_quantile
+#' @format a method
+#'
+#' @details `Nulls` are ignored and `NaNs` are ranked as the largest value.
+#' For linear interpolation `NaN` poisons `Inf`, that poisons any other value.
+#'
+#' @examples
+#' pl$empty_select(pl$lit(-5:5)$quantile())
+Expr_quantile = function(quantile, interpolation = "nearest") {
+  unwrap(.pr$Expr$quantile(self, quantile, interpolation))
+}

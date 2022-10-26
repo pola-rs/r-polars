@@ -18,6 +18,19 @@ Expr (boolean)
 Get mask of unique values
 }
 \examples{
-pl$empty_select(pl$lit(abs(-2:2))$is_unique())
+all.equal(
+  pl$empty_select(
+    pl$lit(v)$is_unique()$alias("is_unique"),
+    pl$lit(v)$is_first()$alias("is_first"),
+    pl$lit(v)$is_duplicated()$alias("is_duplicated"),
+    pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+  )$to_list(),
+  list(
+    is_unique = !v \%in\% v[duplicated(v)],
+    is_first  = !duplicated(v),
+    is_duplicated = v \%in\% v[duplicated(v)],
+    R_duplicated = duplicated(v)
+  )
+)
 }
 \keyword{Expr}

@@ -2,6 +2,7 @@ use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
+use polars_core::prelude::QuantileInterpolOptions;
 
 //expose polars DateType in R
 #[extendr]
@@ -115,6 +116,20 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
         "semi" => pl::JoinType::Semi,
         "anti" => pl::JoinType::Anti,
         _ => panic!("minipolars internal error: jointype not recognized"),
+    }
+}
+
+pub fn new_quantile_interpolation_option(
+    s: &str,
+) -> std::result::Result<QuantileInterpolOptions, String> {
+    use pl::QuantileInterpolOptions::*;
+    match s {
+        "nearest" => Ok(Nearest),
+        "higher" => Ok(Higher),
+        "lower" => Ok(Lower),
+        "midpoint" => Ok(Midpoint),
+        "linear" => Ok(Linear),
+        _ => Err(format!("interpolation choice: [{}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'",s))
     }
 }
 

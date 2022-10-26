@@ -1,5 +1,6 @@
 use super::rseries::Series;
 use super::DataFrame;
+use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -355,6 +356,16 @@ impl Expr {
 
     pub fn arg_unique(&self) -> Self {
         self.clone().0.arg_unique().into()
+    }
+
+    pub fn is_duplicated(&self) -> Self {
+        self.clone().0.is_duplicated().into()
+    }
+
+    pub fn quantile(&self, quantile: f64, interpolation: &str) -> List {
+        let res = new_quantile_interpolation_option(interpolation)
+            .map(|intpl| Expr(self.clone().0.quantile(quantile, intpl)));
+        r_result_list(res)
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

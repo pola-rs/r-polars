@@ -1164,17 +1164,20 @@ test_that("std var", {
 })
 
 
-test_that("is_unique is_first", {
+test_that("is_unique is_first is_duplicated", {
   v = c(1,1,2,2,3,NA,NaN,Inf)
   expect_identical(
     pl$empty_select(
       pl$lit(v)$is_unique()$alias("is_unique"),
-      pl$lit(v)$is_first()$alias("is_first")
+      pl$lit(v)$is_first()$alias("is_first"),
+      pl$lit(v)$is_duplicated()$alias("is_duplicated"),
+      pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
     )$to_list(),
     list(
       is_unique = !v %in% v[duplicated(v)],
-      is_first  = !duplicated(v)
-
+      is_first  = !duplicated(v),
+      is_duplicated = v %in% v[duplicated(v)],
+      R_duplicated = duplicated(v)
     )
   )
 })
@@ -1271,5 +1274,71 @@ test_that("arg_unique", {
       c = which(!duplicated(l$c))-1.0
     )
   )
+
+})
+
+test_that("quantile", {
+
+  v = sample(0:100)
+  expect_identical(
+    sapply(seq(0,1,le=101),\(x) pl$empty_select(pl$lit(v)$quantile(x,"nearest"))$to_list()[[1]]),
+    as.double(sort(v))
+  )
+
+  v2 = seq(0,1,le=42)
+  expect_equal( #tiny rounding errors
+    sapply(v2,\(x) pl$empty_select(pl$lit(v)$quantile(x,"linear"))$to_list()[[1]]),
+    unname(quantile(v,v2))
+  )
+
+  expect_error(
+    pl$lit(1)$quantile(1,"some_unknwon_interpolation_method")
+  )
+
+
+  expect_identical(
+    pl$empty_select(
+      pl$lit(0:1)$quantile(.5,"nearest")$alias("nearest"),
+      pl$lit(0:1)$quantile(.5,"linear")$alias("linear"),
+      pl$lit(0:1)$quantile(.5,"higher")$alias("higher"),
+      pl$lit(0:1)$quantile(.5,"lower")$alias("lower"),
+      pl$lit(0:1)$quantile(.5,"midpoint")$alias("midpoint"),
+
+    )$to_list(),
+    list(
+      nearest = 1.0,
+      linear = 0.5,
+      higher = 1,
+      lower = 0,
+      midpoint = .5
+
+    )
+  )
+
+  #midpoint/linear NaN poisons, NA_integer_ always omitted
+  expect_identical(
+    pl$empty_select(
+      pl$lit(c(0:1,NA_integer_))$quantile(0.5,"midpoint")$alias("midpoint_na"),
+      pl$lit(c(0:1,NaN))$quantile(0.5,"midpoint")$alias("midpoint_nan"),
+      pl$lit(c(0:1,NA_integer_))$quantile(0,"nearest")$alias("nearest_na"),
+      pl$lit(c(0:1,NaN))$quantile(.7,"nearest")$alias("nearest_nan"),
+      pl$lit(c(0:1,NA_integer_))$quantile(0,"linear")$alias("linear_na"),
+      pl$lit(c(0:1,NaN))$quantile(.51,"linear")$alias("linear_nan"),
+      pl$lit(c(0:1,NaN))$quantile(.7,"linear")$alias("linear_nan_0.7"),
+      pl$lit(c(0, Inf,NaN))$quantile(.51,"linear")$alias("linear_nan_inf"),
+    )$to_list(),
+    list(
+      midpoint_na = .5,
+      midpoint_nan = 1,
+      nearest_na = 0,
+      nearest_nan = NaN,
+      linear_na = 0,
+      linear_nan = NaN,
+      linear_nan_0.7 = NaN,
+      linear_nan_inf = NaN
+    )
+  )
+
+
 
 })

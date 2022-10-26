@@ -168,6 +168,10 @@ Expr$null_count <- function() .Call(wrap__Expr__null_count, self)
 
 Expr$arg_unique <- function() .Call(wrap__Expr__arg_unique, self)
 
+Expr$is_duplicated <- function() .Call(wrap__Expr__is_duplicated, self)
+
+Expr$quantile <- function(quantile, interpolation) .Call(wrap__Expr__quantile, self, quantile, interpolation)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)
