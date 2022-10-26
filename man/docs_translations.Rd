@@ -7,27 +7,23 @@
 info
 }
 \description{
-The meaning and naming differencies of values across languages.
-}
-\details{
 #Comments for how the R and python world translates into polars:
 
-R and python are both high-level glue languages great for DataS cience.
+R and python are both high-level glue languages great for Data Science.
 Rust is a pedantic low-level language with similar use cases as C and C++.
 Polars is written in ~100k lines of rust and has a rust API. Py-polars the python API for polars,
-is implemented as an interface with the rust API. Rust is statically typed, and much
-of the 20k py-polars code is about providing the dynamic coding experience of polars.
+is implemented as an interface with the rust API.
 Minipolars is very parallel to py-polars except it interfaces with R. The performance and behavior
 are unexpectedly quite similar as the 'engine' is the exact same rust code and data structures.
 }
 \section{Translation details}{
 \subsection{R and the integerish}{
 
-R only has no native Int32 type, no Uint32, Int64, Uint64 types. These days Int32 is getting a bit small, to
+R only has a native Int32 type, no Uint32, Int64, Uint64 , ... types. These days Int32 is getting a bit small, to
 refer to more rows than ~ 2^31-1. There are packages which provide int64, but the most normal 'hack' is to
-just use floats as integerish. There is an unique float64 value for every integer up to about 2^52 which is
-plenty for all practical concerns. Some minipolars methods may accept or return a float even though an
-integer idealy would be more accurate. Most R functions intermix Integer32 (integer) and Float64 (double)
+just use floats as 'integerish'. There is an unique float64 value for every integer up to about 2^52 which is
+plenty for all practical concerns. Some minipolars methods may accept or return a floats even though an
+integer ideally would be more accurate. Most R functions intermix Int32 (integer) and Float64 (double)
 seamlessly.
 }
 
@@ -38,7 +34,7 @@ Polars uses a bool bitmask to signal \code{NA}-like missing value and it is call
 Not to confuse with R \code{NULL} (see paragraph below).
 Polars supports missingness for any possible type as it kept separately in the bitmask.
 In python lists the symbol \code{None} can carry a similar meaning.
-R \code{NA} ~ polars \code{Null} ~ py-polars \verb{\[None\]} (in a py list)
+R \code{NA} ~ polars \code{Null} ~ py-polars \verb{[None]} (in a py list)
 }
 
 \subsection{Sorting and comparisons}{
@@ -55,7 +51,7 @@ Polars conventions  \code{NaN} > \code{Inf} > \code{99} > \code{-99} > \code{-In
 The documentation or examples do not reveal this variations. The best to do, when in doubt, is  to do
 test sort on a small Series/Column of all values.
 
-#' R \code{NaN} ~ polars \code{NaN} ~ python \verb{\[float("NaN")\]} #only floats have \code{NaN}s
+#' R \code{NaN} ~ polars \code{NaN} ~ python \verb{[float("NaN")]} #only floats have \code{NaN}s
 
 R \code{Inf} ~ polars \code{inf}  ~ python \link{float("inf")} #only floats have \code{Inf}
 }
