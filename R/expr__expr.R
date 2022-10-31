@@ -1637,7 +1637,7 @@ Expr_forward_fill = function(limit = NULL) {
 #' Fill Nulls Forward
 #' @description Fill missing values with last seen values.
 #'
-#' @param expr or `Into<Expr>`  the value to replace NaN with. Default NULL is NA/Null.
+#' @param Expr or `Into<Expr>`  the value to replace NaN with. Default NULL is NA/Null.
 #' @return Expr
 #' @keywords Expr
 #' @aliases fill_nan
@@ -1986,4 +1986,31 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' pl$empty_select(pl$lit(-5:5)$quantile())
 Expr_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$Expr$quantile(self, quantile, interpolation))
+}
+
+
+
+#' Filter a single column.
+#' @description
+#' Mostly useful in an aggregation context. If you want to filter on a DataFrame
+#' level, use `LazyFrame.filter`.
+#'
+#' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
+#' @return Expr
+#' @keywords Expr
+#' @aliases filter
+#' @format a method
+#'
+#' @examples
+#' df = pl$DataFrame(list(
+#'   group_col =  c("g1", "g1", "g2"),
+#'   b = c(1, 2, 3)
+#' ))
+#'
+#' df$groupby("group_col")$agg(
+#'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
+#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
+#' )
+Expr_filter = function(predicate) {
+  .pr$Expr$filter(self, wrap_e(predicate))
 }

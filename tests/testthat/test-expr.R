@@ -1342,3 +1342,28 @@ test_that("quantile", {
 
 
 })
+
+
+
+
+test_that("Expr filter", {
+
+  pdf = pl$DataFrame(list(
+    group_col =  c("g1", "g1", "g2"),
+    b = c(1, 2, 3)
+  ))
+
+  df = pdf$groupby("group_col")$agg(
+    pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
+    pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
+  )$as_data_frame() |> (\(x) x[order(x$group_col),])()
+
+  expect_identical(
+    df,
+    data.frame(
+      group_col = c("g1", "g2"),
+      lt = c(1, NA_real_),
+      gte = c(2,3)
+    )
+  )
+})

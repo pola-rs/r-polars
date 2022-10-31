@@ -368,6 +368,10 @@ impl Expr {
         r_result_list(res)
     }
 
+    pub fn filter(&self, predicate: &Expr) -> Expr {
+        self.clone().0.filter(predicate.0.clone()).into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
