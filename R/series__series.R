@@ -85,6 +85,34 @@ Series_print = function() {
   get_method_usages(minipolars:::Series,pattern = pattern)
 }
 
+#' Immutable combine series
+#' @param x a Series
+#' @param ... Series(s) or any object into Series meaning `pl$Series(object)` returns a series
+#' @return a combined Series
+#' @details append datatypes has to match. Combine does not rechunk.
+#' Read more about R vectors, Series and chunks in \code{\link[minipolars]{docs_translations}}:
+#' @examples
+#' s = c(pl$Series(1:5),3:1,NA_integer_)
+#' s$chunk_lengths() #the series contain three unmerged chunks
+#' @export
+c.Series = \(x,...) {
+  l = list2(...)
+  x = x$clone() #clone to retain an immutable api, append_mut is not immutable
+  for(i in seq_along(l)) { #append each element of i being either Series or Into<Series>
+    unwrap(.pr$Series$append_mut(x,wrap_s(l[[i]])))
+  }
+  x
+}
+
+#' Length of series
+#' @param x a Series
+#' @return the length as a double
+#' @export
+length.Series = \(x) x$len()
+
+
+
+
 
 
 #' Create new Series
@@ -110,27 +138,6 @@ pl$Series = function(x, name=NULL){
     return(.pr$Series$new(x,name))
   }
   abort("x must be a double, interger, char, or logical vector")
-}
-
-
-
-#' @export
-c.Series = \(x,...) {
-  l = list2(...)
-  x = x$clone() #clone to retain an immutable api, append_mut is not mutable
-
-  #append each element of i being either Series or R vector
-  for(i in seq_along(l)) {
-    other = l[[i]]
-
-    #wrap in Series
-    if(!inherits(other,"Series")) {
-      other = pl$Series(other)
-    }
-    unwrap(.pr$Series$append_mut(x,other))
-  }
-
-  x
 }
 
 
