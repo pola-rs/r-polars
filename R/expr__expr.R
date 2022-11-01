@@ -355,35 +355,6 @@ Expr_drop_nans = "use_extendr_wrapper"
 
 
 
-#' Head
-#' @keywords Expr
-#' @description
-#' Get the head n elements.
-#' Similar to R head(x)
-#' @param n numeric number of elements to select from head
-#' @return Expr
-#' @examples
-#' #get 3 first elements
-#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
-Expr_head = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
-  .pr$Expr$head(self,n=n)
-}
-
-#' Tail
-#' @keywords Expr
-#' @description
-#' Get the tail n elements.
-#' Similar to R tail(x)
-#' @param n numeric number of elements to select from tail
-#' @return Expr
-#' @examples
-#' #get 3 last elements
-#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
-Expr_tail = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
-  .pr$Expr$tail(self,n=n)
-}
 
 
 #' is_null
@@ -2107,3 +2078,49 @@ Expr_explode = "use_extendr_wrapper"
 Expr_take_every = "use_extendr_wrapper"
 
 
+#' Head
+#' @keywords Expr
+#' @description
+#' Get the head n elements.
+#' Similar to R head(x)
+#' @param n numeric number of elements to select from head
+#' @return Expr
+#' @examples
+#' #get 3 first elements
+#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
+Expr_head = function(n=10) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  .pr$Expr$head(self,n=n)
+}
+
+#' Tail
+#' @keywords Expr
+#' @description
+#' Get the tail n elements.
+#' Similar to R tail(x)
+#' @param n numeric number of elements to select from tail
+#' @return Expr
+#' @examples
+#' #get 3 last elements
+#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
+Expr_tail = function(n=10) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  .pr$Expr$tail(self,n=n)
+}
+
+
+#' Limit
+#' @keywords Expr
+#' @description
+#' Alias for Head
+#' Get the head n elements.
+#' Similar to R head(x)
+#' @param n numeric number of elements to select from head
+#' @return Expr
+#' @examples
+#' #get 3 first elements
+#' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
+Expr_limit = function(n=10) {
+  if(!is.numeric(n)) abort("n must be numeric")
+  .pr$Expr$head(self,n=n)
+}

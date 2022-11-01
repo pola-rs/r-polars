@@ -145,6 +145,16 @@ test_that("first last heaad tail", {
     data.frame(head2 = 1:2, tail2=10:11)
   )
 
+  #limit is an alias for head
+  df = pl$DataFrame(list(a=1:11))$select(
+    pl$col("a")$limit(2)$alias("limit2"),
+    pl$col("a")$tail(2)$alias("tail2")
+  )$as_data_frame()
+  expect_equal(
+    df,
+    data.frame(limit2 = 1:2, tail2=10:11)
+  )
+
 })
 
 test_that("is_null", {
