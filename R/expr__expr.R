@@ -689,21 +689,6 @@ Expr_or = "use_extendr_wrapper"
 #' pl$lit(TRUE)$xor(pl$lit(FALES))
 Expr_xor = "use_extendr_wrapper"
 
-#' is_in
-#' @name Expr_is_in
-#' @description combine to boolean expresions with similar to `%in%`
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Expr
-#' @examples
-#'
-#' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]]
-#'
-#'
-#'
-Expr_is_in= "use_extendr_wrapper"
-
 
 
 #' To physical representation
@@ -744,24 +729,6 @@ Expr_cast = function(dtype, strict = TRUE) {
 }
 
 
-
-
-#' Exponentiation `^` or `**`
-#' @description Raise expression to the power of exponent.
-#' @keywords Expr
-#' @param base real value of base
-#' @return Expr
-#' @name Expr_pow
-#' @aliases pow
-#' @examples
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ (pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
-Expr_pow = function(exponent) {
-  if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
-  .pr$Expr$pow(self,exponent)
-}
-#' @export
-"^.Expr" <- function(e1,e2) e1$pow(e2)
 
 
 #' Reverse exponentiation `%**%`(in R `** == ^`)
@@ -2124,3 +2091,41 @@ Expr_limit = function(n=10) {
   if(!is.numeric(n)) abort("n must be numeric")
   .pr$Expr$head(self,n=n)
 }
+
+
+
+#' Exponentiation `^` or `**`
+#' @description Raise expression to the power of exponent.
+#' @keywords Expr
+#' @param base real value of base
+#' @return Expr
+#' @name Expr_pow
+#' @aliases pow
+#' @examples
+#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ (pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+Expr_pow = function(exponent) {
+  if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
+  .pr$Expr$pow(self,exponent)
+}
+#' @export
+"^.Expr" <- function(e1,e2) e1$pow(e2)
+
+
+#' is_in
+#' @name Expr_is_in
+#' @description combine to boolean expresions with similar to `%in%`
+#' @keywords Expr Expr_operators
+#' @param other literal or Robj which can become a literal
+#' @return Expr
+#' @examples
+#'
+#' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
+#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]]
+#'
+#'
+#'
+Expr_is_in= "use_extendr_wrapper"
+
+
+
