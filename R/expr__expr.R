@@ -2091,7 +2091,19 @@ Expr_flatten = "use_extendr_wrapper"
 Expr_explode = "use_extendr_wrapper"
 
 
-
-
+##TODO contribute polars, do not panic on non positve n values
+#' Take every n'th element
+#' @description
+#' Take every nth value in the Series and return as a new Series.
+#' @param n positive integerish value
+#'
+#' @return Expr
+#' @keywords Expr
+#' @aliases take_every
+#' @format a method
+#'
+#' @examples
+#' pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
+Expr_take_every = "use_extendr_wrapper"
 
 

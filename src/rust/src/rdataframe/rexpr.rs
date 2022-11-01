@@ -380,6 +380,19 @@ impl Expr {
         self.clone().0.explode().into()
     }
 
+    pub fn take_every(&self, n: f64) -> Expr {
+        use pl::*; //dunno what set of traits needed just take all
+        let n_usize = n as usize;
+        self.clone()
+            .0
+            .map(
+                move |s: Series| Ok(s.0.take_every(n_usize)),
+                GetOutput::same_type(),
+            )
+            .with_fmt("take_every")
+            .into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

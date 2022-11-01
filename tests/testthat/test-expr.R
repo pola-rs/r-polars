@@ -1404,3 +1404,12 @@ test_that("Expr xplode/flatten", {
 
 
 })
+
+
+test_that("tke every", {
+  df = pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
+  expect_identical(
+    df$to_list()[[1]],
+    seq(0L,24L,6L)
+  )
+})

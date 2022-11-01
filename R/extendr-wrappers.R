@@ -178,6 +178,8 @@ Expr$explode <- function() .Call(wrap__Expr__explode, self)
 
 Expr$flatten <- function() .Call(wrap__Expr__flatten, self)
 
+Expr$take_every <- function(n) .Call(wrap__Expr__take_every, self, n)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)
