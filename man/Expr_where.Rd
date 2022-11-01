@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_where}
 \alias{Expr_where}
-\alias{filter}
+\alias{where}
 \title{Where: Filter a single column.}
 \format{
 a method

@@ -372,6 +372,14 @@ impl Expr {
         self.clone().0.filter(predicate.0.clone()).into()
     }
 
+    pub fn explode(&self) -> Expr {
+        self.clone().0.explode().into()
+    }
+    pub fn flatten(&self) -> Expr {
+        //same as explode
+        self.clone().0.explode().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

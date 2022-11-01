@@ -402,3 +402,19 @@ print_env =  function(api,name,max_depth=10) {
   show_api(api,name)
 
 }
+
+
+
+#' Reverts wrapping in I
+#'
+#' @param X any Robj wrapped in `I()``
+#' @details
+#' https://stackoverflow.com/questions/12865218/getting-rid-of-asis-class-attribute
+#' @return X without any AsIs subclass
+unAsIs <- function(X) {
+  if("AsIs" %in% class(X)) {
+    class(X) <- class(X)[-match("AsIs", class(X))]
+  }
+  X
+}
+

@@ -592,6 +592,7 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 
 
 
+
 #' return polars DataFrame as R data.frame
 #'
 #' @param ... any args pased to as.data.frame()
@@ -601,11 +602,16 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 #' @usage as_data_frame()
 #' @examples pl$DataFrame(iris)$as_data_frame()
 DataFrame_as_data_frame = function(...) {
-  as.data.frame(
-    x = unwrap(.pr$DataFrame$to_list(self)),
+  df = as.data.frame(
+    #use to_list(), unwrap any error, protect columns `I()`, that signals to use columns `asIs`
+    x = lapply(unwrap(.pr$DataFrame$to_list(self)), I),
     col.names = .pr$DataFrame$columns(self),
     ...
   )
+
+  #remove AsIs subclass from columns
+  df[] = lapply(df,unAsIs)
+  df
 }
 
 #' as.data.frame.DataFrame S3 method

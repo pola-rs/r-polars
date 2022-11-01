@@ -1368,3 +1368,39 @@ test_that("Expr filter", {
     )
   )
 })
+
+
+
+test_that("Expr xplode/flatten", {
+
+  df = pl$DataFrame(list(a=letters))$select(pl$col("a")$explode()$take(0:5))
+
+  expect_identical(
+    df$as_data_frame()$a,
+    letters[1:6]
+  )
+
+  little_iris = iris[c(1:3,51:53),]
+  listed_group_df =  pl$DataFrame(little_iris)$groupby("Species",maintain_order=TRUE)$agg(pl$all())
+  vectors_df = listed_group_df$select(
+    pl$col(c("Sepal.Width","Sepal.Length"))$explode()
+  )
+
+  df = listed_group_df$as_data_frame()
+
+
+  # yikes kinda like by(), but all details are different
+  x = by(little_iris,as.character(little_iris$Species),FUN = list)
+  df_ref = as.data.frame(do.call(rbind,unname(lapply(x,lapply,I))))
+  df_ref[] = lapply(df_ref,lapply,unAsIs)
+  df_ref$Species = factor(sapply(df_ref$Species,function(x) head((x),1)))
+  row.names(df_ref) = NULL
+
+
+  expect_identical(
+    df,
+    df_ref[,names(df)]
+  )
+
+
+})

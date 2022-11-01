@@ -174,6 +174,10 @@ Expr$quantile <- function(quantile, interpolation) .Call(wrap__Expr__quantile, s
 
 Expr$filter <- function(predicate) .Call(wrap__Expr__filter, self, predicate)
 
+Expr$explode <- function() .Call(wrap__Expr__explode, self)
+
+Expr$flatten <- function() .Call(wrap__Expr__flatten, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)

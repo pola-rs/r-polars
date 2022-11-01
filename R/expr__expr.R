@@ -2027,7 +2027,7 @@ Expr_filter = function(predicate) {
 #' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
 #' @return Expr
 #' @keywords Expr
-#' @aliases filter
+#' @aliases where
 #' @format a method
 #'
 #' @examples
@@ -2043,6 +2043,55 @@ Expr_filter = function(predicate) {
 Expr_where = function(predicate) {
   pl$Expr$filter(predicate)
 }
+
+
+
+#' Flatten/Explode a list or utf8 Series.
+#' @description
+#' Alias for explode
+#' This means that every item is expanded to a new row.
+#'
+#' @return Expr
+#' @keywords Expr
+#' @aliases flatten
+#' @format a method
+#'
+#' @examples
+#' pl$DataFrame(list(a=letters))$select(pl$col("a")$flatten()$take(0:5))
+#'
+#' listed_group_df =  pl$DataFrame(iris[c(1:3,51:53),])$groupby("Species")$agg(pl$all())
+#' print(listed_group_df)
+#' vectors_df = listed_group_df$select(
+#'   pl$col(c("Sepal.Width","Sepal.Length"))$flatten()
+#' )
+#' print(vectors_df)
+Expr_flatten = "use_extendr_wrapper"
+
+#' Explode a list or utf8 Series.
+#' @description
+#' This means that every item is expanded to a new row.
+#'
+#' @return Expr
+#' @keywords Expr
+#' @aliases explode
+#' @format a method
+#'
+#' @details
+#' explode/flatten does not support categorical
+#'
+#' @examples
+#' pl$DataFrame(list(a=letters))$select(pl$col("a")$explode()$take(0:5))
+#'
+#' listed_group_df =  pl$DataFrame(iris[c(1:3,51:53),])$groupby("Species")$agg(pl$all())
+#' print(listed_group_df)
+#' vectors_df = listed_group_df$select(
+#'   pl$col(c("Sepal.Width","Sepal.Length"))$explode()
+#' )
+#' print(vectors_df)
+Expr_explode = "use_extendr_wrapper"
+
+
+
 
 
 
