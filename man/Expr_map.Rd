@@ -4,12 +4,14 @@
 \alias{Expr_map}
 \title{Expr_map}
 \usage{
-Expr_map(lambda, output_type = NULL)
+Expr_map(f, output_type = NULL, agg_list = FALSE)
 }
 \arguments{
-\item{lambda}{r function mapping a series}
+\item{f}{a function mapping a series}
 
-\item{output_type}{NULL or one of pl$dtypes, the output datatype, NULL is the same as input.}
+\item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.}
+
+\item{agg_list}{Aggregate list. Map from vector to group in groupby context. Likely not so useful.}
 }
 \value{
 Expr
@@ -18,9 +20,12 @@ Expr
 Expr_map
 }
 \details{
-in minipolars lambda return should be a series or any R vector convertable into a Series. In PyPolars likely return must be Series.
+user function return should be a series or any Robj convertable into a Series. In PyPolars likely return must be Series.
+User functions do fully support \code{browser()}, helpful to investigate.
 }
 \examples{
-pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) paste("cheese",as.character(x$to_r_vector())),pl$dtypes$Utf8))
+pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
+  paste("cheese",as.character(x$to_r_vector()))
+}, pl$dtypes$Utf8))
 }
 \keyword{Expr}

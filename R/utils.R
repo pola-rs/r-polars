@@ -82,7 +82,12 @@ expect_strictly_identical = function(object,expected,...) {
 unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 
   #if not a result
-  if(!is.list(result) || !all(names(result) %in% c("ok","err"))) {
+  if(
+    !inherits(result,"Result") && ( #trust the class
+      !is.list(result) ||
+      !all(names(result) %in% c("ok","err"))
+    )
+  ) {
     abort("internal error: cannot unwrap non result",.internal = TRUE)
   }
 

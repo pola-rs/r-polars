@@ -483,23 +483,32 @@ construct_ProtoExprArray = function(...) {
 
 
 
-
-
+##TODO allow list to be formed from recursive R lists
+##TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
+# over lambda. However lambda is still in examples.
+##TODO Better explain aggregate list
 #' Expr_map
 #' @keywords Expr
 #'
-#' @param lambda r function mapping a series
-#' @param output_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#' @param f a function mapping a series
+#' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
+#' @param agg_list Aggregate list. Map from vector to group in groupby context. Likely not so useful.
 #'
 #' @rdname Expr_map
 #' @return Expr
 #' @aliases Expr_map
-#' @details in minipolars lambda return should be a series or any R vector convertable into a Series. In PyPolars likely return must be Series.
+#' @details user function return should be a series or any Robj convertable into a Series. In PyPolars likely return must be Series.
+#' User functions do fully support `browser()`, helpful to investigate.
 #' @name Expr_map
-#' @examples pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) paste("cheese",as.character(x$to_r_vector())),pl$dtypes$Utf8))
-Expr_map = function(lambda, output_type=NULL) {
-  .pr$Expr$map(self,lambda,output_type, agg_list = FALSE)
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
+#'   paste("cheese",as.character(x$to_r_vector()))
+#' }, pl$dtypes$Utf8))
+Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
+  .pr$Expr$map(self, f, output_type, agg_list)
 }
+
+
 
 #' Expr_apply
 #' @keywords Expr
@@ -508,63 +517,57 @@ Expr_map = function(lambda, output_type=NULL) {
 #'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
 #'Depending on the context it has the following behavior:
 #' -Selection
-#'
+#' @param f r function see details depending on context
+#' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
 #'
 #' @details
-#' Copied from pypolars (revise)
-#'Expects f to be of type Callable[[Any], Any]. Applies a python function over each individual value in the column.
 #'
-#'GroupBy
+#' Apply a user function in a groupby or projection(select) context
 #'
-#'Expects f to be of type Callable[[Series], Series]. Applies a python function over each group.
 #'
-#'Implementing logic using a Python function is almost always _significantly_ slower and more memory intensive than implementing the same logic using the native expression API because:
+#' Depending on context the following behaviour:
 #'
-#'  The native expression engine runs in Rust; UDFs run in Python.
+#' * Projection/Selection:
+#'  Expects an `f` to operate on R scalar values.
+#'  Polars will convert each element into an R value and pass it to the function
+#'  The output of the user function will be converted back into a polars type.
+#'  Return type must match. See param return type.
+#'  Apply in selection context should be avoided as a `lapply()` has half the overhead.
 #'
-#'Use of Python UDFs forces the DataFrame to be materialized in memory.
+#' * Groupby
+#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to `Series`, eg. R vector.
+#'   GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration
+#'   is only across the groups.
+#'   The r user function could e.g. do vectorized operations and stay quite performant.
+#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and
+#'   `s$to_r_list()` to force conversion to vector or list.
 #'
-#'Polars-native expressions can be parallelised (UDFs cannot).
 #'
-#'Polars-native expressions can be logically optimised (UDFs cannot).
-#'
-#'Wherever possible you should strongly prefer the native expression API to achieve the best performance. @description
-#'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
-#'
-#'Depending on the context it has the following behavior:
-
-#'  Selection
-#' Expects f to be of type Callable[[Any], Any]. Applies a python function over each individual value in the column.
-#'GroupBy
-#'
-#'Expects f to be of type Callable[[Series], Series]. Applies a python function over each group.
-#'
-#'Implementing logic using a Python function is almost always _significantly_ slower and more memory intensive than implementing the same logic using the native expression API because:
-#'
-#'The native expression engine runs in Rust; UDFs run in Python.
-#'Use of Python UDFs forces the DataFrame to be materialized in memory.
-#'Polars-native expressions can be parallelised (UDFs cannot).
-#'Polars-native expressions can be logically optimised (UDFs cannot).
-#'Wherever possible you should strongly prefer the native expression API to achieve the best performance.
-#' @param f r function mapping a series
-#' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#'  Implementing logic using an R function is almost always _significantly_
+#'   slower and more memory intensive than implementing the same logic using
+#'   the native expression API because:
+#'     - The native expression engine runs in Rust; functions run in R.
+#'     - Use of R functions forces the DataFrame to be materialized in memory.
+#'     - Polars-native expressions can be parallelised (R functions cannot*).
+#'     - Polars-native expressions can be logically optimised (R functions cannot).
+#'   Wherever possible you should strongly prefer the native expression API
+#'   to achieve the best performance.
 #'
 #' @return Expr
 #' @aliases Expr_apply
-#' @name Expr_apply
 #' @examples
 #' #apply over groups - normal usage
 #' # s is a series of all values for one column within group, here Species
-#'e_all =pl$all() #perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
-#'e_sum  = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
-#'e_head = e_all$apply(\(s) head(s$to_r(),2))$suffix("_head")
-#'pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
+#' e_all =pl$all() #perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
+#' e_sum  = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
+#' e_head = e_all$apply(\(s) head(s$to_r(),2))$suffix("_head")
+#' pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
 #'
 #'
 #' #apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
 #' #x is an R scalar
-#'e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
-#'e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
+#' e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#' e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
 #' #quite silly index into alphabet(letters) by ceil of float value
 #' #must set return_type as not the same as input
 #' e_letter = e_all$apply(\(x) letters[ceiling(x)], return_type = pl$dtypes$Utf8)$suffix("_letter")
@@ -580,29 +583,29 @@ Expr_map = function(lambda, output_type=NULL) {
 #'  ))
 #'
 #' print("apply over 1 million values takes ~2.5 sec on 2015 MacBook Pro")
-#'system.time({
+#' system.time({
 #'   rdf = df$with_columns(
 #'     pl$col("a")$apply(\(x) {
 #'      x*2L
 #'    })$alias("bob")
 #'  )
-#'})
+#' })
 #'
-#'print("R lapply 1 million values take ~1sec on 2015 MacBook Pro")
-#'system.time({
+#' print("R lapply 1 million values take ~1sec on 2015 MacBook Pro")
+#' system.time({
 #'  lapply(df$get_column("a")$to_r(),\(x) x*2L )
-#'})
-#'print("using polars syntax takes ~1ms")
-#'system.time({
+#' })
+#' print("using polars syntax takes ~1ms")
+#' system.time({
 #'  (df$get_column("a") * 2L)
-#'})
+#' })
 #'
 #'
-#'print("using R vector syntax takes ~4ms")
-#'r_vec = df$get_column("a")$to_r()
-#'system.time({
+#' print("using R vector syntax takes ~4ms")
+#' r_vec = df$get_column("a")$to_r()
+#' system.time({
 #'  r_vec * 2L
-#'})
+#' })
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
 
   #use series apply
@@ -633,9 +636,9 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' #vectors to literal implicitly
 #' (pl$lit(2) + 1:4 ) / 4:1
 Expr_lit = function(x) {
-  if( inherits(x,"Expr")) return(x)
-  if (length(x) > 1L) x = wrap_s(x) #wrap as Series of a vector
-  unwrap(.pr$Expr$lit(x))
+  if (inherits(x,"Expr")) return(x)  # already Expr, pass through
+  if (length(x) > 1L) x = wrap_s(x) #wrap first as Series if not a scalar
+  unwrap(.pr$Expr$lit(x)) # create literal Expr
 }
 
 #' polars suffix
@@ -2014,3 +2017,32 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
 }
+
+#' Where: Filter a single column.
+#' @description
+#' Alias for pl$filter
+#' Mostly useful in an aggregation context. If you want to filter on a DataFrame
+#' level, use `LazyFrame.filter`.
+#'
+#' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
+#' @return Expr
+#' @keywords Expr
+#' @aliases filter
+#' @format a method
+#'
+#' @examples
+#' df = pl$DataFrame(list(
+#'   group_col =  c("g1", "g1", "g2"),
+#'   b = c(1, 2, 3)
+#' ))
+#'
+#' df$groupby("group_col")$agg(
+#'   pl$col("b")$where(pl$col("b") < 2)$sum()$alias("lt"),
+#'   pl$col("b")$where(pl$col("b") >= 2)$sum()$alias("gte"),
+#' )
+Expr_where = function(predicate) {
+  pl$Expr$filter(predicate)
+}
+
+
+

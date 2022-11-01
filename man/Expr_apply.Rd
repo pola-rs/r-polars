@@ -12,7 +12,7 @@ Expr_apply(
 )
 }
 \arguments{
-\item{f}{r function mapping a series}
+\item{f}{r function see details depending on context}
 
 \item{return_type}{NULL or one of pl$dtypes, the output datatype, NULL is the same as input.}
 }
@@ -25,40 +25,34 @@ Depending on the context it has the following behavior:
 -Selection
 }
 \details{
-Copied from pypolars (revise)
-Expects f to be of type Callable[\link{Any}, Any]. Applies a python function over each individual value in the column.
+Apply a user function in a groupby or projection(select) context
 
-GroupBy
+Depending on context the following behaviour:
+\itemize{
+\item Projection/Selection:
+Expects an \code{f} to operate on R scalar values.
+Polars will convert each element into an R value and pass it to the function
+The output of the user function will be converted back into a polars type.
+Return type must match. See param return type.
+Apply in selection context should be avoided as a \code{lapply()} has half the overhead.
+\item Groupby
+Expects a user function \code{f} to take a \code{Series} and return a \code{Series} or Robj convertable to \code{Series}, eg. R vector.
+GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration
+is only across the groups.
+The r user function could e.g. do vectorized operations and stay quite performant.
+use \code{s$to_r()} to convert input Series to an r vector or list. use \code{s$to_r_vector} and
+\code{s$to_r_list()} to force conversion to vector or list.
+}
 
-Expects f to be of type Callable[\link{Series}, Series]. Applies a python function over each group.
-
-Implementing logic using a Python function is almost always \emph{significantly} slower and more memory intensive than implementing the same logic using the native expression API because:
-
-The native expression engine runs in Rust; UDFs run in Python.
-
-Use of Python UDFs forces the DataFrame to be materialized in memory.
-
-Polars-native expressions can be parallelised (UDFs cannot).
-
-Polars-native expressions can be logically optimised (UDFs cannot).
-
-Wherever possible you should strongly prefer the native expression API to achieve the best performance. @description
-Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
-
-Depending on the context it has the following behavior:
-Selection
-Expects f to be of type Callable[\link{Any}, Any]. Applies a python function over each individual value in the column.
-GroupBy
-
-Expects f to be of type Callable[\link{Series}, Series]. Applies a python function over each group.
-
-Implementing logic using a Python function is almost always \emph{significantly} slower and more memory intensive than implementing the same logic using the native expression API because:
-
-The native expression engine runs in Rust; UDFs run in Python.
-Use of Python UDFs forces the DataFrame to be materialized in memory.
-Polars-native expressions can be parallelised (UDFs cannot).
-Polars-native expressions can be logically optimised (UDFs cannot).
-Wherever possible you should strongly prefer the native expression API to achieve the best performance.
+Implementing logic using an R function is almost always \emph{significantly}
+slower and more memory intensive than implementing the same logic using
+the native expression API because:
+- The native expression engine runs in Rust; functions run in R.
+- Use of R functions forces the DataFrame to be materialized in memory.
+- Polars-native expressions can be parallelised (R functions cannot*).
+- Polars-native expressions can be logically optimised (R functions cannot).
+Wherever possible you should strongly prefer the native expression API
+to achieve the best performance.
 }
 \examples{
 #apply over groups - normal usage

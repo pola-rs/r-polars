@@ -1357,6 +1357,7 @@ test_that("Expr filter", {
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
   )$as_data_frame() |> (\(x) x[order(x$group_col),])()
+  row.names(df) = NULL
 
   expect_identical(
     df,

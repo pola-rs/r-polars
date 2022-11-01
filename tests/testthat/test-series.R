@@ -83,7 +83,7 @@ test_that("pl$Series_apply", {
   )
 
 
-  #global statefull variables can be used in lambda (so can browser() debugging, nice!)
+  #global statefull variables can be used in R user function (so can browser() debugging, nice!)
   global_var = 0L
   minipolars:::expect_strictly_identical(
     c(2L,  4L,  6L, NA_integer_),

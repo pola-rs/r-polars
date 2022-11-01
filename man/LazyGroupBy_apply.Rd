@@ -7,7 +7,7 @@
 LazyGroupBy_apply(f)
 }
 \arguments{
-\item{f}{lambda function to apply}
+\item{f}{R function to apply}
 }
 \value{
 A new \code{LazyFrame} object.

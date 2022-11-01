@@ -26,7 +26,7 @@ LazyGroupBy_agg = agg = function(...) {
 #' @title LazyGroupBy_apply
 #' @description
 #' one day this will apply
-#' @param f lambda function to apply
+#' @param f  R function to apply
 #' @return A new `LazyFrame` object.
 LazyGroupBy_apply = function(f) {
   abort("this function is not yet implemented")
