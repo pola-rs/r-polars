@@ -22,7 +22,7 @@ See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translat
 }
 \examples{
 df = pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN),
-))$select(pl$arg_max())
+  a = c(6, 1, 0, NA, Inf, NaN)
+))$select(pl$col("a")$arg_max())
 }
 \keyword{Expr}

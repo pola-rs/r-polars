@@ -748,11 +748,11 @@ impl Expr {
         self.0.clone().prefix(prefix.as_str()).into()
     }
 
-    fn to_field(&self, df: &DataFrame) {
-        let ctxt = polars::prelude::Context::Default;
-        let res = self.0.to_field(&df.0.schema(), ctxt);
-        res.unwrap();
-    }
+    // fn to_field(&self, df: &DataFrame) {
+    //     let ctxt = polars::prelude::Context::Default;
+    //     let res = self.0.to_field(&df.0.schema(), ctxt);
+    //     res.unwrap();
+    // }
 }
 
 //allow proto expression that yet only are strings

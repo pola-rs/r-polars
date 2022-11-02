@@ -23,7 +23,7 @@ test_that("expression boolean operators", {
     (pl$lit(1)==2)$alias("1 eq 2 not")$is_not(),
 
     (pl$lit(1)<=1)$alias("1 lt_eq 1"),
-    (pl$lit(2)<=1)$alias("2 lt_eq 1 not")$is_not()$is_not(), #TODO extra not when polars rust > 24.3
+    (pl$lit(2)<=1)$alias("2 lt_eq 1 not")$is_not(),
 
     (pl$lit(2)>=2)$alias("2 gt_eq 2"),
     (pl$lit(1)>=2)$alias("1 gt_eq 2 not")$is_not(),

@@ -12,7 +12,8 @@ extendr-api = { git = "https://github.com/extendr/extendr"}
 flume = "*"
 state = "*"
 rayon = "*"
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "ee883e0f91fb1c10f7ab56a53ea750c820bc086c", default-features = false}
+#polars = "*"
+polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703", default_features= false}
 
 
 #features copied from node-polars
@@ -51,7 +52,7 @@ features = [
   "rolling_window",
   "repeat_by",
   "interpolate",
-  "list",
+  #"list",
   "ewma",
   "rank",
   "diff",
@@ -86,5 +87,6 @@ features = [
   "search_sorted",
   "propagate_nans"
 ]
+default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "ee883e0f91fb1c10f7ab56a53ea750c820bc086c"
+rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703"
