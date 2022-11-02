@@ -413,6 +413,20 @@ impl Expr {
         )
     }
 
+    pub fn reinterpret(&self, signed: bool) -> Expr {
+        use crate::utils::reinterpret;
+        let function = move |s: pl::Series| reinterpret(&s, signed);
+        let dt = if signed {
+            pl::DataType::Int64
+        } else {
+            pl::DataType::UInt64
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(dt))
+            .into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

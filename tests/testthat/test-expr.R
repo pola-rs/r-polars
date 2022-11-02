@@ -705,7 +705,7 @@ test_that("Expr_rechunk Series_chunk_lengths", {
 test_that("cumsum cumprod cummin cummax cumcount", {
   l_actual = pl$DataFrame(list(a=1:4))$select(
     pl$col("a")$cumsum()$alias("cumsum"),
-    pl$col("a")$cumprod()$alias("cumprod"),
+    pl$col("a")$cumprod()$alias("cumprod")$cast(pl$dtypes$Float64),
     pl$col("a")$cummin()$alias("cummin"),
     pl$col("a")$cummax()$alias("cummax"),
     pl$col("a")$cumcount()$alias("cumcount")
@@ -723,7 +723,7 @@ test_that("cumsum cumprod cummin cummax cumcount", {
 
   l_actual_rev = pl$DataFrame(list(a=1:4))$select(
     pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum"),
-    pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod"),
+    pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod")$cast(pl$dtypes$Float64),
     pl$col("a")$cummin(reverse = TRUE)$alias("cummin"),
     pl$col("a")$cummax(reverse = TRUE)$alias("cummax"),
     pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount")
@@ -1441,11 +1441,31 @@ test_that("is_between", {
 })
 
 
-test_that("hash", {
+test_that("hash + reinterpret", {
   df = pl$DataFrame(iris)
-  hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$cast(pl$dtypes$Utf8)$list())$to_list()))
-  hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$cast(pl$dtypes$Utf8)$list())$to_list()))
+
+  hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
+  hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(duplicated(hash_values2)))
   expect_true(!identical(hash_values1,hash_values2))
+
+  df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())
+  df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$list())
+  df_hash_rein = df_hash$select(pl$all()$flatten()$reinterpret(TRUE)$list())
+
+
+  expect_identical(df_hash$to_list(),df_hash_same$to_list())
+  expect_false(identical(df_hash$to_list(),df_hash_rein$to_list()))
+
+
+  df_actual = pl$empty_select(pl$lit(-2:2)$cast(pl$dtypes$Int64)$alias("i64"))$with_columns(
+    pl$col("i64")$reinterpret(FALSE)$alias("u64")
+  )
+  df_ref = pl$empty_select(
+    pl$lit(-2:2)$cast(pl$dtypes$Int64)$alias("i64"),
+    pl$lit(c("18446744073709551614","18446744073709551615","0","1","2"))$cast(pl$dtypes$UInt64)$alias("u64")
+  )
+  expect_identical(df_actual$to_list(),df_ref$to_list())
+
 })

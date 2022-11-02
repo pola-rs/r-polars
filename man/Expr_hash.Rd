@@ -25,7 +25,7 @@ Hash the elements in the selection.
 The hash value is of type \code{UInt64}.
 }
 \examples{
-df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
-df$select(pl$col("a")$repeat_by("n"))
+df = pl$DataFrame(iris)
+df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
 }
 \keyword{Expr}

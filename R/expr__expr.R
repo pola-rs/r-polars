@@ -2226,3 +2226,20 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
   k3 = seed_3 %||% seed
   unwrap(.pr$Expr$hash(self, k0, k1, k2, k3))
 }
+
+
+#' reinterpret bits
+#' @keywords Expr
+#' @description
+#' Reinterpret the underlying bits as a signed/unsigned integer.
+#' This operation is only allowed for 64bit integers. For lower bits integers,
+#' you can safely use that cast operation.
+#' @param signed bool reinterpret into Int64 else Uint64
+#' @return Expr
+#' @importFrom rlang "%||%"
+#' @examples
+#' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
+Expr_reinterpret = function(signed = TRUE) {
+  if(!is_bool(signed)) abort("in reinterpret() : arg signed must be a bool")
+  .pr$Expr$reinterpret(self,signed)
+}

@@ -532,7 +532,16 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 => s.i64().map(|ca| ca.into_iter().collect_robj()),
+            Int64 => s.i64().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| opt.map(|val| val.to_string()))
+                    .collect_robj()
+            }),
+            UInt64 => s.u64().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| opt.map(|val| val.to_string()))
+                    .collect_robj()
+            }),
             Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
 
             //map u32 to f64

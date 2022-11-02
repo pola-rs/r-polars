@@ -182,6 +182,8 @@ Expr$take_every <- function(n) .Call(wrap__Expr__take_every, self, n)
 
 Expr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__Expr__hash, self, seed, seed_1, seed_2, seed_3)
 
+Expr$reinterpret <- function(signed) .Call(wrap__Expr__reinterpret, self, signed)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

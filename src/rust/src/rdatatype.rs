@@ -19,6 +19,8 @@ impl DataType {
             "Float64" | "float64" => pl::DataType::Float64,
             "Int32" | "integer" => pl::DataType::Int32,
             "Int64" | "integer64" => pl::DataType::Int64,
+            "UInt32" | "uinteger" => pl::DataType::UInt32,
+            "UInt64" | "uinteger64" => pl::DataType::UInt64,
             "Utf8" | "character" => pl::DataType::Utf8,
             "Categorical" | "factor" => pl::DataType::Categorical(None),
             _ => panic!("data type not recgnized"),
@@ -33,6 +35,8 @@ impl DataType {
             "Float64".into(),
             "Int32".into(),
             "Int64".into(),
+            "UInt32".into(),
+            "UInt64".into(),
             "Utf8".into(),
             "Categorical".into(),
         ]
