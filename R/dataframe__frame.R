@@ -333,7 +333,7 @@ DataFrame_shape = method_as_property(function() {
 #' pl$DataFrame(iris)$height
 #'
 DataFrame_height = method_as_property(function() {
-  .pr$DataFrame$shape(self)[1]
+  .pr$DataFrame$shape(self)[1L]
 })
 
 
@@ -349,7 +349,7 @@ DataFrame_height = method_as_property(function() {
 #' pl$DataFrame(iris)$width
 #'
 DataFrame_width = method_as_property(function() {
-    .pr$DataFrame$shape(self)[2]
+    .pr$DataFrame$shape(self)[2L]
 })
 
 

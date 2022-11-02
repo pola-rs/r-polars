@@ -607,7 +607,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' #vector to literal explicitly via Series and back again
-#' pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1]] #R vector to expression and back again
+#' pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]] #R vector to expression and back again
 #'
 #' #vectors to literal implicitly
 #' (pl$lit(2) + 1:4 ) / 4:1
@@ -2129,7 +2129,7 @@ Expr_pow = function(exponent) {
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]]
+#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]]
 #'
 #'
 #'
@@ -2191,7 +2191,7 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
   # prepare args
   start_e =  wrap_e(start)
   end_e = wrap_e(end)
-  with_start = include_bounds[1]
+  with_start = include_bounds[1L]
   with_end = if(length(include_bounds)==1) include_bounds else include_bounds[2]
 
 

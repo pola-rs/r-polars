@@ -255,7 +255,7 @@ LazyFrame_join = function(
   }
 
   how_opts = c('inner', 'left', 'outer', 'semi', 'anti', 'cross')
-  how = match.arg(how[1],how_opts)
+  how = match.arg(how[1L],how_opts)
 
   if(how == "cross") {
     abort("not implemented how == cross")

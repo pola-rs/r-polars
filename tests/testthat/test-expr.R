@@ -272,13 +272,13 @@ test_that("lit expr", {
 
   #explicit vector to series to literal
   expect_identical(
-    pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1]],
+    pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]],
    1:4
   )
 
   #implicit vector to literal
   expect_identical(
-    pl$DataFrame(list())$select(pl$lit(24) / 4:1 + 2)$to_list()[[1]],
+    pl$DataFrame(list())$select(pl$lit(24) / 4:1 + 2)$to_list()[[1L]],
     24 / 4:1 + 2
   )
 
@@ -322,35 +322,35 @@ test_that("prefix suffix reverse", {
 
 test_that("and or is_in xor", {
   df = pl$DataFrame(list())
-  expect_true( df$select(pl$lit(T)&T)$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(T)&F)$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(F)&T)$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(F)&F)$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(T)&T)$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(T)&F)$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)&T)$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)&F)$as_data_frame()[[1L]])
 
-  expect_true( df$select(pl$lit(T)|T)$as_data_frame()[[1]])
-  expect_true( df$select(pl$lit(T)|F)$as_data_frame()[[1]])
-  expect_true( df$select(pl$lit(F)|T)$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(F)|F)$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(T)|T)$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)|F)$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(F)|T)$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)|F)$as_data_frame()[[1L]])
 
-  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$as_data_frame()[[1]])
-  expect_true( df$select(pl$lit(T)$xor(pl$lit(F)))$as_data_frame()[[1]])
-  expect_true( df$select(pl$lit(F)$xor(pl$lit(T)))$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$as_data_frame()[[1]])
+  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)$xor(pl$lit(F)))$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(F)$xor(pl$lit(T)))$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$as_data_frame()[[1L]])
 
   df = pl$DataFrame(list(a=c(1:3,NA_integer_)))
-  expect_true( df$select(pl$lit(1L)$is_in(pl$col("a")))$as_data_frame()[[1]])
-  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$as_data_frame()[[1]])
+  expect_true( df$select(pl$lit(1L)$is_in(pl$col("a")))$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$as_data_frame()[[1L]])
 
 
   #NA_int == NA_int
   expect_identical(
-    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_integer_)))$as_data_frame()[[1]],
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_integer_)))$as_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 
   #both R and polars aliases NA_int_ with NA_real_ in comparisons
   expect_identical(
-    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1]],
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 
@@ -800,10 +800,10 @@ test_that("dot", {
   )$to_list()
 
   expected_list = list(
-    `a dot b` = (l$a %*% l$b)[1],
-    `a dot a` = as.integer((l$a %*% l$a)[1]),
-    `a dot c` = 20, # polars do not carry NA ((l$a %*% l$c)[1]),
-    `a dot d` = ((l$a %*% l$d)[1])
+    `a dot b` = (l$a %*% l$b)[1L],
+    `a dot a` = as.integer((l$a %*% l$a)[1L]),
+    `a dot c` = 20, # polars do not carry NA ((l$a %*% l$c)[1L]),
+    `a dot d` = ((l$a %*% l$d)[1L])
   )
 
   expect_identical(
@@ -958,17 +958,17 @@ test_that("sort_by", {
 test_that("take that", {
 
   expect_identical(
-    pl$empty_select(pl$lit(0:10)$take(c(1,3,5,NA)))$to_list()[[1]],
+    pl$empty_select(pl$lit(0:10)$take(c(1,3,5,NA)))$to_list()[[1L]],
     c(1L,3L,5L,NA_integer_)
   )
 
   expect_error(
-    pl$empty_select(pl$lit(0:10)$take(11))$to_list()[[1]]
+    pl$empty_select(pl$lit(0:10)$take(11))$to_list()[[1L]]
   )
 
 
   expect_identical(
-    pl$empty_select(pl$lit(0:10)$take(-11))$to_list()[[1]],
+    pl$empty_select(pl$lit(0:10)$take(-11))$to_list()[[1L]],
     NA_integer_
   )
 
@@ -1132,7 +1132,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       fnan_NA    = R_replace_nan(l$a,NA),
       fnan_str   = c("1.0", "hej", "NA", "hej", "3.0"),
       fnan_bool  = R_replace_nan(l$a,TRUE),
-      fnan_expr  = R_replace_nan(l$a,pl$empty_select(pl$lit(10)/2)$to_list()[[1]]),
+      fnan_expr  = R_replace_nan(l$a,pl$empty_select(pl$lit(10)/2)$to_list()[[1L]]),
       fnan_series= R_replace_nan(l$a, pl$Series(10)$to_r())
     )
   )
@@ -1155,7 +1155,7 @@ test_that("std var", {
       std_missing = sd(c(NA,1:5),na.rm=TRUE)
     )
   )
-  expect_true(pl$empty_select(pl$lit(1:5)$std(3))$to_list()[[1]] != sd(1:5))
+  expect_true(pl$empty_select(pl$lit(1:5)$std(3))$to_list()[[1L]] != sd(1:5))
 
 
   expect_identical(
@@ -1168,7 +1168,7 @@ test_that("std var", {
       var_missing = var(c(NA,1:5),na.rm=TRUE)
     )
   )
-  expect_true(pl$empty_select(pl$lit(1:5)$var(3))$to_list()[[1]] != var(1:5))
+  expect_true(pl$empty_select(pl$lit(1:5)$var(3))$to_list()[[1L]] != var(1:5))
 
 
 })
@@ -1291,13 +1291,13 @@ test_that("quantile", {
 
   v = sample(0:100)
   expect_identical(
-    sapply(seq(0,1,le=101),\(x) pl$empty_select(pl$lit(v)$quantile(x,"nearest"))$to_list()[[1]]),
+    sapply(seq(0,1,le=101),\(x) pl$empty_select(pl$lit(v)$quantile(x,"nearest"))$to_list()[[1L]]),
     as.double(sort(v))
   )
 
   v2 = seq(0,1,le=42)
   expect_equal( #tiny rounding errors
-    sapply(v2,\(x) pl$empty_select(pl$lit(v)$quantile(x,"linear"))$to_list()[[1]]),
+    sapply(v2,\(x) pl$empty_select(pl$lit(v)$quantile(x,"linear"))$to_list()[[1L]]),
     unname(quantile(v,v2))
   )
 
@@ -1419,7 +1419,7 @@ test_that("Expr xplode/flatten", {
 test_that("take every", {
   df = pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
   expect_identical(
-    df$to_list()[[1]],
+    df$to_list()[[1L]],
     seq(0L,24L,6L)
   )
 })

@@ -44,10 +44,10 @@ concat = function(
 ) {
 
   ## Check inputs
-  how = match.arg(how[1], c("vertical","horizontal","diagonal"))
+  how = match.arg(how[1L], c("vertical","horizontal","diagonal"))
 
   # dispatch on item class and how
-  first = l[[1]]
+  first = l[[1L]]
   result = pcase(
     inherits(first,"DataFrame"), {
       vdf = l_to_vdf(l)

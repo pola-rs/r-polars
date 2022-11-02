@@ -275,8 +275,8 @@ test_that("value counts", {
   df_st = s_st$as_data_frame()
   df_mt = s_st$as_data_frame()
 
-  expect_strictly_identical(df_st[[1]],c(4,3,2,1,NA))
-  expect_strictly_identical(df_mt[[1]],c(4,3,2,1,NA))
+  expect_strictly_identical(df_st[[1L]],c(4,3,2,1,NA))
+  expect_strictly_identical(df_mt[[1L]],c(4,3,2,1,NA))
 
   #notice counts are mapped to numeric
   expect_strictly_identical(df_st[[2]],c(4,3,2,1,1))

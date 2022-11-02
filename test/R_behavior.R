@@ -29,8 +29,8 @@ tst_funs = list(
   arg_min_take = \(x) x[which.min(x)],
   arg_max_take = \(x) x[which.max(x)],
 
-  arg_min_take = \(x) x[which(min(x)==x)[1]],
-  arg_max_take = \(x) x[which(max(x)==x)[1]],
+  arg_min_take = \(x) x[which(min(x)==x)[1L]],
+  arg_max_take = \(x) x[which(max(x)==x)[1L]],
 
   #cumulative: ranking + poison
   cummin= \(x) tail(cummin(x),1),

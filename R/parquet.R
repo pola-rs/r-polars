@@ -32,7 +32,7 @@ scan_parquet = function(
   low_memory = FALSE#: bool = False,
 ) {#-> LazyFrame
 
-  parallel = parallel[1]
+  parallel = parallel[1L]
   if(!parallel %in% c("None","Columns","RowGroups","Auto")) {
     abort("unknown parallel strategy")
   }
