@@ -2201,3 +2201,28 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
   (within_start_e & within_end_e)$alias("is_between")
 }
 
+
+
+#' hash
+#' @keywords Expr
+#' @description
+#' Hash the elements in the selection.
+#' The hash value is of type `UInt64`.
+#' @param seed Random seed parameter. Defaults to 0.
+#' @param seed_1 Random seed parameter. Defaults to 0.
+#' @param seed_2 Random seed parameter. Defaults to 0.
+#' @param seed_3 Random seed parameter. Defaults to 0.
+#' The column will be coerced to UInt32. Give this dtype to make the coercion a
+#' no-op.
+#' @return Expr
+#' @importFrom rlang "%||%"
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
+Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
+  k0 = seed
+  k1 = seed_1 %||% seed
+  k2 = seed_2 %||% seed
+  k3 = seed_3 %||% seed
+  unwrap(.pr$Expr$hash(self, k0, k1, k2, k3))
+}

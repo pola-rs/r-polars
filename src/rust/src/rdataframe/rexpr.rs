@@ -401,6 +401,18 @@ impl Expr {
         r_result_list(result)
     }
 
+    pub fn hash(&self, seed: f64, seed_1: f64, seed_2: f64, seed_3: f64) -> List {
+        let vec_u64_result: std::result::Result<Vec<u64>, String> = [seed, seed_1, seed_2, seed_3]
+            .iter()
+            .map(|x| try_f64_into_usize(*x, false).map(|val| val as u64))
+            .collect();
+        r_result_list(
+            vec_u64_result
+                .map(|v| Expr(self.0.clone().hash(v[0], v[1], v[2], v[3])))
+                .map_err(|err| format!("in hash(): {}", err)),
+        )
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

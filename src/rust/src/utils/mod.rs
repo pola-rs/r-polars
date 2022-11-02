@@ -245,6 +245,12 @@ pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, S
     if x < 0.0 {
         return Err(format!("the value {} cannot be less than zero", x));
     };
+    if x > (2f64.powf(52.0f64)) {
+        return Err(format!(
+            "the value {} exceeds double->integer unambigious conversion bound of 2^52",
+            x
+        ));
+    };
     if x > usize::MAX as f64 {
         return Err(format!(
             "the value {} cannot exceed usize::MAX {}",

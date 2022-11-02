@@ -1438,7 +1438,14 @@ test_that("is_between", {
   expect_error(pl$col("a")$is_between(1,2,logical()))
   expect_error(pl$col("a")$is_between(1,2,logical(3)))
   expect_error(pl$col("a")$is_between(1,2,NA))
+})
 
 
-
+test_that("hash", {
+  df = pl$DataFrame(iris)
+  hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$cast(pl$dtypes$Utf8)$list())$to_list()))
+  hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$cast(pl$dtypes$Utf8)$list())$to_list()))
+  expect_true(!any(duplicated(hash_values1)))
+  expect_true(!any(duplicated(hash_values2)))
+  expect_true(!identical(hash_values1,hash_values2))
 })
