@@ -7,7 +7,7 @@
 Expr_reinterpret(signed = TRUE)
 }
 \arguments{
-\item{signed}{bool}
+\item{signed}{bool reinterpret into Int64 else Uint64}
 }
 \value{
 Expr
