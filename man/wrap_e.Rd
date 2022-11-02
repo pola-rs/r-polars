@@ -4,7 +4,7 @@
 \alias{wrap_e}
 \title{wrap as literal}
 \usage{
-wrap_e(e)
+wrap_e(e, str_to_lit = TRUE)
 }
 \arguments{
 \item{e}{an Expr(polars) or any R expression}

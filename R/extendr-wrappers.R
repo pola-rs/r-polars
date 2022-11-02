@@ -182,6 +182,8 @@ Expr$take_every <- function(n) .Call(wrap__Expr__take_every, self, n)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
+Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
+
 Expr$log10 <- function() .Call(wrap__Expr__log10, self)
 
 Expr$log <- function(base) .Call(wrap__Expr__log, self, base)

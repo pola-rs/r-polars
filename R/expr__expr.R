@@ -53,8 +53,13 @@ Expr_print = function() {
 #' @keywords Expr
 #' @return Expr
 #' @examples pl$col("foo") < 5
-wrap_e = function(e) {
-  if(inherits(e,"Expr")) e else Expr$lit(e)
+wrap_e = function(e, str_to_lit = TRUE) {
+  if(inherits(e,"Expr")) return(e)
+  if(str_to_lit || is.numeric(e)) {
+    pl$lit(e)
+  } else {
+    pl$col(e)
+  }
 }
 
 
@@ -1186,7 +1191,9 @@ Expr_ceil = "use_extendr_wrapper"
 #' ))$select(
 #'   pl$col("a")$round(0)
 #' )
-Expr_round = "use_extendr_wrapper"
+Expr_round = function(decimals) {
+  unwrap(.pr$Expr$round(self, decimals))
+}
 
 
 #TODO contribute polars, dot product unwraps if datatypes, pass Result instead
@@ -2029,7 +2036,6 @@ Expr_flatten = "use_extendr_wrapper"
 Expr_explode = "use_extendr_wrapper"
 
 
-##TODO contribute polars, do not panic on non positve n values
 #' Take every n'th element
 #' @description
 #' Take every nth value in the Series and return as a new Series.
@@ -2042,7 +2048,9 @@ Expr_explode = "use_extendr_wrapper"
 #'
 #' @examples
 #' pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
-Expr_take_every = "use_extendr_wrapper"
+Expr_take_every = function(n) {
+  unwrap(.pr$Expr$take_every(self, n))
+}
 
 
 #' Head
@@ -2057,7 +2065,7 @@ Expr_take_every = "use_extendr_wrapper"
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
 Expr_head = function(n=10) {
   if(!is.numeric(n)) abort("n must be numeric")
-  .pr$Expr$head(self,n=n)
+  unwrap(.pr$Expr$head(self,n=n))
 }
 
 #' Tail
@@ -2072,7 +2080,7 @@ Expr_head = function(n=10) {
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
 Expr_tail = function(n=10) {
   if(!is.numeric(n)) abort("n must be numeric")
-  .pr$Expr$tail(self,n=n)
+  unwrap(.pr$Expr$tail(self,n=n))
 }
 
 
@@ -2089,7 +2097,7 @@ Expr_tail = function(n=10) {
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
 Expr_limit = function(n=10) {
   if(!is.numeric(n)) abort("n must be numeric")
-  .pr$Expr$head(self,n=n)
+  unwrap(.pr$Expr$head(self,n=n))
 }
 
 
@@ -2127,5 +2135,69 @@ Expr_pow = function(exponent) {
 #'
 Expr_is_in= "use_extendr_wrapper"
 
+##TODO contribute polars, do not panic on by pointing to non positive values
+#' Repeat by
+#' @keywords Expr
+#' @description
+#' Repeat the elements in this Series as specified in the given expression.
+#' The repeated elements are expanded into a `List`.
+#' @param by Expr Numeric column that determines how often the values will be repeated.
+#' The column will be coerced to UInt32. Give this dtype to make the coercion a
+#' no-op.
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
+#' df$select(pl$col("a")$repeat_by("n"))
+Expr_repeat_by = function(by) {
+  if(is.numeric(by) && any(by<0)) abort("In repeat_by: any value less than zero is not allowed")
+  .pr$Expr$repeat_by(self, wrap_e(by, FALSE))
+}
 
+
+
+#' is in between
+#' @keywords Expr
+#' @description
+#' Check if this expression is between start and end.
+#' @param start Lower bound as primitive or datetime
+#' @param end Lower bound as primitive or datetime
+#' @param include_bounds bool vector or scalar:
+#' FALSE:           Exclude both start and end (default).
+#' TRUE:            Include both start and end.
+#' c(FALSE, FALSE):  Exclude start and exclude end.
+#' c(TRUE, TRUE):    Include start and include end.
+#' c(FALSE, TRUE):   Exclude start and include end.
+#' c(TRUE, FALSE):   Include start and exclude end.
+#' @details alias the column to 'in_between'
+#' This function is equivalent to a combination of < <= >= and the &-and operator.
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(list(num = 1:5))
+#' df$select(pl$col("num")$is_between(2,4))
+#' df$select(pl$col("num")$is_between(2,4,TRUE))
+#' df$select(pl$col("num")$is_between(2,4,c(F,T)))
+#' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6)) #start end can be a vector/expr with same length as column
+Expr_is_between = function(start, end, include_bounds = FALSE) {
+
+  # check
+  if(
+    !length(include_bounds) %in% 1:2 ||
+    !is.logical(include_bounds) ||
+    any(is.na(include_bounds))
+  ) {
+    abort("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
+  }
+
+  # prepare args
+  start_e =  wrap_e(start)
+  end_e = wrap_e(end)
+  with_start = include_bounds[1]
+  with_end = if(length(include_bounds)==1) include_bounds else include_bounds[2]
+
+
+  # build and return boolean expression
+  within_start_e = if(with_start) self >= start_e else self > start_e
+  within_end_e   = if(with_end  ) self <= end_e   else self < end_e
+  (within_start_e & within_end_e)$alias("is_between")
+}
 

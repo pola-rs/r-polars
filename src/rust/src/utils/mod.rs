@@ -234,6 +234,57 @@ pub fn parse_fill_null_strategy(
     Ok(parsed)
 }
 
+//R encodes i64/u64 as f64 ...
+pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, String> {
+    if x.is_nan() {
+        return Err(String::from("the value cannot be NaN"));
+    };
+    if no_zero && x < 1.0 {
+        return Err(format!("the value {} cannot be less than one", x));
+    };
+    if x < 0.0 {
+        return Err(format!("the value {} cannot be less than zero", x));
+    };
+    if x > usize::MAX as f64 {
+        return Err(format!(
+            "the value {} cannot exceed usize::MAX {}",
+            x,
+            usize::MAX
+        ));
+    };
+    Ok(x as usize)
+}
+
+pub fn try_f64_into_u32(x: f64, no_zero: bool) -> std::result::Result<u32, String> {
+    if x.is_nan() {
+        return Err(String::from("the value cannot be NaN"));
+    };
+    if no_zero && x < 1.0 {
+        return Err(format!("the value {} cannot be less than one", x));
+    };
+    if x < 0.0 {
+        return Err(format!("the value {} cannot be less than zero", x));
+    };
+    if x > u32::MAX as f64 {
+        return Err(format!(
+            "the value {} cannot exceed u32::MAX {}",
+            x,
+            u32::MAX
+        ));
+    };
+    Ok(x as u32)
+}
+
+pub fn try_i64_into_usize(x: i64, no_zero: bool) -> std::result::Result<usize, String> {
+    if no_zero && x < 1 {
+        return Err(format!("the value {} cannot be less than one", x));
+    };
+    if x < 0 {
+        return Err(format!("the value {} cannot be less than zero", x));
+    };
+    Ok(x as usize)
+}
+
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
     T: IntoRobj,

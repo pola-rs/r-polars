@@ -6,6 +6,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
+use crate::utils::{try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
@@ -380,21 +381,32 @@ impl Expr {
         self.clone().0.explode().into()
     }
 
-    pub fn take_every(&self, n: f64) -> Expr {
+    pub fn take_every(&self, n: f64) -> List {
         use pl::*; //dunno what set of traits needed just take all
-        let n_usize = n as usize;
-        self.clone()
-            .0
-            .map(
-                move |s: Series| Ok(s.0.take_every(n_usize)),
-                GetOutput::same_type(),
-            )
-            .with_fmt("take_every")
-            .into()
+
+        let result = try_f64_into_usize(n, true)
+            .map_err(|err| format!("Invalid n argument in take_every: {}", err))
+            .map(|n| {
+                Expr(
+                    self.0
+                        .clone()
+                        .map(
+                            move |s: Series| Ok(s.0.take_every(n)),
+                            GetOutput::same_type(),
+                        )
+                        .with_fmt("take_every"),
+                )
+            });
+
+        r_result_list(result)
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
+    }
+
+    pub fn repeat_by(&self, by: &Expr) -> Expr {
+        self.clone().0.repeat_by(by.0.clone()).into()
     }
 
     pub fn log10(&self) -> Self {
@@ -489,8 +501,11 @@ impl Expr {
         self.0.clone().ceil().into()
     }
 
-    pub fn round(&self, decimals: u32) -> Self {
-        self.0.clone().round(decimals).into()
+    pub fn round(&self, decimals: f64) -> List {
+        let res = try_f64_into_u32(decimals, false)
+            .map_err(|err| format!("in round: {}", err))
+            .map(|n| Expr(self.0.clone().round(n)));
+        r_result_list(res)
     }
 
     pub fn dot(&self, other: &Expr) -> Self {
@@ -509,12 +524,18 @@ impl Expr {
         self.0.clone().last().into()
     }
 
-    pub fn head(&self, n: i64) -> Self {
-        self.0.clone().head(Some(n as usize)).into()
+    pub fn head(&self, n: f64) -> List {
+        let res = try_f64_into_usize(n, false)
+            .map_err(|err| format!("in head: {}", err))
+            .map(|n| Expr(self.0.clone().head(Some(n))));
+        r_result_list(res)
     }
 
-    pub fn tail(&self, n: i64) -> Self {
-        self.0.clone().tail(Some(n as usize)).into()
+    pub fn tail(&self, n: f64) -> List {
+        let res = try_f64_into_usize(n, false)
+            .map_err(|err| format!("in tail: {}", err))
+            .map(|n| Expr(self.0.clone().tail(Some(n))));
+        r_result_list(res)
     }
 
     //chaining methods

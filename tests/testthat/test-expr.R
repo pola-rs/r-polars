@@ -1416,10 +1416,29 @@ test_that("Expr xplode/flatten", {
 })
 
 
-test_that("tke every", {
+test_that("take every", {
   df = pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
   expect_identical(
     df$to_list()[[1]],
     seq(0L,24L,6L)
   )
+})
+
+#TODO contribute polars, panics if start or stop expression has len > 1 or len!= col.len()
+test_that("is_between", {
+  l = list(a = (1:5)*1.0)
+  df = pl$DataFrame(l)
+
+  expect_identical(df$select(pl$col("a")$is_between(2,4))$to_list()[[1L]],       c(F,F,T,F,F))
+  expect_identical(df$select(pl$col("a")$is_between(2,4,T))$to_list()[[1L]],     c(F,T,T,T,F))
+  expect_identical(df$select(pl$col("a")$is_between(2,4,c(T,F)))$to_list()[[1L]],c(F,T,T,F,F))
+  expect_identical(df$select(pl$col("a")$is_between(2,4,c(F,T)))$to_list()[[1L]],c(F,F,T,T,F))
+  expect_identical(df$select(pl$col("a")$is_between(1.9,4.1,F))$to_list()[[1L]], c(F,T,T,T,F))
+
+  expect_error(pl$col("a")$is_between(1,2,logical()))
+  expect_error(pl$col("a")$is_between(1,2,logical(3)))
+  expect_error(pl$col("a")$is_between(1,2,NA))
+
+
+
 })
