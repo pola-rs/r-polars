@@ -1308,8 +1308,8 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @format a method
 #' @examples
 #' df = pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN),
-#' ))$select(pl$arg_min())
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$arg_min())
 Expr_arg_min = "use_extendr_wrapper"
 
 #' Index of min value
@@ -1323,8 +1323,8 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @format a method
 #' @examples
 #' df = pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN),
-#' ))$select(pl$arg_max())
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$arg_max())
 Expr_arg_max = "use_extendr_wrapper"
 
 
