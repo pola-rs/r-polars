@@ -2253,7 +2253,7 @@ Expr_reinterpret = function(signed = TRUE) {
 }
 
 
-#' inspect
+#' Inspect evaluated Series
 #' @keywords Expr
 #' @description
 #' Print the value that this expression evaluates to and pass on the value.
@@ -2290,3 +2290,15 @@ Expr_inspect = function(fmt = "{}") {
   .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE)
 }
 
+
+
+#' Interpolate `Nulls`
+#' @keywords Expr
+#' @description
+#' Fill nulls with linear interpolation over missing values.
+#' Can also be used to regrid data to a new grid - see examples below.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$empty_select(pl$lit(c(1,NA,4,NA,100))$interpolate())
+Expr_interpolate = "use_extendr_wrapper"

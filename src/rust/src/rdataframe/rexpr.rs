@@ -427,6 +427,10 @@ impl Expr {
             .into()
     }
 
+    pub fn interpolate(&self) -> Expr {
+        self.0.clone().interpolate().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

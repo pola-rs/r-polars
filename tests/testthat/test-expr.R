@@ -1500,3 +1500,10 @@ test_that("inspect", {
   expect_error(pl$lit(1)$inspect("ssdds{sdds}sdsfsd"))
 
 })
+
+test_that("interpolate", {
+  expect_identical(
+    pl$empty_select(pl$lit(c(1,NA,4,NA,100))$interpolate())$to_list()[[1L]],
+    approx(c(1,NA,4,NA,100),xout = c(1:5))$y
+  )
+})

@@ -3,7 +3,7 @@
 \name{Expr_inspect}
 \alias{Expr_inspect}
 \alias{inspect}
-\title{inspect}
+\title{Inspect evaluated Series}
 \usage{
 Expr_inspect(fmt = "{}")
 }
