@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reinterpret}
 \alias{Expr_reinterpret}
+\alias{reinterpret}
 \title{reinterpret bits}
 \usage{
 Expr_reinterpret(signed = TRUE)

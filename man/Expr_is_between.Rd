@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_between}
 \alias{Expr_is_between}
+\alias{is_between}
 \title{is in between}
 \usage{
 Expr_is_between(start, end, include_bounds = FALSE)

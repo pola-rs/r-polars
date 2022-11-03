@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_head}
 \alias{Expr_head}
+\alias{head}
 \title{Head}
 \usage{
 Expr_head(n = 10)

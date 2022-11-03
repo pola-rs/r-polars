@@ -3,6 +3,7 @@
 \docType{data}
 \name{Expr_is_in}
 \alias{Expr_is_in}
+\alias{is_in}
 \title{is_in}
 \format{
 An object of class \code{character} of length 1.

@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_hash}
 \alias{Expr_hash}
+\alias{hash}
 \title{hash}
 \usage{
 Expr_hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
@@ -9,11 +10,11 @@ Expr_hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
 \arguments{
 \item{seed}{Random seed parameter. Defaults to 0.}
 
-\item{seed_1}{Random seed parameter. Defaults to 0.}
+\item{seed_1}{Random seed parameter. Defaults to arg seed.}
 
-\item{seed_2}{Random seed parameter. Defaults to 0.}
+\item{seed_2}{Random seed parameter. Defaults to arg seed.}
 
-\item{seed_3}{Random seed parameter. Defaults to 0.
+\item{seed_3}{Random seed parameter. Defaults to arg seed.
 The column will be coerced to UInt32. Give this dtype to make the coercion a
 no-op.}
 }

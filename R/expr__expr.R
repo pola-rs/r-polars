@@ -2060,6 +2060,7 @@ Expr_take_every = function(n) {
 #' Similar to R head(x)
 #' @param n numeric number of elements to select from head
 #' @return Expr
+#' @aliases head
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
@@ -2075,6 +2076,7 @@ Expr_head = function(n=10) {
 #' Similar to R tail(x)
 #' @param n numeric number of elements to select from tail
 #' @return Expr
+#' @aliases tail
 #' @examples
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
@@ -2092,6 +2094,7 @@ Expr_tail = function(n=10) {
 #' Similar to R head(x)
 #' @param n numeric number of elements to select from head
 #' @return Expr
+#' @aliases limit
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
@@ -2126,6 +2129,7 @@ Expr_pow = function(exponent) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @aliases is_in
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
@@ -2145,6 +2149,7 @@ Expr_is_in= "use_extendr_wrapper"
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
 #' @return Expr
+#' @aliases repeat_by
 #' @examples
 #' df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
 #' df$select(pl$col("a")$repeat_by("n"))
@@ -2171,6 +2176,7 @@ Expr_repeat_by = function(by) {
 #' @details alias the column to 'in_between'
 #' This function is equivalent to a combination of < <= >= and the &-and operator.
 #' @return Expr
+#' @aliases is_between
 #' @examples
 #' df = pl$DataFrame(list(num = 1:5))
 #' df$select(pl$col("num")$is_between(2,4))
@@ -2209,13 +2215,14 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
 #' Hash the elements in the selection.
 #' The hash value is of type `UInt64`.
 #' @param seed Random seed parameter. Defaults to 0.
-#' @param seed_1 Random seed parameter. Defaults to 0.
-#' @param seed_2 Random seed parameter. Defaults to 0.
-#' @param seed_3 Random seed parameter. Defaults to 0.
+#' @param seed_1 Random seed parameter. Defaults to arg seed.
+#' @param seed_2 Random seed parameter. Defaults to arg seed.
+#' @param seed_3 Random seed parameter. Defaults to arg seed.
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
 #' @return Expr
 #' @importFrom rlang "%||%"
+#' @aliases hash
 #' @examples
 #' df = pl$DataFrame(iris)
 #' df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
@@ -2236,7 +2243,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' you can safely use that cast operation.
 #' @param signed bool reinterpret into Int64 else Uint64
 #' @return Expr
-#' @importFrom rlang "%||%"
+#' @aliases reinterpret
 #' @examples
 #' df = pl$DataFrame(iris)
 #' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
@@ -2255,6 +2262,7 @@ Expr_reinterpret = function(signed = TRUE) {
 #' This formatting mimics python "string".format() use in pypolars. The string can
 #' contain any thing but should have exactly one set of curly bracket {}.
 #' @return Expr
+#' @aliases inspect
 #' @examples
 #' pl$empty_select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
 Expr_inspect = function(fmt = "{}") {

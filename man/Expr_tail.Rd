@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_tail}
 \alias{Expr_tail}
+\alias{tail}
 \title{Tail}
 \usage{
 Expr_tail(n = 10)

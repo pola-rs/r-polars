@@ -2,6 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_inspect}
 \alias{Expr_inspect}
+\alias{inspect}
 \title{inspect}
 \usage{
 Expr_inspect(fmt = "{}")
