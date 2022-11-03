@@ -504,10 +504,12 @@ DataFrame_get_column = function(name) {
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  exprs = construct_ProtoExprArray(...)
+
+  args = list2(...)
+  exprs = do.call(construct_ProtoExprArray,args)
   df = unwrap(.pr$DataFrame$select(self,exprs))
 
-  expr_names = names(list2(...))
+  expr_names = names(args)
   if(!is.null(expr_names)) {
     old_names = df$columns
     new_names = old_names
