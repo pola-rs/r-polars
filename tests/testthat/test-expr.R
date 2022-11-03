@@ -1469,3 +1469,34 @@ test_that("hash + reinterpret", {
   expect_identical(df_actual$to_list(),df_ref$to_list())
 
 })
+
+
+
+test_that("inspect", {
+
+  actual_txt = capture_output(
+    pl$empty_select(
+      pl$lit(1:5)
+      $inspect(
+        "before dropping half the column it was:{}and not it is dropped"
+      )
+      $head(2)
+    )
+  )
+  ref_fun = \(s) {
+    cat("before dropping half the column it was:")
+    pl$Series(1:5)$print()
+    cat("and not it is dropped","\n",sep="")
+  }
+  ref_text = capture_output(ref_fun())
+
+  expect_identical(actual_txt, ref_text)
+
+  pl$lit(1)$inspect("{}") # no error
+  pl$lit(1)$inspect("ssdds{}sdsfsd") #no error
+  expect_error(pl$lit(1)$inspect(""))
+  expect_error(pl$lit(1)$inspect("{}{}"))
+  expect_error(pl$lit(1)$inspect("sd{}sdfsf{}sdsdf"))
+  expect_error(pl$lit(1)$inspect("ssdds{sdds}sdsfsd"))
+
+})

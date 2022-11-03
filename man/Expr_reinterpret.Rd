@@ -18,6 +18,7 @@ This operation is only allowed for 64bit integers. For lower bits integers,
 you can safely use that cast operation.
 }
 \examples{
+df = pl$DataFrame(iris)
 df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
 }
 \keyword{Expr}

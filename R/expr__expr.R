@@ -2238,8 +2238,47 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' @return Expr
 #' @importFrom rlang "%||%"
 #' @examples
+#' df = pl$DataFrame(iris)
 #' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
 Expr_reinterpret = function(signed = TRUE) {
   if(!is_bool(signed)) abort("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self,signed)
 }
+
+
+#' inspect
+#' @keywords Expr
+#' @description
+#' Print the value that this expression evaluates to and pass on the value.
+#' The printing will happen when the expression evaluates, not when it is formed.
+#' @param fmt format string, should contain one set of `{}` where object will be printed
+#' This formatting mimics python "string".format() use in pypolars. The string can
+#' contain any thing but should have exactly one set of curly bracket {}.
+#' @return Expr
+#' @examples
+#' pl$empty_select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
+Expr_inspect = function(fmt = "{}") {
+
+  #check fmt and create something to print before and after printing Series.
+  if(!is_string(fmt)) abort("Inspect: arg fmt is not a string (length=1)")
+  strs = strsplit(fmt, split = "\\{\\}")[[1L]]
+  if(identical(strs,"")) strs = c("","")
+  if(length(strs)!=2L || length(gregexpr("\\{\\}",fmt)[[1L]])!=1L) abort(paste0(
+    "Inspect: failed to parse arg fmt [",fmt,"] ",
+    " a string containing the two consecutive chars `{}` once. \n",
+    "a valid string is e.g. `hello{}world`"
+    )
+  )
+
+  #function to print the evaluated Series
+  f_inspect = function(s) { #required signature f(Series) -> Series
+    cat(strs[1L])
+    s$print()
+    cat(strs[2L],"\n",sep="")
+    s
+  }
+
+  #add a map to expression printing the evaluated series
+  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE)
+}
+
