@@ -235,6 +235,8 @@ pub fn parse_fill_null_strategy(
 }
 
 //R encodes i64/u64 as f64 ...
+
+const R_MAX_INTEGERISH: f64 = 4503599627370496.0;
 pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, String> {
     if x.is_nan() {
         return Err(String::from("the value cannot be NaN"));
@@ -245,13 +247,14 @@ pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, S
     if x < 0.0 {
         return Err(format!("the value {} cannot be less than zero", x));
     };
-    if x > (2f64.powf(52.0f64)) {
+    if x > R_MAX_INTEGERISH {
         return Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52",
-            x
+            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
+            x, R_MAX_INTEGERISH
         ));
     };
     if x > usize::MAX as f64 {
+        //could only trigger on a 32bit machine
         return Err(format!(
             "the value {} cannot exceed usize::MAX {}",
             x,

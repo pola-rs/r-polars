@@ -1,5 +1,4 @@
 use super::rseries::Series;
-use super::DataFrame;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -431,6 +430,202 @@ impl Expr {
         self.0.clone().interpolate().into()
     }
 
+    pub fn rolling_min(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_min: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_min(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_max(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_max: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_max(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_mean(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_mean: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_mean(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_sum(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_sum: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_sum(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_std(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_std: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_std(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_var(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_var: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_var(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_median(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .map_err(|err| format!("rolling_median: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_median(opts)));
+        r_result_list(expr)
+    }
+
+    pub fn rolling_quantile(
+        &self,
+        quantile: f64,
+        interpolation: &str,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+        by_null: Nullable<String>,
+        closed_null: Nullable<String>,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center,
+            by_null,
+            closed_null,
+        )
+        .and_then(|opts| {
+            let interpolation = new_quantile_interpolation_option(interpolation)
+                .map_err(|err| format!("rolling_quantile: {}", err))?;
+            Ok(Expr(self.0.clone().rolling_quantile(
+                quantile,
+                interpolation,
+                opts,
+            )))
+        });
+        r_result_list(expr)
+    }
+
+    pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
+        use pl::*;
+        let expr =
+            try_f64_into_usize(window_size_f, false).map(|ws| {
+                Expr(self.0.clone().rolling_apply_float(ws, move |ca| {
+                    ca.clone().into_series().skew(bias).unwrap()
+                }))
+            });
+        r_result_list(expr)
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
@@ -827,6 +1022,42 @@ impl ProtoExprArray {
 //deprecate use method instead
 pub fn pra_to_vec(pra: &ProtoExprArray, context: &str) -> Vec<pl::Expr> {
     pra.0.iter().map(|re| re.to_rexpr(context).0).collect()
+}
+
+//make options rolling options from R friendly arguments, handle conversion errors
+pub fn make_rolling_options(
+    window_size: &str,
+    weights_robj: Nullable<Vec<f64>>,
+    min_periods_float: f64,
+    center: bool,
+    by_null: Nullable<String>,
+    closed_null: Nullable<String>,
+) -> std::result::Result<pl::RollingOptions, String> {
+    use crate::rdatatype::new_closed_window;
+
+    // let weights = weights_robj.as_real_vector();
+    // if weights.is_none() && !weights_robj.is_null() {
+    //     return Err(String::from(
+    //         "prepare rolling options: weights are neither a real vector or NULL",
+    //     ));
+    // };
+    let weights = null_to_opt(weights_robj);
+    let min_periods = try_f64_into_usize(min_periods_float, false)?;
+
+    let by = null_to_opt(by_null);
+
+    let closed_window = null_to_opt(closed_null)
+        .map(|s| new_closed_window(s.as_str()))
+        .transpose()?;
+
+    Ok(pl::RollingOptions {
+        window_size: pl::Duration::parse(window_size),
+        weights,
+        min_periods,
+        center,
+        by,
+        closed_window,
+    })
 }
 
 extendr_module! {

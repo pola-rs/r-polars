@@ -1507,3 +1507,44 @@ test_that("interpolate", {
     approx(c(1,NA,4,NA,100),xout = c(1:5))$y
   )
 })
+
+
+
+test_that("Expr_rolling_f", {
+
+
+  #check all examples
+  df = pl$DataFrame(list(a=1:6))
+  dt = data.table(a=1:6)
+
+  df_expected = dt[,
+     .(
+       min      = as.integer(frollapply(a,2,min)),
+       max      = as.integer(frollapply(a,2,max)),
+       mean     = frollmean(a,2),
+       sum      = as.integer(frollsum(a,2)),
+       std      = frollapply(a,2,sd),
+       var      = frollapply(a,2,var),
+       median   = frollapply(a,2,median),
+       quantile_linear = frollapply(a,2,quantile,probs=.33)
+     )
+  ] |> as.data.frame()
+
+  expect_identical(
+    df$select(
+      pl$col("a")$rolling_min(window_size = 2)$alias("min"),
+      pl$col("a")$rolling_max(window_size = 2)$alias("max"),
+      pl$col("a")$rolling_mean(window_size = 2)$alias("mean"),
+      pl$col("a")$rolling_sum(window_size = 2)$alias("sum"),
+      pl$col("a")$rolling_std(window_size = 2)$alias("std"),
+      pl$col("a")$rolling_var(window_size = 2)$alias("var"),
+      pl$col("a")$rolling_median(window_size = 2)$alias("median"),
+      pl$col("a")$rolling_quantile(
+        quantile=.33,window_size = 2,interpolation = "linear"
+      )$alias("quantile_linear"),
+
+    )$as_data_frame(),
+    df_expected
+  )
+
+})

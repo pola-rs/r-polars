@@ -186,6 +186,24 @@ Expr$reinterpret <- function(signed) .Call(wrap__Expr__reinterpret, self, signed
 
 Expr$interpolate <- function() .Call(wrap__Expr__interpolate, self)
 
+Expr$rolling_min <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_min, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_max <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_max, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_mean <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_mean, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_sum <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_sum, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_std <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_std, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_var <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_var, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_median <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_median, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_quantile, self, quantile, interpolation, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+
+Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

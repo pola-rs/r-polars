@@ -137,6 +137,20 @@ pub fn new_quantile_interpolation_option(
     }
 }
 
+pub fn new_closed_window(s: &str) -> std::result::Result<pl::ClosedWindow, String> {
+    use pl::ClosedWindow as CW;
+    match s {
+        "both" => Ok(CW::Both),
+        "left" => Ok(CW::Left),
+        "none" => Ok(CW::None),
+        "right" => Ok(CW::Right),
+        _ => Err(format!(
+            "ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'",
+            s
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;

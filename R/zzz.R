@@ -112,7 +112,11 @@ pl$concat = minipolars:::concat
 
 
 
-#lazy_functions
+
+
+
+# tell testthat data.table is suggested
+.datatable.aware=TRUE
 
 
 .onLoad <- function(libname, pkgname){

@@ -2317,3 +2317,584 @@ Expr_interpolate = "use_extendr_wrapper"
 
 
 
+#' @importFrom rlang is_scalar_integerish
+prepare_rolling_window_args = function(
+  window_size,#: int | str,
+  min_periods = NULL#: int | None = None,
+) { # ->tuple[str, int]:
+  if (is_scalar_integerish(window_size)) {
+    if (is.null(min_periods)) min_periods = as.numeric(window_size)
+    window_size = paste0(as.character(window_size),"i")
+  }
+  if (is.null(min_periods)) min_periods = 1
+  list(window_size = window_size, min_periods = min_periods)
+}
+
+
+##TODO impl datatime in rolling expr
+##TODO contribute polars rolling _min _max _sum _mean do no behave as the aggregation counterparts
+## as NULLs are not omitted. Maybe the best resolution is to implement skipnull option in all function
+## and check if it wont mess up optimzation (maybe it is tested for).
+
+
+#' Rolling Min
+#' @keywords Expr
+#' @description
+#' Apply a rolling min (moving min) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_min(window_size = 2))
+Expr_rolling_min = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_min(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+#' Rolling max
+#' @keywords Expr
+#' @description
+#' Apply a rolling max (moving max) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_max(window_size = 2))
+Expr_rolling_max = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_max(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+#' Rolling mean
+#' @keywords Expr
+#' @description
+#' Apply a rolling mean (moving mean) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_mean(window_size = 2))
+Expr_rolling_mean = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_mean(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+
+
+#' Rolling sum
+#' @keywords Expr
+#' @description
+#' Apply a rolling sum (moving sum) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_sum(window_size = 2))
+Expr_rolling_sum = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_sum(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+
+#' Rolling std
+#' @keywords Expr
+#' @description
+#' Apply a rolling std (moving std) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_std(window_size = 2))
+Expr_rolling_std = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_std(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+#' Rolling var
+#' @keywords Expr
+#' @description
+#' Apply a rolling var (moving var) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_var(window_size = 2))
+Expr_rolling_var = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_var(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+#' Rolling median
+#' @keywords Expr
+#' @description
+#' Apply a rolling median (moving median) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_median(window_size = 2))
+Expr_rolling_median = function(
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_median(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
+
+
+##TODO contribute polars arg center only allows center + right alignment, also implement left
+#' Rolling quantile
+#' @keywords Expr
+#' @description
+#' Apply a rolling quantile (moving quantile) over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#'
+#' @param quantile Quantile between 0.0 and 1.0.
+#' @param  interpolation choice c('nearest', 'higher', 'lower', 'midpoint', 'linear')
+#'
+#' @param window_size
+#' The length of the window. Can be a fixed integer size, or a dynamic temporal
+#' size indicated by the following string language:
+#'   - 1ns   (1 nanosecond)
+#' - 1us   (1 microsecond)
+#' - 1ms   (1 millisecond)
+#' - 1s    (1 second)
+#' - 1m    (1 minute)
+#' - 1h    (1 hour)
+#' - 1d    (1 day)
+#' - 1w    (1 week)
+#' - 1mo   (1 calendar month)
+#' - 1y    (1 calendar year)
+#' - 1i    (1 index count)
+#' If the dynamic string language is used, the `by` and `closed` arguments must
+#' also be set.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' @param by
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' set the column that will be used to determine the windows. This column must
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
+#' Define whether the temporal window interval is closed or not.
+#'
+#'
+#' @details
+#' #Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' Notes
+#' -----
+#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' window, consider using `groupby_rolling` this method can cache the window size
+#' computation.
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_quantile(window_size = 2))
+Expr_rolling_quantile = function(
+    quantile,
+    interpolation = "nearest",
+    window_size,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_quantile(
+    self, quantile, interpolation, wargs$window_size, weights,
+    wargs$min_periods, center, by, closed
+  ))
+}
