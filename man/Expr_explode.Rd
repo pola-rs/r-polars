@@ -4,18 +4,26 @@
 \name{Expr_explode}
 \alias{Expr_explode}
 \alias{explode}
+\alias{Expr_flatten}
+\alias{flatten}
 \title{Explode a list or utf8 Series.}
 \format{
+a method
+
 a method
 }
 \usage{
 Expr_explode
+
+Expr_flatten
 }
 \value{
 Expr
 }
 \description{
 This means that every item is expanded to a new row.
+
+( flatten is an alias for explode )
 }
 \details{
 explode/flatten does not support categorical

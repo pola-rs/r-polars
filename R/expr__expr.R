@@ -1984,26 +1984,8 @@ Expr_where = function(predicate) {
 
 
 
-#' Flatten/Explode a list or utf8 Series.
-#' @description
-#' Alias for explode
-#' This means that every item is expanded to a new row.
-#'
-#' @return Expr
-#' @keywords Expr
-#' @aliases flatten
-#' @format a method
-#'
-#' @examples
-#' pl$DataFrame(list(a=letters))$select(pl$col("a")$flatten()$take(0:5))
-#'
-#' listed_group_df =  pl$DataFrame(iris[c(1:3,51:53),])$groupby("Species")$agg(pl$all())
-#' print(listed_group_df)
-#' vectors_df = listed_group_df$select(
-#'   pl$col(c("Sepal.Width","Sepal.Length"))$flatten()
-#' )
-#' print(vectors_df)
-Expr_flatten = "use_extendr_wrapper"
+
+
 
 #' Explode a list or utf8 Series.
 #' @description
@@ -2027,6 +2009,15 @@ Expr_flatten = "use_extendr_wrapper"
 #' )
 #' print(vectors_df)
 Expr_explode = "use_extendr_wrapper"
+
+#' @description
+#' ( flatten is an alias for explode )
+#' @keywords Expr
+#' @aliases flatten
+#' @format a method
+#' @name Expr_flatten
+#' @rdname Expr_explode
+Expr_flatten = "use_extendr_wrapper"
 
 
 #' Take every n'th element

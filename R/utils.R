@@ -210,7 +210,7 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
   names(class_methods) = sub(class_pattern, "", class_methods)
   #name_methods_DataFrame = sub(class_pattern, "", class_methods)
 
-  #any NULL signals use internal extendr implementation directly
+  #any string-flag signals use internal extendr implementation directly
   use_internal_bools = sapply(class_methods, function(method)  {
     x = get(method)
 
