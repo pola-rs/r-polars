@@ -1288,7 +1288,7 @@ test_that("arg_unique", {
 
 })
 
-test_that("quantile", {
+test_that("Expr_quantile", {
 
   v = sample(0:100)
   expect_identical(
@@ -1357,7 +1357,7 @@ test_that("quantile", {
 
 
 
-test_that("Expr filter", {
+test_that("Expr_filter", {
 
   pdf = pl$DataFrame(list(
     group_col =  c("g1", "g1", "g2"),
@@ -1382,7 +1382,7 @@ test_that("Expr filter", {
 
 
 
-test_that("Expr xplode/flatten", {
+test_that("Expr explode/flatten", {
 
   df = pl$DataFrame(list(a=letters))$select(pl$col("a")$explode()$take(0:5))
 
@@ -1417,7 +1417,7 @@ test_that("Expr xplode/flatten", {
 })
 
 
-test_that("take every", {
+test_that("take_every", {
   df = pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
   expect_identical(
     df$to_list()[[1L]],
@@ -1511,7 +1511,7 @@ test_that("interpolate", {
 
 
 
-test_that("Expr_rolling_f", {
+test_that("Expr_rolling_", {
 
   library(data.table)
   #check all examples
