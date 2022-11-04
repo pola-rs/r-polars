@@ -63,13 +63,6 @@ wrap_e = function(e, str_to_lit = TRUE) {
 }
 
 
-#' Abs
-#' @description Compute absolute values
-#' @keywords Expr
-#' @return Exprs abs
-#' @examples
-#' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
-Expr_abs = "use_extendr_wrapper"
 
 
 #' Add
@@ -2928,3 +2921,21 @@ Expr_rolling_quantile = function(
 Expr_rolling_skew = function(window_size, bias = TRUE) {
   unwrap(.pr$Expr$rolling_skew(self, window_size, bias))
 }
+
+
+
+#' Abs
+#' @description Compute absolute values
+#' @keywords Expr
+#' @return Exprs abs
+#' @examples
+#' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
+Expr_abs = "use_extendr_wrapper"
+
+
+#' Arg Sort
+#' @description argsort is a alias for arg_sort
+#' @rdname Expr_arg_sort
+#' @aliases argsort
+#' @keywords Expr
+Expr_argsort = Expr_arg_sort

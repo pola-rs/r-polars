@@ -875,6 +875,7 @@ test_that("arg_min arg_max arg_sort", {
     pl$col("a")$arg_min()$alias("arg_min"),
     pl$col("a")$arg_max()$alias("arg_max"),
     pl$col("a")$arg_sort()$head(1)$alias("arg_sort_head_1"),
+    pl$col("a")$argsort()$head(1)$alias("argsort_head_1"), #aliased function
     pl$col("a")$arg_sort()$tail(1)$alias("arg_sort_tail_1")
   )$to_list()
   }
@@ -886,7 +887,7 @@ test_that("arg_min arg_max arg_sort", {
 
   expect_identical(
     get_arg_min_max(l),
-    list(arg_min = 6, arg_max = 3, arg_sort_head_1 = 6, arg_sort_tail_1 = 5)
+    list(arg_min = 6, arg_max = 3, arg_sort_head_1 = 6,argsort_head_1 = 6, arg_sort_tail_1 = 5)
   )
 
   l_actual = pl$DataFrame(l)$select(
@@ -1556,3 +1557,5 @@ test_that("Expr_rolling_f", {
   )
 
 })
+
+
