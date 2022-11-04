@@ -25,16 +25,20 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macOS-latest, r: "release", rust-version: "nightly" }
-          - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
-          - {os: windows-latest, r: 'release', rust-version: 'nightly-gnu', rtools-version: '42'}
+          #- { os: macOS-latest, r: "release", rust-version: "nightly" }
+          #- { os: ubuntu-latest, r: "release", rust-version: "nightly" }
+          - {
+              os: windows-latest,
+              r: "release",
+              rust-version: "nightly-gnu",
+              rtools-version: "42",
+            }
           #- { os: windows-latest, r: "release", rust-version: "nightly" } #skip windows fails nightly
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
-
 
     steps:
       - uses: actions/checkout@v3
@@ -44,14 +48,16 @@ jobs:
           toolchain: ${{ matrix.config.rust-version }}
           default: true
 
-      # - name: show rustup targets
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     rustup show
-      #     rustup toolchain remove stable-x86_64-pc-windows-msvc
-      #     rustup toolchain install nightly-x86_64-pc-windows-gnu
-      #     rustup default nightly-x86_64-pc-windows-gnu
-      #     rustup show
+      - name: show rustup targets
+        if: runner.os == 'Windows'
+        run: |
+          rustc --print target-list
+          rustup show
+          rustup toolchain remove stable-x86_64-pc-windows-msvc
+          rustup toolchain install nightly-x86_64-pc-windows-gnu
+          rustup default nightly-x86_64-pc-windows-gnu
+          rustup show
+          rustc --print target-list
 
       - uses: r-lib/actions/setup-pandoc@v2
 
