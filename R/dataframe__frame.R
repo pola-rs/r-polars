@@ -85,7 +85,6 @@ DataFrame
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
-#' @importFrom xptr xptr_address
 #' @importFrom rlang abort
 #' @usage DataFrame(data)
 #' @keywords DataFrame_new
@@ -445,8 +444,8 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' df1 = pl$DataFrame(iris);
 #' df2 =  df1$clone();
 #' df3 = df1
-#' xptr::xptr_address(df1) != xptr::xptr_address(df2)
-#' xptr::xptr_address(df1) == xptr::xptr_address(df3)
+#' pl$mem_address(df1) != pl$mem_address(df2)
+#' pl$mem_address(df1) == pl$mem_address(df3)
 #'
 DataFrame_clone = function() {
   .pr$DataFrame$clone_see_me_macro(self)

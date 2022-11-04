@@ -194,10 +194,10 @@ test_that("clone", {
   s2 = s$clone()
   s3 = s2
   expect_false(identical(s,s2))
-  expect_false(xptr::xptr_address(s) == xptr::xptr_address(s2))
+  expect_false(pl$mem_address(s) == pl$mem_address(s2))
 
   expect_true(identical(s2,s3))
-  expect_true(xptr::xptr_address(s2) == xptr::xptr_address(s3))
+  expect_true(pl$mem_address(s2) == pl$mem_address(s3))
 })
 
 test_that("dtype and equality", {

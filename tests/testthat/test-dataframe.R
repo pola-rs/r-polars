@@ -238,12 +238,12 @@ test_that("cloning", {
   #shallow copy, same external pointer
   pf2 = pl$DataFrame(pf)
   testthat::expect_true(all.equal(pf,pf2))
-  testthat::expect_true(xptr::xptr_address(pf) == xptr::xptr_address(pf2))
+  testthat::expect_true(pl$mem_address(pf) == pl$mem_address(pf2))
 
   #deep copy clone rust side object, hence not same mem address
   pf3 = pf$clone()
   testthat::expect_true(all.equal(pf,pf3))
-  testthat::expect_true(xptr::xptr_address(pf) != xptr::xptr_address(pf3))
+  testthat::expect_true(pl$mem_address(pf) != pl$mem_address(pf3))
 
 
 })

@@ -18,8 +18,8 @@ Any modification of a DataFrame would lead to a clone anyways.
 df1 = pl$DataFrame(iris);
 df2 =  df1$clone();
 df3 = df1
-xptr::xptr_address(df1) != xptr::xptr_address(df2)
-xptr::xptr_address(df1) == xptr::xptr_address(df3)
+pl$mem_address(df1) != pl$mem_address(df2)
+pl$mem_address(df1) == pl$mem_address(df3)
 
 }
 \keyword{DataFrame}

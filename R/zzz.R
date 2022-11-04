@@ -111,7 +111,14 @@ pl$concat = minipolars:::concat
 
 
 
-
+#' Get Memory Address
+#' @name mem_address
+#' @description mimics pl$mem_address
+#' @param robj an R object
+#' @aliases mem_address
+#' @return String of mem address
+#' @examples pl$mem_address(pl$Series(1:3))
+pl$mem_address = minipolars:::mem_address
 
 
 

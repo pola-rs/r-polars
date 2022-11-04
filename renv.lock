@@ -167,6 +167,14 @@
       "Hash": "022c42d49c28e95d69ca60446dbabf88",
       "Requirements": []
     },
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.14.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "36b67b5adf57b292923f5659f5f0c853",
+      "Requirements": []
+    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.2",
@@ -1177,14 +1185,6 @@
       "Requirements": [
         "processx"
       ]
-    },
-    "xptr": {
-      "Package": "xptr",
-      "Version": "1.1.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "1ea07c42e4b48d072b113a345ebfc8ca",
-      "Requirements": []
     },
     "xtable": {
       "Package": "xtable",

@@ -18,6 +18,8 @@ hor_concat_df <- function(dfs) .Call(wrap__hor_concat_df, dfs)
 
 diag_concat_df <- function(dfs) .Call(wrap__diag_concat_df, dfs)
 
+mem_address <- function(robj) .Call(wrap__mem_address, robj)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

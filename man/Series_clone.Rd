@@ -22,8 +22,8 @@ Any modification of a Series should lead to a clone anyways.
 s1 = pl$Series(1:3);
 s2 =  s1$clone();
 s3 = s1
-xptr::xptr_address(s1) != xptr::xptr_address(s2)
-xptr::xptr_address(s1) == xptr::xptr_address(s3)
+pl$mem_address(s1) != pl$mem_address(s2)
+pl$mem_address(s1) == pl$mem_address(s3)
 
 }
 \keyword{Series}

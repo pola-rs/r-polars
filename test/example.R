@@ -13,16 +13,15 @@ isTRUE(all.equal(pf,pf2))
 isTRUE(all.equal(pf,pf3))
 isTRUE(all.equal(pf,pf4))
 isFALSE(identical(pf3,pf4))
-library(xptr)
 
-xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
-  xptr::xptr_address(pf2$.__enclos_env__$private$pf)
+pl$mem_address(pf$.__enclos_env__$private$pf) ==
+  pl$mem_address(pf2$.__enclos_env__$private$pf)
 
-xptr::xptr_address(pf$.__enclos_env__$private$pf) !=
-  xptr::xptr_address(pf3$.__enclos_env__$private$pf)
+pl$mem_address(pf$.__enclos_env__$private$pf) !=
+  pl$mem_address(pf3$.__enclos_env__$private$pf)
 
-xptr::xptr_address(pf$.__enclos_env__$private$pf) ==
-  xptr::xptr_address(pf4$.__enclos_env__$private$pf)
+pl$mem_address(pf$.__enclos_env__$private$pf) ==
+  pl$mem_address(pf4$.__enclos_env__$private$pf)
 
 
 
