@@ -6,6 +6,10 @@ Use awesome polars DataFrame library from R!
 Minipolars is an unofficial porting of polars (pola-rs) in to an R
 package. I aim to finish the project in 2022.
 
+
+ - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install minipolars from binary. See install section.
+
+
  - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise minipolars is going to perform just as fast pypolars.
 
 
@@ -27,12 +31,20 @@ from R and the reverse.
 
 
 
-# install (BETA)
+# install
 
  - Macbbook x86_64
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/0.0.1_x86_64-apple-darwin17/minipolars_0.0.1_x86_64-apple-darwin17.0.tgz")`
+ `install.packages("rlang")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000.tgz")`
  
- - Other targets to come
+ - Linux x86_64
+ `install.packages("rlang")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000_R_x86_64-pc-linux-gnu.tar.gz")`
+ 
+ - Windows
+ pending
+ 
+ - Other targets?  Raise an issue
  
 # Latest documentation found at:
   [here](https://sorhawell.github.io/reference/index.html)
@@ -40,7 +52,7 @@ from R and the reverse.
 
 # build
 
-  install rust + set buildchain to nightly + more
+  install rust + set buildchain to nightly + 3rd party dependencies
   
   see installation in  workflows/pkgdown.yaml for linux and mac.
   Windows install workflow is pending some updates in extendr to use latest Rtools4.2.
