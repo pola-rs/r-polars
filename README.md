@@ -36,11 +36,11 @@ from R and the reverse.
 # install minipolars
 
  - Macbbook x86_64
- `install.packages("rlang")`
+ `install.packages("rlang");`
  `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000.tgz")`
  
  - Linux x86_64
- `install.packages("rlang")`
+ `install.packages("rlang");`
  `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000_R_x86_64-pc-linux-gnu.tar.gz")`
  
  - Windows
