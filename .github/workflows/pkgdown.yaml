@@ -48,14 +48,14 @@ jobs:
           toolchain: ${{ matrix.config.rust-version }}
           default: true
 
-      - name: show rustup targets
-        if: runner.os == 'Windows'
-        run: |
-          rustup show
-          rustup toolchain remove stable-x86_64-pc-windows-msvc
-          rustup toolchain install nightly-x86_64-pc-windows-gnu
-          rustup default nightly-x86_64-pc-windows-gnu
-          rustup show
+      # - name: show rustup targets
+      #   if: runner.os == 'Windows'
+      #   run: |
+      #     rustup show
+      #     rustup toolchain remove stable-x86_64-pc-windows-msvc
+      #     rustup toolchain install nightly-x86_64-pc-windows-gnu
+      #     rustup default nightly-x86_64-pc-windows-gnu
+      #     rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2
 
