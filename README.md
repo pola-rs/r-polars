@@ -1,17 +1,19 @@
 # minipolars
 Use awesome polars DataFrame library from R!
 
-## What is minipolars
-
 Minipolars is an unofficial porting of polars (pola-rs) in to an R
 package. I aim to finish the project in 2022.
 
+
+## news:
 
  - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install minipolars from binary. See install section.
 
 
  - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise minipolars is going to perform just as fast pypolars.
 
+
+## What is polars
 
 [Polars](http://pola.rs) is the
 [fastest](https://h2oai.github.io/db-benchmark/) data table query
@@ -31,7 +33,7 @@ from R and the reverse.
 
 
 
-# install
+# install minipolars
 
  - Macbbook x86_64
  `install.packages("rlang")`
@@ -46,14 +48,13 @@ from R and the reverse.
  
  - Other targets?  Raise an issue
  
-# Latest documentation found at:
-  [here](https://sorhawell.github.io/reference/index.html)
+# Documentation:
+  [Latest docs found here](https://sorhawell.github.io/reference/index.html)
   
 
-# build
+# Build
 
   install rust + set buildchain to nightly + 3rd party dependencies
-  
   see installation in  workflows/pkgdown.yaml for linux and mac.
   Windows install workflow is pending some updates in extendr to use latest Rtools4.2.
 
@@ -64,7 +65,7 @@ from R and the reverse.
  - `devtools::test()` to run all unit tests.
 
 
-minipolars_teaser
+# minipolars_teaser
 ================
 Søren Welling
 10/14/2022
