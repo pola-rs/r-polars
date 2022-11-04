@@ -2919,14 +2919,29 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 #' @description Compute absolute values
 #' @keywords Expr
 #' @return Exprs abs
+#' @aliases abs
 #' @examples
 #' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
 Expr_abs = "use_extendr_wrapper"
 
 
 #' Arg Sort
-#' @description argsort is a alias for arg_sort
-#' @rdname Expr_arg_sort
-#' @aliases argsort
+#' @description  Calculate the n-th discrete difference.
+#' @param n  Integerish Number of slots to shift.
+#' @param null_behavior option default 'ignore', else 'drop'
+#' @return  Expr
+#' @aliases diff
 #' @keywords Expr
-Expr_argsort = Expr_arg_sort
+Expr_diff = function(n = 1, null_behavior = "ignore") {
+  unwrap(.pr$Expr$diff(self, n, null_behavior))
+}
+
+
+#' Diff
+#' @description Compute absolute values
+#' @keywords Expr
+#' @return Exprs abs
+#' @examples
+#' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
+Expr_abs = "use_extendr_wrapper"
+

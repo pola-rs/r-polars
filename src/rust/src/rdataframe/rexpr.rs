@@ -1,4 +1,5 @@
 use super::rseries::Series;
+use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -604,14 +605,14 @@ impl Expr {
             closed_null,
         )
         .and_then(|opts| {
-            let interpolation = new_quantile_interpolation_option(interpolation)
-                .map_err(|err| format!("rolling_quantile: {}", err))?;
+            let interpolation = new_quantile_interpolation_option(interpolation)?;
             Ok(Expr(self.0.clone().rolling_quantile(
                 quantile,
                 interpolation,
                 opts,
             )))
-        });
+        })
+        .map_err(|err| format!("rolling_quantile: {}", err));
         r_result_list(expr)
     }
 
@@ -624,6 +625,21 @@ impl Expr {
                 }))
             });
         r_result_list(expr)
+    }
+
+    pub fn abs(&self) -> Self {
+        self.0.clone().abs().into()
+    }
+
+    fn diff(&self, n_float: f64, null_behavior: &str) -> List {
+        let expr_res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(self.0.clone().diff(
+                try_f64_into_usize(n_float, false)?,
+                new_null_behavior(null_behavior)?,
+            )))
+        }()
+        .map_err(|err| format!("diff: {}", err));
+        r_result_list(expr_res)
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
@@ -775,10 +791,6 @@ impl Expr {
 
     pub fn list(&self) -> Self {
         self.clone().0.list().into()
-    }
-
-    pub fn abs(&self) -> Self {
-        self.0.clone().abs().into()
     }
 
     pub fn agg_groups(&self) -> Self {

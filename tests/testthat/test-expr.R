@@ -1559,3 +1559,48 @@ test_that("Expr_rolling_f", {
 })
 
 
+test_that("Expr_diff", {
+
+  l = list( a=c(20L,10L,30L,40L))
+
+  #polars similar fun
+  diff_r = \(x, n , ignore=TRUE) {
+    x_na = x[length(x)+1]
+    c(if(ignore) rep(x_na,n),diff(x,lag=n))
+  }
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$diff()$alias("diff_default"),
+      pl$col("a")$diff(2,"ignore")$alias("diff_2_ignore")
+    )$to_list(),
+    list(
+      diff_default  = diff_r(l$a,n=1,TRUE),
+      diff_2_ignore = diff_r(l$a,n=2,TRUE)
+    )
+  )
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$diff(2, "drop")$alias("diff_2_drop"),
+    )$to_list(),
+    list(
+      diff_2_drop = diff_r(l$a,n=2,FALSE)
+    )
+  )
+
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$diff(1, "drop")$alias("diff_1_drop"),
+    )$to_list(),
+    list(
+      diff_1_drop = diff_r(l$a,n=1,FALSE)
+    )
+  )
+
+  pl$empty_select(pl$lit(1:5)$diff(0)) #no error
+  expect_error(pl$lit(1:5)$diff(-1))
+  expect_error(pl$lit(1:5)$diff(99^99))
+  expect_error(pl$lit(1:5)$diff(5,"not a null behavior"))
+
+})

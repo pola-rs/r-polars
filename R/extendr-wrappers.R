@@ -206,6 +206,10 @@ Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights_
 
 Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
 
+Expr$abs <- function() .Call(wrap__Expr__abs, self)
+
+Expr$diff <- function(n_float, null_behavior) .Call(wrap__Expr__diff, self, n_float, null_behavior)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
@@ -273,8 +277,6 @@ Expr$unique <- function() .Call(wrap__Expr__unique, self)
 Expr$unique_stable <- function() .Call(wrap__Expr__unique_stable, self)
 
 Expr$list <- function() .Call(wrap__Expr__list, self)
-
-Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
 Expr$agg_groups <- function() .Call(wrap__Expr__agg_groups, self)
 

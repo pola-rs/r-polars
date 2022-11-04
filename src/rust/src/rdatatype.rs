@@ -151,6 +151,21 @@ pub fn new_closed_window(s: &str) -> std::result::Result<pl::ClosedWindow, Strin
     }
 }
 
+pub fn new_null_behavior(
+    s: &str,
+) -> std::result::Result<polars::series::ops::NullBehavior, String> {
+    use polars::series::ops::NullBehavior as NB;
+    match s {
+        "ignore" => Ok(NB::Ignore),
+        "drop" => Ok(NB::Drop),
+
+        _ => Err(format!(
+            "NullBehavior choice: [{}] is not any of 'drop' or 'ignore'",
+            s
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;
