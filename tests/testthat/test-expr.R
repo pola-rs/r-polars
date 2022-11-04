@@ -1512,7 +1512,7 @@ test_that("interpolate", {
 
 test_that("Expr_rolling_f", {
 
-
+  library(data.table)
   #check all examples
   df = pl$DataFrame(list(a=1:6))
   dt = data.table(a=1:6)
