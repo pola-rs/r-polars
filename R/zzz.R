@@ -91,13 +91,8 @@ replace_private_with_pub_methods( minipolars:::Series, "^Series_")
 
 
 
-
-#TODO add to pl directly at source
-
 #expression constructors
 move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
-#TODO decide on namespace rules, should there be a env for methods only?
-
 
 
 

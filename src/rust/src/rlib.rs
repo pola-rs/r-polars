@@ -50,9 +50,17 @@ pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
     r_result_list(df)
 }
 
+#[extendr]
+pub fn mem_address(robj: Robj) -> String {
+    let ptr_raw = unsafe { robj.external_ptr_addr::<usize>() };
+    let ptr_val = ptr_raw as usize;
+    format!("{:#012x}", ptr_val)
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
     fn hor_concat_df;
     fn diag_concat_df;
+    fn mem_address;
 }
