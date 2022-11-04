@@ -1547,4 +1547,12 @@ test_that("Expr_rolling_f", {
     df_expected
   )
 
+  #check skewness
+  df_actual_skew = pl$DataFrame(list(a=iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4 )$head(10))
+  expect_equal(
+                   df_actual_skew$to_list()[[1L]],
+    c(NA, NA, NA, 0.27803055565397, -1.5030755787344e-14, 0.513023958460299,
+      0.493382200218155, 0, 0.278030555653967, -0.186617740163675)
+  )
+
 })
