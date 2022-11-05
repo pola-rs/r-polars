@@ -99,6 +99,10 @@ jobs:
         with:
           cache-version: 2
 
+      - name: Add x86_64-w64-mingw32.static.posix to path
+        run: echo "##[add-path]C:\rtools42\x86_64-w64-mingw32.static.posix;C:\rtools42"
+        if: matrix.os == 'windows'
+
       - name: build package
         run: devtools::install(quick = TRUE)
         shell: Rscript {0}
