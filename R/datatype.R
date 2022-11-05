@@ -15,17 +15,12 @@
 #' #The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
 #' #specifying the output DataType: Utf8 solves the problem
 #' pl$Series(1:4)$apply(\(x) letters[x],datatype = pl$dtypes$Utf8)
-42
+#'
+NULL
 
 
 
-datatype = function(...) {
-  do.call(minipolars:::DataType$new,list2(...))
-}
-#' @export
-"==.DataType" <- function(e1,e2) e1$eq(e2)
-#' @export
-"!=.DataType" <- function(e1,e2) e1$ne(e2)
+
 
 #' print a polars datatype
 #'
@@ -34,10 +29,17 @@ datatype = function(...) {
 #' @return self
 #' @export
 #'
-#' @examples minipolars:::DataType$new("Boolean")
+#' @examples
+#' pl$dtypes$Boolean #implicit print
 print.DataType = function(x) {
   cat("polars DataType: ")
   x$print()
   invisible(x)
 }
+
+#' @export
+"==.DataType" <- function(e1,e2) e1$eq(e2)
+#' @export
+"!=.DataType" <- function(e1,e2) e1$ne(e2)
+
 

@@ -14,6 +14,6 @@ e = pl$lit("any polars object")$
 e$ #place cursor after $ this line and press tab
 
 #manually call like this (should never be needed)
-.DollarNames.Expr
+# minipolars:::.DollarNames.Expr
 }
 \keyword{LazyFrame}

@@ -26,8 +26,8 @@ If used in a groupby context, the groups are sorted.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
-df = pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN),
+pl$DataFrame(list(
+  a = c(6, 1, 0, NA, Inf, NaN)
 ))$select(pl$col("a")$sort())
 }
 \keyword{Expr}

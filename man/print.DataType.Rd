@@ -16,5 +16,5 @@ self
 print a polars datatype
 }
 \examples{
-minipolars:::DataType$new("Boolean")
+pl$dtypes$Boolean #implicit print
 }

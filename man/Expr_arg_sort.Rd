@@ -3,12 +3,16 @@
 \name{Expr_arg_sort}
 \alias{Expr_arg_sort}
 \alias{arg_sort}
+\alias{Expr_argsort}
+\alias{argsort}
 \title{Index of a sort}
 \format{
 a method
 }
 \usage{
 Expr_arg_sort(reverse = FALSE, nulls_last = FALSE)
+
+Expr_argsort(reverse = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{reverse}{bool default FALSE, reverses sort}
@@ -21,13 +25,15 @@ Expr
 \description{
 Get the index values that would sort this column.
 If 'reverse=True` the smallest elements will be given.
+
+argsort is a alias for arg_sort
 }
 \details{
 See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
-df = pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN),
-))$select(pl$arg_sort())
+pl$DataFrame(list(
+  a = c(6, 1, 0, NA, Inf, NaN)
+))$select(pl$col("a")$arg_sort())
 }
 \keyword{Expr}

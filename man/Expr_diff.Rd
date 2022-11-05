@@ -3,19 +3,25 @@
 \name{Expr_diff}
 \alias{Expr_diff}
 \alias{diff}
-\title{Arg Sort}
+\title{Diff}
 \usage{
 Expr_diff(n = 1, null_behavior = "ignore")
 }
 \arguments{
-\item{n}{Number of slots to shift.}
+\item{n}{Integerish Number of slots to shift.}
 
-\item{null_behavior}{option defult 'ignore', else 'drop'}
+\item{null_behavior}{option default 'ignore', else 'drop'}
 }
 \value{
 Expr
 }
 \description{
 Calculate the n-th discrete difference.
+}
+\examples{
+pl$DataFrame(list( a=c(20L,10L,30L,40L)))$select(
+  pl$col("a")$diff()$alias("diff_default"),
+  pl$col("a")$diff(2,"ignore")$alias("diff_2_ignore")
+)
 }
 \keyword{Expr}

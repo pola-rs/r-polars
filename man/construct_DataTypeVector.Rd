@@ -16,5 +16,5 @@ extptr to ProtoExprArray with all exprs or strings
 construct protoArrayExpr
 }
 \examples{
-construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+minipolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 }

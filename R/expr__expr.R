@@ -397,7 +397,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @return ProtoExprArray object
 #'
-#' @examples construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
+#' @examples minipolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
 
 
@@ -1236,8 +1236,8 @@ Expr_mode = "use_extendr_wrapper"
 #' @name Expr_sort
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN),
+#' pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$sort())
 Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
   .pr$Expr$sort(self, reverse, nulls_last)
@@ -1259,9 +1259,9 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' @name Expr_top_k
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN),
-#' ))$select(pl$top_k(5))
+#' pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k , reverse = FALSE) {
   if(!is.numeric(k) || k<0) abort("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self,k , reverse)
@@ -1282,9 +1282,9 @@ Expr_top_k = function(k , reverse = FALSE) {
 #' @name Expr_arg_sort
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN),
-#' ))$select(pl$arg_sort())
+#' pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$arg_sort())
 Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
   .pr$Expr$arg_sort(self, reverse, nulls_last)
 }
@@ -1300,7 +1300,7 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @name Expr_arg_min
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(
+#' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$arg_min())
 Expr_arg_min = "use_extendr_wrapper"
@@ -1315,7 +1315,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @name Expr_arg_max
 #' @format a method
 #' @examples
-#' df = pl$DataFrame(list(
+#' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$arg_max())
 Expr_arg_max = "use_extendr_wrapper"
@@ -2914,34 +2914,38 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 }
 
 
-
 #' Abs
 #' @description Compute absolute values
 #' @keywords Expr
 #' @return Exprs abs
-#' @aliases abs
 #' @examples
 #' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
 Expr_abs = "use_extendr_wrapper"
 
 
 #' Arg Sort
+#' @description argsort is a alias for arg_sort
+#' @rdname Expr_arg_sort
+#' @aliases argsort
+#' @keywords Expr
+Expr_argsort = Expr_arg_sort
+
+
+#' Diff
 #' @description  Calculate the n-th discrete difference.
 #' @param n  Integerish Number of slots to shift.
 #' @param null_behavior option default 'ignore', else 'drop'
 #' @return  Expr
 #' @aliases diff
 #' @keywords Expr
+#' @examples
+#' pl$DataFrame(list( a=c(20L,10L,30L,40L)))$select(
+#'   pl$col("a")$diff()$alias("diff_default"),
+#'   pl$col("a")$diff(2,"ignore")$alias("diff_2_ignore")
+#' )
 Expr_diff = function(n = 1, null_behavior = "ignore") {
   unwrap(.pr$Expr$diff(self, n, null_behavior))
 }
 
 
-#' Diff
-#' @description Compute absolute values
-#' @keywords Expr
-#' @return Exprs abs
-#' @examples
-#' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
-Expr_abs = "use_extendr_wrapper"
 

@@ -21,7 +21,7 @@ Get the index of the minimal value.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
-df = pl$DataFrame(list(
+pl$DataFrame(list(
   a = c(6, 1, 0, NA, Inf, NaN)
 ))$select(pl$col("a")$arg_min())
 }

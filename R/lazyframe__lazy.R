@@ -98,7 +98,7 @@ LazyFrame
 #' e$ #place cursor after $ this line and press tab
 #'
 #' #manually call like this (should never be needed)
-#' .DollarNames.Expr
+#' # minipolars:::.DollarNames.Expr
 .DollarNames.LazyFrame = function(x, pattern = "") {
   paste0(ls(minipolars:::LazyFrame, pattern = pattern ),"()")
 }

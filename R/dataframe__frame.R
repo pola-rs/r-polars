@@ -38,8 +38,8 @@
 #'
 #' #column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
-#' df$columns()
-#' df2$columns()
+#' df$columns
+#' df2$columns
 #'
 #' # set_column_from_robj-method is fallible and returned a result which could be ok or an err.
 #' # No public method or function will ever return a result.

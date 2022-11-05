@@ -3,30 +3,20 @@
 \docType{data}
 \name{Expr_abs}
 \alias{Expr_abs}
-\alias{abs}
 \title{Abs}
 \format{
-An object of class \code{character} of length 1.
-
 An object of class \code{character} of length 1.
 }
 \usage{
 Expr_abs
-
-Expr_abs
 }
 \value{
-Exprs abs
-
 Exprs abs
 }
 \description{
 Compute absolute values
-
-Compute absolute values
 }
 \examples{
-pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
 pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
 }
 \keyword{Expr}

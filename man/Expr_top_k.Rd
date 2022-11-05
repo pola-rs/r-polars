@@ -28,8 +28,8 @@ This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
-df = pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN),
-))$select(pl$top_k(5))
+pl$DataFrame(list(
+  a = c(6, 1, 0, NA, Inf, NaN)
+))$select(pl$col("a")$top_k(5))
 }
 \keyword{Expr}

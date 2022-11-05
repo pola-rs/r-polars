@@ -53,10 +53,7 @@ pf$select(
 
 
 #datatypes
-pl$datatype("logical") #r lingo
-pl$datatype("Boolean") #polars lingo for same type
-pl$datatype("double")
-pl$datatype("character")
+pl$dtypes
 
 
 ##read a csv file

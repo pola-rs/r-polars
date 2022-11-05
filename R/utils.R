@@ -250,7 +250,7 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 #'
 #' @return extptr to ProtoExprArray with all exprs or strings
 #'
-#' @examples construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+#' @examples minipolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_protoArrayExpr = function(l) {
   pra = minipolars:::ProtoExprArray$new()
   if (!is.list(l)) l = list(l)
@@ -274,7 +274,7 @@ construct_protoArrayExpr = function(l) {
 #'
 #' @return extptr to ProtoExprArray with all exprs or strings
 #'
-#' @examples construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+#' @examples minipolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_DataTypeVector = function(l) {
   dtv = minipolars:::DataTypeVector$new()
 

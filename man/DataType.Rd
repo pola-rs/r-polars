@@ -18,4 +18,5 @@ pl$dtypes$Utf8
 #The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
 #specifying the output DataType: Utf8 solves the problem
 pl$Series(1:4)$apply(\(x) letters[x],datatype = pl$dtypes$Utf8)
+
 }
