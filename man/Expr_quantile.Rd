@@ -14,7 +14,7 @@ Expr_quantile(quantile, interpolation = "nearest")
 \item{quantile}{numeric 0.0 to 1.0}
 
 \item{inerpolation}{string value from choices "nearest", "higher",
-"lower", "mimdpoint", "linear"}
+"lower", "midpoint", "linear"}
 }
 \value{
 Expr
@@ -27,6 +27,6 @@ Get quantile value.
 For linear interpolation \code{NaN} poisons \code{Inf}, that poisons any other value.
 }
 \examples{
-pl$empty_select(pl$lit(-5:5)$quantile())
+pl$empty_select(pl$lit(-5:5)$quantile(.5))
 }
 \keyword{Expr}

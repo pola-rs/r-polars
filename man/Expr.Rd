@@ -40,6 +40,7 @@ Expr
 Polars pl$Expr
 }
 \examples{
+2+2
 #Expr has the following methods/constructors
 ls(minipolars:::Expr)
 

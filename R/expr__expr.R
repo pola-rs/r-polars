@@ -8,6 +8,7 @@
 #' @aliases Expr
 #'
 #' @examples
+#' 2+2
 #' #Expr has the following methods/constructors
 #' ls(minipolars:::Expr)
 #'
@@ -23,7 +24,8 @@
 #' @return self
 #' @export
 #'
-#' @examples pl$col("some_column")$sum()$over("some_other_column")
+#' @examples
+#' pl$col("some_column")$sum()$over("some_other_column")
 print.Expr = function(x) {
   cat("polars Expr: ")
   x$print()
@@ -684,7 +686,7 @@ Expr_or = "use_extendr_wrapper"
 #' @param other literal or Robj which can become a literal
 #' @return Expr
 #' @examples
-#' pl$lit(TRUE)$xor(pl$lit(FALES))
+#' pl$lit(TRUE)$xor(pl$lit(FALSE))
 Expr_xor = "use_extendr_wrapper"
 
 
@@ -1838,6 +1840,7 @@ Expr_over = function(...) {
 #' @format a method
 #'
 #' @examples
+#' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
 #'   pl$empty_select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
@@ -1863,6 +1866,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @format a method
 #'
 #' @examples
+#' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
 #'   pl$empty_select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
@@ -1891,6 +1895,7 @@ Expr_is_first = "use_extendr_wrapper"
 #'  Looking for R like `duplicated()`?, use  `some_expr$is_first()$is_not()`
 #'
 #' @examples
+#' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
 #'   pl$empty_select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
@@ -1913,7 +1918,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #'
 #' @param quantile numeric 0.0 to 1.0
 #' @param inerpolation string value from choices "nearest", "higher",
-#' "lower", "mimdpoint", "linear"
+#' "lower", "midpoint", "linear"
 #' @return Expr
 #' @keywords Expr
 #' @aliases quantile
@@ -1924,7 +1929,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' For linear interpolation `NaN` poisons `Inf`, that poisons any other value.
 #'
 #' @examples
-#' pl$empty_select(pl$lit(-5:5)$quantile())
+#' pl$empty_select(pl$lit(-5:5)$quantile(.5))
 Expr_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$Expr$quantile(self, quantile, interpolation))
 }
@@ -1957,30 +1962,12 @@ Expr_filter = function(predicate) {
 }
 
 #' Where: Filter a single column.
+#' @rdname Expr_filter
 #' @description
-#' Alias for pl$filter
-#' Mostly useful in an aggregation context. If you want to filter on a DataFrame
-#' level, use `LazyFrame.filter`.
+#' where() is an alias for pl$filter
 #'
-#' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
-#' @return Expr
-#' @keywords Expr
 #' @aliases where
-#' @format a method
-#'
-#' @examples
-#' df = pl$DataFrame(list(
-#'   group_col =  c("g1", "g1", "g2"),
-#'   b = c(1, 2, 3)
-#' ))
-#'
-#' df$groupby("group_col")$agg(
-#'   pl$col("b")$where(pl$col("b") < 2)$sum()$alias("lt"),
-#'   pl$col("b")$where(pl$col("b") >= 2)$sum()$alias("gte"),
-#' )
-Expr_where = function(predicate) {
-  pl$Expr$filter(predicate)
-}
+Expr_where = Expr_filter
 
 
 
@@ -2865,7 +2852,9 @@ Expr_rolling_median = function(
 #' @return Expr
 #' @aliases interpolate
 #' @examples
-#' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_quantile(window_size = 2))
+#' pl$DataFrame(list(a=1:6))$select(
+#'   pl$col("a")$rolling_quantile(window_size = 2, quantile = .5)
+#' )
 Expr_rolling_quantile = function(
     quantile,
     interpolation = "nearest",

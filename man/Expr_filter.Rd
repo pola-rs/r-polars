@@ -3,12 +3,16 @@
 \name{Expr_filter}
 \alias{Expr_filter}
 \alias{filter}
+\alias{Expr_where}
+\alias{where}
 \title{Filter a single column.}
 \format{
 a method
 }
 \usage{
 Expr_filter(predicate)
+
+Expr_where(predicate)
 }
 \arguments{
 \item{predicate}{Expr or something \verb{Into<Expr>}. Should be a boolean expression.}
@@ -19,6 +23,8 @@ Expr
 \description{
 Mostly useful in an aggregation context. If you want to filter on a DataFrame
 level, use \code{LazyFrame.filter}.
+
+where() is an alias for pl$filter
 }
 \examples{
 df = pl$DataFrame(list(

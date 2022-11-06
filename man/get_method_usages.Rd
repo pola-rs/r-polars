@@ -21,5 +21,5 @@ Generate autocompletion suggestions for object
 used internally for auto completion in .DollarNames methods
 }
 \examples{
-get_method_usages(minipolars:::DataFrame, pattern="col")
+minipolars:::get_method_usages(minipolars:::DataFrame, pattern="col")
 }

@@ -25,6 +25,6 @@ Get data type of Series
 pl$Series(1:4)$dtype
 pl$Series(c(1,2))$dtype
 pl$Series(letters)$dtype
-pl$Series(1:4)$sort()$flags()
+pl$Series(1:4)$sort()$flags
 }
 \keyword{Series}

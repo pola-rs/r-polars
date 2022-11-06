@@ -18,5 +18,5 @@ polars_DataFrame or polars_lazy_DataFrame
 high level csv_reader, will download if path is url
 }
 \examples{
-df = read_csv("https://j.mp/iriscsv")
+df = pl$read_csv("https://j.mp/iriscsv")
 }

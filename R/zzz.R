@@ -122,7 +122,7 @@ pl$mem_address = minipolars:::mem_address
 
 
 .onLoad <- function(libname, pkgname){
-  print(".onload")
+
   #instanciate one of each DataType (it's just an enum)
   all_types = .pr$DataType$get_all_type_names()
   names(all_types) = all_types
@@ -147,7 +147,7 @@ pl$mem_address = minipolars:::mem_address
   pl$empty_select = pl$DataFrame(list())$select
 
   lockEnvironment(pl,bindings = TRUE)
-  print("done onload")
+
 }
 
 print("")

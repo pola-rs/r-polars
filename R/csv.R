@@ -57,7 +57,7 @@
 #' @examples
 #' write.csv(iris,"my.csv")
 #' lazy_frame = minipolars:::lazy_csv_reader(path="my.csv")
-#' lazyframe$collect()
+#' lazy_frame$collect()
 lazy_csv_reader = function(
   path,
   sep = ",",
@@ -158,7 +158,7 @@ csv_reader = function(...) {
 #' @return polars_DataFrame or polars_lazy_DataFrame
 #' @export
 #'
-#' @examples df = read_csv("https://j.mp/iriscsv")
+#' @examples df = pl$read_csv("https://j.mp/iriscsv")
 read_csv_ = function(path, lazy= FALSE, reuse_downloaded = TRUE,  ...) {
 
   # check if path is a existing file, or else try if url to download

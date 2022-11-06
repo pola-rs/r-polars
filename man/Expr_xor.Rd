@@ -20,7 +20,7 @@ Expr
 combine to boolean expresions with XOR
 }
 \examples{
-pl$lit(TRUE)$xor(pl$lit(FALES))
+pl$lit(TRUE)$xor(pl$lit(FALSE))
 }
 \keyword{Expr}
 \keyword{Expr_operators}

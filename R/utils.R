@@ -115,7 +115,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 #' @export
 #'
 #' @examples
-#' n=5
+#' n = 7
 #' pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
@@ -200,8 +200,6 @@ l_to_vdf = function(l) {
 #' @param env class envrionment to modify. Envs are mutable so return needed
 #' @param class_pattern a regex string matching declared public functions of that class
 #'
-#' @examples
-#' replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
 replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
   cat("\n\n setting public methods for ",class_pattern)
 
@@ -296,7 +294,7 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #'
-#' @examples get_method_usages(minipolars:::DataFrame, pattern="col")
+#' @examples minipolars:::get_method_usages(minipolars:::DataFrame, pattern="col")
 get_method_usages = function(env,pattern="") {
 
   found_names = ls(env,pattern=pattern)

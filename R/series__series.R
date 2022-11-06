@@ -60,7 +60,7 @@ wrap_s = function(x) {
 #' @name Series_print
 #'
 #' @return invisible(self)
-#' @examples print(Series(1:3))
+#' @examples print(pl$Series(1:3))
 print.Series = function(x) {
   cat("polars Series: ")
   x$print()
@@ -525,6 +525,7 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
+#' pl$set_minipolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 #' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 Series_append = function(other, immutable = TRUE) {
@@ -665,7 +666,7 @@ Series_dtype = method_as_property(function() {
 #' @aliases dtype
 #' @name Series_dtype
 #' @examples
-#' pl$Series(1:4)$sort()$flags()
+#' pl$Series(1:4)$sort()$flags
 Series_flags = method_as_property(function() {
   list(
     "SORTED_ASC" =  .pr$Series$is_sorted_flag(self),

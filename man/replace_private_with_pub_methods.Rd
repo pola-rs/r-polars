@@ -17,6 +17,3 @@ can be used to delete them and replaces them with the public methods. Which are 
 matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 zzz.R
 }
-\examples{
-replace_private_with_pub_methods(minipolars:::DataFrame, "^DataFrame")
-}

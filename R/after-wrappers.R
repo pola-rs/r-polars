@@ -62,7 +62,8 @@ extendr_method_to_pure_functions = function(env) {
 #'
 #' @seealso verify_method_call
 #'
-#' @examples macro_add_verify_to_class("DataFrame")
+#' @examples
+#' minipolars:::macro_add_syntax_check_to_class("DataFrame")
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
     "`$.",Class_name,"` <- function (self, name) {\n",

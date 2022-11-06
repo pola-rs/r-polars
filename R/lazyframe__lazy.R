@@ -94,11 +94,16 @@ LazyFrame
 #' @description called by the interactive R session internally
 #' @keywords LazyFrame
 #' @examples
-#' e = pl$lit("any polars object")$
-#' e$ #place cursor after $ this line and press tab
+#'
+#'
+#'  # e = pl$lit("any polars object")$e$
+#'
+#'
+#' #place cursor after $ this line and press tab
 #'
 #' #manually call like this (should never be needed)
 #' # minipolars:::.DollarNames.Expr
+#' 2+2
 .DollarNames.LazyFrame = function(x, pattern = "") {
   paste0(ls(minipolars:::LazyFrame, pattern = pattern ),"()")
 }

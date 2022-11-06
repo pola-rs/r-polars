@@ -18,7 +18,7 @@ any return given first true bool statement otherwise value of or_else
 Inspired by data.table::fcase + dplyr::case_when. Used instead of base::switch internally.
 }
 \examples{
-n=5
+n = 7
 pcase(
  n<5,"nope",
  n>6,"yeah",

@@ -97,7 +97,7 @@ pl$DataFrame = function(data, make_names_unique= TRUE) {
   if(inherits(data,"DataFrame")) return(data)
 
   #input guard
-  if(!is_DataFrame_data_input(data)) {
+  if(!minipolars:::is_DataFrame_data_input(data)) {
     abort("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
@@ -197,8 +197,8 @@ DataFrame_print = function() {
 #'
 #' @return bool
 #'
-#' @examples is_DataFrame_data_input(iris)
-#' is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
+#' @examples minipolars:::is_DataFrame_data_input(iris)
+#' minipolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x,"data.frame") ||
     (

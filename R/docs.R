@@ -33,7 +33,7 @@
 #' Polars supports missingness for any possible type as it kept separately in the bitmask.
 #' In python lists the symbol `None` can carry a similar meaning.
 #' R `NA` ~ polars `Null` ~ py-polars `[None]` (in a py list)
-
+#'
 #' ## Sorting and comparisons
 #' From writing alot of tests for all implementations, it appears polars does not have a
 #' fully consistent nor well documented behavior, when it comes to comparisons and sorting of floats.
@@ -85,4 +85,5 @@
 #' Polars Expr's can be understood as a DSL (domain specific language) that expresses syntax trees of instructions. R
 #' expressions evaluate to syntax trees also, but it difficult to optimize the execution order automaticly, without rewriting the
 #' code. A great selling point of Polars is that any query will be optimized. Expr are very light-weight symbols chained together.
+#'
 NULL

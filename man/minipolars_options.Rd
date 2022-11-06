@@ -66,5 +66,5 @@ tryCatch(
 #reset options like this
 pl$reset_minipolars_options()
 #use get_minipolars_opt_requirements() to requirements
-get_minipolars_opt_requirements()
+pl$get_minipolars_opt_requirements()
 }

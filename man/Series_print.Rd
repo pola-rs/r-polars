@@ -17,6 +17,6 @@ invisible(self)
 Print Series
 }
 \examples{
-print(Series(1:3))
+print(pl$Series(1:3))
 }
 \keyword{Series}

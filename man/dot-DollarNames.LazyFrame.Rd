@@ -10,10 +10,15 @@
 called by the interactive R session internally
 }
 \examples{
-e = pl$lit("any polars object")$
-e$ #place cursor after $ this line and press tab
+
+
+ # e = pl$lit("any polars object")$e$
+
+
+#place cursor after $ this line and press tab
 
 #manually call like this (should never be needed)
 # minipolars:::.DollarNames.Expr
+2+2
 }
 \keyword{LazyFrame}
