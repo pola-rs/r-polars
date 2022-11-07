@@ -48,16 +48,6 @@ jobs:
           toolchain: ${{ matrix.config.rust-version }}
           default: true
 
-      - name: show rustup targets + rtools gcc
-        if: runner.os == 'Windows'
-        run: |
-          rustup show
-          dir -Path c:\r* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
-          dir -Filter *gcc*.exe* -Recurse | %{$_.FullName}
-          # rustup toolchain remove stable-x86_64-pc-windows-msvc
-          # rustup toolchain install nightly-x86_64-pc-windows-gnu
-          # rustup default nightly-x86_64-pc-windows-gnu
-          #rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -96,6 +86,13 @@ jobs:
           rtools-version: "42"
           update-rtools: true
           Ncpus: 2
+
+      - name: show rustup targets + rtools gcc
+        if: runner.os == 'Windows'
+        run: |
+          rustup show
+          dir -Path c:\r* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
+          dir -Filter *gcc*.exe* -Recurse | %{$_.FullName}
 
       - uses: r-lib/actions/setup-renv@v2
         with:
