@@ -91,9 +91,8 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           rustup show
-          dir -Path c:\r* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
-          dir -Filter *gcc*.exe* -Recurse | %{$_.FullName}
-          Dir -Path c:\ *gcc.exe -Recurse -ErrorAction SilentlyContinue
+          dir -Path c:\rtools* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
+          echo echo $env:path
 
       - uses: r-lib/actions/setup-renv@v2
         with:
