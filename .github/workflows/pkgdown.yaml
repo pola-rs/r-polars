@@ -105,8 +105,10 @@ jobs:
         with:
           cache-version: 2
 
-      - name: build package
-        run: devtools::install(quick = TRUE)
+      - name: build package + test
+        run: |
+          devtools::install(quick = TRUE)
+          devtools::test(stop_on_failure = TRUE)
         shell: Rscript {0}
 
       - name: build binary
