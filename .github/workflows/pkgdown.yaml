@@ -2,9 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, fix_windows_build]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, fix_windows_build]
   release:
     types: [published]
   workflow_dispatch:
@@ -25,14 +25,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macOS-latest, r: "release", rust-version: "nightly" }
-          - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
-          # - {
-          #     os: windows-latest,
-          #     r: "release",
-          #     rust-version: "nightly-gnu",
-          #     rtools-version: "42",
-          #   }
+          # - { os: macOS-latest, r: "release", rust-version: "nightly" }
+          # - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
+          - {
+              os: windows-latest,
+              r: "release",
+              rust-version: "nightly-gnu",
+              rtools-version: "42",
+            }
           #- { os: windows-latest, r: "release", rust-version: "nightly" } #skip windows fails nightly
 
     env:
@@ -48,14 +48,6 @@ jobs:
           toolchain: ${{ matrix.config.rust-version }}
           default: true
 
-      # - name: show rustup targets
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     rustup show
-      #     rustup toolchain remove stable-x86_64-pc-windows-msvc
-      #     rustup toolchain install nightly-x86_64-pc-windows-gnu
-      #     rustup default nightly-x86_64-pc-windows-gnu
-      #     rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -90,10 +82,17 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
-          install-r: false
+          install-r: true
           rtools-version: "42"
           update-rtools: true
           Ncpus: 2
+
+      - name: show rustup targets + rtools gcc
+        if: runner.os == 'Windows'
+        run: |
+          rustup show
+          dir -Path c:\rtools* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
+          echo echo $env:path
 
       - uses: r-lib/actions/setup-renv@v2
         with:
