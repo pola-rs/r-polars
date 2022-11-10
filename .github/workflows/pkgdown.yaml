@@ -27,12 +27,12 @@ jobs:
         config:
            - { os: macOS-latest, r: "release", rust-version: "nightly" }
            - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
-          - {
+           - {
               os: windows-latest,
               r: "release",
               rust-version: "nightly-gnu",
               rtools-version: "42",
-            }
+           }
           #- { os: windows-latest, r: "release", rust-version: "nightly" } #skip windows fails nightly
 
     env:
