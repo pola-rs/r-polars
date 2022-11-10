@@ -531,6 +531,7 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
     fn to_list_recursive(s: &pl::Series) -> pl::PolarsResult<Robj> {
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
+            Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
             Int64 => s.i64().map(|ca| {
                 ca.into_iter()

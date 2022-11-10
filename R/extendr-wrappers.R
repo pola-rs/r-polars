@@ -208,6 +208,8 @@ Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_ske
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
+Expr$rank <- function(method, reverse) .Call(wrap__Expr__rank, self, method, reverse)
+
 Expr$diff <- function(n_float, null_behavior) .Call(wrap__Expr__diff, self, n_float, null_behavior)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)

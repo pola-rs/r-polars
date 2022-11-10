@@ -1,6 +1,7 @@
 use super::rseries::Series;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
+use crate::rdatatype::new_rank_method;
 use crate::rdatatype::{DataType, DataTypeVector};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -629,6 +630,20 @@ impl Expr {
 
     pub fn abs(&self) -> Self {
         self.0.clone().abs().into()
+    }
+
+    fn rank(&self, method: &str, reverse: bool) -> List {
+        let expr_res = new_rank_method(method)
+            .map(|rank_method| {
+                let options = pl::RankOptions {
+                    method: rank_method,
+                    descending: reverse,
+                };
+                Expr(self.0.clone().rank(options))
+            })
+            .map_err(|err| format!("rank: {}", err));
+
+        r_result_list(expr_res)
     }
 
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {

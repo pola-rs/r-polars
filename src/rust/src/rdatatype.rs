@@ -166,6 +166,23 @@ pub fn new_null_behavior(
     }
 }
 
+pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
+    use pl::RankMethod as RM;
+    let s_low = s.to_lowercase();
+    match s_low.as_str() {
+        "average" => Ok(RM::Average),
+        "dense" => Ok(RM::Dense),
+        "max" => Ok(RM::Max),
+        "min" => Ok(RM::Min),
+        "ordinal" => Ok(RM::Ordinal),
+        "random" => Ok(RM::Random),
+        _ => Err(format!(
+            "RankMethod choice: [{}] is not any 'average','dense', 'min', 'max', 'ordinal', 'random'",
+            s_low.as_str()
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;

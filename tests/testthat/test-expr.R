@@ -1559,6 +1559,23 @@ test_that("Expr_rolling_", {
 })
 
 
+test_that("Expr_rank", {
+  l = list(a = c(3, 6, 1, 1, 6))
+  expect_identical(
+    pl$DataFrame(l)$select(
+      pl$col("a")$rank()$alias("avg"),
+      pl$col("a")$rank(reverse = TRUE)$alias("avg_rev"),
+      pl$col("a")$rank(method = "ordinal")$alias("ord_rev"),
+    )$to_list(),
+    list(
+      avg = rank(l$a),
+      avg_rev = rank(-l$a),
+      ord_rev = as.double(rank(l$a, ties.method = "first"))
+    )
+  )
+})
+
+
 test_that("Expr_diff", {
 
   l = list( a=c(20L,10L,30L,40L))
@@ -1604,3 +1621,6 @@ test_that("Expr_diff", {
   expect_error(pl$lit(1:5)$diff(5,"not a null behavior"))
 
 })
+
+
+
