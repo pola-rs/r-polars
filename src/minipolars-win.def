@@ -1,0 +1,4 @@
+EXPORTS
+ "R_init_helloextendr"
+ "R_init_helloextendr_extendr"
+ 
