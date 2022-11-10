@@ -3,10 +3,13 @@
 on:
   push:
     branches: [main, master, fix_windows_build]
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
     branches: [main, master, fix_windows_build]
   release:
     types: [published]
+
   workflow_dispatch:
 
 name: pkgdown
@@ -27,12 +30,12 @@ jobs:
         config:
           - { os: macOS-latest, r: "release", rust-version: "nightly" }
           - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
-          # - {
-          #     os: windows-latest,
-          #     r: "release",
-          #     rust-version: "nightly-gnu",
-          #     rtools-version: "42",
-          #   }
+          - {
+              os: windows-latest,
+              r: "release",
+              rust-version: "nightly-gnu",
+              rtools-version: "42",
+            }
           #- { os: windows-latest, r: "release", rust-version: "nightly" } #skip windows fails nightly
 
     env:
@@ -43,19 +46,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: check if release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo this is a release
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.config.rust-version }}
           default: true
-
-      # - name: show rustup targets
-      #   if: runner.os == 'Windows'
-      #   run: |
-      #     rustup show
-      #     rustup toolchain remove stable-x86_64-pc-windows-msvc
-      #     rustup toolchain install nightly-x86_64-pc-windows-gnu
-      #     rustup default nightly-x86_64-pc-windows-gnu
-      #     rustup show
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -90,18 +89,21 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: false
-          install-r: false
+          install-r: true
           rtools-version: "42"
           update-rtools: true
           Ncpus: 2
 
+      - name: show rustup targets + rtools gcc
+        if: runner.os == 'Windows'
+        run: |
+          rustup show
+          dir -Path c:\rtools* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
+          echo echo $env:path
+
       - uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 2
-
-      - name: Add x86_64-w64-mingw32.static.posix to path
-        run: echo "##[add-path]C:\rtools42\x86_64-w64-mingw32.static.posix;C:\rtools42"
-        if: matrix.os == 'windows'
 
       - name: build package
         run: devtools::install(quick = TRUE)
