@@ -3,10 +3,13 @@
 on:
   push:
     branches: [main, master, fix_windows_build]
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
     branches: [main, master, fix_windows_build]
   release:
     types: [published]
+
   workflow_dispatch:
 
 name: pkgdown
