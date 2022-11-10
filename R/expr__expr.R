@@ -2978,3 +2978,20 @@ Expr_diff = function(n = 1, null_behavior = "ignore") {
 
 
 
+
+#' Pct change
+#' @description
+#' Computes percentage change between values.
+#' Percentage change (as fraction) between current element and most-recent
+#' non-null element at least ``n`` period(s) before the current element.
+#' Computes the change from the previous row by default.
+#' @param n  periods to shift for forming percent change.
+#' @return  Expr
+#' @aliases pct_change
+#' @keywords Expr
+#' @examples
+#' df = pl$DataFrame(list( a=c(10L, 11L, 12L, NA_integer_, 12L)))
+#' df$with_column(pl$col("a")$pct_change()$alias("pct_change"))
+Expr_pct_change = function(n = 1) {
+  unwrap(.pr$Expr$pct_change(self, n))
+}

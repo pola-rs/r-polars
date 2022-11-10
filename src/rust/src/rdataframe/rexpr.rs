@@ -657,6 +657,13 @@ impl Expr {
         r_result_list(expr_res)
     }
 
+    fn pct_change(&self, n_float: f64) -> List {
+        let expr_res = try_f64_into_usize(n_float, false)
+            .map(|n_usize| Expr(self.0.clone().pct_change(n_usize)))
+            .map_err(|err| format!("pct_change: {}", err));
+        r_result_list(expr_res)
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

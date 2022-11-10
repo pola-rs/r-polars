@@ -519,27 +519,39 @@ DataFrame_select = function(...) {
   df
 }
 
-#' modify/append columns to DataFrame
-#' @description  Like dplyr `mutate()` as it keeps unmentioned columns unlike data.table `.()`.
+#' modify/append column(s)
+#' @description add or modify columns with expressions
 #' @name DataFrame_with_columns
 #' @aliases with_columns
-#' @param ... any expressions or strings defining
+#' @param ... any expressions or string column name
 #' @keywords  DataFrame
 #' @return DataFrame
+#' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
+#' @examples
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 #' )
 #'
 #' #rename columns by naming expression is concidered experimental
-#'  Currently requires pl$set_minipolars_options(named_exprs = TRUE)
+#' pl$set_minipolars_options(named_exprs = TRUE) #unlock
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width")+2)
 #' )
 DataFrame_with_columns = function(...) {
-  df = self$lazy()$with_columns(...)$collect()
-  df
+  self$lazy()$with_columns(...)$collect()
+}
+
+#' modify/append one column
+#' @rdname DataFrame_with_columns
+#' @aliases with_column
+#' @param expr a single expression or string
+#' @keywords  DataFrame
+#' @return DataFrame
+#' @details with_column is derived from with_columns but takes only one expression argument
+DataFrame_with_column = function(expr) {
+  self$with_columns(expr)
 }
 
 

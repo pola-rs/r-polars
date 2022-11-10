@@ -212,6 +212,8 @@ Expr$rank <- function(method, reverse) .Call(wrap__Expr__rank, self, method, rev
 
 Expr$diff <- function(n_float, null_behavior) .Call(wrap__Expr__diff, self, n_float, null_behavior)
 
+Expr$pct_change <- function(n_float) .Call(wrap__Expr__pct_change, self, n_float)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

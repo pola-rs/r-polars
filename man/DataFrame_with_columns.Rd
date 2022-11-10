@@ -3,28 +3,43 @@
 \name{DataFrame_with_columns}
 \alias{DataFrame_with_columns}
 \alias{with_columns}
-\title{modify/append columns to DataFrame}
+\alias{DataFrame_with_column}
+\alias{with_column}
+\title{modify/append column(s)}
 \usage{
 DataFrame_with_columns(...)
+
+DataFrame_with_column(expr)
 }
 \arguments{
-\item{...}{any expressions or strings defining}
+\item{...}{any expressions or string column name}
+
+\item{expr}{a single expression or string}
 }
 \value{
 DataFrame
+
+DataFrame
+}
+\description{
+add or modify columns with expressions
+}
+\details{
+Like dplyr \code{mutate()} as it keeps unmentioned columns unlike $select().
+
+with_column is derived from with_columns but takes only one expression argument
+}
+\examples{
 pl$DataFrame(iris)$with_columns(
-pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-(pl$col("Sepal.Length")+2)$alias("add_2_SL")
+  pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+  (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 )
 
 #rename columns by naming expression is concidered experimental
-Currently requires pl$set_minipolars_options(named_exprs = TRUE)
+pl$set_minipolars_options(named_exprs = TRUE) #unlock
 pl$DataFrame(iris)$with_columns(
-pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
-SW_add_2 = (pl$col("Sepal.Width")+2)
+  pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
+  SW_add_2 = (pl$col("Sepal.Width")+2)
 )
-}
-\description{
-Like dplyr \code{mutate()} as it keeps unmentioned columns unlike data.table \code{.()}.
 }
 \keyword{DataFrame}
