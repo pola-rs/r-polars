@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - { os: macOS-latest, r: "release", rust-version: "nightly" }
-          # - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
+           - { os: macOS-latest, r: "release", rust-version: "nightly" }
+           - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
           - {
               os: windows-latest,
               r: "release",
@@ -97,10 +97,6 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 2
-
-      - name: Add x86_64-w64-mingw32.static.posix to path
-        run: echo "##[add-path]C:\rtools42\x86_64-w64-mingw32.static.posix;C:\rtools42"
-        if: matrix.os == 'windows'
 
       - name: build package
         run: devtools::install(quick = TRUE)
