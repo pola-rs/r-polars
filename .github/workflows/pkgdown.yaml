@@ -47,8 +47,8 @@ jobs:
       - name: check if release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
-        with: |
-         echo this is a release
+        run: |
+          echo this is a release
 
       - uses: actions-rs/toolchain@v1
         with:
