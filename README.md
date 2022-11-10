@@ -7,6 +7,8 @@ package. I aim to finish the project in 2022.
 
 ## news:
 
+ - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, minipolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/minipolars/blob/main/src/minipolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
+
  - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install minipolars from binary. See install section.
 
 
@@ -37,16 +39,19 @@ from R and the reverse.
 
  - Macbbook x86_64
  `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000.tgz")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003.tgz")`
  
  - Linux x86_64
  `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/154/minipolars_0.1.9000_R_x86_64-pc-linux-gnu.tar.gz")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003_R_x86_64-pc-linux-gnu.tar.gz")`
  
  - Windows
- pending
+ `install.packages("rlang");`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003.zip")`
  
  - Other targets?  Raise an issue
+ 
+ 
  
 # Documentation:
   [Latest docs found here](https://sorhawell.github.io/reference/index.html)
