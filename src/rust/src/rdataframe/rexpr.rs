@@ -664,6 +664,13 @@ impl Expr {
         r_result_list(expr_res)
     }
 
+    fn skew(&self, bias: bool) -> Self {
+        self.0.clone().skew(bias).into()
+    }
+    fn kurtosis(&self, fisher: bool, bias: bool) -> Self {
+        self.0.clone().kurtosis(fisher, bias).into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

@@ -2995,3 +2995,73 @@ Expr_diff = function(n = 1, null_behavior = "ignore") {
 Expr_pct_change = function(n = 1) {
   unwrap(.pr$Expr$pct_change(self, n))
 }
+
+
+
+#' Skewness
+#' @description
+#' Compute the sample skewness of a data set.
+#' @param bias If False, then the calculations are corrected for statistical bias.
+#' @return  Expr
+#' @aliases skew
+#' @keywords Expr
+#' @details
+#' For normally distributed data, the skewness should be about zero. For
+#' unimodal continuous distributions, a skewness value greater than zero means
+#' that there is more weight in the right tail of the distribution. The
+#' function `skewtest` can be used to determine if the skewness value
+#' is close enough to zero, statistically speaking.
+#'
+#' See scipy.stats for more information.
+#'
+#' Notes
+#' -----
+#'   The sample skewness is computed as the Fisher-Pearson coefficient
+#' of skewness, i.e.
+#'
+#' \eqn{ g_1=\frac{m_3}{m_2^{3/2}}}
+#'
+#' where
+#'
+#' \eqn{ m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i}
+#'
+#' is the biased sample :math:`i\texttt{th}` central moment, and \eqn{\bar{x}} is
+#' the sample mean.  If ``bias`` is False, the calculations are
+#' corrected for bias and the value computed is the adjusted
+#' Fisher-Pearson standardized moment coefficient, i.e.
+#'
+#' \eqn{ G_1 = \frac{k_3}{k_2^{3/2}} = \frac{\sqrt{N(N-1)}}{N-2}\frac{m_3}{m_2^{3/2}}}
+#' @references https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.skew.html?highlight=skew#scipy.stats.skew
+#' @examples
+#' df = pl$DataFrame(list( a=c(1:3,2:1)))
+#' df$select(pl$col("a")$skew())
+Expr_skew = function(bias = TRUE) {
+  .pr$Expr$skew(self, bias)
+}
+
+
+#' Kurtosis
+#' @description
+#' Compute the kurtosis (Fisher or Pearson) of a dataset.
+#' @param bias If False, then the calculations are corrected for statistical bias.
+#' @return  Expr
+#' @aliases kurtosis
+#' @keywords Expr
+#' @details
+#' Kurtosis is the fourth central moment divided by the square of the
+#' variance. If Fisher's definition is used, then 3.0 is subtracted from
+#'         the result to give 0.0 for a normal distribution.
+#'         If bias is False then the kurtosis is calculated using k statistics to
+#'         eliminate bias coming from biased moment estimators
+#'         See scipy.stats for more information
+#'
+#' #' See scipy.stats for more information.
+#'
+#' @references https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kurtosis.html?highlight=kurtosis
+#'
+#' @examples
+#' df = pl$DataFrame(list( a=c(1:3,2:1)))
+#' df$select(pl$col("a")$kurtosis())
+Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
+  .pr$Expr$kurtosis(self, fisher, bias)
+}

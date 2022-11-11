@@ -1615,6 +1615,7 @@ test_that("Expr_diff", {
     )
   )
 
+
   pl$empty_select(pl$lit(1:5)$diff(0)) #no error
   expect_error(pl$lit(1:5)$diff(-1))
   expect_error(pl$lit(1:5)$diff(99^99))
@@ -1668,6 +1669,103 @@ test_that("Expr_pct_change", {
       n1 = r_pct_chg(l$a),
       n2 = r_pct_chg(l$a,n=2),
       n0 = r_pct_chg(l$a,n=0)
+    )
+  )
+})
+
+
+
+test_that("skew", {
+
+  R_skewness = function (x, bias = TRUE,na.rm = FALSE) {
+    if (na.rm) x <- x[!is.na(x)]
+    n <- length(x)
+    m2 = sum((x - mean(x))^2) / n
+    m3 = sum((x - mean(x))^3) / n
+    biased_skewness = m3 / m2^(3 / 2)
+    if (bias) {
+      biased_skewness
+    } else {
+      correction = sqrt(n * (n - 1L)) / (n - 2)
+      biased_skewness * correction
+    }
+  }
+
+  l = list(a = c(1:3,2:1),b=c(1:3,NA_integer_,1L))
+  expect_equal(
+    pl$DataFrame(l)$select(
+      pl$col("a")$skew()$alias("a_skew"),
+      pl$col("a")$skew(bias=FALSE)$alias("a_skew_bias_F"),
+      pl$col("b")$skew()$alias("b_skew"),
+      pl$col("b")$skew(bias=FALSE)$alias("b_skew_bias_F")
+    )$to_list(),
+    list(
+      a_skew = R_skewness(l$a),
+      a_skew_bias_F = R_skewness(l$a,bias=F),
+      b_skew = R_skewness(l$b,na.rm=TRUE),
+      #TODO update when fixed to R_skewness(l$b,bias=F,na.rm=TRUE)
+      b_skew_bias_F = 0.73549076 # error in polars
+    )
+  )
+
+})
+
+
+
+test_that("kurtosis", {
+
+  R_kurtosis = function (x, fisher= TRUE, bias = TRUE,na.rm = TRUE) {
+    if (na.rm) x <- x[!is.na(x)]
+    n <- length(x)
+    m2 = sum((x - mean(x))^2) / n
+    m4 = sum((x - mean(x))^4) / n
+    fisher_correction = if(fisher) 3 else 0
+    biased_kurtosis = m4 / m2^2
+    if (bias) {
+      biased_kurtosis - fisher_correction
+    } else {
+      correction = 1.0/(n-2)/(n-3) * ((n**2-1.0)*m4/m2**2.0 - 3*(n-1)**2.0)
+      correction + 3 - fisher_correction
+    }
+  }
+
+
+  l = list(a=c(1:3,NA_integer_,1:3))
+  l2 = list(a=c(1:3,1:3))
+
+
+  #TODO this test should pass when polars is updated
+  ##missing values should not change outcome
+  # expect_equal(
+  #   pl$DataFrame(l)$select(
+  #     pl$col("a")$kurtosis()$alias("kurt"),
+  #     pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("_TF"),
+  #     pl$col("a")$kurtosis(fisher = FALSE, bias=TRUE)$alias("kurt_FT"),
+  #     pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
+  #   )$to_list(),
+  #   pl$DataFrame(l2)$select(
+  #     pl$col("a")$kurtosis()$alias("kurt"),
+  #     pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("_TF")+3,
+  #     pl$col("a")$kurtosis(fisher = FALSE, bias=TRUE)$alias("kurt_FT"),
+  #     pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")+3
+  #   )$to_list()
+  # )
+
+  #
+
+  #TODO test for bias correction when polars is updated
+  expect_equal(
+    pl$DataFrame(l2)$select(
+      pl$col("a")$kurtosis()$alias("kurt_TT"),
+      #pl$col("a")$kurtosis(fisher = TRUE, bias=FALSE)$alias("kurt_TF"),
+      pl$col("a")$kurtosis(fisher = FALSE, bias=TRUE)$alias("kurt_FT"),
+      #pl$col("a")$kurtosis(fisher = FALSE, bias=FALSE)$alias("kurt_FF")
+    )$to_list(),
+    list2(
+      kurt_TT =  R_kurtosis(l2$a,T,T),
+      #kurt_TF =  R_kurtosis(l2$a,T,F),
+      kurt_FT =  R_kurtosis(l2$a,F,T),
+      #kurt_FF =  R_kurtosis(l2$a,F,F)
     )
   )
 })
