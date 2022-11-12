@@ -90,15 +90,47 @@ pl$col = function(name) {
 }
 
 
-#TODO contribute polars, rewrite pl$sum(list) without python lambda but as chained add columns
+#TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
+#docs should reflect that
+
+#' new Expr with sum
+#' @description  syntactic sugar for starting a expression with sum
+#' @param column  is a:
+#'  - Series or Expr, same as `column$sum()`
+#'  - string, same as `pl$col(column)$sum()`
+#'  - numeric, same as `pl$lit(column)$sum()`
+#'  - list   , same as `(l[[1]] as literal/expression) + colum[[2]] as literal/expression + .... `
+#'
+#'
+#' @return Expr
+#'
+#' @examples
+#'
+#' #column as string
+#' pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
+#'
+#' #column as Expr (prefer pl$col("Petal.Width")$sum())
+#' pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
+#'
+#' #column as numeric
+#' pl$DataFrame()$select(pl$sum(1:5))
+#'
+#' #column as list
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c")))
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", 42L)))
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b")))))
 pl$sum = function(column) {
 
-  if (inherits(column, "Series")) return(column$sum())
+  if (inherits(column, "Series") || inherits(column, "Expr")) return(column$sum())
   if (is_string(column)) return(pl$col(column)$sum())
   if (is.numeric(column)) return(pl$lit(column)$sum())
-
-  #TODO implement fold operation
-  if (is.list(column)) abort("pl$sum: list fold not implemented yet")
+  if (is.list(column)) {
+    #TODO use polars impl that support wild cards
+    if(any(sapply(column, identical,"*"))) abort("pl$sum wildcard not supported yet")
+    if(length(column)==0L) abort("empty list not allowed")
+    expr = Reduce("+",lapply(column, minipolars:::wrap_e, str_to_lit=FALSE))$alias("sum")
+    return(expr)
+  }
 
   abort("pl$sum: this input is not supported")
   # (Expr): use u32 as that will not cast to float as eagerly
