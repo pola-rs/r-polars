@@ -81,7 +81,13 @@ DataFrame
 #' Create new DataFrame
 #' @name DataFrame
 #'
-#' @param data a data.frame or list of mixed vectors and Series of equal length.
+#' @param ...
+#'  - one data.frame or something that inherits data.frame or DataFrame
+#'  - one list of mixed vectors and Series of equal length
+#'  - mixed vectors and/or Series of equal length
+#'
+#'  Columns will be named as of named arguments or alternatively by names of Series or given a placeholder name
+#'
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
@@ -90,11 +96,24 @@ DataFrame
 #' @keywords DataFrame_new
 #'
 #' @examples
-#' pl$DataFrame(iris)
-#' pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
-pl$DataFrame = function(data, make_names_unique= TRUE) {
+#' pl$DataFrame(iris) #from data.frame
+#' pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5])) #from list
+#' pl$DataFrame(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]) #directly from vectors
+#' pl$DataFrame( 1:5, pl$Series(5:1,"bob"),5:1) #directly from two unnamed vectors and one named Series
+pl$DataFrame = function(..., make_names_unique= TRUE) {
 
-  if(inherits(data,"DataFrame")) return(data)
+  data = list2(...)
+
+  #no args crete empty DataFrame
+  if(length(data)==0L) return(.pr$DataFrame$new())
+
+  #pass through if already a DataFrame
+  if(inherits(data[[1L]],"DataFrame")) return(data[[1L]])
+
+  #if input is one list of expression unpack this one
+  if(length(data)==1L && is.list(data[[1]])) {
+    data = data[[1L]]
+  }
 
   #input guard
   if(!minipolars:::is_DataFrame_data_input(data)) {
@@ -104,7 +123,6 @@ pl$DataFrame = function(data, make_names_unique= TRUE) {
   if (inherits(data,"data.frame")) {
     data = as.data.frame(data)
   }
-
 
 
   ##step1 handle column names

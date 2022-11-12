@@ -99,6 +99,25 @@ test_that("DataFrame, mixed input, create and print", {
   )
 })
 
+test_that("DataFrame, input free vectors, input empty", {
+  #clone into DataFrame and change one name
+
+  #passing vector directly is equal to passing one
+  l = as.list(iris)
+  df1 = pl$DataFrame(l)
+  df2 = do.call(pl$DataFrame,l)
+  expect_identical(
+    df1$to_list(), df2$to_list()
+  )
+
+
+  df_e = pl$DataFrame()
+  expect_true(inherits(df_e,"DataFrame"))
+  expect_identical(df_e$shape , c(0,0))
+  expect_identical(pl$DataFrame()$to_list(), minipolars:::.pr$DataFrame$new()$to_list())
+
+})
+
 test_that("get set properties", {
 
   df = pl$DataFrame(list(a=1:5,b=rep(TRUE,5)))

@@ -7,7 +7,13 @@
 DataFrame(data)
 }
 \arguments{
-\item{data}{a data.frame or list of mixed vectors and Series of equal length.}
+\item{...}{\itemize{
+\item one data.frame or inherits data.frame
+\item one list of mixed vectors and Series of equal length
+\item mixed vectors and/or Series of equal length
+}
+
+Columns will be named as of named arguments or alternatively by names of Series or given a placeholder name}
 
 \item{make_names_unique}{default TRUE, any duplicated names will be prefixed a running number}
 }
@@ -18,7 +24,9 @@ DataFrame
 Create new DataFrame
 }
 \examples{
-pl$DataFrame(iris)
-pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]))
+pl$DataFrame(iris) #from data.frame
+pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5])) #from list
+pl$DataFrame(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]) #directly from vectors
+pl$DataFrame( 1:5, pl$Series(5:1,"bob"),5:1) #directly from two unnamed vectors and one named Series
 }
 \keyword{DataFrame_new}

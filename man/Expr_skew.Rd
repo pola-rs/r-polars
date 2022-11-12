@@ -35,10 +35,7 @@ where
 
 \eqn{ m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i}
 
-is the biased sample :math:\verb{i\\texttt\{th\}} central moment, and
-
-\eqn{\bar{x}} is
-
+is the biased sample :math:\verb{i\\texttt\{th\}} central moment, and \eqn{\bar{x}} is
 the sample mean.  If \code{bias} is False, the calculations are
 corrected for bias and the value computed is the adjusted
 Fisher-Pearson standardized moment coefficient, i.e.
