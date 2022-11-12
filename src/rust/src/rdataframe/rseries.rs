@@ -457,12 +457,27 @@ impl Series {
         r_result_list(s)
     }
 
-    // pub fn mean_as_series(&self) -> Series {
-    //     Series(self.0.clone().mean_as_series())
+    // pub fn mean(&self) -> Option<f64> {
+    //     match self.series.dtype() {
+    //         DataType::Boolean => {
+    //             let s = self.series.cast(&DataType::UInt8).unwrap();
+    //             s.mean()
+    //         }
+    //         _ => self.series.mean(),
+    //     }
     // }
-    // pub fn sum_as_series(&self) -> Series {
-    //     Series(self.0.sum_as_series())
+
+    // pub fn max(&self, py: Python) -> PyObject {
+    //     Wrap(self.series.max_as_series().get(0)).into_py(py)
     // }
+
+    // pub fn min(&self, py: Python) -> PyObject {
+    //     Wrap(self.series.min_as_series().get(0)).into_py(py)
+    // }
+
+    pub fn sum(&self) -> Series {
+        self.0.sum_as_series().into()
+    }
 
     pub fn ceil(&self) -> List {
         r_result_list(self.0.ceil().map(|s| Series(s)))

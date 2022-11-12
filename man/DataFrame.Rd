@@ -8,7 +8,7 @@ DataFrame(data)
 }
 \arguments{
 \item{...}{\itemize{
-\item one data.frame or inherits data.frame
+\item one data.frame or something that inherits data.frame or DataFrame
 \item one list of mixed vectors and Series of equal length
 \item mixed vectors and/or Series of equal length
 }

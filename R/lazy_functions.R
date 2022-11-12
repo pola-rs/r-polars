@@ -89,3 +89,19 @@ pl$col = function(name) {
   abort("not supported implement input")
 }
 
+
+#TODO contribute polars, rewrite pl$sum(list) without python lambda but as chained add columns
+pl$sum = function(column) {
+
+  if (inherits(column, "Series")) return(column$sum())
+  if (is_string(column)) return(pl$col(column)$sum())
+  if (is.numeric(column)) return(pl$lit(column)$sum())
+
+  #TODO implement fold operation
+  if (is.list(column)) abort("pl$sum: list fold not implemented yet")
+
+  abort("pl$sum: this input is not supported")
+  # (Expr): use u32 as that will not cast to float as eagerly
+  #return fold(lit(0).cast(UInt32), lambda a, b: a + b, column).alias("sum")
+
+}
