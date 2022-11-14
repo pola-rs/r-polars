@@ -11,15 +11,16 @@ test_that("multiplication works", {
   expect_equal(
     capture.output(print(gb)),
     c("polars GroupBy: shape: (5, 2)", "┌─────┬─────┐",
-      "│ foo ┆ bar │", "│ --- ┆ --- │", "│ str ┆ f64 │",
-      "╞═════╪═════╡", "│ one ┆ 5.0 │",
-      "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 3.0 │",
-      "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 2.0 │",
-      "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ one ┆ 4.0 │",
-      "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 1.0 │",
-      "└─────┴─────┘", "groups: ProtoExprArray(",
-      "    [", "        String(", "            \"foo\",", "        ),",
-      "    ],", ")", "maintain order:  TRUE")
+       "│ foo ┆ bar │", "│ --- ┆ --- │", "│ str ┆ f64 │",
+       "╞═════╪═════╡", "│ one ┆ 5.0 │",
+       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 3.0 │",
+       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 2.0 │",
+       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ one ┆ 4.0 │",
+       "├╌╌╌╌╌┼╌╌╌╌╌┤", "│ two ┆ 1.0 │",
+       "└─────┴─────┘", "groups: ProtoExprArray(",
+       "    [", "        Expr(", "            Expr(", "                col(\"foo\"),",
+       "            ),", "        ),", "    ],", ")", "maintain order:  TRUE"
+    )
   )
 
 

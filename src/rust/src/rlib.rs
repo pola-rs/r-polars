@@ -1,5 +1,8 @@
+use crate::rdataframe::rexpr::Expr;
 use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
+
+use crate::rdataframe::rexpr::ProtoExprArray;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -57,10 +60,17 @@ pub fn mem_address(robj: Robj) -> String {
     format!("{:#012x}", ptr_val)
 }
 
+#[extendr]
+fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
+    let exprs = exprs.to_vec("select");
+    polars::lazy::dsl::sum_exprs(exprs).into()
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
     fn hor_concat_df;
     fn diag_concat_df;
+    fn sum_exprs;
     fn mem_address;
 }

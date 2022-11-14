@@ -1,8 +1,5 @@
 test_that("pl$sum", {
 
-
-
-
   #from series
   s = pl$sum(pl$Series(1:5))
   expect_true(inherits(s,"Series"))
@@ -24,11 +21,19 @@ test_that("pl$sum", {
   expect_identical(df$to_list()[[1L]],1L)
 
 
-
-  expect_error(pl$sum(list("a","b")))
-
-  expect_error(pl$sum(function(x) x ))
-
-
+  #support sum over list of expressions, wildcards or strings
+  l = list(a=1:2,b=3:4,c=5:6)
+  expect_identical(
+    pl$DataFrame(l)$with_column(pl$sum(list("a","c", 42L)))$to_list(),
+    c(l,list(sum=c(48L,50L)))
+  )
+  expect_identical(
+    pl$DataFrame(l)$with_column(pl$sum(list("*")))$to_list(),
+    c(l,list(sum=c(9L,12L)))
+  )
+  expect_identical(
+    pl$DataFrame(l)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))$to_list(),
+    c(l,list(sum=c(9L,12L)))
+  )
 
 })

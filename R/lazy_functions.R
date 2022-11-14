@@ -95,11 +95,13 @@ pl$col = function(name) {
 
 #' new Expr with sum
 #' @description  syntactic sugar for starting a expression with sum
+#' @name sum
 #' @param column  is a:
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list   , same as `(l[[1]] as literal/expression) + colum[[2]] as literal/expression + .... `
+#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'   wild cards allowed.
 #'
 #'
 #' @return Expr
@@ -118,18 +120,19 @@ pl$col = function(name) {
 #' #column as list
 #' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c")))
 #' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", 42L)))
-#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b")))))
+#'
+#' #three eqivalent lines
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b","c")))))
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
+#' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
 pl$sum = function(column) {
 
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$sum())
   if (is_string(column)) return(pl$col(column)$sum())
   if (is.numeric(column)) return(pl$lit(column)$sum())
   if (is.list(column)) {
-    #TODO use polars impl that support wild cards
-    if(any(sapply(column, identical,"*"))) abort("pl$sum wildcard not supported yet")
-    if(length(column)==0L) abort("empty list not allowed")
-    expr = Reduce("+",lapply(column, minipolars:::wrap_e, str_to_lit=FALSE))$alias("sum")
-    return(expr)
+    pra = do.call(construct_ProtoExprArray,column)
+    return(minipolars:::sum_exprs(pra))
   }
 
   abort("pl$sum: this input is not supported")

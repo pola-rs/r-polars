@@ -388,7 +388,8 @@ Expr_is_not_null = "use_extendr_wrapper"
 
 
 
-
+#TODO move this function in to rust with input list of args
+#TODO deprecate context feature
 #' construct proto Expr array from args
 #'
 #' @param ...  any Expr or string
@@ -411,15 +412,11 @@ construct_ProtoExprArray = function(...) {
   # if args not named load in Expr and string
   if(is.null(arg_names)) {
     for (i in args) {
-      if (is_string(i)) {
-        pra$push_back_str(i) #rust method
-        next
-      }
-      if (inherits(i,"Expr")) {
-        pra$push_back_rexpr(i) #rust method
-        next
-      }
-      abort(paste("cannot handle object:", capture.output(str(i))))
+      # if (is_string(i)) {
+      #   pra$push_back_str(i)
+      #   next
+      # }
+      pra$push_back_rexpr(wrap_e(i,str_to_lit = FALSE))
     }
 
   #if args named, convert string to col and alias any column by name if a name
@@ -432,19 +429,19 @@ construct_ProtoExprArray = function(...) {
     for (i in seq_along(args)) {
       arg = args[[i]]
       name = arg_names[i]
-      if (is_string(arg)) {
-        arg = pl$col(arg)
+
+      expr = wrap_e(arg,str_to_lit = FALSE)
+
+
+      if(nchar(name)>=1L) {
+        expr = expr$alias(name)
       }
-      if (inherits(arg,"Expr")) {
-        if(nchar(name)>=1L) {
-          arg = arg$alias(name)
-        }
-        pra$push_back_rexpr(arg) #rust method
-        next
-      }
-      abort(paste("cannot handle object:", capture.output(str(arg))))
+      pra$push_back_rexpr(expr) #rust method
+
     }
+
   }
+
 
 
   pra
