@@ -61,6 +61,24 @@ pub fn mem_address(robj: Robj) -> String {
 }
 
 #[extendr]
+fn min_exprs(exprs: &ProtoExprArray) -> Expr {
+    let exprs = exprs.to_vec("select");
+    polars::lazy::dsl::min_exprs(exprs).into()
+}
+
+#[extendr]
+fn max_exprs(exprs: &ProtoExprArray) -> Expr {
+    let exprs = exprs.to_vec("select");
+    polars::lazy::dsl::max_exprs(exprs).into()
+}
+
+#[extendr]
+fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
+    let exprs = exprs.to_vec("select");
+    polars::lazy::dsl::coalesce(&exprs).into()
+}
+
+#[extendr]
 fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
     polars::lazy::dsl::sum_exprs(exprs).into()
@@ -71,6 +89,9 @@ extendr_module! {
     fn concat_df;
     fn hor_concat_df;
     fn diag_concat_df;
+    fn min_exprs;
+    fn max_exprs;
+    fn coalesce_exprs;
     fn sum_exprs;
     fn mem_address;
 }

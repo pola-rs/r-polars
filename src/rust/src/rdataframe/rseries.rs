@@ -475,6 +475,14 @@ impl Series {
     //     Wrap(self.series.min_as_series().get(0)).into_py(py)
     // }
 
+    pub fn min(&self) -> Series {
+        self.0.min_as_series().into()
+    }
+
+    pub fn max(&self) -> Series {
+        self.0.max_as_series().into()
+    }
+
     pub fn sum(&self) -> Series {
         self.0.sum_as_series().into()
     }

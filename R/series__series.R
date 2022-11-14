@@ -646,7 +646,7 @@ Series_cumsum = function(reverse = FALSE) {
 }
 
 #' Sum
-#' @description  Reduce Series to sum
+#' @description  Reduce Series with sum
 #' @return Series
 #' @keywords Series
 #' @aliases sum
@@ -658,6 +658,34 @@ Series_cumsum = function(reverse = FALSE) {
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$sum() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$sum() # Inf-Inf is NaN
 Series_sum = "use_extendr_wrapper"
+
+#' max
+#' @description  Reduce Series with max
+#' @return Series
+#' @keywords Series
+#' @aliases max
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before maxming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$max() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$max() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$max() # Inf-Inf is NaN
+Series_max = "use_extendr_wrapper"
+
+#' min
+#' @description  Reduce Series with min
+#' @return Series
+#' @keywords Series
+#' @aliases min
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before minming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$min() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$min() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$min() # Inf-Inf is NaN
+Series_min = "use_extendr_wrapper"
 
 #' Get data type of Series
 #' @keywords Series

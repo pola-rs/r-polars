@@ -125,6 +125,10 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   }
 
 
+  ##step 00 get max length to allow cycle 1-length inputs
+  data_lengths = sapply(data,length)
+  data_lengths_max = if(is.integer(data_lengths)) max(data_lengths) else NULL
+
   ##step1 handle column names
   #keys are tentative new column names
   #fetch keys from names, if missing set as NA
@@ -169,6 +173,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 
       unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {
+      if(length(column)==1L && isTRUE(data_lengths_max > 1L)) column = rep(column,data_lengths_max)
       unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
     }
     return(NULL)

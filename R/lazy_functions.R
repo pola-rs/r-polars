@@ -93,21 +93,20 @@ pl$col = function(name) {
 #TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
 #docs should reflect that
 
-#' new Expr with sum
+#' sum across expressions / literals / Series
 #' @description  syntactic sugar for starting a expression with sum
 #' @name sum
-#' @param column  is a:
+#' @param ...  is a:
+#' If one arg:
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
 #'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
-#'   wild cards allowed.
 #'
-#'
+#' If several args, then wrapped in a list and handled as above.
 #' @return Expr
 #'
 #' @examples
-#'
 #' #column as string
 #' pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
 #'
@@ -125,8 +124,9 @@ pl$col = function(name) {
 #' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b","c")))))
 #' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
 #' pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
-pl$sum = function(column) {
-
+pl$sum = function(...) {
+  column = list2(...)
+  if (length(column)==1L) column = column[[1L]]
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$sum())
   if (is_string(column)) return(pl$col(column)$sum())
   if (is.numeric(column)) return(pl$lit(column)$sum())
@@ -134,9 +134,119 @@ pl$sum = function(column) {
     pra = do.call(construct_ProtoExprArray,column)
     return(minipolars:::sum_exprs(pra))
   }
-
   abort("pl$sum: this input is not supported")
-  # (Expr): use u32 as that will not cast to float as eagerly
-  #return fold(lit(0).cast(UInt32), lambda a, b: a + b, column).alias("sum")
-
 }
+
+
+#' min across expressions / literals / Series
+#' @description Folds the expressions from left to right, keeping the first non-null value.
+#' @name min
+#' @param ...  is a:
+#' If one arg:
+#'  - Series or Expr, same as `column$sum()`
+#'  - string, same as `pl$col(column)$sum()`
+#'  - numeric, same as `pl$lit(column)$sum()`
+#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'
+#' If several args, then wrapped in a list and handled as above.
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(2:1,NA_real_,NA_real_),
+#'   c = c(1:3,NA_real_),
+#'   d = c(1:3,NA_real_,-Inf)
+#' )
+#' #use min to get first non Null value for each row, otherwise insert 99.9
+#' df$with_column(
+#'   pl$min("a", "b", "c", 99.9)$alias("d")
+#' )
+#'
+pl$min = function(...) {
+  column = list2(...)
+  if (length(column)==1L) column = column[[1L]]
+  if (inherits(column, "Series") || inherits(column, "Expr")) return(column$min())
+  if (is_string(column)) return(pl$col(column)$min())
+  if (is.numeric(column)) return(pl$lit(column)$min())
+  if (is.list(column)) {
+    pra = do.call(construct_ProtoExprArray,column)
+    return(minipolars:::min_exprs(pra))
+  }
+  abort("pl$min: this input is not supported")
+}
+
+
+
+
+
+#' max across expressions / literals / Series
+#' @description Folds the expressions from left to right, keeping the first non-null value.
+#' @name max
+#' @param ...  is a:
+#' If one arg:
+#'  - Series or Expr, same as `column$sum()`
+#'  - string, same as `pl$col(column)$sum()`
+#'  - numeric, same as `pl$lit(column)$sum()`
+#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'
+#' If several args, then wrapped in a list and handled as above.
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(1:2,NA_real_,NA_real_),
+#'   c = c(1:3,NA_real_)
+#' )
+#' #use coalesce to get first non Null value for each row, otherwise insert 99.9
+#' df$with_column(
+#'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
+#' )
+#'
+pl$max = function(...) {
+  column = list2(...)
+  if (length(column)==1L) column = column[[1L]]
+  if (inherits(column, "Series") || inherits(column, "Expr")) return(column$max())
+  if (is_string(column)) return(pl$col(column)$max())
+  if (is.numeric(column)) return(pl$lit(column)$max())
+  if (is.list(column)) {
+    pra = do.call(construct_ProtoExprArray,column)
+    return(minipolars:::max_exprs(pra))
+  }
+  abort("pl$max: this input is not supported")
+}
+
+
+
+
+#' Coalesce
+#' @description Folds the expressions from left to right, keeping the first non-null value.
+#' @name coalesce
+#' @param ...  is a:
+#' If one arg:
+#'  - Series or Expr, same as `column$sum()`
+#'  - string, same as `pl$col(column)$sum()`
+#'  - numeric, same as `pl$lit(column)$sum()`
+#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'
+#' If several args, then wrapped in a list and handled as above.
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(1:2,NA_real_,NA_real_),
+#'   c = c(1:3,NA_real_)
+#' )
+#' #use coalesce to get first non Null value for each row, otherwise insert 99.9
+#' df$with_column(
+#'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
+#' )
+#'
+pl$coalesce = function(...) {
+  column = list2(...)
+  pra = do.call(construct_ProtoExprArray,column)
+  minipolars:::coalesce_exprs(pra)
+}
+

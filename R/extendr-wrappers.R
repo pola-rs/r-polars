@@ -18,6 +18,12 @@ hor_concat_df <- function(dfs) .Call(wrap__hor_concat_df, dfs)
 
 diag_concat_df <- function(dfs) .Call(wrap__diag_concat_df, dfs)
 
+min_exprs <- function(exprs) .Call(wrap__min_exprs, exprs)
+
+max_exprs <- function(exprs) .Call(wrap__max_exprs, exprs)
+
+coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
+
 sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
@@ -411,6 +417,10 @@ Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
 Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
 
 Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
+
+Series$min <- function() .Call(wrap__Series__min, self)
+
+Series$max <- function() .Call(wrap__Series__max, self)
 
 Series$sum <- function() .Call(wrap__Series__sum, self)
 

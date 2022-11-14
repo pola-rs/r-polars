@@ -2,16 +2,18 @@
 % Please edit documentation in R/lazy_functions.R
 \name{sum}
 \alias{sum}
-\title{new Expr with sum}
+\title{sum across expressions / literals / Series}
 \arguments{
-\item{column}{is a:
+\item{...}{is a:
+If one arg:
 \itemize{
 \item Series or Expr, same as \code{column$sum()}
 \item string, same as \code{pl$col(column)$sum()}
 \item numeric, same as \code{pl$lit(column)$sum()}
 \item list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
-wild cards allowed.
-}}
+}
+
+If several args, then wrapped in a list and handled as above.}
 }
 \value{
 Expr
@@ -20,7 +22,6 @@ Expr
 syntactic sugar for starting a expression with sum
 }
 \examples{
-
 #column as string
 pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
 
