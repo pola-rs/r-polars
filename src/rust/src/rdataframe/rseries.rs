@@ -549,6 +549,7 @@ impl From<&Series> for pl::Series {
     }
 }
 
+//TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
     fn to_list_recursive(s: &pl::Series) -> pl::PolarsResult<Robj> {

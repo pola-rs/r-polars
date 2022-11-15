@@ -1852,3 +1852,24 @@ expect_identical(
 
 
 })
+
+#TODO check value exported from polars are not lower bound which will become NA in R
+test_that("upper lower bound", {
+
+  expect_identical(
+    pl$DataFrame(
+      i32 = 1L,
+      f64 = 5,
+    )$select(
+      pl$all()$upper_bound()$suffix("_ub"),
+      pl$all()$lower_bound()$suffix("_lb")
+    )$to_list(),
+    list(
+      i32_ub = .Machine$integer.max,
+      f64_ub = Inf,
+      i32_lb = NA_integer_, #R encodes lower bound as NA
+      f64_lb = -Inf
+    )
+  )
+
+})

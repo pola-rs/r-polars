@@ -721,15 +721,13 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    // pub fn clip_min(&self, py: Python, min: PyObject) -> Expr {
-    //     let min = min.extract::<Wrap<AnyValue>>(py).unwrap().0;
-    //     self.clone().inner.clip_min(min).into()
-    // }
+    pub fn lower_bound(&self) -> Self {
+        self.0.clone().lower_bound().into()
+    }
 
-    // pub fn clip_max(&self, py: Python, max: PyObject) -> Expr {
-    //     let max = max.extract::<Wrap<AnyValue>>(py).unwrap().0;
-    //     self.clone().inner.clip_max(max).into()
-    // }
+    pub fn upper_bound(&self) -> Self {
+        self.0.clone().upper_bound().into()
+    }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()

@@ -232,6 +232,10 @@ Expr$clip_min <- function(min) .Call(wrap__Expr__clip_min, self, min)
 
 Expr$clip_max <- function(max) .Call(wrap__Expr__clip_max, self, max)
 
+Expr$lower_bound <- function() .Call(wrap__Expr__lower_bound, self)
+
+Expr$upper_bound <- function() .Call(wrap__Expr__upper_bound, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
