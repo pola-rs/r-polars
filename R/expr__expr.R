@@ -44,15 +44,16 @@ Expr_print = function() {
 #' @export
 #' @title auto complete $-access into object
 #' @description called by the interactive R session internally
-#' @keywords Expr
+#' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(minipolars:::Expr, pattern = pattern ),"()")
 }
 
 #' wrap as literal
 #' @param e an Expr(polars) or any R expression
-#' @details tiny wrapper to allow skipping calling lit on rhs of binary operator
-#' @keywords Expr
+#' @details
+#' used internally to ensure an object is an expression
+#' @keywords internal
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
