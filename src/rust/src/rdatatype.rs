@@ -1,7 +1,7 @@
 use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::prelude as pl;
+use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 
 //expose polars DateType in R
@@ -182,6 +182,58 @@ pub fn new_rank_method(s: &str) -> std::result::Result<pl::RankMethod, String> {
         )),
     }
 }
+
+pub fn literal_to_any_value(
+    litval: pl::LiteralValue,
+) -> std::result::Result<pl::AnyValue<'static>, String> {
+    use pl::AnyValue as av;
+    use pl::LiteralValue as lv;
+
+    match litval {
+        lv::Boolean(x) => Ok(av::Boolean(x)),
+        //lv::DateTime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
+        //lv::Duration(duration, unit) => Ok(av::Duration(duration, unit)), #check how to convert
+        lv::Float32(x) => Ok(av::Float32(x)),
+        lv::Float64(x) => Ok(av::Float64(x)),
+        lv::Int16(x) => Ok(av::Int16(x)),
+        lv::Int32(x) => Ok(av::Int32(x)),
+        lv::Int64(x) => Ok(av::Int64(x)),
+        lv::Int8(x) => Ok(av::Int8(x)),
+        lv::Null => Ok(av::Null),
+        // lv::Range {
+        //     low,
+        //     high,
+        //     data_type,
+        // } => Ok(av::(low, high, data_type)),
+        //lv::Series(s) => no counter part
+        lv::UInt16(x) => Ok(av::UInt16(x)),
+        lv::UInt32(x) => Ok(av::UInt32(x)),
+        lv::UInt64(x) => Ok(av::UInt64(x)),
+        lv::UInt8(x) => Ok(av::UInt8(x)),
+        //lv::Utf8(x) => Ok(av::Utf8Owned(x)), //fancy av string type check how to convert
+        x => Err(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
+    }
+}
+
+// // this function seemed nifty as it would be possible to evalute casted literals into a anyvalue
+// // that would have made it easy from R to express anyvalue as a casted literal.
+// // but could not return the AnyValue due to lifetime stuff
+// pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
+//     use pl::*;
+//     let x = Ok(pl::DataFrame::default()
+//         .lazy()
+//         .select(&[e])
+//         .collect()
+//         .map_err(|err| err.to_string())?
+//         .iter()
+//         .next()
+//         .ok_or_else(|| String::from("expr made now value"))?
+//         .iter()
+//         .next()
+//         .ok_or_else(|| String::from("expr made now value"))?
+//         );
+//     x
+// }
 
 extendr_module! {
     mod rdatatype;

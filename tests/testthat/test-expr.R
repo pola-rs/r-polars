@@ -1770,3 +1770,85 @@ test_that("kurtosis", {
   )
 })
 
+
+
+test_that("clip clip_min clip_max", {
+
+
+  r_clip <- \(x, a, b) ifelse(x<=a,a,x) |> (\(x) ifelse(x>=b,b,x))()
+  r_clip_min <- \(x, a) ifelse(x<=a,a,x)
+  r_clip_max <- \(x, b) ifelse(x>=b,b,x)
+
+
+  l = list(
+    int   = c(NA_integer_,-.Machine$integer.max,-4:4 ,.Machine$integer.max),
+    float = c(NA_real_, -Inf,.Machine$double.xmin, -3:2,.Machine$double.xmax,Inf,NaN)
+
+  )
+
+
+##TODO contribute polars mention in documentation that clipping with NaN takes no effect.
+#clip min
+expect_identical(
+  pl$DataFrame(l)$select(
+    pl$col("int")$clip_min(-.Machine$integer.max)$alias("int_mini32"),
+    pl$col("int")$clip_min(-2L)$alias("int_m2i32"),
+    pl$col("int")$clip_min(2L)$alias("int_p2i32"),
+    pl$col("float")$clip_min(-Inf)$alias("float_minf64"),
+    pl$col("float")$clip_min(NaN)$alias("float_NaN2f64"), #in Polars NaN is the highest values
+    pl$col("float")$clip_min(2)$alias("float_p2f64"),
+
+  )$to_list(),
+  list(
+    int_mini32 = r_clip_min(l$int,-.Machine$integer.max),
+    int_m2i32 = r_clip_min(l$int,-2L),
+    int_p2i32 = r_clip_min(l$int, 2L),
+    float_minf64 = r_clip_min(l$float,-Inf),
+    float_NaN2f64 = l$float, #float_NaN2f64 = r_clip_min(l$float,NaN), #in R NaN is more like NA,
+    float_p2f64 = r_clip_min(l$float,2)
+  )
+)
+
+#clip max
+expect_identical(
+  pl$DataFrame(l)$select(
+    pl$col("int")$clip_max(-.Machine$integer.max)$alias("int_mini32"),
+    pl$col("int")$clip_max(-2L)$alias("int_m2i32"),
+    pl$col("int")$clip_max(2L)$alias("int_p2i32"),
+    pl$col("float")$clip_max(-Inf)$alias("float_minf64"),
+    pl$col("float")$clip_max(NaN)$alias("float_NaN2f64"), #in Polars NaN is the highest values
+    pl$col("float")$clip_max(2)$alias("float_p2f64"),
+
+  )$to_list(),
+  list(
+    int_mini32 = r_clip_max(l$int,-.Machine$integer.max),
+    int_m2i32 = r_clip_max(l$int,-2L),
+    int_p2i32 = r_clip_max(l$int, 2L),
+    float_minf64 = r_clip_max(l$float,-Inf),
+    float_NaN2f64 = l$float, #float_NaN2f64 = r_clip_max(l$float,NaN), #in R NaN is more like NA,
+    float_p2f64 = r_clip_max(l$float,2)
+  )
+)
+
+##TODO contribute polars any NaN value will crash internal clip assertion
+expect_identical(
+  pl$DataFrame(l)$select(
+    pl$col("int")$clip(-.Machine$integer.max,-.Machine$integer.max+1L)$alias("a"),
+    pl$col("int")$clip(-2L,-2L+1L)$alias("b"),
+    pl$col("int")$clip(2L,2L+1L)$alias("c"),
+    pl$col("float")$clip(-Inf,1)$alias("d"),
+    pl$col("float")$clip(2,2+1)$alias("e"),
+
+  )$to_list(),
+  list(
+    a = r_clip(l$int,-.Machine$integer.max,-.Machine$integer.max+1L),
+    b = r_clip(l$int,-2L,-2L+1L),
+    c = r_clip(l$int,2L,2L+1L),
+    d = r_clip(l$float,-Inf,1),
+    e = r_clip(l$float,2,2+1)
+  )
+)
+
+
+
+})

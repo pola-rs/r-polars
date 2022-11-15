@@ -226,6 +226,12 @@ Expr$skew <- function(bias) .Call(wrap__Expr__skew, self, bias)
 
 Expr$kurtosis <- function(fisher, bias) .Call(wrap__Expr__kurtosis, self, fisher, bias)
 
+Expr$clip <- function(min, max) .Call(wrap__Expr__clip, self, min, max)
+
+Expr$clip_min <- function(min) .Call(wrap__Expr__clip_min, self, min)
+
+Expr$clip_max <- function(max) .Call(wrap__Expr__clip_max, self, max)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

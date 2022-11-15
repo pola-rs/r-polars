@@ -671,6 +671,66 @@ impl Expr {
         self.0.clone().kurtosis(fisher, bias).into()
     }
 
+    //Note clip is implemented a bit different that py-polars
+    //instead of PyValue -> AnyValue , it goes Robj -> Literal Expression -> AnyValue
+    pub fn clip(&self, min: &Expr, max: &Expr) -> List {
+        use crate::rdatatype::literal_to_any_value;
+        let expr_res = || -> std::result::Result<Expr, String> {
+            match (min.clone().0, max.clone().0) {
+                (pl::Expr::Literal(mi), pl::Expr::Literal(ma)) => {
+                    let av_min = literal_to_any_value(mi)?;
+                    let av_max = literal_to_any_value(ma)?;
+                    Ok(Expr(self.0.clone().clip(av_min, av_max)))
+                }
+                (mi, pl::Expr::Literal(_)) => Err(format!("min [{:?}] was not a literal:", mi)),
+                (pl::Expr::Literal(_), ma) => Err(format!("max [{:?}] was not a literal:", ma)),
+                (mi, ma) => Err(format!(
+                    "neither min [{:?}] or max[{:?}] were literals:",
+                    mi, ma
+                )),
+            }
+        }();
+        r_result_list(expr_res)
+    }
+
+    pub fn clip_min(&self, min: &Expr) -> List {
+        use crate::rdatatype::literal_to_any_value;
+        let expr_res = || -> std::result::Result<Expr, String> {
+            match min.clone().0 {
+                pl::Expr::Literal(mi) => {
+                    let av_min = literal_to_any_value(mi)?;
+                    Ok(Expr(self.0.clone().clip_min(av_min)))
+                }
+                mi => Err(format!("min [{:?}] was not a literal:", mi)),
+            }
+        }();
+        r_result_list(expr_res)
+    }
+
+    pub fn clip_max(&self, max: &Expr) -> List {
+        use crate::rdatatype::literal_to_any_value;
+        let expr_res = || -> std::result::Result<Expr, String> {
+            match max.clone().0 {
+                pl::Expr::Literal(ma) => {
+                    let av_max = literal_to_any_value(ma)?;
+                    Ok(Expr(self.0.clone().clip_max(av_max)))
+                }
+                ma => Err(format!("max [{:?}] was not a literal:", ma)),
+            }
+        }();
+        r_result_list(expr_res)
+    }
+
+    // pub fn clip_min(&self, py: Python, min: PyObject) -> Expr {
+    //     let min = min.extract::<Wrap<AnyValue>>(py).unwrap().0;
+    //     self.clone().inner.clip_min(min).into()
+    // }
+
+    // pub fn clip_max(&self, py: Python, max: PyObject) -> Expr {
+    //     let max = max.extract::<Wrap<AnyValue>>(py).unwrap().0;
+    //     self.clone().inner.clip_max(max).into()
+    // }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

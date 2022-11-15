@@ -3062,3 +3062,47 @@ Expr_skew = function(bias = TRUE) {
 Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
   .pr$Expr$kurtosis(self, fisher, bias)
 }
+
+
+
+#' Clip
+#' @description
+#' Clip (limit) the values in an array to a `min` and `max` boundary.
+#' @param min_val Minimum Value, ints and floats or any literal expression of ints and floats
+#' @param max_val Maximum Value, ints and floats or any literal expression of ints and floats
+#' @return  Expr
+#' @aliases clip
+#' @keywords Expr
+#' @details
+#' Only works for numerical types.
+#' If you want to clip other dtypes, consider writing a "when, then, otherwise"
+#' expression. See :func:`when` for more information.
+#'
+#' @examples
+#' df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_,50L))
+#' df$with_column(pl$col("foo")$clip(1L,10L)$alias("foo_clipped"))
+Expr_clip= function(min, max) {
+  unwrap(.pr$Expr$clip(self, wrap_e(min), wrap_e(max)))
+}
+
+#' Clip min
+#' @rdname Expr_clip
+#' @aliases clip_min
+#' @keywords Expr
+#' @examples
+#' df$with_column(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
+Expr_clip_min= function(min) {
+  unwrap(.pr$Expr$clip_min(self, wrap_e(min)))
+}
+
+#' Clip max
+#' @rdname Expr_clip
+#' @aliases clip_max
+#' @keywords Expr
+#' @examples
+#' df$with_column(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+Expr_clip_max= function(max) {
+  unwrap(.pr$Expr$clip_max(self, wrap_e(max)))
+}
+
+
