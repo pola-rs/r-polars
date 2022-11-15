@@ -1,3 +1,2 @@
 EXPORTS
- "R_init_minipolars"
- "R_init_minipolars_extendr"
+R_init_minipolars
