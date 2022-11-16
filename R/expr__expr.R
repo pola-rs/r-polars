@@ -3132,3 +3132,166 @@ Expr_upper_bound= "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(i32=1L,f64=1)$select(pl$all()$lower_bound())
 Expr_lower_bound= "use_extendr_wrapper"
+
+
+
+#' Sign
+#' @description
+#' Compute the element-wise indication of the sign.
+#' @return  Expr
+#' @aliases sign
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(.9,-0,0,4,NA_real:))$select(pl$col("a")$sign())
+Expr_sign= "use_extendr_wrapper"
+
+
+#' Sin
+#' @description
+#' Compute the element-wise value for the sine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases sin
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$sin())
+Expr_sin= "use_extendr_wrapper"
+
+
+#' Cos
+#' @description
+#' Compute the element-wise value for the cosine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases cos
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())
+Expr_cos= "use_extendr_wrapper"
+
+
+#' Tan
+#' @description
+#' Compute the element-wise value for the tangent.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases Tan
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$tan())
+Expr_tan= "use_extendr_wrapper"
+
+#' Arcsin
+#' @description
+#' Compute the element-wise value for the inverse sine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arcsin
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,sin(0.5),0,1,NA_real_))$select(pl$col("a")$arcsin())
+Expr_arcsin= "use_extendr_wrapper"
+
+#' Arccos
+#' @description
+#' Compute the element-wise value for the inverse cosine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arccos
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,cos(0.5),0,1,NA_real_))$select(pl$col("a")$arccos())
+Expr_arccos= "use_extendr_wrapper"
+
+
+#' Arctan
+#' @description
+#' Compute the element-wise value for the inverse tangent.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arctan
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,tan(0.5),0,1,NA_real_))$select(pl$col("a")$arctan())
+Expr_arctan= "use_extendr_wrapper"
+
+
+
+#' Sinh
+#' @description
+#' Compute the element-wise value for the hyperbolic sine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases sinh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,asinh(0.5),0,1,NA_real_))$select(pl$col("a")$sinh())
+Expr_sinh= "use_extendr_wrapper"
+
+#' Cosh
+#' @description
+#' Compute the element-wise value for the hyperbolic cosine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases cosh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,acosh(1.5),0,1,NA_real_))$select(pl$col("a")$cosh())
+Expr_cosh= "use_extendr_wrapper"
+
+#' Tanh
+#' @description
+#' Compute the element-wise value for the hyperbolic tangent.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases tanh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,atanh(0.5),0,1,NA_real_))$select(pl$col("a")$tanh())
+Expr_tanh= "use_extendr_wrapper"
+
+#' Arcsinh
+#' @description
+#' Compute the element-wise value for the inverse hyperbolic sine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arcsinh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,sinh(0.5),0,1,NA_real_))$select(pl$col("a")$arcsinh())
+Expr_arcsinh= "use_extendr_wrapper"
+
+#' Arccosh
+#' @description
+#' Compute the element-wise value for the inverse hyperbolic cosine.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arccosh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,cosh(0.5),0,1,NA_real_))$select(pl$col("a")$arccosh())
+Expr_arccosh= "use_extendr_wrapper"
+
+#' arctanh
+#' @description
+#' Compute the element-wise value for the inverse hyperbolic tangent.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arctanh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a=c(-1,tanh(0.5),0,1,NA_real_))$select(pl$col("a")$arctanh())
+Expr_arctanh= "use_extendr_wrapper"

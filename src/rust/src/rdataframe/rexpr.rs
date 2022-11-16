@@ -729,6 +729,58 @@ impl Expr {
         self.0.clone().upper_bound().into()
     }
 
+    pub fn sign(&self) -> Self {
+        self.clone().0.sign().into()
+    }
+
+    pub fn sin(&self) -> Self {
+        self.clone().0.sin().into()
+    }
+
+    pub fn cos(&self) -> Self {
+        self.clone().0.cos().into()
+    }
+
+    pub fn tan(&self) -> Self {
+        self.clone().0.tan().into()
+    }
+
+    pub fn arcsin(&self) -> Self {
+        self.clone().0.arcsin().into()
+    }
+
+    pub fn arccos(&self) -> Self {
+        self.clone().0.arccos().into()
+    }
+
+    pub fn arctan(&self) -> Self {
+        self.clone().0.arctan().into()
+    }
+
+    pub fn sinh(&self) -> Self {
+        self.clone().0.sinh().into()
+    }
+
+    pub fn cosh(&self) -> Self {
+        self.clone().0.cosh().into()
+    }
+
+    pub fn tanh(&self) -> Self {
+        self.clone().0.tanh().into()
+    }
+
+    pub fn arcsinh(&self) -> Self {
+        self.clone().0.arcsinh().into()
+    }
+
+    pub fn arccosh(&self) -> Self {
+        self.clone().0.arccosh().into()
+    }
+
+    pub fn arctanh(&self) -> Self {
+        self.clone().0.arctanh().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

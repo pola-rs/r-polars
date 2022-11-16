@@ -236,6 +236,32 @@ Expr$lower_bound <- function() .Call(wrap__Expr__lower_bound, self)
 
 Expr$upper_bound <- function() .Call(wrap__Expr__upper_bound, self)
 
+Expr$sign <- function() .Call(wrap__Expr__sign, self)
+
+Expr$sin <- function() .Call(wrap__Expr__sin, self)
+
+Expr$cos <- function() .Call(wrap__Expr__cos, self)
+
+Expr$tan <- function() .Call(wrap__Expr__tan, self)
+
+Expr$arcsin <- function() .Call(wrap__Expr__arcsin, self)
+
+Expr$arccos <- function() .Call(wrap__Expr__arccos, self)
+
+Expr$arctan <- function() .Call(wrap__Expr__arctan, self)
+
+Expr$sinh <- function() .Call(wrap__Expr__sinh, self)
+
+Expr$cosh <- function() .Call(wrap__Expr__cosh, self)
+
+Expr$tanh <- function() .Call(wrap__Expr__tanh, self)
+
+Expr$arcsinh <- function() .Call(wrap__Expr__arcsinh, self)
+
+Expr$arccosh <- function() .Call(wrap__Expr__arccosh, self)
+
+Expr$arctanh <- function() .Call(wrap__Expr__arctanh, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

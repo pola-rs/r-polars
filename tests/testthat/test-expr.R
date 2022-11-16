@@ -1873,3 +1873,43 @@ test_that("upper lower bound", {
   )
 
 })
+
+
+test_that("expr trignonometry", {
+
+  a = seq(-2*pi,2*pi,le=50)
+
+  expect_equal(
+    pl$DataFrame(a=a)$select(
+      pl$col("a")$sin()$alias("sin"),
+      pl$col("a")$cos()$alias("cos"),
+      pl$col("a")$tan()$alias("tan"),
+      pl$col("a")$arcsin()$alias("arcsin"),
+      pl$col("a")$arccos()$alias("arccos"),
+      pl$col("a")$arctan()$alias("arctan"),
+      pl$col("a")$sinh()$alias("sinh"),
+      pl$col("a")$cosh()$alias("cosh"),
+      pl$col("a")$tanh()$alias("tanh"),
+      pl$col("a")$arcsinh()$alias("arcsinh"),
+      pl$col("a")$arccosh()$alias("arccosh"),
+      pl$col("a")$arctanh()$alias("arctanh"),
+    )$to_list(),
+    suppressWarnings(
+      list(
+        sin = sin(a),
+        cos = cos(a),
+        tan = tan(a),
+        arcsin = asin(a),
+        arccos = acos(a),
+        arctan = atan(a),
+        sinh = sinh(a),
+        cosh = cosh(a),
+        tanh = tanh(a),
+        arcsinh = asinh(a),
+        arccosh = acosh(a),
+        arctanh = atanh(a)
+      )
+    )
+  )
+
+})

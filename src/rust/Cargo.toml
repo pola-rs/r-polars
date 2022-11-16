@@ -84,7 +84,9 @@ features = [
   #extra features since copy from node-polars
   "top_k",
   "search_sorted",
-  "propagate_nans"
+  "propagate_nans",
+  "trigonometry",
+  "sign"
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
