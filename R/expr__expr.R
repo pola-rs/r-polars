@@ -1444,7 +1444,7 @@ Expr_sort_by = function(by, reverse = FALSE) {
 #'
 #' @format a method
 #' @examples
-#' pl$empty_select( pl$lit(0:10)$take(c(1,8,0,7)))
+#' pl$select( pl$lit(0:10)$take(c(1,8,0,7)))
 Expr_take = function(indices) {
   .pr$Expr$take(self, pl$lit(indices))
 }
@@ -1461,7 +1461,7 @@ Expr_take = function(indices) {
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
-#' pl$empty_select(
+#' pl$select(
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
 #'   pl$lit(0:3)$shift(2)$alias("shift+2")
 #' )
@@ -1480,7 +1480,7 @@ Expr_shift = "use_extendr_wrapper"
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #' @examples
-#' pl$empty_select(
+#' pl$select(
 #'   pl$lit(0:3),
 #'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
 #'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
@@ -1505,7 +1505,7 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 #'
 #' @examples
-#' pl$empty_select(
+#' pl$select(
 #'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
 #'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
 #' )
@@ -1610,7 +1610,7 @@ Expr_fill_nan = function(expr = NULL) {
 #' @format a method
 #'
 #' @examples
-#' pl$empty_select(pl$lit(1:5)$std())
+#' pl$select(pl$lit(1:5)$std())
 Expr_std = function(ddof = 1) {
   .pr$Expr$std(self, ddof)
 }
@@ -1625,7 +1625,7 @@ Expr_std = function(ddof = 1) {
 #' @format a method
 #'
 #' @examples
-#' pl$empty_select(pl$lit(1:5)$var())
+#' pl$select(pl$lit(1:5)$var())
 Expr_var = function(ddof = 1) {
   .pr$Expr$var(self, ddof)
 }
@@ -1754,7 +1754,7 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @aliases null_count
 #' @return Expr
 #' @examples
-#' pl$empty_select(pl$lit(c(NA,"a",NA,"b"))$null_count())
+#' pl$select(pl$lit(c(NA,"a",NA,"b"))$null_count())
 Expr_null_count = "use_extendr_wrapper"
 
 #' Index of First Unique Value.
@@ -1762,7 +1762,7 @@ Expr_null_count = "use_extendr_wrapper"
 #' @aliases arg_unique
 #' @return Expr
 #' @examples
-#' pl$empty_select(pl$lit(c(1:2,1:3))$arg_unique())
+#' pl$select(pl$lit(c(1:2,1:3))$arg_unique())
 Expr_arg_unique = "use_extendr_wrapper"
 
 
@@ -1840,7 +1840,7 @@ Expr_over = function(...) {
 #' @examples
 #' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
-#'   pl$empty_select(
+#'   pl$select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
@@ -1866,7 +1866,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @examples
 #' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
-#'   pl$empty_select(
+#'   pl$select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
@@ -1895,7 +1895,7 @@ Expr_is_first = "use_extendr_wrapper"
 #' @examples
 #' v = c(1,1,2,2,3,NA,NaN,Inf)
 #' all.equal(
-#'   pl$empty_select(
+#'   pl$select(
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
@@ -1927,7 +1927,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' For linear interpolation `NaN` poisons `Inf`, that poisons any other value.
 #'
 #' @examples
-#' pl$empty_select(pl$lit(-5:5)$quantile(.5))
+#' pl$select(pl$lit(-5:5)$quantile(.5))
 Expr_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$Expr$quantile(self, quantile, interpolation))
 }
@@ -2233,7 +2233,7 @@ Expr_reinterpret = function(signed = TRUE) {
 #' @return Expr
 #' @aliases inspect
 #' @examples
-#' pl$empty_select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
+#' pl$select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
 Expr_inspect = function(fmt = "{}") {
 
   #check fmt and create something to print before and after printing Series.
@@ -2269,7 +2269,7 @@ Expr_inspect = function(fmt = "{}") {
 #' @return Expr
 #' @aliases interpolate
 #' @examples
-#' pl$empty_select(pl$lit(c(1,NA,4,NA,100,NaN,150))$interpolate())
+#' pl$select(pl$lit(c(1,NA,4,NA,100,NaN,150))$interpolate())
 #'
 #' #x, y interpolation over a grid
 #' df_original_grid = pl$DataFrame(list(
@@ -3308,8 +3308,8 @@ Expr_arctanh= "use_extendr_wrapper"
 #' @format Method
 #' @keywords Expr
 #' @examples
-#' pl$empty_select(pl$lit(1:12)$reshape(c(3,4)))
-#' pl$empty_select(pl$lit(1:12)$reshape(c(3,-1)))
+#' pl$select(pl$lit(1:12)$reshape(c(3,4)))
+#' pl$select(pl$lit(1:12)$reshape(c(3,-1)))
 Expr_reshape= function(dims) {
   if(!is_integerish(dims)) unwrap(list(err="dims must be integerish of length one or two"))
   if(!length(dims) %in% 1:2) unwrap(list(err="only one and two dimensions are currently supported"))

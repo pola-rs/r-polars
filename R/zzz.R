@@ -137,14 +137,14 @@ pl$mem_address = minipolars:::mem_address
   #' Select from an empty DataFrame
   #' @param ... expressions passed to select
   #' @details experimental
-  #' @name pl_empty_select
-  #' @usage pl_empty_select
+  #' @name pl_select
+  #' @usage pl_select
   #' @keywords DataFrame
-  #' @aliases empty_select
+  #' @aliases pl_select
   #' @return DataFrame
   #'
-  #' @examples pl$empty_select(pl$lit(1:4))
-  pl$empty_select = pl$DataFrame(list())$select
+  #' @examples pl$select(pl$lit(1:4))
+  pl$select = pl$DataFrame(list())$select
 
   lockEnvironment(pl,bindings = TRUE)
 

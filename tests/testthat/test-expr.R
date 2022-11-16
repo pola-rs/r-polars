@@ -959,17 +959,17 @@ test_that("sort_by", {
 test_that("take that", {
 
   expect_identical(
-    pl$empty_select(pl$lit(0:10)$take(c(1,3,5,NA)))$to_list()[[1L]],
+    pl$select(pl$lit(0:10)$take(c(1,3,5,NA)))$to_list()[[1L]],
     c(1L,3L,5L,NA_integer_)
   )
 
   expect_error(
-    pl$empty_select(pl$lit(0:10)$take(11))$to_list()[[1L]]
+    pl$select(pl$lit(0:10)$take(11))$to_list()[[1L]]
   )
 
 
   expect_identical(
-    pl$empty_select(pl$lit(0:10)$take(-11))$to_list()[[1L]],
+    pl$select(pl$lit(0:10)$take(-11))$to_list()[[1L]],
     NA_integer_
   )
 
@@ -986,7 +986,7 @@ test_that("shift", {
   }
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(0:3)$shift(-2)$alias("sm2"),
       pl$lit(0:3)$shift(2)$alias("sp2")
     )$to_list(),
@@ -1006,7 +1006,7 @@ test_that("shift", {
   }
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("sm2"),
       pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("sp2")
     )$to_list(),
@@ -1133,7 +1133,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       fnan_NA    = R_replace_nan(l$a,NA),
       fnan_str   = c("1.0", "hej", "NA", "hej", "3.0"),
       fnan_bool  = R_replace_nan(l$a,TRUE),
-      fnan_expr  = R_replace_nan(l$a,pl$empty_select(pl$lit(10)/2)$to_list()[[1L]]),
+      fnan_expr  = R_replace_nan(l$a,pl$select(pl$lit(10)/2)$to_list()[[1L]]),
       fnan_series= R_replace_nan(l$a, pl$Series(10)$to_r())
     )
   )
@@ -1147,7 +1147,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
 test_that("std var", {
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(1:5)$std()$alias("std"),
       pl$lit(c(NA,1:5))$std()$alias("std_missing"),
     )$to_list(),
@@ -1156,11 +1156,11 @@ test_that("std var", {
       std_missing = sd(c(NA,1:5),na.rm=TRUE)
     )
   )
-  expect_true(pl$empty_select(pl$lit(1:5)$std(3))$to_list()[[1L]] != sd(1:5))
+  expect_true(pl$select(pl$lit(1:5)$std(3))$to_list()[[1L]] != sd(1:5))
 
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(1:5)$var()$alias("var"),
       pl$lit(c(NA,1:5))$var()$alias("var_missing"),
     )$to_list(),
@@ -1169,7 +1169,7 @@ test_that("std var", {
       var_missing = var(c(NA,1:5),na.rm=TRUE)
     )
   )
-  expect_true(pl$empty_select(pl$lit(1:5)$var(3))$to_list()[[1L]] != var(1:5))
+  expect_true(pl$select(pl$lit(1:5)$var(3))$to_list()[[1L]] != var(1:5))
 
 
 })
@@ -1178,7 +1178,7 @@ test_that("std var", {
 test_that("is_unique is_first is_duplicated", {
   v = c(1,1,2,2,3,NA,NaN,Inf)
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(v)$is_unique()$alias("is_unique"),
       pl$lit(v)$is_first()$alias("is_first"),
       pl$lit(v)$is_duplicated()$alias("is_duplicated"),
@@ -1292,13 +1292,13 @@ test_that("Expr_quantile", {
 
   v = sample(0:100)
   expect_identical(
-    sapply(seq(0,1,le=101),\(x) pl$empty_select(pl$lit(v)$quantile(x,"nearest"))$to_list()[[1L]]),
+    sapply(seq(0,1,le=101),\(x) pl$select(pl$lit(v)$quantile(x,"nearest"))$to_list()[[1L]]),
     as.double(sort(v))
   )
 
   v2 = seq(0,1,le=42)
   expect_equal( #tiny rounding errors
-    sapply(v2,\(x) pl$empty_select(pl$lit(v)$quantile(x,"linear"))$to_list()[[1L]]),
+    sapply(v2,\(x) pl$select(pl$lit(v)$quantile(x,"linear"))$to_list()[[1L]]),
     unname(quantile(v,v2))
   )
 
@@ -1308,7 +1308,7 @@ test_that("Expr_quantile", {
 
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(0:1)$quantile(.5,"nearest")$alias("nearest"),
       pl$lit(0:1)$quantile(.5,"linear")$alias("linear"),
       pl$lit(0:1)$quantile(.5,"higher")$alias("higher"),
@@ -1328,7 +1328,7 @@ test_that("Expr_quantile", {
 
   #midpoint/linear NaN poisons, NA_integer_ always omitted
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(c(0:1,NA_integer_))$quantile(0.5,"midpoint")$alias("midpoint_na"),
       pl$lit(c(0:1,NaN))$quantile(0.5,"midpoint")$alias("midpoint_nan"),
       pl$lit(c(0:1,NA_integer_))$quantile(0,"nearest")$alias("nearest_na"),
@@ -1460,10 +1460,10 @@ test_that("hash + reinterpret", {
   expect_false(identical(df_hash$to_list(),df_hash_rein$to_list()))
 
 
-  df_actual = pl$empty_select(pl$lit(-2:2)$cast(pl$dtypes$Int64)$alias("i64"))$with_columns(
+  df_actual = pl$select(pl$lit(-2:2)$cast(pl$dtypes$Int64)$alias("i64"))$with_columns(
     pl$col("i64")$reinterpret(FALSE)$alias("u64")
   )
-  df_ref = pl$empty_select(
+  df_ref = pl$select(
     pl$lit(-2:2)$cast(pl$dtypes$Int64)$alias("i64"),
     pl$lit(c("18446744073709551614","18446744073709551615","0","1","2"))$cast(pl$dtypes$UInt64)$alias("u64")
   )
@@ -1476,7 +1476,7 @@ test_that("hash + reinterpret", {
 test_that("inspect", {
 
   actual_txt = capture_output(
-    pl$empty_select(
+    pl$select(
       pl$lit(1:5)
       $inspect(
         "before dropping half the column it was:{}and not it is dropped"
@@ -1504,7 +1504,7 @@ test_that("inspect", {
 
 test_that("interpolate", {
   expect_identical(
-    pl$empty_select(pl$lit(c(1,NA,4,NA,100))$interpolate())$to_list()[[1L]],
+    pl$select(pl$lit(c(1,NA,4,NA,100))$interpolate())$to_list()[[1L]],
     approx(c(1,NA,4,NA,100),xout = c(1:5))$y
   )
 })
@@ -1616,7 +1616,7 @@ test_that("Expr_diff", {
   )
 
 
-  pl$empty_select(pl$lit(1:5)$diff(0)) #no error
+  pl$select(pl$lit(1:5)$diff(0)) #no error
   expect_error(pl$lit(1:5)$diff(-1))
   expect_error(pl$lit(1:5)$diff(99^99))
   expect_error(pl$lit(1:5)$diff(5,"not a null behavior"))
@@ -1922,7 +1922,7 @@ test_that("reshape", {
   }
 
   expect_identical(
-    pl$empty_select(
+    pl$select(
       pl$lit(1:12)$reshape(c(3,4))$alias("rs_3_4")$list(),
       pl$lit(1:12)$reshape(c(4,3))$alias("rs_4_3")$list(),
     )$to_list(),
