@@ -2,13 +2,17 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reshape}
 \alias{Expr_reshape}
-\alias{arctanh}
+\alias{reshape}
 \title{Reshape}
 \format{
 Method
 }
 \usage{
 Expr_reshape(dims)
+}
+\arguments{
+\item{dims}{numeric vec of the dimension sizes. If a -1 is used in any of the dimensions, that
+dimension is inferred.}
 }
 \value{
 Expr
@@ -20,6 +24,7 @@ Reshape this Expr to a flat Series or a Series of Lists.
 Evaluated Series has dtype Float64
 }
 \examples{
-pl$DataFrame(a=c(-1,tanh(0.5),0,1,NA_real_))$select(pl$col("a")$arctanh())
+pl$empty_select(pl$lit(1:12)$reshape(c(3,4)))
+pl$empty_select(pl$lit(1:12)$reshape(c(3,-1)))
 }
 \keyword{Expr}
