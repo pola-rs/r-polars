@@ -3300,13 +3300,17 @@ Expr_arctanh= "use_extendr_wrapper"
 #' Reshape
 #' @description
 #' Reshape this Expr to a flat Series or a Series of Lists.
+#' @param dims
+#' numeric vec of the dimension sizes. If a -1 is used in any of the dimensions, that
+#' dimension is inferred.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
-#' @aliases arctanh
+#' @aliases reshape
 #' @format Method
 #' @keywords Expr
 #' @examples
 #' pl$empty_select(pl$lit(1:12)$reshape(c(3,4)))
+#' pl$empty_select(pl$lit(1:12)$reshape(c(3,-1)))
 Expr_reshape= function(dims) {
   if(!is_integerish(dims)) unwrap(list(err="dims must be integerish of length one or two"))
   if(!length(dims) %in% 1:2) unwrap(list(err="only one and two dimensions are currently supported"))
