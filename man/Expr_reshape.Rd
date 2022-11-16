@@ -20,9 +20,6 @@ Expr
 \description{
 Reshape this Expr to a flat Series or a Series of Lists.
 }
-\details{
-Evaluated Series has dtype Float64
-}
 \examples{
 pl$empty_select(pl$lit(1:12)$reshape(c(3,4)))
 pl$empty_select(pl$lit(1:12)$reshape(c(3,-1)))

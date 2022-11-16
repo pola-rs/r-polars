@@ -21,9 +21,6 @@ Expr
 \description{
 Shuffle the contents of this expr.
 }
-\details{
-Evaluated Series has dtype Float64
-}
 \examples{
 pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed=1))
 }
