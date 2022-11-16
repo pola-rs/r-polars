@@ -3316,3 +3316,23 @@ Expr_reshape= function(dims) {
   if(!length(dims) %in% 1:2) unwrap(list(err="only one and two dimensions are currently supported"))
   unwrap(.pr$Expr$reshape(self, as.numeric(dims)))
 }
+
+
+#' Shuffle
+#' @description
+#' Shuffle the contents of this expr.
+#' @param seed numeric value of 0 to 2^52
+#' Seed for the random number generator. If set to Null (default), a random
+#' seed value intergish value between 0 and 10000 is picked
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases shuffle
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed=1))
+Expr_shuffle= function(seed = NULL) {
+  seed = seed %||% sample(0:10000,1L)
+  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) unwrap(list(err="seed must be non NA/NaN numeric scalar"))
+  unwrap(.pr$Expr$shuffle(self,seed))
+}

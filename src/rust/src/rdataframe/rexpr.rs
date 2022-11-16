@@ -788,6 +788,12 @@ impl Expr {
         r_result_list(expr_result)
     }
 
+    pub fn shuffle(&self, seed: f64) -> List {
+        let seed_res =
+            try_f64_into_usize(seed, false).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
+        r_result_list(seed_res)
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

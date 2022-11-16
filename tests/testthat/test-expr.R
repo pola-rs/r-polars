@@ -1938,3 +1938,34 @@ test_that("reshape", {
   expect_error(pl$lit(1:12)$reshape(NA_real_))
 
 })
+
+
+test_that("shuffle", {
+
+  r_reshape = function(x,dims) {
+    unname(as.list(as.data.frame(array(x,dims))))
+  }
+
+  expect_identical(
+    pl$DataFrame(a = 1:1000)$select(pl$col("a")$shuffle(seed=1))$to_list(),
+    pl$DataFrame(a = 1:1000)$select(pl$col("a")$shuffle(seed=1))$to_list()
+  )
+
+  expect_false(
+    isTRUE(all.equal(
+      pl$DataFrame(a = 1:1000)$select(pl$col("a")$shuffle(seed=1))$to_list(),
+      pl$DataFrame(a = 1:1000)$select(pl$col("a")$shuffle(seed=42))$to_list()
+    ))
+  )
+
+  expect_identical(
+      pl$DataFrame(a = letters)$select(pl$col("a")$shuffle(seed=1))$to_list(),
+      pl$DataFrame(a = letters)$select(pl$col("a")$shuffle(seed=1))$to_list()
+  )
+
+  expect_error(pl$lit(1:12)$shuffle("hej"))
+  expect_error(pl$lit(1:12)$shuffle(-2))
+  expect_error(pl$lit(1:12)$shuffle(NaN))
+  expect_error(pl$lit(1:12)$shuffle(10^73))
+
+})
