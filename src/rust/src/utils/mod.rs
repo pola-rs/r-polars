@@ -264,6 +264,30 @@ pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, S
     Ok(x as usize)
 }
 
+pub fn try_f64_into_i64(x: f64) -> std::result::Result<i64, String> {
+    if x.is_nan() {
+        return Err(String::from("the value cannot be NaN"));
+    };
+
+    if x > i64::MAX as f64 {
+        //could only trigger on a 32bit machine
+        return Err(format!(
+            "the value {} cannot exceed usize::MAX {}",
+            x,
+            usize::MAX
+        ));
+    };
+    if x < i64::MIN as f64 {
+        //could only trigger on a 32bit machine
+        return Err(format!(
+            "the value {} cannot exceed usize::MIN {}",
+            x,
+            usize::MAX
+        ));
+    };
+    Ok(x as i64)
+}
+
 pub fn try_f64_into_u32(x: f64, no_zero: bool) -> std::result::Result<u32, String> {
     if x.is_nan() {
         return Err(String::from("the value cannot be NaN"));

@@ -3284,7 +3284,7 @@ Expr_arcsinh= "use_extendr_wrapper"
 #' pl$DataFrame(a=c(-1,cosh(0.5),0,1,NA_real_))$select(pl$col("a")$arccosh())
 Expr_arccosh= "use_extendr_wrapper"
 
-#' arctanh
+#' Arctanh
 #' @description
 #' Compute the element-wise value for the inverse hyperbolic tangent.
 #' @details Evaluated Series has dtype Float64
@@ -3295,3 +3295,20 @@ Expr_arccosh= "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(a=c(-1,tanh(0.5),0,1,NA_real_))$select(pl$col("a")$arctanh())
 Expr_arctanh= "use_extendr_wrapper"
+
+
+#' Reshape
+#' @description
+#' Reshape this Expr to a flat Series or a Series of Lists.
+#' @details Evaluated Series has dtype Float64
+#' @return  Expr
+#' @aliases arctanh
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$empty_select(pl$lit(1:12)$reshape(c(3,4)))
+Expr_reshape= function(dims) {
+  if(!is_integerish(dims)) unwrap(list(err="dims must be integerish of length one or two"))
+  if(!length(dims) %in% 1:2) unwrap(list(err="only one and two dimensions are currently supported"))
+  unwrap(.pr$Expr$reshape(self, as.numeric(dims)))
+}

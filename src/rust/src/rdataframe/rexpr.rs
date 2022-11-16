@@ -7,7 +7,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
-use crate::utils::{try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
@@ -779,6 +779,13 @@ impl Expr {
 
     pub fn arctanh(&self) -> Self {
         self.clone().0.arctanh().into()
+    }
+
+    pub fn reshape(&self, dims: Vec<f64>) -> List {
+        let dims_result: std::result::Result<Vec<i64>, String> =
+            dims.iter().map(|x| try_f64_into_i64(*x)).collect();
+        let expr_result = dims_result.map(|dims| Expr(self.0.clone().reshape(&dims[..])));
+        r_result_list(expr_result)
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

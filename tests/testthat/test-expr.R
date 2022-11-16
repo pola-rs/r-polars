@@ -1913,3 +1913,28 @@ test_that("expr trignonometry", {
   )
 
 })
+
+
+test_that("reshape", {
+
+  r_reshape = function(x,dims) {
+    unname(as.list(as.data.frame(array(x,dims))))
+  }
+
+  expect_identical(
+    pl$empty_select(
+      pl$lit(1:12)$reshape(c(3,4))$alias("rs_3_4")$list(),
+      pl$lit(1:12)$reshape(c(4,3))$alias("rs_4_3")$list(),
+    )$to_list(),
+    list(
+      rs_3_4 = list(r_reshape(1:12,c(4,3))),
+      rs_4_3 = list(r_reshape(1:12,c(3,4)))
+    )
+  )
+
+  expect_error(pl$lit(1:12)$reshape("hej"))
+  expect_error(pl$lit(1:12)$reshape(c(3,4,3)))
+  expect_error(pl$lit(1:12)$reshape(NaN))
+  expect_error(pl$lit(1:12)$reshape(NA_real_))
+
+})
