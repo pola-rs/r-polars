@@ -788,7 +788,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @name Series_rename
 #' @return bool
 #' @keywords Series
-#' @aliases series_rename
+#' @aliases rename
 #' @format method
 #'
 #' @examples
@@ -816,7 +816,7 @@ Series_rename = function(name, in_place = FALSE) {
 #' @name Series_rep
 #' @return bool
 #' @keywords Series
-#' @aliases series_rep
+#' @aliases rep
 #' @format method
 #' @details  This function in not implemented in pypolars
 #'
@@ -826,5 +826,63 @@ Series_rep = function(n, rechunk = TRUE) {
   if(!is.numeric(n)) abort("n must be numeric")
   if(!is_bool(rechunk)) abort("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk))
+}
+
+
+#TODO contribute polars suprisingly pl$Series(1:3,"bob")$std(3) yields Inf
+
+#' Get the standard deviation of this Series.
+#'
+#' @param ddof
+#' “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+#' where N represents the number of elements.
+#' By default ddof is 1.
+#' @return bool
+#' @keywords Series
+#' @aliases std
+#' @format method
+#'
+#' @examples
+#' pl$Series(1:4,"bob")$std()
+Series_std = function(ddof = 1) {
+  if (!self$is_numeric()) return(NULL) #TODO impl Series$is_numeric() and insert here
+  self$to_frame()$select(pl$col(self$name)$std(ddof))$to_series()$to_r()
+}
+
+#' Get the standard deviation of this Series.
+#'
+#' @param ddof
+#' “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+#' where N represents the number of elements.
+#' By default ddof is 1.
+#' @return bool
+#' @keywords Series
+#' @aliases var
+#' @format method
+#'
+#' @examples
+#' pl$Series(1:4,"bob")$var()
+Series_var = function(ddof = 1) {
+  if (!self$is_numeric()) return(NULL) #TODO impl Series$is_numeric() and insert here
+  self$to_frame()$select(pl$col(self$name)$var(ddof))$to_series()$to_r()
+}
+
+in_DataType = function(l,rs) any(sapply(rs, function(r) l==r))
+
+#' is_numeric
+#' @description return bool whether series is numeric
+#'
+#' @return bool
+#' @keywords Series
+#' @aliases is_numeric
+#' @format method
+#' @details  true of series dtype is member of pl$numeric_dtypes
+#'
+#' @examples
+#'  pl$Series(1:4)$is_numeric()
+#'  pl$Series(c("a","b","c"))$is_numeric()
+#'  pl$numeric_dtypes
+Series_is_numeric = function() {
+  in_DataType(self$dtype,pl$numeric_dtypes)
 }
 

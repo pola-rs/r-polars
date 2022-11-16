@@ -2,7 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_rename}
 \alias{Series_rename}
-\alias{series_rename}
+\alias{rename}
 \title{Rename a series}
 \format{
 method

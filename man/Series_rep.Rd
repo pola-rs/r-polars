@@ -2,7 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_rep}
 \alias{Series_rep}
-\alias{series_rep}
+\alias{rep}
 \title{duplicate and concatenate a series}
 \format{
 method

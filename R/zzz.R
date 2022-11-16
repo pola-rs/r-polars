@@ -134,6 +134,9 @@ pl$mem_address = minipolars:::mem_address
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
 
 
+
+  pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes),1,3) %in% c("Int","Flo")]
+
   #' Select from an empty DataFrame
   #' @param ... expressions passed to select
   #' @details experimental

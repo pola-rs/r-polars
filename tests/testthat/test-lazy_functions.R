@@ -71,3 +71,23 @@ test_that("pl$min pl$max", {
 
 })
 
+
+test_that("pl$std pl$var", {
+
+
+  x = c(1:5,NA)
+
+  expect_equal(
+    pl$DataFrame(x=x)$select(pl$std("x"))$to_list()[[1]],
+    sd(x,na.rm = TRUE)
+  )
+
+  expect_equal(
+    pl$DataFrame(x=x)$select(pl$var("x"))$to_list()[[1]],
+    var(x,na.rm = TRUE)
+  )
+
+  expect_false(pl$DataFrame(x=x)$select(pl$var("x",2))$to_list()[[1]] == var(x,na.rm = TRUE))
+
+
+})

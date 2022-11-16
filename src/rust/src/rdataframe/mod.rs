@@ -1,7 +1,6 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
-
 pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
@@ -118,6 +117,16 @@ impl DataFrame {
         });
 
         r_result_list(robj_list_res)
+    }
+
+    pub fn select_at_idx(&self, idx: i32) -> List {
+        let expr_result = || -> Result<Series, String> {
+            self.0
+                .select_at_idx(idx as usize)
+                .map(|s| Series(s.clone()))
+                .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
+        }();
+        r_result_list(expr_result)
     }
 
     fn select(&mut self, exprs: &ProtoExprArray) -> list::List {

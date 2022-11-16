@@ -250,3 +250,19 @@ pl$coalesce = function(...) {
   minipolars:::coalesce_exprs(pra)
 }
 
+
+
+
+pl$std = function(column, ddof = 1) {
+  if (inherits(column, "Series") || inherits(column, "Expr")) return(column$std(ddof))
+  if (is_string(column)) return(pl$col(column)$std(ddof))
+  if (is.numeric(column)) return(pl$lit(column)$std(ddof))
+  abort("pl$std: this input is not supported")
+}
+
+pl$var = function(column, ddof = 1) {
+  if (inherits(column, "Series") || inherits(column, "Expr")) return(column$var(ddof))
+  if (is_string(column)) return(pl$col(column)$var(ddof))
+  if (is.numeric(column)) return(pl$lit(column)$var(ddof))
+  abort("pl$var: this input is not supported")
+}

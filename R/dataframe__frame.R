@@ -500,6 +500,24 @@ DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self, name))
 }
 
+#' Get Series by idx, if there
+#' @name DataFrame_get_column
+#' @description get one column by idx as series from DataFrame.
+#' Unlike get_column this method will not fail if no series found at idx but
+#' return a NULL, idx is zero idx.
+#'
+#' @return Series or NULL
+#' @aliases get_column
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(a=1:4)$to_series()
+DataFrame_to_series = function(idx=0) {
+  if(!is.numeric(idx) || isTRUE(idx<0)) {
+    unwrap(list(err = "idx must be non-negative numeric"))
+  }
+  .pr$DataFrame$select_at_idx(self, idx)$ok
+}
+
 
 
 

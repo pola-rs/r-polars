@@ -374,3 +374,17 @@ test_that("Series list", {
   expect_identical(series_vec$to_r_list(), as.list(1:5))
 
 })
+
+
+test_that("Series numeric", {
+  expect_true(pl$Series(1:4)$is_numeric())
+  expect_true(pl$Series(c(1,2,3))$is_numeric())
+  expect_false(pl$Series(c("a","b","c"))$is_numeric())
+})
+
+test_that("to_series", {
+  l = list(a=1:3,b=c("a","b","c"))
+  expect_identical(pl$DataFrame(l)$to_series(0)$to_r(), l$a)
+  expect_identical(pl$DataFrame(l)$to_series(1)$to_r(), l$b)
+  expect_identical(pl$DataFrame(l)$to_series(2), NULL)
+})
