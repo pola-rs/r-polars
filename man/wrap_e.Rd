@@ -16,9 +16,9 @@ Expr
 wrap as literal
 }
 \details{
-tiny wrapper to allow skipping calling lit on rhs of binary operator
+used internally to ensure an object is an expression
 }
 \examples{
 pl$col("foo") < 5
 }
-\keyword{Expr}
+\keyword{internal}
