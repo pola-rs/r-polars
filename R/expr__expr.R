@@ -397,7 +397,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @importFrom rlang is_string list2
 #'
-#' @keywords Expr
+#' @keywords internal
 #'
 #' @return ProtoExprArray object
 #'

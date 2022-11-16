@@ -20,6 +20,6 @@ Expr (f64 scalar)
 Get Standard Deviation
 }
 \examples{
-pl$empty_select(pl$lit(1:5)$std())
+pl$select(pl$lit(1:5)$std())
 }
 \keyword{Expr}

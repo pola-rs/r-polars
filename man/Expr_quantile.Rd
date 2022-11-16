@@ -27,6 +27,6 @@ Get quantile value.
 For linear interpolation \code{NaN} poisons \code{Inf}, that poisons any other value.
 }
 \examples{
-pl$empty_select(pl$lit(-5:5)$quantile(.5))
+pl$select(pl$lit(-5:5)$quantile(.5))
 }
 \keyword{Expr}

@@ -22,7 +22,6 @@ reference:
     contents:
       - has_keyword("Series_new")
       - has_keyword("Series")
-
   - title: Minipolars API and namespace
     desc: >
       Minipolars api's is not exported in NAMESPACE, because it would collide badly with base R
@@ -37,6 +36,11 @@ reference:
       - has_keyword("api_object")
       - has_keyword("api_private")
 
+  - title: Internals
+    desc: Internal documented functions
+    contents:
+      - has_keyword("internal")
+
   - title: everything else
     contents:
       - -has_keyword("api")
@@ -46,3 +50,5 @@ reference:
       - -has_keyword("DataFrame")
       - -has_keyword("LazyFrame_new")
       - -has_keyword("Expr")
+      - -has_keyword("Expr_new")
+      - -has_keyword("internal")

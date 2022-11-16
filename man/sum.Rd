@@ -40,3 +40,4 @@ pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a"
 pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
 pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
 }
+\keyword{Expr_new}

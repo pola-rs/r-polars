@@ -24,7 +24,7 @@ Shift values
 See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
 }
 \examples{
-pl$empty_select(
+pl$select(
   pl$lit(0:3)$shift(-2)$alias("shift-2"),
   pl$lit(0:3)$shift(2)$alias("shift+2")
 )

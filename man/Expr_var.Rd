@@ -20,6 +20,6 @@ Expr (f64 scalar)
 Get Variance
 }
 \examples{
-pl$empty_select(pl$lit(1:5)$var())
+pl$select(pl$lit(1:5)$var())
 }
 \keyword{Expr}

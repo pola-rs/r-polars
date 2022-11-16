@@ -24,7 +24,7 @@ Looking for R like \code{duplicated()}?, use  \code{some_expr$is_first()$is_not(
 \examples{
 v = c(1,1,2,2,3,NA,NaN,Inf)
 all.equal(
-  pl$empty_select(
+  pl$select(
     pl$lit(v)$is_unique()$alias("is_unique"),
     pl$lit(v)$is_first()$alias("is_first"),
     pl$lit(v)$is_duplicated()$alias("is_duplicated"),

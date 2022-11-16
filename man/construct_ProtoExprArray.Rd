@@ -18,4 +18,4 @@ construct proto Expr array from args
 \examples{
 minipolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 }
-\keyword{Expr}
+\keyword{internal}

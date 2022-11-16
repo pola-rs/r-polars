@@ -105,7 +105,7 @@ pl$col = function(name) {
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
-#'
+#' @keywords Expr_new
 #' @examples
 #' #column as string
 #' pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
@@ -150,7 +150,7 @@ pl$sum = function(...) {
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
-#'
+#' @keywords Expr_new
 #' @examples
 #' df = pl$DataFrame(
 #'   a = NA_real_,
@@ -192,7 +192,7 @@ pl$min = function(...) {
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
-#'
+#' @keywords Expr_new
 #' @examples
 #' df = pl$DataFrame(
 #'   a = NA_real_,

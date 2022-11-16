@@ -19,7 +19,7 @@ Fill nulls with linear interpolation over missing values.
 Can also be used to regrid data to a new grid - see examples below.
 }
 \examples{
-pl$empty_select(pl$lit(c(1,NA,4,NA,100,NaN,150))$interpolate())
+pl$select(pl$lit(c(1,NA,4,NA,100,NaN,150))$interpolate())
 
 #x, y interpolation over a grid
 df_original_grid = pl$DataFrame(list(
