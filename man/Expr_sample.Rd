@@ -21,7 +21,7 @@ Expr_sample(
 
 \item{with_replacement}{Allow values to be sampled more than once.}
 
-\item{shuffle}{Shuffle the order of sampled data points.}
+\item{shuffle}{Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)}
 
 \item{seed}{Seed for the random number generator. If set to None (default), a random
 seed is used.}

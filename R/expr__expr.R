@@ -3380,3 +3380,126 @@ Expr_sample= function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, see
   unwrap(.pr$Expr$sample_frac(self, frac, with_replacement, shuffle, seed))
 
 }
+
+
+
+#' preapare alpha
+#' @description  internal function for emw_x expressions
+#' @param com numeric or NULL
+#' @param span numeric or NULL
+#' @param half_life numeric or NULL
+#' @param alpha numeric or NULL
+#' @keywords internal
+#' @return numeric
+prepare_alpha = function(
+  com = NULL,
+  span = NULL,
+  half_life = NULL,
+  alpha = NULL
+) { #-> double:
+
+  if(sum(!sapply(list(com, span, half_life, alpha),is.null)) > 1) {
+    unwrap(list(err = "Parameters 'com', 'span', 'half_life', and 'alpha' are mutually exclusive"))
+  }
+
+  if (!is.null(com)) {
+    if (!is.numeric(com) || com < 0) {
+      unwrap(list(err = "com must be a non-negative numeric"))
+    }
+    return( 1 / (1 + com) )
+  }
+
+  if (!is.null(span)) {
+    if (!is.numeric(span) || span < 1) {
+      unwrap(list(err = "span must be numeric > 1.0"))
+    }
+    return( 2 / (span + 1))
+  }
+
+  if (!is.null(half_life)) {
+    if (!is.numeric(half_life) || half_life < 0) {
+      unwrap(list(err = "half_life must be a non-negative numeric"))
+    }
+    return( 1.0 - exp(-log(2.0)/half_life))
+  }
+
+  if (!is.null(alpha)) {
+    if  (!is.numeric(alpha) || alpha<0 || alpha>=1) {
+      unwrap(list(err = "alpha must be numeric ]0;1] "))
+    }
+    return(alpha)
+  } else {
+    unwrap(list(err = "One of 'com', 'span', 'half_life', or 'alpha' must be set"))
+  }
+
+  abort("it seems a input scenario was not handled properly",.internal = TRUE)
+}
+
+
+
+
+#' Exponentially-weighted moving average/std/var.
+#' @name Expr_ewm_mean_std_var
+#' @param com
+#' Specify decay in terms of center of mass, \eqn{\gamma}, with
+#' \eqn{
+#'   \alpha = \frac{1}{1 + \gamma} \; \forall \; \gamma \geq 0
+#'   }
+#' @param span
+#' Specify decay in terms of span,  \eqn{\theta}, with
+#' \eqn{\alpha = \frac{2}{\theta + 1} \; \forall \; \theta \geq 1 }
+#' @param half_life
+#' Specify decay in terms of half-life, :math:`\lambda`, with
+#' \eqn{ \alpha = 1 - \exp \left\{ \frac{ -\ln(2) }{ \lambda } \right\} }
+#' \eqn{ \forall \; \lambda > 0}
+#' @param alpha
+#' Specify smoothing factor alpha directly, \eqn{0 < \alpha \leq 1}.
+#' @param adjust
+#' Divide by decaying adjustment factor in beginning periods to account for
+#' imbalance in relative weightings
+#' - When ``adjust=True`` the EW function is calculated
+#' using weights \eqn{w_i = (1 - \alpha)^i  }
+#' - When ``adjust=False`` the EW function is calculated
+#' recursively by
+#' \eqn{
+#'   y_0 = x_0 \\
+#'   y_t = (1 - \alpha)y_{t - 1} + \alpha x_t
+#' }
+#' @param min_periods
+#' Minimum number of observations in window required to have a value
+#' (otherwise result is null).
+#' @return  Expr
+#' @aliases ewm_mean
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com=1))
+#'
+Expr_ewm_mean= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE, min_periods = 1L) {
+  alpha = prepare_alpha(com,span,half_life,alpha)
+  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods))
+}
+
+
+#' Ewm_std
+#' @rdname Expr_ewm_mean_std_var
+#' @param bias  When bias=FALSE`, apply a correction to make the estimate statistically unbiased.
+#' @aliases ewm_std
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
+Expr_ewm_std= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE, bias = FALSE, min_periods = 1L) {
+  alpha = prepare_alpha(com,span,half_life,alpha)
+  unwrap(.pr$Expr$ewm_std(self, alpha, adjust,  bias = FALSE, min_periods))
+}
+
+#' Ewm_var
+#' @rdname Expr_ewm_mean_std_var
+#' @aliases ewm_var
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
+Expr_ewm_var= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE,  bias = FALSE, min_periods = 1L) {
+  alpha = prepare_alpha(com,span,half_life,alpha)
+  unwrap(.pr$Expr$ewm_var(self, alpha, adjust,  bias = FALSE,  min_periods))
+}

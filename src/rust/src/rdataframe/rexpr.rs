@@ -819,6 +819,48 @@ impl Expr {
         r_result_list(expr_result)
     }
 
+    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64) -> List {
+        let expr_result = || -> std::result::Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let options = pl::EWMOptions {
+                alpha,
+                adjust,
+                bias: false,
+                min_periods,
+            };
+            Ok(self.0.clone().ewm_mean(options).into())
+        }();
+        r_result_list(expr_result)
+    }
+
+    pub fn ewm_std(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
+        let expr_result = || -> std::result::Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let options = pl::EWMOptions {
+                alpha,
+                adjust,
+                bias,
+                min_periods,
+            };
+            Ok(self.0.clone().ewm_std(options).into())
+        }();
+        r_result_list(expr_result)
+    }
+
+    pub fn ewm_var(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
+        let expr_result = || -> std::result::Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let options = pl::EWMOptions {
+                alpha,
+                adjust,
+                bias,
+                min_periods,
+            };
+            Ok(self.0.clone().ewm_var(options).into())
+        }();
+        r_result_list(expr_result)
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

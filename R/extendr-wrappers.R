@@ -270,6 +270,12 @@ Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__
 
 Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
 
+Expr$ewm_mean <- function(alpha, adjust, min_periods) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods)
+
+Expr$ewm_std <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_std, self, alpha, adjust, bias, min_periods)
+
+Expr$ewm_var <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
