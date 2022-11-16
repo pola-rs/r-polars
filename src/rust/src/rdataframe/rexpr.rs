@@ -794,6 +794,31 @@ impl Expr {
         r_result_list(seed_res)
     }
 
+    pub fn sample_n(&self, n: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
+        let expr_result = || -> std::result::Result<Expr, String> {
+            let seed = try_f64_into_usize(seed, false)?;
+            let n = try_f64_into_usize(n, false)?;
+            Ok(self
+                .0
+                .clone()
+                .sample_n(n, with_replacement, shuffle, Some(seed as u64))
+                .into())
+        }();
+        r_result_list(expr_result)
+    }
+
+    pub fn sample_frac(&self, frac: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
+        let expr_result = || -> std::result::Result<Expr, String> {
+            let seed = try_f64_into_usize(seed, false)?;
+            Ok(self
+                .0
+                .clone()
+                .sample_frac(frac, with_replacement, shuffle, Some(seed as u64))
+                .into())
+        }();
+        r_result_list(expr_result)
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

@@ -3303,7 +3303,6 @@ Expr_arctanh= "use_extendr_wrapper"
 #' @param dims
 #' numeric vec of the dimension sizes. If a -1 is used in any of the dimensions, that
 #' dimension is inferred.
-#' @details Evaluated Series has dtype Float64
 #' @return  Expr
 #' @aliases reshape
 #' @format Method
@@ -3324,7 +3323,6 @@ Expr_reshape= function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value intergish value between 0 and 10000 is picked
-#' @details Evaluated Series has dtype Float64
 #' @return  Expr
 #' @aliases shuffle
 #' @format Method
@@ -3335,4 +3333,50 @@ Expr_shuffle= function(seed = NULL) {
   seed = seed %||% sample(0:10000,1L)
   if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) unwrap(list(err="seed must be non NA/NaN numeric scalar"))
   unwrap(.pr$Expr$shuffle(self,seed))
+}
+
+
+#' Sample
+#' @description
+#' #' Sample from this expression.
+#' @param frac
+#' Fraction of items to return. Cannot be used with `n`.
+#' @param  with_replacement
+#' Allow values to be sampled more than once.
+#' @param shuffle
+#' Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)
+#' @param  seed
+#' Seed for the random number generator. If set to None (default), a random
+#' seed is used.
+#' @param n
+#' Number of items to return. Cannot be used with `frac`.
+#' @return  Expr
+#' @aliases sample
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' df = pl$DataFrame(a=1:3)
+#' df$select(pl$col("a")$sample(frac=1,with_replacement=TRUE,seed=1L))
+#'
+#' df$select(pl$col("a")$sample(frac=2,with_replacement=TRUE,seed=1L))
+#'
+#' df$select(pl$col("a")$sample(n=5,with_replacement=FALSE,seed=1L))
+Expr_sample= function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n=NULL) {
+
+  #check seed
+  seed = seed %||% sample(0:10000,1L)
+  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) unwrap(list(err="seed must be non NA/NaN numeric scalar"))
+
+  #check not both n and frac
+  if (!is.null(n) && !is.null(frac)) unwrap(list(err="cannot specify both `n` and `frac`"))
+
+  #use n
+  if (!is.null(n)) {
+    return(unwrap(.pr$Expr$sample_n(self, n, with_replacement, shuffle, seed)))
+  }
+
+  #use frac
+  if (is.null(frac)) frac = 1
+  unwrap(.pr$Expr$sample_frac(self, frac, with_replacement, shuffle, seed))
+
 }

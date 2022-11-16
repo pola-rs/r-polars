@@ -266,6 +266,10 @@ Expr$reshape <- function(dims) .Call(wrap__Expr__reshape, self, dims)
 
 Expr$shuffle <- function(seed) .Call(wrap__Expr__shuffle, self, seed)
 
+Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed)
+
+Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
