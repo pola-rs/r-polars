@@ -3143,7 +3143,7 @@ Expr_lower_bound= "use_extendr_wrapper"
 #' @format Method
 #' @keywords Expr
 #' @examples
-#' pl$DataFrame(a=c(.9,-0,0,4,NA_real:))$select(pl$col("a")$sign())
+#' pl$DataFrame(a=c(.9,-0,0,4,NA_real_))$select(pl$col("a")$sign())
 Expr_sign= "use_extendr_wrapper"
 
 

@@ -156,7 +156,7 @@ pl$sum = function(...) {
 #'   a = NA_real_,
 #'   b = c(2:1,NA_real_,NA_real_),
 #'   c = c(1:3,NA_real_),
-#'   d = c(1:3,NA_real_,-Inf)
+#'   d = c(1:2,NA_real_,-Inf)
 #' )
 #' #use min to get first non Null value for each row, otherwise insert 99.9
 #' df$with_column(

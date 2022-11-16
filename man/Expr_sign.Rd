@@ -18,6 +18,6 @@ Expr
 Compute the element-wise indication of the sign.
 }
 \examples{
-pl$DataFrame(a=c(.9,-0,0,4,NA_real:))$select(pl$col("a")$sign())
+pl$DataFrame(a=c(.9,-0,0,4,NA_real_))$select(pl$col("a")$sign())
 }
 \keyword{Expr}
