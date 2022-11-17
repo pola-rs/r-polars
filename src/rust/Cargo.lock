@@ -1089,6 +1089,7 @@ dependencies = [
  "polars",
  "polars-core",
  "rayon",
+ "smartstring",
  "state",
 ]
 

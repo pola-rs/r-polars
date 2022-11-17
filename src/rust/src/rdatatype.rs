@@ -188,7 +188,7 @@ pub fn literal_to_any_value(
 ) -> std::result::Result<pl::AnyValue<'static>, String> {
     use pl::AnyValue as av;
     use pl::LiteralValue as lv;
-
+    use smartstring::alias::String as SString;
     match litval {
         lv::Boolean(x) => Ok(av::Boolean(x)),
         //lv::DateTime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
@@ -210,7 +210,13 @@ pub fn literal_to_any_value(
         lv::UInt32(x) => Ok(av::UInt32(x)),
         lv::UInt64(x) => Ok(av::UInt64(x)),
         lv::UInt8(x) => Ok(av::UInt8(x)),
-        //lv::Utf8(x) => Ok(av::Utf8Owned(x)), //fancy av string type check how to convert
+        // lv::Utf8(x) => Ok(av::Utf8(x.as_str())),
+        lv::Utf8(x) => {
+            let mut s = SString::new();
+
+            s.push_str(x.as_str());
+            Ok(av::Utf8Owned(s))
+        }
         x => Err(format!("cannot convert LiteralValue {:?} to AnyValue", x)),
     }
 }

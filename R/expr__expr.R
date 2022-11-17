@@ -990,6 +990,7 @@ Expr_slice = function(offset, length) {
 
 #' Append expressions
 #' @description This is done by adding the chunks of `other` to this `output`.
+#'
 #' @keywords Expr
 #' @return Expr
 #' @aliases append
@@ -3503,3 +3504,135 @@ Expr_ewm_var= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, 
   alpha = prepare_alpha(com,span,half_life,alpha)
   unwrap(.pr$Expr$ewm_var(self, alpha, adjust,  bias = FALSE,  min_periods))
 }
+
+
+
+#' Extend_constant
+#' @description
+#' Extend the Series with given number of values.
+#' @param value The value to extend the Series with.
+#' This value may be None to fill with nulls.
+#' @param n The number of values to extend.
+#' @return  Expr
+#' @aliases extend_constant
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$select(
+#'   pl$lit(c("5","Bob_is_not_a_number"))
+#'   $cast(pl$dtypes$UInt64, strict = FALSE)
+#'   $extend_constant(10.1, 2)
+#' )
+#'
+#' pl$select(
+#'   pl$lit(c("5","Bob_is_not_a_number"))
+#'   $cast(pl$dtypes$Utf8, strict = FALSE)
+#'   $extend_constant("chuchu", 2)
+#' )
+Expr_extend_constant = function(value, n) {
+  unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
+}
+
+
+##further improvement, support value has length, I prefer Expr_rep_extend now
+##
+#' Extend_expr
+#' @description
+#' Extend the Series with a expression repeated a number of times
+#' @param value The expr to extend the Series with.
+#' This value may be None to fill with nulls.
+#' @param n The number of values to extend.
+#' @return  Expr
+#' @aliases extend_constant
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$select(
+#'   pl$lit(c("5","Bob_is_not_a_number"))
+#'   $cast(pl$dtypes$UInt64, strict = FALSE)
+#'   $extend_expr(10.1, 2)
+#' )
+#'
+#' pl$select(
+#'   pl$lit(c("5","Bob_is_not_a_number"))
+#'   $cast(pl$dtypes$Utf8, strict = FALSE)
+#'   $extend_expr("chuchu", 2)
+#' )
+Expr_extend_expr = function(value, n) {
+  .pr$Expr$extend_expr(self, wrap_e(value), wrap_e(n))
+}
+
+
+
+
+#' expression: repeat series
+#' @description
+#' This expression takes input and repeats it n times and append chunk
+#' @param n  Numeric the number of times to repeat, must be non-negative and finite
+#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
+#'
+#' @return  Expr
+#' @aliases extend_constant
+#' @format Method
+#' @details
+#' if self$len() == 1 , has a special faster implementation,  Here rechunk is not
+#' necessary, and takes no effect.
+#'
+#' if self$len() > 1 , then the expression instructs the series to append onto
+#' itself n time and rewrite memory
+#'
+#' @keywords Expr
+#' @examples
+#'
+#' pl$select(
+#'   pl$lit("alice")$rep(n = 3)
+#' )
+#'
+#' pl$select(
+#'   pl$lit(1:3)$rep(n = 2)
+#' )
+#'
+Expr_rep = function(n, rechunk = TRUE) {
+  unwrap(.pr$Expr$rep(self, n, rechunk))
+}
+
+#' Repeat a series
+#' @description This expression emulates R rep()
+#' @name pl_rep
+#' @param value expr or any valid input to pl$lit (literal)
+#' This value may be None to fill with nulls.
+#' @param n  Numeric the number of times to repeat, must be non-negative and finite
+#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
+#' @return  Expr
+#' @aliases extend_constant
+#' @format functino
+#' @keywords Expr
+#' @examples
+#' pl$select(pl$rep(1:3, n = 5))
+pl$rep = function(value, n, rechunk = TRUE) {
+  wrap_e(value)$rep(n, rechunk)
+}
+
+
+#' extend series with repeated series
+#' @description
+#' Extend a series with a repeated series or value.
+#' @param n  Numeric the number of times to repeat, must be non-negative and finite
+#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
+#' @param upcast bool default = TRUE, passed to self$append(), if TRUE non identical types
+#' will be casted to common super type if any. If FALSE or no common super type
+#' throw error.
+#' @return  Expr
+#' @aliases extend_constant
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$select(pl$lit(c(1,2,3))$rep_extend(1:3, n = 5))
+Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
+  other = wrap_e(expr)$rep(n, rechunk = FALSE)
+  new = .pr$Expr$append(self, other, upcast)
+  if(rechunk) new$rechunk() else new
+}
+
+
+

@@ -278,6 +278,12 @@ Expr$ewm_std <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm
 
 Expr$ewm_var <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods)
 
+Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, self, value, n)
+
+Expr$extend_expr <- function(value, n) .Call(wrap__Expr__extend_expr, self, value, n)
+
+Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

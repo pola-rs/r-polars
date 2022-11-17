@@ -2033,3 +2033,15 @@ test_that("ewm_", {
 
 
 })
+
+
+test_that("extend_constant", {
+
+  pl$select(
+    pl$lit(c("5","Bob_is_not_a_number"))
+      $cast(pl$dtypes$Utf8, strict = FALSE)
+      $extend_constant("chuchu", 2)
+  )
+
+
+})

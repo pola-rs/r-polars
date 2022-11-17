@@ -9,12 +9,14 @@ use crate::utils::{r_error_list, r_result_list};
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
+use crate::utils::try_f64_into_usize;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
+use polars::error::ErrString;
+use polars::error::PolarsError;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
-
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
@@ -121,6 +123,22 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
 impl From<polars::prelude::Series> for Series {
     fn from(pls: polars::prelude::Series) -> Self {
         Series(pls)
+    }
+}
+use super::Expr;
+impl From<&Expr> for pl::PolarsResult<Series> {
+    fn from(expr: &Expr) -> Self {
+        DataFrame::new()
+            .lazy()
+            .0
+            .select(&[expr.0.clone()])
+            .collect()
+            .map(|df| {
+                df.select_at_idx(0)
+                    .map(|ref_s| ref_s.clone())
+                    .unwrap_or_else(|| pl::Series::new_empty("", &pl::DataType::Null))
+                    .into()
+            })
     }
 }
 
@@ -238,28 +256,10 @@ impl Series {
 
     //names repeat_ as repeat is locked keyword in R
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
-        let n = n as i64;
-
-        let out: std::result::Result<Series, String> = match n {
-            x if x < 0 => Err("n must be a non-negative number".to_string()),
-            x if x == 0 => Ok(Series(self.clone().0.slice(0, 0))),
-            x if x >= 1 => {
-                let mut s = self.0.clone();
-                if n >= 2 {
-                    for _ in 1..n {
-                        let result = s.append(&self.0);
-                        if result.is_err() {
-                            return r_result_list(result.map(|_| ()));
-                        }
-                    }
-                }
-                Ok(Series(s))
-            }
-            _ => unreachable!("yep"),
+        match try_f64_into_usize(n, false) {
+            Ok(n) => r_result_list(self.rep_impl(n as usize, rechunk)),
+            Err(err) => r_error_list(err),
         }
-        .map(|s| if rechunk { Series(s.0.rechunk()) } else { s });
-
-        r_result_list(out)
     }
 
     pub fn shape(&self) -> Robj {
@@ -539,6 +539,51 @@ impl Series {
                 .0
         };
         Ok(s)
+    }
+
+    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> pl::PolarsResult<Self> {
+        //let expr = value.0.clone().repeat_by(n.clone().0);
+        let s: pl::PolarsResult<Self> = value.into(); //(&Expr(expr)).into();
+        let n_series_result: pl::PolarsResult<Series> = n.into();
+        let s = s?.0.cast(self.0.dtype())?;
+
+        let n_series = n_series_result.map_err(|err| {
+            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
+                "extend_expr: when casting n as Uint64 [{}], n should be a non-negative integer",
+                err
+            )))
+        })?;
+
+        let opt_n_u64 = n_series.0.u64()?.into_iter().next().ok_or_else(|| {
+            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
+                "extend_expr: expr n had no length"
+            )))
+        })?;
+
+        let n_usize = opt_n_u64.ok_or_else(|| {
+            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
+                "extend_expr: expr n cannot be a Null"
+            )))
+        })? as usize;
+        let to_append = s.new_from_index(0, n_usize);
+        dbg!(&to_append);
+        let mut out = self.0.clone();
+        out.append(&to_append)?;
+        Ok(Series(out))
+    }
+
+    pub fn rep_impl(&self, n: usize, rechunk: bool) -> pl::PolarsResult<Self> {
+        if n == 0 {
+            return Ok(Series(self.clone().0.slice(0, 0)));
+        }
+        let mut s = self.0.clone();
+        for _ in 1..n {
+            s.append(&self.0)?;
+        }
+        if rechunk {
+            s = s.rechunk();
+        }
+        Ok(Series(s))
     }
 }
 

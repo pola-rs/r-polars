@@ -1,4 +1,5 @@
 use super::rseries::Series;
+use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
@@ -13,6 +14,7 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude::GetOutput;
+use polars::prelude::PolarsResult;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -859,6 +861,70 @@ impl Expr {
             Ok(self.0.clone().ewm_var(options).into())
         }();
         r_result_list(expr_result)
+    }
+
+    pub fn extend_constant(&self, value: &Expr, n: f64) -> List {
+        let expr_res = || -> std::result::Result<Expr, String> {
+            let av = match value.clone().0 {
+                pl::Expr::Literal(ma) => literal_to_any_value(ma),
+                ma => Err(format!("value [{:?}] was not a literal:", ma)),
+            }?;
+            let n = try_f64_into_usize(n, false)?;
+
+            Ok(Expr(
+                self.0
+                    .clone()
+                    .apply(
+                        move |s| {
+                            //swap owned inline string to str as only supported and if swapped here life time is long enough
+                            let av = match &av {
+                                pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
+                                x => x.clone(),
+                            };
+                            s.extend_constant(av, n)
+                        },
+                        GetOutput::same_type(),
+                    )
+                    .with_fmt("extend"),
+            ))
+        }();
+        r_result_list(expr_res)
+    }
+
+    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> Self {
+        let v = value.clone();
+        let n = Expr(n.0.clone().strict_cast(pl::DataType::UInt64));
+
+        Expr(
+            self.0
+                .clone()
+                .apply(
+                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0),
+                    GetOutput::same_type(),
+                )
+                .with_fmt("extend"),
+        )
+    }
+
+    pub fn rep(&self, n: f64, rechunk: bool) -> List {
+        match try_f64_into_usize(n, false) {
+            Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),
+            Ok(n) => r_ok_list(Expr(
+                self.0
+                    .clone()
+                    .apply(
+                        move |s| {
+                            if s.len() == 1 {
+                                Ok(s.new_from_index(0, n))
+                            } else {
+                                Series(s).rep_impl(n, rechunk).map(|s| s.0)
+                            }
+                        },
+                        GetOutput::same_type(),
+                    )
+                    .with_fmt("rep"),
+            )),
+        }
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
