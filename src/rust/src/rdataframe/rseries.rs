@@ -566,7 +566,6 @@ impl Series {
             )))
         })? as usize;
         let to_append = s.new_from_index(0, n_usize);
-        dbg!(&to_append);
         let mut out = self.0.clone();
         out.append(&to_append)?;
         Ok(Series(out))
@@ -604,12 +603,12 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
             Int64 => s.i64().map(|ca| {
                 ca.into_iter()
-                    .map(|opt| opt.map(|val| val.to_string()))
+                    .map(|opt| opt.map(|val| val as f64))
                     .collect_robj()
             }),
             UInt64 => s.u64().map(|ca| {
                 ca.into_iter()
-                    .map(|opt| opt.map(|val| val.to_string()))
+                    .map(|opt| opt.map(|val| val as f64))
                     .collect_robj()
             }),
             Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),

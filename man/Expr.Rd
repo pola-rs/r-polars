@@ -39,6 +39,9 @@ Expr
 \description{
 Polars pl$Expr
 }
+\details{
+pl$lit(NULL) translates into a typeless polars Null
+}
 \examples{
 2+2
 #Expr has the following methods/constructors

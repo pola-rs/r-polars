@@ -2037,11 +2037,118 @@ test_that("ewm_", {
 
 test_that("extend_constant", {
 
-  pl$select(
-    pl$lit(c("5","Bob_is_not_a_number"))
-      $cast(pl$dtypes$Utf8, strict = FALSE)
-      $extend_constant("chuchu", 2)
+
+  expect_identical(
+      pl$lit(c("5","Bob_is_not_a_number"))
+        $cast(pl$dtypes$Utf8, strict = FALSE)
+        $extend_constant("chuchu", 2)$to_r()
+    ,
+    c("5","Bob_is_not_a_number","chuchu","chuchu")
   )
 
+  expect_identical(
+    (pl$lit(c("5","Bob_is_not_a_number"))
+       $cast(pl$dtypes$Int32, strict = FALSE)
+       $extend_constant(5, 2)
+       $to_r()
+    ),
+    c(5L, NA_integer_, 5L, 5L)
+  )
+
+  expect_identical(
+    (
+      pl$lit(c("5","Bob_is_not_a_number"))
+      $cast(pl$dtypes$Int32, strict = FALSE)
+      $extend_constant(5, 0)
+      $to_r()
+    ),
+    c(5L, NA_integer_)
+  )
+  expect_error(pl$lit(1)$extend_constant(5,-1))
+  expect_error(pl$lit(1)$extend_constant(5,Inf))
 
 })
+
+
+test_that("extend_expr", {
+
+  expect_identical(
+    (
+      pl$lit(c("5","Bob_is_not_a_number"))
+      $cast(pl$dtypes$Utf8, strict = FALSE)
+      $extend_expr("chuchu", 2)
+    )$to_r(),
+    c("5","Bob_is_not_a_number","chuchu","chuchu")
+  )
+
+  expect_identical(
+    (
+        pl$lit(c("5","Bob_is_not_a_number"))
+        $cast(pl$dtypes$Int32, strict = FALSE)
+        $extend_expr(5, 2)
+        $to_r()
+    ),
+    c(5L, NA_integer_, 5L, 5L)
+  )
+
+  expect_identical(
+   (
+      pl$lit(c("5","Bob_is_not_a_number"))
+      $cast(pl$dtypes$Int32, strict = FALSE)
+      $extend_expr(5, 0)
+      $to_r()
+   ),
+    c(5L, NA_integer_)
+  )
+  expect_error(pl$select(pl$lit(1)$extend_expr(5,-1)))
+  expect_error(pl$select(pl$lit(1)$extend_expr(5,Inf)))
+
+})
+
+test_that("rep", {
+  expect_identical(pl$lit(1:3)$rep(5)$to_r(), rep(1:3,5))
+  expect_identical(pl$lit(c("a","b"))$rep(5)$to_r(), rep(c("a","b"),5))
+  expect_identical(pl$lit((1:3)*1)$rep(5)$cast(pl$dtypes$Int64)$to_r(),rep((1:3)*1,5))
+  expect_identical(pl$lit(c("a","b"))$rep(5)$to_r(), rep(c("a","b"),5))
+  expect_identical(pl$lit(c(T,T,F))$rep(2)$to_r(), rep(c(T,T,F),2))
+  expect_error(pl$lit(1:4)$rep(-1))
+  expect_error(pl$lit(1:4)$rep(Inf))
+})
+
+test_that("rep_extend", {
+  expect_identical(pl$lit(1:4)$rep_extend(2:1,2)$to_r(),c(1:4,2:1,2:1))
+  expect_identical(
+    pl$lit(1:4)$rep_extend(
+      pl$lit(c(2,1))$cast(pl$dtypes$Int32),
+      2
+    )$to_r(),
+    c(1:4,2:1,2:1)
+  )
+  expect_identical(
+    pl$lit(1:4)$rep_extend(
+      pl$lit(c(2,1)),
+      2
+    )$to_r(),
+    c(1:4,2:1,2:1)*1.0
+  )
+  expect_identical(pl$lit(1)$rep_extend(numeric(),5)$to_r(), 1)
+  expect_error(pl$lit(1)$rep_extend(1,-1))
+  expect_error(pl$lit(1)$rep_extend(1,Inf))
+})
+
+test_that("to_r", {
+
+  #objects with homomorphic translation between r and polars
+  l = list(
+    1,1:2,Inf,-Inf,NaN,"a",letters,
+    numeric(),integer(),logical(), TRUE, FALSE,
+    NA, NA_integer_, NA_character_, NA_real_
+  )
+  for(i in l) expect_identical(pl$lit(i)$to_r(), i)
+  for(i in l) expect_identical(pl$expr_to_r(i), i)
+
+  #object that has not, NULL signals a typeless polars Null, which reverses to NA
+  expect_identical(pl$lit(NULL)$to_r(),NA)
+
+})
+

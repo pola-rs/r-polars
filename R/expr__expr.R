@@ -595,6 +595,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' @return Expr, literal of that value
 #' @aliases lit
 #' @name Expr_lit
+#' @details pl$lit(NULL) translates into a typeless polars Null
 #' @examples
 #' #scalars to literal, explit `pl$lit(42)` implicit `+ 2`
 #' pl$col("some_column") / pl$lit(42) + 2
@@ -605,8 +606,9 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' #vectors to literal implicitly
 #' (pl$lit(2) + 1:4 ) / 4:1
 Expr_lit = function(x) {
+  if(is.null(x)) return(unwrap(.pr$Expr$lit(NULL)))
   if (inherits(x,"Expr")) return(x)  # already Expr, pass through
-  if (length(x) > 1L) x = wrap_s(x) #wrap first as Series if not a scalar
+  if (length(x) != 1L) x = wrap_s(x) #wrap first as Series if not a scalar
   unwrap(.pr$Expr$lit(x)) # create literal Expr
 }
 
@@ -3632,6 +3634,38 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
   other = wrap_e(expr)$rep(n, rechunk = FALSE)
   new = .pr$Expr$append(self, other, upcast)
   if(rechunk) new$rechunk() else new
+}
+
+
+#' to_r: for debuging an expression
+#' @description
+#' debug an expression by evaluating in empty DataFrame and return first series to R
+#' @param df otherwise a DataFrame to evaluate in, default NULL is an empty DataFrame
+#' @param i numeric column to extract zero index default first, expression could generate multiple
+#' columns
+#' @return  R object
+#' @aliases to_r expr_to_r pl_expr_to_r
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$lit(1:3)$to_r()
+#' pl$expr_to_r(pl$lit(1:3)
+#' pl$expr_to_r(1:3)
+Expr_to_r = function(df = NULL, i = 0) {
+  if(is.null(df)) {
+    pl$select(self)$to_series(i)$to_r()
+  }else {
+    if(!inherits(df,c("DataFrame"))) {
+      abort("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
+    }
+    df$select(self)$to_series(i)$to_r()
+  }
+}
+
+#' @name pl_expr_to_r
+#' @rdname Expr_to_r
+pl$expr_to_r = function(expr, df = NULL, i=0) {
+  wrap_e(expr)$to_r(df, i)
 }
 
 
