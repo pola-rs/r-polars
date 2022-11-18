@@ -3,6 +3,7 @@
 \docType{data}
 \name{Expr_all}
 \alias{Expr_all}
+\alias{all}
 \title{All (is true)}
 \format{
 An object of class \code{character} of length 1.
@@ -15,6 +16,8 @@ Boolean literal
 }
 \description{
 Check if all boolean values in a Boolean column are \code{TRUE}.
+This method is an expression - not to be confused with
+\code{pl$all} which is a function to select all columns.
 }
 \details{
 last \code{all()} in example is this Expr method, the first \code{pl$all()} refers

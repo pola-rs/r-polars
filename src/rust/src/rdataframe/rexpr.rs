@@ -14,7 +14,6 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude::GetOutput;
-use polars::prelude::PolarsResult;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -925,6 +924,10 @@ impl Expr {
                     .with_fmt("rep"),
             )),
         }
+    }
+
+    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> Expr {
+        self.0.clone().value_counts(multithreaded, sorted).into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

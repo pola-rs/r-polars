@@ -3,6 +3,7 @@
 \docType{data}
 \name{Expr_any}
 \alias{Expr_any}
+\alias{any}
 \title{Any (is true)}
 \format{
 An object of class \code{character} of length 1.

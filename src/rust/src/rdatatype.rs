@@ -23,6 +23,7 @@ impl DataType {
             "UInt64" | "uinteger64" => pl::DataType::UInt64,
             "Utf8" | "character" => pl::DataType::Utf8,
             "Categorical" | "factor" => pl::DataType::Categorical(None),
+            "Struct" | "struct" => pl::DataType::Boolean,
             _ => panic!("data type not recgnized"),
         };
         DataType(pl_datatype)

@@ -13,8 +13,6 @@ use crate::utils::try_f64_into_usize;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
-use polars::error::ErrString;
-use polars::error::PolarsError;
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
 pub const R_INT_NA_ENC: i32 = -2147483648;
@@ -584,6 +582,10 @@ impl Series {
         }
         Ok(Series(s))
     }
+
+    pub fn into_frame(&self) -> DataFrame {
+        DataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
+    }
 }
 
 //clone is needed, no known trivial way (to author) how to take ownership R side objects
@@ -643,6 +645,23 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
                 //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
                 //or take ownership of vector
                 let l = extendr_api::List::from_iter(v.iter());
+                Ok(l.into_robj())
+            }
+            Struct(_) => {
+                let name = s.name();
+
+                let df = s.clone().into_frame().unnest(&[name]).unwrap();
+
+                let l = DataFrame(df).to_list_result()?;
+
+                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
+                //or take ownership of vector
+                //let fields = s.struct_().unwrap().fields();
+                //dbg!(&fields);
+                //
+                //let names: Vec<&str> = fields.iter().map(|field| field.name.as_str()).collect();
+                //let mut l = extendr_api::List::from_iter(v.iter());
+                //l.set_names(names).unwrap();
                 Ok(l.into_robj())
             }
             _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(

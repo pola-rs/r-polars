@@ -13,7 +13,7 @@ Method
 Expr_to_r(df = NULL, i = 0)
 }
 \arguments{
-\item{df}{DataFrame to evaluate in, default NULL is an empty DataFrame}
+\item{df}{otherwise a DataFrame to evaluate in, default NULL is an empty DataFrame}
 
 \item{i}{numeric column to extract zero index default first, expression could generate multiple
 columns}

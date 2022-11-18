@@ -284,6 +284,8 @@ Expr$extend_expr <- function(value, n) .Call(wrap__Expr__extend_expr, self, valu
 
 Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
+Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

@@ -277,10 +277,10 @@ Expr_alias = "use_extendr_wrapper"
 #' All (is true)
 #' @keywords Expr
 #' @description
-#'Check if all boolean values in a Boolean column are `TRUE`.
-# This method is an expression - not to be confused with
-#:`pl$all` which is a function to select all columns.
-#'
+#' Check if all boolean values in a Boolean column are `TRUE`.
+#' This method is an expression - not to be confused with
+#' `pl$all` which is a function to select all columns.
+#' @aliases all
 #' @return Boolean literal
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
@@ -293,10 +293,10 @@ Expr_all = "use_extendr_wrapper"
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
+#' @aliases any
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
 Expr_any = "use_extendr_wrapper"
-
 
 
 
@@ -3670,3 +3670,20 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 
 
 
+
+
+#' Value counts
+#' @description
+#' Count all unique values and create a struct mapping value to count.
+#' @return  R object
+#' @param    multithreaded:
+#' Better to turn this off in the aggregation context, as it can lead to contention.
+#' @param sort:
+#' Ensure the output is sorted from most values to least.
+#' @aliases value_counts
+#' @format Method
+#' @keywords Expr
+#' @examples
+Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
+  .pr$Expr$value_counts(self, multithreaded, sort)
+}

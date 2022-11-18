@@ -156,6 +156,23 @@ impl DataFrame {
     }
 }
 
+impl DataFrame {
+    fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
+        //convert DataFrame to Result of to R vectors, error if DataType is not supported
+        let robj_vec_res: Result<Vec<Robj>, _> = self.0.iter().map(pl_series_to_list).collect();
+
+        //rewrap Ok(Vec<Robj>) as R list
+        let robj_list_res = robj_vec_res.map(|vec_robj| {
+            r!(extendr_api::prelude::List::from_names_and_values(
+                self.columns(),
+                vec_robj
+            ))
+        });
+
+        robj_list_res
+    }
+}
+
 #[derive(Clone, Debug)]
 #[extendr]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);
