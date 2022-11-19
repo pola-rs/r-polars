@@ -152,7 +152,7 @@ impl Series {
     }
 
     pub fn to_r(&self) -> list::List {
-        let robj_result = pl_series_to_list(&self.0);
+        let robj_result = pl_series_to_list(&self.0, true);
         r_result_list(robj_result)
     }
 
@@ -596,9 +596,9 @@ impl From<&Series> for pl::Series {
 }
 
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
-pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
+pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
-    fn to_list_recursive(s: &pl::Series) -> pl::PolarsResult<Robj> {
+    fn to_list_recursive(s: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
             Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
@@ -633,7 +633,7 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
                     match opt_s {
                         Some(s) => {
                             let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref)?;
+                            let inner_val = to_list_recursive(s_ref, tag_structs)?;
                             v.push(inner_val);
                         }
 
@@ -648,20 +648,15 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
                 Ok(l.into_robj())
             }
             Struct(_) => {
-                let name = s.name();
-
-                let df = s.clone().into_frame().unnest(&[name]).unwrap();
-
+                let df = s.clone().into_frame().unnest(&[s.name()]).unwrap();
                 let l = DataFrame(df).to_list_result()?;
 
-                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
-                //or take ownership of vector
-                //let fields = s.struct_().unwrap().fields();
-                //dbg!(&fields);
-                //
-                //let names: Vec<&str> = fields.iter().map(|field| field.name.as_str()).collect();
-                //let mut l = extendr_api::List::from_iter(v.iter());
-                //l.set_names(names).unwrap();
+                //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
+                if tag_structs {
+                    l.set_attrib("is_struct", true).unwrap();
+                } else {
+                };
+
                 Ok(l.into_robj())
             }
             _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
@@ -673,7 +668,7 @@ pub fn pl_series_to_list(series: &pl::Series) -> pl::PolarsResult<Robj> {
         }
     }
 
-    to_list_recursive(series)
+    to_list_recursive(series, tag_structs)
 }
 
 extendr_module! {

@@ -5,7 +5,7 @@
 \alias{DataFrame_to_list}
 \title{return polars DataFrame as R lit of vectors}
 \usage{
-DataFrame_to_list()
+DataFrame_to_list(unnest_structs = TRUE)
 }
 \value{
 R list of vectors

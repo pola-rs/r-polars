@@ -653,30 +653,39 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 #'
 #' @return data.frame
 #' @keywords DataFrame
-#' @usage as_data_frame()
-#' @examples pl$DataFrame(iris)$as_data_frame()
+#' @usage as_data_frame(...)
+#' @examples
+#' df = pl$DataFrame(iris[1:3,])
+#' df$as_data_frame()
 DataFrame_as_data_frame = function(...) {
-  df = as.data.frame(
-    #use to_list(), unwrap any error, protect columns `I()`, that signals to use columns `asIs`
-    x = lapply(unwrap(.pr$DataFrame$to_list(self)), I),
-    col.names = .pr$DataFrame$columns(self),
-    ...
-  )
 
-  #remove AsIs subclass from columns
+  #do not unnest structs and mark with I to also preserve categoricals as is
+  l = lapply(self$to_list(unnest_structs=FALSE), I)
+
+  #similar to as.data.frame, but avoid checks, whcih would edit structs
+  df = data.frame(seq_along(l[[1L]]))
+  for(i in seq_along(l)) df[[i]] = l[[i]]
+  names(df) = .pr$DataFrame$columns(self)
+
+  #remove AsIs (I) subclass from columns
   df[] = lapply(df,unAsIs)
   df
 }
 
-#' as.data.frame.DataFrame S3 method
-#'
+#' @rdname DataFrame_as_data_frame
+#' @description to_data_frame is an alias
+#' @keywords DataFrame
+#' @usage to_data_frame(...)
+DataFrame_to_data_frame = DataFrame_as_data_frame
+
+#' @rdname DataFrame_as_data_frame
 #' @param x DataFrame
 #' @param ... any params passed to as.data.frame
 #'
 #' @return data.frame
 #' @export
 #'
-#' @examples as.data.frame(pl$DataFrame(iris[1:3,]))
+#' @examples as.data.frame(df)
 as.data.frame.DataFrame = function(x, ...) {
   x$as_data_frame(...)
 }
@@ -689,8 +698,12 @@ as.data.frame.DataFrame = function(x, ...) {
 #' @export
 #' @keywords DataFrame
 #' @examples pl$DataFrame(iris)$to_list()
-DataFrame_to_list = function() {
-  unwrap(.pr$DataFrame$to_list(self))
+DataFrame_to_list = function(unnest_structs = TRUE) {
+  if(unnest_structs) {
+    unwrap(.pr$DataFrame$to_list(self))
+  } else {
+    restruct_list(unwrap(.pr$DataFrame$to_list_tag_structs(self)))
+  }
 }
 
 
@@ -729,4 +742,33 @@ DataFrame_join = function(
     force_parallel = force_parallel
   )$collect()
 
+}
+
+#' to_struct and unnest again
+#' @name DataFrame_to_Struct_unnest
+#' @param name name of new Series
+#' @return @to_struct() returns a Series
+#' @aliases to_struct
+#' @usage  `self$to_struct(name)`
+#' @keywords DataFrame
+#' @examples
+#' #round-trip conversion from DataFrame with two columns
+#' df = pl$DataFrame(a=1:5,b=c("one","two","three","four","five"))
+#' s = df$to_struct()
+#' s
+#' s$to_r() # to r list
+#' df_s = s$to_frame() #place series in a new DataFrame
+#' df_s$unnest() # back to starting df
+DataFrame_to_struct = function(name = "") {
+  .pr$DataFrame$to_struct(self, name)
+}
+
+
+##TODO contribute polars add minipolars defaults for to_struct and unnest
+#' Unnest a DataFrame struct columns.
+#' @rdname DataFrame_to_Struct_unnest
+#' @param names names of struct columns to unnest, default NULL unnest any struct column
+#' @return $unnest() returns a DataFrame with all column including any that has been unnested
+DataFrame_unnest = function(names = NULL) {
+  unwrap(.pr$DataFrame$unnest(self, names))
 }

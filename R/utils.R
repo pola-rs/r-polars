@@ -376,3 +376,40 @@ unAsIs <- function(X) {
   X
 }
 
+
+#' restruct an object where structs where previously unnested
+#' @details  this function should be repalced with rust code writing this output
+#' directly before nesting
+#' @param l list
+#' @return restructed list
+restruct_list = function(l) {
+
+  #recursive find all struct tags in list
+  explore_structs = function(x, coords) {
+    if(is.list(x)) {
+      if(isTRUE(attr(x,"is_struct"))) {
+        structs_found_list <<- c(structs_found_list,list(coords))
+      }
+      for(i in seq_along(x)) explore_structs(x[[i]], coords = c(coords,i))
+    }
+  }
+  structs_found_list = list()
+  explore_structs(l,integer())
+
+  #sort structs from deepest to shallowest
+  if(!length(structs_found_list)) return(l)
+  structs_found_list = structs_found_list |> (\(x) x[order(-sapply(x,length))])()
+
+  #restruct all tags in list
+  for (x in structs_found_list) {
+    l_access_str = paste0("l",paste0("[[",x,"]]",collapse = ""))
+    get_code_tokens = paste0("val <- ", l_access_str)
+    eval(parse(text = get_code_tokens))
+    listmapply = function(...) mapply(FUN=list,...,SIMPLIFY = FALSE)
+    new_val = do.call(listmapply,val)
+    set_code_tokens = paste0(l_access_str," <- new_val")
+    eval(parse(text = set_code_tokens))
+  }
+
+  l
+}

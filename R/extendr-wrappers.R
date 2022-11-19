@@ -60,11 +60,17 @@ DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
 
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
 
+DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
+
 DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
 DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__DataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
+
+DataFrame$to_struct <- function(name) .Call(wrap__DataFrame__to_struct, self, name)
+
+DataFrame$unnest <- function(names) .Call(wrap__DataFrame__unnest, self, names)
 
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }

@@ -411,3 +411,19 @@ test_that("limit lazy/eager", {
 
 })
 
+
+
+test_that("to_Struct, unnest, to_frame, as_data_frame", {
+
+  #round-trip conversion from DataFrame with two columns
+  df = pl$DataFrame(a=1:5,b=c("one","two","three","four","five"), c= TRUE, d = 42.0, e = NaN, f =  NA_real_)
+  s = df$to_struct()
+  df_s = s$to_frame() #place series in a new DataFrame
+
+  expect_identical(df$to_list(), df_s$unnest()$to_list())
+  expect_identical(df$to_list(), df_s$to_list(unnest_structs = TRUE)[[1L]])
+
+  #tedious way to unnest a data.frame of one column struct
+  df_e = as.data.frame(do.call(rbind,df_s$as_data_frame()[[1L]])) %>% lapply(unlist) %>% as.data.frame()
+  expect_identical(df$as_data_frame(), df_e)
+})

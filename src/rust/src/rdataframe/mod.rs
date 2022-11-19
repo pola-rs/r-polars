@@ -106,7 +106,26 @@ impl DataFrame {
 
     fn to_list(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> = self.0.iter().map(pl_series_to_list).collect();
+        let robj_vec_res: Result<Vec<Robj>, _> =
+            self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
+
+        //rewrap Ok(Vec<Robj>) as R list
+        let robj_list_res = robj_vec_res.map(|vec_robj| {
+            r!(extendr_api::prelude::List::from_names_and_values(
+                self.columns(),
+                vec_robj
+            ))
+        });
+
+        r_result_list(robj_list_res)
+    }
+
+    // to_list have this variant with set_structs = true at pl_series_to_list
+    // does not expose this arg in to_list as it is quite niche and might be deprecated later
+    fn to_list_tag_structs(&self) -> List {
+        //convert DataFrame to Result of to R vectors, error if DataType is not supported
+        let robj_vec_res: Result<Vec<Robj>, _> =
+            self.0.iter().map(|x| pl_series_to_list(x, true)).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
         let robj_list_res = robj_vec_res.map(|vec_robj| {
@@ -154,12 +173,39 @@ impl DataFrame {
 
         LazyFrame(gb.agg(agg_exprs)).collect()
     }
-}
 
+    pub fn to_struct(&self, name: &str) -> Series {
+        use pl::IntoSeries;
+        let s = self.0.clone().into_struct(name);
+        s.into_series().into()
+    }
+
+    pub fn unnest(&self, names: Nullable<Vec<String>>) -> List {
+        let names = if let Some(vec_string) = null_to_opt(names) {
+            vec_string
+        } else {
+            //missing names choose to unnest any column of DataType Struct
+            self.0
+                .dtypes()
+                .iter()
+                .zip(self.0.get_column_names().iter())
+                .filter(|(dtype, _)| match dtype {
+                    pl::DataType::Struct(_) => true,
+                    _ => false,
+                })
+                .map(|(_, y)| y.to_string())
+                .collect::<Vec<String>>()
+        };
+
+        r_result_list(self.0.unnest(names).map(|s| DataFrame(s)))
+    }
+}
+use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
     fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> = self.0.iter().map(pl_series_to_list).collect();
+        let robj_vec_res: Result<Vec<Robj>, _> =
+            self.0.iter().map(|s| pl_series_to_list(s, true)).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
         let robj_list_res = robj_vec_res.map(|vec_robj| {
