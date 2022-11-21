@@ -1,19 +1,19 @@
 ---
-title: "minipolars_teaser"
+title: "rpolars_teaser"
 author: "Søren Welling"
 date: "7/22/2022"
 output: rmarkdown::github_document
 ---
 
 ```{r setup, include=FALSE}
-library(minipolars)
+library(rpolars)
 library(magrittr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## What is minipolars
+## What is rpolars
 
-Minipolars is an unofficial porting of polars (pola-rs) in to an R package. I aim to finish the project in 2022. Beta should be ready by the end of September 2022.
+rpolars is an unofficial porting of polars (pola-rs) in to an R package. I aim to finish the project in 2022. Beta should be ready by the end of September 2022.
 
 [Polars](<http://pola.rs>) is the [fastest](https://h2oai.github.io/db-benchmark/) data table query library.  The syntax is related to Spark, but column oriented and not row oriented. All R libraries are also column oriented so this should feel familiar. Unlike Spark, polars is natively multithreaded instead of multinode(d). This make polars simple to install and use as any other R package. Like Spark and SQL-variants polars optimizes queries for memory consuption and speed so you don't have to. Expect 5-10 speedup compared to dplyr on simple transformations from >500Mb data. When chaining many operations the speedup due to optimization can be even higher. Polars is built on the apache-arrow memory model.
 
@@ -22,8 +22,8 @@ This port relies on extendr <https://github.com/extendr> which is the R equivale
 
 ## Hello world
 ```{r}
-#loading the package minipolars only exposes a few functions 
-library(minipolars)
+#loading the package rpolars only exposes a few functions 
+library(rpolars)
 
 #all constructors are accessed via pl
 
@@ -34,7 +34,7 @@ pl$col("hello")$sum()$over("world","from")$alias("polars")
 
 ## Typical ussage
 
-Where `dplyr` has `%>%`-piping and ``data.table` has `[,]`-indexing, method chaining `object$m1()$m2()` is the bread and butter syntax of polars. For now the best learning material to understand the syntax and the power of polars is the [official user guide for python]( https://pola-rs.github.io/polars-book/user-guide/). As minipolars syntax is the same ( except `$` instead of `.`) the guide should be quite useful. The following example shows a typical 'polar_frame' method together with chained expressions.
+Where `dplyr` has `%>%`-piping and ``data.table` has `[,]`-indexing, method chaining `object$m1()$m2()` is the bread and butter syntax of polars. For now the best learning material to understand the syntax and the power of polars is the [official user guide for python]( https://pola-rs.github.io/polars-book/user-guide/). As rpolars syntax is the same ( except `$` instead of `.`) the guide should be quite useful. The following example shows a typical 'polar_frame' method together with chained expressions.
 ```{r iris}
 #create polar_frames from iris
 df = pl$DataFrame(iris)

@@ -2,14 +2,14 @@
 #'
 #' @name Series_class
 #' @description The `Series`-class is simply two environments of respectively
-#' the public and private methods/function calls to the minipolars rust side. The instanciated
+#' the public and private methods/function calls to the rpolars rust side. The instanciated
 #' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
 #' is the only statefullness of the Series object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object.
 #' Most methods return another `Series`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from minipolars:::.pr.$Series$methodname(), also
+#' reasons, the private methods are external and must be called from rpolars:::.pr.$Series$methodname(), also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -21,10 +21,10 @@
 #' @keywords Series
 #' @examples
 #' #see all exported methods
-#' ls(minipolars:::Series)
+#' ls(rpolars:::Series)
 #'
 #' #see all private methods (not intended for regular use)
-#' ls(minipolars:::.pr$Series)
+#' ls(rpolars:::.pr$Series)
 #'
 #'
 #' #make an object
@@ -82,7 +82,7 @@ Series_print = function() {
 #' @description called by the interactive R session internally
 #' @keywords Series
 .DollarNames.Series = function(x, pattern= "") {
-  get_method_usages(minipolars:::Series,pattern = pattern)
+  get_method_usages(rpolars:::Series,pattern = pattern)
 }
 
 #' Immutable combine series
@@ -90,7 +90,7 @@ Series_print = function() {
 #' @param ... Series(s) or any object into Series meaning `pl$Series(object)` returns a series
 #' @return a combined Series
 #' @details append datatypes has to match. Combine does not rechunk.
-#' Read more about R vectors, Series and chunks in \code{\link[minipolars]{docs_translations}}:
+#' Read more about R vectors, Series and chunks in \code{\link[rpolars]{docs_translations}}:
 #' @examples
 #' s = c(pl$Series(1:5),3:1,NA_integer_)
 #' s$chunk_lengths() #the series contain three unmerged chunks
@@ -525,17 +525,17 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
-#' pl$set_minipolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
+#' pl$set_rpolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 #' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 Series_append = function(other, immutable = TRUE) {
   if(!isFALSE(immutable)) {
     c(self,other)
   } else {
-    if(minipolars_optenv$strictly_immutable) {
+    if(rpolars_optenv$strictly_immutable) {
       abort(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_minipolars_options(strictly_immutable = F)`"
+        "`pl$set_rpolars_options(strictly_immutable = F)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self,other))
@@ -725,17 +725,17 @@ Series_flags = method_as_property(function() {
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_minipolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = F)`
 #'
 #' @return Series
 #'
 #' @examples
 #' pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
 Series_sort = function(reverse = FALSE, in_place = FALSE) {
-  if(in_place && minipolars_optenv$strictly_immutable) {
+  if(in_place && rpolars_optenv$strictly_immutable) {
     abort(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_minipolars_options(strictly_immutable = F)`"
+      "`pl$set_rpolars_options(strictly_immutable = F)`"
     ))
   } else {
     self = self$clone()
@@ -783,7 +783,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_minipolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = F)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -795,10 +795,10 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' pl$Series(1:4,"bob")$rename("alice")
 Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name,name)) return(self) #no change needed
-  if(in_place && minipolars_optenv$strictly_immutable) {
+  if(in_place && rpolars_optenv$strictly_immutable) {
     abort(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_minipolars_options(strictly_immutable = F)`"
+      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = F)`"
     ))
   } else {
     self = self$clone() #clone to break mutable behavior

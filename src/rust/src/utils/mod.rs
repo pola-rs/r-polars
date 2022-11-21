@@ -167,7 +167,7 @@ macro_rules! apply_output {
                         if($allow_fail_eval) {
                             Ok(None)
                         } else {
-                            Err(extendr_api::Error::Other("minipolars fail because lambda evaluation failed".to_string()))
+                            Err(extendr_api::Error::Other("rpolars fail because lambda evaluation failed".to_string()))
                         }
 
                     },

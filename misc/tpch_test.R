@@ -1,15 +1,15 @@
-# library(minipolars)
+# library(rpolars)
 # DATASET_BASE_DIR = "../tpch/tables_scale_1/"
 #
 #
 # get_line_item_ds = function(base_dir = DATASET_BASE_DIR) {
-#   minipolars:::scan_parquet(paste0(base_dir,"lineitem.parquet"))
+#   rpolars:::scan_parquet(paste0(base_dir,"lineitem.parquet"))
 # }
 # get_customer_ds = function(base_dir = DATASET_BASE_DIR) {
-#   minipolars:::scan_parquet(paste0(base_dir,"customer.parquet"))
+#   rpolars:::scan_parquet(paste0(base_dir,"customer.parquet"))
 # }
 # get_orders_ds = function(base_dir = DATASET_BASE_DIR) {
-#   minipolars:::scan_parquet(paste0(base_dir,"orders.parquet"))
+#   rpolars:::scan_parquet(paste0(base_dir,"orders.parquet"))
 # }
 #
 #

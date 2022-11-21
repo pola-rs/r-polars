@@ -18,7 +18,7 @@ Expr
 Create a single chunk of memory for this Series.
 }
 \details{
-See rechunk() explained here \code{\link[minipolars]{docs_translations}}
+See rechunk() explained here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
 #get chunked lengths with/without rechunk

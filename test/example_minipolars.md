@@ -1,11 +1,11 @@
-minipolars_teaser
+rpolars_teaser
 ================
 Søren Welling
 7/22/2022
 
-## What is minipolars
+## What is rpolars
 
-Minipolars is an unofficial porting of polars (pola-rs) in to an R
+rpolars is an unofficial porting of polars (pola-rs) in to an R
 package. I aim to finish the project in 2022. Beta should be ready by
 the end of September 2022.
 
@@ -28,8 +28,8 @@ from R and the reverse.
 ## Hello world
 
 ``` r
-#loading the package minipolars only exposes a few functions 
-library(minipolars)
+#loading the package rpolars only exposes a few functions 
+library(rpolars)
 
 #all constructors are accessed via pl
 
@@ -46,7 +46,7 @@ method chaining `object$m1()$m2()` is the bread and butter syntax of
 polars. For now the best learning material to understand the syntax and
 the power of polars is the [official user guide for
 python](https://pola-rs.github.io/polars-book/user-guide/). As
-minipolars syntax is the same ( except `$` instead of `.`) the guide
+rpolars syntax is the same ( except `$` instead of `.`) the guide
 should be quite useful. The following example shows a typical
 ‘polar_frame’ method together with chained expressions.
 

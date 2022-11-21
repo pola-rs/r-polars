@@ -1,5 +1,5 @@
 library(magrittr)
-minipolars::import_polars_as_("pl")
+rpolars::import_polars_as_("pl")
 pf = pl$DataFrame(iris)
 
 
@@ -57,7 +57,7 @@ pl$dtypes
 
 
 ##read a csv file
-minipolars:::new_csv_r(
+rpolars:::new_csv_r(
   path = "a path",
   sep = ",",
   has_header = TRUE,
@@ -65,7 +65,7 @@ minipolars:::new_csv_r(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  minipolars:::DataType_vector$new()
+  rpolars:::DataType_vector$new()
 )
 
 

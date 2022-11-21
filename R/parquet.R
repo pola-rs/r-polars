@@ -37,7 +37,7 @@ scan_parquet = function(
     abort("unknown parallel strategy")
   }
 
-  result_lf = minipolars:::new_from_parquet(
+  result_lf = rpolars:::new_from_parquet(
     path = file,
     n_rows = n_rows,
     cache = cache,

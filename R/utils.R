@@ -176,7 +176,7 @@ l_to_vdf = function(l) {
         which(!do_inherit_DataFrame),
         collapse = ", "
       ),
-      "are not minipolars DataFrame(s)"
+      "are not rpolars DataFrame(s)"
     ))
   }
 
@@ -248,9 +248,9 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
 #'
 #' @return extptr to ProtoExprArray with all exprs or strings
 #'
-#' @examples minipolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+#' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_protoArrayExpr = function(l) {
-  pra = minipolars:::ProtoExprArray$new()
+  pra = rpolars:::ProtoExprArray$new()
   if (!is.list(l)) l = list(l)
   for (i  in l) {
     if(is_string(i)) {
@@ -272,9 +272,9 @@ construct_protoArrayExpr = function(l) {
 #'
 #' @return extptr to ProtoExprArray with all exprs or strings
 #'
-#' @examples minipolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+#' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_DataTypeVector = function(l) {
-  dtv = minipolars:::DataTypeVector$new()
+  dtv = rpolars:::DataTypeVector$new()
 
   for (i  in seq_along(l)) {
     if(inherits(l[[i]],"DataType")) {
@@ -294,7 +294,7 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #'
-#' @examples minipolars:::get_method_usages(minipolars:::DataFrame, pattern="col")
+#' @examples rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
 get_method_usages = function(env,pattern="") {
 
   found_names = ls(env,pattern=pattern)

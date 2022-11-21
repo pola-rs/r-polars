@@ -101,7 +101,7 @@ Read a file from path into a polars lazy frame. Not yet supporting eol_char and 
 }
 \examples{
 write.csv(iris,"my.csv")
-lazy_frame = minipolars:::lazy_csv_reader(path="my.csv")
+lazy_frame = rpolars:::lazy_csv_reader(path="my.csv")
 lazy_frame$collect()
 }
 \keyword{LazyFrame_new}

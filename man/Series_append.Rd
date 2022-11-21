@@ -36,7 +36,7 @@ identical(s_imut$to_r_vector(),s_imut_copy$to_r_vector())
 #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 s_mut = pl$Series(1:3)
 s_mut_copy = s_mut
-pl$set_minipolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
+pl$set_rpolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
 s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 }

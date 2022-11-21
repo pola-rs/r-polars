@@ -661,7 +661,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
             }
             _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
                 format!(
-                    "sorry minipolars has not yet implemented R conversion for Series.dtype: {}",
+                    "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
                     s.dtype()
                 ),
             ))),

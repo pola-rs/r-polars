@@ -4,13 +4,13 @@
 \alias{strictly_immutable}
 \alias{named_exprs}
 \alias{no_messages}
-\alias{get_minipolars_options}
-\alias{minipolars_options}
-\alias{set_minipolars_options}
-\alias{reset_minipolars_options}
-\title{minipolars options}
+\alias{get_rpolars_options}
+\alias{rpolars_options}
+\alias{set_rpolars_options}
+\alias{reset_rpolars_options}
+\title{rpolars options}
 \arguments{
-\item{strictly_immutable}{bool, default = TRUE, keep minipolars strictly immutable.
+\item{strictly_immutable}{bool, default = TRUE, keep rpolars strictly immutable.
 Polars/arrow is in general pro "immutable objects". However pypolars API has some minor exceptions.
 All settable property elements of classes are mutable.
 Why?, I guess python just do not have strong stance on immutability.
@@ -35,36 +35,36 @@ current settings as list
 list named by options of requirement function input must satisfy
 }
 \description{
-get, set, reset minipolars options
+get, set, reset rpolars options
 }
 \details{
-who likes minipolars package messages? use this option to turn them off.
+who likes rpolars package messages? use this option to turn them off.
 
-modifing list takes no effect, pass it to pl$set_minipolars_options
-get/set/resest interact with internal env \code{minipolars:::minipolars_optenv}
+modifing list takes no effect, pass it to pl$set_rpolars_options
+get/set/resest interact with internal env \code{rpolars:::rpolars_optenv}
 
 setting an options may be rejected if not passing opt_requirements
 }
 \examples{
 #rename columns by naming expression, experimental requires option named_exprs = TRUE
-pl$set_minipolars_options(named_exprs = TRUE)
+pl$set_rpolars_options(named_exprs = TRUE)
 pl$DataFrame(iris)$with_columns(
   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
   SW_add_2 = (pl$col("Sepal.Width")+2)
 )
- pl$get_minipolars_options()
-pl$set_minipolars_options(strictly_immutable = FALSE)
-pl$get_minipolars_options()
+ pl$get_rpolars_options()
+pl$set_rpolars_options(strictly_immutable = FALSE)
+pl$get_rpolars_options()
 
 
 #setting strictly_immutable = 42 will be rejected as
 tryCatch(
-  pl$set_minipolars_options(strictly_immutable = 42),
+  pl$set_rpolars_options(strictly_immutable = 42),
   error= function(e) print(e)
 )
 
 #reset options like this
-pl$reset_minipolars_options()
-#use get_minipolars_opt_requirements() to requirements
-pl$get_minipolars_opt_requirements()
+pl$reset_rpolars_options()
+#use get_rpolars_opt_requirements() to requirements
+pl$get_rpolars_opt_requirements()
 }

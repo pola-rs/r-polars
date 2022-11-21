@@ -1081,19 +1081,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "minipolars"
-version = "0.1.0"
-dependencies = [
- "extendr-api",
- "flume",
- "polars",
- "polars-core",
- "rayon",
- "smartstring",
- "state",
-]
-
-[[package]]
 name = "miniz_oxide"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1659,6 +1646,19 @@ name = "rle-decode-fast"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3582f63211428f83597b51b2ddb88e2a91a9d52d12831f9d08f5e624e8977422"
+
+[[package]]
+name = "rpolars"
+version = "0.1.0"
+dependencies = [
+ "extendr-api",
+ "flume",
+ "polars",
+ "polars-core",
+ "rayon",
+ "smartstring",
+ "state",
+]
 
 [[package]]
 name = "rustversion"

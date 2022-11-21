@@ -24,23 +24,23 @@ extendr_method_to_pure_functions = function(env) {
 #' @keywords api_private
 #' @examples
 #' #.pr$DataFrame$print() is an external function where self is passed as arg
-#' minipolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
+#' rpolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
 #' @export
 #' @examples
 #'
-#' minipolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
+#' rpolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 .pr            = new.env(parent=emptyenv())
-.pr$Series     = extendr_method_to_pure_functions(minipolars:::Series)
-.pr$DataFrame  = extendr_method_to_pure_functions(minipolars:::DataFrame)
+.pr$Series     = extendr_method_to_pure_functions(rpolars:::Series)
+.pr$DataFrame  = extendr_method_to_pure_functions(rpolars:::DataFrame)
 .pr$GroupBy    = NULL # derived from DataFrame in R, has no  rust calls
-.pr$LazyFrame  = extendr_method_to_pure_functions(minipolars:::LazyFrame)
-.pr$LazyGroupBy= extendr_method_to_pure_functions(minipolars:::LazyGroupBy)
-.pr$DataType   = extendr_method_to_pure_functions(minipolars:::DataType)
-.pr$DataTypeVector = extendr_method_to_pure_functions(minipolars:::DataTypeVector)
-.pr$Expr       = extendr_method_to_pure_functions(minipolars:::Expr)
-.pr$ProtoExprArray = extendr_method_to_pure_functions(minipolars:::ProtoExprArray)
-.pr$VecDataFrame = extendr_method_to_pure_functions(minipolars:::VecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(minipolars:::RNullValues)
+.pr$LazyFrame  = extendr_method_to_pure_functions(rpolars:::LazyFrame)
+.pr$LazyGroupBy= extendr_method_to_pure_functions(rpolars:::LazyGroupBy)
+.pr$DataType   = extendr_method_to_pure_functions(rpolars:::DataType)
+.pr$DataTypeVector = extendr_method_to_pure_functions(rpolars:::DataTypeVector)
+.pr$Expr       = extendr_method_to_pure_functions(rpolars:::Expr)
+.pr$ProtoExprArray = extendr_method_to_pure_functions(rpolars:::ProtoExprArray)
+.pr$VecDataFrame = extendr_method_to_pure_functions(rpolars:::VecDataFrame)
+.pr$RNullValues = extendr_method_to_pure_functions(rpolars:::RNullValues)
 #TODO remove export
 
 
@@ -63,7 +63,7 @@ extendr_method_to_pure_functions = function(env) {
 #' @seealso verify_method_call
 #'
 #' @examples
-#' minipolars:::macro_add_syntax_check_to_class("DataFrame")
+#' rpolars:::macro_add_syntax_check_to_class("DataFrame")
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
     "`$.",Class_name,"` <- function (self, name) {\n",
@@ -111,7 +111,7 @@ method_as_property = function(f, setter=FALSE) {
 }
 
 
-#' @title The complete minipolars public API.
+#' @title The complete rpolars public API.
 #' @description `pl`-object is a environment of all public functions and class constructors.
 #' Public functions are not exported as a normal package as it would be huge namespace
 #' collision with base:: and other functions. All object-methods are accessed with object$method()
@@ -131,19 +131,19 @@ method_as_property = function(f, setter=FALSE) {
 #' pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
 #'
 #' #pl inventory
-#' minipolars:::print_env(pl,"minipolars public functions")
+#' rpolars:::print_env(pl,"rpolars public functions")
 #'
 #' #all accessible classes and their public methods
-#' minipolars:::print_env(minipolars:::pl_pub_class_env,"minipolars public class methods, access via object$method()")
+#' rpolars:::print_env(rpolars:::pl_pub_class_env,"rpolars public class methods, access via object$method()")
 pl = new.env(parent=emptyenv())
 
 #used for printing public environment
 pl_class_names = sort(c("LazyFrame","Series","LazyGroupBy","DataType","Expr","DataFrame"))  #TODO discover all public class automatic
-pl_pub_env = as.environment(asNamespace("minipolars"))
+pl_pub_env = as.environment(asNamespace("rpolars"))
 pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 
 
-#' @title Any minipolars class object is made of this
+#' @title Any rpolars class object is made of this
 #' @description One SEXP of Rtype: "externalptr" + a class attribute
 #' @keywords api_object
 #'
@@ -155,7 +155,7 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'
 #' @export
 #' @examples
-#' #all a minipolars object is made of:
-#' some_minipolars_object = pl$DataFrame(iris)
-#' str(some_minipolars_object) #External Pointer tagged with a class attribute.
+#' #all a rpolars object is made of:
+#' some_rpolars_object = pl$DataFrame(iris)
+#' str(some_rpolars_object) #External Pointer tagged with a class attribute.
 object = "place_holder"

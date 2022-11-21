@@ -13,12 +13,12 @@ value
 set value of properties of DataFrames
 }
 \details{
-settable minipolars object properties may appear to be R objects, but they are not. See [\link{method_name}] example
+settable rpolars object properties may appear to be R objects, but they are not. See [\link{method_name}] example
 }
 \examples{
 #For internal use
 #is only activated for following methods of DataFrame
-ls(minipolars:::DataFrame.property_setters)
+ls(rpolars:::DataFrame.property_setters)
 
 #specific use case for one object property 'columns' (names)
 df = pl$DataFrame(iris)
@@ -39,14 +39,14 @@ df$columns
 
 #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
 #however Rstudio backticks it into df$`columns<-`
-#to make life simple, this is valid minipolars syntax also, and can be used in fast scripting
+#to make life simple, this is valid rpolars syntax also, and can be used in fast scripting
 df$`columns<-` = letters[5:1]
 
 #for stable code prefer e.g.  df$columns = letters[5:1]
 
 #to see inside code of a property use the [[]] syntax instead
-df[["columns"]] # to see property code, .pr is the internal minipolars api into rust polars
-minipolars:::DataFrame.property_setters$columns #and even more obscure to see setter code
+df[["columns"]] # to see property code, .pr is the internal rpolars api into rust polars
+rpolars:::DataFrame.property_setters$columns #and even more obscure to see setter code
 
 
 }

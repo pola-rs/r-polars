@@ -45,7 +45,7 @@ pl$lit(NULL) translates into a typeless polars Null
 \examples{
 2+2
 #Expr has the following methods/constructors
-ls(minipolars:::Expr)
+ls(rpolars:::Expr)
 
 pl$col("this_column")$sum()$over("that_column")
 #scalars to literal, explit `pl$lit(42)` implicit `+ 2`

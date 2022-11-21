@@ -4,12 +4,12 @@
 
 print(paste(
   "Modifying extendr bindings,",
-  "originals converted to pure functions and saved to minipolars:::.pr"
+  "originals converted to pure functions and saved to rpolars:::.pr"
 ))
 
 
 ## modify these Series methods
-# env = minipolars:::Series
+# env = rpolars:::Series
 # env$to_r        = Series_to_r
 # env$to_r_vector = Series_to_r_vector
 # env$to_r_list   = Series_to_r_list
@@ -41,21 +41,21 @@ print(paste(
 
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
-replace_private_with_pub_methods( minipolars:::DataFrame, "^DataFrame_")
+replace_private_with_pub_methods( rpolars:::DataFrame, "^DataFrame_")
 
 
 
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
-env = minipolars:::GroupBy
+env = rpolars:::GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
 
 
 # LazyFrame
 macro_add_syntax_check_to_class ("LazyFrame")
-replace_private_with_pub_methods( minipolars:::LazyFrame, "^LazyFrame_")
-# env = minipolars:::LazyFrame
+replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
+# env = rpolars:::LazyFrame
 # env$collect = Lazy_collect
 # env$select = Lazy_select
 # env$with_columns = Lazy_with_columns
@@ -67,7 +67,7 @@ replace_private_with_pub_methods( minipolars:::LazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")
-env = minipolars:::LazyGroupBy
+env = rpolars:::LazyGroupBy
 env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
 env$head = LazyGroupBy_head
@@ -78,14 +78,14 @@ rm(env)
 temp_keepers = character()
 macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(
-  minipolars:::Expr, "^Expr_",
+  rpolars:::Expr, "^Expr_",
   keep  = temp_keepers
 )
 
 
 
 macro_add_syntax_check_to_class("Series")
-replace_private_with_pub_methods( minipolars:::Series, "^Series_")
+replace_private_with_pub_methods( rpolars:::Series, "^Series_")
 
 
 
@@ -97,12 +97,12 @@ move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 
 
 #pl$[readers]
-pl$lazy_csv_reader = minipolars:::lazy_csv_reader
-pl$csv_reader = minipolars:::csv_reader
-pl$read_csv = minipolars:::read_csv_
+pl$lazy_csv_reader = rpolars:::lazy_csv_reader
+pl$csv_reader = rpolars:::csv_reader
+pl$read_csv = rpolars:::read_csv_
 
 #functions
-pl$concat = minipolars:::concat
+pl$concat = rpolars:::concat
 
 
 
@@ -113,7 +113,7 @@ pl$concat = minipolars:::concat
 #' @aliases mem_address
 #' @return String of mem address
 #' @examples pl$mem_address(pl$Series(1:3))
-pl$mem_address = minipolars:::mem_address
+pl$mem_address = rpolars:::mem_address
 
 
 

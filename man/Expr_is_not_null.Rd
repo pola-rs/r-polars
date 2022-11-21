@@ -19,7 +19,7 @@ Similar to R syntax !is.na(x)
 null polars about the same as R NA
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
 pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_not_null())

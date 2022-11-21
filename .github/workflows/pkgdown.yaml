@@ -121,7 +121,7 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
           #tag_name: ${{ github.run_number }}
-          files: ../minipolars_*
+          files: ../rpolars_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))

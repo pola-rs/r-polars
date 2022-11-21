@@ -16,6 +16,6 @@ bool
 The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 }
 \examples{
-minipolars:::is_DataFrame_data_input(iris)
-minipolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
+rpolars:::is_DataFrame_data_input(iris)
+rpolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 }

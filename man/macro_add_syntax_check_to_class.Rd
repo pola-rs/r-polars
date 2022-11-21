@@ -21,7 +21,7 @@ to run first verify_method_call() to check for syntax error and return
 more user friendly error if issues
 }
 \examples{
-minipolars:::macro_add_syntax_check_to_class("DataFrame")
+rpolars:::macro_add_syntax_check_to_class("DataFrame")
 }
 \seealso{
 verify_method_call

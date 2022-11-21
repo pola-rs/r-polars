@@ -1,6 +1,6 @@
 ^renv$
 ^renv\.lock$
-^minipolars\.Rproj$
+^rpolars\.Rproj$
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^docs$

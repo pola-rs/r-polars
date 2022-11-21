@@ -18,7 +18,7 @@ Drop null values.
 Similar to R syntax x\link{!(is.na(x) & !is.nan(x))}
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nulls())

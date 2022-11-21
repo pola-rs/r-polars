@@ -19,7 +19,7 @@ Immutable combine series
 }
 \details{
 append datatypes has to match. Combine does not rechunk.
-Read more about R vectors, Series and chunks in \code{\link[minipolars]{docs_translations}}:
+Read more about R vectors, Series and chunks in \code{\link[rpolars]{docs_translations}}:
 }
 \examples{
 s = c(pl$Series(1:5),3:1,NA_integer_)

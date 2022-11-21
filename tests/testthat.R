@@ -9,8 +9,8 @@
 library(testthat)
 
 
-minipolars::import_polars_as_()
-test_check("minipolars")
+rpolars::import_polars_as_()
+test_check("rpolars")
 
 
 

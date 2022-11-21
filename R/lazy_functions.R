@@ -132,7 +132,7 @@ pl$sum = function(...) {
   if (is.numeric(column)) return(pl$lit(column)$sum())
   if (is.list(column)) {
     pra = do.call(construct_ProtoExprArray,column)
-    return(minipolars:::sum_exprs(pra))
+    return(rpolars:::sum_exprs(pra))
   }
   abort("pl$sum: this input is not supported")
 }
@@ -171,7 +171,7 @@ pl$min = function(...) {
   if (is.numeric(column)) return(pl$lit(column)$min())
   if (is.list(column)) {
     pra = do.call(construct_ProtoExprArray,column)
-    return(minipolars:::min_exprs(pra))
+    return(rpolars:::min_exprs(pra))
   }
   abort("pl$min: this input is not supported")
 }
@@ -212,7 +212,7 @@ pl$max = function(...) {
   if (is.numeric(column)) return(pl$lit(column)$max())
   if (is.list(column)) {
     pra = do.call(construct_ProtoExprArray,column)
-    return(minipolars:::max_exprs(pra))
+    return(rpolars:::max_exprs(pra))
   }
   abort("pl$max: this input is not supported")
 }
@@ -247,7 +247,7 @@ pl$max = function(...) {
 pl$coalesce = function(...) {
   column = list2(...)
   pra = do.call(construct_ProtoExprArray,column)
-  minipolars:::coalesce_exprs(pra)
+  rpolars:::coalesce_exprs(pra)
 }
 
 

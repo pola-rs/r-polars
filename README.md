@@ -1,18 +1,18 @@
-# minipolars
+# rpolars
 Use awesome polars DataFrame library from R!
 
-Minipolars is an unofficial porting of polars (pola-rs) in to an R
+rpolars is an unofficial porting of polars (pola-rs) in to an R
 package. I aim to finish the project in 2022.
 
 
 ## news:
 
- - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, minipolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/minipolars/blob/main/src/minipolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
+ - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, rpolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/rpolars/blob/main/src/rpolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
 
- - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install minipolars from binary. See install section.
+ - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install rpolars from binary. See install section.
 
 
- - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise minipolars is going to perform just as fast pypolars.
+ - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise rpolars is going to perform just as fast pypolars.
 
 
 ## What is polars
@@ -35,19 +35,19 @@ from R and the reverse.
 
 
 
-# install minipolars
+# install rpolars
 
  - Macbbook x86_64
  `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003.tgz")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003.tgz")`
  
  - Linux x86_64
  `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003_R_x86_64-pc-linux-gnu.tar.gz")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003_R_x86_64-pc-linux-gnu.tar.gz")`
  
  - Windows
  `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/minipolars/releases/download/v0.1.9003.7/minipolars_0.1.9003.zip")`
+ `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003.zip")`
  
  - Other targets?  Raise an issue
  
@@ -66,18 +66,18 @@ from R and the reverse.
  - clone repo
  - `source("./renv/activate.R")` to install and set up R packages (likely automatically triggered by .Rprofile)
  - `rextendr::document()` to compile rust code and quick build package
- -  or `R CMD INSTALL --no-multiarch --with-keep.source minipolars` to build final package
+ -  or `R CMD INSTALL --no-multiarch --with-keep.source rpolars` to build final package
  - `devtools::test()` to run all unit tests.
 
 
-# minipolars_teaser
+# rpolars_teaser
 ================
 Søren Welling
 10/14/2022
 
-## What is minipolars
+## What is rpolars
 
-Minipolars is an unofficial porting of polars (pola-rs) in to an R
+rpolars is an unofficial porting of polars (pola-rs) in to an R
 package. I aim to finish the project in 2022. Beta should be ready by
 the end of September 2022.
 
@@ -100,8 +100,8 @@ from R and the reverse.
 ## Hello world
 
 ``` r
-#loading the package minipolars only exposes a few functions 
-library(minipolars)
+#loading the package rpolars only exposes a few functions 
+library(rpolars)
 
 #all constructors are accessed via pl
 
@@ -118,7 +118,7 @@ method chaining `object$m1()$m2()` is the bread and butter syntax of
 polars. For now the best learning material to understand the syntax and
 the power of polars is the [official user guide for
 python](https://pola-rs.github.io/polars-book/user-guide/). As
-minipolars syntax is the same ( except `$` instead of `.`) the guide
+rpolars syntax is the same ( except `$` instead of `.`) the guide
 should be quite useful. The following example shows a typical
 ‘polar_frame’ method together with chained expressions.
 

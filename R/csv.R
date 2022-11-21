@@ -56,7 +56,7 @@
 #'
 #' @examples
 #' write.csv(iris,"my.csv")
-#' lazy_frame = minipolars:::lazy_csv_reader(path="my.csv")
+#' lazy_frame = rpolars:::lazy_csv_reader(path="my.csv")
 #' lazy_frame$collect()
 lazy_csv_reader = function(
   path,
@@ -66,7 +66,7 @@ lazy_csv_reader = function(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  overwrite_dtype = NULL,  #minipolars:::DataTypeVector$new()$print()
+  overwrite_dtype = NULL,  #rpolars:::DataTypeVector$new()$print()
   low_memory = FALSE,
   comment_char = NULL,
   quote_char = '"',
@@ -90,7 +90,7 @@ lazy_csv_reader = function(
     if( !is.list(owdtype) || !rlang::is_named(owdtype)) {
       abort("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
-    datatype_vector = minipolars:::DataTypeVector$new() #mutable
+    datatype_vector = rpolars:::DataTypeVector$new() #mutable
     mapply(
       name = names(owdtype),
       type = unname(owdtype),
@@ -98,7 +98,7 @@ lazy_csv_reader = function(
 
         #convert possible string to datatype
         if(is_string(type)) {
-          type = minipolars:::DataType$new(type)
+          type = rpolars:::DataType$new(type)
         }
         if(!inherits(type,"DataType")) {
           abort("arg overwrite_dtype must be a named list of dtypes or dtype names")
@@ -118,17 +118,17 @@ lazy_csv_reader = function(
 
       #one string is used as one NULL marker for all columns
       if(is_string(nullvals)) {
-        return(minipolars:::RNullValues$new_all_columns(nullvals))
+        return(rpolars:::RNullValues$new_all_columns(nullvals))
       }
 
       #many unnamed strings(char vec) is used one mark for each column
       if(is.character(nullvals) && !is_named(nullvals)) {
-        return(RNullValues = minipolars:::RNullValues$new_columns(nullvals))
+        return(RNullValues = rpolars:::RNullValues$new_columns(nullvals))
       }
 
       #named char vec is used as column(name) marker(value) pairs
       if(is.character(nullvals) && is_named(nullvals)) {
-        return(minipolars:::RNullValues$new_named(null_values))
+        return(rpolars:::RNullValues$new_named(null_values))
       }
 
       abort("null_values arg must be a string OR unamed char vec OR named char vec")
@@ -138,15 +138,15 @@ lazy_csv_reader = function(
   }
 
   ##call low level function with args
-  minipolars:::check_no_missing_args(minipolars:::rlazy_csv_reader,args)
-  unwrap(do.call(minipolars:::rlazy_csv_reader,args))
+  rpolars:::check_no_missing_args(rpolars:::rlazy_csv_reader,args)
+  unwrap(do.call(rpolars:::rlazy_csv_reader,args))
 }
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader
 #' @return DataFrame
 #' @export
 csv_reader = function(...) {
-  minipolars:::lazy_csv_reader(...)$collect()
+  rpolars:::lazy_csv_reader(...)$collect()
 }
 
 

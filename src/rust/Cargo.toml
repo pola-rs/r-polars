@@ -1,5 +1,5 @@
 [package]
-name = 'minipolars'
+name = 'rpolars'
 version = '0.1.0'
 edition = '2021'
 

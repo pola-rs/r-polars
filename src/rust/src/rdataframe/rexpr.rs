@@ -127,7 +127,7 @@ impl Expr {
             }
 
             (x, 1) => Err(format!(
-                "$lit(val): minipolars not yet support rtype {:?}",
+                "$lit(val): rpolars not yet support rtype {:?}",
                 x
             )),
             (_, n) => Err(format!(

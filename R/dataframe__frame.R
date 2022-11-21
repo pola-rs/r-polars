@@ -2,14 +2,14 @@
 #'
 #' @name DataFrame_class
 #' @description The `DataFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the minipolars rust side. The instanciated
+#' the public and private methods/function calls to the rpolars rust side. The instanciated
 #' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object. The pointer address
 #' is the only statefullness of the DataFrame object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods which are callable onto the object.
 #' Most methods return another `DataFrame`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from minipolars:::.pr.$DataFrame$methodname(), also
+#' reasons, the private methods are external and must be called from rpolars:::.pr.$DataFrame$methodname(), also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -21,10 +21,10 @@
 #' @keywords DataFrame
 #' @examples
 #' #see all exported methods
-#' ls(minipolars:::DataFrame)
+#' ls(rpolars:::DataFrame)
 #'
 #' #see all private methods (not intended for regular use)
-#' ls(minipolars:::.pr$DataFrame)
+#' ls(rpolars:::.pr$DataFrame)
 #'
 #'
 #' #make an object
@@ -34,7 +34,7 @@
 #' df$shape
 #' df2 = df
 #' #use a private method, which has mutability
-#' result = minipolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
+#' result = rpolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
 #'
 #' #column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
@@ -51,7 +51,7 @@
 #' unwrap(result) #in this case no error, just a NULL because this mutable method do not return any ok-value
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
-#' err_result = minipolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
+#' err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
 #' tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
 DataFrame
 
@@ -63,7 +63,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @keywords DataFrame
 .DollarNames.DataFrame = function(x, pattern = "") {
-  get_method_usages(minipolars:::DataFrame,pattern = pattern)
+  get_method_usages(rpolars:::DataFrame,pattern = pattern)
 }
 
 
@@ -72,7 +72,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @keywords VecDataFrame
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(minipolars:::VecDataFrame,pattern = pattern)
+  get_method_usages(rpolars:::VecDataFrame,pattern = pattern)
 }
 
 
@@ -116,7 +116,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   }
 
   #input guard
-  if(!minipolars:::is_DataFrame_data_input(data)) {
+  if(!rpolars:::is_DataFrame_data_input(data)) {
     abort("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
@@ -220,8 +220,8 @@ DataFrame_print = function() {
 #'
 #' @return bool
 #'
-#' @examples minipolars:::is_DataFrame_data_input(iris)
-#' minipolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
+#' @examples rpolars:::is_DataFrame_data_input(iris)
+#' rpolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x,"data.frame") ||
     (
@@ -244,13 +244,13 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return value
 #' @keywords DataFrame
-#' @details settable minipolars object properties may appear to be R objects, but they are not. See [[method_name]] example
+#' @details settable rpolars object properties may appear to be R objects, but they are not. See [[method_name]] example
 #'
 #' @export
 #' @examples
 #' #For internal use
 #' #is only activated for following methods of DataFrame
-#' ls(minipolars:::DataFrame.property_setters)
+#' ls(rpolars:::DataFrame.property_setters)
 #'
 #' #specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
@@ -271,14 +271,14 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
 #' #however Rstudio backticks it into df$`columns<-`
-#' #to make life simple, this is valid minipolars syntax also, and can be used in fast scripting
+#' #to make life simple, this is valid rpolars syntax also, and can be used in fast scripting
 #' df$`columns<-` = letters[5:1]
 #'
 #' #for stable code prefer e.g.  df$columns = letters[5:1]
 #'
 #' #to see inside code of a property use the [[]] syntax instead
-#' df[["columns"]] # to see property code, .pr is the internal minipolars api into rust polars
-#' minipolars:::DataFrame.property_setters$columns #and even more obscure to see setter code
+#' df[["columns"]] # to see property code, .pr is the internal rpolars api into rust polars
+#' rpolars:::DataFrame.property_setters$columns #and even more obscure to see setter code
 #'
 #'
 "$<-.DataFrame" = function(self, name, value) {
@@ -291,7 +291,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   }
 
   # if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
-  if (minipolars_optenv$strictly_immutable) self = self$clone()
+  if (rpolars_optenv$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self,value)
   self
@@ -575,7 +575,7 @@ DataFrame_select = function(...) {
 #' )
 #'
 #' #rename columns by naming expression is concidered experimental
-#' pl$set_minipolars_options(named_exprs = TRUE) #unlock
+#' pl$set_rpolars_options(named_exprs = TRUE) #unlock
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width")+2)
@@ -764,7 +764,7 @@ DataFrame_to_struct = function(name = "") {
 }
 
 
-##TODO contribute polars add minipolars defaults for to_struct and unnest
+##TODO contribute polars add rpolars defaults for to_struct and unnest
 #' Unnest a DataFrame struct columns.
 #' @rdname DataFrame_to_Struct_unnest
 #' @param names names of struct columns to unnest, default NULL unnest any struct column

@@ -3,7 +3,7 @@
 \docType{data}
 \name{pl}
 \alias{pl}
-\title{The complete minipolars public API.}
+\title{The complete rpolars public API.}
 \format{
 An object of class \code{environment} of length 34.
 }
@@ -27,9 +27,9 @@ bind the environment to another variable name as \code{simon_says = pl} or even 
 pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
 
 #pl inventory
-minipolars:::print_env(pl,"minipolars public functions")
+rpolars:::print_env(pl,"rpolars public functions")
 
 #all accessible classes and their public methods
-minipolars:::print_env(minipolars:::pl_pub_class_env,"minipolars public class methods, access via object$method()")
+rpolars:::print_env(rpolars:::pl_pub_class_env,"rpolars public class methods, access via object$method()")
 }
 \keyword{api}

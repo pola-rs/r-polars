@@ -23,7 +23,7 @@ Exprs
 neq method and operator
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
 #' #three syntaxes same result

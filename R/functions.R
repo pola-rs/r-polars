@@ -52,9 +52,9 @@ concat = function(
     inherits(first,"DataFrame"), {
       vdf = l_to_vdf(l)
       pcase(
-        how == "vertical",   minipolars:::concat_df(vdf),
-        how == "diagonal",    minipolars:::diag_concat_df(vdf),
-        how == "horizontal", minipolars:::hor_concat_df(vdf),
+        how == "vertical",   rpolars:::concat_df(vdf),
+        how == "diagonal",    rpolars:::diag_concat_df(vdf),
+        how == "horizontal", rpolars:::hor_concat_df(vdf),
         or_else = abort("internal errror")
       )
     },

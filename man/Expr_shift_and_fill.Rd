@@ -22,7 +22,7 @@ Expr
 Shift the values by a given period and fill the resulting null values.
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
 pl$select(

@@ -120,7 +120,7 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
         "outer" => pl::JoinType::Outer,
         "semi" => pl::JoinType::Semi,
         "anti" => pl::JoinType::Anti,
-        _ => panic!("minipolars internal error: jointype not recognized"),
+        _ => panic!("rpolars internal error: jointype not recognized"),
     }
 }
 

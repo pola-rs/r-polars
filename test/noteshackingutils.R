@@ -92,7 +92,7 @@ rc.options("custom.completer" = function(x) {
   NULL
 })
 rcstat
-library(minipolars)
+library(rpolars)
 s = pl$Series(1:4)
 
 rcs2 = rc.status()

@@ -19,7 +19,7 @@ Get maximum value, but propagate/poison encountered \code{NaN} values.
 Get maximum value.
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}s
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
 }
 \examples{
 pl$DataFrame(list(x=c(1,NaN,Inf,3)))$select(pl$col("x")$nan_max()$is_nan()) #is true

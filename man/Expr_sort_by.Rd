@@ -25,7 +25,7 @@ Sort this column by the ordering of another column, or multiple other columns.
 In projection/ selection context the whole column is sorted.
 If used in a groupby context, the groups are sorted.
 
-See Inf,NaN,NULL,Null/NA translations here \code{\link[minipolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 }
 \examples{
 df = pl$DataFrame(list(

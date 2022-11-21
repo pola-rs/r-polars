@@ -1,6 +1,6 @@
 LIBDIR = ./rust/target/release
-STATLIB = $(LIBDIR)/libminipolars.a
-PKG_LIBS = -L$(LIBDIR) -lminipolars
+STATLIB = $(LIBDIR)/librpolars.a
+PKG_LIBS = -L$(LIBDIR) -lrpolars
 
 all: C_clean
 
