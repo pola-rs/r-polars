@@ -2,11 +2,11 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, master, fix_windows_build]
+    branches: [main, fix_github_actions]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
-    branches: [main, master, fix_windows_build]
+    branches: [main, fix_github_actions]
   release:
     types: [published]
 
@@ -40,7 +40,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
+     # GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
 
     steps:
@@ -115,13 +115,13 @@ jobs:
         run: devtools::build(binary = TRUE, args = c('--preclean'))
         shell: Rscript {0}
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          #tag_name: ${{ github.run_number }}
-          files: ../rpolars_*
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     token: ${{ secrets.PAT_TOKEN }}
+      #     #tag_name: ${{ github.run_number }}
+      #     files: ../rpolars_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
@@ -136,12 +136,12 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
         shell: Rscript {0}
 
-      - name: Deploy to GitHub pages 🚀
-        if: runner.os == 'Linux' && github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          clean: false
-          branch: main
-          folder: docs
-          repository-name: sorhawell/sorhawell.github.io
-          token: ${{ secrets.PAT_TOKEN }}
+      # - name: Deploy to GitHub pages 🚀
+      #   if: runner.os == 'Linux' && github.event_name != 'pull_request'
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     clean: false
+      #     branch: main
+      #     folder: docs
+      #     repository-name: sorhawell/sorhawell.github.io
+      #     token: ${{ secrets.PAT_TOKEN }}
