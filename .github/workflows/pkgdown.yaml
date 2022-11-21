@@ -115,13 +115,13 @@ jobs:
         run: devtools::build(binary = TRUE, args = c('--preclean'))
         shell: Rscript {0}
 
-      # - name: Release
-      #   uses: softprops/action-gh-release@v1
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     token: ${{ secrets.PAT_TOKEN }}
-      #     #tag_name: ${{ github.run_number }}
-      #     files: ../rpolars_*
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        #if: startsWith(github.ref, 'refs/tags/')
+        with:
+          #token: ${{ secrets.PAT_TOKEN }}
+          tag_name: ${{ github.run_number }}
+          files: ../rpolars_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
