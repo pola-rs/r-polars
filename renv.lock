@@ -113,6 +113,14 @@
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042",
       "Requirements": []
     },
+    "codetools": {
+      "Package": "codetools",
+      "Version": "0.2-18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "019388fc48e48b3da0d3a76ff94608a8",
+      "Requirements": []
+    },
     "commonmark": {
       "Package": "commonmark",
       "Version": "1.8.1",
@@ -773,12 +781,12 @@
       "Version": "0.2.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
+      "RemoteHost": "api.github.com",
       "RemoteUsername": "extendr",
       "RemoteRepo": "rextendr",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "af7d4779991d135dba18320644ac231c902974c3",
-      "RemoteHost": "api.github.com",
-      "Hash": "7ae22081bd85224652ae742433ffe44b",
+      "RemoteRef": "main",
+      "RemoteSha": "36e145fb00167e25b9c0c891f35720aff70bf02d",
+      "Hash": "16d5eb456dbffe4e96daa19ab2523cbf",
       "Requirements": [
         "brio",
         "callr",
