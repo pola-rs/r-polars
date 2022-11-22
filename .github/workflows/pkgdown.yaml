@@ -16,7 +16,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    needs: deploy
+    #needs: deploy
     # runs-on: ubuntu-latest
     # # Only restrict concurrency for non-PR jobs
     # concurrency:
@@ -153,20 +153,20 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       docs_key: ${{ secrets.DEPLOY_DOCS }}
       repo_token: ${{ secrets.GITHUB_TOKEN }}
-    #needs: pkgdown
+    needs: pkgdown
     steps:
       - uses: actions/checkout@v3
       #- uses: actions/download-artifact@v3
       #   with:
       #     name: rpolars-docs
 
-      - name: Display structure of downloaded files
-        run: |
+      # - name: Display structure of downloaded files
+      #   run: |
 
-          mkdir docs
-          echo "# hello to rpolars.github.io" > docs/README.md
+      #     mkdir docs
+      #     echo "# hello to rpolars.github.io" > docs/README.md
 
-          ls
+      #     ls
 
       - uses: webfactory/ssh-agent@v0.6.0
         with:
