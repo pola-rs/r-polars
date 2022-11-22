@@ -180,5 +180,5 @@ jobs:
           branch: main
           folder: docs
           repository-name: rpolars/rpolars.github.io
-          #ssh-key: docs_key
+          ssh-key: true
           #token: ${{ secrets.PAT_TOKEN }}
