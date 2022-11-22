@@ -162,11 +162,20 @@ jobs:
 
       - name: Display structure of downloaded files
         run: |
-          ls -R
+
           mkdir docs
           echo "# hello to rpolars.github.io" > docs/README.md
-          ls -R
-          cat ${{ secrets.DEPLOY_DOCS }} | ssh-add -
+
+          ls
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.DEPLOY_DOCS }}
+          name: id_rsa # optional
+          #known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          #config: ${{ secrets.CONFIG }} # ssh_config; optional
+          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
