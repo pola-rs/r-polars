@@ -16,7 +16,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    #needs: deploy
+    needs: deploy
     # runs-on: ubuntu-latest
     # # Only restrict concurrency for non-PR jobs
     # concurrency:
@@ -156,9 +156,9 @@ jobs:
     needs: pkgdown
     steps:
       - uses: actions/checkout@v3
-      #- uses: actions/download-artifact@v3
-      #   with:
-      #     name: rpolars-docs
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpolars-docs
 
       # - name: Display structure of downloaded files
       #   run: |
