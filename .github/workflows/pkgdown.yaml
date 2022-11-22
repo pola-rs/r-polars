@@ -147,6 +147,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: deploy docs
+    needs: pkgdowns
     steps:
       - uses: actions/download-artifact@v3
         with:
