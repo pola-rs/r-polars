@@ -41,6 +41,7 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       # GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
     permissions:
       contents: write
@@ -169,4 +170,5 @@ jobs:
           branch: main
           folder: docs
           repository-name: rpolars/rpolars.github.io
+          token: repo_token
           #token: ${{ secrets.PAT_TOKEN }}
