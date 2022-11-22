@@ -16,7 +16,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    needs: deploy
+    #needs: deploy
     # runs-on: ubuntu-latest
     # # Only restrict concurrency for non-PR jobs
     # concurrency:
