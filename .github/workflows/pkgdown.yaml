@@ -16,13 +16,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    #needs: deploy
-    # runs-on: ubuntu-latest
-    # # Only restrict concurrency for non-PR jobs
-    # concurrency:
-    #   group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
 
     strategy:
@@ -40,7 +34,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      # GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
+
       docs_key: ${{ secrets.DEPLOY_DOCS }}
       repo_token: ${{ secrets.GITHUB_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
@@ -109,23 +103,22 @@ jobs:
         with:
           cache-version: 2
 
-      # - name: build package + test
-      #   run: |
-      #     devtools::install(quick = TRUE)
-      #     devtools::test(stop_on_failure = TRUE)
-      #   shell: Rscript {0}
+      - name: build package + test
+        run: |
+          devtools::install(quick = TRUE)
+          devtools::test(stop_on_failure = TRUE)
+        shell: Rscript {0}
 
-      # - name: build binary
-      #   run: devtools::build(binary = TRUE, args = c('--preclean'))
-      #   shell: Rscript {0}
+      - name: build binary
+        run: devtools::build(binary = TRUE, args = c('--preclean'))
+        shell: Rscript {0}
 
-      # - name: Release
-      #   uses: softprops/action-gh-release@v1
-      #   #if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     #token: ${{ secrets.PAT_TOKEN }}
-      #     tag_name: ${{ github.run_number }}
-      #     files: ../rpolars_*
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        #if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.run_number }}
+          files: ../rpolars_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
@@ -140,35 +133,6 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
         shell: Rscript {0}
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: rpolars-docs
-          retention-days: 5
-          path: |
-            docs
-      # deploy:
-      #   runs-on: ubuntu-latest
-      #   name: deploy docs
-      #   env:
-      #     R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      #     docs_key: ${{ secrets.DEPLOY_DOCS }}
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #   #needs: pkgdown
-      #   steps:
-      #- uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        with:
-          name: rpolars-docs
-
-      # - name: Display structure of downloaded files
-      #   run: |
-
-      #     mkdir docs
-      #     echo "# hello to rpolars.github.io" > docs/README.md
-
-      #     ls
-
       - uses: webfactory/ssh-agent@v0.6.0
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
@@ -182,4 +146,3 @@ jobs:
           folder: docs
           repository-name: rpolars/rpolars.github.io
           ssh-key: true
-          #token: ${{ secrets.PAT_TOKEN }}
