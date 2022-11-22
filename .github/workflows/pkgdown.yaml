@@ -168,14 +168,9 @@ jobs:
 
           ls
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - uses: webfactory/ssh-agent@v0.6.0
         with:
-          key: ${{ secrets.DEPLOY_DOCS }}
-          name: id_rsa # optional
-          known_hosts: unnecessary
-          #config: ${{ secrets.CONFIG }} # ssh_config; optional
-          if_key_exists: fail # replace / ignore / fail; optional (defaults to fail)
+          ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
