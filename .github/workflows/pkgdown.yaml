@@ -16,6 +16,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
+    needs: deploy
     # runs-on: ubuntu-latest
     # # Only restrict concurrency for non-PR jobs
     # concurrency:
@@ -147,14 +148,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: deploy docs
-    needs: pkgdown
+    #needs: pkgdown
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: rpolars-docs
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: rpolars-docs
 
       - name: Display structure of downloaded files
-        run: ls -R
+        run: |
+          ls -R
+          mkdir docs
+          echo "# hello to rpolars.github.io" > docs/README.md
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
