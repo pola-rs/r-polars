@@ -166,6 +166,7 @@ jobs:
           mkdir docs
           echo "# hello to rpolars.github.io" > docs/README.md
           ls -R
+          cat ${{ secrets.DEPLOY_DOCS }} | ssh-add -
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
@@ -175,5 +176,5 @@ jobs:
           branch: main
           folder: docs
           repository-name: rpolars/rpolars.github.io
-          ssh-key: docs_key
+          #ssh-key: docs_key
           #token: ${{ secrets.PAT_TOKEN }}
