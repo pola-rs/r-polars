@@ -40,7 +40,7 @@ jobs:
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-     # GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
+      # GITHUB_PAT: ${{ secrets.PAT_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
 
     steps:
@@ -135,6 +135,13 @@ jobs:
         if: runner.os == 'Linux'
         run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
         shell: Rscript {0}
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: rpolars-docs
+          path: |
+            docs
 
       # - name: Deploy to GitHub pages 🚀
       #   if: runner.os == 'Linux' && github.event_name != 'pull_request'
