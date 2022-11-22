@@ -165,6 +165,7 @@ jobs:
           ls -R
           mkdir docs
           echo "# hello to rpolars.github.io" > docs/README.md
+          ls -R
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
