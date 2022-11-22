@@ -144,6 +144,16 @@ jobs:
           retention-days: 5
           path: |
             docs
+  deploy:
+    runs-on: ubuntu-latest
+    name: deploy docs
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: rpolars-docs
+
+      - name: Display structure of downloaded files
+        run: ls -R
 
       - name: Deploy to GitHub pages 🚀
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
