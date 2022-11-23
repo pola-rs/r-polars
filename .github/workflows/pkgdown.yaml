@@ -2,11 +2,12 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, fix_github_actions]
+    branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
-    branches: [main, fix_github_actions]
+    branches:
+      - "*"
   release:
     types: [published]
 
@@ -38,6 +39,7 @@ jobs:
       docs_key: ${{ secrets.DEPLOY_DOCS }}
       repo_token: ${{ secrets.GITHUB_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
+      is_release: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
     permissions:
       contents: write
 
@@ -45,7 +47,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: check if release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: $is_release
         run: |
           echo this is a release
 
@@ -63,7 +65,7 @@ jobs:
           brew install libgit2
           brew install harfbuzz fribidi
 
-      - name: Install ubntu SYSTEM REQUIREMENTS
+      - name: Install ubuntu SYSTEM REQUIREMENTS
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update -y
@@ -92,13 +94,6 @@ jobs:
           update-rtools: true
           Ncpus: 2
 
-      - name: show rustup targets + rtools gcc
-        if: runner.os == 'Windows'
-        run: |
-          rustup show
-          dir -Path c:\rtools* -Filter *gcc*.exe* -Recurse | %{$_.FullName}
-          echo echo $env:path
-
       - uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 2
@@ -115,7 +110,7 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        #if: startsWith(github.ref, 'refs/tags/')
+        if: $is_release
         with:
           tag_name: ${{ github.run_number }}
           files: ../rpolars_*
@@ -134,11 +129,12 @@ jobs:
         shell: Rscript {0}
 
       - uses: webfactory/ssh-agent@v0.6.0
+        if: $is_release
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
       - name: Deploy to GitHub pages 🚀
-        if: runner.os == 'Linux' && github.event_name != 'pull_request'
+        if: $is_release
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false
