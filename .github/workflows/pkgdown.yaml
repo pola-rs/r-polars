@@ -58,9 +58,9 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('Cargo.toml') }}
+            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
       - uses: actions-rs/toolchain@v1
