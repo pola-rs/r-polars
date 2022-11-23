@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R. 
-Version: 0.1.9003
+Version: 0.1.1
 Imports: rlang
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
