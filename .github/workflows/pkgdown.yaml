@@ -51,6 +51,11 @@ jobs:
         run: |
           echo this is a release
 
+      - name: Fix path for Windows caching
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+
       - name: cache rpolars rust targets
         id: cache-rust-targets
         uses: actions/cache@v3
