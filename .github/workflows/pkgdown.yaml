@@ -39,7 +39,7 @@ jobs:
       docs_key: ${{ secrets.DEPLOY_DOCS }}
       repo_token: ${{ secrets.GITHUB_TOKEN }}
       TOOLCHAIN: ${{ matrix.config.rust-version }}
-      is_release: ${{ startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request' }}
+
     permissions:
       contents: write
 
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: check if release
-        if: env.is_release
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
         run: |
           echo this is a release
 
@@ -122,7 +122,7 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v1
-        if: env.is_release
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
         with:
           tag_name: ${{ github.run_number }}
           files: ../rpolars_*
@@ -141,12 +141,12 @@ jobs:
         shell: Rscript {0}
 
       - uses: webfactory/ssh-agent@v0.6.0
-        if: env.is_release
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
       - name: Deploy to GitHub pages 🚀
-        if: env.is_release
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false
