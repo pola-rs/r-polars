@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: check if release
-        if: ${{ ${{
+        if: ${{ is_release }}
         run: |
           echo this is a release
 
