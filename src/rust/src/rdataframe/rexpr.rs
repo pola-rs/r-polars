@@ -126,10 +126,7 @@ impl Expr {
                 Ok(x)
             }
 
-            (x, 1) => Err(format!(
-                "$lit(val): rpolars not yet support rtype {:?}",
-                x
-            )),
+            (x, 1) => Err(format!("$lit(val): rpolars not yet support rtype {:?}", x)),
             (_, n) => Err(format!(
                 "$lit(val), literals mush have length one, not length: {:?}",
                 n
@@ -785,7 +782,9 @@ impl Expr {
     pub fn reshape(&self, dims: Vec<f64>) -> List {
         let dims_result: std::result::Result<Vec<i64>, String> =
             dims.iter().map(|x| try_f64_into_i64(*x)).collect();
-        let expr_result = dims_result.map(|dims| Expr(self.0.clone().reshape(&dims[..])));
+        let expr_result = dims_result
+            .map(|dims| Expr(self.0.clone().reshape(&dims[..])))
+            .map_err(|err| format!("reshape: {}", err));
         r_result_list(expr_result)
     }
 

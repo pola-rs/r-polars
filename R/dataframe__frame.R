@@ -91,7 +91,6 @@ DataFrame
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
-#' @importFrom rlang abort
 #' @usage DataFrame(data)
 #' @keywords DataFrame_new
 #'
@@ -117,7 +116,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 
   #input guard
   if(!rpolars:::is_DataFrame_data_input(data)) {
-    abort("input must inherit data.frame or be a list of vectors and/or  Series")
+    stopf("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
   if (inherits(data,"data.frame")) {
@@ -155,7 +154,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
     if(make_names_unique) {
       keys = make.unique(keys, sep = "_")
     } else {
-      abort(
+      stopf(
         paste(
           "conflicting column names not allowed:",
           paste(unique(keys[duplicated(keys)]),collapse=", ")
@@ -287,10 +286,10 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
   #stop if method is not a setter
   if(!inherits(self[[name]],"setter")) {
-    unwrap(list(err= paste("no setter method for",name)))
+    pstop(err= paste("no setter method for",name))
   }
 
-  # if(is.null(func)) unwrap(list(err= paste("no setter method for",name)))
+  # if(is.null(func)) pstop(err= paste("no setter method for",name)))
   if (rpolars_optenv$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self,value)
@@ -413,10 +412,10 @@ DataFrame_schema = method_as_property(function() {
 #
 DataFrameCompareToOtherDF = function(self, other, op) {
 
-  abort("not done yet")
+  stopf("not done yet")
 #    """Compare a DataFrame with another DataFrame."""
-  if (!identical(self$columns,other$columns)) abort("DataFrame columns do not match")
-  if (!identical(self$shape, other$shape)) abort("DataFrame dimensions do not match")
+  if (!identical(self$columns,other$columns)) stopf("DataFrame columns do not match")
+  if (!identical(self$shape, other$shape)) stopf("DataFrame dimensions do not match")
 
   suffix = "__POLARS_CMP_OTHER"
   other_renamed = other$select(pl$all()$suffix(suffix))
@@ -513,7 +512,7 @@ DataFrame_get_column = function(name) {
 #' pl$DataFrame(a=1:4)$to_series()
 DataFrame_to_series = function(idx=0) {
   if(!is.numeric(idx) || isTRUE(idx<0)) {
-    unwrap(list(err = "idx must be non-negative numeric"))
+    pstop(err = "idx must be non-negative numeric")
   }
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
@@ -544,7 +543,6 @@ DataFrame_to_series = function(idx=0) {
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-
   args = list2(...)
   exprs = do.call(construct_ProtoExprArray,args)
   df = unwrap(.pr$DataFrame$select(self,exprs))
@@ -603,7 +601,6 @@ DataFrame_with_column = function(expr) {
 #'
 #' @aliases limit
 #' @param n positive numeric or integer number not larger than 2^32
-#' @importFrom  rlang is_scalar_integerish
 #'
 #' @details any number will converted to u32. Negative raises error
 #' @keywords  DataFrame

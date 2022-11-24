@@ -90,7 +90,7 @@ env_class_names = names(is_env_class)[is_env_class]
 cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
   cat(i_class,", ",sep="")
-  if(!exists(paste0("$.",i_class))) abort("internal assertion failed, env class without a dollarsign method")
+  if(!exists(paste0("$.",i_class))) stopf("internal assertion failed, env class without a dollarsign method")
   macro_add_syntax_check_to_class(i_class)
 }
 cat("\n")

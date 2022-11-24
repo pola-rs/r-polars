@@ -19,7 +19,9 @@ rpolars_optreq = list() #all requirement functions put in here
 #'
 rpolars_optenv$strictly_immutable = TRUE #set default value
 rpolars_optreq$strictly_immutable = list( #set requirement functions of default value
-  is_bool = rlang::is_bool
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
 )
 
 #' @rdname rpolars_options
@@ -41,7 +43,9 @@ rpolars_optreq$strictly_immutable = list( #set requirement functions of default 
 #' )
 rpolars_optenv$named_exprs = FALSE #set default value
 rpolars_optreq$named_exprs = list( #set requirement functions of default value
-  is_bool = rlang::is_bool
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
 )
 
 
@@ -53,7 +57,9 @@ rpolars_optreq$named_exprs = list( #set requirement functions of default value
 #' turn of messages
 rpolars_optenv$no_messages = FALSE #set default value
 rpolars_optreq$no_messages = list( #set requirement functions of default value
-  is_bool = rlang::is_bool
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
 )
 
 
@@ -82,7 +88,6 @@ pl$get_rpolars_options = function() {
 
 #' @rdname rpolars_options
 #' @name set_rpolars_options
-#' @importFrom  rlang is_bool is_function
 #' @return current settings as list
 #' @details setting an options may be rejected if not passing opt_requirements
 #' @examples
@@ -102,10 +107,10 @@ pl$set_rpolars_options = function(
 
   #check opts
   opts = list2(...)
-  if(is.null(names(opts)) || !all(nzchar(names(opts)))) abort("all options passed must be named")
+  if(is.null(names(opts)) || !all(nzchar(names(opts)))) stopf("all options passed must be named")
   unknown_opts = setdiff(names(opts),names(rpolars_optenv))
   if(length(unknown_opts)) {
-    abort(paste("unknown option(s) was passed:",paste(unknown_opts,collapse=", ")))
+    stopf(paste("unknown option(s) was passed:",paste(unknown_opts,collapse=", ")))
   }
 
   #update options
@@ -114,7 +119,7 @@ pl$set_rpolars_options = function(
     stopifnot(
       !is.null(opt_requirements),
       is.list(opt_requirements),
-      all(sapply(opt_requirements,is_function)),
+      all(sapply(opt_requirements,is.function)),
       all(nzchar(names(opt_requirements)))
     )
 
@@ -123,7 +128,7 @@ pl$set_rpolars_options = function(
       opt_value = opts[[i]]
       opt_result = opt_check(opt_value)
       if(!isTRUE(opt_result)) {
-        abort(paste(
+        stopf(paste(
           "option:",i," must satisfy requirement named",j,
           "with function\n", paste(capture.output(print(opt_check)),collapse="\n")
         ))

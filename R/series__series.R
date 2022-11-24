@@ -124,7 +124,6 @@ length.Series = \(x) x$len()
 #' @rdname Series
 #' @keywords Series_new
 #' @return Series
-#' @importFrom  rlang is_string
 #' @aliases Series
 #'
 #' @examples {
@@ -134,10 +133,10 @@ pl$Series = function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
   if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x) || is.factor(x)) {
     if(is.null(name)) name = ""
-    if(!is_string(name)) abort("name must be NULL or a string")
+    if(!is_string(name)) stopf("name must be NULL or a string")
     return(.pr$Series$new(x,name))
   }
-  abort("x must be a double, interger, char, or logical vector")
+  stopf("x must be a double, interger, char, or logical vector")
 }
 
 
@@ -251,7 +250,7 @@ Series_rem = function(other) {
 #' pl$Series(1:5) == pl$Series(c(1:3,NA_integer_,10L))
 Series_compare = function(other, op) {
   other_s = wrap_s(other)
-  if(self$len() != other_s$len()) abort("Failed to compare two Series because of differing lengths.")
+  if(self$len() != other_s$len()) stopf("Failed to compare two Series because of differing lengths.")
   .pr$Series$compare(self, wrap_s(other), op)
 }
 #' @export
@@ -533,7 +532,7 @@ Series_append = function(other, immutable = TRUE) {
     c(self,other)
   } else {
     if(rpolars_optenv$strictly_immutable) {
-      abort(paste(
+      stopf(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
         "`pl$set_rpolars_options(strictly_immutable = F)`"
       ))
@@ -733,7 +732,7 @@ Series_flags = method_as_property(function() {
 #' pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
 Series_sort = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
-    abort(paste(
+    stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
       "`pl$set_rpolars_options(strictly_immutable = F)`"
     ))
@@ -796,7 +795,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name,name)) return(self) #no change needed
   if(in_place && rpolars_optenv$strictly_immutable) {
-    abort(paste(
+    stopf(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
       "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = F)`"
     ))
@@ -823,8 +822,8 @@ Series_rename = function(name, in_place = FALSE) {
 #' @examples
 #' pl$Series(1:2,"bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
-  if(!is.numeric(n)) abort("n must be numeric")
-  if(!is_bool(rechunk)) abort("rechunk must be a bool")
+  if(!is.numeric(n)) stopf("n must be numeric")
+  if(!is_bool(rechunk)) stopf("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk))
 }
 

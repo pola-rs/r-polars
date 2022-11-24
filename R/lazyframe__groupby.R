@@ -29,18 +29,16 @@ LazyGroupBy_agg = agg = function(...) {
 #' @param f  R function to apply
 #' @return A new `LazyFrame` object.
 LazyGroupBy_apply = function(f) {
-  abort("this function is not yet implemented")
+  stopf("this function is not yet implemented")
 }
 
 #' @title LazyGroupBy_head
 #' @description
 #' get n rows of head of group
 #' @param n integer number of rows to get
-#' @importFrom rlang is_integerish
 #' @return A new `LazyFrame` object.
 LazyGroupBy_head = function(n=1L) {
-  if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
-  .pr$LazyGroupBy$head(n)
+  unwrap(.pr$LazyGroupBy$head(n))
 }
 
 
@@ -50,8 +48,7 @@ LazyGroupBy_head = function(n=1L) {
 #' @param n integer number of rows to get
 #' @return A new `LazyFrame` object.
 LazyGroupBy_tail = function(n = 1L) {
-  if(!is_integerish(n) && n>=1L) abort("n rows must be a whole positive number")
-  .pr$LazyGroupBy$tail(n)
+  unwrap(.pr$LazyGroupBy$tail(n))
 }
 
 

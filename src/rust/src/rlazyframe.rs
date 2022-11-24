@@ -1,6 +1,8 @@
 use crate::rdataframe::rexpr::*;
 use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
+use crate::utils::try_f64_into_u32;
+use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 
 use crate::concurrent::handle_thread_r_requests;
@@ -45,10 +47,12 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
-    fn limit(&self, n: u32) -> LazyFrame {
-        // from R side passed n rlang::is_integerish() and within [0;2^32-1]
-        // and therefore fully contained in u32. extendr auto converts if f64 or i32
-        LazyFrame(self.0.clone().limit(n as u32))
+    fn limit(&self, n: f64) -> List {
+        r_result_list(
+            try_f64_into_u32(n, false)
+                .map(|n| LazyFrame(self.0.clone().limit(n)))
+                .map_err(|err| format!("limit: {}", err)),
+        )
     }
 
     fn filter(&self, expr: &Expr) -> LazyFrame {
@@ -118,12 +122,20 @@ impl LazyGroupBy {
         LazyFrame(self.0.clone().agg(expr_vec))
     }
 
-    fn head(&self, n: i32) -> LazyFrame {
-        LazyFrame(self.0.clone().head(Some(n as usize)))
+    fn head(&self, n: f64) -> List {
+        r_result_list(
+            try_f64_into_usize(n, false)
+                .map(|n| LazyFrame(self.0.clone().head(Some(n))))
+                .map_err(|err| format!("head: {}", err)),
+        )
     }
 
-    fn tail(&self, n: i32) -> LazyFrame {
-        LazyFrame(self.0.clone().tail(Some(n as usize)))
+    fn tail(&self, n: f64) -> List {
+        r_result_list(
+            try_f64_into_usize(n, false)
+                .map(|n| LazyFrame(self.0.clone().tail(Some(n))))
+                .map_err(|err| format!("tail: {}", err)),
+        )
     }
 
     // fn apply(&self, robj: Robj, val: f64) -> Robj {

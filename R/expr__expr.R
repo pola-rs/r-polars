@@ -395,7 +395,6 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @param ...  any Expr or string
 #'
-#' @importFrom rlang is_string list2
 #'
 #' @keywords internal
 #'
@@ -406,7 +405,7 @@ construct_ProtoExprArray = function(...) {
 
 
   pra = rpolars:::ProtoExprArray$new()
-  args = rlang::list2(...)
+  args = list2(...)
   arg_names = names(args)
 
 
@@ -424,7 +423,7 @@ construct_ProtoExprArray = function(...) {
   } else {
 
     if(!rpolars:::rpolars_optenv$named_exprs) {
-      abort("not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` to enable column naming by expression")
+      stopf("not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` to enable column naming by expression")
     }
 
     for (i in seq_along(args)) {
@@ -845,7 +844,7 @@ Expr_exclude  = function(columns) {
     columns = pcase(
       all(sapply(columns,inherits,"DataType")), unwrap(.pr$DataTypeVector$from_rlist(columns)),
       all(sapply(columns,is_string)), unlist(columns),
-      or_else = unwrap(list(err=  paste0("only lists of pure DataType or String")))
+      or_else = pstop(err=  paste0("only lists of pure DataType or String"))
     )
   }
 
@@ -854,7 +853,7 @@ Expr_exclude  = function(columns) {
     is.character(columns), .pr$Expr$exclude(self, columns),
     inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self,columns),
     inherits(columns, "DataType"), .pr$Expr$exclude_dtype(self,unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
-    or_else = unwrap(list(err=  paste0("this type is not supported for Expr_exclude: ", columns)))
+    or_else = pstop(err=  paste0("this type is not supported for Expr_exclude: ", columns))
   )
 
 }
@@ -884,15 +883,18 @@ Expr_keep_name = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
 Expr_map_alias = function(fun) {
-  if (!exists(".warn_map_alias",envir = rpolars:::runtime_state)) {
+  if (
+    !rpolars_optenv$no_messages &&
+    !exists(".warn_map_alias",envir = rpolars:::runtime_state)
+  ) {
     assign(".warn_map_alias",1L,envir = rpolars:::runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
     # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
     # then handle_thread_r_requests should be rewritten to handle any type.
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") #TODO resolve
   }
-  if(!is.function(fun)) unwrap(list(err="alias_map fun must be a function"), class="not_fun")
-  if(length(formals(fun))==0) unwrap(list(err="alias_map fun must take at least one parameter"), class="not_one_arg")
+  if(!is.function(fun)) pstop(err="alias_map fun must be a function", class="not_fun")
+  if(length(formals(fun))==0) pstop(err="alias_map fun must take at least one parameter", class="not_one_arg")
   .pr$Expr$map_alias(self,fun)
 }
 
@@ -1266,7 +1268,7 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k , reverse = FALSE) {
-  if(!is.numeric(k) || k<0) abort("k must be numeric and positive, prefereably integerish")
+  if(!is.numeric(k) || k<0) stopf("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self,k , reverse)
 }
 
@@ -1515,9 +1517,9 @@ Expr_shift_and_fill = function(periods, fill_value) {
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
     # the wrong stuff
-     is.null(value) && is.null(strategy),   abort("must specify either value or strategy"),
-    !is.null(value) && !is.null(strategy),  abort("cannot specify both value and strategy"),
-    !is.null(strategy) && !strategy %in% c("forward","backward") && !is.null(limit), abort(
+     is.null(value) && is.null(strategy),   stopf("must specify either value or strategy"),
+    !is.null(value) && !is.null(strategy),  stopf("cannot specify both value and strategy"),
+    !is.null(strategy) && !strategy %in% c("forward","backward") && !is.null(limit), stopf(
       "can only specify 'limit' when strategy is set to 'backward' or 'forward'"
     ),
 
@@ -1526,7 +1528,7 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
      is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self , strategy, limit)),
 
     # catch failed any match
-    or_else = abort("failed to handle user inputs", .internal = TRUE)
+    or_else = stopf("Internal: failed to handle user inputs")
   )
 }
 
@@ -1779,7 +1781,7 @@ Expr_arg_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
-  if(!is_bool(maintain_order)) abort("param maintain_order must be a bool")
+  if(!is_bool(maintain_order)) stopf("param maintain_order must be a bool")
   if(maintain_order) {
     .pr$Expr$unique_stable(self)
   } else {
@@ -2037,7 +2039,7 @@ Expr_take_every = function(n) {
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
 Expr_head = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is.numeric(n)) stopf("n must be numeric")
   unwrap(.pr$Expr$head(self,n=n))
 }
 
@@ -2053,7 +2055,7 @@ Expr_head = function(n=10) {
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
 Expr_tail = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is.numeric(n)) stopf("n must be numeric")
   unwrap(.pr$Expr$tail(self,n=n))
 }
 
@@ -2071,7 +2073,7 @@ Expr_tail = function(n=10) {
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
 Expr_limit = function(n=10) {
-  if(!is.numeric(n)) abort("n must be numeric")
+  if(!is.numeric(n)) stopf("limit: n must be numeric")
   unwrap(.pr$Expr$head(self,n=n))
 }
 
@@ -2126,7 +2128,7 @@ Expr_is_in= "use_extendr_wrapper"
 #' df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
 #' df$select(pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
-  if(is.numeric(by) && any(by<0)) abort("In repeat_by: any value less than zero is not allowed")
+  if(is.numeric(by) && any(by<0)) stopf("In repeat_by: any value less than zero is not allowed")
   .pr$Expr$repeat_by(self, wrap_e(by, FALSE))
 }
 
@@ -2163,7 +2165,7 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
     !is.logical(include_bounds) ||
     any(is.na(include_bounds))
   ) {
-    abort("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
+    stopf("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
   }
 
   # prepare args
@@ -2193,7 +2195,6 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
 #' @return Expr
-#' @importFrom rlang "%||%"
 #' @aliases hash
 #' @examples
 #' df = pl$DataFrame(iris)
@@ -2220,7 +2221,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' df = pl$DataFrame(iris)
 #' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
 Expr_reinterpret = function(signed = TRUE) {
-  if(!is_bool(signed)) abort("in reinterpret() : arg signed must be a bool")
+  if(!is_bool(signed)) stopf("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self,signed)
 }
 
@@ -2240,10 +2241,10 @@ Expr_reinterpret = function(signed = TRUE) {
 Expr_inspect = function(fmt = "{}") {
 
   #check fmt and create something to print before and after printing Series.
-  if(!is_string(fmt)) abort("Inspect: arg fmt is not a string (length=1)")
+  if(!is_string(fmt)) stopf("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if(identical(strs,"")) strs = c("","")
-  if(length(strs)!=2L || length(gregexpr("\\{\\}",fmt)[[1L]])!=1L) abort(paste0(
+  if(length(strs)!=2L || length(gregexpr("\\{\\}",fmt)[[1L]])!=1L) stopf(paste0(
     "Inspect: failed to parse arg fmt [",fmt,"] ",
     " a string containing the two consecutive chars `{}` once. \n",
     "a valid string is e.g. `hello{}world`"
@@ -2288,15 +2289,13 @@ Expr_inspect = function(fmt = "{}") {
 Expr_interpolate = "use_extendr_wrapper"
 
 
-
-#' @importFrom rlang is_scalar_integerish
 prepare_rolling_window_args = function(
   window_size,#: int | str,
   min_periods = NULL#: int | None = None,
 ) { # ->tuple[str, int]:
-  if (is_scalar_integerish(window_size)) {
+  if (is.numeric(window_size)) {
     if (is.null(min_periods)) min_periods = as.numeric(window_size)
-    window_size = paste0(as.character(window_size),"i")
+    window_size = paste0(as.character(floor(window_size)),"i")
   }
   if (is.null(min_periods)) min_periods = 1
   list(window_size = window_size, min_periods = min_periods)
@@ -3314,8 +3313,8 @@ Expr_arctanh= "use_extendr_wrapper"
 #' pl$select(pl$lit(1:12)$reshape(c(3,4)))
 #' pl$select(pl$lit(1:12)$reshape(c(3,-1)))
 Expr_reshape= function(dims) {
-  if(!is_integerish(dims)) unwrap(list(err="dims must be integerish of length one or two"))
-  if(!length(dims) %in% 1:2) unwrap(list(err="only one and two dimensions are currently supported"))
+  if(!is.numeric(dims)) pstop(err="reshape: arg dims must be numeric")
+  if(!length(dims) %in% 1:2 ) pstop(err="reshape: arg dims must be of length 1 or 2")
   unwrap(.pr$Expr$reshape(self, as.numeric(dims)))
 }
 
@@ -3334,7 +3333,7 @@ Expr_reshape= function(dims) {
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed=1))
 Expr_shuffle= function(seed = NULL) {
   seed = seed %||% sample(0:10000,1L)
-  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) unwrap(list(err="seed must be non NA/NaN numeric scalar"))
+  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) pstop(err="seed must be non NA/NaN numeric scalar")
   unwrap(.pr$Expr$shuffle(self,seed))
 }
 
@@ -3368,10 +3367,10 @@ Expr_sample= function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, see
 
   #check seed
   seed = seed %||% sample(0:10000,1L)
-  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) unwrap(list(err="seed must be non NA/NaN numeric scalar"))
+  if(!is.numeric(seed) || any(is.na(seed)) || length(seed)!=1L) pstop(err="seed must be non NA/NaN numeric scalar")
 
   #check not both n and frac
-  if (!is.null(n) && !is.null(frac)) unwrap(list(err="cannot specify both `n` and `frac`"))
+  if (!is.null(n) && !is.null(frac)) pstop(err="cannot specify both `n` and `frac`")
 
   #use n
   if (!is.null(n)) {
@@ -3402,40 +3401,40 @@ prepare_alpha = function(
 ) { #-> double:
 
   if(sum(!sapply(list(com, span, half_life, alpha),is.null)) > 1) {
-    unwrap(list(err = "Parameters 'com', 'span', 'half_life', and 'alpha' are mutually exclusive"))
+    pstop(err = "Parameters 'com', 'span', 'half_life', and 'alpha' are mutually exclusive")
   }
 
   if (!is.null(com)) {
     if (!is.numeric(com) || com < 0) {
-      unwrap(list(err = "com must be a non-negative numeric"))
+      pstop(err = "com must be a non-negative numeric")
     }
     return( 1 / (1 + com) )
   }
 
   if (!is.null(span)) {
     if (!is.numeric(span) || span < 1) {
-      unwrap(list(err = "span must be numeric > 1.0"))
+      pstop(err = "span must be numeric > 1.0")
     }
     return( 2 / (span + 1))
   }
 
   if (!is.null(half_life)) {
     if (!is.numeric(half_life) || half_life < 0) {
-      unwrap(list(err = "half_life must be a non-negative numeric"))
+      pstop(err = "half_life must be a non-negative numeric")
     }
     return( 1.0 - exp(-log(2.0)/half_life))
   }
 
   if (!is.null(alpha)) {
     if  (!is.numeric(alpha) || alpha<0 || alpha>=1) {
-      unwrap(list(err = "alpha must be numeric ]0;1] "))
+      pstop(err = "alpha must be numeric ]0;1] ")
     }
     return(alpha)
   } else {
-    unwrap(list(err = "One of 'com', 'span', 'half_life', or 'alpha' must be set"))
+    pstop(err = "One of 'com', 'span', 'half_life', or 'alpha' must be set")
   }
 
-  abort("it seems a input scenario was not handled properly",.internal = TRUE)
+  stopf("Internal: it seems a input scenario was not handled properly")
 }
 
 
@@ -3656,7 +3655,7 @@ Expr_to_r = function(df = NULL, i = 0) {
     pl$select(self)$to_series(i)$to_r()
   }else {
     if(!inherits(df,c("DataFrame"))) {
-      abort("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
+      stopf("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
     df$select(self)$to_series(i)$to_r()
   }
@@ -3684,6 +3683,9 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' @format Method
 #' @keywords Expr
 #' @examples
+#' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
+#' df
+#' df$unnest()$as_data_frame() #recommended to unnest structs before converting to R
 Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
   .pr$Expr$value_counts(self, multithreaded, sort)
 }

@@ -1,7 +1,7 @@
 Package: rpolars
 Title: Polars ported to R. 
-Version: 0.1.1
-Imports: rlang
+Version: 0.2.0
+Depends: R (>= 4.1.0)
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
@@ -28,6 +28,8 @@ Collate:
     'lazyframe__lazy.R'
     'options.R'
     'parquet.R'
+    'rlang.R'
     'series__series.R'
+    'translation.R'
     'utils.R'
     'zzz.R'

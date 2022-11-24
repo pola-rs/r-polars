@@ -22,6 +22,6 @@ n = 7
 pcase(
  n<5,"nope",
  n>6,"yeah",
- or_else = abort(paste("failed to have a case for n=",n))
+ or_else = stopf(paste("failed to have a case for n=",n))
 )
 }

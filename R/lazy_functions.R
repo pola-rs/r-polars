@@ -16,7 +16,7 @@ pl$all = function(name=NULL) {
 
   if(is.null(name)) return(.pr$Expr$col("*"))
 
-  abort("not implemented")
+  stopf("not implemented")
   #TODO implement input list of Expr as in:
   #https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
@@ -66,6 +66,7 @@ pl$all = function(name=NULL) {
 pl$col = function(name) {
 
   #preconvert Series into char name(s)
+
   if(inherits(name,"Series")) name = name$to_r_vector()
 
   if(is_string(name)) return(.pr$Expr$col(name))
@@ -82,11 +83,11 @@ pl$col = function(name) {
     if(all(sapply(name, inherits,"DataType"))) {
       return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
     } else {
-      abort("all elements of list must be a DataType")
+      stopf("all elements of list must be a DataType")
     }
   }
   #TODO implement series, DataType
-  abort("not supported implement input")
+  stopf("not supported implement input")
 }
 
 
@@ -134,7 +135,7 @@ pl$sum = function(...) {
     pra = do.call(construct_ProtoExprArray,column)
     return(rpolars:::sum_exprs(pra))
   }
-  abort("pl$sum: this input is not supported")
+  stopf("pl$sum: this input is not supported")
 }
 
 
@@ -173,7 +174,7 @@ pl$min = function(...) {
     pra = do.call(construct_ProtoExprArray,column)
     return(rpolars:::min_exprs(pra))
   }
-  abort("pl$min: this input is not supported")
+  stopf("pl$min: this input is not supported")
 }
 
 
@@ -214,7 +215,7 @@ pl$max = function(...) {
     pra = do.call(construct_ProtoExprArray,column)
     return(rpolars:::max_exprs(pra))
   }
-  abort("pl$max: this input is not supported")
+  stopf("pl$max: this input is not supported")
 }
 
 
@@ -257,12 +258,12 @@ pl$std = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$std(ddof))
   if (is_string(column)) return(pl$col(column)$std(ddof))
   if (is.numeric(column)) return(pl$lit(column)$std(ddof))
-  abort("pl$std: this input is not supported")
+  stopf("pl$std: this input is not supported")
 }
 
 pl$var = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$var(ddof))
   if (is_string(column)) return(pl$col(column)$var(ddof))
   if (is.numeric(column)) return(pl$lit(column)$var(ddof))
-  abort("pl$var: this input is not supported")
+  stopf("pl$var: this input is not supported")
 }

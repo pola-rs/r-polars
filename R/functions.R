@@ -55,20 +55,20 @@ concat = function(
         how == "vertical",   rpolars:::concat_df(vdf),
         how == "diagonal",    rpolars:::diag_concat_df(vdf),
         how == "horizontal", rpolars:::hor_concat_df(vdf),
-        or_else = abort("internal errror")
+        or_else = stopf("Internal error")
       )
     },
 
     inherits(first,"Series"), {
-      abort("not implemented Series")
+      stopf("not implemented Series")
     },
 
     inherits(first,"Expr"), {
-      abort("not implemented Expr")
+      stopf("not implemented Expr")
     },
 
     #TODO implement Series, Expr, Lazy etc
-    or_else = abort(paste0("type of first list element: '",class(first),"' is not supported"))
+    or_else = stopf(paste0("type of first list element: '",class(first),"' is not supported"))
   )
 
   unwrap(result)

@@ -50,7 +50,6 @@
 #'
 #' @return lazyframe
 #'
-#' @importFrom rlang is_string
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #'
@@ -87,8 +86,8 @@ lazy_csv_reader = function(
   if(!is.null(args$overwrite_dtype)) {
     owdtype = args$overwrite_dtype
 
-    if( !is.list(owdtype) || !rlang::is_named(owdtype)) {
-      abort("could not interpret overwrite_dtype, must be a named list of DataTypes")
+    if( !is.list(owdtype) || !is_named(owdtype)) {
+      stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
     datatype_vector = rpolars:::DataTypeVector$new() #mutable
     mapply(
@@ -101,7 +100,7 @@ lazy_csv_reader = function(
           type = rpolars:::DataType$new(type)
         }
         if(!inherits(type,"DataType")) {
-          abort("arg overwrite_dtype must be a named list of dtypes or dtype names")
+          stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
         }
         datatype_vector$push(name,type)
       }
@@ -131,7 +130,7 @@ lazy_csv_reader = function(
         return(rpolars:::RNullValues$new_named(null_values))
       }
 
-      abort("null_values arg must be a string OR unamed char vec OR named char vec")
+      stopf("null_values arg must be a string OR unamed char vec OR named char vec")
     }()
 
     args$null_values = RNullValues

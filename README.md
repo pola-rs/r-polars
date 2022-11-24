@@ -1,11 +1,37 @@
 # rpolars
-Use awesome polars DataFrame library from R!
 
-rpolars is an unofficial porting of polars (pola-rs) in to an R
-package. I aim to finish the project in 2022.
+Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
 
+*rpolars is not completely translated yet - aim to finish March 2023*
+
+See what is currently translated in [latest documentation](https://rpolars.github.io/reference/index.html):
+
+
+
+# install latest rpolars release
+
+ No dependencies other than R (≥ 4.1.0)
+
+ - Macbbook x86_64
+ `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
+ 
+ - Linux x86_64
+ `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
+ 
+ - Windows
+ `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-w64-mingw32.zip")`
+ 
+ - Other targets?  Start a new issue.
+ 
+ 
+ 
+# Documentation:
+  [Latest docs found here](https://sorhawell.github.io/reference/index.html)
+  
 
 ## news:
+ 
+ - update 24th November: minipolars is getting bigger and is changing name to rpolars and is hosted on [github.com/rpolars/rpolars](https://github.com/rpolars/rpolars/). Translation, testing and documenting progress is unfortunately not fast enough to finish in 2022. Goal postponed to March 2023. rlang is dropped as install dependency. No dependencies should make it very easy to install and manage versions long term.
 
  - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, rpolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/rpolars/blob/main/src/rpolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
 
@@ -35,67 +61,25 @@ from R and the reverse.
 
 
 
-# install rpolars
+# Build from source
 
- - Macbbook x86_64
- `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003.tgz")`
- 
- - Linux x86_64
- `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003_R_x86_64-pc-linux-gnu.tar.gz")`
- 
- - Windows
- `install.packages("rlang");`
- `install.packages(repos=NULL,"https://github.com/sorhawell/rpolars/releases/download/v0.1.9003.7/rpolars_0.1.9003.zip")`
- 
- - Other targets?  Raise an issue
- 
- 
- 
-# Documentation:
-  [Latest docs found here](https://sorhawell.github.io/reference/index.html)
-  
+  Install rust + set buildchain to nightly + 3rd party dependencies.
+  See installation workflows/pkgdown.yaml for Windows, Linux and Mac.
 
-# Build
-
-  install rust + set buildchain to nightly + 3rd party dependencies
-  see installation in  workflows/pkgdown.yaml for linux and mac.
-  Windows install workflow is pending some updates in extendr to use latest Rtools4.2.
-
+ - install rust with rustup
+ - `rustup default nightly`
  - clone repo
+ - on Windows rtools42 must be in path
  - `source("./renv/activate.R")` to install and set up R packages (likely automatically triggered by .Rprofile)
  - `rextendr::document()` to compile rust code and quick build package
  -  or `R CMD INSTALL --no-multiarch --with-keep.source rpolars` to build final package
  - `devtools::test()` to run all unit tests.
 
-
 # rpolars_teaser
 ================
 Søren Welling
-10/14/2022
+11/24/2022
 
-## What is rpolars
-
-rpolars is an unofficial porting of polars (pola-rs) in to an R
-package. I aim to finish the project in 2022. Beta should be ready by
-the end of September 2022.
-
-[Polars](http://pola.rs) is the
-[fastest](https://h2oai.github.io/db-benchmark/) data table query
-library. The syntax is related to Spark, but column oriented and not row
-oriented. All R libraries are also column oriented so this should feel
-familiar. Unlike Spark, polars is natively multithreaded instead of
-multinode(d). This make polars simple to install and use as any other R
-package. Like Spark and SQL-variants polars optimizes queries for memory
-consuption and speed so you don’t have to. Expect 5-10 speedup compared
-to dplyr on simple transformations from \>500Mb data. When chaining many
-operations the speedup due to optimization can be even higher. Polars is
-built on the apache-arrow memory model.
-
-This port relies on extendr <https://github.com/extendr> which is the R
-equivalent to pyo3+maturin. Extendr is very convenient for calling rust
-from R and the reverse.
 
 ## Hello world
 
@@ -127,7 +111,6 @@ should be quite useful. The following example shows a typical
 df = pl$DataFrame(iris)
 
 #make selection (similar to dplyr mutute() and data.table [,.()] ) and use expressions or strings.
-
 df = df$select(
   pl$col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
   pl$col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
@@ -172,8 +155,8 @@ pl$Series((1:5) * 5,"my_series")
     ## ]
 
 ``` r
-#Create polar_From  from a list of series and/or plain R vectors.
-values = list (
+#Create polar_From from a mix of series and/or plain R vectors.
+pl$DataFrame(
   newname = pl$Series(c(1,2,3,4,5),name = "b"), #overwrite name b with 'newname'
   pl$Series((1:5) * 5,"a"),
   pl$Series(letters[1:5],"b"),
@@ -181,8 +164,6 @@ values = list (
   named_vector = c(15,14,13,12,11) ,#named provide
   c(5,4,3,2,0)
 )
-
-pl$DataFrame(values)
 ```
 
     ## polars DataFrame: shape: (5, 6)
@@ -212,16 +193,40 @@ pl$dtypes$Float64
     ## polars DataType: Float64
 
 ``` r
-pl$dtypes$Int32
+# currently translated dtypes
+pl$dtypes
 ```
 
-    ## polars DataType: Int32
-
-``` r
-pl$dtypes$Int64 #not R native type
 ```
+$Boolean
+polars DataType: Boolean
 
-    ## polars DataType: Int64
+$Float32
+polars DataType: Float32
+
+$Float64
+polars DataType: Float64
+
+$Int32
+polars DataType: Int32
+
+$Int64
+polars DataType: Int64
+
+$UInt32
+polars DataType: UInt32
+
+$UInt64
+polars DataType: UInt64
+
+$Utf8
+polars DataType: Utf8
+
+$Categorical
+polars DataType: Categorical(
+    None,
+)
+```
 
 # Read csv and the `polars_lazy_frame`
 
@@ -293,13 +298,13 @@ pl$dtypes$Int64 #not R native type
 
 ## User pass user defined functions to polars
 
-It is possible to mix R code with polars by passing user defined
-functions to polars. User defined functions are slower. Use native polar
+It is possible to mix R code with polars by passing R
+functions to polars. R functions are slower. Use native polar
 functions/expressions where possible.
 
 ``` r
     pl$DataFrame(iris)$select(
-      pl$col("Sepal.Length")$map(\(s) {
+      pl$col("Sepal.Length")$map(\(s) { #map with a R function
         x = s$to_r_vector() #convert from Series to a native R vector
         x[x>=5] = 10
         x[1:10] # if return is R vector, it will automatically be converted to Series again

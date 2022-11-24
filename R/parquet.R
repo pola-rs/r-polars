@@ -34,7 +34,7 @@ scan_parquet = function(
 
   parallel = parallel[1L]
   if(!parallel %in% c("None","Columns","RowGroups","Auto")) {
-    abort("unknown parallel strategy")
+    stopf("unknown parallel strategy")
   }
 
   result_lf = rpolars:::new_from_parquet(

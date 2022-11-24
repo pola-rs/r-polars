@@ -31,15 +31,13 @@ expect_strictly_identical = function(object,expected,...) {
 #' rust-like unwrapping of result. Useful to keep error handling on the R side.
 #'
 #' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
-#' @param class class of thrown error
-#' @param call context of error
-#' @param ... not used
+#' @param call context of error or string
 #'
 #' @return the ok-element of list , or a error will be thrown
 #' @export
 #'
-#' @examples unwrap(list(ok="foo",err=NULL))
-unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
+#' @examples pstop(ok="foo",err=NULL))
+unwrap = function(result, call=sys.call(1L)) {
 
   #if not a result
   if(
@@ -48,7 +46,7 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
       !all(names(result) %in% c("ok","err"))
     )
   ) {
-    abort("internal error: cannot unwrap non result",.internal = TRUE)
+    stopf("Internal error: cannot unwrap non result")
   }
 
   #if result is ok (ok can be be valid null, hence OK if both ok and err is null)
@@ -57,19 +55,35 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
   }
 
   #if result is error
-  if( is.null(result$ok) && !is.null(result$err)) {
-    return(abort(
-      result$err,
-      class = class,
-      call=NULL,
-      footer=paste(
-        "when calling:\n",
-        paste(capture.output(print(call)),collapse="\n"))
-      ))
+  if(is.null(result$ok) && !is.null(result$err)) {
+    stopf(
+      paste(
+        result$err,
+        paste(
+          "\nwhen calling:\n",
+          paste(
+            capture.output(print(call)),collapse="\n")
+        )
+    ))
   }
 
   #if not ok XOR error, then roll over
-  abort("internal error: result object corrupted",.internal = TRUE)
+  stopf("Internal error: result object corrupted")
+}
+
+#' Internal preferred function to throw errors
+#'
+#' @param msg error msg string
+#' @param call calling context
+#' @keywords internals
+#'
+#' @return throws an error
+#'
+#' @examples
+#' f = function() pstop("this aint right!!")
+#' f()
+pstop = function(err, call=sys.call(1L)) {
+  unwrap(list(ok=NULL,err=err),call=call)
 }
 
 
@@ -82,25 +96,48 @@ unwrap = function(result, class="rust result error",call=sys.call(1L),...) {
 #'
 #' @return invisible(NULL)
 #'
-#' @examples unwrap(list(ok="foo",err=NULL))
+#' @examples pstop(ok="foo",err=NULL))
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 
   if(!Method_name %in% names(Class_env)) {
-    abort(
+    stopf(
       paste(
+        "syntax error:",
         Method_name,"is not a method/attribute of the class",
-        as.character(as.list(match.call())$Class_env)
-      ),
-      class = "syntax error",
-      call=NULL,
-      footer=paste(
-        "when calling:\n",
+        as.character(as.list(match.call())$Class_env),
+        "\n when calling:\n",
         paste(capture.output(print(call)),collapse="\n")
       )
     )
   }
   invisible(NULL)
 }
+
+
+# #highly experimental work around to use list2 without rlang
+# ok.comma <- function(FUN, which=0) {
+#   function(...) {
+#     #browser()
+#     arg.list <- as.list(sys.call(which=which))[-1L]
+#     len <- length(arg.list)
+#     if (len > 1L) {
+#       last <- arg.list[[len]]
+#       if (missing(last)) {
+#         arg.list <- arg.list[-len]
+#       }
+#     }
+#     do.call(FUN, arg.list,envir=parent.frame(which+1))
+#   }
+# }
+# list2 = ok.comma(list)
+# list3 = ok.comma(list,which = 2)
+
+
+#disable trailing commas for now
+list2 = list
+
+
+
 
 
 
@@ -119,7 +156,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 #' pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
-#'  or_else = abort(paste("failed to have a case for n=",n))
+#'  or_else = stopf(paste("failed to have a case for n=",n))
 #')
 pcase = function(..., or_else = NULL) {
   #get unevaluated args except header-function-name and or_else
@@ -167,10 +204,10 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 
 ##internal function to convert a list of dataframes into a rust VecDataFrame
 l_to_vdf = function(l) {
-  if(!length(l)) abort("cannot concat empty list l")
+  if(!length(l)) stopf("cannot concat empty list l")
   do_inherit_DataFrame = sapply(l,inherits,"DataFrame")
   if(!all(do_inherit_DataFrame)) {
-    abort(paste(
+    stopf(paste(
       "element no(s) of concat param l:",
       paste(
         which(!do_inherit_DataFrame),
@@ -184,7 +221,7 @@ l_to_vdf = function(l) {
   errors = NULL
   for (item in l) {
     tryCatch(vdf$push(item),error = function(e) {errors <<- as.character(e)})
-    if(!is.null(errors)) abort(errors)
+    if(!is.null(errors)) stopf(errors)
   }
 
   vdf
@@ -261,7 +298,7 @@ construct_protoArrayExpr = function(l) {
       pra$push_back_rexpr(i)
       next
     }
-    abort(paste("element:",i, "is neither string nor expr"))
+    stopf(paste("element:",i, "is neither string nor expr"))
   }
   pra
 }
@@ -281,7 +318,7 @@ construct_DataTypeVector = function(l) {
       dtv$push(names(l)[i],l[[i]])
       next
     }
-    abort(paste("element:",i, "is not a DateType"))
+    stopf(paste("element:",i, "is not a DateType"))
   }
   dtv
 }
@@ -290,7 +327,6 @@ construct_DataTypeVector = function(l) {
 #'
 #' @param env environment to extract usages from
 #' @param pattern string passed to ls(pattern) to subset methods by pattern
-#' @importFrom rlang is_function
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #'
@@ -303,7 +339,7 @@ get_method_usages = function(env,pattern="") {
   facts = list(
     is_property = sapply(objects,\(x) inherits(x,"property")),
     is_setter = sapply(objects,\(x) inherits(x,"setter")),
-    is_method = sapply(objects,\(x)  !inherits(x,"property") & is_function(x))
+    is_method = sapply(objects,\(x)  !inherits(x,"property") & is.function(x))
   )
 
   paste0_len = function(...,collapse=NULL,sep="") {

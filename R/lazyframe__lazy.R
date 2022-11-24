@@ -200,16 +200,13 @@ LazyFrame_collect = function() {
 #' @description take limit of n rows of query
 #' @keywords LazyFrame
 #' @param n positive numeric or integer number not larger than 2^32
-#' @importFrom  rlang is_scalar_integerish
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
-  if(!is_scalar_integerish(n) || n>2^32-1 || n<0) {
-    unwrap(list(err=paste("in LazyFrame$limit(n): n must be integerish within the bounds [0; 2^32-1]. n was:",n)))
-  }
-  .pr$LazyFrame$limit(self,n)
+  if(!is.numeric(n)) stopf("limit: n must be numeric")
+  unwrap(.pr$LazyFrame$limit(self,n))
 }
 
 
@@ -256,14 +253,14 @@ LazyFrame_join = function(
   } else if (inherits(other, "DataFrame")){
     other = other$lazy()
   } else {
-    abort(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+    stopf(paste("Expected a `LazyFrame` as join table, got ", class(other)))
   }
 
   how_opts = c('inner', 'left', 'outer', 'semi', 'anti', 'cross')
   how = match.arg(how[1L],how_opts)
 
   if(how == "cross") {
-    abort("not implemented how == cross")
+    stopf("not implemented how == cross")
   }
 
   if(!is.null(on)) {
@@ -274,7 +271,7 @@ LazyFrame_join = function(
     rexprs_left  = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
   } else {
-    abort("must specify `on` OR (  `left_on` AND `right_on` ) ")
+    stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
   }
 
   .pr$LazyFrame$join(

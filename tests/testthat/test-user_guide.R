@@ -76,6 +76,5 @@ test_that("Expression examples // types/NAS in-out", {
     unique_names_3_overflow = 5 + .Machine$integer.max
   ))
 
-  expect_true(rlang::is_integerish(three_counts$unique_names_3_overflow))
 
 })

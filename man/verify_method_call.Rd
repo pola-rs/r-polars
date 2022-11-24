@@ -20,5 +20,5 @@ invisible(NULL)
 internal function to check method call of env_classes
 }
 \examples{
-unwrap(list(ok="foo",err=NULL))
+pstop(ok="foo",err=NULL))
 }

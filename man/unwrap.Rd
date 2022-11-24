@@ -4,16 +4,12 @@
 \alias{unwrap}
 \title{rust-like unwrapping of result. Useful to keep error handling on the R side.}
 \usage{
-unwrap(result, class = "rust result error", call = sys.call(1L), ...)
+unwrap(result, call = sys.call(1L))
 }
 \arguments{
 \item{result}{a list here either element ok or err is NULL, or both if ok is litteral NULL}
 
-\item{class}{class of thrown error}
-
-\item{call}{context of error}
-
-\item{...}{not used}
+\item{call}{context of error or string}
 }
 \value{
 the ok-element of list , or a error will be thrown
@@ -22,5 +18,5 @@ the ok-element of list , or a error will be thrown
 rust-like unwrapping of result. Useful to keep error handling on the R side.
 }
 \examples{
-unwrap(list(ok="foo",err=NULL))
+pstop(ok="foo",err=NULL))
 }
