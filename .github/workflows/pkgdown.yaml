@@ -125,7 +125,7 @@ jobs:
         run: |
           fn = devtools::build(binary = TRUE, args = c('--preclean'))
           newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
-          file.rename(fn,newfn)
+          if (R.version$os != "mingw32") file.rename(fn,newfn) #R expects specific windows binary filename
         shell: Rscript {0}
 
       - name: Release
