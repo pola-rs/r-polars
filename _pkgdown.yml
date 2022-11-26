@@ -1,4 +1,7 @@
 url: https://github.com/rpolars/rpolars/
+template:
+  bootstrap: 5
+
 reference:
   # NSE
 
