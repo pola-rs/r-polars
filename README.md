@@ -19,9 +19,10 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
  
  - Windows
- `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars.zip")`
+ `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars_0.2.0.zip")`
  
  - Other targets?  Start a new issue.
+ - Install a specific version? Find the version specific url, via releases section.
  
  
  
@@ -38,7 +39,7 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  - Find the cos [py-polars rust implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L395) (likely just a simple call to the rust-polars api)
  - Adapt the rust part and place it [here](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/src/rust/src/rdataframe/rexpr.rs#L738).
  - Adapt the python part into R and place it [here](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/R/expr__expr.R#L3175). Add roxygen docs + examples above.
- - Notice `Expr_cos = "use_extendr_wrapper", it means we're this time just using unmodfied the [extendr auto-generated wrapper](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/R/extendr-wrappers.R#L251)
+ - Notice `Expr_cos = "use_extendr_wrapper"`, it means we're this time just using unmodfied the [extendr auto-generated wrapper](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/R/extendr-wrappers.R#L251)
  - Write a test [here](https://github.com/rpolars/rpolars/blob/main/tests/testthat/test-expr.R).
  - Run renv::restore() and resolve all R packages
  - Run extendr::document() to recompile, see new method can be used e.g. like `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
@@ -312,7 +313,7 @@ polars DataType: Categorical(
     ## │ 148.7       │
     ## └─────────────┘
 
-## User pass user defined functions to polars
+## Execute R functions within a polars query
 
 It is possible to mix R code with polars by passing R
 functions to polars. R functions are slower. Use native polar
