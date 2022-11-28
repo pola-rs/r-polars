@@ -2153,3 +2153,84 @@ test_that("to_r", {
 
 })
 
+
+
+test_that("unique_counts", {
+
+  #test cases for value counts
+  l = list(
+    1,1:2,Inf,-Inf,NaN,"a",c(letters,LETTERS,letters),
+    numeric(),integer(), NA_integer_, NA_character_, NA_real_,
+    c(NA_real_,24,NaN),c(NA_real_,24,Inf,NaN,24), c("ejw",NA_character_),
+    c(1,1,1,2,3,4,1,5,2,NA_real_,NA_real_)
+  )
+
+  #mimic value counts with R funcitons
+  r_value_counts = function(x) {
+    as.numeric(sapply(unique(x),\(y) sum(sapply(x,identical,y))))
+  }
+
+  for(i in l) {
+    expect_identical(
+      pl$lit(i)$unique_counts()$to_r(),
+      r_value_counts(i)
+    )
+  }
+})
+
+
+test_that("entropy", {
+
+  #https://stackoverflow.com/questions/27254550/calculating-entropy
+  r_entropy = function(x, base = exp(1),  normalize= TRUE) {
+    if(normalize) x = x/sum(x)
+    -sum(x * log(x) / log(base))
+  }
+
+  expect_equal(pl$lit(1:3)$entropy(base=2)$to_r(),r_entropy(1:3,base=2))
+  expect_equal(
+    pl$lit(1:3)$entropy(base=2, normalize=FALSE)$to_r(),
+    r_entropy(1:3,base=2,normalize = FALSE)
+  )
+
+  #TODO contribute polars calculating entropy on utf8 returns NULL, should either raise error
+  pl$select(pl$lit(c("a","b","b","c","c","c"))$entropy(base=2))
+
+  pl$lit(c("a","a","a"))$entropy(base=2, normalize=FALSE)$to_r()
+})
+
+
+
+test_that("cumulative_eval", {
+
+  r_cumulative_eval = function(x,f,min_periods = 1L, ...) {
+    g = function(x) if(length(x)<min_periods) x[length(x)+1L] else f(x)
+    sapply(lapply(seq_along(x) ,\(i) x[1:i]),g)
+  }
+
+  expect_identical(
+    pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r(),
+    r_cumulative_eval(1:5, \(x) first(x)-last(x)**2)
+  )
+
+  expect_identical(
+    pl$lit(1:5)$cumulative_eval(
+      pl$element()$first()-pl$element()$last() ** 2,
+      min_periods=4
+    )$to_r(),
+    r_cumulative_eval(1:5, \(x) first(x)-last(x)**2, min_periods = 4)
+  )
+
+  expect_identical(
+    pl$lit(1:5)$cumulative_eval(
+      pl$element()$first()-pl$element()$last() ** 2,
+      min_periods=3,
+      parallel = TRUE
+    )$to_r(),
+    r_cumulative_eval(1:5, \(x) first(x)-last(x)**2, min_periods = 3)
+  )
+
+})
+
+
+

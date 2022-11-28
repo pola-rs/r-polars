@@ -90,6 +90,16 @@ pl$col = function(name) {
   stopf("not supported implement input")
 }
 
+#' an element in 'eval'-expr
+#' @description Alias for an element in evaluated in an `eval` expression.
+#' @keywords Expr
+#' @return Expr
+#' @aliases element
+#' @examples
+#' pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r()
+pl$element = function() pl$col("")
+
+
 
 #TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
 #docs should reflect that

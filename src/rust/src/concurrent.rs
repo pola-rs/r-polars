@@ -50,7 +50,7 @@ pub fn handle_thread_r_requests(
             //get user defined function
             let f = probj.0.as_function().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!(
-                    "internal error: udf not a function but a: {:?}",
+                    "provided input is not an R function but a: {:?}",
                     probj.0
                 ))
             })?;

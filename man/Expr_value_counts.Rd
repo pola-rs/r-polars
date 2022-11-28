@@ -16,7 +16,7 @@ Expr_value_counts(multithreaded = FALSE, sort = FALSE)
 \item{sort:}{Ensure the output is sorted from most values to least.}
 }
 \value{
-R object
+Expr
 }
 \description{
 Count all unique values and create a struct mapping value to count.

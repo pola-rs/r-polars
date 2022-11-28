@@ -1,4 +1,4 @@
-test_that("multiplication works", {
+test_that("groupby", {
   df = pl$DataFrame(
     list(
       foo = c("one", "two", "two", "one", "two"),

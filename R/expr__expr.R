@@ -770,28 +770,7 @@ Expr_sqrt = function() {
 }
 
 
-#' Natural Log
-#' @description  Compute the base x logarithm of the input array, element-wise.
-#' @keywords Expr
-#' @return Expr
-#' @aliases log
-#' @name Expr_log
-#' @examples
-#' pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
-Expr_log  = function(base = base::exp(1)) {
-  .pr$Expr$log(self, base)
-}
 
-#' 10-base log
-#' @description Compute the base 10 logarithm of the input array, element-wise.
-#' @keywords Expr
-#' @return Expr
-#' @aliases log10
-#' @name Expr_log10
-#' @format a method
-#' @examples
-#' pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
-Expr_log10  = "use_extendr_wrapper"
 
 
 #' Compute the exponential, element-wise.
@@ -893,8 +872,8 @@ Expr_map_alias = function(fun) {
     # then handle_thread_r_requests should be rewritten to handle any type.
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") #TODO resolve
   }
-  if(!is.function(fun)) pstop(err="alias_map fun must be a function", class="not_fun")
-  if(length(formals(fun))==0) pstop(err="alias_map fun must take at least one parameter", class="not_one_arg")
+  if(!is.function(fun)) pstop(err="alias_map fun must be a function")
+  if(length(formals(fun))==0) pstop(err="alias_map fun must take at least one parameter")
   .pr$Expr$map_alias(self,fun)
 }
 
@@ -3674,7 +3653,7 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' Value counts
 #' @description
 #' Count all unique values and create a struct mapping value to count.
-#' @return  R object
+#' @return Expr
 #' @param    multithreaded:
 #' Better to turn this off in the aggregation context, as it can lead to contention.
 #' @param sort:
@@ -3690,3 +3669,81 @@ Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
   .pr$Expr$value_counts(self, multithreaded, sort)
 }
 
+
+#' Value counts
+#' @description
+#' Return a count of the unique values in the order of appearance.
+#' This method differs from `value_counts` in that it does not return the
+#' values, only the counts and might be faster
+#' @return  Expr
+#' @aliases unique_counts
+#' @format Method
+#' @keywords Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
+Expr_unique_counts = "use_extendr_wrapper"
+
+#' Natural Log
+#' @description  Compute the base x logarithm of the input array, element-wise.
+#' @keywords Expr
+#' @return Expr
+#' @aliases log
+#' @name Expr_log
+#' @examples
+#' pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
+Expr_log  = function(base = base::exp(1)) {
+  .pr$Expr$log(self, base)
+}
+
+#' 10-base log
+#' @description Compute the base 10 logarithm of the input array, element-wise.
+#' @keywords Expr
+#' @return Expr
+#' @aliases log10
+#' @name Expr_log10
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
+Expr_log10  = "use_extendr_wrapper"
+
+
+
+
+#' Entropy
+#' @description  Computes the entropy.
+#' Uses the formula `-sum(pk * log(pk))` where `pk` are discrete probabilities.
+#' Return Null if input is not values
+#' @param base  Given exponential base, defaults to `e`
+#' @param normalize Normalize pk if it doesn't sum to 1.
+#' @keywords Expr
+#' @return Expr
+#' @aliases entropy
+#' @examples
+#' pl$select(pl$lit(c("a","b","b","c","c","c"))$unique_counts()$entropy(base=2))
+Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
+  .pr$Expr$entropy(self, base, normalize)
+}
+
+
+#' @description  Run an expression over a sliding window that increases `1` slot every iteration.
+#' @param expr Expression to evaluate
+#' @param min_periods Number of valid values there should be in the window before the expression
+#' is evaluated. valid values = `length - null_count`
+#' @param parallel Run in parallel. Don't do this in a groupby or another operation that
+#' already has much parallelization.
+#' @details
+#'
+#' Warnings
+#' --------
+#'   This functionality is experimental and may change without it being considered a
+#' breaking change.
+#' This can be really slow as it can have `O(n^2)` complexity. Don't use this
+#'         for operations that visit all elements.
+#' @keywords Expr
+#' @return Expr
+#' @aliases cumulative_eval
+#' @examples
+#' pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r()
+Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
+  unwrap(.pr$Expr$cumulative_eval(self,expr, min_periods, parallel))
+}

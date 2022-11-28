@@ -19,10 +19,10 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
  
  - Windows
- `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars_0.2.0.zip")`
+ `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars.zip")`
  
  - Other targets?  Start a new issue.
- - Install a specific version? Find the version specific url, via releases section.
+ - Install a specific version? Find the version specific url, via [releases section](https://github.com/rpolars/rpolars/releases).
  
  
  

@@ -151,6 +151,16 @@ impl Series {
         Series(self.0.clone())
     }
 
+    //function for debugging only
+    pub fn sleep(&self, millis: i32) -> Series {
+        std::thread::sleep(std::time::Duration::from_millis(millis as u64));
+        Series(self.0.clone())
+    }
+
+    pub fn panic(&self) -> Series {
+        panic!("somebody panicked on purpose");
+    }
+
     pub fn to_r(&self) -> list::List {
         let robj_result = pl_series_to_list(&self.0, true);
         r_result_list(robj_result)

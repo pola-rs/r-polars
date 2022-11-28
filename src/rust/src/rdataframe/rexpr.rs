@@ -925,15 +925,34 @@ impl Expr {
         }
     }
 
-    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> Expr {
+    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> Self {
         self.0.clone().value_counts(multithreaded, sorted).into()
+    }
+
+    pub fn unique_counts(&self) -> Self {
+        self.0.clone().unique_counts().into()
+    }
+
+    pub fn entropy(&self, base: f64, normalize: bool) -> Self {
+        self.0.clone().entropy(base, normalize).into()
+    }
+
+    fn cumulative_eval(&self, expr: &Expr, min_periods: f64, parallel: bool) -> List {
+        use pl::*;
+        r_result_list(try_f64_into_usize(min_periods, false).map(|min_p| {
+            Expr(
+                self.0
+                    .clone()
+                    .cumulative_eval(expr.0.clone(), min_p, parallel),
+            )
+        }))
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
 
-    pub fn repeat_by(&self, by: &Expr) -> Expr {
+    pub fn repeat_by(&self, by: &Expr) -> Self {
         self.clone().0.repeat_by(by.0.clone()).into()
     }
 

@@ -292,6 +292,12 @@ Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
 Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)
 
+Expr$unique_counts <- function() .Call(wrap__Expr__unique_counts, self)
+
+Expr$entropy <- function(base, normalize) .Call(wrap__Expr__entropy, self, base, normalize)
+
+Expr$cumulative_eval <- function(expr, min_periods, parallel) .Call(wrap__Expr__cumulative_eval, self, expr, min_periods, parallel)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
@@ -429,6 +435,10 @@ Series <- new.env(parent = emptyenv())
 Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
 
 Series$clone <- function() .Call(wrap__Series__clone, self)
+
+Series$sleep <- function(millis) .Call(wrap__Series__sleep, self, millis)
+
+Series$panic <- function() .Call(wrap__Series__panic, self)
 
 Series$to_r <- function() .Call(wrap__Series__to_r, self)
 

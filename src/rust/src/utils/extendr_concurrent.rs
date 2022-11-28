@@ -222,9 +222,7 @@ where
                         //check if spawned thread has ended, first child thread should have
                         //dropped the last ThreadComs, so more likely waking up to a disconnect
                         if handle.is_finished() {
-                            rprintln!(
-                                "warning: concurrent_extendr terminated with open ThreadComs"
-                            );
+                            rprintln!("rpolars: closing concurrent R handler");
                             break;
                         }
                     }
@@ -235,7 +233,12 @@ where
         }
     }
 
-    let thread_return_value = handle.join().unwrap();
+    let thread_return_value = handle.join().map_err(|err| {
+        format!(
+            "A polars sub-thread panicked. See panic msg, which is likely more informative than this error: {:?}",
+            err
+        )
+    })?;
 
     //let run_time = std::time::Instant::now() - start_time;
     //dbg!(run_time);
