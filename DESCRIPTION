@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R. 
-Version: 0.2.0
+Version: 0.2.1
 Depends: R (>= 4.1.0)
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
