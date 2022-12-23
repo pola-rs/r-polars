@@ -522,6 +522,14 @@ impl Series {
 
         df
     }
+
+    pub fn set_sorted_mut(&mut self, reverse: bool) {
+        if reverse {
+            self.0.set_sorted(polars::series::IsSorted::Descending)
+        } else {
+            self.0.set_sorted(polars::series::IsSorted::Ascending)
+        };
+    }
 }
 
 //inner_from_robj only when used within Series

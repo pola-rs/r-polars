@@ -21,6 +21,9 @@ Get data type of Series
 
 Get data type of Series
 }
+\details{
+property sorted flags are not settable, use set_sorted
+}
 \examples{
 pl$Series(1:4)$dtype
 pl$Series(c(1,2))$dtype

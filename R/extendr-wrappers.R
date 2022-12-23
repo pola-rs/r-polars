@@ -512,6 +512,8 @@ Series$is_unique <- function() .Call(wrap__Series__is_unique, self)
 
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
+Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
+
 #' @export
 `$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }
 

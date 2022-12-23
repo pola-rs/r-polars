@@ -816,13 +816,23 @@ test_that("dot", {
 
 test_that("Expr_sort", {
 
-  l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
+  l = list(a = c(6,1, 0, NA, Inf,-Inf, NaN))
 
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$sort()$alias("sort"),
     pl$col("a")$sort(nulls_last=TRUE)$alias("sort_nulls_last"),
     pl$col("a")$sort(reverse=TRUE)$alias("sort_reverse"),
-    pl$col("a")$sort(reverse=TRUE,nulls_last=TRUE)$alias("sort_reverse_nulls_last")
+    pl$col("a")$sort(reverse=TRUE,nulls_last=TRUE)$alias("sort_reverse_nulls_last"),
+    pl$col("a")
+      $set_sorted(reverse=FALSE)
+      $sort(reverse=FALSE,nulls_last=TRUE)
+      $alias("fake_sort_nulls_last"),
+    (
+    pl$col("a")
+      $set_sorted(reverse=TRUE)
+      $sort(reverse=TRUE,nulls_last=TRUE)
+      $alias("fake_sort_reverse_nulls_last")
+    )
   )$to_list()
 
 
@@ -834,8 +844,41 @@ test_that("Expr_sort", {
       sort = c(NA, -Inf, 0, 1, 6, Inf, NaN),
       sort_nulls_last = c(-Inf,0, 1, 6, Inf, NaN, NA),
       sort_reverse = c(NA, NaN, Inf, 6, 1, 0, -Inf),
-      sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA)
-      )
+      sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA),
+      #this is a bit surprising, have raised in discord
+      fake_sort_nulls_last = c(-Inf, 0, 1, 6, Inf, NaN, NA),
+      fake_sort_reverse_nulls_last = c(NaN, Inf, 6, 1, 0, -Inf, NA)
+    )
+  )
+
+  #without NUlls set_sorted does prevent sorting
+  l2 = list(a = c(1,3,2,4, Inf,-Inf, NaN))
+  l_actual2 = pl$DataFrame(l2)$select(
+    pl$col("a")$sort()$alias("sort"),
+    pl$col("a")$sort(nulls_last=TRUE)$alias("sort_nulls_last"),
+    pl$col("a")$sort(reverse=TRUE)$alias("sort_reverse"),
+    pl$col("a")$sort(reverse=TRUE,nulls_last=TRUE)$alias("sort_reverse_nulls_last"),
+    pl$col("a")
+    $set_sorted(reverse=FALSE)
+    $sort(reverse=FALSE,nulls_last=TRUE)
+    $alias("fake_sort_nulls_last"),
+    (
+      pl$col("a")
+      $set_sorted(reverse=TRUE)
+      $sort(reverse=TRUE,nulls_last=TRUE)
+      $alias("fake_sort_reverse_nulls_last")
+    )
+  )$to_list()
+  expect_identical(
+    l_actual2,
+    list(
+      sort = c( -Inf, 1, 2,3,4, Inf, NaN),
+      sort_nulls_last = c(-Inf,1, 2, 3,4, Inf, NaN),
+      sort_reverse = c( NaN, Inf, 4, 3, 2, 1, -Inf),
+      sort_reverse_nulls_last = c(NaN, Inf, 4, 3, 2, 1, -Inf),
+      fake_sort_nulls_last = l2$a,
+      fake_sort_reverse_nulls_last = l2$a
+    )
   )
 
 })

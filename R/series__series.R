@@ -706,6 +706,7 @@ Series_dtype = method_as_property(function() {
 #' @return DataType
 #' @aliases dtype
 #' @name Series_dtype
+#' @details property sorted flags are not settable, use set_sorted
 #' @examples
 #' pl$Series(1:4)$sort()$flags
 Series_flags = method_as_property(function() {
@@ -715,6 +716,35 @@ Series_flags = method_as_property(function() {
   )
 })
 
+
+#' Set sorted
+#' @keywords Series
+#' @aliases Series
+#' @param reverse bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.
+#' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
+#' pl$set_rpolars_options(strictly_immutable = F) otherwise an error will be thrown. If FALSE
+#' will return a cloned Series with set_flag which in the very most cases should be just fine.
+#' @return Series invisible
+#' @aliases set_sorted
+#' @details
+#' @examples
+#' s = pl$Series(1:4)$set_sorted()
+#' s$flags
+Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
+  if(in_place && rpolars_optenv$strictly_immutable) {
+    stopf(paste(
+      "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
+      "`pl$set_rpolars_options(strictly_immutable = F)`"
+    ))
+  }
+
+  if(!in_place) {
+    self = self$clone()
+  }
+
+  .pr$Series$set_sorted_mut(self, reverse)
+  if(in_place) invisible(NULL) else invisible(self)
+}
 
 #TODO contribute polars, Series.sort() has an * arg input which is unused
 #TODO contribute polars, Series.sort() is missing nulls_last option, that Expr_sort has
@@ -736,9 +766,11 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
       "in_place sort breaks immutability, to enable mutable features run:\n",
       "`pl$set_rpolars_options(strictly_immutable = F)`"
     ))
-  } else {
+  }
+  if(!in_place) {
     self = self$clone()
   }
+
   .pr$Series$sort_mut(self,reverse)
 }
 
@@ -799,9 +831,12 @@ Series_rename = function(name, in_place = FALSE) {
       "in_place breaks \"objects are immutable\" which is expected in R.",
       "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = F)`"
     ))
-  } else {
-    self = self$clone() #clone to break mutable behavior
   }
+
+  if(!in_place) {
+    self = self$clone()
+  }
+
   .pr$Series$rename_mut(self, name)
   self
 }

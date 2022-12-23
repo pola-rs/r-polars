@@ -266,6 +266,55 @@ test_that("sorted flags, sort", {
       sort_reverse = s$sort(reverse = TRUE)$to_r()
     )
   )
+
+})
+
+test_that("set_sorted" , {
+  pl$reset_rpolars_options()
+
+  expect_error({
+    pl$Series(c(1,3,2,4))$set_sorted(in_place=TRUE)
+  })
+
+  pl$set_rpolars_options(strictly_immutable = F)
+
+  #teest in_place, test set_sorted
+  expect_identical(
+    c(1,3,2,4), {
+      s = pl$Series(c(1,3,2,4))
+      s$set_sorted(reverse = FALSE, in_place=TRUE)
+      s$flags
+      s$sort(reverse=FALSE)$to_r()
+    }
+  )
+
+  #test NOT in_place no effect
+  expect_identical(
+    c(1,2,3,4), {
+      s = pl$Series(c(1,3,2,4))
+      s$set_sorted(reverse = FALSE, in_place=FALSE)
+      s$flags
+      s$sort(reverse=FALSE)$to_r()
+    }
+  )
+
+  #test NOT in_place with effect
+  expect_identical(
+    c(1,3,2,4), {
+      s = pl$Series(c(1,3,2,4))
+      s$set_sorted(reverse = FALSE, in_place=FALSE)$sort()$to_r()
+    }
+  )
+
+  #test NOT in_place. reverse-reverse
+  expect_identical(
+    c(1,3,2,4), {
+      s = pl$Series(c(1,3,2,4))
+      s$set_sorted(reverse = TRUE, in_place=FALSE)$sort(reverse=TRUE)$to_r()
+    }
+  )
+
+  pl$reset_rpolars_options()
 })
 
 test_that("value counts", {

@@ -3747,3 +3747,27 @@ Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
 Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
   unwrap(.pr$Expr$cumulative_eval(self,expr, min_periods, parallel))
 }
+
+
+
+#' Set_sorted
+#' @description  Flags the expression as 'sorted'.
+#* Enables downstream code to user fast paths for sorted arrays.
+#' @param reverse bool if TRUE Descending else Ascending
+#' @keywords Expr
+#' @return Expr
+#' @aliases set_sorted
+#' @examples
+#' #correct use flag something correctly as ascendingly sorted
+#' s = pl$select(pl$lit(1:4)$set_sorted()$alias("a"))$get_column("a")
+#' s$flags # see flags
+#'
+#' #incorrect use, flag somthing as not sorted ascendingly
+#' s2 = pl$select(pl$lit(c(1,3,2,4))$set_sorted()$alias("a"))$get_column("a")
+#' s2$sort() #sorting skipped, although not actually sorted
+Expr_set_sorted = function(reverse = FALSE) {
+  self$map(\(s) {
+    .pr$Series$set_sorted_mut(s, reverse) #use private to bypass mut protection
+    s
+  })
+}
