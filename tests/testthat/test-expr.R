@@ -2275,5 +2275,25 @@ test_that("cumulative_eval", {
 
 })
 
+test_that("shrink_dtype", {
 
+  df = pl$DataFrame(
+       a= c(1L, 2L, 3L),
+       b= c(1L, 2L, bitwShiftL(2L,29)),
+       c= c(-1L, 2L, bitwShiftL(1L,15)),
+       d= c(-112L, 2L, 112L),
+       e= c(-112L, 2L, 129L),
+       f= c("a", "b", "c"),
+       g= c(0.1, 1.32, 0.12),
+       h= c(T, NA, F)
+     )$with_column( pl$col("b")$cast(pl$Int64) *32L
+     )$select(pl$all()$shrink_dtype())
+
+  expect_true(all(mapply(
+    df$dtypes,
+    pl$dtypes[c("Int8","Int64","Int32","Int8","Int16","Utf8","Float32","Boolean")],
+    FUN = function(actual, expected) actual == expected
+  )))
+
+})
 

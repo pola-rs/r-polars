@@ -948,6 +948,14 @@ impl Expr {
         }))
     }
 
+    pub fn list(&self) -> Self {
+        self.clone().0.list().into()
+    }
+
+    pub fn shrink_dtype(&self) -> Self {
+        self.0.clone().shrink_dtype().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
@@ -1093,10 +1101,6 @@ impl Expr {
 
     pub fn unique_stable(&self) -> Self {
         self.0.clone().unique_stable().into()
-    }
-
-    pub fn list(&self) -> Self {
-        self.clone().0.list().into()
     }
 
     pub fn agg_groups(&self) -> Self {

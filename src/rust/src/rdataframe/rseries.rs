@@ -620,8 +620,26 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
             Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
+
+            Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
+            Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
             Int64 => s.i64().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| opt.map(|val| val as f64))
+                    .collect_robj()
+            }),
+            UInt8 => s.u8().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| opt.map(|val| val as i32))
+                    .collect_robj()
+            }),
+            UInt16 => s.u16().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| opt.map(|val| val as i32))
+                    .collect_robj()
+            }),
+            UInt32 => s.u32().map(|ca| {
                 ca.into_iter()
                     .map(|opt| opt.map(|val| val as f64))
                     .collect_robj()
@@ -633,12 +651,6 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
             }),
             Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
 
-            //map u32 to f64
-            UInt32 => s.u32().map(|ca| {
-                ca.into_iter()
-                    .map(|u32opt| u32opt.map(|u32val| u32val as f64))
-                    .collect_robj()
-            }),
             Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
             Categorical(_) => s
                 .categorical()

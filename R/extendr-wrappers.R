@@ -298,6 +298,10 @@ Expr$entropy <- function(base, normalize) .Call(wrap__Expr__entropy, self, base,
 
 Expr$cumulative_eval <- function(expr, min_periods, parallel) .Call(wrap__Expr__cumulative_eval, self, expr, min_periods, parallel)
 
+Expr$list <- function() .Call(wrap__Expr__list, self)
+
+Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
@@ -363,8 +367,6 @@ Expr$tail <- function(n) .Call(wrap__Expr__tail, self, n)
 Expr$unique <- function() .Call(wrap__Expr__unique, self)
 
 Expr$unique_stable <- function() .Call(wrap__Expr__unique_stable, self)
-
-Expr$list <- function() .Call(wrap__Expr__list, self)
 
 Expr$agg_groups <- function() .Call(wrap__Expr__agg_groups, self)
 
@@ -538,7 +540,17 @@ DataType <- new.env(parent = emptyenv())
 
 DataType$new <- function(s) .Call(wrap__DataType__new, s)
 
-DataType$get_all_type_names <- function() .Call(wrap__DataType__get_all_type_names)
+DataType$new_datetime <- function() .Call(wrap__DataType__new_datetime)
+
+DataType$new_duration <- function() .Call(wrap__DataType__new_duration)
+
+DataType$new_list <- function(inner) .Call(wrap__DataType__new_list, inner)
+
+DataType$new_object <- function() .Call(wrap__DataType__new_object)
+
+DataType$new_struct <- function() .Call(wrap__DataType__new_struct)
+
+DataType$get_all_simple_type_names <- function() .Call(wrap__DataType__get_all_simple_type_names)
 
 DataType$print <- function() invisible(.Call(wrap__DataType__print, self))
 

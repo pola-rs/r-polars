@@ -124,11 +124,11 @@ pl$mem_address = rpolars:::mem_address
 .onLoad <- function(libname, pkgname){
 
   #instanciate one of each DataType (it's just an enum)
-  all_types = .pr$DataType$get_all_type_names()
+  all_types = .pr$DataType$get_all_simple_type_names()
   names(all_types) = all_types
-  pl$dtypes = lapply(
-    all_types,
-    .pr$DataType$new
+  pl$dtypes = c(
+    lapply(all_types,.pr$DataType$new), #instanciate all simple flag-like types
+    rpolars:::DataType_constructors # add function constructors for the remainders
   )
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)

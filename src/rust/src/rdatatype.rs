@@ -3,7 +3,6 @@ use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
-
 //expose polars DateType in R
 #[extendr]
 #[derive(Debug, Clone, PartialEq)]
@@ -12,34 +11,75 @@ pub struct DataType(pub pl::DataType);
 #[extendr]
 impl DataType {
     pub fn new(s: &str) -> DataType {
-        //2nd naming is R suggested equivalent
+        //, inner: Nullable<&DataType>
+        //let inner = Box::new(null_to_opt(inner).map_or(pl::DataType::Null, |x| x.0.clone()));
+
         let pl_datatype = match s {
             "Boolean" | "logical" => pl::DataType::Boolean,
-            "Float32" | "double" => pl::DataType::Float32,
-            "Float64" | "float64" => pl::DataType::Float64,
-            "Int32" | "integer" => pl::DataType::Int32,
-            "Int64" | "integer64" => pl::DataType::Int64,
-            "UInt32" | "uinteger" => pl::DataType::UInt32,
+            "UInt8" | "uinteger8" => pl::DataType::UInt8,
+            "UInt16" | "uinteger16" => pl::DataType::UInt16,
+            "UInt32" | "uinteger32" => pl::DataType::UInt32,
             "UInt64" | "uinteger64" => pl::DataType::UInt64,
+            "Int8" | "integer8" => pl::DataType::Int8,
+            "Int16" | "integer16" => pl::DataType::Int16,
+            "Int32" | "integer32" | "integer" => pl::DataType::Int32,
+            "Int64" | "integer64" => pl::DataType::Int64,
+            "Float32" | "float32" | "double" => pl::DataType::Float32,
+            "Float64" | "float64" => pl::DataType::Float64,
+
             "Utf8" | "character" => pl::DataType::Utf8,
+            "Binary" | "binary" => pl::DataType::Binary,
+            "Date" | "date" => pl::DataType::Date,
+            "Time" | "time" => pl::DataType::Time,
+            "Null" | "null" => pl::DataType::Null,
             "Categorical" | "factor" => pl::DataType::Categorical(None),
-            "Struct" | "struct" => pl::DataType::Boolean,
+            "Unknown" | "unknown" => pl::DataType::Unknown,
+
             _ => panic!("data type not recgnized"),
         };
         DataType(pl_datatype)
     }
 
-    pub fn get_all_type_names() -> Vec<String> {
+    pub fn new_datetime() -> DataType {
+        todo!("datetime not implemented")
+    }
+
+    pub fn new_duration() -> DataType {
+        todo!("duration not implemented")
+    }
+
+    pub fn new_list(inner: &DataType) -> DataType {
+        DataType(pl::DataType::List(Box::new(inner.0.clone())))
+    }
+
+    pub fn new_object() -> DataType {
+        todo!("object not implemented")
+    }
+
+    pub fn new_struct() -> DataType {
+        todo!("struct not implemented")
+    }
+
+    pub fn get_all_simple_type_names() -> Vec<String> {
         vec![
             "Boolean".into(),
-            "Float32".into(),
-            "Float64".into(),
-            "Int32".into(),
-            "Int64".into(),
+            "UInt8".into(),
+            "UInt16".into(),
             "UInt32".into(),
             "UInt64".into(),
+            "Int8".into(),
+            "Int16".into(),
+            "Int32".into(),
+            "Int64".into(),
+            "Float32".into(),
+            "Float64".into(),
             "Utf8".into(),
+            "Binary".into(),
+            "Date".into(),
+            "Time".into(),
+            "Null".into(),
             "Categorical".into(),
+            "Unknown".into(),
         ]
     }
 

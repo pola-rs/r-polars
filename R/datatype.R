@@ -42,4 +42,34 @@ print.DataType = function(x) {
 #' @export
 "!=.DataType" <- function(e1,e2) e1$ne(e2)
 
+#create any flag-like DataType
+DataType_new = function(str) {
+  .pr$DataType$new_list(str)
+}
+
+
+#' internal collection of datatype constructors
+DataType_constructors = list(
+
+
+#' create list data type
+#' @param dt an inner DataType
+#' @return a list DataType with an inner DataType
+#' @examples pl$list(pl$list(pl$Boolean))
+  list = function(datatype) {
+    if(is.character(datatype) && length(datatype)==1 ) {
+      datatype = .pr$DataType$new(datatype)
+    }
+    if(!inherits(datatype,"DataType")) {
+      stopf(paste(
+        "input for generating a list DataType must be another DataType",
+        "or an interpretable name thereof."
+      ))
+    }
+    .pr$DataType$new_list(datatype)
+  }
+)
+
+
+
 

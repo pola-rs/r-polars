@@ -17,4 +17,10 @@ Expr
 \description{
 Aggregate to list.
 }
+\details{
+use to_struct to wrap a DataFrame
+}
+\examples{
+pl$select(pl$lit(1:4)$list(), pl$lit(c("a")))
+}
 \keyword{Expr}

@@ -23,5 +23,6 @@ Set sorted
 }
 \examples{
 s = pl$Series(1:4)$set_sorted()
+s$flags
 }
 \keyword{Series}
