@@ -1,0 +1,181 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main]
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  pull_request:
+    branches:
+      - "*"
+  #release:
+  #  types: [published]
+
+  workflow_dispatch:
+
+name: pkgdown
+
+jobs:
+  pkgdown:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R-${{ matrix.config.r }} rust-${{ matrix.config.rust-version }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macOS-latest, r: "release", rust-version: "nightly" }
+          - { os: ubuntu-latest, r: "release", rust-version: "nightly" }
+          - {
+              os: windows-latest,
+              r: "release",
+              rust-version: "nightly-gnu",
+              rtools-version: "42",
+            }
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      docs_key: ${{ secrets.DEPLOY_DOCS }}
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+      TOOLCHAIN: ${{ matrix.config.rust-version }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: check if release
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        run: |
+          echo this is a release
+
+      - name: Fix path for Windows caching
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+
+      - name: cache rpolars rust targets
+        id: cache-rust-targets
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-rust-targets
+        with:
+          path: ./src/rust/target/
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            ${{ runner.os }}-cargo-target
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.config.rust-version }}
+          default: true
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install macOS system dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install imagemagick@6
+          brew install libgit2
+          brew install harfbuzz fribidi
+
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libfontconfig1-dev
+          sudo apt-get install -y libfreetype6-dev
+          sudo apt-get install -y libfribidi-dev
+          sudo apt-get install -y git
+          sudo apt-get install -y make
+          sudo apt-get install -y libharfbuzz-dev
+          sudo apt-get update -y
+          sudo apt-get install -y libcurl4-openssl-dev
+          sudo apt-get install -y libgit2-dev
+          sudo apt-get install -y libicu-dev
+          sudo apt-get install -y libjpeg-dev
+          sudo apt-get install -y libpng-dev
+          sudo apt-get install -y libtiff-dev
+          sudo apt-get install -y libxml2-dev
+          sudo apt-get install -y libssl-dev
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: false
+          install-r: true
+          rtools-version: "42"
+          update-rtools: true
+          Ncpus: 2
+
+      - uses: r-lib/actions/setup-renv@v2
+        with:
+          cache-version: 2
+
+      - name: build package + test
+        run: |
+          devtools::install(quick = TRUE)
+          devtools::test(stop_on_failure = TRUE)
+        shell: Rscript {0}
+
+      - name: build binary
+        run: |
+          fn = devtools::build(binary = TRUE, args = c('--preclean'))
+          if (R.version$os != "mingw32") {
+            newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
+            file.rename(fn,newfn)
+          } else {
+            file.rename(fn,"../rpolars.zip") #R expects specific windows binary filename
+          }
+        shell: Rscript {0}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        with:
+          #tag_name: ${{ github.run_number }}
+          files: |
+            ../rpolars_*
+            ../rpolars.zip
+
+      - name: pre-release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'pull_request'
+        with:
+          body: "Ignore me: I'm just a pre-release."
+          prerelease: true
+          tag_name: Pull-Request-${{github.event.number}}
+          target_commitish: ""
+          files: |
+            ../rpolars_*
+            ../rpolars.zip
+
+      - name: print files
+        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+        shell: Rscript {0}
+
+      - name: print wd
+        run: print(getwd())
+        shell: Rscript {0}
+
+      - name: Build site
+        if: runner.os == 'Linux'
+        run: pkgdown::build_site_github_pages(new_process = FALSE, devel=TRUE, install = FALSE, examples=TRUE)
+        shell: Rscript {0}
+
+      - uses: webfactory/ssh-agent@v0.6.0
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
+
+      - name: Deploy to GitHub pages 🚀
+        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          clean: false
+          branch: main
+          folder: docs
+          repository-name: rpolars/rpolars.github.io
+          ssh-key: true

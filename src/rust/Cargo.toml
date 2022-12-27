@@ -1,0 +1,95 @@
+[package]
+name = 'rpolars'
+version = '0.1.0'
+edition = '2021'
+
+
+[lib]
+crate-type = [ 'staticlib' ]
+
+[dependencies]
+extendr-api = { git = "https://github.com/extendr/extendr"} 
+flume = "*"
+state = "*"
+rayon = "*"
+smartstring = { version = "1" }
+polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703", default_features= false}
+
+
+#features copied from node-polars
+[dependencies.polars]
+features = [
+  "rolling_window",
+  "json",
+  "dynamic_groupby",
+  "zip_with",
+  "simd",
+  "lazy",
+  "strings",
+  "temporal",
+  "random",
+  "object",
+  "csv-file",
+  "fmt",
+  "performant",
+  "dtype-full",
+  "rows",
+  "private",
+  "round_series",
+  "is_in",
+  "is_first",
+  "asof_join",
+  "cross_join",
+  "dot_product",
+  "concat_str",
+  "row_hash",
+  "reinterpret",
+  "decompress-fast",
+  "mode",
+  "extract_jsonpath",
+  "lazy_regex",
+  "cum_agg",
+  "rolling_window",
+  "repeat_by",
+  "interpolate",
+  #"list",
+  "ewma",
+  "rank",
+  "diff",
+  "pct_change",
+  "moment",
+  "arange",
+  "true_div",
+  "dtype-categorical",
+  "diagonal_concat",
+  "horizontal_concat",
+  "abs",
+  "dot_diagram",
+  "dataframe_arithmetic",
+  "json",
+  "string_encoding",
+  "product",
+  "ndarray",
+  "unique_counts",
+  "log",
+  "serde-lazy",
+  "partition_by",
+  "pivot",
+  "semi_anti_join",
+  "parquet",
+  "to_dummies",
+  "ipc",
+  "avro",
+  "list_eval",
+  "arg_where",
+  #extra features since copy from node-polars
+  "top_k",
+  "search_sorted",
+  "propagate_nans",
+  "trigonometry",
+  "sign",
+  "cumulative_eval"
+]
+default-features = false
+git = "https://github.com/pola-rs/polars.git"
+rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703"

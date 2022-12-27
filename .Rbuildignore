@@ -1,0 +1,8 @@
+^renv$
+^renv\.lock$
+^rpolars\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
