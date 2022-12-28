@@ -302,6 +302,38 @@ Expr$list <- function() .Call(wrap__Expr__list, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
+Expr$arr_lengths <- function() .Call(wrap__Expr__arr_lengths, self)
+
+Expr$lst_max <- function() .Call(wrap__Expr__lst_max, self)
+
+Expr$lst_min <- function() .Call(wrap__Expr__lst_min, self)
+
+Expr$lst_sum <- function() .Call(wrap__Expr__lst_sum, self)
+
+Expr$lst_mean <- function() .Call(wrap__Expr__lst_mean, self)
+
+Expr$lst_sort <- function(reverse) .Call(wrap__Expr__lst_sort, self, reverse)
+
+Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
+
+Expr$lst_unique <- function() .Call(wrap__Expr__lst_unique, self)
+
+Expr$lst_get <- function(index) .Call(wrap__Expr__lst_get, self, index)
+
+Expr$lst_join <- function(separator) .Call(wrap__Expr__lst_join, self, separator)
+
+Expr$lst_arg_min <- function() .Call(wrap__Expr__lst_arg_min, self)
+
+Expr$lst_arg_max <- function() .Call(wrap__Expr__lst_arg_max, self)
+
+Expr$lst_diff <- function(n, null_behavior) .Call(wrap__Expr__lst_diff, self, n, null_behavior)
+
+Expr$lst_shift <- function(periods) .Call(wrap__Expr__lst_shift, self, periods)
+
+Expr$lst_slice <- function(offset, length) .Call(wrap__Expr__lst_slice, self, offset, length)
+
+Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr, parallel)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

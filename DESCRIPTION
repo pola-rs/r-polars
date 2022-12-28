@@ -21,6 +21,7 @@ Collate:
     'datatype.R'
     'docs.R'
     'expr__expr.R'
+    'expr__list.R'
     'functions.R'
     'groupby.R'
     'lazy_functions.R'

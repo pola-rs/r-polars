@@ -956,6 +956,103 @@ impl Expr {
         self.0.clone().shrink_dtype().into()
     }
 
+    //arr/list methods
+
+    fn arr_lengths(&self) -> Self {
+        self.0.clone().arr().lengths().into()
+    }
+
+    fn lst_max(&self) -> Self {
+        self.0.clone().arr().max().into()
+    }
+
+    fn lst_min(&self) -> Self {
+        self.0.clone().arr().min().into()
+    }
+
+    fn lst_sum(&self) -> Self {
+        self.0.clone().arr().sum().with_fmt("arr.sum").into()
+    }
+
+    fn lst_mean(&self) -> Self {
+        self.0.clone().arr().mean().with_fmt("arr.mean").into()
+    }
+
+    fn lst_sort(&self, reverse: bool) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .sort(SortOptions {
+                descending: reverse,
+                ..Default::default()
+            })
+            .with_fmt("arr.sort")
+            .into()
+    }
+
+    fn lst_reverse(&self) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .reverse()
+            .with_fmt("arr.reverse")
+            .into()
+    }
+
+    fn lst_unique(&self) -> Self {
+        self.0.clone().arr().unique().with_fmt("arr.unique").into()
+    }
+
+    fn lst_get(&self, index: &Expr) -> Self {
+        self.0.clone().arr().get(index.clone().0).into()
+    }
+
+    fn lst_join(&self, separator: &str) -> Self {
+        self.0.clone().arr().join(separator).into()
+    }
+
+    fn lst_arg_min(&self) -> Self {
+        self.0.clone().arr().arg_min().into()
+    }
+
+    fn lst_arg_max(&self) -> Self {
+        self.0.clone().arr().arg_max().into()
+    }
+
+    fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
+        let expr_res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(self.0.clone().arr().diff(
+                try_f64_into_usize(n, false)?,
+                new_null_behavior(null_behavior)?,
+            )))
+        }()
+        .map_err(|err| format!("arr.diff: {}", err));
+        r_result_list(expr_res)
+    }
+
+    fn lst_shift(&self, periods: f64) -> List {
+        let expr_res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(self.0.clone().arr().shift(try_f64_into_i64(periods)?)))
+        }()
+        .map_err(|err| format!("arr.shift: {}", err));
+        r_result_list(expr_res)
+    }
+
+    fn lst_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
+        let length = match null_to_opt(length) {
+            Some(i) => i.0.clone(),
+            None => dsl::lit(i64::MAX),
+        };
+        self.0.clone().arr().slice(offset.0.clone(), length).into()
+    }
+
+    fn lst_eval(&self, expr: &Expr, parallel: bool) -> Self {
+        use pl::*;
+        self.0.clone().arr().eval(expr.0.clone(), parallel).into()
+    }
+
+    //end list/arr methods
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }
