@@ -15,16 +15,16 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  No dependencies other than R (≥ 4.1.0)
 
  - Macbbook x86_64
- `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
+ `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
  
  - Linux x86_64
- `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
+ `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
  
  - Windows
- `install.packages(repos=NULL, "https://github.com/rpolars/rpolars/releases/latest/download/rpolars.zip")`
+ `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars.zip")`
  
  - Other targets?  Start a new issue.
- - Install a specific version? Find the version specific url, via [releases section](https://github.com/rpolars/rpolars/releases).
+ - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
  
  
  
@@ -35,6 +35,8 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 # Contribute
  I'd freaking love any contributions <3 Just reach out if any questions.
 ### Simple contribution example to implement the cosine expression:
+
+## NB! these examples link to old repo rpolars/rpolars source code, but the idea is the same
 
  - Look up the [polars.Expr.cos method in py-polars documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
  - Press the `[source]` button to see the [python impl](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/polars/internals/expr/expr.py#L5215-L5237)
@@ -50,6 +52,11 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 
 
 ## news:
+
+ - update 28th December: r-polars is now hosted at https://github.com/pola-rs/r-polars. Happy to be
+ here. You might encounter a bunch of links to the old repository the first weeks. I plan to work on r-polars full time the next 3 months, because why not :) Any contributions 
+ are much appreciated. 
+
  - update 24th November: minipolars is getting bigger and is changing name to rpolars and is hosted on [github.com/rpolars/rpolars](https://github.com/rpolars/rpolars/). Translation, testing and documenting progress is unfortunately not fast enough to finish in 2022. Goal postponed to March 2023. rlang is dropped as install dependency. No dependencies should make it very easy to install and manage versions long term.
 
  - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, rpolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/rpolars/blob/main/src/rpolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
@@ -85,12 +92,17 @@ from R and the reverse.
   Install rust + set buildchain to nightly + 3rd party dependencies.
   See installation workflows/pkgdown.yaml for Windows, Linux and Mac.
 
- - install rust with rustup
- - `rustup default nightly`
- - clone repo
+ - install rust with 'rustup', the cross-platform rust installer
+ - `rustup toolchain install nightly` #install nightly
+ - `rustup default nightly` #choose nightly
+ - clone this repo
  - on Windows rtools42 must be in path
- - `source("./renv/activate.R")` to install and set up R packages (likely automatically triggered by .Rprofile)
- - `rextendr::document()` to compile rust code and quick build package
+ 
+ With repo as root dir:
+ 
+ - `source("./renv/activate.R")` # (likely automatically triggered by .Rprofile)
+ - `renv::restore()` #  to install and set up R packages
+ - `rextendr::document()` # to compile rust code and quick build package
  -  or `R CMD INSTALL --no-multiarch --with-keep.source rpolars` to build final package
  - `devtools::test()` to run all unit tests.
 
@@ -123,10 +135,10 @@ the power of polars is the [official user guide for
 python](https://pola-rs.github.io/polars-book/user-guide/). As
 rpolars syntax is the same ( except `$` instead of `.`) the guide
 should be quite useful. The following example shows a typical
-‘polar_frame’ method together with chained expressions.
+‘DataFrame’ method together with chained expressions.
 
 ``` r
-#create polar_frames from iris
+#create DataFrame from iris
 df = pl$DataFrame(iris)
 
 #make selection (similar to dplyr mutute() and data.table [,.()] ) and use expressions or strings.
@@ -156,10 +168,10 @@ head(df$as_data_frame())
     ## 5               171.4               250.3         0.2
     ## 6               171.4               250.3         0.4
 
-## `polar_frame` from `series` and R vectors
+## `DataFrame` from `series` and R vectors
 
 ``` r
-#a single column outside a polars_frame is called a series
+#a single column outside a DataFrame is called a series
 pl$Series((1:5) * 5,"my_series")
 ```
 
@@ -174,7 +186,7 @@ pl$Series((1:5) * 5,"my_series")
     ## ]
 
 ``` r
-#Create polar_From from a mix of series and/or plain R vectors.
+#Create DataFrame from a mix of series and/or plain R vectors.
 pl$DataFrame(
   newname = pl$Series(c(1,2,3,4,5),name = "b"), #overwrite name b with 'newname'
   pl$Series((1:5) * 5,"a"),
@@ -247,13 +259,13 @@ polars DataType: Categorical(
 )
 ```
 
-# Read csv and the `polars_lazy_frame`
+# Read csv and the `LazyFrame`
 
 ``` r
   #using iris.csv as example
   write.csv(iris, "iris.csv",row.names = FALSE)
 
-  #read csv into a lazy_polar_frame and compute sum of Sepal.Width over Species
+  #read csv into a LazyFrame and compute sum of Sepal.Width over Species
   lpf = pl$lazy_csv_reader("iris.csv")$select(
     pl$col("Sepal.Width")$sum()$over("Species")
   )
@@ -285,7 +297,7 @@ polars DataType: Categorical(
   #Only reading some columns or in other cases some row in to memory can save speed downstream operations. This is called peojection. 
   
   
-  #to execute plan, simply call $collect() and get a polars_frame as result
+  #to execute plan, simply call $collect() and get a DataFrame as result
   
   lpf$collect()
 ```
