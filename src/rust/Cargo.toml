@@ -8,6 +8,8 @@ edition = '2021'
 crate-type = [ 'staticlib' ]
 
 [dependencies]
+jemallocator = "*"
+mimalloc = "*"
 extendr-api = { git = "https://github.com/extendr/extendr"} 
 flume = "*"
 state = "*"
