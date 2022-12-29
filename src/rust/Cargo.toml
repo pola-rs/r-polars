@@ -7,11 +7,15 @@ edition = '2021'
 [lib]
 crate-type = [ 'staticlib' ]
 
-[dependencies]
+[workspace]
+# prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
 mimalloc = { version = "*", default-features = false }
+
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
+
+[dependencies]
 extendr-api = { git = "https://github.com/extendr/extendr"} 
 flume = "*"
 state = "*"
