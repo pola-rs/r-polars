@@ -1,3 +1,15 @@
+#[cfg(all(target_os = "linux", not(use_mimalloc)))]
+use jemallocator::Jemalloc;
+#[cfg(any(not(target_os = "linux"), use_mimalloc))]
+use mimalloc::MiMalloc;
+#[global_allocator]
+#[cfg(all(target_os = "linux", not(use_mimalloc)))]
+static ALLOC: Jemalloc = Jemalloc;
+
+#[global_allocator]
+#[cfg(any(not(target_os = "linux"), use_mimalloc))]
+static ALLOC: MiMalloc = MiMalloc;
+
 pub mod concurrent;
 pub mod rdataframe;
 pub mod rdatatype;
