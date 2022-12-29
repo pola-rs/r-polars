@@ -7,9 +7,11 @@
 replace_private_with_pub_methods(env, class_pattern, keep = c())
 }
 \arguments{
-\item{env}{class envrionment to modify. Envs are mutable so return needed}
+\item{env}{class envrionment to modify. Envs are mutable so no return needed}
 
 \item{class_pattern}{a regex string matching declared public functions of that class}
+
+\item{keep}{list of unmentioned methods to keep in public api}
 }
 \description{
 extendr places the naked internal calls to rust in env-classes. This function

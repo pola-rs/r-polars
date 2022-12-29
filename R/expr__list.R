@@ -1,26 +1,29 @@
-Expr__arr_lengths = "use_extendr_wrapper"
 
-Expr__arr_min = "use_extendr_wrapper"
+# create new environment with methods pointing to a given self
+make_expr_arr_opts = function(self) {
 
-Expr__arr_max = "use_extendr_wrapper"
+  env = new.env()
+  env$lengths = function() .pr$Expr$arr_lengths(self)
 
-Expr__arr_sum = "use_extendr_wrapper"
+  env$min = function() .pr$Expr$lst_min(self)
 
-Expr__arr_mean = "use_extendr_wrapper"
+  env$max = function() .pr$Expr$lst_max(self)
 
-Expr__arr_sort = function(reverse = FALSE) {
-  .pr$Expr$lst_sort(self, reverse)
+  env$sum = function() .pr$Expr$lst_sum(self)
+
+  env$mean = function() .pr$Expr$lst_mean(self)
+
+  env$sort = function(reverse = FALSE) {
+    .pr$Expr$lst_sort(self, reverse)
+  }
+
+  env$reverse = function() .pr$Expr$lst_reverse(self)
+
+  env$unique = function() .pr$Expr$lst_unique(self)
+
+  env$get= function(index) {
+    .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = FALSE))
+  }
+
+  env
 }
-
-Expr__arr_reverse = "use_extendr_wrapper"
-
-Expr__arr_unique = "use_extendr_wrapper"
-
-Expr__arr_get= function(index) {
-  .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = FALSE))
-}
-
-
-#missing Expr__arr_concat
-
-

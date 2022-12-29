@@ -581,7 +581,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
     s$apply(f, return_type, strict_return_type, allow_fail_eval)
   }
 
-  #return epression from the functions above, activate agg_list (grouped mapping)
+  #return expression from the functions above, activate agg_list (grouped mapping)
   .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE)
 }
 
@@ -3800,3 +3800,7 @@ Expr_list = "use_extendr_wrapper"
 #'  )$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"
 
+
+Expr_arr = method_as_property(function() {
+  make_expr_arr_opts(self)
+})
