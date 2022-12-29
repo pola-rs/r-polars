@@ -8,8 +8,10 @@ edition = '2021'
 crate-type = [ 'staticlib' ]
 
 [dependencies]
-jemallocator = "*"
-mimalloc = "*"
+[target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
+mimalloc = { version = "*", default-features = false }
+[target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
+jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
 extendr-api = { git = "https://github.com/extendr/extendr"} 
 flume = "*"
 state = "*"
