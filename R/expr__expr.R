@@ -1889,7 +1889,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #TODO contribute polars, example of where NA/Null is omitted and the smallest value
 #' Get quantile value.
 #'
-#' @param quantile numeric 0.0 to 1.0
+#' @param quantile numeric/Expression 0.0 to 1.0
 #' @param inerpolation string value from choices "nearest", "higher",
 #' "lower", "midpoint", "linear"
 #' @return Expr
@@ -1904,7 +1904,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' @examples
 #' pl$select(pl$lit(-5:5)$quantile(.5))
 Expr_quantile = function(quantile, interpolation = "nearest") {
-  unwrap(.pr$Expr$quantile(self, quantile, interpolation))
+  unwrap(.pr$Expr$quantile(self, wrap_e(quantile), interpolation))
 }
 
 
