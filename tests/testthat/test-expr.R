@@ -1548,8 +1548,13 @@ test_that("inspect", {
 
 test_that("interpolate", {
   expect_identical(
-    pl$select(pl$lit(c(1,NA,4,NA,100))$interpolate())$to_list()[[1L]],
+    pl$select(pl$lit(c(1,NA,4,NA,100))$interpolate(method = "linear"))$to_list()[[1L]],
     approx(c(1,NA,4,NA,100),xout = c(1:5))$y
+  )
+
+  expect_identical(
+    pl$select(pl$lit(c(1,NA,4,NA,100,90,NA,60))$interpolate(method = "nearest"))$to_list()[[1L]],
+    approx(c(1,NA,4,NA,100,90,NA,60),xout = c(1:8), method = "constant", f = 1)$y
   )
 })
 

@@ -2256,7 +2256,9 @@ Expr_inspect = function(fmt = "{}") {
 #' df_new_grid$join(
 #'   df_original_grid, on="grid_points", how="left"
 #' )$with_columns(pl$col("values")$interpolate())
-Expr_interpolate = "use_extendr_wrapper"
+Expr_interpolate = function(method) {
+  unwrap(.pr$Expr$interpolate(self, method))
+}
 
 
 prepare_rolling_window_args = function(
