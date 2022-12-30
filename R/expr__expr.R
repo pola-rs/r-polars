@@ -2237,6 +2237,7 @@ Expr_inspect = function(fmt = "{}") {
 
 #' Interpolate `Nulls`
 #' @keywords Expr
+#' @method string 'linear' or 'nearest'
 #' @description
 #' Fill nulls with linear interpolation over missing values.
 #' Can also be used to regrid data to a new grid - see examples below.
