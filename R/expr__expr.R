@@ -3801,6 +3801,26 @@ Expr_list = "use_extendr_wrapper"
 Expr_shrink_dtype = "use_extendr_wrapper"
 
 
+
+#' arr: list related methods
+#' @description
+#' Create an object namespace of all list related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases shrink_dtype
+#' @examples
+#' df_with_list = pl$DataFrame(
+#'   group = c(1,1,2,2,3),
+#'   value = c(1:5)
+#' )$groupby(
+#'   "group",maintain_order = TRUE
+#' )$agg(
+#'   pl$col("value") * 3L
+#' )
+#' df_with_list$with_column(
+#'   pl$col("value")$arr$lengths()$alias("group_size")
+#' )
 Expr_arr = method_as_property(function() {
-  make_expr_arr_opts(self)
+  make_expr_arr_namespace(self)
 })

@@ -4,7 +4,7 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::DataType;
-use crate::utils::{r_error_list, r_result_list};
+use crate::utils::{r_error_list, r_ok_list, r_result_list};
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
@@ -48,7 +48,7 @@ pub fn inherits(x: &Robj, class: &str) -> bool {
 //     pl::Series::new(name, v.as_slice())
 // }
 //TODO remove unwraps
-pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
+pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
     let y = x.rtype();
 
     //used for string vector and factor
@@ -71,14 +71,14 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
 
     match y {
         Rtype::Integers if inherits(&x, "factor") => {
-            robj_to_utf8_series(&x.as_character_factor(), name)
+            Ok(robj_to_utf8_series(&x.as_character_factor(), name)
                 .cast(&pl::DataType::Categorical(None))
-                .unwrap()
+                .unwrap())
         }
         Rtype::Integers => {
             let rints = x.as_integers().unwrap();
             if rints.no_na().is_true() {
-                pl::Series::new(name, x.as_integer_slice().unwrap())
+                Ok(pl::Series::new(name, x.as_integer_slice().unwrap()))
             } else {
                 //convert R NAs to rust options
                 let mut s: pl::Series = rints
@@ -86,7 +86,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
                     .map(|x| if x.is_na() { None } else { Some(x.0) })
                     .collect();
                 s.rename(name);
-                s
+                Ok(s)
             }
         }
         Rtype::Doubles => {
@@ -94,7 +94,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
 
             //likely never real altrep, yields NA_Rbool, yields false
             if rdouble.no_na().is_true() {
-                pl::Series::new(name, x.as_real_slice().unwrap())
+                Ok(pl::Series::new(name, x.as_real_slice().unwrap()))
             } else {
                 //convert R NAs to rust options
                 let mut s: pl::Series = rdouble
@@ -102,19 +102,67 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
                     .map(|x| if x.is_na() { None } else { Some(x.0) })
                     .collect();
                 s.rename(name);
-                s
+                Ok(s)
             }
         }
-        Rtype::Strings => robj_to_utf8_series(x, name),
+        Rtype::Strings => Ok(robj_to_utf8_series(x, name)),
         Rtype::Logicals => {
             let logicals: Logicals = x.try_into().unwrap();
             let s: Vec<Option<bool>> = logicals
                 .iter()
                 .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
                 .collect();
-            pl::Series::new(name, s)
+            Ok(pl::Series::new(name, s))
         }
-        _ => todo!("this input type is not implemented yet"),
+        Rtype::List => {
+            //remeber
+            let mut first_opt_rtype: Option<Rtype> = None;
+
+            //recursive collect elements list elements and check for same type (polars requirement)
+            let result_series: pl::PolarsResult<Vec<pl::Series>> = x
+                .as_list()
+                .unwrap()
+                .iter()
+                .map(|(name, robj)| {
+
+                    //check this rtype is the same as first or is the first
+                    let this_rtype = robj.rtype();
+                    if let Some(last_rtype) = &first_opt_rtype {
+                        if *last_rtype != this_rtype {
+                            Err(pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
+                                format!(
+                                    "new series from rtype list: all elements must have the same type \
+                                    however first element was {:?} while another element was {:?}",
+                                    last_rtype,this_rtype
+                                )
+                            )))?
+                        }
+                    } else {
+                        first_opt_rtype = Some(this_rtype);
+                    }
+
+                    //return result series
+                    robjname2series(&robj, name)
+                })
+                .collect();
+
+            //check not a nested list
+            match first_opt_rtype {
+                Some(extendr_api::Rtype::List) => Err(pl::PolarsError::SchemaMisMatch(
+                    polars::error::ErrString::Owned(
+                        "new series from rtype list: rpolars do not yet support creation of \
+                         nested lists. Only a list of vectors "
+                            .to_string(),
+                    ),
+                ))?,
+                _ => (),
+            };
+
+            Ok(pl::Series::new(name, result_series?)) //todo check with polars why this fails for nested list
+        }
+        _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
+            format!("new series from rtype {:?} is not supported (yet)", y),
+        ))),
     }
 }
 
@@ -143,8 +191,12 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 #[extendr]
 impl Series {
     //utility methods
-    pub fn new(x: Robj, name: &str) -> Self {
-        Series(robjname2series(&x, name))
+    pub fn new(x: Robj, name: &str) -> List {
+        let s_res = robjname2series(&x, name);
+        match s_res {
+            Ok(s) => r_ok_list(Series(s)),
+            Err(s) => r_error_list(s),
+        }
     }
 
     pub fn clone(&self) -> Series {
@@ -545,7 +597,7 @@ impl Series {
 
     pub fn any_robj_to_pl_series_result(robj: &Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&robj, &"")
+            robjname2series(&robj, &"")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {

@@ -131,11 +131,9 @@ length.Series = \(x) x$len()
 #' }
 pl$Series = function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
-  if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x) || is.factor(x)) {
-    if(is.null(name)) name = ""
-    if(!is_string(name)) stopf("name must be NULL or a string")
-    return(.pr$Series$new(x,name))
-  }
+  if(is.null(name)) name = ""
+  if(!is_string(name)) stopf("name must be NULL or a string")
+  return(unwrap(.pr$Series$new(x,name)))
   stopf("x must be a double, interger, char, or logical vector")
 }
 

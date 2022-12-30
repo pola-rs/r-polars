@@ -51,8 +51,9 @@ impl DataFrame {
 
     //internal use
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> List {
-        let new_series = robjname2series(&robj, name);
-        r_result_list(self.0.with_column(new_series).map(|_| ()))
+        let result: pl::PolarsResult<()> =
+            robjname2series(&robj, name).and_then(|s| self.0.with_column(s).map(|_| ()));
+        r_result_list(result)
     }
 
     //internal use

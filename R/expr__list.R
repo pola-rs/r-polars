@@ -1,8 +1,23 @@
 
-# create new environment with methods pointing to a given self
-make_expr_arr_opts = function(self) {
-
+#' make_expr_arr_namespace
+#' @description
+#' Internal function to yield methods within arr namespace
+#' See the individual method pages for full details
+#' @keywords internals
+#' @return environment with methods to call on self
+make_expr_arr_namespace = function(self) {
   env = new.env()
+
+  #' Lenghts arrays in list
+  #' @name arr$lengths
+  #' @description
+  #' Get the length of the arrays as UInt32.
+  #' @keywords ExprArr
+  #' @return Expr
+  #' @aliases lengths
+  #' @examples
+  #' df = pl$DataFrame(list_of_strs = pl$Series(list(c("a","b"),"c")))
+  #' df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
   env$lengths = function() .pr$Expr$arr_lengths(self)
 
   env$min = function() .pr$Expr$lst_min(self)
