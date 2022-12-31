@@ -1,5 +1,3 @@
-use std::any::Any;
-
 //use crate::apply;
 use crate::apply_input;
 use crate::apply_output;
@@ -118,40 +116,20 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
         }
         Rtype::List => {
             //remeber
-            let mut first_opt_rtype: Option<Rtype> = None;
+            //let mut first_opt_rtype: Option<Rtype> = None;
 
             //recursive collect elements list elements and check for same type (polars requirement)
             let result_series: pl::PolarsResult<Vec<pl::Series>> = x
                 .as_list()
                 .unwrap()
                 .iter()
-                .map(|(name, robj)| {
-
-                    //check this rtype is the same as first or is the first
-                    let this_rtype = robj.rtype();
-                    if let Some(last_rtype) = &first_opt_rtype {
-                        if *last_rtype != this_rtype {
-                            Err(pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
-                                format!(
-                                    "new series from rtype list: all elements must have the same type \
-                                    however first element was {:?} while another element was {:?}",
-                                    last_rtype,this_rtype
-                                )
-                            )))?
-                        }
-                    } else {
-                        first_opt_rtype = Some(this_rtype);
-                    }
-
-                    //return result series
-                    robjname2series(&robj, name)
-                })
+                .map(|(name, robj)| robjname2series(&robj, name))
                 .collect();
+            let series = result_series?;
 
-            let result_series = result_series?;
-            let x: Vec<_> = result_series.iter().map(|s| s.0.dtype()).collect();
+            //TODO tidy up this evaluation for same datatype, print what is different
+            let x: Vec<_> = series.iter().map(|s| s.0.dtype()).collect();
             let y = x.as_slice();
-
             fn is_all_same1(arr: &[&pl::DataType]) -> bool {
                 if arr.is_empty() {
                     return true;
@@ -159,7 +137,6 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                 let first = arr[0];
                 arr.iter().all(|&item| item == first)
             }
-
             if !is_all_same1(y) {
                 Err(pl::PolarsError::SchemaMisMatch(
                     polars::error::ErrString::Owned(format!(
@@ -168,7 +145,7 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                 ))?
             };
 
-            Ok(pl::Series::new(name, result_series)) //todo check with polars why this fails for nested list
+            Ok(pl::Series::new(name, series))
         }
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
             format!("new series from rtype {:?} is not supported (yet)", y),
