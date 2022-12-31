@@ -1473,9 +1473,10 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$list(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
-  expect_true(!any(duplicated(hash_values2)))
-  expect_true(!identical(hash_values1,hash_values2))
+  expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
+  expect_true(!all(hash_values1==hash_values2))
 
   df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())
   df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$list())
@@ -1734,8 +1735,7 @@ test_that("skew", {
       a_skew = R_skewness(l$a),
       a_skew_bias_F = R_skewness(l$a,bias=F),
       b_skew = R_skewness(l$b,na.rm=TRUE),
-      #TODO update when fixed to R_skewness(l$b,bias=F,na.rm=TRUE)
-      b_skew_bias_F = 0.73549076 # error in polars
+      b_skew_bias_F = R_skewness(l$b,bias=F,na.rm=TRUE)
     )
   )
 
