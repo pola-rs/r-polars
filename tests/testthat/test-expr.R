@@ -568,39 +568,21 @@ test_that("map_alias" , {
   expect_identical(lf$collect()$columns, "alice_and_bob")
 
 
-  # expect_error(
-  #   pl$DataFrame(list(alice=1:3))$select(
-  #     pl$col("alice")$map_alias(\(x) 42) #wrong return
-  #   ),
-  #   "^select\\ panicked.$"
-  # )
-
-  # out_error = tryCatch(
-  #   pl$DataFrame(list(alice=1:3))$select(
-  #     pl$col("alice")$map_alias(\(x) stop("user fun error")) #wrong return
-  #   ),
-  #   error = function(e) as.character(e)
-  # )
-  # expect_identical(
-  #   out_error,
-  #   "Error in .pr$DataFrame$select(self, exprs): select panicked.\n",
-  #
-  # )
+  expect_error(
+    pl$DataFrame(list(alice=1:3))$select(
+      pl$col("alice")$map_alias(\(x) 42) #wrong return
+    ),
+    "^when calling"
+  )
 
 
   # expect_error(
   #   pl$DataFrame(list(alice=1:3))$select(
-  #     pl$col("alice")$map_alias(\() "bob") #missing param
+  #     pl$col("alice")$map_alias(\(x) stop()) #wrong return
   #   ),
-  #   class = "not_one_arg"
+  #   "^when calling"
   # )
 
-  # expect_error(
-  #   pl$DataFrame(list(alice=1:3))$select(
-  #     pl$col("alice")$map_alias("not a function") #not a fun
-  #   ),
-  #   class = "not_fun"
-  # )
 
 
   pl$reset_rpolars_options()
@@ -1491,9 +1473,10 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$list(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
-  expect_true(!any(duplicated(hash_values2)))
-  expect_true(!identical(hash_values1,hash_values2))
+  expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
+  expect_true(!all(hash_values1==hash_values2))
 
   df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())
   df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$list())
@@ -1548,8 +1531,13 @@ test_that("inspect", {
 
 test_that("interpolate", {
   expect_identical(
-    pl$select(pl$lit(c(1,NA,4,NA,100))$interpolate())$to_list()[[1L]],
+    pl$select(pl$lit(c(1,NA,4,NA,100))$interpolate(method = "linear"))$to_list()[[1L]],
     approx(c(1,NA,4,NA,100),xout = c(1:5))$y
+  )
+
+  expect_identical(
+    pl$select(pl$lit(c(1,NA,4,NA,100,90,NA,60))$interpolate(method = "nearest"))$to_list()[[1L]],
+    approx(c(1,NA,4,NA,100,90,NA,60),xout = c(1:8), method = "constant", f = 1)$y
   )
 })
 
@@ -1747,8 +1735,7 @@ test_that("skew", {
       a_skew = R_skewness(l$a),
       a_skew_bias_F = R_skewness(l$a,bias=F),
       b_skew = R_skewness(l$b,na.rm=TRUE),
-      #TODO update when fixed to R_skewness(l$b,bias=F,na.rm=TRUE)
-      b_skew_bias_F = 0.73549076 # error in polars
+      b_skew_bias_F = R_skewness(l$b,bias=F,na.rm=TRUE)
     )
   )
 

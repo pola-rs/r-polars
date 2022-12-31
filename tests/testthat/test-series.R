@@ -269,6 +269,19 @@ test_that("sorted flags, sort", {
 
 })
 
+# test_that("is_sorted  sort", {
+#   s = pl$Series(c(NA,2,1,3,NA))
+#   s_sorted = s$sort(reverse = FALSE)
+#   expect_true(s_sorted$is_sorted())
+#   expect_false(s$is_sorted())
+#
+#   s_sorted_rev = s$sort(reverse = TRUE)
+#   expect_false(s_sorted_rev$is_sorted(reverse = FALSE))
+#   expect_true(s_sorted_rev$is_sorted(reverse = TRUE, nulls_last = FALSE))
+#   expect_false(s_sorted_rev$is_sorted(reverse = TRUE, nulls_last = TRUE))
+#
+# })
+
 test_that("set_sorted" , {
   pl$reset_rpolars_options()
 

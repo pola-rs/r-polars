@@ -202,7 +202,7 @@ Expr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__Expr__hash, self
 
 Expr$reinterpret <- function(signed) .Call(wrap__Expr__reinterpret, self, signed)
 
-Expr$interpolate <- function() .Call(wrap__Expr__interpolate, self)
+Expr$interpolate <- function(method) .Call(wrap__Expr__interpolate, self, method)
 
 Expr$rolling_min <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_min, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
 

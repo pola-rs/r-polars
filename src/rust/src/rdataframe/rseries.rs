@@ -258,11 +258,23 @@ impl Series {
     }
 
     pub fn is_sorted_flag(&self) -> bool {
-        matches!(self.0.is_sorted(), polars::series::IsSorted::Ascending)
+        matches!(self.0.is_sorted_flag(), polars::series::IsSorted::Ascending)
     }
     pub fn is_sorted_reverse_flag(&self) -> bool {
-        matches!(self.0.is_sorted(), polars::series::IsSorted::Descending)
+        matches!(
+            self.0.is_sorted_flag(),
+            polars::series::IsSorted::Descending
+        )
     }
+
+    // pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
+    //     let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+    //     let options = pl::SortOptions {
+    //         descending: reverse,
+    //         nulls_last: nulls_last,
+    //     };
+    //     self.0.is_sorted(options)
+    // }
 
     pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {
         if strict {
@@ -284,7 +296,6 @@ impl Series {
                 let rhs = casted_series.$dc().map_err(|err| err.to_string())?;
 
                 let ca_bool = match $op.as_str() {
-                    "eq_missing" => lhs.eq_missing(rhs),
                     "equal" => lhs.equal(rhs),
                     "not_equal" => lhs.not_equal(rhs),
                     "gt" => lhs.gt(rhs),
@@ -577,9 +588,9 @@ impl Series {
 
     pub fn set_sorted_mut(&mut self, reverse: bool) {
         if reverse {
-            self.0.set_sorted(polars::series::IsSorted::Descending)
+            self.0.set_sorted_flag(polars::series::IsSorted::Descending)
         } else {
-            self.0.set_sorted(polars::series::IsSorted::Ascending)
+            self.0.set_sorted_flag(polars::series::IsSorted::Ascending)
         };
     }
 }

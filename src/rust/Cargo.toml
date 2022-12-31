@@ -7,13 +7,21 @@ edition = '2021'
 [lib]
 crate-type = [ 'staticlib' ]
 
+[workspace]
+# prevents package from thinking it's in the workspace
+[target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
+mimalloc = { version = "*", default-features = false }
+
+[target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
+jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
+
 [dependencies]
 extendr-api = { git = "https://github.com/extendr/extendr"} 
 flume = "*"
 state = "*"
 rayon = "*"
 smartstring = { version = "1" }
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703", default_features= false}
+polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "91a419acaf024e64410e77210ed928051aab76b5", default_features= false}
 
 
 #features copied from node-polars
@@ -93,4 +101,4 @@ features = [
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "552b4f5ca077ab56ae1126042c8aa6d26d866703"
+rev = "91a419acaf024e64410e77210ed928051aab76b5"
