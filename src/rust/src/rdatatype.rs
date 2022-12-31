@@ -282,6 +282,19 @@ pub fn literal_to_any_value(
 //     x
 // }
 
+pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
+    use pl::InterpolationMethod as IM;
+    match s {
+        "linear" => Ok(IM::Linear),
+        "nearest" => Ok(IM::Nearest),
+
+        _ => Err(format!(
+            "InterpolationMethod choice: [{}] is not any of 'linear' or 'nearest'",
+            s
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;

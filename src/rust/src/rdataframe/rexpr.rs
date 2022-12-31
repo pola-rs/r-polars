@@ -17,6 +17,9 @@ use polars::prelude::GetOutput;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
+use pl::PolarsError as pl_error;
+use polars::error::ErrString as pl_err_string;
+
 #[derive(Clone, Debug)]
 #[extendr]
 pub struct Expr(pub pl::Expr);
@@ -362,9 +365,9 @@ impl Expr {
         self.clone().0.is_duplicated().into()
     }
 
-    pub fn quantile(&self, quantile: f64, interpolation: &str) -> List {
+    pub fn quantile(&self, quantile: &Expr, interpolation: &str) -> List {
         let res = new_quantile_interpolation_option(interpolation)
-            .map(|intpl| Expr(self.clone().0.quantile(quantile, intpl)));
+            .map(|intpl| Expr(self.clone().0.quantile(quantile.0.clone(), intpl)));
         r_result_list(res)
     }
 
@@ -426,8 +429,12 @@ impl Expr {
             .into()
     }
 
-    pub fn interpolate(&self) -> Expr {
-        self.0.clone().interpolate().into()
+    pub fn interpolate(&self, method: &str) -> List {
+        use crate::rdatatype::new_interpolation_method;
+        let im_result = new_interpolation_method(method)
+            .map(|im| Expr(self.0.clone().interpolate(im)))
+            .map_err(|err| format!("in interpolate(): {}", err));
+        r_result_list(im_result)
     }
 
     pub fn rolling_min(
@@ -1243,19 +1250,29 @@ impl Expr {
         //     //wrap as series
         // };
 
-        let f = move |name: &str| -> String {
+        let f = move |name: &str| -> pl::PolarsResult<String> {
             let robj = probj.clone().0;
             let rfun = robj
                 .as_function()
                 .expect("internal error: this is not an R function");
 
-            let newname_robj = rfun
-                .call(pairlist!(name))
-                .expect("user function raised an error");
+            let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
+                let es = pl_err_string::Owned(format!(
+                    "in map_alias: user function raised this error: {:?}",
+                    err
+                ));
+                pl_error::ComputeError(es)
+            })?;
+
             newname_robj
                 .as_str()
-                .expect("R function return value was not a string")
-                .to_string()
+                .ok_or_else(|| {
+                    let es = pl_err_string::Owned(format!(
+                        "in map_alias: R function return value was not a string"
+                    ));
+                    pl_error::ComputeError(es)
+                })
+                .map(|str| str.to_string())
         };
 
         self.clone().0.map_alias(f).into()

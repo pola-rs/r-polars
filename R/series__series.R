@@ -702,7 +702,6 @@ Series_dtype = method_as_property(function() {
 
 #' Get data type of Series
 #' @keywords Series
-#' @aliases Series
 #' @return DataType
 #' @aliases dtype
 #' @name Series_dtype
@@ -715,6 +714,22 @@ Series_flags = method_as_property(function() {
     "SORTED_DESC" =  .pr$Series$is_sorted_reverse_flag(self)
   )
 })
+
+
+##wait until in included in next py-polars release
+###contribute polars, exposee nulls_last option
+##' is_sorted
+##' @keywords Series
+##' @param reverse order sorted
+##' @param nulls_last bool where to keep nulls, default same as reverse
+##' @return DataType
+##' @aliases is_sorted
+##' @details property sorted flags are not settable, use set_sorted
+##' @examples
+##' pl$Series(1:4)$sort()$is_sorted()
+#Series_is_sorted = function(reverse = FALSE, nulls_last = NULL) {
+#  .pr$Series$is_sorted(self, reverse, nulls_last)
+#}
 
 
 #' Set sorted
