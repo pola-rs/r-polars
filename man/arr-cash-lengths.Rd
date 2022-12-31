@@ -21,8 +21,8 @@ See the individual method pages for full details
 Get the length of the arrays as UInt32.
 }
 \examples{
-df = pl$DataFrame(foo = 1:2, bar = list(c("a","b"),"c"))
-df
+df = pl$DataFrame(list_of_strs = pl$Series(list(c("a","b"),"c")))
+df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
 }
 \keyword{ExprArr}
 \keyword{internals}

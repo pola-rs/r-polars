@@ -1,3 +1,5 @@
+use std::any::Any;
+
 //use crate::apply;
 use crate::apply_input;
 use crate::apply_output;
@@ -146,19 +148,27 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                 })
                 .collect();
 
-            //check not a nested list
-            match first_opt_rtype {
-                Some(extendr_api::Rtype::List) => Err(pl::PolarsError::SchemaMisMatch(
-                    polars::error::ErrString::Owned(
-                        "new series from rtype list: rpolars do not yet support creation of \
-                         nested lists. Only a list of vectors "
-                            .to_string(),
-                    ),
-                ))?,
-                _ => (),
+            let result_series = result_series?;
+            let x: Vec<_> = result_series.iter().map(|s| s.0.dtype()).collect();
+            let y = x.as_slice();
+
+            fn is_all_same1(arr: &[&pl::DataType]) -> bool {
+                if arr.is_empty() {
+                    return true;
+                }
+                let first = arr[0];
+                arr.iter().all(|&item| item == first)
+            }
+
+            if !is_all_same1(y) {
+                Err(pl::PolarsError::SchemaMisMatch(
+                    polars::error::ErrString::Owned(format!(
+                        "new series from rtype list: each nested level of subelements must be of same type"
+                    )),
+                ))?
             };
 
-            Ok(pl::Series::new(name, result_series?)) //todo check with polars why this fails for nested list
+            Ok(pl::Series::new(name, result_series)) //todo check with polars why this fails for nested list
         }
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
             format!("new series from rtype {:?} is not supported (yet)", y),
