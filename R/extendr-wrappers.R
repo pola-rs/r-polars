@@ -72,6 +72,8 @@ DataFrame$to_struct <- function(name) .Call(wrap__DataFrame__to_struct, self, na
 
 DataFrame$unnest <- function(names) .Call(wrap__DataFrame__unnest, self, names)
 
+DataFrame$export_stream <- function() invisible(.Call(wrap__DataFrame__export_stream, self))
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
