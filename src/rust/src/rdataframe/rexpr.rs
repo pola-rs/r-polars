@@ -14,6 +14,7 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude::GetOutput;
+use polars::error::PolarsError;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -1372,7 +1373,11 @@ impl Expr {
                 .map(|str| str.to_string())
         };
 
-        self.clone().0.map_alias(f).into()
+        let f_result = move |name: &str| -> std::result::Result<String, PolarsError> {
+            std::result::Result::Ok(f(name))
+        };
+
+        self.clone().0.map_alias(f_result).into()
     }
 
     fn suffix(&self, suffix: String) -> Self {
