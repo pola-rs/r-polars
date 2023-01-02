@@ -115,37 +115,41 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
             Ok(pl::Series::new(name, s))
         }
         Rtype::List => {
-            //remeber
+            //remember
             //let mut first_opt_rtype: Option<Rtype> = None;
-
             //recursive collect elements list elements and check for same type (polars requirement)
-            let result_series: pl::PolarsResult<Vec<pl::Series>> = x
+            let result_series_vec: pl::PolarsResult<Vec<pl::Series>> = x
                 .as_list()
                 .unwrap()
                 .iter()
                 .map(|(name, robj)| robjname2series(&robj, name))
                 .collect();
-            let series = result_series?;
+            let series_vec = result_series_vec?;
 
-            //TODO tidy up this evaluation for same datatype, print what is different
-            let x: Vec<_> = series.iter().map(|s| s.0.dtype()).collect();
-            let y = x.as_slice();
-            fn is_all_same1(arr: &[&pl::DataType]) -> bool {
-                if arr.is_empty() {
-                    return true;
+            //check all dtypes are the same as first
+            let mut dtypes_iter = series_vec.iter().map(|s| s.0.dtype());
+            let first_opt_dt = dtypes_iter.next();
+            for i_dt in dtypes_iter {
+                if let Some(first_dt) = first_opt_dt {
+                    if first_dt != i_dt {
+                        Err(pl::PolarsError::SchemaMisMatch(
+                            polars::error::ErrString::Owned(format!(
+                                "new series from rtype list: each nested level of subelements must be of same type\\
+, however one type was {:?} and another was {:?}",first_dt, i_dt
+                            )),
+                        ))?
+                    }
                 }
-                let first = arr[0];
-                arr.iter().all(|&item| item == first)
             }
-            if !is_all_same1(y) {
-                Err(pl::PolarsError::SchemaMisMatch(
-                    polars::error::ErrString::Owned(format!(
-                        "new series from rtype list: each nested level of subelements must be of same type"
-                    )),
-                ))?
-            };
 
-            Ok(pl::Series::new(name, series))
+            if series_vec.len() == 0 {
+                // construct series manually for the special case of the empty list
+                //float64 is preffered inner type by py-polars for empty list
+                let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
+                Ok(empty_list_series.into_series())
+            } else {
+                Ok(pl::Series::new(name, series_vec))
+            }
         }
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
             format!("new series from rtype {:?} is not supported (yet)", y),
