@@ -22,7 +22,6 @@ use series_to_r::pl_series_to_list;
 use polars_core::utils::arrow;
 use polars::prelude::ArrowField;
 use arrow::datatypes::DataType;
-use arrow::ffi;
 
 use crate::utils::r_result_list;
 
@@ -210,10 +209,11 @@ impl DataFrame {
         r_result_list(self.0.unnest(names).map(|s| DataFrame(s)))
     }
 
-    pub fn export_stream(&self) {
+    pub fn export_stream(&self, stream_ptr: &str) {
         let schema = self.0.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type.clone(), false);
+        
         let df = Box::new(self.0.clone());
         let iter = df.iter_chunks();
         let iter2 = iter.map(move |item| -> std::result::Result<Box<dyn arrow::array::Array>, arrow::error::Error> {
@@ -221,7 +221,14 @@ impl DataFrame {
             std::result::Result::Ok(Box::new(array))
         });
 
-        let stream = arrow::ffi::export_iterator(Box::new(iter2), field);
+        let iter2_boxed = Box::new(iter2);
+        
+        let mut stream = arrow::ffi::export_iterator(iter2_boxed, field);
+        let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
+        let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
+        unsafe {
+            std::ptr::swap_nonoverlapping(stream_out_ptr, &mut stream as *mut arrow::ffi::ArrowArrayStream, 1);
+        }
     }
 }
 use crate::utils::wrappers::null_to_opt;
