@@ -115,9 +115,9 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
             Ok(pl::Series::new(name, s))
         }
         Rtype::List => {
-            //remember
-            //let mut first_opt_rtype: Option<Rtype> = None;
-            //recursive collect elements list elements and check for same type (polars requirement)
+            use pl::*;
+
+            // convert element of lists to series and collect (each element could also be a series)
             let result_series_vec: pl::PolarsResult<Vec<pl::Series>> = x
                 .as_list()
                 .unwrap()
@@ -126,29 +126,120 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                 .collect();
             let series_vec = result_series_vec?;
 
-            //check all dtypes are the same as first
-            let mut dtypes_iter = series_vec.iter().map(|s| s.0.dtype());
-            let first_opt_dt = dtypes_iter.next();
-            for i_dt in dtypes_iter {
-                if let Some(first_dt) = first_opt_dt {
-                    if first_dt != i_dt {
-                        Err(pl::PolarsError::SchemaMisMatch(
-                            polars::error::ErrString::Owned(format!(
-                                "new series from rtype list: each nested level of subelements must be of same type\\
-, however one type was {:?} and another was {:?}",first_dt, i_dt
-                            )),
-                        ))?
-                    }
+            // function to get leaf type
+            fn get_leaf_type(dt: &DataType) -> &DataType {
+                if let Some(inner_dt) = dt.inner_dtype() {
+                    get_leaf_type(inner_dt)
+                } else {
+                    dt
                 }
             }
 
-            if series_vec.len() == 0 {
+            //look through series and find first Non NULL leaf type
+            let first_dominant_type =
+                series_vec
+                    .iter()
+                    .fold(None, |acc: Option<(DataType, DataType)>, s| {
+                        let s_dt = get_leaf_type(s.dtype());
+                        match acc {
+                            //on type yet take what ever
+                            None => Some((s_dt.clone(), s.dtype().clone())),
+
+                            //if current dominant type, prefer next type, don't clone if also NULL
+                            Some((pl::DataType::Null, _)) if s_dt != &pl::DataType::Null => {
+                                Some((s_dt.clone(), s.dtype().clone()))
+                            }
+
+                            //stick with current dominant type
+                            Some(acc) => Some(acc),
+                        }
+                    });
+
+            //new series vec where any NULL series are casted to what the domniant type is
+            let new_series_vec: Vec<_> = if let Some(fdt) = first_dominant_type {
+                let ss: pl::PolarsResult<Vec<Series>> = series_vec
+                    .into_iter()
+                    .map(|s| -> pl::PolarsResult<Series> {
+                        match get_leaf_type(s.dtype()) {
+                            //if leaf type of this series is NULL, then cast to dominant type
+                            &pl::DataType::Null => s.cast(&fdt.1),
+                            //if same as dominant type, then all good, just pass as is
+                            _ if &fdt.1 == s.dtype() => Ok(s),
+
+                            //if not null and not the same as dominant, return type mismatch error
+                            x => Err(pl::PolarsError::SchemaMisMatch(
+                                polars::error::ErrString::Owned(format!(
+"new series from rtype list: each nested level of subelements must be of same type\\
+, however one type was {:?} and another was {:?}",fdt.1, x
+                                                            )),
+                            ))?,
+                        }
+                    })
+                    .collect();
+                ss?
+            } else {
+                //no domninant type found, do nothing
+                series_vec
+            };
+
+            //         //check all dtypes are the same as first
+            //         let mut dtypes_iter = series_vec.iter().map(|s| (s.0.dtype(), s));
+            //         let first_opt_dt = dtypes_iter.next();
+
+            //         for i_dt in dtypes_iter {
+            //             if let Some(first_dt) = first_opt_dt {
+            //                 if first_dt.0 != i_dt.0 {
+            //                     let dt1 = get_leaf_type(first_dt.0);
+            //                     let dt2 = get_leaf_type(i_dt.0);
+            //                     match (dt1, dt2) {
+            //                         (&pl::DataType::Null, _) => first_dt.1.cast(dt2)?,
+            //                         (_, &pl::DataType::Null) => i_dt.1.cast(dt1)?,
+            //                         (_,_) => Err(pl::PolarsError::SchemaMisMatch(
+            //                             polars::error::ErrString::Owned(format!(
+            //                                 "new series from rtype list: each nested level of subelements must be of same type\\
+            // , however one type was {:?} and another was {:?}",first_dt, i_dt
+            //                             )),
+            //                         ))?
+            //                     };
+            //                 }
+            //             }
+            //         }
+
+            //     let opt_first_s = series_vec.get_mut(0);
+            //     if let Some(first_s) = opt_first_s {
+            //         for (i, _) in series_vec.iter().enumerate() {
+            //             if i == 0 {
+            //                 continue;
+            //             };
+            //             let &mut this_s = series_vec.get_mut(i).unwrap();
+            //             match (get_leaf_type(first_s.dtype()),get_leaf_type(this_s.dtype())) {
+            //                 (&pl::DataType::Null, this_dt) => {
+            //                     let new_s = first_s.cast(this_dt)?;
+            //                     *first_s = new_s;
+            //                 },
+            //                 (first_dt, &pl::DataType::Null) => {
+            //                     // let new_s: dyn pl::Series = this_s.cast(first_dt)?;
+            //                     // *this_s = new_s;
+            //                 },
+            //                         (first_dt,this_dt) => Err(pl::PolarsError::SchemaMisMatch(
+            //                             polars::error::ErrString::Owned(format!(
+            //                                 "new series from rtype list: each nested level of subelements must be of same type\\
+            // , however one type was {:?} and another was {:?}",first_dt, this_dt
+            //                             )),
+            //                         ))?
+            //             }
+            //         }
+            //     } else {
+            //     };
+
+            if new_series_vec.len() == 0 {
                 // construct series manually for the special case of the empty list
                 //float64 is preffered inner type by py-polars for empty list
                 let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
-                Ok(empty_list_series.into_series())
+                let s = empty_list_series.into_series();
+                s.cast(&pl::DataType::Null)
             } else {
-                Ok(pl::Series::new(name, series_vec))
+                Ok(pl::Series::new(name, new_series_vec))
             }
         }
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
