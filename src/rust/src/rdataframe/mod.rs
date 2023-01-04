@@ -25,6 +25,42 @@ use arrow::datatypes::DataType;
 
 use crate::utils::r_result_list;
 
+struct OwnedDataFrameIterator<'a> {
+    df: polars::frame::DataFrame,
+    iter: polars::frame::RecordBatchIter<'a>,
+    data_type: arrow::datatypes::DataType
+}
+  
+impl OwnedDataFrameIterator<'_> {
+    fn new(df: polars::frame::DataFrame ) -> Self {
+        let schema = df.schema().to_arrow();
+        let data_type = DataType::Struct(schema.fields);
+        let iter = polars::frame::RecordBatchIter {
+            columns: df.get_columns(),
+            idx: 0,
+            n_chunks: df.n_chunks().unwrap(),
+        };
+
+        Self { df, iter, data_type }
+    }
+}
+
+impl Iterator for OwnedDataFrameIterator<'_> {
+    type Item = Result<Box<dyn arrow::array::Array>, arrow::error::Error>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let item = self.iter.next();
+        match item {
+            std::option::Option::Some(i) => {
+                let array = arrow::array::StructArray::new(self.data_type.clone(), i.into_arrays(), std::option::Option::None);
+                Some(std::result::Result::Ok(Box::new(array)))
+            }
+            _ => None
+        }
+    }
+}
+
+
 #[extendr]
 #[derive(Debug, Clone)]
 pub struct DataFrame(pub pl::DataFrame);
@@ -214,16 +250,8 @@ impl DataFrame {
         let data_type = DataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type.clone(), false);
         
-        let df = Box::new(self.0.clone());
-        let iter = df.iter_chunks();
-        let iter2 = iter.map(move |item| -> std::result::Result<Box<dyn arrow::array::Array>, arrow::error::Error> {
-            let array = arrow::array::StructArray::new(data_type.clone(), item.into_arrays(), std::option::Option::None);
-            std::result::Result::Ok(Box::new(array))
-        });
-
-        let iter2_boxed = Box::new(iter2);
-        
-        let mut stream = arrow::ffi::export_iterator(iter2_boxed, field);
+        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
+        let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
         unsafe {
