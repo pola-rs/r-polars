@@ -1,4 +1,8 @@
-//use crate::apply;
+/// this file implements extendr wrapper class Series
+/// Should really be called Rseries on rust side, but
+/// r-polars has only one class 'Series' on R side and extendr_api currently
+/// requires the class/struct named the same in R and polars.
+/// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
 use crate::handle_type;
@@ -9,190 +13,20 @@ use crate::utils::{r_error_list, r_ok_list, r_result_list};
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
+use crate::rdataframe::r_to_series::robjname2series;
+use crate::rdataframe::series_to_r::pl_series_to_list;
 use crate::utils::try_f64_into_usize;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 
+use polars::prelude as pl;
 use polars::prelude::IntoSeries;
-use polars::prelude::{self as pl, NamedFrom};
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
-
-//todo why not use robj.inherits() instead?
-pub fn inherits(x: &Robj, class: &str) -> bool {
-    let opt_class_attr = x.class();
-    if let Some(class_attr) = opt_class_attr {
-        class_attr.collect::<Vec<&str>>().contains(&class)
-    } else {
-        false
-    }
-}
-
-// internal tree structure to contain Series of fully parsed nested R list into Series
-// It is easier to resolve concatenated datatype after all elements have been parsed
-#[derive(Debug)]
-pub enum SeriesTree {
-    Series(pl::Series),
-    SeriesVec(Vec<SeriesTree>),
-    SeriesEmptyVec,
-}
-
-// this function as named used to resolve DataType before concatenation
-fn find_first_leaf_datatype(st: &SeriesTree) -> Option<pl::DataType> {
-    match st {
-        SeriesTree::Series(s) => Some(s.dtype().clone()), //actual leaf type found
-        SeriesTree::SeriesVec(sv) => sv //looking deeper
-            .iter()
-            .map(|inner_st| find_first_leaf_datatype(inner_st))
-            .filter(|x| x.is_some())
-            .next()
-            .flatten(), //alias outer option (empty list) with inner option (inner empty list)
-        SeriesTree::SeriesEmptyVec => None,
-    }
-}
-
-// consume SeriesTree, return concatenated Series or appropriate Error
-fn concat_series_tree(
-    st: SeriesTree,
-    leaf_dtype: &Option<pl::DataType>,
-    name: &str,
-) -> pl::PolarsResult<pl::Series> {
-    match st {
-        SeriesTree::Series(s) => Ok(s), // Series found return as is
-        SeriesTree::SeriesVec(sv) if sv.len() == 0 => {
-            unreachable!(
-                "internal error: A series tree was built with a literal empty vector, instead of using SeriesEmptyVec flag"
-            );
-        }
-        SeriesTree::SeriesVec(sv) => {
-            //todo, good if this Result<Vec<_>> could be replaced with an iter, is there a pl::Series::new(name, series_iter) (??)
-            let series_vec_result: pl::PolarsResult<Vec<pl::Series>> = sv
-                .into_iter()
-                .map(|inner_st| concat_series_tree(inner_st, leaf_dtype, ""))
-                .collect();
-            Ok(pl::Series::new(name, series_vec_result?))
-        }
-        SeriesTree::SeriesEmptyVec => {
-            let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
-            let s = empty_list_series.into_series();
-            if let Some(leaf_dt_ref) = leaf_dtype {
-                s.cast(leaf_dt_ref)
-            } else {
-                Ok(s) //use float as default DataType for empty lists of lists all the way down
-            }
-        }
-    }
-}
-
-// Convert potentially nested R object handled in three steps
-pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
-    // 1 parse any (potentially) R structure, into a tree of Series, throw error for parse error
-    let st = recursive_robjname2series_tree(x, name)?;
-
-    // 2 search for first leaf dtype, returns None for empty list or lists of empty lists and so on ...
-    let first_leaf_dtype = find_first_leaf_datatype(&st);
-
-    // 3 concat SeriesTree into one Series, throw error of type mismatch
-    concat_series_tree(st, &first_leaf_dtype, name)
-}
-
-// convert any Robj into a SeriesTree, or a nested SeriesTree if nested Robject
-pub fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<SeriesTree> {
-    let rtype = x.rtype();
-
-    //used for string vector and factor
-    fn robj_to_utf8_series(x: &Robj, name: &str) -> pl::Series {
-        let rstrings: Strings = x.try_into().unwrap();
-
-        //likely never real altrep, yields NA_Rbool, yields false
-        if rstrings.no_na().is_true() {
-            pl::Series::new(name, x.as_str_vector().unwrap())
-        } else {
-            //convert R NAs to rust options
-            let s: Vec<Option<&str>> = rstrings
-                .iter()
-                .map(|x| if x.is_na() { None } else { Some(x.as_str()) })
-                .collect();
-            let s = pl::Series::new(name, s);
-            s
-        }
-    }
-
-    match rtype {
-        Rtype::Integers if inherits(&x, "factor") => Ok(SeriesTree::Series(
-            robj_to_utf8_series(&x.as_character_factor(), name)
-                .cast(&pl::DataType::Categorical(None))
-                .expect("as matched"),
-        )),
-        Rtype::Integers => {
-            let rints = x.as_integers().expect("as matched");
-            let s = if rints.no_na().is_true() {
-                pl::Series::new(name, x.as_integer_slice().expect("as matched"))
-            } else {
-                //convert R NAs to rust options
-                let mut s: pl::Series = rints
-                    .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
-                    .collect();
-                s.rename(name);
-                s
-            };
-            Ok(SeriesTree::Series(s))
-        }
-        Rtype::Doubles => {
-            let rdouble: Doubles = x.try_into().expect("as matched");
-
-            //likely never real altrep, yields NA_Rbool, yields false
-            if rdouble.no_na().is_true() {
-                Ok(SeriesTree::Series(pl::Series::new(
-                    name,
-                    x.as_real_slice().unwrap(),
-                )))
-            } else {
-                //convert R NAs to rust options
-                let mut s: pl::Series = rdouble
-                    .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
-                    .collect();
-                s.rename(name);
-                Ok(SeriesTree::Series(s))
-            }
-        }
-        Rtype::Strings => Ok(SeriesTree::Series(robj_to_utf8_series(x, name))),
-        Rtype::Logicals => {
-            let logicals: Logicals = x.try_into().unwrap();
-            let s: Vec<Option<bool>> = logicals
-                .iter()
-                .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
-                .collect();
-            Ok(SeriesTree::Series(pl::Series::new(name, s)))
-        }
-        Rtype::Null => Ok(SeriesTree::SeriesEmptyVec),
-        Rtype::List => {
-            // convert element of lists to series and collect (each element could also be a series)
-            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = x
-                .as_list()
-                .unwrap()
-                .iter()
-                .map(|(name, robj)| recursive_robjname2series_tree(&robj, name))
-                .collect();
-            result_series_vec.map(|vst| {
-                if vst.len() == 0 {
-                    SeriesTree::SeriesEmptyVec
-                } else {
-                    SeriesTree::SeriesVec(vst)
-                }
-            })
-        }
-        _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-            format!("new series from rtype {:?} is not supported (yet)", rtype),
-        ))),
-    }
-}
 
 impl From<polars::prelude::Series> for Series {
     fn from(pls: polars::prelude::Series) -> Self {
@@ -623,7 +457,7 @@ impl Series {
     }
 }
 
-//inner_from_robj only when used within Series
+//inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types
 impl Series {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
         if robj.check_external_ptr("Series") {
@@ -697,99 +531,10 @@ impl Series {
     }
 }
 
-//clone is needed, no known trivial way (to author) how to take ownership R side objects
 impl From<&Series> for pl::Series {
     fn from(x: &Series) -> Self {
         x.clone().0
     }
-}
-
-//TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
-pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
-    use pl::DataType::*;
-    fn to_list_recursive(s: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
-        match s.dtype() {
-            Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
-            Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
-
-            Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
-            Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
-            Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 => s.i64().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            UInt8 => s.u8().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as i32))
-                    .collect_robj()
-            }),
-            UInt16 => s.u16().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as i32))
-                    .collect_robj()
-            }),
-            UInt32 => s.u32().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            UInt64 => s.u64().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
-
-            Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
-            Categorical(_) => s
-                .categorical()
-                .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
-            List(_) => {
-                let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
-                let ca = s.list().unwrap();
-
-                for opt_s in ca.amortized_iter() {
-                    match opt_s {
-                        Some(s) => {
-                            let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref, tag_structs)?;
-                            v.push(inner_val);
-                        }
-
-                        None => {
-                            v.push(r!(extendr_api::NULL));
-                        }
-                    }
-                }
-                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
-                //or take ownership of vector
-                let l = extendr_api::List::from_iter(v.iter());
-                Ok(l.into_robj())
-            }
-            Struct(_) => {
-                let df = s.clone().into_frame().unnest(&[s.name()]).unwrap();
-                let l = DataFrame(df).to_list_result()?;
-
-                //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
-                if tag_structs {
-                    l.set_attrib("is_struct", true).unwrap();
-                } else {
-                };
-
-                Ok(l.into_robj())
-            }
-            _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-                format!(
-                    "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
-                    s.dtype()
-                ),
-            ))),
-        }
-    }
-
-    to_list_recursive(series, tag_structs)
 }
 
 extendr_module! {

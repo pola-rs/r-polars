@@ -435,6 +435,28 @@ test_that("Series list", {
   expect_identical(series_vec$to_r_vector(), 1:5)
   expect_identical(series_vec$to_r_list(), as.list(1:5))
 
+
+  #build heterogenous sized 3-level nested list of chars
+  set.seed(1)
+  l = lapply(sample(1:10,size=10,replace = TRUE),function(x) {
+    lapply(sample(1:10,size=x,replace = TRUE),function(x) {
+      lapply(sample(0:4,size=x,replace = TRUE),function(x) {
+        sample(letters,size=x,replace = TRUE)
+      })
+    })
+  })
+
+  #parse and assemble nested Series
+  s = pl$Series(l)
+
+  #check data_type
+  expect_true(s$dtype == with(pl,list(list(list(Utf8)))))
+
+  #flatten 3-levels and return to R
+  ul = unlist(pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list())
+  expect_true(all(unlist(l) == ul))
+
+
 })
 
 

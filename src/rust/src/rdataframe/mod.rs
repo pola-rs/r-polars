@@ -1,19 +1,23 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
+pub mod r_to_series;
 pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
 pub mod rseries;
+pub mod series_to_r;
 
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
 
 use super::rlib::*;
+use r_to_series::robjname2series;
 use read_csv::*;
 use read_parquet::*;
 use rexpr::*;
 pub use rseries::*;
+use series_to_r::pl_series_to_list;
 
 use crate::utils::r_result_list;
 
