@@ -13,6 +13,7 @@ use crate::utils::try_f64_into_usize;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
+
 use polars::prelude::IntoSeries;
 use polars::prelude::{self as pl, NamedFrom};
 pub const R_INT_NA_ENC: i32 = -2147483648;
@@ -21,6 +22,7 @@ pub const R_INT_NA_ENC: i32 = -2147483648;
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
 
+//todo why not use robj.inherits() instead?
 pub fn inherits(x: &Robj, class: &str) -> bool {
     let opt_class_attr = x.class();
     if let Some(class_attr) = opt_class_attr {
@@ -30,26 +32,77 @@ pub fn inherits(x: &Robj, class: &str) -> bool {
     }
 }
 
-// fn factor_to_string_series(x: &Robj, name: &str) -> pl::Series {
-//     let int_slice = x.as_integer_slice().unwrap();
-//     let levels = x.get_attrib("levels").expect("factor has no levels");
-//     let levels_vec = levels.as_str_vector().unwrap();
+// internal tree structure to contain Series of fully parsed nested R list into Series
+// It is easier to resolve concatenated datatype after all elements have been parsed
+#[derive(Debug)]
+pub enum SeriesTree {
+    Series(pl::Series),
+    SeriesVec(Vec<SeriesTree>),
+    SeriesEmptyVec,
+}
 
-//     let v: Vec<&str> = int_slice
-//         .iter()
-//         .map(|x| {
-//             let idx = (x - 1) as usize;
-//             let x = levels_vec
-//                 .get(idx)
-//                 .expect("Corrupt R factor, level integer out of bound");
-//             *x
-//         })
-//         .collect();
-//     pl::Series::new(name, v.as_slice())
-// }
-//TODO remove unwraps
+// this function as named used to resolve DataType before concatenation
+fn find_first_leaf_datatype(st: &SeriesTree) -> Option<pl::DataType> {
+    match st {
+        SeriesTree::Series(s) => Some(s.dtype().clone()), //actual leaf type found
+        SeriesTree::SeriesVec(sv) => sv //looking deeper
+            .iter()
+            .map(|inner_st| find_first_leaf_datatype(inner_st))
+            .filter(|x| x.is_some())
+            .next()
+            .flatten(), //alias outer option (empty list) with inner option (inner empty list)
+        SeriesTree::SeriesEmptyVec => None,
+    }
+}
+
+// consume SeriesTree, return concatenated Series or appropriate Error
+fn concat_series_tree(
+    st: SeriesTree,
+    leaf_dtype: &Option<pl::DataType>,
+    name: &str,
+) -> pl::PolarsResult<pl::Series> {
+    match st {
+        SeriesTree::Series(s) => Ok(s), // Series found return as is
+        SeriesTree::SeriesVec(sv) if sv.len() == 0 => {
+            unreachable!(
+                "internal error: A series tree was built with a literal empty vector, instead of using SeriesEmptyVec flag"
+            );
+        }
+        SeriesTree::SeriesVec(sv) => {
+            //todo, good if this Result<Vec<_>> could be replaced with an iter, is there a pl::Series::new(name, series_iter) (??)
+            let series_vec_result: pl::PolarsResult<Vec<pl::Series>> = sv
+                .into_iter()
+                .map(|inner_st| concat_series_tree(inner_st, leaf_dtype, ""))
+                .collect();
+            Ok(pl::Series::new(name, series_vec_result?))
+        }
+        SeriesTree::SeriesEmptyVec => {
+            let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
+            let s = empty_list_series.into_series();
+            if let Some(leaf_dt_ref) = leaf_dtype {
+                s.cast(leaf_dt_ref)
+            } else {
+                Ok(s) //use float as default DataType for empty lists of lists all the way down
+            }
+        }
+    }
+}
+
+// Convert potentially nested R object handled in three steps
 pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
-    let y = x.rtype();
+    // 1 parse any (potentially) R structure, into a tree of Series, throw error for parse error
+    let st = recursive_robjname2series_tree(x, name)?;
+
+    // 2 search for first leaf dtype, returns None for empty list or lists of empty lists and so on ...
+    let first_leaf_dtype = find_first_leaf_datatype(&st);
+
+    // 3 concat SeriesTree into one Series, throw error of type mismatch
+    concat_series_tree(st, &first_leaf_dtype, name)
+}
+
+// convert any Robj into a SeriesTree, or a nested SeriesTree if nested Robject
+pub fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<SeriesTree> {
+    let rtype = x.rtype();
 
     //used for string vector and factor
     fn robj_to_utf8_series(x: &Robj, name: &str) -> pl::Series {
@@ -69,16 +122,16 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
         }
     }
 
-    match y {
-        Rtype::Integers if inherits(&x, "factor") => {
-            Ok(robj_to_utf8_series(&x.as_character_factor(), name)
+    match rtype {
+        Rtype::Integers if inherits(&x, "factor") => Ok(SeriesTree::Series(
+            robj_to_utf8_series(&x.as_character_factor(), name)
                 .cast(&pl::DataType::Categorical(None))
-                .unwrap())
-        }
+                .expect("as matched"),
+        )),
         Rtype::Integers => {
-            let rints = x.as_integers().unwrap();
-            if rints.no_na().is_true() {
-                Ok(pl::Series::new(name, x.as_integer_slice().unwrap()))
+            let rints = x.as_integers().expect("as matched");
+            let s = if rints.no_na().is_true() {
+                pl::Series::new(name, x.as_integer_slice().expect("as matched"))
             } else {
                 //convert R NAs to rust options
                 let mut s: pl::Series = rints
@@ -86,15 +139,19 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                     .map(|x| if x.is_na() { None } else { Some(x.0) })
                     .collect();
                 s.rename(name);
-                Ok(s)
-            }
+                s
+            };
+            Ok(SeriesTree::Series(s))
         }
         Rtype::Doubles => {
-            let rdouble: Doubles = x.try_into().unwrap();
+            let rdouble: Doubles = x.try_into().expect("as matched");
 
             //likely never real altrep, yields NA_Rbool, yields false
             if rdouble.no_na().is_true() {
-                Ok(pl::Series::new(name, x.as_real_slice().unwrap()))
+                Ok(SeriesTree::Series(pl::Series::new(
+                    name,
+                    x.as_real_slice().unwrap(),
+                )))
             } else {
                 //convert R NAs to rust options
                 let mut s: pl::Series = rdouble
@@ -102,148 +159,37 @@ pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
                     .map(|x| if x.is_na() { None } else { Some(x.0) })
                     .collect();
                 s.rename(name);
-                Ok(s)
+                Ok(SeriesTree::Series(s))
             }
         }
-        Rtype::Strings => Ok(robj_to_utf8_series(x, name)),
+        Rtype::Strings => Ok(SeriesTree::Series(robj_to_utf8_series(x, name))),
         Rtype::Logicals => {
             let logicals: Logicals = x.try_into().unwrap();
             let s: Vec<Option<bool>> = logicals
                 .iter()
                 .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
                 .collect();
-            Ok(pl::Series::new(name, s))
+            Ok(SeriesTree::Series(pl::Series::new(name, s)))
         }
+        Rtype::Null => Ok(SeriesTree::SeriesEmptyVec),
         Rtype::List => {
-            use pl::*;
-
             // convert element of lists to series and collect (each element could also be a series)
-            let result_series_vec: pl::PolarsResult<Vec<pl::Series>> = x
+            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = x
                 .as_list()
                 .unwrap()
                 .iter()
-                .map(|(name, robj)| robjname2series(&robj, name))
+                .map(|(name, robj)| recursive_robjname2series_tree(&robj, name))
                 .collect();
-            let series_vec = result_series_vec?;
-
-            // function to get leaf type
-            fn get_leaf_type(dt: &DataType) -> &DataType {
-                if let Some(inner_dt) = dt.inner_dtype() {
-                    get_leaf_type(inner_dt)
+            result_series_vec.map(|vst| {
+                if vst.len() == 0 {
+                    SeriesTree::SeriesEmptyVec
                 } else {
-                    dt
+                    SeriesTree::SeriesVec(vst)
                 }
-            }
-
-            //look through series and find first Non NULL leaf type
-            let first_dominant_type =
-                series_vec
-                    .iter()
-                    .fold(None, |acc: Option<(DataType, DataType)>, s| {
-                        let s_dt = get_leaf_type(s.dtype());
-                        match acc {
-                            //on type yet take what ever
-                            None => Some((s_dt.clone(), s.dtype().clone())),
-
-                            //if current dominant type, prefer next type, don't clone if also NULL
-                            Some((pl::DataType::Null, _)) if s_dt != &pl::DataType::Null => {
-                                Some((s_dt.clone(), s.dtype().clone()))
-                            }
-
-                            //stick with current dominant type
-                            Some(acc) => Some(acc),
-                        }
-                    });
-
-            //new series vec where any NULL series are casted to what the domniant type is
-            let new_series_vec: Vec<_> = if let Some(fdt) = first_dominant_type {
-                let ss: pl::PolarsResult<Vec<Series>> = series_vec
-                    .into_iter()
-                    .map(|s| -> pl::PolarsResult<Series> {
-                        match get_leaf_type(s.dtype()) {
-                            //if leaf type of this series is NULL, then cast to dominant type
-                            &pl::DataType::Null => s.cast(&fdt.1),
-                            //if same as dominant type, then all good, just pass as is
-                            _ if &fdt.1 == s.dtype() => Ok(s),
-
-                            //if not null and not the same as dominant, return type mismatch error
-                            x => Err(pl::PolarsError::SchemaMisMatch(
-                                polars::error::ErrString::Owned(format!(
-"new series from rtype list: each nested level of subelements must be of same type\\
-, however one type was {:?} and another was {:?}",fdt.1, x
-                                                            )),
-                            ))?,
-                        }
-                    })
-                    .collect();
-                ss?
-            } else {
-                //no domninant type found, do nothing
-                series_vec
-            };
-
-            //         //check all dtypes are the same as first
-            //         let mut dtypes_iter = series_vec.iter().map(|s| (s.0.dtype(), s));
-            //         let first_opt_dt = dtypes_iter.next();
-
-            //         for i_dt in dtypes_iter {
-            //             if let Some(first_dt) = first_opt_dt {
-            //                 if first_dt.0 != i_dt.0 {
-            //                     let dt1 = get_leaf_type(first_dt.0);
-            //                     let dt2 = get_leaf_type(i_dt.0);
-            //                     match (dt1, dt2) {
-            //                         (&pl::DataType::Null, _) => first_dt.1.cast(dt2)?,
-            //                         (_, &pl::DataType::Null) => i_dt.1.cast(dt1)?,
-            //                         (_,_) => Err(pl::PolarsError::SchemaMisMatch(
-            //                             polars::error::ErrString::Owned(format!(
-            //                                 "new series from rtype list: each nested level of subelements must be of same type\\
-            // , however one type was {:?} and another was {:?}",first_dt, i_dt
-            //                             )),
-            //                         ))?
-            //                     };
-            //                 }
-            //             }
-            //         }
-
-            //     let opt_first_s = series_vec.get_mut(0);
-            //     if let Some(first_s) = opt_first_s {
-            //         for (i, _) in series_vec.iter().enumerate() {
-            //             if i == 0 {
-            //                 continue;
-            //             };
-            //             let &mut this_s = series_vec.get_mut(i).unwrap();
-            //             match (get_leaf_type(first_s.dtype()),get_leaf_type(this_s.dtype())) {
-            //                 (&pl::DataType::Null, this_dt) => {
-            //                     let new_s = first_s.cast(this_dt)?;
-            //                     *first_s = new_s;
-            //                 },
-            //                 (first_dt, &pl::DataType::Null) => {
-            //                     // let new_s: dyn pl::Series = this_s.cast(first_dt)?;
-            //                     // *this_s = new_s;
-            //                 },
-            //                         (first_dt,this_dt) => Err(pl::PolarsError::SchemaMisMatch(
-            //                             polars::error::ErrString::Owned(format!(
-            //                                 "new series from rtype list: each nested level of subelements must be of same type\\
-            // , however one type was {:?} and another was {:?}",first_dt, this_dt
-            //                             )),
-            //                         ))?
-            //             }
-            //         }
-            //     } else {
-            //     };
-
-            if new_series_vec.len() == 0 {
-                // construct series manually for the special case of the empty list
-                //float64 is preffered inner type by py-polars for empty list
-                let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
-                let s = empty_list_series.into_series();
-                s.cast(&pl::DataType::Null)
-            } else {
-                Ok(pl::Series::new(name, new_series_vec))
-            }
+            })
         }
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-            format!("new series from rtype {:?} is not supported (yet)", y),
+            format!("new series from rtype {:?} is not supported (yet)", rtype),
         ))),
     }
 }
