@@ -739,7 +739,6 @@ Series_flags = method_as_property(function() {
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases set_sorted
-#' @details
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags

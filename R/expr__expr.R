@@ -2237,7 +2237,7 @@ Expr_inspect = function(fmt = "{}") {
 
 #' Interpolate `Nulls`
 #' @keywords Expr
-#' @method string 'linear' or 'nearest'
+#' @param method string 'linear' or 'nearest'
 #' @description
 #' Fill nulls with linear interpolation over missing values.
 #' Can also be used to regrid data to a new grid - see examples below.
@@ -3718,7 +3718,7 @@ Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
   .pr$Expr$entropy(self, base, normalize)
 }
 
-
+#' Cumulative eval
 #' @description  Run an expression over a sliding window that increases `1` slot every iteration.
 #' @param expr Expression to evaluate
 #' @param min_periods Number of valid values there should be in the window before the expression

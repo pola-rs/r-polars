@@ -91,6 +91,7 @@ pl$col = function(name) {
 }
 
 #' an element in 'eval'-expr
+#' @name element
 #' @description Alias for an element in evaluated in an `eval` expression.
 #' @keywords Expr
 #' @return Expr
