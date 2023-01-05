@@ -126,7 +126,7 @@ pl$col("hello")$sum()$over("world","from")$alias("polars")
 
     ## polars Expr: col("hello").sum().over([col("world"), col("from")]).alias("polars")
 
-## Typical ussage
+## Typical usage
 
 Where `dplyr` has `%>%`-piping and \``data.table` has `[,]`-indexing,
 method chaining `object$m1()$m2()` is the bread and butter syntax of
