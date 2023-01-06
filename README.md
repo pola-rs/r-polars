@@ -4,7 +4,7 @@
 
 Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
 
-*r-polars is not completely translated yet - aim to finish March 2023*
+### *r-polars is not completely translated yet - aim to finish March 2023*
 
 See what is currently translated in [latest documentation](https://rpolars.github.io/reference/index.html):
 
