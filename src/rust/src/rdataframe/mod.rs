@@ -25,37 +25,41 @@ use arrow::datatypes::DataType;
 
 use crate::utils::r_result_list;
 
-struct OwnedDataFrameIterator<'a> {
-    df: polars::frame::DataFrame,
-    iter: polars::frame::RecordBatchIter<'a>,
-    data_type: arrow::datatypes::DataType
+pub struct OwnedDataFrameIterator {
+    columns: Vec<polars::series::Series>,
+    data_type: arrow::datatypes::DataType,
+    idx: usize,
+    n_chunks: usize,
 }
   
-impl OwnedDataFrameIterator<'_> {
+impl OwnedDataFrameIterator {
     fn new(df: polars::frame::DataFrame ) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-        let iter = polars::frame::RecordBatchIter {
-            columns: df.get_columns(),
-            idx: 0,
-            n_chunks: df.n_chunks().unwrap(),
-        };
 
-        Self { df, iter, data_type }
+        Self { 
+            columns: df.get_columns().clone(),
+            data_type,
+            idx: 0,
+            n_chunks: df.n_chunks().unwrap()
+        }
     }
 }
 
-impl Iterator for OwnedDataFrameIterator<'_> {
+impl Iterator for OwnedDataFrameIterator {
     type Item = Result<Box<dyn arrow::array::Array>, arrow::error::Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let item = self.iter.next();
-        match item {
-            std::option::Option::Some(i) => {
-                let array = arrow::array::StructArray::new(self.data_type.clone(), i.into_arrays(), std::option::Option::None);
-                Some(std::result::Result::Ok(Box::new(array)))
-            }
-            _ => None
+        if self.idx >= self.n_chunks {
+            None
+        } else {
+            // create a batch of the columns with the same chunk no.
+            let batch_cols = self.columns.iter().map(|s| s.to_arrow(self.idx)).collect();
+            self.idx += 1;
+
+            let chunk = polars::frame::ArrowChunk::new(batch_cols);
+            let array = arrow::array::StructArray::new(self.data_type.clone(), chunk.into_arrays(), std::option::Option::None);
+            Some(std::result::Result::Ok(Box::new(array)))
         }
     }
 }
