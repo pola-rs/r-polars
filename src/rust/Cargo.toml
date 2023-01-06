@@ -96,7 +96,8 @@ features = [
   "propagate_nans",
   "trigonometry",
   "sign",
-  "cumulative_eval"
+  "cumulative_eval",
+  "list_eval"
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"

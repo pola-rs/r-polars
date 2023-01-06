@@ -75,15 +75,11 @@ env$tail  = LazyGroupBy_tail
 rm(env)
 
 # Expr
-temp_keepers = character()
 macro_add_syntax_check_to_class("Expr")
-replace_private_with_pub_methods(
-  rpolars:::Expr, "^Expr_",
-  keep  = temp_keepers
-)
+replace_private_with_pub_methods(rpolars:::Expr, "^Expr_")
 
 
-
+#Series
 macro_add_syntax_check_to_class("Series")
 replace_private_with_pub_methods( rpolars:::Series, "^Series_")
 

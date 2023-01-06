@@ -131,11 +131,9 @@ length.Series = \(x) x$len()
 #' }
 pl$Series = function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
-  if(is.double(x) || is.integer(x) || is.character(x) || is.logical(x) || is.factor(x)) {
-    if(is.null(name)) name = ""
-    if(!is_string(name)) stopf("name must be NULL or a string")
-    return(.pr$Series$new(x,name))
-  }
+  if(is.null(name)) name = ""
+  if(!is_string(name)) stopf("name must be NULL or a string")
+  return(unwrap(.pr$Series$new(x,name)))
   stopf("x must be a double, interger, char, or logical vector")
 }
 
@@ -741,7 +739,6 @@ Series_flags = method_as_property(function() {
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases set_sorted
-#' @details
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags

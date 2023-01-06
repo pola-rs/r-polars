@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R. 
-Version: 0.3.0
+Version: 0.3.1
 Depends: R (>= 4.1.0)
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
@@ -21,6 +21,7 @@ Collate:
     'datatype.R'
     'docs.R'
     'expr__expr.R'
+    'expr__list.R'
     'functions.R'
     'groupby.R'
     'lazy_functions.R'

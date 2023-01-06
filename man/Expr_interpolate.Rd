@@ -7,6 +7,9 @@
 \usage{
 Expr_interpolate(method)
 }
+\arguments{
+\item{method}{string 'linear' or 'nearest'}
+}
 \value{
 Expr
 }

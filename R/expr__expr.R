@@ -581,7 +581,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
     s$apply(f, return_type, strict_return_type, allow_fail_eval)
   }
 
-  #return epression from the functions above, activate agg_list (grouped mapping)
+  #return expression from the functions above, activate agg_list (grouped mapping)
   .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE)
 }
 
@@ -2237,7 +2237,7 @@ Expr_inspect = function(fmt = "{}") {
 
 #' Interpolate `Nulls`
 #' @keywords Expr
-#' @method string 'linear' or 'nearest'
+#' @param method string 'linear' or 'nearest'
 #' @description
 #' Fill nulls with linear interpolation over missing values.
 #' Can also be used to regrid data to a new grid - see examples below.
@@ -3718,7 +3718,7 @@ Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
   .pr$Expr$entropy(self, base, normalize)
 }
 
-
+#' Cumulative eval
 #' @description  Run an expression over a sliding window that increases `1` slot every iteration.
 #' @param expr Expression to evaluate
 #' @param min_periods Number of valid values there should be in the window before the expression
@@ -3803,3 +3803,27 @@ Expr_list = "use_extendr_wrapper"
 #'  )$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"
 
+
+
+#' arr: list related methods
+#' @description
+#' Create an object namespace of all list related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases shrink_dtype
+#' @examples
+#' df_with_list = pl$DataFrame(
+#'   group = c(1,1,2,2,3),
+#'   value = c(1:5)
+#' )$groupby(
+#'   "group",maintain_order = TRUE
+#' )$agg(
+#'   pl$col("value") * 3L
+#' )
+#' df_with_list$with_column(
+#'   pl$col("value")$arr$lengths()$alias("group_size")
+#' )
+Expr_arr = method_as_property(function() {
+  make_expr_arr_namespace(self)
+})

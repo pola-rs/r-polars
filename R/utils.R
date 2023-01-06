@@ -202,6 +202,7 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
   invisible(NULL)
 }
 
+
 ##internal function to convert a list of dataframes into a rust VecDataFrame
 l_to_vdf = function(l) {
   if(!length(l)) stopf("cannot concat empty list l")
@@ -228,14 +229,21 @@ l_to_vdf = function(l) {
 }
 
 
+clone_env_one_level_deep = function(env) {
+  newenv <- new.env(parent = env)
+  for (i in ls(envir=env)) newenv[[i]] = env[[i]]
+  newenv
+}
+
 #' remove private method
 #'
 #' @description  extendr places the naked internal calls to rust in env-classes. This function
 #' can be used to delete them and replaces them with the public methods. Which are any function
 #' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 #' zzz.R
-#' @param env class envrionment to modify. Envs are mutable so return needed
+#' @param env class envrionment to modify. Envs are mutable so no return needed
 #' @param class_pattern a regex string matching declared public functions of that class
+#' @param keep list of unmentioned methods to keep in public api
 #'
 replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
   cat("\n\n setting public methods for ",class_pattern)

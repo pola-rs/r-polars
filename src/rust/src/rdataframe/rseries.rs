@@ -1,122 +1,32 @@
-//use crate::apply;
+/// this file implements extendr wrapper class Series
+/// Should really be called Rseries on rust side, but
+/// r-polars has only one class 'Series' on R side and extendr_api currently
+/// requires the class/struct named the same in R and polars.
+/// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::DataType;
-use crate::utils::{r_error_list, r_result_list};
+use crate::utils::{r_error_list, r_ok_list, r_result_list};
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
+use crate::rdataframe::r_to_series::robjname2series;
+use crate::rdataframe::series_to_r::pl_series_to_list;
 use crate::utils::try_f64_into_usize;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
+
+use polars::prelude as pl;
 use polars::prelude::IntoSeries;
-use polars::prelude::{self as pl, NamedFrom};
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[extendr]
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
-
-pub fn inherits(x: &Robj, class: &str) -> bool {
-    let opt_class_attr = x.class();
-    if let Some(class_attr) = opt_class_attr {
-        class_attr.collect::<Vec<&str>>().contains(&class)
-    } else {
-        false
-    }
-}
-
-// fn factor_to_string_series(x: &Robj, name: &str) -> pl::Series {
-//     let int_slice = x.as_integer_slice().unwrap();
-//     let levels = x.get_attrib("levels").expect("factor has no levels");
-//     let levels_vec = levels.as_str_vector().unwrap();
-
-//     let v: Vec<&str> = int_slice
-//         .iter()
-//         .map(|x| {
-//             let idx = (x - 1) as usize;
-//             let x = levels_vec
-//                 .get(idx)
-//                 .expect("Corrupt R factor, level integer out of bound");
-//             *x
-//         })
-//         .collect();
-//     pl::Series::new(name, v.as_slice())
-// }
-//TODO remove unwraps
-pub fn robjname2series(x: &Robj, name: &str) -> pl::Series {
-    let y = x.rtype();
-
-    //used for string vector and factor
-    fn robj_to_utf8_series(x: &Robj, name: &str) -> pl::Series {
-        let rstrings: Strings = x.try_into().unwrap();
-
-        //likely never real altrep, yields NA_Rbool, yields false
-        if rstrings.no_na().is_true() {
-            pl::Series::new(name, x.as_str_vector().unwrap())
-        } else {
-            //convert R NAs to rust options
-            let s: Vec<Option<&str>> = rstrings
-                .iter()
-                .map(|x| if x.is_na() { None } else { Some(x.as_str()) })
-                .collect();
-            let s = pl::Series::new(name, s);
-            s
-        }
-    }
-
-    match y {
-        Rtype::Integers if inherits(&x, "factor") => {
-            robj_to_utf8_series(&x.as_character_factor(), name)
-                .cast(&pl::DataType::Categorical(None))
-                .unwrap()
-        }
-        Rtype::Integers => {
-            let rints = x.as_integers().unwrap();
-            if rints.no_na().is_true() {
-                pl::Series::new(name, x.as_integer_slice().unwrap())
-            } else {
-                //convert R NAs to rust options
-                let mut s: pl::Series = rints
-                    .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
-                    .collect();
-                s.rename(name);
-                s
-            }
-        }
-        Rtype::Doubles => {
-            let rdouble: Doubles = x.try_into().unwrap();
-
-            //likely never real altrep, yields NA_Rbool, yields false
-            if rdouble.no_na().is_true() {
-                pl::Series::new(name, x.as_real_slice().unwrap())
-            } else {
-                //convert R NAs to rust options
-                let mut s: pl::Series = rdouble
-                    .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
-                    .collect();
-                s.rename(name);
-                s
-            }
-        }
-        Rtype::Strings => robj_to_utf8_series(x, name),
-        Rtype::Logicals => {
-            let logicals: Logicals = x.try_into().unwrap();
-            let s: Vec<Option<bool>> = logicals
-                .iter()
-                .map(|x| if x.is_na() { None } else { Some(x.is_true()) })
-                .collect();
-            pl::Series::new(name, s)
-        }
-        _ => todo!("this input type is not implemented yet"),
-    }
-}
 
 impl From<polars::prelude::Series> for Series {
     fn from(pls: polars::prelude::Series) -> Self {
@@ -143,8 +53,12 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 #[extendr]
 impl Series {
     //utility methods
-    pub fn new(x: Robj, name: &str) -> Self {
-        Series(robjname2series(&x, name))
+    pub fn new(x: Robj, name: &str) -> List {
+        let s_res = robjname2series(&x, name);
+        match s_res {
+            Ok(s) => r_ok_list(Series(s)),
+            Err(s) => r_error_list(s),
+        }
     }
 
     pub fn clone(&self) -> Series {
@@ -543,7 +457,7 @@ impl Series {
     }
 }
 
-//inner_from_robj only when used within Series
+//inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types
 impl Series {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
         if robj.check_external_ptr("Series") {
@@ -556,7 +470,7 @@ impl Series {
 
     pub fn any_robj_to_pl_series_result(robj: &Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&robj, &"")
+            robjname2series(&robj, &"")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {
@@ -617,99 +531,10 @@ impl Series {
     }
 }
 
-//clone is needed, no known trivial way (to author) how to take ownership R side objects
 impl From<&Series> for pl::Series {
     fn from(x: &Series) -> Self {
         x.clone().0
     }
-}
-
-//TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
-pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
-    use pl::DataType::*;
-    fn to_list_recursive(s: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
-        match s.dtype() {
-            Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
-            Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
-
-            Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
-            Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
-            Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
-            Int64 => s.i64().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            UInt8 => s.u8().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as i32))
-                    .collect_robj()
-            }),
-            UInt16 => s.u16().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as i32))
-                    .collect_robj()
-            }),
-            UInt32 => s.u32().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            UInt64 => s.u64().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| opt.map(|val| val as f64))
-                    .collect_robj()
-            }),
-            Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
-
-            Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
-            Categorical(_) => s
-                .categorical()
-                .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
-            List(_) => {
-                let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
-                let ca = s.list().unwrap();
-
-                for opt_s in ca.amortized_iter() {
-                    match opt_s {
-                        Some(s) => {
-                            let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref, tag_structs)?;
-                            v.push(inner_val);
-                        }
-
-                        None => {
-                            v.push(r!(extendr_api::NULL));
-                        }
-                    }
-                }
-                //TODO let l = extendr_api::List::from_values(v); or see if possible to skip vec allocation
-                //or take ownership of vector
-                let l = extendr_api::List::from_iter(v.iter());
-                Ok(l.into_robj())
-            }
-            Struct(_) => {
-                let df = s.clone().into_frame().unnest(&[s.name()]).unwrap();
-                let l = DataFrame(df).to_list_result()?;
-
-                //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
-                if tag_structs {
-                    l.set_attrib("is_struct", true).unwrap();
-                } else {
-                };
-
-                Ok(l.into_robj())
-            }
-            _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-                format!(
-                    "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
-                    s.dtype()
-                ),
-            ))),
-        }
-    }
-
-    to_list_recursive(series, tag_structs)
 }
 
 extendr_module! {

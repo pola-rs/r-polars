@@ -1,19 +1,23 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
+pub mod r_to_series;
 pub mod read_csv;
 pub mod read_parquet;
 pub mod rexpr;
 pub mod rseries;
+pub mod series_to_r;
 
 pub use crate::rdatatype::*;
 pub use crate::rlazyframe::*;
 
 use super::rlib::*;
+use r_to_series::robjname2series;
 use read_csv::*;
 use read_parquet::*;
 use rexpr::*;
 pub use rseries::*;
+use series_to_r::pl_series_to_list;
 
 use crate::utils::r_result_list;
 
@@ -51,8 +55,9 @@ impl DataFrame {
 
     //internal use
     fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> List {
-        let new_series = robjname2series(&robj, name);
-        r_result_list(self.0.with_column(new_series).map(|_| ()))
+        let result: pl::PolarsResult<()> =
+            robjname2series(&robj, name).and_then(|s| self.0.with_column(s).map(|_| ()));
+        r_result_list(result)
     }
 
     //internal use
