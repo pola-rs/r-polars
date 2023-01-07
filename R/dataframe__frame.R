@@ -769,3 +769,11 @@ DataFrame_to_struct = function(name = "") {
 DataFrame_unnest = function(names = NULL) {
   unwrap(.pr$DataFrame$unnest(self, names))
 }
+
+#' Stream a DataFrame using nanoarrow
+#' @return A [nanoarrow_array_stream][nanoarrow::as_nanoarrow_array_stream]
+DataFrame_export_stream = function() {
+  stream <- nanoarrow::nanoarrow_allocate_array_stream()
+  .pr$DataFrame$export_stream(self, nanoarrow::nanoarrow_pointer_addr_chr(stream))
+  stream
+}

@@ -31,17 +31,17 @@ pub struct OwnedDataFrameIterator {
     idx: usize,
     n_chunks: usize,
 }
-  
+
 impl OwnedDataFrameIterator {
     fn new(df: polars::frame::DataFrame ) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
 
-        Self { 
+        Self {
             columns: df.get_columns().clone(),
             data_type,
             idx: 0,
-            n_chunks: df.n_chunks().unwrap()
+            n_chunks: df.n_chunks()
         }
     }
 }
@@ -253,7 +253,7 @@ impl DataFrame {
         let schema = self.0.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type.clone(), false);
-        
+
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
