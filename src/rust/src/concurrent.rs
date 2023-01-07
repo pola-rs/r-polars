@@ -20,9 +20,7 @@ use std::result::Result;
 //4: Expr.map or such, passes an R user defined function in a closure to the lazyframe. This closure describes
 //how to request R functions run on the mainthread with a ThreadCom object.
 
-pub fn handle_thread_r_requests(
-    lazy_df: pl::LazyFrame,
-) -> std::result::Result<DataFrame, Box<dyn std::error::Error>> {
+pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<DataFrame> {
     //Closure 1: start concurrent handler and get final result
     let res_res_df = concurrent_handler(
         //give a closure doing what want if we could ... to run LazyFrame.collect() safely
@@ -66,7 +64,12 @@ pub fn handle_thread_r_requests(
     );
 
     //bubble on concurrent errors
-    let res_df = res_res_df?;
+    let res_df = res_res_df.map_err(|err| {
+        pl::PolarsError::ComputeError(polars::error::ErrString::Owned(format!(
+            "error via rpolars concurrent handler {:?}",
+            err
+        )))
+    })?;
 
     //bubble polars errors
     let new_df = res_df?;
