@@ -932,3 +932,79 @@ Series_is_numeric = function() {
   in_DataType(self$dtype,pl$numeric_dtypes)
 }
 
+
+#' arr: list related methods on Series of dtype List
+#' @description
+#' Create an object namespace of all list related methods.
+#' See the individual method pages for full details
+#' @keywords Series
+#' @return Expr
+#' @aliases Series_arr
+#' @examples
+#' s = pl$Series(list(1:3,1:2,NULL))
+#' s$arr$first()
+Series_arr = method_as_property(function() {
+
+  df = pl$DataFrame(self)
+  arr = make_expr_arr_namespace(pl$col(self$name))
+  lapply(arr, \(f) {
+     \(...) df$select(f(...))
+  })
+
+})
+
+#' Any expr method on a Series
+#' @description
+#' Call an expression on a Series
+#' See the individual Expr method pages for full details
+#'
+#' @details
+#' This is a shorthand of writing  something like
+#' `pl$DataFrame(s)$select(pl$col("sname")$expr)$to_series(0)`
+#'
+#' This subnamespace is experimental. Submit an issue if anything
+#' unexpected happend.
+#'
+#' @keywords Series
+#' @return Expr
+#' @aliases Series_arr
+#' @examples
+#' s = pl$Series(list(1:3,1:2,NULL))
+#' s$expr$first()
+#' s$expr$alias("alice")
+Series_expr = method_as_property(function() {
+
+  df = pl$DataFrame(self) #make a DataFrame from Series
+  self = pl$col(self$name) # override self to column named by series
+
+  #loop over each expression function
+  lapply(
+    rpolars:::Expr,
+    \(f) { #f is orignial Expr method
+
+      #point back to env with above defined 'df' and 'self'
+      environment(f) = parent.frame(2L)
+
+      #make a modified Expr function
+      new_f = \() {
+
+        #get the future args the new function will be called with
+        #not using ... as this will erase tooltips and defaults
+        #instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
+
+        #select on df(global-arg, set above) with the series as the only column
+        df$select(
+          #call orignal Expr method with the future calling args
+          #with global-arg self as set above
+          do.call(f,scall)
+        )$to_series(0) #unpack first column of df to Series
+      }
+
+      #set new_f to have the same formals arguments
+      formals(new_f) = formals(f)
+
+      new_f
+    }
+  )
+})
