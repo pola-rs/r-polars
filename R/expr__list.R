@@ -20,10 +20,34 @@ make_expr_arr_namespace = function(self) {
   env$unique   = function() .pr$Expr$lst_unique(self)
 
   env$sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
+  env$concat = function() stop("missing concat")
   env$get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = FALSE))
+
+  env$first = function() env$get(0L)  #10
+  env$last  = function() env$get(-1L) #11
+
+  env$contains = function() stop("missing")
+  env$join = function(separator) .pr$Expr$lst_join(self, separator)
+  env$arg_min = function() .pr$Expr$lst_arg_min(self)
+  env$arg_max = function() .pr$Expr$lst_arg_max(self)
+
+  env$diff = function(n = 1, null_behavior = "ignore") {
+    unwrap(.pr$Expr$lst_diff(self, n, null_behavior))
+  }
+
+  env$shift = function(periods = 1) unwrap(.pr$Expr$lst_shift(self, periods))
+
+  env$slice = function(offset, length = NULL) .pr$Expr$lst_slice(self, offset, length)
+
+
+  class(env) = c("ExprListNameSpace","environment")
 
   env
 }
+
+
+
+
 
 # roxygen does not like docs inside a function must place them out here
 
@@ -140,8 +164,11 @@ make_expr_arr_namespace = function(self) {
 
 #' Get list
 #' @name arr_get
-#' @description
-#' Get the value by index in the sublists.
+#' @description Get the value by index in the sublists.
+#' @param index numeric vector or Expr of length 1 or same length of Series.
+#' if length 1 pick same value from each sublist, if length as Series/column,
+#' pick by individual index across sublists.
+#'
 #' So index `0` would return the first item of every sublist
 #' and index `-1` would return the last item of every sublist
 #' if an index is out of bounds, it will return a `None`.
@@ -152,4 +179,112 @@ make_expr_arr_namespace = function(self) {
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr$get(0))
+#' df$select(pl$col("a")$arr$get(c(2,0,-1)))
 9
+
+#' Get list
+#' @rdname arr_get
+#' @export
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr[0])
+#' df$select(pl$col("a")$arr[c(2,0,-1)])
+`[.ExprListNameSpace` <- function(x, idx) {
+  x$get(idx)
+}
+
+
+#' First in sublists
+#' @name arr_first
+#' @description Get the first value of the sublists.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_first arr.first
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr$first())
+10
+
+#' Last in sublists
+#' @name arr_last
+#' @description Get the last value of the sublists.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_last arr.last
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr$last())
+11
+
+#' Sublists contains
+#' @name arr_contains
+#' @description Check if sublists contain the given item.
+#' @param item any into Expr/literal
+#' @keywords ExprArr
+#' @format function
+#' @return Expr of a boolean mask
+#' @aliases arr_contains arr.contains
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr$contains(1))
+12
+
+#' Join sublists
+#' @name arr_join
+#' @description
+#' Join all string items in a sublist and place a separator between them.
+#' This errors if inner type of list `!= Utf8`.
+#' @param separator string to separate the items with
+#' @keywords ExprArr
+#' @format function
+#' @return Series of dtype Utf8
+#' @aliases arr_join arr.join
+#' @examples
+#' df = pl$DataFrame(list(s = list(c("a","b","c"), c("x","y"))))
+#' df$select(pl$col("s")$arr$join(" "))
+13
+
+#' Arg min sublists
+#' @name arr_arg_min
+#' @description
+#'      Retrieve the index of the minimal value in every sublist.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_arg_min arr.arg_min
+#' @examples
+#' df = pl$DataFrame(list(s = list(1:2,2:1)))
+#' df$select(pl$col("s")$arr$arg_min())
+14
+
+#' Arg max sublists
+#' @name arr_arg_max
+#' @description
+#'      Retrieve the index of the maximum value in every sublist.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_max arr.arg_max
+#' @examples
+#' df = pl$DataFrame(list(s = list(1:2,2:1)))
+#' df$select(pl$col("s")$arr$arg_max())
+15
+
+
+#' Diff sublists
+#' @name arr_diff
+#' @description
+#'      Calculate the n-th discrete difference of every sublist.
+#' @param n
+#' @param null_behavior choice "ignore"(default) "drop"
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_max arr.arg_max
+#' @examples
+#' df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
+#' df$select(pl$col("s")$arr$diff())
+15
+
