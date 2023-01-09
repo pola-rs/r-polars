@@ -63,7 +63,7 @@ pl$all = function(name=NULL) {
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar","foobar"))))
-pl$col = function(name) {
+pl$col = function(name="") {
 
   #preconvert Series into char name(s)
 
