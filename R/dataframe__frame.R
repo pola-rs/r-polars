@@ -562,7 +562,7 @@ DataFrame_select = function(...) {
 #' @description add or modify columns with expressions
 #' @name DataFrame_with_columns
 #' @aliases with_columns
-#' @param ... any expressions or string column name
+#' @param ... any expressions or string column name, or same wrapped in a list
 #' @keywords  DataFrame
 #' @return DataFrame
 #' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
@@ -579,7 +579,14 @@ DataFrame_select = function(...) {
 #'   SW_add_2 = (pl$col("Sepal.Width")+2)
 #' )
 DataFrame_with_columns = function(...) {
-  self$lazy()$with_columns(...)$collect()
+  largs = list2(...)
+
+  #unpack a single list
+  if(length(largs)==1 && is.list(largs[[1]])) {
+    largs = largs[[1]]
+  }
+
+  do.call(self$lazy()$with_columns,largs)$collect()
 }
 
 #' modify/append one column
