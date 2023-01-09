@@ -111,7 +111,7 @@ Expr_div = "use_extendr_wrapper"
 Expr_sub = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_sub
-"-.Expr" <- function(e1,e2) e1$sub(wrap_e(e2))
+"-.Expr" <- function(e1,e2) if(missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(wrap_e(e2))
 
 #' Mul *
 #' @description Multiplication
@@ -589,7 +589,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' polars literal
 #' @keywords Expr
 #'
-#' @param x an R Scalar, or R vector (via Series) into Expr
+#' @param x an R Scalar, or R vector/list (via Series) into Expr
 #' @rdname Expr
 #' @return Expr, literal of that value
 #' @aliases lit
@@ -607,7 +607,7 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 Expr_lit = function(x) {
   if(is.null(x)) return(unwrap(.pr$Expr$lit(NULL)))
   if (inherits(x,"Expr")) return(x)  # already Expr, pass through
-  if (length(x) != 1L) x = wrap_s(x) #wrap first as Series if not a scalar
+  if (length(x) != 1L || is.list(x)) x = wrap_s(x) #wrap first as Series if not a scalar
   unwrap(.pr$Expr$lit(x)) # create literal Expr
 }
 
@@ -3825,5 +3825,26 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #'   pl$col("value")$arr$lengths()$alias("group_size")
 #' )
 Expr_arr = method_as_property(function() {
-  make_expr_arr_namespace(self)
+  expr_arr_make_sub_ns(self)
 })
+
+
+#' Literal to Series
+#' @description
+#' collect an expression based on literals into a Series
+#' @keywords Expr
+#' @return Series
+#' @aliases lit_to_s
+#' @examples
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'     $arr$lengths()
+#'     $sum()
+#'     $cast(pl$dtypes$Int8)
+#'   $lit_to_s()
+#' )
+Expr_lit_to_s = function(){
+  pl$select(self)
+}

@@ -84,6 +84,12 @@ fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     polars::lazy::dsl::sum_exprs(exprs).into()
 }
 
+#[extendr]
+fn concat_lst(exprs: &ProtoExprArray) -> Expr {
+    let exprs = exprs.to_vec("select");
+    polars::lazy::dsl::concat_lst(exprs).into()
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -94,4 +100,5 @@ extendr_module! {
     fn coalesce_exprs;
     fn sum_exprs;
     fn mem_address;
+    fn concat_lst;
 }

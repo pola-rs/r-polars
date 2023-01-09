@@ -12,7 +12,7 @@ DataFrame_with_columns(...)
 DataFrame_with_column(expr)
 }
 \arguments{
-\item{...}{any expressions or string column name}
+\item{...}{any expressions or string column name, or same wrapped in a list}
 
 \item{expr}{a single expression or string}
 }

@@ -21,7 +21,7 @@ Expr_prefix(prefix)
 Expr_reverse()
 }
 \arguments{
-\item{x}{an R Scalar, or R vector (via Series) into Expr}
+\item{x}{an R Scalar, or R vector/list (via Series) into Expr}
 
 \item{suffix}{string suffix to be added to a name}
 
