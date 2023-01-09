@@ -381,3 +381,19 @@ test_that("concat", {
   )
 
 })
+
+
+test_that("eval", {
+  df = pl$DataFrame(a = list(a = c(1,8,3), b = c(4,5,2)))
+  l_act = df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+    pl$concat_list(c("a","b"))$arr$eval(pl$element()$rank())$alias("rank")
+  )$to_list()
+  expect_identical(
+    dput(l_act),
+    list(
+      a = c(1, 8, 3),
+      b = c(4, 5, 2),
+      rank = list(c(1, 2),c(1,2), c(1, 2))
+    )
+  )
+})

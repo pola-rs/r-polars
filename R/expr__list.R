@@ -340,3 +340,27 @@ ExprArr_tail = function(n = 5L) {
   offset = -wrap_e(n, str_to_lit = FALSE)
   self$arr$slice(offset, n)
 }
+
+
+#' eval sublists (kinda like lapply)
+#' @name arr_eval
+#' @description Run any polars expression against the lists' elements.
+#' @param Expr Expression to run. Note that you can select an element with `pl$first()`, or
+#' `pl$col()`
+#' @param parallel bool
+#' Run all expression parallel. Don't activate this blindly.
+#'             Parallelism is worth it if there is enough work to do per thread.
+#'             This likely should not be use in the groupby context, because we already
+#'             parallel execution per group
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_eval arr.eval
+#' @examples
+#' df = pl$DataFrame(a = list(c(1,8,3), b = c(4,5,2)))
+#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+#'   pl$concat_list(c("a","b"))$arr$eval(pl$element()$rank())$alias("rank")
+#' )
+ExprArr_eval = function(expr, parallel = FALSE) {
+  .pr$Expr$lst_eval(self, expr, parallel)
+}
