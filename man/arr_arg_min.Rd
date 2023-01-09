@@ -11,8 +11,7 @@ function
 Expr
 }
 \description{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ Retrieve the index of the minimal value in every sublist.
-}\if{html}{\out{</div>}}
+Retrieve the index of the minimal value in every sublist.
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2,2:1)))

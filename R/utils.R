@@ -245,7 +245,7 @@ clone_env_one_level_deep = function(env) {
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
 #'
-replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
+replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
   cat("\n\n setting public methods for ",class_pattern)
 
   #get these
@@ -283,6 +283,12 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c()) {
     cat(method,", ")
     env[[names(method)]] = get(method)
   }
+
+  if(remove_f) {
+    rm(list=class_methods, envir = parent.frame())
+  }
+
+
   invisible(NULL)
 }
 
@@ -456,4 +462,82 @@ restruct_list = function(l) {
   }
 
   l
+}
+
+
+#' Bundle class methods into an environment (subname space)
+#'
+#' @param class_pattern regex to select functions
+#' @param subclass_env  optional subclass of
+#' @param drop_f drop sourced functions from package ns after bundling into sub ns
+#'
+#' @return
+#' A function which returns a subclass environment of bundled class functions.
+#'
+#' @details
+#' This function is used to emulate py-polars subnamespace-methods
+#' All functions coined 'macro'-functions use eval(parse()) but only at package build time
+#' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
+#' , go ahead.
+#'
+#' @examples
+#'
+#' #define some new methods prefixed 'MyClass_'
+#' MyClass_add2 = function() self + 2
+#' MyClass_mul2 = function() self * 2
+#'
+#' #grab any sourced function prefixed 'MyClass_'
+#' my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
+#'
+#' #here adding sub-namespace as a expr-class property/method during session-time,
+#' which only is for this demo.
+#' #instead sourced method like Expr_arr() at package build time instead
+#' env = rpolars:::Expr #get env of the Expr Class
+#' env$my_sub_ns = method_as_property(function() { #add a property/method
+#'   my_class_sub_ns(self)
+#' })
+#' rm(env) #optional clean up
+#'
+#' #add user defined S3 method the subclass 'myclass_sub_ns'
+#' print.myclass_sub_ns = function(x) {
+#'   print("hello world, I'm myclass_sub_ns")
+#'   print("methods in sub namespace are:")
+#'   print(ls(x))
+#' }
+#'
+#' #test
+#' e = pl$lit(1:5)  #make an Expr
+#' print(e$my_sub_ns) #inspect
+#' e$my_sub_ns$add2() #use the sub namespace
+#' e$my_sub_ns$mul2()
+#'
+macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
+
+  # get all methods within class
+  class_methods = ls(parent.frame(), pattern = class_pattern)
+  names(class_methods) = sub(class_pattern, "", class_methods)
+
+
+
+  str = paste(sep="\n",
+    "function(self) {",
+    "  env = new.env()",
+    paste(collapse="\n",sapply(seq_along(class_methods), function(i) {
+      f_name =  class_methods[i]
+      m_name   = names(class_methods)[i]
+      f = get(f_name)
+      paste0("  env$",m_name," = ",paste(capture.output(dput(f)), collapse = "\n"))
+    })),
+    "  class(env) = c(subclass_env, class(env))",
+    "  env",
+    "}"
+  )
+
+  if(remove_f) {
+    rm(list=class_methods, envir = parent.frame())
+  }
+
+  cat("new subnamespace: ", class_pattern, "\n", str)
+  eval(parse(text=str))
+
 }

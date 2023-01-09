@@ -4,7 +4,12 @@
 \alias{replace_private_with_pub_methods}
 \title{remove private method}
 \usage{
-replace_private_with_pub_methods(env, class_pattern, keep = c())
+replace_private_with_pub_methods(
+  env,
+  class_pattern,
+  keep = c(),
+  remove_f = FALSE
+)
 }
 \arguments{
 \item{env}{class envrionment to modify. Envs are mutable so no return needed}

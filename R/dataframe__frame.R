@@ -692,7 +692,6 @@ as.data.frame.DataFrame = function(x, ...) {
 #'
 #'
 #' @return R list of vectors
-#' @export
 #' @keywords DataFrame
 #' @examples pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE) {

@@ -282,6 +282,18 @@ test_that("lit expr", {
     24 / 4:1 + 2
   )
 
+  #sequence/lits to literal and back
+  expect_identical(pl$lit(1:5)$to_r(),1:5)
+  expect_identical(pl$lit(c(1,2,Inf,-Inf,NaN,NA))$to_r(),c(1,2,Inf,-Inf,NaN,NA))
+  l = list(
+    list(c(1,2,Inf,-Inf,NaN,NA)),
+    list(c(1:5,NA_integer_)),
+    list(letters)
+  )
+  for(i in seq_along(l)) {
+    expect_identical(pl$lit(l[[i]])$to_r(), l[[i]])
+  }
+
 
 })
 

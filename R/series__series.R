@@ -353,7 +353,6 @@ Series_to_r_list = \() {
 #' Take absolute value of Series
 #'
 #' @return Series
-#' @export
 #' @keywords Series
 #' @aliases abs
 #' @name Series_abs
@@ -372,7 +371,6 @@ Series_abs  = function() {
 #' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
 #'
 #' @return DataFrame
-#' @export
 #' @keywords Series
 #' @aliases value_counts
 #' @name Series_value_count
@@ -942,6 +940,7 @@ Series_is_numeric = function() {
 #' @aliases Series_arr
 #' @examples
 #' s = pl$Series(list(1:3,1:2,NULL))
+#' s
 #' s$arr$first()
 Series_arr = method_as_property(function() {
 
@@ -967,7 +966,7 @@ Series_arr = method_as_property(function() {
 #'
 #' @keywords Series
 #' @return Expr
-#' @aliases Series_arr
+#' @aliases Series_expr
 #' @examples
 #' s = pl$Series(list(1:3,1:2,NULL))
 #' s$expr$first()
@@ -993,18 +992,39 @@ Series_expr = method_as_property(function() {
         #instead using sys.call/do.call
         scall = as.list(sys.call()[-1])
 
-        #select on df(global-arg, set above) with the series as the only column
-        df$select(
-          #call orignal Expr method with the future calling args
-          #with global-arg self as set above
-          do.call(f,scall)
-        )$to_series(0) #unpack first column of df to Series
+        x =  do.call(f,scall)
+        pcase(
+          inherits(x,"Expr"),  df$select(x)$to_series(0),
+          or_else = x
+        )
+
       }
 
       #set new_f to have the same formals arguments
       formals(new_f) = formals(f)
-
+      class(new_f) = c("SeriesExpr","function") #
       new_f
     }
   )
 })
+
+
+#' Series to Literal
+#' @description
+#' convert Series to literal to perform modification and return
+#' @keywords Series
+#' @return Expr
+#' @aliases to_lit
+#' @examples
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'     $arr$lengths()
+#'     $sum()
+#'     $cast(pl$dtypes$Int8)
+#'   $lit_to_s()
+#' )
+Series_to_lit = function() {
+  pl$lit(self)
+}

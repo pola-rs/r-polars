@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_expr}
 \alias{Series_expr}
-\alias{Series_arr}
 \title{Any expr method on a Series}
 \usage{
 Series_expr()

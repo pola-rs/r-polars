@@ -15,6 +15,7 @@ See the individual method pages for full details
 }
 \examples{
 s = pl$Series(list(1:3,1:2,NULL))
+s
 s$arr$first()
 }
 \keyword{Series}
