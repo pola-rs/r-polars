@@ -28,6 +28,8 @@ sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
+concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
@@ -303,6 +305,8 @@ Expr$list <- function() .Call(wrap__Expr__list, self)
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
 Expr$arr_lengths <- function() .Call(wrap__Expr__arr_lengths, self)
+
+Expr$arr_contains <- function(other) .Call(wrap__Expr__arr_contains, self, other)
 
 Expr$lst_max <- function() .Call(wrap__Expr__lst_max, self)
 

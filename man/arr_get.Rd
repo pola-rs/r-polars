@@ -3,9 +3,13 @@
 \name{arr_get}
 \alias{arr_get}
 \alias{arr.get}
+\alias{arr_concat}
+\alias{arr.concat}
 \alias{[.ExprListNameSpace}
 \title{Get list}
 \format{
+function
+
 function
 
 function
@@ -14,6 +18,8 @@ function
 \method{[}{ExprListNameSpace}(x, idx)
 }
 \arguments{
+\item{other}{Rlist, Expr or column of same tyoe as self.}
+
 \item{index}{numeric vector or Expr of length 1 or same length of Series.
 if length 1 pick same value from each sublist, if length as Series/column,
 pick by individual index across sublists.
@@ -26,9 +32,13 @@ if an index is out of bounds, it will return a \code{None}.}
 Expr
 
 Expr
+
+Expr
 }
 \description{
 Get the value by index in the sublists.
+
+Concat the arrays in a Series dtype List in linear time.
 
 Get the value by index in the sublists.
 }
@@ -36,6 +46,15 @@ Get the value by index in the sublists.
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 df$select(pl$col("a")$arr$get(0))
 df$select(pl$col("a")$arr$get(c(2,0,-1)))
+df = pl$DataFrame(
+  a = list("a","x"),
+  b = list(c("b","c"),c("y","z"))
+)
+df$select(pl$col("a")$arr$concat(pl$col("b")))
+
+df$select(pl$col("a")$arr$concat("hello from R"))
+
+df$select(pl$col("a")$arr$concat(list("hello",c("hello","world"))))
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 df$select(pl$col("a")$arr$get(0))
 df$select(pl$col("a")$arr$get(c(2,0,-1)))

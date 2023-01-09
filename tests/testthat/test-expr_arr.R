@@ -331,3 +331,53 @@ test_that("slice", {
   expect_identical(l_act_slice,l_exp_slice)
 
 })
+
+test_that("contains", {
+
+  l = list(
+    i32 = list(1:4,1:3,1:1),
+    f64 = list(c(1,2,3,NaN),c(NaN,1,NA),c(Inf)),
+    utf = list(letters,LETTERS,c(NA_character_,"a"))
+  )
+  df = pl$DataFrame(l)
+
+  l_act =  df$select(
+    pl$col("i32")$arr$contains(2L),
+    pl$col("f64")$arr$contains(Inf),
+    pl$col("utf")$arr$contains("a")
+  )$to_list()
+
+  l_exp = list(
+    i32 = sapply(l$i32,\(x) 2L  %in% x),
+    f64 = sapply(l$f64,\(x) Inf %in% x),
+    utf = sapply(l$utf,\(x) "a" %in% x)
+  )
+
+  expect_identical(l_act,l_exp)
+
+})
+
+
+test_that("concat", {
+  df = pl$DataFrame(
+    a = list("a","x"),
+    b = list(c("b","c"),c("y","z"))
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$arr$concat(pl$col("b")))$to_list(),
+    list(a = list(c("a","b","c"), c("x","y","z")))
+
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$arr$concat("hello from R"))$to_list(),
+    list(a = list(c("a","hello from R"), c("x","hello from R")))
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$arr$concat(c("hello","world")))$to_list(),
+    list(a = list(c("a","hello"), c("x","world")))
+  )
+
+})

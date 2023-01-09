@@ -122,7 +122,28 @@ ExprArr_unique   = function() .pr$Expr$lst_unique(self)
 ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
 
 
-ExprArr_concat = function() stop("missing concat")
+#' concat another list
+#' @name arr_get
+#' @description Concat the arrays in a Series dtype List in linear time.
+#' @param other Rlist, Expr or column of same tyoe as self.
+#'
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_concat arr.concat
+#' @examples
+#' df = pl$DataFrame(
+#'   a = list("a","x"),
+#'   b = list(c("b","c"),c("y","z"))
+#' )
+#' df$select(pl$col("a")$arr$concat(pl$col("b")))
+#'
+#' df$select(pl$col("a")$arr$concat("hello from R"))
+#'
+#' df$select(pl$col("a")$arr$concat(list("hello",c("hello","world"))))
+ExprArr_concat = function(other) {
+  pl$concat_list(list(self,other))
+}
 
 #' Get list
 #' @name arr_get
@@ -189,8 +210,8 @@ ExprArr_last  = function(index) .pr$Expr$lst_get(self, wrap_e(-1L,str_to_lit = F
 #' @aliases arr_contains arr.contains
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
-#' df$select(pl$col("a")$arr$contains(1))
-ExprArr_contains = function() stop("missing impl")
+#' df$select(pl$col("a")$arr$contains(1L))
+ExprArr_contains = function(other) .pr$Expr$arr_contains(self,wrap_e(other))
 
 
 #' Join sublists

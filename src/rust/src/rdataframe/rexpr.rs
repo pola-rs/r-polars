@@ -969,6 +969,10 @@ impl Expr {
         self.0.clone().arr().lengths().into()
     }
 
+    pub fn arr_contains(&self, other: &Expr) -> Expr {
+        self.0.clone().arr().contains(other.0.clone()).into()
+    }
+
     fn lst_max(&self) -> Self {
         self.0.clone().arr().max().into()
     }
