@@ -20,6 +20,7 @@ use std::ops::{Add, Div, Mul, Sub};
 use pl::PolarsError as pl_error;
 use polars::error::ErrString as pl_err_string;
 
+pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 #[extendr]
 pub struct Expr(pub pl::Expr);
@@ -1060,6 +1061,38 @@ impl Expr {
     fn lst_eval(&self, expr: &Expr, parallel: bool) -> Self {
         use pl::*;
         self.0.clone().arr().eval(expr.0.clone(), parallel).into()
+    }
+
+    fn lst_to_struct(&self, width_strat: &str, name_gen: Nullable<Robj>, upper_bound: f64) -> List {
+        use crate::rdatatype::new_width_strategy;
+        use crate::utils::extendr_concurrent::ParRObj;
+        use pl::NamedFrom;
+        // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
+        // here a usize is wrapped in Series
+        let name_gen = if let Some(robj) = null_to_opt(name_gen) {
+            let probj: ParRObj = robj.clone().into();
+            let x = Some(pl::Arc::new(move |idx: usize| {
+                let thread_com = ThreadCom::from_global(&CONFIG);
+                let s = pl::Series::new("", &[idx as u64]);
+                thread_com.send((probj.clone(), s));
+                let s = thread_com.recv();
+                s.0.name().to_string()
+            }) as NameGenerator);
+            x
+        } else {
+            None
+        };
+
+        //resolve usize from f64 and stategy from str
+        let res = || -> std::result::Result<Expr, String> {
+            let ub = try_f64_into_usize(upper_bound, false)?;
+            let strat = new_width_strategy(width_strat)?;
+            Ok(Expr(self.0.clone().arr().to_struct(strat, name_gen, ub)))
+        }();
+
+        let res = res.map_err(|err| format!("in to_struct: {}", err));
+
+        r_result_list(res)
     }
 
     //end list/arr methods

@@ -295,6 +295,19 @@ pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::Interpolatio
     }
 }
 
+pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthStrategy, String> {
+    use pl::ListToStructWidthStrategy as WS;
+    match s {
+        "first_non_null" => Ok(WS::FirstNonNull),
+        "max_width" => Ok(WS::MaxWidth),
+
+        _ => Err(format!(
+            "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
+            s
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl DataType;

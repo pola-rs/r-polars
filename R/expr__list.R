@@ -364,3 +364,51 @@ ExprArr_tail = function(n = 5L) {
 ExprArr_eval = function(expr, parallel = FALSE) {
   .pr$Expr$lst_eval(self, expr, parallel)
 }
+
+
+#TODO update rust-polars, this function has likely changed behavior as upper_bound is
+# no longer needed
+
+#' List to Struct
+#'
+#' @param n_field_strategy Strategy to determine the number of fields of the struct.
+#'  default = 'first_non_null' else 'max_width'
+#' @param name_generator an R function that takes a scalar column number
+#' and outputs a string value. The default NULL is equivalent to the R function
+#' `\(idx) paste0("field_",idx)`
+#'
+#' @name arr_to_struct
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_to_struct arr.to_struct
+#' @examples
+#' df = pl$DataFrame(list(a = list(1:3, 1:2)))
+#' df2 = df$select(pl$col("a")$arr$to_struct(
+#'   name_generator =  \(idx) paste0("hello_you_",idx))
+#'   )
+#' df2$unnest()
+#'
+#' df2$to_list()
+ExprArr_to_struct = function(
+    n_field_strategy = 'first_non_null', name_generator = NULL
+) {
+
+  #extendr_concurrent now only supports series communication, wrap out of series
+  #wrapped into series on rust side
+  if(!is.null(name_generator))  {
+    if(!is.function(name_generator)) {
+      stopf("name_generator must be an R function")
+    }
+    name_generator_wrapped = \(s) {
+      .pr$Series$rename_mut(s,name_generator(s$to_r())[1])
+      s
+    }
+  } else {
+    name_generator_wrapped = NULL
+  }
+
+  unwrap(.pr$Expr$lst_to_struct(
+    self, n_field_strategy, name_generator_wrapped, upper_bound = 0
+  ))
+}

@@ -24,6 +24,7 @@ smartstring = { version = "1" }
 polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "91a419acaf024e64410e77210ed928051aab76b5", default_features= false}
 
 
+
 #features copied from node-polars
 [dependencies.polars]
 features = [
@@ -97,7 +98,8 @@ features = [
   "trigonometry",
   "sign",
   "cumulative_eval",
-  "list_eval"
+  "list_eval",
+  "list_to_struct"
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"

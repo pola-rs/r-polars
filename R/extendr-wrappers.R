@@ -338,6 +338,8 @@ Expr$lst_slice <- function(offset, length) .Call(wrap__Expr__lst_slice, self, of
 
 Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr, parallel)
 
+Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
