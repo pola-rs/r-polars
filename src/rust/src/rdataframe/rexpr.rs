@@ -205,12 +205,14 @@ impl Expr {
         .into()
     }
 
+    //TODO expoes multithreded arg
     pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
         self.clone()
             .0
             .sort_with(SortOptions {
                 descending,
                 nulls_last,
+                multithreaded: false,
             })
             .into()
     }
@@ -221,6 +223,7 @@ impl Expr {
             .arg_sort(SortOptions {
                 descending,
                 nulls_last,
+                multithreaded: false,
             })
             .into()
     }
@@ -236,8 +239,13 @@ impl Expr {
         self.clone().0.arg_min().into()
     }
 
+    //TODO expose searchSorted side options
     pub fn search_sorted(&self, element: &Expr) -> Self {
-        self.0.clone().search_sorted(element.0.clone()).into()
+        use pl::SearchSortedSide as Side;
+        self.0
+            .clone()
+            .search_sorted(element.0.clone(), Side::Any)
+            .into()
     }
 
     pub fn take(&self, idx: &Expr) -> Self {
