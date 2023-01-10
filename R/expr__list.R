@@ -352,6 +352,14 @@ ExprArr_tail = function(n = 5L) {
 #' @param name_generator an R function that takes a scalar column number
 #' and outputs a string value. The default NULL is equivalent to the R function
 #' `\(idx) paste0("field_",idx)`
+#' @param upper_bound upper_bound numeric
+#' A polars `LazyFrame` needs to know the schema at all time.
+#' The caller therefore must provide an `upper_bound` of
+#' struct fields that will be set.
+#' If this is incorrectly downstream operation may fail.
+#' For instance an `all().sum()` expression will look in
+#' the current schema to determine which columns to select.
+#' It is adviced to set this value in a lazy query.
 #'
 #' @name arr_to_struct
 #' @keywords ExprArr
@@ -367,7 +375,7 @@ ExprArr_tail = function(n = 5L) {
 #'
 #' df2$to_list()
 ExprArr_to_struct = function(
-    n_field_strategy = 'first_non_null', name_generator = NULL
+    n_field_strategy = 'first_non_null', name_generator = NULL, upper_bound = 0
 ) {
 
   #extendr_concurrent now only supports series communication, wrap out of series
@@ -385,7 +393,7 @@ ExprArr_to_struct = function(
   }
 
   unwrap(.pr$Expr$lst_to_struct(
-    self, n_field_strategy, name_generator_wrapped, upper_bound = 0
+    self, n_field_strategy, name_generator_wrapped, upper_bound
   ))
 }
 
