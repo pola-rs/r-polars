@@ -72,6 +72,26 @@ ExprArr_min      = function() .pr$Expr$lst_min(self)
 #' df$select(pl$col("values")$arr$mean())
 ExprArr_mean     = function() .pr$Expr$lst_mean(self)
 
+#' Get list
+#' @name arr_get
+#' @description Get the value by index in the sublists.
+#' @param index numeric vector or Expr of length 1 or same length of Series.
+#' if length 1 pick same value from each sublist, if length as Series/column,
+#' pick by individual index across sublists.
+#'
+#' So index `0` would return the first item of every sublist
+#' and index `-1` would return the last item of every sublist
+#' if an index is out of bounds, it will return a `None`.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_get arr.get
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr$get(0))
+#' df$select(pl$col("a")$arr$get(c(2,0,-1)))
+ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
+
 #' Reverse list
 #' @name arr_reverse
 #' @description
@@ -99,27 +119,6 @@ ExprArr_reverse  = function() .pr$Expr$lst_reverse(self)
 #' df = pl$DataFrame(list(a = list(1, 1, 2)))
 #' df$select(pl$col("a")$arr$unique())
 ExprArr_unique   = function() .pr$Expr$lst_unique(self)
-
-
-#' Get list
-#' @name arr_get
-#' @description Get the value by index in the sublists.
-#' @param index numeric vector or Expr of length 1 or same length of Series.
-#' if length 1 pick same value from each sublist, if length as Series/column,
-#' pick by individual index across sublists.
-#'
-#' So index `0` would return the first item of every sublist
-#' and index `-1` would return the last item of every sublist
-#' if an index is out of bounds, it will return a `None`.
-#' @keywords ExprArr
-#' @format function
-#' @return Expr
-#' @aliases arr_get arr.get
-#' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
-#' df$select(pl$col("a")$arr$get(0))
-#' df$select(pl$col("a")$arr$get(c(2,0,-1)))
-ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
 
 
 #' concat another list
@@ -342,29 +341,6 @@ ExprArr_tail = function(n = 5L) {
 }
 
 
-#' eval sublists (kinda like lapply)
-#' @name arr_eval
-#' @description Run any polars expression against the lists' elements.
-#' @param Expr Expression to run. Note that you can select an element with `pl$first()`, or
-#' `pl$col()`
-#' @param parallel bool
-#' Run all expression parallel. Don't activate this blindly.
-#'             Parallelism is worth it if there is enough work to do per thread.
-#'             This likely should not be use in the groupby context, because we already
-#'             parallel execution per group
-#' @keywords ExprArr
-#' @format function
-#' @return Expr
-#' @aliases arr_eval arr.eval
-#' @examples
-#' df = pl$DataFrame(a = list(c(1,8,3), b = c(4,5,2)))
-#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
-#'   pl$concat_list(c("a","b"))$arr$eval(pl$element()$rank())$alias("rank")
-#' )
-ExprArr_eval = function(expr, parallel = FALSE) {
-  .pr$Expr$lst_eval(self, expr, parallel)
-}
-
 
 #TODO update rust-polars, this function has likely changed behavior as upper_bound is
 # no longer needed
@@ -412,3 +388,28 @@ ExprArr_to_struct = function(
     self, n_field_strategy, name_generator_wrapped, upper_bound = 0
   ))
 }
+
+#' eval sublists (kinda like lapply)
+#' @name arr_eval
+#' @description Run any polars expression against the lists' elements.
+#' @param Expr Expression to run. Note that you can select an element with `pl$first()`, or
+#' `pl$col()`
+#' @param parallel bool
+#' Run all expression parallel. Don't activate this blindly.
+#'             Parallelism is worth it if there is enough work to do per thread.
+#'             This likely should not be use in the groupby context, because we already
+#'             parallel execution per group
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_eval arr.eval
+#' @examples
+#' df = pl$DataFrame(a = list(c(1,8,3), b = c(4,5,2)))
+#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+#'   pl$concat_list(c("a","b"))$arr$eval(pl$element()$rank())$alias("rank")
+#' )
+ExprArr_eval = function(expr, parallel = FALSE) {
+  .pr$Expr$lst_eval(self, expr, parallel)
+}
+
+
