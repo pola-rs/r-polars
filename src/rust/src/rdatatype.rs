@@ -6,11 +6,11 @@ use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
 #[extendr]
 #[derive(Debug, Clone, PartialEq)]
-pub struct DataType(pub pl::DataType);
+pub struct RPolarsDataType(pub pl::DataType);
 
 #[extendr]
-impl DataType {
-    pub fn new(s: &str) -> DataType {
+impl RPolarsDataType {
+    pub fn new(s: &str) -> RPolarsDataType {
         //, inner: Nullable<&DataType>
         //let inner = Box::new(null_to_opt(inner).map_or(pl::DataType::Null, |x| x.0.clone()));
 
@@ -37,26 +37,26 @@ impl DataType {
 
             _ => panic!("data type not recgnized"),
         };
-        DataType(pl_datatype)
+        RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime() -> DataType {
+    pub fn new_datetime() -> RPolarsDataType {
         todo!("datetime not implemented")
     }
 
-    pub fn new_duration() -> DataType {
+    pub fn new_duration() -> RPolarsDataType {
         todo!("duration not implemented")
     }
 
-    pub fn new_list(inner: &DataType) -> DataType {
-        DataType(pl::DataType::List(Box::new(inner.0.clone())))
+    pub fn new_list(inner: &RPolarsDataType) -> RPolarsDataType {
+        RPolarsDataType(pl::DataType::List(Box::new(inner.0.clone())))
     }
 
-    pub fn new_object() -> DataType {
+    pub fn new_object() -> RPolarsDataType {
         todo!("object not implemented")
     }
 
-    pub fn new_struct() -> DataType {
+    pub fn new_struct() -> RPolarsDataType {
         todo!("struct not implemented")
     }
 
@@ -87,17 +87,17 @@ impl DataType {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn eq(&self, other: &DataType) -> bool {
+    pub fn eq(&self, other: &RPolarsDataType) -> bool {
         self.0.eq(&other.0)
     }
 
-    pub fn ne(&self, other: &DataType) -> bool {
+    pub fn ne(&self, other: &RPolarsDataType) -> bool {
         self.0.ne(&other.0)
     }
 }
 
-impl From<DataType> for pl::DataType {
-    fn from(x: DataType) -> Self {
+impl From<RPolarsDataType> for pl::DataType {
+    fn from(x: RPolarsDataType) -> Self {
         x.0
     }
 }
@@ -116,7 +116,7 @@ impl DataTypeVector {
         DataTypeVector(Vec::new())
     }
 
-    pub fn push(&mut self, colname: Nullable<String>, datatype: &DataType) {
+    pub fn push(&mut self, colname: Nullable<String>, datatype: &RPolarsDataType) {
         self.0.push((Wrap(colname).into(), datatype.clone().into()));
     }
 
@@ -130,11 +130,14 @@ impl DataTypeVector {
         let result: std::result::Result<(), String> = list
             .iter()
             .map(|(name, robj)| -> std::result::Result<(), String> {
-                if !robj.inherits("DataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr {
-                    return Err("Internal error: Object is not a DataType".into());
+                if !robj.inherits("RPolarsDataType")
+                    || robj.rtype() != extendr_api::Rtype::ExternalPtr
+                {
+                    return Err("Internal error: Object is not a RPolarsDataType".into());
                 }
                 //safety checks class and type before conversion
-                let dt: DataType = unsafe { &mut *robj.external_ptr_addr::<DataType>() }.clone();
+                let dt: RPolarsDataType =
+                    unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
                 let name = extendr_api::Nullable::NotNull(name.to_string());
                 dtv.push(name, &dt);
                 Ok(())
@@ -310,6 +313,6 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
 
 extendr_module! {
     mod rdatatype;
-    impl DataType;
+    impl RPolarsDataType;
     impl DataTypeVector;
 }

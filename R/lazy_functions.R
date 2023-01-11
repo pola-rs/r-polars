@@ -78,12 +78,12 @@ pl$col = function(name="") {
     }
     return(.pr$Expr$cols(name))
   }
-  if(inherits(name, "DataType"))return(.pr$Expr$dtype_cols(construct_DataTypeVector(list(name))))
+  if(inherits(name, "RPolarsDataType"))return(.pr$Expr$dtype_cols(construct_DataTypeVector(list(name))))
   if(is.list(name)) {
-    if(all(sapply(name, inherits,"DataType"))) {
+    if(all(sapply(name, inherits,"RPolarsDataType"))) {
       return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
     } else {
-      stopf("all elements of list must be a DataType")
+      stopf("all elements of list must be a RPolarsDataType")
     }
   }
   #TODO implement series, DataType

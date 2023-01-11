@@ -99,7 +99,7 @@ lazy_csv_reader = function(
         if(is_string(type)) {
           type = rpolars:::DataType$new(type)
         }
-        if(!inherits(type,"DataType")) {
+        if(!inherits(type,"RPolarsDataType")) {
           stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
         }
         datatype_vector$push(name,type)

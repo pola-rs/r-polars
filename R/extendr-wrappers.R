@@ -576,33 +576,33 @@ RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj
 #' @export
 `[[.RNullValues` <- `$.RNullValues`
 
-DataType <- new.env(parent = emptyenv())
+RPolarsDataType <- new.env(parent = emptyenv())
 
-DataType$new <- function(s) .Call(wrap__DataType__new, s)
+RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
-DataType$new_datetime <- function() .Call(wrap__DataType__new_datetime)
+RPolarsDataType$new_datetime <- function() .Call(wrap__RPolarsDataType__new_datetime)
 
-DataType$new_duration <- function() .Call(wrap__DataType__new_duration)
+RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
 
-DataType$new_list <- function(inner) .Call(wrap__DataType__new_list, inner)
+RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
-DataType$new_object <- function() .Call(wrap__DataType__new_object)
+RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
 
-DataType$new_struct <- function() .Call(wrap__DataType__new_struct)
+RPolarsDataType$new_struct <- function() .Call(wrap__RPolarsDataType__new_struct)
 
-DataType$get_all_simple_type_names <- function() .Call(wrap__DataType__get_all_simple_type_names)
+RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
 
-DataType$print <- function() invisible(.Call(wrap__DataType__print, self))
+RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
 
-DataType$eq <- function(other) .Call(wrap__DataType__eq, self, other)
+RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
 
-DataType$ne <- function(other) .Call(wrap__DataType__ne, self, other)
-
-#' @export
-`$.DataType` <- function (self, name) { func <- DataType[[name]]; environment(func) <- environment(); func }
+RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
 
 #' @export
-`[[.DataType` <- `$.DataType`
+`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataType` <- `$.RPolarsDataType`
 
 DataTypeVector <- new.env(parent = emptyenv())
 
