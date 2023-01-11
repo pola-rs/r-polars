@@ -597,12 +597,12 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "arrow-nanoarrow",
       "RemoteUsername": "apache",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "da7b5ecc108848e538a2b2592315d0fcf0b12786",
+      "RemoteRepo": "arrow-nanoarrow",
       "RemoteSubdir": "r",
-      "Hash": "20286c6fa6568810c7b7fb89ead643a9",
+      "RemoteRef": "main",
+      "RemoteSha": "da7b5ecc108848e538a2b2592315d0fcf0b12786",
+      "Hash": "be8adf716a3aaa52c31605f0e753f7d8",
       "Requirements": []
     },
     "openssl": {
