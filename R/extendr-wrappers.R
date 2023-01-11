@@ -322,6 +322,8 @@ Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
 
 Expr$lst_unique <- function() .Call(wrap__Expr__lst_unique, self)
 
+Expr$lst_take <- function(index, null_on_oob) .Call(wrap__Expr__lst_take, self, index, null_on_oob)
+
 Expr$lst_get <- function(index) .Call(wrap__Expr__lst_get, self, index)
 
 Expr$lst_join <- function(separator) .Call(wrap__Expr__lst_join, self, separator)

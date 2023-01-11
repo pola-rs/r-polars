@@ -73,7 +73,7 @@ ExprArr_min      = function() .pr$Expr$lst_min(self)
 ExprArr_mean     = function() .pr$Expr$lst_mean(self)
 
 #' Get list
-#' @name arr_get
+#' @name arr_sort
 #' @description Get the value by index in the sublists.
 #' @param index numeric vector or Expr of length 1 or same length of Series.
 #' if length 1 pick same value from each sublist, if length as Series/column,
@@ -122,7 +122,7 @@ ExprArr_unique   = function() .pr$Expr$lst_unique(self)
 
 
 #' concat another list
-#' @name arr_get
+#' @name concat
 #' @description Concat the arrays in a Series dtype List in linear time.
 #' @param other Rlist, Expr or column of same tyoe as self.
 #'
@@ -173,6 +173,23 @@ ExprArr_get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = 
 #' df$select(pl$col("a")$arr[c(2,0,-1)])
 `[.ExprListNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
   x$get(idx)
+}
+
+
+#' take in sublists
+#' @name arr_take
+#' @description Get the take value of the sublists.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_take arr.take
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' idx = pl$Series(list(0:1,1L,1L))
+#' df$select(pl$col("a")$arr$take(99))
+ExprArr_take = function(index, null_on_oob = FALSE) {
+  expr = wrap_e(index, str_to_lit = FALSE)
+  .pr$Expr$lst_take(self, expr, null_on_oob)
 }
 
 #' First in sublists
