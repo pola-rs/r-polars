@@ -139,7 +139,7 @@ impl DataFrame {
     }
 
     fn dtypes(&self) -> List {
-        let iter = self.0.iter().map(|s| DataType(s.dtype().clone()));
+        let iter = self.0.iter().map(|s| RPolarsDataType(s.dtype().clone()));
         List::from_values(iter)
     }
 

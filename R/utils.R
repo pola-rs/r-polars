@@ -328,7 +328,7 @@ construct_DataTypeVector = function(l) {
   dtv = rpolars:::DataTypeVector$new()
 
   for (i  in seq_along(l)) {
-    if(inherits(l[[i]],"DataType")) {
+    if(inherits(l[[i]],"RPolarsDataType")) {
       dtv$push(names(l)[i],l[[i]])
       next
     }

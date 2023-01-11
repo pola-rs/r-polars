@@ -92,11 +92,14 @@ pub fn rlazy_csv_reader(
         offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
     });
 
+    //TODO expose new ignore_errors bahavior
+    let _ = ignore_errors;
+
     let r = pl::LazyCsvReader::new(path)
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
         .with_delimiter(sep.as_bytes()[0])
         .has_header(has_header)
-        .with_ignore_parser_errors(ignore_errors)
+        //.with_ignore_parser_errors(ignore_errors) //TODO check why no longer a thing
         .with_skip_rows(skip_rows as usize)
         .with_n_rows(null_to_opt(n_rows).map(|x| x as usize))
         .with_cache(cache)

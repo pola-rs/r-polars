@@ -154,6 +154,7 @@ fn concat_series_tree(
             // boubble any errors
             let series_vec = series_vec_result?;
 
+            //TODO cast leafs type to any shared see polars_core::utils::get_supertype()
             // check for any type mismatch to avoid polars panics
             let mut s_iter = series_vec.iter();
             let first_s = s_iter.next();

@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R. 
-Version: 0.3.1
+Version: 0.4.0
 Depends: R (>= 4.1.0)
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
@@ -21,6 +21,7 @@ Suggests:
 Remotes: apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
+    'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
     'csv.R'
@@ -40,5 +41,4 @@ Collate:
     'rlang.R'
     'series__series.R'
     'translation.R'
-    'utils.R'
     'zzz.R'

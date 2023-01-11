@@ -324,6 +324,8 @@ Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
 
 Expr$lst_unique <- function() .Call(wrap__Expr__lst_unique, self)
 
+Expr$lst_take <- function(index, null_on_oob) .Call(wrap__Expr__lst_take, self, index, null_on_oob)
+
 Expr$lst_get <- function(index) .Call(wrap__Expr__lst_get, self, index)
 
 Expr$lst_join <- function(separator) .Call(wrap__Expr__lst_join, self, separator)
@@ -339,6 +341,8 @@ Expr$lst_shift <- function(periods) .Call(wrap__Expr__lst_shift, self, periods)
 Expr$lst_slice <- function(offset, length) .Call(wrap__Expr__lst_slice, self, offset, length)
 
 Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr, parallel)
+
+Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
@@ -574,33 +578,33 @@ RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj
 #' @export
 `[[.RNullValues` <- `$.RNullValues`
 
-DataType <- new.env(parent = emptyenv())
+RPolarsDataType <- new.env(parent = emptyenv())
 
-DataType$new <- function(s) .Call(wrap__DataType__new, s)
+RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
-DataType$new_datetime <- function() .Call(wrap__DataType__new_datetime)
+RPolarsDataType$new_datetime <- function() .Call(wrap__RPolarsDataType__new_datetime)
 
-DataType$new_duration <- function() .Call(wrap__DataType__new_duration)
+RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
 
-DataType$new_list <- function(inner) .Call(wrap__DataType__new_list, inner)
+RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
 
-DataType$new_object <- function() .Call(wrap__DataType__new_object)
+RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
 
-DataType$new_struct <- function() .Call(wrap__DataType__new_struct)
+RPolarsDataType$new_struct <- function() .Call(wrap__RPolarsDataType__new_struct)
 
-DataType$get_all_simple_type_names <- function() .Call(wrap__DataType__get_all_simple_type_names)
+RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
 
-DataType$print <- function() invisible(.Call(wrap__DataType__print, self))
+RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
 
-DataType$eq <- function(other) .Call(wrap__DataType__eq, self, other)
+RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
 
-DataType$ne <- function(other) .Call(wrap__DataType__ne, self, other)
-
-#' @export
-`$.DataType` <- function (self, name) { func <- DataType[[name]]; environment(func) <- environment(); func }
+RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
 
 #' @export
-`[[.DataType` <- `$.DataType`
+`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataType` <- `$.RPolarsDataType`
 
 DataTypeVector <- new.env(parent = emptyenv())
 

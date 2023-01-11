@@ -3,7 +3,7 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-use crate::rdatatype::{DataType, DataTypeVector};
+use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
@@ -20,6 +20,7 @@ use std::ops::{Add, Div, Mul, Sub};
 use pl::PolarsError as pl_error;
 use polars::error::ErrString as pl_err_string;
 
+pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 #[extendr]
 pub struct Expr(pub pl::Expr);
@@ -194,7 +195,7 @@ impl Expr {
             .into()
     }
 
-    pub fn cast(&self, data_type: &DataType, strict: bool) -> Self {
+    pub fn cast(&self, data_type: &RPolarsDataType, strict: bool) -> Self {
         let dt = data_type.0.clone();
         if strict {
             self.0.clone().strict_cast(dt)
@@ -204,12 +205,14 @@ impl Expr {
         .into()
     }
 
+    //TODO expoes multithreded arg
     pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
         self.clone()
             .0
             .sort_with(SortOptions {
                 descending,
                 nulls_last,
+                multithreaded: false,
             })
             .into()
     }
@@ -220,6 +223,7 @@ impl Expr {
             .arg_sort(SortOptions {
                 descending,
                 nulls_last,
+                multithreaded: false,
             })
             .into()
     }
@@ -235,8 +239,13 @@ impl Expr {
         self.clone().0.arg_min().into()
     }
 
+    //TODO expose searchSorted side options
     pub fn search_sorted(&self, element: &Expr) -> Self {
-        self.0.clone().search_sorted(element.0.clone()).into()
+        use pl::SearchSortedSide as Side;
+        self.0
+            .clone()
+            .search_sorted(element.0.clone(), Side::Any)
+            .into()
     }
 
     pub fn take(&self, idx: &Expr) -> Self {
@@ -1014,6 +1023,14 @@ impl Expr {
         self.0.clone().arr().unique().with_fmt("arr.unique").into()
     }
 
+    fn lst_take(&self, index: &Expr, null_on_oob: bool) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .take(index.0.clone(), null_on_oob)
+            .into()
+    }
+
     fn lst_get(&self, index: &Expr) -> Self {
         self.0.clone().arr().get(index.clone().0).into()
     }
@@ -1060,6 +1077,38 @@ impl Expr {
     fn lst_eval(&self, expr: &Expr, parallel: bool) -> Self {
         use pl::*;
         self.0.clone().arr().eval(expr.0.clone(), parallel).into()
+    }
+
+    fn lst_to_struct(&self, width_strat: &str, name_gen: Nullable<Robj>, upper_bound: f64) -> List {
+        use crate::rdatatype::new_width_strategy;
+        use crate::utils::extendr_concurrent::ParRObj;
+        use pl::NamedFrom;
+        // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
+        // here a usize is wrapped in Series
+        let name_gen = if let Some(robj) = null_to_opt(name_gen) {
+            let probj: ParRObj = robj.clone().into();
+            let x = Some(pl::Arc::new(move |idx: usize| {
+                let thread_com = ThreadCom::from_global(&CONFIG);
+                let s = pl::Series::new("", &[idx as u64]);
+                thread_com.send((probj.clone(), s));
+                let s = thread_com.recv();
+                s.0.name().to_string()
+            }) as NameGenerator);
+            x
+        } else {
+            None
+        };
+
+        //resolve usize from f64 and stategy from str
+        let res = || -> std::result::Result<Expr, String> {
+            let ub = try_f64_into_usize(upper_bound, false)?;
+            let strat = new_width_strategy(width_strat)?;
+            Ok(Expr(self.0.clone().arr().to_struct(strat, name_gen, ub)))
+        }();
+
+        let res = res.map_err(|err| format!("in to_struct: {}", err));
+
+        r_result_list(res)
     }
 
     //end list/arr methods
@@ -1281,7 +1330,12 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(&self, lambda: Robj, output_type: Nullable<&DataType>, agg_list: bool) -> Self {
+    pub fn map(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+        agg_list: bool,
+    ) -> Self {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler

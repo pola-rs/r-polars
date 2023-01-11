@@ -58,7 +58,7 @@ Expr_print = function() {
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
   if(inherits(e,"Expr")) return(e)
-  if(str_to_lit || is.numeric(e)) {
+  if(str_to_lit || is.numeric(e) || is.list(e)) {
     pl$lit(e)
   } else {
     pl$col(e)
@@ -821,9 +821,9 @@ Expr_exclude  = function(columns) {
   #handle lists
   if(is.list(columns)) {
     columns = pcase(
-      all(sapply(columns,inherits,"DataType")), unwrap(.pr$DataTypeVector$from_rlist(columns)),
+      all(sapply(columns,inherits,"RPolarsDataType")), unwrap(.pr$DataTypeVector$from_rlist(columns)),
       all(sapply(columns,is_string)), unlist(columns),
-      or_else = pstop(err=  paste0("only lists of pure DataType or String"))
+      or_else = pstop(err=  paste0("only lists of pure RPolarsDataType or String"))
     )
   }
 
@@ -831,7 +831,7 @@ Expr_exclude  = function(columns) {
   pcase(
     is.character(columns), .pr$Expr$exclude(self, columns),
     inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self,columns),
-    inherits(columns, "DataType"), .pr$Expr$exclude_dtype(self,unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
+    inherits(columns, "RPolarsDataType"), .pr$Expr$exclude_dtype(self,unwrap(.pr$DataTypeVector$from_rlist(list(columns)))),
     or_else = pstop(err=  paste0("this type is not supported for Expr_exclude: ", columns))
   )
 
