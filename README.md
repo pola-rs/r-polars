@@ -1,5 +1,5 @@
 
-# rpolars
+#
 
 
 Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
@@ -36,15 +36,13 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  I'd freaking love any contributions <3 Just reach out if any questions.
 ### Simple contribution example to implement the cosine expression:
 
-## NB! these examples link to old repo rpolars/rpolars source code, but the idea is the same
-
  - Look up the [polars.Expr.cos method in py-polars documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
- - Press the `[source]` button to see the [python impl](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/polars/internals/expr/expr.py#L5215-L5237)
- - Find the cos [py-polars rust implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L395) (likely just a simple call to the rust-polars api)
- - Adapt the rust part and place it [here](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/src/rust/src/rdataframe/rexpr.rs#L738).
- - Adapt the python part into R and place it [here](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/R/expr__expr.R#L3175). Add roxygen docs + examples above.
- - Notice `Expr_cos = "use_extendr_wrapper"`, it means we're this time just using unmodfied the [extendr auto-generated wrapper](https://github.com/rpolars/rpolars/blob/26799beeb42c7fc71a975afa0c47f6062c201625/R/extendr-wrappers.R#L251)
- - Write a test [here](https://github.com/rpolars/rpolars/blob/main/tests/testthat/test-expr.R).
+ - Press the `[source]` button to see the [python impl](https://github.com/pola-rs/polars/blob/master/py-polars/polars/internals/expr/expr.py#L5057-L5079)
+ - Find the cos [py-polars rust implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L418) (likely just a simple call to the rust-polars api)
+ - Adapt the rust part and place it [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/src/rust/src/rdataframe/rexpr.rs#L754).
+ - Adapt the python part into R and place it [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/expr__expr.R#L3138). Add roxygen docs + examples above.
+ - Notice `Expr_cos = "use_extendr_wrapper"`, it means we're this time just using unmodfied the [extendr auto-generated wrapper](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/extendr-wrappers.R#L253)
+ - Write a test [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/tests/testthat/test-expr.R#L1921).
  - Run renv::restore() and resolve all R packages
  - Run extendr::document() to recompile, see new method can be used e.g. like `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
  - Run devtools::test()
@@ -62,7 +60,6 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, rpolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/rpolars/blob/main/src/rpolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team <3.
 
  - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install rpolars from binary. See install section.
-
 
  - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Priliminary perfomance benchmarking promise rpolars is going to perform just as fast pypolars.
 
