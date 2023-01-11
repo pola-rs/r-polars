@@ -1023,6 +1023,14 @@ impl Expr {
         self.0.clone().arr().unique().with_fmt("arr.unique").into()
     }
 
+    fn lst_take(&self, index: &Expr, null_on_oob: bool) -> Self {
+        self.0
+            .clone()
+            .arr()
+            .take(index.0.clone(), null_on_oob)
+            .into()
+    }
+
     fn lst_get(&self, index: &Expr) -> Self {
         self.0.clone().arr().get(index.clone().0).into()
     }

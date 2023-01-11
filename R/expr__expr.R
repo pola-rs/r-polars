@@ -58,7 +58,7 @@ Expr_print = function() {
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
   if(inherits(e,"Expr")) return(e)
-  if(str_to_lit || is.numeric(e)) {
+  if(str_to_lit || is.numeric(e) || is.list(e)) {
     pl$lit(e)
   } else {
     pl$col(e)
