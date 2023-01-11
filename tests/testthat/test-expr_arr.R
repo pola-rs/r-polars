@@ -145,6 +145,26 @@ test_that("arr$get", {
 
 })
 
+test_that("take", {
+
+  l = list(1:3,1:2,1:1)
+  l_roundtrip = pl$lit(l)$arr$take(lapply(l,"-",1L))$to_r()
+  expect_identical(l_roundtrip,l)
+
+
+  l = list(1:3,4:5,6L)
+  expect_identical(
+    pl$lit(l)$arr$take(list(c(0:3),0L,0L),TRUE)$to_r(),
+
+    #TODO replace answer when bug in poalrs is corrected
+    list(c(1L, 2L, 3L, 1L), 4L, 6L)# list(c(NA,3:1),2L,1L)
+  )
+
+
+
+
+})
+
 test_that("first last head tail", {
 
   l = list(
@@ -383,6 +403,43 @@ test_that("concat", {
 })
 
 
+
+test_that("to_struct",{
+  l = list(integer(), 1:2, 1:3, 1:2)
+  df = pl$DataFrame(list(a = l))
+  act_1 = df$select(pl$col("a")$arr$to_struct(
+    n_field_strategy = "first_non_null",
+    name_generator =  \(idx) paste0("hello_you_",idx))
+  )$to_list()
+
+  act_2 = df$select(pl$col("a")$arr$to_struct(
+    n_field_strategy = "max_width",
+    name_generator =  \(idx) paste0("hello_you_",idx))
+  )$to_list()
+
+
+  exp_1 = list(
+    a = list(
+      hello_you_0 = c(NA, 1L, 1L, 1L),
+      hello_you_1 = c(NA,2L, 2L, 2L)
+    )
+  )
+
+  exp_2 = list(
+    a = list(
+      hello_you_0 = c(NA, 1L, 1L, 1L),
+      hello_you_1 = c(NA, 2L, 2L, 2L),
+      hello_you_2 = c(NA, NA, 3L, NA)
+    )
+  )
+
+  expect_identical(act_1, exp_1)
+  expect_identical(act_2, exp_2)
+
+})
+
+
+
 test_that("eval", {
   df = pl$DataFrame(a = list(a = c(1,8,3), b = c(4,5,2)))
   l_act = df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
@@ -397,3 +454,5 @@ test_that("eval", {
     )
   )
 })
+
+

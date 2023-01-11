@@ -2345,38 +2345,3 @@ test_that("concat_list", {
   )
 
 })
-
-
-test_that("to_struct",{
-  l = list(integer(), 1:2, 1:3, 1:2)
-  df = pl$DataFrame(list(a = l))
-  act_1 = df$select(pl$col("a")$arr$to_struct(
-    n_field_strategy = "first_non_null",
-    name_generator =  \(idx) paste0("hello_you_",idx))
-    )$to_list()
-
-  act_2 = df$select(pl$col("a")$arr$to_struct(
-    n_field_strategy = "max_width",
-    name_generator =  \(idx) paste0("hello_you_",idx))
-  )$to_list()
-
-
-  exp_1 = list(
-    a = list(
-      hello_you_0 = c(NA, 1L, 1L, 1L),
-      hello_you_1 = c(NA,2L, 2L, 2L)
-    )
-  )
-
-  exp_2 = list(
-    a = list(
-      hello_you_0 = c(NA, 1L, 1L, 1L),
-      hello_you_1 = c(NA, 2L, 2L, 2L),
-      hello_you_2 = c(NA, NA, 3L, NA)
-    )
-  )
-
-  expect_identical(act_1, exp_1)
-  expect_identical(act_2, exp_2)
-
-})
