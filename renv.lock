@@ -600,9 +600,9 @@
       "RemoteRepo": "arrow-nanoarrow",
       "RemoteUsername": "apache",
       "RemoteRef": "HEAD",
-      "RemoteSha": "848ffc5d3f99dabbc3fdb225d42be6d47e7c5402",
+      "RemoteSha": "da7b5ecc108848e538a2b2592315d0fcf0b12786",
       "RemoteSubdir": "r",
-      "Hash": "5b6efb2a9afa71933fa9d32f9c7c7b96",
+      "Hash": "20286c6fa6568810c7b7fb89ead643a9",
       "Requirements": []
     },
     "openssl": {
