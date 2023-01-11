@@ -353,7 +353,6 @@ Series_to_r_list = \() {
 #' Take absolute value of Series
 #'
 #' @return Series
-#' @export
 #' @keywords Series
 #' @aliases abs
 #' @name Series_abs
@@ -372,7 +371,6 @@ Series_abs  = function() {
 #' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
 #'
 #' @return DataFrame
-#' @export
 #' @keywords Series
 #' @aliases value_counts
 #' @name Series_value_count
@@ -932,3 +930,101 @@ Series_is_numeric = function() {
   in_DataType(self$dtype,pl$numeric_dtypes)
 }
 
+
+#' arr: list related methods on Series of dtype List
+#' @description
+#' Create an object namespace of all list related methods.
+#' See the individual method pages for full details
+#' @keywords Series
+#' @return Expr
+#' @aliases Series_arr
+#' @examples
+#' s = pl$Series(list(1:3,1:2,NULL))
+#' s
+#' s$arr$first()
+Series_arr = method_as_property(function() {
+
+  df = pl$DataFrame(self)
+  arr = make_expr_arr_namespace(pl$col(self$name))
+  lapply(arr, \(f) {
+     \(...) df$select(f(...))
+  })
+
+})
+
+#' Any expr method on a Series
+#' @description
+#' Call an expression on a Series
+#' See the individual Expr method pages for full details
+#'
+#' @details
+#' This is a shorthand of writing  something like
+#' `pl$DataFrame(s)$select(pl$col("sname")$expr)$to_series(0)`
+#'
+#' This subnamespace is experimental. Submit an issue if anything
+#' unexpected happend.
+#'
+#' @keywords Series
+#' @return Expr
+#' @aliases Series_expr
+#' @examples
+#' s = pl$Series(list(1:3,1:2,NULL))
+#' s$expr$first()
+#' s$expr$alias("alice")
+Series_expr = method_as_property(function() {
+
+  df = pl$DataFrame(self) #make a DataFrame from Series
+  self = pl$col(self$name) # override self to column named by series
+
+  #loop over each expression function
+  lapply(
+    rpolars:::Expr,
+    \(f) { #f is orignial Expr method
+
+      #point back to env with above defined 'df' and 'self'
+      environment(f) = parent.frame(2L)
+
+      #make a modified Expr function
+      new_f = \() {
+
+        #get the future args the new function will be called with
+        #not using ... as this will erase tooltips and defaults
+        #instead using sys.call/do.call
+        scall = as.list(sys.call()[-1])
+
+        x =  do.call(f,scall)
+        pcase(
+          inherits(x,"Expr"),  df$select(x)$to_series(0),
+          or_else = x
+        )
+
+      }
+
+      #set new_f to have the same formals arguments
+      formals(new_f) = formals(f)
+      class(new_f) = c("SeriesExpr","function") #
+      new_f
+    }
+  )
+})
+
+
+#' Series to Literal
+#' @description
+#' convert Series to literal to perform modification and return
+#' @keywords Series
+#' @return Expr
+#' @aliases to_lit
+#' @examples
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'     $arr$lengths()
+#'     $sum()
+#'     $cast(pl$dtypes$Int8)
+#'   $lit_to_s()
+#' )
+Series_to_lit = function() {
+  pl$lit(self)
+}
