@@ -72,6 +72,26 @@ ExprArr_min      = function() .pr$Expr$lst_min(self)
 #' df$select(pl$col("values")$arr$mean())
 ExprArr_mean     = function() .pr$Expr$lst_mean(self)
 
+#' Get list
+#' @name arr_sort
+#' @description Get the value by index in the sublists.
+#' @param index numeric vector or Expr of length 1 or same length of Series.
+#' if length 1 pick same value from each sublist, if length as Series/column,
+#' pick by individual index across sublists.
+#'
+#' So index `0` would return the first item of every sublist
+#' and index `-1` would return the last item of every sublist
+#' if an index is out of bounds, it will return a `None`.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_get arr.get
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' df$select(pl$col("a")$arr$get(0))
+#' df$select(pl$col("a")$arr$get(c(2,0,-1)))
+ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
+
 #' Reverse list
 #' @name arr_reverse
 #' @description
@@ -101,29 +121,8 @@ ExprArr_reverse  = function() .pr$Expr$lst_reverse(self)
 ExprArr_unique   = function() .pr$Expr$lst_unique(self)
 
 
-#' Get list
-#' @name arr_get
-#' @description Get the value by index in the sublists.
-#' @param index numeric vector or Expr of length 1 or same length of Series.
-#' if length 1 pick same value from each sublist, if length as Series/column,
-#' pick by individual index across sublists.
-#'
-#' So index `0` would return the first item of every sublist
-#' and index `-1` would return the last item of every sublist
-#' if an index is out of bounds, it will return a `None`.
-#' @keywords ExprArr
-#' @format function
-#' @return Expr
-#' @aliases arr_get arr.get
-#' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
-#' df$select(pl$col("a")$arr$get(0))
-#' df$select(pl$col("a")$arr$get(c(2,0,-1)))
-ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
-
-
 #' concat another list
-#' @name arr_get
+#' @name concat
 #' @description Concat the arrays in a Series dtype List in linear time.
 #' @param other Rlist, Expr or column of same tyoe as self.
 #'
@@ -174,6 +173,23 @@ ExprArr_get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = 
 #' df$select(pl$col("a")$arr[c(2,0,-1)])
 `[.ExprListNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
   x$get(idx)
+}
+
+
+#' take in sublists
+#' @name arr_take
+#' @description Get the take value of the sublists.
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_take arr.take
+#' @examples
+#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+#' idx = pl$Series(list(0:1,1L,1L))
+#' df$select(pl$col("a")$arr$take(99))
+ExprArr_take = function(index, null_on_oob = FALSE) {
+  expr = wrap_e(index, str_to_lit = FALSE)
+  .pr$Expr$lst_take(self, expr, null_on_oob)
 }
 
 #' First in sublists
@@ -342,6 +358,62 @@ ExprArr_tail = function(n = 5L) {
 }
 
 
+
+#TODO update rust-polars, this function has likely changed behavior as upper_bound is
+# no longer needed
+
+#' List to Struct
+#'
+#' @param n_field_strategy Strategy to determine the number of fields of the struct.
+#'  default = 'first_non_null' else 'max_width'
+#' @param name_generator an R function that takes a scalar column number
+#' and outputs a string value. The default NULL is equivalent to the R function
+#' `\(idx) paste0("field_",idx)`
+#' @param upper_bound upper_bound numeric
+#' A polars `LazyFrame` needs to know the schema at all time.
+#' The caller therefore must provide an `upper_bound` of
+#' struct fields that will be set.
+#' If this is incorrectly downstream operation may fail.
+#' For instance an `all().sum()` expression will look in
+#' the current schema to determine which columns to select.
+#' It is adviced to set this value in a lazy query.
+#'
+#' @name arr_to_struct
+#' @keywords ExprArr
+#' @format function
+#' @return Expr
+#' @aliases arr_to_struct arr.to_struct
+#' @examples
+#' df = pl$DataFrame(list(a = list(1:3, 1:2)))
+#' df2 = df$select(pl$col("a")$arr$to_struct(
+#'   name_generator =  \(idx) paste0("hello_you_",idx))
+#'   )
+#' df2$unnest()
+#'
+#' df2$to_list()
+ExprArr_to_struct = function(
+    n_field_strategy = 'first_non_null', name_generator = NULL, upper_bound = 0
+) {
+
+  #extendr_concurrent now only supports series communication, wrap out of series
+  #wrapped into series on rust side
+  if(!is.null(name_generator))  {
+    if(!is.function(name_generator)) {
+      stopf("name_generator must be an R function")
+    }
+    name_generator_wrapped = \(s) {
+      .pr$Series$rename_mut(s,name_generator(s$to_r())[1])
+      s
+    }
+  } else {
+    name_generator_wrapped = NULL
+  }
+
+  unwrap(.pr$Expr$lst_to_struct(
+    self, n_field_strategy, name_generator_wrapped, upper_bound
+  ))
+}
+
 #' eval sublists (kinda like lapply)
 #' @name arr_eval
 #' @description Run any polars expression against the lists' elements.
@@ -364,3 +436,5 @@ ExprArr_tail = function(n = 5L) {
 ExprArr_eval = function(expr, parallel = FALSE) {
   .pr$Expr$lst_eval(self, expr, parallel)
 }
+
+

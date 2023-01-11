@@ -322,6 +322,8 @@ Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
 
 Expr$lst_unique <- function() .Call(wrap__Expr__lst_unique, self)
 
+Expr$lst_take <- function(index, null_on_oob) .Call(wrap__Expr__lst_take, self, index, null_on_oob)
+
 Expr$lst_get <- function(index) .Call(wrap__Expr__lst_get, self, index)
 
 Expr$lst_join <- function(separator) .Call(wrap__Expr__lst_join, self, separator)
@@ -337,6 +339,8 @@ Expr$lst_shift <- function(periods) .Call(wrap__Expr__lst_shift, self, periods)
 Expr$lst_slice <- function(offset, length) .Call(wrap__Expr__lst_slice, self, offset, length)
 
 Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr, parallel)
+
+Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
