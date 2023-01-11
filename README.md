@@ -29,7 +29,7 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  
  
 # Documentation:
-  [Latest docs found here](https://sorhawell.github.io/reference/index.html)
+  [Latest docs found here](https://rpolars.github.io/reference/index.html)
   
 
 # Contribute
