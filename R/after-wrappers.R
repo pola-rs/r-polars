@@ -35,7 +35,7 @@ extendr_method_to_pure_functions = function(env) {
 .pr$GroupBy    = NULL # derived from DataFrame in R, has no  rust calls
 .pr$LazyFrame  = extendr_method_to_pure_functions(rpolars:::LazyFrame)
 .pr$LazyGroupBy= extendr_method_to_pure_functions(rpolars:::LazyGroupBy)
-.pr$DataType   = extendr_method_to_pure_functions(rpolars:::DataType)
+.pr$DataType   = extendr_method_to_pure_functions(rpolars:::RPolarsDataType)
 .pr$DataTypeVector = extendr_method_to_pure_functions(rpolars:::DataTypeVector)
 .pr$Expr       = extendr_method_to_pure_functions(rpolars:::Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(rpolars:::ProtoExprArray)
@@ -51,7 +51,7 @@ extendr_method_to_pure_functions = function(env) {
 ##this macro must be defined now
 
 #' @title add syntax verification to class
-#'
+#' @include utils.R
 #' @param Class_name string name of env class
 #'
 #' @return dollarsign method with syntax verification
@@ -136,6 +136,9 @@ method_as_property = function(f, setter=FALSE) {
 #' #all accessible classes and their public methods
 #' rpolars:::print_env(rpolars:::pl_pub_class_env,"rpolars public class methods, access via object$method()")
 pl = new.env(parent=emptyenv())
+
+#remap
+DataType = clone_env_one_level_deep(RPolarsDataType)
 
 #used for printing public environment
 pl_class_names = sort(c("LazyFrame","Series","LazyGroupBy","DataType","Expr","DataFrame"))  #TODO discover all public class automatic

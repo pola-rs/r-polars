@@ -7,7 +7,7 @@ use crate::apply_input;
 use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
-use crate::rdatatype::DataType;
+use crate::rdatatype::RPolarsDataType;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
 
 use super::DataFrame;
@@ -89,8 +89,8 @@ impl Series {
 
     //skip arr, cat, dt namespace methods
 
-    pub fn dtype(&self) -> DataType {
-        DataType(self.0.dtype().clone())
+    pub fn dtype(&self) -> RPolarsDataType {
+        RPolarsDataType(self.0.dtype().clone())
     }
 
     //wait inner_dtype until list supported
@@ -284,7 +284,7 @@ impl Series {
     pub fn apply(
         &self,
         robj: Robj,
-        rdatatype: Nullable<&DataType>,
+        rdatatype: Nullable<&RPolarsDataType>,
         strict: bool,
         allow_fail_eval: bool,
     ) -> list::List {

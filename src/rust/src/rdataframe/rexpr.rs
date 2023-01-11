@@ -3,7 +3,7 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-use crate::rdatatype::{DataType, DataTypeVector};
+use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
@@ -194,7 +194,7 @@ impl Expr {
             .into()
     }
 
-    pub fn cast(&self, data_type: &DataType, strict: bool) -> Self {
+    pub fn cast(&self, data_type: &RPolarsDataType, strict: bool) -> Self {
         let dt = data_type.0.clone();
         if strict {
             self.0.clone().strict_cast(dt)
@@ -1281,7 +1281,12 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(&self, lambda: Robj, output_type: Nullable<&DataType>, agg_list: bool) -> Self {
+    pub fn map(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+        agg_list: bool,
+    ) -> Self {
         use crate::utils::wrappers::null_to_opt;
 
         //find a way not to push lambda everytime to main thread handler

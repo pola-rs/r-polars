@@ -31,16 +31,16 @@ NULL
 #'
 #' @examples
 #' pl$dtypes$Boolean #implicit print
-print.DataType = function(x) {
-  cat("polars DataType: ")
+print.RPolarsDataType = function(x) {
+  cat("RPolarsDataType: ")
   x$print()
   invisible(x)
 }
 
 #' @export
-"==.DataType" <- function(e1,e2) e1$eq(e2)
+"==.RPolarsDataType" <- function(e1,e2) e1$eq(e2)
 #' @export
-"!=.DataType" <- function(e1,e2) e1$ne(e2)
+"!=.RPolarsDataType" <- function(e1,e2) e1$ne(e2)
 
 #create any flag-like DataType
 DataType_new = function(str) {
@@ -60,7 +60,7 @@ DataType_constructors = list(
     if(is.character(datatype) && length(datatype)==1 ) {
       datatype = .pr$DataType$new(datatype)
     }
-    if(!inherits(datatype,"DataType")) {
+    if(!inherits(datatype,"RPolarsDataType")) {
       stopf(paste(
         "input for generating a list DataType must be another DataType",
         "or an interpretable name thereof."

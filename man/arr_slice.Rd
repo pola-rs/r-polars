@@ -2,14 +2,10 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_slice}
 \alias{arr_slice}
-\alias{ExprArr_slice}
 \alias{arr.slice}
 \title{Slice sublists}
 \format{
 function
-}
-\usage{
-ExprArr_slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{value or Expr.  Start index. Negative indexing is supported.}

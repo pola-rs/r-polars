@@ -4,7 +4,6 @@ use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
-use polars::prelude::PolarsError;
 
 use crate::concurrent::handle_thread_r_requests;
 use polars::prelude as pl;
