@@ -78,10 +78,13 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' pl$lit(5) + 10
 #' pl$lit(5) + pl$lit(10)
 #' pl$lit(5)$add(pl$lit(10))
-Expr_add = "use_extendr_wrapper"
+#' +pl$lit(5) #unary use resolves to same as pl$lit(5)
+Expr_add = function(other) {
+  .pr$Expr$add(self, wrap_e(other))
+}
 #' @export
 #' @rdname Expr_add
-"+.Expr" <- function(e1,e2) e1$add(wrap_e(e2))
+"+.Expr" <- function(e1,e2) if(missing(e2)) e1 else e1$add(e2)
 
 #' Div
 #' @description Divide
@@ -93,10 +96,12 @@ Expr_add = "use_extendr_wrapper"
 #' pl$lit(5) / 10
 #' pl$lit(5) / pl$lit(10)
 #' pl$lit(5)$div(pl$lit(10))
-Expr_div = "use_extendr_wrapper"
+Expr_div = function(other) {
+  .pr$Expr$div(self, wrap_e(other))
+}
 #' @export
 #' @rdname Expr_div
-"/.Expr" <- function(e1,e2) e1$div(wrap_e(e2))
+"/.Expr" <- function(e1,e2) e1$div(e2)
 
 #' Sub
 #' @description Substract
@@ -108,10 +113,13 @@ Expr_div = "use_extendr_wrapper"
 #' pl$lit(5) - 10
 #' pl$lit(5) - pl$lit(10)
 #' pl$lit(5)$sub(pl$lit(10))
-Expr_sub = "use_extendr_wrapper"
+#' -pl$lit(5)
+Expr_sub = function(other) {
+  .pr$Expr$sub(self, wrap_e(other))
+}
 #' @export
 #' @rdname Expr_sub
-"-.Expr" <- function(e1,e2) if(missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(wrap_e(e2))
+"-.Expr" <- function(e1,e2) if(missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
 
 #' Mul *
 #' @description Multiplication
@@ -123,10 +131,13 @@ Expr_sub = "use_extendr_wrapper"
 #' pl$lit(5) * 10
 #' pl$lit(5) * pl$lit(10)
 #' pl$lit(5)$mul(pl$lit(10))
-Expr_mul = "use_extendr_wrapper"
+Expr_mul = Expr_mul = function(other) {
+  .pr$Expr$mul(self, wrap_e(other))
+}
+
 #' @export
 #' @rdname Expr_mul
-"*.Expr" <- function(e1,e2) e1$mul(wrap_e(e2))
+"*.Expr" <- function(e1,e2) e1$mul(e2)
 
 
 #' Not !
@@ -153,12 +164,14 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5) < 10
 #' pl$lit(5) < pl$lit(10)
 #' pl$lit(5)$lt(pl$lit(10))
-Expr_lt = "use_extendr_wrapper"
+Expr_lt = function(other) {
+  .pr$Expr$lt(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_lt
-"<.Expr" <- function(e1,e2) e1$lt(wrap_e(e2))
+"<.Expr" <- function(e1,e2) e1$lt(e2)
 
 #' GreaterThan <
 #' @description gt method and operator
@@ -170,12 +183,14 @@ Expr_lt = "use_extendr_wrapper"
 #' pl$lit(2) > 1
 #' pl$lit(2) > pl$lit(1)
 #' pl$lit(2)$gt(pl$lit(1))
-Expr_gt = "use_extendr_wrapper"
+Expr_gt = function(other) {
+  .pr$Expr$gt(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_gt
-">.Expr" <- function(e1,e2) e1$gt(wrap_e(e2))
+">.Expr" <- function(e1,e2) e1$gt(e2)
 
 #' Equal ==
 #' @description eq method and operator
@@ -187,12 +202,14 @@ Expr_gt = "use_extendr_wrapper"
 #' pl$lit(2) == 2
 #' pl$lit(2) ==  pl$lit(2)
 #' pl$lit(2)$eq(pl$lit(2))
-Expr_eq = "use_extendr_wrapper"
+Expr_eq = function(other) {
+  .pr$Expr$eq(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_eq
-"==.Expr" <- function(e1,e2) e1$eq(wrap_e(e2))
+"==.Expr" <- function(e1,e2) e1$eq(e2)
 
 
 #' Not Equal !=
@@ -205,12 +222,14 @@ Expr_eq = "use_extendr_wrapper"
 #' pl$lit(1) != 2
 #' pl$lit(1) !=  pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
-Expr_neq = "use_extendr_wrapper"
+Expr_neq = function(other) {
+  .pr$Expr$neq(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_neq
-"!=.Expr" <- function(e1,e2) e1$neq(wrap_e(e2))
+"!=.Expr" <- function(e1,e2) e1$neq(e2)
 
 #' Less Than Or Equal <=
 #' @description lt_eq method and operator
@@ -222,12 +241,14 @@ Expr_neq = "use_extendr_wrapper"
 #' pl$lit(2) <= 2
 #' pl$lit(2) <=  pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
-Expr_lt_eq = "use_extendr_wrapper"
+Expr_lt_eq = function(other) {
+  .pr$Expr$lt_eq(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_lt_eq
-"<=.Expr" <- function(e1,e2) e1$lt_eq(wrap_e(e2))
+"<=.Expr" <- function(e1,e2) e1$lt_eq(e2)
 
 
 #' Greater Than Or Equal <=
@@ -240,12 +261,14 @@ Expr_lt_eq = "use_extendr_wrapper"
 #' pl$lit(2) >= 2
 #' pl$lit(2) >=  pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
-Expr_gt_eq = "use_extendr_wrapper"
+Expr_gt_eq = function(other) {
+  .pr$Expr$gt_eq(self, wrap_e(other))
+}
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @rdname Expr_gt_eq
-">=.Expr" <- function(e1,e2) e1$gt_eq(wrap_e(e2))
+">=.Expr" <- function(e1,e2) e1$gt_eq(e2)
 
 
 
