@@ -19,7 +19,51 @@ use rexpr::*;
 pub use rseries::*;
 use series_to_r::pl_series_to_list;
 
+use polars_core::utils::arrow;
+use polars::prelude::ArrowField;
+use arrow::datatypes::DataType;
+
 use crate::utils::r_result_list;
+
+pub struct OwnedDataFrameIterator {
+    columns: Vec<polars::series::Series>,
+    data_type: arrow::datatypes::DataType,
+    idx: usize,
+    n_chunks: usize,
+}
+
+impl OwnedDataFrameIterator {
+    fn new(df: polars::frame::DataFrame ) -> Self {
+        let schema = df.schema().to_arrow();
+        let data_type = DataType::Struct(schema.fields);
+
+        Self {
+            columns: df.get_columns().clone(),
+            data_type,
+            idx: 0,
+            n_chunks: df.n_chunks()
+        }
+    }
+}
+
+impl Iterator for OwnedDataFrameIterator {
+    type Item = Result<Box<dyn arrow::array::Array>, arrow::error::Error>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx >= self.n_chunks {
+            None
+        } else {
+            // create a batch of the columns with the same chunk no.
+            let batch_cols = self.columns.iter().map(|s| s.to_arrow(self.idx)).collect();
+            self.idx += 1;
+
+            let chunk = polars::frame::ArrowChunk::new(batch_cols);
+            let array = arrow::array::StructArray::new(self.data_type.clone(), chunk.into_arrays(), std::option::Option::None);
+            Some(std::result::Result::Ok(Box::new(array)))
+        }
+    }
+}
+
 
 #[extendr]
 #[derive(Debug, Clone)]
@@ -203,6 +247,20 @@ impl DataFrame {
         };
 
         r_result_list(self.0.unnest(names).map(|s| DataFrame(s)))
+    }
+
+    pub fn export_stream(&self, stream_ptr: &str) {
+        let schema = self.0.schema().to_arrow();
+        let data_type = DataType::Struct(schema.fields);
+        let field = ArrowField::new("", data_type.clone(), false);
+
+        let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
+        let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
+        let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
+        let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
+        unsafe {
+            std::ptr::swap_nonoverlapping(stream_out_ptr, &mut stream as *mut arrow::ffi::ArrowArrayStream, 1);
+        }
     }
 }
 use crate::utils::wrappers::null_to_opt;
