@@ -541,3 +541,32 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
   eval(parse(text=str))
 
 }
+
+
+
+#' expect grepl error
+#' @param expr an R expression to test
+#' @param expected_err a string pattern passed to grepl
+#' @details expr must raise an error and expected_err pattern must match
+#' against the error text with grepl()
+#' @return invisble NULL
+#'
+#' @examples
+#' #passes
+#' expect_grepl_error(stop("orange and carrot"),"carrot")
+#'
+#' #fails
+#' do_not_run {
+#' expect_grepl_error(stop("orange and carrot"),"big carrot")
+#'
+#' }
+#'
+expect_grepl_error = function(expr, expected_err = NULL) {
+  err = NULL
+  err = tryCatch(expr, error = function(e) {as.character(e)})
+  found = grepl(expected_err,err)[1]
+  if(!found) {
+    testthat::expect_identical(err, expected_err)
+  }
+  invisible(NULL)
+}
