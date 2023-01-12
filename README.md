@@ -84,24 +84,41 @@ from R and the reverse.
 
 
 
-# Build from source
+# Build manually from source for use (M1 arch also supported):
 
   Install rust + set buildchain to nightly + 3rd party dependencies.
   See installation workflows/pkgdown.yaml for Windows, Linux and Mac.
 
+ Setup system dependencies:
  - install rust with 'rustup', the cross-platform rust installer
  - `rustup toolchain install nightly` #install nightly
  - `rustup default nightly` #choose nightly
- - clone this repo
  - on Windows rtools42 must be in path
+ - install cmake and add to PATH
  
- With repo as root dir:
+ Build rpolars package for use:
+ `remotes::install_github("pola-rs/r-polars")`
  
- - `source("./renv/activate.R")` # (likely automatically triggered by .Rprofile)
+# Build to develop and contribute:
+
+ Build rpolars package for development:
+ Clone:
+ `git clone git@github.com:pola-rs/r-polars.git`
+ 
+ Optional step A: Manage suggested packages with renv
+ - set repo root as work dir
+ - `source("./renv/activate.R")` # renv is deactivated by default
  - `renv::restore()` #  to install and set up R packages
- - `rextendr::document()` # to compile rust code and quick build package
- -  or `R CMD INSTALL --no-multiarch --with-keep.source rpolars` to build final package
+ 
+ Optional step B: Typical workflow for development. (requires suggested R packages)
+ - `rextendr::document()` # to compile rust code + update wrappers and docs + quick build package
  - `devtools::test()` to run all unit tests.
+ - submit PR to rpolars (notice `./renv.lock` sets R packages on build server)
+ 
+ Optional step C: build final package (requires no R package dependencies)
+ - `R CMD INSTALL --no-multiarch --with-keep.source rpolars
+ 
+ 
 
 # rpolars_teaser
 ================
