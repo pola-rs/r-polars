@@ -248,7 +248,15 @@ Series_rem = function(other) {
 #' pl$Series(1:5) == pl$Series(c(1:3,NA_integer_,10L))
 Series_compare = function(other, op) {
   other_s = wrap_s(other)
-  if(self$len() != other_s$len()) stopf("Failed to compare two Series because of differing lengths.")
+  s_len = self$len()
+  o_len = other_s$len()
+  if(
+    s_len != o_len &&
+    o_len != 1 &&
+    s_len != 1
+  ) {
+    stopf("in compare Series: not same length or either of length 1.")
+  }
   .pr$Series$compare(self, wrap_s(other), op)
 }
 #' @export
