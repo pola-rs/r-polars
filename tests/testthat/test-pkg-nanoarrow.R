@@ -21,6 +21,7 @@ test_that("infer_nanoarrow_schema() works for DataFrame", {
 })
 
 test_that("as_record_batch_reader() works for DataFrame", {
+  skip_if_not_installed("nanoarrow")
   skip_if_not_installed("arrow")
 
   df = pl$DataFrame(a = 1L, b = "two")
@@ -35,6 +36,7 @@ test_that("as_record_batch_reader() works for DataFrame", {
 })
 
 test_that("as_arrow_table() works for DataFrame", {
+  skip_if_not_installed("nanoarrow")
   skip_if_not_installed("arrow")
 
   df = pl$DataFrame(a = 1L, b = "two")
