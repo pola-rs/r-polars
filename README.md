@@ -84,33 +84,30 @@ from R and the reverse.
 
 
 
-# Build manually from source for use (M1 arch also supported):
-
-  Install rust + set buildchain to nightly + 3rd party dependencies.
-  See installation workflows/pkgdown.yaml for Windows, Linux and Mac.
+## Build manually from source for use (M1 arch also supported):
 
  Setup system dependencies:
- - install rust with 'rustup', the cross-platform rust installer
+ - install 'rustup', the cross-platform rust installer
  - `rustup toolchain install nightly` #install nightly
  - `rustup default nightly` #choose nightly
- - on Windows rtools42 must be in path
+ - on Windows rtools42 must be in path, on mac Xcode is required.
  - install cmake and add to PATH
  
  Build rpolars package for use:
  `remotes::install_github("pola-rs/r-polars")`
  
-# Build to develop and contribute:
+## Build rpolars package for development:
 
- Build rpolars package for development:
  Clone:
- `git clone git@github.com:pola-rs/r-polars.git`
+ - `git clone git@github.com:pola-rs/r-polars.git`
+ - `cd r-polars`
  
  Optional step A: Manage suggested packages with renv
- - set repo root as work dir
  - `source("./renv/activate.R")` # renv is deactivated by default
  - `renv::restore()` #  to install and set up R packages
  
- Optional step B: Typical workflow for development. (requires suggested R packages)
+ Typical workflow for development. (requires suggested R packages)
+ - Make some changes to R or rust code.
  - `rextendr::document()` # to compile rust code + update wrappers and docs + quick build package
  - `devtools::test()` to run all unit tests.
  - submit PR to rpolars (notice `./renv.lock` sets R packages on build server)
