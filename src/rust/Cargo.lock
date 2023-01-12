@@ -1462,7 +1462,7 @@ dependencies = [
 [[package]]
 name = "polars"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "getrandom",
  "polars-core",
@@ -1476,7 +1476,7 @@ dependencies = [
 [[package]]
 name = "polars-arrow"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "arrow2",
  "hashbrown 0.13.1",
@@ -1488,7 +1488,7 @@ dependencies = [
 [[package]]
 name = "polars-core"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "ahash 0.8.1",
  "anyhow",
@@ -1520,7 +1520,7 @@ dependencies = [
 [[package]]
 name = "polars-io"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "ahash 0.8.1",
  "anyhow",
@@ -1549,7 +1549,7 @@ dependencies = [
 [[package]]
 name = "polars-lazy"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "ahash 0.8.1",
  "bitflags",
@@ -1568,7 +1568,7 @@ dependencies = [
 [[package]]
 name = "polars-ops"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "arrow2",
  "jsonpath_lib",
@@ -1583,7 +1583,7 @@ dependencies = [
 [[package]]
 name = "polars-pipe"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "enum_dispatch",
  "hashbrown 0.13.1",
@@ -1600,7 +1600,7 @@ dependencies = [
 [[package]]
 name = "polars-plan"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "ahash 0.8.1",
  "polars-arrow",
@@ -1617,7 +1617,7 @@ dependencies = [
 [[package]]
 name = "polars-time"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "chrono",
  "lexical",
@@ -1632,7 +1632,7 @@ dependencies = [
 [[package]]
 name = "polars-utils"
 version = "0.26.1"
-source = "git+https://github.com/pola-rs/polars.git?rev=30783b0476674b97fa92e8674e5e1ad52a9766b1#30783b0476674b97fa92e8674e5e1ad52a9766b1"
+source = "git+https://github.com/pola-rs/polars.git?rev=a7d38dda7342eb706703b993abed40187e0633f2#a7d38dda7342eb706703b993abed40187e0633f2"
 dependencies = [
  "rayon",
 ]
