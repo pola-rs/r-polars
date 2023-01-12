@@ -154,11 +154,13 @@ test_that("take", {
 
   l = list(1:3,4:5,6L)
   expect_identical(
-    pl$lit(l)$arr$take(list(c(0:3),0L,0L),TRUE)$to_r(),
-
-    #TODO replace answer when bug in poalrs is corrected
-    list(c(1L, 2L, 3L, 1L), 4L, 6L)# list(c(NA,3:1),2L,1L)
+    pl$lit(l)$arr$take(list(c(0:3),0L,0L), null_on_oob =TRUE)$to_r(),
+    list(c(1:3,NA),4L,6L)
   )
+
+
+  expected_err = "Take indices are out of bounds."
+  expect_grepl_error(pl$lit(l)$arr$take(list(c(0:3),0L,0L))$to_r(), expected_err)
 
 
 

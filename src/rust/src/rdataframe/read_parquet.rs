@@ -39,6 +39,7 @@ pub fn new_from_parquet(
         rechunk,
         row_count,
         low_memory,
+        cloud_options: None, //TODO implement cloud options
     };
 
     let lf_result = pl::LazyFrame::scan_parquet(path, args)
