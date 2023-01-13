@@ -354,6 +354,20 @@ impl RPolarsTimeUnit {
     }
 }
 
+//maybe deprecate RPolarsTimeUnit class and just this directly, as py-polars
+pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
+    match s {
+        "ns" => Ok(pl::TimeUnit::Nanoseconds),
+        "us" => Ok(pl::TimeUnit::Microseconds),
+        "ms" => Ok(pl::TimeUnit::Milliseconds),
+
+        _ => Err(format!(
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
+            s
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;

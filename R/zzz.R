@@ -102,8 +102,7 @@ pl$lazy_csv_reader = rpolars:::lazy_csv_reader
 pl$csv_reader = rpolars:::csv_reader
 pl$read_csv = rpolars:::read_csv_
 
-#functions
-pl$concat = rpolars:::concat
+
 
 
 

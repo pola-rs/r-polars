@@ -36,7 +36,7 @@
 #'
 #'#diagonal
 #'pl$concat(l_hor, how = "diagonal")
-concat = function(
+pl$concat = function(
     l, #list of DataFrames or Series or lazyFrames or expr
     rechunk = TRUE,
     how  = c("vertical","horizontal","diagnoal"),
@@ -74,5 +74,37 @@ concat = function(
   unwrap(result)
 }
 
+
+
+#' new date_range
+#'
+#' @param low string or
+#' @param high string or
+#' @param interval string parsed to duration like "1w" "1week" "2years" "10s"
+#' @param ... not used
+#' @param lazy  bool
+#' @param closed option one of 'both'(default), 'left', 'none' or 'right'
+#' @param name name of series
+#' @param time_unit option "ns" "us" "ms"
+#' @param time_zone
+#'
+#' @return a datetime
+#'
+#' @examples
+#' t_ms = unclass(as.POSIXct("2022-01-01",tz = "GMT",origin="GMT")) * 1000
+#' pl$date_range(t_ms,t_ms+7500, interval = "2s", time_unit = "ms", time_zone = "GMT")
+pl$date_range = function(
+    low,      #: date | datetime | pli.Expr | str,
+    high,     #: date | datetime | pli.Expr | str,
+    interval, #: str | timedelta,
+    ...,      #*,
+    lazy,     #: Literal[True],
+    closed    = "both",   #: ClosedInterval = "both",
+    name      = "",     #: str | None = None,
+    time_unit = "us",#: TimeUnit | None = None,
+    time_zone = NULL#: str | None = None
+) {
+  unwrap(rpolars:::r_date_range(low, high, interval, closed, name, time_unit, time_zone))
+}
 
 

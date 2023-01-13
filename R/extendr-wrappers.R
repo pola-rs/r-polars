@@ -33,6 +33,8 @@ mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
 
+r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
