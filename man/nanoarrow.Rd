@@ -12,17 +12,17 @@
 \alias{at}
 \alias{\link{https://github.com/apache/arrow-nanoarrow/r}}
 \alias{infer_nanoarrow_schema.DataFrame}
-\alias{as_record_batch_reader.DataFrame}
 \alias{as_arrow_table.DataFrame}
+\alias{as_record_batch_reader.DataFrame}
 \title{rpolars to nanoarrow and arrow}
 \usage{
-as_nanoarrow_array_stream(x, ..., schema = NULL)
+\method{as_nanoarrow_array_stream}{DataFrame}(x, ..., schema = NULL)
 
-infer_nanoarrow_schema(x, ...)
+\method{infer_nanoarrow_schema}{DataFrame}(x, ...)
 
-as_record_batch_reader(x, ..., schema = NULL)
+as_arrow_table.DataFrame(x, ...)
 
-as_arrow_table(x, ..., schema = NULL)
+as_record_batch_reader.DataFrame(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
@@ -32,13 +32,21 @@ as_arrow_table(x, ..., schema = NULL)
 \item{schema}{must stay at default value NULL}
 }
 \value{
-a nanoarrow array stream
+\itemize{
+\item a nanoarrow array stream
+}
 
-a nanoarrow array schema
+\itemize{
+\item a nanoarrow array schema
+}
 
-an arrow record batch reader
+\itemize{
+\item an arrow table
+}
 
-an arrow table
+\itemize{
+\item an arrow record batch reader
+}
 }
 \description{
 Conversion via native apache arrow array stream (fast), THIS REQUIRES ´nanoarrow´
@@ -47,23 +55,19 @@ Conversion via native apache arrow array stream (fast), THIS REQUIRES ´nanoarro
 The following functions enable conversion to \code{nanoarrow} and \code{arrow}.
 Conversion kindly provided by "paleolimbot / Dewey Dunnington" Author of \code{nanoarrow}.
 Currently these conversions are the fastest way to convert from polars to R.
-
-These conversion function are not exported/public are only accessible via \code{nanoarrow}
-e.g. \cr\cr
-\code{df = pl$DataFrame(iris)}\cr
-\code{nanoarrow::nanoarrow_allocate_array_stream(df)}\cr\cr
-or\cr\cr
-\code{library(nanoarrow)}\cr
-\code{nanoarrow_allocate_array_stream(df)}\cr
 }
 \examples{
 library(nanoarrow)
-library(rpolars)
-df = pl$DataFrame(iris)
+df = pl$DataFrame(mtcars)
 nanoarrow_array_stream = as_nanoarrow_array_stream(df)
 rdf = as.data.frame(nanoarrow_array_stream)
+print(head(rdf))
 nanoarrow_array_schema = infer_nanoarrow_schema(df)
-arrow_record_batch_reader = as_record_batch_reader(df)
+print(nanoarrow_array_schema)
+library(arrow)
 arrow_table = as_arrow_table(df)
+print(arrow_table)
+arrow_record_batch_reader = as_record_batch_reader(df) #requires arrow
+print(arrow_record_batch_reader)
 }
 \keyword{nanoarrow_interface}
