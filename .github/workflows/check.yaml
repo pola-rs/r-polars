@@ -31,6 +31,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Fix path for Windows caching
+        if: runner.os == 'Windows'
+        shell: bash
+        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+
+      - name: cache rpolars rust targets
+        id: cache-rust-targets
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-rust-targets
+        with:
+          path: ./src/rust/target/
+          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            ${{ runner.os }}-cargo-target
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
