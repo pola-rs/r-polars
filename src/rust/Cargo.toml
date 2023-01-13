@@ -100,7 +100,12 @@ features = [
   "cumulative_eval",
   "list_eval",
   "list_to_struct",
-  "list_take"
+  "list_take",
+  "timezones",
+  "date_offset",
+  "dtype-date",
+  "dtype-datetime",
+  "dtype-time",
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"

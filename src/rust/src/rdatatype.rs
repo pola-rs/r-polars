@@ -311,8 +311,52 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
+#[extendr]
+#[derive(Debug, Clone, PartialEq)]
+pub struct RPolarsTimeUnit(pub pl::TimeUnit);
+
+#[extendr]
+impl RPolarsTimeUnit {
+    pub fn new(s: &str) -> List {
+        let res = RPolarsTimeUnit::new_timeunit(s);
+        r_result_list(res)
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:?}", self.0.to_string());
+    }
+
+    pub fn all_timeunits() -> List {
+        let iter_all_names = ["ns", "us", "ms"].iter();
+        let iter_all_units = iter_all_names.clone().map(|s| {
+            RPolarsTimeUnit::new_timeunit(s)
+                .expect("RPolarsTimeUnit internal error: failed to make TRimeUnit")
+        });
+        let l = extendr_api::list::List::from_names_and_values(iter_all_names, iter_all_units);
+        l.expect("RPolarsTimeUnit internal error: failed to build list")
+    }
+}
+
+impl RPolarsTimeUnit {
+    pub fn new_timeunit(s: &str) -> std::result::Result<RPolarsTimeUnit, String> {
+        use pl::TimeUnit as TU;
+        match s {
+            "ns" => Ok(TU::Nanoseconds),
+            "us" => Ok(TU::Microseconds),
+            "ms" => Ok(TU::Milliseconds),
+
+            _ => Err(format!(
+                "str to polars timeunit: [{}] is not any of 'ns', 'us' or 'ms'",
+                s
+            )),
+        }
+        .map(|tu| RPolarsTimeUnit(tu))
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;
+    impl RPolarsTimeUnit;
     impl DataTypeVector;
 }

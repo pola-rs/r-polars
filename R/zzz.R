@@ -80,6 +80,8 @@ rm(env)
 macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(rpolars:::Expr, "^Expr_")
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
+expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
 
 #Series

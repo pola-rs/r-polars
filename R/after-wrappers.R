@@ -36,6 +36,7 @@ extendr_method_to_pure_functions = function(env) {
 .pr$LazyFrame  = extendr_method_to_pure_functions(rpolars:::LazyFrame)
 .pr$LazyGroupBy= extendr_method_to_pure_functions(rpolars:::LazyGroupBy)
 .pr$DataType   = extendr_method_to_pure_functions(rpolars:::RPolarsDataType)
+.pr$TimeUnit   = extendr_method_to_pure_functions(rpolars:::RPolarsTimeUnit)
 .pr$DataTypeVector = extendr_method_to_pure_functions(rpolars:::DataTypeVector)
 .pr$Expr       = extendr_method_to_pure_functions(rpolars:::Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(rpolars:::ProtoExprArray)
@@ -139,9 +140,10 @@ pl = new.env(parent=emptyenv())
 
 #remap
 DataType = clone_env_one_level_deep(RPolarsDataType)
+TimeUnit = clone_env_one_level_deep(RPolarsTimeUnit)
 
 #used for printing public environment
-pl_class_names = sort(c("LazyFrame","Series","LazyGroupBy","DataType","Expr","DataFrame"))  #TODO discover all public class automatic
+pl_class_names = sort(c("LazyFrame","Series","LazyGroupBy","DataType","TimeUnit","Expr","DataFrame"))  #TODO discover all public class automatic
 pl_pub_env = as.environment(asNamespace("rpolars"))
 pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 

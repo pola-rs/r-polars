@@ -3834,7 +3834,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases shrink_dtype
+#' @aliases arr list
 #' @examples
 #' df_with_list = pl$DataFrame(
 #'   group = c(1,1,2,2,3),
@@ -3849,6 +3849,37 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' )
 Expr_arr = method_as_property(function() {
   expr_arr_make_sub_ns(self)
+})
+
+
+#' str: string related methods
+#' @description
+#' Create an object namespace of all string related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases string str
+#' @examples
+#'
+#' #missing
+#'
+Expr_str = method_as_property(function() {
+  expr_str_make_sub_ns(self)
+})
+
+#' dt: datetime related methods
+#' @description
+#' Create an object namespace of all datetime related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases dt datetime
+#' @examples
+#'
+#' #missing
+#'
+Expr_dt = method_as_property(function() {
+  expr_dt_make_sub_ns(self)
 })
 
 

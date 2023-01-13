@@ -2,7 +2,8 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arr}
 \alias{Expr_arr}
-\alias{shrink_dtype}
+\alias{arr}
+\alias{list}
 \title{arr: list related methods}
 \usage{
 Expr_arr()

@@ -73,3 +73,21 @@ DataType_constructors = list(
 
 
 
+#' print a polars datatype
+#'
+#' @param x DataType
+#'
+#' @return self
+#' @export
+#'
+#' @examples
+#' pl$dtypes$Boolean #implicit print
+print.RPolarsTimeUnit = function(x) {
+  cat("TimeUnit: ")
+  x$print()
+  invisible(x)
+}
+
+
+
+
