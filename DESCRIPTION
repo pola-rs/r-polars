@@ -16,7 +16,6 @@ Suggests:
     rextendr,
     data.table,
     pkgdown,
-    nanoarrow,
     arrow
 Remotes: apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
