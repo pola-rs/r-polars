@@ -43,5 +43,6 @@ Collate:
     'rlang.R'
     'series__series.R'
     'translation.R'
+    'vctrs.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000
