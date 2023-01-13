@@ -18,7 +18,7 @@ Suggests:
     pkgdown,
     nanoarrow,
     arrow
-Remotes: apache/arrow-nanoarrow/r
+Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
     'utils.R'

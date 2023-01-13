@@ -92,6 +92,7 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          pak-version: devel
         env:
           CI: false
 
