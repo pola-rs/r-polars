@@ -69,6 +69,24 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update \
+          && sudo apt-get install -y \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libfribidi-dev \
+            libharfbuzz-dev \
+            libcurl4-openssl-dev \
+            libgit2-dev \
+            libicu-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libxml2-dev \
+            libssl-dev
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
