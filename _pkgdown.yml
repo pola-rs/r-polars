@@ -44,6 +44,13 @@ reference:
     contents:
       - has_keyword("internal")
 
+
+  - title: Conversion to nanoarrow and arrow
+    desc: Methods to convert polars via low-level arrow format
+    contents:
+      - has_keyword("nanoarrow_interface")
+
+
   - title: everything else
     contents:
       - -has_keyword("api")
@@ -55,3 +62,4 @@ reference:
       - -has_keyword("Expr")
       - -has_keyword("Expr_new")
       - -has_keyword("internal")
+      - -has_keyword("nanoarrow_interface")
