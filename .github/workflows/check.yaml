@@ -48,10 +48,14 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
+      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
+      - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
+        if: runner.os == 'Windows'
+
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly
+          toolchain: ${{ env.rust-toolchain }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
