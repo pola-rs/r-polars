@@ -69,7 +69,7 @@ print.Series = function(x, ...) {
 }
 
 #' Print Series
-#' @rdname Series_pring
+#' @rdname Series_print
 #' @return self
 #'
 #' @examples pl$Series(1:3)
@@ -435,18 +435,6 @@ Series_is_unique = function() {
 }
 
 
-#' Reduce boolean Series with ALL
-#'
-#' @return bool
-#' @keywords Series
-#' @aliases all
-#' @name Series_all
-#' @examples
-#' pl$Series(1:10)$is_unique()$all()
-#'
-Series_all = function() {
-  unwrap(.pr$Series$all(self))
-}
 
 #' Series_len
 #' @description Length of this Series.
@@ -586,7 +574,7 @@ Series_any = "use_extendr_wrapper"
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases all
+#' @aliases Series_all
 #' @name Series_all
 #' @examples
 #' pl$Series(c(TRUE,TRUE,NA))$all()
@@ -695,7 +683,7 @@ Series_min = "use_extendr_wrapper"
 #' @keywords Series
 #' @aliases Series
 #' @return DataType
-#' @aliases dtype
+#' @aliases Series_dtype
 #' @name Series_dtype
 #' @examples
 #' pl$Series(1:4)$dtype
@@ -708,7 +696,7 @@ Series_dtype = method_as_property(function() {
 #' Get data type of Series
 #' @keywords Series
 #' @return DataType
-#' @aliases dtype
+#' @aliases Series_flags
 #' @name Series_dtype
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
@@ -745,7 +733,7 @@ Series_flags = method_as_property(function() {
 #' pl$set_rpolars_options(strictly_immutable = F) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
-#' @aliases set_sorted
+#' @aliases Series_set_sorted
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
@@ -769,7 +757,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #TODO contribute polars, Series.sort() is missing nulls_last option, that Expr_sort has
 #' Sort this Series
 #' @keywords Series
-#' @aliases Series
+#' @aliases Series_sort
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:

@@ -153,7 +153,7 @@ Expr_mul = Expr_mul = function(other) {
 Expr_is_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_is_not
-"!.Expr" <- function(e1,e2) e1$is_not()
+"!.Expr" <- function(x) x$is_not()
 
 #' Less Than <
 #' @description lt method and operator
@@ -304,7 +304,7 @@ Expr_alias = "use_extendr_wrapper"
 #' Check if all boolean values in a Boolean column are `TRUE`.
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
-#' @aliases all
+#' @aliases Expr_all
 #' @return Boolean literal
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
@@ -2396,8 +2396,7 @@ Expr_rolling_min = function(
 
 #' Rolling max
 #' @keywords Expr
-#' @description
-#' Apply a rolling max (moving max) over the values in this array.
+#' @description Apply a rolling max (moving max) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
 #' this window will (optionally) be multiplied with the weights given by the
 #' `weight` vector. The resulting values will be aggregated to their sum.

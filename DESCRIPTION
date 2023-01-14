@@ -1,7 +1,8 @@
 Package: rpolars
 Title: Polars ported to R
 Version: 0.4.1
-Depends: R (>= 4.1.0), utils
+Depends: R (>= 4.1.0)
+Imports: utils, codetools
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
