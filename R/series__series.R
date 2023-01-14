@@ -83,7 +83,7 @@ Series_print = function() {
 #' @description called by the interactive R session internally
 #' @keywords Series
 .DollarNames.Series = function(x, pattern= "") {
-  get_method_usages(rpolars:::Series,pattern = pattern)
+  get_method_usages(Series, pattern = pattern)
 }
 
 #' Immutable combine series
@@ -987,7 +987,7 @@ Series_expr = method_as_property(function() {
 
   #loop over each expression function
   lapply(
-    rpolars:::Expr,
+    Expr,
     \(f) { #f is orignial Expr method
 
       #point back to env with above defined 'df' and 'self'

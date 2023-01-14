@@ -66,7 +66,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @keywords DataFrame
 .DollarNames.DataFrame = function(x, pattern = "") {
-  get_method_usages(rpolars:::DataFrame,pattern = pattern)
+  get_method_usages(DataFrame,pattern = pattern)
 }
 
 
@@ -75,7 +75,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @keywords VecDataFrame
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(rpolars:::VecDataFrame,pattern = pattern)
+  get_method_usages(VecDataFrame,pattern = pattern)
 }
 
 

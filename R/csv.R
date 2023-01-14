@@ -89,7 +89,7 @@ lazy_csv_reader = function(
     if( !is.list(owdtype) || !is_named(owdtype)) {
       stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
-    datatype_vector = rpolars:::DataTypeVector$new() #mutable
+    datatype_vector = DataTypeVector$new() #mutable
     mapply(
       name = names(owdtype),
       type = unname(owdtype),
@@ -97,7 +97,7 @@ lazy_csv_reader = function(
 
         #convert possible string to datatype
         if(is_string(type)) {
-          type = rpolars:::DataType$new(type)
+          type = DataType$new(type)
         }
         if(!inherits(type,"RPolarsDataType")) {
           stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
@@ -117,17 +117,17 @@ lazy_csv_reader = function(
 
       #one string is used as one NULL marker for all columns
       if(is_string(nullvals)) {
-        return(rpolars:::RNullValues$new_all_columns(nullvals))
+        return(RNullValues$new_all_columns(nullvals))
       }
 
       #many unnamed strings(char vec) is used one mark for each column
       if(is.character(nullvals) && !is_named(nullvals)) {
-        return(RNullValues = rpolars:::RNullValues$new_columns(nullvals))
+        return(RNullValues = RNullValues$new_columns(nullvals))
       }
 
       #named char vec is used as column(name) marker(value) pairs
       if(is.character(nullvals) && is_named(nullvals)) {
-        return(rpolars:::RNullValues$new_named(null_values))
+        return(RNullValues$new_named(null_values))
       }
 
       stopf("null_values arg must be a string OR unamed char vec OR named char vec")
@@ -137,15 +137,15 @@ lazy_csv_reader = function(
   }
 
   ##call low level function with args
-  rpolars:::check_no_missing_args(rpolars:::rlazy_csv_reader,args)
-  unwrap(do.call(rpolars:::rlazy_csv_reader,args))
+  check_no_missing_args(rlazy_csv_reader,args)
+  unwrap(do.call(rlazy_csv_reader,args))
 }
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader
 #' @return DataFrame
 #' @export
 csv_reader = function(...) {
-  rpolars:::lazy_csv_reader(...)$collect()
+  lazy_csv_reader(...)$collect()
 }
 
 

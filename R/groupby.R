@@ -19,7 +19,7 @@ GroupBy <- new.env(parent = emptyenv())
 #' @description called by the interactive R session internally
 #' @keywords GroupBy
 .DollarNames.GroupBy = function(x, pattern = "") {
-  paste0(ls(rpolars:::GroupBy, pattern = pattern ),"()")
+  paste0(ls(GroupBy, pattern = pattern ),"()")
 }
 
 #' print GroupBy

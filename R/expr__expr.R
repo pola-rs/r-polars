@@ -47,7 +47,7 @@ Expr_print = function() {
 #' @description called by the interactive R session internally
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
-  paste0(ls(rpolars:::Expr, pattern = pattern ),"()")
+  paste0(ls(Expr, pattern = pattern ),"()")
 }
 
 #' wrap as literal
@@ -427,8 +427,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @examples rpolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
 
-
-  pra = rpolars:::ProtoExprArray$new()
+  pra = ProtoExprArray$new()
   args = list2(...)
   arg_names = names(args)
 
@@ -446,7 +445,7 @@ construct_ProtoExprArray = function(...) {
   #if args named, convert string to col and alias any column by name if a name
   } else {
 
-    if(!rpolars:::rpolars_optenv$named_exprs) {
+    if(!rpolars_optenv$named_exprs) {
       stopf(
         "not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` %s",
         "to enable column naming by expression"
@@ -904,9 +903,9 @@ Expr_keep_name = "use_extendr_wrapper"
 Expr_map_alias = function(fun) {
   if (
     !rpolars_optenv$no_messages &&
-    !exists(".warn_map_alias",envir = rpolars:::runtime_state)
+    !exists(".warn_map_alias",envir = runtime_state)
   ) {
-    assign(".warn_map_alias",1L,envir = rpolars:::runtime_state)
+    assign(".warn_map_alias",1L,envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
     # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
     # then handle_thread_r_requests should be rewritten to handle any type.

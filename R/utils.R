@@ -301,7 +301,7 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_
 #'
 #' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_protoArrayExpr = function(l) {
-  pra = rpolars:::ProtoExprArray$new()
+  pra = ProtoExprArray$new()
   if (!is.list(l)) l = list(l)
   for (i  in l) {
     if(is_string(i)) {
@@ -325,7 +325,7 @@ construct_protoArrayExpr = function(l) {
 #'
 #' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_DataTypeVector = function(l) {
-  dtv = rpolars:::DataTypeVector$new()
+  dtv = DataTypeVector$new()
 
   for (i  in seq_along(l)) {
     if(inherits(l[[i]],"RPolarsDataType")) {

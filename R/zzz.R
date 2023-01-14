@@ -42,13 +42,13 @@ print(paste(
 
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
-replace_private_with_pub_methods( rpolars:::DataFrame, "^DataFrame_")
+replace_private_with_pub_methods(DataFrame, "^DataFrame_")
 
 
 
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
-env = rpolars:::GroupBy
+env = GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
 
@@ -68,7 +68,7 @@ replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")
-env = rpolars:::LazyGroupBy
+env = LazyGroupBy
 env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
 env$head = LazyGroupBy_head
@@ -79,13 +79,13 @@ rm(env)
 
 
 macro_add_syntax_check_to_class("Expr")
-replace_private_with_pub_methods(rpolars:::Expr, "^Expr_")
+replace_private_with_pub_methods(Expr, "^Expr_")
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
 
 
 #Series
 macro_add_syntax_check_to_class("Series")
-replace_private_with_pub_methods( rpolars:::Series, "^Series_")
+replace_private_with_pub_methods(Series, "^Series_")
 
 
 
@@ -97,12 +97,12 @@ move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 
 
 #pl$[readers]
-pl$lazy_csv_reader = rpolars:::lazy_csv_reader
-pl$csv_reader = rpolars:::csv_reader
-pl$read_csv = rpolars:::read_csv_
+pl$lazy_csv_reader = lazy_csv_reader
+pl$csv_reader = csv_reader
+pl$read_csv = read_csv_
 
 #functions
-pl$concat = rpolars:::concat
+pl$concat = concat
 
 
 
@@ -113,7 +113,7 @@ pl$concat = rpolars:::concat
 #' @aliases mem_address
 #' @return String of mem address
 #' @examples pl$mem_address(pl$Series(1:3))
-pl$mem_address = rpolars:::mem_address
+pl$mem_address = mem_address
 
 
 
@@ -128,7 +128,7 @@ pl$mem_address = rpolars:::mem_address
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types,.pr$DataType$new), #instanciate all simple flag-like types
-    rpolars:::DataType_constructors # add function constructors for the remainders
+    DataType_constructors # add function constructors for the remainders
   )
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)

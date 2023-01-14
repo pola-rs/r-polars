@@ -3,7 +3,7 @@
 \name{GroupBy_agg}
 \alias{GroupBy_agg}
 \alias{agg}
-\title{Aggregatete a DataFrame over a groupby}
+\title{GroupBy Aggregate}
 \usage{
 GroupBy_agg(...)
 }
@@ -14,7 +14,7 @@ GroupBy_agg(...)
 aggregated DataFrame
 }
 \description{
-Hej mor
+Aggregatete a DataFrame over a groupby
 }
 \examples{
 pl$DataFrame(

@@ -105,7 +105,7 @@ LazyFrame
 #' # rpolars:::.DollarNames.Expr
 #' 2+2
 .DollarNames.LazyFrame = function(x, pattern = "") {
-  paste0(ls(rpolars:::LazyFrame, pattern = pattern ),"()")
+  paste0(ls(LazyFrame, pattern = pattern ),"()")
 }
 
 #' print LazyFrame s3 method

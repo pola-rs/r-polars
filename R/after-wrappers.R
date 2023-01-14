@@ -30,17 +30,17 @@ extendr_method_to_pure_functions = function(env) {
 #'
 #' rpolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 .pr            = new.env(parent=emptyenv())
-.pr$Series     = extendr_method_to_pure_functions(rpolars:::Series)
-.pr$DataFrame  = extendr_method_to_pure_functions(rpolars:::DataFrame)
+.pr$Series     = extendr_method_to_pure_functions(Series)
+.pr$DataFrame  = extendr_method_to_pure_functions(DataFrame)
 .pr$GroupBy    = NULL # derived from DataFrame in R, has no  rust calls
-.pr$LazyFrame  = extendr_method_to_pure_functions(rpolars:::LazyFrame)
-.pr$LazyGroupBy= extendr_method_to_pure_functions(rpolars:::LazyGroupBy)
-.pr$DataType   = extendr_method_to_pure_functions(rpolars:::RPolarsDataType)
-.pr$DataTypeVector = extendr_method_to_pure_functions(rpolars:::DataTypeVector)
-.pr$Expr       = extendr_method_to_pure_functions(rpolars:::Expr)
-.pr$ProtoExprArray = extendr_method_to_pure_functions(rpolars:::ProtoExprArray)
-.pr$VecDataFrame = extendr_method_to_pure_functions(rpolars:::VecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(rpolars:::RNullValues)
+.pr$LazyFrame  = extendr_method_to_pure_functions(LazyFrame)
+.pr$LazyGroupBy= extendr_method_to_pure_functions(LazyGroupBy)
+.pr$DataType   = extendr_method_to_pure_functions(RPolarsDataType)
+.pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
+.pr$Expr       = extendr_method_to_pure_functions(Expr)
+.pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
+.pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
+.pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 #TODO remove export
 
 
