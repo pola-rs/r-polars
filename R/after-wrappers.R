@@ -90,7 +90,9 @@ env_class_names = names(is_env_class)[is_env_class]
 cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
   cat(i_class,", ",sep="")
-  if(!exists(paste0("$.",i_class))) stopf("internal assertion failed, env class without a dollarsign method")
+  if(!exists(paste0("$.",i_class))) {
+    stopf("internal assertion failed, env class without a dollarsign method")
+  }
   macro_add_syntax_check_to_class(i_class)
 }
 cat("\n")
@@ -134,7 +136,10 @@ method_as_property = function(f, setter=FALSE) {
 #' rpolars:::print_env(pl,"rpolars public functions")
 #'
 #' #all accessible classes and their public methods
-#' rpolars:::print_env(rpolars:::pl_pub_class_env,"rpolars public class methods, access via object$method()")
+#' rpolars:::print_env(
+#'   rpolars:::pl_pub_class_env,
+#'   "rpolars public class methods, access via object$method()"
+#' )
 pl = new.env(parent=emptyenv())
 
 #remap
@@ -156,9 +161,12 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'  - Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to `$.ClassName`
 #'  See function macro_add_syntax_check_to_class().
 #'
+#' @importFrom utils .DollarNames
 #' @export
 #' @examples
 #' #all a rpolars object is made of:
 #' some_rpolars_object = pl$DataFrame(iris)
 #' str(some_rpolars_object) #External Pointer tagged with a class attribute.
 object = "place_holder"
+
+

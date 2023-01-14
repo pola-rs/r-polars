@@ -1,6 +1,7 @@
 # This file zzz.R will be sourced last when building package.
 # This is important as namespaces of other files are modified here.
-# This modification happens only on building the package unlike .onLoad which occours on loading the package.
+# This modification happens only on building the package unlike .onLoad which occours on loading the
+# package.
 
 print(paste(
   "Modifying extendr bindings,",

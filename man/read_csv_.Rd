@@ -9,7 +9,7 @@ read_csv_(path, lazy = FALSE, reuse_downloaded = TRUE, ...)
 \arguments{
 \item{path}{file or url}
 
-\item{...}{}
+\item{...}{arguments forwarded to csv_reader or lazy_csv_reader}
 }
 \value{
 polars_DataFrame or polars_lazy_DataFrame

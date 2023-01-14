@@ -36,9 +36,9 @@ The output of the user function will be converted back into a polars type.
 Return type must match. See param return type.
 Apply in selection context should be avoided as a \code{lapply()} has half the overhead.
 \item Groupby
-Expects a user function \code{f} to take a \code{Series} and return a \code{Series} or Robj convertable to \code{Series}, eg. R vector.
-GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration
-is only across the groups.
+Expects a user function \code{f} to take a \code{Series} and return a \code{Series} or Robj convertable to
+\code{Series}, eg. R vector. GroupBy context much faster if number groups are quite fewer than
+number of rows, as the iteration is only across the groups.
 The r user function could e.g. do vectorized operations and stay quite performant.
 use \code{s$to_r()} to convert input Series to an r vector or list. use \code{s$to_r_vector} and
 \code{s$to_r_list()} to force conversion to vector or list.
@@ -63,9 +63,11 @@ e_head = e_all$apply(\(s) head(s$to_r(),2))$suffix("_head")
 pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
 
 
-#apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
-#x is an R scalar
-e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
+# apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
+# on a 2015 MacBook Pro) x is an R scalar
+
+#perform on all Float64 columns, using pl$all requires user function can handle any input type
+e_all =pl$col(pl$dtypes$Float64)
 e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
 #quite silly index into alphabet(letters) by ceil of float value
 #must set return_type as not the same as input

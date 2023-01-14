@@ -13,7 +13,8 @@ DataFrame(data)
 \item mixed vectors and/or Series of equal length
 }
 
-Columns will be named as of named arguments or alternatively by names of Series or given a placeholder name}
+Columns will be named as of named arguments or alternatively by names of Series or given a
+placeholder name.}
 
 \item{make_names_unique}{default TRUE, any duplicated names will be prefixed a running number}
 }
@@ -24,9 +25,22 @@ DataFrame
 Create new DataFrame
 }
 \examples{
-pl$DataFrame(iris) #from data.frame
-pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5])) #from list
-pl$DataFrame(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]) #directly from vectors
-pl$DataFrame( 1:5, pl$Series(5:1,"bob"),5:1) #directly from two unnamed vectors and one named Series
+
+pl$DataFrame(
+  a = pl$list(c(1,2,3,4,5)), #NB if first column should be a list, wrap it in a Series
+  b = 1:5,
+  c = letters[1:5],
+  d = list(1:1,1:2,1:3,1:4,1:5
+) #directly from vectors
+
+#from a list of vectors or data.frame
+pl$DataFrame(iris) #from a data.frame (which is also a list)
+pl$DataFrame(list(
+  a= c(1,2,3,4,5),
+  b=1:5,
+  c = letters[1:5],
+  d = list(1,1:2,1:3,1:4,1:5)
+))
+
 }
 \keyword{DataFrame_new}

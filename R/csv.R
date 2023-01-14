@@ -152,7 +152,7 @@ csv_reader = function(...) {
 #' high level csv_reader, will download if path is url
 #'
 #' @param path file or url
-#' @param ...
+#' @param ... arguments forwarded to csv_reader or lazy_csv_reader
 #'
 #' @return polars_DataFrame or polars_lazy_DataFrame
 #' @export

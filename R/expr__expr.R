@@ -446,7 +446,10 @@ construct_ProtoExprArray = function(...) {
   } else {
 
     if(!rpolars:::rpolars_optenv$named_exprs) {
-      stopf("not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` to enable column naming by expression")
+      stopf(
+        "not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` %s",
+        "to enable column naming by expression"
+      )
     }
 
     for (i in seq_along(args)) {
@@ -483,13 +486,15 @@ construct_ProtoExprArray = function(...) {
 #'
 #' @param f a function mapping a series
 #' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
-#' @param agg_list Aggregate list. Map from vector to group in groupby context. Likely not so useful.
+#' @param agg_list Aggregate list. Map from vector to group in groupby context.
+#' Likely not so useful.
 #'
 #' @rdname Expr_map
 #' @return Expr
 #' @aliases Expr_map
-#' @details user function return should be a series or any Robj convertable into a Series. In PyPolars likely return must be Series.
-#' User functions do fully support `browser()`, helpful to investigate.
+#' @details user function return should be a series or any Robj convertable into a Series.
+#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
+#'  investigate.
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
@@ -526,13 +531,12 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'  Apply in selection context should be avoided as a `lapply()` has half the overhead.
 #'
 #' * Groupby
-#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to `Series`, eg. R vector.
-#'   GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration
-#'   is only across the groups.
+#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to
+#'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
+#'   number of rows, as the iteration is only across the groups.
 #'   The r user function could e.g. do vectorized operations and stay quite performant.
 #'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and
 #'   `s$to_r_list()` to force conversion to vector or list.
-#'
 #'
 #'  Implementing logic using an R function is almost always _significantly_
 #'   slower and more memory intensive than implementing the same logic using
@@ -555,9 +559,11 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
 #'
 #'
-#' #apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
-#' #x is an R scalar
-#' e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#' # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
+#' # on a 2015 MacBook Pro) x is an R scalar
+#'
+#' #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#' e_all =pl$col(pl$dtypes$Float64)
 #' e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
 #' #quite silly index into alphabet(letters) by ceil of float value
 #' #must set return_type as not the same as input
@@ -623,7 +629,17 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' #vector to literal explicitly via Series and back again
-#' pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]] #R vector to expression and back again
+#' #R vector to expression and back again
+#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+#'
+#' #r vecot to literal and back r vector
+#' pl$lit(1:4)$to_r()
+#'
+#' #r vector to literal to dataframe
+#' pl$select(pl$lit(1:4))
+#'
+#' #r vector to literal to Series
+#' pl$lit(1:4)$lit_to_s()
 #'
 #' #vectors to literal implicitly
 #' (pl$lit(2) + 1:4 ) / 4:1
@@ -2080,8 +2096,13 @@ Expr_limit = function(n=10) {
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ (pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+#' pl$DataFrame(a= -1:3)$select(
+#'   pl$lit(2)$pow(pl$col("a"))
+#' )$get_column("literal")$to_r()== 2^(-1:3)
+#'
+#' pl$DataFrame(a = -1:3)$select(
+#'   pl$lit(2) ^ (pl$col("a"))
+#' )$get_column("literal")$to_r()== 2^(-1:3)
 Expr_pow = function(exponent) {
   if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
   .pr$Expr$pow(self,exponent)
