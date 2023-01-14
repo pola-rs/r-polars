@@ -56,12 +56,13 @@ wrap_s = function(x) {
 #' Print Series
 #' @export
 #' @param x Series
+#' @param ... not used
 #' @keywords Series
 #' @name Series_print
 #'
 #' @return invisible(self)
 #' @examples print(pl$Series(1:3))
-print.Series = function(x) {
+print.Series = function(x, ...) {
   cat("polars Series: ")
   x$print()
   invisible(x)

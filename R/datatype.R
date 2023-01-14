@@ -25,13 +25,14 @@ NULL
 #' print a polars datatype
 #'
 #' @param x DataType
+#' @param ... not used
 #'
 #' @return self
 #' @export
 #'
 #' @examples
 #' pl$dtypes$Boolean #implicit print
-print.RPolarsDataType = function(x) {
+print.RPolarsDataType = function(x, ...) {
   cat("RPolarsDataType: ")
   x$print()
   invisible(x)

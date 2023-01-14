@@ -25,12 +25,12 @@ GroupBy <- new.env(parent = emptyenv())
 #' print GroupBy
 #'
 #' @param x DataFrame
-#'
+#' @param ... not used
 #' @return self
 #' @export
 #'
 #' @examples pl$DataFrame(iris)$groupby("Species")
-print.GroupBy = function(x) {
+print.GroupBy = function(x, ...) {
   cat("polars GroupBy: ")
   .pr$DataFrame$print(x)
   cat("groups: ")
@@ -40,10 +40,8 @@ print.GroupBy = function(x) {
 }
 
 
-#' Aggregatete a DataFrame over a groupby
-#'
-#'
-#' @description Hej mor
+#' GroupBy Aggregate
+#' @description Aggregatete a DataFrame over a groupby
 #' @param ... exprs to aggregate
 #'
 #' @return aggregated DataFrame

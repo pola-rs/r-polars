@@ -19,6 +19,7 @@
 #' Print expr
 #'
 #' @param x Expr
+#' @param ... not used
 #' @keywords Expr
 #'
 #' @return self
@@ -26,7 +27,7 @@
 #'
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")
-print.Expr = function(x) {
+print.Expr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)

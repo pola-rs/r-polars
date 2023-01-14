@@ -203,6 +203,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 #' s3 method print DataFrame
 #'
 #' @param x DataFrame
+#' @param ... not used
 #'
 #' @name print()
 #'
@@ -210,7 +211,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 #' @export
 #'
 #' @examples pl$DataFrame(iris)
-print.DataFrame = function(x) {
+print.DataFrame = function(x, ...) {
   cat("polars DataFrame: ")
   x$print()
   invisible(x)

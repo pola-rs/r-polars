@@ -111,13 +111,14 @@ LazyFrame
 #' print LazyFrame s3 method
 #' @keywords LazyFrame
 #' @param x DataFrame
+#' @param ... not used
 #' @keywords LazyFrame
 #'
 #' @return self
 #' @export
 #'
 #' @examples print(pl$DataFrame(iris)$lazy())
-print.LazyFrame = function(x) {
+print.LazyFrame = function(x, ...) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
   cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
