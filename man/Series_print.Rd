@@ -5,10 +5,12 @@
 \alias{print.Series}
 \title{Print Series}
 \usage{
-\method{print}{Series}(x)
+\method{print}{Series}(x, ...)
 }
 \arguments{
 \item{x}{Series}
+
+\item{...}{not used}
 }
 \value{
 invisible(self)

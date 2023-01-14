@@ -4,10 +4,12 @@
 \alias{print.LazyFrame}
 \title{print LazyFrame s3 method}
 \usage{
-\method{print}{LazyFrame}(x)
+\method{print}{LazyFrame}(x, ...)
 }
 \arguments{
 \item{x}{DataFrame}
+
+\item{...}{not used}
 }
 \value{
 self

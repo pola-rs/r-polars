@@ -44,7 +44,7 @@ env$my_sub_ns = method_as_property(function() { #add a property/method
 rm(env) #optional clean up
 
 #add user defined S3 method the subclass 'myclass_sub_ns'
-print.myclass_sub_ns = function(x) {
+print.myclass_sub_ns = function(x, ...) { #add ... even if not used
   print("hello world, I'm myclass_sub_ns")
   print("methods in sub namespace are:")
   print(ls(x))
