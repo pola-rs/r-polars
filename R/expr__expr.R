@@ -3869,5 +3869,25 @@ Expr_arr = method_as_property(function() {
 #'   $lit_to_s()
 #' )
 Expr_lit_to_s = function(){
+  pl$select(self)$to_series(0)
+}
+
+#' Literal to DataFrame
+#' @description
+#' collect an expression based on literals into a DataFrame
+#' @keywords Expr
+#' @return Series
+#' @aliases lit_to_df
+#' @examples
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'     $arr$lengths()
+#'     $sum()
+#'     $cast(pl$dtypes$Int8)
+#'   $lit_to_df()
+#' )
+Expr_lit_to_df = function(){
   pl$select(self)
 }

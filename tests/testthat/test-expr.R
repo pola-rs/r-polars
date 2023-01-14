@@ -2329,7 +2329,7 @@ test_that("concat_list", {
     pl$lit(1:5),
     pl$Series(5:1),
     rep(0L,5)
-  ))$alias("alice")$lit_to_s()
+  ))$alias("alice")$lit_to_df()
 
   expect_identical(
     df_act$as_data_frame(),

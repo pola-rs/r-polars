@@ -214,7 +214,7 @@ test_that("first last head tail", {
 test_that("join", {
   l = list(letters,as.character(1:5))
   s = pl$Series(l)
-  l_act = s$to_lit()$arr$join("-")$lit_to_s()$to_list()
+  l_act = s$to_lit()$arr$join("-")$lit_to_df()$to_list()
   l_exp = list(sapply(l,paste,collapse="-"))
   names(l_exp) = ""
   expect_identical(l_act, l_exp)
