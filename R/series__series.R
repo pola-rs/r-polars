@@ -953,7 +953,7 @@ Series_is_numeric = function() {
 Series_arr = method_as_property(function() {
 
   df = pl$DataFrame(self)
-  arr = make_expr_arr_namespace(pl$col(self$name))
+  arr = expr_arr_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
      \(...) df$select(f(...))
   })

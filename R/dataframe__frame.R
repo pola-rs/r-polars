@@ -133,7 +133,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   }
 
   #input guard
-  if(!rpolars:::is_DataFrame_data_input(data)) {
+  if(!is_DataFrame_data_input(data)) {
     stopf("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
