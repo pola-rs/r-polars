@@ -304,7 +304,7 @@ Expr_alias = "use_extendr_wrapper"
 #' Check if all boolean values in a Boolean column are `TRUE`.
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
-#' @aliases Expr_all
+#' @aliases all
 #' @return Boolean literal
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
@@ -2336,7 +2336,7 @@ prepare_rolling_window_args = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2366,13 +2366,10 @@ prepare_rolling_window_args = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2396,7 +2393,8 @@ Expr_rolling_min = function(
 
 #' Rolling max
 #' @keywords Expr
-#' @description Apply a rolling max (moving max) over the values in this array.
+#' @description
+#' Apply a rolling max (moving max) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
 #' this window will (optionally) be multiplied with the weights given by the
 #' `weight` vector. The resulting values will be aggregated to their sum.
@@ -2404,7 +2402,7 @@ Expr_rolling_min = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2434,13 +2432,10 @@ Expr_rolling_min = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2473,7 +2468,7 @@ Expr_rolling_max = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2500,16 +2495,11 @@ Expr_rolling_max = function(
 #' be of dtype `{Date, Datetime}`
 #' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
-#'
-#'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2544,7 +2534,7 @@ Expr_rolling_mean = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2571,16 +2561,11 @@ Expr_rolling_mean = function(
 #' be of dtype `{Date, Datetime}`
 #' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
-#'
-#'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2614,7 +2599,7 @@ Expr_rolling_sum = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2644,13 +2629,10 @@ Expr_rolling_sum = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2683,7 +2665,7 @@ Expr_rolling_std = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2713,13 +2695,10 @@ Expr_rolling_std = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2752,7 +2731,7 @@ Expr_rolling_var = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2782,13 +2761,10 @@ Expr_rolling_var = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2856,13 +2832,12 @@ Expr_rolling_median = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
+#'
+#'
 #'   This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
@@ -2900,17 +2875,15 @@ Expr_rolling_quantile = function(
 #' @return Expr
 #' @aliases rolling_skew
 #' @details
+#' Extra comments copied from rust-polars_0.25.1
+#' Compute the sample skewness of a data set.
 #'
-#'  Extra comments copied from rust-polars_0.25.1
-#'   Compute the sample skewness of a data set.
-#'
-#'  For normally distributed data, the skewness should be about zero. For
-#'  uni-modal continuous distributions, a skewness value greater than zero means
-#'  that there is more weight in the right tail of the distribution. The
-#'  function `skewtest` can be used to determine if the skewness value
-#'  is close enough to zero, statistically speaking.
-#'
-#'  see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
+#' For normally distributed data, the skewness should be about zero. For
+#' uni-modal continuous distributions, a skewness value greater than zero means
+#' that there is more weight in the right tail of the distribution. The
+#' function `skewtest` can be used to determine if the skewness value
+#' is close enough to zero, statistically speaking.
+#' see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
 #'
 #' @examples
 #' pl$DataFrame(list(a=iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4 )$head(10))
@@ -3771,7 +3744,7 @@ Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
 #' @details
 #'
 #' Warnings
-#' --------
+#'
 #'   This functionality is experimental and may change without it being considered a
 #' breaking change.
 #' This can be really slow as it can have `O(n^2)` complexity. Don't use this
