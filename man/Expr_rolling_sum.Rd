@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_sum}
 \alias{Expr_rolling_sum}
-\alias{interpolate}
 \title{Rolling sum}
 \usage{
 Expr_rolling_sum(

@@ -2,7 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_max}
 \alias{arr_max}
-\alias{arr.max}
+\alias{Expr_arr_max}
+\alias{Expr_arr.max}
 \title{Max lists}
 \format{
 function

@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_dtype}
 \alias{Series_dtype}
-\alias{Series}
 \alias{Series_flags}
 \title{Get data type of Series}
 \usage{

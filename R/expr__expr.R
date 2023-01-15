@@ -304,7 +304,7 @@ Expr_alias = "use_extendr_wrapper"
 #' Check if all boolean values in a Boolean column are `TRUE`.
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
-#' @aliases all
+#' @aliases Expr_all
 #' @return Boolean literal
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
@@ -317,7 +317,7 @@ Expr_all = "use_extendr_wrapper"
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
-#' @aliases any
+#' @aliases Expr_any
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
 Expr_any = "use_extendr_wrapper"
@@ -331,7 +331,6 @@ Expr_any = "use_extendr_wrapper"
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
-#' @aliases count
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
 Expr_count = "use_extendr_wrapper"
@@ -340,7 +339,6 @@ Expr_count = "use_extendr_wrapper"
 #' @keywords Expr
 #' @rdname Expr_count
 #' @return Expr
-#' @aliases count len
 #' @examples
 #' #same as
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
@@ -1015,7 +1013,7 @@ Expr_slice = function(offset, length) {
 #'
 #' @keywords Expr
 #' @return Expr
-#' @aliases append
+#' @aliases Expr_append
 #' @name Expr_append
 #' @format a method
 #' @examples
@@ -1055,7 +1053,7 @@ Expr_rechunk = "use_extendr_wrapper"
 #' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
-#' @aliases cumsum
+#' @aliases Expr_cumsum
 #' @name Expr_cumsum
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -1166,7 +1164,7 @@ Expr_cumcount = function(reverse = FALSE) {
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
-#' @aliases floor
+#' @aliases Expr_floor
 #' @name Expr_floor
 #' @format a method
 #' @examples
@@ -1182,7 +1180,7 @@ Expr_floor = "use_extendr_wrapper"
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
-#' @aliases ceil
+#' @aliases Expr_ceil
 #' @name Expr_ceil
 #' @format a method
 #' @examples
@@ -1317,7 +1315,7 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
-#' @aliases arg_min
+#' @aliases Expr_arg_min
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @name Expr_arg_min
@@ -1332,7 +1330,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
-#' @aliases arg_max
+#' @aliases Expr_arg_max
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @name Expr_arg_max
@@ -1619,7 +1617,6 @@ Expr_fill_nan = function(expr = NULL) {
 #' @param ddof integer in range [0;255] degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
-#' @aliases std
 #' @name Expr_std
 #' @format a method
 #'
@@ -1634,7 +1631,6 @@ Expr_std = function(ddof = 1) {
 #' @param ddof integer in range [0;255] degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
-#' @aliases var
 #' @name Expr_var
 #' @format a method
 #'
@@ -1679,7 +1675,6 @@ Expr_min = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description Get maximum value, but propagate/poison encountered `NaN` values.
 #' Get maximum value.
-#' @aliases nan_min
 #' @return Expr
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
@@ -1692,7 +1687,6 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description Get minimum value, but propagate/poison encountered `NaN` values.
 #' @return Expr
-#' @aliases nan_min
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
@@ -1847,7 +1841,7 @@ Expr_over = function(...) {
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases is_unique
+#' @aliases Expr_is_unique
 #' @name Expr_is_unique
 #' @format a method
 #'
@@ -1873,7 +1867,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases is_unique
+#' @aliases Expr_is_unique
 #' @name Expr_is_first
 #' @format a method
 #'
@@ -1956,7 +1950,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
 #' @return Expr
 #' @keywords Expr
-#' @aliases filter
+#' @aliases Expr_filter
 #' @format a method
 #'
 #' @examples
@@ -2077,7 +2071,6 @@ Expr_tail = function(n=10) {
 #' Similar to R head(x)
 #' @param n numeric number of elements to select from head
 #' @return Expr
-#' @aliases limit
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
@@ -2373,7 +2366,7 @@ prepare_rolling_window_args = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_min
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_min(window_size = 2))
 Expr_rolling_min = function(
@@ -2439,7 +2432,7 @@ Expr_rolling_min = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_max
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_max(window_size = 2))
 Expr_rolling_max = function(
@@ -2503,7 +2496,7 @@ Expr_rolling_max = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_mean
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_mean(window_size = 2))
 Expr_rolling_mean = function(
@@ -2569,7 +2562,7 @@ Expr_rolling_mean = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_sum
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_sum(window_size = 2))
 Expr_rolling_sum = function(
@@ -2636,7 +2629,7 @@ Expr_rolling_sum = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_std
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_std(window_size = 2))
 Expr_rolling_std = function(
@@ -2702,7 +2695,7 @@ Expr_rolling_std = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_var
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_var(window_size = 2))
 Expr_rolling_var = function(
@@ -2768,7 +2761,7 @@ Expr_rolling_var = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_median
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_median(window_size = 2))
 Expr_rolling_median = function(
@@ -2841,7 +2834,7 @@ Expr_rolling_median = function(
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_quantile
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(
 #'   pl$col("a")$rolling_quantile(window_size = 2, quantile = .5)
@@ -3533,7 +3526,7 @@ Expr_extend_constant = function(value, n) {
 #' This value may be None to fill with nulls.
 #' @param n The number of values to extend.
 #' @return  Expr
-#' @aliases extend_constant
+#' @aliases Expr_extend_expr
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3562,7 +3555,7 @@ Expr_extend_expr = function(value, n) {
 #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
 #'
 #' @return  Expr
-#' @aliases extend_constant
+#' @aliases Expr_rep
 #' @format Method
 #' @details
 #' if self$len() == 1 , has a special faster implementation,  Here rechunk is not
@@ -3586,22 +3579,7 @@ Expr_rep = function(n, rechunk = TRUE) {
   unwrap(.pr$Expr$rep(self, n, rechunk))
 }
 
-#' Repeat a series
-#' @description This expression emulates R rep()
-#' @name pl_rep
-#' @param value expr or any valid input to pl$lit (literal)
-#' This value may be None to fill with nulls.
-#' @param n  Numeric the number of times to repeat, must be non-negative and finite
-#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
-#' @return  Expr
-#' @aliases extend_constant
-#' @format functino
-#' @keywords Expr
-#' @examples
-#' pl$select(pl$rep(1:3, n = 5))
-pl$rep = function(value, n, rechunk = TRUE) {
-  wrap_e(value)$rep(n, rechunk)
-}
+
 
 
 #' extend series with repeated series
@@ -3613,7 +3591,7 @@ pl$rep = function(value, n, rechunk = TRUE) {
 #' will be casted to common super type if any. If FALSE or no common super type
 #' throw error.
 #' @return  Expr
-#' @aliases extend_constant
+#' @aliases Expr_rep_extend
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3632,7 +3610,6 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @param i numeric column to extract zero index default first, expression could generate multiple
 #' columns
 #' @return  R object
-#' @aliases to_r expr_to_r pl_expr_to_r
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3668,7 +3645,6 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' Better to turn this off in the aggregation context, as it can lead to contention.
 #' @param sort:
 #' Ensure the output is sorted from most values to least.
-#' @aliases value_counts
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3827,7 +3803,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases shrink_dtype
+#' @aliases arr
 #' @examples
 #' df_with_list = pl$DataFrame(
 #'   group = c(1,1,2,2,3),

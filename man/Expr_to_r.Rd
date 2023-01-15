@@ -2,8 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_to_r}
 \alias{Expr_to_r}
-\alias{to_r}
-\alias{expr_to_r}
 \alias{pl_expr_to_r}
 \title{to_r: for debuging an expression}
 \format{

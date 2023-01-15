@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_max}
 \alias{Expr_rolling_max}
-\alias{interpolate}
 \title{Rolling max}
 \usage{
 Expr_rolling_max(

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_median}
 \alias{Expr_rolling_median}
-\alias{interpolate}
 \title{Rolling median}
 \usage{
 Expr_rolling_median(

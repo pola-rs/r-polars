@@ -40,7 +40,7 @@ ExprArr_sum = function() .pr$Expr$lst_sum(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.max
+#' @aliases Expr_arr_max Expr_arr.max
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$max())
@@ -53,7 +53,7 @@ ExprArr_max      = function() .pr$Expr$lst_max(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_min arr.min
+#' @aliases Expr_arr_min Expr_arr.min
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$min())
@@ -85,7 +85,7 @@ ExprArr_mean     = function() .pr$Expr$lst_mean(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_get arr.get
+#' @aliases Expr_arr_sort Expr_arr.sort
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr$get(0))
@@ -157,7 +157,7 @@ ExprArr_concat = function(other) {
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_get arr.get
+#' @aliases Expr_arr_get Expr_arr.get
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr$get(0))
@@ -263,7 +263,7 @@ ExprArr_arg_min = function() .pr$Expr$lst_arg_min(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.arg_max
+#' @aliases Expr_arr_arg_max Expr_arr.arg_max
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2,2:1)))
 #' df$select(pl$col("s")$arr$arg_max())
@@ -280,7 +280,7 @@ ExprArr_arg_max = function() .pr$Expr$lst_arg_max(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.arg_max
+#' @aliases Expr_arr_diff Expr_arr.diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
 #' df$select(pl$col("s")$arr$diff())

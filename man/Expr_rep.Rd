@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rep}
 \alias{Expr_rep}
-\alias{extend_constant}
 \title{expression: repeat series}
 \format{
 Method

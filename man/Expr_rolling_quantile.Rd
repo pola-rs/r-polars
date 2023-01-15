@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_quantile}
 \alias{Expr_rolling_quantile}
-\alias{interpolate}
 \title{Rolling quantile}
 \usage{
 Expr_rolling_quantile(

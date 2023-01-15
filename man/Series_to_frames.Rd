@@ -4,7 +4,6 @@
 \name{Series_to_frames}
 \alias{Series_to_frames}
 \alias{Series_to_frame}
-\alias{Series}
 \title{Series to DataFrame}
 \format{
 method

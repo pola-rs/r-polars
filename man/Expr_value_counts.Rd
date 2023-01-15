@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_value_counts}
 \alias{Expr_value_counts}
-\alias{value_counts}
 \title{Value counts}
 \format{
 Method

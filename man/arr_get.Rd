@@ -2,7 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_get}
 \alias{arr_get}
-\alias{arr.get}
+\alias{Expr_arr_get}
+\alias{Expr_arr.get}
 \alias{[.ExprListNameSpace}
 \title{Get list}
 \format{

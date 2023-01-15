@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_min}
 \alias{Expr_rolling_min}
-\alias{interpolate}
 \title{Rolling Min}
 \usage{
 Expr_rolling_min(

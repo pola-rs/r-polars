@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_nan_max}
 \alias{Expr_nan_max}
-\alias{nan_min}
 \title{max}
 \format{
 An object of class \code{character} of length 1.

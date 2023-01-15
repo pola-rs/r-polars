@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_all}
 \alias{Expr_all}
-\alias{all}
 \title{All (is true)}
 \format{
 An object of class \code{character} of length 1.

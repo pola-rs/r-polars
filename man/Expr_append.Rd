@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_append}
 \alias{Expr_append}
-\alias{append}
 \title{Append expressions}
 \format{
 a method

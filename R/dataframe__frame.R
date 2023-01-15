@@ -350,7 +350,6 @@ DataFrame.property_setters$columns =
 #' @description Get shape/dimensions of DataFrame
 #'
 #' @return two length numeric vector of c(nrows,ncols)
-#' @aliases shape
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris)$shape
@@ -382,7 +381,6 @@ DataFrame_height = method_as_property(function() {
 #' @description Get width(ncol) of DataFrame
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
@@ -400,7 +398,6 @@ DataFrame_width = method_as_property(function() {
 #' Dtypes can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtypes
@@ -416,7 +413,6 @@ DataFrame_dtypes = method_as_property(function() {
 #' Dtypes can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$schema
@@ -478,7 +474,7 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' Any modification of a DataFrame would lead to a clone anyways.
 #'
 #' @return DataFrame
-#' @aliases clone
+#' @aliases DataFrame_clone
 #' @keywords  DataFrame
 #' @examples
 #' df1 = pl$DataFrame(iris);
@@ -623,8 +619,6 @@ DataFrame_with_column = function(expr) {
 #' Limit a DataFrame
 #' @name DataFrame_limit
 #' @description take limit of n rows of query
-#'
-#' @aliases limit
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
@@ -636,7 +630,7 @@ DataFrame_limit = function(n) {
 
 
 #' filter DataFrame
-#' @aliases filter
+#' @aliases DataFrame_filter
 #' @description DataFrame$filter(bool_expr)
 #'
 #' @param bool_expr Polars expression which will evaluate to a bool pl$Series

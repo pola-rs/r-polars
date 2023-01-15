@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_append}
 \alias{Series_append}
-\alias{append}
 \title{append (default immutable)}
 \usage{
 Series_append(other, immutable = TRUE)

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_mean}
 \alias{Expr_rolling_mean}
-\alias{interpolate}
 \title{Rolling mean}
 \usage{
 Expr_rolling_mean(

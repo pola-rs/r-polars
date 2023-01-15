@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_is_unique}
 \alias{Expr_is_unique}
-\alias{is_unique}
 \title{Get mask of unique values}
 \format{
 a method

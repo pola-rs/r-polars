@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_limit}
 \alias{Expr_limit}
-\alias{limit}
 \title{Limit}
 \usage{
 Expr_limit(n = 10)

@@ -2,8 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_diff}
 \alias{arr_diff}
-\alias{arr_max}
-\alias{arr.arg_max}
+\alias{Expr_arr_diff}
+\alias{Expr_arr.diff}
 \title{Diff sublists}
 \format{
 function

@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_max}
 \alias{Series_max}
-\alias{max}
 \title{max}
 \format{
 An object of class \code{character} of length 1.

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_std}
 \alias{Expr_rolling_std}
-\alias{interpolate}
 \title{Rolling std}
 \usage{
 Expr_rolling_std(

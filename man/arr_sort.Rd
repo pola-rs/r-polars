@@ -2,8 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_sort}
 \alias{arr_sort}
-\alias{arr_get}
-\alias{arr.get}
+\alias{Expr_arr_sort}
+\alias{Expr_arr.sort}
 \title{Get list}
 \format{
 function

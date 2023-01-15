@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_var}
 \alias{Expr_var}
-\alias{var}
 \title{Get Variance}
 \format{
 a method

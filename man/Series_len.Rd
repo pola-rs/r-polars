@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_len}
 \alias{Series_len}
-\alias{len}
 \title{Series_len}
 \format{
 An object of class \code{character} of length 1.

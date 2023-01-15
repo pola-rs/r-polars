@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_var}
 \alias{Expr_rolling_var}
-\alias{interpolate}
 \title{Rolling var}
 \usage{
 Expr_rolling_var(

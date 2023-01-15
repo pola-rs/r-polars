@@ -3,9 +3,7 @@
 \docType{data}
 \name{Expr_count}
 \alias{Expr_count}
-\alias{count}
 \alias{Expr_len}
-\alias{len}
 \title{Count values (len is a alias)}
 \format{
 An object of class \code{character} of length 1.

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_std}
 \alias{Expr_std}
-\alias{std}
 \title{Get Standard Deviation}
 \format{
 a method

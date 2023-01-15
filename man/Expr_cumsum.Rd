@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_cumsum}
 \alias{Expr_cumsum}
-\alias{cumsum}
 \title{Cumulative sum}
 \format{
 a method
