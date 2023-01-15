@@ -11,7 +11,7 @@ An object of class \code{character} of length 1.
 \usage{
 Expr_is_not
 
-\method{!}{Expr}(e1, e2)
+\method{!}{Expr}(x)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

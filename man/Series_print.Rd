@@ -6,6 +6,8 @@
 \title{Print Series}
 \usage{
 \method{print}{Series}(x, ...)
+
+Series_print()
 }
 \arguments{
 \item{x}{Series}
@@ -14,11 +16,16 @@
 }
 \value{
 invisible(self)
+
+self
 }
 \description{
+Print Series
+
 Print Series
 }
 \examples{
 print(pl$Series(1:3))
+pl$Series(1:3)
 }
 \keyword{Series}

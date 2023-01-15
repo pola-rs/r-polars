@@ -25,7 +25,6 @@ DataFrame
 Create new DataFrame
 }
 \examples{
-
 pl$DataFrame(
   a = pl$list(c(1,2,3,4,5)), #NB if first column should be a list, wrap it in a Series
   b = 1:5,

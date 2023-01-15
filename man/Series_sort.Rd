@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_sort}
 \alias{Series_sort}
-\alias{Series}
 \title{Sort this Series}
 \usage{
 Series_sort(reverse = FALSE, in_place = FALSE)

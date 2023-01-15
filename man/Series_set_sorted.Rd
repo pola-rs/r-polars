@@ -4,7 +4,6 @@
 \alias{Series_set_sorted}
 \alias{is_sorted}
 \alias{Series}
-\alias{set_sorted}
 \title{is_sorted}
 \usage{
 Series_set_sorted(reverse = FALSE, in_place = FALSE)

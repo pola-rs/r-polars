@@ -27,7 +27,6 @@ uni-modal continuous distributions, a skewness value greater than zero means
 that there is more weight in the right tail of the distribution. The
 function \code{skewtest} can be used to determine if the skewness value
 is close enough to zero, statistically speaking.
-
 see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
 }
 \examples{
