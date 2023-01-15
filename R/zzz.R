@@ -2,7 +2,6 @@
 # This is important as namespaces of other files are modified here.
 # This modification happens only on building the package unlike .onLoad which occours on loading the
 # package.
-
 print(paste(
   "Modifying extendr bindings,",
   "originals converted to pure functions and saved to rpolars:::.pr"
@@ -39,12 +38,9 @@ print(paste(
 #   invisible(NULL)
 # })
 
-
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
 replace_private_with_pub_methods(DataFrame, "^DataFrame_")
-
-
 
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
@@ -52,10 +48,9 @@ env = GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
 
-
 # LazyFrame
 macro_add_syntax_check_to_class ("LazyFrame")
-replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
+replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 # env = rpolars:::LazyFrame
 # env$collect = Lazy_collect
 # env$select = Lazy_select
@@ -64,7 +59,6 @@ replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
 # env$join    = Lazy_join
 # env$limit   = Lazy_limit
 # env$describe_optimized_plan = Lazy_describe_optimized_plan
-
 
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")
@@ -82,18 +76,14 @@ macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(Expr, "^Expr_")
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
 
-
 #Series
 macro_add_syntax_check_to_class("Series")
 replace_private_with_pub_methods(Series, "^Series_")
 
 
 
-
-
 #expression constructors
 move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
-
 
 
 #pl$[readers]

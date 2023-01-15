@@ -519,7 +519,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 
 
 
-  str = paste(sep="\n",
+  string = paste(sep="\n",
     "function(self) {",
     "  env = new.env()",
     paste(collapse="\n",sapply(seq_along(class_methods), function(i) {
@@ -537,8 +537,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     rm(list=class_methods, envir = parent.frame())
   }
 
-  cat("new subnamespace: ", class_pattern, "\n", str)
-  eval(parse(text=str))
+  #cat("new subnamespace: ", class_pattern, "\n", string)
+  eval(parse(text=string))
 
 }
 

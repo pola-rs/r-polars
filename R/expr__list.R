@@ -31,7 +31,7 @@ ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$sum())
-ExprArr_sum      = function() .pr$Expr$lst_sum(self)
+ExprArr_sum = function() .pr$Expr$lst_sum(self)
 
 #' Max lists
 #' @name arr_max
