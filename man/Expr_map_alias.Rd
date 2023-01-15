@@ -14,6 +14,8 @@ Expr
 Rename the output of an expression by mapping a function over the root name.
 }
 \examples{
-pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
+pl$DataFrame(list(alice=1:3))$select(
+  pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
+)
 }
 \keyword{Expr}

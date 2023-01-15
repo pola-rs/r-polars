@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_is_first}
 \alias{Expr_is_first}
-\alias{Expr_is_unique}
 \title{Get a mask of the first unique value.}
 \format{
 a method

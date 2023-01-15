@@ -18,6 +18,12 @@ This is similar to a groupby + aggregation + self join.
 Or similar to \verb{window functions in Postgres <https://www.postgresql.org/docs/current/tutorial-window.html>}_.
 }
 \examples{
-pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
+pl$DataFrame(
+  val = 1:5,
+  a = c("+","+","-","-","+"),
+  b = c("+","-","+","-","+"))
+)$select(
+  pl$col("val")$count()$over("a","b")
+)
 }
 \keyword{Expr}

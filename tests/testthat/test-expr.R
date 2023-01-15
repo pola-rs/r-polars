@@ -356,13 +356,17 @@ test_that("and or is_in xor", {
 
   #NA_int == NA_int
   expect_identical(
-    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_integer_)))$as_data_frame()[[1L]],
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
+      pl$col("a")$is_in(pl$lit(NA_integer_))
+    )$as_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 
   #both R and polars aliases NA_int_ with NA_real_ in comparisons
   expect_identical(
-    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]],
+    pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
+      pl$col("a")$is_in(pl$lit(NA_real_))
+    )$as_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 

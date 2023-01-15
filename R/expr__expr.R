@@ -317,7 +317,6 @@ Expr_all = "use_extendr_wrapper"
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
-#' @aliases Expr_any
 #' @examples
 #' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
 Expr_any = "use_extendr_wrapper"
@@ -350,7 +349,7 @@ Expr_len = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' Drop null values.
-#' Similar to R syntax x[!(is.na(x) & !is.nan(x))]
+#' Similar to R syntax `x[!(is.na(x) & !is.nan(x))]`
 #' @return Expr
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
@@ -362,7 +361,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' Drop floating point NaN values.
-#' Similar to R syntax x[!is.nan(x)]
+#' Similar to R syntax `x[!is.nan(x)]`
 #' @details
 #'
 #'  Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
@@ -897,7 +896,9 @@ Expr_keep_name = "use_extendr_wrapper"
 #' @aliases map_alias
 #' @name Expr_map_alias
 #' @examples
-#' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
+#' pl$DataFrame(list(alice=1:3))$select(
+#'   pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
+#' )
 Expr_map_alias = function(fun) {
   if (
     !rpolars_optenv$no_messages &&
@@ -1315,7 +1316,6 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
-#' @aliases Expr_arg_min
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @name Expr_arg_min
@@ -1614,7 +1614,7 @@ Expr_fill_nan = function(expr = NULL) {
 
 #' Get Standard Deviation
 #'
-#' @param ddof integer in range [0;255] degrees of freedom
+#' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
 #' @name Expr_std
@@ -1628,7 +1628,7 @@ Expr_std = function(ddof = 1) {
 
 #' Get Variance
 #'
-#' @param ddof integer in range [0;255] degrees of freedom
+#' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
 #' @name Expr_var
@@ -1648,7 +1648,7 @@ Expr_var = function(ddof = 1) {
 #'
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 Expr_max = "use_extendr_wrapper"
@@ -1677,7 +1677,7 @@ Expr_min = "use_extendr_wrapper"
 #' Get maximum value.
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NaN,Inf,3)))$select(pl$col("x")$nan_max()$is_nan()) #is true
 Expr_nan_max = "use_extendr_wrapper"
@@ -1825,7 +1825,13 @@ Expr_last = "use_extendr_wrapper"
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
+#' pl$DataFrame(
+#'   val = 1:5,
+#'   a = c("+","+","-","-","+"),
+#'   b = c("+","-","+","-","+"))
+#' )$select(
+#'   pl$col("val")$count()$over("a","b")
+#' )
 Expr_over = function(...) {
 
   #combine arguments in proto expression array
@@ -1841,7 +1847,6 @@ Expr_over = function(...) {
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases Expr_is_unique
 #' @name Expr_is_unique
 #' @format a method
 #'
@@ -1867,7 +1872,6 @@ Expr_is_unique = "use_extendr_wrapper"
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases Expr_is_unique
 #' @name Expr_is_first
 #' @format a method
 #'
@@ -2114,7 +2118,9 @@ Expr_pow = function(exponent) {
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]]
+#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
+#'   pl$col("a")$is_in(pl$lit(NA_real_))
+#' )$as_data_frame()[[1L]]
 #'
 #'
 #'
@@ -2163,7 +2169,8 @@ Expr_repeat_by = function(by) {
 #' df$select(pl$col("num")$is_between(2,4))
 #' df$select(pl$col("num")$is_between(2,4,TRUE))
 #' df$select(pl$col("num")$is_between(2,4,c(F,T)))
-#' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6)) #start end can be a vector/expr with same length as column
+#' #start end can be a vector/expr with same length as column
+#' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6))
 Expr_is_between = function(start, end, include_bounds = FALSE) {
 
   # check
@@ -2244,7 +2251,9 @@ Expr_reinterpret = function(signed = TRUE) {
 #' @return Expr
 #' @aliases inspect
 #' @examples
-#' pl$select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
+#' pl$select(pl$lit(1:5)$inspect(
+#'   "before dropping half the column it was:{}and not it is dropped")$head(2)
+#' )
 Expr_inspect = function(fmt = "{}") {
 
   #check fmt and create something to print before and after printing Series.

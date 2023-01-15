@@ -10,7 +10,7 @@ a method
 Expr_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer in range \link{0;255} degrees of freedom}
+\item{ddof}{integer in range \verb{[0;255]} degrees of freedom}
 }
 \value{
 Expr (f64 scalar)

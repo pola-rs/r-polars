@@ -559,7 +559,6 @@ Series_name = method_as_property(function() {
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases Expr_any
 #' @name Series_any
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
@@ -591,7 +590,6 @@ Series_arg_max = "use_extendr_wrapper"
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases Expr_arg_min
 #' @name Series_arg_min
 #' @examples
 #' pl$Series(c(5,1))$arg_min()
@@ -604,7 +602,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' Any modification of a Series should lead to a clone anyways.
 #'
 #' @return Series
-#' @aliases DataFrame_clone
+#' @aliases Series_clone
 #' @keywords  Series
 #' @examples
 #' s1 = pl$Series(1:3);

@@ -20,6 +20,8 @@ Print the value that this expression evaluates to and pass on the value.
 The printing will happen when the expression evaluates, not when it is formed.
 }
 \examples{
-pl$select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
+pl$select(pl$lit(1:5)$inspect(
+  "before dropping half the column it was:{}and not it is dropped")$head(2)
+)
 }
 \keyword{Expr}

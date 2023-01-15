@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_clone}
 \alias{Series_clone}
-\alias{DataFrame_clone}
 \title{Clone a Series}
 \format{
 An object of class \code{character} of length 1.

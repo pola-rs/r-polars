@@ -118,42 +118,42 @@ DataFrame
 
 pl$DataFrame = function(..., make_names_unique= TRUE) {
 
-  data = list2(...)
+  largs = list2(...)
 
   #no args crete empty DataFrame
-  if(length(data)==0L) return(.pr$DataFrame$new())
+  if(length(largs)==0L) return(.pr$DataFrame$new())
 
   #pass through if already a DataFrame
-  if(inherits(data[[1L]],"DataFrame")) return(data[[1L]])
+  if(inherits(largs[[1L]],"DataFrame")) return(largs[[1L]])
 
   #if input is one list of expression unpack this one
-  if(length(data)==1L && is.list(data[[1]])) {
-    data = data[[1L]]
+  Data = if(length(largs)==1L && is.list(largs[[1]])) {
+    largs = largs[[1L]]
   }
 
   #input guard
-  if(!is_DataFrame_data_input(data)) {
+  if(!is_DataFrame_data_input(largs)) {
     stopf("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
-  if (inherits(data,"data.frame")) {
-    data = as.data.frame(data)
+  if (inherits(largs,"data.frame")) {
+    largs = as.data.frame(largs)
   }
 
 
   ##step 00 get max length to allow cycle 1-length inputs
-  data_lengths = sapply(data,length)
-  data_lengths_max = if(is.integer(data_lengths)) max(data_lengths) else NULL
+  largs_lengths = sapply(largs,length)
+  largs_lengths_max = if(is.integer(largs_lengths)) max(largs_lengths) else NULL
 
   ##step1 handle column names
   #keys are tentative new column names
   #fetch keys from names, if missing set as NA
-  keys = names(data)
-  if(length(keys)==0) keys = rep(NA_character_, length(data))
+  keys = names(largs)
+  if(length(keys)==0) keys = rep(NA_character_, length(largs))
 
   ##step2
   #if missing key use pl$Series name or generate new
-  keys = mapply(data,keys, FUN = function(column,key) {
+  keys = mapply(largs,keys, FUN = function(column,key) {
 
     if(is.na(key) || nchar(key)==0) {
       if(inherits(column, "Series")) {
@@ -182,14 +182,14 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 
   ##step 4
   #buildDataFrameone column at the time
-  self = .pr$DataFrame$new_with_capacity(length(data))
-  mapply(data,keys, FUN = function(column, key) {
+  self = .pr$DataFrame$new_with_capacity(length(largs))
+  mapply(largs,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
       .pr$Series$rename_mut(column, key)
 
       unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {
-      if(length(column)==1L && isTRUE(data_lengths_max > 1L)) column = rep(column,data_lengths_max)
+      if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) column = rep(column,largs_lengths_max)
       unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
     }
     return(NULL)
@@ -261,7 +261,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return value
 #' @keywords DataFrame
-#' @details settable rpolars object properties may appear to be R objects, but they are not. See [[method_name]] example
+#' @details settable rpolars object properties may appear to be R objects, but they are not.
+#' See `[[method_name]]` example
 #'
 #' @export
 #' @examples
