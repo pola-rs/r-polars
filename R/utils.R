@@ -450,6 +450,7 @@ restruct_list = function(l) {
   if(!length(structs_found_list)) return(l)
   structs_found_list = structs_found_list |> (\(x) x[order(-sapply(x,length))])()
 
+  val = NULL # to satisyfy R CMD check no undefined global
   #restruct all tags in list
   for (x in structs_found_list) {
     l_access_str = paste0("l",paste0("[[",x,"]]",collapse = ""))
