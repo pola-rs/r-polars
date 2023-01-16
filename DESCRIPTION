@@ -5,7 +5,7 @@ Depends: R (>= 4.1.0)
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
