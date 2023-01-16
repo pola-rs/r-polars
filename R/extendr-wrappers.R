@@ -7,6 +7,7 @@
 #   .Call("wrap__make_rpolars_wrappers", use_symbols = TRUE, package_name = "rpolars")
 
 #' @docType package
+#' @usage NULL
 #' @useDynLib rpolars, .registration = TRUE
 NULL
 
