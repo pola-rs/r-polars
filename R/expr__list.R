@@ -122,10 +122,9 @@ ExprArr_unique   = function() .pr$Expr$lst_unique(self)
 
 
 #' concat another list
-#' @name concat
 #' @description Concat the arrays in a Series dtype List in linear time.
 #' @param other Rlist, Expr or column of same tyoe as self.
-#'
+#' @name arr_concat
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
@@ -167,12 +166,16 @@ ExprArr_get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = 
 #' Get list
 #' @rdname arr_get
 #' @export
+#' @param x ExprArrNameSpace
+#' @param index value to get
+#' @details
+#' `[.ExprArrNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr[0])
 #' df$select(pl$col("a")$arr[c(2,0,-1)])
-`[.ExprArrNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
-  x$get(idx)
+`[.ExprArrNameSpace` <- function(x, index) { #S3 sub class-name set in zzz.R
+  x$get(index)
 }
 
 
@@ -363,7 +366,6 @@ ExprArr_tail = function(n = 5L) {
 # no longer needed
 
 #' List to Struct
-#'
 #' @param n_field_strategy Strategy to determine the number of fields of the struct.
 #'  default = 'first_non_null' else 'max_width'
 #' @param name_generator an R function that takes a scalar column number

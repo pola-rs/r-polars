@@ -42,9 +42,11 @@ Expr_print = function() {
   invisible(self)
 }
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
+#' @param x Expr
+#' @param pattern code-stump as string to auto-complete
+#' @export
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(Expr, pattern = pattern ),"()")
@@ -85,6 +87,8 @@ Expr_add = function(other) {
 }
 #' @export
 #' @rdname Expr_add
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "+.Expr" <- function(e1,e2) if(missing(e2)) e1 else e1$add(e2)
 
 #' Div
@@ -102,6 +106,8 @@ Expr_div = function(other) {
 }
 #' @export
 #' @rdname Expr_div
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "/.Expr" <- function(e1,e2) e1$div(e2)
 
 #' Sub
@@ -120,6 +126,8 @@ Expr_sub = function(other) {
 }
 #' @export
 #' @rdname Expr_sub
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "-.Expr" <- function(e1,e2) if(missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
 
 #' Mul *
@@ -138,6 +146,8 @@ Expr_mul = Expr_mul = function(other) {
 
 #' @export
 #' @rdname Expr_mul
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "*.Expr" <- function(e1,e2) e1$mul(e2)
 
 
@@ -146,6 +156,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
+#' @usage Expr_is_not(other)
 #' @examples
 #' #two syntaxes same result
 #' pl$lit(TRUE)$is_not()
@@ -153,6 +164,7 @@ Expr_mul = Expr_mul = function(other) {
 Expr_is_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_is_not
+#' @param x Expr
 "!.Expr" <- function(x) x$is_not()
 
 #' Less Than <
@@ -171,6 +183,8 @@ Expr_lt = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
 "<.Expr" <- function(e1,e2) e1$lt(e2)
 
@@ -190,6 +204,8 @@ Expr_gt = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
 ">.Expr" <- function(e1,e2) e1$gt(e2)
 
@@ -209,6 +225,8 @@ Expr_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
 "==.Expr" <- function(e1,e2) e1$eq(e2)
 
@@ -229,6 +247,8 @@ Expr_neq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
 "!=.Expr" <- function(e1,e2) e1$neq(e2)
 
@@ -248,6 +268,8 @@ Expr_lt_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
 "<=.Expr" <- function(e1,e2) e1$lt_eq(e2)
 
@@ -268,6 +290,8 @@ Expr_gt_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
 ">=.Expr" <- function(e1,e2) e1$gt_eq(e2)
 
@@ -295,10 +319,11 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' Rename the output of an expression.
 #' @param name string new name of output
 #' @return Expr
+#' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
 
-#' All (is true)
+#' All, is true
 #' @keywords Expr
 #' @description
 #' Check if all boolean values in a Boolean column are `TRUE`.
@@ -309,7 +334,13 @@ Expr_alias = "use_extendr_wrapper"
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$all()
+#' )
 Expr_all = "use_extendr_wrapper"
 
 #' Any (is true)
@@ -318,7 +349,13 @@ Expr_all = "use_extendr_wrapper"
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$any()
+#' )
 Expr_any = "use_extendr_wrapper"
 
 
@@ -331,7 +368,13 @@ Expr_any = "use_extendr_wrapper"
 #' Similar to R length()
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$count()
+#' )
 Expr_count = "use_extendr_wrapper"
 
 #' Count values (len is a alias)
@@ -339,8 +382,14 @@ Expr_count = "use_extendr_wrapper"
 #' @rdname Expr_count
 #' @return Expr
 #' @examples
-#' #same as
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$len(),
+#'   pl$col("all")$first()$len()$alias("all_first")
+#' )
 Expr_len = "use_extendr_wrapper"
 
 
@@ -510,8 +559,13 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
 #'Depending on the context it has the following behavior:
 #' -Selection
+#'
 #' @param f r function see details depending on context
 #' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#' @param strict_return_type bool (default TRUE), error if not correct datatype returned from R,
+#' if FALSE will convert to a Polars Null and carry on.
+#' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
+#' but convert result to a polars Null and carry on.
 #'
 #' @details
 #'
@@ -692,6 +746,7 @@ Expr_reverse = function() {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @usage Expr_and(other)
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
@@ -706,6 +761,8 @@ Expr_and = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @param other Expr or into Expr
+#' @usage Expr_or(other)
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
@@ -720,6 +777,7 @@ Expr_or = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
 Expr_xor = "use_extendr_wrapper"
@@ -769,7 +827,9 @@ Expr_cast = function(dtype, strict = TRUE) {
 #' Reverse exponentiation `%**%`(in R `** == ^`)
 #' @description Raise a base to the power of the expression as exponent.
 #' @keywords Expr
+#'
 #' @param base real or Expr, the value of the base, self is the exponent
+#'
 #' @return Expr
 #' @name Expr_rpow
 #' @details  do not use `**`, R secretly parses that just as if it was a `^`
@@ -787,8 +847,14 @@ Expr_rpow = function(base) {
   expr = .pr$Expr$pow(base,self)
 
 }
+
+#' @rdname Expr_rpow
 #' @export
-"%**%" = function(lhs,rhs) rhs^lhs #some default method of what reverse exponentiation is (as python ** operator)
+#' @param e1 value where ** operator is defined
+#' @param e2 value where ** operator is defined
+"%**%" = function(e1,e2) e2^e1 #some default method of what reverse exponentiation is (as python ** operator)
+
+#' @rdname Expr_rpow
 #' @export
 "%**%.Expr" <- function(e1,e2) e1$rpow(e2)
 
@@ -890,6 +956,9 @@ Expr_keep_name = "use_extendr_wrapper"
 
 #TODO contribute polars, map_alias unwrap user function errors instead of passing them back
 #' Map alias of expression with an R function
+#'
+#' @param fun an R function which takes a string as input and return a string
+#'
 #' @description Rename the output of an expression by mapping a function over the root name.
 #' @keywords Expr
 #' @return Expr
@@ -1015,6 +1084,9 @@ Expr_slice = function(offset, length = NULL) {
 
 #' Append expressions
 #' @description This is done by adding the chunks of `other` to this `output`.
+#'
+#' @param other Expr, into Expr
+#' @param upcast bool upcast to, if any supertype of two non equal datatypes.
 #'
 #' @keywords Expr
 #' @return Expr
@@ -1400,7 +1472,7 @@ Expr_search_sorted = function(element) {
 #'
 #' # by two columns/expressions
 #' df$select(
-#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(T,F))
+#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
 #' )
 #'
 #'
@@ -1427,8 +1499,8 @@ Expr_search_sorted = function(element) {
 #'     pl$col("ab")$sort_by("v3")$alias("ab3"),
 #'     pl$col("ab")$sort_by("v2")$alias("ab2"),
 #'     pl$col("ab")$sort_by("v1")$alias("ab1"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
 #'   )$to_list(),
 #'   list(
 #'     ab4 = l$ab[order(l$v4)],
@@ -1436,7 +1508,7 @@ Expr_search_sorted = function(element) {
 #'     ab2 = l$ab[order(l$v2)],
 #'     ab1 = l$ab[order(l$v1)],
 #'     ab13FT= l$ab[order(l$v3,rev(l$v1))],
-#'     ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+#'     ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
 #'   )
 #' )
 Expr_sort_by = function(by, reverse = FALSE) {
@@ -1451,7 +1523,7 @@ Expr_sort_by = function(by, reverse = FALSE) {
 #pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
 #pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 #' Take values by index.
-#' @param indeces R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
+#' @param indices R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
 #' @return Expr
 #' @keywords Expr
 #' @aliases take
@@ -1478,6 +1550,7 @@ Expr_take = function(indices) {
 #' @format a method
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @usage Expr_shift(periods)
 #' @examples
 #' pl$select(
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
@@ -1594,9 +1667,11 @@ Expr_forward_fill = function(limit = NULL) {
 
 
 #' Fill Nulls Forward
+#'
+#' @param expr Expr or into Expr, value to fill NaNs with
+#'
 #' @description Fill missing values with last seen values.
 #'
-#' @param Expr or `Into<Expr>`  the value to replace NaN with. Default NULL is NA/Null.
 #' @return Expr
 #' @keywords Expr
 #' @aliases fill_nan
@@ -1604,7 +1679,6 @@ Expr_forward_fill = function(limit = NULL) {
 #' @format a method
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
-#'
 #' @examples
 #' l = list(a=c(1,NaN,NaN,3))
 #' pl$DataFrame(l)$select(
@@ -1933,7 +2007,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' Get quantile value.
 #'
 #' @param quantile numeric/Expression 0.0 to 1.0
-#' @param inerpolation string value from choices "nearest", "higher",
+#' @param interpolation string value from choices "nearest", "higher",
 #' "lower", "midpoint", "linear"
 #' @return Expr
 #' @keywords Expr
@@ -2094,7 +2168,7 @@ Expr_limit = function(n=10) {
 #' Exponentiation `^` or `**`
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
-#' @param base real value of base
+#' @param exponent exponent
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow
@@ -2107,8 +2181,7 @@ Expr_limit = function(n=10) {
 #'   pl$lit(2) ^ (pl$col("a"))
 #' )$get_column("literal")$to_r()== 2^(-1:3)
 Expr_pow = function(exponent) {
-  if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
-  .pr$Expr$pow(self,exponent)
+  .pr$Expr$pow(self,wrap_e(exponent))
 }
 #' @export
 "^.Expr" <- function(e1,e2) e1$pow(e2)
@@ -2120,7 +2193,7 @@ Expr_pow = function(exponent) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
-#' @aliases is_in
+#' @usage Expr_is_in(other)
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
@@ -2142,7 +2215,6 @@ Expr_is_in= "use_extendr_wrapper"
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
 #' @return Expr
-#' @aliases repeat_by
 #' @examples
 #' df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
 #' df$select(pl$col("a")$repeat_by("n"))
@@ -2169,12 +2241,11 @@ Expr_repeat_by = function(by) {
 #' @details alias the column to 'in_between'
 #' This function is equivalent to a combination of < <= >= and the &-and operator.
 #' @return Expr
-#' @aliases is_between
 #' @examples
 #' df = pl$DataFrame(list(num = 1:5))
 #' df$select(pl$col("num")$is_between(2,4))
 #' df$select(pl$col("num")$is_between(2,4,TRUE))
-#' df$select(pl$col("num")$is_between(2,4,c(F,T)))
+#' df$select(pl$col("num")$is_between(2,4,c(FALSE, TRUE)))
 #' #start end can be a vector/expr with same length as column
 #' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6))
 Expr_is_between = function(start, end, include_bounds = FALSE) {
@@ -3040,7 +3111,10 @@ Expr_skew = function(bias = TRUE) {
 #' Kurtosis
 #' @description
 #' Compute the kurtosis (Fisher or Pearson) of a dataset.
-#' @param bias If False, then the calculations are corrected for statistical bias.
+#'
+#' @param fisher bool se details
+#' @param bias bool, If FALSE, then the calculations are corrected for statistical bias.
+#'
 #' @return  Expr
 #' @aliases kurtosis
 #' @keywords Expr
@@ -3068,8 +3142,8 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 #' Clip
 #' @description
 #' Clip (limit) the values in an array to a `min` and `max` boundary.
-#' @param min_val Minimum Value, ints and floats or any literal expression of ints and floats
-#' @param max_val Maximum Value, ints and floats or any literal expression of ints and floats
+#' @param min Minimum Value, ints and floats or any literal expression of ints and floats
+#' @param max Maximum Value, ints and floats or any literal expression of ints and floats
 #' @return  Expr
 #' @aliases clip
 #' @keywords Expr
@@ -3600,13 +3674,13 @@ Expr_rep = function(n, rechunk = TRUE) {
 #' extend series with repeated series
 #' @description
 #' Extend a series with a repeated series or value.
+#' @param expr Expr or into Expr
 #' @param n  Numeric the number of times to repeat, must be non-negative and finite
 #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
 #' @param upcast bool default = TRUE, passed to self$append(), if TRUE non identical types
 #' will be casted to common super type if any. If FALSE or no common super type
 #' throw error.
 #' @return  Expr
-#' @aliases Expr_rep_extend
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3656,9 +3730,9 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
-#' @param    multithreaded:
+#' @param multithreaded
 #' Better to turn this off in the aggregation context, as it can lead to contention.
-#' @param sort:
+#' @param sort
 #' Ensure the output is sorted from most values to least.
 #' @format Method
 #' @keywords Expr
@@ -3685,6 +3759,9 @@ Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
 Expr_unique_counts = "use_extendr_wrapper"
 
 #' Natural Log
+#'
+#' @param base numeric base value for log, default base::exp(1)
+#'
 #' @description  Compute the base x logarithm of the input array, element-wise.
 #' @keywords Expr
 #' @return Expr
@@ -3805,7 +3882,7 @@ Expr_list = "use_extendr_wrapper"
 #'    e= c(-112L, 2L, 129L),
 #'    f= c("a", "b", "c"),
 #'    g= c(0.1, 1.32, 0.12),
-#'    h= c(T, NA, F)
+#'    h= c(TRUE, NA, FALSE)
 #'  )$with_column( pl$col("b")$cast(pl$Int64) *32L
 #'  )$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"

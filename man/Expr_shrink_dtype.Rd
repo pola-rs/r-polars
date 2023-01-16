@@ -28,7 +28,7 @@ This can be used to reduce memory pressure.
    e= c(-112L, 2L, 129L),
    f= c("a", "b", "c"),
    g= c(0.1, 1.32, 0.12),
-   h= c(T, NA, F)
+   h= c(TRUE, NA, FALSE)
  )$with_column( pl$col("b")$cast(pl$Int64) *32L
  )$select(pl$all()$shrink_dtype())
 }

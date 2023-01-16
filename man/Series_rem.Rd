@@ -7,6 +7,9 @@
 \usage{
 Series_rem(other)
 }
+\arguments{
+\item{other}{Series or into Series}
+}
 \value{
 Series
 }

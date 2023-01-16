@@ -78,10 +78,12 @@ Series_print = function() {
   invisible(self)
 }
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords Series
+#' @param x Series
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.Series = function(x, pattern= "") {
   get_method_usages(Series, pattern = pattern)
 }
@@ -148,6 +150,7 @@ pl$Series = function(x, name=NULL){
 #' add Series
 #' @name Series_add
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases add
 #' @keywords  Series
@@ -162,11 +165,14 @@ Series_add = function(other) {
 }
 #' @export
 #' @rdname Series_add
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "+.Series" <- function(s1,s2) wrap_s(s1)$add(s2)
 
 #' sub Series
 #' @name Series_sub
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases sub
 #' @keywords  Series
@@ -181,11 +187,14 @@ Series_sub = function(other) {
 }
 #' @export
 #' @rdname Series_sub
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2)
 
 #' div Series
 #' @name Series_div
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases div
 #' @keywords  Series
@@ -200,11 +209,14 @@ Series_div = function(other) {
 }
 #' @export
 #' @rdname Series_div
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "/.Series" <- function(s1,s2) wrap_s(s1)$div(s2)
 
 #' mul Series
 #' @name Series_mul
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases mul
 #' @keywords  Series
@@ -219,10 +231,13 @@ Series_mul = function(other) {
 }
 #' @export
 #' @rdname Series_mul
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
 
 #' rem Series
 #' @description Series arithmetics, remainder
+#' @param other Series or into Series
 #' @return Series
 #' @keywords Series
 #' @aliases rem
@@ -262,6 +277,8 @@ Series_compare = function(other, op) {
 }
 #' @export
 #' @rdname Series_compare
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "==.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"equal"))
 #' @export
 #' @rdname Series_compare
@@ -512,7 +529,8 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
-#' pl$set_rpolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
+#'  #must deactivate this to allow to use immutable=FALSE
+#' pl$set_rpolars_options(strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 #' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 Series_append = function(other, immutable = TRUE) {
@@ -522,7 +540,7 @@ Series_append = function(other, immutable = TRUE) {
     if(rpolars_optenv$strictly_immutable) {
       stopf(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_rpolars_options(strictly_immutable = F)`"
+        "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self,other))
@@ -532,12 +550,12 @@ Series_append = function(other, immutable = TRUE) {
 
 #' Alias
 #' @description Change name of Series
-#'
 #' @param name a String as the new name
 #' @return Series
 #' @keywords Series
 #' @aliases alias
 #' @name Series_alias
+#' @usage Series_alias(name)
 #' @examples
 #' pl$Series(1:3,name = "alice")$alias("bob")
 Series_alias = "use_extendr_wrapper"
@@ -718,7 +736,7 @@ Series_is_sorted = function(reverse = FALSE, nulls_last= NULL) {
 #' @keywords Series
 #' @param reverse bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_rpolars_options(strictly_immutable = F) otherwise an error will be thrown. If FALSE
+#' pl$set_rpolars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases Series_set_sorted
@@ -729,7 +747,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = F)`"
+      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
 
@@ -749,7 +767,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
@@ -759,7 +777,7 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = F)`"
+      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
   if(!in_place) {
@@ -809,7 +827,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -824,7 +842,7 @@ Series_rename = function(name, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = F)`"
+      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
 

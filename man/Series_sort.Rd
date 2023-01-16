@@ -11,7 +11,7 @@ Series_sort(reverse = FALSE, in_place = FALSE)
 
 \item{in_place}{bool sort mutable in-place, breaks immutability
 If true will throw an error unless this option has been set:
-\code{pl$set_rpolars_options(strictly_immutable = F)}}
+\code{pl$set_rpolars_options(strictly_immutable = FALSE)}}
 }
 \value{
 Series

@@ -7,9 +7,9 @@
 pstop(err, call = sys.call(1L))
 }
 \arguments{
-\item{call}{calling context}
+\item{err}{error msg string}
 
-\item{msg}{error msg string}
+\item{call}{calling context}
 }
 \value{
 throws an error

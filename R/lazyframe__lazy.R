@@ -89,21 +89,12 @@
 LazyFrame
 
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords LazyFrame
-#' @examples
-#'
-#'
-#'  # e = pl$lit("any polars object")$e$
-#'
-#'
-#' #place cursor after $ this line and press tab
-#'
-#' #manually call like this (should never be needed)
-#' # rpolars:::.DollarNames.Expr
-#' 2+2
+#' @param x LazyFrame
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.LazyFrame = function(x, pattern = "") {
   paste0(ls(LazyFrame, pattern = pattern ),"()")
 }
@@ -132,6 +123,7 @@ print.LazyFrame = function(x, ...) {
 #' @return self
 #' @export
 #'
+#' @usage LazyFrame_print(x)
 #' @examples  pl$DataFrame(iris)$lazy()$print()
 LazyFrame_print = "use_extendr_wrapper"
 
@@ -177,6 +169,7 @@ LazyFrame_with_columns = function(...) {
 #' @description add or replace columns of LazyFrame
 #' @keywords LazyFrame
 #' @param expr one Expr or string naming a column
+#' @usage LazyFrame_with_column(expr)
 #' @return A new `LazyFrame` object with add/modified column.
 LazyFrame_with_column = "use_extendr_wrapper"
 
@@ -185,6 +178,7 @@ LazyFrame_with_column = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @param expr one Expr or string naming a column
 #' @return A new `LazyFrame` object with add/modified column.
+#' @usage LazyFrame_filter(expr)
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"
 

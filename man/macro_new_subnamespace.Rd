@@ -11,7 +11,7 @@ macro_new_subnamespace(class_pattern, subclass_env = NULL, remove_f = TRUE)
 
 \item{subclass_env}{optional subclass of}
 
-\item{drop_f}{drop sourced functions from package ns after bundling into sub ns}
+\item{remove_f}{drop sourced functions from package ns after bundling into sub ns}
 }
 \value{
 A function which returns a subclass environment of bundled class functions.

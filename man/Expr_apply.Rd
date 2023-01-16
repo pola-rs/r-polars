@@ -15,6 +15,12 @@ Expr_apply(
 \item{f}{r function see details depending on context}
 
 \item{return_type}{NULL or one of pl$dtypes, the output datatype, NULL is the same as input.}
+
+\item{strict_return_type}{bool (default TRUE), error if not correct datatype returned from R,
+if FALSE will convert to a Polars Null and carry on.}
+
+\item{allow_fail_eval}{bool (default FALSE), if TRUE will not raise user function error
+but convert result to a polars Null and carry on.}
 }
 \value{
 Expr

@@ -7,6 +7,9 @@
 \usage{
 Expr_map_alias(fun)
 }
+\arguments{
+\item{fun}{an R function which takes a string as input and return a string}
+}
 \value{
 Expr
 }

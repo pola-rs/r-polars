@@ -1,14 +1,13 @@
 
 
 #' @title concat polars objects
-#'
+#' @name internal_concat
 #' @param l list of DataFrame, or Series, LazyFrame or Expr
 #' @param rechunk perform a rechunk at last
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally
 #' @param parallel BOOL default TRUE, only used for LazyFrames
 #'
 #' @return DataFrame, or Series, LazyFrame or Expr
-#' @export
 #'
 #' @examples
 #' #vertical

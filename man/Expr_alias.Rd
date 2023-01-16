@@ -8,7 +8,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_alias
+Expr_alias(name)
 }
 \arguments{
 \item{name}{string new name of output}

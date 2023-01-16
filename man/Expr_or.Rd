@@ -8,10 +8,10 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_or
+Expr_or(other)
 }
 \arguments{
-\item{other}{literal or Robj which can become a literal}
+\item{other}{Expr or into Expr}
 }
 \value{
 Expr

@@ -4,12 +4,21 @@
 \alias{Expr_rpow}
 \alias{rpow}
 \alias{\%**\%}
+\alias{\%**\%.Expr}
 \title{Reverse exponentiation \verb{\%**\%}(in R \verb{** == ^})}
 \usage{
 Expr_rpow(base)
+
+e1 \%**\% e2
+
+`\%**\%.Expr`(e1, e2)
 }
 \arguments{
 \item{base}{real or Expr, the value of the base, self is the exponent}
+
+\item{e1}{value where ** operator is defined}
+
+\item{e2}{value where ** operator is defined}
 }
 \value{
 Expr

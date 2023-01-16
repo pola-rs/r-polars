@@ -3,7 +3,7 @@
 \docType{data}
 \name{Expr_all}
 \alias{Expr_all}
-\title{All (is true)}
+\title{All, is true}
 \format{
 An object of class \code{character} of length 1.
 }
@@ -23,6 +23,12 @@ last \code{all()} in example is this Expr method, the first \code{pl$all()} refe
 to "all-columns" and is an expression constructor
 }
 \examples{
-pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
+pl$DataFrame(
+  all=c(TRUE,TRUE),
+  any=c(TRUE,FALSE),
+  none=c(FALSE,FALSE)
+)$select(
+  pl$all()$all()
+)
 }
 \keyword{Expr}

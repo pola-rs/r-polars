@@ -61,19 +61,24 @@ DataFrame
 
 
 
-#' @export
-#' @title auto complete $-access into object
+
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords DataFrame
+#' @param x DataFrame
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
   get_method_usages(DataFrame,pattern = pattern)
 }
 
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords VecDataFrame
+#' @param x VecDataFrame
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
   get_method_usages(VecDataFrame,pattern = pattern)
 }
@@ -95,7 +100,6 @@ DataFrame
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
-#' @usage DataFrame(data)
 #' @keywords DataFrame_new
 #'
 #' @examples
@@ -229,7 +233,7 @@ DataFrame_print = function() {
 
 #' Validate data input for create Dataframe with pl$DataFrame
 #'
-#' @param robj any R object to test
+#' @param x any R object to test if suitable as input to DataFrame
 #'
 #' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
@@ -250,6 +254,11 @@ is_DataFrame_data_input = function(x) {
 DataFrame.property_setters = new.env(parent = emptyenv())
 
 #' generic setter method
+#'
+#' @param self DataFrame
+#' @param name name method/property to set
+#' @param value value to insert
+#'
 #' @description set value of properties of DataFrames
 #'
 #' @return value
@@ -317,7 +326,6 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return char vec of column names
 #' @keywords DataFrame
-#' @usage DataFrame_columns
 #'
 #' @examples
 #' df = pl$DataFrame(iris)
@@ -486,7 +494,6 @@ DataFrame_clone = function() {
 #' @description get columns as list of series
 #'
 #' @return list of series
-#' @aliases get_columns
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
@@ -497,8 +504,10 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' @name DataFrame_get_column
 #' @description get one column by name as series
 #'
+#' @param name name of column to extract as Series
+#'
 #' @return Series
-#' @aliases get_column
+#' @aliases DataFrame_get_column
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
@@ -508,13 +517,15 @@ DataFrame_get_column = function(name) {
 }
 
 #' Get Series by idx, if there
-#' @name DataFrame_get_column
+#'
+#' @param idx numeric default 0, zero-index of what column to return as Series
+#'
+#' @name DataFrame_to_series
 #' @description get one column by idx as series from DataFrame.
 #' Unlike get_column this method will not fail if no series found at idx but
 #' return a NULL, idx is zero idx.
 #'
 #' @return Series or NULL
-#' @aliases get_column
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(a=1:4)$to_series()
@@ -663,7 +674,6 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 #'
 #' @return data.frame
 #' @keywords DataFrame
-#' @usage as_data_frame(...)
 #' @examples
 #' df = pl$DataFrame(iris[1:3,])
 #' df$as_data_frame()
@@ -682,10 +692,10 @@ DataFrame_as_data_frame = function(...) {
   df
 }
 
-#' @rdname DataFrame_as_data_frame
-#' @description to_data_frame is an alias
-#' @keywords DataFrame
-DataFrame_to_data_frame = DataFrame_as_data_frame
+# #' @rdname DataFrame_as_data_frame
+# #' @description to_data_frame is an alias
+# #' @keywords DataFrame
+# DataFrame_to_data_frame = DataFrame_as_data_frame
 
 #' @rdname DataFrame_as_data_frame
 #' @param x DataFrame
@@ -698,8 +708,16 @@ as.data.frame.DataFrame = function(x, ...) {
 }
 
 #' return polars DataFrame as R lit of vectors
+#'
+#' @param unnest_structs bool default true, as calling $unnest() on any struct column
+#'
 #' @name to_list
 #'
+#' @details
+#' This implementation for simplicity reasons relies on unnesting all structs before
+#' exporting to R. unnest_structs = FALSE, the previous struct columns will be re-
+#' nested. A struct in a R is a lists of lists, where each row is a list of values.
+#' Such a structure is not very typical or efficient in R.
 #'
 #' @return R list of vectors
 #' @keywords DataFrame
@@ -756,7 +774,6 @@ DataFrame_join = function(
 #' @param name name of new Series
 #' @return @to_struct() returns a Series
 #' @aliases to_struct
-#' @usage  `self$to_struct(name)`
 #' @keywords DataFrame
 #' @examples
 #' #round-trip conversion from DataFrame with two columns

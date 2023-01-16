@@ -14,10 +14,12 @@ GroupBy <- new.env(parent = emptyenv())
 #' @export
 `[[.GroupBy` <- `$.GroupBy`
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords GroupBy
+#' @param x GroupBy
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.GroupBy = function(x, pattern = "") {
   paste0(ls(GroupBy, pattern = pattern ),"()")
 }

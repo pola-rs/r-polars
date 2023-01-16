@@ -6,6 +6,13 @@
 \usage{
 \method{$}{DataFrame}(self, name) <- value
 }
+\arguments{
+\item{self}{DataFrame}
+
+\item{name}{name method/property to set}
+
+\item{value}{value to insert}
+}
 \value{
 value
 }

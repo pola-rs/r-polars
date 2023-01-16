@@ -9,7 +9,7 @@
 a method
 }
 \usage{
-Expr_shift
+Expr_shift(periods)
 }
 \arguments{
 \item{periods}{numeric number of periods to shift, may be negative.}

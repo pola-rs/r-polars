@@ -8,7 +8,7 @@
 Expr_pow(exponent)
 }
 \arguments{
-\item{base}{real value of base}
+\item{exponent}{exponent}
 }
 \value{
 Expr

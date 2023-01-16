@@ -13,7 +13,7 @@ Expr_quantile(quantile, interpolation = "nearest")
 \arguments{
 \item{quantile}{numeric/Expression 0.0 to 1.0}
 
-\item{inerpolation}{string value from choices "nearest", "higher",
+\item{interpolation}{string value from choices "nearest", "higher",
 "lower", "midpoint", "linear"}
 }
 \value{

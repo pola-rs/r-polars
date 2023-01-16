@@ -133,21 +133,31 @@ pl$mem_address = mem_address
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes),1,3) %in% c("Int","Flo")]
 
-  #' Select from an empty DataFrame
-  #' @param ... expressions passed to select
-  #' @details experimental
-  #' @name pl_select
-  #' @usage pl_select
-  #' @keywords DataFrame
-  #' @aliases pl_select
-  #' @return DataFrame
-  #'
-  #' @examples pl$select(pl$lit(1:4))
+
+  #see doc below, R CMD check did not like this function def
   pl$select = pl$DataFrame(list())$select
 
   lockEnvironment(pl,bindings = TRUE)
 
 }
+
+#' Select from an empty DataFrame
+#' @details
+#' param ... expressions passed to select
+#' `pl$select` is a shorthand for `pl$DataFrame(list())$select`
+#'
+#' NB param of this function
+#'
+#' @name pl_select
+#' @keywords DataFrame
+#' @return DataFrame
+#' @format method
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+NULL
 
 # From the `vctrs` package (this function is intended to be copied
 # without attribution or license requirements to avoid a hard dependency on

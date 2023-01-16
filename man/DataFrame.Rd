@@ -3,9 +3,6 @@
 \name{DataFrame}
 \alias{DataFrame}
 \title{Create new DataFrame}
-\usage{
-DataFrame(data)
-}
 \arguments{
 \item{...}{\itemize{
 \item one data.frame or something that inherits data.frame or DataFrame

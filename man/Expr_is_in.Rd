@@ -3,13 +3,12 @@
 \docType{data}
 \name{Expr_is_in}
 \alias{Expr_is_in}
-\alias{is_in}
 \title{is_in}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_is_in
+Expr_is_in(other)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

@@ -10,6 +10,13 @@ Series_sub(other)
 
 \method{-}{Series}(s1, s2)
 }
+\arguments{
+\item{other}{Series or into Series}
+
+\item{s1}{lhs Series}
+
+\item{s2}{rhs Series or any into Series}
+}
 \value{
 Series
 }

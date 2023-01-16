@@ -1,11 +1,7 @@
 
-
-
-
 check_no_missing_args = function(
   fun, args, warn =TRUE
 ) {
-
   expected_args = names(formals(fun))
   missing_args = expected_args[!expected_args %in% names(args)]
   if(length(missing_args)) {
@@ -18,7 +14,7 @@ check_no_missing_args = function(
   return(TRUE)
 }
 
-#' more strict than expect_identical
+# more strict than expect_identical
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
                    failure_message  = paste(
@@ -80,7 +76,7 @@ unwrap = function(result, call=sys.call(1L)) {
 
 #' Internal preferred function to throw errors
 #'
-#' @param msg error msg string
+#' @param err error msg string
 #' @param call calling context
 #' @keywords internals
 #'
@@ -246,9 +242,11 @@ clone_env_one_level_deep = function(env) {
 #' can be used to delete them and replaces them with the public methods. Which are any function
 #' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 #' zzz.R
+#'
 #' @param env class envrionment to modify. Envs are mutable so no return needed
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
+#' @param remove_f bool if true, will move methods, not copy
 #'
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
   if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
@@ -385,6 +383,7 @@ get_method_usages = function(env,pattern="") {
 #'
 #' @param api env
 #' @param name  name of env
+#' @param max_depth numeric/int max levels to recursive iterate through
 #'
 print_env =  function(api,name,max_depth=10) {
   indent_count = 1
@@ -475,7 +474,7 @@ restruct_list = function(l) {
 #'
 #' @param class_pattern regex to select functions
 #' @param subclass_env  optional subclass of
-#' @param drop_f drop sourced functions from package ns after bundling into sub ns
+#' @param remove_f drop sourced functions from package ns after bundling into sub ns
 #'
 #' @return
 #' A function which returns a subclass environment of bundled class functions.
@@ -525,8 +524,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
   # get all methods within class
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
-
-
 
   string = paste(sep="\n",
     "function(self) {",

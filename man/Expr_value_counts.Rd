@@ -10,9 +10,9 @@ Method
 Expr_value_counts(multithreaded = FALSE, sort = FALSE)
 }
 \arguments{
-\item{multithreaded:}{Better to turn this off in the aggregation context, as it can lead to contention.}
+\item{multithreaded}{Better to turn this off in the aggregation context, as it can lead to contention.}
 
-\item{sort:}{Ensure the output is sorted from most values to least.}
+\item{sort}{Ensure the output is sorted from most values to least.}
 }
 \value{
 Expr

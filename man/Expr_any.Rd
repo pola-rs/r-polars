@@ -17,6 +17,12 @@ Boolean literal
 Check if any boolean value in a Boolean column is \code{TRUE}.
 }
 \examples{
-pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
+pl$DataFrame(
+  all=c(TRUE,TRUE),
+  any=c(TRUE,FALSE),
+  none=c(FALSE,FALSE)
+)$select(
+  pl$all()$any()
+)
 }
 \keyword{Expr}
