@@ -653,6 +653,12 @@ test_that("slice", {
     lapply(l,head,length(l$a)/2)
   )
 
+  #use default length (max length)
+  expect_identical(
+    pl$lit(0:100)$slice(80)$to_r(),
+    80:100
+  )
+
 })
 
 test_that("Expr_append", {

@@ -316,7 +316,8 @@ test_that("slice", {
   )
   df = pl$DataFrame(l)
 
-  r_slice = function(x, o, n) {
+  r_slice = function(x, o, n=NULL) {
+    if(is.null(n)) n = max(length(x)-o,1L)
     if(o>=0) {
       o = o+1
     } else {
@@ -350,6 +351,10 @@ test_that("slice", {
   df2 = pl$DataFrame(l2)
   l_act_slice =   df2$select(pl$all()$arr$slice(-2,2))$to_list()
   l_exp_slice =  lapply(l2, lapply, r_slice,-2,2)
+  expect_identical(l_act_slice,l_exp_slice)
+
+  l_act_slice =   df2$select(pl$all()$arr$slice(1,))$to_list()
+  l_exp_slice =  lapply(l2, lapply, r_slice,1)
   expect_identical(l_act_slice,l_exp_slice)
 
 })
