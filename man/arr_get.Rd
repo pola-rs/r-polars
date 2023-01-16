@@ -4,13 +4,13 @@
 \alias{arr_get}
 \alias{Expr_arr_get}
 \alias{Expr_arr.get}
-\alias{[.ExprListNameSpace}
+\alias{[.ExprArrNameSpace}
 \title{Get list}
 \format{
 function
 }
 \usage{
-\method{[}{ExprListNameSpace}(x, idx)
+\method{[}{ExprArrNameSpace}(x, idx)
 }
 \arguments{
 \item{index}{numeric vector or Expr of length 1 or same length of Series.
