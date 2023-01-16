@@ -171,7 +171,7 @@ ExprArr_get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = 
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr[0])
 #' df$select(pl$col("a")$arr[c(2,0,-1)])
-`[.ExprListNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
+`[.ExprArrNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
   x$get(idx)
 }
 
