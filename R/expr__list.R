@@ -314,7 +314,7 @@ ExprArr_shift = function(periods = 1) unwrap(.pr$Expr$lst_shift(self, periods))
 #' @aliases arr_slice arr.slice
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
-#' df$select(pl$col("s")$arr$slice())
+#' df$select(pl$col("s")$arr$slice(2))
 ExprArr_slice = function(offset, length = NULL) {
   offset = wrap_e(offset, str_to_lit = FALSE)
   if (!is.null(length)) {

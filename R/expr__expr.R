@@ -986,7 +986,7 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #'
 #' @param offset numeric or expression, zero-indexed where to start slice
 #' negative value indicate starting (one-indexed) from back
-#' @param length how many elements should slice contain
+#' @param length how many elements should slice contain, default NULL is max length
 #'
 #' @keywords Expr
 #' @return Expr
@@ -1004,7 +1004,11 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #' pl$DataFrame(list(a=0:100))$select(
 #'   pl$all()$slice(-6,6)
 #' )
-Expr_slice = function(offset, length) {
+#'
+#' pl$DataFrame(list(a=0:100))$select(
+#'   pl$all()$slice(80)
+#' )
+Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, wrap_e(offset),wrap_e(length))
 }
 
