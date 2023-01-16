@@ -1,3 +1,7 @@
+
+# Build time options
+build_debug_print = FALSE
+
 #' extendr methods into pure functions
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
@@ -87,15 +91,15 @@ macro_add_syntax_check_to_class = function(Class_name) {
 ##this mod should be run immediately after extendr-wrappers.R are sourced
 is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
 env_class_names = names(is_env_class)[is_env_class]
-cat("\nadd syntax check to: ")
+if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
-  cat(i_class,", ",sep="")
+  if (build_debug_print) cat(i_class,", ",sep="")
   if(!exists(paste0("$.",i_class))) {
     stopf("internal assertion failed, env class without a dollarsign method")
   }
   macro_add_syntax_check_to_class(i_class)
 }
-cat("\n")
+if (build_debug_print) cat("\n")
 
 
 #' Give a class method property behavior

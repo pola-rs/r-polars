@@ -1,8 +1,10 @@
+
+
 # This file zzz.R will be sourced last when building package.
 # This is important as namespaces of other files are modified here.
 # This modification happens only on building the package unlike .onLoad which occours on loading the
 # package.
-print(paste(
+if(build_debug_print) print(paste(
   "Modifying extendr bindings,",
   "originals converted to pure functions and saved to rpolars:::.pr"
 ))
@@ -146,10 +148,6 @@ pl$mem_address = mem_address
   lockEnvironment(pl,bindings = TRUE)
 
 }
-
-print("")
-print("done source")
-
 
 # From the `vctrs` package (this function is intended to be copied
 # without attribution or license requirements to avoid a hard dependency on

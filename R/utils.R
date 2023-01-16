@@ -246,7 +246,7 @@ clone_env_one_level_deep = function(env) {
 #' @param keep list of unmentioned methods to keep in public api
 #'
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
-  cat("\n\n setting public methods for ",class_pattern)
+  if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
 
   #get these
   class_methods = ls(parent.frame(), pattern = class_pattern)
@@ -266,21 +266,21 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_
 
   #keep internals flagged with "use_internal_method"
   null_keepers = names(class_methods)[use_internal_bools]
-  cat("\n reuse internal method :\n",paste(null_keepers,collapse=", "))
+  if(build_debug_print) cat("\n reuse internal method :\n",paste(null_keepers,collapse=", "))
 
   #remove any internal method from class, not to keep
   remove_these = setdiff(ls(env),c(keep,null_keepers))
   rm(list=remove_these,envir = env)
-  cat(
+  if(build_debug_print) cat(
     "\nInternal methods not in use or replaced :\n",
     paste(setdiff(remove_these,names(class_methods)),collapse=", ")
   )
 
   #write any all class methods, where not using internal directly
-  cat("\n insert derived methods:\n")
+  if(build_debug_print) cat("\n insert derived methods:\n")
   for(i in which(!use_internal_bools)) {
     method = class_methods[i]
-    cat(method,", ")
+    if(build_debug_print) cat(method,", ")
     env[[names(method)]] = get(method)
   }
 
@@ -538,7 +538,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     rm(list=class_methods, envir = parent.frame())
   }
 
-  #cat("new subnamespace: ", class_pattern, "\n", string)
+  if(build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
   eval(parse(text=string))
 
 }
