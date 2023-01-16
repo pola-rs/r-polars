@@ -36,7 +36,14 @@ expect_strictly_identical = function(object,expected,...) {
 #' @return the ok-element of list , or a error will be thrown
 #' @export
 #'
-#' @examples pstop(ok="foo",err=NULL))
+#' @examples
+#'
+#' unwrap(list(ok="foo",err=NULL))
+#'
+#' tryCatch(
+#'   unwrap(ok=NULL, err = "something happen on the rust side"),
+#'   error = function(e) as.character(e)
+#' )
 unwrap = function(result, call=sys.call(1L)) {
 
   #if not a result
@@ -80,8 +87,8 @@ unwrap = function(result, call=sys.call(1L)) {
 #' @return throws an error
 #'
 #' @examples
-#' f = function() pstop("this aint right!!")
-#' f()
+#' f = function() rpolars:::pstop("this aint right!!")
+#' tryCatch(f(), error = \(e) as.character(e))
 pstop = function(err, call=sys.call(1L)) {
   unwrap(list(ok=NULL,err=err),call=call)
 }
@@ -95,8 +102,6 @@ pstop = function(err, call=sys.call(1L)) {
 #' @param call context to throw user error, just use default
 #'
 #' @return invisible(NULL)
-#'
-#' @examples pstop(ok="foo",err=NULL))
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 
   if(!Method_name %in% names(Class_env)) {
@@ -483,34 +488,37 @@ restruct_list = function(l) {
 #'
 #' @examples
 #'
-#' #define some new methods prefixed 'MyClass_'
-#' MyClass_add2 = function() self + 2
-#' MyClass_mul2 = function() self * 2
+#' #macro_new_subnamespace() is not exported, export for this toy example
+#' #macro_new_subnamespace = rpolars:::macro_new_subnamespace
 #'
-#' #grab any sourced function prefixed 'MyClass_'
-#' my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
+#' ##define some new methods prefixed 'MyClass_'
+#' #MyClass_add2 = function() self + 2
+#' #MyClass_mul2 = function() self * 2
+#'
+#' ##grab any sourced function prefixed 'MyClass_'
+#' #my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
 #'
 #' #here adding sub-namespace as a expr-class property/method during session-time,
-#' which only is for this demo.
+#' #which only is for this demo.
 #' #instead sourced method like Expr_arr() at package build time instead
-#' env = rpolars:::Expr #get env of the Expr Class
-#' env$my_sub_ns = method_as_property(function() { #add a property/method
-#'   my_class_sub_ns(self)
-#' })
-#' rm(env) #optional clean up
+#' #env = rpolars:::Expr #get env of the Expr Class
+#' #env$my_sub_ns = method_as_property(function() { #add a property/method
+#' # my_class_sub_ns(self)
+#' #})
+#' #rm(env) #optional clean up
 #'
 #' #add user defined S3 method the subclass 'myclass_sub_ns'
-#' print.myclass_sub_ns = function(x, ...) { #add ... even if not used
-#'   print("hello world, I'm myclass_sub_ns")
-#'   print("methods in sub namespace are:")
-#'   print(ls(x))
-#' }
+#' #print.myclass_sub_ns = function(x, ...) { #add ... even if not used
+#' #   print("hello world, I'm myclass_sub_ns")
+#' #   print("methods in sub namespace are:")
+#' #  print(ls(x))
+#' #  }
 #'
 #' #test
-#' e = pl$lit(1:5)  #make an Expr
-#' print(e$my_sub_ns) #inspect
-#' e$my_sub_ns$add2() #use the sub namespace
-#' e$my_sub_ns$mul2()
+#' # e = pl$lit(1:5)  #make an Expr
+#' #print(e$my_sub_ns) #inspect
+#' #e$my_sub_ns$add2() #use the sub namespace
+#' #e$my_sub_ns$mul2()
 #'
 macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
 
@@ -553,15 +561,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @return invisble NULL
 #'
 #' @examples
-#' #passes
-#' expect_grepl_error(stop("orange and carrot"),"carrot")
-#'
-#' #fails
-#' do_not_run {
-#' expect_grepl_error(stop("orange and carrot"),"big carrot")
-#'
-#' }
-#'
+#' # passes as "carrot" is in "orange and carrot"
+#' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
 expect_grepl_error = function(expr, expected_err = NULL) {
   err = NULL
   err = tryCatch(expr, error = function(e) {as.character(e)})

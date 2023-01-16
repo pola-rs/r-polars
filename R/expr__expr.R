@@ -1225,7 +1225,9 @@ Expr_round = function(decimals) {
 #' @name Expr_dot
 #' @format a method
 #' @examples
-#' pl$DataFrame(list(a=1:4,b=c(1,2,3,4),c="bob"),)$select(
+#' pl$DataFrame(
+#'   a=1:4,b=c(1,2,3,4),c="bob"
+#' )$select(
 #'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
 #'   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 #' )
@@ -1832,7 +1834,7 @@ Expr_last = "use_extendr_wrapper"
 #' pl$DataFrame(
 #'   val = 1:5,
 #'   a = c("+","+","-","-","+"),
-#'   b = c("+","-","+","-","+"))
+#'   b = c("+","-","+","-","+")
 #' )$select(
 #'   pl$col("val")$count()$over("a","b")
 #' )
@@ -1861,7 +1863,7 @@ Expr_over = function(...) {
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1886,7 +1888,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1915,7 +1917,7 @@ Expr_is_first = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1969,7 +1971,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #'
 #' df$groupby("group_col")$agg(
 #'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
-#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
+#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 #' )
 Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
@@ -2287,7 +2289,7 @@ Expr_inspect = function(fmt = "{}") {
 
 #' Interpolate `Nulls`
 #' @keywords Expr
-#' @param method string 'linear' or 'nearest'
+#' @param method string 'linear' or 'nearest', default "linear"
 #' @description
 #' Fill nulls with linear interpolation over missing values.
 #' Can also be used to regrid data to a new grid - see examples below.
@@ -2307,7 +2309,7 @@ Expr_inspect = function(fmt = "{}") {
 #' df_new_grid$join(
 #'   df_original_grid, on="grid_points", how="left"
 #' )$with_columns(pl$col("values")$interpolate())
-Expr_interpolate = function(method) {
+Expr_interpolate = function(method = "linear") {
   unwrap(.pr$Expr$interpolate(self, method))
 }
 
@@ -3357,7 +3359,7 @@ Expr_shuffle= function(seed = NULL) {
 #'
 #' df$select(pl$col("a")$sample(frac=2,with_replacement=TRUE,seed=1L))
 #'
-#' df$select(pl$col("a")$sample(n=5,with_replacement=FALSE,seed=1L))
+#' df$select(pl$col("a")$sample(n=2,with_replacement=FALSE,seed=1L))
 Expr_sample= function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n=NULL) {
 
   #check seed
@@ -3627,7 +3629,7 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @keywords Expr
 #' @examples
 #' pl$lit(1:3)$to_r()
-#' pl$expr_to_r(pl$lit(1:3)
+#' pl$expr_to_r(pl$lit(1:3))
 #' pl$expr_to_r(1:3)
 Expr_to_r = function(df = NULL, i = 0) {
   if(is.null(df)) {

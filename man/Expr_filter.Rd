@@ -33,7 +33,7 @@ df = pl$DataFrame(list(
 
 df$groupby("group_col")$agg(
   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
-  pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
+  pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 )
 }
 \keyword{Expr}

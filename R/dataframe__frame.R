@@ -50,8 +50,8 @@
 #' # potentially errors can be thrown. unwrap(result) is a way to
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
 #' # would case some unneccesary confusing and  some very verbose error messages on the inner
-#' workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable method
-#' do not return any ok-value
+#' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable method
+#' # do not return any ok-value
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
@@ -685,7 +685,6 @@ DataFrame_as_data_frame = function(...) {
 #' @rdname DataFrame_as_data_frame
 #' @description to_data_frame is an alias
 #' @keywords DataFrame
-#' @usage to_data_frame(...)
 DataFrame_to_data_frame = DataFrame_as_data_frame
 
 #' @rdname DataFrame_as_data_frame
@@ -694,8 +693,6 @@ DataFrame_to_data_frame = DataFrame_as_data_frame
 #'
 #' @return data.frame
 #' @export
-#'
-#' @examples as.data.frame(df)
 as.data.frame.DataFrame = function(x, ...) {
   x$as_data_frame(...)
 }
@@ -706,7 +703,8 @@ as.data.frame.DataFrame = function(x, ...) {
 #'
 #' @return R list of vectors
 #' @keywords DataFrame
-#' @examples pl$DataFrame(iris)$to_list()
+#' @examples
+#' pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE) {
   if(unnest_structs) {
     unwrap(.pr$DataFrame$to_list(self))

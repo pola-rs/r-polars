@@ -129,14 +129,15 @@ impl Series {
         )
     }
 
-    // pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
-    //     let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
-    //     let options = pl::SortOptions {
-    //         descending: reverse,
-    //         nulls_last: nulls_last,
-    //     };
-    //     self.0.is_sorted(options)
-    // }
+    pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
+        let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+        let options = pl::SortOptions {
+            descending: reverse,
+            nulls_last: nulls_last,
+            multithreaded: false,
+        };
+        self.0.is_sorted(options)
+    }
 
     pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {
         if strict {

@@ -64,10 +64,9 @@ extendr_method_to_pure_functions = function(env) {
 #' to run first verify_method_call() to check for syntax error and return
 #' more user friendly error if issues
 #'
-#' @seealso verify_method_call
+#' see zzz.R for usage examples
 #'
-#' @examples
-#' rpolars:::macro_add_syntax_check_to_class("DataFrame")
+#' @seealso verify_method_call
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
     "`$.",Class_name,"` <- function (self, name) {\n",

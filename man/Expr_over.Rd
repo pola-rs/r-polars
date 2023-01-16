@@ -21,7 +21,7 @@ Or similar to \verb{window functions in Postgres <https://www.postgresql.org/doc
 pl$DataFrame(
   val = 1:5,
   a = c("+","+","-","-","+"),
-  b = c("+","-","+","-","+"))
+  b = c("+","-","+","-","+")
 )$select(
   pl$col("val")$count()$over("a","b")
 )

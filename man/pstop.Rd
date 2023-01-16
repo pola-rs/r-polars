@@ -18,7 +18,7 @@ throws an error
 Internal preferred function to throw errors
 }
 \examples{
-f = function() pstop("this aint right!!")
-f()
+f = function() rpolars:::pstop("this aint right!!")
+tryCatch(f(), error = \(e) as.character(e))
 }
 \keyword{internals}

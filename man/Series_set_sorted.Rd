@@ -2,8 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_set_sorted}
 \alias{Series_set_sorted}
-\alias{is_sorted}
-\title{is_sorted}
+\title{Set sorted}
 \usage{
 Series_set_sorted(reverse = FALSE, in_place = FALSE)
 }
@@ -13,23 +12,14 @@ Series_set_sorted(reverse = FALSE, in_place = FALSE)
 \item{in_place}{if TRUE, will set flag mutably and return NULL. Remember to use
 pl$set_rpolars_options(strictly_immutable = F) otherwise an error will be thrown. If FALSE
 will return a cloned Series with set_flag which in the very most cases should be just fine.}
-
-\item{nulls_last}{bool where to keep nulls, default same as reverse}
 }
 \value{
-DataType
-
 Series invisible
 }
 \description{
-is_sorted
-}
-\details{
-property sorted flags are not settable, use set_sorted
+Set sorted
 }
 \examples{
-pl$Series(1:4)$sort()$is_sorted()
-Set sorted
 s = pl$Series(1:4)$set_sorted()
 s$flags
 }

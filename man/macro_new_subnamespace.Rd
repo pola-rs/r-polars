@@ -27,33 +27,36 @@ to solve some tricky self-referential problem. If possible to deprecate a macro 
 }
 \examples{
 
-#define some new methods prefixed 'MyClass_'
-MyClass_add2 = function() self + 2
-MyClass_mul2 = function() self * 2
+#macro_new_subnamespace() is not exported, export for this toy example
+#macro_new_subnamespace = rpolars:::macro_new_subnamespace
 
-#grab any sourced function prefixed 'MyClass_'
-my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
+##define some new methods prefixed 'MyClass_'
+#MyClass_add2 = function() self + 2
+#MyClass_mul2 = function() self * 2
+
+##grab any sourced function prefixed 'MyClass_'
+#my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
 
 #here adding sub-namespace as a expr-class property/method during session-time,
-which only is for this demo.
+#which only is for this demo.
 #instead sourced method like Expr_arr() at package build time instead
-env = rpolars:::Expr #get env of the Expr Class
-env$my_sub_ns = method_as_property(function() { #add a property/method
-  my_class_sub_ns(self)
-})
-rm(env) #optional clean up
+#env = rpolars:::Expr #get env of the Expr Class
+#env$my_sub_ns = method_as_property(function() { #add a property/method
+# my_class_sub_ns(self)
+#})
+#rm(env) #optional clean up
 
 #add user defined S3 method the subclass 'myclass_sub_ns'
-print.myclass_sub_ns = function(x, ...) { #add ... even if not used
-  print("hello world, I'm myclass_sub_ns")
-  print("methods in sub namespace are:")
-  print(ls(x))
-}
+#print.myclass_sub_ns = function(x, ...) { #add ... even if not used
+#   print("hello world, I'm myclass_sub_ns")
+#   print("methods in sub namespace are:")
+#  print(ls(x))
+#  }
 
 #test
-e = pl$lit(1:5)  #make an Expr
-print(e$my_sub_ns) #inspect
-e$my_sub_ns$add2() #use the sub namespace
-e$my_sub_ns$mul2()
+# e = pl$lit(1:5)  #make an Expr
+#print(e$my_sub_ns) #inspect
+#e$my_sub_ns$add2() #use the sub namespace
+#e$my_sub_ns$mul2()
 
 }

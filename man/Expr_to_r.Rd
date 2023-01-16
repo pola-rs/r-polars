@@ -24,7 +24,7 @@ debug an expression by evaluating in empty DataFrame and return first series to 
 }
 \examples{
 pl$lit(1:3)$to_r()
-pl$expr_to_r(pl$lit(1:3)
+pl$expr_to_r(pl$lit(1:3))
 pl$expr_to_r(1:3)
 }
 \keyword{Expr}

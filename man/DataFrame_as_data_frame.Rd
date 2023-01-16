@@ -8,7 +8,7 @@
 \usage{
 as_data_frame(...)
 
-to_data_frame(...)
+DataFrame_to_data_frame(...)
 
 \method{as.data.frame}{DataFrame}(x, ...)
 }
@@ -28,6 +28,5 @@ to_data_frame is an alias
 \examples{
 df = pl$DataFrame(iris[1:3,])
 df$as_data_frame()
-as.data.frame(df)
 }
 \keyword{DataFrame}
