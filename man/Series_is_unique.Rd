@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_is_unique}
 \alias{Series_is_unique}
-\alias{is_unique}
 \title{Series element(s) is unique}
 \usage{
 Series_is_unique()

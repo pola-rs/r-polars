@@ -19,6 +19,3 @@ invisible(NULL)
 \description{
 internal function to check method call of env_classes
 }
-\examples{
-pstop(ok="foo",err=NULL))
-}

@@ -4,11 +4,11 @@
 #' print LazyGroupBy
 #'
 #' @param x LazyGroupBy
-#'
+#' @param ... not used
 #' @return self
 #' @export
 #'
-print.LazyGroupBy = function(x) {
+print.LazyGroupBy = function(x, ...) {
   cat("polars LazyGroupBy: \n")
   x$print()
 }

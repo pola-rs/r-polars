@@ -29,6 +29,10 @@ Series_compare(other, op)
 \item{other}{A Series or something a Series can be created from}
 
 \item{op}{the chosen operator a String either: 'equal', 'not_equal', 'lt', 'gt', 'lt_eq' or 'gt_eq'}
+
+\item{s1}{lhs Series}
+
+\item{s2}{rhs Series or any into Series}
 }
 \value{
 Series

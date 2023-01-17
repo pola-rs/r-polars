@@ -2,8 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_arg_max}
 \alias{arr_arg_max}
-\alias{arr_max}
-\alias{arr.arg_max}
+\alias{Expr_arr_arg_max}
+\alias{Expr_arr.arg_max}
 \title{Arg max sublists}
 \format{
 function

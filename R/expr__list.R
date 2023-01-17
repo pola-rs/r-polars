@@ -31,7 +31,7 @@ ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$sum())
-ExprArr_sum      = function() .pr$Expr$lst_sum(self)
+ExprArr_sum = function() .pr$Expr$lst_sum(self)
 
 #' Max lists
 #' @name arr_max
@@ -40,7 +40,7 @@ ExprArr_sum      = function() .pr$Expr$lst_sum(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.max
+#' @aliases Expr_arr_max Expr_arr.max
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$max())
@@ -53,7 +53,7 @@ ExprArr_max      = function() .pr$Expr$lst_max(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_min arr.min
+#' @aliases Expr_arr_min Expr_arr.min
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 #' df$select(pl$col("values")$arr$min())
@@ -85,7 +85,7 @@ ExprArr_mean     = function() .pr$Expr$lst_mean(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_get arr.get
+#' @aliases Expr_arr_sort Expr_arr.sort
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr$get(0))
@@ -122,10 +122,9 @@ ExprArr_unique   = function() .pr$Expr$lst_unique(self)
 
 
 #' concat another list
-#' @name concat
 #' @description Concat the arrays in a Series dtype List in linear time.
 #' @param other Rlist, Expr or column of same tyoe as self.
-#'
+#' @name arr_concat
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
@@ -157,7 +156,7 @@ ExprArr_concat = function(other) {
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_get arr.get
+#' @aliases Expr_arr_get Expr_arr.get
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr$get(0))
@@ -167,12 +166,16 @@ ExprArr_get  = function(index) .pr$Expr$lst_get(self, wrap_e(index,str_to_lit = 
 #' Get list
 #' @rdname arr_get
 #' @export
+#' @param x ExprArrNameSpace
+#' @param index value to get
+#' @details
+#' `[.ExprArrNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 #' df$select(pl$col("a")$arr[0])
 #' df$select(pl$col("a")$arr[c(2,0,-1)])
-`[.ExprListNameSpace` <- function(x, idx) { #S3 sub class-name set in zzz.R
-  x$get(idx)
+`[.ExprArrNameSpace` <- function(x, index) { #S3 sub class-name set in zzz.R
+  x$get(index)
 }
 
 
@@ -263,7 +266,7 @@ ExprArr_arg_min = function() .pr$Expr$lst_arg_min(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.arg_max
+#' @aliases Expr_arr_arg_max Expr_arr.arg_max
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2,2:1)))
 #' df$select(pl$col("s")$arr$arg_max())
@@ -280,7 +283,7 @@ ExprArr_arg_max = function() .pr$Expr$lst_arg_max(self)
 #' @keywords ExprArr
 #' @format function
 #' @return Expr
-#' @aliases arr_max arr.arg_max
+#' @aliases Expr_arr_diff Expr_arr.diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
 #' df$select(pl$col("s")$arr$diff())
@@ -314,7 +317,7 @@ ExprArr_shift = function(periods = 1) unwrap(.pr$Expr$lst_shift(self, periods))
 #' @aliases arr_slice arr.slice
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
-#' df$select(pl$col("s")$arr$slice())
+#' df$select(pl$col("s")$arr$slice(2))
 ExprArr_slice = function(offset, length = NULL) {
   offset = wrap_e(offset, str_to_lit = FALSE)
   if (!is.null(length)) {
@@ -363,7 +366,6 @@ ExprArr_tail = function(n = 5L) {
 # no longer needed
 
 #' List to Struct
-#'
 #' @param n_field_strategy Strategy to determine the number of fields of the struct.
 #'  default = 'first_non_null' else 'max_width'
 #' @param name_generator an R function that takes a scalar column number

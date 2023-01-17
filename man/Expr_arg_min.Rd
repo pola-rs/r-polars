@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_arg_min}
 \alias{Expr_arg_min}
-\alias{arg_min}
 \title{Index of min value}
 \format{
 a method

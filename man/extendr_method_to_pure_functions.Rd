@@ -6,6 +6,9 @@
 \usage{
 extendr_method_to_pure_functions(env)
 }
+\arguments{
+\item{env}{environment object output from extendr-wrappers.R classes}
+}
 \value{
 env of pure function calls to rust
 }

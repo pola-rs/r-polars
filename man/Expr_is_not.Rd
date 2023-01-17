@@ -9,11 +9,13 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_is_not
+Expr_is_not(other)
 
-\method{!}{Expr}(e1, e2)
+\method{!}{Expr}(x)
 }
 \arguments{
+\item{x}{Expr}
+
 \item{other}{literal or Robj which can become a literal}
 }
 \value{

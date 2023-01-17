@@ -3,20 +3,22 @@
 #' @name DataFrame_class
 #' @description The `DataFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the rpolars rust side. The instanciated
-#' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object. The pointer address
-#' is the only statefullness of the DataFrame object on the R side. Any other state resides on the
-#' rust side. The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods which are callable onto the object.
-#' Most methods return another `DataFrame`-class instance or similar which allows for method chaining.
-#' This class system in lack of a better name could be called "environment classes" and is the same class
-#' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from rpolars:::.pr.$DataFrame$methodname(), also
-#' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
+#' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object. The pointer
+#' address is the only statefullness of the DataFrame object on the R side. Any other state resides
+#' on the rust side. The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods
+#' which are callable onto the object. Most methods return another `DataFrame`-class instance or
+#' similar which allows for method chaining. This class system in lack of a better name could be
+#' called "environment classes" and is the same class system extendr provides, except here there is
+#' both a public and private set of methods. For implementation reasons, the private methods are
+#' external and must be called from rpolars:::.pr.$DataFrame$methodname(), also all private methods
+#' must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
-#' @details Check out the source code in R/dataframe_frame.R how public methods are derived from private methods.
-#' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
-#' into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
-#' are removed and replaced by any function prefixed `DataFrame_`.
+#' @details Check out the source code in R/dataframe_frame.R how public methods are derived from
+#' private methods. Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These
+#' are moved to .pr and converted into pure external functions in after-wrappers.R. In zzz.R (named
+#' zzz to be last file sourced) the extendr-methods are removed and replaced by any function
+#' prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
 #' @examples
@@ -47,8 +49,9 @@
 #' # To use results on R side, these must be unwrapped first such that
 #' # potentially errors can be thrown. unwrap(result) is a way to
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
-#' # would case some unneccesary confusing and  some very verbose error messages on the inner workings of rust.
-#' unwrap(result) #in this case no error, just a NULL because this mutable method do not return any ok-value
+#' # would case some unneccesary confusing and  some very verbose error messages on the inner
+#' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable method
+#' # do not return any ok-value
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
@@ -58,21 +61,26 @@ DataFrame
 
 
 
-#' @export
-#' @title auto complete $-access into object
+
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords DataFrame
+#' @param x DataFrame
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
-  get_method_usages(rpolars:::DataFrame,pattern = pattern)
+  get_method_usages(DataFrame,pattern = pattern)
 }
 
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords VecDataFrame
+#' @param x VecDataFrame
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(rpolars:::VecDataFrame,pattern = pattern)
+  get_method_usages(VecDataFrame,pattern = pattern)
 }
 
 
@@ -86,57 +94,68 @@ DataFrame
 #'  - one list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'
-#'  Columns will be named as of named arguments or alternatively by names of Series or given a placeholder name
+#' Columns will be named as of named arguments or alternatively by names of Series or given a
+#' placeholder name.
 #'
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
 #'
 #' @return DataFrame
-#' @usage DataFrame(data)
 #' @keywords DataFrame_new
 #'
 #' @examples
-#' pl$DataFrame(iris) #from data.frame
-#' pl$DataFrame(list(a= c(1,2,3,4,5), b=1:5, c = letters[1:5])) #from list
-#' pl$DataFrame(a= c(1,2,3,4,5), b=1:5, c = letters[1:5]) #directly from vectors
-#' pl$DataFrame( 1:5, pl$Series(5:1,"bob"),5:1) #directly from two unnamed vectors and one named Series
+#' pl$DataFrame(
+#'   a = list(c(1,2,3,4,5)), #NB if first column should be a list, wrap it in a Series
+#'   b = 1:5,
+#'   c = letters[1:5],
+#'   d = list(1:1,1:2,1:3,1:4,1:5)
+#' ) #directly from vectors
+#'
+#' #from a list of vectors or data.frame
+#' pl$DataFrame(list(
+#'   a= c(1,2,3,4,5),
+#'   b=1:5,
+#'   c = letters[1:5],
+#'   d = list(1L,1:2,1:3,1:4,1:5)
+#' ))
+#'
 pl$DataFrame = function(..., make_names_unique= TRUE) {
 
-  data = list2(...)
+  largs = list2(...)
 
   #no args crete empty DataFrame
-  if(length(data)==0L) return(.pr$DataFrame$new())
+  if(length(largs)==0L) return(.pr$DataFrame$new())
 
   #pass through if already a DataFrame
-  if(inherits(data[[1L]],"DataFrame")) return(data[[1L]])
+  if(inherits(largs[[1L]],"DataFrame")) return(largs[[1L]])
 
   #if input is one list of expression unpack this one
-  if(length(data)==1L && is.list(data[[1]])) {
-    data = data[[1L]]
+  Data = if(length(largs)==1L && is.list(largs[[1]])) {
+    largs = largs[[1L]]
   }
 
   #input guard
-  if(!rpolars:::is_DataFrame_data_input(data)) {
+  if(!is_DataFrame_data_input(largs)) {
     stopf("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
-  if (inherits(data,"data.frame")) {
-    data = as.data.frame(data)
+  if (inherits(largs,"data.frame")) {
+    largs = as.data.frame(largs)
   }
 
 
   ##step 00 get max length to allow cycle 1-length inputs
-  data_lengths = sapply(data,length)
-  data_lengths_max = if(is.integer(data_lengths)) max(data_lengths) else NULL
+  largs_lengths = sapply(largs,length)
+  largs_lengths_max = if(is.integer(largs_lengths)) max(largs_lengths) else NULL
 
   ##step1 handle column names
   #keys are tentative new column names
   #fetch keys from names, if missing set as NA
-  keys = names(data)
-  if(length(keys)==0) keys = rep(NA_character_, length(data))
+  keys = names(largs)
+  if(length(keys)==0) keys = rep(NA_character_, length(largs))
 
   ##step2
   #if missing key use pl$Series name or generate new
-  keys = mapply(data,keys, FUN = function(column,key) {
+  keys = mapply(largs,keys, FUN = function(column,key) {
 
     if(is.na(key) || nchar(key)==0) {
       if(inherits(column, "Series")) {
@@ -165,14 +184,14 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 
   ##step 4
   #buildDataFrameone column at the time
-  self = .pr$DataFrame$new_with_capacity(length(data))
-  mapply(data,keys, FUN = function(column, key) {
+  self = .pr$DataFrame$new_with_capacity(length(largs))
+  mapply(largs,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
       .pr$Series$rename_mut(column, key)
 
       unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {
-      if(length(column)==1L && isTRUE(data_lengths_max > 1L)) column = rep(column,data_lengths_max)
+      if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) column = rep(column,largs_lengths_max)
       unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
     }
     return(NULL)
@@ -185,6 +204,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 #' s3 method print DataFrame
 #'
 #' @param x DataFrame
+#' @param ... not used
 #'
 #' @name print()
 #'
@@ -192,7 +212,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
 #' @export
 #'
 #' @examples pl$DataFrame(iris)
-print.DataFrame = function(x) {
+print.DataFrame = function(x, ...) {
   cat("polars DataFrame: ")
   x$print()
   invisible(x)
@@ -213,7 +233,7 @@ DataFrame_print = function() {
 
 #' Validate data input for create Dataframe with pl$DataFrame
 #'
-#' @param robj any R object to test
+#' @param x any R object to test if suitable as input to DataFrame
 #'
 #' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
@@ -223,13 +243,8 @@ DataFrame_print = function() {
 #' rpolars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x,"data.frame") ||
-    (
-      is.list(x) ||
-        all(sapply(data,function(x) is.vector(x) ||
-                     inherits(x,"Series")
-        ))
-    )
-
+    is.list(x) ||
+    all(sapply(x,function(x) is.vector(x) || inherits(x,"Series")))
 }
 
 
@@ -239,11 +254,17 @@ is_DataFrame_data_input = function(x) {
 DataFrame.property_setters = new.env(parent = emptyenv())
 
 #' generic setter method
+#'
+#' @param self DataFrame
+#' @param name name method/property to set
+#' @param value value to insert
+#'
 #' @description set value of properties of DataFrames
 #'
 #' @return value
 #' @keywords DataFrame
-#' @details settable rpolars object properties may appear to be R objects, but they are not. See [[method_name]] example
+#' @details settable rpolars object properties may appear to be R objects, but they are not.
+#' See `[[method_name]]` example
 #'
 #' @export
 #' @examples
@@ -305,7 +326,6 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return char vec of column names
 #' @keywords DataFrame
-#' @usage DataFrame_columns
 #'
 #' @examples
 #' df = pl$DataFrame(iris)
@@ -332,7 +352,6 @@ DataFrame.property_setters$columns =
 #' @description Get shape/dimensions of DataFrame
 #'
 #' @return two length numeric vector of c(nrows,ncols)
-#' @aliases shape
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris)$shape
@@ -364,7 +383,6 @@ DataFrame_height = method_as_property(function() {
 #' @description Get width(ncol) of DataFrame
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
@@ -382,7 +400,6 @@ DataFrame_width = method_as_property(function() {
 #' Dtypes can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtypes
@@ -398,7 +415,6 @@ DataFrame_dtypes = method_as_property(function() {
 #' Dtypes can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
-#' @aliases width, nrow
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$schema
@@ -460,7 +476,7 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' Any modification of a DataFrame would lead to a clone anyways.
 #'
 #' @return DataFrame
-#' @aliases clone
+#' @aliases DataFrame_clone
 #' @keywords  DataFrame
 #' @examples
 #' df1 = pl$DataFrame(iris);
@@ -478,7 +494,6 @@ DataFrame_clone = function() {
 #' @description get columns as list of series
 #'
 #' @return list of series
-#' @aliases get_columns
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
@@ -489,8 +504,10 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' @name DataFrame_get_column
 #' @description get one column by name as series
 #'
+#' @param name name of column to extract as Series
+#'
 #' @return Series
-#' @aliases get_column
+#' @aliases DataFrame_get_column
 #' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
@@ -500,13 +517,15 @@ DataFrame_get_column = function(name) {
 }
 
 #' Get Series by idx, if there
-#' @name DataFrame_get_column
+#'
+#' @param idx numeric default 0, zero-index of what column to return as Series
+#'
+#' @name DataFrame_to_series
 #' @description get one column by idx as series from DataFrame.
 #' Unlike get_column this method will not fail if no series found at idx but
 #' return a NULL, idx is zero idx.
 #'
 #' @return Series or NULL
-#' @aliases get_column
 #' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(a=1:4)$to_series()
@@ -605,8 +624,6 @@ DataFrame_with_column = function(expr) {
 #' Limit a DataFrame
 #' @name DataFrame_limit
 #' @description take limit of n rows of query
-#'
-#' @aliases limit
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
@@ -618,7 +635,7 @@ DataFrame_limit = function(n) {
 
 
 #' filter DataFrame
-#' @aliases filter
+#' @aliases DataFrame_filter
 #' @description DataFrame$filter(bool_expr)
 #'
 #' @param bool_expr Polars expression which will evaluate to a bool pl$Series
@@ -657,7 +674,6 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 #'
 #' @return data.frame
 #' @keywords DataFrame
-#' @usage as_data_frame(...)
 #' @examples
 #' df = pl$DataFrame(iris[1:3,])
 #' df$as_data_frame()
@@ -676,11 +692,10 @@ DataFrame_as_data_frame = function(...) {
   df
 }
 
-#' @rdname DataFrame_as_data_frame
-#' @description to_data_frame is an alias
-#' @keywords DataFrame
-#' @usage to_data_frame(...)
-DataFrame_to_data_frame = DataFrame_as_data_frame
+# #' @rdname DataFrame_as_data_frame
+# #' @description to_data_frame is an alias
+# #' @keywords DataFrame
+# DataFrame_to_data_frame = DataFrame_as_data_frame
 
 #' @rdname DataFrame_as_data_frame
 #' @param x DataFrame
@@ -688,19 +703,26 @@ DataFrame_to_data_frame = DataFrame_as_data_frame
 #'
 #' @return data.frame
 #' @export
-#'
-#' @examples as.data.frame(df)
 as.data.frame.DataFrame = function(x, ...) {
   x$as_data_frame(...)
 }
 
 #' return polars DataFrame as R lit of vectors
+#'
+#' @param unnest_structs bool default true, as calling $unnest() on any struct column
+#'
 #' @name to_list
 #'
+#' @details
+#' This implementation for simplicity reasons relies on unnesting all structs before
+#' exporting to R. unnest_structs = FALSE, the previous struct columns will be re-
+#' nested. A struct in a R is a lists of lists, where each row is a list of values.
+#' Such a structure is not very typical or efficient in R.
 #'
 #' @return R list of vectors
 #' @keywords DataFrame
-#' @examples pl$DataFrame(iris)$to_list()
+#' @examples
+#' pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE) {
   if(unnest_structs) {
     unwrap(.pr$DataFrame$to_list(self))
@@ -752,7 +774,6 @@ DataFrame_join = function(
 #' @param name name of new Series
 #' @return @to_struct() returns a Series
 #' @aliases to_struct
-#' @usage  `self$to_struct(name)`
 #' @keywords DataFrame
 #' @examples
 #' #round-trip conversion from DataFrame with two columns

@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_sum}
 \alias{Series_sum}
-\alias{sum}
 \title{Sum}
 \format{
 An object of class \code{character} of length 1.

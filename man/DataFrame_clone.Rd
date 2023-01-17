@@ -2,7 +2,6 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_clone}
 \alias{DataFrame_clone}
-\alias{clone}
 \title{Clone a DataFrame}
 \usage{
 DataFrame_clone()

@@ -14,23 +14,25 @@ GroupBy <- new.env(parent = emptyenv())
 #' @export
 `[[.GroupBy` <- `$.GroupBy`
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords GroupBy
+#' @param x GroupBy
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.GroupBy = function(x, pattern = "") {
-  paste0(ls(rpolars:::GroupBy, pattern = pattern ),"()")
+  paste0(ls(GroupBy, pattern = pattern ),"()")
 }
 
 #' print GroupBy
 #'
 #' @param x DataFrame
-#'
+#' @param ... not used
 #' @return self
 #' @export
 #'
 #' @examples pl$DataFrame(iris)$groupby("Species")
-print.GroupBy = function(x) {
+print.GroupBy = function(x, ...) {
   cat("polars GroupBy: ")
   .pr$DataFrame$print(x)
   cat("groups: ")
@@ -40,10 +42,8 @@ print.GroupBy = function(x) {
 }
 
 
-#' Aggregatete a DataFrame over a groupby
-#'
-#'
-#' @description Hej mor
+#' GroupBy Aggregate
+#' @description Aggregatete a DataFrame over a groupby
 #' @param ... exprs to aggregate
 #'
 #' @return aggregated DataFrame

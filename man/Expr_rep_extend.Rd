@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rep_extend}
 \alias{Expr_rep_extend}
-\alias{extend_constant}
 \title{extend series with repeated series}
 \format{
 Method
@@ -11,6 +10,8 @@ Method
 Expr_rep_extend(expr, n, rechunk = TRUE, upcast = TRUE)
 }
 \arguments{
+\item{expr}{Expr or into Expr}
+
 \item{n}{Numeric the number of times to repeat, must be non-negative and finite}
 
 \item{rechunk}{bool default = TRUE, if true memory layout will be rewritten}

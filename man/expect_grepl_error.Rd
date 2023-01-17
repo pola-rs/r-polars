@@ -22,13 +22,6 @@ expr must raise an error and expected_err pattern must match
 against the error text with grepl()
 }
 \examples{
-#passes
-expect_grepl_error(stop("orange and carrot"),"carrot")
-
-#fails
-do_not_run {
-expect_grepl_error(stop("orange and carrot"),"big carrot")
-
-}
-
+# passes as "carrot" is in "orange and carrot"
+rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
 }

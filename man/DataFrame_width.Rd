@@ -2,8 +2,6 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_width}
 \alias{DataFrame_width}
-\alias{width,}
-\alias{nrow}
 \title{Width of DataFrame}
 \usage{
 DataFrame_width()

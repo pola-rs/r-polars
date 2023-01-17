@@ -8,7 +8,9 @@
 Expr_kurtosis(fisher = TRUE, bias = TRUE)
 }
 \arguments{
-\item{bias}{If False, then the calculations are corrected for statistical bias.}
+\item{fisher}{bool se details}
+
+\item{bias}{bool, If FALSE, then the calculations are corrected for statistical bias.}
 }
 \value{
 Expr

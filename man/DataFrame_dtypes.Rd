@@ -2,8 +2,6 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_dtypes}
 \alias{DataFrame_dtypes}
-\alias{width,}
-\alias{nrow}
 \alias{DataFrame_schema}
 \title{DataFrame dtypes}
 \usage{

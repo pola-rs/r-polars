@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_cumsum}
 \alias{Series_cumsum}
-\alias{cumsum}
 \title{Cumulative sum}
 \usage{
 Series_cumsum(reverse = FALSE)

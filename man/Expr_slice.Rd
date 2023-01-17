@@ -8,13 +8,13 @@
 a method
 }
 \usage{
-Expr_slice(offset, length)
+Expr_slice(offset, length = NULL)
 }
 \arguments{
 \item{offset}{numeric or expression, zero-indexed where to start slice
 negative value indicate starting (one-indexed) from back}
 
-\item{length}{how many elements should slice contain}
+\item{length}{how many elements should slice contain, default NULL is max length}
 }
 \value{
 Expr
@@ -32,6 +32,10 @@ pl$DataFrame(list(a=0:100))$select(
 #as tail
 pl$DataFrame(list(a=0:100))$select(
   pl$all()$slice(-6,6)
+)
+
+pl$DataFrame(list(a=0:100))$select(
+  pl$all()$slice(80)
 )
 }
 \keyword{Expr}

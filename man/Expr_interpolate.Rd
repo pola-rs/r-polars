@@ -5,10 +5,10 @@
 \alias{interpolate}
 \title{Interpolate \code{Nulls}}
 \usage{
-Expr_interpolate(method)
+Expr_interpolate(method = "linear")
 }
 \arguments{
-\item{method}{string 'linear' or 'nearest'}
+\item{method}{string 'linear' or 'nearest', default "linear"}
 }
 \value{
 Expr

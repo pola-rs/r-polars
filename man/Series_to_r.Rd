@@ -2,11 +2,8 @@
 % Please edit documentation in R/series__series.R
 \name{Series_to_r}
 \alias{Series_to_r}
-\alias{to_r}
 \alias{Series_to_r_vector}
-\alias{to_r_vector}
 \alias{Series_to_r_list}
-\alias{to_r_list}
 \title{Get r vector/list}
 \usage{
 Series_to_r()

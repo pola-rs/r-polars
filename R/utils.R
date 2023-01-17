@@ -1,11 +1,7 @@
 
-
-
-
 check_no_missing_args = function(
   fun, args, warn =TRUE
 ) {
-
   expected_args = names(formals(fun))
   missing_args = expected_args[!expected_args %in% names(args)]
   if(length(missing_args)) {
@@ -18,7 +14,7 @@ check_no_missing_args = function(
   return(TRUE)
 }
 
-#' more strict than expect_identical
+# more strict than expect_identical
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
                    failure_message  = paste(
@@ -36,7 +32,14 @@ expect_strictly_identical = function(object,expected,...) {
 #' @return the ok-element of list , or a error will be thrown
 #' @export
 #'
-#' @examples pstop(ok="foo",err=NULL))
+#' @examples
+#'
+#' unwrap(list(ok="foo",err=NULL))
+#'
+#' tryCatch(
+#'   unwrap(ok=NULL, err = "something happen on the rust side"),
+#'   error = function(e) as.character(e)
+#' )
 unwrap = function(result, call=sys.call(1L)) {
 
   #if not a result
@@ -73,15 +76,15 @@ unwrap = function(result, call=sys.call(1L)) {
 
 #' Internal preferred function to throw errors
 #'
-#' @param msg error msg string
+#' @param err error msg string
 #' @param call calling context
 #' @keywords internals
 #'
 #' @return throws an error
 #'
 #' @examples
-#' f = function() pstop("this aint right!!")
-#' f()
+#' f = function() rpolars:::pstop("this aint right!!")
+#' tryCatch(f(), error = \(e) as.character(e))
 pstop = function(err, call=sys.call(1L)) {
   unwrap(list(ok=NULL,err=err),call=call)
 }
@@ -95,8 +98,6 @@ pstop = function(err, call=sys.call(1L)) {
 #' @param call context to throw user error, just use default
 #'
 #' @return invisible(NULL)
-#'
-#' @examples pstop(ok="foo",err=NULL))
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 
   if(!Method_name %in% names(Class_env)) {
@@ -241,12 +242,14 @@ clone_env_one_level_deep = function(env) {
 #' can be used to delete them and replaces them with the public methods. Which are any function
 #' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 #' zzz.R
+#'
 #' @param env class envrionment to modify. Envs are mutable so no return needed
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
+#' @param remove_f bool if true, will move methods, not copy
 #'
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
-  cat("\n\n setting public methods for ",class_pattern)
+  if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
 
   #get these
   class_methods = ls(parent.frame(), pattern = class_pattern)
@@ -266,21 +269,21 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_
 
   #keep internals flagged with "use_internal_method"
   null_keepers = names(class_methods)[use_internal_bools]
-  cat("\n reuse internal method :\n",paste(null_keepers,collapse=", "))
+  if(build_debug_print) cat("\n reuse internal method :\n",paste(null_keepers,collapse=", "))
 
   #remove any internal method from class, not to keep
   remove_these = setdiff(ls(env),c(keep,null_keepers))
   rm(list=remove_these,envir = env)
-  cat(
+  if(build_debug_print) cat(
     "\nInternal methods not in use or replaced :\n",
     paste(setdiff(remove_these,names(class_methods)),collapse=", ")
   )
 
   #write any all class methods, where not using internal directly
-  cat("\n insert derived methods:\n")
+  if(build_debug_print) cat("\n insert derived methods:\n")
   for(i in which(!use_internal_bools)) {
     method = class_methods[i]
-    cat(method,", ")
+    if(build_debug_print) cat(method,", ")
     env[[names(method)]] = get(method)
   }
 
@@ -301,7 +304,7 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_
 #'
 #' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_protoArrayExpr = function(l) {
-  pra = rpolars:::ProtoExprArray$new()
+  pra = ProtoExprArray$new()
   if (!is.list(l)) l = list(l)
   for (i  in l) {
     if(is_string(i)) {
@@ -325,7 +328,7 @@ construct_protoArrayExpr = function(l) {
 #'
 #' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
 construct_DataTypeVector = function(l) {
-  dtv = rpolars:::DataTypeVector$new()
+  dtv = DataTypeVector$new()
 
   for (i  in seq_along(l)) {
     if(inherits(l[[i]],"RPolarsDataType")) {
@@ -380,6 +383,7 @@ get_method_usages = function(env,pattern="") {
 #'
 #' @param api env
 #' @param name  name of env
+#' @param max_depth numeric/int max levels to recursive iterate through
 #'
 print_env =  function(api,name,max_depth=10) {
   indent_count = 1
@@ -450,6 +454,7 @@ restruct_list = function(l) {
   if(!length(structs_found_list)) return(l)
   structs_found_list = structs_found_list |> (\(x) x[order(-sapply(x,length))])()
 
+  val = NULL # to satisyfy R CMD check no undefined global
   #restruct all tags in list
   for (x in structs_found_list) {
     l_access_str = paste0("l",paste0("[[",x,"]]",collapse = ""))
@@ -469,7 +474,7 @@ restruct_list = function(l) {
 #'
 #' @param class_pattern regex to select functions
 #' @param subclass_env  optional subclass of
-#' @param drop_f drop sourced functions from package ns after bundling into sub ns
+#' @param remove_f drop sourced functions from package ns after bundling into sub ns
 #'
 #' @return
 #' A function which returns a subclass environment of bundled class functions.
@@ -482,34 +487,37 @@ restruct_list = function(l) {
 #'
 #' @examples
 #'
-#' #define some new methods prefixed 'MyClass_'
-#' MyClass_add2 = function() self + 2
-#' MyClass_mul2 = function() self * 2
+#' #macro_new_subnamespace() is not exported, export for this toy example
+#' #macro_new_subnamespace = rpolars:::macro_new_subnamespace
 #'
-#' #grab any sourced function prefixed 'MyClass_'
-#' my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
+#' ##define some new methods prefixed 'MyClass_'
+#' #MyClass_add2 = function() self + 2
+#' #MyClass_mul2 = function() self * 2
+#'
+#' ##grab any sourced function prefixed 'MyClass_'
+#' #my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
 #'
 #' #here adding sub-namespace as a expr-class property/method during session-time,
-#' which only is for this demo.
+#' #which only is for this demo.
 #' #instead sourced method like Expr_arr() at package build time instead
-#' env = rpolars:::Expr #get env of the Expr Class
-#' env$my_sub_ns = method_as_property(function() { #add a property/method
-#'   my_class_sub_ns(self)
-#' })
-#' rm(env) #optional clean up
+#' #env = rpolars:::Expr #get env of the Expr Class
+#' #env$my_sub_ns = method_as_property(function() { #add a property/method
+#' # my_class_sub_ns(self)
+#' #})
+#' #rm(env) #optional clean up
 #'
 #' #add user defined S3 method the subclass 'myclass_sub_ns'
-#' print.myclass_sub_ns = function(x) {
-#'   print("hello world, I'm myclass_sub_ns")
-#'   print("methods in sub namespace are:")
-#'   print(ls(x))
-#' }
+#' #print.myclass_sub_ns = function(x, ...) { #add ... even if not used
+#' #   print("hello world, I'm myclass_sub_ns")
+#' #   print("methods in sub namespace are:")
+#' #  print(ls(x))
+#' #  }
 #'
 #' #test
-#' e = pl$lit(1:5)  #make an Expr
-#' print(e$my_sub_ns) #inspect
-#' e$my_sub_ns$add2() #use the sub namespace
-#' e$my_sub_ns$mul2()
+#' # e = pl$lit(1:5)  #make an Expr
+#' #print(e$my_sub_ns) #inspect
+#' #e$my_sub_ns$add2() #use the sub namespace
+#' #e$my_sub_ns$mul2()
 #'
 macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f = TRUE) {
 
@@ -517,9 +525,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
   class_methods = ls(parent.frame(), pattern = class_pattern)
   names(class_methods) = sub(class_pattern, "", class_methods)
 
-
-
-  str = paste(sep="\n",
+  string = paste(sep="\n",
     "function(self) {",
     "  env = new.env()",
     paste(collapse="\n",sapply(seq_along(class_methods), function(i) {
@@ -537,8 +543,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     rm(list=class_methods, envir = parent.frame())
   }
 
-  cat("new subnamespace: ", class_pattern, "\n", str)
-  eval(parse(text=str))
+  if(build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
+  eval(parse(text=string))
 
 }
 
@@ -552,15 +558,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @return invisble NULL
 #'
 #' @examples
-#' #passes
-#' expect_grepl_error(stop("orange and carrot"),"carrot")
-#'
-#' #fails
-#' do_not_run {
-#' expect_grepl_error(stop("orange and carrot"),"big carrot")
-#'
-#' }
-#'
+#' # passes as "carrot" is in "orange and carrot"
+#' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
 expect_grepl_error = function(expr, expected_err = NULL) {
   err = NULL
   err = tryCatch(expr, error = function(e) {as.character(e)})

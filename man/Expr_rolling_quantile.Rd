@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_quantile}
 \alias{Expr_rolling_quantile}
-\alias{interpolate}
 \title{Rolling quantile}
 \usage{
 Expr_rolling_quantile(
@@ -64,17 +63,12 @@ this window will (optionally) be multiplied with the weights given by the
 \code{weight} vector. The resulting values will be aggregated to their sum.
 }
 \details{
-\subsection{#Warnings}{
-}
-
-\subsection{This functionality is experimental and may change without it being considered a
+This functionality is experimental and may change without it being considered a
 breaking change.
-Notes}{
-
+Notes:
 If you want to compute multiple aggregation statistics over the same dynamic
 window, consider using \code{groupby_rolling} this method can cache the window size
 computation.
-}
 }
 \examples{
 pl$DataFrame(list(a=1:6))$select(

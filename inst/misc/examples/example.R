@@ -1,5 +1,4 @@
 library(magrittr)
-rpolars::import_polars_as_("pl")
 pf = pl$DataFrame(iris)
 
 

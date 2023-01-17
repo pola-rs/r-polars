@@ -6,6 +6,7 @@
 #' new LazyFrame from csv
 #' @description will scan the csv when collect(), not now
 #' @keywords LazyFrame_new
+#'
 #' @param path string, Path to a file
 #' @param sep Single char to use as delimiter in the file.
 #' @param has_header bool, indicate if the first row of dataset is a header or not.
@@ -54,9 +55,11 @@
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #'
 #' @examples
-#' write.csv(iris,"my.csv")
-#' lazy_frame = rpolars:::lazy_csv_reader(path="my.csv")
+#' my_file = tempfile()
+#' write.csv(iris,my_file)
+#' lazy_frame = rpolars:::lazy_csv_reader(path=my_file)
 #' lazy_frame$collect()
+#' unlink(my_file)
 lazy_csv_reader = function(
   path,
   sep = ",",
@@ -89,7 +92,7 @@ lazy_csv_reader = function(
     if( !is.list(owdtype) || !is_named(owdtype)) {
       stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
-    datatype_vector = rpolars:::DataTypeVector$new() #mutable
+    datatype_vector = DataTypeVector$new() #mutable
     mapply(
       name = names(owdtype),
       type = unname(owdtype),
@@ -97,7 +100,7 @@ lazy_csv_reader = function(
 
         #convert possible string to datatype
         if(is_string(type)) {
-          type = rpolars:::DataType$new(type)
+          type = DataType$new(type)
         }
         if(!inherits(type,"RPolarsDataType")) {
           stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
@@ -117,17 +120,17 @@ lazy_csv_reader = function(
 
       #one string is used as one NULL marker for all columns
       if(is_string(nullvals)) {
-        return(rpolars:::RNullValues$new_all_columns(nullvals))
+        return(RNullValues$new_all_columns(nullvals))
       }
 
       #many unnamed strings(char vec) is used one mark for each column
       if(is.character(nullvals) && !is_named(nullvals)) {
-        return(RNullValues = rpolars:::RNullValues$new_columns(nullvals))
+        return(RNullValues = RNullValues$new_columns(nullvals))
       }
 
       #named char vec is used as column(name) marker(value) pairs
       if(is.character(nullvals) && is_named(nullvals)) {
-        return(rpolars:::RNullValues$new_named(null_values))
+        return(RNullValues$new_named(null_values))
       }
 
       stopf("null_values arg must be a string OR unamed char vec OR named char vec")
@@ -137,22 +140,26 @@ lazy_csv_reader = function(
   }
 
   ##call low level function with args
-  rpolars:::check_no_missing_args(rpolars:::rlazy_csv_reader,args)
-  unwrap(do.call(rpolars:::rlazy_csv_reader,args))
+  check_no_missing_args(rlazy_csv_reader,args)
+  unwrap(do.call(rlazy_csv_reader,args))
 }
+
 #' Read csv to DataFrame
 #' @rdname lazy_csv_reader
+#' @param ... any argument passed to lazy_csv_reader
 #' @return DataFrame
 #' @export
 csv_reader = function(...) {
-  rpolars:::lazy_csv_reader(...)$collect()
+  lazy_csv_reader(...)$collect()
 }
 
 
 #' high level csv_reader, will download if path is url
 #'
 #' @param path file or url
-#' @param ...
+#' @param ... arguments forwarded to csv_reader or lazy_csv_reader
+#' @param lazy bool default FALSE, read csv lazy
+#' @param reuse_downloaded bool default TRUE, cache url downloaded files in session an reuse
 #'
 #' @return polars_DataFrame or polars_lazy_DataFrame
 #' @export

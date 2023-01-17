@@ -8,7 +8,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-LazyFrame_with_column
+LazyFrame_with_column(expr)
 }
 \arguments{
 \item{expr}{one Expr or string naming a column}
