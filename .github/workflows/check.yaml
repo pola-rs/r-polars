@@ -49,7 +49,7 @@ jobs:
           path: ./src/rust/target/
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}-key_vers1
+            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
 
 
       - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
@@ -109,15 +109,11 @@ jobs:
         env:
           RPOLARS_RUST_SOURCE: ${{ env.rpolars_rust_source }}
 
-      - name: print check install log linux
-        if: runner.os == 'Linux'
+      - name: print check install log linux / windows
+        if: runner.os != 'macOS'
+        shell: bash
         run: |
           less /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
-
-      - name: print check install Windos
-        if: runner.os == 'Windows'
-        run: |
-          get.content /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
 
       - name: print check install MacOS
         if: runner.os == 'macOS'
