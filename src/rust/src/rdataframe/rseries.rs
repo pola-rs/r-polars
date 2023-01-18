@@ -461,7 +461,7 @@ impl Series {
 //inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types
 impl Series {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        if robj.check_external_ptr("Series") {
+        if robj.check_external_ptr_type::<Series>() {
             let x: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
             Ok(x)
         } else {
