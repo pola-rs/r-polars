@@ -62,10 +62,10 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          key: key_v2-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
+            key_v2-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            key_v2-${{ runner.os }}-cargo-target
 
       - uses: actions-rs/toolchain@v1
         with:
