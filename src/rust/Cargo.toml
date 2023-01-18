@@ -20,7 +20,7 @@ extendr-api = { git = "https://github.com/extendr/extendr", rev = "f511254b1be18
 flume = "0.10.14"
 state = "0.5.3"
 rayon = "1.6.1"
-smartstring = { version = "1.0.1" }
+smartstring = "1.0.1"
 polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
 
 
