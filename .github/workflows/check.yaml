@@ -22,10 +22,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release', rtools-version: "42"}
+          - { os: macos-latest, r: "release" }
+          - { os: windows-latest, r: "release", rtools-version: "42" }
           #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          - { os: ubuntu-latest, r: "release" }
           #- {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
@@ -108,13 +108,12 @@ jobs:
         env:
           RPOLARS_RUST_SOURCE: /home/runner/work/r-polars/r-polars/src/rust
 
-
       - name: print check install log linux
         if: runner.os == 'Linux'
         run: |
           less /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
 
-       - name: print check install Windos
+      - name: print check install Windos
         if: runner.os == 'Windows'
         run: |
           get.content /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
@@ -123,5 +122,3 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           less /Users/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
-
-
