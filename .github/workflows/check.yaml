@@ -100,3 +100,5 @@ jobs:
         with:
           upload-snapshots: false
           error-on: '"never"'
+        env:
+          RPOLARS_RUST_SOURCE: /Users/runner/work/r-polars/r-polars/rust
