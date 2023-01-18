@@ -21,9 +21,10 @@ flume = "*"
 state = "*"
 rayon = "*"
 smartstring = { version = "1" }
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
+polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
 
 
+#try to trigger new hashFiles hash value
 
 
 #features copied from node-polars
