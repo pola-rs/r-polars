@@ -101,7 +101,7 @@ jobs:
           upload-snapshots: false
           error-on: '"never"'
         env:
-          RPOLARS_RUST_SOURCE: /Users/runner/work/r-polars/r-polars/rust
+          RPOLARS_RUST_SOURCE: /home/runner/work/r-polars/r-polars/rust
 
       - name: print check install log
         if: runner.os == 'Linux'
