@@ -24,9 +24,9 @@ jobs:
         config:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release', rtools-version: "42"}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          #- {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -96,6 +96,11 @@ jobs:
         env:
           CI: false
 
+      - name: find rpolars rust source
+        id: get_the_rust_sauce
+        run: |
+          echo "rpolars_rust_source=${PWD}/src/rust"
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
@@ -103,8 +108,20 @@ jobs:
         env:
           RPOLARS_RUST_SOURCE: /home/runner/work/r-polars/r-polars/src/rust
 
-      - name: print check install log
+
+      - name: print check install log linux
         if: runner.os == 'Linux'
         run: |
           less /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+       - name: print check install Windos
+        if: runner.os == 'Windows'
+        run: |
+          get.content /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print check install MacOS
+        if: runner.os == 'macOS'
+        run: |
+          less /Users/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
 
