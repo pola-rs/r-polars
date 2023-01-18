@@ -98,6 +98,7 @@ jobs:
 
       - name: find rpolars rust source
         id: get_the_rust_sauce
+        shell: bash
         run: |
           echo "rpolars_rust_source=${PWD}/src/rust" >> $GITHUB_ENV
           echo "rpolars_rust_source=${PWD}/src/rust"
