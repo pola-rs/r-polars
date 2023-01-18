@@ -49,8 +49,8 @@ jobs:
           path: ./src/rust/target/
           key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
+            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}-key_vers1
+
 
       - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
       - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
