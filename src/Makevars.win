@@ -5,8 +5,11 @@ TOOLCHAIN ?= stable-msvc
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/release
-STATLIB = $(LIBDIR)/libhelloextendr.a
+STATLIB = $(LIBDIR)/librpolars.a
 PKG_LIBS = -L$(LIBDIR) -lrpolars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -t
+RPOLARS_RUST_SOURCE ?= ./rust
+RPOLARS_CARGO_CLEAN_DEPS ?= nope
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/release/librpolars.a"
 
 all: C_clean
 
@@ -21,9 +24,35 @@ $(STATLIB):
 		cp libgcc_eh.a libgcc_s.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
+	#--target-dir $(TARGET_DIR)
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path=./rust/Cargo.toml --target-dir $(TARGET_DIR)
+		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+
+	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
+	# if binary is not here, it can be symlinked instead.
+	# This solves both caching and R CMD check failing cargo build files
+	# see issue #28
+	if [ -f "$(STATLIB)" ]; \
+	then \
+	echo "found binary proceed to linking"; \
+	else \
+	echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
+	mkdir -p $(LIBDIR) ; \
+	ln -s $(rpolars_ext_binary) $(LIBDIR)/librpolars.a ; \
+	fi
+
+	# CRAN might even need more files to be gone, delete them here...
+	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; \
+	then \
+	echo "clean up target, to not let R CMD check fail on rust files"; \
+	mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
+	rm -rf $(LIBDIR); \
+	mkdir $(LIBDIR); \
+	mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
+	else \
+	echo "skip cleaning" ; \
+	fi
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)
