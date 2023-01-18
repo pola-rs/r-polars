@@ -110,7 +110,13 @@ jobs:
           RPOLARS_RUST_SOURCE: ${{ env.rpolars_rust_source }}
 
       - name: print check install log linux / windows
-        if: runner.os != 'macOS'
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          less D:/a/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print check install log linux / windows
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           less /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
