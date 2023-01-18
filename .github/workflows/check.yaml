@@ -69,6 +69,7 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools-version }}
+          Ncpus: 2
 
       - name: Install ubuntu SYSTEM REQUIREMENTS
         if: runner.os == 'Linux'
