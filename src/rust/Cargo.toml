@@ -16,12 +16,13 @@ mimalloc = { version = "*", default-features = false }
 jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr"} 
+extendr-api = { git = "https://github.com/extendr/extendr"}
 flume = "*"
 state = "*"
 rayon = "*"
 smartstring = { version = "1" }
 polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
+
 
 
 
