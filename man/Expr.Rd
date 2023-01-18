@@ -52,7 +52,17 @@ pl$col("this_column")$sum()$over("that_column")
 pl$col("some_column") / pl$lit(42) + 2
 
 #vector to literal explicitly via Series and back again
-pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]] #R vector to expression and back again
+#R vector to expression and back again
+pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+
+#r vecot to literal and back r vector
+pl$lit(1:4)$to_r()
+
+#r vector to literal to dataframe
+pl$select(pl$lit(1:4))
+
+#r vector to literal to Series
+pl$lit(1:4)$lit_to_s()
 
 #vectors to literal implicitly
 (pl$lit(2) + 1:4 ) / 4:1

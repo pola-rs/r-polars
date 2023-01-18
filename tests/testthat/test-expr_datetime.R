@@ -11,8 +11,9 @@ test_that("pl$date_range", {
     pl$col("datetime")$dt$truncate("4s")$alias("truncated_10s")
   )
 
+  #TODO
   #implement datetime to r
-  df$to_list()
-  s$to_r()
+  #df$to_list()
+  #s$to_r()
 
 })

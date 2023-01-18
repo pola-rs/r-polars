@@ -2,11 +2,16 @@
 % Please edit documentation in R/groupby.R
 \name{.DollarNames.GroupBy}
 \alias{.DollarNames.GroupBy}
-\title{auto complete $-access into object}
+\title{auto complete $-access into a polars object}
 \usage{
 \method{.DollarNames}{GroupBy}(x, pattern = "")
+}
+\arguments{
+\item{x}{GroupBy}
+
+\item{pattern}{code-stump as string to auto-complete}
 }
 \description{
 called by the interactive R session internally
 }
-\keyword{GroupBy}
+\keyword{internal}

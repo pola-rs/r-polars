@@ -87,6 +87,8 @@ be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
 \item{row_count_offset}{integer, Offset to start the row_count column (only used if the name is set).}
 
 \item{parse_dates}{bool Try to automatically parse dates. If this does not succeed, the column remains of data type pl.Utf8.}
+
+\item{...}{any argument passed to lazy_csv_reader}
 }
 \value{
 lazyframe
@@ -100,8 +102,10 @@ will scan the csv when collect(), not now
 Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 }
 \examples{
-write.csv(iris,"my.csv")
-lazy_frame = rpolars:::lazy_csv_reader(path="my.csv")
+my_file = tempfile()
+write.csv(iris,my_file)
+lazy_frame = rpolars:::lazy_csv_reader(path=my_file)
 lazy_frame$collect()
+unlink(my_file)
 }
 \keyword{LazyFrame_new}

@@ -2,11 +2,16 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{.DollarNames.DataFrame}
 \alias{.DollarNames.DataFrame}
-\title{auto complete $-access into object}
+\title{auto complete $-access into a polars object}
 \usage{
 \method{.DollarNames}{DataFrame}(x, pattern = "")
+}
+\arguments{
+\item{x}{DataFrame}
+
+\item{pattern}{code-stump as string to auto-complete}
 }
 \description{
 called by the interactive R session internally
 }
-\keyword{DataFrame}
+\keyword{internal}

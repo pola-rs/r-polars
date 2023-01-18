@@ -1512,11 +1512,12 @@ impl Expr {
         self.0.clone().count().into()
     }
 
-    pub fn slice(&self, offset: &Expr, length: &Expr) -> Self {
-        self.0
-            .clone()
-            .slice(offset.0.clone(), length.0.clone())
-            .into()
+    pub fn slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
+        let length = match null_to_opt(length) {
+            Some(i) => i.0.clone(),
+            None => dsl::lit(i64::MAX),
+        };
+        self.0.clone().slice(offset.0.clone(), length).into()
     }
 
     pub fn append(&self, other: &Expr, upcast: bool) -> Self {
@@ -1553,7 +1554,7 @@ impl Expr {
         self.0.clone().not().into()
     }
 
-    //expr "funnies"
+    //expr      "funnies"
     pub fn over(&self, proto_exprs: &ProtoExprArray) -> Self {
         let ve = pra_to_vec(proto_exprs, "select");
         self.0.clone().over(ve).into()

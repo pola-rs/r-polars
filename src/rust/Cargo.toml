@@ -16,7 +16,7 @@ mimalloc = { version = "*", default-features = false }
 jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr"} 
+extendr-api = { git = "https://github.com/extendr/extendr", rev = "f511254b1be180528a1711e4c87473966a1010d0"}
 flume = "*"
 state = "*"
 rayon = "*"

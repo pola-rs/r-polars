@@ -7,7 +7,7 @@
 \alias{DataFrame_unnest}
 \title{to_struct and unnest again}
 \usage{
-`self$to_struct(name)`
+DataFrame_to_struct(name = "")
 
 DataFrame_unnest(names = NULL)
 }

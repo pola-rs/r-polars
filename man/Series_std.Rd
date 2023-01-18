@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_std}
 \alias{Series_std}
-\alias{std}
 \title{Get the standard deviation of this Series.}
 \format{
 method

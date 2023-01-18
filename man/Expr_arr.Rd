@@ -3,7 +3,6 @@
 \name{Expr_arr}
 \alias{Expr_arr}
 \alias{arr}
-\alias{list}
 \title{arr: list related methods}
 \usage{
 Expr_arr()

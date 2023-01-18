@@ -2,7 +2,6 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_shape}
 \alias{DataFrame_shape}
-\alias{shape}
 \title{Shape of  DataFrame}
 \usage{
 DataFrame_shape()

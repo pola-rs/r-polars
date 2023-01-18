@@ -3,9 +3,7 @@
 \docType{data}
 \name{Expr_count}
 \alias{Expr_count}
-\alias{count}
 \alias{Expr_len}
-\alias{len}
 \title{Count values (len is a alias)}
 \format{
 An object of class \code{character} of length 1.
@@ -27,8 +25,20 @@ Count the number of values in this expression.
 Similar to R length()
 }
 \examples{
-pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
-#same as
-pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
+pl$DataFrame(
+  all=c(TRUE,TRUE),
+  any=c(TRUE,FALSE),
+  none=c(FALSE,FALSE)
+)$select(
+  pl$all()$count()
+)
+pl$DataFrame(
+  all=c(TRUE,TRUE),
+  any=c(TRUE,FALSE),
+  none=c(FALSE,FALSE)
+)$select(
+  pl$all()$len(),
+  pl$col("all")$first()$len()$alias("all_first")
+)
 }
 \keyword{Expr}

@@ -1,8 +1,10 @@
+
+
 # This file zzz.R will be sourced last when building package.
 # This is important as namespaces of other files are modified here.
-# This modification happens only on building the package unlike .onLoad which occours on loading the package.
-
-print(paste(
+# This modification happens only on building the package unlike .onLoad which occours on loading the
+# package.
+if(build_debug_print) print(paste(
   "Modifying extendr bindings,",
   "originals converted to pure functions and saved to rpolars:::.pr"
 ))
@@ -38,23 +40,19 @@ print(paste(
 #   invisible(NULL)
 # })
 
-
 # modify these Dataframe methods
 macro_add_syntax_check_to_class("DataFrame")
-replace_private_with_pub_methods( rpolars:::DataFrame, "^DataFrame_")
-
-
+replace_private_with_pub_methods(DataFrame, "^DataFrame_")
 
 # GroupBy
 macro_add_syntax_check_to_class("GroupBy")
-env = rpolars:::GroupBy
+env = GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
 
-
 # LazyFrame
 macro_add_syntax_check_to_class ("LazyFrame")
-replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
+replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 # env = rpolars:::LazyFrame
 # env$collect = Lazy_collect
 # env$select = Lazy_select
@@ -64,10 +62,9 @@ replace_private_with_pub_methods( rpolars:::LazyFrame, "^LazyFrame_")
 # env$limit   = Lazy_limit
 # env$describe_optimized_plan = Lazy_describe_optimized_plan
 
-
 # LazyGroupBy
 macro_add_syntax_check_to_class("LazyGroupBy")
-env = rpolars:::LazyGroupBy
+env = LazyGroupBy
 env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
 env$head = LazyGroupBy_head
@@ -78,17 +75,14 @@ rm(env)
 
 
 macro_add_syntax_check_to_class("Expr")
-replace_private_with_pub_methods(rpolars:::Expr, "^Expr_")
+replace_private_with_pub_methods(Expr, "^Expr_")
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
 expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
-
 #Series
 macro_add_syntax_check_to_class("Series")
-replace_private_with_pub_methods( rpolars:::Series, "^Series_")
-
-
+replace_private_with_pub_methods(Series, "^Series_")
 
 
 
@@ -96,14 +90,10 @@ replace_private_with_pub_methods( rpolars:::Series, "^Series_")
 move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 
 
-
 #pl$[readers]
-pl$lazy_csv_reader = rpolars:::lazy_csv_reader
-pl$csv_reader = rpolars:::csv_reader
-pl$read_csv = rpolars:::read_csv_
-
-
-
+pl$lazy_csv_reader = lazy_csv_reader
+pl$csv_reader = csv_reader
+pl$read_csv = read_csv_
 
 
 #' Get Memory Address
@@ -113,7 +103,7 @@ pl$read_csv = rpolars:::read_csv_
 #' @aliases mem_address
 #' @return String of mem address
 #' @examples pl$mem_address(pl$Series(1:3))
-pl$mem_address = rpolars:::mem_address
+pl$mem_address = mem_address
 
 
 
@@ -128,7 +118,7 @@ pl$mem_address = rpolars:::mem_address
   names(all_types) = all_types
   pl$dtypes = c(
     lapply(all_types,.pr$DataType$new), #instanciate all simple flag-like types
-    rpolars:::DataType_constructors # add function constructors for the remainders
+    DataType_constructors # add function constructors for the remainders
   )
 
   pl$timeunits = .pr$TimeUnit$all_timeunits()
@@ -145,23 +135,29 @@ pl$mem_address = rpolars:::mem_address
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes),1,3) %in% c("Int","Flo")]
 
-  #' Select from an empty DataFrame
-  #' @param ... expressions passed to select
-  #' @details experimental
-  #' @name pl_select
-  #' @usage pl_select
-  #' @keywords DataFrame
-  #' @aliases pl_select
-  #' @return DataFrame
-  #'
-  #' @examples pl$select(pl$lit(1:4))
+
+  #see doc below, R CMD check did not like this function def
   pl$select = pl$DataFrame(list())$select
 
   lockEnvironment(pl,bindings = TRUE)
 
 }
 
-print("")
-print("done source")
-
+#' Select from an empty DataFrame
+#' @details
+#' param ... expressions passed to select
+#' `pl$select` is a shorthand for `pl$DataFrame(list())$select`
+#'
+#' NB param of this function
+#'
+#' @name pl_select
+#' @keywords DataFrame
+#' @return DataFrame
+#' @format method
+#' @examples
+#' pl$select(
+#'   pl$lit(1:4)$alias("ints"),
+#'   pl$lit(letters[1:4])$alias("letters")
+#' )
+NULL
 

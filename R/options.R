@@ -1,4 +1,5 @@
 
+# R runtime options
 ##all rpolars sessions options saved to here
 rpolars_optenv = new.env(parent = emptyenv())
 rpolars_optreq = list() #all requirement functions put in here

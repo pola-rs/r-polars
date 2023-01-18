@@ -16,9 +16,9 @@ Expr_clip_min(min)
 Expr_clip_max(max)
 }
 \arguments{
-\item{min_val}{Minimum Value, ints and floats or any literal expression of ints and floats}
+\item{min}{Minimum Value, ints and floats or any literal expression of ints and floats}
 
-\item{max_val}{Maximum Value, ints and floats or any literal expression of ints and floats}
+\item{max}{Maximum Value, ints and floats or any literal expression of ints and floats}
 }
 \value{
 Expr

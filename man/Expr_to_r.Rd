@@ -2,8 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_to_r}
 \alias{Expr_to_r}
-\alias{to_r}
-\alias{expr_to_r}
 \alias{pl_expr_to_r}
 \title{to_r: for debuging an expression}
 \format{
@@ -26,7 +24,7 @@ debug an expression by evaluating in empty DataFrame and return first series to 
 }
 \examples{
 pl$lit(1:3)$to_r()
-pl$expr_to_r(pl$lit(1:3)
+pl$expr_to_r(pl$lit(1:3))
 pl$expr_to_r(1:3)
 }
 \keyword{Expr}

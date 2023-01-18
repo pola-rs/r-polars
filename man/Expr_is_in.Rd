@@ -3,13 +3,12 @@
 \docType{data}
 \name{Expr_is_in}
 \alias{Expr_is_in}
-\alias{is_in}
 \title{is_in}
 \format{
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_is_in
+Expr_is_in(other)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}
@@ -23,7 +22,9 @@ combine to boolean expresions with similar to \code{\%in\%}
 \examples{
 
 #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]]
+pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
+  pl$col("a")$is_in(pl$lit(NA_real_))
+)$as_data_frame()[[1L]]
 
 
 

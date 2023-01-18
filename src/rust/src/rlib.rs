@@ -90,8 +90,6 @@ fn concat_lst(exprs: &ProtoExprArray) -> Expr {
     polars::lazy::dsl::concat_lst(exprs).into()
 }
 
-use crate::rdatatype::RPolarsTimeUnit;
-
 #[extendr]
 fn r_date_range(
     start: f64,

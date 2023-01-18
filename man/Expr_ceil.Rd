@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_ceil}
 \alias{Expr_ceil}
-\alias{ceil}
 \title{Ceiling}
 \format{
 a method

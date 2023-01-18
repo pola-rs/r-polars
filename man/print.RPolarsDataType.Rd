@@ -4,10 +4,12 @@
 \alias{print.RPolarsDataType}
 \title{print a polars datatype}
 \usage{
-\method{print}{RPolarsDataType}(x)
+\method{print}{RPolarsDataType}(x, ...)
 }
 \arguments{
 \item{x}{DataType}
+
+\item{...}{not used}
 }
 \value{
 self

@@ -19,9 +19,8 @@ add syntax verification to class
 this function overrides dollarclass method of a extendr env_class
 to run first verify_method_call() to check for syntax error and return
 more user friendly error if issues
-}
-\examples{
-rpolars:::macro_add_syntax_check_to_class("DataFrame")
+
+see zzz.R for usage examples
 }
 \seealso{
 verify_method_call

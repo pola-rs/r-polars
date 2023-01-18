@@ -23,13 +23,12 @@ Expr
 Run an expression over a sliding window that increases \code{1} slot every iteration.
 }
 \details{
-\subsection{Warnings}{
+Warnings
 
 This functionality is experimental and may change without it being considered a
 breaking change.
 This can be really slow as it can have \code{O(n^2)} complexity. Don't use this
 for operations that visit all elements.
-}
 }
 \examples{
 pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r()

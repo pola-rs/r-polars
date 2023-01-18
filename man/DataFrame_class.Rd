@@ -6,21 +6,23 @@
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the rpolars rust side. The instanciated
-\code{DataFrame}-object is an \code{externalptr} to a lowlevel rust polars DataFrame  object. The pointer address
-is the only statefullness of the DataFrame object on the R side. Any other state resides on the
-rust side. The S3 method \code{.DollarNames.DataFrame} exposes all public \verb{$foobar()}-methods which are callable onto the object.
-Most methods return another \code{DataFrame}-class instance or similar which allows for method chaining.
-This class system in lack of a better name could be called "environment classes" and is the same class
-system extendr provides, except here there is both a public and private set of methods. For implementation
-reasons, the private methods are external and must be called from rpolars:::.pr.$DataFrame$methodname(), also
-all private methods must take any self as an argument, thus they are pure functions. Having the private methods
+\code{DataFrame}-object is an \code{externalptr} to a lowlevel rust polars DataFrame  object. The pointer
+address is the only statefullness of the DataFrame object on the R side. Any other state resides
+on the rust side. The S3 method \code{.DollarNames.DataFrame} exposes all public \verb{$foobar()}-methods
+which are callable onto the object. Most methods return another \code{DataFrame}-class instance or
+similar which allows for method chaining. This class system in lack of a better name could be
+called "environment classes" and is the same class system extendr provides, except here there is
+both a public and private set of methods. For implementation reasons, the private methods are
+external and must be called from rpolars:::.pr.$DataFrame$methodname(), also all private methods
+must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 }
 \details{
-Check out the source code in R/dataframe_frame.R how public methods are derived from private methods.
-Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
-into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
-are removed and replaced by any function prefixed \code{DataFrame_}.
+Check out the source code in R/dataframe_frame.R how public methods are derived from
+private methods. Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These
+are moved to .pr and converted into pure external functions in after-wrappers.R. In zzz.R (named
+zzz to be last file sourced) the extendr-methods are removed and replaced by any function
+prefixed \code{DataFrame_}.
 }
 \examples{
 #see all exported methods
@@ -50,8 +52,9 @@ df2$columns
 # To use results on R side, these must be unwrapped first such that
 # potentially errors can be thrown. unwrap(result) is a way to
 # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
-# would case some unneccesary confusing and  some very verbose error messages on the inner workings of rust.
-unwrap(result) #in this case no error, just a NULL because this mutable method do not return any ok-value
+# would case some unneccesary confusing and  some very verbose error messages on the inner
+# workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable method
+# do not return any ok-value
 
 #try unwrapping an error from polars due to unmatching column lengths
 err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")

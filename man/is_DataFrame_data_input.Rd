@@ -7,7 +7,7 @@
 is_DataFrame_data_input(x)
 }
 \arguments{
-\item{robj}{any R object to test}
+\item{x}{any R object to test if suitable as input to DataFrame}
 }
 \value{
 bool

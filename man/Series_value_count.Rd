@@ -3,7 +3,6 @@
 \name{Series_value_count}
 \alias{Series_value_count}
 \alias{Series_value_counts}
-\alias{value_counts}
 \title{Value Counts as DataFrame}
 \usage{
 Series_value_counts(sorted = TRUE, multithreaded = FALSE)

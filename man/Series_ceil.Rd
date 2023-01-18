@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_ceil}
 \alias{Series_ceil}
-\alias{ceil}
 \title{Series_ceil}
 \usage{
 Series_ceil()

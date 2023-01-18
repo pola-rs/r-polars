@@ -19,6 +19,7 @@
 #' Print expr
 #'
 #' @param x Expr
+#' @param ... not used
 #' @keywords Expr
 #'
 #' @return self
@@ -26,7 +27,7 @@
 #'
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")
-print.Expr = function(x) {
+print.Expr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)
@@ -41,12 +42,14 @@ Expr_print = function() {
   invisible(self)
 }
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
+#' @param x Expr
+#' @param pattern code-stump as string to auto-complete
+#' @export
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
-  paste0(ls(rpolars:::Expr, pattern = pattern ),"()")
+  paste0(ls(Expr, pattern = pattern ),"()")
 }
 
 #' wrap as literal
@@ -84,6 +87,8 @@ Expr_add = function(other) {
 }
 #' @export
 #' @rdname Expr_add
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "+.Expr" <- function(e1,e2) if(missing(e2)) e1 else e1$add(e2)
 
 #' Div
@@ -101,6 +106,8 @@ Expr_div = function(other) {
 }
 #' @export
 #' @rdname Expr_div
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "/.Expr" <- function(e1,e2) e1$div(e2)
 
 #' Sub
@@ -119,6 +126,8 @@ Expr_sub = function(other) {
 }
 #' @export
 #' @rdname Expr_sub
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "-.Expr" <- function(e1,e2) if(missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
 
 #' Mul *
@@ -137,6 +146,8 @@ Expr_mul = Expr_mul = function(other) {
 
 #' @export
 #' @rdname Expr_mul
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 "*.Expr" <- function(e1,e2) e1$mul(e2)
 
 
@@ -145,6 +156,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
+#' @usage Expr_is_not(other)
 #' @examples
 #' #two syntaxes same result
 #' pl$lit(TRUE)$is_not()
@@ -152,7 +164,8 @@ Expr_mul = Expr_mul = function(other) {
 Expr_is_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_is_not
-"!.Expr" <- function(e1,e2) e1$is_not()
+#' @param x Expr
+"!.Expr" <- function(x) x$is_not()
 
 #' Less Than <
 #' @description lt method and operator
@@ -170,6 +183,8 @@ Expr_lt = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
 "<.Expr" <- function(e1,e2) e1$lt(e2)
 
@@ -189,6 +204,8 @@ Expr_gt = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
 ">.Expr" <- function(e1,e2) e1$gt(e2)
 
@@ -208,6 +225,8 @@ Expr_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
 "==.Expr" <- function(e1,e2) e1$eq(e2)
 
@@ -228,6 +247,8 @@ Expr_neq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
 "!=.Expr" <- function(e1,e2) e1$neq(e2)
 
@@ -247,6 +268,8 @@ Expr_lt_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
 "<=.Expr" <- function(e1,e2) e1$lt_eq(e2)
 
@@ -267,6 +290,8 @@ Expr_gt_eq = function(other) {
 #' @export
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @param e1 lhs Expr
+#' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
 ">=.Expr" <- function(e1,e2) e1$gt_eq(e2)
 
@@ -294,21 +319,28 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' Rename the output of an expression.
 #' @param name string new name of output
 #' @return Expr
+#' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
 
-#' All (is true)
+#' All, is true
 #' @keywords Expr
 #' @description
 #' Check if all boolean values in a Boolean column are `TRUE`.
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
-#' @aliases all
+#' @aliases Expr_all
 #' @return Boolean literal
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$all())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$all()
+#' )
 Expr_all = "use_extendr_wrapper"
 
 #' Any (is true)
@@ -316,9 +348,14 @@ Expr_all = "use_extendr_wrapper"
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
-#' @aliases any
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$any())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$any()
+#' )
 Expr_any = "use_extendr_wrapper"
 
 
@@ -330,19 +367,29 @@ Expr_any = "use_extendr_wrapper"
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
-#' @aliases count
 #' @examples
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$count())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$count()
+#' )
 Expr_count = "use_extendr_wrapper"
 
 #' Count values (len is a alias)
 #' @keywords Expr
 #' @rdname Expr_count
 #' @return Expr
-#' @aliases count len
 #' @examples
-#' #same as
-#' pl$DataFrame(list(all=c(T,T),any=c(T,F),none=c(F,F)))$select(pl$all()$len())
+#' pl$DataFrame(
+#'   all=c(TRUE,TRUE),
+#'   any=c(TRUE,FALSE),
+#'   none=c(FALSE,FALSE)
+#' )$select(
+#'   pl$all()$len(),
+#'   pl$col("all")$first()$len()$alias("all_first")
+#' )
 Expr_len = "use_extendr_wrapper"
 
 
@@ -351,7 +398,7 @@ Expr_len = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' Drop null values.
-#' Similar to R syntax x[!(is.na(x) & !is.nan(x))]
+#' Similar to R syntax `x[!(is.na(x) & !is.nan(x))]`
 #' @return Expr
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
@@ -363,7 +410,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' Drop floating point NaN values.
-#' Similar to R syntax x[!is.nan(x)]
+#' Similar to R syntax `x[!is.nan(x)]`
 #' @details
 #'
 #'  Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
@@ -426,8 +473,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #' @examples rpolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
 
-
-  pra = rpolars:::ProtoExprArray$new()
+  pra = ProtoExprArray$new()
   args = list2(...)
   arg_names = names(args)
 
@@ -445,8 +491,11 @@ construct_ProtoExprArray = function(...) {
   #if args named, convert string to col and alias any column by name if a name
   } else {
 
-    if(!rpolars:::rpolars_optenv$named_exprs) {
-      stopf("not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` to enable column naming by expression")
+    if(!rpolars_optenv$named_exprs) {
+      stopf(
+        "not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` %s",
+        "to enable column naming by expression"
+      )
     }
 
     for (i in seq_along(args)) {
@@ -483,13 +532,15 @@ construct_ProtoExprArray = function(...) {
 #'
 #' @param f a function mapping a series
 #' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
-#' @param agg_list Aggregate list. Map from vector to group in groupby context. Likely not so useful.
+#' @param agg_list Aggregate list. Map from vector to group in groupby context.
+#' Likely not so useful.
 #'
 #' @rdname Expr_map
 #' @return Expr
 #' @aliases Expr_map
-#' @details user function return should be a series or any Robj convertable into a Series. In PyPolars likely return must be Series.
-#' User functions do fully support `browser()`, helpful to investigate.
+#' @details user function return should be a series or any Robj convertable into a Series.
+#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
+#'  investigate.
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
@@ -508,8 +559,13 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
 #'Depending on the context it has the following behavior:
 #' -Selection
+#'
 #' @param f r function see details depending on context
 #' @param return_type NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+#' @param strict_return_type bool (default TRUE), error if not correct datatype returned from R,
+#' if FALSE will convert to a Polars Null and carry on.
+#' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
+#' but convert result to a polars Null and carry on.
 #'
 #' @details
 #'
@@ -526,13 +582,12 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'  Apply in selection context should be avoided as a `lapply()` has half the overhead.
 #'
 #' * Groupby
-#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to `Series`, eg. R vector.
-#'   GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration
-#'   is only across the groups.
+#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to
+#'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
+#'   number of rows, as the iteration is only across the groups.
 #'   The r user function could e.g. do vectorized operations and stay quite performant.
 #'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and
 #'   `s$to_r_list()` to force conversion to vector or list.
-#'
 #'
 #'  Implementing logic using an R function is almost always _significantly_
 #'   slower and more memory intensive than implementing the same logic using
@@ -555,9 +610,11 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' pl$DataFrame(iris)$groupby("Species")$agg(e_sum,e_head)
 #'
 #'
-#' #apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time on a 2015 MacBook Pro)
-#' #x is an R scalar
-#' e_all =pl$col(pl$dtypes$Float64) #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#' # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
+#' # on a 2015 MacBook Pro) x is an R scalar
+#'
+#' #perform on all Float64 columns, using pl$all requires user function can handle any input type
+#' e_all =pl$col(pl$dtypes$Float64)
 #' e_add10  = e_all$apply(\(x)  {x+10})$suffix("_sum")
 #' #quite silly index into alphabet(letters) by ceil of float value
 #' #must set return_type as not the same as input
@@ -623,7 +680,17 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' #vector to literal explicitly via Series and back again
-#' pl$DataFrame(list())$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]] #R vector to expression and back again
+#' #R vector to expression and back again
+#' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
+#'
+#' #r vecot to literal and back r vector
+#' pl$lit(1:4)$to_r()
+#'
+#' #r vector to literal to dataframe
+#' pl$select(pl$lit(1:4))
+#'
+#' #r vector to literal to Series
+#' pl$lit(1:4)$lit_to_s()
 #'
 #' #vectors to literal implicitly
 #' (pl$lit(2) + 1:4 ) / 4:1
@@ -679,6 +746,7 @@ Expr_reverse = function() {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @usage Expr_and(other)
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
@@ -693,6 +761,8 @@ Expr_and = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @param other Expr or into Expr
+#' @usage Expr_or(other)
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
@@ -707,6 +777,7 @@ Expr_or = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
 Expr_xor = "use_extendr_wrapper"
@@ -756,7 +827,9 @@ Expr_cast = function(dtype, strict = TRUE) {
 #' Reverse exponentiation `%**%`(in R `** == ^`)
 #' @description Raise a base to the power of the expression as exponent.
 #' @keywords Expr
+#'
 #' @param base real or Expr, the value of the base, self is the exponent
+#'
 #' @return Expr
 #' @name Expr_rpow
 #' @details  do not use `**`, R secretly parses that just as if it was a `^`
@@ -774,8 +847,14 @@ Expr_rpow = function(base) {
   expr = .pr$Expr$pow(base,self)
 
 }
+
+#' @rdname Expr_rpow
 #' @export
-"%**%" = function(lhs,rhs) rhs^lhs #some default method of what reverse exponentiation is (as python ** operator)
+#' @param e1 value where ** operator is defined
+#' @param e2 value where ** operator is defined
+"%**%" = function(e1,e2) e2^e1 #some default method of what reverse exponentiation is (as python ** operator)
+
+#' @rdname Expr_rpow
 #' @export
 "%**%.Expr" <- function(e1,e2) e1$rpow(e2)
 
@@ -877,19 +956,24 @@ Expr_keep_name = "use_extendr_wrapper"
 
 #TODO contribute polars, map_alias unwrap user function errors instead of passing them back
 #' Map alias of expression with an R function
+#'
+#' @param fun an R function which takes a string as input and return a string
+#'
 #' @description Rename the output of an expression by mapping a function over the root name.
 #' @keywords Expr
 #' @return Expr
 #' @aliases map_alias
 #' @name Expr_map_alias
 #' @examples
-#' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob")))
+#' pl$DataFrame(list(alice=1:3))$select(
+#'   pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
+#' )
 Expr_map_alias = function(fun) {
   if (
     !rpolars_optenv$no_messages &&
-    !exists(".warn_map_alias",envir = rpolars:::runtime_state)
+    !exists(".warn_map_alias",envir = runtime_state)
   ) {
-    assign(".warn_map_alias",1L,envir = rpolars:::runtime_state)
+    assign(".warn_map_alias",1L,envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
     # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
     # then handle_thread_r_requests should be rewritten to handle any type.
@@ -971,7 +1055,7 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #'
 #' @param offset numeric or expression, zero-indexed where to start slice
 #' negative value indicate starting (one-indexed) from back
-#' @param length how many elements should slice contain
+#' @param length how many elements should slice contain, default NULL is max length
 #'
 #' @keywords Expr
 #' @return Expr
@@ -989,7 +1073,11 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #' pl$DataFrame(list(a=0:100))$select(
 #'   pl$all()$slice(-6,6)
 #' )
-Expr_slice = function(offset, length) {
+#'
+#' pl$DataFrame(list(a=0:100))$select(
+#'   pl$all()$slice(80)
+#' )
+Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, wrap_e(offset),wrap_e(length))
 }
 
@@ -997,9 +1085,12 @@ Expr_slice = function(offset, length) {
 #' Append expressions
 #' @description This is done by adding the chunks of `other` to this `output`.
 #'
+#' @param other Expr, into Expr
+#' @param upcast bool upcast to, if any supertype of two non equal datatypes.
+#'
 #' @keywords Expr
 #' @return Expr
-#' @aliases append
+#' @aliases Expr_append
 #' @name Expr_append
 #' @format a method
 #' @examples
@@ -1039,7 +1130,7 @@ Expr_rechunk = "use_extendr_wrapper"
 #' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
-#' @aliases cumsum
+#' @aliases Expr_cumsum
 #' @name Expr_cumsum
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -1150,7 +1241,7 @@ Expr_cumcount = function(reverse = FALSE) {
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
-#' @aliases floor
+#' @aliases Expr_floor
 #' @name Expr_floor
 #' @format a method
 #' @examples
@@ -1166,7 +1257,7 @@ Expr_floor = "use_extendr_wrapper"
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
-#' @aliases ceil
+#' @aliases Expr_ceil
 #' @name Expr_ceil
 #' @format a method
 #' @examples
@@ -1206,7 +1297,9 @@ Expr_round = function(decimals) {
 #' @name Expr_dot
 #' @format a method
 #' @examples
-#' pl$DataFrame(list(a=1:4,b=c(1,2,3,4),c="bob"),)$select(
+#' pl$DataFrame(
+#'   a=1:4,b=c(1,2,3,4),c="bob"
+#' )$select(
 #'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
 #'   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 #' )
@@ -1301,7 +1394,6 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
-#' @aliases arg_min
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @name Expr_arg_min
@@ -1316,7 +1408,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
-#' @aliases arg_max
+#' @aliases Expr_arg_max
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @name Expr_arg_max
@@ -1380,7 +1472,7 @@ Expr_search_sorted = function(element) {
 #'
 #' # by two columns/expressions
 #' df$select(
-#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(T,F))
+#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
 #' )
 #'
 #'
@@ -1407,8 +1499,8 @@ Expr_search_sorted = function(element) {
 #'     pl$col("ab")$sort_by("v3")$alias("ab3"),
 #'     pl$col("ab")$sort_by("v2")$alias("ab2"),
 #'     pl$col("ab")$sort_by("v1")$alias("ab1"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
 #'   )$to_list(),
 #'   list(
 #'     ab4 = l$ab[order(l$v4)],
@@ -1416,7 +1508,7 @@ Expr_search_sorted = function(element) {
 #'     ab2 = l$ab[order(l$v2)],
 #'     ab1 = l$ab[order(l$v1)],
 #'     ab13FT= l$ab[order(l$v3,rev(l$v1))],
-#'     ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+#'     ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
 #'   )
 #' )
 Expr_sort_by = function(by, reverse = FALSE) {
@@ -1431,7 +1523,7 @@ Expr_sort_by = function(by, reverse = FALSE) {
 #pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
 #pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 #' Take values by index.
-#' @param indeces R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
+#' @param indices R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
 #' @return Expr
 #' @keywords Expr
 #' @aliases take
@@ -1458,6 +1550,7 @@ Expr_take = function(indices) {
 #' @format a method
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' @usage Expr_shift(periods)
 #' @examples
 #' pl$select(
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
@@ -1574,9 +1667,11 @@ Expr_forward_fill = function(limit = NULL) {
 
 
 #' Fill Nulls Forward
+#'
+#' @param expr Expr or into Expr, value to fill NaNs with
+#'
 #' @description Fill missing values with last seen values.
 #'
-#' @param Expr or `Into<Expr>`  the value to replace NaN with. Default NULL is NA/Null.
 #' @return Expr
 #' @keywords Expr
 #' @aliases fill_nan
@@ -1584,7 +1679,6 @@ Expr_forward_fill = function(limit = NULL) {
 #' @format a method
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
-#'
 #' @examples
 #' l = list(a=c(1,NaN,NaN,3))
 #' pl$DataFrame(l)$select(
@@ -1600,10 +1694,9 @@ Expr_fill_nan = function(expr = NULL) {
 
 #' Get Standard Deviation
 #'
-#' @param ddof integer in range [0;255] degrees of freedom
+#' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
-#' @aliases std
 #' @name Expr_std
 #' @format a method
 #'
@@ -1615,10 +1708,9 @@ Expr_std = function(ddof = 1) {
 
 #' Get Variance
 #'
-#' @param ddof integer in range [0;255] degrees of freedom
+#' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
 #' @keywords Expr
-#' @aliases var
 #' @name Expr_var
 #' @format a method
 #'
@@ -1636,7 +1728,7 @@ Expr_var = function(ddof = 1) {
 #'
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 Expr_max = "use_extendr_wrapper"
@@ -1663,10 +1755,9 @@ Expr_min = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description Get maximum value, but propagate/poison encountered `NaN` values.
 #' Get maximum value.
-#' @aliases nan_min
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}s
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NaN,Inf,3)))$select(pl$col("x")$nan_max()$is_nan()) #is true
 Expr_nan_max = "use_extendr_wrapper"
@@ -1676,7 +1767,6 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description Get minimum value, but propagate/poison encountered `NaN` values.
 #' @return Expr
-#' @aliases nan_min
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @examples
@@ -1815,7 +1905,13 @@ Expr_last = "use_extendr_wrapper"
 #'
 #' @return Expr
 #' @examples
-#' pl$DataFrame(list(val=1:5,a=c("+","+","-","-","+"),b=c("+","-","+","-","+")))$select(pl$col("val")$count()$over("a","b"))
+#' pl$DataFrame(
+#'   val = 1:5,
+#'   a = c("+","+","-","-","+"),
+#'   b = c("+","-","+","-","+")
+#' )$select(
+#'   pl$col("val")$count()$over("a","b")
+#' )
 Expr_over = function(...) {
 
   #combine arguments in proto expression array
@@ -1831,7 +1927,6 @@ Expr_over = function(...) {
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases is_unique
 #' @name Expr_is_unique
 #' @format a method
 #'
@@ -1842,7 +1937,7 @@ Expr_over = function(...) {
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1857,7 +1952,6 @@ Expr_is_unique = "use_extendr_wrapper"
 #'
 #' @return Expr (boolean)
 #' @keywords Expr
-#' @aliases is_unique
 #' @name Expr_is_first
 #' @format a method
 #'
@@ -1868,7 +1962,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1897,7 +1991,7 @@ Expr_is_first = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -1913,7 +2007,7 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' Get quantile value.
 #'
 #' @param quantile numeric/Expression 0.0 to 1.0
-#' @param inerpolation string value from choices "nearest", "higher",
+#' @param interpolation string value from choices "nearest", "higher",
 #' "lower", "midpoint", "linear"
 #' @return Expr
 #' @keywords Expr
@@ -1940,7 +2034,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
 #' @return Expr
 #' @keywords Expr
-#' @aliases filter
+#' @aliases Expr_filter
 #' @format a method
 #'
 #' @examples
@@ -1951,7 +2045,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #'
 #' df$groupby("group_col")$agg(
 #'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
-#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte"),
+#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 #' )
 Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
@@ -2061,7 +2155,6 @@ Expr_tail = function(n=10) {
 #' Similar to R head(x)
 #' @param n numeric number of elements to select from head
 #' @return Expr
-#' @aliases limit
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$limit(3))
@@ -2075,16 +2168,20 @@ Expr_limit = function(n=10) {
 #' Exponentiation `^` or `**`
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
-#' @param base real value of base
+#' @param exponent exponent
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
-#' pl$DataFrame(list(a = -1:3))$select(pl$lit(2) ^ (pl$col("a")))$get_column("literal")$to_r()== 2^(-1:3)
+#' pl$DataFrame(a= -1:3)$select(
+#'   pl$lit(2)$pow(pl$col("a"))
+#' )$get_column("literal")$to_r()== 2^(-1:3)
+#'
+#' pl$DataFrame(a = -1:3)$select(
+#'   pl$lit(2) ^ (pl$col("a"))
+#' )$get_column("literal")$to_r()== 2^(-1:3)
 Expr_pow = function(exponent) {
-  if(!inherits(exponent,"Expr")) exponent = pl$lit(exponent)
-  .pr$Expr$pow(self,exponent)
+  .pr$Expr$pow(self,wrap_e(exponent))
 }
 #' @export
 "^.Expr" <- function(e1,e2) e1$pow(e2)
@@ -2096,11 +2193,13 @@ Expr_pow = function(exponent) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
-#' @aliases is_in
+#' @usage Expr_is_in(other)
 #' @examples
 #'
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(pl$col("a")$is_in(pl$lit(NA_real_)))$as_data_frame()[[1L]]
+#' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
+#'   pl$col("a")$is_in(pl$lit(NA_real_))
+#' )$as_data_frame()[[1L]]
 #'
 #'
 #'
@@ -2116,7 +2215,6 @@ Expr_is_in= "use_extendr_wrapper"
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
 #' @return Expr
-#' @aliases repeat_by
 #' @examples
 #' df = pl$DataFrame(list(a = c("x","y","z"), n = c(0:2)))
 #' df$select(pl$col("a")$repeat_by("n"))
@@ -2143,13 +2241,13 @@ Expr_repeat_by = function(by) {
 #' @details alias the column to 'in_between'
 #' This function is equivalent to a combination of < <= >= and the &-and operator.
 #' @return Expr
-#' @aliases is_between
 #' @examples
 #' df = pl$DataFrame(list(num = 1:5))
 #' df$select(pl$col("num")$is_between(2,4))
 #' df$select(pl$col("num")$is_between(2,4,TRUE))
-#' df$select(pl$col("num")$is_between(2,4,c(F,T)))
-#' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6)) #start end can be a vector/expr with same length as column
+#' df$select(pl$col("num")$is_between(2,4,c(FALSE, TRUE)))
+#' #start end can be a vector/expr with same length as column
+#' df$select(pl$col("num")$is_between(c(0,2,3,3,3),6))
 Expr_is_between = function(start, end, include_bounds = FALSE) {
 
   # check
@@ -2230,7 +2328,9 @@ Expr_reinterpret = function(signed = TRUE) {
 #' @return Expr
 #' @aliases inspect
 #' @examples
-#' pl$select(pl$lit(1:5)$inspect("before dropping half the column it was:{}and not it is dropped")$head(2))
+#' pl$select(pl$lit(1:5)$inspect(
+#'   "before dropping half the column it was:{}and not it is dropped")$head(2)
+#' )
 Expr_inspect = function(fmt = "{}") {
 
   #check fmt and create something to print before and after printing Series.
@@ -2260,7 +2360,7 @@ Expr_inspect = function(fmt = "{}") {
 
 #' Interpolate `Nulls`
 #' @keywords Expr
-#' @param method string 'linear' or 'nearest'
+#' @param method string 'linear' or 'nearest', default "linear"
 #' @description
 #' Fill nulls with linear interpolation over missing values.
 #' Can also be used to regrid data to a new grid - see examples below.
@@ -2280,7 +2380,7 @@ Expr_inspect = function(fmt = "{}") {
 #' df_new_grid$join(
 #'   df_original_grid, on="grid_points", how="left"
 #' )$with_columns(pl$col("values")$interpolate())
-Expr_interpolate = function(method) {
+Expr_interpolate = function(method = "linear") {
   unwrap(.pr$Expr$interpolate(self, method))
 }
 
@@ -2315,7 +2415,7 @@ prepare_rolling_window_args = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2345,17 +2445,14 @@ prepare_rolling_window_args = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_min
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_min(window_size = 2))
 Expr_rolling_min = function(
@@ -2384,7 +2481,7 @@ Expr_rolling_min = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2414,17 +2511,14 @@ Expr_rolling_min = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_max
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_max(window_size = 2))
 Expr_rolling_max = function(
@@ -2453,7 +2547,7 @@ Expr_rolling_max = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2480,20 +2574,15 @@ Expr_rolling_max = function(
 #' be of dtype `{Date, Datetime}`
 #' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
-#'
-#'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_mean
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_mean(window_size = 2))
 Expr_rolling_mean = function(
@@ -2524,7 +2613,7 @@ Expr_rolling_mean = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2551,20 +2640,15 @@ Expr_rolling_mean = function(
 #' be of dtype `{Date, Datetime}`
 #' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
-#'
-#'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_sum
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_sum(window_size = 2))
 Expr_rolling_sum = function(
@@ -2594,7 +2678,7 @@ Expr_rolling_sum = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2624,17 +2708,14 @@ Expr_rolling_sum = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_std
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_std(window_size = 2))
 Expr_rolling_std = function(
@@ -2663,7 +2744,7 @@ Expr_rolling_std = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2693,17 +2774,14 @@ Expr_rolling_std = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_var
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_var(window_size = 2))
 Expr_rolling_var = function(
@@ -2732,7 +2810,7 @@ Expr_rolling_var = function(
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
 #' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
+#' - 1ns   (1 nanosecond)
 #' - 1us   (1 microsecond)
 #' - 1ms   (1 millisecond)
 #' - 1s    (1 second)
@@ -2762,17 +2840,14 @@ Expr_rolling_var = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
-#'   This functionality is experimental and may change without it being considered a
+#' This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_median
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_median(window_size = 2))
 Expr_rolling_median = function(
@@ -2836,17 +2911,16 @@ Expr_rolling_median = function(
 #'
 #'
 #' @details
-#' #Warnings
-#' --------
+#'
+#'
 #'   This functionality is experimental and may change without it being considered a
 #' breaking change.
-#' Notes
-#' -----
-#'   If you want to compute multiple aggregation statistics over the same dynamic
+#' Notes:
+#' If you want to compute multiple aggregation statistics over the same dynamic
 #' window, consider using `groupby_rolling` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases interpolate
+#' @aliases Expr_rolling_quantile
 #' @examples
 #' pl$DataFrame(list(a=1:6))$select(
 #'   pl$col("a")$rolling_quantile(window_size = 2, quantile = .5)
@@ -2880,17 +2954,15 @@ Expr_rolling_quantile = function(
 #' @return Expr
 #' @aliases rolling_skew
 #' @details
+#' Extra comments copied from rust-polars_0.25.1
+#' Compute the sample skewness of a data set.
 #'
-#'  Extra comments copied from rust-polars_0.25.1
-#'   Compute the sample skewness of a data set.
-#'
-#'  For normally distributed data, the skewness should be about zero. For
-#'  uni-modal continuous distributions, a skewness value greater than zero means
-#'  that there is more weight in the right tail of the distribution. The
-#'  function `skewtest` can be used to determine if the skewness value
-#'  is close enough to zero, statistically speaking.
-#'
-#'  see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
+#' For normally distributed data, the skewness should be about zero. For
+#' uni-modal continuous distributions, a skewness value greater than zero means
+#' that there is more weight in the right tail of the distribution. The
+#' function `skewtest` can be used to determine if the skewness value
+#' is close enough to zero, statistically speaking.
+#' see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
 #'
 #' @examples
 #' pl$DataFrame(list(a=iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4 )$head(10))
@@ -3039,7 +3111,10 @@ Expr_skew = function(bias = TRUE) {
 #' Kurtosis
 #' @description
 #' Compute the kurtosis (Fisher or Pearson) of a dataset.
-#' @param bias If False, then the calculations are corrected for statistical bias.
+#'
+#' @param fisher bool se details
+#' @param bias bool, If FALSE, then the calculations are corrected for statistical bias.
+#'
 #' @return  Expr
 #' @aliases kurtosis
 #' @keywords Expr
@@ -3067,8 +3142,8 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 #' Clip
 #' @description
 #' Clip (limit) the values in an array to a `min` and `max` boundary.
-#' @param min_val Minimum Value, ints and floats or any literal expression of ints and floats
-#' @param max_val Maximum Value, ints and floats or any literal expression of ints and floats
+#' @param min Minimum Value, ints and floats or any literal expression of ints and floats
+#' @param max Maximum Value, ints and floats or any literal expression of ints and floats
 #' @return  Expr
 #' @aliases clip
 #' @keywords Expr
@@ -3358,7 +3433,7 @@ Expr_shuffle= function(seed = NULL) {
 #'
 #' df$select(pl$col("a")$sample(frac=2,with_replacement=TRUE,seed=1L))
 #'
-#' df$select(pl$col("a")$sample(n=5,with_replacement=FALSE,seed=1L))
+#' df$select(pl$col("a")$sample(n=2,with_replacement=FALSE,seed=1L))
 Expr_sample= function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n=NULL) {
 
   #check seed
@@ -3540,7 +3615,7 @@ Expr_extend_constant = function(value, n) {
 #' This value may be None to fill with nulls.
 #' @param n The number of values to extend.
 #' @return  Expr
-#' @aliases extend_constant
+#' @aliases Expr_extend_expr
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3569,7 +3644,7 @@ Expr_extend_expr = function(value, n) {
 #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
 #'
 #' @return  Expr
-#' @aliases extend_constant
+#' @aliases Expr_rep
 #' @format Method
 #' @details
 #' if self$len() == 1 , has a special faster implementation,  Here rechunk is not
@@ -3593,34 +3668,19 @@ Expr_rep = function(n, rechunk = TRUE) {
   unwrap(.pr$Expr$rep(self, n, rechunk))
 }
 
-#' Repeat a series
-#' @description This expression emulates R rep()
-#' @name pl_rep
-#' @param value expr or any valid input to pl$lit (literal)
-#' This value may be None to fill with nulls.
-#' @param n  Numeric the number of times to repeat, must be non-negative and finite
-#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
-#' @return  Expr
-#' @aliases extend_constant
-#' @format functino
-#' @keywords Expr
-#' @examples
-#' pl$select(pl$rep(1:3, n = 5))
-pl$rep = function(value, n, rechunk = TRUE) {
-  wrap_e(value)$rep(n, rechunk)
-}
+
 
 
 #' extend series with repeated series
 #' @description
 #' Extend a series with a repeated series or value.
+#' @param expr Expr or into Expr
 #' @param n  Numeric the number of times to repeat, must be non-negative and finite
 #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
 #' @param upcast bool default = TRUE, passed to self$append(), if TRUE non identical types
 #' will be casted to common super type if any. If FALSE or no common super type
 #' throw error.
 #' @return  Expr
-#' @aliases extend_constant
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3639,12 +3699,11 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' @param i numeric column to extract zero index default first, expression could generate multiple
 #' columns
 #' @return  R object
-#' @aliases to_r expr_to_r pl_expr_to_r
 #' @format Method
 #' @keywords Expr
 #' @examples
 #' pl$lit(1:3)$to_r()
-#' pl$expr_to_r(pl$lit(1:3)
+#' pl$expr_to_r(pl$lit(1:3))
 #' pl$expr_to_r(1:3)
 Expr_to_r = function(df = NULL, i = 0) {
   if(is.null(df)) {
@@ -3671,11 +3730,10 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
-#' @param    multithreaded:
+#' @param multithreaded
 #' Better to turn this off in the aggregation context, as it can lead to contention.
-#' @param sort:
+#' @param sort
 #' Ensure the output is sorted from most values to least.
-#' @aliases value_counts
 #' @format Method
 #' @keywords Expr
 #' @examples
@@ -3701,6 +3759,9 @@ Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
 Expr_unique_counts = "use_extendr_wrapper"
 
 #' Natural Log
+#'
+#' @param base numeric base value for log, default base::exp(1)
+#'
 #' @description  Compute the base x logarithm of the input array, element-wise.
 #' @keywords Expr
 #' @return Expr
@@ -3751,7 +3812,7 @@ Expr_entropy  = function(base = base::exp(1), normalize = TRUE) {
 #' @details
 #'
 #' Warnings
-#' --------
+#'
 #'   This functionality is experimental and may change without it being considered a
 #' breaking change.
 #' This can be really slow as it can have `O(n^2)` complexity. Don't use this
@@ -3821,7 +3882,7 @@ Expr_list = "use_extendr_wrapper"
 #'    e= c(-112L, 2L, 129L),
 #'    f= c("a", "b", "c"),
 #'    g= c(0.1, 1.32, 0.12),
-#'    h= c(T, NA, F)
+#'    h= c(TRUE, NA, FALSE)
 #'  )$with_column( pl$col("b")$cast(pl$Int64) *32L
 #'  )$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"
@@ -3834,7 +3895,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases arr list
+#' @aliases arr
 #' @examples
 #' df_with_list = pl$DataFrame(
 #'   group = c(1,1,2,2,3),
@@ -3900,5 +3961,25 @@ Expr_dt = method_as_property(function() {
 #'   $lit_to_s()
 #' )
 Expr_lit_to_s = function(){
+  pl$select(self)$to_series(0)
+}
+
+#' Literal to DataFrame
+#' @description
+#' collect an expression based on literals into a DataFrame
+#' @keywords Expr
+#' @return Series
+#' @aliases lit_to_df
+#' @examples
+#' (
+#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
+#'   $print()
+#'   $to_lit()
+#'     $arr$lengths()
+#'     $sum()
+#'     $cast(pl$dtypes$Int8)
+#'   $lit_to_df()
+#' )
+Expr_lit_to_df = function(){
   pl$select(self)
 }

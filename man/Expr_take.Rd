@@ -11,7 +11,7 @@ a method
 Expr_take(indices)
 }
 \arguments{
-\item{indeces}{R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.}
+\item{indices}{R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.}
 }
 \value{
 Expr

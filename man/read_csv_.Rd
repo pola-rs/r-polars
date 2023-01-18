@@ -9,7 +9,11 @@ read_csv_(path, lazy = FALSE, reuse_downloaded = TRUE, ...)
 \arguments{
 \item{path}{file or url}
 
-\item{...}{}
+\item{lazy}{bool default FALSE, read csv lazy}
+
+\item{reuse_downloaded}{bool default TRUE, cache url downloaded files in session an reuse}
+
+\item{...}{arguments forwarded to csv_reader or lazy_csv_reader}
 }
 \value{
 polars_DataFrame or polars_lazy_DataFrame

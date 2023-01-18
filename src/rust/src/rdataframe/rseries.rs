@@ -129,14 +129,15 @@ impl Series {
         )
     }
 
-    // pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
-    //     let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
-    //     let options = pl::SortOptions {
-    //         descending: reverse,
-    //         nulls_last: nulls_last,
-    //     };
-    //     self.0.is_sorted(options)
-    // }
+    pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
+        let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+        let options = pl::SortOptions {
+            descending: reverse,
+            nulls_last: nulls_last,
+            multithreaded: false,
+        };
+        self.0.is_sorted(options)
+    }
 
     pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {
         if strict {
@@ -460,7 +461,7 @@ impl Series {
 //inner_from_robj only when used within Series, do not have to comply with extendr_api macro supported types
 impl Series {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
-        if robj.check_external_ptr("Series") {
+        if robj.check_external_ptr_type::<Series>() {
             let x: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
             Ok(x)
         } else {

@@ -11,6 +11,10 @@ Expr_eq(other)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}
+
+\item{e1}{lhs Expr}
+
+\item{e2}{rhs Expr or anything which can become a literal Expression}
 }
 \value{
 Exprs

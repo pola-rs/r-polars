@@ -41,7 +41,7 @@ df$select(
 
 # by two columns/expressions
 df$select(
-  pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(T,F))
+  pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
 )
 
 
@@ -68,8 +68,8 @@ all.equal(
     pl$col("ab")$sort_by("v3")$alias("ab3"),
     pl$col("ab")$sort_by("v2")$alias("ab2"),
     pl$col("ab")$sort_by("v1")$alias("ab1"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
+    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
   )$to_list(),
   list(
     ab4 = l$ab[order(l$v4)],
@@ -77,7 +77,7 @@ all.equal(
     ab2 = l$ab[order(l$v2)],
     ab1 = l$ab[order(l$v1)],
     ab13FT= l$ab[order(l$v3,rev(l$v1))],
-    ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+    ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
   )
 )
 }

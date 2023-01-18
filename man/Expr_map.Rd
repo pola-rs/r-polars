@@ -11,7 +11,8 @@ Expr_map(f, output_type = NULL, agg_list = FALSE)
 
 \item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.}
 
-\item{agg_list}{Aggregate list. Map from vector to group in groupby context. Likely not so useful.}
+\item{agg_list}{Aggregate list. Map from vector to group in groupby context.
+Likely not so useful.}
 }
 \value{
 Expr
@@ -20,8 +21,9 @@ Expr
 Expr_map
 }
 \details{
-user function return should be a series or any Robj convertable into a Series. In PyPolars likely return must be Series.
-User functions do fully support \code{browser()}, helpful to investigate.
+user function return should be a series or any Robj convertable into a Series.
+In PyPolars likely return must be Series. User functions do fully support \code{browser()}, helpful to
+investigate.
 }
 \examples{
 pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {

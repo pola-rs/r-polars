@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_any}
 \alias{Series_any}
-\alias{any}
 \title{Reduce Boolean Series with ANY}
 \format{
 An object of class \code{character} of length 1.

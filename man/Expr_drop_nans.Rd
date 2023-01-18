@@ -15,7 +15,7 @@ Expr
 }
 \description{
 Drop floating point NaN values.
-Similar to R syntax x\link{!is.nan(x)}
+Similar to R syntax \code{x[!is.nan(x)]}
 }
 \details{
 Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)

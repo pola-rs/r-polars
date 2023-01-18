@@ -380,6 +380,18 @@ test_that("series comparison", {
   expect_true((pl$Series("a") < "ab")$all())
   expect_true((pl$Series("ab") == "ab")$all())
   expect_true((pl$Series("true") == TRUE)$all())
+
+
+
+  expect_true((pl$Series(1:5)<=5)$all())
+  expect_false((pl$Series(1:5)<=3)$all())
+  expect_true((pl$Series(1:5)<11:15)$all())
+  expect_grepl_error(
+    (pl$Series(1:5)<=c(1:2))$all(),
+    "Error: in compare Series: not same length or either of length 1."
+  )
+
+
 })
 
 

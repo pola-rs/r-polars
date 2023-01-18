@@ -7,6 +7,9 @@
 \usage{
 Expr_log(base = base::exp(1))
 }
+\arguments{
+\item{base}{numeric base value for log, default base::exp(1)}
+}
 \value{
 Expr
 }

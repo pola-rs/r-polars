@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_std}
 \alias{Expr_std}
-\alias{std}
 \title{Get Standard Deviation}
 \format{
 a method
@@ -11,7 +10,7 @@ a method
 Expr_std(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer in range \link{0;255} degrees of freedom}
+\item{ddof}{integer in range \verb{[0;255]} degrees of freedom}
 }
 \value{
 Expr (f64 scalar)

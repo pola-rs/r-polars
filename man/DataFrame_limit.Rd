@@ -2,7 +2,6 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_limit}
 \alias{DataFrame_limit}
-\alias{limit}
 \title{Limit a DataFrame}
 \usage{
 DataFrame_limit(n)

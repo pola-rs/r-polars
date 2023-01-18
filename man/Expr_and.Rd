@@ -8,7 +8,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Expr_and
+Expr_and(other)
 }
 \arguments{
 \item{other}{literal or Robj which can become a literal}

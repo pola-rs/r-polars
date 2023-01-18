@@ -1,4 +1,11 @@
+
+# Build time options
+build_debug_print = FALSE
+
 #' extendr methods into pure functions
+#'
+#' @param env environment object output from extendr-wrappers.R classes
+#'
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
@@ -30,18 +37,19 @@ extendr_method_to_pure_functions = function(env) {
 #'
 #' rpolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 .pr            = new.env(parent=emptyenv())
-.pr$Series     = extendr_method_to_pure_functions(rpolars:::Series)
-.pr$DataFrame  = extendr_method_to_pure_functions(rpolars:::DataFrame)
+.pr$Series     = extendr_method_to_pure_functions(Series)
+.pr$DataFrame  = extendr_method_to_pure_functions(DataFrame)
 .pr$GroupBy    = NULL # derived from DataFrame in R, has no  rust calls
-.pr$LazyFrame  = extendr_method_to_pure_functions(rpolars:::LazyFrame)
-.pr$LazyGroupBy= extendr_method_to_pure_functions(rpolars:::LazyGroupBy)
-.pr$DataType   = extendr_method_to_pure_functions(rpolars:::RPolarsDataType)
-.pr$TimeUnit   = extendr_method_to_pure_functions(rpolars:::RPolarsTimeUnit)
-.pr$DataTypeVector = extendr_method_to_pure_functions(rpolars:::DataTypeVector)
-.pr$Expr       = extendr_method_to_pure_functions(rpolars:::Expr)
-.pr$ProtoExprArray = extendr_method_to_pure_functions(rpolars:::ProtoExprArray)
-.pr$VecDataFrame = extendr_method_to_pure_functions(rpolars:::VecDataFrame)
-.pr$RNullValues = extendr_method_to_pure_functions(rpolars:::RNullValues)
+.pr$LazyFrame  = extendr_method_to_pure_functions(LazyFrame)
+.pr$LazyGroupBy= extendr_method_to_pure_functions(LazyGroupBy)
+.pr$DataType   = extendr_method_to_pure_functions(RPolarsDataType)
+.pr$TimeUnit   = extendr_method_to_pure_functions(RPolarsTimeUnit)
+.pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
+.pr$Expr       = extendr_method_to_pure_functions(Expr)
+.pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
+.pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
+.pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
+
 #TODO remove export
 
 
@@ -61,10 +69,9 @@ extendr_method_to_pure_functions = function(env) {
 #' to run first verify_method_call() to check for syntax error and return
 #' more user friendly error if issues
 #'
-#' @seealso verify_method_call
+#' see zzz.R for usage examples
 #'
-#' @examples
-#' rpolars:::macro_add_syntax_check_to_class("DataFrame")
+#' @seealso verify_method_call
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
     "`$.",Class_name,"` <- function (self, name) {\n",
@@ -88,13 +95,15 @@ macro_add_syntax_check_to_class = function(Class_name) {
 ##this mod should be run immediately after extendr-wrappers.R are sourced
 is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
 env_class_names = names(is_env_class)[is_env_class]
-cat("\nadd syntax check to: ")
+if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
-  cat(i_class,", ",sep="")
-  if(!exists(paste0("$.",i_class))) stopf("internal assertion failed, env class without a dollarsign method")
+  if (build_debug_print) cat(i_class,", ",sep="")
+  if(!exists(paste0("$.",i_class))) {
+    stopf("internal assertion failed, env class without a dollarsign method")
+  }
   macro_add_syntax_check_to_class(i_class)
 }
-cat("\n")
+if (build_debug_print) cat("\n")
 
 
 #' Give a class method property behavior
@@ -135,7 +144,10 @@ method_as_property = function(f, setter=FALSE) {
 #' rpolars:::print_env(pl,"rpolars public functions")
 #'
 #' #all accessible classes and their public methods
-#' rpolars:::print_env(rpolars:::pl_pub_class_env,"rpolars public class methods, access via object$method()")
+#' rpolars:::print_env(
+#'   rpolars:::pl_pub_class_env,
+#'   "rpolars public class methods, access via object$method()"
+#' )
 pl = new.env(parent=emptyenv())
 
 #remap
@@ -158,9 +170,12 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'  - Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to `$.ClassName`
 #'  See function macro_add_syntax_check_to_class().
 #'
+#' @importFrom utils .DollarNames
 #' @export
 #' @examples
 #' #all a rpolars object is made of:
 #' some_rpolars_object = pl$DataFrame(iris)
 #' str(some_rpolars_object) #External Pointer tagged with a class attribute.
 object = "place_holder"
+
+

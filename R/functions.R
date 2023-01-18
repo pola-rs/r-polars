@@ -1,14 +1,13 @@
 
 
 #' @title concat polars objects
-#'
+#' @name pl_concat
 #' @param l list of DataFrame, or Series, LazyFrame or Expr
 #' @param rechunk perform a rechunk at last
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally
 #' @param parallel BOOL default TRUE, only used for LazyFrames
 #'
 #' @return DataFrame, or Series, LazyFrame or Expr
-#' @export
 #'
 #' @examples
 #' #vertical
@@ -52,9 +51,9 @@ pl$concat = function(
     inherits(first,"DataFrame"), {
       vdf = l_to_vdf(l)
       pcase(
-        how == "vertical",   rpolars:::concat_df(vdf),
-        how == "diagonal",    rpolars:::diag_concat_df(vdf),
-        how == "horizontal", rpolars:::hor_concat_df(vdf),
+        how == "vertical",   concat_df(vdf),
+        how == "diagonal",   diag_concat_df(vdf),
+        how == "horizontal", hor_concat_df(vdf),
         or_else = stopf("Internal error")
       )
     },
@@ -76,8 +75,9 @@ pl$concat = function(
 
 
 
+
 #' new date_range
-#'
+#' @name pl_date_range
 #' @param low string or
 #' @param high string or
 #' @param interval string parsed to duration like "1w" "1week" "2years" "10s"
@@ -107,4 +107,24 @@ pl$date_range = function(
   unwrap(rpolars:::r_date_range(low, high, interval, closed, name, time_unit, time_zone))
 }
 
+
+
+##this implementation is parked here, it does not seam to match py-polars
+## which could be ok if very fancy, however this seem not to useful
+#' #' Repeat a series
+#' #' @description This expression emulates R rep()
+#' #' @name pl_rep
+#' #' @param value expr or any valid input to pl$lit (literal)
+#' #' This value may be None to fill with nulls.
+#' #' @param n  Numeric the number of times to repeat, must be non-negative and finite
+#' #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
+#' #' @return  Expr
+#' #' @aliases pl_rep
+#' #' @format functino
+#' #' @keywords Expr
+#' #' @examples
+#' #' pl$select(pl$rep(1:3, n = 5))
+#' pl$rep = function(value, n, rechunk = TRUE) {
+#'   wrap_e(value)$rep(n, rechunk)
+#' }
 
