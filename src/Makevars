@@ -34,6 +34,7 @@ $(STATLIB):
 	rm -rf $(LIBDIR); \
 	mkdir $(LIBDIR); \
 	mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
+	rm -rf ./src/.cargo; \
 	else \
 	echo "hands off!!" ; \
 	fi
