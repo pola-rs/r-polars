@@ -35,7 +35,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
@@ -104,27 +103,17 @@ jobs:
         env:
           CI: false
 
-      - name: find rpolars rust source
+      - name: find rpolars rust source/cache, used by Makevars in check step
         id: get_the_rust_sauce
         shell: bash
         run: |
-          echo "rpolars_rust_source=${PWD}/src/rust" >> $GITHUB_ENV
-          echo "rpolars_rust_source=${PWD}/src/rust"
-          blop_blop="123123"
-
-      - name: print GITHUB PATH on all OS 2
-        shell: bash
-        run: |
-          echo "${GITHUB_PATH}"
-          echo "${PATH}"
-
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
           error-on: '"never"'
-        env:
-          RPOLARS_RUST_SOURCE: ${{ env.rpolars_rust_source }}
 
       - name: print check install log linux / windows
         if: runner.os == 'Windows'
@@ -142,7 +131,6 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           less /Users/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
-
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
