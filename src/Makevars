@@ -1,13 +1,39 @@
 LIBDIR = ./rust/target/release
 STATLIB = $(LIBDIR)/librpolars.a
 PKG_LIBS = -L$(LIBDIR) -lrpolars
+RPOLARS_RUST_SOURCE ?= ./rust
+RPOLARS_CARGO_CLEAN_DEPS ?= nope
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/librpolars.a"
 
 all: C_clean
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --lib --release --manifest-path=./rust/Cargo.toml
+	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+
+	if [ -f "$(STATLIB)" ]; \
+	then \
+	echo "file is there: "; \
+	else \
+	echo "no, file is NOT there: "; \
+	mkdir -p ./rust/target/release ; \
+	echo "trying to symlink in $(rpolars_ext_binary)"; \
+	ln -s $(rpolars_ext_binary) ./rust/target/release/librpolars.a ; \
+	fi
+
+	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; \
+	then \
+	echo "cleanup!!" ; \
+	mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
+	rm -rf $(LIBDIR); \
+	mkdir $(LIBDIR); \
+	mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
+	rm -rf ./src/.cargo; \
+	else \
+	echo "hands off!!" ; \
+	fi
+
 
 C_clean:
 	rm -Rf $(SHLIB) $(STATLIB) $(OBJECTS)

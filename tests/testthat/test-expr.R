@@ -1566,7 +1566,7 @@ test_that("interpolate", {
 
 
 test_that("Expr_rolling_", {
-
+  skip_if_not_installed("data.table")
   library(data.table)
   #check all examples
   df = pl$DataFrame(list(a=1:6))
@@ -2260,6 +2260,8 @@ test_that("cumulative_eval", {
     sapply(lapply(seq_along(x) ,\(i) x[1:i]),g)
   }
 
+  first = \(x,n=1) head(x,n)
+  last =  \(x,n=1) tail(x,n)
   expect_identical(
     pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r(),
     r_cumulative_eval(1:5, \(x) first(x)-last(x)**2)

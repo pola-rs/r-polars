@@ -22,11 +22,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release', rtools-version: "42"}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - { os: macos-latest, r: "release" }
+          - { os: windows-latest, r: "release", rtools-version: "42" }
+          - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
+          - { os: ubuntu-latest, r: "release" }
+          - { os: ubuntu-latest, r: "oldrel-1" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -35,22 +35,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: print files
+        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+        shell: Rscript {0}
+
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
         shell: bash
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+        run: |
+          echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+          echo "${GITHUB_PATH}"
 
       - name: cache rpolars rust targets
         id: cache-rust-targets
-        uses: actions/cache@v3
+        uses: actions/cache@v3.2.2
         env:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          key: check_v4-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
+            check_v4-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
+            check_v4-${{ runner.os }}-cargo-target
 
       - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
       - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
@@ -69,6 +75,7 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools-version }}
+          Ncpus: 2
 
       - name: Install ubuntu SYSTEM REQUIREMENTS
         if: runner.os == 'Linux'
@@ -96,7 +103,36 @@ jobs:
         env:
           CI: false
 
+      - name: find rpolars rust source/cache, used by Makevars in check step
+        id: get_the_rust_sauce
+        shell: bash
+        run: |
+          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
-          error-on: '"never"'
+          error-on: '"warning"'
+
+      - name: print check install log linux / windows
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          less D:/a/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print check install log linux / windows
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          less /home/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print check install MacOS
+        if: runner.os == 'macOS'
+        run: |
+          less /Users/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print files
+        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+        shell: Rscript {0}
