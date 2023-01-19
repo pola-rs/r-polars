@@ -2,15 +2,9 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
-    # tags:
-    #   - "**" # Push events to every tag including hierarchical tags like v1.0/beta
-  # pull_request:
-  #   branches:
-  #     - "*"
-  #release:
-  #  types: [published]
-  # workflow_dispatch:
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  workflow_dispatch:
 
 name: pkgdown
 
@@ -63,10 +57,10 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: key_v2-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          key: pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            key_v2-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            key_v2-${{ runner.os }}-cargo-target
+            pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            pkgdown_v1-${{ runner.os }}-cargo-target
 
       - uses: actions-rs/toolchain@v1
         with:
