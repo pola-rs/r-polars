@@ -49,7 +49,7 @@ jobs:
 
       - name: cache rpolars rust targets
         id: cache-rust-targets
-        uses: actions/cache@v3
+        uses: actions/cache@v3.2.2
         env:
           cache-name: cache-rust-targets
         with:
