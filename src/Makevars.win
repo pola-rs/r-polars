@@ -14,11 +14,6 @@ rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/release/librpolars
 all: C_clean
 
 $(SHLIB): $(STATLIB)
-# CRAN policy forbids using $HOME so we build in the current working dir.
-# This makes things really slow because we have to reinstall all dependencies
-# for each build. Comment this out for non-CRAN releases.
-CARGOTMP=$(PWD)/.cargo
-export CARGO_HOME=$(CARGOTMP)
 
 $(STATLIB):
 	mkdir -p $(TARGET_DIR)/libgcc_mock
@@ -56,7 +51,8 @@ $(STATLIB):
 	rm -rf $(LIBDIR); \
 	mkdir $(LIBDIR); \
 	mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
-	rm -rf ./src/.cargo; \
+	PWD; \
+	rm -rf -v ./src/.cargo; \
 	else \
 	echo "skip cleaning" ; \
 	fi

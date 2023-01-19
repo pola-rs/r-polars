@@ -8,11 +8,6 @@ rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/librpolars.a"
 all: C_clean
 
 $(SHLIB): $(STATLIB)
-# CRAN policy forbids using $HOME so we build in the current working dir.
-# This makes things really slow because we have to reinstall all dependencies
-# for each build. Comment this out for non-CRAN releases.
-CARGOTMP=$(PWD)/.cargo
-export CARGO_HOME=$(CARGOTMP)
 
 $(STATLIB):
 	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
