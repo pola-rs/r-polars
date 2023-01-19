@@ -114,7 +114,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
-          error-on: '"never"'
+          error-on: '"warning"'
 
       - name: print check install log linux / windows
         if: runner.os == 'Windows'
