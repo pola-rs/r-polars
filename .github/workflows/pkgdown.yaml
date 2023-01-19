@@ -3,15 +3,14 @@
 on:
   push:
     branches: [main]
-    tags:
-      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
-  pull_request:
-    branches:
-      - "*"
+    # tags:
+    #   - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  # pull_request:
+  #   branches:
+  #     - "*"
   #release:
   #  types: [published]
-
-  workflow_dispatch:
+  # workflow_dispatch:
 
 name: pkgdown
 
@@ -53,7 +52,9 @@ jobs:
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
         shell: bash
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+        run: |
+          echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+          echo "${GITHUB_PATH}"
 
       - name: cache rpolars rust targets
         id: cache-rust-targets

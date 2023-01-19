@@ -43,7 +43,9 @@ jobs:
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
         shell: bash
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+        run: |
+          echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+          echo "${GITHUB_PATH}"
 
       - name: cache rpolars rust targets
         id: cache-rust-targets
@@ -110,6 +112,12 @@ jobs:
           echo "rpolars_rust_source=${PWD}/src/rust"
           blop_blop="123123"
 
+      - name: print GITHUB PATH on all OS 2
+        shell: bash
+        run: |
+          echo "${GITHUB_PATH}"
+          echo "${PATH}"
+
 
       - uses: r-lib/actions/check-r-package@v2
         with:
@@ -134,6 +142,12 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           less /Users/runner/work/r-polars/r-polars/check/rpolars.Rcheck/00install.out
+
+      - name: print GITHUB PATH on all OS
+        shell: bash
+        run: |
+          echo "${GITHUB_PATH}"
+          echo "${PATH}"
 
 
       - name: print files
