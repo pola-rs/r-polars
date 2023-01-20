@@ -2,15 +2,8 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
-  pull_request:
-    branches:
-      - "*"
-  #release:
-  #  types: [published]
-
   workflow_dispatch:
 
 name: pkgdown
@@ -53,7 +46,9 @@ jobs:
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
         shell: bash
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+        run: |
+          echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+          echo "${GITHUB_PATH}"
 
       - name: cache rpolars rust targets
         id: cache-rust-targets
@@ -62,10 +57,10 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          key: pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
+            pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            pkgdown_v1-${{ runner.os }}-cargo-target
 
       - uses: actions-rs/toolchain@v1
         with:

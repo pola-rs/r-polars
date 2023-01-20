@@ -251,6 +251,7 @@ test_that("arg_min arg_max", {
 
 
 test_that("diff", {
+  skip_if_not_installed("data.table")
   l = list(
     l_i32 = list(1:5,1:3,c(4L,2L,1L,7L,42L)),
     l_f64 = list(c(1,1,2,3,NA,Inf,NA,Inf),c(1),numeric())
@@ -278,6 +279,7 @@ test_that("diff", {
 
 
 test_that("shift", {
+  skip_if_not_installed("data.table")
   l = list(
     l_i32 = list(1:5,1:3,c(4L,2L,1L,7L,42L)),
     l_f64 = list(c(1,1,2,3,NA,Inf,NA,Inf),c(1),numeric())
