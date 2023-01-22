@@ -7,9 +7,9 @@
 pstop(err, call = sys.call(1L))
 }
 \arguments{
-\item{call}{calling context}
+\item{err}{error msg string}
 
-\item{msg}{error msg string}
+\item{call}{calling context}
 }
 \value{
 throws an error
@@ -18,7 +18,7 @@ throws an error
 Internal preferred function to throw errors
 }
 \examples{
-f = function() pstop("this aint right!!")
-f()
+f = function() rpolars:::pstop("this aint right!!")
+tryCatch(f(), error = \(e) as.character(e))
 }
 \keyword{internals}

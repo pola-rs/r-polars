@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_floor}
 \alias{Series_floor}
-\alias{floor}
 \title{Series_floor}
 \usage{
 Series_floor()

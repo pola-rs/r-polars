@@ -6,6 +6,13 @@
 \usage{
 \method{$}{DataFrame}(self, name) <- value
 }
+\arguments{
+\item{self}{DataFrame}
+
+\item{name}{name method/property to set}
+
+\item{value}{value to insert}
+}
 \value{
 value
 }
@@ -13,7 +20,8 @@ value
 set value of properties of DataFrames
 }
 \details{
-settable rpolars object properties may appear to be R objects, but they are not. See [\link{method_name}] example
+settable rpolars object properties may appear to be R objects, but they are not.
+See \verb{[[method_name]]} example
 }
 \examples{
 #For internal use

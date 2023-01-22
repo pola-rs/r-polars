@@ -4,10 +4,12 @@
 \alias{print.GroupBy}
 \title{print GroupBy}
 \usage{
-\method{print}{GroupBy}(x)
+\method{print}{GroupBy}(x, ...)
 }
 \arguments{
 \item{x}{DataFrame}
+
+\item{...}{not used}
 }
 \value{
 self

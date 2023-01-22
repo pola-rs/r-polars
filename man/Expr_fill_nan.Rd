@@ -11,7 +11,7 @@ a method
 Expr_fill_nan(expr = NULL)
 }
 \arguments{
-\item{Expr}{or \verb{Into<Expr>}  the value to replace NaN with. Default NULL is NA/Null.}
+\item{expr}{Expr or into Expr, value to fill NaNs with}
 }
 \value{
 Expr

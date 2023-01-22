@@ -4,10 +4,12 @@
 \alias{print.Expr}
 \title{Print expr}
 \usage{
-\method{print}{Expr}(x)
+\method{print}{Expr}(x, ...)
 }
 \arguments{
 \item{x}{Expr}
+
+\item{...}{not used}
 }
 \value{
 self

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_repeat_by}
 \alias{Expr_repeat_by}
-\alias{repeat_by}
 \title{Repeat by}
 \usage{
 Expr_repeat_by(by)

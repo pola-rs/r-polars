@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_floor}
 \alias{Expr_floor}
-\alias{floor}
 \title{Floor}
 \format{
 a method

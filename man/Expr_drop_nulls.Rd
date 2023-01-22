@@ -15,7 +15,7 @@ Expr
 }
 \description{
 Drop null values.
-Similar to R syntax x\link{!(is.na(x) & !is.nan(x))}
+Similar to R syntax \code{x[!(is.na(x) & !is.nan(x))]}
 }
 \details{
 See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}

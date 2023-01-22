@@ -2,7 +2,6 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
@@ -32,6 +31,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: check if release
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        run: |
+          echo this is a release
+
+      - name: Fix path for Windows caching
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
+          echo "${GITHUB_PATH}"
+
       - name: cache rpolars rust targets
         id: cache-rust-targets
         uses: actions/cache@v3
@@ -39,10 +50,10 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+          key: pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
+            pkgdown_v1-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
+            pkgdown_v1-${{ runner.os }}-cargo-target
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master

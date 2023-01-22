@@ -3,7 +3,6 @@
 \docType{data}
 \name{Expr_is_unique}
 \alias{Expr_is_unique}
-\alias{is_unique}
 \title{Get mask of unique values}
 \format{
 a method
@@ -24,7 +23,7 @@ all.equal(
     pl$lit(v)$is_unique()$alias("is_unique"),
     pl$lit(v)$is_first()$alias("is_first"),
     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-    pl$lit(v)$is_first()$is_not()$alias("R_duplicated"),
+    pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
   )$to_list(),
   list(
     is_unique = !v \%in\% v[duplicated(v)],

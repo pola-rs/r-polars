@@ -10,6 +10,8 @@ print_env(api, name, max_depth = 10)
 \item{api}{env}
 
 \item{name}{name of env}
+
+\item{max_depth}{numeric/int max levels to recursive iterate through}
 }
 \description{
 print recursively an environment, used in some documentation

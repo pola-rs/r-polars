@@ -2,13 +2,17 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_append}
 \alias{Expr_append}
-\alias{append}
 \title{Append expressions}
 \format{
 a method
 }
 \usage{
 Expr_append(other, upcast = TRUE)
+}
+\arguments{
+\item{other}{Expr, into Expr}
+
+\item{upcast}{bool upcast to, if any supertype of two non equal datatypes.}
 }
 \value{
 Expr

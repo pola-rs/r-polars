@@ -5,10 +5,12 @@
 \alias{print.DataFrame}
 \title{s3 method print DataFrame}
 \usage{
-\method{print}{DataFrame}(x)
+\method{print}{DataFrame}(x, ...)
 }
 \arguments{
 \item{x}{DataFrame}
+
+\item{...}{not used}
 }
 \value{
 self

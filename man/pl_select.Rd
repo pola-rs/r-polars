@@ -2,13 +2,9 @@
 % Please edit documentation in R/zzz.R
 \name{pl_select}
 \alias{pl_select}
-\alias{.onLoad}
 \title{Select from an empty DataFrame}
-\usage{
-pl_select
-}
-\arguments{
-\item{...}{expressions passed to select}
+\format{
+method
 }
 \value{
 DataFrame
@@ -17,9 +13,15 @@ DataFrame
 Select from an empty DataFrame
 }
 \details{
-experimental
+param ... expressions passed to select
+\code{pl$select} is a shorthand for \code{pl$DataFrame(list())$select}
+
+NB param of this function
 }
 \examples{
-pl$select(pl$lit(1:4))
+pl$select(
+  pl$lit(1:4)$alias("ints"),
+  pl$lit(letters[1:4])$alias("letters")
+)
 }
 \keyword{DataFrame}

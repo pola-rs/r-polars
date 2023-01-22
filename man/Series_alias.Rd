@@ -9,7 +9,7 @@
 An object of class \code{character} of length 1.
 }
 \usage{
-Series_alias
+Series_alias(name)
 }
 \arguments{
 \item{name}{a String as the new name}

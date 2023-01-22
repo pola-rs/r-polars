@@ -1,11 +1,12 @@
 Package: rpolars
-Title: Polars ported to R. 
-Version: 0.4.1
+Title: Polars ported to R
+Version: 0.4.2
 Depends: R (>= 4.1.0)
+Imports: utils, codetools
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
 Description: This package aims to port the fast data table Polars to R.
-License: use_mit_license()
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -35,6 +36,7 @@ Collate:
     'lazy_functions.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
+    'namespace.R'
     'options.R'
     'parquet.R'
     'pkg-nanoarrow.R'

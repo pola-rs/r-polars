@@ -4,10 +4,12 @@
 \alias{print.LazyGroupBy}
 \title{print LazyGroupBy}
 \usage{
-\method{print}{LazyGroupBy}(x)
+\method{print}{LazyGroupBy}(x, ...)
 }
 \arguments{
 \item{x}{LazyGroupBy}
+
+\item{...}{not used}
 }
 \value{
 self

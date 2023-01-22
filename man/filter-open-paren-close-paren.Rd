@@ -3,7 +3,6 @@
 \name{filter()}
 \alias{filter()}
 \alias{DataFrame_filter}
-\alias{filter}
 \title{filter DataFrame}
 \usage{
 DataFrame_filter(bool_expr)

@@ -4,7 +4,7 @@
 \alias{DataFrame_columns}
 \title{get/set columns (the names columns)}
 \usage{
-DataFrame_columns
+DataFrame_columns()
 }
 \value{
 char vec of column names

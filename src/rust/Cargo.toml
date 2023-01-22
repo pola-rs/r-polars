@@ -10,19 +10,21 @@ crate-type = [ 'staticlib' ]
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
-mimalloc = { version = "*", default-features = false }
+mimalloc = { version = "0.1.34", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
-jemallocator = { version = "0.5", features = ["disable_initial_exec_tls"] }
+jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr"} 
-flume = "*"
-state = "*"
-rayon = "*"
-smartstring = { version = "1" }
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
+extendr-api = { git = "https://github.com/extendr/extendr", rev = "f511254b1be180528a1711e4c87473966a1010d0"}
+flume = "0.10.14"
+state = "0.5.3"
+rayon = "1.6.1"
+smartstring = "1.0.1"
+polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
 
+
+#try to trigger new hashFiles hash value
 
 
 #features copied from node-polars

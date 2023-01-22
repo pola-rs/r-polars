@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_min}
 \alias{Series_min}
-\alias{min}
 \title{min}
 \format{
 An object of class \code{character} of length 1.

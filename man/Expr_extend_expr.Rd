@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_extend_expr}
 \alias{Expr_extend_expr}
-\alias{extend_constant}
 \title{Extend_expr}
 \format{
 Method

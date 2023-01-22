@@ -3,7 +3,6 @@
 \docType{data}
 \name{Series_arg_max}
 \alias{Series_arg_max}
-\alias{arg_max}
 \title{idx to max value}
 \format{
 An object of class \code{character} of length 1.

@@ -2,9 +2,14 @@
 % Please edit documentation in R/expr__expr.R
 \name{.DollarNames.Expr}
 \alias{.DollarNames.Expr}
-\title{auto complete $-access into object}
+\title{auto complete $-access into a polars object}
 \usage{
 \method{.DollarNames}{Expr}(x, pattern = "")
+}
+\arguments{
+\item{x}{Expr}
+
+\item{pattern}{code-stump as string to auto-complete}
 }
 \description{
 called by the interactive R session internally

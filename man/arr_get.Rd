@@ -2,29 +2,29 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_get}
 \alias{arr_get}
-\alias{arr.get}
-\alias{[.ExprListNameSpace}
+\alias{Expr_arr_get}
+\alias{Expr_arr.get}
+\alias{[.ExprArrNameSpace}
 \title{Get list}
 \format{
 function
 }
 \usage{
-\method{[}{ExprListNameSpace}(x, idx)
+\method{[}{ExprArrNameSpace}(x, index)
 }
 \arguments{
-\item{index}{numeric vector or Expr of length 1 or same length of Series.
-if length 1 pick same value from each sublist, if length as Series/column,
-pick by individual index across sublists.
+\item{x}{ExprArrNameSpace}
 
-So index \code{0} would return the first item of every sublist
-and index \code{-1} would return the last item of every sublist
-if an index is out of bounds, it will return a \code{None}.}
+\item{index}{value to get}
 }
 \value{
 Expr
 }
 \description{
 Get the value by index in the sublists.
+}
+\details{
+\verb{[.ExprArrNameSpace} used as e.g. \code{pl$col("a")$arr[0]} same as \code{pl$col("a")$get(0)}
 }
 \examples{
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()

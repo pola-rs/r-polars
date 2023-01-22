@@ -3,25 +3,14 @@
 \docType{data}
 \name{DataType_constructors}
 \alias{DataType_constructors}
-\title{internal collection of datatype constructors
-create list data type}
+\title{internal collection of datatype constructors}
 \format{
-An object of class \code{list} of length 1.
+An object of class \code{list} of length 0.
 }
 \usage{
 DataType_constructors
 }
-\arguments{
-\item{dt}{an inner DataType}
-}
-\value{
-a list DataType with an inner DataType
-}
 \description{
 internal collection of datatype constructors
-create list data type
-}
-\examples{
-pl$list(pl$list(pl$Boolean))
 }
 \keyword{datasets}

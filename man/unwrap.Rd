@@ -18,5 +18,11 @@ the ok-element of list , or a error will be thrown
 rust-like unwrapping of result. Useful to keep error handling on the R side.
 }
 \examples{
-pstop(ok="foo",err=NULL))
+
+unwrap(list(ok="foo",err=NULL))
+
+tryCatch(
+  unwrap(ok=NULL, err = "something happen on the rust side"),
+  error = function(e) as.character(e)
+)
 }

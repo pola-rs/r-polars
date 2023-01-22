@@ -2,7 +2,6 @@
 % Please edit documentation in R/series__series.R
 \name{Series_shape}
 \alias{Series_shape}
-\alias{shape}
 \title{Shape of series}
 \usage{
 Series_shape()

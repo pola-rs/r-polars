@@ -2,23 +2,16 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{.DollarNames.LazyFrame}
 \alias{.DollarNames.LazyFrame}
-\title{auto complete $-access into object}
+\title{auto complete $-access into a polars object}
 \usage{
 \method{.DollarNames}{LazyFrame}(x, pattern = "")
+}
+\arguments{
+\item{x}{LazyFrame}
+
+\item{pattern}{code-stump as string to auto-complete}
 }
 \description{
 called by the interactive R session internally
 }
-\examples{
-
-
- # e = pl$lit("any polars object")$e$
-
-
-#place cursor after $ this line and press tab
-
-#manually call like this (should never be needed)
-# rpolars:::.DollarNames.Expr
-2+2
-}
-\keyword{LazyFrame}
+\keyword{internal}

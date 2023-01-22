@@ -56,19 +56,20 @@ wrap_s = function(x) {
 #' Print Series
 #' @export
 #' @param x Series
+#' @param ... not used
 #' @keywords Series
 #' @name Series_print
 #'
 #' @return invisible(self)
 #' @examples print(pl$Series(1:3))
-print.Series = function(x) {
+print.Series = function(x, ...) {
   cat("polars Series: ")
   x$print()
   invisible(x)
 }
 
 #' Print Series
-#' @rdname Series_pring
+#' @rdname Series_print
 #' @return self
 #'
 #' @examples pl$Series(1:3)
@@ -77,12 +78,14 @@ Series_print = function() {
   invisible(self)
 }
 
-#' @export
-#' @title auto complete $-access into object
+#' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @keywords Series
+#' @param x Series
+#' @param pattern code-stump as string to auto-complete
+#' @export
+#' @keywords internal
 .DollarNames.Series = function(x, pattern= "") {
-  get_method_usages(rpolars:::Series,pattern = pattern)
+  get_method_usages(Series, pattern = pattern)
 }
 
 #' Immutable combine series
@@ -147,6 +150,7 @@ pl$Series = function(x, name=NULL){
 #' add Series
 #' @name Series_add
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases add
 #' @keywords  Series
@@ -161,11 +165,14 @@ Series_add = function(other) {
 }
 #' @export
 #' @rdname Series_add
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "+.Series" <- function(s1,s2) wrap_s(s1)$add(s2)
 
 #' sub Series
 #' @name Series_sub
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases sub
 #' @keywords  Series
@@ -180,11 +187,14 @@ Series_sub = function(other) {
 }
 #' @export
 #' @rdname Series_sub
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "-.Series" <- function(s1,s2) wrap_s(s1)$sub(s2)
 
 #' div Series
 #' @name Series_div
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases div
 #' @keywords  Series
@@ -199,11 +209,14 @@ Series_div = function(other) {
 }
 #' @export
 #' @rdname Series_div
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "/.Series" <- function(s1,s2) wrap_s(s1)$div(s2)
 
 #' mul Series
 #' @name Series_mul
 #' @description Series arithmetics
+#' @param other Series or into Series
 #' @return Series
 #' @aliases mul
 #' @keywords  Series
@@ -218,10 +231,13 @@ Series_mul = function(other) {
 }
 #' @export
 #' @rdname Series_mul
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "*.Series" <- function(s1,s2) wrap_s(s1)$mul(s2)
 
 #' rem Series
 #' @description Series arithmetics, remainder
+#' @param other Series or into Series
 #' @return Series
 #' @keywords Series
 #' @aliases rem
@@ -261,6 +277,8 @@ Series_compare = function(other, op) {
 }
 #' @export
 #' @rdname Series_compare
+#' @param s1 lhs Series
+#' @param s2 rhs Series or any into Series
 "==.Series"  <- function(s1,s2) unwrap(wrap_s(s1)$compare(s2,"equal"))
 #' @export
 #' @rdname Series_compare
@@ -283,7 +301,6 @@ Series_compare = function(other, op) {
 #'
 #' @return dimension vector of Series
 #' @keywords Series
-#' @aliases shape
 #' @name Series_shape
 #'
 #' @examples identical(pl$Series(1:2)$shape, 2:1)
@@ -298,7 +315,6 @@ Series_shape = method_as_property(function() {
 #' @rdname Series_to_r
 #' @return R list or vector
 #' @keywords Series
-#' @aliases to_r
 #' @details
 #' Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
 #' Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.
@@ -339,7 +355,6 @@ Series_to_r = \() {
 #' @name Series_to_r_vector
 #' @description return R vector (implicit unlist)
 #' @return R vector
-#' @aliases to_r_vector
 #' @keywords Series
 #' @examples  #
 Series_to_r_vector = \() {
@@ -350,7 +365,6 @@ Series_to_r_vector = \() {
 #' @name Series_to_r_list
 #' @description return R list (implicit as.list)
 #' @return R list
-#' @aliases to_r_list
 #' @keywords Series
 #' @examples  #
 Series_to_r_list = \() {
@@ -380,7 +394,6 @@ Series_abs  = function() {
 #'
 #' @return DataFrame
 #' @keywords Series
-#' @aliases value_counts
 #' @name Series_value_count
 #' @examples
 #' pl$Series(iris$Species,"flower species")$value_counts()
@@ -423,7 +436,7 @@ Series_apply   = function(
 #' @description return Boolean vector for all elements that occurs only once
 #' @return Series
 #' @keywords Series
-#' @aliases is_unique
+#' @aliases Series_is_unique
 #' @name Series_is_unique
 #'
 #' @examples
@@ -434,25 +447,13 @@ Series_is_unique = function() {
 }
 
 
-#' Reduce boolean Series with ALL
-#'
-#' @return bool
-#' @keywords Series
-#' @aliases all
-#' @name Series_all
-#' @examples
-#' pl$Series(1:10)$is_unique()$all()
-#'
-Series_all = function() {
-  unwrap(.pr$Series$all(self))
-}
 
 #' Series_len
 #' @description Length of this Series.
 #'
 #' @return numeric
 #' @keywords Series
-#' @aliases len
+#' @aliases Series_len
 #' @name Series_len
 #'
 #' @examples
@@ -465,7 +466,7 @@ Series_len = "use_extendr_wrapper"
 #'
 #' @return numeric
 #' @keywords Series
-#' @aliases floor
+#' @aliases Series_floor
 #' @name Series_floor
 #' @examples
 #' pl$Series(c(.5,1.999))$floor()
@@ -480,7 +481,7 @@ Series_floor = function() {
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases ceil
+#' @aliases Series_ceil
 #' @name Series_ceil
 #' @examples
 #' pl$Series(c(.5,1.999))$ceil()
@@ -515,7 +516,7 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #'
 #' @return Series
 #' @keywords Series
-#' @aliases append
+#' @aliases Series_append
 #' @name Series_append
 #' @examples
 #'
@@ -528,7 +529,8 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
-#' pl$set_rpolars_options(strictly_immutable = F) #must deactivate this to allow to use immutable=FALSE
+#'  #must deactivate this to allow to use immutable=FALSE
+#' pl$set_rpolars_options(strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 #' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 Series_append = function(other, immutable = TRUE) {
@@ -538,7 +540,7 @@ Series_append = function(other, immutable = TRUE) {
     if(rpolars_optenv$strictly_immutable) {
       stopf(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_rpolars_options(strictly_immutable = F)`"
+        "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self,other))
@@ -548,12 +550,12 @@ Series_append = function(other, immutable = TRUE) {
 
 #' Alias
 #' @description Change name of Series
-#'
 #' @param name a String as the new name
 #' @return Series
 #' @keywords Series
 #' @aliases alias
 #' @name Series_alias
+#' @usage Series_alias(name)
 #' @examples
 #' pl$Series(1:3,name = "alice")$alias("bob")
 Series_alias = "use_extendr_wrapper"
@@ -575,7 +577,6 @@ Series_name = method_as_property(function() {
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases any
 #' @name Series_any
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
@@ -585,7 +586,7 @@ Series_any = "use_extendr_wrapper"
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases all
+#' @aliases Series_all
 #' @name Series_all
 #' @examples
 #' pl$Series(c(TRUE,TRUE,NA))$all()
@@ -597,7 +598,7 @@ Series_all = function() {
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases arg_max
+#' @aliases Series_arg_max
 #' @name Series_arg_max
 #' @examples
 #' pl$Series(c(5,1))$arg_max()
@@ -607,7 +608,6 @@ Series_arg_max = "use_extendr_wrapper"
 #'
 #' @return bool
 #' @keywords Series
-#' @aliases arg_min
 #' @name Series_arg_min
 #' @examples
 #' pl$Series(c(5,1))$arg_min()
@@ -620,7 +620,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' Any modification of a Series should lead to a clone anyways.
 #'
 #' @return Series
-#' @aliases clone
+#' @aliases Series_clone
 #' @keywords  Series
 #' @examples
 #' s1 = pl$Series(1:3);
@@ -636,7 +636,7 @@ Series_clone = "use_extendr_wrapper"
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Series
 #' @keywords Series
-#' @aliases cumsum
+#' @aliases Series_cumsum
 #' @name Series_cumsum
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -652,7 +652,6 @@ Series_cumsum = function(reverse = FALSE) {
 #' @description  Reduce Series with sum
 #' @return Series
 #' @keywords Series
-#' @aliases sum
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
@@ -666,7 +665,6 @@ Series_sum = "use_extendr_wrapper"
 #' @description  Reduce Series with max
 #' @return Series
 #' @keywords Series
-#' @aliases max
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before maxming to prevent overflow issues.
@@ -680,7 +678,6 @@ Series_max = "use_extendr_wrapper"
 #' @description  Reduce Series with min
 #' @return Series
 #' @keywords Series
-#' @aliases min
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before minming to prevent overflow issues.
@@ -692,9 +689,8 @@ Series_min = "use_extendr_wrapper"
 
 #' Get data type of Series
 #' @keywords Series
-#' @aliases Series
 #' @return DataType
-#' @aliases dtype
+#' @aliases Series_dtype
 #' @name Series_dtype
 #' @examples
 #' pl$Series(1:4)$dtype
@@ -707,7 +703,7 @@ Series_dtype = method_as_property(function() {
 #' Get data type of Series
 #' @keywords Series
 #' @return DataType
-#' @aliases dtype
+#' @aliases Series_flags
 #' @name Series_dtype
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
@@ -722,29 +718,28 @@ Series_flags = method_as_property(function() {
 
 ##wait until in included in next py-polars release
 ###contribute polars, exposee nulls_last option
-##' is_sorted
-##' @keywords Series
-##' @param reverse order sorted
-##' @param nulls_last bool where to keep nulls, default same as reverse
-##' @return DataType
-##' @aliases is_sorted
-##' @details property sorted flags are not settable, use set_sorted
-##' @examples
-##' pl$Series(1:4)$sort()$is_sorted()
-#Series_is_sorted = function(reverse = FALSE, nulls_last = NULL) {
-#  .pr$Series$is_sorted(self, reverse, nulls_last)
-#}
+#' is_sorted
+#' @keywords Series
+#' @param reverse order sorted
+#' @param nulls_last bool where to keep nulls, default same as reverse
+#' @return DataType
+#' @aliases is_sorted
+#' @details property sorted flags are not settable, use set_sorted
+#' @examples
+#' pl$Series(1:4)$sort()$is_sorted()
+Series_is_sorted = function(reverse = FALSE, nulls_last= NULL) {
+   .pr$Series$is_sorted(self, reverse, nulls_last)
+}
 
 
 #' Set sorted
 #' @keywords Series
-#' @aliases Series
 #' @param reverse bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_rpolars_options(strictly_immutable = F) otherwise an error will be thrown. If FALSE
+#' pl$set_rpolars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
-#' @aliases set_sorted
+#' @aliases Series_set_sorted
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
@@ -752,7 +747,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = F)`"
+      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
 
@@ -768,11 +763,11 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #TODO contribute polars, Series.sort() is missing nulls_last option, that Expr_sort has
 #' Sort this Series
 #' @keywords Series
-#' @aliases Series
+#' @aliases Series_sort
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
@@ -782,7 +777,7 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = F)`"
+      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
   if(!in_place) {
@@ -797,7 +792,7 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
 #' @name Series_to_frames
 #' @return Series
 #' @keywords Series
-#' @aliases Series
+#' @aliases Series_to_frame
 #' @format method
 #'
 #' @examples
@@ -832,7 +827,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = F)`
+#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -847,7 +842,7 @@ Series_rename = function(name, in_place = FALSE) {
   if(in_place && rpolars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = F)`"
+      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = FALSE)`"
     ))
   }
 
@@ -891,7 +886,6 @@ Series_rep = function(n, rechunk = TRUE) {
 #' By default ddof is 1.
 #' @return bool
 #' @keywords Series
-#' @aliases std
 #' @format method
 #'
 #' @examples
@@ -909,7 +903,6 @@ Series_std = function(ddof = 1) {
 #' By default ddof is 1.
 #' @return bool
 #' @keywords Series
-#' @aliases var
 #' @format method
 #'
 #' @examples
@@ -953,7 +946,7 @@ Series_is_numeric = function() {
 Series_arr = method_as_property(function() {
 
   df = pl$DataFrame(self)
-  arr = make_expr_arr_namespace(pl$col(self$name))
+  arr = expr_arr_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
      \(...) df$select(f(...))
   })
@@ -986,7 +979,7 @@ Series_expr = method_as_property(function() {
 
   #loop over each expression function
   lapply(
-    rpolars:::Expr,
+    Expr,
     \(f) { #f is orignial Expr method
 
       #point back to env with above defined 'df' and 'self'

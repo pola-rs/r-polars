@@ -2,13 +2,10 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_as_data_frame}
 \alias{DataFrame_as_data_frame}
-\alias{DataFrame_to_data_frame}
 \alias{as.data.frame.DataFrame}
 \title{return polars DataFrame as R data.frame}
 \usage{
-as_data_frame(...)
-
-to_data_frame(...)
+DataFrame_as_data_frame(...)
 
 \method{as.data.frame}{DataFrame}(x, ...)
 }
@@ -23,11 +20,10 @@ data.frame
 data.frame
 }
 \description{
-to_data_frame is an alias
+return polars DataFrame as R data.frame
 }
 \examples{
 df = pl$DataFrame(iris[1:3,])
 df$as_data_frame()
-as.data.frame(df)
 }
 \keyword{DataFrame}

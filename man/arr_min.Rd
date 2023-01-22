@@ -2,7 +2,8 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_min}
 \alias{arr_min}
-\alias{arr.min}
+\alias{Expr_arr_min}
+\alias{Expr_arr.min}
 \title{#' Min lists}
 \format{
 function

@@ -17,6 +17,8 @@ replace_private_with_pub_methods(
 \item{class_pattern}{a regex string matching declared public functions of that class}
 
 \item{keep}{list of unmentioned methods to keep in public api}
+
+\item{remove_f}{bool if true, will move methods, not copy}
 }
 \description{
 extendr places the naked internal calls to rust in env-classes. This function

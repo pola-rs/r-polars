@@ -2,26 +2,17 @@
 % Please edit documentation in R/series__series.R
 \name{Series_all}
 \alias{Series_all}
-\alias{all}
-\title{Reduce boolean Series with ALL}
+\title{Reduce Boolean Series with ALL}
 \usage{
-Series_all()
-
 Series_all()
 }
 \value{
 bool
-
-bool
 }
 \description{
-Reduce boolean Series with ALL
-
 Reduce Boolean Series with ALL
 }
 \examples{
-pl$Series(1:10)$is_unique()$all()
-
 pl$Series(c(TRUE,TRUE,NA))$all()
 }
 \keyword{Series}
