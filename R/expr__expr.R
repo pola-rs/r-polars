@@ -3666,8 +3666,6 @@ Expr_rep = function(n, rechunk = TRUE) {
 }
 
 
-
-
 #' extend series with repeated series
 #' @description
 #' Extend a series with a repeated series or value.
@@ -3687,6 +3685,7 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
   new = .pr$Expr$append(self, other, upcast)
   if(rechunk) new$rechunk() else new
 }
+
 
 #' to_r: for debuging an expression
 #' @description
@@ -3712,11 +3711,13 @@ Expr_to_r = function(df = NULL, i = 0) {
   }
 }
 
+
 #' @name pl_expr_to_r
 #' @rdname Expr_to_r
 pl$expr_to_r = function(expr, df = NULL, i=0) {
   wrap_e(expr)$to_r(df, i)
 }
+
 
 #' Value counts
 #' @description
