@@ -3634,9 +3634,6 @@ Expr_extend_expr = function(value, n) {
   .pr$Expr$extend_expr(self, wrap_e(value), wrap_e(n))
 }
 
-
-
-
 #' expression: repeat series
 #' @description
 #' This expression takes input and repeats it n times and append chunk
@@ -3691,7 +3688,6 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
   if(rechunk) new$rechunk() else new
 }
 
-
 #' to_r: for debuging an expression
 #' @description
 #' debug an expression by evaluating in empty DataFrame and return first series to R
@@ -3722,10 +3718,6 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
   wrap_e(expr)$to_r(df, i)
 }
 
-
-
-
-
 #' Value counts
 #' @description
 #' Count all unique values and create a struct mapping value to count.
@@ -3743,7 +3735,6 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
   .pr$Expr$value_counts(self, multithreaded, sort)
 }
-
 
 #' Value counts
 #' @description
