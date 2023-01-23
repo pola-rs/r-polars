@@ -103,8 +103,9 @@ fn r_date_range(
     use crate::rdatatype::new_closed_window;
     use crate::rdatatype::str_to_timeunit;
     use crate::utils::try_f64_into_i64;
-    use crate::utils::wrappers::null_to_opt;
+
     use pl::IntoSeries;
+
     let res = || -> std::result::Result<Series, String> {
         Ok(Series(
             polars::time::date_range_impl(
@@ -114,7 +115,7 @@ fn r_date_range(
                 pl::Duration::parse(every),
                 new_closed_window(closed)?,
                 str_to_timeunit(tu)?,
-                null_to_opt(tz).as_ref(),
+                tz.into_option().as_ref(),
             )
             .into_series(),
         ))
