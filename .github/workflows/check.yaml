@@ -46,6 +46,12 @@ jobs:
           echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
           echo "${GITHUB_PATH}"
 
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: cache rpolars rust targets
         id: cache-rust-targets
         uses: actions/cache@v3.2.2
@@ -53,9 +59,9 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ date +'%Y_%m_%d' }}
+          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
           restore-keys: |
-            check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ date +'%Y_%m_%d' }}
+            check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
             check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
             check_v5-${{ runner.os }}-cargo-target
 
