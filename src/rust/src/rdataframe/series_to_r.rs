@@ -1,6 +1,8 @@
 use extendr_api::prelude::*;
-use polars::prelude as pl;
+use polars::prelude::{self as pl};
 
+use pl::PolarsError as pl_error;
+use polars::error::ErrString as pl_err_string;
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
@@ -76,6 +78,34 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                 };
 
                 Ok(l.into_robj())
+            }
+            Datetime(tu, opt_tz) => {
+                let tu_i64: i64 = match tu {
+                    pl::TimeUnit::Nanoseconds => 1_000_000_000,
+                    pl::TimeUnit::Microseconds => 1_000_000,
+                    pl::TimeUnit::Milliseconds => 1_000,
+                };
+                let tz = opt_tz.clone().unwrap_or_else(|| String::new());
+                s.cast(&Int64)?
+                    .i64()
+                    .map(|ca| {
+                        ca.into_iter()
+                            .map(|opt| opt.map(|val| (val / tu_i64) as f64))
+                            .collect_robj()
+                    })
+                    // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
+                    .map(|robj| {
+                        robj.set_class(&["POSIXct", "POSIXt"])
+                            .expect("internal error: class POSIXct label failed")
+                    })
+                    .map(|robj| robj.set_attrib("tzone", tz))
+                    .expect("internal error: attr tzone failed")
+                    .map_err(|err| {
+                        pl_error::ComputeError(pl_err_string::Owned(format!(
+                            "when converting polars datetime to R POSIXct: {:?}",
+                            err
+                        )))
+                    })
             }
             _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
                 format!(
