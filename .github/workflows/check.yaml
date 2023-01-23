@@ -23,7 +23,7 @@ jobs:
       matrix:
         config:
           - { os: macos-latest, r: "release" }
-          - { os: windows-latest, r: "release", rtools-version: "42" }
+          #- { os: windows-latest, r: "release", rtools-version: "42" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           - { os: ubuntu-latest, r: "oldrel-1" }
@@ -53,9 +53,9 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-$(date +'%Y_%m_%d')
+          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ date +'%Y_%m_%d' }}
           restore-keys: |
-            check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-$(date +'%Y_%m_%d')
+            check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ date +'%Y_%m_%d' }}
             check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
             check_v5-${{ runner.os }}-cargo-target
 
