@@ -76,6 +76,8 @@ jobs:
 
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
 
       - uses: r-lib/actions/setup-pandoc@v2
 
