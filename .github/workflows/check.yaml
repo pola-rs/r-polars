@@ -53,8 +53,9 @@ jobs:
           cache-name: cache-rust-targets
         with:
           path: ./src/rust/target/
-          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
+          key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-$(date +'%Y_%m_%d')
           restore-keys: |
+            check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-$(date +'%Y_%m_%d')
             check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
             check_v5-${{ runner.os }}-cargo-target
 
