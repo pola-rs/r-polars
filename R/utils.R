@@ -44,10 +44,8 @@ unwrap = function(result, call=sys.call(1L)) {
 
   #if not a result
   if(
-    !inherits(result,"Result") && ( #trust the class
       !is.list(result) ||
       !all(names(result) %in% c("ok","err"))
-    )
   ) {
     stopf("Internal error: cannot unwrap non result")
   }

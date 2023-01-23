@@ -79,7 +79,6 @@ impl Series {
         let robj_result = pl_series_to_list(&self.0, true);
         r_result_list(robj_result)
     }
-
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
         self.0.rename(name);

@@ -18,7 +18,9 @@ Suggests:
     data.table,
     pkgdown,
     nanoarrow,
-    arrow
+    arrow,
+    bench,
+    nycflights13
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
