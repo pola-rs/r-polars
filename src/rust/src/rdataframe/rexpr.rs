@@ -24,7 +24,6 @@ use polars::error::ErrString as pl_err_string;
 
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct Expr(pub pl::Expr);
 
 impl Deref for Expr {
@@ -1685,7 +1684,6 @@ impl Expr {
 //allow proto expression that yet only are strings
 //string expression will transformed into an actual expression in different contexts such as select
 #[derive(Clone, Debug)]
-#[extendr]
 pub enum ProtoRexpr {
     Expr(Expr),
     String(String),
@@ -1718,7 +1716,6 @@ impl ProtoRexpr {
 
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
 
 #[extendr]

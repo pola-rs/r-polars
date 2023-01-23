@@ -24,7 +24,6 @@ use polars::prelude as pl;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
-#[extendr]
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
 

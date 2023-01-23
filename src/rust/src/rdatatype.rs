@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-#[extendr]
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);
 
@@ -107,7 +107,6 @@ impl From<RPolarsDataType> for pl::DataType {
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone)]
-#[extendr]
 pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
@@ -311,7 +310,6 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-#[extendr]
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsTimeUnit(pub pl::TimeUnit);
 

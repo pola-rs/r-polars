@@ -68,7 +68,6 @@ impl Iterator for OwnedDataFrameIterator {
     }
 }
 
-#[extendr]
 #[derive(Debug, Clone)]
 pub struct DataFrame(pub pl::DataFrame);
 
@@ -306,7 +305,6 @@ impl DataFrame {
 }
 
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);
 
 #[extendr]
