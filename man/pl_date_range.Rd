@@ -20,7 +20,7 @@
 
 \item{time_unit}{option "ns" "us" "ms"}
 
-\item{time_zone}{}
+\item{time_zone}{optional string describing a timezone like CET}
 }
 \value{
 a datetime

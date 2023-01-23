@@ -86,7 +86,7 @@ pl$concat = function(
 #' @param closed option one of 'both'(default), 'left', 'none' or 'right'
 #' @param name name of series
 #' @param time_unit option "ns" "us" "ms"
-#' @param time_zone
+#' @param time_zone optional string describing a timezone like CET
 #'
 #' @return a datetime
 #'

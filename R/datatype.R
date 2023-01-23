@@ -78,13 +78,14 @@ if(!inherits(datatype,"RPolarsDataType")) {
 #' print a polars datatype
 #'
 #' @param x DataType
+#' @param ... not used
 #'
 #' @return self
 #' @export
 #'
 #' @examples
 #' pl$dtypes$Boolean #implicit print
-print.RPolarsTimeUnit = function(x) {
+print.RPolarsTimeUnit = function(x, ...) {
   cat("TimeUnit: ")
   x$print()
   invisible(x)

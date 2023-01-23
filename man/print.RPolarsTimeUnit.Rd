@@ -4,10 +4,12 @@
 \alias{print.RPolarsTimeUnit}
 \title{print a polars datatype}
 \usage{
-\method{print}{RPolarsTimeUnit}(x)
+\method{print}{RPolarsTimeUnit}(x, ...)
 }
 \arguments{
 \item{x}{DataType}
+
+\item{...}{not used}
 }
 \value{
 self

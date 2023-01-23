@@ -14,7 +14,7 @@ ExprStr_strptime = function(
 ) { #-> Expr:
 
 
- fstop("missing implementation")
+ stop("missing implementation")
 
 
 }
