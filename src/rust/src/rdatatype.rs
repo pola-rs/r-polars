@@ -40,8 +40,22 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime() -> RPolarsDataType {
-        todo!("datetime not implemented")
+    pub fn new_datetime(tu: &str, tz: Nullable<String>) -> List {
+        use crate::utils::wrappers::null_to_opt;
+        use pl::TimeUnit as TU;
+        let result = match tu {
+            "ns" => Ok(TU::Nanoseconds),
+            "us" => Ok(TU::Microseconds),
+            "ms" => Ok(TU::Milliseconds),
+
+            _ => Err(format!(
+                "str to polars timeunit: [{}] is not any of 'ns', 'us' or 'ms'",
+                tu
+            )),
+        }
+        .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
+
+        r_result_list(result)
     }
 
     pub fn new_duration() -> RPolarsDataType {

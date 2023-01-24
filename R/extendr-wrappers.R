@@ -615,7 +615,7 @@ RPolarsDataType <- new.env(parent = emptyenv())
 
 RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
-RPolarsDataType$new_datetime <- function() .Call(wrap__RPolarsDataType__new_datetime)
+RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
 RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
 

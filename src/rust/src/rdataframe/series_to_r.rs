@@ -85,7 +85,9 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                     pl::TimeUnit::Microseconds => 1_000_000,
                     pl::TimeUnit::Milliseconds => 1_000,
                 };
-                let tz = opt_tz.clone().unwrap_or_else(|| String::new());
+
+                //resolve timezone
+                let tz = opt_tz.as_ref().map(|s| s.as_str()).unwrap_or_else(|| &"");
                 s.cast(&Int64)?
                     .i64()
                     .map(|ca| {

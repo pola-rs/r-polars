@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{pl_concat}
 \alias{pl_concat}
-\title{concat polars objects}
+\title{Concat polars objects}
 \arguments{
 \item{l}{list of DataFrame, or Series, LazyFrame or Expr}
 
@@ -16,15 +16,15 @@
 DataFrame, or Series, LazyFrame or Expr
 }
 \description{
-concat polars objects
+Concat polars objects
 }
 \examples{
 #vertical
- l_ver = lapply(1:10, function(i) {
-l_internal = list(
- a = 1:5,
- b = letters[1:5]
-)
+l_ver = lapply(1:10, function(i) {
+  l_internal = list(
+    a = 1:5,
+    b = letters[1:5]
+  )
 pl$DataFrame(l_internal)
 })
 pl$concat(l_ver, how="vertical")
@@ -32,16 +32,14 @@ pl$concat(l_ver, how="vertical")
 
 #horizontal
 l_hor = lapply(1:10, function(i) {
- l_internal = list(
-   1:5,
-   letters[1:5]
- )
- names(l_internal) = paste0(c("a","b"),i)
- pl$DataFrame(l_internal)
+  l_internal = list(
+    1:5,
+    letters[1:5]
+  )
+  names(l_internal) = paste0(c("a","b"),i)
+  pl$DataFrame(l_internal)
 })
 pl$concat(l_hor, how = "horizontal")
-
-
 #diagonal
 pl$concat(l_hor, how = "diagonal")
 }

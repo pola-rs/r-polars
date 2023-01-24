@@ -20,7 +20,10 @@
 
 \item{time_unit}{option "ns" "us" "ms"}
 
-\item{time_zone}{optional string describing a timezone like CET}
+\item{time_zone}{optional string describing a timezone. If no time_zone is provided the
+the tz of low/high input is ignored and the output Series will no have a tz predicate.
+If time_zone is provided the low/high timezone will be corrected into that tz. If low/high
+does not have a tz(tzone)-attribute, then local System time is assumed.}
 }
 \value{
 a datetime
@@ -29,6 +32,10 @@ a datetime
 new date_range
 }
 \examples{
-t_ms = unclass(as.POSIXct("2022-01-01",tz = "GMT",origin="GMT")) * 1000
-pl$date_range(t_ms,t_ms+7500, interval = "2s", time_unit = "ms", time_zone = "GMT")
+t_ms = unclass() * 1000
+pl$date_range(
+  as.POSIXct("2022-01-01"),
+  as.POSIXct("2022-01-02",tz = "GMT", origin="GMT"),
+  interval = "2h", time_unit = "ms", time_zone = "GMT"
+)
 }
