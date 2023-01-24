@@ -367,10 +367,6 @@ Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
 Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
 
-Expr$dt_with_time_unit <- function(tu) .Call(wrap__Expr__dt_with_time_unit, self, tu)
-
-Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self, tu)
-
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
@@ -638,20 +634,6 @@ RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, oth
 
 #' @export
 `[[.RPolarsDataType` <- `$.RPolarsDataType`
-
-RPolarsTimeUnit <- new.env(parent = emptyenv())
-
-RPolarsTimeUnit$new <- function(s) .Call(wrap__RPolarsTimeUnit__new, s)
-
-RPolarsTimeUnit$print <- function() invisible(.Call(wrap__RPolarsTimeUnit__print, self))
-
-RPolarsTimeUnit$all_timeunits <- function() .Call(wrap__RPolarsTimeUnit__all_timeunits)
-
-#' @export
-`$.RPolarsTimeUnit` <- function (self, name) { func <- RPolarsTimeUnit[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsTimeUnit` <- `$.RPolarsTimeUnit`
 
 DataTypeVector <- new.env(parent = emptyenv())
 

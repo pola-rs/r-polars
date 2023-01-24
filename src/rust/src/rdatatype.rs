@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-
+use crate::utils::wrappers::null_to_opt;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);
 
@@ -35,26 +35,14 @@ impl RPolarsDataType {
             "Categorical" | "factor" => pl::DataType::Categorical(None),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
-            _ => panic!("data type not recgnized"),
+            _ => panic!("data type not recgnized "),
         };
         RPolarsDataType(pl_datatype)
     }
 
     pub fn new_datetime(tu: &str, tz: Nullable<String>) -> List {
-        use crate::utils::wrappers::null_to_opt;
-        use pl::TimeUnit as TU;
-        let result = match tu {
-            "ns" => Ok(TU::Nanoseconds),
-            "us" => Ok(TU::Microseconds),
-            "ms" => Ok(TU::Milliseconds),
-
-            _ => Err(format!(
-                "str to polars timeunit: [{}] is not any of 'ns', 'us' or 'ms'",
-                tu
-            )),
-        }
-        .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
-
+        let result = str_to_timeunit(tu)
+            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
         r_result_list(result)
     }
 
@@ -324,49 +312,6 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct RPolarsTimeUnit(pub pl::TimeUnit);
-
-#[extendr]
-impl RPolarsTimeUnit {
-    pub fn new(s: &str) -> List {
-        let res = RPolarsTimeUnit::new_timeunit(s);
-        r_result_list(res)
-    }
-
-    pub fn print(&self) {
-        rprintln!("{:?}", self.0.to_string());
-    }
-
-    pub fn all_timeunits() -> List {
-        let iter_all_names = ["ns", "us", "ms"].iter();
-        let iter_all_units = iter_all_names.clone().map(|s| {
-            RPolarsTimeUnit::new_timeunit(s)
-                .expect("RPolarsTimeUnit internal error: failed to make TRimeUnit")
-        });
-        let l = extendr_api::list::List::from_names_and_values(iter_all_names, iter_all_units);
-        l.expect("RPolarsTimeUnit internal error: failed to build list")
-    }
-}
-
-impl RPolarsTimeUnit {
-    pub fn new_timeunit(s: &str) -> std::result::Result<RPolarsTimeUnit, String> {
-        use pl::TimeUnit as TU;
-        match s {
-            "ns" => Ok(TU::Nanoseconds),
-            "us" => Ok(TU::Microseconds),
-            "ms" => Ok(TU::Milliseconds),
-
-            _ => Err(format!(
-                "str to polars timeunit: [{}] is not any of 'ns', 'us' or 'ms'",
-                s
-            )),
-        }
-        .map(|tu| RPolarsTimeUnit(tu))
-    }
-}
-
-//maybe deprecate RPolarsTimeUnit class and just this directly, as py-polars
 pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
@@ -383,6 +328,5 @@ pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;
-    impl RPolarsTimeUnit;
     impl DataTypeVector;
 }

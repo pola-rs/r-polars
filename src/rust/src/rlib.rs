@@ -3,10 +3,10 @@ use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::rdataframe::rexpr::ProtoExprArray;
+use crate::rdataframe::rseries::Series;
+use crate::rdatatype::str_to_timeunit;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-
-use crate::rdataframe::rseries::Series;
 use polars_core::functions as pl_functions;
 #[extendr]
 fn concat_df(vdf: &VecDataFrame) -> List {
@@ -101,7 +101,6 @@ fn r_date_range(
     tz: Nullable<String>,
 ) -> List {
     use crate::rdatatype::new_closed_window;
-    use crate::rdatatype::str_to_timeunit;
     use crate::utils::try_f64_into_i64;
 
     use pl::IntoSeries;

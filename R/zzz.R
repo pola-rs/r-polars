@@ -121,9 +121,6 @@ pl$mem_address = mem_address
     DataType_constructors # add function constructors for the remainders
   )
 
-  pl$timeunits = .pr$TimeUnit$all_timeunits()
-
-
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
 

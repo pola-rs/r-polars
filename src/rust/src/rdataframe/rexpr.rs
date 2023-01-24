@@ -3,7 +3,7 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-use crate::rdatatype::{DataTypeVector, RPolarsDataType, RPolarsTimeUnit};
+use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
@@ -1314,18 +1314,18 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_with_time_unit(&self, tu: &RPolarsTimeUnit) -> Self {
-        self.0.clone().dt().with_time_unit(tu.0.clone()).into()
-    }
+    // pub fn dt_with_time_unit(&self, tu: &str) -> Self {
+    //     self.0.clone().dt().with_time_unit(tu.0.clone()).into()
+    // }
 
     // // #[cfg(feature = "timezones")]
     // // pub fn dt_with_time_zone(&self, tz: Nullable<RTimeZone>) -> Self {
     // //     self.0.clone().dt().with_time_zone(tz).into()
     // // }
 
-    pub fn dt_cast_time_unit(&self, tu: &RPolarsTimeUnit) -> Self {
-        self.0.clone().dt().cast_time_unit(tu.0.clone()).into()
-    }
+    // pub fn dt_cast_time_unit(&self, tu: &str) -> Self {
+    //     self.0.clone().dt().cast_time_unit(tu.0.clone()).into()
+    // }
 
     // #[cfg(feature = "timezones")]
     // pub fn dt_cast_time_zone(&self, tz: String) -> Self {
