@@ -93,10 +93,9 @@ pl$concat = function(
 #' @keywords functions ExprDT
 #'
 #' @examples
-#' t_ms = unclass() * 1000
 #' pl$date_range(
-#'   as.POSIXct("2022-01-01"),
-#'   as.POSIXct("2022-01-02",tz = "GMT", origin="GMT"),
+#'   as.POSIXct("2022-01-01",tz = "GMT"),
+#'   as.POSIXct("2022-01-02",tz = "GMT"),
 #'   interval = "2h", time_unit = "ms", time_zone = "GMT"
 #' )
 pl$date_range = function(
