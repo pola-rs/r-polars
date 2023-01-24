@@ -39,3 +39,5 @@ pl$date_range(
   interval = "2h", time_unit = "ms", time_zone = "GMT"
 )
 }
+\keyword{ExprDT}
+\keyword{functions}

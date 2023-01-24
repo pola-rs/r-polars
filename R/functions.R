@@ -90,6 +90,7 @@ pl$concat = function(
 #' does not have a tz(tzone)-attribute, then local System time is assumed.
 #'
 #' @return a datetime
+#' @keywords functions ExprDT
 #'
 #' @examples
 #' t_ms = unclass() * 1000
@@ -106,7 +107,7 @@ pl$date_range = function(
     lazy,     #: Literal[True],
     closed    = "both",   #: ClosedInterval = "both",
     name      = "",     #: str | None = None,
-    time_unit = "us",#: TimeUnit | None = None,
+    time_unit = "us",
     time_zone = NULL #: str | None = None
 ) {
 
