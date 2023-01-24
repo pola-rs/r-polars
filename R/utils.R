@@ -569,3 +569,14 @@ expect_grepl_error = function(expr, expected_err = NULL) {
   }
   invisible(NULL)
 }
+
+
+#' Simple viewer of an R object based on str()
+#' @param collapse word to glue possible multilines with
+#' @return string
+#'
+#' @examples
+#' str_string(list(a=42,c(1,2,3,NA)))
+str_string = function(x,collapse=" ") {
+  paste(capture.output(str(x)),collapse = collapse)
+}

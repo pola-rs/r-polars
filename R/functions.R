@@ -120,7 +120,7 @@ pl$date_range = function(
   dt_series = unwrap(rpolars:::r_date_range(
     start = convert_time_unit(low, "ms"),
     stop = convert_time_unit(high, "ms"),
-    every = interval,
+    every = as_pl_duration(interval),
     closed = closed,
     name = name,
     tu = "ms",
@@ -134,10 +134,10 @@ pl$date_range = function(
   dt_series
 }
 
-str_string = function(x,collapse=" ") {
-  paste(capture.output(str(x)),collapse = collapse)
-}
+#date range support functions
 
+# convert any R time unit into a value (float), time_unit (ns, us, ns) and
+# time_zone string
 time_to_value_unit_tz = function(x, time_unit, time_zone = NULL) {
 
   pcase(
@@ -155,10 +155,13 @@ time_to_value_unit_tz = function(x, time_unit, time_zone = NULL) {
       )
     },
     inherits(x,"Date"), list(v = as.numeric(x), u = "d", tz = NULL),
+    #TODO consider string as short hand for POSIXct in GMT tz, may conflict with lazy interface
+    #add more types here
     or_else = stopf("cannot interpret following as a timepoint: %s",str_string(x))
   )
 }
 
+#convert a (time, value, optional-tz)-list to a new value by time_unit
 convert_time_unit = function(x, time_unit) {
   if (isTRUE(x$u == time_unit)) {
     return(x$v)
@@ -166,6 +169,7 @@ convert_time_unit = function(x, time_unit) {
   get_time_factor(time_unit) / get_time_factor(x$u) * x$v
 }
 
+#inverse factor lookup table
 get_time_factor = function(u) {
   pcase(
     u == "ns", 1000000000,
@@ -180,6 +184,33 @@ get_time_factor = function(u) {
     u == "y", stopf("cannot accurately use y"),
     or_else = stopf("failed to recognize timeunit: %s",u)
   )
+}
+
+#to pl_duration from other R types, add more if need
+as_pl_duration = function(x) {
+  pcase(
+    is_string(x), x,
+    inherits(x, "difftime"), difftime_to_pl_duration(x),
+    #add more types here
+    or_else = stopf("unknown conversion into pl_duration from: %s",str_string(x))
+  )
+}
+
+#impl this converison
+difftime_to_pl_duration = function(dft) {
+  value = as.numeric(dft)
+  u = attr(dft,"units")
+  unit = pcase(
+    !is_string(u), stopf("difftime units should be a string not a: %s",str_string(u)),
+    u=="secs", "s",
+    u=="mins", "m",
+    u=="hours", "h",
+    u=="days", "d",
+    u=="weeks", "w",
+    u=="years", "y",
+    or_else = stopf("unknown difftime units: %s",u)
+  )
+  paste0(value,unit)
 }
 
 

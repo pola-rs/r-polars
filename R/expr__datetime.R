@@ -35,10 +35,10 @@
 #' )
 #' df
 ExprDT_truncate = function(
-    every,# str | timedelta, #support R difftime
+    every,# str
     offset = NULL#: str | timedelta | None = None,
 ) {
-  .pr$Expr$dt_truncate(self, every, offset %||% "0ns")
+  .pr$Expr$dt_truncate(self, every, as_pl_duration(offset %||% "0ns"))
 }
 
 #' Round datetime
@@ -87,7 +87,7 @@ ExprDT_truncate = function(
 #' )
 #' df
 ExprDT_round = function(every, offset = NULL) {
-  .pr$Expr$dt_round(self, every, offset %||% "0ns")
+  .pr$Expr$dt_round(self, every,  as_pl_duration(offset %||% "0ns"))
 }
 
 
