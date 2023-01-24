@@ -14,6 +14,8 @@ use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude::GetOutput;
+use polars::prelude::IntoSeries;
+use polars::prelude::TemporalMethods;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 
@@ -22,7 +24,6 @@ use polars::error::ErrString as pl_err_string;
 
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct Expr(pub pl::Expr);
 
 impl Deref for Expr {
@@ -1111,7 +1112,238 @@ impl Expr {
         r_result_list(res)
     }
 
+    pub fn str_parse_date(
+        &self,
+        fmt: Nullable<String>,
+        strict: bool,
+        exact: bool,
+        cache: bool,
+    ) -> Self {
+        self.0
+            .clone()
+            .str()
+            .strptime(pl::StrpTimeOptions {
+                date_dtype: pl::DataType::Date,
+                fmt: null_to_opt(fmt),
+                strict,
+                exact,
+                cache,
+                tz_aware: false,
+            })
+            .into()
+    }
+
+    pub fn str_parse_datetime(
+        &self,
+        fmt: Nullable<String>,
+        strict: bool,
+        exact: bool,
+        cache: bool,
+        tz_aware: bool,
+    ) -> Self {
+        let fmt = null_to_opt(fmt);
+        let tu = match fmt {
+            Some(ref fmt) => {
+                if fmt.contains("%.9f")
+                    || fmt.contains("%9f")
+                    || fmt.contains("%f")
+                    || fmt.contains("%.f")
+                {
+                    pl::TimeUnit::Nanoseconds
+                } else if fmt.contains("%.3f") || fmt.contains("%3f") {
+                    pl::TimeUnit::Milliseconds
+                } else {
+                    pl::TimeUnit::Microseconds
+                }
+            }
+            None => pl::TimeUnit::Microseconds,
+        };
+        self.0
+            .clone()
+            .str()
+            .strptime(pl::StrpTimeOptions {
+                date_dtype: pl::DataType::Datetime(tu, None),
+                fmt,
+                strict,
+                exact,
+                cache,
+                tz_aware,
+            })
+            .into()
+    }
+
+    pub fn str_parse_time(
+        &self,
+        fmt: Nullable<String>,
+        strict: bool,
+        exact: bool,
+        cache: bool,
+    ) -> Self {
+        self.0
+            .clone()
+            .str()
+            .strptime(pl::StrpTimeOptions {
+                date_dtype: pl::DataType::Time,
+                fmt: null_to_opt(fmt),
+                strict,
+                exact,
+                cache,
+                tz_aware: false,
+            })
+            .into()
+    }
+
+    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().strip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+    }
+
+    // pub fn str_slice(&self, start: i64, length: Option<u64>) -> Self {
+    //     let function = move |s: Series| {
+    //         let ca = s.utf8()?;
+    //         Ok(ca.str_slice(start, length)?.into_series())
+    //     };
+    //     self.clone()
+    //         .0
+    //         .map(function, GetOutput::from_type(DataType::Utf8))
+    //         .with_fmt("str.slice")
+    //         .into()
+    // }
+
+    // pub fn str_to_uppercase(&self) -> Self {
+    //     self.0.clone().str().to_uppercase().into()
+    // }
+
+    // pub fn str_to_lowercase(&self) -> Self {
+    //     self.0.clone().str().to_lowercase().into()
+    // }
+
+    // pub fn str_lengths(&self) -> Self {
+    //     let function = |s: Series| {
+    //         let ca = s.utf8()?;
+    //         Ok(ca.str_lengths().into_series())
+    //     };
+    //     self.clone()
+    //         .0
+    //         .map(function, GetOutput::from_type(DataType::UInt32))
+    //         .with_fmt("str.lengths")
+    //         .into()
+    // }
+
+    // pub fn str_n_chars(&self) -> Self {
+    //     let function = |s: Series| {
+    //         let ca = s.utf8()?;
+    //         Ok(ca.str_n_chars().into_series())
+    //     };
+    //     self.clone()
+    //         .0
+    //         .map(function, GetOutput::from_type(DataType::UInt32))
+    //         .with_fmt("str.n_chars")
+    //         .into()
+    // }
+
+    // #[cfg(feature = "lazy_regex")]
+    // pub fn str_replace(&self, pat: Self, val: Self, literal: bool) -> Self {
+    //     self.0
+    //         .clone()
+    //         .str()
+    //         .replace(pat.0, val.0, literal)
+    //         .into()
+    // }
+
+    // #[cfg(feature = "lazy_regex")]
+    // pub fn str_replace_all(&self, pat: Self, val: Self, literal: bool) -> Self {
+    //     self.0
+    //         .clone()
+    //         .str()
+    //         .replace_all(pat.0, val.0, literal)
+    //         .into()
+    // }
+
+    // pub fn str_zfill(&self, alignment: usize) -> Self {
+    //     self.clone().0.str().zfill(alignment).into()
+    // }
+
+    // pub fn str_ljust(&self, width: usize, fillchar: char) -> Self {
+    //     self.clone().0.str().ljust(width, fillchar).into()
+    // }
+
+    // pub fn str_rjust(&self, width: usize, fillchar: char) -> Self {
+    //     self.clone().0.str().rjust(width, fillchar).into()
+    // }
+
+    // pub fn str_contains(&self, pat: String, literal: Option<bool>) -> Self {
+    //     match literal {
+    //         Some(true) => self.0.clone().str().contains_literal(pat).into(),
+    //         _ => self.0.clone().str().contains(pat).into(),
+    //     }
+    // }
+
+    // pub fn str_ends_with(&self, sub: String) -> Self {
+    //     self.0.clone().str().ends_with(sub).into()
+    // }
+
+    // pub fn str_starts_with(&self, sub: String) -> Self {
+    //     self.0.clone().str().starts_with(sub).into()
+    // }
+
     //end list/arr methods
+
+    pub fn dt_offset_by(&self, by: &str) -> Self {
+        let by = pl::Duration::parse(by);
+        self.0.clone().dt().offset_by(by).into()
+    }
+
+    pub fn dt_epoch_seconds(&self) -> Self {
+        self.clone()
+            .0
+            .map(
+                |s| {
+                    s.timestamp(pl::TimeUnit::Milliseconds)
+                        .map(|ca| (ca / 1000).into_series())
+                },
+                pl::GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+
+    // pub fn dt_with_time_unit(&self, tu: &str) -> Self {
+    //     self.0.clone().dt().with_time_unit(tu.0.clone()).into()
+    // }
+
+    // // #[cfg(feature = "timezones")]
+    // // pub fn dt_with_time_zone(&self, tz: Nullable<RTimeZone>) -> Self {
+    // //     self.0.clone().dt().with_time_zone(tz).into()
+    // // }
+
+    // pub fn dt_cast_time_unit(&self, tu: &str) -> Self {
+    //     self.0.clone().dt().cast_time_unit(tu.0.clone()).into()
+    // }
+
+    // #[cfg(feature = "timezones")]
+    // pub fn dt_cast_time_zone(&self, tz: String) -> Self {
+    //     self.0.clone().dt().cast_time_zone(tz).into()
+    // }
+
+    // #[cfg(feature = "timezones")]
+    // pub fn dt_tz_localize(&self, tz: String) -> Self {
+    //     self.0.clone().dt().tz_localize(tz).into()
+    // }
+
+    pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
+        self.0.clone().dt().truncate(every, offset).into()
+    }
+
+    pub fn dt_round(&self, every: &str, offset: &str) -> Self {
+        self.0.clone().dt().round(every, offset).into()
+    }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
@@ -1452,7 +1684,6 @@ impl Expr {
 //allow proto expression that yet only are strings
 //string expression will transformed into an actual expression in different contexts such as select
 #[derive(Clone, Debug)]
-#[extendr]
 pub enum ProtoRexpr {
     Expr(Expr),
     String(String),
@@ -1485,7 +1716,6 @@ impl ProtoRexpr {
 
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
 
 #[extendr]

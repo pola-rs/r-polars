@@ -77,6 +77,8 @@ rm(env)
 macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(Expr, "^Expr_")
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
+expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
 #Series
 macro_add_syntax_check_to_class("Series")
@@ -92,10 +94,6 @@ move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 pl$lazy_csv_reader = lazy_csv_reader
 pl$csv_reader = csv_reader
 pl$read_csv = read_csv_
-
-#functions
-pl$concat = concat
-
 
 
 #' Get Memory Address
@@ -122,6 +120,7 @@ pl$mem_address = mem_address
     lapply(all_types,.pr$DataType$new), #instanciate all simple flag-like types
     DataType_constructors # add function constructors for the remainders
   )
+
   #export dtypes directly into pl, because py-polars does that
   move_env_elements(pl$dtypes,pl,names(pl$dtypes),remove = FALSE)
 
@@ -159,66 +158,3 @@ pl$mem_address = mem_address
 #' )
 NULL
 
-# From the `vctrs` package (this function is intended to be copied
-# without attribution or license requirements to avoid a hard dependency on
-# vctrs:
-# https://github.com/r-lib/vctrs/blob/c2a7710fe55e3a2249c4fdfe75bbccbafcf38804/R/register-s3.R#L25-L31
-s3_register <- function(generic, class, method = NULL) {
-  stopifnot(is.character(generic), length(generic) == 1)
-  stopifnot(is.character(class), length(class) == 1)
-
-  pieces <- strsplit(generic, "::")[[1]]
-  stopifnot(length(pieces) == 2)
-  package <- pieces[[1]]
-  generic <- pieces[[2]]
-
-  caller <- parent.frame()
-
-  get_method_env <- function() {
-    top <- topenv(caller)
-    if (isNamespace(top)) {
-      asNamespace(environmentName(top))
-    } else {
-      caller
-    }
-  }
-  get_method <- function(method, env) {
-    if (is.null(method)) {
-      get(paste0(generic, ".", class), envir = get_method_env())
-    } else {
-      method
-    }
-  }
-
-  register <- function(...) {
-    envir <- asNamespace(package)
-
-    # Refresh the method each time, it might have been updated by
-    # `devtools::load_all()`
-    method_fn <- get_method(method)
-    stopifnot(is.function(method_fn))
-
-
-    # Only register if generic can be accessed
-    if (exists(generic, envir)) {
-      registerS3method(generic, class, method_fn, envir = envir)
-    } else if (identical(Sys.getenv("NOT_CRAN"), "true")) {
-      warning(sprintf(
-        "Can't find generic `%s` in package %s to register S3 method.",
-        generic,
-        package
-      ))
-    }
-  }
-
-  # Always register hook in case package is later unloaded & reloaded
-  setHook(packageEvent(package, "onLoad"), register)
-
-  # Avoid registration failures during loading (pkgload or regular)
-  if (isNamespaceLoaded(package)) {
-    register()
-  }
-
-  invisible()
-}
-# nocov end

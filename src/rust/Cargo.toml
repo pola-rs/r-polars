@@ -16,12 +16,14 @@ mimalloc = { version = "0.1.34", default-features = false }
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr", rev = "f511254b1be180528a1711e4c87473966a1010d0"}
+extendr-api = { git = "https://github.com/extendr/extendr", rev = "b813b20be4daee0829e74c06a45bc6f0a984dc4a"}
+
 flume = "0.10.14"
 state = "0.5.3"
 rayon = "1.6.1"
 smartstring = "1.0.1"
 polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "a7d38dda7342eb706703b993abed40187e0633f2", default_features= false}
+
 
 
 #try to trigger new hashFiles hash value
@@ -102,7 +104,12 @@ features = [
   "cumulative_eval",
   "list_eval",
   "list_to_struct",
-  "list_take"
+  "list_take",
+  "timezones",
+  "date_offset",
+  "dtype-date",
+  "dtype-datetime",
+  "dtype-time",
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"

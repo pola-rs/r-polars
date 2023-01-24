@@ -3634,9 +3634,6 @@ Expr_extend_expr = function(value, n) {
   .pr$Expr$extend_expr(self, wrap_e(value), wrap_e(n))
 }
 
-
-
-
 #' expression: repeat series
 #' @description
 #' This expression takes input and repeats it n times and append chunk
@@ -3667,8 +3664,6 @@ Expr_extend_expr = function(value, n) {
 Expr_rep = function(n, rechunk = TRUE) {
   unwrap(.pr$Expr$rep(self, n, rechunk))
 }
-
-
 
 
 #' extend series with repeated series
@@ -3716,14 +3711,12 @@ Expr_to_r = function(df = NULL, i = 0) {
   }
 }
 
+
 #' @name pl_expr_to_r
 #' @rdname Expr_to_r
 pl$expr_to_r = function(expr, df = NULL, i=0) {
   wrap_e(expr)$to_r(df, i)
 }
-
-
-
 
 
 #' Value counts
@@ -3743,7 +3736,6 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
   .pr$Expr$value_counts(self, multithreaded, sort)
 }
-
 
 #' Value counts
 #' @description
@@ -3910,6 +3902,37 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' )
 Expr_arr = method_as_property(function() {
   expr_arr_make_sub_ns(self)
+})
+
+
+#' str: string related methods
+#' @description
+#' Create an object namespace of all string related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases string str
+#' @examples
+#'
+#' #missing
+#'
+Expr_str = method_as_property(function() {
+  expr_str_make_sub_ns(self)
+})
+
+#' dt: datetime related methods
+#' @description
+#' Create an object namespace of all datetime related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases dt datetime
+#' @examples
+#'
+#' #missing
+#'
+Expr_dt = method_as_property(function() {
+  expr_dt_make_sub_ns(self)
 })
 
 

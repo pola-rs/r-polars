@@ -24,7 +24,6 @@ use polars::prelude as pl;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
-#[extendr]
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
 
@@ -79,7 +78,6 @@ impl Series {
         let robj_result = pl_series_to_list(&self.0, true);
         r_result_list(robj_result)
     }
-
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
         self.0.rename(name);

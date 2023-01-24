@@ -33,6 +33,8 @@ mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
 
+r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
@@ -64,6 +66,8 @@ DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
 DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
 
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
+
+DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, self)
 
 DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
 
@@ -347,6 +351,26 @@ Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr
 
 Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
 
+Expr$str_parse_date <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, fmt, strict, exact, cache)
+
+Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware)
+
+Expr$str_parse_time <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, fmt, strict, exact, cache)
+
+Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
+
+Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
+
+Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
+
+Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
+
+Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
+
+Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
+
+Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
@@ -587,7 +611,7 @@ RPolarsDataType <- new.env(parent = emptyenv())
 
 RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
 
-RPolarsDataType$new_datetime <- function() .Call(wrap__RPolarsDataType__new_datetime)
+RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
 
 RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
 

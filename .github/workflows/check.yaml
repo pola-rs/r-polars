@@ -26,7 +26,7 @@ jobs:
           - { os: windows-latest, r: "release", rtools-version: "42" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
-          - { os: ubuntu-latest, r: "oldrel-1" }
+          #- { os: ubuntu-latest, r: "oldrel-1" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -46,17 +46,24 @@ jobs:
           echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
           echo "${GITHUB_PATH}"
 
-      - name: cache rpolars rust targets
-        id: cache-rust-targets
-        uses: actions/cache@v3.2.2
-        env:
-          cache-name: cache-rust-targets
-        with:
-          path: ./src/rust/target/
-          key: check_v4-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
-          restore-keys: |
-            check_v4-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
-            check_v4-${{ runner.os }}-cargo-target
+      # - name: Get Date
+      #   id: get-date
+      #   run: |
+      #     echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+      #   shell: bash
+
+      # - name: cache rpolars rust targets
+      #   id: cache-rust-targets
+      #   uses: actions/cache@v3.2.2
+      #   env:
+      #     cache-name: cache-rust-targets
+      #   with:
+      #     path: ./src/rust/target/
+      #     key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
+      #     restore-keys: |
+      #       check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
+      #       check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
+      #       check_v5-${{ runner.os }}-cargo-target
 
       - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
       - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
@@ -66,6 +73,11 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.rust-toolchain }}
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
 
       - uses: r-lib/actions/setup-pandoc@v2
 

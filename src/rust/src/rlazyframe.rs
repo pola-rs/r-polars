@@ -8,7 +8,6 @@ use extendr_api::prelude::*;
 use crate::concurrent::handle_thread_r_requests;
 use polars::prelude as pl;
 #[derive(Clone)]
-#[extendr]
 pub struct LazyFrame(pub pl::LazyFrame);
 
 #[extendr]
@@ -118,7 +117,6 @@ impl LazyFrame {
 }
 
 #[derive(Clone)]
-#[extendr]
 pub struct LazyGroupBy(pub pl::LazyGroupBy);
 
 #[extendr]

@@ -18,7 +18,9 @@ Suggests:
     data.table,
     pkgdown,
     nanoarrow,
-    arrow
+    arrow,
+    bench,
+    nycflights13
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
@@ -29,8 +31,10 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'expr__datetime.R'
     'expr__expr.R'
     'expr__list.R'
+    'expr__string.R'
     'functions.R'
     'groupby.R'
     'lazy_functions.R'
@@ -43,5 +47,6 @@ Collate:
     'rlang.R'
     'series__series.R'
     'translation.R'
+    'vctrs.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000

@@ -19,9 +19,9 @@ use rexpr::*;
 pub use rseries::*;
 use series_to_r::pl_series_to_list;
 
-use polars_core::utils::arrow;
-use polars::prelude::ArrowField;
 use arrow::datatypes::DataType;
+use polars::prelude::ArrowField;
+use polars_core::utils::arrow;
 
 use crate::utils::r_result_list;
 
@@ -33,7 +33,7 @@ pub struct OwnedDataFrameIterator {
 }
 
 impl OwnedDataFrameIterator {
-    fn new(df: polars::frame::DataFrame ) -> Self {
+    fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
 
@@ -41,7 +41,7 @@ impl OwnedDataFrameIterator {
             columns: df.get_columns().clone(),
             data_type,
             idx: 0,
-            n_chunks: df.n_chunks()
+            n_chunks: df.n_chunks(),
         }
     }
 }
@@ -58,14 +58,16 @@ impl Iterator for OwnedDataFrameIterator {
             self.idx += 1;
 
             let chunk = polars::frame::ArrowChunk::new(batch_cols);
-            let array = arrow::array::StructArray::new(self.data_type.clone(), chunk.into_arrays(), std::option::Option::None);
+            let array = arrow::array::StructArray::new(
+                self.data_type.clone(),
+                chunk.into_arrays(),
+                std::option::Option::None,
+            );
             Some(std::result::Result::Ok(Box::new(array)))
         }
     }
 }
 
-
-#[extendr]
 #[derive(Debug, Clone)]
 pub struct DataFrame(pub pl::DataFrame);
 
@@ -169,6 +171,22 @@ impl DataFrame {
         r_result_list(robj_list_res)
     }
 
+    fn to_list_unwind(&self) -> Robj {
+        //convert DataFrame to Result of to R vectors, error if DataType is not supported
+        let robj_vec_res: Result<Vec<Robj>, _> =
+            self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
+
+        //rewrap Ok(Vec<Robj>) as R list
+        let robj_list_res = robj_vec_res.map(|vec_robj| {
+            r!(extendr_api::prelude::List::from_names_and_values(
+                self.columns(),
+                vec_robj
+            ))
+        });
+
+        robj_list_res.unwrap()
+    }
+
     // to_list have this variant with set_structs = true at pl_series_to_list
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
     fn to_list_tag_structs(&self) -> List {
@@ -259,7 +277,11 @@ impl DataFrame {
         let stream_out_ptr_addr: usize = stream_ptr.parse().unwrap();
         let stream_out_ptr = stream_out_ptr_addr as *mut arrow::ffi::ArrowArrayStream;
         unsafe {
-            std::ptr::swap_nonoverlapping(stream_out_ptr, &mut stream as *mut arrow::ffi::ArrowArrayStream, 1);
+            std::ptr::swap_nonoverlapping(
+                stream_out_ptr,
+                &mut stream as *mut arrow::ffi::ArrowArrayStream,
+                1,
+            );
         }
     }
 }
@@ -283,7 +305,6 @@ impl DataFrame {
 }
 
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);
 
 #[extendr]

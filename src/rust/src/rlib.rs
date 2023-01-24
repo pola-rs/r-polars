@@ -3,11 +3,11 @@ use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::rdataframe::rexpr::ProtoExprArray;
+use crate::rdataframe::rseries::Series;
+use crate::rdatatype::str_to_timeunit;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-
 use polars_core::functions as pl_functions;
-
 #[extendr]
 fn concat_df(vdf: &VecDataFrame) -> List {
     //-> PyResult<PyDataFrame> {
@@ -90,6 +90,39 @@ fn concat_lst(exprs: &ProtoExprArray) -> Expr {
     polars::lazy::dsl::concat_lst(exprs).into()
 }
 
+#[extendr]
+fn r_date_range(
+    start: f64,
+    stop: f64,
+    every: &str,
+    closed: &str, //Wap<ClosedWindow>
+    name: &str,
+    tu: &str,
+    tz: Nullable<String>,
+) -> List {
+    use crate::rdatatype::new_closed_window;
+    use crate::utils::try_f64_into_i64;
+
+    use pl::IntoSeries;
+
+    let res = || -> std::result::Result<Series, String> {
+        Ok(Series(
+            polars::time::date_range_impl(
+                name,
+                try_f64_into_i64(start)?,
+                try_f64_into_i64(stop)?,
+                pl::Duration::parse(every),
+                new_closed_window(closed)?,
+                str_to_timeunit(tu)?,
+                tz.into_option().as_ref(),
+            )
+            .into_series(),
+        ))
+    }()
+    .map_err(|err| format!("in r_date_range: {}", err));
+    r_result_list(res)
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -101,4 +134,5 @@ extendr_module! {
     fn sum_exprs;
     fn mem_address;
     fn concat_lst;
+    fn r_date_range;
 }

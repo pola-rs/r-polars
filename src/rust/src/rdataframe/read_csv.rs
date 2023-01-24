@@ -12,7 +12,6 @@ use crate::utils::r_result_list;
 use std::result::Result;
 //see param, null_values
 #[derive(Clone, Debug)]
-#[extendr]
 pub struct RNullValues(pl::NullValues);
 
 #[extendr]
@@ -87,10 +86,12 @@ pub fn rlazy_csv_reader(
     });
 
     //construct optional RowCount parameter
-    let row_count = null_to_opt(row_count_name).map(|name| polars::io::RowCount {
-        name,
-        offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
-    });
+    let row_count = row_count_name
+        .into_option()
+        .map(|name| polars::io::RowCount {
+            name,
+            offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
+        });
 
     //TODO expose new ignore_errors bahavior
     let _ = ignore_errors;

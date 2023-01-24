@@ -50,7 +50,14 @@ DataType_new = function(str) {
 
 
 #' internal collection of datatype constructors
-DataType_constructors = list()
+DataType_constructors = list(
+  Datetime = function(tu="us", tz = NULL) {
+    if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
+      stopf("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()",tz)
+    }
+    unwrap(.pr$DataType$new_datetime(tu,tz))
+  }
+)
 
 
 #' create list data type
@@ -70,6 +77,8 @@ if(!inherits(datatype,"RPolarsDataType")) {
 }
 .pr$DataType$new_list(datatype)
 }
+
+
 
 
 

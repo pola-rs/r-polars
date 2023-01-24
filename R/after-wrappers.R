@@ -48,6 +48,7 @@ extendr_method_to_pure_functions = function(env) {
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
+
 #TODO remove export
 
 

@@ -16,6 +16,10 @@ all: C_clean
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
+
+	curdir=$(CURDIR)
+	cd $(RPOLARS_RUST_SOURCE)/..
+
 	mkdir -p $(TARGET_DIR)/libgcc_mock
 	cd $(TARGET_DIR)/libgcc_mock && \
 		touch gcc_mock.c && \
@@ -30,6 +34,7 @@ $(STATLIB):
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
+	cd $(curdir)
 	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
 	# if binary is not here, it can be symlinked instead.
 	# This solves both caching and R CMD check failing cargo build files

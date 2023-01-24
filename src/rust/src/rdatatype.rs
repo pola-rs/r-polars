@@ -4,7 +4,7 @@ use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-#[extendr]
+use crate::utils::wrappers::null_to_opt;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);
 
@@ -35,13 +35,15 @@ impl RPolarsDataType {
             "Categorical" | "factor" => pl::DataType::Categorical(None),
             "Unknown" | "unknown" => pl::DataType::Unknown,
 
-            _ => panic!("data type not recgnized"),
+            _ => panic!("data type not recgnized "),
         };
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime() -> RPolarsDataType {
-        todo!("datetime not implemented")
+    pub fn new_datetime(tu: &str, tz: Nullable<String>) -> List {
+        let result = str_to_timeunit(tu)
+            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
+        r_result_list(result)
     }
 
     pub fn new_duration() -> RPolarsDataType {
@@ -107,7 +109,6 @@ impl From<RPolarsDataType> for pl::DataType {
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
 #[derive(Debug, Clone)]
-#[extendr]
 pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
@@ -306,6 +307,19 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
 
         _ => Err(format!(
             "n_field_strategy: [{}] is not any of 'first_non_null' or 'max_width'",
+            s
+        )),
+    }
+}
+
+pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
+    match s {
+        "ns" => Ok(pl::TimeUnit::Nanoseconds),
+        "us" => Ok(pl::TimeUnit::Microseconds),
+        "ms" => Ok(pl::TimeUnit::Milliseconds),
+
+        _ => Err(format!(
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
             s
         )),
     }
