@@ -123,6 +123,29 @@ fn r_date_range(
     r_result_list(res)
 }
 
+#[extendr]
+fn r_date_range_lazy(
+    start: &Expr,
+    end: &Expr,
+    every: &str,
+    closed: &str,
+    name: String,
+    tz: Nullable<String>,
+) -> List {
+    use crate::rdatatype::new_closed_window;
+    let res = || -> std::result::Result<Expr, String> {
+        Ok(Expr(polars::lazy::dsl::functions::date_range(
+            name,
+            start.0.clone(),
+            end.0.clone(),
+            pl::Duration::parse(every),
+            new_closed_window(closed)?,
+            tz.into_option(),
+        )))
+    }();
+    r_result_list(res)
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -135,4 +158,5 @@ extendr_module! {
     fn mem_address;
     fn concat_lst;
     fn r_date_range;
+    fn r_date_range_lazy;
 }

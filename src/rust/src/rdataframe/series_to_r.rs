@@ -79,6 +79,15 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
 
                 Ok(l.into_robj())
             }
+
+            Date => Ok(s
+                .cast(&Float64)?
+                .f64()?
+                .into_iter()
+                .collect_robj()
+                .set_class(&["Date"])
+                .expect("internal error: class Date label failed")),
+
             Datetime(tu, opt_tz) => {
                 let tu_i64: i64 = match tu {
                     pl::TimeUnit::Nanoseconds => 1_000_000_000,

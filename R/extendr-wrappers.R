@@ -35,6 +35,8 @@ concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
+r_date_range_lazy <- function(start, end, every, closed, name, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, name, tz)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

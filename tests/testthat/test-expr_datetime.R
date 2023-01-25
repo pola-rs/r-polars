@@ -95,6 +95,54 @@ test_that("dt$truncate", {
 })
 
 
+test_that("pl$date_range lazy ", {
+
+  t1 = ISOdate(2022,1,1,0)
+  t2 = ISOdate(2022,1,2,0)
+
+  expect_identical(
+    pl$date_range(low = t1, high = t2, interval = "6h", time_zone = "GMT")$to_r(),
+    pl$date_range(low = t1, high = t2, interval = "6h", time_zone = "GMT",lazy = TRUE)$to_r()
+  )
+  expect_identical(
+    pl$date_range(low = t1, high = t2, interval = "6h", time_zone = "CET")$to_r(),
+    pl$date_range(low = t1, high = t2, interval = "6h", time_zone = "CET",lazy = TRUE)$to_r()
+  )
+
+  #check variations of lazy input gives same result
+  df = pl$DataFrame(
+    t1 = t1, t2 = t2
+  )$select(
+    pl$date_range("t1","t2","6h")$alias("s1"),
+    pl$date_range("t1","t2","6h",lazy = TRUE)$alias("s2"),
+    pl$date_range(pl$col("t1"),pl$col("t2"),"6h",lazy = TRUE)$alias("s3"),
+    pl$date_range(t1,t2,"6h",lazy = TRUE)$alias("s4")
+  )
+  l = df$to_list()
+  for(i in length(l)-1) {
+    expect_identical(l[[i]],l[[i+1]])
+  }
+})
+
+
+test_that("pl$date_range Date lazy/eager", {
+
+  d1 = as.Date("2022-01-01")
+
+  s_d  = pl$Series(d1, name = "Date")
+  s_dt = pl$Series(as.POSIXct(d1), name = "Date")
+  df = pl$DataFrame(Date = d1)$to_series()
+  dr_e = pl$date_range(d1, d1+1, interval = "6h")
+  dr_l = pl$date_range(d1, d1+1, interval = "6h", lazy=TRUE)
+
+  expect_identical(as.POSIXct(s_d$to_r()) |> 'attr<-'("tzone",""),s_dt$to_r())
+  expect_identical(d1, s_d$to_r())
+  expect_identical(d1, df$to_r())
+  expect_identical(s_dt$to_r(), dr_e$to_r()[1])
+  expect_identical(s_dt$to_r(), dr_l$to_r()[1])
+})
+
+
 test_that("dt$round", {
 
   #make a datetime

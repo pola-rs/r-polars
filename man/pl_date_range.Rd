@@ -4,11 +4,11 @@
 \alias{pl_date_range}
 \title{new date_range}
 \arguments{
-\item{low}{string or}
+\item{low}{POSIXt, preferably with time_zone}
 
-\item{high}{string or}
+\item{high}{POSIXt, preferably with time_zone}
 
-\item{interval}{string parsed to duration like "1w" "1week" "2years" "10s"}
+\item{interval}{string pl_duration or R difftime}
 
 \item{...}{not used}
 
@@ -18,12 +18,9 @@
 
 \item{name}{name of series}
 
-\item{time_unit}{option "ns" "us" "ms"}
+\item{time_unit}{option string ("ns" "us" "ms") duration of one int64 value on polars side}
 
-\item{time_zone}{optional string describing a timezone. If no time_zone is provided the
-the tz of low/high input is ignored and the output Series will no have a tz predicate.
-If time_zone is provided the low/high timezone will be corrected into that tz. If low/high
-does not have a tz(tzone)-attribute, then local System time is assumed.}
+\item{time_zone}{optional string describing a timezone.}
 }
 \value{
 a datetime
@@ -31,12 +28,49 @@ a datetime
 \description{
 new date_range
 }
+\details{
+If param time_zone is not defined the Series will have no time zone.
+
+NOTICE: R POSIXt without defined timezones(tzone/tz) are counter intuitive. It is recommended to
+always set the timezone of low and high. If not output will vary between local machine timezone,
+R and polars.
+
+In r-polars it is perfectly fine to mix timezones of params time_zone, low and high in eager
+evaluation. TODO checkup on lazy polars implementation.
+}
 \examples{
-pl$date_range(
+
+# All in GMT, straight forward, no mental confusion
+s_gmt = pl$date_range(
   as.POSIXct("2022-01-01",tz = "GMT"),
   as.POSIXct("2022-01-02",tz = "GMT"),
-  interval = "2h", time_unit = "ms", time_zone = "GMT"
+  interval = "6h", time_unit = "ms", time_zone = "GMT"
 )
+s_gmt
+s_gmt$to_r() #printed same way in R and polars becuase tagged with a time_zone/tzone
+
+# polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print
+s_null = pl$date_range(
+  as.POSIXct("2022-01-01",tz = "GMT"),
+  as.POSIXct("2022-01-02",tz = "GMT"),
+  interval = "6h", time_unit = "ms", time_zone = NULL
+)
+s_null$to_r() #back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
+
+
+#Any mixing of timezones is fine, just set them all, and it works as expected.
+t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
+t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
+s_mix = pl$date_range(low = t1, high = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
+s_mix
+s_mix$to_r()
+
+
+#use of ISOdate
+t1 = ISOdate(2022,1,1,0) #preset GMT
+t2 = ISOdate(2022,1,2,0) #preset GMT
+pl$date_range(t1,t2,interval = "4h", time_unit = "ms", time_zone = "GMT")
+
 }
 \keyword{ExprDT}
 \keyword{functions}

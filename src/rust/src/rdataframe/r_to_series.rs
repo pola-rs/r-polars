@@ -48,7 +48,8 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     let rtype = x.rtype();
 
     // handle any supported Robj
-    match rtype {
+    let series_result = match rtype {
+
         Rtype::Doubles => {
             let rdouble: Doubles = x.try_into().expect("as matched");
             if rdouble.no_na().is_true() {
@@ -96,6 +97,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 s.rename(name);
                 s
             };
+
             Ok(SeriesTree::Series(s))
         },
 
@@ -120,8 +122,26 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
             format!("new series from rtype {:?} is not supported (yet)", rtype),
         ))),
+    };
+
+    //post process derived R types
+    match series_result {
+        Ok(SeriesTree::Series(s)) if x.inherits("POSIXct") => {
+            let tz = x.get_attrib("tzone").map(|robj| robj.as_str().map(|str| if str=="" {None} else {Some(str.to_string())})).flatten().flatten();
+            //todo this could probably in fewer allocations
+            let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds,tz);
+            Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
+        },
+        Ok(SeriesTree::Series(s)) if x.inherits("Date") => {
+            Ok(SeriesTree::Series(s.cast(&pl::DataType::Date)?))
+        },
+        _ => series_result
     }
+
 }
+
+
+
 
 // consume nested SeriesTree and return concatenated Series or an appropriate Error
 fn concat_series_tree(

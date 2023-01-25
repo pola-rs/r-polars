@@ -90,5 +90,7 @@ ExprDT_round = function(every, offset = NULL) {
   .pr$Expr$dt_round(self, every,  as_pl_duration(offset %||% "0ns"))
 }
 
+#ExprDT_combine = function(self, tm: time | pli.Expr, tu: TimeUnit = "us") -> pli.Expr:
+
 
 

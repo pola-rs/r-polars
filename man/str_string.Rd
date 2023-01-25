@@ -7,6 +7,8 @@
 str_string(x, collapse = " ")
 }
 \arguments{
+\item{x}{object to view.}
+
 \item{collapse}{word to glue possible multilines with}
 }
 \value{
@@ -16,5 +18,5 @@ string
 Simple viewer of an R object based on str()
 }
 \examples{
-str_string(list(a=42,c(1,2,3,NA)))
+rpolars:::str_string(list(a=42,c(1,2,3,NA)))
 }

@@ -572,11 +572,30 @@ expect_grepl_error = function(expr, expected_err = NULL) {
 
 
 #' Simple viewer of an R object based on str()
+#'
+#' @param x object to view.
 #' @param collapse word to glue possible multilines with
+#'
 #' @return string
 #'
 #' @examples
-#' str_string(list(a=42,c(1,2,3,NA)))
+#' rpolars:::str_string(list(a=42,c(1,2,3,NA)))
 str_string = function(x,collapse=" ") {
   paste(capture.output(str(x)),collapse = collapse)
+}
+
+
+#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#that is supported
+convert_to_fewer_types = function(x) {
+  pcase(
+    #PSOIXlt not directly supported by rpolars but POSIXct is
+    inherits(x, "POSIXlt"), as.POSIXct(x),
+
+    #Date converted to  POSIXct, tz GMT is assumed
+    #inherits(x, "Date"), .POSIXct(unclass(x) * 86400,tz="GMT",cl = "POSIXct"),
+
+    #no conversion needed/supported
+    or_else = x
+  )
 }
