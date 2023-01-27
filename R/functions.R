@@ -145,6 +145,11 @@ pl$date_range = function(
     time_zone = NULL #: str | None = None
 ) {
 
+  if(missing(high)) {
+    high = low
+    interval = "1h"
+  }
+
   name = name %||% ""
   interval = as_pl_duration(interval)
 

@@ -27,6 +27,7 @@ Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
+    'PTime.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'

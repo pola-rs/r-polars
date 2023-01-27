@@ -125,6 +125,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     };
 
     //post process derived R types
+    //let x_class: Vec<&str> = x.class().map(|itr| itr.collect()).unwrap_or_else(||Vec::new());
     match series_result {
         Ok(SeriesTree::Series(s)) if x.inherits("POSIXct") => {
             let tz = x.get_attrib("tzone").map(|robj| robj.as_str().map(|str| if str=="" {None} else {Some(str.to_string())})).flatten().flatten();
@@ -135,6 +136,32 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         Ok(SeriesTree::Series(s)) if x.inherits("Date") => {
             Ok(SeriesTree::Series(s.cast(&pl::DataType::Date)?))
         },
+        // Ok(SeriesTree::Series(s)) if x.inherits("ITime")=> {
+        //     let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds,tz);
+        //     Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
+        // },
+        Ok(SeriesTree::Series(s)) if x.inherits("PTime")=> {
+            let tu_str = x.get_attrib("tu").map(|robj| robj.as_str()).flatten().ok_or_else(||
+                pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
+                    "failure to convert class PTime as attribute tu is not a string or there".to_string(),
+                ))
+            )?;
+            let i_conv: i64 =  match tu_str {
+                "ns" => 1,
+                "us" => 1_000,
+                "ms" => 1_000_000,
+                "s" => 1_000_000_000,
+                _ => Err(
+                    pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
+                        "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'".to_string(),
+                    ))
+                )?
+            };
+            Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*i_conv).cast(&pl::DataType::Time)?))
+        }
+
+        //     Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
+        // },
         _ => series_result
     }
 
