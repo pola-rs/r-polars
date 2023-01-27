@@ -334,33 +334,33 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
     tu_i64
 }
 
-pub fn Ptime(
-    val: f64,
-    tu: &str,
-    tu_out: Option<pl::TimeUnit>,
-) -> std::result::Result<(i64, pl::TimeUnit), String> {
-    let (val, tu) = match tu {
-        "s" => ((val * 1000f64), "ms"),
-        _ => (val, tu),
-    };
+// pub fn Ptime(
+//     val: f64,
+//     tu: &str,
+//     tu_out: Option<pl::TimeUnit>,
+// ) -> std::result::Result<(i64, pl::TimeUnit), String> {
+//     let (val, tu) = match tu {
+//         "s" => ((val * 1000f64), "ms"),
+//         _ => (val, tu),
+//     };
 
-    let tu = str_to_timeunit(tu)?;
-    let tu_out = tu_out.unwrap_or_else(|| tu.clone());
+//     let tu = str_to_timeunit(tu)?;
+//     let tu_out = tu_out.unwrap_or_else(|| tu.clone());
 
-    use pl::TimeUnit::*;
-    let out = match (&tu, &tu_out) {
-        (tu_in, tu_out) if tu_in == tu_out => (val, tu),
-        (Nanoseconds, Microseconds) => (val / 1000.0, tu),
-        (Nanoseconds, Milliseconds) => (val / 1000000.0, tu),
-        (Microseconds, Nanoseconds) => (val * 1000.0, tu),
-        (Microseconds, Milliseconds) => (val / 1000.0, tu),
-        (Milliseconds, Microseconds) => (val * 1000.0, tu),
-        (Milliseconds, Nanoseconds) => (val * 1000000.0, tu),
-        _ => unreachable!("no more time unit conversion options"),
-    };
+//     use pl::TimeUnit::*;
+//     let out = match (&tu, &tu_out) {
+//         (tu_in, tu_out) if tu_in == tu_out => (val, tu),
+//         (Nanoseconds, Microseconds) => (val / 1000.0, tu),
+//         (Nanoseconds, Milliseconds) => (val / 1000000.0, tu),
+//         (Microseconds, Nanoseconds) => (val * 1000.0, tu),
+//         (Microseconds, Milliseconds) => (val / 1000.0, tu),
+//         (Milliseconds, Microseconds) => (val * 1000.0, tu),
+//         (Milliseconds, Nanoseconds) => (val * 1000000.0, tu),
+//         _ => unreachable!("no more time unit conversion options"),
+//     };
 
-    Ok((out.0 as i64, out.1))
-}
+//     Ok((out.0 as i64, out.1))
+// }
 
 extendr_module! {
     mod rdatatype;
