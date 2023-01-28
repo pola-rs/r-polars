@@ -10,12 +10,17 @@
 #' Store Time in R
 #' @name pl_PTime
 #' @include after-wrappers.R
+#'
 #' @param x an integer or double vector of n epochs since midnight OR a char vector of char times
 #' passed to as.POSIXct converted to seconds.
 #' @param tu timeunit either "s","ms","us","ns"
 #' @param fmt a format string passed to as.POSIXct format via ...
 #'
-#' @details base R is missing encodinging of Time since midnight "s" "ms", "us" and "ns". The latter
+#' @details
+#'
+#' PTime should probably be replaced with package nanotime or similar.
+#'
+#' base R is missing encodinging of Time since midnight "s" "ms", "us" and "ns". The latter
 #' "ns" is the standard for the polars Time type.
 #'
 #' Use PTime to convert R doubles and integers and use as input to polars functions which needs a
@@ -55,9 +60,7 @@
 #' pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 #'
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
-#'
 pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
-
 
   if( is.character(x)) {
     x = as.double(as.POSIXct(x, format = fmt)) - as.double(as.POSIXct("00:00:00", format = fmt))
@@ -108,9 +111,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
   x
 }
 
-
-
-#' @rdname pl_PTime
+#' print PTime
 #' @param x a PTime vector
 #' @param ... not used
 #' @return invisible x
@@ -125,7 +126,8 @@ print.PTime = function(x, ...) {
     or_else = stopf("not recognized tu")
   )
   val = unclass(x) / 10^tu_exp
-  fmt = format(as.POSIXct(val,tz="GMT"),format="%H:%M:%S")
+  origin = structure(0, tzone = "GMT", class = c("POSIXct", "POSIXt"))
+  fmt = format(as.POSIXct(val,tz="GMT",origin=origin),format="%H:%M:%S")
 
   if(tu!="s") {
     dgt = formatC((val-floor(val))*10^tu_exp, width = tu_exp, flag=0,big.mark ="_",digits = tu_exp)

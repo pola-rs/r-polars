@@ -3,15 +3,10 @@
 \name{pl_PTime}
 \alias{pl_PTime}
 \alias{PTIME}
-\alias{print.PTime}
 \title{Store Time in R}
-\usage{
-\method{print}{PTime}(x, ...)
-}
 \arguments{
-\item{x}{a PTime vector}
-
-\item{...}{not used}
+\item{x}{an integer or double vector of n epochs since midnight OR a char vector of char times
+passed to as.POSIXct converted to seconds.}
 
 \item{tu}{timeunit either "s","ms","us","ns"}
 
@@ -20,13 +15,13 @@
 \value{
 a PTime vector either double or integer, with class "PTime" and attribute "tu" being
 either "s","ms","us" or "ns"
-
-invisible x
 }
 \description{
 Store Time in R
 }
 \details{
+PTime should probably be replaced with package nanotime or similar.
+
 base R is missing encodinging of Time since midnight "s" "ms", "us" and "ns". The latter
 "ns" is the standard for the polars Time type.
 
@@ -62,5 +57,4 @@ pl$Series(pl$PTime(runif(5)*3600*24*1E0, tu = "s"))
 pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 
 pl$lit(pl$PTime("23:59:59"))$to_r()
-
 }
