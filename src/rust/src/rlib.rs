@@ -116,10 +116,10 @@ fn r_date_range(
                 str_to_timeunit(tu)?,
                 tz.into_option().as_ref(),
             )
+            .map_err(|err| format!("in r_date_range: {}", err))?
             .into_series(),
         ))
-    }()
-    .map_err(|err| format!("in r_date_range: {}", err));
+    }();
     r_result_list(res)
 }
 
