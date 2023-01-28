@@ -93,6 +93,7 @@ ExprDT_round = function(every, offset = NULL) {
 #ExprDT_combine = function(self, tm: time | pli.Expr, tu: TimeUnit = "us") -> pli.Expr:
 
 
+#'
 #' Round datetime
 #' @description  Create a naive Datetime from an existing Date/Datetime expression and a Time.
 #' Each date/datetime in the first half of the interval
@@ -139,6 +140,7 @@ ExprDT_round = function(every, offset = NULL) {
 #' )
 #' df
 ExprDT_combine = function(tm, tu = "us") {
+  stopf("combine is currently unavailable for now")
   if( inherits(tm, "PTime")) {
     tu = "ns" #PTime implicitly get converted to "ns"
   }

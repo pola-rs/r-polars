@@ -370,8 +370,6 @@ Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self,
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
-Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
-
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
