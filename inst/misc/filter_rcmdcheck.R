@@ -7,7 +7,7 @@
 library(rcmdcheck)
 print(R.version)
 print(Sys.info())
-
+print(getwd())
 
 #define ignore rules for notes, warnings and errors
 ignore_rules = list(
@@ -56,7 +56,7 @@ check_report_path = c(
   Sys.getenv("rcmdcheck_path"),
   "./check/rpolars.Rcheck/"
 ) |> (\(x) {x[nzchar(x)]})()
-check_obj = rcmdcheck::parse_check("../check_here/rpolars.Rcheck/")
+check_obj = rcmdcheck::parse_check(check_report_path)
 
 
 #filter remaining not-ignored msgs
