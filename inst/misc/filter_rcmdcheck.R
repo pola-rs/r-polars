@@ -54,7 +54,7 @@ drop_ignored = function(msg_set, rule_list) {
 #parse check report to object
 check_report_path = c(
   Sys.getenv("rcmdcheck_path"),
-  "./check/rpolars.Rcheck/00install.out"
+  "../check/rpolars.Rcheck/00install.out"
 ) |> (\(x) {x[nzchar(x)]})()
 check_obj = rcmdcheck::parse_check("../check_here/rpolars.Rcheck/")
 
