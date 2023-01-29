@@ -60,12 +60,12 @@ check_obj = rcmdcheck::parse_check(check_report_path)
 
 
 #filter remaining not-ignored msgs
-remaining_erros = lapply(
+remaining_erros = unlist(lapply(
   c(notes = "notes", warnings = "warnings", errors = "errors"),
   function(msg_type) {
     drop_ignored(check_obj[[msg_type]], ignore_rules[[msg_type]])
   }
-)
+))
 
 
 #raise any remaining errors
