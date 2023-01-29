@@ -78,6 +78,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: ./src/rust/
+          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -151,7 +152,7 @@ jobs:
 
       - name: raise remaining rcmdcheck errors
         run: |
-         print(getwd()); \
-         source("./r-polars/r-polars/inst/misc/filter_rcmdcheck.R")
+         print(getwd());
+         source("./r-polars/r-polars/inst/misc/filter_rcmdcheck.R");
         shell: Rscript {0}
 
