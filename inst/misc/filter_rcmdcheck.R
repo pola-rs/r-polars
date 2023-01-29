@@ -13,11 +13,11 @@ print(getwd())
 ignore_rules = list(
   notes = list(
 
-    # #if note contains this phrase then skip it by returning TRUE.
-    # #yes rpolars is huge way above 10Mb nothing to do about that
-    # ignore_lib_size = function(msg) {
-    #   isTRUE(grepl("checking installed package size ... NOTE",msg))
-    # },
+    #if note contains this phrase then skip it by returning TRUE.
+    #yes rpolars is huge way above 10Mb nothing to do about that
+    ignore_lib_size = function(msg) {
+      isTRUE(grepl("checking installed package size ... NOTE",msg))
+    },
 
     #check warnings/notes appear since main polars commit from and after
     #" feat(rust, python): The 1 billion row sort (#6156) "
