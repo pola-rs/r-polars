@@ -1130,6 +1130,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware: false,
+                utc: false,
             })
             .into()
     }
@@ -1169,6 +1170,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware,
+                utc: false,
             })
             .into()
     }
@@ -1190,6 +1192,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware: false,
+                utc: false,
             })
             .into()
     }
