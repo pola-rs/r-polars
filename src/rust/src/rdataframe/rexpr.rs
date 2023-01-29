@@ -1350,11 +1350,11 @@ impl Expr {
     }
 
     //todo bump rust polars before available
-    // pub fn dt_combine(&self, time: &Expr, tu: &str) -> List {
-    //     let res =
-    //         str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
-    //     r_result_list(res)
-    // }
+    pub fn dt_combine(&self, time: &Expr, tu: &str) -> List {
+        let res =
+            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
+        r_result_list(res)
+    }
 
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()

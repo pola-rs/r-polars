@@ -140,7 +140,6 @@ ExprDT_round = function(every, offset = NULL) {
 #' )
 #' df
 ExprDT_combine = function(tm, tu = "us") {
-  stopf("combine is currently unavailable for now")
   if( inherits(tm, "PTime")) {
     tu = "ns" #PTime implicitly get converted to "ns"
   }
