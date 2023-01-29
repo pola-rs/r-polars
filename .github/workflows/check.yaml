@@ -150,6 +150,8 @@ jobs:
         shell: Rscript {0}
 
       - name: raise remaining rcmdcheck errors
-        run: source("./r-polars/inst/misc/filter_rcmdcheck.R")
+        run: |
+         print(getwd()); \
+         source("./r-polars/r-polars/inst/misc/filter_rcmdcheck.R")
         shell: Rscript {0}
 
