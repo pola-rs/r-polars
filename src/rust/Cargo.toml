@@ -22,7 +22,7 @@ flume = "0.10.14"
 state = "0.5.3"
 rayon = "1.6.1"
 smartstring = "1.0.1"
-polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "5b310e2e3382078274f689441782a3c698eac5c2", default_features= false}
+polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "1a51f9e55196f69fb59e44d497de4f0e6685640d", default_features= false}
 
 
 
@@ -113,4 +113,4 @@ features = [
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "5b310e2e3382078274f689441782a3c698eac5c2"
+rev = "1a51f9e55196f69fb59e44d497de4f0e6685640d"
