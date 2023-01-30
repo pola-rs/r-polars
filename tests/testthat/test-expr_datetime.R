@@ -274,3 +274,81 @@ test_that("dt$year iso_year",{
   )
 })
 
+
+test_that("dt$quarter, month, day",{
+
+  df = pl$DataFrame(
+    date = pl$date_range(
+      as.Date("2020-12-25"),
+      as.Date("2021-1-05"),
+      interval = "1d",
+      time_zone = "GMT"
+    )
+  )$with_columns(
+    pl$col("date")$dt$quarter()$alias("quarter"),
+    pl$col("date")$dt$month()$alias("month"),
+    pl$col("date")$dt$day()$alias("day")
+  )
+
+
+  # dput(df$to_list()$date |> (\(x) list(
+  #   quarter = lubridate::quarter(x),
+  #   month = lubridate::month(x),
+  #   day = lubridate::day(x)
+  # ))() |> lapply(as.numeric))
+  l_exp = list(quarter = c(4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1), month = c(12,
+    12, 12, 12, 12, 12, 12, 1, 1, 1, 1, 1), day = c(25, 26, 27, 28,
+    29, 30, 31, 1, 2, 3, 4, 5))
+
+  expect_identical(
+    df$select(pl$col(c("quarter","month","day")))$to_list(),
+    l_exp
+  )
+
+})
+
+
+test_that("hour minute",{
+
+  df = pl$DataFrame(
+    date = pl$date_range(
+      as.Date("2020-12-25"),
+      as.Date("2021-05-05"),
+      interval = "1d2h3m4s",
+      time_zone = "GMT"
+    )
+  )$with_columns(
+    pl$col("date")$dt$hour()$alias("hour"),
+    pl$col("date")$dt$minute()$alias("minute")
+  )
+
+
+  # dput(df$to_list()$date |> (\(x) list(
+  #   hour = lubridate::hour(x),
+  #   minute = lubridate::minute(x)
+  # ))() |> lapply(as.numeric))
+  l_exp =
+    list(hour = c(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2,
+                  4, 6, 8, 10, 12, 14, 17, 19, 21, 23, 1, 3, 5, 7, 9, 11, 13, 15,
+                  17, 19, 21, 23, 1, 3, 5, 7, 10, 12, 14, 16, 18, 20, 22, 0, 2,
+                  4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 1, 3, 5, 7, 9, 11, 13, 15,
+                  17, 19, 21, 23, 1, 3, 5, 7, 9, 11, 13, 15, 18, 20, 22, 0, 2,
+                  4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0, 2, 4, 6, 9, 11, 13, 15,
+                  17, 19, 21, 23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 2,
+                  4, 6), minute = c(0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33,
+                                    36, 39, 42, 46, 49, 52, 55, 58, 1, 4, 7, 10, 13, 16, 19, 22,
+                                    25, 28, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 2, 5, 8, 11,
+                                    14, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 0,
+                                    4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 50,
+                                    53, 56, 59, 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 36, 39,
+                                    42, 45, 48, 51, 54, 57, 0, 3, 6, 9, 12, 15, 18, 22, 25, 28, 31,
+                                    34, 37, 40, 43, 46, 49, 52, 55, 58, 1, 4, 8))
+  expect_identical(
+    df$select(pl$col(c("hour","minute")))$to_list(),
+    l_exp
+  )
+
+})
+
+
+

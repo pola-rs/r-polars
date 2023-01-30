@@ -298,3 +298,267 @@ ExprDT_month = function() {
 ExprDT_week = function() {
   .pr$Expr$dt_week(self)
 }
+
+#' Week
+#' @description
+#' Extract the week from the underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the ISO week number starting from 1.
+#' The return value ranges from 1 to 53. (The last week of year differs by years.)
+#' @name dt_week
+#' @return Expr of week as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.week arr_week
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$week()$alias("week")
+#' )
+ExprDT_week = function() {
+  .pr$Expr$dt_week(self)
+}
+
+#' weekday
+#' @description
+#' Extract the week day from the underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the ISO weekday number where monday = 1 and sunday = 7
+#' @name dt_weekday
+#' @return Expr of weekday as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.weekday arr_weekday
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$weekday()$alias("weekday")
+#' )
+ExprDT_weekday = function() {
+  .pr$Expr$dt_weekday(self)
+}
+
+
+#' day
+#' @description
+#' Extract day from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the day of month starting from 1.
+#' The return value ranges from 1 to 31. (The last day of month differs by months.)
+#' @name dt_day
+#' @return Expr of day as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.day arr_day
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$day()$alias("day")
+#' )
+ExprDT_day = function() {
+  .pr$Expr$dt_day(self)
+}
+
+#' Ordinal Day
+#' @description
+#' Extract ordinal day from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the day of year starting from 1.
+#' The return value ranges from 1 to 366. (The last day of year differs by years.)
+#' @name dt_ordinal_day
+#' @return Expr of ordinal_day as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.ordinal_day arr_ordinal_day
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$ordinal_day()$alias("ordinal_day")
+#' )
+ExprDT_ordinal_day = function() {
+  .pr$Expr$dt_ordinal_day(self)
+}
+
+
+#' Hour
+#' @description
+#' Extract hour from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' Returns the hour number from 0 to 23.
+#' @name dt_hour
+#' @return Expr of hour as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.hour arr_hour
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$hour()$alias("hour")
+#' )
+ExprDT_hour = function() {
+  .pr$Expr$dt_hour(self)
+}
+
+#' Minute
+#' @description
+#' Extract minutes from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' Returns the minute number from 0 to 59.
+#' @name dt_minute
+#' @return Expr of minute as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.minute arr_minute
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$minute()$alias("minute")
+#' )
+ExprDT_minute = function() {
+  .pr$Expr$dt_minute(self)
+}
+
+#' Second
+#' @description
+#' Extract seconds from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' Returns the integer second number from 0 to 59, or a floating
+#' point number from 0 < 60 if ``fractional=True`` that includes
+#' any milli/micro/nanosecond component.
+#' @name dt_second
+#' @return Expr of second as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.second arr_second
+#' @examples
+#' pl$DataFrame(date = pl$date_range(
+#'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
+#'   as.numeric(as.POSIXct("2001-1-1 00:00:6"))*1E6,
+#'   interval = "2s654321us",
+#'   time_unit = "us" #instruct polars input is us, and store as us
+#' ))$with_columns(
+#'   pl$col("date")$dt$second()$alias("second"),
+#'   pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac")
+#' )
+ExprDT_second = function(fractional = FALSE) {
+  sec = .pr$Expr$dt_second(self)
+  if( fractional) {
+    sec + .pr$Expr$dt_nanosecond(self) / pl$lit(1E9)
+  } else {
+    sec
+  }
+}
+
+#' Millisecond
+#' @description
+#' Extract milliseconds from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' @name dt_millisecond
+#' @return Expr of millisecond as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.millisecond arr_millisecond
+#' @examples
+#' pl$DataFrame(date = pl$date_range(
+#'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
+#'   as.numeric(as.POSIXct("2001-1-1 00:00:6"))*1E6,
+#'   interval = "2s654321us",
+#'   time_unit = "us" #instruct polars input is us, and store as us
+#' ))$with_columns(
+#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
+#'   pl$col("date")$dt$millisecond()$alias("millisecond")
+#' )
+ExprDT_millisecond = function() {
+  .pr$Expr$dt_millisecond(self)
+}
+
+#' Micromicrosecond
+#' @description
+#' Extract microseconds from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' @name dt_microsecond
+#' @return Expr of microsecond as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.microsecond arr_microsecond
+#' @examples
+#' pl$DataFrame(date = pl$date_range(
+#'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
+#'   as.numeric(as.POSIXct("2001-1-1 00:00:6"))*1E6,
+#'   interval = "2s654321us",
+#'   time_unit = "us" #instruct polars input is us, and store as us
+#' ))$with_columns(
+#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
+#'   pl$col("date")$dt$microsecond()$alias("microsecond")
+#' )
+ExprDT_microsecond = function() {
+  .pr$Expr$dt_microsecond(self)
+}
+
+#' NanoSecond
+#' @description
+#' Extract seconds from underlying DateTime representation.
+#' Applies to Datetime columns.
+#' Returns the integer second number from 0 to 59, or a floating
+#' point number from 0 < 60 if ``fractional=True`` that includes
+#' any milli/micro/nanosecond component.
+#' @name dt_second
+#' @return Expr of second as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.nanosecond arr_nanosecond
+#' @examples
+#' pl$DataFrame(date = pl$date_range(
+#'   as.numeric(as.POSIXct("2001-1-1"))*1E9+123456789, #manually convert to us
+#'   as.numeric(as.POSIXct("2001-1-1 00:00:6"))*1E9,
+#'   interval = "1s987654321ns",
+#'   time_unit = "ns" #instruct polars input is us, and store as us
+#' ))$with_columns(
+#'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
+#'   pl$col("date")$dt$nanosecond()$alias("nanosecond")
+#' )
+ExprDT_nanosecond = function() {
+  .pr$Expr$dt_nanosecond(self)
+}

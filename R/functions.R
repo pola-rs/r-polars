@@ -219,6 +219,7 @@ time_to_value_unit_tz = function(x, time_unit, time_zone = NULL) {
       tz = attr(x,"tzone")
     ),
     inherits(x,"Date"), list(v = as.numeric(x), u = "d", tz = NULL),
+    is.numeric(x), list(v = x, u = time_unit, tz = time_zone),
 
     #TODO consider string as short hand for POSIXct in GMT tz, may conflict with lazy interface
     #add more types here
