@@ -4,6 +4,8 @@
 \alias{dt_round}
 \alias{dt.round}
 \alias{arr_round}
+\alias{dt.combine}
+\alias{arr_combine}
 \title{Round datetime}
 \format{
 function
@@ -14,6 +16,11 @@ function
 \item{every}{string encoding duration see details.}
 
 \item{ofset}{optional string encoding duration see details.}
+
+\item{tm}{Expr or numeric or PTime, the number of epoch since or before(if negative) the Date
+or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.}
+
+\item{tu}{time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.}
 }
 \value{
 Date/Datetime expr
@@ -56,27 +63,13 @@ These strings can be combined:
 This functionality is currently experimental and may
 change without it being considered a breaking change.
 
-The \code{every} and \code{offset} argument are created with the
+The \code{tu} allows the following time time units
 the following string language:
 \itemize{
 \item 1ns # 1 nanosecond
 \item 1us # 1 microsecond
 \item 1ms # 1 millisecond
-\item 1s  # 1 second
-\item 1m  # 1 minute
-\item 1h  # 1 hour
-\item 1d  # 1 day
-\item 1w  # 1 calendar week
-\item 1mo # 1 calendar month
-\item 1y  # 1 calendar year
-These strings can be combined:
-\itemize{
-\item 3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds
 }
-}
-
-This functionality is currently experimental and may
-change without it being considered a breaking change.
 }
 \examples{
 t1 = as.POSIXct("3040-01-01",tz = "GMT")
@@ -89,15 +82,16 @@ df = pl$DataFrame(datetime = s)$with_columns(
   pl$col("datetime")$dt$truncate("4s",offset("3s"))$alias("truncated_4s_offset_2s")
 )
 df
-t1 = as.POSIXct("3040-01-01",tz = "GMT")
-t2 = t1 + as.difftime(25,units = "secs")
-s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+#Using pl$PTime
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu="s"))$lit_to_s()
+pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu="us"))$lit_to_s()
 
-#use a dt namespace function
-df = pl$DataFrame(datetime = s)$with_columns(
-  pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s"),
-  pl$col("datetime")$dt$truncate("4s",offset("3s"))$alias("truncated_4s_offset_2s")
-)
-df
+#pass double and set tu manually
+pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")$lit_to_s()
+
+#if needed to convert back to R it is more intuitive to set a specific time zone
+expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")
+expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
 }
 \keyword{ExprDT}

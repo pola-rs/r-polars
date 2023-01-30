@@ -184,4 +184,55 @@ test_that("dt$round", {
 })
 
 
-##TODO  missing test for dt_round
+test_that("dt$combine", {
+
+  #Using pl$PTime
+  expect_identical(
+    (
+      pl$lit(as.Date("2021-01-01"))
+        $dt$combine(pl$PTime("02:34:12"))
+        $cast(pl$Datetime(tu="us",tz="GMT"))
+        $to_r()
+    ),
+    as.POSIXct("2021-01-01 02:34:12",tz="GMT")
+  )
+
+  expect_identical(
+    (
+      pl$lit(as.Date("2021-01-01"))
+      $dt$combine(pl$PTime(3600 * 1.5E3, tu="ms"))
+      $cast(pl$Datetime(tu="us",tz="GMT"))
+      $to_r()
+    ),
+    as.POSIXct("2021-01-01 01:30:00",tz="GMT")
+  )
+
+  expect_identical(
+    (
+      pl$lit(as.Date("2021-01-01"))
+      $dt$combine(3600 * 1.5E9, tu="ns")
+      $cast(pl$Datetime(tu="us",tz="GMT"))
+      $to_r()
+    ),
+    as.POSIXct("2021-01-01 01:30:00",tz="GMT")
+  )
+
+  expect_identical(
+    (
+      pl$lit(as.Date("2021-01-01"))
+      $dt$combine(-3600 * 1.5E9, tu="ns")
+      $cast(pl$Datetime(tu="us",tz="GMT"))
+      $to_r()
+    ),
+    as.POSIXct("2020-12-31 22:30:00",tz="GMT")
+  )
+
+  expect_grepl_error(
+    pl$lit(as.Date("2021-01-01"))$dt$combine(1, tu="s"),
+    "str to polars TimeUnit: \\[s\\] is not any of 'ns', 'us' or 'ms'"
+  )
+
+
+})
+
+
