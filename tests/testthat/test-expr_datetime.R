@@ -236,3 +236,41 @@ test_that("dt$combine", {
 })
 
 
+test_that("dt$strftime", {
+
+  expect_identical(
+    pl$lit(as.POSIXct("2021-01-02 12:13:14",tz="GMT"))$dt$strftime("this is the year: %Y")$to_r(),
+    "this is the year: 2021"
+  )
+
+})
+
+
+test_that("dt$year iso_year",{
+  df = pl$DataFrame(
+    date = pl$date_range(
+      as.Date("2020-12-25"),
+      as.Date("2021-1-05"),
+      interval = "1d",
+      time_zone = "GMT"
+    )
+  )$with_columns(
+    pl$col("date")$dt$year()$alias("year"),
+    pl$col("date")$dt$iso_year()$alias("iso_year")
+  )
+
+  #dput(lubridate::isoyear(df$to_list()$date))
+  lubridate_iso_year = c(2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020, 2020,2021, 2021)
+  #dput(lubridate::year(df$to_list()$date))
+  lubridate_year = c(2020, 2020, 2020, 2020, 2020, 2020, 2020, 2021, 2021, 2021,2021, 2021)
+  expect_identical(
+    df$get_column("iso_year")$to_r(),
+    as.integer(lubridate_iso_year)
+  )
+
+  expect_identical(
+    df$get_column("year")$to_r(),
+    as.integer(lubridate_year)
+  )
+})
+

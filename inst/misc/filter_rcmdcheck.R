@@ -70,9 +70,9 @@ remaining_erros = unlist(lapply(
 
 #raise any remaining errors
 if( length(remaining_erros)) {
-  print("some errors where not ignored, and will be raised right now!")
   stop(remaining_erros)
+  print("some errors where not ignored, and will be raised right now!")
 } else {
-  print("Hey you deserve a Gold Medal!! No msgs from rcmdcheck you're not ignoring anyways")
   print(ignore_rules)
+  print("Hey you deserve a Gold Medal!! No msgs from rcmdcheck you're not ignoring anyways")
 }

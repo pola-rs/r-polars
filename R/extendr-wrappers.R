@@ -372,6 +372,12 @@ Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every
 
 Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
 
+Expr$dt_strftime <- function(fmt) .Call(wrap__Expr__dt_strftime, self, fmt)
+
+Expr$dt_year <- function() .Call(wrap__Expr__dt_year, self)
+
+Expr$dt_iso_year <- function() .Call(wrap__Expr__dt_iso_year, self)
+
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)

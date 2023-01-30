@@ -1349,11 +1349,23 @@ impl Expr {
         self.0.clone().dt().round(every, offset).into()
     }
 
-    //todo bump rust polars before available
     pub fn dt_combine(&self, time: &Expr, tu: &str) -> List {
         let res =
             str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
         r_result_list(res)
+    }
+
+    pub fn dt_strftime(&self, fmt: &str) -> Self {
+        //named strftime in py-polars
+        self.0.clone().dt().strftime(fmt).into()
+    }
+    pub fn dt_year(&self) -> Self {
+        //named year in py-polars
+        self.clone().0.dt().year().into()
+    }
+    pub fn dt_iso_year(&self) -> Self {
+        //named iso_year in py-polars
+        self.clone().0.dt().iso_year().into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

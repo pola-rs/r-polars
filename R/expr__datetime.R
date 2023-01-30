@@ -93,14 +93,13 @@ ExprDT_round = function(every, offset = NULL) {
 #ExprDT_combine = function(self, tm: time | pli.Expr, tu: TimeUnit = "us") -> pli.Expr:
 
 
-#'
-#' Round datetime
+#' Combine Data and Time
 #' @description  Create a naive Datetime from an existing Date/Datetime expression and a Time.
 #' Each date/datetime in the first half of the interval
 #' is mapped to the start of its bucket.
 #' Each date/datetime in the second half of the interval
 #' is mapped to the end of its bucket.
-#' @name dt_round
+#' @name dt_combine
 #'
 #' @param tm Expr or numeric or PTime, the number of epoch since or before(if negative) the Date
 #' or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.
@@ -130,12 +129,90 @@ ExprDT_round = function(every, offset = NULL) {
 #' expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")
 #' expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
 ExprDT_combine = function(tm, tu = "us") {
-  if( inherits(tm, "PTime")) {
-    tu = "ns" #PTime implicitly get converted to "ns"
-  }
+  if( inherits(tm, "PTime")) tu = "ns" #PTime implicitly gets converted to "ns"
   if(!is_string(tu)) stopf("combine: input tu is not a string, [%s ]",str_string(tu))
   unwrap(.pr$Expr$dt_combine(self, wrap_e(tm), tu))
 }
 
 
 
+#' strftime
+#' @description
+#' Format Date/Datetime with a formatting rule.
+#' See `chrono strftime/strptime
+#' <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>`_.
+#' @name dt_combine
+#'
+#' @param fmt string format very much like in R passed to chrono
+#'
+#' @return   Date/Datetime expr
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.strftime arr_strftime
+#' @examples
+#' pl$lit(as.POSIXct("2021-01-02 12:13:14",tz="GMT"))$dt$strftime("this is the year: %Y")$to_r()
+ExprDT_strftime = function(fmt) {
+  .pr$Expr$dt_strftime(self, fmt)
+}
+
+
+#' Year
+#' @description
+#' Extract year from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the year number in the calendar date.
+#' @name dt_combine
+#'
+#' @param fmt string format very much like in R passed to chrono
+#'
+#' @return Expr of Year as Int32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.year arr_year
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$year()$alias("year"),
+#'   pl$col("date")$dt$iso_year()$alias("iso_year")
+#' )
+ExprDT_year = function() {
+  .pr$Expr$dt_year(self)
+}
+
+#' Iso-Year
+#' @description
+#' Extract ISO year from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the year number in the ISO standard.
+#' This may not correspond with the calendar year.
+#' @name dt_combine
+#'
+#' @param fmt string format very much like in R passed to chrono
+#'
+#' @return Expr of iso_year as Int32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.iso_year arr_iso_year
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$year()$alias("year"),
+#'   pl$col("date")$dt$iso_year()$alias("iso_year")
+#' )
+ExprDT_iso_year = function() {
+  .pr$Expr$dt_iso_year(self)
+}
