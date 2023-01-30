@@ -1300,24 +1300,6 @@ impl Expr {
 
     //end list/arr methods
 
-    pub fn dt_offset_by(&self, by: &str) -> Self {
-        let by = pl::Duration::parse(by);
-        self.0.clone().dt().offset_by(by).into()
-    }
-
-    pub fn dt_epoch_seconds(&self) -> Self {
-        self.clone()
-            .0
-            .map(
-                |s| {
-                    s.timestamp(pl::TimeUnit::Milliseconds)
-                        .map(|ca| (ca / 1000).into_series())
-                },
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into()
-    }
-
     // pub fn dt_with_time_unit(&self, tu: &str) -> Self {
     //     self.0.clone().dt().with_time_unit(tu.0.clone()).into()
     // }
@@ -1403,6 +1385,24 @@ impl Expr {
     }
     pub fn dt_nanosecond(&self) -> Self {
         self.clone().0.dt().nanosecond().into()
+    }
+
+    pub fn dt_offset_by(&self, by: &str) -> Self {
+        let by = pl::Duration::parse(by);
+        self.clone().0.dt().offset_by(by).into()
+    }
+
+    pub fn dt_epoch_seconds(&self) -> Self {
+        self.clone()
+            .0
+            .map(
+                |s| {
+                    s.timestamp(pl::TimeUnit::Milliseconds)
+                        .map(|ca| (ca / 1000).into_series())
+                },
+                pl::GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

@@ -406,5 +406,57 @@ test_that("second",{
 
 })
 
+test_that("offset_by",{
+  df = pl$DataFrame(
+    dates = pl$date_range(as.Date("2000-1-1"),as.Date("2005-1-1"), "1y",time_zone = "GMT")
+  )
+  l_actual = df$with_columns(
+    pl$col("dates")$dt$offset_by("1y")$alias("date_plus_1y"),
+    pl$col("dates")$dt$offset_by("-1y2mo")$alias("date_min")
+  )$to_list()
 
+
+  #helper function to add whole years and months
+  add_yemo = \(dates, years, months) {
+    as.POSIXlt(dates) |>
+      unclass() |>
+      (\(x) {
+        l_ym = mapply(y=x$year, m=x$mon,FUN =  \(y,m) {
+          y = y + years
+          m = m + months
+          if(m<0L) {
+            y = y - 1L
+            m = m + 12L
+          }
+          if(m>=12L) {
+            y = y + 1L
+            m = m - 12L
+          }
+          c(y,m)
+        },SIMPLIFY = FALSE)
+
+        x$year = l_ym |> sapply(head,1)
+        x$mon = l_ym |> sapply(tail,1)
+        class(x) = "POSIXlt"
+        x
+      })() |>
+      as.POSIXct()
+  }
+
+  #compute offset_by with base R
+  dates = df$to_list()$dates
+  l_expected =  list(
+    dates = dates,
+    date_plus_1y = add_yemo(dates,1,0),
+    date_min = add_yemo(dates, -1,-2)
+  )
+
+  #compare
+  expect_identical(
+    l_actual,
+    l_expected
+  )
+
+
+})
 

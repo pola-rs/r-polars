@@ -365,10 +365,6 @@ Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches
 
 Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
 
-Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
-
-Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
-
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
@@ -404,6 +400,10 @@ Expr$dt_millisecond <- function() .Call(wrap__Expr__dt_millisecond, self)
 Expr$dt_microsecond <- function() .Call(wrap__Expr__dt_microsecond, self)
 
 Expr$dt_nanosecond <- function() .Call(wrap__Expr__dt_nanosecond, self)
+
+Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
+
+Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
