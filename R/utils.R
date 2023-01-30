@@ -24,68 +24,9 @@ expect_strictly_identical = function(object,expected,...) {
   )
 }
 
-#' rust-like unwrapping of result. Useful to keep error handling on the R side.
-#'
-#' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
-#' @param call context of error or string
-#'
-#' @return the ok-element of list , or a error will be thrown
-#' @export
-#'
-#' @examples
-#'
-#' unwrap(list(ok="foo",err=NULL))
-#'
-#' tryCatch(
-#'   unwrap(ok=NULL, err = "something happen on the rust side"),
-#'   error = function(e) as.character(e)
-#' )
-unwrap = function(result, call=sys.call(1L)) {
 
-  #if not a result
-  if(
-      !is.list(result) ||
-      !all(names(result) %in% c("ok","err"))
-  ) {
-    stopf("Internal error: cannot unwrap non result")
-  }
 
-  #if result is ok (ok can be be valid null, hence OK if both ok and err is null)
-  if(is.null(result$err)) {
-    return(result$ok)
-  }
 
-  #if result is error
-  if(is.null(result$ok) && !is.null(result$err)) {
-    stopf(
-      paste(
-        result$err,
-        paste(
-          "\nwhen calling:\n",
-          paste(
-            capture.output(print(call)),collapse="\n")
-        )
-    ))
-  }
-
-  #if not ok XOR error, then roll over
-  stopf("Internal error: result object corrupted")
-}
-
-#' Internal preferred function to throw errors
-#'
-#' @param err error msg string
-#' @param call calling context
-#' @keywords internals
-#'
-#' @return throws an error
-#'
-#' @examples
-#' f = function() rpolars:::pstop("this aint right!!")
-#' tryCatch(f(), error = \(e) as.character(e))
-pstop = function(err, call=sys.call(1L)) {
-  unwrap(list(ok=NULL,err=err),call=call)
-}
 
 
 #' Verify user selected method/attribute exists
@@ -599,4 +540,5 @@ convert_to_fewer_types = function(x) {
     or_else = x
   )
 }
+
 

@@ -46,6 +46,7 @@ Collate:
     'parquet.R'
     'pkg-nanoarrow.R'
     'rlang.R'
+    'rust_result.R'
     'series__series.R'
     'translation.R'
     'vctrs.R'
