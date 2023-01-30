@@ -537,6 +537,46 @@ ExprDT_microsecond = function() {
   .pr$Expr$dt_microsecond(self)
 }
 
+
+#' Epoch
+#' @description
+#' Get the time passed since the Unix EPOCH in the give time unit.
+#' @name dt_epoch
+#' @param tu string option either 'ns', 'us', 'ms', 's' or  'd'
+#' @details ns and perhaps us will exceed integerish limit if returning to
+#' R as flaot64/double.
+#' @return Expr of epoch as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.epoch arr_epoch
+#' @examples
+#'
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ms")$to_r()
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("s")$to_r()
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("d")$to_r()
+ExprDT_epoch = function(tu = c('us','ns', 'ms', 's', 'd')) {
+  tu = tu[1]
+
+  #experimental rust-like error handling on R side for the fun of it, sorry
+  #jokes aside here the use case is to tie various rust functions together
+  #and add context to the error message
+  expr_result = pcase(
+    !is_string(tu), Err("tu must be a string"),
+    tu %in% c("ms","us","ns"), .pr$Expr$timestamp(self, tu),
+    tu == "s", Ok(.pr$Expr$dt_epoch_seconds(self)),
+    tu == "d", Ok(self$cast(pl$Date)$cast(pl$Int32)),
+    or_else = Err(
+      paste("tu must be one of 'ns', 'us', 'ms', 's', 'd', got", str_string(tu))
+    )
+  ) |> map_err(\(err) paste("in dt$epoch:", err))
+
+  unwrap(expr_result)
+}
+
+
+
+
+
 #' NanoSecond
 #' @description
 #' Extract seconds from underlying DateTime representation.

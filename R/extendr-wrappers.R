@@ -403,6 +403,8 @@ Expr$dt_nanosecond <- function() .Call(wrap__Expr__dt_nanosecond, self)
 
 Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
+Expr$timestamp <- function(tu) .Call(wrap__Expr__timestamp, self, tu)
+
 Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)

@@ -1392,6 +1392,13 @@ impl Expr {
         self.clone().0.dt().offset_by(by).into()
     }
 
+    pub fn timestamp(&self, tu: &str) -> List {
+        let res = str_to_timeunit(tu)
+            .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
+            .map_err(|err| format!("valid tu needed for timestamp: {}", err));
+        r_result_list(res)
+    }
+
     pub fn dt_epoch_seconds(&self) -> Self {
         self.clone()
             .0
