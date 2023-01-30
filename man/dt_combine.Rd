@@ -4,20 +4,8 @@
 \alias{dt_combine}
 \alias{dt.combine}
 \alias{arr_combine}
-\alias{dt.strftime}
-\alias{arr_strftime}
-\alias{dt.year}
-\alias{arr_year}
-\alias{dt.iso_year}
-\alias{arr_iso_year}
 \title{Combine Data and Time}
 \format{
-function
-
-function
-
-function
-
 function
 }
 \arguments{
@@ -25,17 +13,9 @@ function
 or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.}
 
 \item{tu}{time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.}
-
-\item{fmt}{string format very much like in R passed to chrono}
 }
 \value{
 Date/Datetime expr
-
-Date/Datetime expr
-
-Expr of Year as Int32
-
-Expr of iso_year as Int32
 }
 \description{
 Create a naive Datetime from an existing Date/Datetime expression and a Time.
@@ -43,18 +23,6 @@ Each date/datetime in the first half of the interval
 is mapped to the start of its bucket.
 Each date/datetime in the second half of the interval
 is mapped to the end of its bucket.
-
-Format Date/Datetime with a formatting rule.
-See \verb{chrono strftime/strptime <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>}_.
-
-Extract year from underlying Date representation.
-Applies to Date and Datetime columns.
-Returns the year number in the calendar date.
-
-Extract ISO year from underlying Date representation.
-Applies to Date and Datetime columns.
-Returns the year number in the ISO standard.
-This may not correspond with the calendar year.
 }
 \details{
 The \code{tu} allows the following time time units
@@ -77,30 +45,5 @@ pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")$lit_to_s()
 #if needed to convert back to R it is more intuitive to set a specific time zone
 expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")
 expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
-pl$lit(as.POSIXct("2021-01-02 12:13:14",tz="GMT"))$dt$strftime("this is the year: \%Y")$to_r()
-df = pl$DataFrame(
-  date = pl$date_range(
-    as.Date("2020-12-25"),
-    as.Date("2021-1-05"),
-    interval = "1d",
-    time_zone = "GMT"
-  )
-)
-df$with_columns(
-  pl$col("date")$dt$year()$alias("year"),
-  pl$col("date")$dt$iso_year()$alias("iso_year")
-)
-df = pl$DataFrame(
-  date = pl$date_range(
-    as.Date("2020-12-25"),
-    as.Date("2021-1-05"),
-    interval = "1d",
-    time_zone = "GMT"
-  )
-)
-df$with_columns(
-  pl$col("date")$dt$year()$alias("year"),
-  pl$col("date")$dt$iso_year()$alias("iso_year")
-)
 }
 \keyword{ExprDT}

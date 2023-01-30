@@ -1368,6 +1368,43 @@ impl Expr {
         self.clone().0.dt().iso_year().into()
     }
 
+    pub fn dt_quarter(&self) -> Self {
+        self.clone().0.dt().quarter().into()
+    }
+    pub fn dt_month(&self) -> Self {
+        self.clone().0.dt().month().into()
+    }
+    pub fn dt_week(&self) -> Self {
+        self.clone().0.dt().week().into()
+    }
+    pub fn dt_weekday(&self) -> Self {
+        self.clone().0.dt().weekday().into()
+    }
+    pub fn dt_day(&self) -> Self {
+        self.clone().0.dt().day().into()
+    }
+    pub fn dt_ordinal_day(&self) -> Self {
+        self.clone().0.dt().ordinal_day().into()
+    }
+    pub fn dt_hour(&self) -> Self {
+        self.clone().0.dt().hour().into()
+    }
+    pub fn dt_minute(&self) -> Self {
+        self.clone().0.dt().minute().into()
+    }
+    pub fn dt_second(&self) -> Self {
+        self.clone().0.dt().second().into()
+    }
+    pub fn dt_millisecond(&self) -> Self {
+        self.clone().0.dt().millisecond().into()
+    }
+    pub fn dt_microsecond(&self) -> Self {
+        self.clone().0.dt().microsecond().into()
+    }
+    pub fn dt_nanosecond(&self) -> Self {
+        self.clone().0.dt().nanosecond().into()
+    }
+
     pub fn pow(&self, exponent: &Expr) -> Self {
         self.0.clone().pow(exponent.0.clone()).into()
     }

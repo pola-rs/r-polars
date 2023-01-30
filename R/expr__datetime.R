@@ -141,7 +141,7 @@ ExprDT_combine = function(tm, tu = "us") {
 #' Format Date/Datetime with a formatting rule.
 #' See `chrono strftime/strptime
 #' <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>`_.
-#' @name dt_combine
+#' @name dt_strftime
 #'
 #' @param fmt string format very much like in R passed to chrono
 #'
@@ -161,7 +161,7 @@ ExprDT_strftime = function(fmt) {
 #' Extract year from underlying Date representation.
 #' Applies to Date and Datetime columns.
 #' Returns the year number in the calendar date.
-#' @name dt_combine
+#' @name dt_year
 #'
 #' @param fmt string format very much like in R passed to chrono
 #'
@@ -192,7 +192,7 @@ ExprDT_year = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the year number in the ISO standard.
 #' This may not correspond with the calendar year.
-#' @name dt_combine
+#' @name dt_iso_year
 #'
 #' @param fmt string format very much like in R passed to chrono
 #'
@@ -215,4 +215,86 @@ ExprDT_year = function() {
 #' )
 ExprDT_iso_year = function() {
   .pr$Expr$dt_iso_year(self)
+}
+
+
+#' Quarter
+#' @description
+#' Extract quarter from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the quarter ranging from 1 to 4.
+#' @name dt_quarter
+#' @return Expr of quater as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.quarter arr_quarter
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$quarter()$alias("quarter")
+#' )
+ExprDT_quarter = function() {
+  .pr$Expr$dt_quarter(self)
+}
+
+#' Month
+#' @description
+#' Extract month from underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the month number starting from 1.
+#' The return value ranges from 1 to 12.
+#' @name dt_month
+#' @return Expr of month as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.month arr_month
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$month()$alias("month")
+#' )
+ExprDT_month = function() {
+  .pr$Expr$dt_month(self)
+}
+
+
+#' Week
+#' @description
+#' Extract the week from the underlying Date representation.
+#' Applies to Date and Datetime columns.
+#' Returns the ISO week number starting from 1.
+#' The return value ranges from 1 to 53. (The last week of year differs by years.)
+#' @name dt_week
+#' @return Expr of week as UInt32
+#' @keywords ExprDT
+#' @format function
+#' @aliases dt.week arr_week
+#' @examples
+#' df = pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.Date("2020-12-25"),
+#'     as.Date("2021-1-05"),
+#'     interval = "1d",
+#'     time_zone = "GMT"
+#'   )
+#' )
+#' df$with_columns(
+#'   pl$col("date")$dt$week()$alias("week")
+#' )
+ExprDT_week = function() {
+  .pr$Expr$dt_week(self)
 }
