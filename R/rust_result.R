@@ -6,18 +6,24 @@ is_result = function(x) {
   is.list(x) && identical(names(x), c("ok","err"))
 }
 
+guard_result = function(x) {
+  if(!is_result(x)) stopf("internal error: cannot map_err a non result")
+}
+
 #' check if x ss a result and an err
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an err
 is_err = function(x) {
-  is_result(x)  && !is.null(x$err)
+  guard_result(x)
+  !is.null(x$err)
 }
 
 #' check if x ss a result and an ok
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an ok
 is_ok = function(x) {
-  !is_err(x)
+  guard_result(x)
+  is_result(x)  && is.null(x$err)
 }
 
 #' Wrap in Ok
@@ -40,10 +46,8 @@ Err = function(x) {
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
 map_err = function(x, f) {
-  if(!is_result(x)) stopf("internal error: cannot map_err a non result")
-  if(is_err(x)) {
-    x$err = f(x$err)
-  }
+  guard_result(x)
+  if(is_err(x)) x$err = f(x$err)
   x
 }
 
@@ -52,10 +56,8 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  if(!is_result(x)) stopf("internal error: cannot map a non result")
-  if(is_ok(x)) {
-    x$ok = f(x$ok)
-  }
+  guard_result(x)
+  if(is_ok(x)) x$ok = f(x$ok)
   x
 }
 

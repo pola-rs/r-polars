@@ -401,11 +401,35 @@ Expr$dt_microsecond <- function() .Call(wrap__Expr__dt_microsecond, self)
 
 Expr$dt_nanosecond <- function() .Call(wrap__Expr__dt_nanosecond, self)
 
-Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
-
 Expr$timestamp <- function(tu) .Call(wrap__Expr__timestamp, self, tu)
 
 Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
+
+Expr$dt_with_time_unit <- function(tu) .Call(wrap__Expr__dt_with_time_unit, self, tu)
+
+Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self, tu)
+
+Expr$dt_with_time_zone <- function(tz) .Call(wrap__Expr__dt_with_time_zone, self, tz)
+
+Expr$dt_cast_time_zone <- function(tz) .Call(wrap__Expr__dt_cast_time_zone, self, tz)
+
+Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
+
+Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
+
+Expr$duration_hours <- function() .Call(wrap__Expr__duration_hours, self)
+
+Expr$duration_minutes <- function() .Call(wrap__Expr__duration_minutes, self)
+
+Expr$duration_seconds <- function() .Call(wrap__Expr__duration_seconds, self)
+
+Expr$duration_nanoseconds <- function() .Call(wrap__Expr__duration_nanoseconds, self)
+
+Expr$duration_microseconds <- function() .Call(wrap__Expr__duration_microseconds, self)
+
+Expr$duration_milliseconds <- function() .Call(wrap__Expr__duration_milliseconds, self)
+
+Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 

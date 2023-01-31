@@ -542,3 +542,16 @@ convert_to_fewer_types = function(x) {
 }
 
 
+check_tz_to_result = function(tz, allow_null = TRUE) {
+  if(is.null(tz) && !allow_null)  return(Err("pre-check tz: here NULL tz is not allowed"))
+  if (
+    (!is.null(tz)) && #null tz is fine
+    (!is_string(tz) || !tz %in% base::OlsonNames()) #otherwise must be a string of OlsenNames
+  ) {
+    Err(paste0(
+      "pre-check tz: the tz '",tz,"' is not a valid string from base::OlsonNames() or NULL"
+    ))
+  } else {
+    Ok(tz)
+  }
+}

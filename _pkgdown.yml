@@ -17,10 +17,21 @@ reference:
     contents:
       - has_keyword("LazyFrame_new")
       - has_keyword("LazyFrame")
+
   - subtitle: Expr
     contents:
       - has_keyword("Expr_new")
       - has_keyword("Expr")
+  - subtitle: Expr dt/DateTime methods
+    contents:
+      - has_keyword("ExprDT")
+  - subtitle: Expr arr/list methods
+    contents:
+      - has_keyword("ExprArr")
+  - subtitle: Expr str/string methods
+    contents:
+      - has_keyword("ExprStr")
+
   - subtitle: Series
     contents:
       - has_keyword("Series_new")

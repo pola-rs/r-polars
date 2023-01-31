@@ -466,8 +466,8 @@ test_that("Series list", {
 
   #flatten 3-levels and return to R
   #TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null
-  #ul = unlist(pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list())
-  #expect_true(all(unlist(l) == ul))
+  # ul = unlist(pl$DataFrame(s)$select(pl$col("")$flatten()$flatten()$flatten())$to_list())
+  # expect_true(all(unlist(l) == ul))
 
 
 })
