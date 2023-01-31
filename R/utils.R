@@ -500,6 +500,9 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' expect grepl error
 #' @param expr an R expression to test
 #' @param expected_err a string pattern passed to grepl
+#' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
+#' useful for grepping the same error message, without grep-patterns becomes
+#' included in the error message.
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
 #' @return invisble NULL

@@ -10,6 +10,10 @@ expect_grepl_error(expr, expected_err = NULL, do_not_repeat_call = TRUE)
 \item{expr}{an R expression to test}
 
 \item{expected_err}{a string pattern passed to grepl}
+
+\item{do_not_repeat_call}{bool, prevent error-handler to add call to err msg
+useful for grepping the same error message, without grep-patterns becomes
+included in the error message.}
 }
 \value{
 invisble NULL
