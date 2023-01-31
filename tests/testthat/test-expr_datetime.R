@@ -353,7 +353,7 @@ test_that("hour minute",{
 })
 
 
-test_that("second",{
+test_that("second, milli, micro, nano",{
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -405,6 +405,8 @@ test_that("second",{
   )
 
 })
+
+
 
 test_that("offset_by",{
   df = pl$DataFrame(
@@ -460,3 +462,103 @@ test_that("offset_by",{
 
 })
 
+
+test_that("dt$epoch", {
+
+  df = pl$select(
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ns")$alias("e_ns"),
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("us")$alias("e_us"),
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ms")$alias("e_ms"),
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("s")$alias("e_s"),
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("d")$alias("e_d")
+  )
+  l_exp = df$to_list()
+
+  base_r_s_epochs = as.numeric(as.POSIXct("2022-1-1",tz="GMT"))
+  expect_identical(l_exp$e_s, base_r_s_epochs)
+  expect_identical(l_exp$e_ms, base_r_s_epochs*1E3)
+  expect_identical(l_exp$e_us, base_r_s_epochs*1E6)
+  expect_identical(l_exp$e_ns, base_r_s_epochs*1E9)
+
+  base_r_d_epochs = as.integer(as.Date("2022-1-1"))
+  expect_identical(l_exp$e_d, base_r_d_epochs)
+
+  pl$set_rpolars_options(do_not_repeat_call = TRUE)
+
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("bob"),
+    "epoch: tu must be one of 'ns', 'us', 'ms', 's', 'd'"
+  )
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch(42),
+    "epoch: tu must be a string"
+  )
+
+})
+
+
+test_that("dt$timestamp", {
+
+  df = pl$DataFrame(
+    date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+  )
+  l_exp = df$select(
+    pl$col("date"),
+    pl$col("date")$dt$timestamp()$alias("timestamp_ns"),
+    pl$col("date")$dt$timestamp(tu="us")$alias("timestamp_us"),
+    pl$col("date")$dt$timestamp(tu="ms")$alias("timestamp_ms")
+  )$to_list()
+
+  base_r_s_timestamp = as.numeric(seq(
+      as.POSIXct("2001-1-1",tz="GMT"),
+      as.POSIXct("2001-1-3",tz="GMT"),
+      by = as.difftime(1,units="days")
+  ))
+
+  expect_identical(l_exp$timestamp_ms, base_r_s_timestamp*1E3)
+  expect_identical(l_exp$timestamp_us, base_r_s_timestamp*1E6)
+  expect_identical(l_exp$timestamp_ns, base_r_s_timestamp*1E9)
+
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$timestamp("bob"),
+    "timestamp: valid tu needed for timestamp: str to polars TimeUnit"
+  )
+
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$timestamp(42),
+    "timestamp: valid tu needed for timestamp: Robj must be a string to be matched as TimeUnit"
+  )
+
+})
+
+
+test_that("dt$cast_time_unit", {
+
+
+
+  df = pl$DataFrame(
+    date = pl$date_range(
+      low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d", time_unit = "us"
+    )
+  )$select(
+    pl$col("date"),
+    pl$col("date")$dt$cast_time_unit()$alias("cast_time_unit_ns"),
+    pl$col("date")$dt$cast_time_unit(tu="us")$alias("cast_time_unit_us"),
+    pl$col("date")$dt$cast_time_unit(tu="ms")$alias("cast_time_unit_ms")
+  )$select(
+    pl$all()$cast(pl$Float64)
+  )
+  l_exp = df$to_list()
+  expect_identical( l_exp$cast_time_unit_ns, l_exp$cast_time_unit_us*1E3)
+  expect_identical( l_exp$cast_time_unit_us, l_exp$cast_time_unit_ms*1E3)
+
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$cast_time_unit("bob"),
+    "cast_time_unit: str to polars TimeUnit:"
+  )
+  expect_grepl_error(
+    {pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$cast_time_unit(42)},
+    "Error: in dt\\$cast_time_unit: Robj must be a string to be matched as TimeUnit"
+  )
+
+})

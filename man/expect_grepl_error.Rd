@@ -4,7 +4,7 @@
 \alias{expect_grepl_error}
 \title{expect grepl error}
 \usage{
-expect_grepl_error(expr, expected_err = NULL)
+expect_grepl_error(expr, expected_err = NULL, do_not_repeat_call = TRUE)
 }
 \arguments{
 \item{expr}{an R expression to test}
