@@ -3,7 +3,6 @@
 \name{dt_combine}
 \alias{dt_combine}
 \alias{dt.combine}
-\alias{arr_combine}
 \title{Combine Data and Time}
 \format{
 function

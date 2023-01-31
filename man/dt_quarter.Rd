@@ -3,7 +3,6 @@
 \name{dt_quarter}
 \alias{dt_quarter}
 \alias{dt.quarter}
-\alias{arr_quarter}
 \title{Quarter}
 \format{
 function

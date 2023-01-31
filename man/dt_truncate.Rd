@@ -3,7 +3,6 @@
 \name{dt_truncate}
 \alias{dt_truncate}
 \alias{dt.truncate}
-\alias{arr_truncate}
 \title{Truncate datetime}
 \format{
 function

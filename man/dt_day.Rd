@@ -3,7 +3,6 @@
 \name{dt_day}
 \alias{dt_day}
 \alias{dt.day}
-\alias{arr_day}
 \title{day}
 \format{
 function

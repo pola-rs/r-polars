@@ -3,7 +3,6 @@
 \name{dt_ordinal_day}
 \alias{dt_ordinal_day}
 \alias{dt.ordinal_day}
-\alias{arr_ordinal_day}
 \title{Ordinal Day}
 \format{
 function

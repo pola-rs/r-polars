@@ -3,7 +3,6 @@
 \name{dt_offset_by}
 \alias{dt_offset_by}
 \alias{dt.offset_by}
-\alias{arr_offset_by}
 \title{Offset By}
 \format{
 function

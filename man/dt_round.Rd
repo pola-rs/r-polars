@@ -3,7 +3,6 @@
 \name{dt_round}
 \alias{dt_round}
 \alias{dt.round}
-\alias{arr_round}
 \title{Round datetime}
 \format{
 function

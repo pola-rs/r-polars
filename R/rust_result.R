@@ -52,7 +52,7 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  if(!is_result(x)) stopf("internal error: cannot map_err a non result")
+  if(!is_result(x)) stopf("internal error: cannot map a non result")
   if(is_ok(x)) {
     x$ok = f(x$ok)
   }
@@ -78,10 +78,7 @@ map = function(x, f) {
 unwrap = function(result, call=sys.call(1L)) {
 
   #if not a result
-  if(
-      !is.list(result) ||
-      !all(names(result) %in% c("ok","err"))
-  ) {
+  if(!is_result(result)) {
     stopf("Internal error: cannot unwrap non result")
   }
 
@@ -90,7 +87,7 @@ unwrap = function(result, call=sys.call(1L)) {
     return(result$ok)
   }
 
-  #if result is error
+  #if result is error, make a pretty with context
   #TODO err messages cannot contain %, they should be able to that
   # replace stopf here without dropping context err messages
   if(is.null(result$ok) && !is.null(result$err)) {

@@ -3,7 +3,6 @@
 \name{dt_weekday}
 \alias{dt_weekday}
 \alias{dt.weekday}
-\alias{arr_weekday}
 \title{weekday}
 \format{
 function

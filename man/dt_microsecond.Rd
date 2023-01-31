@@ -3,7 +3,6 @@
 \name{dt_microsecond}
 \alias{dt_microsecond}
 \alias{dt.microsecond}
-\alias{arr_microsecond}
 \title{Micromicrosecond}
 \format{
 function

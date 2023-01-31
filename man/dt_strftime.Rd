@@ -3,7 +3,6 @@
 \name{dt_strftime}
 \alias{dt_strftime}
 \alias{dt.strftime}
-\alias{arr_strftime}
 \title{strftime}
 \format{
 function

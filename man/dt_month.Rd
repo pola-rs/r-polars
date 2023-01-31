@@ -3,7 +3,6 @@
 \name{dt_month}
 \alias{dt_month}
 \alias{dt.month}
-\alias{arr_month}
 \title{Month}
 \format{
 function

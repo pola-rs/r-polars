@@ -3,7 +3,6 @@
 \name{dt_week}
 \alias{dt_week}
 \alias{dt.week}
-\alias{arr_week}
 \title{Week}
 \format{
 function

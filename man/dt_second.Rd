@@ -3,9 +3,8 @@
 \name{dt_second}
 \alias{dt_second}
 \alias{dt.second}
-\alias{arr_second}
 \alias{dt.nanosecond}
-\alias{arr_nanosecond}
+\alias{dt_nanosecond}
 \title{Second}
 \format{
 function

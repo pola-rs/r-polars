@@ -3,7 +3,6 @@
 \name{dt_year}
 \alias{dt_year}
 \alias{dt.year}
-\alias{arr_year}
 \title{Year}
 \format{
 function

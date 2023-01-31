@@ -22,7 +22,7 @@
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.truncate arr_truncate
+#' @aliases dt.truncate dt_truncate
 #' @examples
 #' t1 = as.POSIXct("3040-01-01",tz = "GMT")
 #' t2 = t1 + as.difftime(25,units = "secs")
@@ -74,7 +74,7 @@ ExprDT_truncate = function(
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.round arr_round
+#' @aliases dt.round dt_round
 #' @examples
 #' t1 = as.POSIXct("3040-01-01",tz = "GMT")
 #' t2 = t1 + as.difftime(25,units = "secs")
@@ -115,7 +115,7 @@ ExprDT_round = function(every, offset = NULL) {
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.combine arr_combine
+#' @aliases dt.combine dt_combine
 #' @examples
 #' #Using pl$PTime
 #' pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
@@ -148,7 +148,7 @@ ExprDT_combine = function(tm, tu = "us") {
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.strftime arr_strftime
+#' @aliases dt.strftime dt_strftime
 #' @examples
 #' pl$lit(as.POSIXct("2021-01-02 12:13:14",tz="GMT"))$dt$strftime("this is the year: %Y")$to_r()
 ExprDT_strftime = function(fmt) {
@@ -168,7 +168,7 @@ ExprDT_strftime = function(fmt) {
 #' @return Expr of Year as Int32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.year arr_year
+#' @aliases dt.year dt_year
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -199,7 +199,7 @@ ExprDT_year = function() {
 #' @return Expr of iso_year as Int32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.iso_year arr_iso_year
+#' @aliases dt.iso_year dt_iso_year
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -227,7 +227,7 @@ ExprDT_iso_year = function() {
 #' @return Expr of quater as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.quarter arr_quarter
+#' @aliases dt.quarter dt_quarter
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -254,7 +254,7 @@ ExprDT_quarter = function() {
 #' @return Expr of month as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.month arr_month
+#' @aliases dt.month dt_month
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -282,7 +282,7 @@ ExprDT_month = function() {
 #' @return Expr of week as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.week arr_week
+#' @aliases dt.week dt_week
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -309,7 +309,7 @@ ExprDT_week = function() {
 #' @return Expr of week as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.week arr_week
+#' @aliases dt.week dt_week
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -335,7 +335,7 @@ ExprDT_week = function() {
 #' @return Expr of weekday as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.weekday arr_weekday
+#' @aliases dt.weekday dt_weekday
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -363,7 +363,7 @@ ExprDT_weekday = function() {
 #' @return Expr of day as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.day arr_day
+#' @aliases dt.day dt_day
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -390,7 +390,7 @@ ExprDT_day = function() {
 #' @return Expr of ordinal_day as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.ordinal_day arr_ordinal_day
+#' @aliases dt.ordinal_day dt_ordinal_day
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -417,7 +417,7 @@ ExprDT_ordinal_day = function() {
 #' @return Expr of hour as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.hour arr_hour
+#' @aliases dt.hour dt_hour
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -443,7 +443,7 @@ ExprDT_hour = function() {
 #' @return Expr of minute as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.minute arr_minute
+#' @aliases dt.minute dt_minute
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -471,7 +471,7 @@ ExprDT_minute = function() {
 #' @return Expr of second as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.second arr_second
+#' @aliases dt.second dt_second
 #' @examples
 #' pl$DataFrame(date = pl$date_range(
 #'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
@@ -499,7 +499,7 @@ ExprDT_second = function(fractional = FALSE) {
 #' @return Expr of millisecond as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.millisecond arr_millisecond
+#' @aliases dt.millisecond dt_millisecond
 #' @examples
 #' pl$DataFrame(date = pl$date_range(
 #'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
@@ -522,7 +522,7 @@ ExprDT_millisecond = function() {
 #' @return Expr of microsecond as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.microsecond arr_microsecond
+#' @aliases dt.microsecond dt_microsecond
 #' @examples
 #' pl$DataFrame(date = pl$date_range(
 #'   as.numeric(as.POSIXct("2001-1-1"))*1E6+456789, #manually convert to us
@@ -548,13 +548,13 @@ ExprDT_microsecond = function() {
 #' @return Expr of epoch as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.epoch arr_epoch
+#' @aliases dt.epoch dt_epoch
 #' @examples
-#'
-#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ms")$to_r()
-#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("s")$to_r()
-#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("d")$to_r()
-ExprDT_epoch = function(tu = c('us','ns', 'ms', 's', 'd')) {
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ns")$lit_to_s()
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ms")$lit_to_s()
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("s")$lit_to_s()
+#'  pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("d")$lit_to_s()
+ExprDT_epoch = function(tu = c('us', 'ns', 'ms', 's', 'd')) {
   tu = tu[1]
 
   #experimental rust-like error handling on R side for the fun of it, sorry
@@ -588,7 +588,7 @@ ExprDT_epoch = function(tu = c('us','ns', 'ms', 's', 'd')) {
 #' @return Expr of second as UInt32
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.nanosecond arr_nanosecond
+#' @aliases dt.nanosecond dt_nanosecond
 #' @examples
 #' pl$DataFrame(date = pl$date_range(
 #'   as.numeric(as.POSIXct("2001-1-1"))*1E9+123456789, #manually convert to us
@@ -636,7 +636,7 @@ ExprDT_nanosecond = function() {
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
 #' @format function
-#' @aliases dt.offset_by arr_offset_by
+#' @aliases dt.offset_by dt_offset_by
 #' @examples
 #' df = pl$DataFrame(
 #'   dates = pl$date_range(as.Date("2000-1-1"),as.Date("2005-1-1"), "1y")

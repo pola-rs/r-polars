@@ -3,7 +3,6 @@
 \name{dt_hour}
 \alias{dt_hour}
 \alias{dt.hour}
-\alias{arr_hour}
 \title{Hour}
 \format{
 function

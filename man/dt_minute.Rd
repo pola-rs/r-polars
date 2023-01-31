@@ -3,7 +3,6 @@
 \name{dt_minute}
 \alias{dt_minute}
 \alias{dt.minute}
-\alias{arr_minute}
 \title{Minute}
 \format{
 function

@@ -3,7 +3,6 @@
 \name{dt_iso_year}
 \alias{dt_iso_year}
 \alias{dt.iso_year}
-\alias{arr_iso_year}
 \title{Iso-Year}
 \format{
 function
