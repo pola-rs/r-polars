@@ -79,6 +79,37 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
 
                 Ok(l.into_robj())
             }
+
+            Date => Ok(s
+                .cast(&Float64)?
+                .f64()?
+                .into_iter()
+                .collect_robj()
+                .set_class(&["Date"])
+                .expect("internal error: class label Date failed")),
+
+            Time => s
+                .cast(&Int64)?
+                .i64()
+                .map(|ca| {
+                    ca.into_iter()
+                        .map(|opt| opt.map(|val| val as f64))
+                        .collect_robj()
+                })
+                // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
+                .map(|robj| {
+                    robj.set_class(&["PTime"])
+                        .expect("internal error: class label PTime failed")
+                })
+                .map(|robj| robj.set_attrib("tu", "ns"))
+                .expect("internal error: attr tu failed")
+                .map_err(|err| {
+                    pl_error::ComputeError(pl_err_string::Owned(format!(
+                        "when converting polars Time to R PTime: {:?}",
+                        err
+                    )))
+                }),
+
             Datetime(tu, opt_tz) => {
                 let tu_i64: i64 = match tu {
                     pl::TimeUnit::Nanoseconds => 1_000_000_000,
@@ -104,7 +135,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
                         pl_error::ComputeError(pl_err_string::Owned(format!(
-                            "when converting polars datetime to R POSIXct: {:?}",
+                            "when converting polars Datetime to R POSIXct: {:?}",
                             err
                         )))
                     })

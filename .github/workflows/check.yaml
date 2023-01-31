@@ -78,6 +78,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: ./src/rust/
+          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -126,7 +127,7 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
-          error-on: '"warning"'
+          error-on: '"never"' #errors are filtered by rules below
 
       - name: print check install log linux / windows
         if: runner.os == 'Windows'
@@ -148,3 +149,10 @@ jobs:
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
+
+      - name: raise remaining rcmdcheck errors
+        run: |
+         print(getwd());
+         source("./inst/misc/filter_rcmdcheck.R");
+        shell: Rscript {0}
+

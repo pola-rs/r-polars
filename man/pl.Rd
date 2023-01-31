@@ -5,7 +5,7 @@
 \alias{pl}
 \title{The complete rpolars public API.}
 \format{
-An object of class \code{environment} of length 47.
+An object of class \code{environment} of length 48.
 }
 \usage{
 pl

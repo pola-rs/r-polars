@@ -3,6 +3,7 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
+use crate::rdatatype::str_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -11,16 +12,16 @@ use crate::utils::{r_error_list, r_ok_list, r_result_list};
 use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
+use polars::error::ErrString as pl_err_string;
 use polars::lazy::dsl;
+use polars::prelude::DurationMethods;
 use polars::prelude::GetOutput;
 use polars::prelude::IntoSeries;
 use polars::prelude::TemporalMethods;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
-
-use pl::PolarsError as pl_error;
-use polars::error::ErrString as pl_err_string;
 
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
@@ -1129,6 +1130,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware: false,
+                utc: false,
             })
             .into()
     }
@@ -1168,6 +1170,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware,
+                utc: false,
             })
             .into()
     }
@@ -1189,6 +1192,7 @@ impl Expr {
                 exact,
                 cache,
                 tz_aware: false,
+                utc: false,
             })
             .into()
     }
@@ -1212,7 +1216,7 @@ impl Expr {
     //     };
     //     self.clone()
     //         .0
-    //         .map(function, GetOutput::from_type(DataType::Utf8))
+    //         .map(function, GetOutput::from_type(pl::DataType::Utf8))
     //         .with_fmt("str.slice")
     //         .into()
     // }
@@ -1232,7 +1236,7 @@ impl Expr {
     //     };
     //     self.clone()
     //         .0
-    //         .map(function, GetOutput::from_type(DataType::UInt32))
+    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
     //         .with_fmt("str.lengths")
     //         .into()
     // }
@@ -1244,7 +1248,7 @@ impl Expr {
     //     };
     //     self.clone()
     //         .0
-    //         .map(function, GetOutput::from_type(DataType::UInt32))
+    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
     //         .with_fmt("str.n_chars")
     //         .into()
     // }
@@ -1296,9 +1300,74 @@ impl Expr {
 
     //end list/arr methods
 
-    pub fn dt_offset_by(&self, by: &str) -> Self {
-        let by = pl::Duration::parse(by);
-        self.0.clone().dt().offset_by(by).into()
+    pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
+        self.0.clone().dt().truncate(every, offset).into()
+    }
+
+    pub fn dt_round(&self, every: &str, offset: &str) -> Self {
+        self.0.clone().dt().round(every, offset).into()
+    }
+
+    pub fn dt_combine(&self, time: &Expr, tu: &str) -> List {
+        let res =
+            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
+        r_result_list(res)
+    }
+
+    pub fn dt_strftime(&self, fmt: &str) -> Self {
+        //named strftime in py-polars
+        self.0.clone().dt().strftime(fmt).into()
+    }
+    pub fn dt_year(&self) -> Self {
+        //named year in py-polars
+        self.clone().0.dt().year().into()
+    }
+    pub fn dt_iso_year(&self) -> Self {
+        //named iso_year in py-polars
+        self.clone().0.dt().iso_year().into()
+    }
+
+    pub fn dt_quarter(&self) -> Self {
+        self.clone().0.dt().quarter().into()
+    }
+    pub fn dt_month(&self) -> Self {
+        self.clone().0.dt().month().into()
+    }
+    pub fn dt_week(&self) -> Self {
+        self.clone().0.dt().week().into()
+    }
+    pub fn dt_weekday(&self) -> Self {
+        self.clone().0.dt().weekday().into()
+    }
+    pub fn dt_day(&self) -> Self {
+        self.clone().0.dt().day().into()
+    }
+    pub fn dt_ordinal_day(&self) -> Self {
+        self.clone().0.dt().ordinal_day().into()
+    }
+    pub fn dt_hour(&self) -> Self {
+        self.clone().0.dt().hour().into()
+    }
+    pub fn dt_minute(&self) -> Self {
+        self.clone().0.dt().minute().into()
+    }
+    pub fn dt_second(&self) -> Self {
+        self.clone().0.dt().second().into()
+    }
+    pub fn dt_millisecond(&self) -> Self {
+        self.clone().0.dt().millisecond().into()
+    }
+    pub fn dt_microsecond(&self) -> Self {
+        self.clone().0.dt().microsecond().into()
+    }
+    pub fn dt_nanosecond(&self) -> Self {
+        self.clone().0.dt().nanosecond().into()
+    }
+    pub fn timestamp(&self, tu: &str) -> List {
+        let res = str_to_timeunit(tu)
+            .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
+            .map_err(|err| format!("valid tu needed for timestamp: {}", err));
+        r_result_list(res)
     }
 
     pub fn dt_epoch_seconds(&self) -> Self {
@@ -1314,35 +1383,97 @@ impl Expr {
             .into()
     }
 
-    // pub fn dt_with_time_unit(&self, tu: &str) -> Self {
-    //     self.0.clone().dt().with_time_unit(tu.0.clone()).into()
-    // }
-
-    // // #[cfg(feature = "timezones")]
-    // // pub fn dt_with_time_zone(&self, tz: Nullable<RTimeZone>) -> Self {
-    // //     self.0.clone().dt().with_time_zone(tz).into()
-    // // }
-
-    // pub fn dt_cast_time_unit(&self, tu: &str) -> Self {
-    //     self.0.clone().dt().cast_time_unit(tu.0.clone()).into()
-    // }
-
-    // #[cfg(feature = "timezones")]
-    // pub fn dt_cast_time_zone(&self, tz: String) -> Self {
-    //     self.0.clone().dt().cast_time_zone(tz).into()
-    // }
-
-    // #[cfg(feature = "timezones")]
-    // pub fn dt_tz_localize(&self, tz: String) -> Self {
-    //     self.0.clone().dt().tz_localize(tz).into()
-    // }
-
-    pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
-        self.0.clone().dt().truncate(every, offset).into()
+    pub fn dt_with_time_unit(&self, tu: &str) -> List {
+        let expr_result =
+            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().with_time_unit(tu)));
+        r_result_list(expr_result)
     }
 
-    pub fn dt_round(&self, every: &str, offset: &str) -> Self {
-        self.0.clone().dt().round(every, offset).into()
+    pub fn dt_cast_time_unit(&self, tu: &str) -> List {
+        let expr_result =
+            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().cast_time_unit(tu)));
+        r_result_list(expr_result)
+    }
+
+    pub fn dt_with_time_zone(&self, tz: Nullable<String>) -> Self {
+        self.0.clone().dt().with_time_zone(tz.into_option()).into()
+    }
+
+    pub fn dt_cast_time_zone(&self, tz: Nullable<String>) -> Self {
+        self.0.clone().dt().cast_time_zone(tz.into_option()).into()
+    }
+
+    pub fn dt_tz_localize(&self, tz: String) -> Self {
+        self.0.clone().dt().tz_localize(tz).into()
+    }
+
+    pub fn duration_days(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.days().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_hours(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.hours().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_minutes(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.minutes().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_seconds(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.seconds().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_nanoseconds(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.nanoseconds().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_microseconds(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.microseconds().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+    pub fn duration_milliseconds(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                |s| Ok(s.duration()?.milliseconds().into_series()),
+                GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into()
+    }
+
+    pub fn dt_offset_by(&self, by: &str) -> Self {
+        let by = pl::Duration::parse(by);
+        self.clone().0.dt().offset_by(by).into()
     }
 
     pub fn pow(&self, exponent: &Expr) -> Self {

@@ -136,6 +136,7 @@ pl$Series = function(x, name=NULL){
   if(inherits(x,"Series")) return(x)
   if(is.null(name)) name = ""
   if(!is_string(name)) stopf("name must be NULL or a string")
+  x = convert_to_fewer_types(x) #type conversions on R side
   return(unwrap(.pr$Series$new(x,name)))
   stopf("x must be a double, interger, char, or logical vector")
 }

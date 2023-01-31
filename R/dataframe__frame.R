@@ -183,7 +183,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   }
 
   ##step 4
-  #buildDataFrameone column at the time
+  #buildDataFrame one column at the time
   self = .pr$DataFrame$new_with_capacity(length(largs))
   mapply(largs,keys, FUN = function(column, key) {
     if(inherits(column, "Series")) {
@@ -192,6 +192,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
       unwrap(.pr$DataFrame$set_column_from_series(self,column))
     } else {
       if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) column = rep(column,largs_lengths_max)
+      column = convert_to_fewer_types(column) #type conversions on R side
       unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
     }
     return(NULL)

@@ -35,6 +35,8 @@ concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
+r_date_range_lazy <- function(start, end, every, closed, name, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, name, tz)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
@@ -363,13 +365,71 @@ Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches
 
 Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
 
-Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
-
-Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
-
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
+
+Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
+
+Expr$dt_strftime <- function(fmt) .Call(wrap__Expr__dt_strftime, self, fmt)
+
+Expr$dt_year <- function() .Call(wrap__Expr__dt_year, self)
+
+Expr$dt_iso_year <- function() .Call(wrap__Expr__dt_iso_year, self)
+
+Expr$dt_quarter <- function() .Call(wrap__Expr__dt_quarter, self)
+
+Expr$dt_month <- function() .Call(wrap__Expr__dt_month, self)
+
+Expr$dt_week <- function() .Call(wrap__Expr__dt_week, self)
+
+Expr$dt_weekday <- function() .Call(wrap__Expr__dt_weekday, self)
+
+Expr$dt_day <- function() .Call(wrap__Expr__dt_day, self)
+
+Expr$dt_ordinal_day <- function() .Call(wrap__Expr__dt_ordinal_day, self)
+
+Expr$dt_hour <- function() .Call(wrap__Expr__dt_hour, self)
+
+Expr$dt_minute <- function() .Call(wrap__Expr__dt_minute, self)
+
+Expr$dt_second <- function() .Call(wrap__Expr__dt_second, self)
+
+Expr$dt_millisecond <- function() .Call(wrap__Expr__dt_millisecond, self)
+
+Expr$dt_microsecond <- function() .Call(wrap__Expr__dt_microsecond, self)
+
+Expr$dt_nanosecond <- function() .Call(wrap__Expr__dt_nanosecond, self)
+
+Expr$timestamp <- function(tu) .Call(wrap__Expr__timestamp, self, tu)
+
+Expr$dt_epoch_seconds <- function() .Call(wrap__Expr__dt_epoch_seconds, self)
+
+Expr$dt_with_time_unit <- function(tu) .Call(wrap__Expr__dt_with_time_unit, self, tu)
+
+Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self, tu)
+
+Expr$dt_with_time_zone <- function(tz) .Call(wrap__Expr__dt_with_time_zone, self, tz)
+
+Expr$dt_cast_time_zone <- function(tz) .Call(wrap__Expr__dt_cast_time_zone, self, tz)
+
+Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
+
+Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
+
+Expr$duration_hours <- function() .Call(wrap__Expr__duration_hours, self)
+
+Expr$duration_minutes <- function() .Call(wrap__Expr__duration_minutes, self)
+
+Expr$duration_seconds <- function() .Call(wrap__Expr__duration_seconds, self)
+
+Expr$duration_nanoseconds <- function() .Call(wrap__Expr__duration_nanoseconds, self)
+
+Expr$duration_microseconds <- function() .Call(wrap__Expr__duration_microseconds, self)
+
+Expr$duration_milliseconds <- function() .Call(wrap__Expr__duration_milliseconds, self)
+
+Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
 Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 

@@ -697,7 +697,11 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 Expr_lit = function(x) {
   if(is.null(x)) return(unwrap(.pr$Expr$lit(NULL)))
   if (inherits(x,"Expr")) return(x)  # already Expr, pass through
-  if (length(x) != 1L || is.list(x)) x = wrap_s(x) #wrap first as Series if not a scalar
+  if (
+    length(x) != 1L || is.list(x) || inherits(x,c("POSIXct","PTime","Date"))
+  ) {
+    x = wrap_s(x) #wrap first as Series if not a simple scalar
+  }
   unwrap(.pr$Expr$lit(x)) # create literal Expr
 }
 

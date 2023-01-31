@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R
-Version: 0.4.2
+Version: 0.4.3
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R: 
@@ -27,6 +27,7 @@ Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
+    'PTime.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'
@@ -45,6 +46,7 @@ Collate:
     'parquet.R'
     'pkg-nanoarrow.R'
     'rlang.R'
+    'rust_result.R'
     'series__series.R'
     'translation.R'
     'vctrs.R'
