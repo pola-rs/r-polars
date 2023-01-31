@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__datetime.R
 \name{ExprDT_with_time_zone}
 \alias{ExprDT_with_time_zone}
-\alias{(Expr)$dt$with_time_unit}
+\alias{(Expr)$dt$with_time_zone}
 \title{with_time_zone}
 \format{
 function
