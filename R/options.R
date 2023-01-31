@@ -63,7 +63,17 @@ rpolars_optreq$no_messages = list( #set requirement functions of default value
   }
 )
 
-
+#' @rdname rpolars_options
+#' @name do_not_repeat_call
+#' @details do not print the call causing the error in error messages
+#' @param do_not_repeat_call bool, default = FALSE,
+#' turn of messages
+rpolars_optenv$do_not_repeat_call = FALSE #set default value
+rpolars_optreq$do_not_repeat_call = list( #set requirement functions of default value
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
+)
 
 
 ## END OF DEFINED OPTIONS

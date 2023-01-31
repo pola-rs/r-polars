@@ -96,11 +96,12 @@ unwrap = function(result, call=sys.call(1L)) {
     stopf(
       paste(
         result$err,
-        paste(
-          "\nwhen calling:\n",
+        if(!rpolars_optenv$do_not_repeat_call) {
           paste(
-            capture.output(print(call)),collapse="\n")
-        )
+            "\n when calling:\n",
+            paste(capture.output(print(call)),collapse="\n")
+          )
+        }
     ))
   }
 

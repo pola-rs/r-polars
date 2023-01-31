@@ -45,8 +45,14 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
         "syntax error:",
         Method_name,"is not a method/attribute of the class",
         as.character(as.list(match.call())$Class_env),
-        "\n when calling:\n",
-        paste(capture.output(print(call)),collapse="\n")
+
+        #add call to error messages
+        if(!rpolars_optenv$do_not_repeat_call) {
+          paste(
+            "\n when calling:\n",
+            paste(capture.output(print(call)),collapse="\n")
+          )
+        }
       )
     )
   }
@@ -501,14 +507,19 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
 #' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-expect_grepl_error = function(expr, expected_err = NULL) {
+expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE) {
   err = NULL
+  if(do_not_repeat_call) {
+    old_setting = pl$get_rpolars_options()$do_not_repeat_call
+    pl$set_rpolars_options(do_not_repeat_call=TRUE)
+  }
   err = tryCatch(expr, error = function(e) {as.character(e)})
+  if(do_not_repeat_call) pl$set_rpolars_options(do_not_repeat_call=old_setting)
   found = grepl(expected_err,err)[1]
   if(!found) {
     testthat::expect_identical(err, expected_err)
   }
-  invisible(NULL)
+  invisible(err)
 }
 
 
