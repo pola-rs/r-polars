@@ -18,6 +18,10 @@ Localize tz-naive Datetime Series to tz-aware Datetime Series.
 This method takes a naive Datetime Series and makes this time zone aware.
 It does not move the time to another time zone.
 }
+\details{
+In R as modifying tzone attribute manually but takes into account summertime.
+See unittest "dt$with_time_zone dt$tz_localize" for a more detailed comparison to base R.
+}
 \examples{
 df = pl$DataFrame(
   date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")

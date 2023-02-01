@@ -3,7 +3,7 @@
 \name{ExprDT_with_time_zone}
 \alias{ExprDT_with_time_zone}
 \alias{(Expr)$dt$with_time_zone}
-\title{with_time_zone}
+\title{With Time Zone}
 \format{
 function
 }
@@ -15,6 +15,10 @@ Expr of i64
 }
 \description{
 Set time zone for a Series of type Datetime.
+Use to change time zone annotation, but keep the corresponding global timepoint.
+}
+\details{
+corresponds to in R manually modifying the tzone attribute of POSIXt objects
 }
 \examples{
 df = pl$DataFrame(

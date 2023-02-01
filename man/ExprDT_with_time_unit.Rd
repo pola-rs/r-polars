@@ -14,8 +14,9 @@ function
 Expr of i64
 }
 \description{
-Return a with_time_unit in the given time unit.
+Set time unit of a Series of dtype Datetime or Duration.
 This does not modify underlying data, and should be used to fix an incorrect time unit.
+The corresponding global timepoint will change.
 }
 \examples{
 df = pl$DataFrame(

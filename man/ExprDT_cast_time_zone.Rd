@@ -14,10 +14,9 @@ function
 Expr of i64
 }
 \description{
-Return a cast_time_unit in the given time unit.
 Cast time zone for a Series of type Datetime.
 Different from \code{with_time_zone}, this will also modify the underlying timestamp.
-Use this to e.g. correct a wrong time zone designation.
+Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 }
 \examples{
 df = pl$DataFrame(

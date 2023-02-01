@@ -532,11 +532,9 @@ test_that("dt$timestamp", {
 })
 
 
-test_that("dt$cast_time_unit", {
+test_that("dt$with_time_unit cast_time_unit", {
 
-
-
-  df = pl$DataFrame(
+  df_time = pl$DataFrame(
     date = pl$date_range(
       low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d", time_unit = "us"
     )
@@ -544,14 +542,36 @@ test_that("dt$cast_time_unit", {
     pl$col("date"),
     pl$col("date")$dt$cast_time_unit()$alias("cast_time_unit_ns"),
     pl$col("date")$dt$cast_time_unit(tu="us")$alias("cast_time_unit_us"),
-    pl$col("date")$dt$cast_time_unit(tu="ms")$alias("cast_time_unit_ms")
-  )$select(
-    pl$all()$cast(pl$Float64)
+    pl$col("date")$dt$cast_time_unit(tu="ms")$alias("cast_time_unit_ms"),
+    pl$col("date")$dt$with_time_unit()$alias("with_time_unit_ns"),
+    pl$col("date")$dt$with_time_unit(tu="us")$alias("with_time_unit_us"),
+    pl$col("date")$dt$with_time_unit(tu="ms")$alias("with_time_unit_ms")
   )
-  l_exp = df$to_list()
+
+  l_exp = df_time$select(
+    pl$all()$cast(pl$Float64)
+  )$to_list()
+
+
+  #cast time unit changes the value
   expect_identical( l_exp$cast_time_unit_ns, l_exp$cast_time_unit_us*1E3)
   expect_identical( l_exp$cast_time_unit_us, l_exp$cast_time_unit_ms*1E3)
 
+  #with does not
+  expect_identical( l_exp$with_time_unit_ns, l_exp$with_time_unit_us)
+  expect_identical( l_exp$with_time_unit_us, l_exp$with_time_unit_ms)
+
+  #both with and cast change the value
+  types = df_time$schema
+  expect_true(types$with_time_unit_ns ==  pl$Datetime("ns"))
+  expect_true(types$with_time_unit_us ==  pl$Datetime("us"))
+  expect_true(types$with_time_unit_ms ==  pl$Datetime("ms"))
+
+  expect_true(types$cast_time_unit_ns ==  pl$Datetime("ns"))
+  expect_true(types$cast_time_unit_us ==  pl$Datetime("us"))
+  expect_true(types$cast_time_unit_ms ==  pl$Datetime("ms"))
+
+  #cast wrong inputs
   expect_grepl_error(
     pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$cast_time_unit("bob"),
     "cast_time_unit: str to polars TimeUnit:"
@@ -561,4 +581,170 @@ test_that("dt$cast_time_unit", {
     "Error: in dt\\$cast_time_unit: Robj must be a string to be matched as TimeUnit"
   )
 
+  #with wrong inputs
+  expect_grepl_error(
+    pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$with_time_unit("bob"),
+    "with_time_unit: str to polars TimeUnit:"
+  )
+  expect_grepl_error(
+    {pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$with_time_unit(42)},
+    "Error: in dt\\$with_time_unit: Robj must be a string to be matched as TimeUnit"
+  )
+
 })
+
+
+
+test_that("$with_time_zone dt$tz_localize", {
+
+
+  df_time = pl$DataFrame(
+    date = pl$date_range(
+      low = as.Date("2001-3-1"),
+      high = as.Date("2001-5-1"), interval = "1mo"
+    )
+  )
+  df_casts = df_time$select(
+    pl$col("date"),
+    pl$col("date")
+      $dt$with_time_zone("Europe/London")
+      $alias("London_with"),
+    pl$col("date")
+      $dt$tz_localize("Europe/London")
+      $alias("London_localize")
+  )
+
+
+  r_time = unclass(as.POSIXlt("2001-3-1"))
+  r_time_naive = lapply(r_time$mon + 0:2, \(i_mon) {
+    r_time$mon<-i_mon
+    class(r_time) = c("POSIXlt","POSIXt")
+    r_time
+  }) %>% do.call(what=c)
+
+
+  r_time_eu_london = r_time_naive
+  attr(r_time_eu_london,"tzone") = "Europe/London"
+
+
+  expect_identical(
+    df_casts$to_list()$London_localize,
+    as.POSIXct(r_time_eu_london)
+  )
+
+  r_time_gmt = r_time_naive
+  attr(r_time_gmt,"tzone") = "GMT"
+  expect_identical(
+    df_casts$to_list()$London_with,
+    as.POSIXct(format(as.POSIXct(r_time_gmt),tz="Europe/London"),tz="Europe/London")
+  )
+
+})
+
+
+test_that("dt$cast_time_zone", {
+
+  df = pl$DataFrame(
+    london_timezone = pl$date_range(
+      low = as.Date("2001-3-1"), high = as.Date("2001-7-1"),
+      interval = "1mo", time_zone = "Europe/London"
+    )
+  )
+
+  df = df$with_columns(
+    pl$col("london_timezone")
+      $dt$cast_time_zone("Europe/Amsterdam")
+      $alias("cast London_to_Amsterdam")
+  )
+  l = df$to_list()
+
+  #cast moves the time point one hour
+  as.numeric(l$london_timezone)
+  as.numeric(l$`cast London_to_Amsterdam`)
+
+  expect_identical(
+    as.numeric(l$london_timezone - l$`cast London_to_Amsterdam`),
+    rep(1,5)
+  )
+
+  #corrosponding operatio in Base R
+  r_amst_tz = l$london_timezone - 3600
+  attr(r_amst_tz,"tzone") = "Europe/Amsterdam"
+
+  expect_identical(
+    l$`cast London_to_Amsterdam`,
+    r_amst_tz
+  )
+
+})
+
+
+
+test_that("dt$days, dt$hours, dt$mminutes, dt$seconds", {
+
+  #diff with settable units
+  diffy = \(x,units) as.numeric(diff(x),units=units)
+
+  #days
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-3-1"), high = as.Date("2020-5-1"), interval = "1mo"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$days()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"days")))
+
+  #hours
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$hours()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"hours")))
+
+  #minutes
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$minutes()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"mins")))
+
+  #seconds
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
+    interval = "1m"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$seconds()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"secs")))
+
+
+  #milliseconds
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
+    interval = "1m"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$milliseconds()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"secs"))*1000)
+
+  #microseconds
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
+    interval = "1m"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$microseconds()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"secs"))*1E6)
+
+  #nanoseconds
+  df = pl$DataFrame(date = pl$date_range(
+    low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
+    interval = "1m"
+  ))$with_columns(
+    pl$col("date")$diff()$dt$nanoseconds()$alias("diff")
+  )$to_list()
+  expect_identical(df$diff, c(NA,diffy(df$date,"secs"))*1E9)
+
+})
+

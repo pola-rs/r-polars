@@ -14,8 +14,8 @@ function
 Expr of i64
 }
 \description{
-Return a cast_time_unit in the given time unit.
-This does not modify underlying data, and should be used to fix an incorrect time unit.
+Cast the underlying data to another time unit. This may lose precision.
+The corresponding global timepoint will stay unchanged +/- precision.
 }
 \examples{
 df = pl$DataFrame(
