@@ -13,7 +13,7 @@ expect_grepl_error(expr, expected_err = NULL, do_not_repeat_call = TRUE)
 
 \item{do_not_repeat_call}{bool, prevent error-handler to add call to err msg
 useful for grepping the same error message, without grep-patterns becomes
-included in the error message.}
+included in the error message. Latter leads to false positive outcomes.}
 }
 \value{
 invisble NULL
@@ -29,3 +29,4 @@ against the error text with grepl()
 # passes as "carrot" is in "orange and carrot"
 rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ print_env(api, name, max_depth = 10)
 \description{
 print recursively an environment, used in some documentation
 }
+\keyword{internal}

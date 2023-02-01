@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{move_env_elements}
 \alias{move_env_elements}
-\title{Move environment element from one env to another}
+\title{Move environment elements from one env to another}
 \usage{
 move_env_elements(from_env, to_env, element_names, remove = TRUE)
 }
@@ -16,8 +16,6 @@ move_env_elements(from_env, to_env, element_names, remove = TRUE)
 \item{remove}{bool, actually remove element in from_env}
 }
 \description{
-Move environment element from one env to another
+Move environment elements from one env to another
 }
-\details{
-envs are mutable
-}
+\keyword{internal}

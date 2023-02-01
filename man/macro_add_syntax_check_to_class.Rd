@@ -20,6 +20,10 @@ this function overrides dollarclass method of a extendr env_class
 to run first verify_method_call() to check for syntax error and return
 more user friendly error if issues
 
+All R functions coined 'macro'-functions use eval(parse()) but only at package build time
+to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
+, go ahead.
+
 see zzz.R for usage examples
 }
 \seealso{

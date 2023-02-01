@@ -1,4 +1,11 @@
 
+#' check_no_missing_args
+#' @description lifecycle: DEPRECATE
+#' @param fun target function to check incomming arguments for
+#' @param args list of args to check
+#' @param warn bool if TRUE throw warning when check fails
+#' @keywords internal
+#' @return true if args are correct
 check_no_missing_args = function(
   fun, args, warn =TRUE
 ) {
@@ -14,7 +21,24 @@ check_no_missing_args = function(
   return(TRUE)
 }
 
-# more strict than expect_identical
+#' expect strictly identical
+#' @description stricter than testthat::expect_identical in regards of NaN an NA's
+#'
+#' @param object R object to test
+#' @param expected R object of how it exactly should be
+#' @param ... other args passed to expect_identical
+#' @details objects are evaluated on prints via utils::str()
+#' @return testthat::expect_identical return
+#' @keywords internal
+#' @examples
+#' if (FALSE){
+#'
+#'   #to testthat NA_real and NaN are the same !?
+#'   #https://github.com/r-lib/waldo/issues/150
+#'   testthat::expect_identical(NA_real_,NaN)
+#'
+#'   rpolars:::expect_strictly_identical(NA_real_,NaN)
+#' }
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
                    failure_message  = paste(
@@ -35,7 +59,7 @@ expect_strictly_identical = function(object,expected,...) {
 #' @param Class_env env_class object (the classes created by extendr-wrappers.R)
 #' @param Method_name name of method requested by user
 #' @param call context to throw user error, just use default
-#'
+#' @keywords internal
 #' @return invisible(NULL)
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 
@@ -97,11 +121,10 @@ list2 = list
 #' @param or_else return this if no bool statements were true
 #'
 #' @return any return given first true bool statement otherwise value of or_else
-#' @export
-#'
+#' @keywords internal
 #' @examples
 #' n = 7
-#' pcase(
+#' rpolars:::pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
 #'  or_else = stopf("failed to have a case for n=%s",n)
@@ -119,14 +142,13 @@ pcase = function(..., or_else = NULL) {
 }
 
 
-#' Move environment element from one env to another
+#' Move environment elements from one env to another
 #'
 #' @param from_env env from
 #' @param element_names names of elements to move, if named names, then name of name is to_env name
 #' @param remove bool, actually remove element in from_env
 #' @param to_env env to
-#'
-#' @details envs are mutable
+#' @keywords internal
 #' @return NULL
 #'
 move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
@@ -151,7 +173,12 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 }
 
 
-##internal function to convert a list of dataframes into a rust VecDataFrame
+
+#' DataFrame-list to rust vector of DataFrame
+#' @description lifecycle: DEPRECATE, imple on rust side as a function
+#' @param l list of DataFrame
+#' @keywords internal
+#' @return VecDataFrame
 l_to_vdf = function(l) {
   if(!length(l)) stopf("cannot concat empty list l")
   do_inherit_DataFrame = sapply(l,inherits,"DataFrame")
@@ -172,29 +199,62 @@ l_to_vdf = function(l) {
     tryCatch(vdf$push(item),error = function(e) {errors <<- as.character(e)})
     if(!is.null(errors)) stopf(errors)
   }
-
   vdf
 }
 
 
+#' Clone env on level deep.
+#' @details Sometimes used in rpolars to produce different hashmaps(environments) containing
+#' some of the same, but not all elements.
+#'
+#' environments are used for collections of methods and types. This function can be used to make
+#' a parallel collection pointing to some of the same types. Simply copying an environment, does
+#' apparently not spawn a new hashmap, and therefore the collections stay identical.
+#'
+#' @param env an R environment.
+#' @return shallow clone of R environment
+#' @keywords internal
+#' @examples
+#'
+#' fruit_env = new.env(parent = emptyenv())
+#' fruit_env$banana = TRUE
+#' fruit_env$apple = FALSE
+#'
+#' env_1 = new.env(parent = emptyenv())
+#' env_1$fruit_env = fruit_env
+#'
+#' env_naive_copy = env_1
+#' env_shallow_clone = rpolars:::clone_env_one_level_deep(env_1)
+#'
+#' #modifying env_!
+#' env_1$minerals = new.env(parent = emptyenv())
+#' env_1$fruit_env$apple = 42L
+#'
+#' #naive copy is fully identical to env_1, so copying it not much useful
+#' ls(env_naive_copy)
+#' #shallow copy env does not have minerals
+#' ls(env_shallow_clone)
+#'
+#' #however shallow clone does subscribe to changes to fruits as they were there
+#' # at time of cloning
+#' env_shallow_clone$fruit_env$apple
 clone_env_one_level_deep = function(env) {
   newenv <- new.env(parent = env)
   for (i in ls(envir=env)) newenv[[i]] = env[[i]]
   newenv
 }
 
-#' remove private method
-#'
+#' replace private class-methods with public
 #' @description  extendr places the naked internal calls to rust in env-classes. This function
 #' can be used to delete them and replaces them with the public methods. Which are any function
 #' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 #' zzz.R
-#'
 #' @param env class envrionment to modify. Envs are mutable so no return needed
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
 #' @param remove_f bool if true, will move methods, not copy
-#'
+#' @keywords internal
+#' @return side effects only
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
   if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
 
@@ -242,41 +302,14 @@ replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_
   invisible(NULL)
 }
 
-
-#' construct protoArrayExpr
-#'
+##TODO deprecate and handle on rust side only
+#' construct data type vector
+#' @description lifecycle: Deprecate, move to rust side
 #' @param l list of Expr or string
-#'
-#' @return extptr to ProtoExprArray with all exprs or strings
-#'
-#' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
-construct_protoArrayExpr = function(l) {
-  pra = ProtoExprArray$new()
-  if (!is.list(l)) l = list(l)
-  for (i  in l) {
-    if(is_string(i)) {
-      pra$push_back_str(i)
-      next
-    }
-    if(inherits(i,"Expr")) {
-      pra$push_back_rexpr(i)
-      next
-    }
-    stopf(paste("element:",i, "is neither string nor expr"))
-  }
-  pra
-}
-
-#' construct protoArrayExpr
-#'
-#' @param l list of Expr or string
-#'
-#' @return extptr to ProtoExprArray with all exprs or strings
-#'
-#' @examples rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
+#' @return extptr to rust vector of RPolarsDataType's
+#' @keywords internal
 construct_DataTypeVector = function(l) {
   dtv = DataTypeVector$new()
-
   for (i  in seq_along(l)) {
     if(inherits(l[[i]],"RPolarsDataType")) {
       dtv$push(names(l)[i],l[[i]])
@@ -293,7 +326,7 @@ construct_DataTypeVector = function(l) {
 #' @param pattern string passed to ls(pattern) to subset methods by pattern
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
-#'
+#' @keywords internal
 #' @examples rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
 get_method_usages = function(env,pattern="") {
 
@@ -327,11 +360,10 @@ get_method_usages = function(env,pattern="") {
 }
 
 #' print recursively an environment, used in some documentation
-#'
+#' @keywords internal
 #' @param api env
 #' @param name  name of env
 #' @param max_depth numeric/int max levels to recursive iterate through
-#'
 print_env =  function(api,name,max_depth=10) {
   indent_count = 1
   indentation = paste0(rep("  ",indent_count))
@@ -365,10 +397,10 @@ print_env =  function(api,name,max_depth=10) {
 
 
 #' Reverts wrapping in I
-#'
 #' @param X any Robj wrapped in `I()``
 #' @details
 #' https://stackoverflow.com/questions/12865218/getting-rid-of-asis-class-attribute
+#' @keywords internal
 #' @return X without any AsIs subclass
 unAsIs <- function(X) {
   if("AsIs" %in% class(X)) {
@@ -377,10 +409,17 @@ unAsIs <- function(X) {
   X
 }
 
-
-#' restruct an object where structs where previously unnested
-#' @details  this function should be repalced with rust code writing this output
-#' directly before nesting
+##TODO deprecate
+#' restruct list
+#' @description lifecycle:: Deprecate
+#' Restruct an object where structs where previously unnested
+#' @details
+#' It was much easier impl export unnested struct from polars. This function
+#' restructs exported unnested structs.
+#' This function should be repalced with rust code writing this output
+#' directly before nesting.
+#' This hack relies on rust uses the tag "is_struct" to mark what should be re-structed.
+#' @keywords internal
 #' @param l list
 #' @return restructed list
 restruct_list = function(l) {
@@ -417,21 +456,22 @@ restruct_list = function(l) {
 }
 
 
-#' Bundle class methods into an environment (subname space)
+#' Macro - New subnamespace
+#'
+#' @description Bundle class methods into an environment (subname space)
 #'
 #' @param class_pattern regex to select functions
 #' @param subclass_env  optional subclass of
 #' @param remove_f drop sourced functions from package ns after bundling into sub ns
-#'
 #' @return
 #' A function which returns a subclass environment of bundled class functions.
 #'
 #' @details
 #' This function is used to emulate py-polars subnamespace-methods
-#' All functions coined 'macro'-functions use eval(parse()) but only at package build time
+#' All R functions coined 'macro_'-functions use eval(parse()) but only at package build time
 #' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 #' , go ahead.
-#'
+#' @keywords internal
 #' @examples
 #'
 #' #macro_new_subnamespace() is not exported, export for this toy example
@@ -502,26 +542,36 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @param expected_err a string pattern passed to grepl
 #' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
 #' useful for grepping the same error message, without grep-patterns becomes
-#' included in the error message.
+#' included in the error message. Latter leads to false positive outcomes.
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
+#' @keywords internal
 #' @return invisble NULL
 #'
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
 #' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE) {
-  err = NULL
+
+  #turn of including call in err msg
   if(do_not_repeat_call) {
-    old_setting = pl$get_rpolars_options()$do_not_repeat_call
-    pl$set_rpolars_options(do_not_repeat_call=TRUE)
+    old_options = pl$set_rpolars_options(do_not_repeat_call=TRUE)
   }
+
+  #capture err msg
+  err = NULL
   err = tryCatch(expr, error = function(e) {as.character(e)})
-  if(do_not_repeat_call) pl$set_rpolars_options(do_not_repeat_call=old_setting)
+
+  #restore previous options state
+  if(do_not_repeat_call) do.call(pl$set_rpolars_options, old_options)
+
+  #check if error message contains pattern
   found = grepl(expected_err,err)[1]
   if(!found) {
+    #... if not use testthat to point out the difference
     testthat::expect_identical(err, expected_err)
   }
+
   invisible(err)
 }
 
@@ -530,7 +580,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
 #'
 #' @param x object to view.
 #' @param collapse word to glue possible multilines with
-#'
+#' @keywords internal
 #' @return string
 #'
 #' @examples
@@ -556,6 +606,24 @@ convert_to_fewer_types = function(x) {
 }
 
 
+#' Verify correct time zone
+#'
+#' @param tz time zone string or NULL
+#' @param allow_null bool, if TRUE accept NULL
+#'
+#' @return a result object, with either a valid string or an Err
+#' @keywords internal
+#'
+#' @examples
+#'  check_tz_to_result = rpolars:::check_tz_to_result # expose internal
+#'  #return Ok
+#'  check_tz_to_result("GMT")
+#'  check_tz_to_result(NULL)
+#'
+#'  #return Err
+#'  check_tz_to_result("Alice")
+#'  check_tz_to_result(42)
+#'  check_tz_to_result(NULL, allow_null = FALSE)
 check_tz_to_result = function(tz, allow_null = TRUE) {
   if(is.null(tz) && !allow_null)  return(Err("pre-check tz: here NULL tz is not allowed"))
   if (
@@ -563,7 +631,7 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
     (!is_string(tz) || !tz %in% base::OlsonNames()) #otherwise must be a string of OlsenNames
   ) {
     Err(paste0(
-      "pre-check tz: the tz '",tz,"' is not a valid string from base::OlsonNames() or NULL"
+      "pre-check tz: '",tz,"' is not a valid time zone string from base::OlsonNames() or NULL"
     ))
   } else {
     Ok(tz)

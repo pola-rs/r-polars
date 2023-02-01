@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{construct_DataTypeVector}
 \alias{construct_DataTypeVector}
-\title{construct protoArrayExpr}
+\title{construct data type vector}
 \usage{
 construct_DataTypeVector(l)
 }
@@ -10,11 +10,9 @@ construct_DataTypeVector(l)
 \item{l}{list of Expr or string}
 }
 \value{
-extptr to ProtoExprArray with all exprs or strings
+extptr to rust vector of RPolarsDataType's
 }
 \description{
-construct protoArrayExpr
+lifecycle: Deprecate, move to rust side
 }
-\examples{
-rpolars:::construct_protoArrayExpr(list("column_a",pl$col("column_b")))
-}
+\keyword{internal}

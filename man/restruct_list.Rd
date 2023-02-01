@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{restruct_list}
 \alias{restruct_list}
-\title{restruct an object where structs where previously unnested}
+\title{restruct list}
 \usage{
 restruct_list(l)
 }
@@ -13,9 +13,14 @@ restruct_list(l)
 restructed list
 }
 \description{
-restruct an object where structs where previously unnested
+lifecycle:: Deprecate
+Restruct an object where structs where previously unnested
 }
 \details{
-this function should be repalced with rust code writing this output
-directly before nesting
+It was much easier impl export unnested struct from polars. This function
+restructs exported unnested structs.
+This function should be repalced with rust code writing this output
+directly before nesting.
+This hack relies on rust uses the tag "is_struct" to mark what should be re-structed.
 }
+\keyword{internal}

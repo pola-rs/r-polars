@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{replace_private_with_pub_methods}
 \alias{replace_private_with_pub_methods}
-\title{remove private method}
+\title{replace private class-methods with public}
 \usage{
 replace_private_with_pub_methods(
   env,
@@ -20,9 +20,13 @@ replace_private_with_pub_methods(
 
 \item{remove_f}{bool if true, will move methods, not copy}
 }
+\value{
+side effects only
+}
 \description{
 extendr places the naked internal calls to rust in env-classes. This function
 can be used to delete them and replaces them with the public methods. Which are any function
 matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 zzz.R
 }
+\keyword{internal}

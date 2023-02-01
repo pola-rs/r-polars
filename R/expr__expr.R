@@ -1516,7 +1516,8 @@ Expr_search_sorted = function(element) {
 #'   )
 #' )
 Expr_sort_by = function(by, reverse = FALSE) {
-  pra = construct_protoArrayExpr(by)
+  by_list = if(is.list(by)) by else list(by)
+  pra = do.call(construct_ProtoExprArray,by_list)
   unwrap(.pr$Expr$sort_by(self, pra, reverse))
 }
 
@@ -1919,7 +1920,7 @@ Expr_last = "use_extendr_wrapper"
 Expr_over = function(...) {
 
   #combine arguments in proto expression array
-  pra = construct_protoArrayExpr(list2(...))
+  pra = construct_ProtoExprArray(...)
 
   #pass to over
   .pr$Expr$over(self,pra)

@@ -23,7 +23,6 @@ test_that("set wrong options", {
 
 
 test_that("set/get/reset an option", {
-  before_opt = pl$get_rpolars_options()$strictly_immutable
 
   #check dataframe is immutable by setting
   df = pl$DataFrame(iris)
@@ -31,10 +30,18 @@ test_that("set/get/reset an option", {
   df_immutable_copy$columns <- paste0(df_immutable_copy$columns, "_modified")
   expect_true(all(names(df)!=names(df_immutable_copy)))
 
-  #check change setting
-  after_opt = pl$set_rpolars_options(strictly_immutable= FALSE)$strictly_immutable
-  expect_equal(before_opt, !after_opt)
+  #check current state
+  before_opt = pl$get_rpolars_options()$strictly_immutable
 
+  #setting and option returns the previous/state state as defualt
+  before_opt2 = pl$set_rpolars_options(strictly_immutable= !before_opt)[[1]]
+
+  #get new state
+  after_opt = pl$get_rpolars_options()$strictly_immutable
+
+  #check change took place
+  expect_equal(before_opt, !after_opt)
+  expect_equal(before_opt2, !after_opt)
 
   #check change setting took effect
   df = pl$DataFrame(iris)
@@ -42,7 +49,8 @@ test_that("set/get/reset an option", {
   df_mutable_copy$columns <- paste0(df_mutable_copy$columns, "_modified")
   expect_true(all(names(df)==names(df_mutable_copy)))
 
-
+  #check returning to default state, if fail, maybe testthat did not start in default
+  #state which is an error.
   pl$reset_rpolars_options()
   default_opt = pl$get_rpolars_options()$strictly_immutable
   expect_equal(before_opt,  default_opt)

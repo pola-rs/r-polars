@@ -17,3 +17,4 @@ self is a global of extendr wrapper methods
 this function copies the function into a new environment and
 modify formals to have a self argument
 }
+\keyword{internals}

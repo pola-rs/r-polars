@@ -280,22 +280,3 @@ difftime_to_pl_duration = function(dft) {
 }
 
 
-##this implementation is parked here, it does not seam to match py-polars
-## which could be ok if very fancy, however this seem not to useful
-#' #' Repeat a series
-#' #' @description This expression emulates R rep()
-#' #' @name pl_rep
-#' #' @param value expr or any valid input to pl$lit (literal)
-#' #' This value may be None to fill with nulls.
-#' #' @param n  Numeric the number of times to repeat, must be non-negative and finite
-#' #' @param rechunk bool default = TRUE, if true memory layout will be rewritten
-#' #' @return  Expr
-#' #' @aliases pl_rep
-#' #' @format functino
-#' #' @keywords Expr
-#' #' @examples
-#' #' pl$select(pl$rep(1:3, n = 5))
-#' pl$rep = function(value, n, rechunk = TRUE) {
-#'   wrap_e(value)$rep(n, rechunk)
-#' }
-

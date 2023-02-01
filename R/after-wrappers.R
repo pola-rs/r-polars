@@ -5,7 +5,7 @@ build_debug_print = FALSE
 #' extendr methods into pure functions
 #'
 #' @param env environment object output from extendr-wrappers.R classes
-#'
+#' @keywords internals
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
@@ -29,12 +29,11 @@ extendr_method_to_pure_functions = function(env) {
 #' Original extendr bindings converted into pure functions
 #' @aliases  .pr
 #' @keywords api_private
+#' @export
 #' @examples
 #' #.pr$DataFrame$print() is an external function where self is passed as arg
 #' rpolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
-#' @export
 #' @examples
-#'
 #' rpolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 .pr            = new.env(parent=emptyenv())
 .pr$Series     = extendr_method_to_pure_functions(Series)
@@ -53,9 +52,6 @@ extendr_method_to_pure_functions = function(env) {
 
 
 
-
-
-
 ##this macro must be defined now
 
 #' @title add syntax verification to class
@@ -67,6 +63,10 @@ extendr_method_to_pure_functions = function(env) {
 #' @details this function overrides dollarclass method of a extendr env_class
 #' to run first verify_method_call() to check for syntax error and return
 #' more user friendly error if issues
+#'
+#' All R functions coined 'macro'-functions use eval(parse()) but only at package build time
+#' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
+#' , go ahead.
 #'
 #' see zzz.R for usage examples
 #'
@@ -169,7 +169,6 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'  See function macro_add_syntax_check_to_class().
 #'
 #' @importFrom utils .DollarNames
-#' @export
 #' @examples
 #' #all a rpolars object is made of:
 #' some_rpolars_object = pl$DataFrame(iris)
