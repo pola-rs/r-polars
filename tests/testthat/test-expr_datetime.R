@@ -594,52 +594,54 @@ test_that("dt$with_time_unit cast_time_unit", {
 })
 
 
-
-test_that("$with_time_zone dt$tz_localize", {
-
-
-  df_time = pl$DataFrame(
-    date = pl$date_range(
-      low = as.Date("2001-3-1"),
-      high = as.Date("2001-5-1"), interval = "1mo"
-    )
-  )
-  df_casts = df_time$select(
-    pl$col("date"),
-    pl$col("date")
-      $dt$with_time_zone("Europe/London")
-      $alias("London_with"),
-    pl$col("date")
-      $dt$tz_localize("Europe/London")
-      $alias("London_localize")
-  )
-
-
-  r_time = unclass(as.POSIXlt("2001-3-1", tz="GMT"))
-  r_time_naive = lapply(r_time$mon + 0:2, \(i_mon) {
-    r_time$mon<-i_mon
-    class(r_time) = c("POSIXlt","POSIXt")
-    r_time
-  }) %>% do.call(what=c)
-
-
-  r_time_eu_london = r_time_naive
-  attr(r_time_eu_london,"tzone") = "Europe/London"
-
-
-  expect_identical(
-    df_casts$to_list()$London_localize,
-    as.POSIXct(r_time_eu_london)
-  )
-
-  r_time_gmt = r_time_naive
-  attr(r_time_gmt,"tzone") = "GMT"
-  expect_identical(
-    df_casts$to_list()$London_with,
-    as.POSIXct(format(as.POSIXct(r_time_gmt),tz="Europe/London"),tz="Europe/London")
-  )
-
-})
+#TODO write a new test
+# test_that("$with_time_zone dt$tz_localize", {
+#
+#   skip(
+#     "This test works on macos but not on linux whereR  reference code yields different results."
+#   )
+#
+#   df_time = pl$DataFrame(
+#     date = pl$date_range(
+#       low = as.Date("2001-3-1"),
+#       high = as.Date("2001-5-1"), interval = "1mo"
+#     )
+#   )
+#   df_casts = df_time$select(
+#     pl$col("date"),
+#     pl$col("date")
+#       $dt$with_time_zone("Europe/London")
+#       $alias("London_with"),
+#     pl$col("date")
+#       $dt$tz_localize("Europe/London")
+#       $alias("London_localize")
+#   )
+#
+#
+#   r_time = unclass(as.POSIXlt("2001-3-1", tz="GMT"))
+#   r_time_naive = lapply(r_time$mon + 0:2, \(i_mon) {
+#     r_time$mon<-i_mon
+#     class(r_time) = c("POSIXlt","POSIXt")
+#     r_time
+#   }) %>% do.call(what=c)
+#
+#
+#   r_time_eu_london = r_time_naive
+#   attr(r_time_eu_london,"tzone") = "Europe/London"
+#
+#   expect_identical(
+#     df_casts$to_list()$London_localize,
+#     as.POSIXct(r_time_eu_london)
+#   )
+#
+#   r_time_gmt = r_time_naive
+#   attr(r_time_gmt,"tzone") = "GMT"
+#   expect_identical(
+#     df_casts$to_list()$London_with,
+#     as.POSIXct(format(as.POSIXct(r_time_gmt),tz="Europe/London"),tz="Europe/London")
+#   )
+#
+# })
 
 
 test_that("dt$cast_time_zone", {
