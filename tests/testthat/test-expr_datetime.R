@@ -680,7 +680,7 @@ test_that("dt$cast_time_zone", {
 
 
 
-test_that("dt$days, dt$hours, dt$mminutes, dt$seconds", {
+test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
   #diff with settable units
   diffy = \(x,units) as.numeric(diff(x),units=units)

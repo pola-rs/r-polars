@@ -639,20 +639,6 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
 }
 
 
-#' Simple viewer of an R object based on str()
-#'
-#' @param x object to view.
-#' @param collapse word to glue possible multilines with
-#'
-#' @return string
-#'
-#' @examples
-#' rpolars:::str_string(list(a=42,c(1,2,3,NA)))
-str_string = function(x,collapse=" ") {
-  paste(capture.output(str(x)),collapse = collapse)
-}
-
-
 #not all R types may be immediately supported by rpolars but has reasonble conversion to a type
 #that is supported
 convert_to_fewer_types = function(x) {
