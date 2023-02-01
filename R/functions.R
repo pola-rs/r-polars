@@ -76,11 +76,11 @@ pl$concat = function(
 
 #' new date_range
 #' @name pl_date_range
-#' @param low POSIXt, preferably with time_zone
-#' @param high POSIXt, preferably with time_zone
-#' @param interval string pl_duration or R difftime
-#' @param ... not used
-#' @param lazy  bool
+#' @param low POSIXt or Date preferably with time_zone or double or integer
+#' @param high POSIXt or Date preferably with time_zone or double or integer. If high is and
+#' interval are missing, then single datetime is constructed.
+#' @param interval string pl_duration or R difftime. Can be missing if high is missing also.
+#' @param lazy  bool, if TRUE return expression
 #' @param closed option one of 'both'(default), 'left', 'none' or 'right'
 #' @param name name of series
 #' @param time_unit option string ("ns" "us" "ms") duration of one int64 value on polars side
@@ -89,12 +89,11 @@ pl$concat = function(
 #' @details
 #' If param time_zone is not defined the Series will have no time zone.
 #'
-#' NOTICE: R POSIXt without defined timezones(tzone/tz) are counter intuitive. It is recommended to
-#' always set the timezone of low and high. If not output will vary between local machine timezone,
-#' R and polars.
+#' NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
+#' intuitive in R. It is recommended to always set the timezone of low and high. If not output will
+#' vary between local machine timezone, R and polars.
 #'
-#' In r-polars it is perfectly fine to mix timezones of params time_zone, low and high in eager
-#' evaluation. TODO checkup on lazy polars implementation.
+#' In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and high.
 #'
 #'
 #' @return a datetime
@@ -137,7 +136,6 @@ pl$date_range = function(
     low,      #: date | datetime |# for lazy  pli.Expr | str,
     high,     #: date | datetime | pli.Expr | str,
     interval, #: str | timedelta,
-    ...,      #*,
     lazy      = FALSE,     #: Literal[True],
     closed    = "both",   #: ClosedInterval = "both",
     name      = NULL,     #: str | None = None,
