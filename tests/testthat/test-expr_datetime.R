@@ -615,7 +615,7 @@ test_that("$with_time_zone dt$tz_localize", {
   )
 
 
-  r_time = unclass(as.POSIXlt("2001-3-1"))
+  r_time = unclass(as.POSIXlt("2001-3-1", tz="GMT"))
   r_time_naive = lapply(r_time$mon + 0:2, \(i_mon) {
     r_time$mon<-i_mon
     class(r_time) = c("POSIXlt","POSIXt")
