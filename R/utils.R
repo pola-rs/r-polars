@@ -637,3 +637,48 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
     Ok(tz)
   }
 }
+
+
+#' Simple viewer of an R object based on str()
+#'
+#' @param x object to view.
+#' @param collapse word to glue possible multilines with
+#'
+#' @return string
+#'
+#' @examples
+#' rpolars:::str_string(list(a=42,c(1,2,3,NA)))
+str_string = function(x,collapse=" ") {
+  paste(capture.output(str(x)),collapse = collapse)
+}
+
+
+#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#that is supported
+convert_to_fewer_types = function(x) {
+  pcase(
+    #PSOIXlt not directly supported by rpolars but POSIXct is
+    inherits(x, "POSIXlt"), as.POSIXct(x),
+
+    #Date converted to  POSIXct, tz GMT is assumed
+    #inherits(x, "Date"), .POSIXct(unclass(x) * 86400,tz="GMT",cl = "POSIXct"),
+
+    #no conversion needed/supported
+    or_else = x
+  )
+}
+
+
+check_tz_to_result = function(tz, allow_null = TRUE) {
+  if(is.null(tz) && !allow_null)  return(Err("pre-check tz: here NULL tz is not allowed"))
+  if (
+    (!is.null(tz)) && #null tz is fine
+    (!is_string(tz) || !tz %in% base::OlsonNames()) #otherwise must be a string of OlsenNames
+  ) {
+    Err(paste0(
+      "pre-check tz: the tz '",tz,"' is not a valid string from base::OlsonNames() or NULL"
+    ))
+  } else {
+    Ok(tz)
+  }
+}
