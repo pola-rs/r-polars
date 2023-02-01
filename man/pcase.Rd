@@ -21,9 +21,10 @@ Used instead of base::switch internally.
 }
 \examples{
 n = 7
-pcase(
+rpolars:::pcase(
  n<5,"nope",
  n>6,"yeah",
  or_else = stopf("failed to have a case for n=\%s",n)
 )
 }
+\keyword{internal}

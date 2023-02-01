@@ -455,7 +455,7 @@ test_that("eval", {
     pl$concat_list(c("a","b"))$arr$eval(pl$element()$rank())$alias("rank")
   )$to_list()
   expect_identical(
-    dput(l_act),
+    l_act,
     list(
       a = c(1, 8, 3),
       b = c(4, 5, 2),

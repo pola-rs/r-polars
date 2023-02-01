@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{macro_new_subnamespace}
 \alias{macro_new_subnamespace}
-\title{Bundle class methods into an environment (subname space)}
+\title{Macro - New subnamespace}
 \usage{
 macro_new_subnamespace(class_pattern, subclass_env = NULL, remove_f = TRUE)
 }
@@ -21,7 +21,7 @@ Bundle class methods into an environment (subname space)
 }
 \details{
 This function is used to emulate py-polars subnamespace-methods
-All functions coined 'macro'-functions use eval(parse()) but only at package build time
+All R functions coined 'macro_'-functions use eval(parse()) but only at package build time
 to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 , go ahead.
 }
@@ -60,3 +60,4 @@ to solve some tricky self-referential problem. If possible to deprecate a macro 
 #e$my_sub_ns$mul2()
 
 }
+\keyword{internal}

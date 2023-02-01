@@ -3,7 +3,10 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-use crate::rdatatype::str_to_timeunit;
+
+use crate::rdatatype::robj_to_timeunit;
+
+
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -1308,9 +1311,11 @@ impl Expr {
         self.0.clone().dt().round(every, offset).into()
     }
 
-    pub fn dt_combine(&self, time: &Expr, tu: &str) -> List {
+
+    pub fn dt_combine(&self, time: &Expr, tu: Robj) -> List {
         let res =
-            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
+            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
+
         r_result_list(res)
     }
 
@@ -1363,8 +1368,10 @@ impl Expr {
     pub fn dt_nanosecond(&self) -> Self {
         self.clone().0.dt().nanosecond().into()
     }
-    pub fn timestamp(&self, tu: &str) -> List {
-        let res = str_to_timeunit(tu)
+
+    pub fn timestamp(&self, tu: Robj) -> List {
+        let res = robj_to_timeunit(tu)
+
             .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
             .map_err(|err| format!("valid tu needed for timestamp: {}", err));
         r_result_list(res)
@@ -1383,15 +1390,17 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_with_time_unit(&self, tu: &str) -> List {
+
+    pub fn dt_with_time_unit(&self, tu: Robj) -> List {
         let expr_result =
-            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().with_time_unit(tu)));
+            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().with_time_unit(tu)));
         r_result_list(expr_result)
     }
 
-    pub fn dt_cast_time_unit(&self, tu: &str) -> List {
+    pub fn dt_cast_time_unit(&self, tu: Robj) -> List {
         let expr_result =
-            str_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().cast_time_unit(tu)));
+            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().cast_time_unit(tu)));
+
         r_result_list(expr_result)
     }
 

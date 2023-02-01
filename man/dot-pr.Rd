@@ -17,7 +17,6 @@ Original extendr bindings converted into pure functions
 \examples{
 #.pr$DataFrame$print() is an external function where self is passed as arg
 rpolars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
-
 rpolars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 }
 \keyword{api_private}

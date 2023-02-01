@@ -18,3 +18,4 @@ Reverts wrapping in I
 \details{
 https://stackoverflow.com/questions/12865218/getting-rid-of-asis-class-attribute
 }
+\keyword{internal}

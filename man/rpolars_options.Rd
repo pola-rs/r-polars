@@ -4,6 +4,7 @@
 \alias{strictly_immutable}
 \alias{named_exprs}
 \alias{no_messages}
+\alias{do_not_repeat_call}
 \alias{get_rpolars_options}
 \alias{rpolars_options}
 \alias{set_rpolars_options}
@@ -26,6 +27,14 @@ and only allow named exprs in with_columns (or potentially any method derived th
 
 \item{no_messages}{bool, default = FALSE,
 turn of messages}
+
+\item{do_not_repeat_call}{bool, default = FALSE,
+turn of messages}
+
+\item{...}{any options to modify}
+
+\item{return_replaced_options}{return previous state of modified options
+Convenient for temporarily swapping of options during testing.}
 }
 \value{
 current settings as list
@@ -39,6 +48,8 @@ get, set, reset rpolars options
 }
 \details{
 who likes rpolars package messages? use this option to turn them off.
+
+do not print the call causing the error in error messages
 
 modifing list takes no effect, pass it to pl$set_rpolars_options
 get/set/resest interact with internal env \code{rpolars:::rpolars_optenv}

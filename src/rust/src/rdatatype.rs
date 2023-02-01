@@ -40,8 +40,8 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime(tu: &str, tz: Nullable<String>) -> List {
-        let result = str_to_timeunit(tu)
+    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> List {
+        let result = robj_to_timeunit(tu)
             .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
         r_result_list(result)
     }
@@ -312,7 +312,27 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
+// pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
+//     match s {
+//         "ns" => Ok(pl::TimeUnit::Nanoseconds),
+//         "us" => Ok(pl::TimeUnit::Microseconds),
+//         "ms" => Ok(pl::TimeUnit::Milliseconds),
+
+//         _ => Err(format!(
+//             "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
+//             s
+//         )),
+//     }
+// }
+
+pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
+    let s = robj.as_str().ok_or_else(|| {
+        format!(
+            "Robj must be a string to be matched as TimeUnit, got a [{:?}]",
+            robj
+        )
+    })?;
+
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
         "us" => Ok(pl::TimeUnit::Microseconds),
@@ -334,33 +354,6 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
     tu_i64
 }
 
-// pub fn Ptime(
-//     val: f64,
-//     tu: &str,
-//     tu_out: Option<pl::TimeUnit>,
-// ) -> std::result::Result<(i64, pl::TimeUnit), String> {
-//     let (val, tu) = match tu {
-//         "s" => ((val * 1000f64), "ms"),
-//         _ => (val, tu),
-//     };
-
-//     let tu = str_to_timeunit(tu)?;
-//     let tu_out = tu_out.unwrap_or_else(|| tu.clone());
-
-//     use pl::TimeUnit::*;
-//     let out = match (&tu, &tu_out) {
-//         (tu_in, tu_out) if tu_in == tu_out => (val, tu),
-//         (Nanoseconds, Microseconds) => (val / 1000.0, tu),
-//         (Nanoseconds, Milliseconds) => (val / 1000000.0, tu),
-//         (Microseconds, Nanoseconds) => (val * 1000.0, tu),
-//         (Microseconds, Milliseconds) => (val / 1000.0, tu),
-//         (Milliseconds, Microseconds) => (val * 1000.0, tu),
-//         (Milliseconds, Nanoseconds) => (val * 1000000.0, tu),
-//         _ => unreachable!("no more time unit conversion options"),
-//     };
-
-//     Ok((out.0 as i64, out.1))
-// }
 
 extendr_module! {
     mod rdatatype;

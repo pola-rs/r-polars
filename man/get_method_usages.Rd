@@ -23,3 +23,4 @@ used internally for auto completion in .DollarNames methods
 \examples{
 rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
 }
+\keyword{internal}

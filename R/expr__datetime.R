@@ -598,8 +598,9 @@ ExprDT_timestamp = function(tu = c('ns', 'us', 'ms')) {
 
 
 #' with_time_unit
-#' @description Return a with_time_unit in the given time unit.
-#'  This does not modify underlying data, and should be used to fix an incorrect time unit.
+#' @description  Set time unit of a Series of dtype Datetime or Duration.
+#' This does not modify underlying data, and should be used to fix an incorrect time unit.
+#' The corresponding global timepoint will change.
 #' @name ExprDT_with_time_unit
 #' @param tu string option either 'ns', 'us', or 'ms'
 #' @return Expr of i64
@@ -623,8 +624,10 @@ ExprDT_with_time_unit = function(tu = c('ns', 'us', 'ms')) {
 
 
 #' cast_time_unit
-#' @description Return a cast_time_unit in the given time unit.
-#'  This does not modify underlying data, and should be used to fix an incorrect time unit.
+#' @description
+#' Cast the underlying data to another time unit. This may lose precision.
+#' The corresponding global timepoint will stay unchanged +/- precision.
+#'
 #' @name ExprDT_cast_time_unit
 #' @param tu string option either 'ns', 'us', or 'ms'
 #' @return Expr of i64
@@ -646,12 +649,14 @@ ExprDT_cast_time_unit = function(tu = c('ns', 'us', 'ms')) {
     unwrap()
 }
 
-#' with_time_zone
+#' With Time Zone
 #' @description Set time zone for a Series of type Datetime.
+#' Use to change time zone annotation, but keep the corresponding global timepoint.
 #' @name ExprDT_with_time_zone
 #' @param tz Null or string time zone from base::OlsonNames()
 #' @return Expr of i64
 #' @keywords ExprDT
+#' @details corresponds to in R manually modifying the tzone attribute of POSIXt objects
 #' @format function
 #' @aliases (Expr)$dt$with_time_zone
 #' @examples
@@ -675,10 +680,10 @@ ExprDT_with_time_zone = function(tz) {
 }
 
 #' cast_time_zone
-#' @description Return a cast_time_unit in the given time unit.
-#'  Cast time zone for a Series of type Datetime.
-#'  Different from ``with_time_zone``, this will also modify the underlying timestamp.
-#'  Use this to e.g. correct a wrong time zone designation.
+#' @description
+#' Cast time zone for a Series of type Datetime.
+#' Different from ``with_time_zone``, this will also modify the underlying timestamp.
+#' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 #'
 #' @name ExprDT_cast_time_zone
 #' @param tz Null or string time zone from base::OlsonNames()
@@ -725,6 +730,8 @@ ExprDT_cast_time_zone = function(tz) {
 #'
 #' @param tz string of time zone (no NULL allowed) see allowed timezone in base::OlsonNames()
 #' @name ExprDT_tz_localize
+#' @details In R as modifying tzone attribute manually but takes into account summertime.
+#' See unittest "dt$with_time_zone dt$tz_localize" for a more detailed comparison to base R.
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @format function

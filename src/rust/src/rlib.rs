@@ -4,7 +4,7 @@ use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::rdataframe::rexpr::ProtoExprArray;
 use crate::rdataframe::rseries::Series;
-use crate::rdatatype::str_to_timeunit;
+use crate::rdatatype::robj_to_timeunit;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
@@ -97,7 +97,7 @@ fn r_date_range(
     every: &str,
     closed: &str, //Wap<ClosedWindow>
     name: &str,
-    tu: &str,
+    tu: Robj,
     tz: Nullable<String>,
 ) -> List {
     use crate::rdatatype::new_closed_window;
@@ -113,7 +113,7 @@ fn r_date_range(
                 try_f64_into_i64(stop)?,
                 pl::Duration::parse(every),
                 new_closed_window(closed)?,
-                str_to_timeunit(tu)?,
+                robj_to_timeunit(tu)?,
                 tz.into_option().as_ref(),
             )
             .map_err(|err| format!("in r_date_range: {}", err))?

@@ -63,7 +63,17 @@ rpolars_optreq$no_messages = list( #set requirement functions of default value
   }
 )
 
-
+#' @rdname rpolars_options
+#' @name do_not_repeat_call
+#' @details do not print the call causing the error in error messages
+#' @param do_not_repeat_call bool, default = FALSE,
+#' turn of messages
+rpolars_optenv$do_not_repeat_call = FALSE #set default value
+rpolars_optreq$do_not_repeat_call = list( #set requirement functions of default value
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
+)
 
 
 ## END OF DEFINED OPTIONS
@@ -87,6 +97,11 @@ pl$get_rpolars_options = function() {
 }
 
 
+#' @param ... any options to modify
+#'
+#' @param return_replaced_options return previous state of modified options
+#' Convenient for temporarily swapping of options during testing.
+#'
 #' @rdname rpolars_options
 #' @name set_rpolars_options
 #' @return current settings as list
@@ -103,7 +118,8 @@ pl$get_rpolars_options = function() {
 #' )
 #'
 pl$set_rpolars_options = function(
-  ...
+  ...,
+  return_replaced_options = TRUE
 ) {
 
   #check opts
@@ -115,6 +131,7 @@ pl$set_rpolars_options = function(
   }
 
   #update options
+  replaced_opts_list = list()
   for(i in names(opts)) {
     opt_requirements = rpolars_optreq[[i]]
     stopifnot(
@@ -136,10 +153,15 @@ pl$set_rpolars_options = function(
       }
     }
 
+    replaced_opts_list[[i]] = rpolars_optenv[[i]]
     rpolars_optenv[[i]] = opts[[i]]
   }
 
-  #return current option set invisibly
+  if(return_replaced_options) {
+    return(replaced_opts_list)
+  }
+
+  #return current option set invisible
   invisible(pl$get_rpolars_options())
 }
 
