@@ -7,7 +7,7 @@ is_result = function(x) {
 }
 
 guard_result = function(x) {
-  if(!is_result(x)) stopf("internal error: cannot map_err a non result")
+  if(!is_result(x)) stopf("internal error: expected a Result-type")
 }
 
 #' check if x ss a result and an err
