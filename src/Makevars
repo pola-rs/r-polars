@@ -4,8 +4,8 @@ PKG_LIBS = -L$(LIBDIR) -lrpolars
 RPOLARS_RUST_SOURCE ?= ./rust
 RPOLARS_CARGO_CLEAN_DEPS ?= nope
 rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/librpolars.a"
-fetch_premade_binary = "true"
-rpolars_url_binary = "https://github.com/pola-rs/r-polars/releases/v0.4.3_binary/download/rpolars__x86_64-apple-darwin17.a"
+fetch_premade_binary = nope
+rpolars_url_binary = https://github.com/pola-rs/r-polars/releases/v0.4.3_binary/download/rpolars__x86_64-apple-darwin17.a
 
 all: C_clean
 
