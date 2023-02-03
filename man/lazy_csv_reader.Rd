@@ -80,7 +80,7 @@ be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
 
 \item{skip_rows_after_header}{bool Skip this number of rows when the header is parsed.}
 
-\item{encoding}{either "utf8" or "utf8-lossy". Lossy means that invalid utf8 values are replaced with � characters.}
+\item{encoding}{either "utf8" or "utf8-lossy". Lossy means that invalid utf8 values are replaced with "?" characters.}
 
 \item{row_count_name}{String(NULL is disable), name of a added row count column}
 
