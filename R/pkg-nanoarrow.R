@@ -12,7 +12,7 @@
 #' Currently these conversions are the fastest way to convert from polars to R.
 #'
 #' @aliases array_stream arrow nanoarrow record_batch_reader arrow_table
-#' read more at \link{https://github.com/apache/arrow-nanoarrow/r}
+#' read more at \url{https://github.com/apache/arrow-nanoarrow/r}
 #'
 #' @examples
 #' library(nanoarrow)
