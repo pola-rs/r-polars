@@ -26,7 +26,7 @@ No dependencies other than R (≥ 4.1.0)
  - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
  - We're working on a experimental cross-compiled binary for Arm64/M1.
 
-# Install rpolars via R-universe
+# Install rpolars via [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install)
 We are very happy to be hosted on R-universe. Thankyou so much to Jeroen Ooms for excellent support.
 ```r
 # Enable repository from rpolars
