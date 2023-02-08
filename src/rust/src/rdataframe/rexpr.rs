@@ -6,7 +6,6 @@ use crate::rdatatype::new_rank_method;
 
 use crate::rdatatype::robj_to_timeunit;
 
-
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -1145,37 +1144,45 @@ impl Expr {
         exact: bool,
         cache: bool,
         tz_aware: bool,
-    ) -> Self {
-        let fmt = null_to_opt(fmt);
-        let tu = match fmt {
-            Some(ref fmt) => {
-                if fmt.contains("%.9f")
-                    || fmt.contains("%9f")
-                    || fmt.contains("%f")
-                    || fmt.contains("%.f")
-                {
-                    pl::TimeUnit::Nanoseconds
-                } else if fmt.contains("%.3f") || fmt.contains("%3f") {
-                    pl::TimeUnit::Milliseconds
-                } else {
-                    pl::TimeUnit::Microseconds
+        utc: bool,
+        tu: Nullable<Robj>,
+    ) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            let tu = null_to_opt(tu).map(|tu| robj_to_timeunit(tu)).transpose()?;
+            let fmt = null_to_opt(fmt);
+            let result_tu = match (&fmt, tu) {
+                (_, Some(tu)) => tu,
+                (Some(fmt), None) => {
+                    if fmt.contains("%.9f")
+                        || fmt.contains("%9f")
+                        || fmt.contains("%f")
+                        || fmt.contains("%.f")
+                    {
+                        pl::TimeUnit::Nanoseconds
+                    } else if fmt.contains("%.3f") || fmt.contains("%3f") {
+                        pl::TimeUnit::Milliseconds
+                    } else {
+                        pl::TimeUnit::Microseconds
+                    }
                 }
-            }
-            None => pl::TimeUnit::Microseconds,
-        };
-        self.0
-            .clone()
-            .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Datetime(tu, None),
-                fmt,
-                strict,
-                exact,
-                cache,
-                tz_aware,
-                utc: false,
-            })
-            .into()
+                (None, None) => pl::TimeUnit::Microseconds,
+            };
+            Ok(self
+                .0
+                .clone()
+                .str()
+                .strptime(pl::StrpTimeOptions {
+                    date_dtype: pl::DataType::Datetime(result_tu, None),
+                    fmt,
+                    strict,
+                    exact,
+                    cache,
+                    tz_aware,
+                    utc,
+                })
+                .into())
+        }();
+        r_result_list(res)
     }
 
     pub fn str_parse_time(
@@ -1311,7 +1318,6 @@ impl Expr {
         self.0.clone().dt().round(every, offset).into()
     }
 
-
     pub fn dt_combine(&self, time: &Expr, tu: Robj) -> List {
         let res =
             robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
@@ -1371,7 +1377,6 @@ impl Expr {
 
     pub fn timestamp(&self, tu: Robj) -> List {
         let res = robj_to_timeunit(tu)
-
             .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
             .map_err(|err| format!("valid tu needed for timestamp: {}", err));
         r_result_list(res)
@@ -1389,7 +1394,6 @@ impl Expr {
             )
             .into()
     }
-
 
     pub fn dt_with_time_unit(&self, tu: Robj) -> List {
         let expr_result =
