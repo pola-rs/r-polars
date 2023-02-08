@@ -7,6 +7,15 @@
 # and a attribute "tu" setting time unit.
 
 
+#conversion factor
+time_unit_conv_factor = c(
+  "s" = 1,
+  "ms" = 1E3,
+  "us" = 1E6,
+  "ns" = 1E9
+)
+
+
 #' Store Time in R
 #' @name pl_PTime
 #' @include after-wrappers.R
@@ -62,15 +71,17 @@
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
 pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
 
-  if( is.character(x)) {
-    x = as.double(as.POSIXct(x, format = fmt)) - as.double(as.POSIXct("00:00:00", format = fmt))
-    tu = "s"
-  }
-
   tu = tu[1]
   if(!is_string(tu) || !tu %in% c("s","ms","us","ns")) {
     stopf("tu must be either 's','ms','us' ,or 'ns', not [%s]",str_string(tu))
   }
+
+  if( is.character(x)) {
+    x = as.double(as.POSIXct(x, format = fmt)) - as.double(as.POSIXct("00:00:00", format = fmt))
+    x = x * time_unit_conv_factor[tu]
+  }
+
+
 
   #type specific conciderations
   type_ok = FALSE
@@ -92,7 +103,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
   }
 
   #check boundaries
-  if(any(x<0)) {
+  if(isTRUE(any(x<0))) {
     stopf("no element of x can be negative")
   }
   x = floor(x)
@@ -102,7 +113,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
     "us" = 86400000000,
     "ns" = 86400000000000
   )
-  if(any(x>limits[tu])) {
+  if(isTRUE(any(x>limits[tu]))) {
     stopf("no elements can exceed 24 hours, the limit for tu '%s' is the value %s",tu,limits[tu])
   }
 
