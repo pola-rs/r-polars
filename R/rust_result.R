@@ -8,6 +8,7 @@ is_result = function(x) {
 
 guard_result = function(x) {
   if(!is_result(x)) stopf("internal error: expected a Result-type")
+  invisible(x)
 }
 
 #' check if x ss a result and an err
@@ -23,7 +24,7 @@ is_err = function(x) {
 #' @return bool if is a result object which is an ok
 is_ok = function(x) {
   guard_result(x)
-  is_result(x)  && is.null(x$err)
+  is.null(x$err)
 }
 
 #' Wrap in Ok
@@ -46,7 +47,6 @@ Err = function(x) {
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
 map_err = function(x, f) {
-  guard_result(x)
   if(is_err(x)) x$err = f(x$err)
   x
 }
@@ -56,10 +56,29 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  guard_result(x)
   if(is_ok(x)) x$ok = f(x$ok)
   x
 }
+
+#' map an ok-value or pass on err-value
+#' @param x any R object
+#' @param f a closure that takes the ok part as input
+#' @return same R object wrapped in a Err-result
+and_then = function(x, f) {
+  if(is_ok(x)) return(x)
+  guard_result(f(x$ok))
+}
+
+#' map an Err part of Result
+#' @param x any R object
+#' @param f a closure that takes the ok part as input, must return a result itself
+#' @return same R object wrapped in a Err-result
+or_else = function(x, f) {
+  guard_result(x)
+  if(is_ok(x)) return(x)
+  guard_result(f(x$err))
+}
+
 
 #' rust-like unwrapping of result. Useful to keep error handling on the R side.
 #'
@@ -78,7 +97,6 @@ map = function(x, f) {
 #'   error = function(e) as.character(e)
 #' )
 unwrap = function(result, call=sys.call(1L)) {
-
   #if not a result
   if(!is_result(result)) {
     stopf("Internal error: cannot unwrap non result")
