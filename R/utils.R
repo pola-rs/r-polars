@@ -64,7 +64,7 @@ expect_strictly_identical = function(object,expected,...) {
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
 
   if(!Method_name %in% names(Class_env)) {
-    stopf(
+    stop(
       paste(
         "syntax error:",
         Method_name,"is not a method/attribute of the class",
@@ -77,8 +77,11 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
             paste(capture.output(print(call)),collapse="\n")
           )
         }
-      )
+      ),
+      domain = NA,
+      call. = FALSE
     )
+
   }
   invisible(NULL)
 }

@@ -90,10 +90,8 @@ unwrap = function(result, call=sys.call(1L)) {
   }
 
   #if result is error, make a pretty with context
-  #TODO err messages cannot contain %, they should be able to that
-  # replace stopf here without dropping context err messages
   if(is.null(result$ok) && !is.null(result$err)) {
-    stopf(
+    stop(
       paste(
         result$err,
 
@@ -103,8 +101,10 @@ unwrap = function(result, call=sys.call(1L)) {
             paste(capture.output(print(call)),collapse="\n")
           )
         }
-
-    ))
+      ),
+      domain = NA,
+      call. = FALSE
+    )
   }
 
   #if not ok XOR error, then roll over
