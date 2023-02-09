@@ -355,7 +355,7 @@ Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__E
 
 Expr$str_parse_date <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, fmt, strict, exact, cache)
 
-Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware)
+Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware, utc, tu) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware, utc, tu)
 
 Expr$str_parse_time <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, fmt, strict, exact, cache)
 
@@ -688,6 +688,12 @@ RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print
 RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
 
 RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
+
+RPolarsDataType$same_outer_datatype <- function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
+
+RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insides, self)
+
+RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
 
 #' @export
 `$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }

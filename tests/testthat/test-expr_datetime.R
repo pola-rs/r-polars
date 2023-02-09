@@ -183,7 +183,6 @@ test_that("dt$round", {
 
 })
 
-
 test_that("dt$combine", {
 
   #Using pl$PTime
@@ -229,7 +228,7 @@ test_that("dt$combine", {
 
   expect_grepl_error(
     pl$lit(as.Date("2021-01-01"))$dt$combine(1, tu="s"),
-    "str to polars TimeUnit: \\[s\\] is not any of 'ns', 'us' or 'ms'"
+    "str to polars TimeUnit: .*s. is not any of 'ns', 'us/μs' or 'ms' "
   )
 
 
