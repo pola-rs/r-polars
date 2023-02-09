@@ -123,6 +123,8 @@ list2 = list
 #' if prior bool statement is the first true
 #' @param or_else return this if no bool statements were true
 #'
+#' @details Lifecycle: perhaps replace with something written in rust to speed up a bit
+#'
 #' @return any return given first true bool statement otherwise value of or_else
 #' @keywords internal
 #' @examples
@@ -546,6 +548,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
 #' useful for grepping the same error message, without grep-patterns becomes
 #' included in the error message. Latter leads to false positive outcomes.
+#' @param ... args passed to expect_identical which will run if grepl fails
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
 #' @keywords internal
@@ -554,7 +557,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
 #' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE) {
+expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
 
   #turn of including call in err msg
   if(do_not_repeat_call) {
@@ -572,7 +575,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   found = grepl(expected_err,err)[1]
   if(!found) {
     #... if not use testthat to point out the difference
-    testthat::expect_identical(err, expected_err)
+    testthat::expect_identical(err, expected_err,...)
   }
 
   invisible(err)
