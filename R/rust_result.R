@@ -1,13 +1,15 @@
 
 #' check if z is a result
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
+#' @details both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
+#' If both ok and err has value then this is an invalid result
 #' @return bool if is a result object
 is_result = function(x) {
-  is.list(x) && identical(names(x), c("ok","err"))
+  is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
 }
 
-guard_result = function(x) {
-  if(!is_result(x)) stopf("internal error: expected a Result-type")
+guard_result = function(x, msg="") {
+  if(!is_result(x)) stopf("internal error: expected a Result-type %s", msg)
   invisible(x)
 }
 
@@ -38,6 +40,7 @@ Ok = function(x) {
 #' @param x any R object
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
+  if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL")
   list(ok = NULL, err = x)
 }
 
@@ -65,8 +68,8 @@ map = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 and_then = function(x, f) {
-  if(is_ok(x)) return(x)
-  guard_result(f(x$ok))
+  if(is_err(x)) return(x)
+  guard_result(f(x$ok), msg ="in and_then(x, f): f must return a result")
 }
 
 #' map an Err part of Result
@@ -76,7 +79,7 @@ and_then = function(x, f) {
 or_else = function(x, f) {
   guard_result(x)
   if(is_ok(x)) return(x)
-  guard_result(f(x$err))
+  guard_result(f(x$err), msg ="in or_else(x, f): f must return a result")
 }
 
 

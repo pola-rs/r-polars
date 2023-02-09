@@ -64,30 +64,35 @@ ExprStr_strptime = function(
   utc = FALSE
 ) { #-> Expr:
 
+  #match on datatype, return Result<Expr, String>
   expr_result = pcase(
 
     !is_polars_dtype(datatype), Err("arg datatype is not an RPolarsDataType"),
 
+    #as any Datetime
+    pl$same_outer_dt(datatype,pl$Datetime()), {
+      tu = .pr$DataType$get_insides(datatype)$tu
+
+      .pr$Expr$str_parse_datetime(
+        self, fmt, strict, exact, cache, tz_aware, utc, tu
+      ) |> and_then(
+        \(expr) .pr$Expr$dt_cast_time_unit(expr, tu) #cast if not an err
+      )
+    },
+
     #as Date
     datatype == pl$Date, Ok(.pr$Expr$str_parse_date(self, fmt, strict, exact, cache)),
 
-    #as Datetime, same_outer_dt ignores tu+tz
-    pl$same_outer_dt(datatype,pl$Datetime()), {
-      tu = .pr$DataType$get_insides(datatype)$tu
-      .pr$Expr$str_parse_datetime(
-        self, fmt, strict, exact, cache, tz_aware, utc, tu
-      ) |> and_then(\(expr) expr$dt$cast_time_unit(tu)) #cast if not an err
-    },
+    #as Time
+    datatype == pl$Time, Ok(.pr$Expr$str_parse_time(self, fmt, strict, exact, cache)),
 
-    #as time
-    datatype == pl$Time,  Ok(.pr$Expr$str_parse_time(self, fmt, strict, exact, cache)),
-
-
+    #datatype not recognized return error
     or_else = Err("datatype should be of type {Date, Datetime, Time}")
 
-  ) |> map_err(\(err) {
-    paste("in str$strptime:", err)
-  })
+  ) |> map_err(
+    \(err) paste("in str$strptime:", err)
+  )
 
+  #raise any error or return unwrapped ok value
   unwrap(expr_result)
 }
