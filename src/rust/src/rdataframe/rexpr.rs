@@ -14,6 +14,7 @@ use crate::utils::{r_error_list, r_ok_list, r_result_list};
 use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+
 use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
 use polars::error::ErrString as pl_err_string;
@@ -1219,95 +1220,6 @@ impl Expr {
         self.0.clone().str().lstrip(null_to_opt(matches)).into()
     }
 
-    // pub fn str_slice(&self, start: i64, length: Option<u64>) -> Self {
-    //     let function = move |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_slice(start, length)?.into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::Utf8))
-    //         .with_fmt("str.slice")
-    //         .into()
-    // }
-
-    // pub fn str_to_uppercase(&self) -> Self {
-    //     self.0.clone().str().to_uppercase().into()
-    // }
-
-    // pub fn str_to_lowercase(&self) -> Self {
-    //     self.0.clone().str().to_lowercase().into()
-    // }
-
-    // pub fn str_lengths(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_lengths().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.lengths")
-    //         .into()
-    // }
-
-    // pub fn str_n_chars(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_n_chars().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.n_chars")
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace_all(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace_all(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // pub fn str_zfill(&self, alignment: usize) -> Self {
-    //     self.clone().0.str().zfill(alignment).into()
-    // }
-
-    // pub fn str_ljust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().ljust(width, fillchar).into()
-    // }
-
-    // pub fn str_rjust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().rjust(width, fillchar).into()
-    // }
-
-    // pub fn str_contains(&self, pat: String, literal: Option<bool>) -> Self {
-    //     match literal {
-    //         Some(true) => self.0.clone().str().contains_literal(pat).into(),
-    //         _ => self.0.clone().str().contains(pat).into(),
-    //     }
-    // }
-
-    // pub fn str_ends_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().ends_with(sub).into()
-    // }
-
-    // pub fn str_starts_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().starts_with(sub).into()
-    // }
-
     //end list/arr methods
 
     pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
@@ -1818,11 +1730,19 @@ impl Expr {
         self.0.clone().prefix(prefix.as_str()).into()
     }
 
-    // fn to_field(&self, df: &DataFrame) {
-    //     let ctxt = polars::prelude::Context::Default;
-    //     let res = self.0.to_field(&df.0.schema(), ctxt);
-    //     res.unwrap();
-    // }
+    //string methods
+    pub fn str_lengths(&self) -> Self {
+        use pl::*;
+        let function = |s: pl::Series| {
+            let ca = s.utf8()?;
+            Ok(ca.str_lengths().into_series())
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.lengths")
+            .into()
+    }
 }
 
 //allow proto expression that yet only are strings
