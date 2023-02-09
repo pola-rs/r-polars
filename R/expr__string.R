@@ -69,7 +69,7 @@ ExprStr_strptime = function(
 
     !is_polars_dtype(datatype), Err("arg datatype is not an RPolarsDataType"),
 
-    #as any Datetime
+    #Datetime
     pl$same_outer_dt(datatype,pl$Datetime()), {
       tu = .pr$DataType$get_insides(datatype)$tu
 
@@ -80,13 +80,13 @@ ExprStr_strptime = function(
       )
     },
 
-    #as Date
+    #Date
     datatype == pl$Date, Ok(.pr$Expr$str_parse_date(self, fmt, strict, exact, cache)),
 
-    #as Time
+    #Time
     datatype == pl$Time, Ok(.pr$Expr$str_parse_time(self, fmt, strict, exact, cache)),
 
-    #datatype not recognized return error
+    #Other
     or_else = Err("datatype should be of type {Date, Datetime, Time}")
 
   ) |> map_err(
