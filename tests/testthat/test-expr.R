@@ -1016,9 +1016,8 @@ test_that("take that", {
   )
 
 
-  expect_identical(
-    pl$select(pl$lit(0:10)$take(-11))$to_list()[[1L]],
-    NA_integer_
+   expect_error(
+    pl$select(pl$lit(0:10)$take(-5))$to_list()[[1L]]
   )
 
 

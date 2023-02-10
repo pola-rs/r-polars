@@ -193,7 +193,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.to_physical_repr().into_owned()),
+                |s| Ok(Some(s.to_physical_repr().into_owned())),
                 GetOutput::map_dtype(|dt| dt.to_physical()),
             )
             .with_fmt("to_physical")
@@ -293,26 +293,26 @@ impl Expr {
     }
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let lmt = null_to_opt(limit).map(|x| x as u32);
+        let res = || -> std::result::Result<Expr, String> {
+            let limit = null_to_opt(limit)
+                .map(|lim| try_f64_into_usize(lim, false))
+                .transpose()?;
+            let limit: pl::FillNullLimit = limit.map(|x| x as u32).into();
 
-        let strat_result = parse_fill_null_strategy(strategy, lmt);
-
-        if let Ok(strat) = strat_result {
-            let result: pl::PolarsResult<Expr> = Ok(self
+            let strat = parse_fill_null_strategy(strategy, limit)
+                .map_err(|err| format!("this happe4nd {:?}", err))?;
+            let expr: pl::Expr = self
                 .0
                 .clone()
-                .apply(move |s| s.fill_null(strat), GetOutput::same_type())
-                .with_fmt("fill_null_with_strategy")
-                .into());
+                .apply(
+                    move |s| s.fill_null(strat).map(Some),
+                    GetOutput::same_type(),
+                )
+                .with_fmt("fill_null_with_strategy");
 
-            r_result_list(result)
-        } else {
-            if let Err(err) = strat_result {
-                r_error_list(err)
-            } else {
-                unreachable!("yep")
-            }
-        }
+            Ok(Expr(expr))
+        }();
+        r_result_list(res)
     }
 
     pub fn fill_nan(&self, expr: &Expr) -> Self {
@@ -404,13 +404,14 @@ impl Expr {
             .map_err(|err| format!("Invalid n argument in take_every: {}", err))
             .map(|n| {
                 Expr(
-                    self.0
-                        .clone()
+                    self.clone()
+                        .0
                         .map(
-                            move |s: Series| Ok(s.0.take_every(n)),
+                            move |s: Series| Ok(Some(s.take_every(n))),
                             GetOutput::same_type(),
                         )
-                        .with_fmt("take_every"),
+                        .with_fmt("take_every")
+                        .into(),
                 )
             });
 
@@ -431,7 +432,7 @@ impl Expr {
 
     pub fn reinterpret(&self, signed: bool) -> Expr {
         use crate::utils::reinterpret;
-        let function = move |s: pl::Series| reinterpret(&s, signed);
+        let function = move |s: pl::Series| reinterpret(&s, signed).map(Some);
         let dt = if signed {
             pl::DataType::Int64
         } else {
@@ -840,7 +841,7 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64) -> List {
+    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
             let min_periods = try_f64_into_usize(min_periods, false)?;
             let options = pl::EWMOptions {
@@ -848,13 +849,21 @@ impl Expr {
                 adjust,
                 bias: false,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_mean(options).into())
         }();
         r_result_list(expr_result)
     }
 
-    pub fn ewm_std(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
+    pub fn ewm_std(
+        &self,
+        alpha: f64,
+        adjust: bool,
+        bias: bool,
+        min_periods: f64,
+        ignore_nulls: bool,
+    ) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
             let min_periods = try_f64_into_usize(min_periods, false)?;
             let options = pl::EWMOptions {
@@ -862,13 +871,21 @@ impl Expr {
                 adjust,
                 bias,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_std(options).into())
         }();
         r_result_list(expr_result)
     }
 
-    pub fn ewm_var(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
+    pub fn ewm_var(
+        &self,
+        alpha: f64,
+        adjust: bool,
+        bias: bool,
+        min_periods: f64,
+        ignore_nulls: bool,
+    ) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
             let min_periods = try_f64_into_usize(min_periods, false)?;
             let options = pl::EWMOptions {
@@ -876,6 +893,7 @@ impl Expr {
                 adjust,
                 bias,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_var(options).into())
         }();
@@ -900,7 +918,7 @@ impl Expr {
                                 pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
                                 x => x.clone(),
                             };
-                            s.extend_constant(av, n)
+                            s.extend_constant(av, n).map(Some)
                         },
                         GetOutput::same_type(),
                     )
@@ -918,7 +936,7 @@ impl Expr {
             self.0
                 .clone()
                 .apply(
-                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0),
+                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0).map(Some),
                     GetOutput::same_type(),
                 )
                 .with_fmt("extend"),
@@ -934,9 +952,9 @@ impl Expr {
                     .apply(
                         move |s| {
                             if s.len() == 1 {
-                                Ok(s.new_from_index(0, n))
+                                Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                Series(s).rep_impl(n, rechunk).map(|s| s.0)
+                                Series(s).rep_impl(n, rechunk).map(|s| Some(s.0))
                             }
                         },
                         GetOutput::same_type(),
@@ -1300,7 +1318,7 @@ impl Expr {
             .map(
                 |s| {
                     s.timestamp(pl::TimeUnit::Milliseconds)
-                        .map(|ca| (ca / 1000).into_series())
+                        .map(|ca| Some((ca / 1000).into_series()))
                 },
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
@@ -1320,14 +1338,15 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn dt_with_time_zone(&self, tz: Nullable<String>) -> Self {
-        self.0.clone().dt().with_time_zone(tz.into_option()).into()
+    pub fn dt_with_time_zone(&self, tz: String) -> Self {
+        self.0.clone().dt().with_time_zone(tz).into()
     }
 
     pub fn dt_cast_time_zone(&self, tz: Nullable<String>) -> Self {
         self.0.clone().dt().cast_time_zone(tz.into_option()).into()
     }
 
+    #[allow(deprecated)]
     pub fn dt_tz_localize(&self, tz: String) -> Self {
         self.0.clone().dt().tz_localize(tz).into()
     }
@@ -1336,7 +1355,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.days().into_series()),
+                |s| Ok(Some(s.duration()?.days().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1345,7 +1364,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.hours().into_series()),
+                |s| Ok(Some(s.duration()?.hours().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1354,7 +1373,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.minutes().into_series()),
+                |s| Ok(Some(s.duration()?.minutes().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1363,7 +1382,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.seconds().into_series()),
+                |s| Ok(Some(s.duration()?.seconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1372,7 +1391,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.nanoseconds().into_series()),
+                |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1381,7 +1400,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.microseconds().into_series()),
+                |s| Ok(Some(s.duration()?.microseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1390,7 +1409,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.milliseconds().into_series()),
+                |s| Ok(Some(s.duration()?.milliseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1582,7 +1601,7 @@ impl Expr {
     pub fn rechunk(&self) -> Self {
         self.0
             .clone()
-            .map(|s| Ok(s.rechunk()), GetOutput::same_type())
+            .map(|s| Ok(Some(s.rechunk())), GetOutput::same_type())
             .into()
     }
 
@@ -1643,7 +1662,7 @@ impl Expr {
             let s = thread_com.recv();
 
             //wrap as series
-            Ok(s)
+            Ok(Some(s))
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());

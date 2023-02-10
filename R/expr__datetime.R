@@ -653,7 +653,7 @@ ExprDT_cast_time_unit = function(tu = c('ns', 'us', 'ms')) {
 #' @description Set time zone for a Series of type Datetime.
 #' Use to change time zone annotation, but keep the corresponding global timepoint.
 #' @name ExprDT_with_time_zone
-#' @param tz Null or string time zone from base::OlsonNames()
+#' @param tz String time zone from base::OlsonNames()
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @details corresponds to in R manually modifying the tzone attribute of POSIXt objects
@@ -666,6 +666,7 @@ ExprDT_cast_time_unit = function(tu = c('ns', 'us', 'ms')) {
 #' df$select(
 #'   pl$col("date"),
 #'   pl$col("date")
+#'     $dt$cast_time_zone("Europe/Amsterdam")
 #'     $dt$with_time_zone("Europe/London")
 #'     $alias("London_with"),
 #'   pl$col("date")
@@ -697,6 +698,7 @@ ExprDT_with_time_zone = function(tz) {
 #' )
 #' df = df$with_columns(
 #'   pl$col("date")
+#'     $dt$cast_time_zone("Europe/Amsterdam")
 #'     $dt$with_time_zone("Europe/London")
 #'     $alias("london_timezone")
 #' )
@@ -742,6 +744,7 @@ ExprDT_cast_time_zone = function(tz) {
 #' )
 #' df = df$with_columns(
 #'   pl$col("date")
+#'     $dt$cast_time_zone("Europe/Amsterdam")
 #'     $dt$with_time_zone("Europe/London")
 #'     $alias("london_timezone"),
 #'   pl$col("date")

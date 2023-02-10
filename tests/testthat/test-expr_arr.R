@@ -235,12 +235,12 @@ test_that("arg_min arg_max", {
   l_exp_arg_min = list(
     l_i32 = c(0,0,0),
     l_f64 = c(4,0,NA),
-    l_char = c(NA_real_,NA,NA)
+    l_char = c(0,0,NA)
   )
   l_exp_arg_max = list(
     l_i32 = c(4, 2, 9),
     l_f64 = c(5, 0, NA),
-    l_char = c(NA_real_,NA_real_, NA_real_)
+    l_char = c(25,2,NA)
   )
 
   expect_identical(l_act_arg_min,l_exp_arg_min)

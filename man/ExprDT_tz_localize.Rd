@@ -28,6 +28,7 @@ df = pl$DataFrame(
 )
 df = df$with_columns(
   pl$col("date")
+    $dt$cast_time_zone("Europe/Amsterdam")
     $dt$with_time_zone("Europe/London")
     $alias("london_timezone"),
   pl$col("date")
