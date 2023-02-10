@@ -291,11 +291,11 @@ Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__
 
 Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
 
-Expr$ewm_mean <- function(alpha, adjust, min_periods) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods)
+Expr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
 
-Expr$ewm_std <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_std, self, alpha, adjust, bias, min_periods)
+Expr$ewm_std <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_std, self, alpha, adjust, bias, min_periods, ignore_nulls)
 
-Expr$ewm_var <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods)
+Expr$ewm_var <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods, ignore_nulls)
 
 Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, self, value, n)
 
