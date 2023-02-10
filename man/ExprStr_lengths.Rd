@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprStr_lengths()
-}
 \value{
 Expr of u32 lengths
 }
@@ -22,7 +19,7 @@ need the length in terms of the number of characters, use \code{n_chars} instead
 }
 \examples{
 pl$DataFrame(
-  s = c("Café", NA, "345", "東京")
+  s = c("Café", NA, "345", "東京", "æøå")
 )$select(
   pl$col("s"),
   pl$col("s")$str$lengths()$alias("lengths"),
