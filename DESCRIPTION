@@ -20,7 +20,8 @@ Suggests:
     nanoarrow,
     arrow,
     bench,
-    nycflights13
+    nycflights13,
+    patrick
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 

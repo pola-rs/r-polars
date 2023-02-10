@@ -539,6 +539,10 @@ Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 
 Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
 
+Expr$str_lengths <- function() .Call(wrap__Expr__str_lengths, self)
+
+Expr$str_n_chars <- function() .Call(wrap__Expr__str_n_chars, self)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

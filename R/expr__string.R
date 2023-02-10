@@ -24,7 +24,7 @@
 #' @details Notes When parsing a Datetime the column precision will be inferred from the format
 #' string, if given, eg: “%F %T%.3f” => Datetime(“ms”). If no fractional second component is found
 #' then the default is “us”.
-#'
+#' @keywords ExprStr
 #' @return Expr of a Data, Datetime or Time Series
 #' @examples
 #' s = pl$Series(c(
@@ -96,3 +96,48 @@ ExprStr_strptime = function(
   #raise any error or return unwrapped ok value
   unwrap(expr_result)
 }
+
+
+#' str lengths
+#' @description  Get length of the strings as UInt32 (as number of bytes).
+#' @name ExprStr_lengths
+#' @aliases expr_str_lengths
+#' @format function
+#' @keywords ExprStr
+#' @details The returned lengths are equal to the number of bytes in the UTF8 string. If you
+#' need the length in terms of the number of characters, use ``n_chars`` instead.
+#' @return Expr of u32 lengths
+#' @examples
+#' pl$DataFrame(
+#'   s = c("Café", NA, "345", "東京")
+#' )$select(
+#'   pl$col("s"),
+#'   pl$col("s")$str$lengths()$alias("lengths"),
+#'   pl$col("s")$str$n_chars()$alias("n_chars")
+#' )
+ExprStr_lengths = function() {
+  .pr$Expr$str_lengths(self)
+}
+
+#' str n_chars
+#' @description   Get length of the strings as UInt32 (as number of chars).
+#' @name ExprStr_n_chars
+#' @aliases expr_str_n_chars
+#' @format function
+#' @keywords ExprStr
+#' @details  If you know that you are working with ASCII text, ``lengths`` will be
+#' equivalent, and faster (returns length in terms of the number of bytes).
+#' @keywords ExprStr
+#' @return Expr of u32 n_chars
+#' @examples
+#' pl$DataFrame(
+#'   s = c("Café", NA, "345", "東京")
+#' )$select(
+#'   pl$col("s"),
+#'   pl$col("s")$str$lengths()$alias("lengths"),
+#'   pl$col("s")$str$n_chars()$alias("n_chars")
+#' )
+ExprStr_n_chars = function() {
+  .pr$Expr$str_n_chars(self)
+}
+

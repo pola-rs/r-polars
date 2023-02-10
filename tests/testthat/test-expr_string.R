@@ -62,8 +62,6 @@ test_that("str$strptime date", {
 
 })
 
-
-
 test_that("str$strptime time", {
   txt_times = c(
     "11:22:33 -0100",
@@ -86,6 +84,33 @@ test_that("str$strptime time", {
       pl$Time,fmt = "%H:%M:%S %z", strict=FALSE,
     )$to_r(),
     pl$PTime(txt_times,tu="ns")
+  )
+
+})
+
+
+
+
+
+test_that("str$lengths str$n_chars", {
+  test_str = c("Café", NA, "345", "東京") |> enc2utf8()
+  Encoding(test_str)
+
+  df = pl$DataFrame(
+    s = test_str
+  )$select(
+    pl$col("s"),
+    pl$col("s")$str$lengths()$alias("lengths"),
+    pl$col("s")$str$n_chars()$alias("n_chars")
+  )
+
+  expect_identical(
+    df$to_list(),
+    list(
+      s = test_str,
+      lengths = c(5, NA_integer_, 3, 6),
+      n_chars = nchar(test_str) |> as.numeric()
+    )
   )
 
 })

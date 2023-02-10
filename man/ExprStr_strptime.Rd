@@ -65,3 +65,4 @@ pl$lit(txt_datetimes)$str$strptime(
   tz_aware = TRUE, utc =TRUE
 )$lit_to_s()
 }
+\keyword{ExprStr}

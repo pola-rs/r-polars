@@ -1754,12 +1754,25 @@ impl Expr {
         use pl::*;
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
-            Ok(ca.str_lengths().into_series())
+            Ok(Some(ca.str_lengths().into_series()))
         };
         self.clone()
             .0
             .map(function, GetOutput::from_type(pl::DataType::UInt32))
             .with_fmt("str.lengths")
+            .into()
+    }
+
+    pub fn str_n_chars(&self) -> Self {
+        use pl::*;
+        let function = |s: Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_n_chars().into_series()))
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.n_chars")
             .into()
     }
 }
