@@ -112,6 +112,7 @@ features = [
   "dtype-time",
   "dtype-duration",
   "date_offset",
+  "string_justify",
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"

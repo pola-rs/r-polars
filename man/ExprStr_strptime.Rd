@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
-\title{str$strptime}
+\title{strptime}
 \arguments{
 \item{datatype}{a temporal data type either pl$Date, pl$Time or pl$Datetime}
 

@@ -3,7 +3,7 @@
 \name{ExprStr_n_chars}
 \alias{ExprStr_n_chars}
 \alias{expr_str_n_chars}
-\title{str n_chars}
+\title{n_chars}
 \format{
 function
 }

@@ -3,7 +3,7 @@
 \name{ExprStr_lengths}
 \alias{ExprStr_lengths}
 \alias{expr_str_lengths}
-\title{str lengths}
+\title{lengths}
 \format{
 function
 }

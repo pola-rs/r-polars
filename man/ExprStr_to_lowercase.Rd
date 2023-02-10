@@ -3,10 +3,7 @@
 \name{ExprStr_to_lowercase}
 \alias{ExprStr_to_lowercase}
 \alias{expr_str_to_lowercase}
-\title{str_to_lowercase}
-\format{
-function
-}
+\title{To lowercase}
 \value{
 Expr of Utf8 lowercase chars
 }

@@ -3,8 +3,8 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-
 use crate::rdatatype::robj_to_timeunit;
+use crate::utils::{robj_to_char, robj_to_usize};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -1226,18 +1226,6 @@ impl Expr {
             .into()
     }
 
-    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().rstrip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().lstrip(null_to_opt(matches)).into()
-    }
-
     //end list/arr methods
 
     pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
@@ -1787,6 +1775,65 @@ impl Expr {
     pub fn str_to_lowercase(&self) -> Self {
         self.0.clone().str().to_lowercase().into()
     }
+
+    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().strip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_zfill(&self, alignment: f64) -> List {
+        let res = try_f64_into_usize(alignment, false)
+            .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
+        r_result_list(res)
+    }
+
+    pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .ljust(robj_to_usize(width)?, robj_to_char(fillchar)?),
+            ))
+        }()
+        .map_err(|err| format!("in str_ljust: {:?}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .rjust(robj_to_usize(width)?, robj_to_char(fillchar)?),
+            ))
+        }()
+        .map_err(|err| format!("in str_ljust: {:?}", err));
+        r_result_list(res)
+    }
+
+    // pub fn str_contains(&self, pat: Expr, literal: Option<bool>, strict: bool) -> Self {
+    //     match literal {
+    //         Some(true) => self.0.clone().str().contains_literal(pat.0).into(),
+    //         _ => self.0.clone().str().contains(pat.0, strict).into(),
+    //     }
+    // }
+
+    // pub fn str_ends_with(&self, sub: Expr) -> Self {
+    //     self.0.clone().str().ends_with(sub.0).into()
+    // }
+
+    // pub fn str_starts_with(&self, sub: Expr) -> Self {
+    //     self.0.clone().str().starts_with(sub.0).into()
+    // }
 }
 
 //allow proto expression that yet only are strings

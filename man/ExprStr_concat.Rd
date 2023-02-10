@@ -3,10 +3,7 @@
 \name{ExprStr_concat}
 \alias{ExprStr_concat}
 \alias{expr_str_concat}
-\title{str_concat}
-\format{
-function
-}
+\title{Concat}
 \arguments{
 \item{delimiter}{string The delimiter to insert between consecutive string values.}
 }

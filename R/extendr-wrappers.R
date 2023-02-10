@@ -359,12 +359,6 @@ Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware, utc, tu
 
 Expr$str_parse_time <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, fmt, strict, exact, cache)
 
-Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
-
-Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
-
-Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
-
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
@@ -548,6 +542,18 @@ Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delim
 Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
 
 Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
+
+Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
+
+Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
+
+Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
+
+Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
+
+Expr$str_ljust <- function(width, fillchar) .Call(wrap__Expr__str_ljust, self, width, fillchar)
+
+Expr$str_rjust <- function(width, fillchar) .Call(wrap__Expr__str_rjust, self, width, fillchar)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

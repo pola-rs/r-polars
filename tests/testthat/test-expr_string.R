@@ -150,3 +150,25 @@ test_that("str$to_uppercase to_lowercase", {
     tolower(df$to_list()$foo)
   )
 })
+
+
+test_that("str$to_uppercase to_lowercase", {
+
+  lit = pl$lit(" 123abc ")
+
+  #strip
+  expect_identical(lit$str$strip()$to_r(), "123abc")
+  expect_identical(lit$str$strip("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip("1c ")$to_r(), "23ab")
+
+  #lstrip
+  expect_identical(lit$str$lstrip()$to_r(), "123abc ")
+  expect_identical(lit$str$lstrip("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$lstrip("1c ")$to_r(), "23abc ")
+
+  #rstrip
+  expect_identical(lit$str$rstrip()$to_r(), " 123abc")
+  expect_identical(lit$str$rstrip("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$rstrip("1c ")$to_r(), " 123ab")
+
+})

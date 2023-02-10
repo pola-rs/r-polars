@@ -4,7 +4,7 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 
 
-#' str$strptime
+#' strptime
 #' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
 #' @name ExprStr_strptime
 #' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
@@ -98,7 +98,7 @@ ExprStr_strptime = function(
 }
 
 
-#' str lengths
+#' lengths
 #' @description  Get length of the strings as UInt32 (as number of bytes).
 #' @name ExprStr_lengths
 #' @aliases expr_str_lengths
@@ -119,7 +119,7 @@ ExprStr_lengths = function() {
   .pr$Expr$str_lengths(self)
 }
 
-#' str n_chars
+#' n_chars
 #' @description   Get length of the strings as UInt32 (as number of chars).
 #' @name ExprStr_n_chars
 #' @aliases expr_str_n_chars
@@ -143,12 +143,11 @@ ExprStr_n_chars = function() {
 
 
 
-#' str_concat
+#' Concat
 #' @name ExprStr_concat
 #' @description Vertically concat the values in the Series to a single string value.
 #' @param delimiter string The delimiter to insert between consecutive string values.
 #' @aliases expr_str_concat
-#' @format function
 #' @keywords ExprStr
 #' @return Expr of Utf8 concatenated
 #' @examples
@@ -163,11 +162,10 @@ ExprStr_concat = function(delimiter = "-") {
   .pr$Expr$str_concat(self, delimiter)
 }
 
-#' str_to_uppercase
+#' To uppercase
 #' @name ExprStr_to_uppercase
 #' @description Transform to uppercase variant.
 #' @aliases expr_str_to_uppercase
-#' @format function
 #' @keywords ExprStr
 #' @return Expr of Utf8 uppercase chars
 #' @examples
@@ -176,15 +174,78 @@ ExprStr_to_uppercase = function() {
   .pr$Expr$str_to_uppercase(self)
 }
 
-#' str_to_lowercase
+#' To lowercase
 #' @name ExprStr_to_lowercase
 #' @description Transform to lowercase variant.
 #' @aliases expr_str_to_lowercase
-#' @format function
 #' @keywords ExprStr
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' pl$lit(c("A","b", "c", "1", NA))$str$to_lowercase()$lit_to_s()
 ExprStr_to_lowercase = function() {
   .pr$Expr$str_to_lowercase(self)
+}
+
+
+#' Strip
+#' @name ExprStr_strip
+#' @aliases expr_str_strip
+#' @description  Remove leading and trailing characters.
+#' @keywords ExprStr
+#' @param matches The set of characters to be removed. All combinations of this set of
+#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
+#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#' @return Expr of Utf8 lowercase chars
+#' @examples
+#' df = pl$DataFrame(foo = c(" hello", "\tworld"))
+#' df$select(pl$col("foo")$str$strip())
+#' df$select(pl$col("foo")$str$strip(" hel rld"))
+#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
+#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
+#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
+ExprStr_strip = function(matches = NULL) {
+  .pr$Expr$str_strip(self, matches)
+}
+
+#' lstrip
+#' @name ExprStr_lstrip
+#' @aliases expr_str_lstrip
+#' @description  Remove leading characters.
+#' @keywords ExprStr
+#' @param matches The set of characters to be removed. All combinations of this set of
+#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
+#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#' @return Expr of Utf8 lowercase chars
+#' @examples
+#' df = pl$DataFrame(foo = c(" hello", "\tworld"))
+#' df$select(pl$col("foo")$str$strip())
+#' df$select(pl$col("foo")$str$strip(" hel rld"))
+#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
+#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
+#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
+ExprStr_lstrip = function(matches = NULL) {
+  .pr$Expr$str_lstrip(self, matches)
+}
+
+#' rstrip
+#' @name ExprStr_rstrip
+#' @aliases expr_str_rstrip
+#' @description  Remove leading characters.
+#' @keywords ExprStr
+#' @param matches The set of characters to be removed. All combinations of this set of
+#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
+#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' both left and right. Whereas `rstrip()`and `rstrip()` starts from left and right respectively.
+#' @return Expr of Utf8 lowercase chars
+#' @examples
+#' df = pl$DataFrame(foo = c(" hello", "\tworld"))
+#' df$select(pl$col("foo")$str$strip())
+#' df$select(pl$col("foo")$str$strip(" hel rld"))
+#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
+#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
+#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
+ExprStr_rstrip = function(matches = NULL) {
+  .pr$Expr$str_rstrip(self, matches)
 }

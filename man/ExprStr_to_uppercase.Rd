@@ -3,10 +3,7 @@
 \name{ExprStr_to_uppercase}
 \alias{ExprStr_to_uppercase}
 \alias{expr_str_to_uppercase}
-\title{str_to_uppercase}
-\format{
-function
-}
+\title{To uppercase}
 \value{
 Expr of Utf8 uppercase chars
 }
