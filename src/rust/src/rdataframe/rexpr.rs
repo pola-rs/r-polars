@@ -1775,6 +1775,18 @@ impl Expr {
             .with_fmt("str.n_chars")
             .into()
     }
+
+    pub fn str_concat(&self, delimiter: &str) -> Self {
+        self.0.clone().str().concat(delimiter).into()
+    }
+
+    pub fn str_to_uppercase(&self) -> Self {
+        self.0.clone().str().to_uppercase().into()
+    }
+
+    pub fn str_to_lowercase(&self) -> Self {
+        self.0.clone().str().to_lowercase().into()
+    }
 }
 
 //allow proto expression that yet only are strings

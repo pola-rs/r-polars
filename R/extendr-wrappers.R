@@ -543,6 +543,12 @@ Expr$str_lengths <- function() .Call(wrap__Expr__str_lengths, self)
 
 Expr$str_n_chars <- function() .Call(wrap__Expr__str_n_chars, self)
 
+Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
+
+Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
+
+Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

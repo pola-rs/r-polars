@@ -114,3 +114,39 @@ test_that("str$lengths str$n_chars", {
   )
 
 })
+
+
+
+test_that("str$concat", {
+
+  #concatenate a Series of strings to a single string
+  df = pl$DataFrame(foo = c("1", "a", 2))
+  expect_identical(
+    df$select(pl$col("foo")$str$concat())$to_list(),
+    lapply(df$to_list(),paste,collapse = "-")
+  )
+
+  #Series list of strings to Series of concatenated strings
+  df = pl$DataFrame(list(bar = list(c("a","b", "c"), c("1","2","æ"))))
+  expect_identical(
+    df$select(pl$col("bar")$arr$eval(pl$col()$str$concat())$arr$first())$to_list()$bar,
+    sapply(df$to_list()[[1]],paste,collapse = "-")
+  )
+
+})
+
+
+test_that("str$to_uppercase to_lowercase", {
+  #concatenate a Series of strings to a single string
+  df = pl$DataFrame(foo = c("1", "æøå", letters,LETTERS))
+
+  expect_identical(
+    df$select(pl$col("foo")$str$to_uppercase())$to_list()$foo,
+    toupper(df$to_list()$foo)
+  )
+
+  expect_identical(
+    df$select(pl$col("foo")$str$to_lowercase())$to_list()$foo,
+    tolower(df$to_list()$foo)
+  )
+})

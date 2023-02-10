@@ -141,3 +141,50 @@ ExprStr_n_chars = function() {
   .pr$Expr$str_n_chars(self)
 }
 
+
+
+#' str_concat
+#' @name ExprStr_concat
+#' @description Vertically concat the values in the Series to a single string value.
+#' @param delimiter string The delimiter to insert between consecutive string values.
+#' @aliases expr_str_concat
+#' @format function
+#' @keywords ExprStr
+#' @return Expr of Utf8 concatenated
+#' @examples
+#' #concatenate a Series of strings to a single string
+#' df = pl$DataFrame(foo = c("1", NA, 2))
+#' df$select(pl$col("foo")$str$concat("-"))
+#'
+#' #Series list of strings to Series of concatenated strings
+#' df = pl$DataFrame(list(bar = list(c("a","b", "c"), c("1","2",NA))))
+#' df$select(pl$col("bar")$arr$eval(pl$col()$str$concat())$arr$first())
+ExprStr_concat = function(delimiter = "-") {
+  .pr$Expr$str_concat(self, delimiter)
+}
+
+#' str_to_uppercase
+#' @name ExprStr_to_uppercase
+#' @description Transform to uppercase variant.
+#' @aliases expr_str_to_uppercase
+#' @format function
+#' @keywords ExprStr
+#' @return Expr of Utf8 uppercase chars
+#' @examples
+#' pl$lit(c("A","b", "c", "1", NA))$str$to_uppercase()$lit_to_s()
+ExprStr_to_uppercase = function() {
+  .pr$Expr$str_to_uppercase(self)
+}
+
+#' str_to_lowercase
+#' @name ExprStr_to_lowercase
+#' @description Transform to lowercase variant.
+#' @aliases expr_str_to_lowercase
+#' @format function
+#' @keywords ExprStr
+#' @return Expr of Utf8 lowercase chars
+#' @examples
+#' pl$lit(c("A","b", "c", "1", NA))$str$to_lowercase()$lit_to_s()
+ExprStr_to_lowercase = function() {
+  .pr$Expr$str_to_lowercase(self)
+}
