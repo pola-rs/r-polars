@@ -119,7 +119,8 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             })
         }
 
-        _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
+        
+        _ => Err(pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(
             format!("new series from rtype {:?} is not supported (yet)", rtype),
         ))),
     };

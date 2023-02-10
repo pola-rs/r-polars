@@ -348,10 +348,10 @@ test_that("value counts", {
 
 test_that("arg minmax", {
   s1 = pl$Series(c(NA,3,1,2))
-  s2 = pl$Series(c(NA,NA))
+  s2 = pl$Series(c(NA_real_,NA_real_))
   expect_equal(s1$arg_max(),1)
   expect_equal(s1$arg_min(),0) #polars define NULL as smallest value
-  expect_equal(s2$arg_min(),NA_real_)
+  expect_equal(s2$arg_min(),0)
 
 
 })
