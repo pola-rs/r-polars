@@ -8,13 +8,14 @@ pub mod rexpr;
 pub mod rseries;
 pub mod series_to_r;
 
-pub use crate::rdatatype::*;
+use crate::rdatatype;
+use crate::rlazyframe;
 pub use crate::rlazyframe::*;
+use crate::rlib;
 
-use super::rlib::*;
+use crate::rdatatype::RPolarsDataType;
 use r_to_series::robjname2series;
-use read_csv::*;
-use read_parquet::*;
+
 use rexpr::*;
 pub use rseries::*;
 use series_to_r::pl_series_to_list;

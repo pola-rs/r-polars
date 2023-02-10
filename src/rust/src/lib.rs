@@ -18,7 +18,7 @@ pub mod rlib;
 pub mod utils;
 
 use extendr_api::prelude::*;
-use rdataframe::get_rdataframe_metadata;
+//use rdataframe::get_rdataframe_metadata;
 use utils::extendr_concurrent::ParRObj;
 
 use polars::prelude::Series;
