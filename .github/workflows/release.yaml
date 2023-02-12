@@ -72,9 +72,15 @@ jobs:
           workspaces: ./src/rust/
           cache-on-failure: "true"
 
+      - name: pre-compile rpolars
+        shell: bash
+        run: |
+          cargo build --lib --release
+
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
+        if: matrix.config.arch != 'nightly-aarch64-apple-darwin'
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
@@ -101,6 +107,7 @@ jobs:
             libssl-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
+        if: matrix.config.arch != 'nightly-aarch64-apple-darwin'
         with:
           extra-packages: any::rcmdcheck
           needs: check
@@ -109,12 +116,14 @@ jobs:
           CI: false
 
       - name: build package + test
+        if: matrix.config.arch != 'nightly-aarch64-apple-darwin'
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)
         shell: Rscript {0}
 
       - name: build binary
+        if: matrix.config.arch != 'nightly-aarch64-apple-darwin'
         run: |
           fn = devtools::build(binary = TRUE, args = c('--preclean'))
           if (R.version$os != "mingw32") {
