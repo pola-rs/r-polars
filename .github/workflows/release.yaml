@@ -56,7 +56,14 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.config.arch }}
+          toolchain: "nightly"
+
+      - name: set cross compile target for M1
+        if: matrix.config.arch == '"nightly-aarch64-apple-darwin"'
+        shell: bash
+        run: |
+          rustup toolchain install nightly-aarch64-apple-darwin
+          rustup default nightly-aarch64-apple-darwin
 
       - name: Cache Rust
         if: ${{ matrix.config.arch }} != "nightly-aarch64-apple-darwin"
