@@ -135,7 +135,7 @@ jobs:
           echo "also releasing binary"
           cp ./src/rust/target/release/librpolars.a ../rpolars_binary_${arch_name}.a
           ls -a
-        with:
+        env:
           arch_name: ${{ matrix.arch }}
 
       - name: Release
