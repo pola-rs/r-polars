@@ -26,9 +26,29 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release', rtools-version: "42"}
-          - {os: ubuntu-latest,   r: 'release'}
+          - {
+              os: macos-latest,
+              r: "release",
+              arch: "nightly-aarch64-apple-darwin",
+              binary: "yes",
+            }
+          - {
+              os: macos-latest,
+              r: "release",
+              arch: "nightly-x86_64-apple-darwin",
+              binary: "yes",
+            }
+          - {
+              os: windows-latest,
+              r: "release",
+              arch: "nightly-x86_64-pc-windows-gnu",
+              rtools-version: "42",
+            }
+          - {
+              os: ubuntu-latest,
+              r: "release",
+              arch: "nightly-x86_64-unknown-linux-gnu",
+            }
 
     steps:
       - uses: actions/checkout@v3
@@ -50,14 +70,10 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
-      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
-      - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
-        if: runner.os == 'Windows'
-
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ env.rust-toolchain }}
+          toolchain: ${{ matrix.config.arch }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -112,6 +128,16 @@ jobs:
           }
         shell: Rscript {0}
 
+      - name: Release binary
+        if: matrix.binary == 'yes'
+        shell: bash
+        run: |
+          echo "also releasing binary"
+          cp ./src/rust/target/release/librpolars.a ../rpolars_binary_${arch_name}.a
+          ls -a
+        with:
+          arch_name: ${{ matrix.arch }}
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
@@ -119,6 +145,7 @@ jobs:
           files: |
             ../rpolars_*
             ../rpolars.zip
+            ../rpolars_binary_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
