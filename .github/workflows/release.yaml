@@ -59,7 +59,7 @@ jobs:
           toolchain: "nightly"
 
       - name: set cross compile target for M1
-        if: matrix.config.arch == "nightly-aarch64-apple-darwin"
+        if: ${{ matrix.config.arch }} == "nightly-aarch64-apple-darwin"
         shell: bash
         run: |
           rustup toolchain install nightly-aarch64-apple-darwin
