@@ -11,7 +11,7 @@ name: Release
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -53,27 +53,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Fix path for Windows caching
-        if: runner.os == 'Windows'
-        shell: bash
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
-
-      - name: cache rpolars rust targets
-        id: cache-rust-targets
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-rust-targets
-        with:
-          path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
-
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.config.arch }}
+
+      - name: Cache Rust
+        if: ${{ matrix.config.arch }} != "nightly-aarch64-apple-darwin"
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
