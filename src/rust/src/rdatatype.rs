@@ -96,6 +96,31 @@ impl RPolarsDataType {
     pub fn ne(&self, other: &RPolarsDataType) -> bool {
         self.0.ne(&other.0)
     }
+
+    pub fn same_outer_datatype(&self, other: &RPolarsDataType) -> bool {
+        std::mem::discriminant(&self.0) == std::mem::discriminant(&other.0)
+    }
+
+    pub fn get_insides(&self) -> List {
+        match self.0.clone() {
+            pl::DataType::Datetime(tu, tz) => list!(
+                tu = tu.to_string().into_robj(),
+                tz = if let Some(tz) = tz {
+                    tz.into_robj()
+                } else {
+                    extendr_api::NULL.into_robj()
+                },
+            ),
+            pl::DataType::List(inner) => {
+                list!(RPolarsDataType(*inner.clone()).into_robj())
+            }
+            _ => list!(),
+        }
+    }
+
+    pub fn is_temporal(&self) -> bool {
+        self.0.is_temporal()
+    }
 }
 
 impl From<RPolarsDataType> for pl::DataType {
@@ -335,11 +360,11 @@ pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String>
 
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
-        "us" => Ok(pl::TimeUnit::Microseconds),
+        "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
         _ => Err(format!(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ",
             s
         )),
     }
@@ -353,7 +378,6 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
     };
     tu_i64
 }
-
 
 extendr_module! {
     mod rdatatype;

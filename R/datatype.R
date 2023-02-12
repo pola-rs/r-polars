@@ -20,8 +20,6 @@ NULL
 
 
 
-
-
 #' print a polars datatype
 #'
 #' @param x DataType
@@ -43,10 +41,15 @@ print.RPolarsDataType = function(x, ...) {
 #' @export
 "!=.RPolarsDataType" <- function(e1,e2) e1$ne(e2)
 
+
+
 #create any flag-like DataType
 DataType_new = function(str) {
   .pr$DataType$new_list(str)
 }
+
+#TODO contribute polars, DateType equality is implementd in py-polars and it not the same
+#as eq and ne methods.
 
 
 #' internal collection of datatype constructors
@@ -79,8 +82,29 @@ if(!inherits(datatype,"RPolarsDataType")) {
 }
 
 
+#' chek if x is a valid RPolarsDataType
+#' @name is_polars_dtype
+#' @param x a candidate
+#' @keywords internal
+#' @return a list DataType with an inner DataType
+#' @examples rpolars:::is_polars_dtype(pl$Int64)
+is_polars_dtype = function(x, include_unknown = FALSE) {
+  inherits(x,"RPolarsDataType") && (x != pl$Unknown || include_unknown)
+}
 
-
-
-
-
+#' check if x is a valid RPolarsDataType
+#' @name same_outer_datatype
+#' @param lhs an RPolarsDataType
+#' @param rhs an RPolarsDataType
+#' @keywords functions
+#' @return bool TRUE if outer datatype is the same.
+#' @examples
+#' # TRUE
+#' pl$same_outer_dt(pl$Datetime("us"),pl$Datetime("ms"))
+#' pl$same_outer_dt(pl$list(pl$Int64),pl$list(pl$Float32))
+#'
+#' #FALSE
+#' pl$same_outer_dt(pl$Int64,pl$Float64)
+pl$same_outer_dt = function(lhs, rhs) {
+  .pr$DataType$same_outer_datatype(lhs,rhs)
+}

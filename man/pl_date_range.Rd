@@ -4,15 +4,14 @@
 \alias{pl_date_range}
 \title{new date_range}
 \arguments{
-\item{low}{POSIXt, preferably with time_zone}
+\item{low}{POSIXt or Date preferably with time_zone or double or integer}
 
-\item{high}{POSIXt, preferably with time_zone}
+\item{high}{POSIXt or Date preferably with time_zone or double or integer. If high is and
+interval are missing, then single datetime is constructed.}
 
-\item{interval}{string pl_duration or R difftime}
+\item{interval}{string pl_duration or R difftime. Can be missing if high is missing also.}
 
-\item{...}{not used}
-
-\item{lazy}{bool}
+\item{lazy}{bool, if TRUE return expression}
 
 \item{closed}{option one of 'both'(default), 'left', 'none' or 'right'}
 
@@ -31,12 +30,11 @@ new date_range
 \details{
 If param time_zone is not defined the Series will have no time zone.
 
-NOTICE: R POSIXt without defined timezones(tzone/tz) are counter intuitive. It is recommended to
-always set the timezone of low and high. If not output will vary between local machine timezone,
-R and polars.
+NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
+intuitive in R. It is recommended to always set the timezone of low and high. If not output will
+vary between local machine timezone, R and polars.
 
-In r-polars it is perfectly fine to mix timezones of params time_zone, low and high in eager
-evaluation. TODO checkup on lazy polars implementation.
+In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and high.
 }
 \examples{
 

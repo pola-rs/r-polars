@@ -33,7 +33,7 @@ impl LazyFrame {
         let result = handle_thread_r_requests(self.clone().0).map_err(|err| {
             //improve err messages
             let err_string = match err {
-                pl::PolarsError::NotFound(polars::error::ErrString::Owned(x)) => {
+                pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(x)) => {
                     format!("Something (Likely a Column) named {:?} was not found", x)
                 }
                 x => format!("{:?}", x),

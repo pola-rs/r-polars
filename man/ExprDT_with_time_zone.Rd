@@ -8,7 +8,7 @@
 function
 }
 \arguments{
-\item{tz}{Null or string time zone from base::OlsonNames()}
+\item{tz}{String time zone from base::OlsonNames()}
 }
 \value{
 Expr of i64
@@ -27,6 +27,7 @@ df = pl$DataFrame(
 df$select(
   pl$col("date"),
   pl$col("date")
+    $dt$cast_time_zone("Europe/Amsterdam")
     $dt$with_time_zone("Europe/London")
     $alias("London_with"),
   pl$col("date")

@@ -10,13 +10,12 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 
 
 
-# Install latest rpolars release
+# Install latest binary rpolars package directly from github release
 
- No dependencies other than R (≥ 4.1.0)
-
+No dependencies other than R (≥ 4.1.0)
  - Macbbook x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
- 
+  
  - Linux x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
  
@@ -25,12 +24,25 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  
  - Other targets?  Start a new issue.
  - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
- 
- 
+ - We're working on a experimental cross-compiled binary for Arm64/M1.
+
+# Install rpolars via [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install)
+We are very happy to be hosted on R-universe. Thankyou so much to Jeroen Ooms for excellent support.
+```r
+# Enable repository from rpolars
+options(repos = c(
+  rpolars = 'https://rpolars.r-universe.dev',
+  CRAN = 'https://cloud.r-project.org'))
+# Download and install rpolars in R
+install.packages('rpolars')
+```
+R-universe provides binaries for windows and macos x86_64 and source builds for other platforms. Macos Arm64/M1 is pending.
+
+
+See further down how to install rust to build from source.
  
 # Documentation:
   [Latest docs found here](https://rpolars.github.io/reference/index.html)
-  
 
 # Contribute
  I'd freaking love any contributions <3 Just reach out if any questions.
@@ -83,8 +95,6 @@ Polars is built on the apache-arrow memory model.
 This port relies on extendr <https://github.com/extendr> which is the R
 equivalent to pyo3+maturin. Extendr is very convenient for calling rust
 from R and the reverse.
-
-
 
 ## Build manually from source for use (M1 arch also supported):
 

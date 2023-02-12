@@ -224,9 +224,9 @@ pub fn parse_fill_null_strategy(
         "zero" => Zero,
         "one" => One,
         e => {
-            return Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-                format!("Strategy named not found: {}", e),
-            )))
+            return Err(pl::PolarsError::InvalidOperation(
+                polars::error::ErrString::Owned(format!("Strategy named not found: {}", e)),
+            ))
         }
     };
     Ok(parsed)
