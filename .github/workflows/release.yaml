@@ -119,7 +119,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Release binary
-        if: matrix.binary == 'yes'
+        if: matrix.config.binary == 'yes'
         shell: bash
         run: |
           echo "also releasing binary"
