@@ -46,7 +46,7 @@ jobs:
       - name: cross compile targets
         shell: bash
         run: |
-          rustup target add --toolchain nightly ${arch}
+          rustup target add --toolchain nightly ${arch_name}
           cd ./src/rust/
           cargo +nightly build --lib --release --target ${arch_name}
           cp ./target/${arch_name}/release/librpolars.a ../../../rpolars_binary_${arch_name}.a
