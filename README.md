@@ -15,6 +15,9 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 No dependencies other than R (≥ 4.1.0)
  - Macbbook x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
+ 
+ - Macbook arm64 (Requires Xcode. Makevars script downloads 200MB cross-compiled object file, while your machine links and builds the final R package)
+ `remotes::install_github("https://github.com/pola-rs/r-polars",ref = "long_arms64", force =TRUE)`
   
  - Linux x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
@@ -24,7 +27,7 @@ No dependencies other than R (≥ 4.1.0)
  
  - Other targets?  Start a new issue.
  - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
- - We're working on a experimental cross-compiled binary for Arm64/M1.
+
 
 # Install rpolars via [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install)
 We are very happy to be hosted on R-universe. Thankyou so much to Jeroen Ooms for excellent support.
@@ -36,7 +39,7 @@ options(repos = c(
 # Download and install rpolars in R
 install.packages('rpolars')
 ```
-R-universe provides binaries for windows and macos x86_64 and source builds for other platforms. Macos Arm64/M1 is pending.
+R-universe provides binaries for windows and macos x86_64 and source builds for other platforms.
 
 
 See further down how to install rust to build from source.
