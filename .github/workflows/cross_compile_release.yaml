@@ -43,6 +43,24 @@ jobs:
           workspaces: ./src/rust/
           cache-on-failure: "true"
 
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update \
+          && sudo apt-get install -y \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libfribidi-dev \
+            libharfbuzz-dev \
+            libcurl4-openssl-dev \
+            libgit2-dev \
+            libicu-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libxml2-dev \
+            libssl-dev
+
       - name: cross compile targets
         shell: bash
         run: |
