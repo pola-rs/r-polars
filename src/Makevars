@@ -4,27 +4,38 @@ PKG_LIBS = -L$(LIBDIR) -lrpolars
 RPOLARS_RUST_SOURCE ?= ./rust
 RPOLARS_CARGO_CLEAN_DEPS ?= nope
 rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/librpolars.a"
-fetch_premade_binary = nope
-rpolars_url_binary = https://github.com/pola-rs/r-polars/releases/v0.4.3_binary/download/rpolars__x86_64-apple-darwin17.a
+fetch_premade_binary = true
+rpolars_url_binary_1 = https://github.com/pola-rs/r-polars/releases/download/m1test12/rpolars_binary_x86_64-apple-darwin.a
+rpolars_url_binary_2 = https://github.com/pola-rs/r-polars/releases/download/m1test12/rpolars_binary_aarch64-apple-darwin.a
+env_arch ?= not_set
 
 all: C_clean
 
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-
-	# Get pre-made binary, then rustc/cargo toolchain is not needed
-	if [ -f "$(fetch_premade_binary)"  == "true"]; \
+	echo ${env_arch}
+	# arch cross compile arch
+	if [ "${env_arch}" == "x86_64" ]; \
 	then \
+		rpolars_url_binary="${rpolars_url_binary_1}"; \
+	else \
+		rpolars_url_binary="${rpolars_url_binary_2}"; \
+	fi; \
+	echo $$rpolars_url_binary; \
+	if [ "$(fetch_premade_binary)"  == "true" ]; \
+	then \
+			echo "fetch!!"; \
 	    mkdir -p $(LIBDIR); \
-    	curl -L -o $(STATLIB) $(rpolars_url_binary); \
+    	curl -L -o $(STATLIB) $$rpolars_url_binary; \
+  else \
+		curdir=$(CURDIR); \
+		cd $(RPOLARS_RUST_SOURCE)/..; \
+		cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"; \
+		cd $(curdir); \
 	fi
 
-	# compile binary self here (may areaady be compiled in RPOLARS_RUST_SOURCE dir via cache)
-	curdir=$(CURDIR)
-	cd $(RPOLARS_RUST_SOURCE)/..
-	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
-	cd $(curdir)
+
 
 	# if compilation did take place "here" but in RPOLARS_RUST_SOURCE then symlink the binary to here
 	if [ -f "$(STATLIB)" ]; \
