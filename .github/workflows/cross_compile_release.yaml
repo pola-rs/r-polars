@@ -26,8 +26,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: ubuntu-latest, arch: "aarch64-apple-darwin" }
-          - { os: ubuntu-latest, arch: "x86_64-apple-darwin" }
+          - { os: macos-latest, arch: "aarch64-apple-darwin" }
+          - { os: macos-latest, arch: "x86_64-apple-darwin" }
 
     steps:
       - uses: actions/checkout@v3
@@ -64,6 +64,7 @@ jobs:
       - name: cross compile targets
         shell: bash
         run: |
+          echo 
           rustup target add --toolchain nightly ${arch_name}
           cd ./src/rust/
           cargo +nightly build --lib --release --target ${arch_name}
