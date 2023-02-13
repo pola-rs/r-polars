@@ -1,0 +1,61 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main]
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  workflow_dispatch:
+
+name: Release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.arch }} (${{ matrix.config.r }})
+
+    permissions:
+      contents: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: ubuntu-latest, arch: "aarch64-apple-darwin" }
+          - { os: ubuntu-latest, arch: "x86_64-apple-darwin" }
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "nightly"
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
+
+      - name: cross compile targets
+        shell: bash
+        run: |
+          rustup target add --toolchain nightly ${arch}
+          cd ./src/rust/
+          cargo +nightly build --lib --release --target ${arch_name}
+          cp ./target/${arch_name}/release/librpolars.a ../../../rpolars_binary_${arch_name}.a
+        env:
+          arch_name: ${{ matrix.config.arch }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+        with:
+          files: |
+            ../rpolars_binary_*
