@@ -30,7 +30,6 @@ jobs:
               os: macos-latest,
               r: "release",
               arch: "nightly-aarch64-apple-darwin",
-              binary: "yes",
             }
           - {
               os: macos-latest,
@@ -63,7 +62,9 @@ jobs:
         shell: bash
         run: |
           rustup toolchain install nightly-aarch64-apple-darwin
-          rustup default nightly-aarch64-apple-darwin
+          cd ./src/rust/
+          cargo +nightly build --lib --release --target aarch64-apple-darwin
+          cp ./target/aarch64-apple-darwin/librpolars.a ../../../rpolars_binary_${arch_name}.a
 
       - name: Cache Rust
         if: matrix.config.arch != 'nightly-aarch64-apple-darwin'
@@ -75,6 +76,7 @@ jobs:
       - name: pre-compile rpolars
         shell: bash
         run: |
+          cd ./src/rust/
           cargo build --lib --release
 
       - uses: r-lib/actions/setup-pandoc@v2
