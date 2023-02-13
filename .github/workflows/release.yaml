@@ -61,7 +61,7 @@ jobs:
         if: matrix.config.arch == 'nightly-aarch64-apple-darwin'
         shell: bash
         run: |
-          rustup toolchain install nightly-aarch64-apple-darwin
+          rustup target add --toolchain nightly aarch64-apple-darwin
           cd ./src/rust/
           cargo +nightly build --lib --release --target aarch64-apple-darwin
           cp ./target/aarch64-apple-darwin/librpolars.a ../../../rpolars_binary_${arch_name}.a
