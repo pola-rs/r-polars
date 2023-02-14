@@ -414,10 +414,7 @@ pub fn robj_to_char(robj: extendr_api::Robj) -> std::result::Result<char, String
     };
     match (fchar_iter.next(), fchar_iter.next()) {
         (Some(x), None) => Ok(x),
-        (_, _) => Err(format!(
-            "robj is not a single char string but [ {:?} ]",
-            robj
-        )),
+        (_, _) => Err(format!("not a single char string, but {:?}", robj)),
     }
 }
 
@@ -428,11 +425,43 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, Stri
         (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
         (_, _) => None,
     }
+    .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
+    .and_then(|float| try_f64_into_usize(float, false))
+}
+
+pub fn named_robj_to_usize(
+    robj: extendr_api::Robj,
+    name: &str,
+) -> std::result::Result<usize, String> {
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
     .ok_or_else(|| {
         format!(
-            "Robj is not scalar integer or double as required, it is [ {:?} ]",
+            "not a scalar integer or double as required, it is {:?}",
             robj
         )
     })
     .and_then(|float| try_f64_into_usize(float, false))
+    .map_err(|err| format!("[{}] is {}", name, err))
+}
+
+#[macro_export]
+macro_rules! try_robj_to {
+    (usize, $a:ident) => {
+        named_robj_to_usize($a, stringify!($a))
+    };
+    (usize, $a:ident, $b:expr) => {
+        named_robj_to_usize($a, stringify!($a)).map_err(|err| format!($b, err))
+    };
+    (char, $a:ident) => {
+        robj_to_char($a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
+    };
+    (char, $a:ident, $b:expr) => {
+        robj_to_char($a, stringify!($a))
+            .map_err(|err| format!("{} {}", stringify!($b), format!($b, err)))
+    };
 }

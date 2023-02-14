@@ -4,7 +4,8 @@ use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
-use crate::utils::{robj_to_char, robj_to_usize};
+use crate::try_robj_to;
+use crate::utils::{named_robj_to_usize, robj_to_char};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -1788,35 +1789,31 @@ impl Expr {
         self.0.clone().str().lstrip(null_to_opt(matches)).into()
     }
 
-    pub fn str_zfill(&self, alignment: f64) -> List {
-        let res = try_f64_into_usize(alignment, false)
+    pub fn str_zfill(&self, alignment: Robj) -> List {
+        let res = try_robj_to!(usize, alignment, "in str$zfill(): {:?}")
             .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
         r_result_list(res)
     }
 
     pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .ljust(robj_to_usize(width)?, robj_to_char(fillchar)?),
-            ))
+            Ok(Expr(self.clone().0.str().ljust(
+                try_robj_to!(usize, width)?,
+                try_robj_to!(char, fillchar)?,
+            )))
         }()
-        .map_err(|err| format!("in str_ljust: {:?}", err));
+        .map_err(|err| format!("in str$ljust: {:?}", err));
         r_result_list(res)
     }
 
     pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .rjust(robj_to_usize(width)?, robj_to_char(fillchar)?),
-            ))
+            Ok(Expr(self.clone().0.str().rjust(
+                try_robj_to!(usize, width)?,
+                try_robj_to!(char, fillchar)?,
+            )))
         }()
-        .map_err(|err| format!("in str_ljust: {:?}", err));
+        .map_err(|err| format!("in str$rjust: {:?}", err));
         r_result_list(res)
     }
 

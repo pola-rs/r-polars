@@ -4,24 +4,18 @@
 \alias{ExprStr_zfill}
 \alias{expr_str_zfill}
 \title{zfill}
-\usage{
-ExprStr_zfill(alignment)
-}
 \arguments{
-\item{width}{Justify left to this length.}
-
-\item{fillchar}{Fill with this ASCII character.}
+\item{alignment}{Fill the value up to this length}
 }
 \value{
-Expr of Utf8
+Expr
 }
 \description{
-Return the string left justified in a string of length \code{width}.
+Fills the string with zeroes.
 }
 \details{
-Padding is done using the specified \code{fillchar}.
-The original string is returned if \code{width} is less than or equal to
-\code{len(s)}.
+Return a copy of the string left filled with ASCII '0' digits to make a string
+of length width.
 
 A leading sign prefix ('+'/'-') is handled by inserting the padding after the
 sign character rather than before. The original string is returned if width is

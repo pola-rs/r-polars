@@ -152,7 +152,7 @@ test_that("str$to_uppercase to_lowercase", {
 })
 
 
-test_that("str$to_uppercase to_lowercase", {
+test_that("strip rstrip lstrip", {
 
   lit = pl$lit(" 123abc ")
 
@@ -170,5 +170,91 @@ test_that("str$to_uppercase to_lowercase", {
   expect_identical(lit$str$rstrip()$to_r(), " 123abc")
   expect_identical(lit$str$rstrip("1c")$to_r(), " 123abc ")
   expect_identical(lit$str$rstrip("1c ")$to_r(), " 123ab")
+
+})
+
+
+test_that("zfill", {
+
+  lit = pl$lit(" 123abc ")
+
+  #strip
+  expect_identical(lit$str$zfill(9)$to_r(), "0 123abc ")
+  expect_identical(lit$str$zfill(10)$to_r(), "00 123abc ")
+  expect_identical(lit$str$zfill(10L)$to_r(), "00 123abc ")
+  expect_identical(
+    pl$lit(c(-1,2,10,"5"))$str$zfill(6)$to_r(),
+    c("-00001", "000002", "000010", "000005")
+  )
+
+  #test wrong input type
+  expect_grepl_error(
+    expect_identical(
+      pl$lit(c(-1,2,10,"5"))$str$zfill("a")$to_r(),
+      "something"
+    ),
+    "is not a scalar integer or double as required"
+  )
+
+  #test wrong input range
+  expect_grepl_error(
+    pl$lit(c(-1,2,10,"5"))$str$zfill(-3)$to_r(),
+    "is the value -3 cannot be less than zero"
+  )
+
+})
+
+#patrick package could be justified here
+test_that("str$ljust str$rjust", {
+
+  #ljust
+  df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
+  expect_identical(
+    df$select(pl$col("a")$str$ljust(8, "*"))$to_list(),
+    list(a = c("cow*****", "monkey**", NA, "hippopotamus"))
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$str$ljust(7, "w"))$to_list(),
+    list(a = c("cowwwww", "monkeyw", NA, "hippopotamus"))
+  )
+
+  expect_grepl_error(
+    df$select(pl$col("a")$str$ljust("wrong_string", "w"))$to_list(),
+    "\\[width\\] is not a scalar integer or double as required"
+  )
+  expect_grepl_error(
+    df$select(pl$col("a")$str$ljust(-2, "w"))$to_list(),
+    "\\[width\\] is the value -2 cannot be less than zero"
+  )
+  expect_grepl_error(
+    df$select(pl$col("a")$str$ljust(5, "multiple_chars"))$to_list(),
+    "in str.ljust: \\\"\\[fillchar\\] is not a single char string, but "
+  )
+
+
+  #rjust
+  expect_identical(
+    df$select(pl$col("a")$str$rjust(8, "*"))$to_list(),
+    list(a = c("*****cow", "**monkey", NA, "hippopotamus"))
+  )
+
+  expect_identical(
+    df$select(pl$col("a")$str$rjust(7, "w"))$to_list(),
+    list(a = c("wwwwcow", "wmonkey", NA, "hippopotamus"))
+  )
+
+  expect_grepl_error(
+    df$select(pl$col("a")$str$rjust("wrong_string", "w"))$to_list(),
+    "\\[width\\] is not a scalar integer or double as required"
+  )
+  expect_grepl_error(
+    df$select(pl$col("a")$str$rjust(-2, "w"))$to_list(),
+    "\\[width\\] is the value -2 cannot be less than zero"
+  )
+  expect_grepl_error(
+    df$select(pl$col("a")$str$rjust(5, "multiple_chars"))$to_list(),
+    "in str.rjust: \\\"\\[fillchar\\] is not a single char string, but "
+  )
 
 })

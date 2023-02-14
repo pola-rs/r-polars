@@ -254,18 +254,18 @@ ExprStr_rstrip = function(matches = NULL) {
 #' zfill
 #' @name ExprStr_zfill
 #' @aliases expr_str_zfill
-#' @description  Return the string left justified in a string of length ``width``.
+#' @description   Fills the string with zeroes.
 #' @keywords ExprStr
-#' @param width Justify left to this length.
-#' @param fillchar  Fill with this ASCII character.
-#' @details  Padding is done using the specified ``fillchar``.
-#' The original string is returned if ``width`` is less than or equal to
-#' ``len(s)``.
+#' @param alignment Fill the value up to this length
+#' @details
+#' Return a copy of the string left filled with ASCII '0' digits to make a string
+#' of length width.
 #'
 #' A leading sign prefix ('+'/'-') is handled by inserting the padding after the
 #' sign character rather than before. The original string is returned if width is
 #' less than or equal to ``len(s)``.
-#' @return Expr of Utf8
+#'
+#' @return Expr
 #' @examples
 #' some_floats_expr = pl$lit(c(0,10,-5,5))
 #'
@@ -279,31 +279,39 @@ ExprStr_zfill = function(alignment) {
 }
 
 
+#' ljust
+#' @name ExprStr_ljust
+#' @aliases expr_str_ljust
+#' @description Return the string left justified in a string of length ``width``.
+#' @keywords ExprStr
+#' @param width Justify left to this length.
+#' @param fillchar Fill with this ASCII character.
+#' @details Padding is done using the specified ``fillchar``. The original string is returned if
+#' ``width`` is less than or equal to ``len(s)``.
+#' @return Expr of Utf8
+#' @examples
+#' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
+#' df$select(pl$col("a")$str$ljust(8, "*"))
+ExprStr_ljust = function(width, fillchar = " ") {
+  unwrap(.pr$Expr$str_ljust(self, width, fillchar))
+}
 
 
-#' #' ljust
-#' #' @name ExprStr_ljust
-#' #' @aliases expr_str_ljust
-#' #' @description  Fills the string with zeroes.
-#' #' @keywords ExprStr
-#' #' @param alignment  Fill the value up to this length
-#' #' @details  Return a copy of the string left filled with ASCII '0' digits to make a string
-#' #' of length width.
-#' #'
-#' #' A leading sign prefix ('+'/'-') is handled by inserting the padding after the
-#' #' sign character rather than before. The original string is returned if width is
-#' #' less than or equal to ``len(s)``.
-#' #' @return Expr of Utf8
-#' #' @examples
-#' #' some_floats_expr = pl$lit(c(0,10,-5,5))
-#' #'
-#' #' #cast to Utf8 and ljust alignment = 5, and view as R char vector
-#' #' some_floats_expr$cast(pl$Utf8)$str$ljust(5)$to_r()
-#' #'
-#' #' #cast to int and the to utf8 and then ljust alignment = 5, and view as R char vector
-#' #' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$ljust(5)$to_r()
-#' ExprStr_ljust = function(alignment) {
-#'   unwrap(.pr$Expr$str_ljust(self,alignment))
-#' }
+#' rjust
+#' @name ExprStr_rjust
+#' @aliases expr_str_rjust
+#' @description Return the string left justified in a string of length ``width``.
+#' @keywords ExprStr
+#' @param width Justify left to this length.
+#' @param fillchar Fill with this ASCII character.
+#' @details Padding is done using the specified ``fillchar``. The original string is returned if
+#' ``width`` is less than or equal to ``len(s)``.
+#' @return Expr of Utf8
+#' @examples
+#' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
+#' df$select(pl$col("a")$str$rjust(8, "*"))
+ExprStr_rjust = function(width, fillchar = " ") {
+  unwrap(.pr$Expr$str_rjust(self, width, fillchar))
+}
 
 
