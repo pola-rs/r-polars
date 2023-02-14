@@ -38,7 +38,7 @@ extendr_method_to_pure_functions = function(env) {
 .pr            = new.env(parent=emptyenv())
 .pr$Series     = extendr_method_to_pure_functions(Series)
 .pr$DataFrame  = extendr_method_to_pure_functions(DataFrame)
-.pr$GroupBy    = NULL # derived from DataFrame in R, has no  rust calls
+.pr$GroupBy    = NULL # derived from DataFrame in R, has no rust calls
 .pr$LazyFrame  = extendr_method_to_pure_functions(LazyFrame)
 .pr$LazyGroupBy= extendr_method_to_pure_functions(LazyGroupBy)
 .pr$DataType   = extendr_method_to_pure_functions(RPolarsDataType)

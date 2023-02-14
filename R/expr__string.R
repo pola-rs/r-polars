@@ -249,3 +249,61 @@ ExprStr_lstrip = function(matches = NULL) {
 ExprStr_rstrip = function(matches = NULL) {
   .pr$Expr$str_rstrip(self, matches)
 }
+
+
+#' zfill
+#' @name ExprStr_zfill
+#' @aliases expr_str_zfill
+#' @description  Return the string left justified in a string of length ``width``.
+#' @keywords ExprStr
+#' @param width Justify left to this length.
+#' @param fillchar  Fill with this ASCII character.
+#' @details  Padding is done using the specified ``fillchar``.
+#' The original string is returned if ``width`` is less than or equal to
+#' ``len(s)``.
+#'
+#' A leading sign prefix ('+'/'-') is handled by inserting the padding after the
+#' sign character rather than before. The original string is returned if width is
+#' less than or equal to ``len(s)``.
+#' @return Expr of Utf8
+#' @examples
+#' some_floats_expr = pl$lit(c(0,10,-5,5))
+#'
+#' #cast to Utf8 and ljust alignment = 5, and view as R char vector
+#' some_floats_expr$cast(pl$Utf8)$str$zfill(5)$to_r()
+#'
+#' #cast to int and the to utf8 and then ljust alignment = 5, and view as R char vector
+#' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$zfill(5)$to_r()
+ExprStr_zfill = function(alignment) {
+  unwrap(.pr$Expr$str_zfill(self,alignment))
+}
+
+
+
+
+#' #' ljust
+#' #' @name ExprStr_ljust
+#' #' @aliases expr_str_ljust
+#' #' @description  Fills the string with zeroes.
+#' #' @keywords ExprStr
+#' #' @param alignment  Fill the value up to this length
+#' #' @details  Return a copy of the string left filled with ASCII '0' digits to make a string
+#' #' of length width.
+#' #'
+#' #' A leading sign prefix ('+'/'-') is handled by inserting the padding after the
+#' #' sign character rather than before. The original string is returned if width is
+#' #' less than or equal to ``len(s)``.
+#' #' @return Expr of Utf8
+#' #' @examples
+#' #' some_floats_expr = pl$lit(c(0,10,-5,5))
+#' #'
+#' #' #cast to Utf8 and ljust alignment = 5, and view as R char vector
+#' #' some_floats_expr$cast(pl$Utf8)$str$ljust(5)$to_r()
+#' #'
+#' #' #cast to int and the to utf8 and then ljust alignment = 5, and view as R char vector
+#' #' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$ljust(5)$to_r()
+#' ExprStr_ljust = function(alignment) {
+#'   unwrap(.pr$Expr$str_ljust(self,alignment))
+#' }
+
+
