@@ -10,60 +10,19 @@ if(build_debug_print) print(paste(
 ))
 
 
-## modify these Series methods
-# env = rpolars:::Series
-# env$to_r        = Series_to_r
-# env$to_r_vector = Series_to_r_vector
-# env$to_r_list   = Series_to_r_list
-# env$abs         = Series_abs
-# env$apply       = Series_apply
-# env$value_counts= Series_value_counts
-# env$is_unique   = Series_is_unique
-# env$all         = Series_all
-# env$shape       = Series_shape
-# env$len         = Series_len
-# env$ceil        = Series_ceil
-# env$floor       = Series_floor
-# env$chunk_lengths = Series_chunk_lengths
-# env$append      = Series_append
-
-
-
-# #rewrite all binary operators or other methods to accept something that can turn into a Series
-# lapply(Series_ops, \(so) {
-#   more_args = attr(so,"more_args")
-#   if(!is.null(more_args)) more_args = paste0(", ",more_args,collapse=", ")
-#
-#   env[[so]] =eval(parse(text=paste0(
-#     "function(other",more_args,") .Call(wrap__Series__",so,", self, wrap_s(other)",more_args,")"
-#   )))
-#   invisible(NULL)
-# })
-
 # modify these Dataframe methods
-macro_add_syntax_check_to_class("DataFrame")
 replace_private_with_pub_methods(DataFrame, "^DataFrame_")
 
-# GroupBy
-macro_add_syntax_check_to_class("GroupBy")
+
 env = GroupBy
 env$agg = GroupBy_agg
 env$as_data_frame = GroupBy_as_data_frame
+macro_add_syntax_check_to_class("GroupBy")
 
 # LazyFrame
-macro_add_syntax_check_to_class ("LazyFrame")
 replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
-# env = rpolars:::LazyFrame
-# env$collect = Lazy_collect
-# env$select = Lazy_select
-# env$with_columns = Lazy_with_columns
-# env$groupby = Lazy_groupby
-# env$join    = Lazy_join
-# env$limit   = Lazy_limit
-# env$describe_optimized_plan = Lazy_describe_optimized_plan
 
 # LazyGroupBy
-macro_add_syntax_check_to_class("LazyGroupBy")
 env = LazyGroupBy
 env$agg = LazyGroupBy_agg
 env$apply = LazyGroupBy_apply
@@ -72,16 +31,48 @@ env$tail  = LazyGroupBy_tail
 rm(env)
 
 # Expr
-
-
-macro_add_syntax_check_to_class("Expr")
 replace_private_with_pub_methods(Expr, "^Expr_")
+
+#configure subnames spaces of Expr
+#' @export
+`$.ExprArrNameSpace` = sub_name_space_accessor_function
 expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
+
+#' @export
+`$.ExprStrNameSpace` = sub_name_space_accessor_function
 expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
+
+#' @export
+`$.ExprDTNameSpace` = sub_name_space_accessor_function
 expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
+
+
+# any sub-namespace inherits 'method_environment'
+# This s3 method performs auto-completion
+#' @export
+.DollarNames.method_environment = function(x, pattern = "") {
+
+  # I ponder why R chose to let attributes of environments be mutable also?!
+  # temp store full class and upcast to plain environment
+  old_class = class(x)
+  class(x) = "environment"
+
+  #use environment function to complete available methods
+  found_usages = get_method_usages(x,pattern = pattern)
+
+  #restore class, before returning to not cause havoc somewhere else
+  class(x) = old_class
+  found_usages
+}
+
+
+
+
+
+
+
 #Series
-macro_add_syntax_check_to_class("Series")
 replace_private_with_pub_methods(Series, "^Series_")
 
 
