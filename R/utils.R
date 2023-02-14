@@ -59,16 +59,16 @@ expect_strictly_identical = function(object,expected,...) {
 #' @param Class_env env_class object (the classes created by extendr-wrappers.R)
 #' @param Method_name name of method requested by user
 #' @param call context to throw user error, just use default
+#' @param class_name NULLs
 #' @keywords internal
 #' @return invisible(NULL)
-verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
+verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name =NULL) {
 
   if(!Method_name %in% names(Class_env)) {
+    class_name = class_name %||%  as.character(as.list(match.call())$Class_env)
     stop(
       paste(
-        "syntax error:",
-        Method_name,"is not a method/attribute of the class",
-        as.character(as.list(match.call())$Class_env),
+        "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         #add call to error messages
         if(!rpolars_optenv$do_not_repeat_call) {
@@ -526,7 +526,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
       f = get(f_name)
       paste0("  env$",m_name," = ",paste(capture.output(dput(f)), collapse = "\n"))
     })),
-    "  class(env) = c(subclass_env, class(env))",
+    "  class(env) = c(subclass_env, 'method_environment',class(env))",
     "  env",
     "}"
   )
@@ -674,3 +674,11 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
     Ok(tz)
   }
 }
+
+
+sub_name_space_accessor_function = function (self, name) {
+  verify_method_call(self,name,class_name = class(self)[1L])
+  func <- self[[name]]
+  func
+}
+
