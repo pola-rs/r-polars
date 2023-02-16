@@ -17,6 +17,7 @@ jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
 extendr-api = { git = "https://github.com/extendr/extendr", rev = "f27bda063040e0302747bece860c094c623a03be"}
+#extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
 
 flume = "0.10.14"
 state = "0.5.3"

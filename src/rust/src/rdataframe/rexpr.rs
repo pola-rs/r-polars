@@ -5,7 +5,7 @@ use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::try_robj_to;
-use crate::utils::{named_robj_to_usize, robj_to_char};
+use crate::utils::{named_robj_to_usize, robj_to_char, robj_to_string};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -1817,20 +1817,41 @@ impl Expr {
         r_result_list(res)
     }
 
-    // pub fn str_contains(&self, pat: Expr, literal: Option<bool>, strict: bool) -> Self {
-    //     match literal {
-    //         Some(true) => self.0.clone().str().contains_literal(pat.0).into(),
-    //         _ => self.0.clone().str().contains(pat.0, strict).into(),
-    //     }
-    // }
+    pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {
+        Expr(match null_to_opt(literal) {
+            Some(true) => self.0.clone().str().contains_literal(pat.0.clone()),
+            _ => self.0.clone().str().contains(pat.0.clone(), strict),
+        })
+    }
 
-    // pub fn str_ends_with(&self, sub: Expr) -> Self {
-    //     self.0.clone().str().ends_with(sub.0).into()
-    // }
+    pub fn str_ends_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().ends_with(sub.0.clone()).into()
+    }
 
-    // pub fn str_starts_with(&self, sub: Expr) -> Self {
-    //     self.0.clone().str().starts_with(sub.0).into()
-    // }
+    pub fn str_starts_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().starts_with(sub.0.clone()).into()
+    }
+
+    pub fn str_json_path_match(&self, pat: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            use pl::*;
+            let pat: String = try_robj_to!(String, pat, "in str$json_path_match: {}")?;
+            let function = move |s: Series| {
+                let ca = s.utf8()?;
+                match ca.json_path_match(&pat) {
+                    Ok(ca) => Ok(Some(ca.into_series())),
+                    Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
+                }
+            };
+            Ok(Expr(
+                self.0
+                    .clone()
+                    .map(function, GetOutput::from_type(pl::DataType::Utf8))
+                    .with_fmt("str.json_path_match"),
+            ))
+        }();
+        r_result_list(res)
+    }
 }
 
 //allow proto expression that yet only are strings

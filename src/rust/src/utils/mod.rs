@@ -418,6 +418,14 @@ pub fn robj_to_char(robj: extendr_api::Robj) -> std::result::Result<char, String
     }
 }
 
+pub fn robj_to_string(robj: extendr_api::Robj) -> std::result::Result<String, String> {
+    use extendr_api::Length;
+    match (robj.as_str(), robj.len()) {
+        (Some(x), 1) => Ok(x.to_string()),
+        (_, _) => Err(format!("not a single string, but {:?}", robj)),
+    }
+}
+
 pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, String> {
     use extendr_api::*;
     match (robj.rtype(), robj.len()) {
@@ -461,7 +469,15 @@ macro_rules! try_robj_to {
         robj_to_char($a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
     };
     (char, $a:ident, $b:expr) => {
-        robj_to_char($a, stringify!($a))
-            .map_err(|err| format!("{} {}", stringify!($b), format!($b, err)))
+        robj_to_char($a).map_err(|err| format!("{} {}", stringify!($b), format!($b, err)))
+    };
+
+    //arg name + error_msg
+    (String, $a:ident) => {
+        robj_to_string($a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
+    };
+    //context + arg name + error_msg
+    (String, $a:ident, $b:expr) => {
+        try_robj_to!(String, $a).map_err(|err| format!($b, err))
     };
 }

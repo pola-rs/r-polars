@@ -158,16 +158,18 @@ impl DataFrame {
 
     fn to_list(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
+
         let robj_vec_res: Result<Vec<Robj>, _> =
             self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
-        });
+        let robj_list_res = robj_vec_res
+            .map_err(|err| format!("conversion error for a polars Series to R: {}", err))
+            .and_then(|vec_robj| {
+                extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
+                    .map_err(|err| format!("internal error: could not create an R list {}", err))
+                    .map(|ok| ok.into_robj())
+            });
 
         r_result_list(robj_list_res)
     }
@@ -178,12 +180,13 @@ impl DataFrame {
             self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
-        });
+        let robj_list_res = robj_vec_res
+            .map_err(|err| format!("conversion error for a polars Series to R: {}", err))
+            .and_then(|vec_robj| {
+                extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
+                    .map_err(|err| format!("internal error: could not create an R list {}", err))
+                    .map(|ok| ok.into_robj())
+            });
 
         robj_list_res.unwrap()
     }
@@ -196,12 +199,13 @@ impl DataFrame {
             self.0.iter().map(|x| pl_series_to_list(x, true)).collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
-        });
+        let robj_list_res = robj_vec_res
+            .map_err(|err| format!("conversion error for a polars Series to R: {}", err))
+            .and_then(|vec_robj| {
+                extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
+                    .map_err(|err| format!("internal error: could not create an R list {}", err))
+                    .map(|ok| ok.into_robj())
+            });
 
         r_result_list(robj_list_res)
     }

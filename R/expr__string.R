@@ -315,3 +315,89 @@ ExprStr_rjust = function(width, fillchar = " ") {
 }
 
 
+#' contains
+#' @name ExprStr_contains
+#' @aliases expr_str_contains
+#' @description R Check if string contains a substring that matches a regex.
+#' @keywords ExprStr
+#' @param pattern String or Expr of a string, a valid regex pattern.
+#' @param literal bool, treat pattern as a literal string. NULL is aliased with FALSE.
+#' @param strict bool, raise an error if the underlying pattern is not a valid
+#' regex expression, otherwise mask out with a null value.
+#' @details
+#'   starts_with : Check if string values start with a substring.
+#'   ends_with : Check if string values end with a substring.
+#' @return Expr returning a Boolean
+#' @examples
+#' df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
+#' df$select(
+#'   pl$col("a"),
+#'   pl$col("a")$str$contains("cat|bit")$alias("regex"),
+#'   pl$col("a")$str$contains("rab$", literal=TRUE)$alias("literal")
+#' )
+ExprStr_contains = function(pattern, literal = FALSE, strict = TRUE) {
+  .pr$Expr$str_contains(self, wrap_e(pattern, str_to_lit = TRUE), literal, strict)
+}
+
+#' ends_with
+#' @name ExprStr_ends_with
+#' @aliases expr_str_ends_with
+#' @description   Check if string values end with a substring.
+#' @keywords ExprStr
+#' @param sub Suffix substring or Expr.
+#' @details
+#'    contains : Check if string contains a substring that matches a regex.
+#'    starts_with : Check if string values start with a substring.
+#' @return Expr returning a Boolean
+#' @examples
+#' df = pl$DataFrame(fruits = c("apple", "mango", NA))
+#' df$select(
+#'   pl$col("fruits"),
+#'   pl$col("fruits")$str$ends_with("go")$alias("has_suffix")
+#' )
+ExprStr_ends_with = function(sub) {
+  .pr$Expr$str_ends_with(self, wrap_e(sub, str_to_lit = TRUE))
+}
+
+
+#' starts_with
+#' @name ExprStr_starts_with
+#' @aliases expr_str_starts_with
+#' @description   Check if string values starts with a substring.
+#' @keywords ExprStr
+#' @param sub Prefix substring or Expr.
+#' @details
+#' contains : Check if string contains a substring that matches a regex.
+#' ends_with : Check if string values end with a substring.
+#' @return Expr returning a Boolean
+#' @examples
+#' df = pl$DataFrame(fruits = c("apple", "mango", NA))
+#' df$select(
+#'   pl$col("fruits"),
+#'   pl$col("fruits")$str$starts_with("app")$alias("has_suffix")
+#' )
+ExprStr_starts_with = function(sub) {
+  .pr$Expr$str_starts_with(self, wrap_e(sub, str_to_lit = TRUE))
+}
+
+
+#' json_path_match
+#' @name ExprStr_json_path_match
+#' @aliases expr_str_json_path_match
+#' @description Extract the first match of json string with provided JSONPath expression.
+#' @keywords ExprStr
+#' @param sub Prefix substring or Expr.
+#' @details
+#' Throw errors if encounter invalid json strings.
+#' All return value will be casted to Utf8 regardless of the original value.
+#' Documentation on JSONPath standard can be found
+#' `here <https://goessner.net/articles/JsonPath/>`_.
+#' @return Expr returning a boolean
+#' @examples
+#' df = pl$DataFrame(
+#'   json_val =  c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
+#' )
+#' df$select(pl$col("json_val")$str$json_path_match("$.a"))
+ExprStr_json_path_match = function(pat) {
+  unwrap(.pr$Expr$str_json_path_match(self, pat))
+}

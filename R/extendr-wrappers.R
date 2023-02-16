@@ -552,6 +552,14 @@ Expr$str_ljust <- function(width, fillchar) .Call(wrap__Expr__str_ljust, self, w
 
 Expr$str_rjust <- function(width, fillchar) .Call(wrap__Expr__str_rjust, self, width, fillchar)
 
+Expr$str_contains <- function(pat, literal, strict) .Call(wrap__Expr__str_contains, self, pat, literal, strict)
+
+Expr$str_ends_with <- function(sub) .Call(wrap__Expr__str_ends_with, self, sub)
+
+Expr$str_starts_with <- function(sub) .Call(wrap__Expr__str_starts_with, self, sub)
+
+Expr$str_json_path_match <- function(pat) .Call(wrap__Expr__str_json_path_match, self, pat)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

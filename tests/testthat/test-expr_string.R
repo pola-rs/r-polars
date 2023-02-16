@@ -258,3 +258,63 @@ test_that("str$ljust str$rjust", {
   )
 
 })
+
+
+
+test_that("str$contains", {
+  df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
+
+  df_act = df$select(
+    pl$col("a"),
+    pl$col("a")$str$contains("cat|bit")$alias("regex"),
+    pl$col("a")$str$contains("rab$", literal=TRUE)$alias("literal")
+  )
+
+  expect_identical(
+    df_act$to_list(),
+    list(
+      a = c("Crab", "cat and dog", "rab$bit", NA), regex = c(FALSE,
+      TRUE, TRUE, NA), literal = c(FALSE, FALSE, TRUE, NA)
+    )
+  )
+
+  #TODO seem strict does not work, raised issue https://github.com/pola-rs/polars/issues/6901
+  # expect_grepl_error(
+  #   df$select(
+  #     pl$col("a")$str$contains(
+  #       "($INVALIDREGEX$", literal=FALSE, strict=FALSE
+  #     )$alias("literal")
+  #   )
+  # )
+
+  #)
+})
+
+
+test_that("str$starts_with str$ends_with", {
+  df = pl$DataFrame(a = c("foobar", "fruitbar", "foofighers", NA))
+
+  df_act = df$select(
+    pl$col("a"),
+    pl$col("a")$str$starts_with("foo")$alias("starts_foo"),
+    pl$col("a")$str$ends_with("bar")$alias("ends_bar")
+  )
+  expect_identical(
+    df_act$to_list(),
+    list(
+      a = c("foobar", "fruitbar", "foofighers", NA),
+      starts_foo = c(TRUE,FALSE, TRUE, NA),
+      ends_bar = c(TRUE, TRUE, FALSE, NA)
+    )
+  )
+})
+
+test_that("str$json_path", {
+  df = pl$DataFrame(
+    json_val =  c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
+  )
+  expect_identical(
+    df$select(pl$col("json_val")$str$json_path_match("$.a"))$to_list(),
+    list(json_val = c("1", NA, "2", "2.1", "true"))
+  )
+})
