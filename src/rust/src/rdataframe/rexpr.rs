@@ -1327,12 +1327,16 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn dt_with_time_zone(&self, tz: String) -> Self {
-        self.0.clone().dt().with_time_zone(tz).into()
+    pub fn dt_convert_time_zone(&self, tz: String) -> Self {
+        self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_cast_time_zone(&self, tz: Nullable<String>) -> Self {
-        self.0.clone().dt().cast_time_zone(tz.into_option()).into()
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .dt()
+            .replace_time_zone(tz.into_option())
+            .into()
     }
 
     #[allow(deprecated)]
@@ -1670,7 +1674,7 @@ impl Expr {
     }
 
     pub fn is_unique(&self) -> Self {
-        self.clone().0.is_unique().into()
+        self.0.clone().is_unique().into()
     }
 
     pub fn is_first(&self) -> Self {

@@ -2193,14 +2193,15 @@ test_that("to_r", {
   #objects with homomorphic translation between r and polars
   l = list(
     1,1:2,Inf,-Inf,NaN,"a",letters,
-    numeric(),integer(),logical(), TRUE, FALSE,
+    numeric(),integer(),logical(), TRUE, FALSE, NULL,
     NA, NA_integer_, NA_character_, NA_real_
   )
   for(i in l) expect_identical(pl$lit(i)$to_r(), i)
   for(i in l) expect_identical(pl$expr_to_r(i), i)
 
-  #object that has not, NULL signals a typeless polars Null, which reverses to NA
-  expect_identical(pl$lit(NULL)$to_r(),NA)
+  #NULL to NULL
+  expect_identical(pl$lit(NULL)$to_r(),NULL)
+
 
 })
 

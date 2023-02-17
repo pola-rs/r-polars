@@ -380,6 +380,26 @@ ExprStr_starts_with = function(sub) {
   .pr$Expr$str_starts_with(self, wrap_e(sub, str_to_lit = TRUE))
 }
 
+#' #' json_extract
+#' #' @name ExprStr_json_extract
+#' #' @aliases expr_str_json_extract
+#' #' @description Parse string values as JSON.
+#' #' @keywords ExprStr
+#' #' @param sub Prefix substring or Expr.
+#' #' @details
+#' #' Throw errors if encounter invalid json strings.
+#' #'
+#' #' `here <https://goessner.net/articles/JsonPath/>`_.
+#' #' @return Expr returning a boolean
+#' #' @examples
+#' #' df = pl$DataFrame(
+#' #'   json_val =  c(''{"a":1, "b": true}', NA, '{"a":2, "b": false}'')
+#' #' )
+#' #' dtype = pl$Struct(c(pl$Field("a", pl.Int64), pl$Field("b", pl$Boolean)))
+#' #' df.select(pl.col("json").str.json_extract(dtype))
+#' ExprStr_json_extract = function(pat) {
+#'   unwrap(.pr$Expr$str_json_extract(self, pat))
+#' }
 
 #' json_path_match
 #' @name ExprStr_json_path_match

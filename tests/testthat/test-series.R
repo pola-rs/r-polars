@@ -180,13 +180,14 @@ test_that("all any", {
 })
 
 
-test_that("is_unique", {
-  expect_true(pl$Series(1:5)$is_unique()$all())
-  expect_false(pl$Series(c(1:5,1))$is_unique()$all())
-  expect_false(pl$Series(c(1:3,NA,NA))$is_unique()$all())
-  expect_true(pl$Series(c(1:3,NA,NA))$is_unique()$any())
-  expect_true(pl$Series(c(1:3,NA))$is_unique()$all())
-})
+#deprecated will come back when all expr functions are accisble via series
+# test_that("is_unique", {
+#   expect_true(pl$Series(1:5)$is_unique()$all())
+#   expect_false(pl$Series(c(1:5,1))$is_unique()$all())
+#   expect_false(pl$Series(c(1:3,NA,NA))$is_unique()$all())
+#   expect_true(pl$Series(c(1:3,NA,NA))$is_unique()$any())
+#   expect_true(pl$Series(c(1:3,NA))$is_unique()$all())
+# })
 
 
 test_that("clone", {

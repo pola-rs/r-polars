@@ -87,7 +87,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                 .collect_robj()
                 .set_class(&["Date"])
                 .expect("internal error: class label Date failed")),
-
+            Null => Ok((extendr_api::NULL).into_robj()),
             Time => s
                 .cast(&Int64)?
                 .i64()

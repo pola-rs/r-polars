@@ -3,7 +3,14 @@
 \name{ExprStr_json_path_match}
 \alias{ExprStr_json_path_match}
 \alias{expr_str_json_path_match}
-\title{json_path_match}
+\title{#' json_extract
+#' @name ExprStr_json_extract
+#' @aliases expr_str_json_extract
+#' @description Parse string values as JSON.
+#' @keywords ExprStr
+#' @param sub Prefix substring or Expr.
+#' @details
+#' Throw errors if encounter invalid json strings.}
 \arguments{
 \item{sub}{Prefix substring or Expr.}
 }
@@ -14,6 +21,19 @@ Expr returning a boolean
 Extract the first match of json string with provided JSONPath expression.
 }
 \details{
+#' \verb{here <https://goessner.net/articles/JsonPath/>}_.
+#' @return Expr returning a boolean
+#' @examples
+#' df = pl$DataFrame(
+#'   json_val =  c(''{"a":1, "b": true}', NA, '{"a":2, "b": false}'')
+#' )
+#' dtype = pl$Struct(c(pl$Field("a", pl.Int64), pl$Field("b", pl$Boolean)))
+#' df.select(pl.col("json").str.json_extract(dtype))
+ExprStr_json_extract = function(pat) {
+unwrap(.pr$Expr$str_json_extract(self, pat))
+}
+json_path_match
+
 Throw errors if encounter invalid json strings.
 All return value will be casted to Utf8 regardless of the original value.
 Documentation on JSONPath standard can be found

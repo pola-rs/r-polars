@@ -8,7 +8,7 @@
 #' @useDynLib rpolars, .registration = TRUE
 NULL
 
-rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
+rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
 
@@ -400,9 +400,9 @@ Expr$dt_with_time_unit <- function(tu) .Call(wrap__Expr__dt_with_time_unit, self
 
 Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self, tu)
 
-Expr$dt_with_time_zone <- function(tz) .Call(wrap__Expr__dt_with_time_zone, self, tz)
+Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
-Expr$dt_cast_time_zone <- function(tz) .Call(wrap__Expr__dt_cast_time_zone, self, tz)
+Expr$dt_replace_time_zone <- function(tz) .Call(wrap__Expr__dt_replace_time_zone, self, tz)
 
 Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
 
@@ -661,8 +661,6 @@ Series$floor <- function() .Call(wrap__Series__floor, self)
 Series$print <- function() invisible(.Call(wrap__Series__print, self))
 
 Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
-
-Series$is_unique <- function() .Call(wrap__Series__is_unique, self)
 
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
