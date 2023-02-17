@@ -24,7 +24,6 @@ impl LazyFrame {
     pub fn describe_optimized_plan(&self) -> List {
         let result = self.0.describe_optimized_plan().map(|opt_plan| {
             rprintln!("{}", opt_plan);
-            ()
         });
         r_result_list(result)
     }
