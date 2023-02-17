@@ -97,7 +97,7 @@ impl RPolarsDataType {
         self.0.ne(&other.0)
     }
 
-    pub fn same_outer_datatype(&self, other: &RPolarsDataType) -> bool {
+    fn same_outer_datatype(&self, other: &RPolarsDataType) -> bool {
         std::mem::discriminant(&self.0) == std::mem::discriminant(&other.0)
     }
 

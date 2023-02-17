@@ -131,7 +131,7 @@ impl Series {
         let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
         let options = pl::SortOptions {
             descending: reverse,
-            nulls_last: nulls_last,
+            nulls_last,
             multithreaded: false,
         };
         self.0.is_sorted(options)

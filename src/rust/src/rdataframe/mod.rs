@@ -24,7 +24,7 @@ use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
 use polars_core::utils::arrow;
 
-use crate::utils::r_result_list;
+use crate::utils::{collect_hinted_result, r_result_list};
 
 pub struct OwnedDataFrameIterator {
     columns: Vec<polars::series::Series>,
@@ -157,50 +157,34 @@ impl DataFrame {
     // }
 
     fn to_list(&self) -> List {
-        //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> =
-            self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
-
-        //rewrap Ok(Vec<Robj>) as R list
+        let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
+            self.0.width(),
+            self.0.iter().map(|x| pl_series_to_list(x, false)),
+        );
         let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
+            extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj).unwrap()
         });
 
         r_result_list(robj_list_res)
     }
 
     fn to_list_unwind(&self) -> Robj {
-        //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> =
-            self.0.iter().map(|x| pl_series_to_list(x, false)).collect();
-
-        //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
-        });
-
-        robj_list_res.unwrap()
+        extendr_api::prelude::List::from_names_and_values(
+            self.columns(),
+            self.0.iter().map(|x| pl_series_to_list(x, false).unwrap()),
+        )
+        .into_robj()
     }
 
     // to_list have this variant with set_structs = true at pl_series_to_list
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
     fn to_list_tag_structs(&self) -> List {
-        //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> =
-            self.0.iter().map(|x| pl_series_to_list(x, true)).collect();
-
-        //rewrap Ok(Vec<Robj>) as R list
+        let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
+            self.0.width(),
+            self.0.iter().map(|x| pl_series_to_list(x, true)),
+        );
         let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
+            extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj).unwrap()
         });
 
         r_result_list(robj_list_res)

@@ -373,3 +373,28 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
         )),
     }
 }
+
+pub fn collect_hinted_result<T, E>(
+    size: usize,
+    iter: impl IntoIterator<Item = Result<T, E>>,
+) -> Result<Vec<T>, E> {
+    let mut new_vec = Vec::with_capacity(size);
+    for item in iter {
+        new_vec.push(item?);
+    }
+    Ok(new_vec)
+}
+
+pub fn collect_hinted_unwrap<T, E>(
+    size: usize,
+    iter: impl IntoIterator<Item = Result<T, E>>,
+) -> Vec<T>
+where
+    E: std::fmt::Debug,
+{
+    let mut new_vec = Vec::with_capacity(size);
+    for item in iter {
+        new_vec.push(item.unwrap());
+    }
+    new_vec
+}
