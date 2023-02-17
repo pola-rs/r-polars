@@ -10,17 +10,8 @@
 #' @keywords ExprStr
 #' @param sub Prefix substring or Expr.
 #' @details
-#' Throw errors if encounter invalid json strings.}
-\arguments{
-\item{sub}{Prefix substring or Expr.}
-}
-\value{
-Expr returning a boolean
-}
-\description{
-Extract the first match of json string with provided JSONPath expression.
-}
-\details{
+#' Throw errors if encounter invalid json strings.
+#'
 #' \verb{here <https://goessner.net/articles/JsonPath/>}_.
 #' @return Expr returning a boolean
 #' @examples
@@ -32,8 +23,17 @@ Extract the first match of json string with provided JSONPath expression.
 ExprStr_json_extract = function(pat) {
 unwrap(.pr$Expr$str_json_extract(self, pat))
 }
-json_path_match
-
+json_path_match}
+\arguments{
+\item{sub}{Prefix substring or Expr.}
+}
+\value{
+Expr returning a boolean
+}
+\description{
+Extract the first match of json string with provided JSONPath expression.
+}
+\details{
 Throw errors if encounter invalid json strings.
 All return value will be casted to Utf8 regardless of the original value.
 Documentation on JSONPath standard can be found
