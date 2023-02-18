@@ -11,7 +11,7 @@ function
 Expr of hour as UInt32
 }
 \description{
-Extract hour from underlying DateTime representation.
+Extract hour from underlying Datetime representation.
 Applies to Datetime columns.
 Returns the hour number from 0 to 23.
 }

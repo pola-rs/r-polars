@@ -698,7 +698,7 @@ RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_lis
 
 RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
 
-RPolarsDataType$new_struct <- function() .Call(wrap__RPolarsDataType__new_struct)
+RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
 
 RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
 
@@ -735,6 +735,28 @@ DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rli
 
 #' @export
 `[[.DataTypeVector` <- `$.DataTypeVector`
+
+RField <- new.env(parent = emptyenv())
+
+RField$new <- function(name, datatype) .Call(wrap__RField__new, name, datatype)
+
+RField$print <- function() invisible(.Call(wrap__RField__print, self))
+
+RField$clone <- function() .Call(wrap__RField__clone, self)
+
+RField$get_name <- function() .Call(wrap__RField__get_name, self)
+
+RField$get_datatype <- function() .Call(wrap__RField__get_datatype, self)
+
+RField$set_name_mut <- function(name) invisible(.Call(wrap__RField__set_name_mut, self, name))
+
+RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_datatype_mut, self, datatype))
+
+#' @export
+`$.RField` <- function (self, name) { func <- RField[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RField` <- `$.RField`
 
 LazyFrame <- new.env(parent = emptyenv())
 

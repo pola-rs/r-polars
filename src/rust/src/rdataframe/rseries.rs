@@ -484,7 +484,7 @@ impl Series {
 
         let n_series = n_series_result.map_err(|err| {
             pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: when casting n as Uint64 [{}], n should be a non-negative integer",
+                "extend_expr: when casting n as UInt64 [{}], n should be a non-negative integer",
                 err
             )))
         })?;

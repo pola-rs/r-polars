@@ -28,6 +28,7 @@ Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
+    'Field.R'
     'PTime.R'
     'csv.R'
     'dataframe__frame.R'

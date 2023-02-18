@@ -2310,7 +2310,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' Reinterpret the underlying bits as a signed/unsigned integer.
 #' This operation is only allowed for 64bit integers. For lower bits integers,
 #' you can safely use that cast operation.
-#' @param signed bool reinterpret into Int64 else Uint64
+#' @param signed bool reinterpret into Int64 else UInt64
 #' @return Expr
 #' @aliases reinterpret
 #' @examples

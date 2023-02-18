@@ -43,10 +43,12 @@ extendr_method_to_pure_functions = function(env) {
 .pr$LazyGroupBy= extendr_method_to_pure_functions(LazyGroupBy)
 .pr$DataType   = extendr_method_to_pure_functions(RPolarsDataType)
 .pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
+.pr$RField      = extendr_method_to_pure_functions(RField)
 .pr$Expr       = extendr_method_to_pure_functions(Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
+
 
 #TODO remove export
 

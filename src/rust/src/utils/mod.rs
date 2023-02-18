@@ -481,3 +481,14 @@ macro_rules! try_robj_to {
         try_robj_to!(String, $a).map_err(|err| format!($b, err))
     };
 }
+
+pub fn collect_hinted_result<T, E>(
+    size: usize,
+    iter: impl IntoIterator<Item = Result<T, E>>,
+) -> Result<Vec<T>, E> {
+    let mut new_vec = Vec::with_capacity(size);
+    for item in iter {
+        new_vec.push(item?);
+    }
+    Ok(new_vec)
+}

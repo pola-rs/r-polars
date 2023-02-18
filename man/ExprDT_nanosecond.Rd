@@ -11,7 +11,7 @@ function
 Expr of second as Int64
 }
 \description{
-Extract seconds from underlying DateTime representation.
+Extract seconds from underlying Datetime representation.
 Applies to Datetime columns.
 Returns the integer second number from 0 to 59, or a floating
 point number from 0 < 60 if \code{fractional=True} that includes

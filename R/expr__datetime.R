@@ -380,7 +380,7 @@ ExprDT_ordinal_day = function() {
 
 #' Hour
 #' @description
-#' Extract hour from underlying DateTime representation.
+#' Extract hour from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the hour number from 0 to 23.
 #' @name ExprDT_hour
@@ -406,7 +406,7 @@ ExprDT_hour = function() {
 
 #' Minute
 #' @description
-#' Extract minutes from underlying DateTime representation.
+#' Extract minutes from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the minute number from 0 to 59.
 #' @name ExprDT_minute
@@ -432,7 +432,7 @@ ExprDT_minute = function() {
 
 #' Second
 #' @description
-#' Extract seconds from underlying DateTime representation.
+#' Extract seconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
@@ -463,7 +463,7 @@ ExprDT_second = function(fractional = FALSE) {
 
 #' Millisecond
 #' @description
-#' Extract milliseconds from underlying DateTime representation.
+#' Extract milliseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' @name ExprDT_millisecond
 #' @return Expr of millisecond as Int64
@@ -486,7 +486,7 @@ ExprDT_millisecond = function() {
 
 #' Microsecond
 #' @description
-#' Extract microseconds from underlying DateTime representation.
+#' Extract microseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' @name ExprDT_microsecond
 #' @return Expr of microsecond as Int64
@@ -511,7 +511,7 @@ ExprDT_microsecond = function() {
 
 #' Nanosecond
 #' @description
-#' Extract seconds from underlying DateTime representation.
+#' Extract seconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes

@@ -261,6 +261,7 @@ clone_env_one_level_deep = function(env) {
 #' @keywords internal
 #' @return side effects only
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
+
   if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
 
   #get these

@@ -68,8 +68,8 @@ expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
 
 
-
-
+#Field
+replace_private_with_pub_methods(RField, "^RField_")
 
 
 #Series
@@ -108,7 +108,7 @@ pl$mem_address = mem_address
   all_types = .pr$DataType$get_all_simple_type_names()
   names(all_types) = all_types
   pl$dtypes = c(
-    lapply(all_types,.pr$DataType$new), #instanciate all simple flag-like types
+    lapply(all_types, DataType_new), #instanciate all simple flag-like types
     DataType_constructors # add function constructors for the remainders
   )
 
