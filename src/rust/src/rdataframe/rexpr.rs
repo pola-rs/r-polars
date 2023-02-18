@@ -1943,6 +1943,14 @@ impl Expr {
                 .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
         )
     }
+
+    pub fn str_split(&self, by: &str) -> Self {
+        self.0.clone().str().split(by).into()
+    }
+
+    pub fn str_split_inclusive(&self, by: &str) -> Self {
+        self.0.clone().str().split_inclusive(by).into()
+    }
 }
 
 //allow proto expression that yet only are strings

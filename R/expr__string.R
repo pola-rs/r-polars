@@ -555,3 +555,30 @@ ExprStr_extract_all = function(pattern){
 ExprStr_count_match = function(pattern){
   unwrap(.pr$Expr$str_count_match(self, pattern))
 }
+
+
+#' split
+#' @name ExprStr_split
+#' @aliases expr_str_split
+#' @description Split the string by a substring.
+#' @keywords ExprStr
+#' @param by Substring to split by.
+#' @param inclusive If True, include the split character/string in the results.
+#'
+#' @return
+#' List of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
+#' df$select( pl$col("s")$str$split(by=" "))
+ExprStr_split = function(by, inclusive = FALSE){
+  pcase(
+    !is_bool(inclusive), Err(paste("arg [inclusive] must be a bool, it is:",str_string(inclusive))),
+    !is_string(by), Err(paste("arg [by] must be a string, it is:", str_string(by))),
+    isFALSE(inclusive),Ok(.pr$Expr$str_split(self, by)),
+    isTRUE(inclusive), Ok(.pr$Expr$str_split_inclusive(self, by)),
+    or_else = Err("internal error: bool neither true or false")
+  ) |> map_err(\(err) {
+    paste("in str$split:", err)
+  }) |> unwrap()
+}

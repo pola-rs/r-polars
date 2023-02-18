@@ -309,7 +309,7 @@ test_that("str$starts_with str$ends_with", {
   )
 })
 
-test_that("str$json_path", {
+test_that("str$json_path. json_extract", {
   df = pl$DataFrame(
     json_val =  c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
   )
@@ -317,4 +317,148 @@ test_that("str$json_path", {
     df$select(pl$col("json_val")$str$json_path_match("$.a"))$to_list(),
     list(json_val = c("1", NA, "2", "2.1", "true"))
   )
+
+
+  df = pl$DataFrame(
+    json_val =  c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
+  )
+  dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
+  actual = df$select(pl$col("json_val")$str$json_extract(dtype))$to_list()
+  expect_identical(
+    actual,
+    list(json_val = list(a = c(1, NA, 2), b = c(TRUE, NA, FALSE)))
+  )
+
+
 })
+
+
+test_that("encode decode", {
+
+  l = pl$DataFrame(
+    strings = c("foo", "bar", NA)
+  )$select(
+    pl$col("strings")$str$encode("hex")
+  )$with_columns(
+    pl$col("strings")$str$encode("base64")$alias("base64"), #notice DataType is not encoded
+    pl$col("strings")$str$encode("hex")$alias("hex")       #... and must restored with cast
+  )$with_columns(
+    pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
+    pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+  )$to_list()
+
+  expect_identical(l$strings,l$base64_decoded)
+  expect_identical(l$strings,l$hex_decoded)
+
+  expect_identical(
+    pl$lit("?")$str$decode("base64",strict=FALSE)$cast(pl$Utf8)$to_r(),
+    NA_character_
+  )
+
+  expect_grepl_error(
+    pl$lit("?")$str$decode("base64")$to_r(),
+    "Invalid 'base64' encoding found"
+  )
+
+  expect_grepl_error(
+    pl$lit("?")$str$decode("invalid_name"),
+    r"{encoding must be one of 'hex' or 'base64'\, got invalid_name}"
+  )
+
+  expect_grepl_error(
+    pl$lit("?")$str$encode("invalid_name"),
+    r"{encoding must be one of 'hex' or 'base64'\, got invalid_name}"
+  )
+
+
+})
+
+
+
+test_that("str$extract", {
+  actual = pl$lit(
+    c(
+      "http://vote.com/ballon_dor?candidate=messi&ref=polars",
+      "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
+      "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
+    )
+  )$str$extract(r"(candidate=(\w+))", 1)$to_r()
+  expect_identical(actual, c("messi", NA, "ronaldo"))
+
+  expect_grepl_error(
+    pl$lit("abc")$str$extract(42,42),
+    r"(in str\$extract\: \[pattern\] is not a single string, but 42.0)",
+  )
+
+  expect_grepl_error(
+    pl$lit("abc")$str$extract("a","a"),
+    r"(in str\$extract\: \[group_index\] is not a scalar integer or double as required, it is \["a"\])",
+  )
+
+})
+
+test_that("str$extract_all", {
+  df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
+  actual = df$select(
+    pl$col("foo")$str$extract_all(r"((\d+))")$alias("extracted_nrs")
+  )$to_list()
+
+
+  expect_identical(actual, list(extracted_nrs = list(c("123", "45"), c("678", "910"))))
+
+  expect_grepl_error(
+    pl$lit("abc")$str$extract_all(complex(2)),
+    r"(Invalid operation new series from rtype Complexes is not supported)",
+  )
+
+
+})
+
+
+test_that("str$count_match", {
+  df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
+  actual = df$select(
+    pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+  )
+  expect_identical(
+    actual$to_list(),
+    list(`count digits` = c(5, 6))
+  )
+
+  expect_grepl_error(
+    pl$col("foo")$str$count_match(5),
+    r"(in str\$count_match\: \[pattern\] is not a single string, but 5.0)",
+  )
+
+})
+
+
+test_that("str$split", {
+  expect_identical(
+     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by=" ")$to_r(),
+     list(c("foo", "bar"), "foo-bar", c("foo", "bar", "baz"))
+  )
+
+  expect_identical(
+     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by=" ", inclusive=TRUE)$to_r(),
+     list(c("foo ", "bar"), "foo-bar", c("foo ", "bar ", "baz"))
+  )
+
+  expect_identical(
+     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by="-", inclusive=TRUE)$to_r(),
+     list("foo bar", c("foo-", "bar"), "foo bar baz")
+  )
+
+  expect_grepl_error(
+     pl$lit("42")$str$split(by=42L, inclusive=TRUE),
+     r"{in str\$split\: arg \[by\] must be a string, it is\:}"
+  )
+
+   expect_grepl_error(
+     pl$lit("42")$str$split(by="blop", inclusive=42),
+     r"{in str\$split\: arg \[inclusive\] must be a bool, it is\:}"
+  )
+
+
+})
+

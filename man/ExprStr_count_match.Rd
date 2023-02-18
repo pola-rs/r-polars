@@ -16,7 +16,7 @@ Count all successive non-overlapping regex matches.
 \examples{
 df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
 df$select(
-  pl$col("foo")$str$count_match(r"((\d+))")$alias("extracted_nrs")
+  pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
 )
 }
 \keyword{ExprStr}

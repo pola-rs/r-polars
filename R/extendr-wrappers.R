@@ -576,6 +576,10 @@ Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, sel
 
 Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
 
+Expr$str_split <- function(by) .Call(wrap__Expr__str_split, self, by)
+
+Expr$str_split_inclusive <- function(by) .Call(wrap__Expr__str_split_inclusive, self, by)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
