@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_json_path_match}
 \alias{ExprStr_json_path_match}
-\alias{expr_str_json_path_match}
+\alias{expr_json_path_match}
 \title{json_path_match}
 \arguments{
 \item{json_path}{A valid JSON path query string.}

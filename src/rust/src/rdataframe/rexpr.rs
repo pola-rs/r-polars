@@ -1871,6 +1871,57 @@ impl Expr {
             .with_fmt("str.json_extract")
             .into()
     }
+
+    pub fn str_hex_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_encode")
+            .into()
+    }
+
+    pub fn str_hex_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_decode")
+            .into()
+    }
+    pub fn str_base64_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_encode")
+            .into()
+    }
+
+    pub fn str_base64_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| {
+                    s.utf8()?
+                        .base64_decode(strict)
+                        .map(|s| Some(s.into_series()))
+                },
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_decode")
+            .into()
+    }
 }
 
 //allow proto expression that yet only are strings

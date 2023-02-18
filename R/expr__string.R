@@ -403,7 +403,7 @@ ExprStr_json_extract = function(pat) {
 
 #' json_path_match
 #' @name ExprStr_json_path_match
-#' @aliases expr_str_json_path_match
+#' @aliases expr_json_path_match
 #' @description Extract the first match of json string with provided JSONPath expression.
 #' @keywords ExprStr
 #' @param  json_path A valid JSON path query string.
@@ -420,4 +420,68 @@ ExprStr_json_extract = function(pat) {
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
 ExprStr_json_path_match = function(pat) {
   unwrap(.pr$Expr$str_json_path_match(self, pat))
+}
+
+
+#' decode
+#' @name ExprStr_decode
+#' @aliases expr_str_decode
+#' @description Decode a value using the provided encoding.
+#' @keywords ExprStr
+#' @param encoding string choice either 'hex' or 'base64'
+#' @param ... not used currently
+#' @param strict  Raise an error if the underlying value cannot be decoded,
+#'  otherwise mask out with a null value.
+#'
+#' @return Utf8 array with values decoded using provided encoding
+#'
+#' @examples
+#' df = pl$DataFrame( strings = c("foo", "bar", NA))
+#' df$select(pl$col("strings")$str$encode("hex"))
+#' df$with_columns(
+#'   pl$col("strings")$str$encode("base64")$alias("base64"), #notice DataType is not encoded
+#'   pl$col("strings")$str$encode("hex")$alias("hex")       #... and must restored with cast
+#' )$with_columns(
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#' )
+ExprStr_decode = function(
+    encoding,#: TransferEncoding,
+    ...,
+    strict = TRUE
+){
+  pcase(
+    !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    encoding == "hex", .pr$Expr$str_hex_decode(self, strict),
+    encoding == "base64", .pr$Expr$str_base64_decode(self, strict),
+    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+  )
+}
+
+#' encode
+#' @name ExprStr_encode
+#' @aliases expr_str_encode
+#' @description  Encode a value using the provided encoding.
+#' @keywords ExprStr
+#' @param encoding string choice either 'hex' or 'base64'
+#'
+#' @return Utf8 array with values encoded using provided encoding
+#'
+#' @examples
+#' df = pl$DataFrame( strings = c("foo", "bar", NA))
+#' df$select(pl$col("strings")$str$encode("hex"))
+#' df$with_columns(
+#'   pl$col("strings")$str$encode("base64")$alias("base64"), #notice DataType is not encoded
+#'   pl$col("strings")$str$encode("hex")$alias("hex")       #... and must restored with cast
+#' )$with_columns(
+#'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
+#'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
+#' )
+ExprStr_encode = function(encoding){
+  pcase(
+    !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    encoding == "hex", .pr$Expr$str_hex_encode(self),
+    encoding == "base64", .pr$Expr$str_base64_encode(self),
+    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+  )
 }

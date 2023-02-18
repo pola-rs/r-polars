@@ -562,6 +562,14 @@ Expr$str_json_path_match <- function(pat) .Call(wrap__Expr__str_json_path_match,
 
 Expr$str_json_extract <- function(dtype) .Call(wrap__Expr__str_json_extract, self, dtype)
 
+Expr$str_hex_encode <- function() .Call(wrap__Expr__str_hex_encode, self)
+
+Expr$str_hex_decode <- function(strict) .Call(wrap__Expr__str_hex_decode, self, strict)
+
+Expr$str_base64_encode <- function() .Call(wrap__Expr__str_base64_encode, self)
+
+Expr$str_base64_decode <- function(strict) .Call(wrap__Expr__str_base64_decode, self, strict)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

@@ -115,6 +115,7 @@ features = [
   "date_offset",
   "string_justify",
   "is_unique",
+  "binary_encoding"
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
