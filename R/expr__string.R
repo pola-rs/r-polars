@@ -479,9 +479,62 @@ ExprStr_decode = function(
 #' )
 ExprStr_encode = function(encoding){
   pcase(
-    !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$str_hex_encode(self),
     encoding == "base64", .pr$Expr$str_base64_encode(self),
     or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
 }
+
+
+#' extract
+#' @name ExprStr_extract
+#' @aliases expr_str_extract
+#' @description Extract the target capture group from provided patterns.
+#' @keywords ExprStr
+#' @param pattern A valid regex pattern
+#' @param group_index
+#' Index of the targeted capture group.
+#' Group 0 mean the whole pattern, first group begin at index 1.
+#' Default to the first capture group.
+#'
+#' @return
+#' Utf8 array. Contain null if original value is null or regex capture nothing.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a =  c(
+#'     "http://vote.com/ballon_dor?candidate=messi&ref=polars",
+#'     "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
+#'     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
+#'   )
+#' )
+#' df$select(
+#'   pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
+#' )
+ExprStr_extract = function(pattern, group_index){
+  unwrap(.pr$Expr$str_extract(self, pattern, group_index))
+}
+
+
+#' extract_all
+#' @name ExprStr_extract_all
+#' @aliases expr_str_extract_all
+#' @description Extracts all matches for the given regex pattern. Extracts each successive
+#' non-overlapping regex match in an individual string as an array.
+#' @keywords ExprStr
+#' @param pattern A valid regex pattern
+#'
+#' @return
+#' `List[Utf8]` array. Contain null if original value is null or regex capture nothing.
+#'
+#' @examples
+#' df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
+#' df$select(
+#'   pl$col("foo")$str$extract_all(r"((\d+))")$alias("extracted_nrs")
+#' )
+ExprStr_extract_all = function(pattern){
+  .pr$Expr$str_extract_all(self, wrap_e(pattern))
+}
+
+

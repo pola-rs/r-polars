@@ -1922,6 +1922,20 @@ impl Expr {
             .with_fmt("str.base64_decode")
             .into()
     }
+
+    pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            let pat = try_robj_to!(String, pattern)?;
+            let gi = try_robj_to!(usize, group_index)?;
+            Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
+        }()
+        .map_err(|err| format!("in str$extract: {}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_extract_all(&self, pattern: &Expr) -> Self {
+        self.0.clone().str().extract_all(pattern.0.clone()).into()
+    }
 }
 
 //allow proto expression that yet only are strings
