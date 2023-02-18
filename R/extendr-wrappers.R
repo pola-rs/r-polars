@@ -560,6 +560,8 @@ Expr$str_starts_with <- function(sub) .Call(wrap__Expr__str_starts_with, self, s
 
 Expr$str_json_path_match <- function(pat) .Call(wrap__Expr__str_json_path_match, self, pat)
 
+Expr$str_json_extract <- function(dtype) .Call(wrap__Expr__str_json_extract, self, dtype)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

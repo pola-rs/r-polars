@@ -1848,6 +1848,29 @@ impl Expr {
         }();
         r_result_list(res)
     }
+
+    pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
+        let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
+        use pl::*;
+        let output_type = match dtype.clone() {
+            Some(dtype) => GetOutput::from_type(dtype),
+            None => GetOutput::from_type(DataType::Unknown),
+        };
+
+        let function = move |s: Series| {
+            let ca = s.utf8()?;
+            match ca.json_extract(dtype.clone()) {
+                Ok(ca) => Ok(Some(ca.into_series())),
+                Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
+            }
+        };
+
+        self.0
+            .clone()
+            .map(function, output_type)
+            .with_fmt("str.json_extract")
+            .into()
+    }
 }
 
 //allow proto expression that yet only are strings

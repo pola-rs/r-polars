@@ -380,39 +380,39 @@ ExprStr_starts_with = function(sub) {
   .pr$Expr$str_starts_with(self, wrap_e(sub, str_to_lit = TRUE))
 }
 
-#' #' json_extract
-#' #' @name ExprStr_json_extract
-#' #' @aliases expr_str_json_extract
-#' #' @description Parse string values as JSON.
-#' #' @keywords ExprStr
-#' #' @param sub Prefix substring or Expr.
-#' #' @details
-#' #' Throw errors if encounter invalid json strings.
-#' #'
-#' #' `here <https://goessner.net/articles/JsonPath/>`_.
-#' #' @return Expr returning a boolean
-#' #' @examples
-#' #' df = pl$DataFrame(
-#' #'   json_val =  c(''{"a":1, "b": true}', NA, '{"a":2, "b": false}'')
-#' #' )
-#' #' dtype = pl$Struct(c(pl$Field("a", pl.Int64), pl$Field("b", pl$Boolean)))
-#' #' df.select(pl.col("json").str.json_extract(dtype))
-#' ExprStr_json_extract = function(pat) {
-#'   unwrap(.pr$Expr$str_json_extract(self, pat))
-#' }
+#' json_extract
+#' @name ExprStr_json_extract
+#' @aliases expr_str_json_extract
+#' @description Parse string values as JSON.
+#' @keywords ExprStr
+#' @param dtype The dtype to cast the extracted value to. If None, the dtype will be
+#' inferred from the JSON value.
+#' @details
+#' Throw errors if encounter invalid json strings.
+#'
+#' @return Expr returning a boolean
+#' @examples
+#' df = pl$DataFrame(
+#'   json_val =  c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
+#' )
+#' dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
+#' df$select(pl$col("json_val")$str$json_extract(dtype))
+ExprStr_json_extract = function(pat) {
+  .pr$Expr$str_json_extract(self, pat)
+}
 
 #' json_path_match
 #' @name ExprStr_json_path_match
 #' @aliases expr_str_json_path_match
 #' @description Extract the first match of json string with provided JSONPath expression.
 #' @keywords ExprStr
-#' @param sub Prefix substring or Expr.
+#' @param  json_path A valid JSON path query string.
 #' @details
 #' Throw errors if encounter invalid json strings.
 #' All return value will be casted to Utf8 regardless of the original value.
 #' Documentation on JSONPath standard can be found
 #' `here <https://goessner.net/articles/JsonPath/>`_.
-#' @return Expr returning a boolean
+#' @return Utf8 array. Contain null if original value is null or the json_path return nothing.
 #' @examples
 #' df = pl$DataFrame(
 #'   json_val =  c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
