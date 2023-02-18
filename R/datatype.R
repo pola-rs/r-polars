@@ -163,7 +163,6 @@ NULL
 #' Create Struct DataType
 #' @name pl_Struct
 #' @description Struct DataType Constructor
-#' @name pl_Struct
 #' @param datatype an inner DataType
 #' @return a list DataType with an inner DataType
 #' @format function

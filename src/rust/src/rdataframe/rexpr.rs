@@ -78,48 +78,40 @@ impl Expr {
                 let opt_val = robj.as_integer();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Doubles, 1) => {
                 let opt_val = robj.as_real();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Strings, 1) => {
                 let opt_val = robj.as_str();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Logicals, 1) => {
                 let opt_val = robj.as_bool();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::ExternalPtr, 1) => {
