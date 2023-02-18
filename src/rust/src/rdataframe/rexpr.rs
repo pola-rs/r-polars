@@ -1936,6 +1936,13 @@ impl Expr {
     pub fn str_extract_all(&self, pattern: &Expr) -> Self {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
+
+    pub fn str_count_match(&self, pattern: Robj) -> List {
+        r_result_list(
+            try_robj_to!(String, pattern, "in str$count_match: {}")
+                .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
+        )
+    }
 }
 
 //allow proto expression that yet only are strings

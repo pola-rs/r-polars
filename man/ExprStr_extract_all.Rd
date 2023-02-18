@@ -8,7 +8,7 @@
 \item{pattern}{A valid regex pattern}
 }
 \value{
-List\link{Utf8} array. Contain null if original value is null or regex capture nothing.
+\code{List[Utf8]} array. Contain null if original value is null or regex capture nothing.
 }
 \description{
 Extracts all matches for the given regex pattern. Extracts each successive
