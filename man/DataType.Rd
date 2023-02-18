@@ -11,6 +11,10 @@ print(ls(pl$dtypes))
 pl$dtypes$Float64
 pl$dtypes$Utf8
 
+pl$List(pl$List(pl$UInt64))
+
+pl$Struct(pl$Field("CityNames", pl$Utf8))
+
 # Some DataType use case, this user function fails because....
 \dontrun{
   pl$Series(1:4)$apply(\(x) letters[x])

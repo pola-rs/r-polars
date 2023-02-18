@@ -3,14 +3,31 @@
 \docType{data}
 \name{DataType_constructors}
 \alias{DataType_constructors}
-\title{internal collection of datatype constructors}
+\title{DataType_constructors (composite DataType's)}
 \format{
-An object of class \code{list} of length 1.
+An object of class \code{list} of length 3.
 }
 \usage{
 DataType_constructors
 }
-\description{
-internal collection of datatype constructors
+\value{
+DataType
 }
-\keyword{datasets}
+\description{
+List of all composite DataType constructors
+}
+\details{
+This list is mainly used in \code{zzz.R} \code{.onLoad} to instantiate singletons of all
+flag-like DataTypes.
+
+Non-flag like DataType called composite DataTypes also carries extra information
+e.g. Datetime a timeunit and a TimeZone, or List which recursively carries another DataType
+inside. Composite DataTypes use DataType constructors.
+
+Any DataType can be found in pl$dtypes
+}
+\examples{
+#constructors are finally available via pl$... or pl$dtypes$...
+pl$List(pl$List(pl$Int64))
+}
+\keyword{internal}

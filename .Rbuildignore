@@ -7,3 +7,4 @@
 ^pkgdown$
 ^\.github$
 ^LICENSE\.md$
+^\.vscode$

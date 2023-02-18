@@ -20,13 +20,15 @@ Suggests:
     nanoarrow,
     arrow,
     bench,
-    nycflights13
+    nycflights13,
+    patrick
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
+    'Field.R'
     'PTime.R'
     'csv.R'
     'dataframe__frame.R'

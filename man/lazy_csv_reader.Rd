@@ -19,7 +19,6 @@ lazy_csv_reader(
   quote_char = "\\"",
   null_values = NULL,
   infer_schema_length = 100,
-  rechunk = TRUE,
   skip_rows_after_header = 0,
   encoding = "utf8",
   row_count_name = NULL,
@@ -75,8 +74,6 @@ Named char vector.  A mapping from (names)column to a null value string(values).
 
 \item{infer_schema_length}{(NULL is disable) Maximum number of lines to read to infer schema. If set to 0, all columns will
 be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
-
-\item{rechunk}{bool Reallocate to contiguous memory when all chunks/ files are parsed.}
 
 \item{skip_rows_after_header}{bool Skip this number of rows when the header is parsed.}
 

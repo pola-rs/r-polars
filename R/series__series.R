@@ -433,20 +433,6 @@ Series_apply   = function(
 }
 
 
-#' Series element(s) is unique
-#' @description return Boolean vector for all elements that occurs only once
-#' @return Series
-#' @keywords Series
-#' @aliases Series_is_unique
-#' @name Series_is_unique
-#'
-#' @examples
-#' pl$Series(c(1:2,2L))$is_unique()
-#'
-Series_is_unique = function() {
-  unwrap(.pr$Series$is_unique(self))
-}
-
 
 
 #' Series_len

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
-\title{str$strptime}
+\title{strptime}
 \arguments{
 \item{datatype}{a temporal data type either pl$Date, pl$Time or pl$Datetime}
 
@@ -65,3 +65,4 @@ pl$lit(txt_datetimes)$str$strptime(
   tz_aware = TRUE, utc =TRUE
 )$lit_to_s()
 }
+\keyword{ExprStr}

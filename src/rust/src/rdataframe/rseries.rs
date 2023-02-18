@@ -435,11 +435,6 @@ impl Series {
         Series(self.0.cumsum(reverse))
     }
 
-    pub fn is_unique(&self) -> List {
-        let res_ser = self.0.is_unique().map(|ca| Series(ca.into_series()));
-        r_result_list(res_ser)
-    }
-
     pub fn to_frame(&self) -> DataFrame {
         let mut df = DataFrame::new_with_capacity(1);
         df.set_column_from_series(&self);
@@ -489,7 +484,7 @@ impl Series {
 
         let n_series = n_series_result.map_err(|err| {
             pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: when casting n as Uint64 [{}], n should be a non-negative integer",
+                "extend_expr: when casting n as UInt64 [{}], n should be a non-negative integer",
                 err
             )))
         })?;

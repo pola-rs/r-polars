@@ -3,8 +3,9 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-
 use crate::rdatatype::robj_to_timeunit;
+use crate::try_robj_to;
+use crate::utils::{named_robj_to_usize, robj_to_char, robj_to_string};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -14,6 +15,7 @@ use crate::utils::{r_error_list, r_ok_list, r_result_list};
 use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
+
 use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
 use polars::error::ErrString as pl_err_string;
@@ -1217,107 +1219,6 @@ impl Expr {
             .into()
     }
 
-    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().rstrip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().lstrip(null_to_opt(matches)).into()
-    }
-
-    // pub fn str_slice(&self, start: i64, length: Option<u64>) -> Self {
-    //     let function = move |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_slice(start, length)?.into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::Utf8))
-    //         .with_fmt("str.slice")
-    //         .into()
-    // }
-
-    // pub fn str_to_uppercase(&self) -> Self {
-    //     self.0.clone().str().to_uppercase().into()
-    // }
-
-    // pub fn str_to_lowercase(&self) -> Self {
-    //     self.0.clone().str().to_lowercase().into()
-    // }
-
-    // pub fn str_lengths(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_lengths().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.lengths")
-    //         .into()
-    // }
-
-    // pub fn str_n_chars(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_n_chars().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.n_chars")
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace_all(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace_all(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // pub fn str_zfill(&self, alignment: usize) -> Self {
-    //     self.clone().0.str().zfill(alignment).into()
-    // }
-
-    // pub fn str_ljust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().ljust(width, fillchar).into()
-    // }
-
-    // pub fn str_rjust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().rjust(width, fillchar).into()
-    // }
-
-    // pub fn str_contains(&self, pat: String, literal: Option<bool>) -> Self {
-    //     match literal {
-    //         Some(true) => self.0.clone().str().contains_literal(pat).into(),
-    //         _ => self.0.clone().str().contains(pat).into(),
-    //     }
-    // }
-
-    // pub fn str_ends_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().ends_with(sub).into()
-    // }
-
-    // pub fn str_starts_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().starts_with(sub).into()
-    // }
-
     //end list/arr methods
 
     pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
@@ -1418,12 +1319,16 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn dt_with_time_zone(&self, tz: String) -> Self {
-        self.0.clone().dt().with_time_zone(tz).into()
+    pub fn dt_convert_time_zone(&self, tz: String) -> Self {
+        self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_cast_time_zone(&self, tz: Nullable<String>) -> Self {
-        self.0.clone().dt().cast_time_zone(tz.into_option()).into()
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .dt()
+            .replace_time_zone(tz.into_option())
+            .into()
     }
 
     #[allow(deprecated)]
@@ -1761,7 +1666,7 @@ impl Expr {
     }
 
     pub fn is_unique(&self) -> Self {
-        self.clone().0.is_unique().into()
+        self.0.clone().is_unique().into()
     }
 
     pub fn is_first(&self) -> Self {
@@ -1829,11 +1734,194 @@ impl Expr {
         self.0.clone().prefix(prefix.as_str()).into()
     }
 
-    // fn to_field(&self, df: &DataFrame) {
-    //     let ctxt = polars::prelude::Context::Default;
-    //     let res = self.0.to_field(&df.0.schema(), ctxt);
-    //     res.unwrap();
-    // }
+    //string methods
+    pub fn str_lengths(&self) -> Self {
+        use pl::*;
+        let function = |s: pl::Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_lengths().into_series()))
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.lengths")
+            .into()
+    }
+
+    pub fn str_n_chars(&self) -> Self {
+        use pl::*;
+        let function = |s: Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_n_chars().into_series()))
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.n_chars")
+            .into()
+    }
+
+    pub fn str_concat(&self, delimiter: &str) -> Self {
+        self.0.clone().str().concat(delimiter).into()
+    }
+
+    pub fn str_to_uppercase(&self) -> Self {
+        self.0.clone().str().to_uppercase().into()
+    }
+
+    pub fn str_to_lowercase(&self) -> Self {
+        self.0.clone().str().to_lowercase().into()
+    }
+
+    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().strip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_zfill(&self, alignment: Robj) -> List {
+        let res = try_robj_to!(usize, alignment, "in str$zfill(): {:?}")
+            .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
+        r_result_list(res)
+    }
+
+    pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(self.clone().0.str().ljust(
+                try_robj_to!(usize, width)?,
+                try_robj_to!(char, fillchar)?,
+            )))
+        }()
+        .map_err(|err| format!("in str$ljust: {:?}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            Ok(Expr(self.clone().0.str().rjust(
+                try_robj_to!(usize, width)?,
+                try_robj_to!(char, fillchar)?,
+            )))
+        }()
+        .map_err(|err| format!("in str$rjust: {:?}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {
+        Expr(match null_to_opt(literal) {
+            Some(true) => self.0.clone().str().contains_literal(pat.0.clone()),
+            _ => self.0.clone().str().contains(pat.0.clone(), strict),
+        })
+    }
+
+    pub fn str_ends_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().ends_with(sub.0.clone()).into()
+    }
+
+    pub fn str_starts_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().starts_with(sub.0.clone()).into()
+    }
+
+    pub fn str_json_path_match(&self, pat: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            use pl::*;
+            let pat: String = try_robj_to!(String, pat, "in str$json_path_match: {}")?;
+            let function = move |s: Series| {
+                let ca = s.utf8()?;
+                match ca.json_path_match(&pat) {
+                    Ok(ca) => Ok(Some(ca.into_series())),
+                    Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
+                }
+            };
+            Ok(Expr(
+                self.0
+                    .clone()
+                    .map(function, GetOutput::from_type(pl::DataType::Utf8))
+                    .with_fmt("str.json_path_match"),
+            ))
+        }();
+        r_result_list(res)
+    }
+
+    pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
+        let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
+        use pl::*;
+        let output_type = match dtype.clone() {
+            Some(dtype) => GetOutput::from_type(dtype),
+            None => GetOutput::from_type(DataType::Unknown),
+        };
+
+        let function = move |s: Series| {
+            let ca = s.utf8()?;
+            match ca.json_extract(dtype.clone()) {
+                Ok(ca) => Ok(Some(ca.into_series())),
+                Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
+            }
+        };
+
+        self.0
+            .clone()
+            .map(function, output_type)
+            .with_fmt("str.json_extract")
+            .into()
+    }
+
+    pub fn str_hex_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_encode")
+            .into()
+    }
+
+    pub fn str_hex_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_decode")
+            .into()
+    }
+    pub fn str_base64_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_encode")
+            .into()
+    }
+
+    pub fn str_base64_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| {
+                    s.utf8()?
+                        .base64_decode(strict)
+                        .map(|s| Some(s.into_series()))
+                },
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_decode")
+            .into()
+    }
 }
 
 //allow proto expression that yet only are strings

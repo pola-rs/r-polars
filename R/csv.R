@@ -42,7 +42,6 @@
 #'
 #' @param infer_schema_length (NULL is disable) Maximum number of lines to read to infer schema. If set to 0, all columns will
 #' be read as pl.Utf8. If set to None, a full table scan will be done (slow).
-#' @param rechunk bool Reallocate to contiguous memory when all chunks/ files are parsed.
 #' @param skip_rows_after_header bool Skip this number of rows when the header is parsed.
 #' @param encoding either "utf8" or "utf8-lossy". Lossy means that invalid utf8 values are replaced with � characters.
 #' @param row_count_name String(NULL is disable), name of a added row count column
@@ -74,7 +73,6 @@ lazy_csv_reader = function(
   quote_char = '"',
   null_values = NULL,
   infer_schema_length = 100,
-  rechunk = TRUE,
   skip_rows_after_header = 0,
   encoding = "utf8",
   row_count_name = NULL,

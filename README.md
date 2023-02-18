@@ -66,7 +66,7 @@ See further down how to install rust to build from source.
 
 ## news:
 
- - update 1st February: All DateTime expressions included from v0.4.3.
+ - update 1st February: All Datetime expressions included from v0.4.3.
 
  - update 28th December: r-polars is now hosted at https://github.com/pola-rs/r-polars. Happy to be
  here. You might encounter a bunch of links to the old repository the first weeks. I plan to work on r-polars full time the next 3 months, because why not :) Any contributions 
