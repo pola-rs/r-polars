@@ -5,18 +5,23 @@
 \alias{expr_str_split_exact}
 \title{split_exact}
 \arguments{
-\item{by}{Substring to split_exact by.}
+\item{by}{Substring to split by.}
+
+\item{n}{Number of splits to make.}
 
 \item{inclusive}{If True, include the split_exact character/string in the results.}
 }
 \value{
-List of Utf8 type
+Struct where each of n+1 fields is of Utf8 type
 }
 \description{
-split_exact the string by a substring.
+Split the string by a substring using \code{n} splits.
+Results in a struct of \code{n+1} fields.
+If it cannot make \code{n} splits, the remaining field elements will be null.
 }
 \examples{
-df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
+df = pl$DataFrame(x = c("a_1", NA, "c", "d_4"))
 df$select( pl$col("s")$str$split_exact(by="_",1))
+
 }
 \keyword{ExprStr}

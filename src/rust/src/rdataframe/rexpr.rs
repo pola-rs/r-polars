@@ -1969,6 +1969,16 @@ impl Expr {
         .map_err(|err| format!("in str$split_exact: {}", err));
         r_result_list(res)
     }
+
+    pub fn str_splitn(&self, by: Robj, n: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            let by = try_robj_to!(str, by)?;
+            let n = try_robj_to!(usize, n)?;
+            Ok(self.0.clone().str().splitn(by, n).into())
+        }()
+        .map_err(|err| format!("in str$splitn {}", err));
+        r_result_list(res)
+    }
 }
 
 //allow proto expression that yet only are strings

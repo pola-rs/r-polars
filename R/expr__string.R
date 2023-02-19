@@ -585,24 +585,53 @@ ExprStr_split = function(by, inclusive = FALSE){
   }) |> unwrap()
 }
 
-
+#TODO write 2nd example after expr_struct has been implemented
 #NOTE ExprStr_split_exact showcase all rust side arg handling
 #' split_exact
 #' @name ExprStr_split_exact
 #' @aliases expr_str_split_exact
-#' @description split_exact the string by a substring.
+#' @description Split the string by a substring using ``n`` splits.
+#' Results in a struct of ``n+1`` fields.
+#' If it cannot make ``n`` splits, the remaining field elements will be null.
 #' @keywords ExprStr
-#' @param by Substring to split_exact by.
+#' @param by Substring to split by.
+#' @param n Number of splits to make.
 #' @param inclusive If True, include the split_exact character/string in the results.
 #'
 #' @return
-#' List of Utf8 type
+#' Struct where each of n+1 fields is of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(x = c("a_1", NA, "c", "d_4"))
+#' df$select( pl$col("s")$str$split_exact(by="_",1))
+#'
+ExprStr_split_exact = function(by, n, inclusive = FALSE){
+  unwrap(.pr$Expr$str_split_exact(self, by, n, inclusive))
+}
+
+
+#' splitn
+#' @name ExprStr_splitn
+#' @aliases expr_str_splitn
+#' @description Split the string by a substring, restricted to returning at most ``n`` items.
+#' If the number of possible splits is less than ``n-1``, the remaining field
+#' elements will be null. If the number of possible splits is ``n-1`` or greater,
+#' the last (nth) substring will contain the remainder of the string.
+#' @keywords ExprStr
+#' @param by Substring to split by.
+#' @param n Number of splits to make.
+#' @param inclusive If True, include the splitn character/string in the results.
+#'
+#' @return
+#' Struct where each of n+1 fields is of Utf8 type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-#' df$select( pl$col("s")$str$split_exact(by="_",1))
-ExprStr_split_exact = function(by, n, inclusive = FALSE){
-  unwrap(.pr$Expr$str_split_exact(self, by, n, inclusive))
+#' df$select( pl$col("s")$str$splitn(by="_",0))
+#' df$select( pl$col("s")$str$splitn(by="_",1))
+#' df$select( pl$col("s")$str$splitn(by="_",2))
+ExprStr_splitn = function(by, n){
+  unwrap(.pr$Expr$str_splitn(self, by, n))
 }
 
 
