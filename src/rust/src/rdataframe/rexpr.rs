@@ -5,7 +5,7 @@ use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::try_robj_to;
-use crate::utils::{named_robj_to_usize, robj_to_char, robj_to_string};
+use crate::utils::{robj_to_bool, robj_to_char, robj_to_str, robj_to_string, robj_to_usize};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -1939,17 +1939,35 @@ impl Expr {
 
     pub fn str_count_match(&self, pattern: Robj) -> List {
         r_result_list(
-            try_robj_to!(String, pattern, "in str$count_match: {}")
+            try_robj_to!(String, pattern, "in str$count_match:")
                 .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
         )
     }
 
+    //NOTE SHOW CASE all R side argument handling
     pub fn str_split(&self, by: &str) -> Self {
         self.0.clone().str().split(by).into()
     }
-
     pub fn str_split_inclusive(&self, by: &str) -> Self {
         self.0.clone().str().split_inclusive(by).into()
+    }
+
+    //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
+    //handled on rust side anyways
+    pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> List {
+        let res = || -> std::result::Result<Expr, String> {
+            let by = try_robj_to!(str, by)?;
+            let n = try_robj_to!(usize, n)?;
+            let inclusive = try_robj_to!(bool, inclusive)?;
+            Ok(if inclusive {
+                self.0.clone().str().split_exact_inclusive(by, n)
+            } else {
+                self.0.clone().str().split_exact(by, n)
+            }
+            .into())
+        }()
+        .map_err(|err| format!("in str$split_exact: {}", err));
+        r_result_list(res)
     }
 }
 

@@ -392,7 +392,7 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract("a","a"),
-    r"(in str\$extract\: \[group_index\] is not a scalar integer or double as required, it is \["a"\])",
+    r"(in str\$extract\: \[group_index\] is not a scalar integer or double as required, but \["a"\])",
   )
 
 })
@@ -457,6 +457,40 @@ test_that("str$split", {
    expect_grepl_error(
      pl$lit("42")$str$split(by="blop", inclusive=42),
      r"{in str\$split\: arg \[inclusive\] must be a bool, it is\:}"
+  )
+
+
+})
+
+test_that("str$split_exact", {
+  expect_identical(
+     pl$lit(c("foo bar", "bar foo", "foo bar baz"))$str$split_exact(by=" ",n = 1)$to_r(),
+     structure(list(field_0 = c("foo", "bar", "foo"), field_1 = c("bar", "foo", "bar")), is_struct = TRUE)
+  )
+
+  expect_identical(
+     pl$lit(c("foo bar", "bar foo", "foo bar baz"))$str$split_exact(by=" ",n = 2)$to_r(),
+     structure(list(field_0 = c("foo", "bar", "foo"), field_1 = c("bar", "foo", "bar"), field_2 = c(NA, NA, "baz")), is_struct = TRUE)
+  )
+
+  expect_identical(
+     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by="-", inclusive=TRUE)$to_r(),
+     list("foo bar", c("foo-", "bar"), "foo bar baz")
+  )
+
+  expect_grepl_error(
+     pl$lit("42")$str$split_exact(by=42L, n=1, inclusive=TRUE),
+     r"{in str\$split_exact\: \[by\] is not a single string, but 42}"
+  )
+
+  expect_grepl_error(
+     pl$lit("42")$str$split_exact(by="a", n=-1, inclusive=TRUE),
+     r"{in str\$split_exact\: \[n\] is the value -1 cannot be less than zero}"
+  )
+
+  expect_grepl_error(
+    pl$lit("42")$str$split_exact(by="a", n=2, inclusive="joe"),
+    r"{in str\$split_exact\: \[inclusive\] is not a single bool as required, but}"
   )
 
 

@@ -557,6 +557,8 @@ ExprStr_count_match = function(pattern){
 }
 
 
+
+#NOTE ExprStr_split showcase all R side arg handling
 #' split
 #' @name ExprStr_split
 #' @aliases expr_str_split
@@ -582,3 +584,28 @@ ExprStr_split = function(by, inclusive = FALSE){
     paste("in str$split:", err)
   }) |> unwrap()
 }
+
+
+#NOTE ExprStr_split_exact showcase all rust side arg handling
+#' split_exact
+#' @name ExprStr_split_exact
+#' @aliases expr_str_split_exact
+#' @description split_exact the string by a substring.
+#' @keywords ExprStr
+#' @param by Substring to split_exact by.
+#' @param inclusive If True, include the split_exact character/string in the results.
+#'
+#' @return
+#' List of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
+#' df$select( pl$col("s")$str$split_exact(by="_",1))
+ExprStr_split_exact = function(by, n, inclusive = FALSE){
+  unwrap(.pr$Expr$str_split_exact(self, by, n, inclusive))
+}
+
+
+
+
+
