@@ -4,15 +4,10 @@
 \alias{ExprStr_splitn}
 \alias{expr_str_splitn}
 \title{splitn}
-\usage{
-ExprStr_splitn(by, n)
-}
 \arguments{
 \item{by}{Substring to split by.}
 
 \item{n}{Number of splits to make.}
-
-\item{inclusive}{If True, include the splitn character/string in the results.}
 }
 \value{
 Struct where each of n+1 fields is of Utf8 type

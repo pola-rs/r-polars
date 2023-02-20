@@ -598,11 +598,10 @@ ExprStr_split = function(by, inclusive = FALSE){
 #' @param n Number of splits to make.
 #' @param inclusive If True, include the split_exact character/string in the results.
 #'
-#' @return
-#' Struct where each of n+1 fields is of Utf8 type
+#' @return Struct where each of n+1 fields is of Utf8 type
 #'
 #' @examples
-#' df = pl$DataFrame(x = c("a_1", NA, "c", "d_4"))
+#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
 #' df$select( pl$col("s")$str$split_exact(by="_",1))
 #'
 ExprStr_split_exact = function(by, n, inclusive = FALSE){
@@ -620,7 +619,6 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE){
 #' @keywords ExprStr
 #' @param by Substring to split by.
 #' @param n Number of splits to make.
-#' @param inclusive If True, include the splitn character/string in the results.
 #'
 #' @return
 #' Struct where each of n+1 fields is of Utf8 type
