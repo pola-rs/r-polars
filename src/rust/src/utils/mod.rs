@@ -417,13 +417,11 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, Strin
 }
 
 #[macro_export]
-macro_rules! try_robj_to_inner {
+macro_rules! robj_to_inner {
     (usize, $a:ident) => {
         crate::utils::robj_to_usize($a)
     };
-    (usize_no_zero, $a:ident) => {
-        crate::utils::robj_to_usize($a)
-    };
+
     (char, $a:ident) => {
         crate::utils::robj_to_char($a)
     };
@@ -444,14 +442,13 @@ macro_rules! try_robj_to_inner {
 
 //convert any Robj to appropriate rust type with informative error Strings
 #[macro_export]
-macro_rules! try_robj_to {
+macro_rules! robj_to {
     ($type:ident, $a:ident) => {
-        crate::try_robj_to_inner!($type, $a)
-            .map_err(|err| format!("[{}] is {}", stringify!($a), err))
+        crate::robj_to_inner!($type, $a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
     };
 
     ($type:ident, $a:ident, $b:expr) => {
-        crate::try_robj_to_inner!($type, $a)
+        crate::robj_to_inner!($type, $a)
             .map_err(|err| format!("[{}] is {}", stringify!($a), err))
             .map_err(|err| format!("{} {}", $b, err))
     };

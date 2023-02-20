@@ -188,8 +188,8 @@ impl Series {
 
     //names repeat_ as repeat is locked keyword in R
     pub fn rep(&self, n: Robj, rechunk: Robj) -> std::result::Result<Series, String> {
-        use crate::try_robj_to;
-        self.rep_impl(try_robj_to!(usize, n)?, try_robj_to!(bool, rechunk)?)
+        use crate::robj_to;
+        self.rep_impl(robj_to!(usize, n)?, robj_to!(bool, rechunk)?)
             .map_err(|err| format!("{:?}", err))
     }
 

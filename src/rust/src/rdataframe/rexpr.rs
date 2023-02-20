@@ -4,7 +4,7 @@ use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
-use crate::try_robj_to;
+use crate::robj_to;
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -1787,7 +1787,7 @@ impl Expr {
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
-        let res = try_robj_to!(usize, alignment, "in str$zfill(): {:?}")
+        let res = robj_to!(usize, alignment, "in str$zfill(): {:?}")
             .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
         r_result_list(res)
     }
@@ -1795,8 +1795,8 @@ impl Expr {
     pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
             Ok(Expr(self.clone().0.str().ljust(
-                try_robj_to!(usize, width)?,
-                try_robj_to!(char, fillchar)?,
+                robj_to!(usize, width)?,
+                robj_to!(char, fillchar)?,
             )))
         }()
         .map_err(|err| format!("in str$ljust: {:?}", err));
@@ -1806,8 +1806,8 @@ impl Expr {
     pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
             Ok(Expr(self.clone().0.str().rjust(
-                try_robj_to!(usize, width)?,
-                try_robj_to!(char, fillchar)?,
+                robj_to!(usize, width)?,
+                robj_to!(char, fillchar)?,
             )))
         }()
         .map_err(|err| format!("in str$rjust: {:?}", err));
@@ -1832,7 +1832,7 @@ impl Expr {
     pub fn str_json_path_match(&self, pat: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
             use pl::*;
-            let pat: String = try_robj_to!(String, pat, "in str$json_path_match: {}")?;
+            let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
             let function = move |s: Series| {
                 let ca = s.utf8()?;
                 match ca.json_path_match(&pat) {
@@ -1926,8 +1926,8 @@ impl Expr {
 
     pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            let pat = try_robj_to!(String, pattern)?;
-            let gi = try_robj_to!(usize, group_index)?;
+            let pat = robj_to!(String, pattern)?;
+            let gi = robj_to!(usize, group_index)?;
             Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
         }()
         .map_err(|err| format!("in str$extract: {}", err));
@@ -1940,7 +1940,7 @@ impl Expr {
 
     pub fn str_count_match(&self, pattern: Robj) -> List {
         r_result_list(
-            try_robj_to!(String, pattern, "in str$count_match:")
+            robj_to!(String, pattern, "in str$count_match:")
                 .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
         )
     }
@@ -1957,9 +1957,9 @@ impl Expr {
     //handled on rust side anyways
     pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            let by = try_robj_to!(str, by)?;
-            let n = try_robj_to!(usize, n)?;
-            let inclusive = try_robj_to!(bool, inclusive)?;
+            let by = robj_to!(str, by)?;
+            let n = robj_to!(usize, n)?;
+            let inclusive = robj_to!(bool, inclusive)?;
             Ok(if inclusive {
                 self.0.clone().str().split_exact_inclusive(by, n)
             } else {
@@ -1973,8 +1973,8 @@ impl Expr {
 
     pub fn str_splitn(&self, by: Robj, n: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            let by = try_robj_to!(str, by)?;
-            let n = try_robj_to!(usize, n)?;
+            let by = robj_to!(str, by)?;
+            let n = robj_to!(usize, n)?;
             Ok(self.0.clone().str().splitn(by, n).into())
         }()
         .map_err(|err| format!("in str$splitn {}", err));
@@ -1992,9 +1992,9 @@ impl Expr {
             .clone()
             .str()
             .replace(
-                try_robj_to!(Expr, pattern)?.0,
-                try_robj_to!(Expr, value)?.0,
-                try_robj_to!(bool, literal)?,
+                robj_to!(Expr, pattern)?.0,
+                robj_to!(Expr, value)?.0,
+                robj_to!(bool, literal)?,
             )
             .into())
     }
