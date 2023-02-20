@@ -786,7 +786,9 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
 #'
 #' @examples
 #' pl$Series(1:4,"bob")$to_frame()
-Series_to_frame = "use_extendr_wrapper"
+Series_to_frame = function() {
+  unwrap(.pr$Series$to_frame(self))
+}
 
 
 #' Are Series's equal?

@@ -69,7 +69,7 @@ impl Expr {
     }
 
     //TODO expand usecases to series and datatime
-    pub fn lit(robj: Robj) -> List {
+    pub fn lit(robj: Robj) -> std::result::Result<Expr, String> {
         let rtype = robj.rtype();
         let rlen = robj.len();
         let err_msg = "NA not allowed use NULL";
@@ -137,7 +137,7 @@ impl Expr {
         }
         .map(|ok| Expr(ok));
 
-        r_result_list(expr_result)
+        expr_result
     }
 
     //expr binary comparisons
@@ -1794,10 +1794,12 @@ impl Expr {
 
     pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            Ok(Expr(self.clone().0.str().ljust(
-                robj_to!(usize, width)?,
-                robj_to!(char, fillchar)?,
-            )))
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .ljust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
+            ))
         }()
         .map_err(|err| format!("in str$ljust: {:?}", err));
         r_result_list(res)
@@ -1805,10 +1807,12 @@ impl Expr {
 
     pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
         let res = || -> std::result::Result<Expr, String> {
-            Ok(Expr(self.clone().0.str().rjust(
-                robj_to!(usize, width)?,
-                robj_to!(char, fillchar)?,
-            )))
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .rjust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
+            ))
         }()
         .map_err(|err| format!("in str$rjust: {:?}", err));
         r_result_list(res)
@@ -1983,19 +1987,15 @@ impl Expr {
 
     pub fn str_replace(
         &self,
-        pattern: Robj,
-        value: Robj,
+        pattern: &Expr,
+        value: &Expr,
         literal: Robj,
     ) -> std::result::Result<Expr, String> {
         Ok(self
             .0
             .clone()
             .str()
-            .replace(
-                robj_to!(Expr, pattern)?.0,
-                robj_to!(Expr, value)?.0,
-                robj_to!(bool, literal)?,
-            )
+            .replace(pattern.0.clone(), value.0.clone(), robj_to!(bool, literal)?)
             .into())
     }
 }

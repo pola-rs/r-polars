@@ -8,14 +8,14 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
-use crate::utils::{r_error_list, r_ok_list, r_result_list};
+use crate::utils::{r_error_list, r_result_list};
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
 use crate::rdataframe::r_to_series::robjname2series;
 use crate::rdataframe::series_to_r::pl_series_to_list;
-use crate::utils::try_f64_into_usize;
+
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -455,11 +455,10 @@ impl Series {
         Series(self.0.cumsum(reverse))
     }
 
-    pub fn to_frame(&self) -> DataFrame {
+    pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
-        df.set_column_from_series(&self);
-
-        df
+        df.set_column_from_series(&self)?;
+        Ok(df)
     }
 
     pub fn set_sorted_mut(&mut self, reverse: bool) {

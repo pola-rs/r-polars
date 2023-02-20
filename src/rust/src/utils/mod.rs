@@ -3,9 +3,10 @@ pub mod extendr_concurrent;
 pub mod wrappers;
 use crate::rdataframe::rexpr::Expr;
 use extendr_api::prelude::list;
-use extendr_api::prelude::IntoRobj;
+
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
+
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -416,6 +417,19 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, Strin
         .map(|ok| Expr(ok.0.clone()))
 }
 
+// pub fn robj_to_lit(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
+//     use extendr_api::*;
+//     match robj.rtype() {
+//         _ if robj.inherits("Expr") => robj_to_rexpr(robj),
+//         Rtype::Doubles => Expr::lit(robj),
+//         Rtype::Integers => Expr::lit(robj),
+//         Rtype::List => Expr::lit(robj),
+//         _ => extendr_api::call!("pl$col", robj.clone())
+//             .map_err(|_| format!(" is not Into<Expr>/literal see above error {:?}", robj))
+//             .and_then(robj_to_rexpr),
+//     }
+// }
+
 #[macro_export]
 macro_rules! robj_to_inner {
     (usize, $a:ident) => {
@@ -437,6 +451,10 @@ macro_rules! robj_to_inner {
 
     (Expr, $a:ident) => {
         crate::utils::robj_to_rexpr($a)
+    };
+
+    (lit, $a:ident) => {
+        crate::utils::robj_to_lit($a)
     };
 }
 
