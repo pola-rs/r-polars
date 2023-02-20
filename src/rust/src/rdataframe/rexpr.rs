@@ -1981,12 +1981,22 @@ impl Expr {
         r_result_list(res)
     }
 
-    pub fn str_replace(&self, pat: &Expr, val: &Expr, literal: bool) -> Self {
-        self.0
+    pub fn str_replace(
+        &self,
+        pattern: Robj,
+        value: Robj,
+        literal: Robj,
+    ) -> std::result::Result<Expr, String> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .replace(pat.0.clone(), val.0.clone(), literal)
-            .into()
+            .replace(
+                try_robj_to!(Expr, pattern)?.0,
+                try_robj_to!(Expr, value)?.0,
+                try_robj_to!(bool, literal)?,
+            )
+            .into())
     }
 }
 

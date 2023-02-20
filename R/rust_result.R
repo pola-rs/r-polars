@@ -88,6 +88,7 @@ or_else = function(x, f) {
 #'
 #' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
 #' @param call context of error or string
+#' @param context a msg to prefix a raised error with
 #'
 #' @return the ok-element of list , or a error will be thrown
 #' @export
@@ -105,7 +106,7 @@ or_else = function(x, f) {
 #'   ),
 #'   error = function(err) as.character(err)
 #' )
-unwrap = function(result, call=sys.call(1L)) {
+unwrap = function(result, call=sys.call(1L), context = NULL) {
   #if not a result
   if(!is_result(result)) {
     stopf("Internal error: cannot unwrap non result")
@@ -118,6 +119,10 @@ unwrap = function(result, call=sys.call(1L)) {
 
   #if result is error, make a pretty with context
   if(is.null(result$ok) && !is.null(result$err)) {
+    if(!is.null(context)) {
+      result$err = paste(context, result$err)
+    }
+
     stop(
       paste(
         result$err,
