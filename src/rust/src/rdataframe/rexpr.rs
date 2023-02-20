@@ -1980,6 +1980,14 @@ impl Expr {
         .map_err(|err| format!("in str$splitn {}", err));
         r_result_list(res)
     }
+
+    pub fn str_replace(&self, pat: &Expr, val: &Expr, literal: bool) -> Self {
+        self.0
+            .clone()
+            .str()
+            .replace(pat.0.clone(), val.0.clone(), literal)
+            .into()
+    }
 }
 
 //allow proto expression that yet only are strings

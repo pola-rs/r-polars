@@ -584,6 +584,8 @@ Expr$str_split_exact <- function(by, n, inclusive) .Call(wrap__Expr__str_split_e
 
 Expr$str_splitn <- function(by, n) .Call(wrap__Expr__str_splitn, self, by, n)
 
+Expr$str_replace <- function(pat, val, literal) .Call(wrap__Expr__str_replace, self, pat, val, literal)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

@@ -633,6 +633,31 @@ ExprStr_splitn = function(by, n){
 }
 
 
+#' replace
+#' @name ExprStr_replace
+#' @aliases expr_str_replace
+#' @description
+#' Replace first matching regex/literal substring with a new string value.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, Treat pattern as a literal string.
+#'
+#' @return
+#' Struct where each of n+1 fields is of Utf8 type
+#'
+#' @seealso replace_all : Replace all matching regex/literal substrings.
+#'
+#' @examples
+#' df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
+#' df$with_columns(
+#'    pl$col("text")$str$replace(r"{abc\b}", "ABC")
+#' )
+ExprStr_replace = function(pattern, value, literal = FALSE){
+  .pr$Expr$str_replace(self, wrap_e(pattern), wrap_e(value), literal)
+}
+
+
 
 
 
