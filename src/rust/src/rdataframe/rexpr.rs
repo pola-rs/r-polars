@@ -5,14 +5,15 @@ use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::try_robj_to;
-use crate::utils::{robj_to_bool, robj_to_char, robj_to_str, robj_to_string, robj_to_usize};
 
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
-use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{
+    try_f64_into_i64, try_f64_into_u32, try_f64_into_usize, try_f64_into_usize_no_zero,
+};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 
@@ -288,7 +289,7 @@ impl Expr {
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
         let res = || -> std::result::Result<Expr, String> {
             let limit = null_to_opt(limit)
-                .map(|lim| try_f64_into_usize(lim, false))
+                .map(|lim| try_f64_into_usize(lim))
                 .transpose()?;
             let limit: pl::FillNullLimit = limit.map(|x| x as u32).into();
 
@@ -393,7 +394,7 @@ impl Expr {
     pub fn take_every(&self, n: f64) -> List {
         use pl::*; //dunno what set of traits needed just take all
 
-        let result = try_f64_into_usize(n, true)
+        let result = try_f64_into_usize_no_zero(n)
             .map_err(|err| format!("Invalid n argument in take_every: {}", err))
             .map(|n| {
                 Expr(
@@ -414,7 +415,7 @@ impl Expr {
     pub fn hash(&self, seed: f64, seed_1: f64, seed_2: f64, seed_3: f64) -> List {
         let vec_u64_result: std::result::Result<Vec<u64>, String> = [seed, seed_1, seed_2, seed_3]
             .iter()
-            .map(|x| try_f64_into_usize(*x, false).map(|val| val as u64))
+            .map(|x| try_f64_into_usize(*x).map(|val| val as u64))
             .collect();
         r_result_list(
             vec_u64_result
@@ -633,7 +634,7 @@ impl Expr {
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
         use pl::*;
         let expr =
-            try_f64_into_usize(window_size_f, false).map(|ws| {
+            try_f64_into_usize(window_size_f).map(|ws| {
                 Expr(self.0.clone().rolling_apply_float(ws, move |ca| {
                     ca.clone().into_series().skew(bias).unwrap()
                 }))
@@ -662,7 +663,7 @@ impl Expr {
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {
         let expr_res = || -> std::result::Result<Expr, String> {
             Ok(Expr(self.0.clone().diff(
-                try_f64_into_usize(n_float, false)?,
+                try_f64_into_usize(n_float)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -671,7 +672,7 @@ impl Expr {
     }
 
     fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_usize(n_float, false)
+        let expr_res = try_f64_into_usize(n_float)
             .map(|n_usize| Expr(self.0.clone().pct_change(n_usize)))
             .map_err(|err| format!("pct_change: {}", err));
         r_result_list(expr_res)
@@ -805,14 +806,14 @@ impl Expr {
 
     pub fn shuffle(&self, seed: f64) -> List {
         let seed_res =
-            try_f64_into_usize(seed, false).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
+            try_f64_into_usize(seed).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
         r_result_list(seed_res)
     }
 
     pub fn sample_n(&self, n: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
-            let seed = try_f64_into_usize(seed, false)?;
-            let n = try_f64_into_usize(n, false)?;
+            let seed = try_f64_into_usize(seed)?;
+            let n = try_f64_into_usize(n)?;
             Ok(self
                 .0
                 .clone()
@@ -824,7 +825,7 @@ impl Expr {
 
     pub fn sample_frac(&self, frac: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
-            let seed = try_f64_into_usize(seed, false)?;
+            let seed = try_f64_into_usize(seed)?;
             Ok(self
                 .0
                 .clone()
@@ -836,7 +837,7 @@ impl Expr {
 
     pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
@@ -858,7 +859,7 @@ impl Expr {
         ignore_nulls: bool,
     ) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
@@ -880,7 +881,7 @@ impl Expr {
         ignore_nulls: bool,
     ) -> List {
         let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
@@ -899,7 +900,7 @@ impl Expr {
                 pl::Expr::Literal(ma) => literal_to_any_value(ma),
                 ma => Err(format!("value [{:?}] was not a literal:", ma)),
             }?;
-            let n = try_f64_into_usize(n, false)?;
+            let n = try_f64_into_usize(n)?;
 
             Ok(Expr(
                 self.0
@@ -937,7 +938,7 @@ impl Expr {
     }
 
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
-        match try_f64_into_usize(n, false) {
+        match try_f64_into_usize(n) {
             Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),
             Ok(n) => r_ok_list(Expr(
                 self.0
@@ -971,7 +972,7 @@ impl Expr {
 
     fn cumulative_eval(&self, expr: &Expr, min_periods: f64, parallel: bool) -> List {
         use pl::*;
-        r_result_list(try_f64_into_usize(min_periods, false).map(|min_p| {
+        r_result_list(try_f64_into_usize(min_periods).map(|min_p| {
             Expr(
                 self.0
                     .clone()
@@ -1066,7 +1067,7 @@ impl Expr {
     fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
         let expr_res = || -> std::result::Result<Expr, String> {
             Ok(Expr(self.0.clone().arr().diff(
-                try_f64_into_usize(n, false)?,
+                try_f64_into_usize(n)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -1117,7 +1118,7 @@ impl Expr {
 
         //resolve usize from f64 and stategy from str
         let res = || -> std::result::Result<Expr, String> {
-            let ub = try_f64_into_usize(upper_bound, false)?;
+            let ub = try_f64_into_usize(upper_bound)?;
             let strat = new_width_strategy(width_strat)?;
             Ok(Expr(self.0.clone().arr().to_struct(strat, name_gen, ub)))
         }();
@@ -1529,14 +1530,14 @@ impl Expr {
     }
 
     pub fn head(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n, false)
+        let res = try_f64_into_usize(n)
             .map_err(|err| format!("in head: {}", err))
             .map(|n| Expr(self.0.clone().head(Some(n))));
         r_result_list(res)
     }
 
     pub fn tail(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n, false)
+        let res = try_f64_into_usize(n)
             .map_err(|err| format!("in tail: {}", err))
             .map(|n| Expr(self.0.clone().tail(Some(n))));
         r_result_list(res)
@@ -2067,7 +2068,7 @@ pub fn make_rolling_options(
     //     ));
     // };
     let weights = null_to_opt(weights_robj);
-    let min_periods = try_f64_into_usize(min_periods_float, false)?;
+    let min_periods = try_f64_into_usize(min_periods_float)?;
 
     let by = null_to_opt(by_null);
 

@@ -188,7 +188,7 @@ impl Series {
 
     //names repeat_ as repeat is locked keyword in R
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
-        match try_f64_into_usize(n, false) {
+        match try_f64_into_usize(n) {
             Ok(n) => r_result_list(self.rep_impl(n as usize, rechunk)),
             Err(err) => r_error_list(err),
         }

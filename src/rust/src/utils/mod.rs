@@ -237,16 +237,14 @@ pub fn parse_fill_null_strategy(
 const R_MAX_INTEGERISH: f64 = 4503599627370496.0;
 const R_MIN_INTEGERISH: f64 = -4503599627370496.0;
 
-pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, String> {
+pub fn try_f64_into_usize_no_zero(x: f64) -> std::result::Result<usize, String> {
     if x.is_nan() {
         return Err(String::from("the value cannot be NaN"));
     };
-    if no_zero && x < 1.0 {
+    if x < 1.0 {
         return Err(format!("the value {} cannot be less than one", x));
     };
-    if x < 0.0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
+
     if x > R_MAX_INTEGERISH {
         return Err(format!(
             "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
@@ -262,6 +260,23 @@ pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, S
         ));
     };
     Ok(x as usize)
+}
+
+pub fn try_f64_into_usize(x: f64) -> std::result::Result<usize, String> {
+    match x {
+        _ if x.is_nan() => Err(String::from("the value cannot be NaN")),
+        _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > R_MAX_INTEGERISH => Err(format!(
+            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
+            x, R_MAX_INTEGERISH
+        )),
+        _ if x > usize::MAX as f64 => Err(format!(
+            "the value {} cannot exceed usize::MAX {}",
+            x,
+            usize::MAX
+        )),
+        _ => Ok(x as usize),
+    }
 }
 
 pub fn try_f64_into_i64(x: f64) -> std::result::Result<i64, String> {
@@ -442,7 +457,7 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, Stri
         (_, _) => None,
     }
     .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
-    .and_then(|float| try_f64_into_usize(float, false))
+    .and_then(|float| try_f64_into_usize(float))
 }
 
 pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
@@ -454,45 +469,29 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
     .ok_or_else(|| format!("not a single bool as required, but {:?}", robj))
 }
 
-// pub fn named_robj_to_usize(
-//     robj: extendr_api::Robj,
-//     name: &str,
-// ) -> std::result::Result<usize, String> {
-//     use extendr_api::*;
-//     match (robj.rtype(), robj.len()) {
-//         (Rtype::Doubles, 1) => robj.as_real(),
-//         (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
-//         (_, _) => None,
-//     }
-//     .ok_or_else(|| {
-//         format!(
-//             "not a scalar integer or double as required, it is {:?}",
-//             robj
-//         )
-//     })
-//     .and_then(|float| try_f64_into_usize(float, false))
-//     .map_err(|err| format!("[{}] is {}", name, err))
-// }
-
 #[macro_export]
 macro_rules! try_robj_to_inner {
     (usize, $a:ident) => {
-        robj_to_usize($a)
+        crate::utils::robj_to_usize($a)
+    };
+    (usize_no_zero, $a:ident) => {
+        crate::utils::robj_to_usize($a)
     };
     (char, $a:ident) => {
-        robj_to_char($a)
+        crate::utils::robj_to_char($a)
     };
     (String, $a:ident) => {
-        robj_to_string($a)
+        crate::utils::robj_to_string($a)
     };
     (str, $a:ident) => {
-        robj_to_str($a)
+        crate::utils::robj_to_str($a)
     };
     (bool, $a:ident) => {
-        robj_to_bool($a)
+        crate::utils::robj_to_bool($a)
     };
 }
 
+//convert any Robj to appropriate rust type with informative error Strings
 #[macro_export]
 macro_rules! try_robj_to {
     ($type:ident, $a:ident) => {

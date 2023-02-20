@@ -131,7 +131,7 @@ impl LazyGroupBy {
 
     fn head(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_usize(n, false)
+            try_f64_into_usize(n)
                 .map(|n| LazyFrame(self.0.clone().head(Some(n))))
                 .map_err(|err| format!("head: {}", err)),
         )
@@ -139,7 +139,7 @@ impl LazyGroupBy {
 
     fn tail(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_usize(n, false)
+            try_f64_into_usize(n)
                 .map(|n| LazyFrame(self.0.clone().tail(Some(n))))
                 .map_err(|err| format!("tail: {}", err)),
         )
