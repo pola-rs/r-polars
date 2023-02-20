@@ -236,41 +236,37 @@ pub fn parse_fill_null_strategy(
 
 const R_MAX_INTEGERISH: f64 = 4503599627370496.0;
 const R_MIN_INTEGERISH: f64 = -4503599627370496.0;
+const I64_MIN_INTO_F64: f64 = i64::MIN as f64;
+const I64_MAX_INTO_F64: f64 = i64::MAX as f64;
+const USIZE_MAX_INTO_F64: f64 = usize::MAX as f64;
+const U32_MAX_INTO_F64: f64 = u32::MAX as f64;
+const MSG_INTEGERISH_MAX: &'static str =
+    "exceeds double->integer unambigious conversion bound of 2^52 = 4503599627370496.0";
+const MSG_INTEGERISH_MIN: &'static str =
+    "exceeds double->integer unambigious conversion bound of -(2^52)= -4503599627370496.0";
+const MSG_NAN: &'static str = "the value cannot be NaN";
+const MSG_NO_LESS_ONE: &'static str = "cannot be less than one";
 
 pub fn try_f64_into_usize_no_zero(x: f64) -> std::result::Result<usize, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if x < 1.0 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-
-    if x > R_MAX_INTEGERISH {
-        return Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-            x, R_MAX_INTEGERISH
-        ));
-    };
-    if x > usize::MAX as f64 {
-        //could only trigger on a 32bit machine
-        return Err(format!(
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 1.0 => Err(format!("the value {} {}", x, MSG_NO_LESS_ONE)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        _ if x > USIZE_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed usize::MAX {}",
             x,
             usize::MAX
-        ));
-    };
-    Ok(x as usize)
+        )),
+        _ => Ok(x as usize),
+    }
 }
 
 pub fn try_f64_into_usize(x: f64) -> std::result::Result<usize, String> {
     match x {
-        _ if x.is_nan() => Err(String::from("the value cannot be NaN")),
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
         _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
-        _ if x > R_MAX_INTEGERISH => Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-            x, R_MAX_INTEGERISH
-        )),
-        _ if x > usize::MAX as f64 => Err(format!(
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        _ if x > USIZE_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed usize::MAX {}",
             x,
             usize::MAX
@@ -280,102 +276,37 @@ pub fn try_f64_into_usize(x: f64) -> std::result::Result<usize, String> {
 }
 
 pub fn try_f64_into_i64(x: f64) -> std::result::Result<i64, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if x > R_MAX_INTEGERISH {
-        return Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-            x, R_MAX_INTEGERISH
-        ));
-    };
-    if x < R_MIN_INTEGERISH {
-        return Err(format!(
-            "the value {} is lower than double->integer unambigious conversion bound of -(2^52)={}",
-            x, R_MIN_INTEGERISH
-        ));
-    };
-
-    if x > i64::MAX as f64 {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < R_MIN_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MIN)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
         //could only trigger on a 32bit machine
-        return Err(format!(
+        _ if x > I64_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed i64::MAX {}",
             x,
             i64::MAX
-        ));
-    };
-    if x < i64::MIN as f64 {
-        //could only trigger on a 32bit machine
-        return Err(format!(
+        )),
+        _ if x < I64_MIN_INTO_F64 => Err(format!(
             "the value {} cannot exceed i64::MIN {}",
             x,
             i64::MIN
-        ));
-    };
-    Ok(x as i64)
+        )),
+        _ => Ok(x as i64),
+    }
 }
 
-pub fn try_f64_into_u32(x: f64, no_zero: bool) -> std::result::Result<u32, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if no_zero && x < 1.0 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-    if x < 0.0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
-    if x > u32::MAX as f64 {
-        return Err(format!(
+pub fn try_f64_into_u32(x: f64) -> std::result::Result<u32, String> {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > U32_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed u32::MAX {}",
             x,
             u32::MAX
-        ));
-    };
-    Ok(x as u32)
+        )),
+        _ => Ok(x as u32),
+    }
 }
-
-pub fn try_i64_into_usize(x: i64, no_zero: bool) -> std::result::Result<usize, String> {
-    if no_zero && x < 1 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-    if x < 0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
-    Ok(x as usize)
-}
-
-// pub fn try_robj_into_usize(x: robj, no_zero: bool) -> std::result::Result<usize, String> {
-
-//     match x.rtype() {
-
-//     }
-
-//     if x.is_nan() {
-//         return Err(String::from("the value cannot be NaN"));
-//     };
-//     if no_zero && x < 1.0 {
-//         return Err(format!("the value {} cannot be less than one", x));
-//     };
-//     if x < 0.0 {
-//         return Err(format!("the value {} cannot be less than zero", x));
-//     };
-//     if x > R_MAX_INTEGERISH {
-//         return Err(format!(
-//             "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-//             x, R_MAX_INTEGERISH
-//         ));
-//     };
-//     if x > usize::MAX as f64 {
-//         //could only trigger on a 32bit machine
-//         return Err(format!(
-//             "the value {} cannot exceed usize::MAX {}",
-//             x,
-//             usize::MAX
-//         ));
-//     };
-//     Ok(x as usize)
-// }
 
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where

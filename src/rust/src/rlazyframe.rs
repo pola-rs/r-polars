@@ -57,7 +57,7 @@ impl LazyFrame {
 
     fn limit(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_u32(n, false)
+            try_f64_into_u32(n)
                 .map(|n| LazyFrame(self.0.clone().limit(n)))
                 .map_err(|err| format!("limit: {}", err)),
         )

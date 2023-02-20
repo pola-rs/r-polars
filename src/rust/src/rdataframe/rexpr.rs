@@ -1507,7 +1507,7 @@ impl Expr {
     }
 
     pub fn round(&self, decimals: f64) -> List {
-        let res = try_f64_into_u32(decimals, false)
+        let res = try_f64_into_u32(decimals)
             .map_err(|err| format!("in round: {}", err))
             .map(|n| Expr(self.0.clone().round(n)));
         r_result_list(res)
