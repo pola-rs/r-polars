@@ -129,7 +129,7 @@ unwrap = function(result, call=sys.call(1L), context = NULL) {
 
         if(!rpolars_optenv$do_not_repeat_call) {
           paste(
-            "\n when calling:\n",
+            "\n when calling :\n",
             paste(capture.output(print(call)),collapse="\n")
           )
         }

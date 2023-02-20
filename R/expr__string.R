@@ -654,7 +654,7 @@ ExprStr_splitn = function(by, n){
 #'    pl$col("text")$str$replace(r"{abc\b}", "ABC")
 #' )
 ExprStr_replace = function(pattern, value, literal = FALSE){
-  .pr$Expr$str_replace(self, wrap_e(pattern), wrap_e(value), literal) |>
+  .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), literal) |>
     unwrap(context = "in str$replace:")
 }
 

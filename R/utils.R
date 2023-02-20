@@ -73,7 +73,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name
         #add call to error messages
         if(!rpolars_optenv$do_not_repeat_call) {
           paste(
-            "\n when calling:\n",
+            "\n when calling method:\n",
             paste(capture.output(print(call)),collapse="\n")
           )
         }

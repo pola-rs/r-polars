@@ -411,8 +411,30 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
     .ok_or_else(|| format!("not a single bool as required, but {:?}", robj))
 }
 
+pub fn unpack_r_result_list(robj: extendr_api::Robj) -> std::result::Result<Robj, String> {
+    use extendr_api::*;
+    if robj.inherits("extendr_result") {
+        let l = robj.as_list().unwrap();
+        let ok = l.elt(0).unwrap();
+        let err = l.elt(1).unwrap();
+        match (ok.rtype(), err.rtype()) {
+            (Rtype::Null, Rtype::Null) => Ok(ok),
+            (Rtype::Null, _) => {
+                if let Some(err_msg) = err.as_str() {
+                    Err(err_msg.to_string())
+                } else {
+                    Err(format!("{:?}", err))
+                }
+            }
+            (_, Rtype::Null) => Ok(ok),
+            (_, _) => unreachable!("Internal error: failed to unpack r_result_list"),
+        }
+    } else {
+        Ok(robj)
+    }
+}
 pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
-    let res: ExtendrResult<ExternalPtr<Expr>> = robj.try_into();
+    let res: ExtendrResult<ExternalPtr<Expr>> = unpack_r_result_list(robj)?.try_into();
     res.map_err(|err| format!("not an Expr, because {:?}", err))
         .map(|ok| Expr(ok.0.clone()))
 }
