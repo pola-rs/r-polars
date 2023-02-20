@@ -19,10 +19,15 @@ rust-like unwrapping of result. Useful to keep error handling on the R side.
 }
 \examples{
 
-unwrap(list(ok="foo",err=NULL))
+structure(list(ok = "foo", err = NULL), class = "extendr_result")
 
 tryCatch(
-  unwrap(ok=NULL, err = "something happen on the rust side"),
-  error = function(e) as.character(e)
+  unwrap(
+    structure(
+      list(ok = NULL, err = "something happen on the rust side"),
+      class = "extendr_result"
+    )
+  ),
+  error = function(err) as.character(err)
 )
 }

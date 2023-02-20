@@ -567,7 +567,9 @@ Series_name = method_as_property(function() {
 #' @name Series_any
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
-Series_any = "use_extendr_wrapper"
+Series_any = function() {
+  unwrap(.pr$Series$any(self))
+}
 
 #' Reduce Boolean Series with ALL
 #'

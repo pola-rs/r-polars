@@ -1,8 +1,11 @@
 pub mod extendr_concurrent;
 
 pub mod wrappers;
+use crate::rdataframe::rexpr::Expr;
 use extendr_api::prelude::list;
 use extendr_api::prelude::IntoRobj;
+use extendr_api::ExternalPtr;
+use extendr_api::Result as ExtendrResult;
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -308,29 +311,36 @@ pub fn try_f64_into_u32(x: f64) -> std::result::Result<u32, String> {
     }
 }
 
+use extendr_api::Robj;
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
-    T: IntoRobj,
-    E: std::fmt::Display,
+    T: Into<Robj>,
+    E: Into<Robj>,
 {
-    match result {
-        Ok(x) => list!(ok = x.into_robj(), err = extendr_api::NULL),
-        Err(x) => list!(ok = extendr_api::NULL, err = x.to_string()),
-    }
+    use extendr_api::*;
+    result
+        .into_robj()
+        .as_list()
+        .expect("Internal error: failed to restor list")
 }
 
 pub fn r_error_list<E>(err: E) -> list::List
 where
-    E: std::fmt::Display,
+    E: Into<Robj>,
 {
-    list!(ok = extendr_api::NULL, err = err.to_string())
+    use extendr_api::*;
+    let x = Err::<Robj, E>(err).into_robj();
+    x.as_list().expect("Internal error: failed to restor list")
 }
 
-pub fn r_ok_list<T>(result: T) -> list::List
+pub fn r_ok_list<T>(ok: T) -> list::List
 where
-    T: IntoRobj,
+    T: Into<Robj>,
 {
-    list!(ok = result.into_robj(), err = extendr_api::NULL)
+    use extendr_api::*;
+    let x = Ok::<T, Robj>(ok);
+    let x = x.into_robj();
+    x.as_list().expect("Internal error: failed to restor list")
 }
 
 pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series> {
@@ -400,6 +410,12 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
     .ok_or_else(|| format!("not a single bool as required, but {:?}", robj))
 }
 
+pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
+    let res: ExtendrResult<ExternalPtr<Expr>> = robj.try_into();
+    res.map_err(|err| format!("not an Expr, because {:?}", err))
+        .map(|ok| Expr(ok.0.clone()))
+}
+
 #[macro_export]
 macro_rules! try_robj_to_inner {
     (usize, $a:ident) => {
@@ -419,6 +435,10 @@ macro_rules! try_robj_to_inner {
     };
     (bool, $a:ident) => {
         crate::utils::robj_to_bool($a)
+    };
+
+    (Expr, $a:ident) => {
+        crate::utils::robj_to_rexpr($a)
     };
 }
 

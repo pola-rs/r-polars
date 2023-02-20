@@ -408,7 +408,7 @@ test_that("str$extract_all", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract_all(complex(2)),
-    r"(Invalid operation new series from rtype Complexes is not supported)",
+    "new series from rtype Complexes is not supported",
   )
 
 

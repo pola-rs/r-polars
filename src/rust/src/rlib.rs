@@ -37,20 +37,20 @@ fn concat_df(vdf: &VecDataFrame) -> List {
         })
         .map(|ok| DataFrame(ok));
 
-    r_result_list(result)
+    r_result_list(result.map_err(|err| format!("{:?}", err)))
 }
 //ping
 
 #[extendr]
 fn diag_concat_df(dfs: &VecDataFrame) -> List {
     let df = pl_functions::diag_concat_df(&dfs.0[..]).map(|ok| DataFrame(ok));
-    r_result_list(df)
+    r_result_list(df.map_err(|err| format!("{:?}", err)))
 }
 
 #[extendr]
 pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
     let df = pl_functions::hor_concat_df(&dfs.0[..]).map(|ok| DataFrame(ok));
-    r_result_list(df)
+    r_result_list(df.map_err(|err| format!("{:?}", err)))
 }
 
 #[extendr]

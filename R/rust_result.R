@@ -5,8 +5,8 @@
 #' If both ok and err has value then this is an invalid result
 #' @return bool if is a result object
 is_result = function(x) {
-  #identical(class(x),"extendr_result")
-  is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
+  identical(class(x),"extendr_result")
+  #is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
 }
 
 guard_result = function(x, msg="") {
@@ -34,7 +34,7 @@ is_ok = function(x) {
 #' @param x any R object
 #' @return same R object wrapped in a Ok-result
 Ok = function(x) {
-  list(ok = x, err = NULL)
+  structure(list(ok = x, err = NULL), class = "extendr_result")
 }
 
 #' Wrap in Err
@@ -42,7 +42,7 @@ Ok = function(x) {
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
   if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL")
-  list(ok = NULL, err = x)
+  structure(list(ok = NULL, err = x), class = "extendr_result")
 }
 
 
@@ -94,11 +94,16 @@ or_else = function(x, f) {
 #'
 #' @examples
 #'
-#' unwrap(list(ok="foo",err=NULL))
+#' structure(list(ok = "foo", err = NULL), class = "extendr_result")
 #'
 #' tryCatch(
-#'   unwrap(ok=NULL, err = "something happen on the rust side"),
-#'   error = function(e) as.character(e)
+#'   unwrap(
+#'     structure(
+#'       list(ok = NULL, err = "something happen on the rust side"),
+#'       class = "extendr_result"
+#'     )
+#'   ),
+#'   error = function(err) as.character(err)
 #' )
 unwrap = function(result, call=sys.call(1L)) {
   #if not a result
