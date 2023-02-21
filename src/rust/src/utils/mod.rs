@@ -472,6 +472,23 @@ pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> 
     .and_then(|float| try_f64_into_u64(float))
 }
 
+pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| {
+        format!(
+            "is not a scalar integer or double as required, but {:?}",
+            robj
+        )
+    })
+    .and_then(|float| try_f64_into_u32(float))
+}
+
 pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
@@ -513,6 +530,10 @@ macro_rules! robj_to_inner {
 
     (u64, $a:ident) => {
         crate::utils::robj_to_u64($a)
+    };
+
+    (u32, $a:ident) => {
+        crate::utils::robj_to_u32($a)
     };
 
     (char, $a:ident) => {

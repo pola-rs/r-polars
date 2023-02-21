@@ -577,7 +577,7 @@ test_that("str$replace_all", {
 })
 
 test_that("str$slice", {
-  s= c("pear", None, "papaya", "dragonfruit")
+  s= c("pear", NA, "papaya", "dragonfruit")
   expect_identical(
     pl$lit(s)$str$slice(-3)$to_r(),
     c("ear", NA,    "aya", "uit")
@@ -597,5 +597,38 @@ test_that("str$slice", {
     pl$lit(s)$str$slice(1,0)$to_r(),
     c("", NA, "", "")
   )
+
+})
+
+
+test_that("str$explode", {
+  s= c("64","255","9","11","16","2.5",NA,"not number")
+  expect_identical(
+    pl$lit(s)$str$explode()$to_r(),
+    unlist(strsplit(s, split = ""))
+  )
+})
+
+
+test_that("str$parse_int", {
+  expect_identical(
+    pl$lit(c("110", "101", "010"))$str$parse_int(2)$to_r(),
+    c(6L,5L,2L)
+  )
+
+  expect_identical(
+    pl$lit(c("110", "101", "010"))$str$parse_int()$to_r(),
+    c(6L,5L,2L)
+  )
+
+
+  expect_identical(
+    pl$lit(c("110", "101", "010"))$str$parse_int(10)$to_r(),
+    c(110L,101L,10L)
+  )
+
+  #TODO check if parse_int now supports faulty strings,
+  #currently causes a deep panic!
+  #pl$lit(c("110", "101", "hej"))$str$parse_int(10)$to_r(),
 
 })

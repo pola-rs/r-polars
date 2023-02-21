@@ -18,7 +18,7 @@ Expr: Series of dtype Utf8.
 Create subslices of the string values of a Utf8 Series.
 }
 \examples{
-df = pl$DataFrame(s = c("pear", None, "papaya", "dragonfruit"))
+df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
 df$with_columns(
    pl$col("s")$str$slice(-3)$alias("s_sliced")
 )

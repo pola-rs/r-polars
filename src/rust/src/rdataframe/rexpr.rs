@@ -2031,6 +2031,16 @@ impl Expr {
             .with_fmt("str.slice")
             .into())
     }
+
+    pub fn str_parse_int(&self, radix: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .from_radix(robj_to!(Option, u32, radix)?)
+            .with_fmt("str.parse_int")
+            .into())
+    }
 }
 
 //allow proto expression that yet only are strings

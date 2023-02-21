@@ -694,7 +694,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' @return Expr: Series of dtype Utf8.
 #'
 #' @examples
-#' df = pl$DataFrame(s = c("pear", None, "papaya", "dragonfruit"))
+#' df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
 #' df$with_columns(
 #'    pl$col("s")$str$slice(-3)$alias("s_sliced")
 #' )
@@ -703,3 +703,31 @@ ExprStr_slice = function(offset, length = NULL) {
     unwrap("in str$slice:")
 }
 
+#' explode
+#' @name ExprStr_explode
+#' @aliases expr_str_explode
+#' @description Returns a column with a separate row for every string character.
+#' @keywords ExprStr
+#' @return Expr: Series of dtype Utf8.
+#' @examples
+#' df = pl$DataFrame(a = c("foo", "bar"))
+#' df$select(pl$col("a")$str$explode())
+ExprStr_explode = function() {
+  .pr$Expr$explode(self)
+}
+
+
+#' parse_int
+#' @name ExprStr_parse_int
+#' @aliases expr_str_parse_int
+#' @description Parse integers with base radix from strings.
+#' By default base 2.
+#' @keywords ExprStr
+#' @param radix Positive integer which is the base of the string we are parsing. Default: 2
+#' @return Expr: Series of dtype i32.
+#' @examples
+#' df = pl$DataFrame(bin = c("110", "101", "010"))
+#' df$select(pl$col("bin")$str$parse_int(2))
+ExprStr_parse_int = function(radix = NULL) {
+  .pr$Expr$str_parse_int(self, result(radix)) |> unwrap("in str$parse_int:")
+}
