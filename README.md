@@ -66,6 +66,28 @@ See further down how to install rust to build from source.
 
 ## news:
 
+ - update 21st February: 
+  - All str/String expressions included from v0.4.5.
+  - There is now a resonable easy pre-compiled installation for arm64-MacBooks, see above.
+  - Starting to roll out new error-handling and type-conversions between R and rust. Precise source
+  of error should be very clear even in a long method-chain e.g. 
+  ```r
+  pl$lit("hey-you-there")$str$splitn("-",-3)$alias("struct_of_words")$to_r()
+  > Error: in str$splitn the arg [n] the value -3 cannot be less than zero
+  when calling :
+  pl$lit("hey-you-there")$str$splitn("-", -3)
+  
+  pl$lit("hey-you-there")$str$splitn()$alias("struct_of_words")$to_r()
+  > Error: in str$splitn the arg [by] an error because:
+  argument "by" is missing, with no default
+  when calling :
+  pl$lit("hey-you-there")$str$splitn()
+
+  ```
+  - rpolars is now on [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install), see above.
+  
+   
+
  - update 1st February: All Datetime expressions included from v0.4.3.
 
  - update 28th December: r-polars is now hosted at https://github.com/pola-rs/r-polars. Happy to be

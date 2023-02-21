@@ -101,16 +101,19 @@ impl DataFrame {
     }
 
     //internal use
-    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> List {
-        let result: pl::PolarsResult<()> =
-            robjname2series(&robj, name).and_then(|s| self.0.with_column(s).map(|_| ()));
-        r_result_list(result)
+    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
+        robjname2series(&robj, name)
+            .and_then(|s| self.0.with_column(s).map(|_| ()))
+            .map_err(|err| format!("in set_column_from_robj: {:?}", err))
     }
 
     //internal use
-    fn set_column_from_series(&mut self, x: &Series) -> List {
+    fn set_column_from_series(&mut self, x: &Series) -> Result<(), String> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
-        r_result_list(self.0.with_column(s).map(|_| ()))
+        self.0
+            .with_column(s)
+            .map(|_| ())
+            .map_err(|err| format!("in set_column_from_series: {:?}", err))
     }
 
     fn print(&self) -> Self {
@@ -122,16 +125,19 @@ impl DataFrame {
         self.0.get_column_names_owned()
     }
 
-    fn set_column_names_mut(&mut self, names: Vec<String>) -> List {
-        let res = self.0.set_column_names(&names[..]);
-        r_result_list(res)
+    fn set_column_names_mut(&mut self, names: Vec<String>) -> Result<(), String> {
+        self.0
+            .set_column_names(&names[..])
+            .map(|_| ())
+            .map_err(|err| format!("in set_column_names_mut: {:?}", err))
     }
 
     fn get_column(&self, name: &str) -> List {
         let res_series = self
             .0
             .select([name])
-            .map(|df| Series(df.iter().next().unwrap().clone()));
+            .map(|df| Series(df.iter().next().unwrap().clone()))
+            .map_err(|err| format!("in get_column: {:?}", err));
         r_result_list(res_series)
     }
 
@@ -271,7 +277,12 @@ impl DataFrame {
                 .collect::<Vec<String>>()
         };
 
-        r_result_list(self.0.unnest(names).map(|s| DataFrame(s)))
+        r_result_list(
+            self.0
+                .unnest(names)
+                .map(|s| DataFrame(s))
+                .map_err(|err| format!("in unnest: {:?}", err)),
+        )
     }
 
     pub fn export_stream(&self, stream_ptr: &str) {
@@ -301,10 +312,9 @@ impl DataFrame {
 
         //rewrap Ok(Vec<Robj>) as R list
         let robj_list_res = robj_vec_res.map(|vec_robj| {
-            r!(extendr_api::prelude::List::from_names_and_values(
-                self.columns(),
-                vec_robj
-            ))
+            let l = extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
+                .unwrap();
+            l.into_robj()
         });
 
         robj_list_res

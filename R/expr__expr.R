@@ -68,6 +68,23 @@ wrap_e = function(e, str_to_lit = TRUE) {
   }
 }
 
+#' wrap as literal
+#' @param e an Expr(polars) or any R expression
+#' @details
+#' used internally to ensure an object is an expression
+#' @keywords internal
+#' @return Expr
+#' @examples pl$col("foo") < 5
+wrap_e_result = function(e, str_to_lit = TRUE) {
+  x = tryCatch(
+    Ok(wrap_e(e, str_to_lit)),
+    error = function(err) {
+      Err(paste0("not convertable into Expr because:\n",err$message))
+    }
+  )
+  x
+}
+
 
 
 

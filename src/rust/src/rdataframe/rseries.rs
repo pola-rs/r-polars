@@ -8,14 +8,14 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
-use crate::utils::{r_error_list, r_ok_list, r_result_list};
+use crate::utils::{r_error_list, r_result_list};
 
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
 use crate::rdataframe::r_to_series::robjname2series;
 use crate::rdataframe::series_to_r::pl_series_to_list;
-use crate::utils::try_f64_into_usize;
+
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -52,12 +52,10 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 #[extendr]
 impl Series {
     //utility methods
-    pub fn new(x: Robj, name: &str) -> List {
-        let s_res = robjname2series(&x, name);
-        match s_res {
-            Ok(s) => r_ok_list(Series(s)),
-            Err(s) => r_error_list(s),
-        }
+    pub fn new(x: Robj, name: &str) -> std::result::Result<Series, String> {
+        robjname2series(&x, name)
+            .map_err(|err| format!("in Series.new: {:?}", err))
+            .map(|s| Series(s))
     }
 
     pub fn clone(&self) -> Series {
@@ -74,9 +72,8 @@ impl Series {
         panic!("somebody panicked on purpose");
     }
 
-    pub fn to_r(&self) -> list::List {
-        let robj_result = pl_series_to_list(&self.0, true);
-        r_result_list(robj_result)
+    pub fn to_r(&self) -> std::result::Result<Robj, String> {
+        pl_series_to_list(&self.0, true).map_err(|err| format!("in to_r: {:?}", err))
     }
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {
@@ -101,12 +98,15 @@ impl Series {
         Series(self.0.sort(reverse))
     }
 
-    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> List {
-        let res = self
-            .0
+    pub fn value_counts(
+        &self,
+        multithreaded: bool,
+        sorted: bool,
+    ) -> std::result::Result<DataFrame, String> {
+        self.0
             .value_counts(multithreaded, sorted)
-            .map(|df| DataFrame(df));
-        r_result_list(res)
+            .map(|df| DataFrame(df))
+            .map_err(|err| format!("in value_counts: {:?}", err))
     }
 
     pub fn arg_min(&self) -> Option<usize> {
@@ -187,11 +187,10 @@ impl Series {
     }
 
     //names repeat_ as repeat is locked keyword in R
-    pub fn rep(&self, n: f64, rechunk: bool) -> List {
-        match try_f64_into_usize(n, false) {
-            Ok(n) => r_result_list(self.rep_impl(n as usize, rechunk)),
-            Err(err) => r_error_list(err),
-        }
+    pub fn rep(&self, n: Robj, rechunk: Robj) -> std::result::Result<Series, String> {
+        use crate::robj_to;
+        self.rep_impl(robj_to!(usize, n)?, robj_to!(bool, rechunk)?)
+            .map_err(|err| format!("{:?}", err))
     }
 
     pub fn shape(&self) -> Robj {
@@ -207,7 +206,12 @@ impl Series {
     }
 
     pub fn abs(&self) -> list::List {
-        let x = self.0.clone().abs().map(|x| Series(x));
+        let x = self
+            .0
+            .clone()
+            .abs()
+            .map(|x| Series(x))
+            .map_err(|err| format!("{:?}", err));
         r_result_list(x)
     }
 
@@ -230,11 +234,12 @@ impl Series {
                 break;
             }
             Ok(!one_not_true)
-        }();
+        }()
+        .map_err(|err| format!("{:?}", err));
         r_result_list(result)
     }
 
-    pub fn any(&self) -> Result<bool> {
+    pub fn any(&self) -> std::result::Result<bool, String> {
         use polars::prelude::*;
         if *self.0.dtype() == DataType::Boolean {
             let mut one_seen_true = false;
@@ -252,7 +257,7 @@ impl Series {
 
             Ok(one_seen_true)
         } else {
-            Err(extendr_api::error::Error::Other("not a bool".to_string()))
+            Err("Series DataType is not a bool".to_string())
         }
     }
 
@@ -277,7 +282,12 @@ impl Series {
     }
 
     pub fn append_mut(&mut self, other: &Series) -> List {
-        r_result_list(self.0.append(&other.0).map(|_| ()))
+        r_result_list(
+            self.0
+                .append(&other.0)
+                .map(|_| ())
+                .map_err(|err| format!("{:?}", err)),
+        )
     }
 
     pub fn apply(
@@ -420,11 +430,21 @@ impl Series {
     }
 
     pub fn ceil(&self) -> List {
-        r_result_list(self.0.ceil().map(|s| Series(s)))
+        r_result_list(
+            self.0
+                .ceil()
+                .map(|s| Series(s))
+                .map_err(|err| format!("{:?}", err)),
+        )
     }
 
     pub fn floor(&self) -> List {
-        r_result_list(self.0.floor().map(|s| Series(s)))
+        r_result_list(
+            self.0
+                .floor()
+                .map(|s| Series(s))
+                .map_err(|err| format!("{:?}", err)),
+        )
     }
 
     pub fn print(&self) {
@@ -435,11 +455,10 @@ impl Series {
         Series(self.0.cumsum(reverse))
     }
 
-    pub fn to_frame(&self) -> DataFrame {
+    pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
-        df.set_column_from_series(&self);
-
-        df
+        df.set_column_from_series(&self)?;
+        Ok(df)
     }
 
     pub fn set_sorted_mut(&mut self, reverse: bool) {

@@ -113,7 +113,10 @@ pub fn rlazy_csv_reader(
         .with_parse_dates(parse_dates)
         .with_null_values(Wrap(null_values).into());
 
-    let result = r.finish().map(|ldf| LazyFrame(ldf));
+    let result = r
+        .finish()
+        .map(|ldf| LazyFrame(ldf))
+        .map_err(|err| format!("in rlazy_csv_reader: {:?}", err));
 
     r_result_list(result)
 }

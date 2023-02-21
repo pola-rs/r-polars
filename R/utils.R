@@ -73,7 +73,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name
         #add call to error messages
         if(!rpolars_optenv$do_not_repeat_call) {
           paste(
-            "\n when calling:\n",
+            "\n when calling method:\n",
             paste(capture.output(print(call)),collapse="\n")
           )
         }
@@ -681,5 +681,16 @@ sub_name_space_accessor_function = function (self, name) {
   verify_method_call(self,name,class_name = class(self)[1L])
   func <- self[[name]]
   func
+}
+
+#capture error in any R side arguments, and pass to rust side to preserve context and write
+# really sweet error messages
+result = function(x) {
+ tryCatch(
+    Ok(x),
+    error = function(err) {
+      Err(paste0("an error because:\n",err$message))
+    }
+  )
 }
 

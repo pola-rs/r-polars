@@ -570,6 +570,26 @@ Expr$str_base64_encode <- function() .Call(wrap__Expr__str_base64_encode, self)
 
 Expr$str_base64_decode <- function(strict) .Call(wrap__Expr__str_base64_decode, self, strict)
 
+Expr$str_extract <- function(pattern, group_index) .Call(wrap__Expr__str_extract, self, pattern, group_index)
+
+Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, self, pattern)
+
+Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
+
+Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
+
+Expr$str_split_exact <- function(by, n, inclusive) .Call(wrap__Expr__str_split_exact, self, by, n, inclusive)
+
+Expr$str_splitn <- function(by, n) .Call(wrap__Expr__str_splitn, self, by, n)
+
+Expr$str_replace <- function(pattern, value, literal) .Call(wrap__Expr__str_replace, self, pattern, value, literal)
+
+Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_replace_all, self, pattern, value, literal)
+
+Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, offset, length)
+
+Expr$str_parse_int <- function(radix) .Call(wrap__Expr__str_parse_int, self, radix)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

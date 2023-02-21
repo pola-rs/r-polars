@@ -2,7 +2,7 @@
 % Please edit documentation in R/rust_result.R
 \name{and_then}
 \alias{and_then}
-\title{map an ok-value or pass on err-value}
+\title{map an ok-value or pass on an err-value}
 \usage{
 and_then(x, f)
 }
@@ -15,5 +15,5 @@ and_then(x, f)
 same R object wrapped in a Err-result
 }
 \description{
-map an ok-value or pass on err-value
+map an ok-value or pass on an err-value
 }

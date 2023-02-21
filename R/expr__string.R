@@ -479,9 +479,255 @@ ExprStr_decode = function(
 #' )
 ExprStr_encode = function(encoding){
   pcase(
-    !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$str_hex_encode(self),
     encoding == "base64", .pr$Expr$str_base64_encode(self),
     or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
+}
+
+
+#' extract
+#' @name ExprStr_extract
+#' @aliases expr_str_extract
+#' @description Extract the target capture group from provided patterns.
+#' @keywords ExprStr
+#' @param pattern A valid regex pattern
+#' @param group_index
+#' Index of the targeted capture group.
+#' Group 0 mean the whole pattern, first group begin at index 1.
+#' Default to the first capture group.
+#'
+#' @return
+#' Utf8 array. Contain null if original value is null or regex capture nothing.
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a =  c(
+#'     "http://vote.com/ballon_dor?candidate=messi&ref=polars",
+#'     "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
+#'     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
+#'   )
+#' )
+#' df$select(
+#'   pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
+#' )
+ExprStr_extract = function(pattern, group_index){
+  unwrap(.pr$Expr$str_extract(self, pattern, group_index))
+}
+
+
+#' extract_all
+#' @name ExprStr_extract_all
+#' @aliases expr_str_extract_all
+#' @description Extracts all matches for the given regex pattern. Extracts each successive
+#' non-overlapping regex match in an individual string as an array.
+#' @keywords ExprStr
+#' @param pattern A valid regex pattern
+#'
+#' @return
+#' `List[Utf8]` array. Contain null if original value is null or regex capture nothing.
+#'
+#' @examples
+#' df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
+#' df$select(
+#'   pl$col("foo")$str$extract_all(r"((\d+))")$alias("extracted_nrs")
+#' )
+ExprStr_extract_all = function(pattern){
+  .pr$Expr$str_extract_all(self, wrap_e(pattern))
+}
+
+#' count_match
+#' @name ExprStr_count_match
+#' @aliases expr_str_count_match
+#' @description Count all successive non-overlapping regex matches.
+#' @keywords ExprStr
+#' @param pattern A valid regex pattern
+#'
+#' @return
+#' UInt32 array. Contain null if original value is null or regex capture nothing.
+#'
+#' @examples
+#' df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
+#' df$select(
+#'   pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+#' )
+ExprStr_count_match = function(pattern){
+  unwrap(.pr$Expr$str_count_match(self, pattern))
+}
+
+
+
+
+#' split
+#' @name ExprStr_split
+#' @aliases expr_str_split
+#' @description Split the string by a substring.
+#' @keywords ExprStr
+#' @param by Substring to split by.
+#' @param inclusive If True, include the split character/string in the results.
+#'
+#' @return
+#' List of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
+#' df$select( pl$col("s")$str$split(by=" "))
+ExprStr_split = function(by, inclusive = FALSE){
+   unwrap(
+    .pr$Expr$str_split(self, result(by), result(inclusive)),
+    context = "in str$split:"
+  )
+}
+
+#TODO write 2nd example after expr_struct has been implemented
+#' split_exact
+#' @name ExprStr_split_exact
+#' @aliases expr_str_split_exact
+#' @description Split the string by a substring using ``n`` splits.
+#' Results in a struct of ``n+1`` fields.
+#' If it cannot make ``n`` splits, the remaining field elements will be null.
+#' @keywords ExprStr
+#' @param by Substring to split by.
+#' @param n Number of splits to make.
+#' @param inclusive If True, include the split_exact character/string in the results.
+#'
+#' @return Struct where each of n+1 fields is of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
+#' df$select( pl$col("s")$str$split_exact(by="_",1))
+#'
+ExprStr_split_exact = function(by, n, inclusive = FALSE){
+  unwrap(
+    .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
+    context = "in str$split_exact:"
+  )
+}
+
+
+#' splitn
+#' @name ExprStr_splitn
+#' @aliases expr_str_splitn
+#' @description Split the string by a substring, restricted to returning at most ``n`` items.
+#' If the number of possible splits is less than ``n-1``, the remaining field
+#' elements will be null. If the number of possible splits is ``n-1`` or greater,
+#' the last (nth) substring will contain the remainder of the string.
+#' @keywords ExprStr
+#' @param by Substring to split by.
+#' @param n Number of splits to make.
+#'
+#' @return
+#' Struct where each of n+1 fields is of Utf8 type
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
+#' df$select( pl$col("s")$str$splitn(by="_",0))
+#' df$select( pl$col("s")$str$splitn(by="_",1))
+#' df$select( pl$col("s")$str$splitn(by="_",2))
+ExprStr_splitn = function(by, n){
+  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn")
+}
+
+
+#' replace
+#' @name ExprStr_replace
+#' @aliases expr_str_replace
+#' @description
+#' Replace first matching regex/literal substring with a new string value.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, Treat pattern as a literal string.
+#'
+#' @return Expr of Utf8 Series
+#'
+#' @seealso replace_all : Replace all matching regex/literal substrings.
+#'
+#' @examples
+#' df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
+#' df$with_columns(
+#'    pl$col("text")$str$replace(r"{abc\b}", "ABC")
+#' )
+ExprStr_replace = function(pattern, value, literal = FALSE){
+  .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
+    unwrap("in str$replace:")
+}
+
+
+
+#' replace_all
+#' @name ExprStr_replace_all
+#' @aliases expr_str_replace_all
+#' @description
+#' Replace all matching regex/literal substrings with a new string value.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, treat pattern as a literal string.
+#'
+#' @return Expr of Utf8 Series
+#'
+#' @seealso replace : Replace first matching regex/literal substring.
+#'
+#' @examples
+#' df = pl$DataFrame(id = c(1, 2), text = c("abcabc", "123a123"))
+#' df$with_columns(
+#'    pl$col("text")$str$replace_all("a", "-")
+#' )
+ExprStr_replace_all = function(pattern, value, literal = FALSE) {
+  .pr$Expr$str_replace_all(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
+    unwrap("in str$replace_all:")
+}
+
+
+#' slice
+#' @name ExprStr_slice
+#' @aliases expr_str_slice
+#' @description
+#' Create subslices of the string values of a Utf8 Series.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, treat pattern as a literal string.
+#'
+#' @return Expr: Series of dtype Utf8.
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
+#' df$with_columns(
+#'    pl$col("s")$str$slice(-3)$alias("s_sliced")
+#' )
+ExprStr_slice = function(offset, length = NULL) {
+  .pr$Expr$str_slice(self, result(offset), result(length)) |>
+    unwrap("in str$slice:")
+}
+
+#' explode
+#' @name ExprStr_explode
+#' @aliases expr_str_explode
+#' @description Returns a column with a separate row for every string character.
+#' @keywords ExprStr
+#' @return Expr: Series of dtype Utf8.
+#' @examples
+#' df = pl$DataFrame(a = c("foo", "bar"))
+#' df$select(pl$col("a")$str$explode())
+ExprStr_explode = function() {
+  .pr$Expr$explode(self)
+}
+
+
+#' parse_int
+#' @name ExprStr_parse_int
+#' @aliases expr_str_parse_int
+#' @description Parse integers with base radix from strings.
+#' By default base 2.
+#' @keywords ExprStr
+#' @param radix Positive integer which is the base of the string we are parsing. Default: 2
+#' @return Expr: Series of dtype i32.
+#' @examples
+#' df = pl$DataFrame(bin = c("110", "101", "010"))
+#' df$select(pl$col("bin")$str$parse_int(2))
+ExprStr_parse_int = function(radix = NULL) {
+  .pr$Expr$str_parse_int(self, result(radix)) |> unwrap("in str$parse_int:")
 }
