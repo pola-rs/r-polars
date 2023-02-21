@@ -586,7 +586,7 @@ Expr$str_replace <- function(pattern, value, literal) .Call(wrap__Expr__str_repl
 
 Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_replace_all, self, pattern, value, literal)
 
-Expr$str_slice <- function(start, length) .Call(wrap__Expr__str_slice, self, start, length)
+Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, offset, length)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

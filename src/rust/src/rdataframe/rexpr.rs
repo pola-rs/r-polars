@@ -2014,14 +2014,14 @@ impl Expr {
             .into())
     }
 
-    pub fn str_slice(&self, start: Robj, length: Robj) -> Result<Expr, String> {
-        let start = robj_to!(i64, start)?;
+    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<Expr, String> {
+        let offset = robj_to!(i64, offset)?;
         let length = robj_to!(Option, u64, length)?;
 
         use pl::*;
         let function = move |s: Series| {
             let ca = s.utf8()?;
-            Ok(Some(ca.str_slice(start, length)?.into_series()))
+            Ok(Some(ca.str_slice(offset, length)?.into_series()))
         };
 
         Ok(self

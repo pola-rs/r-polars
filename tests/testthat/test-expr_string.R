@@ -496,3 +496,106 @@ test_that("str$split_exact", {
 
 })
 
+
+test_that("str$split_exact", {
+
+  expect_identical(
+    pl$lit(c("a_1", NA, "c", "d_4-5"))$str$splitn(by="_",1)$to_r(),
+    structure(list(field_0 = c("a_1", NA, "c", "d_4-5")), is_struct = TRUE)
+  )
+
+  expect_identical(
+    pl$lit(c("a_1", NA, "c", "d_4-5"))$str$splitn(by="_",2)$to_r(),
+    structure(list(field_0 = c("a", NA, "c", "d"), field_1 = c("1", NA, NA, "4-5")), is_struct = TRUE)
+  )
+
+  expect_identical(
+    pl$lit(c("a_1", NA, "c", "d_4-5"))$str$splitn(by="-",2)$to_r(),
+    structure(list(
+      field_0 = c("a_1", NA, "c", "d_4"),
+      field_1 = c(NA, NA, NA, "5")
+      ), is_struct = TRUE
+    )
+  )
+
+})
+
+
+test_that("str$replace", {
+
+  expect_identical(
+    pl$lit(c("123abc", "abc456"))$str$replace(r"{abc\b}", "ABC")$to_r(),
+    c("123ABC", "abc456")
+  )
+
+  expect_identical(
+    pl$lit(c("123abc", "abc456"))$str$replace(r"{abc\b}", "ABC")$to_r(),
+    c("123ABC", "abc456")
+  )
+
+   expect_identical(
+    pl$lit(c("123abc", "abc456"))$str$replace(r"{abc\b}", "ABC", TRUE)$to_r(),
+    c("123abc", "abc456")
+  )
+
+  e = pl$lit(r"{(abc\b)}")
+  expect_identical(
+    pl$lit(c("123abc", "abc456"))$str$replace(e, "ABC", FALSE)$to_r(),
+    c("123ABC", "abc456")
+  )
+
+   expect_identical(
+    pl$lit(c("abcabc", "123a123"))$str$replace("ab", "__")$to_r(),
+    c("__cabc", "123a123")
+  )
+
+})
+
+test_that("str$replace_all", {
+
+  expect_identical(
+    pl$lit(c("abcabc", "123a123"))$str$replace_all("a", "-")$to_r(),
+    c("-bc-bc", "123-123")
+  )
+
+  expect_identical(
+    pl$lit(c("abcabc", "123a123"))$str$replace_all("a", "!")$to_r(),
+    c("!bc!bc", "123!123")
+  )
+
+  expect_identical(
+    pl$lit(c("abcabc", "123a123"))$str$replace_all("^12", "-")$to_r(),
+    c("abcabc", "-3a123")
+  )
+
+  expect_identical(
+    pl$lit(c("abcabc", "123a123"))$str$replace_all("^12", "-", TRUE)$to_r(),
+    c("abcabc", "123a123")
+  )
+
+
+})
+
+test_that("str$slice", {
+  s= c("pear", None, "papaya", "dragonfruit")
+  expect_identical(
+    pl$lit(s)$str$slice(-3)$to_r(),
+    c("ear", NA,    "aya", "uit")
+  )
+
+  expect_identical(
+    pl$lit(s)$str$slice(3)$to_r(),
+    c("r", NA, "aya", "gonfruit")
+  )
+
+  expect_identical(
+    pl$lit(s)$str$slice(3,1)$to_r(),
+    c("r", NA, "a", "g")
+  )
+
+  expect_identical(
+    pl$lit(s)$str$slice(1,0)$to_r(),
+    c("", NA, "", "")
+  )
+
+})
