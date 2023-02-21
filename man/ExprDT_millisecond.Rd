@@ -11,7 +11,7 @@ function
 Expr of millisecond as Int64
 }
 \description{
-Extract milliseconds from underlying DateTime representation.
+Extract milliseconds from underlying Datetime representation.
 Applies to Datetime columns.
 }
 \examples{

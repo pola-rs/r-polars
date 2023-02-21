@@ -380,7 +380,7 @@ ExprDT_ordinal_day = function() {
 
 #' Hour
 #' @description
-#' Extract hour from underlying DateTime representation.
+#' Extract hour from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the hour number from 0 to 23.
 #' @name ExprDT_hour
@@ -406,7 +406,7 @@ ExprDT_hour = function() {
 
 #' Minute
 #' @description
-#' Extract minutes from underlying DateTime representation.
+#' Extract minutes from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the minute number from 0 to 59.
 #' @name ExprDT_minute
@@ -432,7 +432,7 @@ ExprDT_minute = function() {
 
 #' Second
 #' @description
-#' Extract seconds from underlying DateTime representation.
+#' Extract seconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
@@ -463,7 +463,7 @@ ExprDT_second = function(fractional = FALSE) {
 
 #' Millisecond
 #' @description
-#' Extract milliseconds from underlying DateTime representation.
+#' Extract milliseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' @name ExprDT_millisecond
 #' @return Expr of millisecond as Int64
@@ -486,7 +486,7 @@ ExprDT_millisecond = function() {
 
 #' Microsecond
 #' @description
-#' Extract microseconds from underlying DateTime representation.
+#' Extract microseconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' @name ExprDT_microsecond
 #' @return Expr of microsecond as Int64
@@ -511,7 +511,7 @@ ExprDT_microsecond = function() {
 
 #' Nanosecond
 #' @description
-#' Extract seconds from underlying DateTime representation.
+#' Extract seconds from underlying Datetime representation.
 #' Applies to Datetime columns.
 #' Returns the integer second number from 0 to 59, or a floating
 #' point number from 0 < 60 if ``fractional=True`` that includes
@@ -652,13 +652,13 @@ ExprDT_cast_time_unit = function(tu = c('ns', 'us', 'ms')) {
 #' With Time Zone
 #' @description Set time zone for a Series of type Datetime.
 #' Use to change time zone annotation, but keep the corresponding global timepoint.
-#' @name ExprDT_with_time_zone
+#' @name ExprDT_convert_time_zone
 #' @param tz String time zone from base::OlsonNames()
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @details corresponds to in R manually modifying the tzone attribute of POSIXt objects
 #' @format function
-#' @aliases (Expr)$dt$with_time_zone
+#' @aliases (Expr)$dt$convert_time_zone
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-5-1"), interval = "1mo")
@@ -666,60 +666,60 @@ ExprDT_cast_time_unit = function(tu = c('ns', 'us', 'ms')) {
 #' df$select(
 #'   pl$col("date"),
 #'   pl$col("date")
-#'     $dt$cast_time_zone("Europe/Amsterdam")
-#'     $dt$with_time_zone("Europe/London")
+#'     $dt$replace_time_zone("Europe/Amsterdam")
+#'     $dt$convert_time_zone("Europe/London")
 #'     $alias("London_with"),
 #'   pl$col("date")
 #'     $dt$tz_localize("Europe/London")
 #'     $alias("London_localize")
 #' )
-ExprDT_with_time_zone = function(tz) {
+ExprDT_convert_time_zone = function(tz) {
   check_tz_to_result(tz) |>
-    map(\(valid_tz) .pr$Expr$dt_with_time_zone(self, valid_tz)) |>
-    map_err(\(err) paste("in dt$with_time_zone:", err)) |>
+    map(\(valid_tz) .pr$Expr$dt_convert_time_zone(self, valid_tz)) |>
+    map_err(\(err) paste("in dt$convert_time_zone:", err)) |>
     unwrap()
 }
 
-#' cast_time_zone
+#' replace_time_zone
 #' @description
 #' Cast time zone for a Series of type Datetime.
-#' Different from ``with_time_zone``, this will also modify the underlying timestamp.
+#' Different from ``convert_time_zone``, this will also modify the underlying timestamp.
 #' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 #'
-#' @name ExprDT_cast_time_zone
+#' @name ExprDT_replace_time_zone
 #' @param tz Null or string time zone from base::OlsonNames()
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @format function
-#' @aliases (Expr)$dt$cast_time_zone
+#' @aliases (Expr)$dt$replace_time_zone
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")
 #' )
 #' df = df$with_columns(
 #'   pl$col("date")
-#'     $dt$cast_time_zone("Europe/Amsterdam")
-#'     $dt$with_time_zone("Europe/London")
+#'     $dt$replace_time_zone("Europe/Amsterdam")
+#'     $dt$convert_time_zone("Europe/London")
 #'     $alias("london_timezone")
 #' )
 #'
 #' df2 = df$with_columns(
 #'   pl$col("london_timezone")
-#'     $dt$cast_time_zone("Europe/Amsterdam")
+#'     $dt$replace_time_zone("Europe/Amsterdam")
 #'     $alias("cast London_to_Amsterdam"),
 #'   pl$col("london_timezone")
-#'     $dt$with_time_zone("Europe/Amsterdam")
+#'     $dt$convert_time_zone("Europe/Amsterdam")
 #'     $alias("with London_to_Amsterdam"),
 #'   pl$col("london_timezone")
-#'     $dt$with_time_zone("Europe/Amsterdam")
-#'     $dt$cast_time_zone(NULL)
+#'     $dt$convert_time_zone("Europe/Amsterdam")
+#'     $dt$replace_time_zone(NULL)
 #'     $alias("strip tz from with-'Europe/Amsterdam'")
 #' )
 #' df2
-ExprDT_cast_time_zone = function(tz) {
+ExprDT_replace_time_zone = function(tz) {
   check_tz_to_result(tz) |>
-    map(\(valid_tz) .pr$Expr$dt_cast_time_zone(self, valid_tz)) |>
-    map_err(\(err) paste("in dt$cast_time_zone:", err)) |>
+    map(\(valid_tz) .pr$Expr$dt_replace_time_zone(self, valid_tz)) |>
+    map_err(\(err) paste("in dt$replace_time_zone:", err)) |>
     unwrap()
 }
 
@@ -733,7 +733,7 @@ ExprDT_cast_time_zone = function(tz) {
 #' @param tz string of time zone (no NULL allowed) see allowed timezone in base::OlsonNames()
 #' @name ExprDT_tz_localize
 #' @details In R as modifying tzone attribute manually but takes into account summertime.
-#' See unittest "dt$with_time_zone dt$tz_localize" for a more detailed comparison to base R.
+#' See unittest "dt$convert_time_zone dt$tz_localize" for a more detailed comparison to base R.
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @format function
@@ -744,8 +744,8 @@ ExprDT_cast_time_zone = function(tz) {
 #' )
 #' df = df$with_columns(
 #'   pl$col("date")
-#'     $dt$cast_time_zone("Europe/Amsterdam")
-#'     $dt$with_time_zone("Europe/London")
+#'     $dt$replace_time_zone("Europe/Amsterdam")
+#'     $dt$convert_time_zone("Europe/London")
 #'     $alias("london_timezone"),
 #'   pl$col("date")
 #'     $dt$tz_localize("Europe/London")
@@ -754,14 +754,14 @@ ExprDT_cast_time_zone = function(tz) {
 #'
 #' df2 = df$with_columns(
 #'   pl$col("london_timezone")
-#'     $dt$cast_time_zone("Europe/Amsterdam")
+#'     $dt$replace_time_zone("Europe/Amsterdam")
 #'     $alias("cast London_to_Amsterdam"),
 #'   pl$col("london_timezone")
-#'     $dt$with_time_zone("Europe/Amsterdam")
+#'     $dt$convert_time_zone("Europe/Amsterdam")
 #'     $alias("with London_to_Amsterdam"),
 #'   pl$col("london_timezone")
-#'     $dt$with_time_zone("Europe/Amsterdam")
-#'     $dt$cast_time_zone(NULL)
+#'     $dt$convert_time_zone("Europe/Amsterdam")
+#'     $dt$replace_time_zone(NULL)
 #'     $alias("strip tz from with-'Europe/Amsterdam'")
 #' )
 #' df2

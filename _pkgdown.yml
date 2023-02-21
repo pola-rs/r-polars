@@ -22,7 +22,7 @@ reference:
     contents:
       - has_keyword("Expr_new")
       - has_keyword("Expr")
-  - subtitle: Expr dt/DateTime methods
+  - subtitle: Expr dt/Datetime methods
     contents:
       - has_keyword("ExprDT")
   - subtitle: Expr arr/list methods

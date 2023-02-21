@@ -330,6 +330,38 @@ pub fn try_i64_into_usize(x: i64, no_zero: bool) -> std::result::Result<usize, S
     Ok(x as usize)
 }
 
+// pub fn try_robj_into_usize(x: robj, no_zero: bool) -> std::result::Result<usize, String> {
+
+//     match x.rtype() {
+
+//     }
+
+//     if x.is_nan() {
+//         return Err(String::from("the value cannot be NaN"));
+//     };
+//     if no_zero && x < 1.0 {
+//         return Err(format!("the value {} cannot be less than one", x));
+//     };
+//     if x < 0.0 {
+//         return Err(format!("the value {} cannot be less than zero", x));
+//     };
+//     if x > R_MAX_INTEGERISH {
+//         return Err(format!(
+//             "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
+//             x, R_MAX_INTEGERISH
+//         ));
+//     };
+//     if x > usize::MAX as f64 {
+//         //could only trigger on a 32bit machine
+//         return Err(format!(
+//             "the value {} cannot exceed usize::MAX {}",
+//             x,
+//             usize::MAX
+//         ));
+//     };
+//     Ok(x as usize)
+// }
+
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
     T: IntoRobj,
@@ -372,4 +404,91 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
             "reinterpret is only allowed for 64bit integers dtype, use cast otherwise".into(),
         )),
     }
+}
+
+pub fn robj_to_char(robj: extendr_api::Robj) -> std::result::Result<char, String> {
+    let mut fchar_iter = if let Some(char_str) = robj.as_str() {
+        char_str.chars()
+    } else {
+        "".chars()
+    };
+    match (fchar_iter.next(), fchar_iter.next()) {
+        (Some(x), None) => Ok(x),
+        (_, _) => Err(format!("not a single char string, but {:?}", robj)),
+    }
+}
+
+pub fn robj_to_string(robj: extendr_api::Robj) -> std::result::Result<String, String> {
+    use extendr_api::Length;
+    match (robj.as_str(), robj.len()) {
+        (Some(x), 1) => Ok(x.to_string()),
+        (_, _) => Err(format!("not a single string, but {:?}", robj)),
+    }
+}
+
+pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, String> {
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
+    .and_then(|float| try_f64_into_usize(float, false))
+}
+
+pub fn named_robj_to_usize(
+    robj: extendr_api::Robj,
+    name: &str,
+) -> std::result::Result<usize, String> {
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| {
+        format!(
+            "not a scalar integer or double as required, it is {:?}",
+            robj
+        )
+    })
+    .and_then(|float| try_f64_into_usize(float, false))
+    .map_err(|err| format!("[{}] is {}", name, err))
+}
+
+#[macro_export]
+macro_rules! try_robj_to {
+    (usize, $a:ident) => {
+        named_robj_to_usize($a, stringify!($a))
+    };
+    (usize, $a:ident, $b:expr) => {
+        named_robj_to_usize($a, stringify!($a)).map_err(|err| format!($b, err))
+    };
+    (char, $a:ident) => {
+        robj_to_char($a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
+    };
+    (char, $a:ident, $b:expr) => {
+        robj_to_char($a).map_err(|err| format!("{} {}", stringify!($b), format!($b, err)))
+    };
+
+    //arg name + error_msg
+    (String, $a:ident) => {
+        robj_to_string($a).map_err(|err| format!("[{}] is {}", stringify!($a), err))
+    };
+    //context + arg name + error_msg
+    (String, $a:ident, $b:expr) => {
+        try_robj_to!(String, $a).map_err(|err| format!($b, err))
+    };
+}
+
+pub fn collect_hinted_result<T, E>(
+    size: usize,
+    iter: impl IntoIterator<Item = Result<T, E>>,
+) -> Result<Vec<T>, E> {
+    let mut new_vec = Vec::with_capacity(size);
+    for item in iter {
+        new_vec.push(item?);
+    }
+    Ok(new_vec)
 }

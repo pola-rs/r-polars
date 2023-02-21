@@ -35,6 +35,13 @@ ignore_rules = list(
     ignore_macos_dll_error = function(msg) {
       isTRUE(grepl("darwin",R.version$os)[1]) &&
         isTRUE(grepl("_IOBSDNameMatching",msg))
+    },
+
+    ignore_lengths_ns_collision = function(msg) {
+       isTRUE(
+          grepl("Functions or methods with usage in documentation object 'ExprStr_lengths'",
+          msg)
+       )
     }
   ),
 

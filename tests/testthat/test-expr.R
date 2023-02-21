@@ -1494,7 +1494,7 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$list(pl$Utf8)))$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$List(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
   expect_true(!all(hash_values1==hash_values2))
@@ -2193,14 +2193,15 @@ test_that("to_r", {
   #objects with homomorphic translation between r and polars
   l = list(
     1,1:2,Inf,-Inf,NaN,"a",letters,
-    numeric(),integer(),logical(), TRUE, FALSE,
+    numeric(),integer(),logical(), TRUE, FALSE, NULL,
     NA, NA_integer_, NA_character_, NA_real_
   )
   for(i in l) expect_identical(pl$lit(i)$to_r(), i)
   for(i in l) expect_identical(pl$expr_to_r(i), i)
 
-  #object that has not, NULL signals a typeless polars Null, which reverses to NA
-  expect_identical(pl$lit(NULL)$to_r(),NA)
+  #NULL to NULL
+  expect_identical(pl$lit(NULL)$to_r(),NULL)
+
 
 })
 

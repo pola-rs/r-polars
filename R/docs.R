@@ -19,7 +19,7 @@
 #' # Translation details
 #'
 #' ## R and the integerish
-#' R only has a native Int32 type, no Uint32, Int64, Uint64 , ... types. These days Int32 is getting
+#' R only has a native Int32 type, no Uint32, Int64, UInt64 , ... types. These days Int32 is getting
 #' a bit small, to refer to more rows than ~ 2^31-1. There are packages which provide int64,
 #' but the most normal hack' is to just use floats as 'integerish'. There is an unique float64 value
 #' for every integer up to about 2^52 which is

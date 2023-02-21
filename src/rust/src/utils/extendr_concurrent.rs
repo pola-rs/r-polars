@@ -200,36 +200,34 @@ where
             let a = answer.map_err(|err| format!("user function raised an error: {:?} \n", err))?;
 
             let _send_result = c_tx.send(a).unwrap();
-        } else {
-            if let Err(recv_err) = any_new_msg {
-                //dbg!(&recv_err);
-                match recv_err {
-                    //no threadcoms connections left, new request impossible, shut down loop,
-                    flume::RecvTimeoutError::Disconnected => {
+        } else if let Err(recv_err) = any_new_msg {
+            //dbg!(&recv_err);
+            match recv_err {
+                //no threadcoms connections left, new request impossible, shut down loop,
+                flume::RecvTimeoutError::Disconnected => {
+                    break;
+                }
+
+                //waking up with on request since last
+                flume::RecvTimeoutError::Timeout => {
+                    //check for user interrupts in R
+                    let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
+                    //dbg!(&res_res);
+                    if res_res.is_err() {
+                        rprintln!("R user interrupt");
+                        return Err("interupt by user".into());
+                    }
+
+                    //check if spawned thread has ended, first child thread should have
+                    //dropped the last ThreadComs, so more likely waking up to a disconnect
+                    if handle.is_finished() {
+                        rprintln!("rpolars: closing concurrent R handler");
                         break;
                     }
-
-                    //waking up with on request since last
-                    flume::RecvTimeoutError::Timeout => {
-                        //check for user interrupts in R
-                        let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
-                        //dbg!(&res_res);
-                        if res_res.is_err() {
-                            rprintln!("R user interrupt");
-                            return Err("interupt by user".into());
-                        }
-
-                        //check if spawned thread has ended, first child thread should have
-                        //dropped the last ThreadComs, so more likely waking up to a disconnect
-                        if handle.is_finished() {
-                            rprintln!("rpolars: closing concurrent R handler");
-                            break;
-                        }
-                    }
                 }
-            } else {
-                unreachable!("a result was neither error or ok");
             }
+        } else {
+            unreachable!("a result was neither error or ok");
         }
     }
 

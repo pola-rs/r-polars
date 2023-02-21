@@ -55,7 +55,6 @@ pub fn rlazy_csv_reader(
     null_values: Nullable<&RNullValues>,
     infer_schema_length: Nullable<i32>,
     //with_schema_modify: Option<PyObject>,
-    rechunk: bool,
     skip_rows_after_header: i32,
     encoding: &str,
     row_count_name: Nullable<String>,
@@ -95,7 +94,7 @@ pub fn rlazy_csv_reader(
 
     //TODO expose new ignore_errors bahavior
     let _ = ignore_errors;
-
+    use polars::prelude::LazyFileListReader;
     let r = pl::LazyCsvReader::new(path)
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
         .with_delimiter(sep.as_bytes()[0])
@@ -108,7 +107,6 @@ pub fn rlazy_csv_reader(
         .low_memory(low_memory)
         .with_comment_char(null_to_opt(comment_char).map(|x| x.as_bytes()[0]))
         .with_quote_char(null_to_opt(quote_char).map(|x| x.as_bytes()[0]))
-        .with_rechunk(rechunk)
         .with_skip_rows_after_header(skip_rows_after_header as usize)
         .with_encoding(encoding)
         .with_row_count(row_count)
