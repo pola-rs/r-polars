@@ -199,7 +199,7 @@ test_that("zfill", {
   #test wrong input range
   expect_grepl_error(
     pl$lit(c(-1,2,10,"5"))$str$zfill(-3)$to_r(),
-    "is the value -3 cannot be less than zero"
+    r"{the arg \[alignment\] the value -3 cannot be less than zero}"
   )
 
 })
@@ -225,11 +225,11 @@ test_that("str$ljust str$rjust", {
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust(-2, "w"))$to_list(),
-    "\\[width\\] is the value -2 cannot be less than zero"
+    r"{in str\$ljust\: "the arg \[width\] the value -2 cannot be less than zero}"
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust(5, "multiple_chars"))$to_list(),
-    "in str.ljust: \\\"\\[fillchar\\] is not a single char string, but "
+    r"{the arg \[fillchar\] is not a single char string, but}"
   )
 
 
@@ -250,11 +250,11 @@ test_that("str$ljust str$rjust", {
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust(-2, "w"))$to_list(),
-    "\\[width\\] is the value -2 cannot be less than zero"
+    r"{in str\$rjust\: "the arg \[width\] the value -2 cannot be less than zero}"
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust(5, "multiple_chars"))$to_list(),
-    "in str.rjust: \\\"\\[fillchar\\] is not a single char string, but "
+    r"{in str\$rjust\: "the arg \[fillchar\] is not a single char string, but}"
   )
 
 })
@@ -387,12 +387,12 @@ test_that("str$extract", {
 
   expect_grepl_error(
     pl$lit("abc")$str$extract(42,42),
-    r"(in str\$extract\: \[pattern\] is not a single string, but 42.0)",
+    r"(in str\$extract\: the arg \[pattern\] is not a single string)",
   )
 
   expect_grepl_error(
     pl$lit("abc")$str$extract("a","a"),
-    r"(in str\$extract\: \[group_index\] is not a scalar integer or double as required, but \["a"\])",
+    r"(str\$extract\: the arg \[group_index\] is not a scalar integer or double as required, but)",
   )
 
 })
@@ -427,7 +427,7 @@ test_that("str$count_match", {
 
   expect_grepl_error(
     pl$col("foo")$str$count_match(5),
-    r"(in str\$count_match\: \[pattern\] is not a single string, but 5.0)",
+    r"(in str\$count_match\: the arg \[pattern\] is not a single string, but 5.0)",
   )
 
 })
@@ -451,12 +451,12 @@ test_that("str$split", {
 
   expect_grepl_error(
      pl$lit("42")$str$split(by=42L, inclusive=TRUE),
-     r"{in str\$split\: arg \[by\] must be a string, it is\:}"
+     r"{in str\$split\: the arg \[by\] is not a single string, but 42}"
   )
 
    expect_grepl_error(
      pl$lit("42")$str$split(by="blop", inclusive=42),
-     r"{in str\$split\: arg \[inclusive\] must be a bool, it is\:}"
+     r"{in str\$split\: the arg \[inclusive\] is not a single bool as required}"
   )
 
 
@@ -480,17 +480,17 @@ test_that("str$split_exact", {
 
   expect_grepl_error(
      pl$lit("42")$str$split_exact(by=42L, n=1, inclusive=TRUE),
-     r"{in str\$split_exact\: \[by\] is not a single string, but 42}"
+     r"{in str\$split_exact\: the arg \[by\] is not a single string, but 42}"
   )
 
   expect_grepl_error(
      pl$lit("42")$str$split_exact(by="a", n=-1, inclusive=TRUE),
-     r"{in str\$split_exact\: \[n\] is the value -1 cannot be less than zero}"
+     r"{str\$split_exact\: the arg \[n\] the value -1 cannot be less than zero}"
   )
 
   expect_grepl_error(
     pl$lit("42")$str$split_exact(by="a", n=2, inclusive="joe"),
-    r"{in str\$split_exact\: \[inclusive\] is not a single bool as required, but}"
+    r"{str\$split_exact\: the arg \[inclusive\] is not a single bool as required, but}"
   )
 
 

@@ -576,15 +576,17 @@ Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, sel
 
 Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
 
-Expr$str_split <- function(by) .Call(wrap__Expr__str_split, self, by)
-
-Expr$str_split_inclusive <- function(by) .Call(wrap__Expr__str_split_inclusive, self, by)
+Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
 
 Expr$str_split_exact <- function(by, n, inclusive) .Call(wrap__Expr__str_split_exact, self, by, n, inclusive)
 
 Expr$str_splitn <- function(by, n) .Call(wrap__Expr__str_splitn, self, by, n)
 
 Expr$str_replace <- function(pattern, value, literal) .Call(wrap__Expr__str_replace, self, pattern, value, literal)
+
+Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_replace_all, self, pattern, value, literal)
+
+Expr$str_slice <- function(start, length) .Call(wrap__Expr__str_slice, self, start, length)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

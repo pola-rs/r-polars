@@ -558,7 +558,7 @@ ExprStr_count_match = function(pattern){
 
 
 
-#NOTE ExprStr_split showcase all R side arg handling
+
 #' split
 #' @name ExprStr_split
 #' @aliases expr_str_split
@@ -574,19 +574,13 @@ ExprStr_count_match = function(pattern){
 #' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 #' df$select( pl$col("s")$str$split(by=" "))
 ExprStr_split = function(by, inclusive = FALSE){
-  pcase(
-    !is_bool(inclusive), Err(paste("arg [inclusive] must be a bool, it is:",str_string(inclusive))),
-    !is_string(by), Err(paste("arg [by] must be a string, it is:", str_string(by))),
-    isFALSE(inclusive),Ok(.pr$Expr$str_split(self, by)),
-    isTRUE(inclusive), Ok(.pr$Expr$str_split_inclusive(self, by)),
-    or_else = Err("internal error: bool neither true or false")
-  ) |> map_err(\(err) {
-    paste("in str$split:", err)
-  }) |> unwrap()
+   unwrap(
+    .pr$Expr$str_split(self, result(by), result(inclusive)),
+    context = "in str$split:"
+  )
 }
 
 #TODO write 2nd example after expr_struct has been implemented
-#NOTE ExprStr_split_exact showcase all rust side arg handling
 #' split_exact
 #' @name ExprStr_split_exact
 #' @aliases expr_str_split_exact
@@ -605,7 +599,10 @@ ExprStr_split = function(by, inclusive = FALSE){
 #' df$select( pl$col("s")$str$split_exact(by="_",1))
 #'
 ExprStr_split_exact = function(by, n, inclusive = FALSE){
-  unwrap(.pr$Expr$str_split_exact(self, by, n, inclusive))
+  unwrap(
+    .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
+    context = "in str$split_exact:"
+  )
 }
 
 
@@ -629,7 +626,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE){
 #' df$select( pl$col("s")$str$splitn(by="_",1))
 #' df$select( pl$col("s")$str$splitn(by="_",2))
 ExprStr_splitn = function(by, n){
-  unwrap(.pr$Expr$str_splitn(self, by, n))
+  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn")
 }
 
 
@@ -643,8 +640,7 @@ ExprStr_splitn = function(by, n){
 #' @param value Into<Expr> replcacement
 #' @param literal bool, Treat pattern as a literal string.
 #'
-#' @return
-#' Struct where each of n+1 fields is of Utf8 type
+#' @return Expr of Utf8 Series
 #'
 #' @seealso replace_all : Replace all matching regex/literal substrings.
 #'
@@ -654,11 +650,56 @@ ExprStr_splitn = function(by, n){
 #'    pl$col("text")$str$replace(r"{abc\b}", "ABC")
 #' )
 ExprStr_replace = function(pattern, value, literal = FALSE){
-  .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), literal) |>
-    unwrap(context = "in str$replace:")
+  .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
+    unwrap("in str$replace:")
 }
 
 
 
+#' replace_all
+#' @name ExprStr_replace_all
+#' @aliases expr_str_replace_all
+#' @description
+#' Replace all matching regex/literal substrings with a new string value.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, treat pattern as a literal string.
+#'
+#' @return Expr of Utf8 Series
+#'
+#' @seealso replace : Replace first matching regex/literal substring.
+#'
+#' @examples
+#' df = pl$DataFrame(id = c(1, 2), text = c("abcabc", "123a123"))
+#' df$with_columns(
+#'    pl$col("text")$str$replace_all("a", "-")
+#' )
+ExprStr_replace_all = function(pattern, value, literal = FALSE) {
+  .pr$Expr$str_replace_all(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
+    unwrap("in str$replace_all:")
+}
 
+
+#' slice
+#' @name ExprStr_slice
+#' @aliases expr_str_slice
+#' @description
+#' Create subslices of the string values of a Utf8 Series.
+#' @keywords ExprStr
+#' @param pattern Into<Expr>, regex pattern
+#' @param value Into<Expr> replcacement
+#' @param literal bool, treat pattern as a literal string.
+#'
+#' @return Expr: Series of dtype Utf8.
+#'
+#' @examples
+#' df = pl$DataFrame(s = c("pear", None, "papaya", "dragonfruit"))
+#' df$with_columns(
+#'    pl$col("s")$str$slice(-3)$alias("s_sliced")
+#' )
+ExprStr_slice = function(offset, length = NULL) {
+  .pr$Expr$str_slice(self, result(offset), result(length)) |>
+    unwrap("in str$slice:")
+}
 

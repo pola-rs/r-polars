@@ -12,7 +12,7 @@
 \item{literal}{bool, Treat pattern as a literal string.}
 }
 \value{
-Struct where each of n+1 fields is of Utf8 type
+Expr of Utf8 Series
 }
 \description{
 Replace first matching regex/literal substring with a new string value.

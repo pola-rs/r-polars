@@ -4,14 +4,14 @@
 \alias{unwrap}
 \title{rust-like unwrapping of result. Useful to keep error handling on the R side.}
 \usage{
-unwrap(result, call = sys.call(1L), context = NULL)
+unwrap(result, context = NULL, call = sys.call(1L))
 }
 \arguments{
 \item{result}{a list here either element ok or err is NULL, or both if ok is litteral NULL}
 
-\item{call}{context of error or string}
-
 \item{context}{a msg to prefix a raised error with}
+
+\item{call}{context of error or string}
 }
 \value{
 the ok-element of list , or a error will be thrown

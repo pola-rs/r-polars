@@ -41,7 +41,7 @@ Ok = function(x) {
 #' @param x any R object
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
-  if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL")
+  if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL, not allowed")
   structure(list(ok = NULL, err = x), class = "extendr_result")
 }
 
@@ -64,7 +64,7 @@ map = function(x, f) {
   x
 }
 
-#' map an ok-value or pass on err-value
+#' map an ok-value or pass on an err-value
 #' @param x any R object
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
@@ -106,7 +106,7 @@ or_else = function(x, f) {
 #'   ),
 #'   error = function(err) as.character(err)
 #' )
-unwrap = function(result, call=sys.call(1L), context = NULL) {
+unwrap = function(result, context = NULL, call=sys.call(1L)) {
   #if not a result
   if(!is_result(result)) {
     stopf("Internal error: cannot unwrap non result")

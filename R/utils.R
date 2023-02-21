@@ -683,3 +683,14 @@ sub_name_space_accessor_function = function (self, name) {
   func
 }
 
+#capture error in any R side arguments, and pass to rust side to preserve context and write
+# really sweet error messages
+result = function(x) {
+ tryCatch(
+    Ok(x),
+    error = function(err) {
+      Err(paste0("an error because:\n",err$message))
+    }
+  )
+}
+
