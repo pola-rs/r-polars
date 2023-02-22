@@ -1,8 +1,5 @@
 
-#
-
-
-Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
+#Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
 
 ### *r-polars is not completely translated yet - aim to finish March 2023*
 
@@ -10,20 +7,20 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 
 
 
-# Install latest binary rpolars package directly from github release
+# Install latest binary rpolars package directly from github release.
 
 No dependencies other than R (≥ 4.1.0)
  - Macbbook x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
  
- - Macbook arm64 (Requires Xcode. Makevars script downloads 200MB cross-compiled object file, while your machine links and builds the final R package)
- `remotes::install_github("https://github.com/pola-rs/r-polars",ref = "long_arms64", force =TRUE)`
-  
  - Linux x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz")`
  
  - Windows
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars.zip")`
+ 
+ - Macbook arm64 (Does require Xcode. Makevars script downloads 200MB cross-compiled object file, while your machine links and builds the final R package)
+ `remotes::install_github("https://github.com/pola-rs/r-polars",ref = "long_arms64", force =TRUE)`
  
  - Other targets?  Start a new issue.
  - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
@@ -67,26 +64,13 @@ See further down how to install rust to build from source.
 ## news:
 
  - update 21st February: 
-  - All str/String expressions included from v0.4.5.
-  - There is now a resonable easy pre-compiled installation for arm64-MacBooks, see above.
-  - Starting to roll out new error-handling and type-conversions between R and rust. Precise source
-  of error should be very clear even in a long method-chain e.g. 
+   All str/String expressions included from v0.4.5. There is now a resonable easy pre-compiled installation for arm64-MacBooks, see above. Starting to roll out new error-handling and type-conversions between R and rust. Rpolars is now on [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install), see above. Precise source of error should be very clear even in a long method-chain e.g. 
   ```r
   pl$lit("hey-you-there")$str$splitn("-",-3)$alias("struct_of_words")$to_r()
   > Error: in str$splitn the arg [n] the value -3 cannot be less than zero
   when calling :
   pl$lit("hey-you-there")$str$splitn("-", -3)
-  
-  pl$lit("hey-you-there")$str$splitn()$alias("struct_of_words")$to_r()
-  > Error: in str$splitn the arg [by] an error because:
-  argument "by" is missing, with no default
-  when calling :
-  pl$lit("hey-you-there")$str$splitn()
-
   ```
-  - rpolars is now on [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install), see above.
-  
-   
 
  - update 1st February: All Datetime expressions included from v0.4.3.
 
