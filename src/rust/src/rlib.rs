@@ -5,9 +5,11 @@ use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use crate::rdataframe::rexpr::ProtoExprArray;
 use crate::rdataframe::rseries::Series;
 use crate::rdatatype::robj_to_timeunit;
+use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
+use std::result::Result;
 #[extendr]
 fn concat_df(vdf: &VecDataFrame) -> List {
     //-> PyResult<PyDataFrame> {
@@ -146,6 +148,43 @@ fn r_date_range_lazy(
     r_result_list(res)
 }
 
+//TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
+//for now just use inner directly
+#[extendr]
+fn as_struct(exprs: Robj) -> Result<Expr, String> {
+    Ok(
+        polars::lazy::dsl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs)?.as_slice())
+            .into(),
+    )
+}
+
+#[extendr]
+fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
+    use crate::rdatatype::RPolarsDataType;
+    let struct_expr = as_struct(exprs)?;
+    let eager = robj_to!(bool, eager)?;
+
+    let struct_expr = if !schema.is_null() {
+        let schema: Vec<RPolarsDataType> = robj_to!(Vec, RPolarsDataType, schema)?;
+        dbg!(&schema);
+        todo!()
+    } else {
+        struct_expr
+    };
+
+    if eager {
+        use pl::*;
+        let df = pl::DataFrame::empty()
+            .lazy()
+            .select(&[struct_expr.0])
+            .collect()
+            .map_err(|err| format!("during eager evaluation of struct: {}", err))?;
+        Ok(crate::rdataframe::DataFrame(df).into())
+    } else {
+        Ok(struct_expr.into())
+    }
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -159,4 +198,6 @@ extendr_module! {
     fn concat_lst;
     fn r_date_range;
     fn r_date_range_lazy;
+    fn as_struct;
+    fn struct_;
 }

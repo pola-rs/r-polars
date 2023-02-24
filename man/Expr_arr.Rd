@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arr}
 \alias{Expr_arr}
-\alias{arr}
+\alias{arr_ns}
 \title{arr: list related methods}
 \usage{
 Expr_arr()

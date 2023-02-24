@@ -46,6 +46,9 @@ expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 `$.ExprDTNameSpace` = sub_name_space_accessor_function
 expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 
+#' @export
+`$.ExprStructNameSpace` = sub_name_space_accessor_function
+expr_struct_make_sub_ns  = macro_new_subnamespace("^ExprStruct_" , "ExprStructNameSpace")
 
 
 # any sub-namespace inherits 'method_environment'

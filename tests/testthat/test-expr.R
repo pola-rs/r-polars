@@ -989,7 +989,8 @@ test_that("sort_by", {
         pl$col("ab")$sort_by("v2")$alias("ab2"),
         pl$col("ab")$sort_by("v1")$alias("ab1"),
         pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
-        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T"),
+        pl$col("ab")$sort_by(c("v3","v1"),reverse=T)$alias("ab13T2")
       )$to_list(),
       list(
         ab4 = l$ab[order(l$v4)],
@@ -997,9 +998,16 @@ test_that("sort_by", {
         ab2 = l$ab[order(l$v2)],
         ab1 = l$ab[order(l$v1)],
         ab13FT= l$ab[order(l$v3,rev(l$v1))],
-        ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+        ab13T = l$ab[order(l$v3,l$v1,decreasing= T)],
+        ab13T2= l$ab[order(l$v3,l$v1,decreasing= T)]
       )
     )
+
+    expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(),"Expected length\\: 4")
+    expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
+    expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
 
   #this test is minimal, if polars give better documentation on behaviour, expand the test.
 })
