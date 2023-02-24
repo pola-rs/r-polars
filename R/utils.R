@@ -676,21 +676,12 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
   }
 }
 
-
+#this function is used in zzz.R to defined how to access methods of a subname space
 sub_name_space_accessor_function = function (self, name) {
   verify_method_call(self,name,class_name = class(self)[1L])
   func <- self[[name]]
   func
 }
 
-#capture error in any R side arguments, and pass to rust side to preserve context and write
-# really sweet error messages
-result = function(x) {
- tryCatch(
-    Ok(x),
-    error = function(err) {
-      Err(paste0("an error because:\n",err$message))
-    }
-  )
-}
+
 

@@ -158,3 +158,14 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
 pstop = function(err, call=sys.call(1L)) {
   unwrap(list(ok=NULL,err=err),call=call)
 }
+
+#capture error in any R side arguments, and pass to rust side to preserve context and write
+# really sweet error messages
+result = function(x, msg= "an error because:\n") {
+ tryCatch(
+    Ok(x),
+    error = function(err) {
+      Err(paste0(msg,err$message))
+    }
+  )
+}

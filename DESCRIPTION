@@ -38,6 +38,7 @@ Collate:
     'expr__expr.R'
     'expr__list.R'
     'expr__string.R'
+    'expr__struct.R'
     'functions.R'
     'groupby.R'
     'lazy_functions.R'
