@@ -2,6 +2,7 @@ pub mod extendr_concurrent;
 
 pub mod wrappers;
 use crate::rdataframe::rexpr::Expr;
+use crate::rdatatype::RPolarsDataType;
 use extendr_api::prelude::list;
 
 use extendr_api::ExternalPtr;
@@ -499,24 +500,46 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
     .ok_or_else(|| format!("is not a single bool as required, but {:?}", robj))
 }
 
-pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
-    let res: ExtendrResult<ExternalPtr<Expr>> = unpack_r_result_list(robj)?.try_into();
-    res.map_err(|err| format!("not an Expr, because {:?}", err))
-        .map(|ok| Expr(ok.0.clone()))
+pub fn robj_to_datatype(robj: extendr_api::Robj) -> std::result::Result<RPolarsDataType, String> {
+    let res: ExtendrResult<ExternalPtr<RPolarsDataType>> = robj.try_into();
+    let ext_dt = res.map_err(|err| format!("not an DataType, because {:?}", err))?;
+    Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
-// pub fn robj_to_lit(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
-//     use extendr_api::*;
-//     match robj.rtype() {
-//         _ if robj.inherits("Expr") => robj_to_rexpr(robj),
-//         Rtype::Doubles => Expr::lit(robj),
-//         Rtype::Integers => Expr::lit(robj),
-//         Rtype::List => Expr::lit(robj),
-//         _ => extendr_api::call!("pl$col", robj.clone())
-//             .map_err(|_| format!(" is not Into<Expr>/literal see above error {:?}", robj))
-//             .and_then(robj_to_rexpr),
-//     }
-// }
+pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
+    let robj = unpack_r_result_list(robj)?;
+
+    let res = if let Some(str) = robj.as_str() {
+        use extendr_api::*;
+        let new_col_expr = extendr_api::call!("wrap_e", str).map_err(|err| err.to_string())?;
+        let x = robj_to_rexpr(new_col_expr);
+        x?
+    } else {
+        let res: ExtendrResult<ExternalPtr<Expr>> = robj.try_into();
+        let ext_expr = res.map_err(|err| format!("not an Expr, because {:?}", err))?;
+        Expr(ext_expr.0.clone())
+    };
+
+    Ok(res)
+}
+
+pub fn list_expr_to_vec_pl_expr(robj: Robj) -> std::result::Result<Vec<pl::Expr>, String> {
+    use extendr_api::*;
+    let robj = unpack_r_result_list(robj)?;
+    let l = robj.as_list().ok_or_else(|| "is not a list".to_string())?;
+    let iter = l.iter().map(|(_, robj)| robj_to_rexpr(robj).map(|e| e.0));
+    crate::utils::collect_hinted_result::<pl::Expr, String>(l.len(), iter)
+}
+
+pub fn iter_pl_expr_to_list_expr<T>(ite: T) -> extendr_api::List
+where
+    T: IntoIterator<Item = polars::prelude::Expr>,
+    T::IntoIter: ExactSizeIterator,
+{
+    use extendr_api::prelude::*;
+    let iter = ite.into_iter().map(|pl_expr| Expr(pl_expr));
+    List::from_values(iter)
+}
 
 #[macro_export]
 macro_rules! robj_to_inner {
@@ -553,6 +576,18 @@ macro_rules! robj_to_inner {
         crate::utils::robj_to_rexpr($a)
     };
 
+    (VecPLExpr, $a:ident) => {
+        crate::utils::list_expr_to_vec_pl_expr($a)
+    };
+
+    (RPolarsDataType, $a:ident) => {
+        crate::utils::robj_to_datatype($a)
+    };
+
+    (RField, $a:ident) => {
+        crate::utils::robj_to_field($a)
+    };
+
     (lit, $a:ident) => {
         crate::utils::robj_to_lit($a)
     };
@@ -574,6 +609,35 @@ macro_rules! robj_to {
             }
         })
     }};
+
+    //iterate list and call this macro again on inner objects
+    (Vec, $type:ident, $a:ident) => {{
+        //unpack raise any R result error
+        crate::utils::unpack_r_result_list($a)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+            .and_then(|x: Robj| {
+                //coerce R vectors into list
+                let x = if !x.is_list() && x.len() > 1 {
+                    extendr_api::call!("as.list", x)
+                        .map_err(|err| format!("could not coerce to list: {}", err))?
+                } else {
+                    x
+                };
+
+                if x.is_list() {
+                    // convert each element in list to $type
+                    let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
+                        robj_to!($type, $a, format!("element no. [{}] of ", i + 1))
+                    });
+                    crate::utils::collect_hinted_result::<$type, String>(x.len(), iter)
+                } else {
+                    // single value without list, convert as is and wrap in a list
+                    let $a = x;
+                    Ok(vec![robj_to!($type, $a)?])
+                }
+            })
+    }};
+
     ($type:ident, $a:ident) => {
         crate::robj_to_inner!($type, $a)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
