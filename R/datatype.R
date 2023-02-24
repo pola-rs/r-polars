@@ -146,17 +146,22 @@ DataType_constructors = list(
       } else {
         element_name = "positional argument"
       }
-      mapply(names(largs), largs, seq_along(largs), FUN = \(name, arg, i) {
-        if(inherits(arg,"RPolarsDataType")) return(pl$Field(name, arg))
-        if(inherits(arg,"RField")) return(arg)
-        stopf(
-          "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
-          element_name, i, name, arg,"DataType see (pl$dtypes), see examples for pl$Struct()"
-        )
-        },SIMPLIFY = FALSE)
+      mapply(
+        names(largs) %||% character(length(largs)),
+        largs,
+        seq_along(largs),
+        FUN = \(name, arg, i) {
+          if(inherits(arg,"RPolarsDataType")) return(pl$Field(name, arg))
+          if(inherits(arg,"RField")) return(arg)
+          stopf(
+            "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
+            element_name, i, name, arg,"DataType see (pl$dtypes), see examples for pl$Struct()"
+          )
+        },SIMPLIFY = FALSE
+      )
     }) |>
       and_then(DataType$new_struct) |>
-      unwrap("in pl$Struct")
+      unwrap("in pl$Struct:")
   }
 
 )
