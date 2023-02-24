@@ -20,12 +20,7 @@ $(STATLIB):
 	curdir=$(CURDIR)
 	cd $(RPOLARS_RUST_SOURCE)/..
 
-	mkdir -p $(TARGET_DIR)/libgcc_mock
-	cd $(TARGET_DIR)/libgcc_mock && \
-		touch gcc_mock.c && \
-		gcc -c gcc_mock.c -o gcc_mock.o && \
-		ar -r libgcc_eh.a gcc_mock.o && \
-		cp libgcc_eh.a libgcc_s.a
+	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
 	#--target-dir $(TARGET_DIR)
