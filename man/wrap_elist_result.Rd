@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{wrap_elist_result}
 \alias{wrap_elist_result}
-\title{wrap elements of list as literals}
+\title{wrap_elist_result}
 \usage{
 wrap_elist_result(elist, str_to_lit = TRUE)
 }
@@ -13,7 +13,8 @@ wrap_elist_result(elist, str_to_lit = TRUE)
 Expr
 }
 \description{
-wrap elements of list as literals
+make sure all elementsof a list is wrapped as Expr
+Capture any conversion error in the result
 }
 \details{
 Used internally to ensure an object is a list of expression
@@ -21,6 +22,6 @@ The output is wrapped in a result, which can contain an ok or
 err value.
 }
 \examples{
-repolars:::wrap_e_list(list(pl$lit(42),42,1:3))
+rpolars:::wrap_elist_result(list(pl$lit(42),42,1:3))
 }
 \keyword{internal}

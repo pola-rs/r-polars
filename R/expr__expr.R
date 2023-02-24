@@ -82,7 +82,9 @@ wrap_e_result = function(e, str_to_lit = TRUE) {
   )
 }
 
-#' wrap elements of list as literals
+#' wrap_elist_result
+#' @description make sure all elementsof a list is wrapped as Expr
+#' Capture any conversion error in the result
 #' @param elist a list Expr or any R object Into<Expr> (passable to pl$lit)
 #' @details
 #' Used internally to ensure an object is a list of expression
@@ -90,7 +92,7 @@ wrap_e_result = function(e, str_to_lit = TRUE) {
 #' err value.
 #' @keywords internal
 #' @return Expr
-#' @examples repolars:::wrap_e_list(list(pl$lit(42),42,1:3))
+#' @examples rpolars:::wrap_elist_result(list(pl$lit(42),42,1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
