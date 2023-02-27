@@ -4008,6 +4008,21 @@ Expr_dt = method_as_property(function() {
   expr_dt_make_sub_ns(self)
 })
 
+#' meta: related methods
+#' @description
+#' Create an object namespace of all meta related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases meta_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_meta = method_as_property(function() {
+  expr_meta_make_sub_ns(self)
+})
+
 #' struct: related methods
 #' @description
 #' Create an object namespace of all struct related methods.

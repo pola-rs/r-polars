@@ -2052,12 +2052,57 @@ impl Expr {
     }
 
     // pub fn struct_field_by_index(&self, index: i64) -> PyExpr {
-    //     self.inner.clone().struct_().field_by_index(index).into()
+    //     self.0.clone().struct_().field_by_index(index).into()
     // }
 
     pub fn struct_rename_fields(&self, names: Robj) -> Result<Expr, String> {
         let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
         Ok(self.0.clone().struct_().rename_fields(string_vec).into())
+    }
+
+    //placed in py-polars/src/lazy/meta.rs, however extendr do not support
+    //multiple export impl.
+    fn meta_pop(&self) -> List {
+        let exprs: Vec<pl::Expr> = self.0.clone().meta().pop();
+        List::from_values(exprs.iter().map(|e| Expr(e.clone())))
+    }
+
+    fn meta_eq(&self, other: Robj) -> Result<bool, String> {
+        let other = robj_to!(Expr, other)?;
+        Ok(self.0 == other.0)
+    }
+
+    fn meta_roots(&self) -> Vec<String> {
+        self.0
+            .clone()
+            .meta()
+            .root_names()
+            .iter()
+            .map(|name| name.to_string())
+            .collect()
+    }
+
+    fn meta_output_name(&self) -> Result<String, String> {
+        let name = self
+            .0
+            .clone()
+            .meta()
+            .output_name()
+            .map_err(|err| err.to_string())?;
+
+        Ok(name.to_string())
+    }
+
+    fn meta_undo_aliases(&self) -> Expr {
+        self.0.clone().meta().undo_aliases().into()
+    }
+
+    fn meta_has_multiple_outputs(&self) -> bool {
+        self.0.clone().meta().has_multiple_outputs()
+    }
+
+    fn meta_is_regex_projection(&self) -> bool {
+        self.0.clone().meta().is_regex_projection()
     }
 }
 

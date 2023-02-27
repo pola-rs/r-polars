@@ -601,6 +601,20 @@ Expr$struct_field_by_name <- function(name) .Call(wrap__Expr__struct_field_by_na
 
 Expr$struct_rename_fields <- function(names) .Call(wrap__Expr__struct_rename_fields, self, names)
 
+Expr$meta_pop <- function() .Call(wrap__Expr__meta_pop, self)
+
+Expr$meta_eq <- function(other) .Call(wrap__Expr__meta_eq, self, other)
+
+Expr$meta_roots <- function() .Call(wrap__Expr__meta_roots, self)
+
+Expr$meta_output_name <- function() .Call(wrap__Expr__meta_output_name, self)
+
+Expr$meta_undo_aliases <- function() .Call(wrap__Expr__meta_undo_aliases, self)
+
+Expr$meta_has_multiple_outputs <- function() .Call(wrap__Expr__meta_has_multiple_outputs, self)
+
+Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_projection, self)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 

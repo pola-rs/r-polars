@@ -50,6 +50,10 @@ expr_dt_make_sub_ns  = macro_new_subnamespace("^ExprDT_" , "ExprDTNameSpace")
 `$.ExprStructNameSpace` = sub_name_space_accessor_function
 expr_struct_make_sub_ns  = macro_new_subnamespace("^ExprStruct_" , "ExprStructNameSpace")
 
+#' @export
+`$.ExprMetaNameSpace` = sub_name_space_accessor_function
+expr_meta_make_sub_ns  = macro_new_subnamespace("^ExprMeta_" , "ExprMetaNameSpace")
+
 
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
