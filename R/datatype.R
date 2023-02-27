@@ -138,12 +138,30 @@ DataType_constructors = list(
 
   #doc below pl_Struct
   Struct = function(...) {
-    largs = list2(...)
-    if (is.list(largs[[1]])) {
-       rpolars:::DataType$new_struct(largs[[1]])
-    } else {
-       rpolars:::DataType$new_struct(largs)
-    } |> unwrap()
+    result({
+      largs = list2(...)
+      if (is.list(largs[[1]])) {
+        largs = largs[[1]]
+        element_name = "list element"
+      } else {
+        element_name = "positional argument"
+      }
+      mapply(
+        names(largs) %||% character(length(largs)),
+        largs,
+        seq_along(largs),
+        FUN = \(name, arg, i) {
+          if(inherits(arg,"RPolarsDataType")) return(pl$Field(name, arg))
+          if(inherits(arg,"RField")) return(arg)
+          stopf(
+            "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
+            element_name, i, name, arg,"DataType see (pl$dtypes), see examples for pl$Struct()"
+          )
+        },SIMPLIFY = FALSE
+      )
+    }) |>
+      and_then(DataType$new_struct) |>
+      unwrap("in pl$Struct:")
   }
 
 )

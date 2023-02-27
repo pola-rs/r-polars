@@ -4,9 +4,8 @@ use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
-use crate::robj_to;
-
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
+use crate::robj_to;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
@@ -16,7 +15,6 @@ use crate::utils::{
 };
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
-
 use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
 use polars::error::ErrString as pl_err_string;
@@ -25,6 +23,7 @@ use polars::prelude::DurationMethods;
 use polars::prelude::GetOutput;
 use polars::prelude::IntoSeries;
 use polars::prelude::TemporalMethods;
+use polars::prelude::Utf8NameSpaceImpl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
@@ -251,16 +250,15 @@ impl Expr {
         self.clone().0.take(idx.0.clone()).into()
     }
 
-    pub fn sort_by(&self, by: &ProtoExprArray, reverse: Robj) -> List {
-        let rev: Vec<bool> = if let Some(lgl_itr) = reverse.as_logical_iter() {
-            lgl_itr.map(|x| x.is_true()).collect()
-        } else {
-            return r_error_list("reverse argument must be a logical vector");
-        };
-        let by = by.to_vec("select");
-        let expr = Expr(self.clone().0.sort_by(by, rev));
-        r_ok_list(expr)
+    pub fn sort_by(&self, by: Robj, reverse: Robj) -> Result<Expr, String> {
+        let expr = Expr(
+            self.clone()
+                .0
+                .sort_by(robj_to!(VecPLExpr, by)?, robj_to!(Vec, bool, reverse)?),
+        );
+        Ok(expr)
     }
+
     pub fn backward_fill(&self, limit: Nullable<f64>) -> Self {
         let lmt = null_to_opt(limit).map(|x| x as u32);
         self.clone().0.backward_fill(lmt).into()
@@ -412,16 +410,19 @@ impl Expr {
         r_result_list(result)
     }
 
-    pub fn hash(&self, seed: f64, seed_1: f64, seed_2: f64, seed_3: f64) -> List {
-        let vec_u64_result: Result<Vec<u64>, String> = [seed, seed_1, seed_2, seed_3]
-            .iter()
-            .map(|x| try_f64_into_usize(*x).map(|val| val as u64))
-            .collect();
-        r_result_list(
-            vec_u64_result
-                .map(|v| Expr(self.0.clone().hash(v[0], v[1], v[2], v[3])))
-                .map_err(|err| format!("in hash(): {}", err)),
-        )
+    pub fn hash(
+        &self,
+        seed: Robj,
+        seed_1: Robj,
+        seed_2: Robj,
+        seed_3: Robj,
+    ) -> Result<Expr, String> {
+        Ok(Expr(self.0.clone().hash(
+            robj_to!(u64, seed)?,
+            robj_to!(u64, seed_1)?,
+            robj_to!(u64, seed_2)?,
+            robj_to!(u64, seed_3)?,
+        )))
     }
 
     pub fn reinterpret(&self, signed: bool) -> Expr {
@@ -1750,8 +1751,7 @@ impl Expr {
     }
 
     pub fn str_n_chars(&self) -> Self {
-        use pl::*;
-        let function = |s: Series| {
+        let function = |s: pl::Series| {
             let ca = s.utf8()?;
             Ok(Some(ca.str_n_chars().into_series()))
         };
@@ -2040,6 +2040,69 @@ impl Expr {
             .from_radix(robj_to!(Option, u32, radix)?)
             .with_fmt("str.parse_int")
             .into())
+    }
+
+    pub fn struct_field_by_name(&self, name: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .struct_()
+            .field_by_name(robj_to!(str, name)?)
+            .into())
+    }
+
+    // pub fn struct_field_by_index(&self, index: i64) -> PyExpr {
+    //     self.0.clone().struct_().field_by_index(index).into()
+    // }
+
+    pub fn struct_rename_fields(&self, names: Robj) -> Result<Expr, String> {
+        let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
+        Ok(self.0.clone().struct_().rename_fields(string_vec).into())
+    }
+
+    //placed in py-polars/src/lazy/meta.rs, however extendr do not support
+    //multiple export impl.
+    fn meta_pop(&self) -> List {
+        let exprs: Vec<pl::Expr> = self.0.clone().meta().pop();
+        List::from_values(exprs.iter().map(|e| Expr(e.clone())))
+    }
+
+    fn meta_eq(&self, other: Robj) -> Result<bool, String> {
+        let other = robj_to!(Expr, other)?;
+        Ok(self.0 == other.0)
+    }
+
+    fn meta_roots(&self) -> Vec<String> {
+        self.0
+            .clone()
+            .meta()
+            .root_names()
+            .iter()
+            .map(|name| name.to_string())
+            .collect()
+    }
+
+    fn meta_output_name(&self) -> Result<String, String> {
+        let name = self
+            .0
+            .clone()
+            .meta()
+            .output_name()
+            .map_err(|err| err.to_string())?;
+
+        Ok(name.to_string())
+    }
+
+    fn meta_undo_aliases(&self) -> Expr {
+        self.0.clone().meta().undo_aliases().into()
+    }
+
+    fn meta_has_multiple_outputs(&self) -> bool {
+        self.0.clone().meta().has_multiple_outputs()
+    }
+
+    fn meta_is_regex_projection(&self) -> bool {
+        self.0.clone().meta().is_regex_projection()
     }
 }
 

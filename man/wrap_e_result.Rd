@@ -16,7 +16,7 @@ Expr
 wrap as literal
 }
 \details{
-used internally to ensure an object is an expression
+used internally to ensure an object is an expression and to catch any error
 }
 \examples{
 pl$col("foo") < 5
