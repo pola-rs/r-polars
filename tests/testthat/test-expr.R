@@ -1574,7 +1574,7 @@ test_that("interpolate", {
 
 test_that("Expr_rolling_", {
   skip_if_not_installed("data.table")
-  library(data.table)
+  suppressMessages(library(data.table))
   #check all examples
   df = pl$DataFrame(list(a=1:6))
   dt = data.table(a=1:6)

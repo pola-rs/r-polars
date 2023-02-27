@@ -1,9 +1,9 @@
 #' field
-#' @name ExprStr_field
-#' @aliases expr_str_field
+#' @name ExprStruct_field
+#' @aliases expr_struct_field
 #' @description Retrieve a ``Struct`` field as a new Series.
 #' By default base 2.
-#' @keywords ExprStr
+#' @keywords ExprStruct
 #' @param name string, the Name of the struct field to retrieve.
 #' @return Expr: Series of same and name selected field.
 #' @examples
@@ -26,11 +26,11 @@ ExprStruct_field = function(name) {
 
 
 #' rename fields
-#' @name ExprStr_rename_fields
-#' @aliases expr_str_rename_fields
+#' @name ExprStruct_rename_fields
+#' @aliases expr_struct_rename_fields
 #' @description Rename the fields of the struct.
 #' By default base 2.
-#' @keywords ExprStr
+#' @keywords ExprStruct
 #' @param names char vec or list of strings given in the same order as the struct's fields.
 #' Providing fewer names will drop the latter fields. Providing too many names is ignored.
 #' @return Expr: struct-series with new names for the fields
