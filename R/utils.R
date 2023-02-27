@@ -545,7 +545,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 
 #' expect grepl error
 #' @param expr an R expression to test
-#' @param expected_err a string pattern passed to grepl
+#' @param expected_err one or several string patterns passed to grepl
 #' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
 #' useful for grepping the same error message, without grep-patterns becomes
 #' included in the error message. Latter leads to false positive outcomes.
@@ -558,6 +558,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
 #' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
+#' rpolars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
 
   #turn of including call in err msg
@@ -573,10 +574,11 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   if(do_not_repeat_call) do.call(pl$set_rpolars_options, old_options)
 
   #check if error message contains pattern
-  found = grepl(expected_err,err)[1]
-  if(!found) {
+  founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))
+
+  if(!all(founds)) {
     #... if not use testthat to point out the difference
-    testthat::expect_identical(err, expected_err,...)
+    testthat::expect_identical(err, expected_err[which(!founds)[1]],...)
   }
 
   invisible(err)
