@@ -528,6 +528,7 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
       paste0("  env$",m_name," = ",paste(capture.output(dput(f)), collapse = "\n"))
     })),
     "  class(env) = c(subclass_env, 'method_environment',class(env))",
+    "attr(env,'self') = self",
     "  env",
     "}"
   )
