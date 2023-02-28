@@ -6,6 +6,7 @@ use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
+use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RField(pl::Field);
 
@@ -436,19 +437,6 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-// pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
-//     match s {
-//         "ns" => Ok(pl::TimeUnit::Nanoseconds),
-//         "us" => Ok(pl::TimeUnit::Microseconds),
-//         "ms" => Ok(pl::TimeUnit::Milliseconds),
-
-//         _ => Err(format!(
-//             "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
-//             s
-//         )),
-//     }
-// }
-
 pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
     let s = robj.as_str().ok_or_else(|| {
         format!(
@@ -476,6 +464,18 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
         pl::TimeUnit::Milliseconds => 1_000,
     };
     tu_i64
+}
+
+pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, String> {
+    use pl::CategoricalOrdering as CO;
+    match s {
+        "physical" => Ok(CO::Physical),
+        "lexical" => Ok(CO::Lexical),
+        _ => Err(format!(
+            "CategoricalOrdering: [{}] is not any of 'physical' or 'lexical'",
+            s
+        )),
+    }
 }
 
 extendr_module! {

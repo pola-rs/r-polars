@@ -2104,6 +2104,14 @@ impl Expr {
     fn meta_is_regex_projection(&self) -> bool {
         self.0.clone().meta().is_regex_projection()
     }
+
+    //the only cat ns function from dsl.rs
+    fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
+        let ordering = robj_to!(Map, str, ordering, |s| {
+            crate::rdatatype::new_categorical_ordering(s)
+        })?;
+        Ok(self.0.clone().cat().set_ordering(ordering).into())
+    }
 }
 
 //allow proto expression that yet only are strings
