@@ -3977,6 +3977,21 @@ Expr_arr = method_as_property(function() {
   expr_arr_make_sub_ns(self)
 })
 
+#' bin: binary related methods
+#' @description
+#' Create an object namespace of all bining related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases bin_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_bin = method_as_property(function() {
+  expr_bin_make_sub_ns(self)
+})
+
 
 #' str: string related methods
 #' @description
