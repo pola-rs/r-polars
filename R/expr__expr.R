@@ -4023,6 +4023,21 @@ Expr_meta = method_as_property(function() {
   expr_meta_make_sub_ns(self)
 })
 
+#' cat: related methods
+#' @description
+#' Create an object namespace of all cat related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases cat_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_cat = method_as_property(function() {
+  expr_cat_make_sub_ns(self)
+})
+
 #' struct: related methods
 #' @description
 #' Create an object namespace of all struct related methods.

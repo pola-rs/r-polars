@@ -34,6 +34,7 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'expr__categorical.R'
     'expr__datetime.R'
     'expr__expr.R'
     'expr__list.R'

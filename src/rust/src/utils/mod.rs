@@ -638,6 +638,12 @@ macro_rules! robj_to {
             })
     }};
 
+    (Map, $type:ident, $a:ident, $f:expr) => {
+        crate::robj_to_inner!($type, $a)
+            .and_then($f)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+    };
+
     ($type:ident, $a:ident) => {
         crate::robj_to_inner!($type, $a)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
