@@ -3,7 +3,7 @@ use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
-use crate::rdataframe::rseries::Series;
+use crate::series::Series;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};

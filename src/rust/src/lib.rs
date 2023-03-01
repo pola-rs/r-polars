@@ -18,6 +18,7 @@ pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod utils;
+pub mod series;
 
 use extendr_api::prelude::*;
 use utils::extendr_concurrent::ParRObj;
@@ -35,4 +36,5 @@ extendr_module! {
     mod rpolars;
     use rdataframe;
     use lazy;
+    use series;
 }

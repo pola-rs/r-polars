@@ -111,96 +111,6 @@ VecDataFrame$print <- function() invisible(.Call(wrap__VecDataFrame__print, self
 #' @export
 `[[.VecDataFrame` <- `$.VecDataFrame`
 
-Series <- new.env(parent = emptyenv())
-
-Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
-
-Series$clone <- function() .Call(wrap__Series__clone, self)
-
-Series$sleep <- function(millis) .Call(wrap__Series__sleep, self, millis)
-
-Series$panic <- function() .Call(wrap__Series__panic, self)
-
-Series$to_r <- function() .Call(wrap__Series__to_r, self)
-
-Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
-
-Series$dtype <- function() .Call(wrap__Series__dtype, self)
-
-Series$name <- function() .Call(wrap__Series__name, self)
-
-Series$sort_mut <- function(reverse) .Call(wrap__Series__sort_mut, self, reverse)
-
-Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
-
-Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
-
-Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
-
-Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
-
-Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
-
-Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted, self, reverse, nulls_last)
-
-Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
-
-Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
-
-Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
-
-Series$shape <- function() .Call(wrap__Series__shape, self)
-
-Series$len <- function() .Call(wrap__Series__len, self)
-
-Series$chunk_lengths <- function() .Call(wrap__Series__chunk_lengths, self)
-
-Series$abs <- function() .Call(wrap__Series__abs, self)
-
-Series$alias <- function(name) .Call(wrap__Series__alias, self, name)
-
-Series$all <- function() .Call(wrap__Series__all, self)
-
-Series$any <- function() .Call(wrap__Series__any, self)
-
-Series$add <- function(other) .Call(wrap__Series__add, self, other)
-
-Series$sub <- function(other) .Call(wrap__Series__sub, self, other)
-
-Series$mul <- function(other) .Call(wrap__Series__mul, self, other)
-
-Series$div <- function(other) .Call(wrap__Series__div, self, other)
-
-Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
-
-Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
-
-Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
-
-Series$min <- function() .Call(wrap__Series__min, self)
-
-Series$max <- function() .Call(wrap__Series__max, self)
-
-Series$sum <- function() .Call(wrap__Series__sum, self)
-
-Series$ceil <- function() .Call(wrap__Series__ceil, self)
-
-Series$floor <- function() .Call(wrap__Series__floor, self)
-
-Series$print <- function() invisible(.Call(wrap__Series__print, self))
-
-Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
-
-Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
-
-Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
-
-#' @export
-`$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.Series` <- `$.Series`
-
 RNullValues <- new.env(parent = emptyenv())
 
 RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
@@ -860,6 +770,96 @@ LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
 
 #' @export
 `[[.LazyGroupBy` <- `$.LazyGroupBy`
+
+Series <- new.env(parent = emptyenv())
+
+Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
+
+Series$clone <- function() .Call(wrap__Series__clone, self)
+
+Series$sleep <- function(millis) .Call(wrap__Series__sleep, self, millis)
+
+Series$panic <- function() .Call(wrap__Series__panic, self)
+
+Series$to_r <- function() .Call(wrap__Series__to_r, self)
+
+Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
+
+Series$dtype <- function() .Call(wrap__Series__dtype, self)
+
+Series$name <- function() .Call(wrap__Series__name, self)
+
+Series$sort_mut <- function(reverse) .Call(wrap__Series__sort_mut, self, reverse)
+
+Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
+
+Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
+
+Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
+
+Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
+
+Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
+
+Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted, self, reverse, nulls_last)
+
+Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
+
+Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
+
+Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
+
+Series$shape <- function() .Call(wrap__Series__shape, self)
+
+Series$len <- function() .Call(wrap__Series__len, self)
+
+Series$chunk_lengths <- function() .Call(wrap__Series__chunk_lengths, self)
+
+Series$abs <- function() .Call(wrap__Series__abs, self)
+
+Series$alias <- function(name) .Call(wrap__Series__alias, self, name)
+
+Series$all <- function() .Call(wrap__Series__all, self)
+
+Series$any <- function() .Call(wrap__Series__any, self)
+
+Series$add <- function(other) .Call(wrap__Series__add, self, other)
+
+Series$sub <- function(other) .Call(wrap__Series__sub, self, other)
+
+Series$mul <- function(other) .Call(wrap__Series__mul, self, other)
+
+Series$div <- function(other) .Call(wrap__Series__div, self, other)
+
+Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
+
+Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
+
+Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
+
+Series$min <- function() .Call(wrap__Series__min, self)
+
+Series$max <- function() .Call(wrap__Series__max, self)
+
+Series$sum <- function() .Call(wrap__Series__sum, self)
+
+Series$ceil <- function() .Call(wrap__Series__ceil, self)
+
+Series$floor <- function() .Call(wrap__Series__floor, self)
+
+Series$print <- function() invisible(.Call(wrap__Series__print, self))
+
+Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
+
+Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
+
+Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
+
+#' @export
+`$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Series` <- `$.Series`
 
 
 # nolint end

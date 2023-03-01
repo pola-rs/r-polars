@@ -10,7 +10,7 @@ use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
 use crate::utils::{r_error_list, r_result_list};
 
-use super::DataFrame;
+use crate::rdataframe::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
 use crate::conversion_r_to_s::robjname2series;
@@ -22,6 +22,7 @@ use polars::datatypes::*;
 use polars::prelude as pl;
 use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
+use crate::lazy::dsl::Expr;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[derive(Debug, Clone)]
@@ -32,7 +33,7 @@ impl From<polars::prelude::Series> for Series {
         Series(pls)
     }
 }
-use super::Expr;
+
 impl From<&Expr> for pl::PolarsResult<Series> {
     fn from(expr: &Expr) -> Self {
         DataFrame::new()
@@ -551,6 +552,6 @@ impl From<&Series> for pl::Series {
 }
 
 extendr_module! {
-    mod rseries;
+    mod series;
     impl Series;
 }

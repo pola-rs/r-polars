@@ -3,7 +3,7 @@ use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::lazy::dsl::ProtoExprArray;
-use crate::rdataframe::rseries::Series;
+use crate::series::Series;
 use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
 use extendr_api::prelude::*;
