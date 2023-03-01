@@ -1,14 +1,15 @@
 
-#Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
+<p align="center">
+  <b>Documentation: </b>:
+  <a href="https://rpolars.github.io/reference/index.html"> R reference</a>
+  |  <b> Discord: </b>:
+  <a href="https://discord.gg/4UfP5cfBE7"> Polars - subchannel r-polars </a>
+</p>
 
+# Use [polars](https://www.pola.rs/) DataFrame library in R!
 ### *r-polars is not completely translated yet - aim to finish March 2023*
 
-See what is currently translated in [latest documentation](https://rpolars.github.io/reference/index.html):
-
-
-
 # Install latest binary rpolars package directly from github release.
-
 No dependencies other than R (≥ 4.1.0)
  - Macbbook x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
