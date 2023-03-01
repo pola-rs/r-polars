@@ -9,8 +9,9 @@ static ALLOC: Jemalloc = Jemalloc;
 #[global_allocator]
 #[cfg(any(not(target_os = "linux"), use_mimalloc))]
 static ALLOC: MiMalloc = MiMalloc;
-
+pub mod lazy;
 pub mod concurrent;
+
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlazyframe;
@@ -32,4 +33,5 @@ static CONFIG: Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Ser
 extendr_module! {
     mod rpolars;
     use rdataframe;
+    use lazy;
 }

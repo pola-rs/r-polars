@@ -1,4 +1,4 @@
-use crate::rdataframe::rexpr::*;
+use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;

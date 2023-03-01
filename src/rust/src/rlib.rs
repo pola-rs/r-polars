@@ -1,8 +1,8 @@
-use crate::rdataframe::rexpr::Expr;
+use crate::lazy::dsl::Expr;
 use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
-use crate::rdataframe::rexpr::ProtoExprArray;
+use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::rseries::Series;
 use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;

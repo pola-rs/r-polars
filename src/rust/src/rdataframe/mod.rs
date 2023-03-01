@@ -4,7 +4,7 @@ use std::result::Result;
 pub mod r_to_series;
 pub mod read_csv;
 pub mod read_parquet;
-pub mod rexpr;
+use crate::lazy::dsl;
 pub mod rseries;
 pub mod series_to_r;
 
@@ -16,7 +16,7 @@ use crate::rlib;
 use crate::rdatatype::RPolarsDataType;
 use r_to_series::robjname2series;
 
-use rexpr::*;
+use dsl::*;
 pub use rseries::*;
 use series_to_r::pl_series_to_list;
 
@@ -345,7 +345,6 @@ impl VecDataFrame {
 
 extendr_module! {
     mod rdataframe;
-    use rexpr;
     use rseries;
     use read_csv;
     use read_parquet;
