@@ -12,6 +12,8 @@ static ALLOC: MiMalloc = MiMalloc;
 pub mod lazy;
 pub mod concurrent;
 
+pub mod conversion_s_to_r;
+pub mod conversion_r_to_s;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;

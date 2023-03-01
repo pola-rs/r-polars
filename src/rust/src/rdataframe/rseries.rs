@@ -13,8 +13,8 @@ use crate::utils::{r_error_list, r_result_list};
 use super::DataFrame;
 use crate::utils::wrappers::null_to_opt;
 
-use crate::rdataframe::r_to_series::robjname2series;
-use crate::rdataframe::series_to_r::pl_series_to_list;
+use crate::conversion_r_to_s::robjname2series;
+use crate::conversion_s_to_r::pl_series_to_list;
 
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;

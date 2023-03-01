@@ -1,12 +1,10 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
-pub mod r_to_series;
 pub mod read_csv;
 pub mod read_parquet;
 use crate::lazy::dsl;
 pub mod rseries;
-pub mod series_to_r;
 
 use crate::rdatatype;
 use crate::lazy;
@@ -14,11 +12,12 @@ pub use lazy::dataframe::*;
 use crate::rlib;
 
 use crate::rdatatype::RPolarsDataType;
-use r_to_series::robjname2series;
+use crate::conversion_r_to_s::robjname2series;
 
 use dsl::*;
 pub use rseries::*;
-use series_to_r::pl_series_to_list;
+use crate::conversion_s_to_r::pl_series_to_list;
+
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
@@ -305,7 +304,7 @@ impl DataFrame {
 }
 use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
-    fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> =
             self.0.iter().map(|s| pl_series_to_list(s, true)).collect();
