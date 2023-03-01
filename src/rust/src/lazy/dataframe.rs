@@ -151,7 +151,7 @@ impl LazyGroupBy {
 }
 
 extendr_module! {
-    mod rlazyframe;
+    mod dataframe;
     impl LazyFrame;
     impl LazyGroupBy;
 }

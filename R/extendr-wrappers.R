@@ -287,52 +287,6 @@ RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_
 #' @export
 `[[.RField` <- `$.RField`
 
-LazyFrame <- new.env(parent = emptyenv())
-
-LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
-
-LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
-
-LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
-
-LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
-
-LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
-
-LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
-
-LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
-
-LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
-
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
-
-LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
-
-#' @export
-`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyFrame` <- `$.LazyFrame`
-
-LazyGroupBy <- new.env(parent = emptyenv())
-
-LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
-
-LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
-
-LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
-
-LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
-
-#' @export
-`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyGroupBy` <- `$.LazyGroupBy`
-
 Expr <- new.env(parent = emptyenv())
 
 Expr$col <- function(name) .Call(wrap__Expr__col, name)
@@ -860,6 +814,52 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
+
+LazyFrame <- new.env(parent = emptyenv())
+
+LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
+
+LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+
+LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+
+LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+
+LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
+
+LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
+
+LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
+
+LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+
+LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
+#' @export
+`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyFrame` <- `$.LazyFrame`
+
+LazyGroupBy <- new.env(parent = emptyenv())
+
+LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
+
+LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
+
+LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
+
+#' @export
+`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyGroupBy` <- `$.LazyGroupBy`
 
 
 # nolint end

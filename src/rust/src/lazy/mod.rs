@@ -1,6 +1,7 @@
 //mod apply;
 //pub mod dataframe;
 pub mod dsl;
+pub mod dataframe;
 //#[cfg(feature = "meta")]
 //mod meta;
 //pub mod utils;
@@ -38,4 +39,5 @@ use extendr_api::*;
 extendr_module! {
     mod lazy;
     use dsl;
+    use dataframe;
 }

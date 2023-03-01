@@ -14,7 +14,6 @@ pub mod concurrent;
 
 pub mod rdataframe;
 pub mod rdatatype;
-pub mod rlazyframe;
 pub mod rlib;
 pub mod utils;
 

@@ -9,8 +9,8 @@ pub mod rseries;
 pub mod series_to_r;
 
 use crate::rdatatype;
-use crate::rlazyframe;
-pub use crate::rlazyframe::*;
+use crate::lazy;
+pub use lazy::dataframe::*;
 use crate::rlib;
 
 use crate::rdatatype::RPolarsDataType;
@@ -349,7 +349,6 @@ extendr_module! {
     use read_csv;
     use read_parquet;
     use rdatatype;
-    use rlazyframe;
     use rlib;
     impl DataFrame;
     impl VecDataFrame;
