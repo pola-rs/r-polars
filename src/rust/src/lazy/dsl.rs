@@ -1,9 +1,9 @@
-use super::rseries::Series;
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
+use crate::series::Series;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
@@ -2219,8 +2219,7 @@ pub fn make_rolling_options(
 }
 
 extendr_module! {
-    mod rexpr;
+    mod dsl;
     impl Expr;
     impl ProtoExprArray;
-
 }

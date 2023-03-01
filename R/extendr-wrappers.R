@@ -111,6 +111,92 @@ VecDataFrame$print <- function() invisible(.Call(wrap__VecDataFrame__print, self
 #' @export
 `[[.VecDataFrame` <- `$.VecDataFrame`
 
+RNullValues <- new.env(parent = emptyenv())
+
+RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
+
+RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
+
+RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
+
+#' @export
+`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RNullValues` <- `$.RNullValues`
+
+RPolarsDataType <- new.env(parent = emptyenv())
+
+RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
+
+RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
+
+RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
+
+RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
+
+RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
+
+RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
+
+RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
+
+RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
+
+RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
+
+RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
+
+RPolarsDataType$same_outer_datatype <- function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
+
+RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insides, self)
+
+RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
+
+#' @export
+`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataType` <- `$.RPolarsDataType`
+
+DataTypeVector <- new.env(parent = emptyenv())
+
+DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
+
+DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
+
+DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
+
+DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
+
+#' @export
+`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.DataTypeVector` <- `$.DataTypeVector`
+
+RField <- new.env(parent = emptyenv())
+
+RField$new <- function(name, datatype) .Call(wrap__RField__new, name, datatype)
+
+RField$print <- function() invisible(.Call(wrap__RField__print, self))
+
+RField$clone <- function() .Call(wrap__RField__clone, self)
+
+RField$get_name <- function() .Call(wrap__RField__get_name, self)
+
+RField$get_datatype <- function() .Call(wrap__RField__get_datatype, self)
+
+RField$set_name_mut <- function(name) invisible(.Call(wrap__RField__set_name_mut, self, name))
+
+RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_datatype_mut, self, datatype))
+
+#' @export
+`$.RField` <- function (self, name) { func <- RField[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RField` <- `$.RField`
+
 Expr <- new.env(parent = emptyenv())
 
 Expr$col <- function(name) .Call(wrap__Expr__col, name)
@@ -639,6 +725,52 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
 
+LazyFrame <- new.env(parent = emptyenv())
+
+LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
+
+LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+
+LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+
+LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+
+LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
+
+LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
+
+LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
+
+LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+
+LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
+#' @export
+`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyFrame` <- `$.LazyFrame`
+
+LazyGroupBy <- new.env(parent = emptyenv())
+
+LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
+
+LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
+
+LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
+
+#' @export
+`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyGroupBy` <- `$.LazyGroupBy`
+
 Series <- new.env(parent = emptyenv())
 
 Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
@@ -728,138 +860,6 @@ Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sor
 
 #' @export
 `[[.Series` <- `$.Series`
-
-RNullValues <- new.env(parent = emptyenv())
-
-RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
-
-RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
-
-RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
-
-#' @export
-`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RNullValues` <- `$.RNullValues`
-
-RPolarsDataType <- new.env(parent = emptyenv())
-
-RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
-
-RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
-
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
-
-RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
-
-RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
-
-RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
-
-RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
-
-RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
-
-RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
-
-RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
-
-RPolarsDataType$same_outer_datatype <- function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
-
-RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insides, self)
-
-RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
-
-#' @export
-`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsDataType` <- `$.RPolarsDataType`
-
-DataTypeVector <- new.env(parent = emptyenv())
-
-DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
-
-DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
-
-DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
-
-DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
-
-#' @export
-`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.DataTypeVector` <- `$.DataTypeVector`
-
-RField <- new.env(parent = emptyenv())
-
-RField$new <- function(name, datatype) .Call(wrap__RField__new, name, datatype)
-
-RField$print <- function() invisible(.Call(wrap__RField__print, self))
-
-RField$clone <- function() .Call(wrap__RField__clone, self)
-
-RField$get_name <- function() .Call(wrap__RField__get_name, self)
-
-RField$get_datatype <- function() .Call(wrap__RField__get_datatype, self)
-
-RField$set_name_mut <- function(name) invisible(.Call(wrap__RField__set_name_mut, self, name))
-
-RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_datatype_mut, self, datatype))
-
-#' @export
-`$.RField` <- function (self, name) { func <- RField[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RField` <- `$.RField`
-
-LazyFrame <- new.env(parent = emptyenv())
-
-LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
-
-LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
-
-LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
-
-LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
-
-LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
-
-LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
-
-LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
-
-LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
-
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
-
-LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
-
-#' @export
-`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyFrame` <- `$.LazyFrame`
-
-LazyGroupBy <- new.env(parent = emptyenv())
-
-LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
-
-LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
-
-LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
-
-LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
-
-#' @export
-`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyGroupBy` <- `$.LazyGroupBy`
 
 
 # nolint end

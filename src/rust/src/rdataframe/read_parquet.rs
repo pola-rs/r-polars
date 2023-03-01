@@ -1,6 +1,6 @@
 use crate::utils::r_result_list;
 
-use crate::rlazyframe::LazyFrame;
+use crate::lazy::dataframe::LazyFrame;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::null_to_opt;
