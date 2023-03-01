@@ -14,7 +14,7 @@ $(STATLIB):
 	curdir=$(CURDIR)
 	cd $(RPOLARS_RUST_SOURCE)/..
 	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
-	cd $(curdir)
+	cd "$$curdir"
 
 	if [ -f "$(STATLIB)" ]; \
 	then \
