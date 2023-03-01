@@ -1,4 +1,4 @@
-use crate::rdataframe::rexpr::*;
+use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
@@ -24,16 +24,15 @@ impl LazyFrame {
     pub fn describe_optimized_plan(&self) -> List {
         let result = self.0.describe_optimized_plan().map(|opt_plan| {
             rprintln!("{}", opt_plan);
-            ()
         });
-        r_result_list(result)
+        r_result_list(result.map_err(|err| format!("{:?}", err)))
     }
 
     pub fn collect(&self) -> List {
         let result = handle_thread_r_requests(self.clone().0).map_err(|err| {
             //improve err messages
             let err_string = match err {
-                pl::PolarsError::NotFound(polars::error::ErrString::Owned(x)) => {
+                pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(x)) => {
                     format!("Something (Likely a Column) named {:?} was not found", x)
                 }
                 x => format!("{:?}", x),
@@ -58,7 +57,7 @@ impl LazyFrame {
 
     fn limit(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_u32(n, false)
+            try_f64_into_u32(n)
                 .map(|n| LazyFrame(self.0.clone().limit(n)))
                 .map_err(|err| format!("limit: {}", err)),
         )
@@ -132,7 +131,7 @@ impl LazyGroupBy {
 
     fn head(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_usize(n, false)
+            try_f64_into_usize(n)
                 .map(|n| LazyFrame(self.0.clone().head(Some(n))))
                 .map_err(|err| format!("head: {}", err)),
         )
@@ -140,7 +139,7 @@ impl LazyGroupBy {
 
     fn tail(&self, n: f64) -> List {
         r_result_list(
-            try_f64_into_usize(n, false)
+            try_f64_into_usize(n)
                 .map(|n| LazyFrame(self.0.clone().tail(Some(n))))
                 .map_err(|err| format!("tail: {}", err)),
         )
@@ -152,7 +151,7 @@ impl LazyGroupBy {
 }
 
 extendr_module! {
-    mod rlazyframe;
+    mod dataframe;
     impl LazyFrame;
     impl LazyGroupBy;
 }

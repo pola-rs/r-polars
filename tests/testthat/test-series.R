@@ -180,13 +180,14 @@ test_that("all any", {
 })
 
 
-test_that("is_unique", {
-  expect_true(pl$Series(1:5)$is_unique()$all())
-  expect_false(pl$Series(c(1:5,1))$is_unique()$all())
-  expect_false(pl$Series(c(1:3,NA,NA))$is_unique()$all())
-  expect_true(pl$Series(c(1:3,NA,NA))$is_unique()$any())
-  expect_true(pl$Series(c(1:3,NA))$is_unique()$all())
-})
+#deprecated will come back when all expr functions are accisble via series
+# test_that("is_unique", {
+#   expect_true(pl$Series(1:5)$is_unique()$all())
+#   expect_false(pl$Series(c(1:5,1))$is_unique()$all())
+#   expect_false(pl$Series(c(1:3,NA,NA))$is_unique()$all())
+#   expect_true(pl$Series(c(1:3,NA,NA))$is_unique()$any())
+#   expect_true(pl$Series(c(1:3,NA))$is_unique()$all())
+# })
 
 
 test_that("clone", {
@@ -348,10 +349,10 @@ test_that("value counts", {
 
 test_that("arg minmax", {
   s1 = pl$Series(c(NA,3,1,2))
-  s2 = pl$Series(c(NA,NA))
+  s2 = pl$Series(c(NA_real_,NA_real_))
   expect_equal(s1$arg_max(),1)
   expect_equal(s1$arg_min(),0) #polars define NULL as smallest value
-  expect_equal(s2$arg_min(),NA_real_)
+  expect_equal(s2$arg_min(),0)
 
 
 })
@@ -462,7 +463,7 @@ test_that("Series list", {
   s = pl$Series(l)
 
   #check data_type
-  expect_true(s$dtype == with(pl,list(list(list(Utf8)))))
+  expect_true(s$dtype == with(pl,List(List(List(Utf8)))))
 
   #flatten 3-levels and return to R
   #TODO CONTRIBUTE POLARS this is a bug, when flattening an empty list, it should not give a null

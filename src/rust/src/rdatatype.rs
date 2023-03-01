@@ -4,7 +4,82 @@ use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
+use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
+use std::result::Result;
+#[derive(Debug, Clone, PartialEq)]
+pub struct RField(pl::Field);
+
+#[extendr]
+impl RField {
+    fn new(name: String, datatype: &RPolarsDataType) -> RField {
+        RField(pl::Field {
+            name,
+            dtype: datatype.0.clone(),
+        })
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:#?}", self.0);
+    }
+
+    //
+    pub fn clone(&self) -> Self {
+        RField(self.0.clone())
+    }
+
+    pub fn get_name(&self) -> String {
+        self.0.name.clone()
+    }
+    pub fn get_datatype(&self) -> RPolarsDataType {
+        RPolarsDataType(self.0.dtype.clone())
+    }
+
+    pub fn set_name_mut(&mut self, name: &str) {
+        self.0.name = name.to_string()
+    }
+
+    pub fn set_datatype_mut(&mut self, datatype: &RPolarsDataType) {
+        self.0.dtype = datatype.0.clone()
+    }
+
+    // pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
+    //     if robj.check_external_ptr_type::<RField>() {
+    //         let x: RField = unsafe { &mut *robj.external_ptr_addr::<RField>() }.clone();
+    //         Ok(x)
+    //     } else {
+    //         Err("expected RField")
+    //     }
+    // }
+
+    // pub fn any_robj_to_pl_RField_result(robj: &Robj) -> pl::PolarsResult<pl::RField> {
+    //     let s = if !&robj.inherits("RField") {
+    //         robjname2series(&robj, &"")?
+    //     } else {
+    //         Series::inner_from_robj_clone(&robj)
+    //             .map_err(|err| {
+    //                 //convert any error from R to a polars error
+    //                 pl::PolarsError::ComputeError(polars::error::ErrString::Owned(err.to_string()))
+    //             })?
+    //             .0
+    //     };
+    //     Ok(s)
+    // }
+}
+
+// impl TryFrom<Robj> for RField {
+//     type Error = String;
+
+//     fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
+//         if  &robj.inherits("RField") {
+//             lrobj.try_into()
+//             Ok(EvenNumber(value))
+//         } else {
+//             Err(())
+//         }
+//     }
+// }
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);
 
@@ -58,8 +133,33 @@ impl RPolarsDataType {
         todo!("object not implemented")
     }
 
-    pub fn new_struct() -> RPolarsDataType {
-        todo!("struct not implemented")
+    pub fn new_struct(l: Robj) -> List {
+        let res = || -> std::result::Result<RPolarsDataType, String> {
+            let len = l.len();
+
+            //iterate over R list and collect Fields and place in a Struct-datatype
+            l.as_list()
+                .ok_or_else(|| "argument [l] is not a list".to_string())
+                .map(|l| {
+                    l.into_iter().enumerate().map(|(i, (name, robj))| {
+                        let res: extendr_api::Result<ExternalPtr<RField>> = robj.try_into();
+                        res.map_err(|err| {
+                            format!(
+                                "list element [[{}]] named {} is not a Field: {:?}",
+                                i + 1,
+                                name,
+                                err
+                            )
+                        })
+                        .map(|ok| ok.0.clone())
+                    })
+                })
+                .and_then(|iter| collect_hinted_result(len, iter))
+                .map_err(|err| format!("in pl$Struct: {}", err))
+                .map(|v_field| RPolarsDataType(pl::DataType::Struct(v_field)))
+        }();
+
+        r_result_list(res)
     }
 
     pub fn get_all_simple_type_names() -> Vec<String> {
@@ -95,6 +195,31 @@ impl RPolarsDataType {
 
     pub fn ne(&self, other: &RPolarsDataType) -> bool {
         self.0.ne(&other.0)
+    }
+
+    fn same_outer_datatype(&self, other: &RPolarsDataType) -> bool {
+        std::mem::discriminant(&self.0) == std::mem::discriminant(&other.0)
+    }
+
+    pub fn get_insides(&self) -> List {
+        match self.0.clone() {
+            pl::DataType::Datetime(tu, tz) => list!(
+                tu = tu.to_string().into_robj(),
+                tz = if let Some(tz) = tz {
+                    tz.into_robj()
+                } else {
+                    extendr_api::NULL.into_robj()
+                },
+            ),
+            pl::DataType::List(inner) => {
+                list!(RPolarsDataType(*inner.clone()).into_robj())
+            }
+            _ => list!(),
+        }
+    }
+
+    pub fn is_temporal(&self) -> bool {
+        self.0.is_temporal()
     }
 }
 
@@ -236,7 +361,7 @@ pub fn literal_to_any_value(
     use smartstring::alias::String as SString;
     match litval {
         lv::Boolean(x) => Ok(av::Boolean(x)),
-        //lv::DateTime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
+        //lv::Datetime(datetime, unit) => Ok(av::Datetime(datetime, unit, &None)), #check how to convert
         //lv::Duration(duration, unit) => Ok(av::Duration(duration, unit)), #check how to convert
         lv::Float32(x) => Ok(av::Float32(x)),
         lv::Float64(x) => Ok(av::Float64(x)),
@@ -312,19 +437,6 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-// pub fn str_to_timeunit(s: &str) -> std::result::Result<pl::TimeUnit, String> {
-//     match s {
-//         "ns" => Ok(pl::TimeUnit::Nanoseconds),
-//         "us" => Ok(pl::TimeUnit::Microseconds),
-//         "ms" => Ok(pl::TimeUnit::Milliseconds),
-
-//         _ => Err(format!(
-//             "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
-//             s
-//         )),
-//     }
-// }
-
 pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
     let s = robj.as_str().ok_or_else(|| {
         format!(
@@ -335,11 +447,11 @@ pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String>
 
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
-        "us" => Ok(pl::TimeUnit::Microseconds),
+        "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
         _ => Err(format!(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us' or 'ms'",
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ",
             s
         )),
     }
@@ -354,9 +466,21 @@ pub fn time_unit_converson(tu: pl::TimeUnit) -> i64 {
     tu_i64
 }
 
+pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, String> {
+    use pl::CategoricalOrdering as CO;
+    match s {
+        "physical" => Ok(CO::Physical),
+        "lexical" => Ok(CO::Lexical),
+        _ => Err(format!(
+            "CategoricalOrdering: [{}] is not any of 'physical' or 'lexical'",
+            s
+        )),
+    }
+}
 
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;
     impl DataTypeVector;
+    impl RField;
 }

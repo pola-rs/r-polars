@@ -16,13 +16,14 @@ mimalloc = { version = "0.1.34", default-features = false }
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = { git = "https://github.com/extendr/extendr", rev = "b813b20be4daee0829e74c06a45bc6f0a984dc4a"}
+extendr-api = {git = "https://github.com/rpolars/extendr", branch = "errorhandling", default-features = false, features= ["result_list"]} 
+#extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
 
 flume = "0.10.14"
 state = "0.5.3"
 rayon = "1.6.1"
 smartstring = "1.0.1"
-polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "6e64c8a626cd7a9e143e58939bf524153963237b", default_features= false}
+polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "01126f2524108ac8fe567e1dbb24a74ca9ec39e7", default_features= false}
 
 
 
@@ -112,7 +113,12 @@ features = [
   "dtype-time",
   "dtype-duration",
   "date_offset",
+  "string_justify",
+  "is_unique",
+  "binary_encoding",
+  "string_from_radix",
+  "meta"
   ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "6e64c8a626cd7a9e143e58939bf524153963237b"
+rev = "01126f2524108ac8fe567e1dbb24a74ca9ec39e7"

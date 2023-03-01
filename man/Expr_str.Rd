@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_str}
 \alias{Expr_str}
-\alias{string}
-\alias{str}
+\alias{str_ns}
 \title{str: string related methods}
 \usage{
 Expr_str()

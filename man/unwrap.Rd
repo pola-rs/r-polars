@@ -4,10 +4,12 @@
 \alias{unwrap}
 \title{rust-like unwrapping of result. Useful to keep error handling on the R side.}
 \usage{
-unwrap(result, call = sys.call(1L))
+unwrap(result, context = NULL, call = sys.call(1L))
 }
 \arguments{
 \item{result}{a list here either element ok or err is NULL, or both if ok is litteral NULL}
+
+\item{context}{a msg to prefix a raised error with}
 
 \item{call}{context of error or string}
 }
@@ -19,10 +21,15 @@ rust-like unwrapping of result. Useful to keep error handling on the R side.
 }
 \examples{
 
-unwrap(list(ok="foo",err=NULL))
+structure(list(ok = "foo", err = NULL), class = "extendr_result")
 
 tryCatch(
-  unwrap(ok=NULL, err = "something happen on the rust side"),
-  error = function(e) as.character(e)
+  unwrap(
+    structure(
+      list(ok = NULL, err = "something happen on the rust side"),
+      class = "extendr_result"
+    )
+  ),
+  error = function(err) as.character(err)
 )
 }

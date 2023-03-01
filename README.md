@@ -1,8 +1,5 @@
 
-#
-
-
-Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
+#Use awesome [polars](https://www.pola.rs/) DataFrame library from R!
 
 ### *r-polars is not completely translated yet - aim to finish March 2023*
 
@@ -10,10 +7,9 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 
 
 
-# Install latest rpolars release
+# Install latest binary rpolars package directly from github release.
 
- No dependencies other than R (≥ 4.1.0)
-
+No dependencies other than R (≥ 4.1.0)
  - Macbbook x86_64
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz")`
  
@@ -23,14 +19,30 @@ See what is currently translated in [latest documentation](https://rpolars.githu
  - Windows
  `install.packages(repos=NULL, "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars.zip")`
  
+ - Macbook arm64 (Does require Xcode. Makevars script downloads 200MB cross-compiled object file, while your machine links and builds the final R package)
+ `remotes::install_github("https://github.com/pola-rs/r-polars",ref = "long_arms64", force =TRUE)`
+ 
  - Other targets?  Start a new issue.
  - Install a specific version? Find the version specific url, via [releases section](https://github.com/pola-rs/r-polars/releases).
- 
- 
+
+
+# Install rpolars via [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install)
+We are very happy to be hosted on R-universe. Thankyou so much to Jeroen Ooms for excellent support.
+```r
+# Enable repository from rpolars
+options(repos = c(
+  rpolars = 'https://rpolars.r-universe.dev',
+  CRAN = 'https://cloud.r-project.org'))
+# Download and install rpolars in R
+install.packages('rpolars')
+```
+R-universe provides binaries for windows and macos x86_64 and source builds for other platforms.
+
+
+See further down how to install rust to build from source.
  
 # Documentation:
   [Latest docs found here](https://rpolars.github.io/reference/index.html)
-  
 
 # Contribute
  I'd freaking love any contributions <3 Just reach out if any questions.
@@ -51,7 +63,16 @@ See what is currently translated in [latest documentation](https://rpolars.githu
 
 ## news:
 
- - update 1st February: All DateTime expressions included from v0.4.3.
+ - update 21st February: 
+   All str/String expressions included from v0.4.5. There is now a resonable easy pre-compiled installation for arm64-MacBooks, see above. Starting to roll out new error-handling and type-conversions between R and rust. Rpolars is now on [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install), see above. Precise source of error should be very clear even in a long method-chain e.g. 
+  ```r
+  pl$lit("hey-you-there")$str$splitn("-",-3)$alias("struct_of_words")$to_r()
+  > Error: in str$splitn the arg [n] the value -3 cannot be less than zero
+  when calling :
+  pl$lit("hey-you-there")$str$splitn("-", -3)
+  ```
+
+ - update 1st February: All Datetime expressions included from v0.4.3.
 
  - update 28th December: r-polars is now hosted at https://github.com/pola-rs/r-polars. Happy to be
  here. You might encounter a bunch of links to the old repository the first weeks. I plan to work on r-polars full time the next 3 months, because why not :) Any contributions 
@@ -83,8 +104,6 @@ Polars is built on the apache-arrow memory model.
 This port relies on extendr <https://github.com/extendr> which is the R
 equivalent to pyo3+maturin. Extendr is very convenient for calling rust
 from R and the reverse.
-
-
 
 ## Build manually from source for use (M1 arch also supported):
 

@@ -91,3 +91,20 @@ test_that("pl$std pl$var", {
 
 
 })
+
+
+test_that("pl$struct", {
+  expr = pl$struct(names(iris))$alias("struct")
+  df_act = pl$DataFrame(iris[1:150,])$select(expr)$as_data_frame()
+
+  df_exp = structure(
+    list(struct = unname(lapply(1:150,\(i) as.list(iris[i,])))),
+    names = "struct",
+    row.names = 1:150,
+    class = "data.frame"
+  )
+  expect_identical(df_act, df_exp)
+
+  #TODO test pl$struct when meta_eq is impl
+
+})

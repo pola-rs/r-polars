@@ -16,7 +16,7 @@ Expr
 }
 \description{
 Shrink numeric columns to the minimal required datatype.
-Shrink to the dtype needed to fit the extrema of this \code{\link{Series}}.
+Shrink to the dtype needed to fit the extrema of this \verb{[Series]}.
 This can be used to reduce memory pressure.
 }
 \examples{

@@ -15,3 +15,7 @@ bool if is a result object
 \description{
 check if z is a result
 }
+\details{
+both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
+If both ok and err has value then this is an invalid result
+}

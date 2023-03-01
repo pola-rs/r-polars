@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R
-Version: 0.4.4
+Version: 0.4.5
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R: 
@@ -20,22 +20,27 @@ Suggests:
     nanoarrow,
     arrow,
     bench,
-    nycflights13
+    nycflights13,
+    patrick
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
+    'Field.R'
     'PTime.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'expr__categorical.R'
     'expr__datetime.R'
     'expr__expr.R'
     'expr__list.R'
+    'expr__meta.R'
     'expr__string.R'
+    'expr__struct.R'
     'functions.R'
     'groupby.R'
     'lazy_functions.R'

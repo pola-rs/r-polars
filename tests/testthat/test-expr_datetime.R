@@ -183,7 +183,6 @@ test_that("dt$round", {
 
 })
 
-
 test_that("dt$combine", {
 
   #Using pl$PTime
@@ -229,7 +228,7 @@ test_that("dt$combine", {
 
   expect_grepl_error(
     pl$lit(as.Date("2021-01-01"))$dt$combine(1, tu="s"),
-    "str to polars TimeUnit: \\[s\\] is not any of 'ns', 'us' or 'ms'"
+    "str to polars TimeUnit: .*s. is not any of 'ns', 'us/μs' or 'ms' "
   )
 
 
@@ -595,7 +594,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 
 
 #TODO write a new test
-# test_that("$with_time_zone dt$tz_localize", {
+# test_that("$convert_time_zone dt$tz_localize", {
 #
 #   skip(
 #     "This test works on macos but not on linux whereR  reference code yields different results."
@@ -610,7 +609,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 #   df_casts = df_time$select(
 #     pl$col("date"),
 #     pl$col("date")
-#       $dt$with_time_zone("Europe/London")
+#       $dt$convert_time_zone("Europe/London")
 #       $alias("London_with"),
 #     pl$col("date")
 #       $dt$tz_localize("Europe/London")
@@ -644,7 +643,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 # })
 
 
-test_that("dt$cast_time_zone", {
+test_that("dt$replace_time_zone", {
 
   df = pl$DataFrame(
     london_timezone = pl$date_range(
@@ -655,7 +654,7 @@ test_that("dt$cast_time_zone", {
 
   df = df$with_columns(
     pl$col("london_timezone")
-      $dt$cast_time_zone("Europe/Amsterdam")
+      $dt$replace_time_zone("Europe/Amsterdam")
       $alias("cast London_to_Amsterdam")
   )
   l = df$to_list()

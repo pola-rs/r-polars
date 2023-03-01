@@ -22,7 +22,7 @@ reference:
     contents:
       - has_keyword("Expr_new")
       - has_keyword("Expr")
-  - subtitle: Expr dt/DateTime methods
+  - subtitle: Expr dt/Datetime methods
     contents:
       - has_keyword("ExprDT")
   - subtitle: Expr arr/list methods
@@ -31,6 +31,14 @@ reference:
   - subtitle: Expr str/string methods
     contents:
       - has_keyword("ExprStr")
+
+  - subtitle: Expr struct methods
+    contents:
+      - has_keyword("ExprStruct")
+
+  - subtitle: Expr meta methods
+    contents:
+      - has_keyword("ExprMeta")
 
   - subtitle: Series
     contents:
@@ -74,3 +82,9 @@ reference:
       - -has_keyword("Expr_new")
       - -has_keyword("internal")
       - -has_keyword("nanoarrow_interface")
+      - -has_keyword("ExprDT")
+      - -has_keyword("ExprArr")
+      - -has_keyword("ExprStr")
+      - -has_keyword("ExprStruct")
+      - -has_keyword("ExprMeta")
+

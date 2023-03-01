@@ -59,26 +59,29 @@ expect_strictly_identical = function(object,expected,...) {
 #' @param Class_env env_class object (the classes created by extendr-wrappers.R)
 #' @param Method_name name of method requested by user
 #' @param call context to throw user error, just use default
+#' @param class_name NULLs
 #' @keywords internal
 #' @return invisible(NULL)
-verify_method_call = function(Class_env,Method_name,call=sys.call(1L)) {
+verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name =NULL) {
 
   if(!Method_name %in% names(Class_env)) {
-    stopf(
+    class_name = class_name %||%  as.character(as.list(match.call())$Class_env)
+    stop(
       paste(
-        "syntax error:",
-        Method_name,"is not a method/attribute of the class",
-        as.character(as.list(match.call())$Class_env),
+        "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         #add call to error messages
         if(!rpolars_optenv$do_not_repeat_call) {
           paste(
-            "\n when calling:\n",
+            "\n when calling method:\n",
             paste(capture.output(print(call)),collapse="\n")
           )
         }
-      )
+      ),
+      domain = NA,
+      call. = FALSE
     )
+
   }
   invisible(NULL)
 }
@@ -119,6 +122,8 @@ list2 = list
 #' @param ... odd arugments are bool statements, a next even argument is returned
 #' if prior bool statement is the first true
 #' @param or_else return this if no bool statements were true
+#'
+#' @details Lifecycle: perhaps replace with something written in rust to speed up a bit
 #'
 #' @return any return given first true bool statement otherwise value of or_else
 #' @keywords internal
@@ -256,6 +261,7 @@ clone_env_one_level_deep = function(env) {
 #' @keywords internal
 #' @return side effects only
 replace_private_with_pub_methods = function(env, class_pattern,keep=c(), remove_f = FALSE) {
+
   if(build_debug_print) cat("\n\n setting public methods for ",class_pattern)
 
   #get these
@@ -521,7 +527,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
       f = get(f_name)
       paste0("  env$",m_name," = ",paste(capture.output(dput(f)), collapse = "\n"))
     })),
-    "  class(env) = c(subclass_env, class(env))",
+    "  class(env) = c(subclass_env, 'method_environment',class(env))",
+    "attr(env,'self') = self",
     "  env",
     "}"
   )
@@ -539,10 +546,11 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 
 #' expect grepl error
 #' @param expr an R expression to test
-#' @param expected_err a string pattern passed to grepl
+#' @param expected_err one or several string patterns passed to grepl
 #' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
 #' useful for grepping the same error message, without grep-patterns becomes
 #' included in the error message. Latter leads to false positive outcomes.
+#' @param ... args passed to expect_identical which will run if grepl fails
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
 #' @keywords internal
@@ -551,7 +559,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
 #' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE) {
+#' rpolars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
+expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
 
   #turn of including call in err msg
   if(do_not_repeat_call) {
@@ -566,10 +575,11 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   if(do_not_repeat_call) do.call(pl$set_rpolars_options, old_options)
 
   #check if error message contains pattern
-  found = grepl(expected_err,err)[1]
-  if(!found) {
+  founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))
+
+  if(!all(founds)) {
     #... if not use testthat to point out the difference
-    testthat::expect_identical(err, expected_err)
+    testthat::expect_identical(err, expected_err[which(!founds)[1]],...)
   }
 
   invisible(err)
@@ -668,3 +678,13 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
     Ok(tz)
   }
 }
+
+#this function is used in zzz.R to defined how to access methods of a subname space
+sub_name_space_accessor_function = function (self, name) {
+  verify_method_call(self,name,class_name = class(self)[1L])
+  func <- self[[name]]
+  func
+}
+
+
+

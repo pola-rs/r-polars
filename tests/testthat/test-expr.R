@@ -989,7 +989,8 @@ test_that("sort_by", {
         pl$col("ab")$sort_by("v2")$alias("ab2"),
         pl$col("ab")$sort_by("v1")$alias("ab1"),
         pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(F,T))$alias("ab13FT"),
-        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T")
+        pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=T)$alias("ab13T"),
+        pl$col("ab")$sort_by(c("v3","v1"),reverse=T)$alias("ab13T2")
       )$to_list(),
       list(
         ab4 = l$ab[order(l$v4)],
@@ -997,9 +998,16 @@ test_that("sort_by", {
         ab2 = l$ab[order(l$v2)],
         ab1 = l$ab[order(l$v1)],
         ab13FT= l$ab[order(l$v3,rev(l$v1))],
-        ab13T = l$ab[order(l$v3,l$v1,decreasing= T)]
+        ab13T = l$ab[order(l$v3,l$v1,decreasing= T)],
+        ab13T2= l$ab[order(l$v3,l$v1,decreasing= T)]
       )
     )
+
+    expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(),"Expected length\\: 4")
+    expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
+    expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
 
   #this test is minimal, if polars give better documentation on behaviour, expand the test.
 })
@@ -1016,9 +1024,8 @@ test_that("take that", {
   )
 
 
-  expect_identical(
-    pl$select(pl$lit(0:10)$take(-11))$to_list()[[1L]],
-    NA_integer_
+   expect_error(
+    pl$select(pl$lit(0:10)$take(-5))$to_list()[[1L]]
   )
 
 
@@ -1495,7 +1502,7 @@ test_that("hash + reinterpret", {
 
   hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
   hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$list(pl$Utf8)))$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$List(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
   expect_true(!all(hash_values1==hash_values2))
@@ -1567,7 +1574,7 @@ test_that("interpolate", {
 
 test_that("Expr_rolling_", {
   skip_if_not_installed("data.table")
-  library(data.table)
+  suppressMessages(library(data.table))
   #check all examples
   df = pl$DataFrame(list(a=1:6))
   dt = data.table(a=1:6)
@@ -2194,14 +2201,15 @@ test_that("to_r", {
   #objects with homomorphic translation between r and polars
   l = list(
     1,1:2,Inf,-Inf,NaN,"a",letters,
-    numeric(),integer(),logical(), TRUE, FALSE,
+    numeric(),integer(),logical(), TRUE, FALSE, NULL,
     NA, NA_integer_, NA_character_, NA_real_
   )
   for(i in l) expect_identical(pl$lit(i)$to_r(), i)
   for(i in l) expect_identical(pl$expr_to_r(i), i)
 
-  #object that has not, NULL signals a typeless polars Null, which reverses to NA
-  expect_identical(pl$lit(NULL)$to_r(),NA)
+  #NULL to NULL
+  expect_identical(pl$lit(NULL)$to_r(),NULL)
+
 
 })
 

@@ -68,7 +68,48 @@ wrap_e = function(e, str_to_lit = TRUE) {
   }
 }
 
+#' wrap as literal
+#' @param e an Expr(polars) or any R expression
+#' @details
+#' used internally to ensure an object is an expression and to catch any error
+#' @keywords internal
+#' @return Expr
+#' @examples pl$col("foo") < 5
+wrap_e_result = function(e, str_to_lit = TRUE) {
+  result(
+    wrap_e(e, str_to_lit),
+    "not convertable into Expr because:\n"
+  )
+}
 
+#' wrap_elist_result
+#' @description make sure all elementsof a list is wrapped as Expr
+#' Capture any conversion error in the result
+#' @param elist a list Expr or any R object Into<Expr> (passable to pl$lit)
+#' @details
+#' Used internally to ensure an object is a list of expression
+#' The output is wrapped in a result, which can contain an ok or
+#' err value.
+#' @keywords internal
+#' @return Expr
+#' @examples rpolars:::wrap_elist_result(list(pl$lit(42),42,1:3))
+wrap_elist_result = function(elist, str_to_lit = TRUE) {
+  element_i = 0L
+  result(
+    {
+      if(!is.list(elist) && length(elist) == 1L) elist = list(elist)
+      lapply(elist, \(e) {
+        element_i <<- element_i + 1L
+        wrap_e(e, str_to_lit)
+      })
+    },
+    msg = if(element_i>=1L) {
+      paste0("element [[", element_i, "]] of sequence not convertable into an Expr, error in:\n")
+    }else {
+      "not convertable into a list of Expr, error in:\n"
+    }
+  )
+}
 
 
 #' Add
@@ -1516,9 +1557,11 @@ Expr_search_sorted = function(element) {
 #'   )
 #' )
 Expr_sort_by = function(by, reverse = FALSE) {
-  by_list = if(is.list(by)) by else list(by)
-  pra = do.call(construct_ProtoExprArray,by_list)
-  unwrap(.pr$Expr$sort_by(self, pra, reverse))
+  .pr$Expr$sort_by(
+    self,
+    wrap_elist_result(by, str_to_lit = FALSE),
+    result(reverse)
+  ) |> unwrap("in $sort_by:")
 }
 
 
@@ -2300,7 +2343,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
   k1 = seed_1 %||% seed
   k2 = seed_2 %||% seed
   k3 = seed_3 %||% seed
-  unwrap(.pr$Expr$hash(self, k0, k1, k2, k3))
+  unwrap(.pr$Expr$hash(self, k0, k1, k2, k3), "in $hash()")
 }
 
 
@@ -2310,7 +2353,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' Reinterpret the underlying bits as a signed/unsigned integer.
 #' This operation is only allowed for 64bit integers. For lower bits integers,
 #' you can safely use that cast operation.
-#' @param signed bool reinterpret into Int64 else Uint64
+#' @param signed bool reinterpret into Int64 else UInt64
 #' @return Expr
 #' @aliases reinterpret
 #' @examples
@@ -3535,9 +3578,9 @@ prepare_alpha = function(
 #' @param adjust
 #' Divide by decaying adjustment factor in beginning periods to account for
 #' imbalance in relative weightings
-#' - When ``adjust=True`` the EW function is calculated
+#' - When ``adjust=TRUE`` the EW function is calculated
 #' using weights \eqn{w_i = (1 - \alpha)^i  }
-#' - When ``adjust=False`` the EW function is calculated
+#' - When ``adjust=FALSE`` the EW function is calculated
 #' recursively by
 #' \eqn{
 #'   y_0 = x_0 \\
@@ -3546,6 +3589,22 @@ prepare_alpha = function(
 #' @param min_periods
 #' Minimum number of observations in window required to have a value
 #' (otherwise result is null).
+#'
+#' @param ignore_nulls  ignore_nulls
+#' Ignore missing values when calculating weights.
+#'  - When ``ignore_nulls=FALSE`` (default), weights are based on absolute
+#'    positions.
+#'    For example, the weights of :math:`x_0` and :math:`x_2` used in
+#'    calculating the final weighted average of
+#'    `[` \eqn{x_0}, None,  \eqn{x_2}\\`]` are
+#'      \eqn{1-\alpha)^2} and  \eqn{1} if ``adjust=TRUE``, and
+#'      \eqn{(1-\alpha)^2} and  \eqn{\alpha} if `adjust=FALSE`.
+#'  - When ``ignore_nulls=TRUE``, weights are based
+#'    on relative positions. For example, the weights of
+#'     \eqn{x_0} and  \eqn{x_2} used in calculating the final weighted
+#'    average of `[` \eqn{x_0}, None,  \eqn{x_2}`]` are
+#'     \eqn{1-\alpha} and  \eqn{1} if `adjust=TRUE`,
+#'    and  \eqn{1-\alpha} and  \eqn{\alpha} if `adjust=FALSE`.
 #' @return  Expr
 #' @aliases ewm_mean
 #' @format Method
@@ -3553,9 +3612,12 @@ prepare_alpha = function(
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com=1))
 #'
-Expr_ewm_mean= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE, min_periods = 1L) {
+Expr_ewm_mean= function(
+    com = NULL, span = NULL, half_life = NULL, alpha = NULL,
+    adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE
+) {
   alpha = prepare_alpha(com,span,half_life,alpha)
-  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods))
+  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
 }
 
 
@@ -3566,9 +3628,12 @@ Expr_ewm_mean= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL,
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
-Expr_ewm_std= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE, bias = FALSE, min_periods = 1L) {
+Expr_ewm_std= function(
+  com = NULL, span = NULL, half_life = NULL, alpha = NULL,
+  adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE
+) {
   alpha = prepare_alpha(com,span,half_life,alpha)
-  unwrap(.pr$Expr$ewm_std(self, alpha, adjust,  bias = FALSE, min_periods))
+  unwrap(.pr$Expr$ewm_std(self, alpha, adjust,  bias, min_periods, ignore_nulls))
 }
 
 #' Ewm_var
@@ -3577,9 +3642,12 @@ Expr_ewm_std= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, 
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
-Expr_ewm_var= function(com = NULL, span = NULL, half_life = NULL, alpha = NULL, adjust = TRUE,  bias = FALSE, min_periods = 1L) {
+Expr_ewm_var= function(
+  com = NULL, span = NULL, half_life = NULL, alpha = NULL,
+  adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE
+) {
   alpha = prepare_alpha(com,span,half_life,alpha)
-  unwrap(.pr$Expr$ewm_var(self, alpha, adjust,  bias = FALSE,  min_periods))
+  unwrap(.pr$Expr$ewm_var(self, alpha, adjust,  bias,  min_periods, ignore_nulls))
 }
 
 
@@ -3865,7 +3933,7 @@ Expr_list = "use_extendr_wrapper"
 #' Wrap column in list
 #' @description
 #' Shrink numeric columns to the minimal required datatype.
-#' Shrink to the dtype needed to fit the extrema of this [`Series`].
+#' Shrink to the dtype needed to fit the extrema of this `[Series]`.
 #' This can be used to reduce memory pressure.
 #' @keywords Expr
 #' @return Expr
@@ -3892,7 +3960,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases arr
+#' @aliases arr_ns
 #' @examples
 #' df_with_list = pl$DataFrame(
 #'   group = c(1,1,2,2,3),
@@ -3916,7 +3984,7 @@ Expr_arr = method_as_property(function() {
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases string str
+#' @aliases str_ns
 #' @examples
 #'
 #' #missing
@@ -3931,7 +3999,7 @@ Expr_str = method_as_property(function() {
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases dt datetime
+#' @aliases dt_ns
 #' @examples
 #'
 #' #missing
@@ -3939,6 +4007,65 @@ Expr_str = method_as_property(function() {
 Expr_dt = method_as_property(function() {
   expr_dt_make_sub_ns(self)
 })
+
+#' meta: related methods
+#' @description
+#' Create an object namespace of all meta related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases meta_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_meta = method_as_property(function() {
+  expr_meta_make_sub_ns(self)
+})
+
+#' cat: related methods
+#' @description
+#' Create an object namespace of all cat related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases cat_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_cat = method_as_property(function() {
+  expr_cat_make_sub_ns(self)
+})
+
+#' struct: related methods
+#' @description
+#' Create an object namespace of all struct related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases struct_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_struct = method_as_property(function() {
+  expr_struct_make_sub_ns(self)
+})
+
+#' to_struct
+#' @description pass expr to pl$struct
+#' @keywords Expr
+#' @return Expr
+#' @aliases expr_to_struct
+#' @keywords Expr
+#' @examples
+#' e = pl$all()$to_struct()$alias("my_struct")
+#' print(e)
+#' pl$DataFrame(iris)$select(e)
+Expr_to_struct = function() {
+  pl$struct(self)
+}
 
 
 #' Literal to Series

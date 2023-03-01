@@ -1,8 +1,13 @@
 pub mod extendr_concurrent;
 
 pub mod wrappers;
+use crate::lazy::dsl::Expr;
+use crate::rdatatype::RPolarsDataType;
 use extendr_api::prelude::list;
-use extendr_api::prelude::IntoRobj;
+
+use extendr_api::ExternalPtr;
+use extendr_api::Result as ExtendrResult;
+
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -224,9 +229,9 @@ pub fn parse_fill_null_strategy(
         "zero" => Zero,
         "one" => One,
         e => {
-            return Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-                format!("Strategy named not found: {}", e),
-            )))
+            return Err(pl::PolarsError::InvalidOperation(
+                polars::error::ErrString::Owned(format!("Strategy named not found: {}", e)),
+            ))
         }
     };
     Ok(parsed)
@@ -236,123 +241,117 @@ pub fn parse_fill_null_strategy(
 
 const R_MAX_INTEGERISH: f64 = 4503599627370496.0;
 const R_MIN_INTEGERISH: f64 = -4503599627370496.0;
+//const I64_MIN_INTO_F64: f64 = i64::MIN as f64;
+//const I64_MAX_INTO_F64: f64 = i64::MAX as f64;
+const USIZE_MAX_INTO_F64: f64 = usize::MAX as f64;
+const U32_MAX_INTO_F64: f64 = u32::MAX as f64;
+const MSG_INTEGERISH_MAX: &'static str =
+    "exceeds double->integer unambigious conversion bound of 2^52 = 4503599627370496.0";
+const MSG_INTEGERISH_MIN: &'static str =
+    "exceeds double->integer unambigious conversion bound of -(2^52)= -4503599627370496.0";
+const MSG_NAN: &'static str = "the value cannot be NaN";
+const MSG_NO_LESS_ONE: &'static str = "cannot be less than one";
 
-pub fn try_f64_into_usize(x: f64, no_zero: bool) -> std::result::Result<usize, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if no_zero && x < 1.0 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-    if x < 0.0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
-    if x > R_MAX_INTEGERISH {
-        return Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-            x, R_MAX_INTEGERISH
-        ));
-    };
-    if x > usize::MAX as f64 {
-        //could only trigger on a 32bit machine
-        return Err(format!(
+pub fn try_f64_into_usize_no_zero(x: f64) -> std::result::Result<usize, String> {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 1.0 => Err(format!("the value {} {}", x, MSG_NO_LESS_ONE)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        _ if x > USIZE_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed usize::MAX {}",
             x,
             usize::MAX
-        ));
-    };
-    Ok(x as usize)
+        )),
+        _ => Ok(x as usize),
+    }
+}
+
+pub fn try_f64_into_usize(x: f64) -> std::result::Result<usize, String> {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        _ if x > USIZE_MAX_INTO_F64 => Err(format!(
+            "the value {} cannot exceed usize::MAX {}",
+            x,
+            usize::MAX
+        )),
+        _ => Ok(x as usize),
+    }
+}
+
+pub fn try_f64_into_u64(x: f64) -> std::result::Result<u64, String> {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        _ => Ok(x as u64),
+    }
 }
 
 pub fn try_f64_into_i64(x: f64) -> std::result::Result<i64, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if x > R_MAX_INTEGERISH {
-        return Err(format!(
-            "the value {} exceeds double->integer unambigious conversion bound of 2^52={}",
-            x, R_MAX_INTEGERISH
-        ));
-    };
-    if x < R_MIN_INTEGERISH {
-        return Err(format!(
-            "the value {} is lower than double->integer unambigious conversion bound of -(2^52)={}",
-            x, R_MIN_INTEGERISH
-        ));
-    };
-
-    if x > i64::MAX as f64 {
-        //could only trigger on a 32bit machine
-        return Err(format!(
-            "the value {} cannot exceed i64::MAX {}",
-            x,
-            i64::MAX
-        ));
-    };
-    if x < i64::MIN as f64 {
-        //could only trigger on a 32bit machine
-        return Err(format!(
-            "the value {} cannot exceed i64::MIN {}",
-            x,
-            i64::MIN
-        ));
-    };
-    Ok(x as i64)
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < R_MIN_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MIN)),
+        _ if x > R_MAX_INTEGERISH => Err(format!("the value {} {}", x, MSG_INTEGERISH_MAX)),
+        // should not matter
+        // _ if x > I64_MAX_INTO_F64 => Err(format!(
+        //     "the value {} cannot exceed i64::MAX {}",
+        //     x,
+        //     i64::MAX
+        // )),
+        // _ if x < I64_MIN_INTO_F64 => Err(format!(
+        //     "the value {} cannot exceed i64::MIN {}",
+        //     x,
+        //     i64::MIN
+        // )),
+        _ => Ok(x as i64),
+    }
 }
 
-pub fn try_f64_into_u32(x: f64, no_zero: bool) -> std::result::Result<u32, String> {
-    if x.is_nan() {
-        return Err(String::from("the value cannot be NaN"));
-    };
-    if no_zero && x < 1.0 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-    if x < 0.0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
-    if x > u32::MAX as f64 {
-        return Err(format!(
+pub fn try_f64_into_u32(x: f64) -> std::result::Result<u32, String> {
+    match x {
+        _ if x.is_nan() => Err(MSG_NAN.to_string()),
+        _ if x < 0.0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > U32_MAX_INTO_F64 => Err(format!(
             "the value {} cannot exceed u32::MAX {}",
             x,
             u32::MAX
-        ));
-    };
-    Ok(x as u32)
+        )),
+        _ => Ok(x as u32),
+    }
 }
 
-pub fn try_i64_into_usize(x: i64, no_zero: bool) -> std::result::Result<usize, String> {
-    if no_zero && x < 1 {
-        return Err(format!("the value {} cannot be less than one", x));
-    };
-    if x < 0 {
-        return Err(format!("the value {} cannot be less than zero", x));
-    };
-    Ok(x as usize)
-}
-
+use extendr_api::Robj;
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
-    T: IntoRobj,
-    E: std::fmt::Display,
+    T: Into<Robj>,
+    E: Into<Robj>,
 {
-    match result {
-        Ok(x) => list!(ok = x.into_robj(), err = extendr_api::NULL),
-        Err(x) => list!(ok = extendr_api::NULL, err = x.to_string()),
-    }
+    use extendr_api::*;
+    result
+        .into_robj()
+        .as_list()
+        .expect("Internal error: failed to restor list")
 }
 
 pub fn r_error_list<E>(err: E) -> list::List
 where
-    E: std::fmt::Display,
+    E: Into<Robj>,
 {
-    list!(ok = extendr_api::NULL, err = err.to_string())
+    use extendr_api::*;
+    let x = Err::<Robj, E>(err).into_robj();
+    x.as_list().expect("Internal error: failed to restor list")
 }
 
-pub fn r_ok_list<T>(result: T) -> list::List
+pub fn r_ok_list<T>(ok: T) -> list::List
 where
-    T: IntoRobj,
+    T: Into<Robj>,
 {
-    list!(ok = result.into_robj(), err = extendr_api::NULL)
+    use extendr_api::*;
+    let x = Ok::<T, Robj>(ok);
+    let x = x.into_robj();
+    x.as_list().expect("Internal error: failed to restor list")
 }
 
 pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series> {
@@ -372,4 +371,298 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
             "reinterpret is only allowed for 64bit integers dtype, use cast otherwise".into(),
         )),
     }
+}
+
+pub fn unpack_r_result_list(robj: extendr_api::Robj) -> std::result::Result<Robj, String> {
+    use extendr_api::*;
+    if robj.inherits("extendr_result") {
+        let l = robj.as_list().unwrap();
+        let ok = l.elt(0).unwrap();
+        let err = l.elt(1).unwrap();
+        match (ok.rtype(), err.rtype()) {
+            (Rtype::Null, Rtype::Null) => Ok(ok),
+            (Rtype::Null, _) => {
+                if let Some(err_msg) = err.as_str() {
+                    Err(err_msg.to_string())
+                } else {
+                    Err(format!("{:?}", err))
+                }
+            }
+            (_, Rtype::Null) => Ok(ok),
+            (_, _) => unreachable!("Internal error: failed to unpack r_result_list"),
+        }
+    } else {
+        Ok(robj)
+    }
+}
+
+pub fn robj_to_char(robj: extendr_api::Robj) -> std::result::Result<char, String> {
+    let robj = unpack_r_result_list(robj)?;
+    let mut fchar_iter = if let Some(char_str) = robj.as_str() {
+        char_str.chars()
+    } else {
+        "".chars()
+    };
+    match (fchar_iter.next(), fchar_iter.next()) {
+        (Some(x), None) => Ok(x),
+        (_, _) => Err(format!("is not a single char string, but {:?}", robj)),
+    }
+}
+
+pub fn robj_to_string(robj: extendr_api::Robj) -> std::result::Result<String, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::Length;
+    match (robj.as_str(), robj.len()) {
+        (Some(x), 1) => Ok(x.to_string()),
+        (_, _) => Err(format!("is not a single string, but {:?}", robj)),
+    }
+}
+
+pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> std::result::Result<&'a str, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::Length;
+    match (robj.as_str(), robj.len()) {
+        (Some(x), 1) => Ok(x),
+        (_, _) => Err(format!("is not a single string, but {:?}", robj)),
+    }
+}
+
+pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| {
+        format!(
+            "is not a scalar integer or double as required, but {:?}",
+            robj
+        )
+    })
+    .and_then(|float| try_f64_into_usize(float))
+}
+
+pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
+    .and_then(|float| try_f64_into_i64(float))
+}
+
+pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| {
+        format!(
+            "is not a scalar integer or double as required, but {:?}",
+            robj
+        )
+    })
+    .and_then(|float| try_f64_into_u64(float))
+}
+
+pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
+        (_, _) => None,
+    }
+    .ok_or_else(|| {
+        format!(
+            "is not a scalar integer or double as required, but {:?}",
+            robj
+        )
+    })
+    .and_then(|float| try_f64_into_u32(float))
+}
+
+pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    match (robj.rtype(), robj.len()) {
+        (Rtype::Logicals, 1) => robj.as_bool(),
+        (_, _) => None,
+    }
+    .ok_or_else(|| format!("is not a single bool as required, but {:?}", robj))
+}
+
+pub fn robj_to_datatype(robj: extendr_api::Robj) -> std::result::Result<RPolarsDataType, String> {
+    let res: ExtendrResult<ExternalPtr<RPolarsDataType>> = robj.try_into();
+    let ext_dt = res.map_err(|err| format!("not an DataType, because {:?}", err))?;
+    Ok(RPolarsDataType(ext_dt.0.clone()))
+}
+
+pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
+    let robj = unpack_r_result_list(robj)?;
+
+    let res = if let Some(str) = robj.as_str() {
+        use extendr_api::*;
+        let new_col_expr = extendr_api::call!("wrap_e", str).map_err(|err| err.to_string())?;
+        let x = robj_to_rexpr(new_col_expr);
+        x?
+    } else {
+        let res: ExtendrResult<ExternalPtr<Expr>> = robj.try_into();
+        let ext_expr = res.map_err(|err| format!("not an Expr, because {:?}", err))?;
+        Expr(ext_expr.0.clone())
+    };
+
+    Ok(res)
+}
+
+pub fn list_expr_to_vec_pl_expr(robj: Robj) -> std::result::Result<Vec<pl::Expr>, String> {
+    use extendr_api::*;
+    let robj = unpack_r_result_list(robj)?;
+    let l = robj.as_list().ok_or_else(|| "is not a list".to_string())?;
+    let iter = l.iter().map(|(_, robj)| robj_to_rexpr(robj).map(|e| e.0));
+    crate::utils::collect_hinted_result::<pl::Expr, String>(l.len(), iter)
+}
+
+pub fn iter_pl_expr_to_list_expr<T>(ite: T) -> extendr_api::List
+where
+    T: IntoIterator<Item = polars::prelude::Expr>,
+    T::IntoIter: ExactSizeIterator,
+{
+    use extendr_api::prelude::*;
+    let iter = ite.into_iter().map(|pl_expr| Expr(pl_expr));
+    List::from_values(iter)
+}
+
+#[macro_export]
+macro_rules! robj_to_inner {
+    (usize, $a:ident) => {
+        crate::utils::robj_to_usize($a)
+    };
+
+    (i64, $a:ident) => {
+        crate::utils::robj_to_i64($a)
+    };
+
+    (u64, $a:ident) => {
+        crate::utils::robj_to_u64($a)
+    };
+
+    (u32, $a:ident) => {
+        crate::utils::robj_to_u32($a)
+    };
+
+    (char, $a:ident) => {
+        crate::utils::robj_to_char($a)
+    };
+    (String, $a:ident) => {
+        crate::utils::robj_to_string($a)
+    };
+    (str, $a:ident) => {
+        crate::utils::robj_to_str($a)
+    };
+    (bool, $a:ident) => {
+        crate::utils::robj_to_bool($a)
+    };
+
+    (Expr, $a:ident) => {
+        crate::utils::robj_to_rexpr($a)
+    };
+
+    (VecPLExpr, $a:ident) => {
+        crate::utils::list_expr_to_vec_pl_expr($a)
+    };
+
+    (RPolarsDataType, $a:ident) => {
+        crate::utils::robj_to_datatype($a)
+    };
+
+    (RField, $a:ident) => {
+        crate::utils::robj_to_field($a)
+    };
+
+    (lit, $a:ident) => {
+        crate::utils::robj_to_lit($a)
+    };
+}
+
+//convert any Robj to appropriate rust type with informative error Strings
+#[macro_export]
+macro_rules! robj_to {
+    (Option, $type:ident, $a:ident) => {{
+        crate::utils::unpack_r_result_list($a).and_then(|$a| {
+            if ($a.is_null()) {
+                Ok(None)
+            } else {
+                Some(
+                    crate::robj_to_inner!($type, $a)
+                        .map_err(|err| format!("the arg [{}] {}", stringify!($a), err)),
+                )
+                .transpose()
+            }
+        })
+    }};
+
+    //iterate list and call this macro again on inner objects
+    (Vec, $type:ident, $a:ident) => {{
+        //unpack raise any R result error
+        crate::utils::unpack_r_result_list($a)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+            .and_then(|x: Robj| {
+                //coerce R vectors into list
+                let x = if !x.is_list() && x.len() > 1 {
+                    extendr_api::call!("as.list", x)
+                        .map_err(|err| format!("could not coerce to list: {}", err))?
+                } else {
+                    x
+                };
+
+                if x.is_list() {
+                    // convert each element in list to $type
+                    let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
+                        robj_to!($type, $a, format!("element no. [{}] of ", i + 1))
+                    });
+                    crate::utils::collect_hinted_result::<$type, String>(x.len(), iter)
+                } else {
+                    // single value without list, convert as is and wrap in a list
+                    let $a = x;
+                    Ok(vec![robj_to!($type, $a)?])
+                }
+            })
+    }};
+
+    (Map, $type:ident, $a:ident, $f:expr) => {
+        crate::robj_to_inner!($type, $a)
+            .and_then($f)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+    };
+
+    ($type:ident, $a:ident) => {
+        crate::robj_to_inner!($type, $a)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+    };
+
+    ($type:ident, $a:ident, $b:expr) => {
+        crate::robj_to_inner!($type, $a)
+            .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
+            .map_err(|err| format!("{} {}", $b, err))
+    };
+}
+
+pub fn collect_hinted_result<T, E>(
+    size: usize,
+    iter: impl IntoIterator<Item = Result<T, E>>,
+) -> Result<Vec<T>, E> {
+    let mut new_vec = Vec::with_capacity(size);
+    for item in iter {
+        new_vec.push(item?);
+    }
+    Ok(new_vec)
 }

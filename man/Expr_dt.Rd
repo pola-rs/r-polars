@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_dt}
 \alias{Expr_dt}
-\alias{dt}
-\alias{datetime}
+\alias{dt_ns}
 \title{dt: datetime related methods}
 \usage{
 Expr_dt()

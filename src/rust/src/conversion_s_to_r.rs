@@ -3,6 +3,7 @@ use polars::prelude::{self as pl};
 
 use pl::PolarsError as pl_error;
 use polars::error::ErrString as pl_err_string;
+use crate::rdataframe::DataFrame;
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
@@ -69,7 +70,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
             }
             Struct(_) => {
                 let df = s.clone().into_frame().unnest(&[s.name()]).unwrap();
-                let l = super::DataFrame(df).to_list_result()?;
+                let l = DataFrame(df).to_list_result()?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
                 if tag_structs {
@@ -87,7 +88,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                 .collect_robj()
                 .set_class(&["Date"])
                 .expect("internal error: class label Date failed")),
-
+            Null => Ok((extendr_api::NULL).into_robj()),
             Time => s
                 .cast(&Int64)?
                 .i64()
@@ -140,12 +141,12 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                         )))
                     })
             }
-            _ => Err(pl::PolarsError::NotFound(polars::error::ErrString::Owned(
-                format!(
+            _ => Err(pl::PolarsError::InvalidOperation(
+                polars::error::ErrString::Owned(format!(
                     "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
                     s.dtype()
-                ),
-            ))),
+                )),
+            )),
         }
     }
 

@@ -11,7 +11,7 @@
 #' @useDynLib rpolars, .registration = TRUE
 NULL
 
-rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, rechunk, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
+rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
 
@@ -36,6 +36,10 @@ concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
 r_date_range_lazy <- function(start, end, every, closed, name, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, name, tz)
+
+as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
+
+struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -106,6 +110,92 @@ VecDataFrame$print <- function() invisible(.Call(wrap__VecDataFrame__print, self
 
 #' @export
 `[[.VecDataFrame` <- `$.VecDataFrame`
+
+RNullValues <- new.env(parent = emptyenv())
+
+RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
+
+RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
+
+RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
+
+#' @export
+`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RNullValues` <- `$.RNullValues`
+
+RPolarsDataType <- new.env(parent = emptyenv())
+
+RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
+
+RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
+
+RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
+
+RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
+
+RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
+
+RPolarsDataType$new_struct <- function(l) .Call(wrap__RPolarsDataType__new_struct, l)
+
+RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
+
+RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
+
+RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
+
+RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
+
+RPolarsDataType$same_outer_datatype <- function(other) .Call(wrap__RPolarsDataType__same_outer_datatype, self, other)
+
+RPolarsDataType$get_insides <- function() .Call(wrap__RPolarsDataType__get_insides, self)
+
+RPolarsDataType$is_temporal <- function() .Call(wrap__RPolarsDataType__is_temporal, self)
+
+#' @export
+`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataType` <- `$.RPolarsDataType`
+
+DataTypeVector <- new.env(parent = emptyenv())
+
+DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
+
+DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
+
+DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
+
+DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
+
+#' @export
+`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.DataTypeVector` <- `$.DataTypeVector`
+
+RField <- new.env(parent = emptyenv())
+
+RField$new <- function(name, datatype) .Call(wrap__RField__new, name, datatype)
+
+RField$print <- function() invisible(.Call(wrap__RField__print, self))
+
+RField$clone <- function() .Call(wrap__RField__clone, self)
+
+RField$get_name <- function() .Call(wrap__RField__get_name, self)
+
+RField$get_datatype <- function() .Call(wrap__RField__get_datatype, self)
+
+RField$set_name_mut <- function(name) invisible(.Call(wrap__RField__set_name_mut, self, name))
+
+RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_datatype_mut, self, datatype))
+
+#' @export
+`$.RField` <- function (self, name) { func <- RField[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RField` <- `$.RField`
 
 Expr <- new.env(parent = emptyenv())
 
@@ -291,11 +381,11 @@ Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__
 
 Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
 
-Expr$ewm_mean <- function(alpha, adjust, min_periods) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods)
+Expr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
 
-Expr$ewm_std <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_std, self, alpha, adjust, bias, min_periods)
+Expr$ewm_std <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_std, self, alpha, adjust, bias, min_periods, ignore_nulls)
 
-Expr$ewm_var <- function(alpha, adjust, bias, min_periods) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods)
+Expr$ewm_var <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_var, self, alpha, adjust, bias, min_periods, ignore_nulls)
 
 Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, self, value, n)
 
@@ -355,15 +445,9 @@ Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__E
 
 Expr$str_parse_date <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, fmt, strict, exact, cache)
 
-Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware)
+Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware, utc, tu) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware, utc, tu)
 
 Expr$str_parse_time <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, fmt, strict, exact, cache)
-
-Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
-
-Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
-
-Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
 
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
@@ -409,9 +493,9 @@ Expr$dt_with_time_unit <- function(tu) .Call(wrap__Expr__dt_with_time_unit, self
 
 Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self, tu)
 
-Expr$dt_with_time_zone <- function(tz) .Call(wrap__Expr__dt_with_time_zone, self, tz)
+Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
-Expr$dt_cast_time_zone <- function(tz) .Call(wrap__Expr__dt_cast_time_zone, self, tz)
+Expr$dt_replace_time_zone <- function(tz) .Call(wrap__Expr__dt_replace_time_zone, self, tz)
 
 Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
 
@@ -539,6 +623,86 @@ Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 
 Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
 
+Expr$str_lengths <- function() .Call(wrap__Expr__str_lengths, self)
+
+Expr$str_n_chars <- function() .Call(wrap__Expr__str_n_chars, self)
+
+Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
+
+Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
+
+Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
+
+Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
+
+Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
+
+Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
+
+Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
+
+Expr$str_ljust <- function(width, fillchar) .Call(wrap__Expr__str_ljust, self, width, fillchar)
+
+Expr$str_rjust <- function(width, fillchar) .Call(wrap__Expr__str_rjust, self, width, fillchar)
+
+Expr$str_contains <- function(pat, literal, strict) .Call(wrap__Expr__str_contains, self, pat, literal, strict)
+
+Expr$str_ends_with <- function(sub) .Call(wrap__Expr__str_ends_with, self, sub)
+
+Expr$str_starts_with <- function(sub) .Call(wrap__Expr__str_starts_with, self, sub)
+
+Expr$str_json_path_match <- function(pat) .Call(wrap__Expr__str_json_path_match, self, pat)
+
+Expr$str_json_extract <- function(dtype) .Call(wrap__Expr__str_json_extract, self, dtype)
+
+Expr$str_hex_encode <- function() .Call(wrap__Expr__str_hex_encode, self)
+
+Expr$str_hex_decode <- function(strict) .Call(wrap__Expr__str_hex_decode, self, strict)
+
+Expr$str_base64_encode <- function() .Call(wrap__Expr__str_base64_encode, self)
+
+Expr$str_base64_decode <- function(strict) .Call(wrap__Expr__str_base64_decode, self, strict)
+
+Expr$str_extract <- function(pattern, group_index) .Call(wrap__Expr__str_extract, self, pattern, group_index)
+
+Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, self, pattern)
+
+Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
+
+Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
+
+Expr$str_split_exact <- function(by, n, inclusive) .Call(wrap__Expr__str_split_exact, self, by, n, inclusive)
+
+Expr$str_splitn <- function(by, n) .Call(wrap__Expr__str_splitn, self, by, n)
+
+Expr$str_replace <- function(pattern, value, literal) .Call(wrap__Expr__str_replace, self, pattern, value, literal)
+
+Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_replace_all, self, pattern, value, literal)
+
+Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, offset, length)
+
+Expr$str_parse_int <- function(radix) .Call(wrap__Expr__str_parse_int, self, radix)
+
+Expr$struct_field_by_name <- function(name) .Call(wrap__Expr__struct_field_by_name, self, name)
+
+Expr$struct_rename_fields <- function(names) .Call(wrap__Expr__struct_rename_fields, self, names)
+
+Expr$meta_pop <- function() .Call(wrap__Expr__meta_pop, self)
+
+Expr$meta_eq <- function(other) .Call(wrap__Expr__meta_eq, self, other)
+
+Expr$meta_roots <- function() .Call(wrap__Expr__meta_roots, self)
+
+Expr$meta_output_name <- function() .Call(wrap__Expr__meta_output_name, self)
+
+Expr$meta_undo_aliases <- function() .Call(wrap__Expr__meta_undo_aliases, self)
+
+Expr$meta_has_multiple_outputs <- function() .Call(wrap__Expr__meta_has_multiple_outputs, self)
+
+Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_projection, self)
+
+Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
@@ -560,6 +724,52 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
+
+LazyFrame <- new.env(parent = emptyenv())
+
+LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
+
+LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+
+LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+
+LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+
+LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
+
+LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
+
+LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
+
+LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+
+LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
+#' @export
+`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyFrame` <- `$.LazyFrame`
+
+LazyGroupBy <- new.env(parent = emptyenv())
+
+LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
+
+LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
+
+LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
+
+#' @export
+`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.LazyGroupBy` <- `$.LazyGroupBy`
 
 Series <- new.env(parent = emptyenv())
 
@@ -641,8 +851,6 @@ Series$print <- function() invisible(.Call(wrap__Series__print, self))
 
 Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
 
-Series$is_unique <- function() .Call(wrap__Series__is_unique, self)
-
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
 Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
@@ -652,110 +860,6 @@ Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sor
 
 #' @export
 `[[.Series` <- `$.Series`
-
-RNullValues <- new.env(parent = emptyenv())
-
-RNullValues$new_all_columns <- function(x) .Call(wrap__RNullValues__new_all_columns, x)
-
-RNullValues$new_columns <- function(x) .Call(wrap__RNullValues__new_columns, x)
-
-RNullValues$new_named <- function(robj) .Call(wrap__RNullValues__new_named, robj)
-
-#' @export
-`$.RNullValues` <- function (self, name) { func <- RNullValues[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RNullValues` <- `$.RNullValues`
-
-RPolarsDataType <- new.env(parent = emptyenv())
-
-RPolarsDataType$new <- function(s) .Call(wrap__RPolarsDataType__new, s)
-
-RPolarsDataType$new_datetime <- function(tu, tz) .Call(wrap__RPolarsDataType__new_datetime, tu, tz)
-
-RPolarsDataType$new_duration <- function() .Call(wrap__RPolarsDataType__new_duration)
-
-RPolarsDataType$new_list <- function(inner) .Call(wrap__RPolarsDataType__new_list, inner)
-
-RPolarsDataType$new_object <- function() .Call(wrap__RPolarsDataType__new_object)
-
-RPolarsDataType$new_struct <- function() .Call(wrap__RPolarsDataType__new_struct)
-
-RPolarsDataType$get_all_simple_type_names <- function() .Call(wrap__RPolarsDataType__get_all_simple_type_names)
-
-RPolarsDataType$print <- function() invisible(.Call(wrap__RPolarsDataType__print, self))
-
-RPolarsDataType$eq <- function(other) .Call(wrap__RPolarsDataType__eq, self, other)
-
-RPolarsDataType$ne <- function(other) .Call(wrap__RPolarsDataType__ne, self, other)
-
-#' @export
-`$.RPolarsDataType` <- function (self, name) { func <- RPolarsDataType[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsDataType` <- `$.RPolarsDataType`
-
-DataTypeVector <- new.env(parent = emptyenv())
-
-DataTypeVector$new <- function() .Call(wrap__DataTypeVector__new)
-
-DataTypeVector$push <- function(colname, datatype) invisible(.Call(wrap__DataTypeVector__push, self, colname, datatype))
-
-DataTypeVector$print <- function() invisible(.Call(wrap__DataTypeVector__print, self))
-
-DataTypeVector$from_rlist <- function(list) .Call(wrap__DataTypeVector__from_rlist, list)
-
-#' @export
-`$.DataTypeVector` <- function (self, name) { func <- DataTypeVector[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.DataTypeVector` <- `$.DataTypeVector`
-
-LazyFrame <- new.env(parent = emptyenv())
-
-LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
-
-LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
-
-LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
-
-LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
-
-LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
-
-LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
-
-LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
-
-LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
-
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
-
-LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
-
-#' @export
-`$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyFrame` <- `$.LazyFrame`
-
-LazyGroupBy <- new.env(parent = emptyenv())
-
-LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
-
-LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
-
-LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)
-
-LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
-
-#' @export
-`$.LazyGroupBy` <- function (self, name) { func <- LazyGroupBy[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.LazyGroupBy` <- `$.LazyGroupBy`
 
 
 # nolint end

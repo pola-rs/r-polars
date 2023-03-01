@@ -11,7 +11,7 @@ function
 Expr of minute as UInt32
 }
 \description{
-Extract minutes from underlying DateTime representation.
+Extract minutes from underlying Datetime representation.
 Applies to Datetime columns.
 Returns the minute number from 0 to 59.
 }

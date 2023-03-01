@@ -1,18 +1,18 @@
-use super::rseries::Series;
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
-
 use crate::rdatatype::robj_to_timeunit;
-
-
+use crate::series::Series;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
+use crate::robj_to;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
-use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{
+    try_f64_into_i64, try_f64_into_u32, try_f64_into_usize, try_f64_into_usize_no_zero,
+};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
@@ -23,9 +23,10 @@ use polars::prelude::DurationMethods;
 use polars::prelude::GetOutput;
 use polars::prelude::IntoSeries;
 use polars::prelude::TemporalMethods;
+use polars::prelude::Utf8NameSpaceImpl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
-
+use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
@@ -67,7 +68,7 @@ impl Expr {
     }
 
     //TODO expand usecases to series and datatime
-    pub fn lit(robj: Robj) -> List {
+    pub fn lit(robj: Robj) -> Result<Expr, String> {
         let rtype = robj.rtype();
         let rlen = robj.len();
         let err_msg = "NA not allowed use NULL";
@@ -77,48 +78,40 @@ impl Expr {
                 let opt_val = robj.as_integer();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Doubles, 1) => {
                 let opt_val = robj.as_real();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Strings, 1) => {
                 let opt_val = robj.as_str();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::Logicals, 1) => {
                 let opt_val = robj.as_bool();
                 if let Some(val) = opt_val.clone() {
                     Ok(dsl::lit(val))
+                } else if robj.is_na() {
+                    Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
                 } else {
-                    if robj.is_na() {
-                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
-                    } else {
-                        Err(err_msg.into())
-                    }
+                    Err(err_msg.into())
                 }
             }
             (Rtype::ExternalPtr, 1) => {
@@ -143,7 +136,7 @@ impl Expr {
         }
         .map(|ok| Expr(ok));
 
-        r_result_list(expr_result)
+        expr_result
     }
 
     //expr binary comparisons
@@ -193,7 +186,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.to_physical_repr().into_owned()),
+                |s| Ok(Some(s.to_physical_repr().into_owned())),
                 GetOutput::map_dtype(|dt| dt.to_physical()),
             )
             .with_fmt("to_physical")
@@ -257,16 +250,15 @@ impl Expr {
         self.clone().0.take(idx.0.clone()).into()
     }
 
-    pub fn sort_by(&self, by: &ProtoExprArray, reverse: Robj) -> List {
-        let rev: Vec<bool> = if let Some(lgl_itr) = reverse.as_logical_iter() {
-            lgl_itr.map(|x| x.is_true()).collect()
-        } else {
-            return r_error_list("reverse argument must be a logical vector");
-        };
-        let by = by.to_vec("select");
-        let expr = Expr(self.clone().0.sort_by(by, rev));
-        r_ok_list(expr)
+    pub fn sort_by(&self, by: Robj, reverse: Robj) -> Result<Expr, String> {
+        let expr = Expr(
+            self.clone()
+                .0
+                .sort_by(robj_to!(VecPLExpr, by)?, robj_to!(Vec, bool, reverse)?),
+        );
+        Ok(expr)
     }
+
     pub fn backward_fill(&self, limit: Nullable<f64>) -> Self {
         let lmt = null_to_opt(limit).map(|x| x as u32);
         self.clone().0.backward_fill(lmt).into()
@@ -293,26 +285,26 @@ impl Expr {
     }
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let lmt = null_to_opt(limit).map(|x| x as u32);
+        let res = || -> Result<Expr, String> {
+            let limit = null_to_opt(limit)
+                .map(|lim| try_f64_into_usize(lim))
+                .transpose()?;
+            let limit: pl::FillNullLimit = limit.map(|x| x as u32).into();
 
-        let strat_result = parse_fill_null_strategy(strategy, lmt);
-
-        if let Ok(strat) = strat_result {
-            let result: pl::PolarsResult<Expr> = Ok(self
+            let strat = parse_fill_null_strategy(strategy, limit)
+                .map_err(|err| format!("this happe4nd {:?}", err))?;
+            let expr: pl::Expr = self
                 .0
                 .clone()
-                .apply(move |s| s.fill_null(strat), GetOutput::same_type())
-                .with_fmt("fill_null_with_strategy")
-                .into());
+                .apply(
+                    move |s| s.fill_null(strat).map(Some),
+                    GetOutput::same_type(),
+                )
+                .with_fmt("fill_null_with_strategy");
 
-            r_result_list(result)
-        } else {
-            if let Err(err) = strat_result {
-                r_error_list(err)
-            } else {
-                unreachable!("yep")
-            }
-        }
+            Ok(Expr(expr))
+        }();
+        r_result_list(res)
     }
 
     pub fn fill_nan(&self, expr: &Expr) -> Self {
@@ -400,38 +392,42 @@ impl Expr {
     pub fn take_every(&self, n: f64) -> List {
         use pl::*; //dunno what set of traits needed just take all
 
-        let result = try_f64_into_usize(n, true)
+        let result = try_f64_into_usize_no_zero(n)
             .map_err(|err| format!("Invalid n argument in take_every: {}", err))
             .map(|n| {
                 Expr(
-                    self.0
-                        .clone()
+                    self.clone()
+                        .0
                         .map(
-                            move |s: Series| Ok(s.0.take_every(n)),
+                            move |s: Series| Ok(Some(s.take_every(n))),
                             GetOutput::same_type(),
                         )
-                        .with_fmt("take_every"),
+                        .with_fmt("take_every")
+                        .into(),
                 )
             });
 
         r_result_list(result)
     }
 
-    pub fn hash(&self, seed: f64, seed_1: f64, seed_2: f64, seed_3: f64) -> List {
-        let vec_u64_result: std::result::Result<Vec<u64>, String> = [seed, seed_1, seed_2, seed_3]
-            .iter()
-            .map(|x| try_f64_into_usize(*x, false).map(|val| val as u64))
-            .collect();
-        r_result_list(
-            vec_u64_result
-                .map(|v| Expr(self.0.clone().hash(v[0], v[1], v[2], v[3])))
-                .map_err(|err| format!("in hash(): {}", err)),
-        )
+    pub fn hash(
+        &self,
+        seed: Robj,
+        seed_1: Robj,
+        seed_2: Robj,
+        seed_3: Robj,
+    ) -> Result<Expr, String> {
+        Ok(Expr(self.0.clone().hash(
+            robj_to!(u64, seed)?,
+            robj_to!(u64, seed_1)?,
+            robj_to!(u64, seed_2)?,
+            robj_to!(u64, seed_3)?,
+        )))
     }
 
     pub fn reinterpret(&self, signed: bool) -> Expr {
         use crate::utils::reinterpret;
-        let function = move |s: pl::Series| reinterpret(&s, signed);
+        let function = move |s: pl::Series| reinterpret(&s, signed).map(Some);
         let dt = if signed {
             pl::DataType::Int64
         } else {
@@ -639,7 +635,7 @@ impl Expr {
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
         use pl::*;
         let expr =
-            try_f64_into_usize(window_size_f, false).map(|ws| {
+            try_f64_into_usize(window_size_f).map(|ws| {
                 Expr(self.0.clone().rolling_apply_float(ws, move |ca| {
                     ca.clone().into_series().skew(bias).unwrap()
                 }))
@@ -666,9 +662,9 @@ impl Expr {
     }
 
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().diff(
-                try_f64_into_usize(n_float, false)?,
+                try_f64_into_usize(n_float)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -677,7 +673,7 @@ impl Expr {
     }
 
     fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_usize(n_float, false)
+        let expr_res = try_f64_into_usize(n_float)
             .map(|n_usize| Expr(self.0.clone().pct_change(n_usize)))
             .map_err(|err| format!("pct_change: {}", err));
         r_result_list(expr_res)
@@ -694,7 +690,7 @@ impl Expr {
     //instead of PyValue -> AnyValue , it goes Robj -> Literal Expression -> AnyValue
     pub fn clip(&self, min: &Expr, max: &Expr) -> List {
         use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             match (min.clone().0, max.clone().0) {
                 (pl::Expr::Literal(mi), pl::Expr::Literal(ma)) => {
                     let av_min = literal_to_any_value(mi)?;
@@ -714,7 +710,7 @@ impl Expr {
 
     pub fn clip_min(&self, min: &Expr) -> List {
         use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             match min.clone().0 {
                 pl::Expr::Literal(mi) => {
                     let av_min = literal_to_any_value(mi)?;
@@ -728,7 +724,7 @@ impl Expr {
 
     pub fn clip_max(&self, max: &Expr) -> List {
         use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             match max.clone().0 {
                 pl::Expr::Literal(ma) => {
                     let av_max = literal_to_any_value(ma)?;
@@ -801,7 +797,7 @@ impl Expr {
     }
 
     pub fn reshape(&self, dims: Vec<f64>) -> List {
-        let dims_result: std::result::Result<Vec<i64>, String> =
+        let dims_result: Result<Vec<i64>, String> =
             dims.iter().map(|x| try_f64_into_i64(*x)).collect();
         let expr_result = dims_result
             .map(|dims| Expr(self.0.clone().reshape(&dims[..])))
@@ -811,14 +807,14 @@ impl Expr {
 
     pub fn shuffle(&self, seed: f64) -> List {
         let seed_res =
-            try_f64_into_usize(seed, false).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
+            try_f64_into_usize(seed).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
         r_result_list(seed_res)
     }
 
     pub fn sample_n(&self, n: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
-        let expr_result = || -> std::result::Result<Expr, String> {
-            let seed = try_f64_into_usize(seed, false)?;
-            let n = try_f64_into_usize(n, false)?;
+        let expr_result = || -> Result<Expr, String> {
+            let seed = try_f64_into_usize(seed)?;
+            let n = try_f64_into_usize(n)?;
             Ok(self
                 .0
                 .clone()
@@ -829,8 +825,8 @@ impl Expr {
     }
 
     pub fn sample_frac(&self, frac: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
-        let expr_result = || -> std::result::Result<Expr, String> {
-            let seed = try_f64_into_usize(seed, false)?;
+        let expr_result = || -> Result<Expr, String> {
+            let seed = try_f64_into_usize(seed)?;
             Ok(self
                 .0
                 .clone()
@@ -840,42 +836,59 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64) -> List {
-        let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
+        let expr_result = || -> Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
                 bias: false,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_mean(options).into())
         }();
         r_result_list(expr_result)
     }
 
-    pub fn ewm_std(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
-        let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+    pub fn ewm_std(
+        &self,
+        alpha: f64,
+        adjust: bool,
+        bias: bool,
+        min_periods: f64,
+        ignore_nulls: bool,
+    ) -> List {
+        let expr_result = || -> Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
                 bias,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_std(options).into())
         }();
         r_result_list(expr_result)
     }
 
-    pub fn ewm_var(&self, alpha: f64, adjust: bool, bias: bool, min_periods: f64) -> List {
-        let expr_result = || -> std::result::Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods, false)?;
+    pub fn ewm_var(
+        &self,
+        alpha: f64,
+        adjust: bool,
+        bias: bool,
+        min_periods: f64,
+        ignore_nulls: bool,
+    ) -> List {
+        let expr_result = || -> Result<Expr, String> {
+            let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
                 adjust,
                 bias,
                 min_periods,
+                ignore_nulls,
             };
             Ok(self.0.clone().ewm_var(options).into())
         }();
@@ -883,12 +896,12 @@ impl Expr {
     }
 
     pub fn extend_constant(&self, value: &Expr, n: f64) -> List {
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             let av = match value.clone().0 {
                 pl::Expr::Literal(ma) => literal_to_any_value(ma),
                 ma => Err(format!("value [{:?}] was not a literal:", ma)),
             }?;
-            let n = try_f64_into_usize(n, false)?;
+            let n = try_f64_into_usize(n)?;
 
             Ok(Expr(
                 self.0
@@ -900,7 +913,7 @@ impl Expr {
                                 pl::AnyValue::Utf8Owned(x) => pl::AnyValue::Utf8(x.as_str()),
                                 x => x.clone(),
                             };
-                            s.extend_constant(av, n)
+                            s.extend_constant(av, n).map(Some)
                         },
                         GetOutput::same_type(),
                     )
@@ -918,7 +931,7 @@ impl Expr {
             self.0
                 .clone()
                 .apply(
-                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0),
+                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0).map(Some),
                     GetOutput::same_type(),
                 )
                 .with_fmt("extend"),
@@ -926,7 +939,7 @@ impl Expr {
     }
 
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
-        match try_f64_into_usize(n, false) {
+        match try_f64_into_usize(n) {
             Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),
             Ok(n) => r_ok_list(Expr(
                 self.0
@@ -934,9 +947,9 @@ impl Expr {
                     .apply(
                         move |s| {
                             if s.len() == 1 {
-                                Ok(s.new_from_index(0, n))
+                                Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                Series(s).rep_impl(n, rechunk).map(|s| s.0)
+                                Series(s).rep_impl(n, rechunk).map(|s| Some(s.0))
                             }
                         },
                         GetOutput::same_type(),
@@ -960,7 +973,7 @@ impl Expr {
 
     fn cumulative_eval(&self, expr: &Expr, min_periods: f64, parallel: bool) -> List {
         use pl::*;
-        r_result_list(try_f64_into_usize(min_periods, false).map(|min_p| {
+        r_result_list(try_f64_into_usize(min_periods).map(|min_p| {
             Expr(
                 self.0
                     .clone()
@@ -1053,9 +1066,9 @@ impl Expr {
     }
 
     fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().arr().diff(
-                try_f64_into_usize(n, false)?,
+                try_f64_into_usize(n)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -1064,7 +1077,7 @@ impl Expr {
     }
 
     fn lst_shift(&self, periods: f64) -> List {
-        let expr_res = || -> std::result::Result<Expr, String> {
+        let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().arr().shift(try_f64_into_i64(periods)?)))
         }()
         .map_err(|err| format!("arr.shift: {}", err));
@@ -1105,8 +1118,8 @@ impl Expr {
         };
 
         //resolve usize from f64 and stategy from str
-        let res = || -> std::result::Result<Expr, String> {
-            let ub = try_f64_into_usize(upper_bound, false)?;
+        let res = || -> Result<Expr, String> {
+            let ub = try_f64_into_usize(upper_bound)?;
             let strat = new_width_strategy(width_strat)?;
             Ok(Expr(self.0.clone().arr().to_struct(strat, name_gen, ub)))
         }();
@@ -1145,37 +1158,45 @@ impl Expr {
         exact: bool,
         cache: bool,
         tz_aware: bool,
-    ) -> Self {
-        let fmt = null_to_opt(fmt);
-        let tu = match fmt {
-            Some(ref fmt) => {
-                if fmt.contains("%.9f")
-                    || fmt.contains("%9f")
-                    || fmt.contains("%f")
-                    || fmt.contains("%.f")
-                {
-                    pl::TimeUnit::Nanoseconds
-                } else if fmt.contains("%.3f") || fmt.contains("%3f") {
-                    pl::TimeUnit::Milliseconds
-                } else {
-                    pl::TimeUnit::Microseconds
+        utc: bool,
+        tu: Nullable<Robj>,
+    ) -> List {
+        let res = || -> Result<Expr, String> {
+            let tu = null_to_opt(tu).map(|tu| robj_to_timeunit(tu)).transpose()?;
+            let fmt = null_to_opt(fmt);
+            let result_tu = match (&fmt, tu) {
+                (_, Some(tu)) => tu,
+                (Some(fmt), None) => {
+                    if fmt.contains("%.9f")
+                        || fmt.contains("%9f")
+                        || fmt.contains("%f")
+                        || fmt.contains("%.f")
+                    {
+                        pl::TimeUnit::Nanoseconds
+                    } else if fmt.contains("%.3f") || fmt.contains("%3f") {
+                        pl::TimeUnit::Milliseconds
+                    } else {
+                        pl::TimeUnit::Microseconds
+                    }
                 }
-            }
-            None => pl::TimeUnit::Microseconds,
-        };
-        self.0
-            .clone()
-            .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Datetime(tu, None),
-                fmt,
-                strict,
-                exact,
-                cache,
-                tz_aware,
-                utc: false,
-            })
-            .into()
+                (None, None) => pl::TimeUnit::Microseconds,
+            };
+            Ok(self
+                .0
+                .clone()
+                .str()
+                .strptime(pl::StrpTimeOptions {
+                    date_dtype: pl::DataType::Datetime(result_tu, None),
+                    fmt,
+                    strict,
+                    exact,
+                    cache,
+                    tz_aware,
+                    utc,
+                })
+                .into())
+        }();
+        r_result_list(res)
     }
 
     pub fn str_parse_time(
@@ -1200,107 +1221,6 @@ impl Expr {
             .into()
     }
 
-    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().rstrip(null_to_opt(matches)).into()
-    }
-
-    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().lstrip(null_to_opt(matches)).into()
-    }
-
-    // pub fn str_slice(&self, start: i64, length: Option<u64>) -> Self {
-    //     let function = move |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_slice(start, length)?.into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::Utf8))
-    //         .with_fmt("str.slice")
-    //         .into()
-    // }
-
-    // pub fn str_to_uppercase(&self) -> Self {
-    //     self.0.clone().str().to_uppercase().into()
-    // }
-
-    // pub fn str_to_lowercase(&self) -> Self {
-    //     self.0.clone().str().to_lowercase().into()
-    // }
-
-    // pub fn str_lengths(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_lengths().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.lengths")
-    //         .into()
-    // }
-
-    // pub fn str_n_chars(&self) -> Self {
-    //     let function = |s: Series| {
-    //         let ca = s.utf8()?;
-    //         Ok(ca.str_n_chars().into_series())
-    //     };
-    //     self.clone()
-    //         .0
-    //         .map(function, GetOutput::from_type(pl::DataType::UInt32))
-    //         .with_fmt("str.n_chars")
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // #[cfg(feature = "lazy_regex")]
-    // pub fn str_replace_all(&self, pat: Self, val: Self, literal: bool) -> Self {
-    //     self.0
-    //         .clone()
-    //         .str()
-    //         .replace_all(pat.0, val.0, literal)
-    //         .into()
-    // }
-
-    // pub fn str_zfill(&self, alignment: usize) -> Self {
-    //     self.clone().0.str().zfill(alignment).into()
-    // }
-
-    // pub fn str_ljust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().ljust(width, fillchar).into()
-    // }
-
-    // pub fn str_rjust(&self, width: usize, fillchar: char) -> Self {
-    //     self.clone().0.str().rjust(width, fillchar).into()
-    // }
-
-    // pub fn str_contains(&self, pat: String, literal: Option<bool>) -> Self {
-    //     match literal {
-    //         Some(true) => self.0.clone().str().contains_literal(pat).into(),
-    //         _ => self.0.clone().str().contains(pat).into(),
-    //     }
-    // }
-
-    // pub fn str_ends_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().ends_with(sub).into()
-    // }
-
-    // pub fn str_starts_with(&self, sub: String) -> Self {
-    //     self.0.clone().str().starts_with(sub).into()
-    // }
-
     //end list/arr methods
 
     pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
@@ -1310,7 +1230,6 @@ impl Expr {
     pub fn dt_round(&self, every: &str, offset: &str) -> Self {
         self.0.clone().dt().round(every, offset).into()
     }
-
 
     pub fn dt_combine(&self, time: &Expr, tu: Robj) -> List {
         let res =
@@ -1371,7 +1290,6 @@ impl Expr {
 
     pub fn timestamp(&self, tu: Robj) -> List {
         let res = robj_to_timeunit(tu)
-
             .map(|tu| Expr(self.0.clone().dt().timestamp(tu)))
             .map_err(|err| format!("valid tu needed for timestamp: {}", err));
         r_result_list(res)
@@ -1383,13 +1301,12 @@ impl Expr {
             .map(
                 |s| {
                     s.timestamp(pl::TimeUnit::Milliseconds)
-                        .map(|ca| (ca / 1000).into_series())
+                        .map(|ca| Some((ca / 1000).into_series()))
                 },
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
-
 
     pub fn dt_with_time_unit(&self, tu: Robj) -> List {
         let expr_result =
@@ -1404,14 +1321,19 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn dt_with_time_zone(&self, tz: Nullable<String>) -> Self {
-        self.0.clone().dt().with_time_zone(tz.into_option()).into()
+    pub fn dt_convert_time_zone(&self, tz: String) -> Self {
+        self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_cast_time_zone(&self, tz: Nullable<String>) -> Self {
-        self.0.clone().dt().cast_time_zone(tz.into_option()).into()
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .dt()
+            .replace_time_zone(tz.into_option())
+            .into()
     }
 
+    #[allow(deprecated)]
     pub fn dt_tz_localize(&self, tz: String) -> Self {
         self.0.clone().dt().tz_localize(tz).into()
     }
@@ -1420,7 +1342,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.days().into_series()),
+                |s| Ok(Some(s.duration()?.days().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1429,7 +1351,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.hours().into_series()),
+                |s| Ok(Some(s.duration()?.hours().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1438,7 +1360,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.minutes().into_series()),
+                |s| Ok(Some(s.duration()?.minutes().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1447,7 +1369,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.seconds().into_series()),
+                |s| Ok(Some(s.duration()?.seconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1456,7 +1378,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.nanoseconds().into_series()),
+                |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1465,7 +1387,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.microseconds().into_series()),
+                |s| Ok(Some(s.duration()?.microseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1474,7 +1396,7 @@ impl Expr {
         self.0
             .clone()
             .map(
-                |s| Ok(s.duration()?.milliseconds().into_series()),
+                |s| Ok(Some(s.duration()?.milliseconds().into_series())),
                 GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
@@ -1586,7 +1508,7 @@ impl Expr {
     }
 
     pub fn round(&self, decimals: f64) -> List {
-        let res = try_f64_into_u32(decimals, false)
+        let res = try_f64_into_u32(decimals)
             .map_err(|err| format!("in round: {}", err))
             .map(|n| Expr(self.0.clone().round(n)));
         r_result_list(res)
@@ -1609,14 +1531,14 @@ impl Expr {
     }
 
     pub fn head(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n, false)
+        let res = try_f64_into_usize(n)
             .map_err(|err| format!("in head: {}", err))
             .map(|n| Expr(self.0.clone().head(Some(n))));
         r_result_list(res)
     }
 
     pub fn tail(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n, false)
+        let res = try_f64_into_usize(n)
             .map_err(|err| format!("in tail: {}", err))
             .map(|n| Expr(self.0.clone().tail(Some(n))));
         r_result_list(res)
@@ -1666,7 +1588,7 @@ impl Expr {
     pub fn rechunk(&self) -> Self {
         self.0
             .clone()
-            .map(|s| Ok(s.rechunk()), GetOutput::same_type())
+            .map(|s| Ok(Some(s.rechunk())), GetOutput::same_type())
             .into()
     }
 
@@ -1727,7 +1649,7 @@ impl Expr {
             let s = thread_com.recv();
 
             //wrap as series
-            Ok(s)
+            Ok(Some(s))
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
@@ -1746,7 +1668,7 @@ impl Expr {
     }
 
     pub fn is_unique(&self) -> Self {
-        self.clone().0.is_unique().into()
+        self.0.clone().is_unique().into()
     }
 
     pub fn is_first(&self) -> Self {
@@ -1814,11 +1736,382 @@ impl Expr {
         self.0.clone().prefix(prefix.as_str()).into()
     }
 
-    // fn to_field(&self, df: &DataFrame) {
-    //     let ctxt = polars::prelude::Context::Default;
-    //     let res = self.0.to_field(&df.0.schema(), ctxt);
-    //     res.unwrap();
+    //string methods
+    pub fn str_lengths(&self) -> Self {
+        use pl::*;
+        let function = |s: pl::Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_lengths().into_series()))
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.lengths")
+            .into()
+    }
+
+    pub fn str_n_chars(&self) -> Self {
+        let function = |s: pl::Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_n_chars().into_series()))
+        };
+        self.clone()
+            .0
+            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .with_fmt("str.n_chars")
+            .into()
+    }
+
+    pub fn str_concat(&self, delimiter: &str) -> Self {
+        self.0.clone().str().concat(delimiter).into()
+    }
+
+    pub fn str_to_uppercase(&self) -> Self {
+        self.0.clone().str().to_uppercase().into()
+    }
+
+    pub fn str_to_lowercase(&self) -> Self {
+        self.0.clone().str().to_lowercase().into()
+    }
+
+    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().strip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
+        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+    }
+
+    pub fn str_zfill(&self, alignment: Robj) -> List {
+        let res = robj_to!(usize, alignment, "in str$zfill(): {:?}")
+            .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
+        r_result_list(res)
+    }
+
+    pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> Result<Expr, String> {
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .ljust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
+            ))
+        }()
+        .map_err(|err| format!("in str$ljust: {:?}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
+        let res = || -> Result<Expr, String> {
+            Ok(Expr(
+                self.clone()
+                    .0
+                    .str()
+                    .rjust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
+            ))
+        }()
+        .map_err(|err| format!("in str$rjust: {:?}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {
+        Expr(match null_to_opt(literal) {
+            Some(true) => self.0.clone().str().contains_literal(pat.0.clone()),
+            _ => self.0.clone().str().contains(pat.0.clone(), strict),
+        })
+    }
+
+    pub fn str_ends_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().ends_with(sub.0.clone()).into()
+    }
+
+    pub fn str_starts_with(&self, sub: &Expr) -> Self {
+        self.0.clone().str().starts_with(sub.0.clone()).into()
+    }
+
+    pub fn str_json_path_match(&self, pat: Robj) -> List {
+        let res = || -> Result<Expr, String> {
+            use pl::*;
+            let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
+            let function = move |s: Series| {
+                let ca = s.utf8()?;
+                match ca.json_path_match(&pat) {
+                    Ok(ca) => Ok(Some(ca.into_series())),
+                    Err(e) => Err(pl::PolarsError::ComputeError(format!("{e:?}").into())),
+                }
+            };
+            Ok(Expr(
+                self.0
+                    .clone()
+                    .map(function, GetOutput::from_type(pl::DataType::Utf8))
+                    .with_fmt("str.json_path_match"),
+            ))
+        }();
+        r_result_list(res)
+    }
+
+    pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
+        let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
+        use pl::*;
+        let output_type = match dtype.clone() {
+            Some(dtype) => GetOutput::from_type(dtype),
+            None => GetOutput::from_type(DataType::Unknown),
+        };
+
+        let function = move |s: Series| {
+            let ca = s.utf8()?;
+            match ca.json_extract(dtype.clone()) {
+                Ok(ca) => Ok(Some(ca.into_series())),
+                Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
+            }
+        };
+
+        self.0
+            .clone()
+            .map(function, output_type)
+            .with_fmt("str.json_extract")
+            .into()
+    }
+
+    pub fn str_hex_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_encode")
+            .into()
+    }
+
+    pub fn str_hex_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.hex_decode")
+            .into()
+    }
+    pub fn str_base64_encode(&self) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_encode")
+            .into()
+    }
+
+    pub fn str_base64_decode(&self, strict: bool) -> Self {
+        use pl::*;
+        self.clone()
+            .0
+            .map(
+                move |s| {
+                    s.utf8()?
+                        .base64_decode(strict)
+                        .map(|s| Some(s.into_series()))
+                },
+                GetOutput::same_type(),
+            )
+            .with_fmt("str.base64_decode")
+            .into()
+    }
+
+    pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
+        let res = || -> Result<Expr, String> {
+            let pat = robj_to!(String, pattern)?;
+            let gi = robj_to!(usize, group_index)?;
+            Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
+        }()
+        .map_err(|err| format!("in str$extract: {}", err));
+        r_result_list(res)
+    }
+
+    pub fn str_extract_all(&self, pattern: &Expr) -> Self {
+        self.0.clone().str().extract_all(pattern.0.clone()).into()
+    }
+
+    pub fn str_count_match(&self, pattern: Robj) -> List {
+        r_result_list(
+            robj_to!(String, pattern, "in str$count_match:")
+                .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
+        )
+    }
+
+    //NOTE SHOW CASE all R side argument handling
+    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<Expr, String> {
+        let by = robj_to!(str, by)?;
+        let inclusive = robj_to!(bool, inclusive)?;
+        if inclusive {
+            Ok(self.0.clone().str().split_inclusive(by).into())
+        } else {
+            Ok(self.0.clone().str().split(by).into())
+        }
+    }
+
+    //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
+    //handled on rust side anyways
+    pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> Result<Expr, String> {
+        let by = robj_to!(str, by)?;
+        let n = robj_to!(usize, n)?;
+        let inclusive = robj_to!(bool, inclusive)?;
+        Ok(if inclusive {
+            self.0.clone().str().split_exact_inclusive(by, n)
+        } else {
+            self.0.clone().str().split_exact(by, n)
+        }
+        .into())
+    }
+
+    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .splitn(robj_to!(str, by)?, robj_to!(usize, n)?)
+            .into())
+    }
+
+    pub fn str_replace(&self, pattern: Robj, value: Robj, literal: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .replace(
+                robj_to!(Expr, pattern)?.0,
+                robj_to!(Expr, value)?.0,
+                robj_to!(bool, literal)?,
+            )
+            .into())
+    }
+
+    pub fn str_replace_all(
+        &self,
+        pattern: Robj,
+        value: Robj,
+        literal: Robj,
+    ) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .replace_all(
+                robj_to!(Expr, pattern)?.0,
+                robj_to!(Expr, value)?.0,
+                robj_to!(bool, literal)?,
+            )
+            .into())
+    }
+
+    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<Expr, String> {
+        let offset = robj_to!(i64, offset)?;
+        let length = robj_to!(Option, u64, length)?;
+
+        use pl::*;
+        let function = move |s: Series| {
+            let ca = s.utf8()?;
+            Ok(Some(ca.str_slice(offset, length)?.into_series()))
+        };
+
+        Ok(self
+            .clone()
+            .0
+            .map(function, GetOutput::from_type(DataType::Utf8))
+            .with_fmt("str.slice")
+            .into())
+    }
+
+    pub fn str_parse_int(&self, radix: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .from_radix(robj_to!(Option, u32, radix)?)
+            .with_fmt("str.parse_int")
+            .into())
+    }
+
+    pub fn struct_field_by_name(&self, name: Robj) -> Result<Expr, String> {
+        Ok(self
+            .0
+            .clone()
+            .struct_()
+            .field_by_name(robj_to!(str, name)?)
+            .into())
+    }
+
+    // pub fn struct_field_by_index(&self, index: i64) -> PyExpr {
+    //     self.0.clone().struct_().field_by_index(index).into()
     // }
+
+    pub fn struct_rename_fields(&self, names: Robj) -> Result<Expr, String> {
+        let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
+        Ok(self.0.clone().struct_().rename_fields(string_vec).into())
+    }
+
+    //placed in py-polars/src/lazy/meta.rs, however extendr do not support
+    //multiple export impl.
+    fn meta_pop(&self) -> List {
+        let exprs: Vec<pl::Expr> = self.0.clone().meta().pop();
+        List::from_values(exprs.iter().map(|e| Expr(e.clone())))
+    }
+
+    fn meta_eq(&self, other: Robj) -> Result<bool, String> {
+        let other = robj_to!(Expr, other)?;
+        Ok(self.0 == other.0)
+    }
+
+    fn meta_roots(&self) -> Vec<String> {
+        self.0
+            .clone()
+            .meta()
+            .root_names()
+            .iter()
+            .map(|name| name.to_string())
+            .collect()
+    }
+
+    fn meta_output_name(&self) -> Result<String, String> {
+        let name = self
+            .0
+            .clone()
+            .meta()
+            .output_name()
+            .map_err(|err| err.to_string())?;
+
+        Ok(name.to_string())
+    }
+
+    fn meta_undo_aliases(&self) -> Expr {
+        self.0.clone().meta().undo_aliases().into()
+    }
+
+    fn meta_has_multiple_outputs(&self) -> bool {
+        self.0.clone().meta().has_multiple_outputs()
+    }
+
+    fn meta_is_regex_projection(&self) -> bool {
+        self.0.clone().meta().is_regex_projection()
+    }
+
+    //the only cat ns function from dsl.rs
+    fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
+        let ordering = robj_to!(Map, str, ordering, |s| {
+            crate::rdatatype::new_categorical_ordering(s)
+        })?;
+        Ok(self.0.clone().cat().set_ordering(ordering).into())
+    }
 }
 
 //allow proto expression that yet only are strings
@@ -1897,7 +2190,7 @@ pub fn make_rolling_options(
     center: bool,
     by_null: Nullable<String>,
     closed_null: Nullable<String>,
-) -> std::result::Result<pl::RollingOptions, String> {
+) -> Result<pl::RollingOptions, String> {
     use crate::rdatatype::new_closed_window;
 
     // let weights = weights_robj.as_real_vector();
@@ -1907,7 +2200,7 @@ pub fn make_rolling_options(
     //     ));
     // };
     let weights = null_to_opt(weights_robj);
-    let min_periods = try_f64_into_usize(min_periods_float, false)?;
+    let min_periods = try_f64_into_usize(min_periods_float)?;
 
     let by = null_to_opt(by_null);
 
@@ -1926,8 +2219,7 @@ pub fn make_rolling_options(
 }
 
 extendr_module! {
-    mod rexpr;
+    mod dsl;
     impl Expr;
     impl ProtoExprArray;
-
 }

@@ -433,20 +433,6 @@ Series_apply   = function(
 }
 
 
-#' Series element(s) is unique
-#' @description return Boolean vector for all elements that occurs only once
-#' @return Series
-#' @keywords Series
-#' @aliases Series_is_unique
-#' @name Series_is_unique
-#'
-#' @examples
-#' pl$Series(c(1:2,2L))$is_unique()
-#'
-Series_is_unique = function() {
-  unwrap(.pr$Series$is_unique(self))
-}
-
 
 
 #' Series_len
@@ -581,7 +567,9 @@ Series_name = method_as_property(function() {
 #' @name Series_any
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
-Series_any = "use_extendr_wrapper"
+Series_any = function() {
+  unwrap(.pr$Series$any(self))
+}
 
 #' Reduce Boolean Series with ALL
 #'
@@ -798,7 +786,9 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
 #'
 #' @examples
 #' pl$Series(1:4,"bob")$to_frame()
-Series_to_frame = "use_extendr_wrapper"
+Series_to_frame = function() {
+  unwrap(.pr$Series$to_frame(self))
+}
 
 
 #' Are Series's equal?

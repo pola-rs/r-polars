@@ -19,7 +19,8 @@ Expr_ewm_mean(
   half_life = NULL,
   alpha = NULL,
   adjust = TRUE,
-  min_periods = 1L
+  min_periods = 1L,
+  ignore_nulls = TRUE
 )
 
 Expr_ewm_std(
@@ -29,7 +30,8 @@ Expr_ewm_std(
   alpha = NULL,
   adjust = TRUE,
   bias = FALSE,
-  min_periods = 1L
+  min_periods = 1L,
+  ignore_nulls = TRUE
 )
 
 Expr_ewm_var(
@@ -39,7 +41,8 @@ Expr_ewm_var(
   alpha = NULL,
   adjust = TRUE,
   bias = FALSE,
-  min_periods = 1L
+  min_periods = 1L,
+  ignore_nulls = TRUE
 )
 }
 \arguments{
@@ -60,9 +63,9 @@ Expr_ewm_var(
 \item{adjust}{Divide by decaying adjustment factor in beginning periods to account for
 imbalance in relative weightings
 \itemize{
-\item When \code{adjust=True} the EW function is calculated
+\item When \code{adjust=TRUE} the EW function is calculated
 using weights \eqn{w_i = (1 - \alpha)^i  }
-\item When \code{adjust=False} the EW function is calculated
+\item When \code{adjust=FALSE} the EW function is calculated
 recursively by
 \eqn{
   y_0 = x_0 \\
@@ -72,6 +75,24 @@ recursively by
 
 \item{min_periods}{Minimum number of observations in window required to have a value
 (otherwise result is null).}
+
+\item{ignore_nulls}{ignore_nulls
+Ignore missing values when calculating weights.
+\itemize{
+\item When \code{ignore_nulls=FALSE} (default), weights are based on absolute
+positions.
+For example, the weights of :math:\code{x_0} and :math:\code{x_2} used in
+calculating the final weighted average of
+\code{[} \eqn{x_0}, None,  \eqn{x_2}\\\verb{]} are
+\eqn{1-\alpha)^2} and  \eqn{1} if \code{adjust=TRUE}, and
+\eqn{(1-\alpha)^2} and  \eqn{\alpha} if \code{adjust=FALSE}.
+\item When \code{ignore_nulls=TRUE}, weights are based
+on relative positions. For example, the weights of
+\eqn{x_0} and  \eqn{x_2} used in calculating the final weighted
+average of \code{[} \eqn{x_0}, None,  \eqn{x_2}\verb{]} are
+\eqn{1-\alpha} and  \eqn{1} if \code{adjust=TRUE},
+and  \eqn{1-\alpha} and  \eqn{\alpha} if \code{adjust=FALSE}.
+}}
 
 \item{bias}{When bias=FALSE`, apply a correction to make the estimate statistically unbiased.}
 }
