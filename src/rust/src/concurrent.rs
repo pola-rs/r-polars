@@ -1,7 +1,10 @@
 //use crate::rdataframe::rseries::ptr_str_to_rseries;
+use crate::lazy::dataframe::LazyFrame;
 use crate::rdataframe::DataFrame;
 use crate::utils::extendr_concurrent::ParRObj;
-use crate::utils::extendr_concurrent::{concurrent_handler, ThreadCom};
+use crate::utils::extendr_concurrent::{
+    concurrent_handler, join_background_handler, start_background_handler, ThreadCom,
+};
 use crate::CONFIG;
 use polars::prelude as pl;
 
@@ -9,6 +12,7 @@ use crate::rdataframe::Series;
 use extendr_api::prelude::*;
 use extendr_api::Conversions;
 use std::result::Result;
+use std::thread::JoinHandle;
 
 // This functions allows to call .collect() on polars lazy frame. A lazy frame may contain user defined functions
 // which could call R from any spawned thread by polars. This function is a bridge between multithraedded polars
@@ -21,14 +25,12 @@ use std::result::Result;
 //how to request R functions run on the mainthread with a ThreadCom object.
 
 pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<DataFrame> {
-    
     let res_res_df = concurrent_handler(
         // Closure 1: start concurrent handler and get final result
         // This what we want to do in the first place ... to run LazyFrame.collect() thread-safe
-        
+
         //this closure gets spawned in a child of main thred, tc is a ThreadCom struct
-        move |tc| { 
-            
+        move |tc| {
             //start polars .collect, which it self can spawn many new threads
             let retval = lazy_df.collect();
             //collect done, we're all done know
@@ -40,12 +42,10 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
             //taadaaa return value
             retval
         },
-
         //closure 2
         //how should the R-serving mainthread handle a user function requst?
         //synopsis: run the user-R-function, input/ouput is a Series
         |(probj, s): (ParRObj, pl::Series)| -> Result<pl::Series, Box<dyn std::error::Error>> {
-            
             //unpack user-R-function
             let f = probj.0.as_function().ok_or_else(|| {
                 extendr_api::error::Error::Other(format!(
@@ -62,7 +62,6 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
 
             Ok(s)
         },
-
         //CONFIG is "global variable" where threads can request a new ThreadCom
         &CONFIG,
     );
@@ -81,4 +80,49 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
 
     //wrap ok
     Ok(DataFrame(new_df))
+}
+
+#[derive(Debug)]
+pub struct PolarsBackgroundHandle(Option<JoinHandle<pl::PolarsResult<pl::DataFrame>>>);
+
+#[extendr]
+impl PolarsBackgroundHandle {
+    pub fn new(lazy_df: &LazyFrame) -> Self {
+        let lazy_df = lazy_df.0.clone();
+        let join_handle = start_background_handler(move || lazy_df.collect());
+        PolarsBackgroundHandle(Some(join_handle))
+        //concurrent handling complete
+    }
+
+    pub fn join(&mut self) -> Result<DataFrame, String> {
+        //take handle from Robj, replace with default None
+        let handle = std::mem::take(self)
+            .0
+            .ok_or_else(|| "join error: Handle was already exhausted")?;
+
+        let x = join_background_handler(handle);
+        x.map_err(|err| {
+            format!(
+                "thread error when joining polars background process: {}",
+                err
+            )
+        })?
+        .map(|df| DataFrame(df))
+        .map_err(|err| format!("polars query error : {}", err))
+    }
+
+    pub fn is_exhausted(&self) -> bool {
+        self.0.is_none()
+    }
+}
+
+impl Default for PolarsBackgroundHandle {
+    fn default() -> Self {
+        PolarsBackgroundHandle(None)
+    }
+}
+
+extendr_module! {
+    mod concurrent;
+    impl PolarsBackgroundHandle;
 }
