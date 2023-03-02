@@ -44,4 +44,10 @@
           packages = pkgs.lib.singleton rpkgs;
         };
       });
+
+  nixConfig = {
+    extra-substituters = [ "https://r-polars.cachix.org" ];
+    extra-trusted-public-keys = [ "r-polars.cachix.org-1:LhIYJk3lSZay+OuJ30RU4WkvAc8VY0QvaSy7rIcQ31w=" ];
+  };
+
 }
