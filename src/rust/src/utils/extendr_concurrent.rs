@@ -187,13 +187,13 @@ where
         // before = std::time::Instant::now();
         // dbg!(duration, loop_counter);
 
-        //look for
+        // Wakeup thread on request or disconnect, else wakeup every 1000ms to check R user interrupts.
         // let recv_time = std::time::Instant::now();
         let any_new_msg = main_rx.recv_timeout(std::time::Duration::from_millis(1000));
         // let sleep_time = std::time::Instant::now() - recv_time;
         // dbg!(sleep_time);
 
-        //avoid using unwrap/unwrap_err if msg is Debug
+        // avoiding unwrap/unwrap_err if msg T does not have trait Debug
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
             let answer = i(s); //handle requst with i closure
@@ -208,9 +208,9 @@ where
                     break;
                 }
 
-                //waking up with on request since last
+                // waking up with no now requests since last
                 flume::RecvTimeoutError::Timeout => {
-                    //check for user interrupts in R
+                    //check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
                     let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
                     //dbg!(&res_res);
                     if res_res.is_err() {
