@@ -54,10 +54,10 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
                 ))
             })?;
 
-            //call user-R-function with Series as input, return Robj (likeliy as Series)
+            // call user-R-function with Series as input, return Robj (likeliy as Series)
             let rseries_robj = f.call(pairlist!(Series(s)))?;
 
-            //return may not
+            // return of user-R-function may not be Series, return Err if so
             let s = Series::any_robj_to_pl_series_result(&rseries_robj)?;
 
             Ok(s)
