@@ -137,6 +137,14 @@ from R and the reverse.
  Optional step C: build final package (requires no R package dependencies)
  - `R CMD INSTALL --no-multiarch --with-keep.source rpolars
  
+ Speed up Run R CMD check locally. 
+ ```r
+{devtools::check(env_vars = list(RPOLARS_RUST_SOURCE="/your/own/absolute/path/r-polars/src/rust"),check_dir = "./check/");source("./inst/misc/filter_rcmdcheck.R"); Sys.sleep(5); unlink("check",recursive = TRUE, force =TRUE)}
+```
+envvar `RPOLARS_RUST_SOURCE`allows rpolars to recover Cargo cache even if source files was moved.
+`filter_rcmdcheck.R` removes known warnigns from final check report.
+`unlink("check")` cleans up.
+ 
  
 
 # rpolars_teaser
