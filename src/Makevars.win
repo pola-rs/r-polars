@@ -16,10 +16,6 @@ all: C_clean
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-
-	curdir=$(CURDIR)
-	cd $(RPOLARS_RUST_SOURCE)/..
-
 	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
@@ -29,32 +25,28 @@ $(STATLIB):
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
-	cd $(curdir)
 	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
 	# if binary is not here, it can be symlinked instead.
 	# This solves both caching and R CMD check failing cargo build files
 	# see issue #28
-	if [ -f "$(STATLIB)" ]; \
-	then \
-	echo "found binary proceed to linking"; \
+	if [ -f "$(STATLIB)" ]; then \
+		echo "found binary proceed to linking"; \
 	else \
-	echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
-	mkdir -p $(LIBDIR) ; \
-	ln -s $(rpolars_ext_binary) $(LIBDIR)/librpolars.a ; \
+		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
+		mkdir -p $(LIBDIR) ; \
+		ln -s $(rpolars_ext_binary) $(LIBDIR)/librpolars.a ; \
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
-	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; \
-	then \
-	echo "clean up target, to not let R CMD check fail on rust files"; \
-	mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
-	rm -rf $(LIBDIR); \
-	mkdir $(LIBDIR); \
-	mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
-	PWD; \
-	rm -rf -v ./src/.cargo; \
+	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \
+		echo "clean up target, to not let R CMD check fail on rust files"; \
+		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
+		rm -rf $(LIBDIR); \
+		mkdir $(LIBDIR); \
+		mv $(LIBDIR)/../temp_binary.a $(STATLIB); \
+		rm -rf -v ./src/.cargo; \
 	else \
-	echo "skip cleaning" ; \
+		echo "skip cleaning" ; \
 	fi
 
 C_clean:
