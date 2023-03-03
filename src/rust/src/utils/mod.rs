@@ -1,7 +1,7 @@
 pub mod extendr_concurrent;
 
 pub mod wrappers;
-use crate::rdataframe::rexpr::Expr;
+use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use extendr_api::prelude::list;
 

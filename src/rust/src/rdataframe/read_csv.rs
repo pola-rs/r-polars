@@ -2,7 +2,8 @@
 
 use crate::rdatatype::DataTypeVector;
 
-use crate::rlazyframe::LazyFrame;
+use crate::lazy;
+
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
 use extendr_api::{extendr, prelude::*, Rinternals};
@@ -115,7 +116,7 @@ pub fn rlazy_csv_reader(
 
     let result = r
         .finish()
-        .map(|ldf| LazyFrame(ldf))
+        .map(|ldf| lazy::dataframe::LazyFrame(ldf))
         .map_err(|err| format!("in rlazy_csv_reader: {:?}", err));
 
     r_result_list(result)

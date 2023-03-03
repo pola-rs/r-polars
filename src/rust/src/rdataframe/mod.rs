@@ -1,24 +1,22 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
-pub mod r_to_series;
 pub mod read_csv;
 pub mod read_parquet;
-pub mod rexpr;
-pub mod rseries;
-pub mod series_to_r;
+use crate::lazy::dsl;
 
 use crate::rdatatype;
-use crate::rlazyframe;
-pub use crate::rlazyframe::*;
+use crate::lazy;
+pub use lazy::dataframe::*;
 use crate::rlib;
 
 use crate::rdatatype::RPolarsDataType;
-use r_to_series::robjname2series;
+use crate::conversion_r_to_s::robjname2series;
 
-use rexpr::*;
-pub use rseries::*;
-use series_to_r::pl_series_to_list;
+use dsl::*;
+pub use crate::series::*;
+use crate::conversion_s_to_r::pl_series_to_list;
+
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
@@ -80,35 +78,35 @@ impl DataFrame {
     }
 
     //renamed back to clone
-    fn clone_see_me_macro(&self) -> DataFrame {
+    pub fn clone_see_me_macro(&self) -> DataFrame {
         self.clone()
     }
 
     //internal use
-    fn new() -> Self {
+    pub fn new() -> Self {
         let empty_series: Vec<pl::Series> = Vec::new();
         DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
-    fn lazy(&self) -> LazyFrame {
+    pub fn lazy(&self) -> LazyFrame {
         LazyFrame(self.0.clone().lazy())
     }
 
     //internal use
-    fn new_with_capacity(capacity: i32) -> Self {
+    pub fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
         DataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
     //internal use
-    fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
+    pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
         robjname2series(&robj, name)
             .and_then(|s| self.0.with_column(s).map(|_| ()))
             .map_err(|err| format!("in set_column_from_robj: {:?}", err))
     }
 
     //internal use
-    fn set_column_from_series(&mut self, x: &Series) -> Result<(), String> {
+    pub fn set_column_from_series(&mut self, x: &Series) -> Result<(), String> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
         self.0
             .with_column(s)
@@ -116,23 +114,23 @@ impl DataFrame {
             .map_err(|err| format!("in set_column_from_series: {:?}", err))
     }
 
-    fn print(&self) -> Self {
+    pub fn print(&self) -> Self {
         rprintln!("{:#?}", self.0);
         self.clone()
     }
 
-    fn columns(&self) -> Vec<String> {
+    pub fn columns(&self) -> Vec<String> {
         self.0.get_column_names_owned()
     }
 
-    fn set_column_names_mut(&mut self, names: Vec<String>) -> Result<(), String> {
+    pub fn set_column_names_mut(&mut self, names: Vec<String>) -> Result<(), String> {
         self.0
             .set_column_names(&names[..])
             .map(|_| ())
             .map_err(|err| format!("in set_column_names_mut: {:?}", err))
     }
 
-    fn get_column(&self, name: &str) -> List {
+    pub fn get_column(&self, name: &str) -> List {
         let res_series = self
             .0
             .select([name])
@@ -141,18 +139,18 @@ impl DataFrame {
         r_result_list(res_series)
     }
 
-    fn get_columns(&self) -> List {
+    pub fn get_columns(&self) -> List {
         let mut l = List::from_values(self.0.get_columns().iter().map(|x| Series(x.clone())));
         l.set_names(self.0.get_column_names()).unwrap();
         l
     }
 
-    fn dtypes(&self) -> List {
+    pub fn dtypes(&self) -> List {
         let iter = self.0.iter().map(|s| RPolarsDataType(s.dtype().clone()));
         List::from_values(iter)
     }
 
-    fn schema(&self) -> List {
+    pub fn schema(&self) -> List {
         let mut l = self.dtypes();
         l.set_names(self.0.get_column_names()).unwrap();
         l
@@ -162,7 +160,7 @@ impl DataFrame {
     //     self.0.compare
     // }
 
-    fn to_list(&self) -> List {
+    pub fn to_list(&self) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0.iter().map(|x| pl_series_to_list(x, false)),
@@ -180,7 +178,7 @@ impl DataFrame {
     }
 
     //this methods should only be used for benchmarking
-    fn to_list_unwind(&self) -> Robj {
+    pub fn to_list_unwind(&self) -> Robj {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
             self.0.iter().map(|x| pl_series_to_list(x, false)),
@@ -199,7 +197,7 @@ impl DataFrame {
 
     // to_list have this variant with set_structs = true at pl_series_to_list
     // does not expose this arg in to_list as it is quite niche and might be deprecated later
-    fn to_list_tag_structs(&self) -> List {
+    pub fn to_list_tag_structs(&self) -> List {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
@@ -228,13 +226,13 @@ impl DataFrame {
         r_result_list(expr_result)
     }
 
-    fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
+    pub fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
         LazyFrame(self.lazy().0.select(exprs)).collect()
     }
 
     //used in GroupBy, not DataFrame
-    fn by_agg(
+    pub fn by_agg(
         &mut self,
         group_exprs: &ProtoExprArray,
         agg_exprs: &ProtoExprArray,
@@ -305,7 +303,7 @@ impl DataFrame {
 }
 use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
-    fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
+    pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> =
             self.0.iter().map(|s| pl_series_to_list(s, true)).collect();
@@ -345,12 +343,9 @@ impl VecDataFrame {
 
 extendr_module! {
     mod rdataframe;
-    use rexpr;
-    use rseries;
     use read_csv;
     use read_parquet;
     use rdatatype;
-    use rlazyframe;
     use rlib;
     impl DataFrame;
     impl VecDataFrame;

@@ -1,4 +1,3 @@
-use super::rseries::Series;
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
@@ -6,6 +5,7 @@ use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
+use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
@@ -1640,7 +1640,9 @@ impl Expr {
 
         let f = move |s: pl::Series| {
             //acquire channel to R via main thread handler
-            let thread_com = ThreadCom::from_global(&CONFIG);
+            let thread_com = ThreadCom::try_from_global(&CONFIG)
+                .expect("polars was thread could not initiate ThreadCommunication to R");
+            //this could happen if running in background mode, but inly panic is possible here
 
             //send request to run in R
             thread_com.send((probj.clone(), s));
@@ -2219,8 +2221,7 @@ pub fn make_rolling_options(
 }
 
 extendr_module! {
-    mod rexpr;
+    mod dsl;
     impl Expr;
     impl ProtoExprArray;
-
 }

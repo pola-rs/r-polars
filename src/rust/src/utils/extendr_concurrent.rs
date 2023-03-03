@@ -51,7 +51,6 @@ where
     pub fn create() -> (Self, Receiver<(S, Sender<R>)>) {
         let (m_tx, m_rx) = flume::unbounded::<(S, Sender<R>)>();
         let (c_tx, c_rx) = flume::unbounded::<R>();
-
         (
             ThreadCom {
                 mains_tx: m_tx,
@@ -88,7 +87,6 @@ where
         //     dbg!(val);
         //     *lock = val;
         // }
-
         ThreadCom {
             mains_tx: self.mains_tx.clone(),
             child_rx: rx,
@@ -136,6 +134,28 @@ where
             .clone();
 
         thread_com
+    }
+
+    pub fn try_from_global(
+        config: &Storage<RwLock<Option<ThreadCom<S, R>>>>,
+    ) -> std::result::Result<Self, String>
+    where
+        S: Send,
+        R: Send,
+    {
+        let thread_com = config
+            .try_get()
+            .ok_or_else(|| {
+                "Failed to communicate with R from polars. \
+                It is not possible collect_background a LazyFrame containing user R functions"
+            })?
+            .read()
+            .expect("failded to restore thread_com")
+            .as_ref()
+            .unwrap()
+            .clone();
+
+        Ok(thread_com)
     }
 }
 
@@ -187,13 +207,13 @@ where
         // before = std::time::Instant::now();
         // dbg!(duration, loop_counter);
 
-        //look for
+        // Wakeup thread on request or disconnect, else wakeup every 1000ms to check R user interrupts.
         // let recv_time = std::time::Instant::now();
         let any_new_msg = main_rx.recv_timeout(std::time::Duration::from_millis(1000));
         // let sleep_time = std::time::Instant::now() - recv_time;
         // dbg!(sleep_time);
 
-        //avoid using unwrap/unwrap_err if msg is Debug
+        // avoiding unwrap/unwrap_err if msg T does not have trait Debug
         if let Ok(packet) = any_new_msg {
             let (s, c_tx) = packet;
             let answer = i(s); //handle requst with i closure
@@ -208,9 +228,9 @@ where
                     break;
                 }
 
-                //waking up with on request since last
+                // waking up with no now requests since last
                 flume::RecvTimeoutError::Timeout => {
-                    //check for user interrupts in R
+                    //check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
                     let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
                     //dbg!(&res_res);
                     if res_res.is_err() {
@@ -240,6 +260,35 @@ where
 
     //let run_time = std::time::Instant::now() - start_time;
     //dbg!(run_time);
+
+    Ok(thread_return_value)
+}
+
+use std::thread::JoinHandle;
+
+pub fn start_background_handler<F, T>(
+    f: F,
+    //y: Y,
+) -> JoinHandle<T>
+where
+    F: FnOnce() -> T + Send + 'static,
+    T: Send + 'static,
+{
+    thread::spawn(move || f())
+}
+
+pub fn join_background_handler<T>(
+    handle: JoinHandle<T>,
+) -> std::result::Result<T, Box<dyn std::error::Error>>
+where
+    T: Send + 'static,
+{
+    let thread_return_value = handle.join().map_err(|err| {
+        format!(
+            "A polars background thread panicked. See panic msg, which is likely more informative than this error: {:?}",
+            err
+        )
+    })?;
 
     Ok(thread_return_value)
 }
