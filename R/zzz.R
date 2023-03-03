@@ -30,6 +30,9 @@ env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
 rm(env)
 
+# PolarsBackgroundHandle
+replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")
+
 # Expr
 replace_private_with_pub_methods(Expr, "^Expr_")
 

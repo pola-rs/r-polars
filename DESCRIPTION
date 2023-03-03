@@ -44,6 +44,7 @@ Collate:
     'functions.R'
     'groupby.R'
     'lazy_functions.R'
+    'lazyframe__background.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
     'namespace.R'
