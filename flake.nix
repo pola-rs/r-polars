@@ -1,16 +1,19 @@
 {
   inputs = {
-    nixpkgs.url =
-      "github:winterqt/nixpkgs/import-cargo-lock-git-dep-workspace-inheritance";
-    flake-utils.url = "github:numtide/flake-utils";
     fenix.url = "github:nix-community/fenix";
+    flake-utils.url = "github:numtide/flake-utils";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    rustPlatformFix.url =
+      "github:winterqt/nixpkgs/import-cargo-lock-git-dep-workspace-inheritance";
   };
 
-  outputs = { self, nixpkgs, flake-utils, fenix }:
+  outputs = { self, fenix, flake-utils, nixpkgs, rustPlatformFix }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         rustNightly = fenix.packages.${system}.complete;
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgs.legacyPackages.${system}.extend (final: prev: {
+          inherit (rustPlatformFix.legacyPackages.${system}) rustPlatform;
+        });
         # Build r-polars from source
         rpolars = pkgs.rPackages.buildRPackage {
           name = "polars";
@@ -34,20 +37,21 @@
             ++ pkgs.lib.singleton rustNightly.toolchain;
         };
         # Create R development environment with r-polars and other useful libraries
-        rpkgs = pkgs.rWrapper.override {
-          packages = with pkgs.rPackages; [ rextendr rpolars tidyverse ];
+        renv = pkgs.rWrapper.override {
+          packages = with pkgs.rPackages; [ devtools rextendr rpolars ];
         };
       in {
         packages.default = rpolars;
         devShells.default = pkgs.mkShell {
           inputsFrom = pkgs.lib.singleton rpolars;
-          packages = pkgs.lib.singleton rpkgs;
+          packages = pkgs.lib.singleton renv;
         };
       });
 
   nixConfig = {
     extra-substituters = [ "https://r-polars.cachix.org" ];
-    extra-trusted-public-keys = [ "r-polars.cachix.org-1:LhIYJk3lSZay+OuJ30RU4WkvAc8VY0QvaSy7rIcQ31w=" ];
+    extra-trusted-public-keys =
+      [ "r-polars.cachix.org-1:LhIYJk3lSZay+OuJ30RU4WkvAc8VY0QvaSy7rIcQ31w=" ];
   };
 
 }
