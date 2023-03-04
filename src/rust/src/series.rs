@@ -118,20 +118,20 @@ impl Series {
         self.0.arg_max()
     }
 
-    pub fn is_sorted_flag(&self) -> bool {
+    pub fn is_sorted_ascending_flag(&self) -> bool {
         matches!(self.0.is_sorted_flag(), polars::series::IsSorted::Ascending)
     }
-    pub fn is_sorted_reverse_flag(&self) -> bool {
+    pub fn is_sorted_descending_flag(&self) -> bool {
         matches!(
             self.0.is_sorted_flag(),
             polars::series::IsSorted::Descending
         )
     }
 
-    pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
-        let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+    pub fn is_sorted(&self, descending: bool, nulls_last: Nullable<bool>) -> bool {
+        let nulls_last = null_to_opt(nulls_last).unwrap_or(descending);
         let options = pl::SortOptions {
-            descending: reverse,
+            descending: descending,
             nulls_last,
             multithreaded: false,
         };

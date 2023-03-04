@@ -1372,7 +1372,7 @@ Expr_mode = "use_extendr_wrapper"
 #' @description Sort this column. In projection/ selection context the whole column is sorted.
 #' If used in a groupby context, the groups are sorted.
 #' @keywords Expr
-#' @param reverse bool default FALSE, reverses sort
+#' @param descending bool default FALSE, reverses sort
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases sort
@@ -1384,21 +1384,21 @@ Expr_mode = "use_extendr_wrapper"
 #' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$sort())
-Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
-  .pr$Expr$sort(self, reverse, nulls_last)
+Expr_sort = function(descending = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
+  .pr$Expr$sort(self, descending, nulls_last)
 }
 
 
 #TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
 #' Top k values
 #' @description  Return the `k` largest elements.
-#' If 'reverse=True` the smallest elements will be given.
+#' If 'descending=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
 #' @keywords Expr
 #' @param k numeric k top values to get
-#' @param reverse bool if true then k smallest values
+#' @param descending bool if true then k smallest values
 #' @return Expr
 #' @aliases top_k
 #' @name Expr_top_k
@@ -1407,18 +1407,18 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k , reverse = FALSE) {
+Expr_top_k = function(k , descending = FALSE) {
   if(!is.numeric(k) || k<0) stopf("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self,k , reverse)
+  .pr$Expr$top_k(self,k , descending)
 }
 
 
 
 #' Index of a sort
 #' @description Get the index values that would sort this column.
-#' If 'reverse=True` the smallest elements will be given.
+#' If 'descending=True` the smallest elements will be given.
 #' @keywords Expr
-#' @param reverse bool default FALSE, reverses sort
+#' @param descending bool default FALSE, reverses sort
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases arg_sort
@@ -1430,12 +1430,12 @@ Expr_top_k = function(k , reverse = FALSE) {
 #' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$arg_sort())
-Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
-  .pr$Expr$arg_sort(self, reverse, nulls_last)
+Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) { #param reverse named descending on rust side
+  .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
 
-#' Index of min value
+#' Index of min valueg
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
@@ -1492,7 +1492,7 @@ Expr_search_sorted = function(element) {
 #' sort column by order of others
 #' @description Sort this column by the ordering of another column, or multiple other columns.
 #' @param by one expression or list expressions and/or strings(interpreted as column names)
-#' @param reverse single bool to boolean vector, any is_TRUE will give reverse sorting of that column
+#' @param descending single bool to boolean vector, any is_TRUE will give reverse sorting of that column
 #' @return Expr
 #' @keywords Expr
 #' @aliases sort_by
@@ -1517,13 +1517,13 @@ Expr_search_sorted = function(element) {
 #'
 #' # by two columns/expressions
 #' df$select(
-#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
+#'   pl$col("group")$sort_by(list("value2",pl$col("value1")), descending =c(TRUE,FALSE))
 #' )
 #'
 #'
 #' # by some expression
 #' df$select(
-#'   pl$col("group")$sort_by(pl$col("value1")$sort(reverse=TRUE))
+#'   pl$col("group")$sort_by(pl$col("value1")$sort(descending=TRUE))
 #' )
 #'
 #' #quite similar usecase as R function `order()`
@@ -1544,8 +1544,8 @@ Expr_search_sorted = function(element) {
 #'     pl$col("ab")$sort_by("v3")$alias("ab3"),
 #'     pl$col("ab")$sort_by("v2")$alias("ab2"),
 #'     pl$col("ab")$sort_by("v1")$alias("ab1"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
-#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),descending=c(FALSE,TRUE))$alias("ab13FT"),
+#'     pl$col("ab")$sort_by(list("v3",pl$col("v1")),descending=TRUE)$alias("ab13T")
 #'   )$to_list(),
 #'   list(
 #'     ab4 = l$ab[order(l$v4)],
@@ -1556,11 +1556,11 @@ Expr_search_sorted = function(element) {
 #'     ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
 #'   )
 #' )
-Expr_sort_by = function(by, reverse = FALSE) {
+Expr_sort_by = function(by, descending = FALSE) {
   .pr$Expr$sort_by(
     self,
     wrap_elist_result(by, str_to_lit = FALSE),
-    result(reverse)
+    result(descending)
   ) |> unwrap("in $sort_by:")
 }
 
@@ -3058,7 +3058,7 @@ Expr_argsort = Expr_arg_sort
 #' - 'random' : Like 'ordinal', but the rank for ties is not dependent
 #' on the order that the values occur in the Series.
 #'
-#' @param reverse bool, reverse the operation
+#' @param descending bool, reverse the operation
 #' @return  Expr
 #' @aliases rank
 #' @keywords Expr
@@ -3070,8 +3070,8 @@ Expr_argsort = Expr_arg_sort
 #' #  The 'ordinal' method:
 #' df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
 #' df$select(pl$col("a")$rank("ordinal"))
-Expr_rank = function(method = "average", reverse = FALSE) {
-  unwrap(.pr$Expr$rank(self, method, reverse))
+Expr_rank = function(method = "average", descending = FALSE) {
+  unwrap(.pr$Expr$rank(self, method, descending))
 }
 
 
@@ -3896,7 +3896,7 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' Set_sorted
 #' @description  Flags the expression as 'sorted'.
 #* Enables downstream code to user fast paths for sorted arrays.
-#' @param reverse bool if TRUE Descending else Ascending
+#' @param descending bool if TRUE Descending else Ascending
 #' @keywords Expr
 #' @return Expr
 #' @aliases set_sorted
@@ -3908,9 +3908,9 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' #incorrect use, flag somthing as not sorted ascendingly
 #' s2 = pl$select(pl$lit(c(1,3,2,4))$set_sorted()$alias("a"))$get_column("a")
 #' s2$sort() #sorting skipped, although not actually sorted
-Expr_set_sorted = function(reverse = FALSE) {
+Expr_set_sorted = function(descending = FALSE) {
   self$map(\(s) {
-    .pr$Series$set_sorted_mut(s, reverse) #use private to bypass mut protection
+    .pr$Series$set_sorted_mut(s, descending) #use private to bypass mut protection
     s
   })
 }

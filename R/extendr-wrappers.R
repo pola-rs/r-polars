@@ -235,7 +235,7 @@ Expr$sort <- function(descending, nulls_last) .Call(wrap__Expr__sort, self, desc
 
 Expr$arg_sort <- function(descending, nulls_last) .Call(wrap__Expr__arg_sort, self, descending, nulls_last)
 
-Expr$top_k <- function(k, reverse) .Call(wrap__Expr__top_k, self, k, reverse)
+Expr$top_k <- function(k, descending) .Call(wrap__Expr__top_k, self, k, descending)
 
 Expr$arg_max <- function() .Call(wrap__Expr__arg_max, self)
 
@@ -245,7 +245,7 @@ Expr$search_sorted <- function(element) .Call(wrap__Expr__search_sorted, self, e
 
 Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
 
-Expr$sort_by <- function(by, reverse) .Call(wrap__Expr__sort_by, self, by, reverse)
+Expr$sort_by <- function(by, descending) .Call(wrap__Expr__sort_by, self, by, descending)
 
 Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
 
@@ -327,7 +327,7 @@ Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_ske
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
-Expr$rank <- function(method, reverse) .Call(wrap__Expr__rank, self, method, reverse)
+Expr$rank <- function(method, descending) .Call(wrap__Expr__rank, self, method, descending)
 
 Expr$diff <- function(n_float, null_behavior) .Call(wrap__Expr__diff, self, n_float, null_behavior)
 
@@ -417,7 +417,7 @@ Expr$lst_sum <- function() .Call(wrap__Expr__lst_sum, self)
 
 Expr$lst_mean <- function() .Call(wrap__Expr__lst_mean, self)
 
-Expr$lst_sort <- function(reverse) .Call(wrap__Expr__lst_sort, self, reverse)
+Expr$lst_sort <- function(descending) .Call(wrap__Expr__lst_sort, self, descending)
 
 Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
 
@@ -799,9 +799,9 @@ Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
 
 Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
 
-Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
+Series$is_sorted_ascending_flag <- function() .Call(wrap__Series__is_sorted_ascending_flag, self)
 
-Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
+Series$is_sorted_descending_flag <- function() .Call(wrap__Series__is_sorted_descending_flag, self)
 
 Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted, self, reverse, nulls_last)
 
