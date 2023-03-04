@@ -1,3 +1,6 @@
+# Direnv files
+.direnv
+.envrc
 # History files
 .Rhistory
 .Rapp.history
