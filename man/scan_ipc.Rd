@@ -2,7 +2,7 @@
 % Please edit documentation in R/ipc.R
 \name{scan_ipc}
 \alias{scan_ipc}
-\title{new LazyFrame from ipc file}
+\title{Scan Apache Arrow IPC}
 \usage{
 scan_ipc(
   path,
@@ -33,6 +33,6 @@ scan_ipc(
 LazyFrame
 }
 \description{
-new LazyFrame from ipc file
+Create new LazyFrame from Apache Arrow IPC file or stream
 }
 \keyword{LazyFrame_new}

@@ -2,8 +2,7 @@ use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
 use polars::prelude as pl;
-use polars::prelude::IntoSeries;
-use polars::prelude::NamedFrom;
+use polars::prelude::{IntoSeries, NamedFrom};
 
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed

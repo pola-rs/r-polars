@@ -1,7 +1,7 @@
 use crate::lazy::dataframe::LazyFrame as RLazyFrame;
 use crate::utils::r_result_list;
 use crate::utils::wrappers::null_to_opt;
-use extendr_api::{extendr, prelude::*};
+use extendr_api::prelude::*;
 use polars::io::RowCount;
 use polars::prelude::*;
 

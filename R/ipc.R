@@ -1,4 +1,6 @@
-#' new LazyFrame from ipc file
+#' Scan Apache Arrow IPC
+#'
+#' Create new LazyFrame from Apache Arrow IPC file or stream
 #' @keywords LazyFrame_new
 #'
 #' @param path string, path
