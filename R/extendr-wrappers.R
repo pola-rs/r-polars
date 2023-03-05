@@ -13,6 +13,8 @@ NULL
 
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
+new_from_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__new_from_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
+
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
 
 concat_df <- function(vdf) .Call(wrap__concat_df, vdf)

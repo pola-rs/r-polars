@@ -2,21 +2,21 @@ use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 pub mod read_csv;
+pub mod read_ipc;
 pub mod read_parquet;
 use crate::lazy::dsl;
 
-use crate::rdatatype;
 use crate::lazy;
-pub use lazy::dataframe::*;
+use crate::rdatatype;
 use crate::rlib;
+pub use lazy::dataframe::*;
 
-use crate::rdatatype::RPolarsDataType;
 use crate::conversion_r_to_s::robjname2series;
+use crate::rdatatype::RPolarsDataType;
 
-use dsl::*;
-pub use crate::series::*;
 use crate::conversion_s_to_r::pl_series_to_list;
-
+pub use crate::series::*;
+use dsl::*;
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
@@ -344,6 +344,7 @@ impl VecDataFrame {
 extendr_module! {
     mod rdataframe;
     use read_csv;
+    use read_ipc;
     use read_parquet;
     use rdatatype;
     use rlib;

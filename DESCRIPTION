@@ -43,6 +43,7 @@ Collate:
     'expr__struct.R'
     'functions.R'
     'groupby.R'
+    'ipc.R'
     'lazy_functions.R'
     'lazyframe__background.R'
     'lazyframe__groupby.R'

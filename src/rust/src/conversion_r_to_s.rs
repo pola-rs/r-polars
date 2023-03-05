@@ -1,10 +1,9 @@
+use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
-
 use polars::prelude as pl;
-use extendr_api::prelude::*;
-use polars::prelude::NamedFrom;
 use polars::prelude::IntoSeries;
+use polars::prelude::NamedFrom;
 
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
@@ -12,9 +11,9 @@ use polars::prelude::IntoSeries;
 // concatenation.
 #[derive(Debug)]
 enum SeriesTree {
-    Series(pl::Series),         // an R object likely some vector was converted into a plain Series
+    Series(pl::Series), // an R object likely some vector was converted into a plain Series
     SeriesVec(Vec<SeriesTree>), // an R object was converted into list of Series'
-    SeriesEmptyVec,             // likely an R NULL or list() delayed conversion as corrosponding polars is yet given
+    SeriesEmptyVec, // likely an R NULL or list() delayed conversion as corrosponding polars is yet given
 }
 
 // Main module function: Convert any potentially nested R object handled in three steps
@@ -49,7 +48,6 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
     // handle any supported Robj
     let series_result = match rtype {
-
         Rtype::Doubles => {
             let rdouble: Doubles = x.try_into().expect("as matched");
             if rdouble.no_na().is_true() {
@@ -58,7 +56,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     x.as_real_slice().unwrap(),
                 )))
             } else {
-                let mut s: pl::Series = rdouble//convert R NAs to rust options
+                let mut s: pl::Series = rdouble //convert R NAs to rust options
                     .iter()
                     .map(|x| if x.is_na() { None } else { Some(x.0) })
                     .collect();
@@ -67,7 +65,10 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             }
         }
 
-        Rtype::Strings => Ok(SeriesTree::Series(robj_to_utf8_series(x.try_into().expect("as matched"), name))),
+        Rtype::Strings => Ok(SeriesTree::Series(robj_to_utf8_series(
+            x.try_into().expect("as matched"),
+            name,
+        ))),
 
         Rtype::Logicals => {
             let logicals: Logicals = x.try_into().unwrap();
@@ -79,9 +80,14 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         }
 
         Rtype::Integers if x.inherits("factor") => Ok(SeriesTree::Series(
-            robj_to_utf8_series(x.as_character_factor().try_into().expect("as_character_factor() enforces same type"), name)
-                .cast(&pl::DataType::Categorical(None))
-                .expect("as matched"),
+            robj_to_utf8_series(
+                x.as_character_factor()
+                    .try_into()
+                    .expect("as_character_factor() enforces same type"),
+                name,
+            )
+            .cast(&pl::DataType::Categorical(None))
+            .expect("as matched"),
         )),
 
         Rtype::Integers => {
@@ -99,11 +105,12 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             };
 
             Ok(SeriesTree::Series(s))
-        },
+        }
 
         Rtype::Null => Ok(SeriesTree::SeriesEmptyVec), // flag NULL with this enum, to resolve polars type later
 
-        Rtype::List => { // Recusively handle elements of list
+        Rtype::List => {
+            // Recusively handle elements of list
             let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = x
                 .as_list()
                 .unwrap()
@@ -112,64 +119,84 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 .collect();
             result_series_vec.map(|vst| {
                 if vst.len() == 0 {
-                    SeriesTree::SeriesEmptyVec  // flag empty list() with this enum, to resolve polars type later
+                    SeriesTree::SeriesEmptyVec // flag empty list() with this enum, to resolve polars type later
                 } else {
                     SeriesTree::SeriesVec(vst)
                 }
             })
         }
 
-        
-        _ => Err(pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(
-            format!("new series from rtype {:?} is not supported (yet)", rtype),
-        ))),
+        _ => Err(pl::PolarsError::InvalidOperation(
+            polars::error::ErrString::Owned(format!(
+                "new series from rtype {:?} is not supported (yet)",
+                rtype
+            )),
+        )),
     };
 
     //post process derived R types
     //let x_class: Vec<&str> = x.class().map(|itr| itr.collect()).unwrap_or_else(||Vec::new());
     match series_result {
         Ok(SeriesTree::Series(s)) if x.inherits("POSIXct") => {
-            let tz = x.get_attrib("tzone").map(|robj| robj.as_str().map(|str| if str=="" {None} else {Some(str.to_string())})).flatten().flatten();
+            let tz = x
+                .get_attrib("tzone")
+                .map(|robj| {
+                    robj.as_str().map(|str| {
+                        if str == "" {
+                            None
+                        } else {
+                            Some(str.to_string())
+                        }
+                    })
+                })
+                .flatten()
+                .flatten();
             //todo this could probably in fewer allocations
-            let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds,tz);
-            Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
-        },
+            let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds, tz);
+            Ok(SeriesTree::Series(
+                (s.cast(&pl::DataType::Int64)? * 1_000i64).cast(&dt)?,
+            ))
+        }
         Ok(SeriesTree::Series(s)) if x.inherits("Date") => {
             Ok(SeriesTree::Series(s.cast(&pl::DataType::Date)?))
-        },
+        }
         // Ok(SeriesTree::Series(s)) if x.inherits("ITime")=> {
         //     let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds,tz);
         //     Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
         // },
-        Ok(SeriesTree::Series(s)) if x.inherits("PTime")=> {
-            let tu_str = x.get_attrib("tu").map(|robj| robj.as_str()).flatten().ok_or_else(||
-                pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
-                    "failure to convert class PTime as attribute tu is not a string or there".to_string(),
-                ))
-            )?;
-            let i_conv: i64 =  match tu_str {
+        Ok(SeriesTree::Series(s)) if x.inherits("PTime") => {
+            let tu_str = x
+                .get_attrib("tu")
+                .map(|robj| robj.as_str())
+                .flatten()
+                .ok_or_else(|| {
+                    pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
+                        "failure to convert class PTime as attribute tu is not a string or there"
+                            .to_string(),
+                    ))
+                })?;
+            let i_conv: i64 = match tu_str {
                 "ns" => 1,
                 "us" => 1_000,
                 "ms" => 1_000_000,
                 "s" => 1_000_000_000,
-                _ => Err(
-                    pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
-                        "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'".to_string(),
-                    ))
-                )?
+                _ => Err(pl::PolarsError::SchemaMisMatch(
+                    polars::error::ErrString::Owned(
+                        "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'"
+                            .to_string(),
+                    ),
+                ))?,
             };
-            Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*i_conv).cast(&pl::DataType::Time)?))
+            Ok(SeriesTree::Series(
+                (s.cast(&pl::DataType::Int64)? * i_conv).cast(&pl::DataType::Time)?,
+            ))
         }
 
         //     Ok(SeriesTree::Series((s.cast(&pl::DataType::Int64)?*1_000i64).cast(&dt)?))
         // },
-        _ => series_result
+        _ => series_result,
     }
-
 }
-
-
-
 
 // consume nested SeriesTree and return concatenated Series or an appropriate Error
 fn concat_series_tree(
@@ -192,7 +219,6 @@ fn concat_series_tree(
             "internal error: A series tree was built with a literal empty vector, instead of using the SeriesEmptyVec flag"
         ),
         SeriesTree::SeriesVec(sv) => {
-            
             // concat any deeper nested parts of SeriesTree
             let series_vec_result: pl::PolarsResult<Vec<pl::Series>> = sv
                 .into_iter()

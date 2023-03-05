@@ -16,13 +16,13 @@ use crate::utils::wrappers::null_to_opt;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 
+use crate::lazy::dsl::Expr;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
 use polars::prelude as pl;
 use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
-use crate::lazy::dsl::Expr;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
 #[derive(Debug, Clone)]

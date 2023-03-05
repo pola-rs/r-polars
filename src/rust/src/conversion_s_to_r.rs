@@ -1,9 +1,9 @@
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 
+use crate::rdataframe::DataFrame;
 use pl::PolarsError as pl_error;
 use polars::error::ErrString as pl_err_string;
-use crate::rdataframe::DataFrame;
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
 pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
