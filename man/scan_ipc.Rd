@@ -15,6 +15,8 @@ scan_ipc(
 )
 }
 \arguments{
+\item{path}{string, path}
+
 \item{n_rows}{integer, limit rows to scan}
 
 \item{cache}{bool, use cache}
@@ -26,8 +28,6 @@ scan_ipc(
 \item{row_count_offset}{integer, the rowcount column can be offst by this value}
 
 \item{memmap}{bool, mapped memory}
-
-\item{file}{string, path}
 }
 \value{
 LazyFrame
