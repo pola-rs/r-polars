@@ -1,7 +1,7 @@
 #' new LazyFrame from ipc file
 #' @keywords LazyFrame_new
 #'
-#' @param file string, path
+#' @param path string, path
 #' @param n_rows integer, limit rows to scan
 #' @param cache bool, use cache
 #' @param rechunk bool, rechunk reorganize memory layout, potentially make future operations faster, however perform reallocation now.
