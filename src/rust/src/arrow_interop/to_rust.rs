@@ -67,55 +67,54 @@ use std::result::Result;
 //     }
 // }
 
-// pub fn field_to_rust(arrow_array: Robj) -> Result<String, String> {
-//     // prepare a pointer to receive the Array struct
+pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<String, String> {
+    let array = Box::new(ffi::ArrowArray::empty());
+    let schema = Box::new(ffi::ArrowSchema::empty());
+    let array_ptr = &*array as *const ffi::ArrowArray;
+    let schema_ptr = &*schema as *const ffi::ArrowSchema;
+    dbg!((array_ptr as usize).to_string());
+    let ext_a = call!("xptr::new_xptr", (array_ptr as usize).to_string())?;
+    let ext_s = call!("xptr::new_xptr", (schema_ptr as usize).to_string())?;
+    call!(r" {\(x) .Internal(inspect(x))}", ext_a.clone())?;
+    call!(r" {\(x) .Internal(inspect(x))}", ext_s.clone())?;
 
-//     let array = Box::new(ffi::ArrowArray::empty());
-//     let schema = Box::new(ffi::ArrowSchema::empty());
-//     //let r_a_ptr = extendr_api::ExternalPtr::new(*array);
-//     //let r_s_ptr = extendr_api::ExternalPtr::new(*schema);
-//     let array_ptr = &*array as *const ffi::ArrowArray;
-//     let schema_ptr = &*schema as *const ffi::ArrowSchema;
-//     dbg!((array_ptr as usize).to_string());
-//     let ext_a = call!("xptr::new_xptr", (array_ptr as usize).to_string())?;
-//     let ext_s = call!("xptr::new_xptr", (schema_ptr as usize).to_string())?;
-//     dbg!(&ext_a, &ext_s);
-//     call!("arrow:::ExportArray", arrow_array, ext_a, ext_s)?;
+    dbg!(&ext_a, &ext_s);
+    call!("arrow:::ExportArray", arrow_array, ext_a, ext_s)?;
 
-//     // make the conversion through PyArrow's private API
-//     // this changes the pointer's memory and is thus unsafe. In particular, `_export_to_c` can go out of bounds
+    // make the conversion through PyArrow's private API
+    // this changes the pointer's memory and is thus unsafe. In particular, `_export_to_c` can go out of bounds
 
-//     let array = unsafe {
-//         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
-//         let array =
-//             ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?;
-//         array
-//     };
-
-//     dbg!(array);
-
-//     Ok("done".to_string())
-// }
-
-pub fn field_to_rust(f_ptr: Robj) -> Result<String, String> {
-    // prepare a pointer to receive the Array struct
-
-    //let array = Box::new(ffi::ArrowArray::empty());
-    //let schema = Box::new(ffi::ArrowSchema::empty());
-    let f_ptr = robj_to!(usize, f_ptr)?;
-    let x = f_ptr as *const ffi::ArrowArray;
-
-    use polars_core::utils::arrow::datatypes as dt;
-    let y = unsafe {
-        ffi::import_array_from_c(*x, dt::DataType::Float64).map_err(|err| err.to_string())?
+    let array = unsafe {
+        let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
+        let array =
+            ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?;
+        array
     };
-    dbg!("to here");
-    let w = y.data_type();
 
-    dbg!(w);
+    dbg!(array);
 
     Ok("done".to_string())
 }
+
+// pub fn field_to_rust(f_ptr: Robj) -> Result<String, String> {
+//     // prepare a pointer to receive the Array struct
+
+//     //let array = Box::new(ffi::ArrowArray::empty());
+//     //let schema = Box::new(ffi::ArrowSchema::empty());
+//     let f_ptr = robj_to!(usize, f_ptr)?;
+//     let x = f_ptr as *const ffi::ArrowArray;
+
+//     use polars_core::utils::arrow::datatypes as dt;
+//     let y = unsafe {
+//         ffi::import_array_from_c(*x, dt::DataType::Float64).map_err(|err| err.to_string())?
+//     };
+//     dbg!("to here");
+//     let w = y.data_type();
+
+//     dbg!(w);
+
+//     Ok("done".to_string())
+// }
 
 // // PyList<Field> which you get by calling `list(schema)`
 // pub fn pyarrow_schema_to_rust(obj: &PyList) -> PyResult<Schema> {
