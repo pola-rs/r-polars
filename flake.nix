@@ -23,7 +23,7 @@
             outputHashes = {
               "arrow2-0.16.0" =
                 "sha256-Ac/DhiLKd16ffBmmZXK2ph7gWrm/2YgioOclSpzTMx8=";
-              "extendr-api-0.3.1" =
+              "extendr-api-0.4.0" =
                 "sha256-HOglEF9PLLV12uP3gWr/6pSZFfn38I+ATcJPBbGzpJI=";
               "jsonpath_lib-0.3.0" =
                 "sha256-NKszYpDGG8VxfZSMbsTlzcMGFHBOUeFojNw4P2wM3qk=";
