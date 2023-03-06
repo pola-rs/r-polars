@@ -5,9 +5,9 @@ use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use extendr_api::prelude::list;
 
+use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
-
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -430,6 +430,14 @@ pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> std::result::Result<&'a str, 
 pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, String> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
+    if robj.rtype() == Rtype::Strings && robj.len() == 1 {
+        let us = robj
+            .as_str()
+            .unwrap_or("empty string")
+            .parse::<usize>()
+            .map_err(|err| format!("failed parsing {:?} to usize", err));
+        return us;
+    }
     match (robj.rtype(), robj.len()) {
         (Rtype::Doubles, 1) => robj.as_real(),
         (Rtype::Integers, 1) => robj.as_integer().map(|i| i as f64),
@@ -498,6 +506,49 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
         (_, _) => None,
     }
     .ok_or_else(|| format!("is not a single bool as required, but {:?}", robj))
+}
+
+pub fn robj_to_rarrow_schema(robj: extendr_api::Robj) -> std::result::Result<Robj, String> {
+    let robj = unpack_r_result_list(robj)?;
+
+    let is_arrow_schema = robj
+        .class()
+        .map(|striter| {
+            striter
+                .zip(["Schema", "ArrowObject", "R6"])
+                .all(|(x, y)| x.eq(y))
+        })
+        .unwrap_or(false);
+
+    if is_arrow_schema {
+        Ok(robj)
+    } else {
+        Err(format!(
+            "is not class c('Schema', 'ArrowObject', 'R6') as required, but {:?}",
+            robj
+        ))
+    }
+}
+
+pub fn robj_to_rarrow_field(robj: extendr_api::Robj) -> std::result::Result<Robj, String> {
+    let robj = unpack_r_result_list(robj)?;
+
+    let is_arrow_schema = robj
+        .class()
+        .map(|striter| {
+            striter
+                .zip(["Field", "ArrowObject", "R6"])
+                .all(|(x, y)| x.eq(y))
+        })
+        .unwrap_or(false);
+    if is_arrow_schema {
+        Ok(robj)
+    } else {
+        Err(format!(
+            "is not class c('Field', 'ArrowObject', 'R6') as required, but {:?}",
+            robj
+        ))
+    }
 }
 
 pub fn robj_to_datatype(robj: extendr_api::Robj) -> std::result::Result<RPolarsDataType, String> {
@@ -586,6 +637,14 @@ macro_rules! robj_to_inner {
 
     (RField, $a:ident) => {
         crate::utils::robj_to_field($a)
+    };
+
+    (RArrow_schema, $a:ident) => {
+        crate::utils::robj_to_rarrow_schema($a)
+    };
+
+    (RArrow_field, $a:ident) => {
+        crate::utils::robj_to_rarrow_field($a)
     };
 
     (lit, $a:ident) => {

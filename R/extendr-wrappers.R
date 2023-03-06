@@ -41,6 +41,8 @@ as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
+field_to_rust2 <- function(arrow_array) .Call(wrap__field_to_rust2, arrow_array)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

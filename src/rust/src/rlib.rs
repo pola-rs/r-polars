@@ -3,9 +3,9 @@ use crate::rdataframe::DataFrame;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::lazy::dsl::ProtoExprArray;
-use crate::series::Series;
 use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
+use crate::series::Series;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
@@ -185,6 +185,15 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
+#[extendr]
+fn field_to_rust2(arrow_array: Robj) -> Result<String, String> {
+    let x = crate::arrow_interop::to_rust::field_to_rust(arrow_array)?;
+
+    rprintln!("hurray we read an arrow field {:?}", x);
+
+    Ok(x)
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -200,4 +209,5 @@ extendr_module! {
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;
+    fn field_to_rust2;
 }
