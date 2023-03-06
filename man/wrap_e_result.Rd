@@ -2,18 +2,22 @@
 % Please edit documentation in R/expr__expr.R
 \name{wrap_e_result}
 \alias{wrap_e_result}
-\title{wrap as literal}
+\title{wrap as Expression capture ok/err as result}
 \usage{
-wrap_e_result(e, str_to_lit = TRUE)
+wrap_e_result(e, str_to_lit = TRUE, argname = NULL)
 }
 \arguments{
 \item{e}{an Expr(polars) or any R expression}
+
+\item{str_to_lit}{bool should string become a column name or not, then a literal string}
+
+\item{argname}{if error, blame argument of this name}
 }
 \value{
 Expr
 }
 \description{
-wrap as literal
+wrap as Expression capture ok/err as result
 }
 \details{
 used internally to ensure an object is an expression and to catch any error
