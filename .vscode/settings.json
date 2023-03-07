@@ -1,7 +1,9 @@
 {
-    // "rust-analyzer.linkedProjects": [
-    //     //"./extendr-api/Cargo.toml",
-    //     "./src/rust/Cargo.toml",
-    //     //"py-polars"
-    // ],
+    "rust-analyzer.linkedProjects": [
+        //"./extendr-api/Cargo.toml",
+        "./src/rust/Cargo.toml",
+        //"py-polars"
+    ],
+    //"rust-analyzer.cargo.features": "all",
+    "python.formatting.provider": "black",
 }

@@ -43,6 +43,12 @@ struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, sch
 
 field_to_rust2 <- function(arrow_array) .Call(wrap__field_to_rust2, arrow_array)
 
+series_from_arrow <- function(name, array) .Call(wrap__series_from_arrow, name, array)
+
+rb_to_df <- function(r_columns, names) .Call(wrap__rb_to_df, r_columns, names)
+
+rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

@@ -56,5 +56,6 @@ Collate:
     'series__series.R'
     'translation.R'
     'vctrs.R'
+    'xptr-package.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000

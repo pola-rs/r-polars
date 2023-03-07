@@ -11,6 +11,7 @@ use polars_core::POOL;
 use crate::rdatatype::RField;
 use crate::robj_to;
 use extendr_api::prelude::*;
+use polars::prelude as pl;
 use std::result::Result;
 
 // pub fn field_to_rust(robj: Robj) -> Result<RField, String> {
@@ -66,22 +67,29 @@ use std::result::Result;
 //         }
 //     }
 // }
+unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
+    use extendr_api::{Integers, Rinternals};
+    unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
+}
 
-pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<String, String> {
-    let array = Box::new(ffi::ArrowArray::empty());
-    let schema = Box::new(ffi::ArrowSchema::empty());
-    let array_ptr = &*array as *const ffi::ArrowArray;
-    let schema_ptr = &*schema as *const ffi::ArrowSchema;
-    dbg!((array_ptr as usize).to_string());
-    let ext_a = call!("xptr::new_xptr", (array_ptr as usize).to_string())?;
-    let ext_s = call!("xptr::new_xptr", (schema_ptr as usize).to_string())?;
-    call!(r" {\(x) .Internal(inspect(x))}", ext_a.clone())?;
-    call!(r" {\(x) .Internal(inspect(x))}", ext_s.clone())?;
+pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<ArrayRef, String> {
+    let mut array = Box::new(ffi::ArrowArray::empty());
+    let mut schema = Box::new(ffi::ArrowSchema::empty());
 
-    dbg!(&ext_a, &ext_s);
+    let (ext_a, ext_s) = unsafe {
+        (
+            wrap_make_external_ptr(&mut *array),
+            wrap_make_external_ptr(&mut *schema),
+        )
+    };
+    //dbg!(&ext_s);
+    //call!(r" {\(x) .Internal(inspect(x))}", ext_a.clone())?;
+    //call!(r" {\(x) .Internal(inspect(x))}", ext_s.clone())?;
+
+    //dbg!(&ext_a, &ext_s);
     call!("arrow:::ExportArray", arrow_array, ext_a, ext_s)?;
 
-    // make the conversion through PyArrow's private API
+    // make the conversion through R-Arrow's private API
     // this changes the pointer's memory and is thus unsafe. In particular, `_export_to_c` can go out of bounds
 
     let array = unsafe {
@@ -91,65 +99,30 @@ pub fn arrow_array_to_rust(arrow_array: Robj) -> Result<String, String> {
         array
     };
 
-    dbg!(array);
+    //dbg!(&array);
 
-    Ok("done".to_string())
+    Ok(array)
 }
 
-// pub fn field_to_rust(f_ptr: Robj) -> Result<String, String> {
-//     // prepare a pointer to receive the Array struct
+pub fn rb_to_rust_df(r_rb_columns: List, names: &Vec<String>) -> Result<pl::DataFrame, String> {
+    let columns: Result<Vec<_>, String> = r_rb_columns
+        .into_iter()
+        .map(|(_, r_array)| arrow_array_to_rust(r_array))
+        .collect();
 
-//     //let array = Box::new(ffi::ArrowArray::empty());
-//     //let schema = Box::new(ffi::ArrowSchema::empty());
-//     let f_ptr = robj_to!(usize, f_ptr)?;
-//     let x = f_ptr as *const ffi::ArrowArray;
+    let s_vec_res = columns?
+        .into_iter()
+        .enumerate()
+        .map(|(i, arr)| {
+            let str = names[i].as_str();
+            let s = <polars::prelude::Series>::try_from((str, arr)).map_err(|err| err.to_string());
+            Ok(s?)
+        })
+        .collect::<Result<Vec<_>, String>>();
+    Ok(pl::DataFrame::new_no_checks(s_vec_res?))
+}
 
-//     use polars_core::utils::arrow::datatypes as dt;
-//     let y = unsafe {
-//         ffi::import_array_from_c(*x, dt::DataType::Float64).map_err(|err| err.to_string())?
-//     };
-//     dbg!("to here");
-//     let w = y.data_type();
-
-//     dbg!(w);
-
-//     Ok("done".to_string())
-// }
-
-// // PyList<Field> which you get by calling `list(schema)`
-// pub fn pyarrow_schema_to_rust(obj: &PyList) -> PyResult<Schema> {
-//     obj.into_iter().map(field_to_rust).collect()
-// }
-
-// pub fn array_to_rust(obj: &PyAny) -> PyResult<ArrayRef> {
-//     // prepare a pointer to receive the Array struct
-//     let array = Box::new(ffi::ArrowArray::empty());
-//     let schema = Box::new(ffi::ArrowSchema::empty());
-
-//     let array_ptr = &*array as *const ffi::ArrowArray;
-//     let schema_ptr = &*schema as *const ffi::ArrowSchema;
-
-//     // make the conversion through PyArrow's private API
-//     // this changes the pointer's memory and is thus unsafe. In particular, `_export_to_c` can go out of bounds
-//     obj.call_method1(
-//         "_export_to_c",
-//         (array_ptr as Py_uintptr_t, schema_ptr as Py_uintptr_t),
-//     )?;
-
-//     unsafe {
-//         let field = ffi::import_field_from_c(schema.as_ref()).map_err(PyPolarsErr::from)?;
-//         let array = ffi::import_array_from_c(*array, field.data_type).map_err(PyPolarsErr::from)?;
-//         Ok(array)
-//     }
-// }
-
-// pub fn to_rust_df(rb: &[&PyAny]) -> PyResult<DataFrame> {
-//     let schema = rb
-//         .get(0)
-//         .ok_or_else(|| PyPolarsErr::Other("empty table".into()))?
-//         .getattr("schema")?;
-//     let names = schema.getattr("names")?.extract::<Vec<String>>()?;
-
+// pub fn to_rust_df(rb: RObj, names: Vec<String>) -> Result<pl::DataFrame, String> {
 //     let dfs = rb
 //         .iter()
 //         .map(|rb| {

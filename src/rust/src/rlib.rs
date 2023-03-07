@@ -41,6 +41,33 @@ fn concat_df(vdf: &VecDataFrame) -> List {
 
     r_result_list(result.map_err(|err| format!("{:?}", err)))
 }
+
+fn concat_df2(vdf: Vec<pl::DataFrame>) -> pl::PolarsResult<pl::DataFrame> {
+    //-> PyResult<PyDataFrame> {
+
+    use polars_core::error::PolarsResult;
+    use polars_core::utils::rayon::prelude::*;
+
+    let first = (vdf.iter().peekable().peek().unwrap()).clone().clone();
+    let identity_df = first.clone().slice(0, 0);
+    let identity = || Ok(identity_df.clone());
+
+    let result = polars_core::POOL.install(|| {
+        vdf.into_par_iter()
+            .fold(identity, |acc: PolarsResult<pl::DataFrame>, df| {
+                let mut acc = acc?;
+                acc.vstack_mut(&df)?;
+                Ok(acc)
+            })
+            .reduce(identity, |acc, df| {
+                let mut acc = acc?;
+                acc.vstack_mut(&df?)?;
+                Ok(acc)
+            })
+    });
+
+    result
+}
 //ping
 
 #[extendr]
@@ -186,12 +213,70 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
 }
 
 #[extendr]
-fn field_to_rust2(arrow_array: Robj) -> Result<String, String> {
-    let x = crate::arrow_interop::to_rust::field_to_rust(arrow_array)?;
+fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
+    let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
 
     rprintln!("hurray we read an arrow field {:?}", x);
+    Ok(extendr_api::NULL.into())
+}
 
-    Ok(x)
+#[extendr]
+fn rb_to_df(r_columns: List, names: Vec<String>) -> Result<DataFrame, String> {
+    let x = crate::arrow_interop::to_rust::rb_to_rust_df(r_columns, &names);
+    x.map(|df| DataFrame(df))
+}
+
+#[extendr]
+fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
+    let dfs: Result<Vec<pl::DataFrame>, String> = r_batches
+        .into_iter()
+        .map(|(_, robj)| {
+            let robj = call!(r"\(x) x$columns", robj)?;
+            let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
+            crate::arrow_interop::to_rust::rb_to_rust_df(l, &names)
+        })
+        .collect();
+    let df = concat_df2(dfs?).map_err(|err| {
+        format!(
+            "while vertical concatenating RecordBatches, polars gave this error {}",
+            err
+        )
+    })?;
+
+    Ok(DataFrame(df))
+}
+
+#[extendr]
+pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
+    use polars::prelude::IntoSeries;
+    let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
+
+    match arr.data_type() {
+        pl::ArrowDataType::LargeList(_) => {
+            let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
+
+            let mut previous = 0;
+            let mut fast_explode = true;
+            for &o in array.offsets().as_slice()[1..].iter() {
+                if o == previous {
+                    fast_explode = false;
+                    break;
+                }
+                previous = o;
+            }
+            let mut out = unsafe { pl::ListChunked::from_chunks(name, vec![arr]) };
+            if fast_explode {
+                out.set_fast_explode()
+            }
+            Ok(Series(out.into_series()))
+        }
+        _ => {
+            let res_series: pl::PolarsResult<pl::Series> =
+                std::convert::TryFrom::try_from((name, arr));
+            let series = res_series.map_err(|err| err.to_string())?;
+            Ok(Series(series))
+        }
+    }
 }
 
 extendr_module! {
@@ -210,4 +295,7 @@ extendr_module! {
     fn as_struct;
     fn struct_;
     fn field_to_rust2;
+    fn series_from_arrow;
+    fn rb_to_df;
+    fn rb_list_to_df;
 }
