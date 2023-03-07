@@ -193,7 +193,7 @@ test_that("zfill", {
       pl$lit(c(-1,2,10,"5"))$str$zfill("a")$to_r(),
       "something"
     ),
-    "is not a scalar integer or double as required"
+    "failed parsing ParseIntError"
   )
 
   #test wrong input range
@@ -221,7 +221,7 @@ test_that("str$ljust str$rjust", {
 
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust("wrong_string", "w"))$to_list(),
-    "\\[width\\] is not a scalar integer or double as required"
+    "\\[width\\] failed parsing ParseIntError"
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust(-2, "w"))$to_list(),
@@ -246,7 +246,7 @@ test_that("str$ljust str$rjust", {
 
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust("wrong_string", "w"))$to_list(),
-    "\\[width\\] is not a scalar integer or double as required"
+    c("\\[width\\]","failed parsing ParseIntError")
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust(-2, "w"))$to_list(),
@@ -390,9 +390,13 @@ test_that("str$extract", {
     r"(in str\$extract\: the arg \[pattern\] is not a single string)",
   )
 
+  expect_true(
+    pl$lit("abc")$str$extract("a","2")$meta$eq(pl$lit("abc")$str$extract("a",2))
+  )
+
   expect_grepl_error(
     pl$lit("abc")$str$extract("a","a"),
-    r"(str\$extract\: the arg \[group_index\] is not a scalar integer or double as required, but)",
+    c(r"(str\$extract\: the arg \[group_index\])","failed parsing ParseIntError","InvalidDigit")
   )
 
 })
