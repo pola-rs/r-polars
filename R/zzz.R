@@ -63,6 +63,12 @@ expr_cat_make_sub_ns  = macro_new_subnamespace("^ExprCat_" , "ExprCatNameSpace")
 
 
 
+replace_private_with_pub_methods(When, "^When_")
+replace_private_with_pub_methods(WhenThen, "^WhenThen_")
+replace_private_with_pub_methods(WhenThenThen, "^WhenThenThen_")
+
+
+
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
 #' @export

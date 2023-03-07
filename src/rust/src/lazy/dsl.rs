@@ -2220,8 +2220,87 @@ pub fn make_rolling_options(
     })
 }
 
+#[derive(Clone, Debug)]
+pub struct When {
+    predicate: Expr,
+}
+
+#[derive(Clone, Debug)]
+pub struct WhenThen {
+    predicate: Expr,
+    then: Expr,
+}
+
+#[derive(Clone)]
+pub struct WhenThenThen(dsl::WhenThenThen);
+
+#[extendr]
+impl WhenThenThen {
+    pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+        Self(self.0.clone().when(predicate.0.clone()))
+    }
+    pub fn then(&self, expr: &Expr) -> WhenThenThen {
+        Self(self.0.clone().then(expr.0.clone()))
+    }
+    pub fn otherwise(&self, expr: &Expr) -> Expr {
+        self.0.clone().otherwise(expr.0.clone()).into()
+    }
+
+    pub fn print(&self) {
+        rprintln!("Polars WhenThenThen");
+    }
+}
+
+#[extendr]
+impl WhenThen {
+    pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+        let e = dsl::when(self.predicate.0.clone())
+            .then(self.then.0.clone())
+            .when(predicate.0.clone());
+        WhenThenThen(e)
+    }
+
+    pub fn otherwise(&self, expr: &Expr) -> Expr {
+        dsl::ternary_expr(
+            self.predicate.0.clone(),
+            self.then.0.clone(),
+            expr.0.clone(),
+        )
+        .into()
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:?}", self);
+    }
+}
+
+#[extendr]
+impl When {
+    pub fn when(predicate: &Expr) -> When {
+        When {
+            predicate: predicate.clone(),
+        }
+    }
+
+    pub fn then(&self, expr: &Expr) -> WhenThen {
+        WhenThen {
+            predicate: self.predicate.clone(),
+            then: expr.clone(),
+        }
+    }
+
+    pub fn print(&self) {
+        rprintln!("{:?}", self);
+    }
+}
+
+#[extendr]
 extendr_module! {
     mod dsl;
     impl Expr;
     impl ProtoExprArray;
+    impl When;
+    impl WhenThen;
+    impl WhenThenThen;
+
 }
