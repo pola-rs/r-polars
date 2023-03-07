@@ -212,13 +212,13 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
-#[extendr]
-fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
-    let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
+// #[extendr]
+// fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
+//     let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
 
-    rprintln!("hurray we read an arrow field {:?}", x);
-    Ok(extendr_api::NULL.into())
-}
+//     rprintln!("hurray we read an arrow field {:?}", x);
+//     Ok(extendr_api::NULL.into())
+// }
 
 #[extendr]
 fn rb_to_df(r_columns: List, names: Vec<String>) -> Result<DataFrame, String> {
@@ -228,56 +228,52 @@ fn rb_to_df(r_columns: List, names: Vec<String>) -> Result<DataFrame, String> {
 
 #[extendr]
 fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
-    let dfs: Result<Vec<pl::DataFrame>, String> = r_batches
-        .into_iter()
-        .map(|(_, robj)| {
-            let robj = call!(r"\(x) x$columns", robj)?;
-            let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
-            crate::arrow_interop::to_rust::rb_to_rust_df(l, &names)
-        })
-        .collect();
-    let df = concat_df2(dfs?).map_err(|err| {
-        format!(
-            "while vertical concatenating RecordBatches, polars gave this error {}",
-            err
-        )
-    })?;
-
-    Ok(DataFrame(df))
-}
-
-#[extendr]
-pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
-    use polars::prelude::IntoSeries;
-    let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
-
-    match arr.data_type() {
-        pl::ArrowDataType::LargeList(_) => {
-            let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
-
-            let mut previous = 0;
-            let mut fast_explode = true;
-            for &o in array.offsets().as_slice()[1..].iter() {
-                if o == previous {
-                    fast_explode = false;
-                    break;
-                }
-                previous = o;
-            }
-            let mut out = unsafe { pl::ListChunked::from_chunks(name, vec![arr]) };
-            if fast_explode {
-                out.set_fast_explode()
-            }
-            Ok(Series(out.into_series()))
-        }
-        _ => {
-            let res_series: pl::PolarsResult<pl::Series> =
-                std::convert::TryFrom::try_from((name, arr));
-            let series = res_series.map_err(|err| err.to_string())?;
-            Ok(Series(series))
-        }
+    let mut iter = r_batches.into_iter().map(|(_, robj)| {
+        let robj = call!(r"\(x) x$columns", robj)?;
+        let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
+        crate::arrow_interop::to_rust::rb_to_rust_df(l, &names)
+    });
+    let mut df_acc = iter
+        .next()
+        .unwrap_or_else(|| Ok(pl::DataFrame::default()))?;
+    for df in iter {
+        df_acc.vstack_mut(&df?).map_err(|err| err.to_string())?;
     }
+    Ok(DataFrame(df_acc))
 }
+
+// #[extendr]
+// pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
+//     use polars::prelude::IntoSeries;
+//     let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
+
+//     match arr.data_type() {
+//         pl::ArrowDataType::LargeList(_) => {
+//             let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
+
+//             let mut previous = 0;
+//             let mut fast_explode = true;
+//             for &o in array.offsets().as_slice()[1..].iter() {
+//                 if o == previous {
+//                     fast_explode = false;
+//                     break;
+//                 }
+//                 previous = o;
+//             }
+//             let mut out = unsafe { pl::ListChunked::from_chunks(name, vec![arr]) };
+//             if fast_explode {
+//                 out.set_fast_explode()
+//             }
+//             Ok(Series(out.into_series()))
+//         }
+//         _ => {
+//             let res_series: pl::PolarsResult<pl::Series> =
+//                 std::convert::TryFrom::try_from((name, arr));
+//             let series = res_series.map_err(|err| err.to_string())?;
+//             Ok(Series(series))
+//         }
+//     }
+// }
 
 extendr_module! {
     mod rlib;
@@ -294,8 +290,8 @@ extendr_module! {
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;
-    fn field_to_rust2;
-    fn series_from_arrow;
+    //fn field_to_rust2;
+    //fn series_from_arrow;
     fn rb_to_df;
     fn rb_list_to_df;
 }
