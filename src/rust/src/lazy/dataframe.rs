@@ -6,11 +6,12 @@ use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
+
+#[allow(unused_imports)]
 use std::result::Result;
+
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
-use crate::arrow_interop;
-use crate::rdataframe::DataFrame;
 
 #[extendr]
 impl LazyFrame {

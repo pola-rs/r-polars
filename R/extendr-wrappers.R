@@ -45,6 +45,12 @@ rb_to_df <- function(r_columns, names) .Call(wrap__rb_to_df, r_columns, names)
 
 rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
 
+test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
+
+test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
+
+test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

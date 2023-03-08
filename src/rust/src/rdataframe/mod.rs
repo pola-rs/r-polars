@@ -5,18 +5,17 @@ pub mod read_csv;
 pub mod read_parquet;
 use crate::lazy::dsl;
 
-use crate::rdatatype;
 use crate::lazy;
-pub use lazy::dataframe::*;
+use crate::rdatatype;
 use crate::rlib;
+pub use lazy::dataframe::*;
 
-use crate::rdatatype::RPolarsDataType;
 use crate::conversion_r_to_s::robjname2series;
+use crate::rdatatype::RPolarsDataType;
 
-use dsl::*;
-pub use crate::series::*;
 use crate::conversion_s_to_r::pl_series_to_list;
-
+pub use crate::series::*;
+use dsl::*;
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
@@ -163,7 +162,7 @@ impl DataFrame {
     pub fn to_list(&self) -> List {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false)),
+            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
         );
 
         let robj_list_res = robj_vec_res
@@ -181,7 +180,7 @@ impl DataFrame {
     pub fn to_list_unwind(&self) -> Robj {
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, false)),
+            self.0.iter().map(|x| pl_series_to_list(x, false, true)),
         );
 
         let robj_list_res = robj_vec_res
@@ -201,7 +200,7 @@ impl DataFrame {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = collect_hinted_result(
             self.0.width(),
-            self.0.iter().map(|x| pl_series_to_list(x, true)),
+            self.0.iter().map(|x| pl_series_to_list(x, true, true)),
         );
 
         //rewrap Ok(Vec<Robj>) as R list
@@ -305,8 +304,11 @@ use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
-        let robj_vec_res: Result<Vec<Robj>, _> =
-            self.0.iter().map(|s| pl_series_to_list(s, true)).collect();
+        let robj_vec_res: Result<Vec<Robj>, _> = self
+            .0
+            .iter()
+            .map(|s| pl_series_to_list(s, true, true))
+            .collect();
 
         //rewrap Ok(Vec<Robj>) as R list
         let robj_list_res = robj_vec_res.map(|vec_robj| {
