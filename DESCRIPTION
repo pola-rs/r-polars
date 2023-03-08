@@ -21,7 +21,8 @@ Suggests:
     arrow,
     bench,
     nycflights13,
-    patrick
+    patrick,
+    bit64
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
