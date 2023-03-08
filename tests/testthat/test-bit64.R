@@ -8,7 +8,7 @@ test_that("from r to series and reverse", {
   expect_true(all((s_act == s_ref)$to_r()))
   #sereis to R
   r_act = s_act$to_r()
-  r_ref = as.integer64(values)
+  r_ref = bit64::as.integer64(values)
   expect_identical(
     r_act, r_ref
   )
@@ -19,32 +19,32 @@ test_that("from r to series and reverse", {
 test_that("robj_to! from bit64", {
     testthat::skip_if_not_installed("bit64")
     expect_identical(
-      unwrap(rpolars:::test_robj_to_i64(as.integer64(1))),
-      as.character(as.integer64(1))
+      unwrap(rpolars:::test_robj_to_i64(bit64::as.integer64(1))),
+      as.character(bit64::as.integer64(1))
     )
 
     expect_identical(
-      unwrap(rpolars:::test_robj_to_u32(as.integer64(2^27))),
+      unwrap(rpolars:::test_robj_to_u32(bit64::as.integer64(2^27))),
       as.character(2^27)
     )
 
     expect_identical(
-      unwrap(rpolars:::test_robj_to_usize(as.integer64("2305843009213693952"))),
+      unwrap(rpolars:::test_robj_to_usize(bit64::as.integer64("2305843009213693952"))),
       as.character(2^61)
     )
 
     expect_identical(
-      unwrap(rpolars:::test_robj_to_usize(as.integer64(2^61))),
+      unwrap(rpolars:::test_robj_to_usize(bit64::as.integer64(2^61))),
       as.character(2^61)
     )
 
     #NO NA
     expect_grepl_error(
-      unwrap(rpolars:::test_robj_to_i64(as.integer64(NA))),
+      unwrap(rpolars:::test_robj_to_i64(bit64::as.integer64(NA))),
       "scalar arguments do not support integer64 NA value"
     )
     expect_grepl_error(
-      unwrap(rpolars:::test_robj_to_usize(as.integer64(NA))),
+      unwrap(rpolars:::test_robj_to_usize(bit64::as.integer64(NA))),
       "scalar arguments do not support integer64 NA value"
     )
 
@@ -56,15 +56,17 @@ test_that("robj_to! from bit64", {
 
     #NO NEGATIVE
     expect_grepl_error(
-      unwrap(rpolars:::test_robj_to_usize(as.integer64(-1))),"the value -1 cannot be less than zero"
+      unwrap(rpolars:::test_robj_to_usize(bit64::as.integer64(-1))),
+      "the value -1 cannot be less than zero"
     )
     expect_grepl_error(
-      unwrap(rpolars:::test_robj_to_u32(as.integer64(-1))), "the value -1 cannot be less than zero"
+      unwrap(rpolars:::test_robj_to_u32(bit64::as.integer64(-1))),
+      "the value -1 cannot be less than zero"
     )
 
     #NO length>1
     expect_grepl_error(
-      unwrap(rpolars:::test_robj_to_usize(as.integer64(c(1:2)))),
+      unwrap(rpolars:::test_robj_to_usize(bit64::as.integer64(c(1:2)))),
       "is not a scalar integer or double as required"
     )
 
