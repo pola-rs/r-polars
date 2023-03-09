@@ -747,7 +747,7 @@ Expr_lit = function(x) {
   if(is.null(x)) return(unwrap(.pr$Expr$lit(NULL)))
   if (inherits(x,"Expr")) return(x)  # already Expr, pass through
   if (
-    length(x) != 1L || is.list(x) || inherits(x,c("POSIXct","PTime","Date"))
+    length(x) != 1L || inherits(x,c("list","POSIXct","PTime","Date"))
   ) {
     x = wrap_s(x) #wrap first as Series if not a simple scalar
   }

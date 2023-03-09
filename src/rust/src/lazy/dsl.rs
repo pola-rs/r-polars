@@ -71,7 +71,7 @@ impl Expr {
     pub fn lit(robj: Robj) -> Result<Expr, String> {
         let rtype = robj.rtype();
         let rlen = robj.len();
-        let err_msg = "NA not allowed use NULL";
+        let err_msg = "internal error: Should not be reached";
         let expr_result = match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
             (Rtype::Integers, 1) => {
@@ -80,6 +80,19 @@ impl Expr {
                     Ok(dsl::lit(val))
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
+                } else {
+                    Err(err_msg.into())
+                }
+            }
+            (Rtype::Doubles, 1) if robj.inherits("integer64") => {
+                let opt_val = robj.as_real();
+                if let Some(val) = opt_val.clone() {
+                    let x = unsafe { std::mem::transmute::<f64, i64>(val) };
+                    if x == crate::utils::BIT64_NA_ECODING {
+                        Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int64))
+                    } else {
+                        Ok(dsl::lit(x))
+                    }
                 } else {
                     Err(err_msg.into())
                 }

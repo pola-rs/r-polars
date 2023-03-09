@@ -13,6 +13,12 @@ test_that("from r to series and reverse", {
     r_act, r_ref
   )
 
+  #lit scalar
+  expect_identical(pl$lit(bit64::as.integer64(5))$to_r(),bit64::as.integer64(5))
+  expect_identical(pl$lit(bit64::as.integer64(NA))$to_r(),bit64::as.integer64(NA))
+
+  #lit series
+  expect_identical(pl$lit(bit64::as.integer64(c(NA,5)))$to_r(),bit64::as.integer64(c(NA,5)))
 })
 
 
