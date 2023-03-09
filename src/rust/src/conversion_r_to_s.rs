@@ -4,7 +4,6 @@ use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars::prelude::{IntoSeries, NamedFrom};
 
-
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -48,25 +47,24 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
     // handle any supported Robj
     let series_result = match rtype {
-
         Rtype::Doubles if x.inherits("integer64") => {
             let rdouble: Doubles = x.try_into().expect("as matched");
             if rdouble.no_na().is_true() {
-                let real_slice=  x.as_real_slice().unwrap();
+                let real_slice = x.as_real_slice().unwrap();
                 let i64_slice = unsafe { std::mem::transmute::<&[f64], &[i64]>(real_slice) };
-                Ok(SeriesTree::Series(pl::Series::new(
-                    name,
-                    i64_slice,
-                )))
+                Ok(SeriesTree::Series(pl::Series::new(name, i64_slice)))
             } else {
-                let mut s: pl::Series = rdouble//convert R NAs to rust options
+                let mut s: pl::Series = rdouble //convert R NAs to rust options
                     .iter()
                     .map(|x| {
-                        
                         //if x.is_na() { None } else { Some(x.0) }
                         let x = unsafe { std::mem::transmute::<f64, i64>(x.0) };
-                        if x == crate::utils::BIT64_NA_ECODING {None} else {Some(x)}
-            })
+                        if x == crate::utils::BIT64_NA_ECODING {
+                            None
+                        } else {
+                            Some(x)
+                        }
+                    })
                     .collect();
                 s.rename(name);
                 Ok(SeriesTree::Series(s))

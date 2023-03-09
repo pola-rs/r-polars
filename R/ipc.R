@@ -1,6 +1,6 @@
-#' Scan Apache Arrow IPC
+#' Import data in Apache Arrow IPC format
 #'
-#' Create new LazyFrame from Apache Arrow IPC file or stream
+#' @details Create new LazyFrame from Apache Arrow IPC file or stream
 #' @keywords LazyFrame_new
 #'
 #' @param path string, path
@@ -12,9 +12,8 @@
 #' @param memmap bool, mapped memory
 #'
 #' @return LazyFrame
-#' @export
 #'
-scan_ipc = function(
+scan_arrow_ipc = function(
     path, #: str | Path,
     n_rows = NULL, #: int | None = None,
     cache = TRUE, #: bool = True,
@@ -25,7 +24,7 @@ scan_ipc = function(
 ) {#-> LazyFrame
 
 
-  result_lf = new_from_ipc(
+  result_lf = import_arrow_ipc(
     path,
     n_rows,
     cache,
@@ -35,6 +34,6 @@ scan_ipc = function(
     memmap
   )
 
-  unwrap(result_lf)
+  unwrap(result_lf, "in pl$scan_ipc:")
 
 }

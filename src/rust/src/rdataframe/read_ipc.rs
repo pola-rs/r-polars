@@ -1,37 +1,32 @@
 use crate::lazy::dataframe::LazyFrame as RLazyFrame;
-use crate::utils::r_result_list;
-use crate::utils::wrappers::null_to_opt;
+use crate::{Error::Other, Result, robj_to};
 use extendr_api::prelude::*;
 use polars::io::RowCount;
-use polars::prelude::*;
+use polars::prelude::{LazyFrame, ScanArgsIpc};
 
 #[extendr]
-pub fn new_from_ipc(
-    path: String,
-    n_rows: Nullable<i64>,
-    cache: bool,
-    rechunk: bool,
-    row_name: Nullable<String>,
-    row_count: i64,
-    memmap: bool,
-) -> List {
+pub fn import_arrow_ipc(
+    path: Robj,
+    n_rows: Robj,
+    cache: Robj,
+    rechunk: Robj,
+    row_name: Robj,
+    row_count: Robj,
+    memmap: Robj,
+) -> Result<RLazyFrame> {
     let args = ScanArgsIpc {
-        n_rows: null_to_opt(n_rows).and_then(|n| usize::try_from(n).ok()),
-        cache,
-        rechunk,
-        row_count: u32::try_from(row_count)
-            .ok()
-            .and_then(|rc| null_to_opt(row_name).map(|name| RowCount { name, offset: rc })),
-        memmap,
+        n_rows: robj_to!(Option, usize, n_rows)?,
+        cache: robj_to!(bool, cache)?,
+        rechunk: robj_to!(bool, rechunk)?,
+        row_count: robj_to!(Option, String, row_name)?.map(|name| robj_to!(u32, row_count).map(|offset| RowCount { name, offset })).transpose()?,
+        memmap: robj_to!(bool, memmap)?,
     };
-    r_result_list(
-        LazyFrame::scan_ipc(path, args)
-            .map_err(|x| x.to_string())
-            .map(|lf| RLazyFrame(lf)),
-    )
+    LazyFrame::scan_ipc(robj_to!(String, path)?, args)
+        .map_err(|x| Other(format!("Polaris internal error: {x}")))
+        .map(|lf| RLazyFrame(lf))
 }
 
 extendr_module! {
     mod read_ipc;
-    fn new_from_ipc;
+    fn import_arrow_ipc;
 }
