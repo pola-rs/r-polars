@@ -12,8 +12,6 @@ use std::result::Result;
 
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
-use crate::arrow_interop;
-use crate::rdataframe::DataFrame;
 
 #[extendr]
 impl LazyFrame {

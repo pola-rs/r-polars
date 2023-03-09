@@ -99,6 +99,8 @@ DataFrame$unnest <- function(names) .Call(wrap__DataFrame__unnest, self, names)
 
 DataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__DataFrame__export_stream, self, stream_ptr))
 
+DataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__DataFrame__from_arrow_record_batches, rbr)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -910,6 +912,8 @@ Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
 Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
+
+Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name, array)
 
 #' @export
 `$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }

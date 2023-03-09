@@ -70,7 +70,7 @@ macro_rules! apply_input {
                     .unwrap()
                     .into_iter()
                     .map(|opt| {
-                        let rval: Result<Robj> = opt.
+                        let rval: extendr_api::Result<Robj> = opt.
                         map_or_else(
                             ||  $na_fun.call(pairlist!()),
                             |x| $rfun.call(pairlist!(x))
@@ -206,7 +206,7 @@ macro_rules! apply_output {
                 )
             })
             //collect evaluation return on first error or all values ok
-            .collect::<Result<$ca_type>>()
+            .collect::<extendr_api::Result<$ca_type>>()
             //if all ok collect into serias and rename
             .map(|ca| {
                 Series(ca.into_series())

@@ -299,6 +299,10 @@ impl DataFrame {
             );
         }
     }
+
+    pub fn from_arrow_record_batches(rbr: Robj) -> Result<DataFrame, String> {
+        Ok(DataFrame(crate::arrow_interop::to_rust::to_rust_df(rbr)?))
+    }
 }
 use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
