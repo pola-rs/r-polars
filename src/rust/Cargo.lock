@@ -572,8 +572,8 @@ checksum = "0198b9d0078e0f30dedc7acbb21c974e838fc8fae3ee170128658a98cb2c1c04"
 
 [[package]]
 name = "extendr-api"
-version = "0.3.1"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#120d6efce92fad10904832c97207c334f1601269"
+version = "0.4.0"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
 dependencies = [
  "extendr-engine",
  "extendr-macros",
@@ -584,16 +584,16 @@ dependencies = [
 
 [[package]]
 name = "extendr-engine"
-version = "0.3.1"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#120d6efce92fad10904832c97207c334f1601269"
+version = "0.4.0"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
 dependencies = [
  "libR-sys",
 ]
 
 [[package]]
 name = "extendr-macros"
-version = "0.3.1"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#120d6efce92fad10904832c97207c334f1601269"
+version = "0.4.0"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1024,12 +1024,9 @@ dependencies = [
 
 [[package]]
 name = "libR-sys"
-version = "0.3.0"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a97fd689379c62156b5c9b7b368d118ef660ad8c220a2f3e4c655529ad52384"
-dependencies = [
- "winapi",
-]
+checksum = "cd728a97b9b0975f546bc865a7413e0ce6f98a8f6cea52e77dc5ee0bcea00adf"
 
 [[package]]
 name = "libc"

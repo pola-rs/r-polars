@@ -42,6 +42,7 @@ fn concat_df(vdf: &VecDataFrame) -> List {
     r_result_list(result.map_err(|err| format!("{:?}", err)))
 }
 
+
 fn concat_df2(vdf: Vec<pl::DataFrame>) -> pl::PolarsResult<pl::DataFrame> {
     //-> PyResult<PyDataFrame> {
 
@@ -68,7 +69,7 @@ fn concat_df2(vdf: Vec<pl::DataFrame>) -> pl::PolarsResult<pl::DataFrame> {
 
     result
 }
-//ping
+
 
 #[extendr]
 fn diag_concat_df(dfs: &VecDataFrame) -> List {
@@ -242,7 +243,7 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
     Ok(DataFrame(df_acc))
 }
 
-// #[extendr]
+
 // pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
 //     use polars::prelude::IntoSeries;
 //     let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
@@ -275,6 +276,24 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
 //     }
 // }
 
+
+#[extendr]
+fn test_robj_to_usize(robj: Robj) -> Result<String, String> {
+    let x = robj_to!(usize, robj).map(|x| x.to_string());
+    x
+}
+#[extendr]
+fn test_robj_to_i64(robj: Robj) -> Result<String, String> {
+    let x = robj_to!(i64, robj).map(|x| x.to_string());
+    x
+}
+
+#[extendr]
+fn test_robj_to_u32(robj: Robj) -> Result<String, String> {
+    let x = robj_to!(u32, robj).map(|x| x.to_string());
+    x
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -294,4 +313,8 @@ extendr_module! {
     //fn series_from_arrow;
     fn rb_to_df;
     fn rb_list_to_df;
+
+    fn test_robj_to_usize;
+    fn test_robj_to_i64;
+    fn test_robj_to_u32;
 }

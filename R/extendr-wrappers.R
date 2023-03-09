@@ -45,6 +45,12 @@ rb_to_df <- function(r_columns, names) .Call(wrap__rb_to_df, r_columns, names)
 
 rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
 
+test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
+
+test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
+
+test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
@@ -728,6 +734,50 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
+
+When <- new.env(parent = emptyenv())
+
+When$when <- function(predicate) .Call(wrap__When__when, predicate)
+
+When$then <- function(expr) .Call(wrap__When__then, self, expr)
+
+When$print <- function() invisible(.Call(wrap__When__print, self))
+
+#' @export
+`$.When` <- function (self, name) { func <- When[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.When` <- `$.When`
+
+WhenThen <- new.env(parent = emptyenv())
+
+WhenThen$when <- function(predicate) .Call(wrap__WhenThen__when, self, predicate)
+
+WhenThen$otherwise <- function(expr) .Call(wrap__WhenThen__otherwise, self, expr)
+
+WhenThen$print <- function() invisible(.Call(wrap__WhenThen__print, self))
+
+#' @export
+`$.WhenThen` <- function (self, name) { func <- WhenThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.WhenThen` <- `$.WhenThen`
+
+WhenThenThen <- new.env(parent = emptyenv())
+
+WhenThenThen$when <- function(predicate) .Call(wrap__WhenThenThen__when, self, predicate)
+
+WhenThenThen$then <- function(expr) .Call(wrap__WhenThenThen__then, self, expr)
+
+WhenThenThen$otherwise <- function(expr) .Call(wrap__WhenThenThen__otherwise, self, expr)
+
+WhenThenThen$print <- function() invisible(.Call(wrap__WhenThenThen__print, self))
+
+#' @export
+`$.WhenThenThen` <- function (self, name) { func <- WhenThenThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.WhenThenThen` <- `$.WhenThenThen`
 
 LazyFrame <- new.env(parent = emptyenv())
 

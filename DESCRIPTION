@@ -21,7 +21,8 @@ Suggests:
     arrow,
     bench,
     nycflights13,
-    patrick
+    patrick,
+    bit64
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
@@ -56,5 +57,6 @@ Collate:
     'series__series.R'
     'translation.R'
     'vctrs.R'
+    'whenthen.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000
