@@ -342,8 +342,8 @@ test_that("value counts", {
   expect_strictly_identical(df_mt[[1L]],c(4,3,2,1,NA))
 
   #notice counts are mapped to numeric
-  expect_strictly_identical(df_st[[2]],c(4,3,2,1,1))
-  expect_strictly_identical(df_mt[[2]],c(4,3,2,1,1))
+  expect_strictly_identical(as.numeric(df_st[[2]]),c(4,3,2,1,1))
+  expect_strictly_identical(as.numeric(df_mt[[2]]),c(4,3,2,1,1))
 
 })
 

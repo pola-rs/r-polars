@@ -74,7 +74,7 @@ impl Series {
     }
 
     pub fn to_r(&self) -> std::result::Result<Robj, String> {
-        pl_series_to_list(&self.0, true).map_err(|err| format!("in to_r: {:?}", err))
+        pl_series_to_list(&self.0, true, true).map_err(|err| format!("in to_r: {:?}", err))
     }
     //any mut method exposed in R suffixed _mut
     pub fn rename_mut(&mut self, name: &str) {

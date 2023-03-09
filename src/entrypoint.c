@@ -4,5 +4,5 @@
 void R_init_rpolars_extendr(void *dll);
 
 void R_init_rpolars(void *dll) {
-    R_init_rpolars_extendr(dll);
+    R_init_rpolars_extendr(dll);  //first or last
 }
