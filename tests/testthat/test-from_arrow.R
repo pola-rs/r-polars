@@ -48,5 +48,12 @@ test_that("from_arrow", {
   ))
 
 
+ # #not supported yet
+ # #chunked data with factors
+ # l = list(
+ #   df1 = data.frame(factor = factor(c("apple","apple","banana"))),
+ #   df2 = data.frame(factor = factor(c("apple","apple","clementine")))
+ # )
+
 
 })
