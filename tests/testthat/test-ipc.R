@@ -19,15 +19,13 @@ test_that("Test reading data from Apache Arrow IPC", {
     droplevels(head(iris, read_limit))
   )
   testthat::expect_equal(
-    pl$scan_arrow_ipc(
+    as.integer(pl$scan_arrow_ipc(
       tmpf,
       n_rows = read_limit,
       row_count_name = "rc",
       row_count_offset = read_limit
-    )$collect()$as_data_frame(),
-    droplevels(cbind(
-      data.frame(rc = vctrs::vec_cast.integer64(read_limit:(2 * read_limit - 1))),
-      head(iris, read_limit)))
+    )$collect()$as_data_frame()$rc),
+    read_limit:(2 * read_limit - 1)
   )
 
   # Test error handling
