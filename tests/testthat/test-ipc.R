@@ -1,15 +1,33 @@
 test_that("Test reading data from Apache Arrow IPC", {
 
+  # This test requires library arrow
+  skip_if_not_installed("arrow")
+
   # Put data in Apache Arrow IPC format
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   arrow::write_ipc_file(iris, tmpf)
 
   # Collect data from Apache Arrow IPC
-  iris_ipc = pl$scan_arrow_ipc(tmpf)$collect()$as_data_frame()
+  read_limit = 27
   testthat::expect_equal(
-    iris_ipc,
+    pl$scan_arrow_ipc(tmpf)$collect()$as_data_frame(),
     iris
+  )
+  testthat::expect_equal(
+    pl$scan_arrow_ipc(tmpf, n_rows = read_limit)$collect()$as_data_frame(),
+    droplevels(head(iris, read_limit))
+  )
+  testthat::expect_equal(
+    pl$scan_arrow_ipc(
+      tmpf,
+      n_rows = read_limit,
+      row_count_name = "rc",
+      row_count_offset = read_limit
+    )$collect()$as_data_frame(),
+    droplevels(cbind(
+      data.frame(rc = vctrs::vec_cast.integer64(read_limit:(2 * read_limit - 1))),
+      head(iris, read_limit)))
   )
 
   # Test error handling
