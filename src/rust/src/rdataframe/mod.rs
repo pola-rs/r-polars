@@ -2,6 +2,7 @@ use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use polars::prelude::{self as pl, IntoLazy};
 use std::result::Result;
 pub mod read_csv;
+pub mod read_ipc;
 pub mod read_parquet;
 use crate::lazy::dsl;
 
@@ -346,6 +347,7 @@ impl VecDataFrame {
 extendr_module! {
     mod rdataframe;
     use read_csv;
+    use read_ipc;
     use read_parquet;
     use rdatatype;
     use rlib;

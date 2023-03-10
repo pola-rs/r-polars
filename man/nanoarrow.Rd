@@ -20,9 +20,9 @@ as_nanoarrow_array_stream.DataFrame(x, ..., schema = NULL)
 
 infer_nanoarrow_schema.DataFrame(x, ...)
 
-\method{as_arrow_table}{DataFrame}(x, ...)
+as_arrow_table.DataFrame(x, ...)
 
-\method{as_record_batch_reader}{DataFrame}(x, ..., schema = NULL)
+as_record_batch_reader.DataFrame(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
