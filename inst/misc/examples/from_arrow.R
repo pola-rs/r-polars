@@ -19,6 +19,12 @@ system.time({
    rbr = as_record_batch_reader(big_arrow_table)
       df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
 })
+
+system.time({
+   rbr = as_record_batch_reader(big_arrow_table)
+   df = pl$from_arrow(rbr)
+})
+
 # via r-polars conversion full copy
 big_df = as.data.frame(big_arrow_table)
 system.time({df_simple = pl$DataFrame(big_df)})
@@ -34,10 +40,13 @@ x = bench::mark(
   from_arrow = {
       pl$from_arrow(big_arrow_table)
   },
-  to_arrow2 = {
-      rbr = as_record_batch_reader(big_arrow_table)
-      df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
+  from_arrow_no_rechunk = {
+      pl$from_arrow(big_arrow_table,rechunk = FALSE)
   },
+  from_arrow_all_series ={
+    lapply(big_arrow_table$columns, pl$from_arrow, rechunk=FALSE)
+  },
+
   # ,
   # DataFrame = {
   #     df = pl$DataFrame(big_df)
@@ -46,7 +55,7 @@ x = bench::mark(
   min_iterations = 10L
 )
 
-
+x
 
 #a not very smooth to way to do rechunk in arrow
 bat = arrow::Table$create(
@@ -62,6 +71,9 @@ y = bench::mark(
   },
   from_arrow = {
       pl$from_arrow(bat)
+  },
+  from_arrow_all_series ={
+    lapply(big_arrow_table$columns, pl$from_arrow, rechunk=FALSE)
   },
   to_arrow2 = {
       rbr = as_record_batch_reader(bat)
@@ -79,5 +91,11 @@ print(x)
 print(y)
 
 arrow:::as_arrow_array.ChunkedArray(big_arrow_table$column(1))
+
+
+
+
+
+
 
 

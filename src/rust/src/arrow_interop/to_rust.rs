@@ -7,11 +7,6 @@ use polars_core::utils::arrow::ffi;
 use polars_core::POOL;
 use std::result::Result;
 
-unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
-    //use extendr_api::{Integers, Rinternals};
-    unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
-}
-
 //does not support chunked array
 pub fn arrow_array_to_rust(
     arrow_array: Robj,
@@ -40,6 +35,38 @@ pub fn arrow_array_to_rust(
     };
     //dbg!(&array);
     Ok(array)
+}
+
+unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
+    //use extendr_api::{Integers, Rinternals};
+    unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
+}
+//does not support chunked array
+pub fn arrow_array_stream_to_rust(
+    arrow_stream_reader: Robj,
+    opt_f: Option<&Function>,
+) -> Result<ArrayRef, String> {
+    let mut stream = Box::new(ffi::ArrowArrayStream::empty());
+    //let mut schema = Box::new(ffi::ArrowSchema::empty());
+    let ext_stream = unsafe { wrap_make_external_ptr(&mut *stream) };
+
+    if let Some(f) = opt_f {
+        f.call(pairlist!(arrow_stream_reader, ext_stream))?;
+    } else {
+        call!(r"\(x,y) x$export_to_c(y)", arrow_stream_reader, ext_stream)?;
+    };
+    dbg!("after export");
+
+    let mut iter =
+        unsafe { ffi::ArrowArrayStreamReader::try_new(stream) }.map_err(|err| err.to_string())?;
+    dbg!("after reader");
+
+    while let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res.map_err(|err| err.to_string())?;
+        dbg!(&array);
+    }
+
+    todo!("not  more for now");
 }
 
 pub fn rb_to_rust_df(r_rb_columns: List, names: &Vec<String>) -> Result<pl::DataFrame, String> {
@@ -83,6 +110,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         .ok_or_else(|| "internal error: Robj$schema$names is not a char vec".to_string())?;
 
     //iterate over record batches
+    let rb_len = rb.len();
     let dfs_iter = rb.iter().map(|(_, rb)| {
         //do not run parallel unless data.type matches ...
         let mut run_parallel = false;
@@ -133,6 +161,6 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
         let df_res: Result<_, String> = Ok(DataFrame::new_no_checks(series_vec));
         df_res
     });
-    let dfs = crate::utils::collect_hinted_result(5, dfs_iter)?;
+    let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;
     Ok(accumulate_dataframes_vertical_unchecked(dfs))
 }

@@ -41,9 +41,9 @@ as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
 
-rb_to_df <- function(r_columns, names) .Call(wrap__rb_to_df, r_columns, names)
-
 rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
+
+arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 

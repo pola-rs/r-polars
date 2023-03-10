@@ -2,16 +2,23 @@
 % Please edit documentation in R/convert.R
 \name{pl$from_arrow}
 \alias{pl$from_arrow}
-\alias{to_struct}
-\title{to_struct and unnest again}
+\alias{from_arrow}
+\title{pl$from_arrow}
 \arguments{
-\item{name}{name of new Series}
+\item{data}{arrow Table or Array or ChunkedArray}
+
+\item{rechunk}{bool rewrite in one array per column, Implemented for ChunkedArray
+Array is already contiguous. Not implemented for Table. C}
+
+\item{schema}{not used yet}
+
+\item{schema_overrides}{not used yet}
 }
 \value{
-@to_struct() returns a Series
+DataFrame or Series
 }
 \description{
-to_struct and unnest again
+import Arrow Table or Array
 }
 \examples{
 #none so for
