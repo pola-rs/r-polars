@@ -23,7 +23,6 @@ Suggests:
     nycflights13,
     patrick,
     bit64
-Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
