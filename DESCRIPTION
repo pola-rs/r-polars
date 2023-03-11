@@ -21,7 +21,8 @@ Suggests:
     arrow,
     bench,
     nycflights13,
-    patrick
+    patrick,
+    bit64
 Remotes: nanoarrow=github::apache/arrow-nanoarrow/r
 Config/testthat/edition: 3
 Collate: 
@@ -43,7 +44,9 @@ Collate:
     'expr__struct.R'
     'functions.R'
     'groupby.R'
+    'ipc.R'
     'lazy_functions.R'
+    'lazyframe__background.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
     'namespace.R'
@@ -55,5 +58,6 @@ Collate:
     'series__series.R'
     'translation.R'
     'vctrs.R'
+    'whenthen.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000

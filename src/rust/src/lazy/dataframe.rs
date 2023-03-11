@@ -1,12 +1,15 @@
+use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
 use extendr_api::prelude::*;
-
-use crate::concurrent::handle_thread_r_requests;
 use polars::prelude as pl;
+
+#[allow(unused_imports)]
+use std::result::Result;
+
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
 
@@ -26,6 +29,10 @@ impl LazyFrame {
             rprintln!("{}", opt_plan);
         });
         r_result_list(result.map_err(|err| format!("{:?}", err)))
+    }
+
+    pub fn collect_background(&self) -> PolarsBackgroundHandle {
+        PolarsBackgroundHandle::new(self)
     }
 
     pub fn collect(&self) -> List {

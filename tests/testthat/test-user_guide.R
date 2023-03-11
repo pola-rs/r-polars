@@ -68,7 +68,7 @@ test_that("Expression examples // types/NAS in-out", {
   ##u32 type is converted to R real which gracefully avoids overflow u32->i32
   ## however it is a bit silly to perform a count a get a double as result
   ## but that's R ;)
-  three_counts = as.list(pf2$as_data_frame())
+  three_counts = as.list(pf2$as_data_frame()) |> lapply(as.numeric)
 
   expect_equal(  three_counts, list(
     unique_names_1 = 5,

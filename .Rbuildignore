@@ -8,3 +8,5 @@
 ^\.github$
 ^LICENSE\.md$
 ^\.vscode$
+^flake.nix$
+^flake.lock$

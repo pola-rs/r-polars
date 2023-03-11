@@ -1,13 +1,34 @@
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 
+use crate::rdataframe::DataFrame;
 use pl::PolarsError as pl_error;
 use polars::error::ErrString as pl_err_string;
-use crate::rdataframe::DataFrame;
+
+// #[extendr]
+// fn hello_bit64() -> Robj {
+//     let i64_vec = vec![1i64, 2, 3, 4, 14503599627370496];
+//     let robj = i64_vec
+//         .into_iter()
+//         .map(|x| {
+//             let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+//             x
+//         })
+//         .collect_robj();
+
+//     robj.set_class(&["integer64"]).unwrap();
+
+//     robj
+// }
+
 //TODO throw a warning if i32 contains a lowerbound value which is the NA in R.
-pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
+pub fn pl_series_to_list(
+    series: &pl::Series,
+    tag_structs: bool,
+    bit64: bool,
+) -> pl::PolarsResult<Robj> {
     use pl::DataType::*;
-    fn to_list_recursive(s: &pl::Series, tag_structs: bool) -> pl::PolarsResult<Robj> {
+    fn to_list_recursive(s: &pl::Series, tag_structs: bool, bit64: bool) -> pl::PolarsResult<Robj> {
         match s.dtype() {
             Float64 => s.f64().map(|ca| ca.into_iter().collect_robj()),
             Float32 => s.f32().map(|ca| ca.into_iter().collect_robj()),
@@ -15,6 +36,23 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
             Int8 => s.i8().map(|ca| ca.into_iter().collect_robj()),
             Int16 => s.i16().map(|ca| ca.into_iter().collect_robj()),
             Int32 => s.i32().map(|ca| ca.into_iter().collect_robj()),
+            Int64 if bit64 => s.i64().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| match opt {
+                        Some(x) if x != crate::utils::BIT64_NA_ECODING => {
+                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+                            Some(x)
+                        }
+                        _ => {
+                            let x = crate::utils::BIT64_NA_ECODING;
+                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+                            Some(x)
+                        }
+                    })
+                    .collect_robj()
+                    .set_class(&["integer64"])
+                    .expect("internal error could not set class label 'integer64'")
+            }),
             Int64 => s.i64().map(|ca| {
                 ca.into_iter()
                     .map(|opt| opt.map(|val| val as f64))
@@ -29,6 +67,23 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                 ca.into_iter()
                     .map(|opt| opt.map(|val| val as i32))
                     .collect_robj()
+            }),
+            UInt32 if bit64 => s.u32().map(|ca| {
+                ca.into_iter()
+                    .map(|opt| match opt {
+                        Some(x) => {
+                            let x = unsafe { std::mem::transmute::<i64, f64>(x as i64) };
+                            Some(x)
+                        }
+                        _ => {
+                            let x = crate::utils::BIT64_NA_ECODING;
+                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+                            Some(x)
+                        }
+                    })
+                    .collect_robj()
+                    .set_class(&["integer64"])
+                    .expect("internal error could not set class label 'integer64'")
             }),
             UInt32 => s.u32().map(|ca| {
                 ca.into_iter()
@@ -54,7 +109,7 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
                     match opt_s {
                         Some(s) => {
                             let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref, tag_structs)?;
+                            let inner_val = to_list_recursive(s_ref, tag_structs, bit64)?;
                             v.push(inner_val);
                         }
 
@@ -150,5 +205,5 @@ pub fn pl_series_to_list(series: &pl::Series, tag_structs: bool) -> pl::PolarsRe
         }
     }
 
-    to_list_recursive(series, tag_structs)
+    to_list_recursive(series, tag_structs, bit64)
 }

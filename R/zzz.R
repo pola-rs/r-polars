@@ -30,6 +30,9 @@ env$head = LazyGroupBy_head
 env$tail  = LazyGroupBy_tail
 rm(env)
 
+# PolarsBackgroundHandle
+replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")
+
 # Expr
 replace_private_with_pub_methods(Expr, "^Expr_")
 
@@ -57,6 +60,12 @@ expr_meta_make_sub_ns  = macro_new_subnamespace("^ExprMeta_" , "ExprMetaNameSpac
 #' @export
 `$.ExprCatNameSpace` = sub_name_space_accessor_function
 expr_cat_make_sub_ns  = macro_new_subnamespace("^ExprCat_" , "ExprCatNameSpace")
+
+
+
+replace_private_with_pub_methods(When, "^When_")
+replace_private_with_pub_methods(WhenThen, "^WhenThen_")
+replace_private_with_pub_methods(WhenThenThen, "^WhenThenThen_")
 
 
 
@@ -97,6 +106,7 @@ move_env_elements(Expr,pl,c("lit"), remove=  FALSE)
 pl$lazy_csv_reader = lazy_csv_reader
 pl$csv_reader = csv_reader
 pl$read_csv = read_csv_
+pl$scan_arrow_ipc = scan_arrow_ipc
 
 
 #' Get Memory Address

@@ -65,18 +65,18 @@ test_that("expression Arithmetics", {
 
 test_that("count + unique + n_unique", {
   expect_equal(
-    unlist(pl$DataFrame(iris)$select(pl$all()$unique()$count())$as_data_frame()),
-    sapply(iris, \(x) length(unique(x)))
+    pl$DataFrame(iris)$select(pl$all()$unique()$count())$to_list() |> lapply(as.numeric),
+    lapply(iris, \(x) length(unique(x)))
   )
 
   expect_equal(
-    unlist(pl$DataFrame(iris)$select(pl$all()$unique()$len())$as_data_frame()),
-    sapply(iris, \(x) length(unique(x)))
+    pl$DataFrame(iris)$select(pl$all()$unique()$len())$to_list()|> lapply(as.numeric),
+    lapply(iris, \(x) length(unique(x)))
   )
 
   expect_equal(
-    unlist(pl$DataFrame(iris)$select(pl$all()$n_unique())$as_data_frame()),
-    sapply(iris, \(x) length(unique(x)))
+    pl$DataFrame(iris)$select(pl$all()$n_unique())$to_list() |> lapply(as.numeric),
+    lapply(iris, \(x) length(unique(x)))
   )
 
   expect_equal(
@@ -97,7 +97,9 @@ test_that("drop_nans drop_nulls", {
   )
 
   expect_equal(
-    pl$DataFrame(list(x=x))$select(pl$col("x")$drop_nans()$drop_nulls()$count())$get_column("x")$to_r(),
+    pl$DataFrame(list(x=x))$select(
+        pl$col("x")$drop_nans()$drop_nulls()$count()
+    )$get_column("x")$to_r() |> as.numeric(),
     2L
   )
 
@@ -208,7 +210,7 @@ test_that("over", {
   )
 
   expect_equal(
-    df$get_column("val")$to_r(),
+    as.numeric(df$get_column("val")$to_r()),
     c(2,1,1,1,2)
   )
 
@@ -412,8 +414,10 @@ test_that("to_physical + cast", {
       $alias("vals_physical")
   )
 
+  df_act = df$as_data_frame()
+  df_act$vals_physical = as.numeric(df_act$vals_physical)
   expect_identical(
-    df$as_data_frame(),
+    df_act,
     data.frame(
       vals = factor(c("a","x",NA_character_,"a")),
       vals_physical = c(0:1,NA_real_,0) #u32 casted to real to preserve full range
@@ -713,7 +717,7 @@ test_that("cumsum cumprod cummin cummax cumcount", {
     pl$col("a")$cumprod()$alias("cumprod")$cast(pl$dtypes$Float64),
     pl$col("a")$cummin()$alias("cummin"),
     pl$col("a")$cummax()$alias("cummax"),
-    pl$col("a")$cumcount()$alias("cumcount")
+    pl$col("a")$cumcount()$alias("cumcount")$cast(pl$Float64)
   )$to_list()
   l_reference = list(
     cumsum = cumsum(1:4),
@@ -731,7 +735,7 @@ test_that("cumsum cumprod cummin cummax cumcount", {
     pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod")$cast(pl$dtypes$Float64),
     pl$col("a")$cummin(reverse = TRUE)$alias("cummin"),
     pl$col("a")$cummax(reverse = TRUE)$alias("cummax"),
-    pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount")
+    pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount")$cast(pl$Float64)
   )$to_list()
 
   expect_identical(
@@ -925,7 +929,7 @@ test_that("arg_min arg_max arg_sort", {
     pl$col("a")$arg_sort()$head(1)$alias("arg_sort_head_1"),
     pl$col("a")$argsort()$head(1)$alias("argsort_head_1"), #aliased function
     pl$col("a")$arg_sort()$tail(1)$alias("arg_sort_tail_1")
-  )$to_list()
+  )$select(pl$all()$cast(pl$Float64))$to_list()
   }
 
   #it seems Null/NA is smallest value (arg_min)
@@ -942,7 +946,7 @@ test_that("arg_min arg_max arg_sort", {
     pl$col("a")$arg_sort()$alias("arg_sort default"),
     pl$col("a")$arg_sort(reverse=TRUE)$alias("arg_sort rev"),
     pl$col("a")$arg_sort(reverse=TRUE, nulls_last = TRUE)$alias("arg_sort rev nulls_last")
-  )$to_list()
+  )$select(pl$all()$cast(pl$Float64))$to_list()
 
   #it seems Null/NA is not sorted and just placed first or last given null_lasts
   #it seems NaN is a value larger than Inf
@@ -964,7 +968,9 @@ test_that("arg_min arg_max arg_sort", {
 
 test_that("search_sorted", {
   expect_identical(
-    pl$DataFrame(list(a=0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))$to_list()$a,
+    as.numeric(
+      pl$DataFrame(list(a=0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))$to_list()$a
+    ),
     42
   )
   #this test is minimal, if polars give better documentation on behaviour, expand the test.
@@ -1310,7 +1316,7 @@ test_that("null count", {
       pl$col("a")$null_count(),
       pl$col("b")$null_count(),
       pl$col("c")$null_count()
-    )$to_list(),
+    )$to_list() |> lapply(as.numeric),
     list(
       a = sum(is.na_only(l$a)) * 1.0,
       b = sum(is.na_only(l$b)) * 1.0,
@@ -1333,7 +1339,7 @@ test_that("arg_unique", {
       pl$col("a")$arg_unique()$list(),
       pl$col("b")$arg_unique()$list(),
       pl$col("c")$arg_unique()$list()
-    )$to_list() |> lapply(unlist),
+    )$to_list() |> lapply(\(x) x[[1]]) |>lapply(as.numeric)  ,
     list(
       a = which(!duplicated(l$a))-1.0,
       b = which(!duplicated(l$b))-1.0,
@@ -1627,7 +1633,7 @@ test_that("Expr_rank", {
       pl$col("a")$rank()$alias("avg"),
       pl$col("a")$rank(reverse = TRUE)$alias("avg_rev"),
       pl$col("a")$rank(method = "ordinal")$alias("ord_rev")
-    )$to_list(),
+    )$to_list() |> lapply(as.numeric),
     list(
       avg = rank(l$a),
       avg_rev = rank(-l$a),
@@ -2168,7 +2174,7 @@ test_that("extend_expr", {
 test_that("rep", {
   expect_identical(pl$lit(1:3)$rep(5)$to_r(), rep(1:3,5))
   expect_identical(pl$lit(c("a","b"))$rep(5)$to_r(), rep(c("a","b"),5))
-  expect_identical(pl$lit((1:3)*1)$rep(5)$cast(pl$dtypes$Int64)$to_r(),rep((1:3)*1,5))
+  expect_identical(pl$lit((1:3)*1)$rep(5)$to_r(),rep((1:3)*1,5))
   expect_identical(pl$lit(c("a","b"))$rep(5)$to_r(), rep(c("a","b"),5))
   expect_identical(pl$lit(c(T,T,F))$rep(2)$to_r(), rep(c(T,T,F),2))
   expect_error(pl$lit(1:4)$rep(-1))
@@ -2232,7 +2238,7 @@ test_that("unique_counts", {
 
   for(i in l) {
     expect_identical(
-      pl$lit(i)$unique_counts()$to_r(),
+      as.numeric(pl$lit(i)$unique_counts()$to_r()),
       r_value_counts(i)
     )
   }

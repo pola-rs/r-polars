@@ -191,6 +191,15 @@ LazyFrame_collect = function() {
   unwrap(.pr$LazyFrame$collect(self))
 }
 
+#' @title New DataFrame from LazyFrame_object$collect()
+#' @description collect DataFrame by lazy query
+#' @keywords LazyFrame DataFrame_new
+#' @return collected `DataFrame`
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+LazyFrame_collect_background = function() {
+  .pr$LazyFrame$collect_background(self)
+}
+
 #' @title Limits
 #' @description take limit of n rows of query
 #' @keywords LazyFrame

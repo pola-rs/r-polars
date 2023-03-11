@@ -105,7 +105,7 @@ test_that("str$lengths str$n_chars", {
   )
 
   expect_identical(
-    df$to_list(),
+    df$to_list() |> lapply(\(x) if(inherits(x,"integer64")) as.numeric(x) else x),
     list(
       s = test_str,
       lengths = c(5, NA_integer_, 3, 6),
@@ -193,7 +193,7 @@ test_that("zfill", {
       pl$lit(c(-1,2,10,"5"))$str$zfill("a")$to_r(),
       "something"
     ),
-    "is not a scalar integer or double as required"
+    "failed parsing ParseIntError"
   )
 
   #test wrong input range
@@ -221,7 +221,7 @@ test_that("str$ljust str$rjust", {
 
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust("wrong_string", "w"))$to_list(),
-    "\\[width\\] is not a scalar integer or double as required"
+    "\\[width\\] failed parsing ParseIntError"
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$ljust(-2, "w"))$to_list(),
@@ -246,7 +246,7 @@ test_that("str$ljust str$rjust", {
 
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust("wrong_string", "w"))$to_list(),
-    "\\[width\\] is not a scalar integer or double as required"
+    c("\\[width\\]","failed parsing ParseIntError")
   )
   expect_grepl_error(
     df$select(pl$col("a")$str$rjust(-2, "w"))$to_list(),
@@ -322,7 +322,7 @@ test_that("str$json_path. json_extract", {
   df = pl$DataFrame(
     json_val =  c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
   )
-  dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
+  dtype = pl$Struct(pl$Field("a", pl$Float64), pl$Field("b", pl$Boolean))
   actual = df$select(pl$col("json_val")$str$json_extract(dtype))$to_list()
   expect_identical(
     actual,
@@ -390,9 +390,13 @@ test_that("str$extract", {
     r"(in str\$extract\: the arg \[pattern\] is not a single string)",
   )
 
+  expect_true(
+    pl$lit("abc")$str$extract("a","2")$meta$eq(pl$lit("abc")$str$extract("a",2))
+  )
+
   expect_grepl_error(
     pl$lit("abc")$str$extract("a","a"),
-    r"(str\$extract\: the arg \[group_index\] is not a scalar integer or double as required, but)",
+    c(r"(str\$extract\: the arg \[group_index\])","failed parsing ParseIntError","InvalidDigit")
   )
 
 })
@@ -421,7 +425,7 @@ test_that("str$count_match", {
     pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
   )
   expect_identical(
-    actual$to_list(),
+    actual$to_list()  |> lapply(as.numeric),
     list(`count digits` = c(5, 6))
   )
 

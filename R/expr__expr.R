@@ -61,24 +61,32 @@ Expr_print = function() {
 #' @examples pl$col("foo") < 5
 wrap_e = function(e, str_to_lit = TRUE) {
   if(inherits(e,"Expr")) return(e)
-  if(str_to_lit || is.numeric(e) || is.list(e)) {
-    pl$lit(e)
+  #terminate WhenThen's to yield an Expr
+  if(inherits(e,c("WhenThen","WhenThenThen"))) return(e$otherwise(pl$lit(NULL)))
+  if(inherits(e,"When")) return(stopf("Cannot use a When-statement as Expr without a $then()"))
+  if(str_to_lit || is.numeric(e) || is.list(e) || is_bool(e)) {
+    return(pl$lit(e))
   } else {
     pl$col(e)
   }
 }
 
-#' wrap as literal
+#' wrap as Expression capture ok/err as result
 #' @param e an Expr(polars) or any R expression
+#' @param str_to_lit bool should string become a column name or not, then a literal string
+#' @param argname if error, blame argument of this name
 #' @details
 #' used internally to ensure an object is an expression and to catch any error
 #' @keywords internal
 #' @return Expr
 #' @examples pl$col("foo") < 5
-wrap_e_result = function(e, str_to_lit = TRUE) {
+wrap_e_result = function(e, str_to_lit = TRUE, argname=NULL) {
   result(
     wrap_e(e, str_to_lit),
-    "not convertable into Expr because:\n"
+    paste(
+      {if (!is.null(argname)) paste0("argument [",argname,"]") else NULL},
+      "not convertable into Expr because:\n"
+    )
   )
 }
 
@@ -739,7 +747,7 @@ Expr_lit = function(x) {
   if(is.null(x)) return(unwrap(.pr$Expr$lit(NULL)))
   if (inherits(x,"Expr")) return(x)  # already Expr, pass through
   if (
-    length(x) != 1L || is.list(x) || inherits(x,c("POSIXct","PTime","Date"))
+    length(x) != 1L || inherits(x,c("list","POSIXct","PTime","Date"))
   ) {
     x = wrap_s(x) #wrap first as Series if not a simple scalar
   }

@@ -13,6 +13,8 @@ NULL
 
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
+import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
+
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
 
 concat_df <- function(vdf) .Call(wrap__concat_df, vdf)
@@ -40,6 +42,16 @@ r_date_range_lazy <- function(start, end, every, closed, name, tz) .Call(wrap__r
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
 struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, schema)
+
+rb_to_df <- function(r_columns, names) .Call(wrap__rb_to_df, r_columns, names)
+
+rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
+
+test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
+
+test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
+
+test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -725,6 +737,50 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
 
+When <- new.env(parent = emptyenv())
+
+When$when <- function(predicate) .Call(wrap__When__when, predicate)
+
+When$then <- function(expr) .Call(wrap__When__then, self, expr)
+
+When$print <- function() invisible(.Call(wrap__When__print, self))
+
+#' @export
+`$.When` <- function (self, name) { func <- When[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.When` <- `$.When`
+
+WhenThen <- new.env(parent = emptyenv())
+
+WhenThen$when <- function(predicate) .Call(wrap__WhenThen__when, self, predicate)
+
+WhenThen$otherwise <- function(expr) .Call(wrap__WhenThen__otherwise, self, expr)
+
+WhenThen$print <- function() invisible(.Call(wrap__WhenThen__print, self))
+
+#' @export
+`$.WhenThen` <- function (self, name) { func <- WhenThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.WhenThen` <- `$.WhenThen`
+
+WhenThenThen <- new.env(parent = emptyenv())
+
+WhenThenThen$when <- function(predicate) .Call(wrap__WhenThenThen__when, self, predicate)
+
+WhenThenThen$then <- function(expr) .Call(wrap__WhenThenThen__then, self, expr)
+
+WhenThenThen$otherwise <- function(expr) .Call(wrap__WhenThenThen__otherwise, self, expr)
+
+WhenThenThen$print <- function() invisible(.Call(wrap__WhenThenThen__print, self))
+
+#' @export
+`$.WhenThenThen` <- function (self, name) { func <- WhenThenThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.WhenThenThen` <- `$.WhenThenThen`
+
 LazyFrame <- new.env(parent = emptyenv())
 
 LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
@@ -732,6 +788,8 @@ LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
 LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
 
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
+
+LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_background, self)
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
@@ -860,6 +918,20 @@ Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sor
 
 #' @export
 `[[.Series` <- `$.Series`
+
+PolarsBackgroundHandle <- new.env(parent = emptyenv())
+
+PolarsBackgroundHandle$new <- function(lazy_df) .Call(wrap__PolarsBackgroundHandle__new, lazy_df)
+
+PolarsBackgroundHandle$join <- function() .Call(wrap__PolarsBackgroundHandle__join, self)
+
+PolarsBackgroundHandle$is_exhausted <- function() .Call(wrap__PolarsBackgroundHandle__is_exhausted, self)
+
+#' @export
+`$.PolarsBackgroundHandle` <- function (self, name) { func <- PolarsBackgroundHandle[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.PolarsBackgroundHandle` <- `$.PolarsBackgroundHandle`
 
 
 # nolint end

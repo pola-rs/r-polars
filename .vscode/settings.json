@@ -4,4 +4,27 @@
         "./src/rust/Cargo.toml",
         //"py-polars"
     ],
+    //"rust-analyzer.cargo.features": "all",
+    "python.formatting.provider": "black",
+    "cSpell.diagnosticLevel": "Hint",
+    "cSpell.words": [
+        "dataframe",
+        "Datetime",
+        "dtype",
+        "extendr",
+        "groupby",
+        "lazyframe",
+        "lowerbound",
+        "pairlist",
+        "POSI",
+        "Proto",
+        "rdataframe",
+        "rdatatype",
+        "Rinternals",
+        "Robj",
+        "rpolars",
+        "rprintln",
+        "tzone",
+        "unnest"
+    ],
 }

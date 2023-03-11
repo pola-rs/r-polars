@@ -8,7 +8,7 @@ use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
-pub struct RField(pl::Field);
+pub struct RField(pub pl::Field);
 
 #[extendr]
 impl RField {

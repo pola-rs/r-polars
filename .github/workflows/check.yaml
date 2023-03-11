@@ -24,7 +24,7 @@ jobs:
         config:
           - { os: macos-latest, r: "release" }
           - { os: windows-latest, r: "release", rtools-version: "42" }
-          - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
+          #- { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           #- { os: ubuntu-latest, r: "oldrel-1" }
 
