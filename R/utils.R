@@ -686,5 +686,6 @@ sub_name_space_accessor_function = function (self, name) {
   func
 }
 
-
+#as %in% but supports lists also
+"%in_list%" = \(lhs_element, rhs_list) rhs_list |> sapply("==", lhs_element) |> any()
 

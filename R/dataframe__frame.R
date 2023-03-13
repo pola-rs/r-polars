@@ -3,12 +3,13 @@
 #' @name DataFrame_class
 #' @description The `DataFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the rpolars rust side. The instanciated
-#' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object. The pointer
-#' address is the only statefullness of the DataFrame object on the R side. Any other state resides
-#' on the rust side. The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods
-#' which are callable onto the object. Most methods return another `DataFrame`-class instance or
-#' similar which allows for method chaining. This class system in lack of a better name could be
-#' called "environment classes" and is the same class system extendr provides, except here there is
+#' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object.
+#' The pointer address is the only statefullness of the DataFrame object on the R side.
+#' Any other state resides on the rust side. The S3 method `.DollarNames.DataFrame`
+#' exposes all public `$foobar()`-methods which are callable onto the object. Most methods return
+#' another `DataFrame`-class instance or similar which allows for method chaining.
+#' This class system in lack of a better name could be called "environment classes"
+#' and is the same class system extendr provides, except here there is
 #' both a public and private set of methods. For implementation reasons, the private methods are
 #' external and must be called from rpolars:::.pr.$DataFrame$methodname(), also all private methods
 #' must take any self as an argument, thus they are pure functions. Having the private methods
@@ -50,8 +51,8 @@
 #' # potentially errors can be thrown. unwrap(result) is a way to
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
 #' # would case some unneccesary confusing and  some very verbose error messages on the inner
-#' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable method
-#' # do not return any ok-value
+#' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
+#' # method does not return any ok-value.
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
@@ -797,3 +798,6 @@ DataFrame_to_struct = function(name = "") {
 DataFrame_unnest = function(names = NULL) {
   unwrap(.pr$DataFrame$unnest(self, names))
 }
+
+
+
