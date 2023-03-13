@@ -109,7 +109,7 @@ ExprStr_strptime = function(
 #' @return Expr of u32 lengths
 #' @examples
 #' pl$DataFrame(
-#'   s = c("Café", NA, "345", "東京", "æøå")
+#'   s = c("Café", NA, "345", "æøå")
 #' )$select(
 #'   pl$col("s"),
 #'   pl$col("s")$str$lengths()$alias("lengths"),
@@ -131,7 +131,7 @@ ExprStr_lengths = function() {
 #' @return Expr of u32 n_chars
 #' @examples
 #' pl$DataFrame(
-#'   s = c("Café", NA, "345", "東京")
+#'   s = c("Café", NA, "345", "æøå")
 #' )$select(
 #'   pl$col("s"),
 #'   pl$col("s")$str$lengths()$alias("lengths"),
