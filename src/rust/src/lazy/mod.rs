@@ -1,7 +1,7 @@
 //mod apply;
 //pub mod dataframe;
-pub mod dsl;
 pub mod dataframe;
+pub mod dsl;
 //#[cfg(feature = "meta")]
 //mod meta;
 //pub mod utils;
