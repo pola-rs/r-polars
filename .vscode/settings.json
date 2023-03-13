@@ -6,6 +6,7 @@
     ],
     //"rust-analyzer.cargo.features": "all",
     "python.formatting.provider": "black",
+
     "cSpell.diagnosticLevel": "Hint",
     "cSpell.words": [
         "dataframe",
@@ -27,4 +28,5 @@
         "tzone",
         "unnest"
     ],
+
 }

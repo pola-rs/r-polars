@@ -1,3 +1,46 @@
+
+#' check if schema
+#' @name is_schema
+#' @param x objet to test if schema
+#' @return bool
+#' @format function
+#' @examples
+#' rpolars:::is_schema(pl$DataFrame(iris)$schema)
+#' pl$is_schema(pl$DataFrame(iris)$schema)
+#' rpolars:::is_schema(list("alice","bob"))
+#'
+is_schema = \(x) {
+  is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
+    do.call(all,lapply(x, inherits, "RPolarsDataType"))
+}
+pl$is_schema = is_schema
+
+
+#' wrap proto schema
+#' @name wrap_proto_schema
+#' @param x either schema, or incomplete schema where dataType can be NULL
+#' or schema is just char vec, implicitly the same as if all DataType are NULL,
+#' mean undefinesd.
+#' @return bool
+#' @format function
+#' @examples
+#' rpolars:::wrap_proto_schema(c("alice","bob"))
+#' rpolars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
+wrap_proto_schema = function(x) {
+  pcase(
+    is.list(x) && !is.null(names(x)), x,
+    is.character(x) && !anyNA(x), {
+      names(x) = x
+      lapply(x, \(x) NULL)
+    },
+    or_else = stopf(
+      "arg schema must be a list of named DataType/RPolarsDataType or char vec of no NAs"
+    )
+  )
+}
+
+
+
 #' @title DataTypes polars types
 #'
 #' @name DataType
@@ -199,6 +242,7 @@ NULL
 #' @format function
 #' @examples pl$List(pl$List(pl$Boolean))
 NULL
+
 
 
 

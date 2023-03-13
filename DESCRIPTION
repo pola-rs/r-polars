@@ -1,6 +1,6 @@
 Package: rpolars
 Title: Polars ported to R
-Version: 0.4.5
+Version: 0.4.6
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R: 
@@ -31,6 +31,8 @@ Collate:
     'after-wrappers.R'
     'Field.R'
     'PTime.R'
+    'construction.R'
+    'convert.R'
     'csv.R'
     'dataframe__frame.R'
     'datatype.R'

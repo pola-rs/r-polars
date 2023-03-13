@@ -193,9 +193,9 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
 // }
 
 #[extendr]
-fn rb_to_df(r_columns: List, names: Vec<String>) -> Result<DataFrame, String> {
-    let x = crate::arrow_interop::to_rust::rb_to_rust_df(r_columns, &names);
-    x.map(|df| DataFrame(df))
+fn arrow_stream_to_rust(rbr: Robj) {
+    let x = crate::arrow_interop::to_rust::arrow_array_stream_to_rust(rbr, None).unwrap();
+    dbg!(x);
 }
 
 #[extendr]
@@ -214,18 +214,6 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
     Ok(DataFrame(df_acc))
 }
 
-// #[extendr]
-// fn is_larger_than_zero(x: Robj) -> bool {
-//     use  extendr_api::prelude::Rtype;
-//     let rtype =robj.rtype();
-//     match rtype {
-//         Rtype::Doubles =>
-
-//     }
-//     true;
-// }
-
-// #[extendr]
 // pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
 //     use polars::prelude::IntoSeries;
 //     let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
@@ -292,11 +280,11 @@ extendr_module! {
     fn struct_;
     //fn field_to_rust2;
     //fn series_from_arrow;
-    fn rb_to_df;
+    //fn rb_to_df;
     fn rb_list_to_df;
+    fn arrow_stream_to_rust;
 
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
-
 }

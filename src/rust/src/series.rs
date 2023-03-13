@@ -25,6 +25,8 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
+use std::result::Result;
+
 #[derive(Debug, Clone)]
 pub struct Series(pub pl::Series);
 
@@ -352,7 +354,7 @@ impl Series {
         };
 
         //handle any return type from R and collect into Series
-        let s: Result<Series> = || -> Result<Series> {
+        let s: extendr_api::Result<Series> = || -> extendr_api::Result<Series> {
             match out_type {
                 Float64 => apply_output!(r_iter, strict, allow_fail_eval, Doubles, Float64Chunked),
                 Int32 => apply_output!(r_iter, strict, allow_fail_eval, Integers, Int32Chunked),
@@ -378,7 +380,7 @@ impl Series {
 
                     let lc_res: pl::PolarsResult<ListChunked> = xx.collect::<pl::PolarsResult<_>>();
 
-                    let s: Result<Series> = lc_res
+                    let s: extendr_api::Result<Series> = lc_res
                         .map(|lc| lc.into_series())
                         .and_then(|s| if all_length_one { s.explode() } else { Ok(s) })
                         .map(|s| Series(s))
@@ -468,6 +470,36 @@ impl Series {
         } else {
             self.0.set_sorted_flag(polars::series::IsSorted::Ascending)
         };
+    }
+
+    pub fn from_arrow(name: &str, array: Robj) -> Result<Self, String> {
+        let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array, None)?;
+
+        match arr.data_type() {
+            ArrowDataType::LargeList(_) => {
+                let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
+
+                let mut previous = 0;
+                let mut fast_explode = true;
+                for &o in array.offsets().as_slice()[1..].iter() {
+                    if o == previous {
+                        fast_explode = false;
+                        break;
+                    }
+                    previous = o;
+                }
+                let mut out = unsafe { ListChunked::from_chunks(name, vec![arr]) };
+                if fast_explode {
+                    out.set_fast_explode()
+                }
+                Ok(out.into_series().into())
+            }
+            _ => {
+                let series_res: Result<pl::Series, pl::PolarsError> =
+                    std::convert::TryFrom::try_from((name, arr));
+                Ok(series_res.map_err(|err| err.to_string())?.into())
+            }
+        }
     }
 }
 

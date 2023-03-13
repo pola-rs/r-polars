@@ -70,7 +70,7 @@ macro_rules! apply_input {
                     .unwrap()
                     .into_iter()
                     .map(|opt| {
-                        let rval: Result<Robj> = opt.
+                        let rval: extendr_api::Result<Robj> = opt.
                         map_or_else(
                             ||  $na_fun.call(pairlist!()),
                             |x| $rfun.call(pairlist!(x))
@@ -206,7 +206,7 @@ macro_rules! apply_output {
                 )
             })
             //collect evaluation return on first error or all values ok
-            .collect::<Result<$ca_type>>()
+            .collect::<extendr_api::Result<$ca_type>>()
             //if all ok collect into serias and rename
             .map(|ca| {
                 Series(ca.into_series())
@@ -454,6 +454,14 @@ pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> std::result::Result<&'a str, 
 pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, String> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
+    if robj.rtype() == Rtype::Strings && robj.len() == 1 {
+        let us = robj
+            .as_str()
+            .unwrap_or("empty string")
+            .parse::<usize>()
+            .map_err(|err| format!("failed parsing {:?} to usize", err));
+        return us;
+    }
 
     match (robj.rtype(), robj.len()) {
         (Rtype::Strings, 1) => {
