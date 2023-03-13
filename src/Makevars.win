@@ -23,7 +23,7 @@ $(STATLIB):
 	echo "RPOLARS_RUST_SOURCE is set to $(RPOLARS_RUST_SOURCE)"
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		cargo +$(TOOLCHAIN) build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+		cargo build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
 	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
 	# if binary is not here, it can be symlinked instead.

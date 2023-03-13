@@ -10,7 +10,7 @@
 \alias{read}
 \alias{more}
 \alias{at}
-\alias{\link{https://github.com/apache/arrow-nanoarrow/r}}
+\alias{\url{https://github.com/apache/arrow-nanoarrow/r}}
 \alias{infer_nanoarrow_schema.DataFrame}
 \alias{as_arrow_table.DataFrame}
 \alias{as_record_batch_reader.DataFrame}
@@ -20,9 +20,9 @@
 
 \method{infer_nanoarrow_schema}{DataFrame}(x, ...)
 
-as_arrow_table.DataFrame(x, ...)
+\method{as_arrow_table}{DataFrame}(x, ...)
 
-as_record_batch_reader.DataFrame(x, ..., schema = NULL)
+\method{as_record_batch_reader}{DataFrame}(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
