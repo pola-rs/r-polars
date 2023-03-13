@@ -52,8 +52,7 @@
 #' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
 #' # would case some unneccesary confusing and  some very verbose error messages on the inner
 #' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
-#' method
-#' # do not return any ok-value
+#' # method does not return any ok-value.
 #'
 #' #try unwrapping an error from polars due to unmatching column lengths
 #' err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")

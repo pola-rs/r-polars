@@ -50,10 +50,39 @@ test_that("from_arrow", {
 
  # #not supported yet
  # #chunked data with factors
- # l = list(
- #   df1 = data.frame(factor = factor(c("apple","apple","banana"))),
- #   df2 = data.frame(factor = factor(c("apple","apple","clementine")))
- # )
+ l = list(
+   df1 = data.frame(factor = factor(c("apple","apple","banana"))),
+   df2 = data.frame(factor = factor(c("apple","apple","clementine")))
+ )
+ at = lapply(l, arrow::arrow_table) |> do.call(what=rbind)
+ df = pl$from_arrow(at)
+ expect_identical(as.data.frame(at),as.data.frame(df))
 
+ # chunked data with factors and regular integer32
+ at2 = lapply(l, \(df) {df$value = 1:3;df}) |> lapply(arrow::arrow_table) |> do.call(what=rbind)
+ df2 = pl$from_arrow(at2)
+ expect_identical(as.data.frame(at2),as.data.frame(df2))
+
+
+ #use schema override
+ df = pl$from_arrow(
+   arrow::arrow_table(iris),
+   schema_overrides = list(Sepal.Length=pl$Float32, Species = pl$Utf8)
+ )
+ iris_str = iris
+ iris_str$Species = as.character(iris_str$Species)
+ expect_error(expect_equal(df$to_list(), as.list(iris_str)))
+ expect_equal(df$to_list(), as.list(iris_str),tolerance = 0.0001)
+
+ #change column name via char schema
+ char_schema = names(iris)
+ char_schema[1] = "Alice"
+ expect_identical(
+   pl$from_arrow(
+     data = arrow::arrow_table(iris),
+     schema = char_schema
+   )$columns,
+   char_schema
+ )
 
 })
