@@ -19,7 +19,7 @@ equivalent, and faster (returns length in terms of the number of bytes).
 }
 \examples{
 pl$DataFrame(
-  s = c("Café", NA, "345", "東京")
+  s = c("Café", NA, "345", "æøå")
 )$select(
   pl$col("s"),
   pl$col("s")$str$lengths()$alias("lengths"),
