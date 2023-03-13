@@ -7,7 +7,7 @@
 </p>
 
 # Use [polars](https://www.pola.rs/) DataFrame library in R!
-### *r-polars is not completely translated yet - aim to finish March 2023*
+### r-polars now has a close to 100% translated the lazy Expr syntax. Not all the eager syntax has been translated, but if using `$select()` + `$with_columns()` you can do about everything.
 
 # Install latest binary rpolars package directly from github release.
 No dependencies other than R (≥ 4.1.0)
@@ -63,6 +63,8 @@ See further down how to install rust to build from source.
 
 
 ## news:
+ - update 13th March
+  All 'meta'+'categorical' expressions. Add when-then-syntax. R bit64 support. Scan ipc. Import from R arrow tables with about 4Gb/s!. Run polars queries in background thread, while still using R sessesion.
 
  - update 21st February: 
    All str/String expressions included from v0.4.5. There is now a resonable easy pre-compiled installation for arm64-MacBooks, see above. Starting to roll out new error-handling and type-conversions between R and rust. Rpolars is now on [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install), see above. Precise source of error should be very clear even in a long method-chain e.g. 
