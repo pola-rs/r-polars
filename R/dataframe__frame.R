@@ -99,6 +99,9 @@ DataFrame
 #' placeholder name.
 #'
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
+#' @param parallel bool default FALSE, experimental multithreaded interpretation of R vectors
+#' into a polars DataFrame. This is experimental as multiple threads read from R mem simultaneously.
+#' So far no issues parallel read from R has been found.
 #'
 #' @return DataFrame
 #' @keywords DataFrame_new
@@ -119,7 +122,7 @@ DataFrame
 #'   d = list(1L,1:2,1:3,1:4,1:5)
 #' ))
 #'
-pl$DataFrame = function(..., make_names_unique= TRUE) {
+pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
 
   largs = list2(...)
 
@@ -132,7 +135,11 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   #if input is one list of expression unpack this one
   Data = if(length(largs)==1L && is.list(largs[[1]])) {
     largs = largs[[1L]]
+    if(length(largs)==0) return(.pr$DataFrame$new())
+    largs
   }
+
+
 
   #input guard
   if(!is_DataFrame_data_input(largs)) {
@@ -184,20 +191,63 @@ pl$DataFrame = function(..., make_names_unique= TRUE) {
   }
 
   ##step 4
-  #buildDataFrame one column at the time
-  self = .pr$DataFrame$new_with_capacity(length(largs))
-  mapply(largs,keys, FUN = function(column, key) {
-    if(inherits(column, "Series")) {
-      .pr$Series$rename_mut(column, key)
 
-      unwrap(.pr$DataFrame$set_column_from_series(self,column))
+  if(parallel) {
+    #interpret R vectors into series in DataFrame in parallel
+    aux_df = NULL #save Series temp to here
+    l =  mapply(largs,keys, SIMPLIFY = FALSE, FUN = function(column, key) {
+      if(inherits(column, "Series")) {
+        if(is.null(aux_df)) {
+          aux_df <<- .pr$DataFrame$new_with_capacity(length(largs))
+        }
+        .pr$Series$rename_mut(column, key)
+        unwrap(.pr$DataFrame$set_column_from_series(aux_df,column))
+        column = NULL
+      } else {
+        if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) {
+          column = rep(column,largs_lengths_max)
+        }
+        column = convert_to_fewer_types(column) #type conversions on R side
+      }
+      column
+    })
+    names(l) = keys
+    #drop series from converted columns
+    l = l |> (\(x) if(length(x)) x[!sapply(x,is.null)] else x)()
+
+
+
+    if(length(l)) {
+      self = unwrap(.pr$DataFrame$new_par_from_list(l))
     } else {
-      if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) column = rep(column,largs_lengths_max)
-      column = convert_to_fewer_types(column) #type conversions on R side
-      unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
+      self = aux_df
     }
-    return(NULL)
-  })
+
+    #combine DataFrame if both defined and reorder columns
+    if(!is.null(aux_df) && length(l)) {
+      self = pl$concat(list(self,aux_df),rechunk=FALSE, how = "horizontal")
+      self = do.call(self$select,unname(lapply(keys,pl$col))) #reorder columns by keys
+    }
+
+
+  } else {
+    #buildDataFrame one column at the time
+    self = .pr$DataFrame$new_with_capacity(length(largs))
+    mapply(largs,keys, FUN = function(column, key) {
+      if(inherits(column, "Series")) {
+        .pr$Series$rename_mut(column, key)
+
+        unwrap(.pr$DataFrame$set_column_from_series(self,column))
+      } else {
+        if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) {
+          column = rep(column,largs_lengths_max)
+        }
+        column = convert_to_fewer_types(column) #type conversions on R side
+        unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
+      }
+      return(NULL)
+    })
+  }
 
   return(self)
 }
