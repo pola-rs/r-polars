@@ -3,7 +3,8 @@ use extendr_api::prelude::*;
 /// most other R to polars conversion uses the module only pub function robjname2series()
 use polars::prelude as pl;
 use polars::prelude::{IntoSeries, NamedFrom};
-
+use rayon::prelude::IntoParallelIterator;
+use crate::utils::collect_hinted_result;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -15,10 +16,20 @@ enum SeriesTree {
     SeriesEmptyVec, // likely an R NULL or list() delayed conversion as corrosponding polars is yet given
 }
 
+use crate::utils::extendr_concurrent::ParRObj;
+
+pub fn par_read_robjs(x: Vec<(ParRObj, String)>) -> pl::PolarsResult<Vec<pl::Series>> {
+use rayon::iter::ParallelIterator;
+    x.into_par_iter().map(|(probj,name)| {
+        robjname2series(&probj, name.as_str())
+    }).collect()
+}
+
+
 // Main module function: Convert any potentially nested R object handled in three steps
-pub fn robjname2series(x: &Robj, name: &str) -> pl::PolarsResult<pl::Series> {
+pub fn robjname2series(x: &ParRObj, name: &str) -> pl::PolarsResult<pl::Series> {
     // 1 parse any (potentially) R structure, into a tree of Series, boubble any parse error
-    let st = recursive_robjname2series_tree(x, name)?;
+    let st = recursive_robjname2series_tree(&x.0, name)?;
 
     // 2 search for first leaf dtype, returns None for empty list or lists of empty lists and so on ...
     let first_leaf_dtype = find_first_leaf_datatype(&st);
@@ -133,12 +144,12 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
         Rtype::List => {
             // Recusively handle elements of list
-            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = x
+            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = collect_hinted_result(x.len(),x
                 .as_list()
                 .unwrap()
                 .iter()
                 .map(|(name, robj)| recursive_robjname2series_tree(&robj, name))
-                .collect();
+            );
             result_series_vec.map(|vst| {
                 if vst.len() == 0 {
                     SeriesTree::SeriesEmptyVec // flag empty list() with this enum, to resolve polars type later
@@ -242,10 +253,12 @@ fn concat_series_tree(
         ),
         SeriesTree::SeriesVec(sv) => {
             // concat any deeper nested parts of SeriesTree
-            let series_vec_result: pl::PolarsResult<Vec<pl::Series>> = sv
+            
+            let series_vec_result: pl::PolarsResult<Vec<pl::Series>> =  collect_hinted_result(sv.len(), sv
                 .into_iter()
                 .map(|inner_st| concat_series_tree(inner_st, leaf_dtype, ""))
-                .collect();
+            );
+             
 
             // boubble any errors
             let series_vec = series_vec_result?;
@@ -275,10 +288,13 @@ fn robj_to_utf8_series(rstrings: Strings, name: &str) -> pl::Series {
         pl::Series::new(name, rstrings.as_robj().as_str_vector().unwrap())
     } else {
         //convert R NAs to rust options
-        let s: Vec<Option<&str>> = rstrings
-            .iter()
-            .map(|x| if x.is_na() { None } else { Some(x.as_str()) })
-            .collect();
+        let mut s: Vec<Option<&str>> = Vec::with_capacity(rstrings.len());
+        s.extend(
+            rstrings
+                .iter()
+                .map(|x| if x.is_na() { None } else { Some(x.as_str()) }),
+        );
+
         let s = pl::Series::new(name, s);
         s
     }

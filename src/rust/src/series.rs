@@ -10,11 +10,11 @@ use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
 use crate::utils::{r_error_list, r_result_list};
 
-use crate::rdataframe::DataFrame;
-use crate::utils::wrappers::null_to_opt;
-
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
+use crate::rdataframe::DataFrame;
+use crate::utils::extendr_concurrent::ParRObj;
+use crate::utils::wrappers::null_to_opt;
 
 use crate::lazy::dsl::Expr;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
@@ -56,7 +56,7 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 impl Series {
     //utility methods
     pub fn new(x: Robj, name: &str) -> std::result::Result<Series, String> {
-        robjname2series(&x, name)
+        robjname2series(&ParRObj(x), name)
             .map_err(|err| format!("in Series.new: {:?}", err))
             .map(|s| Series(s))
     }
@@ -366,7 +366,7 @@ impl Series {
                     let xx = r_iter.map(|opt_r| -> pl::PolarsResult<_> {
                         if let Some(robj) = opt_r {
                             //convert Robj of Series or something "into series" to pl Series
-                            let s = Series::any_robj_to_pl_series_result(&robj)?;
+                            let s = Series::any_robj_to_pl_series_result(robj)?;
 
                             if s.len() > 1 {
                                 all_length_one = false;
@@ -514,9 +514,9 @@ impl Series {
         }
     }
 
-    pub fn any_robj_to_pl_series_result(robj: &Robj) -> pl::PolarsResult<pl::Series> {
+    pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&robj, &"")?
+            robjname2series(&ParRObj(robj), &"")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {
