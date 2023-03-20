@@ -208,7 +208,7 @@ cd r-polars
 - Option A: Using **devtools**.
 
   ```r
-  Rscript -e 'devtools::install(pkg = ".", dependencies = "Suggests")' 
+  Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 - Option B: Using **renv**.

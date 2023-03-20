@@ -81,7 +81,7 @@ new M1/M2 “Silicon” chips. To install **rpolars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**rpolars**. The corresponding `Makevars` script will download a ~200MB
+**rpolars**. The corresponding `Makevars` script will download a \~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -259,7 +259,7 @@ dependencies.
 - Option A: Using **devtools**.
 
   ``` r
-  Rscript -e 'devtools::install(pkg = ".", dependencies = "Suggests")' 
+  Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 - Option B: Using **renv**.
