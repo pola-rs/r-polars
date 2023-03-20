@@ -26,13 +26,15 @@ The goal of this project is to bring the blazingly fast
 computation engine is written in Rust and this R implementation has no other
 dependencies than R itself (≥ 4.1.0).
 
-Documentation can be found on the **rpolars** [homepage](https://rpolars.github.io.html).
+Documentation can be found on the **rpolars**
+[homepage](https://rpolars.github.io.html).
 
 The primary developer of the upstream polars project is 
 Ritchie Vink ([@ritchie46](https://github.com/ritchie46)). 
 This R port is maintained by 
 Søren Welling ([@sorhawell](https://github.com/sorhawell)),
-together with other contributors.
+together with other
+[contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 Consider joining our [Discord](https://discord.gg/4UfP5cfBE7) (subchannel) for
 additional help and discussion.
 
@@ -57,7 +59,8 @@ binary install options on Linux.
 install.packages("rpolars", repos = "https://rpolars.r-universe.dev")
 ```
 
-Special thanks to Jeroen Ooms for the excellent R-universe support.
+Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for the
+excellent R-universe support.
 
 ### GitHub releases
 

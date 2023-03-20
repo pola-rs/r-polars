@@ -23,9 +23,10 @@ Documentation can be found on the **rpolars**
 The primary developer of the upstream polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
 by Søren Welling ([@sorhawell](https://github.com/sorhawell)), together
-with other contributors. Consider joining our
-[Discord](https://discord.gg/4UfP5cfBE7) (subchannel) for additional
-help and discussion.
+with other
+[contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
+Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
+(subchannel) for additional help and discussion.
 
 **Update:** As of March 2023, **rpolars** has now reached approximately
 100% translation coverage of the underlying “lazy” Expr syntax. While
@@ -48,7 +49,8 @@ below for binary install options on Linux.
 install.packages("rpolars", repos = "https://rpolars.r-universe.dev")
 ```
 
-Special thanks to Jeroen Ooms for the excellent R-universe support.
+Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for
+the excellent R-universe support.
 
 ### GitHub releases
 
