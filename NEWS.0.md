@@ -1,0 +1,9 @@
+# Old (pre-v0.2.0) changelog
+
+ - update 24th November: minipolars is getting bigger and is changing name to **rpolars** and is hosted on [github.com/rpolars/rpolars](https://github.com/rpolars/rpolars/). Translation, testing and documenting progress is unfortunately not fast enough to finish in 2022. Goal postponed to March 2023. rlang is dropped as install dependency. No dependencies should make it very easy to install and manage versions long term.
+
+ - update 10th November 2022: Full support for Windows, see installation section. After digging through gnu ld linker documentation and R source code idiosyncrasies, rpolars, can now be build for windows (nighly-gnu). In the end adding this super simple [linker export definition file](https://github.com/sorhawell/rpolars/blob/main/src/rpolars-win.def) prevented the linker from trying to export all +160_000 internal variables into a 16bit symbol table maxing out at 65000 variables. Many thanks for 24-hour support from extendr-team.
+
+ - update 4th November 2022: [Latest documentation shows half (125) of all expression functions are now ported](https://sorhawell.github.io/reference/index.html#expr). Automatic binary release for Mac and Linux. Windows still pending. It is now very easy to install rpolars from binary. See install section.
+
+ - update: 5th October 2022 Currently ~20% of features have been translated. To make polars call R multi-threaded was a really hard nut to crack as R has no Global-interpreter-lock feature. My solution is to have a main thread in charge of R calls, and any abitrary polars child threads can request to have R user functions executed. Implemented with flume mpsc channels. No serious obstacles left known to me. Just a a lot of writing. Preliminary performance benchmarking promise rpolars is going to perform just as fast pypolars.

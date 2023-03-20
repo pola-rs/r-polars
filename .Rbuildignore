@@ -10,3 +10,5 @@
 ^\.vscode$
 ^flake.nix$
 ^flake.lock$
+^README\.Rmd$
+^NEWS\.0\.md$

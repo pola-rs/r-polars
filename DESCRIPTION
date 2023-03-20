@@ -1,11 +1,11 @@
 Package: rpolars
 Title: Polars ported to R
-Version: 0.4.6
+Version: 0.4.6.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R: 
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
-Description: This package aims to port the fast data table Polars to R.
+Description: This package ports the polars data query library to R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,7 +23,9 @@ Suggests:
     bench,
     nycflights13,
     patrick,
-    bit64
+    bit64,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
@@ -63,3 +65,4 @@ Collate:
     'whenthen.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000
+VignetteBuilder: knitr
