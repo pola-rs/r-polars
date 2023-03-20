@@ -325,22 +325,19 @@ pl$lazy_csv_reader("airquality.csv")
 
 We could obviously append a set of query operators to the above LazyFrame and
 then collect the results. However, this workflow is even better suited to 
-Parquet files and datasets, since we can leverage their efficient storage format 
+Parquet files, since we can leverage their efficient storage format 
 on disk. Let's see an example.
 
 ```{r}
 library(arrow)
 
-dir.create("airquality-ds")
-write_dataset(airquality, "airquality-ds", partitioning = "Month")
-```
+write_parquet(airquality, "airquality.parquet")
 
-```{r}
-# aq = read_parquet("airquality-ds/*/*.parquet) # eager version (okay)
-aq = scan_parquet("airquality-ds/*/*.parquet")  # lazy version (better)
+# aq = read_parquet("airquality.parquet) # eager version (okay)
+aq = scan_parquet("airquality.parquet")  # lazy version (better)
 
 aq$filter(
-  pl$col("Month")<=6
+  pl$col("Month") <= 6
 )$groupby(
   "Month"
 )$agg(
@@ -348,11 +345,29 @@ aq$filter(
 )$collect()
 ```
 
-We'll clean up by removing our newly created files and directory before
-continuing.
+Finally, can read/scan multiple files in the same directory through pattern
+globbing. However, please note that partition-aware scanning is not yet 
+supported out of the box (e.g., Hive-style partitioned datasets). Follow
+[this issue](https://github.com/pola-rs/polars/issues/4347) for more details
+about when this will be resolved.
 
 ```{r}
-file.remove("airquality.csv")
+dir.create("airquality-ds")
+write_dataset(airquality, "airquality-ds", partitioning = "Month")
+
+# Use pattern globbing to scan all parquet files in the folder
+aq2 = scan_parquet("airquality-ds/*/*.parquet")
+
+# Just print the first two rows. But note that the Month column
+# (which we used for partitioning) is missing.
+aq2$limit(2)$collect()
+```
+
+Before continuing, don't forget to clean up by removing the newly created temp files
+and directory on disk.
+
+```{r}
+file.remove(c("airquality.csv", "airquality.parquet"))
 unlink("airquality-ds", recursive = TRUE)
 ```
 
