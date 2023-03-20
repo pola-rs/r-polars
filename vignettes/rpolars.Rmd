@@ -54,7 +54,7 @@ The rest of this vignette contains some simple examples to get you going. Note
 that the **rpolars** syntax and expressions are (deliberately) as close to the
 Python implementation as possible, so you can always refer to the
 [(py)polars book](https://pola-rs.github.io/polars-book/user-guide/) for more 
-ideas. Just remember to switch out the `.` (Python) for `$` (R) when chaining 
+ideas. Just remember to switch out any `.` (Python) for a `$` (R) when chaining
 methods. For example, here are two equivalent lines of code for some
 hypothetical dataset.
 
@@ -250,7 +250,7 @@ More information on the **rpolars** joining method can be found in the
 
 The package supports many other data manipulation operations, which we won't 
 cover here. Hopefully, you will already have a sense of the key syntax features.
-We now turn to another core idea of the Polars ecosytem: lazy execution.
+We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 
 ## Lazy execution
 
@@ -295,12 +295,12 @@ Here we see a simple, but surprisingly effective component in query
 optimization: _projection_. Changing the order in which our subsetting
 operations occurs---in this case, subsetting on columns first---reduces the
 memory overhead of the overall query and leads to a downstream speedup. Of
-course, you would hardly notice difference for this small dataset. But the same
-principles carry over to much bigger datasets and more complex queries.
+course, you would hardly notice a difference for this small dataset. But the
+same principles carry over to much bigger datasets and more complex queries.
 
 To actually execute the plan, we just need tp invoke the `collect()` method.
 This should feel very familiar if you have previously used other lazy execution
-engines like those provided **arrow** or **dbplyr**.
+engines like those provided by **arrow** or **dbplyr**.
 
 ```{r}
 subset_query$collect()
@@ -308,8 +308,8 @@ subset_query$collect()
 
 ## Data import
 
-**rpolars** supports data import of both CSV and Parquet files formats. For
-example:
+**rpolars** supports data import of both CSV and Parquet files formats. Here we
+demonstrate using the `airquality` dataset that also comes bundled with base R.
 
 ```{r}
 write.csv(airquality, "airquality.csv")
@@ -348,7 +348,8 @@ aq$filter(
 )$collect()
 ```
 
-We'll clean by removing our newly created files and directory before continuing.
+We'll clean up by removing our newly created files and directory before
+continuing.
 
 ```{r}
 file.remove("airquality.csv")
