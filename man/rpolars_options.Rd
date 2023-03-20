@@ -52,7 +52,7 @@ who likes rpolars package messages? use this option to turn them off.
 do not print the call causing the error in error messages
 
 modifing list takes no effect, pass it to pl$set_rpolars_options
-get/set/resest interact with internal env \code{rpolars:::rpolars_optenv}
+get/set/resest interact with internal env \code{polars:::rpolars_optenv}
 
 setting an options may be rejected if not passing opt_requirements
 }

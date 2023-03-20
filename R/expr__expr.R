@@ -10,7 +10,7 @@
 #' @examples
 #' 2+2
 #' #Expr has the following methods/constructors
-#' ls(rpolars:::Expr)
+#' ls(polars:::Expr)
 #'
 #' pl$col("this_column")$sum()$over("that_column")
 42
@@ -100,7 +100,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname=NULL) {
 #' err value.
 #' @keywords internal
 #' @return Expr
-#' @examples rpolars:::wrap_elist_result(list(pl$lit(42),42,1:3))
+#' @examples polars:::wrap_elist_result(list(pl$lit(42),42,1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
@@ -519,7 +519,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @return ProtoExprArray object
 #'
-#' @examples rpolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
+#' @examples polars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 construct_ProtoExprArray = function(...) {
 
   pra = ProtoExprArray$new()

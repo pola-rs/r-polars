@@ -5,9 +5,9 @@
 #' @return bool
 #' @format function
 #' @examples
-#' rpolars:::is_schema(pl$DataFrame(iris)$schema)
+#' polars:::is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(pl$DataFrame(iris)$schema)
-#' rpolars:::is_schema(list("alice","bob"))
+#' polars:::is_schema(list("alice","bob"))
 #'
 is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
@@ -24,8 +24,8 @@ pl$is_schema = is_schema
 #' @return bool
 #' @format function
 #' @examples
-#' rpolars:::wrap_proto_schema(c("alice","bob"))
-#' rpolars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
+#' polars:::wrap_proto_schema(c("alice","bob"))
+#' polars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
 wrap_proto_schema = function(x) {
   pcase(
     is.list(x) && !is.null(names(x)), x,
@@ -94,7 +94,7 @@ print.RPolarsDataType = function(x, ...) {
 #' @param x a candidate
 #' @keywords internal
 #' @return a list DataType with an inner DataType
-#' @examples rpolars:::is_polars_dtype(pl$Int64)
+#' @examples polars:::is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
   inherits(x,"RPolarsDataType") && (x != pl$Unknown || include_unknown)
 }
@@ -133,7 +133,7 @@ pl$same_outer_dt = function(lhs, rhs) {
 #'
 #' @return DataType
 #' @examples
-#' rpolars:::DataType_new("Int64")
+#' polars:::DataType_new("Int64")
 DataType_new = function(str) {
   .pr$DataType$new(str)
 }

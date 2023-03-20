@@ -37,7 +37,7 @@ check_no_missing_args = function(
 #'   #https://github.com/r-lib/waldo/issues/150
 #'   testthat::expect_identical(NA_real_,NaN)
 #'
-#'   rpolars:::expect_strictly_identical(NA_real_,NaN)
+#'   polars:::expect_strictly_identical(NA_real_,NaN)
 #' }
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
@@ -129,7 +129,7 @@ list2 = list
 #' @keywords internal
 #' @examples
 #' n = 7
-#' rpolars:::pcase(
+#' polars:::pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
 #'  or_else = stopf("failed to have a case for n=%s",n)
@@ -229,7 +229,7 @@ l_to_vdf = function(l) {
 #' env_1$fruit_env = fruit_env
 #'
 #' env_naive_copy = env_1
-#' env_shallow_clone = rpolars:::clone_env_one_level_deep(env_1)
+#' env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
 #'
 #' #modifying env_!
 #' env_1$minerals = new.env(parent = emptyenv())
@@ -333,7 +333,7 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #' @keywords internal
-#' @examples rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
+#' @examples polars:::get_method_usages(polars:::DataFrame, pattern="col")
 get_method_usages = function(env,pattern="") {
 
   found_names = ls(env,pattern=pattern)
@@ -481,7 +481,7 @@ restruct_list = function(l) {
 #' @examples
 #'
 #' #macro_new_subnamespace() is not exported, export for this toy example
-#' #macro_new_subnamespace = rpolars:::macro_new_subnamespace
+#' #macro_new_subnamespace = polars:::macro_new_subnamespace
 #'
 #' ##define some new methods prefixed 'MyClass_'
 #' #MyClass_add2 = function() self + 2
@@ -493,7 +493,7 @@ restruct_list = function(l) {
 #' #here adding sub-namespace as a expr-class property/method during session-time,
 #' #which only is for this demo.
 #' #instead sourced method like Expr_arr() at package build time instead
-#' #env = rpolars:::Expr #get env of the Expr Class
+#' #env = polars:::Expr #get env of the Expr Class
 #' #env$my_sub_ns = method_as_property(function() { #add a property/method
 #' # my_class_sub_ns(self)
 #' #})
@@ -558,8 +558,8 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #'
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
-#' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-#' rpolars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
+#' polars:::expect_grepl_error(stop("orange and carrot"),"carrot")
+#' polars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
 
   #turn of including call in err msg
@@ -594,7 +594,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
 #' @return string
 #'
 #' @examples
-#' rpolars:::str_string(list(a=42,c(1,2,3,NA)))
+#' polars:::str_string(list(a=42,c(1,2,3,NA)))
 str_string = function(x,collapse=" ") {
   paste(capture.output(str(x)),collapse = collapse)
 }
@@ -625,7 +625,7 @@ convert_to_fewer_types = function(x) {
 #' @keywords internal
 #'
 #' @examples
-#'  check_tz_to_result = rpolars:::check_tz_to_result # expose internal
+#'  check_tz_to_result = polars:::check_tz_to_result # expose internal
 #'  #return Ok
 #'  check_tz_to_result("GMT")
 #'  check_tz_to_result(NULL)

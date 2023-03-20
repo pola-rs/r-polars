@@ -28,7 +28,7 @@ to solve some tricky self-referential problem. If possible to deprecate a macro 
 \examples{
 
 #macro_new_subnamespace() is not exported, export for this toy example
-#macro_new_subnamespace = rpolars:::macro_new_subnamespace
+#macro_new_subnamespace = polars:::macro_new_subnamespace
 
 ##define some new methods prefixed 'MyClass_'
 #MyClass_add2 = function() self + 2
@@ -40,7 +40,7 @@ to solve some tricky self-referential problem. If possible to deprecate a macro 
 #here adding sub-namespace as a expr-class property/method during session-time,
 #which only is for this demo.
 #instead sourced method like Expr_arr() at package build time instead
-#env = rpolars:::Expr #get env of the Expr Class
+#env = polars:::Expr #get env of the Expr Class
 #env$my_sub_ns = method_as_property(function() { #add a property/method
 # my_class_sub_ns(self)
 #})

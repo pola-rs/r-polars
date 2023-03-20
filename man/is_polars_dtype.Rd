@@ -16,6 +16,6 @@ a list DataType with an inner DataType
 chek if x is a valid RPolarsDataType
 }
 \examples{
-rpolars:::is_polars_dtype(pl$Int64)
+polars:::is_polars_dtype(pl$Int64)
 }
 \keyword{internal}

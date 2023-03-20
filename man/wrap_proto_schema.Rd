@@ -21,6 +21,6 @@ bool
 wrap proto schema
 }
 \examples{
-rpolars:::wrap_proto_schema(c("alice","bob"))
-rpolars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
+polars:::wrap_proto_schema(c("alice","bob"))
+polars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
 }

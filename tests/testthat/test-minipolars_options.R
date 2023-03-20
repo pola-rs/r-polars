@@ -1,6 +1,6 @@
 test_that("get options", {
   opts = pl$get_rpolars_options()
-  expect_equal(opts,as.list(rpolars:::rpolars_optenv))
+  expect_equal(opts,as.list(polars:::rpolars_optenv))
 })
 
 
@@ -55,3 +55,4 @@ test_that("set/get/reset an option", {
   default_opt = pl$get_rpolars_options()$strictly_immutable
   expect_equal(before_opt,  default_opt)
 })
+

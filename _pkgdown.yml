@@ -52,7 +52,7 @@ reference:
       `pl` is the public api of functions and class constructors. All functions, objects and methods
       needed to interact with polars are accessed via `pl$` or `object$method()`.
       `.pr` the private class methods, which always are calls to rust-polars.
-      Also `rpolars:::` have lots of private R functions.
+      Also `polars:::` have lots of private R functions.
     contents:
       - has_keyword("api")
       - has_keyword("api_object")

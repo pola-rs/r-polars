@@ -1,4 +1,4 @@
-Package: rpolars
+Package: polars
 Title: Polars ported to R
 Version: 0.4.6.9000
 Depends: R (>= 4.1.0)

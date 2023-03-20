@@ -5,11 +5,11 @@ TOOLCHAIN ?= stable-msvc
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/release
-STATLIB = $(LIBDIR)/librpolars.a
+STATLIB = $(LIBDIR)/libpolars.a
 PKG_LIBS = -L$(LIBDIR) -lrpolars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
 RPOLARS_RUST_SOURCE ?= ./rust
 RPOLARS_CARGO_CLEAN_DEPS ?= nope
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/release/librpolars.a"
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/release/libpolars.a"
 
 all: C_clean
 
@@ -34,7 +34,7 @@ $(STATLIB):
 	else \
 		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
 		mkdir -p $(LIBDIR) ; \
-		ln -s $(rpolars_ext_binary) $(LIBDIR)/librpolars.a ; \
+		ln -s $(rpolars_ext_binary) $(LIBDIR)/libpolars.a ; \
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...

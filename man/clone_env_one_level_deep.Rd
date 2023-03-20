@@ -33,7 +33,7 @@ env_1 = new.env(parent = emptyenv())
 env_1$fruit_env = fruit_env
 
 env_naive_copy = env_1
-env_shallow_clone = rpolars:::clone_env_one_level_deep(env_1)
+env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
 
 #modifying env_!
 env_1$minerals = new.env(parent = emptyenv())

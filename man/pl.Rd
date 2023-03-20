@@ -5,7 +5,7 @@
 \alias{pl}
 \title{The complete rpolars public API.}
 \format{
-An object of class \code{environment} of length 55.
+An object of class \code{environment} of length 56.
 }
 \usage{
 pl
@@ -27,11 +27,11 @@ bind the environment to another variable name as \code{simon_says = pl} or even 
 pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
 
 #pl inventory
-rpolars:::print_env(pl,"rpolars public functions")
+polars:::print_env(pl,"rpolars public functions")
 
 #all accessible classes and their public methods
-rpolars:::print_env(
-  rpolars:::pl_pub_class_env,
+polars:::print_env(
+  polars:::pl_pub_class_env,
   "rpolars public class methods, access via object$method()"
 )
 }

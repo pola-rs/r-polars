@@ -56,7 +56,7 @@
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris,my_file)
-#' lazy_frame = rpolars:::lazy_csv_reader(path=my_file)
+#' lazy_frame = polars:::lazy_csv_reader(path=my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
 lazy_csv_reader = function(
@@ -67,7 +67,7 @@ lazy_csv_reader = function(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  overwrite_dtype = NULL,  #rpolars:::DataTypeVector$new()$print()
+  overwrite_dtype = NULL,  #polars:::DataTypeVector$new()$print()
   low_memory = FALSE,
   comment_char = NULL,
   quote_char = '"',

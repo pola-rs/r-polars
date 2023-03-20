@@ -88,7 +88,7 @@ rpolars_optreq$do_not_repeat_call = list( #set requirement functions of default 
 #'
 #' @return current settings as list
 #' @details modifing list takes no effect, pass it to pl$set_rpolars_options
-#' get/set/resest interact with internal env `rpolars:::rpolars_optenv`
+#' get/set/resest interact with internal env `polars:::rpolars_optenv`
 #'
 #'
 #' @examples  pl$get_rpolars_options()
