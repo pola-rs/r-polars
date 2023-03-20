@@ -10,3 +10,4 @@
 ^\.vscode$
 ^flake.nix$
 ^flake.lock$
+^README\.Rmd$
