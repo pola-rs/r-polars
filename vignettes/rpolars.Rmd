@@ -37,8 +37,8 @@ optimization framework means that that this speed boost can be even greater for
 complex queries that chain together many operations. Performance is similar to
 that of **data.table**, although **rpolars** supports additional functionality
 via its relationship to the Apache Arrow memory model. For example, it can scan
-multiple Parquet files and datasets (e.g., directories with Hive-style
-partitioning) and selectively import random subsets without having to read all
+multiple Parquet files and datasets
+and selectively import random subsets without having to read all
 of the data. Furthermore, many operations can be performed efficiently
 out-of-core, enabling users to work with larger than RAM data.
 
@@ -139,16 +139,16 @@ already have an innate sense of what this means. For instance,
 
 In **rpolars** our method chaining syntax takes the form `object$m1()$m2()`,
 where `object` is our data object, and `m1()` and `m2()` are appropriate 
-[methods](https://rpolars.github.io/reference/index.html), like an subsetting
+[methods](https://rpolars.github.io/reference/index.html), like subsetting
 or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
-examples to help make things concrete. Start by creating a polars "DataFrame"
+examples to help make things concrete. Start by creating a Polars "DataFrame"
 object.^[Similar to how (most) **data.table** operations are limited to objects
 of class `data.table`, we can only perform polars operations on objects that
 have been converted to an appropriate **rpolars** class.] Later on, we'll see
 how to do this automatically when importing data from disk. But for the moment,
-it will suffice to coerce R's built-in `mtcars` dataset to a polars DataFrame.
+it will suffice to coerce R's built-in `mtcars` dataset to a Polars DataFrame.
 
 ```{r}
 # Create a polars DataFrame from mtcars
@@ -262,15 +262,16 @@ enables several benefits, but the most important is that it improves
 performance. Delaying execution until the last possible moment allows Polars to
 apply automatic optimization to every query. Let's take a quick look.
 
-To create a so-called "LazyFrame" from an existing object in memory, we can
-invoke the `lazy()` constructor.
+To create a so-called
+"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class.html)" from an
+existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}
 ldat = dat$lazy()
 ldat
 ```
 
-Now consider what happens we run one our subsetting query from earlier on this
+Now consider what happens when we run our subsetting query from earlier on this
 LazyFrame.
 
 ```{r}
@@ -298,7 +299,7 @@ memory overhead of the overall query and leads to a downstream speedup. Of
 course, you would hardly notice a difference for this small dataset. But the
 same principles carry over to much bigger datasets and more complex queries.
 
-To actually execute the plan, we just need tp invoke the `collect()` method.
+To actually execute the plan, we just need to invoke the `collect()` method.
 This should feel very familiar if you have previously used other lazy execution
 engines like those provided by **arrow** or **dbplyr**.
 

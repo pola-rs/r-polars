@@ -36,3 +36,4 @@ docs
 .Rprofile
 check
 inst/doc
+.DS_Store
