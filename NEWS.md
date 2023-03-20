@@ -2,7 +2,7 @@
 
 ## What's changed
 
-- Revamped docs that includes a new introductory vignette (@grantmcdermott)
+- Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)
 
 # rpolars v0.4.6
 
