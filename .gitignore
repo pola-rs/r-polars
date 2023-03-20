@@ -35,3 +35,4 @@ test.csv
 docs
 .Rprofile
 check
+inst/doc

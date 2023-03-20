@@ -23,7 +23,9 @@ Suggests:
     bench,
     nycflights13,
     patrick,
-    bit64
+    bit64,
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
@@ -63,3 +65,4 @@ Collate:
     'whenthen.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000
+VignetteBuilder: knitr
