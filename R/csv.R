@@ -112,9 +112,10 @@ lazy_csv_reader = function(
 
   #null_values: convert string or un/named  char vec into RNullValues obj
   if(!is.null(args$null_values)) {
+
     nullvals = args$null_values
     ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
-    RNullValues = function() {
+    RNullValues = (function() {
 
       #one string is used as one NULL marker for all columns
       if(is_string(nullvals)) {
@@ -132,7 +133,7 @@ lazy_csv_reader = function(
       }
 
       stopf("null_values arg must be a string OR unamed char vec OR named char vec")
-    }()
+    })()
 
     args$null_values = RNullValues
   }
