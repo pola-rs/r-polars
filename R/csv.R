@@ -114,10 +114,6 @@ lazy_csv_reader = function(
   if(!is.null(args$null_values)) {
     nullvals = args$null_values
     ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
-    if(!is.null(args$null_values)) {
-
-    nullvals = args$null_values
-    ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
     RNullValues = (function() {
 
       #one string is used as one NULL marker for all columns
