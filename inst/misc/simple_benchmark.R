@@ -1,5 +1,5 @@
 library(arrow, warn.conflicts = FALSE)
-library(rpolars)
+library(polars)
 library(nanoarrow)
 library(bench)
 

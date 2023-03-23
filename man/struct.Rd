@@ -22,7 +22,7 @@ Collect several columns into a Series of dtype Struct.
 \details{
 pl$struct creates Expr or Series of DataType Struct()
 pl$Struct creates the DataType Struct()
-In rpolars a schema is a named list of DataTypes. #' A schema describes e.g. a DataFrame.
+In polars a schema is a named list of DataTypes. #' A schema describes e.g. a DataFrame.
 More formally schemas consist of Fields.
 A Field is an object describing the name and DataType of a column/Series, but same same.
 A struct is a DataFrame wrapped into a Series, the DataType is Struct, and each

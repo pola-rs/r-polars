@@ -1,4 +1,4 @@
-# library(rpolars)
+# library(polars)
 # DATASET_BASE_DIR = "../tpch/tables_scale_1/"
 #
 #

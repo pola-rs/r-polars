@@ -5,7 +5,7 @@
 \title{Inner workings of the LazyFrame-class}
 \description{
 The \code{LazyFrame}-class is simply two environments of respectively
-the public and private methods/function calls to the rpolars rust side. The instanciated
+the public and private methods/function calls to the polars rust side. The instanciated
 \code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars LazyFrame  object. The pointer address
 is the only statefullness of the LazyFrame object on the R side. Any other state resides on the
 rust side. The S3 method \code{.DollarNames.LazyFrame} exposes all public \verb{$foobar()}-methods which are callable onto the object.
@@ -20,7 +20,7 @@ as pure functions solved/simplified self-referential complications.
 \code{LazyFrame_object$collect() -> DataFrame_object}. This is quite similar to the lazy-collect syntax of the dplyrpackage to
 interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
 as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
-and other data sources such parquet files simultanously. (#TODO implement rpolars SQL ;)
+and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
 }
 \details{
 Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.

@@ -23,7 +23,7 @@ R only has a native Int32 type, no Uint32, Int64, UInt64 , ... types. These days
 a bit small, to refer to more rows than ~ 2^31-1. There are packages which provide int64,
 but the most normal hack' is to just use floats as 'integerish'. There is an unique float64 value
 for every integer up to about 2^52 which is
-plenty for all practical concerns. Some rpolars methods may accept or return a floats even though
+plenty for all practical concerns. Some polars methods may accept or return a floats even though
 an integer ideally would be more accurate. Most R functions intermix Int32 (integer) and Float64
 (double) seamlessly.
 }
@@ -72,7 +72,7 @@ arguments
 The following translations are relevant when loading data into polars. The R list appears
 similar to python dictionary (hashmap), but is implemented more similar to the python list
 (array of pointers). R list do support string naming elements via a string vector.
-In rpolars both lists (of vectors or series) and data.frames can be used to construct a polars
+In polars both lists (of vectors or series) and data.frames can be used to construct a polars
 DataFrame, just a as dictionaries would be used in python. In terms of loading in/out data the
 follow tranlation holds: R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
 }

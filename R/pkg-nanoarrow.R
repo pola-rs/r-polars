@@ -1,4 +1,4 @@
-#' rpolars to nanoarrow and arrow
+#' polars to nanoarrow and arrow
 #' @description Conversion via native apache arrow array stream (fast), THIS REQUIRES ´nanoarrow´
 #' @name nanoarrow
 #' @param x a polars DataFrame

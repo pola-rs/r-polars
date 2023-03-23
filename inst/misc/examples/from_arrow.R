@@ -1,4 +1,4 @@
-library(rpolars)
+library(polars)
 library(arrow)
 library(nycflights13)
 

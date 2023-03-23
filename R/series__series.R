@@ -2,7 +2,7 @@
 #'
 #' @name Series_class
 #' @description The `Series`-class is simply two environments of respectively
-#' the public and private methods/function calls to the rpolars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instanciated
 #' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
 #' is the only statefullness of the Series object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object.

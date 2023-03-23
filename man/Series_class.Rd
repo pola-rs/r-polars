@@ -5,7 +5,7 @@
 \title{Inner workings of the Series-class}
 \description{
 The \code{Series}-class is simply two environments of respectively
-the public and private methods/function calls to the rpolars rust side. The instanciated
+the public and private methods/function calls to the polars rust side. The instanciated
 \code{Series}-object is an \code{externalptr} to a lowlevel rust polars Series  object. The pointer address
 is the only statefullness of the Series object on the R side. Any other state resides on the
 rust side. The S3 method \code{.DollarNames.Series} exposes all public \verb{$foobar()}-methods which are callable onto the object.

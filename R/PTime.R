@@ -47,7 +47,7 @@ time_unit_conv_factor = c(
 #' timexone(tzone) and Datetime with a timezone(tz) the behavior is the same conversion is
 #' intuitive.
 #'
-#' It appears behavior of R timezones is subject to change a bit in R 4.3.0, see rpolars unit test
+#' It appears behavior of R timezones is subject to change a bit in R 4.3.0, see polars unit test
 #' test-expr_datetime.R/"pl$date_range Date lazy/eager".
 #'
 #' @return a PTime vector either double or integer, with class "PTime" and attribute "tu" being

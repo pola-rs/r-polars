@@ -14,7 +14,7 @@
 \alias{infer_nanoarrow_schema.DataFrame}
 \alias{as_arrow_table.DataFrame}
 \alias{as_record_batch_reader.DataFrame}
-\title{rpolars to nanoarrow and arrow}
+\title{polars to nanoarrow and arrow}
 \usage{
 \method{as_nanoarrow_array_stream}{DataFrame}(x, ..., schema = NULL)
 

@@ -9,9 +9,9 @@
 \alias{rpolars_options}
 \alias{set_rpolars_options}
 \alias{reset_rpolars_options}
-\title{rpolars options}
+\title{polars options}
 \arguments{
-\item{strictly_immutable}{bool, default = TRUE, keep rpolars strictly immutable.
+\item{strictly_immutable}{bool, default = TRUE, keep polars strictly immutable.
 Polars/arrow is in general pro "immutable objects". However pypolars API has some minor exceptions.
 All settable property elements of classes are mutable.
 Why?, I guess python just do not have strong stance on immutability.

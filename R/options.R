@@ -1,6 +1,6 @@
 
 # R runtime options
-##all rpolars sessions options saved to here
+##all polars sessions options saved to here
 rpolars_optenv = new.env(parent = emptyenv())
 rpolars_optreq = list() #all requirement functions put in here
 
@@ -11,7 +11,7 @@ rpolars_optreq = list() #all requirement functions put in here
 #' @rdname rpolars_options
 #' @name strictly_immutable
 #' @aliases strictly_immutable
-#' @param strictly_immutable bool, default = TRUE, keep rpolars strictly immutable.
+#' @param strictly_immutable bool, default = TRUE, keep polars strictly immutable.
 #' Polars/arrow is in general pro "immutable objects". However pypolars API has some minor exceptions.
 #' All settable property elements of classes are mutable.
 #' Why?, I guess python just do not have strong stance on immutability.
@@ -79,7 +79,7 @@ rpolars_optreq$do_not_repeat_call = list( #set requirement functions of default 
 ## END OF DEFINED OPTIONS
 
 
-#' rpolars options
+#' polars options
 #' @description  get, set, reset rpolars options
 #' @rdname rpolars_options
 #' @name get_rpolars_options

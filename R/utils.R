@@ -194,7 +194,7 @@ l_to_vdf = function(l) {
         which(!do_inherit_DataFrame),
         collapse = ", "
       ),
-      "are not rpolars DataFrame(s)"
+      "are not polars DataFrame(s)"
     ))
   }
 
