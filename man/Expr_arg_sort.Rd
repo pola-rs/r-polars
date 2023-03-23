@@ -29,7 +29,7 @@ If 'reverse=True` the smallest elements will be given.
 argsort is a alias for arg_sort
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 pl$DataFrame(list(

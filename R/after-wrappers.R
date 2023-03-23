@@ -126,7 +126,7 @@ method_as_property = function(f, setter=FALSE) {
 }
 
 
-#' @title The complete rpolars public API.
+#' @title The complete polars public API.
 #' @description `pl`-object is a environment of all public functions and class constructors.
 #' Public functions are not exported as a normal package as it would be huge namespace
 #' collision with base:: and other functions. All object-methods are accessed with object$method()
@@ -146,12 +146,12 @@ method_as_property = function(f, setter=FALSE) {
 #' pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
 #'
 #' #pl inventory
-#' polars:::print_env(pl,"rpolars public functions")
+#' polars:::print_env(pl,"polars public functions")
 #'
 #' #all accessible classes and their public methods
 #' polars:::print_env(
 #'   polars:::pl_pub_class_env,
-#'   "rpolars public class methods, access via object$method()"
+#'   "polars public class methods, access via object$method()"
 #' )
 pl = new.env(parent=emptyenv())
 
@@ -169,7 +169,7 @@ pl_pub_env = as.environment(asNamespace("polars"))
 pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 
 
-#' @title Any rpolars class object is made of this
+#' @title Any polars class object is made of this
 #' @description One SEXP of Rtype: "externalptr" + a class attribute
 #' @keywords api_object
 #'
@@ -181,9 +181,9 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'
 #' @importFrom utils .DollarNames
 #' @examples
-#' #all a rpolars object is made of:
-#' some_rpolars_object = pl$DataFrame(iris)
-#' str(some_rpolars_object) #External Pointer tagged with a class attribute.
+#' #all a polars object is made of:
+#' some_polars_object = pl$DataFrame(iris)
+#' str(some_polars_object) #External Pointer tagged with a class attribute.
 object = "place_holder"
 
 

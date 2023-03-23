@@ -20,7 +20,7 @@ value
 set value of properties of DataFrames
 }
 \details{
-settable rpolars object properties may appear to be R objects, but they are not.
+settable polars object properties may appear to be R objects, but they are not.
 See \verb{[[method_name]]} example
 }
 \examples{
@@ -47,13 +47,13 @@ df$columns
 
 #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
 #however Rstudio backticks it into df$`columns<-`
-#to make life simple, this is valid rpolars syntax also, and can be used in fast scripting
+#to make life simple, this is valid polars syntax also, and can be used in fast scripting
 df$`columns<-` = letters[5:1]
 
 #for stable code prefer e.g.  df$columns = letters[5:1]
 
 #to see inside code of a property use the [[]] syntax instead
-df[["columns"]] # to see property code, .pr is the internal rpolars api into rust polars
+df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 polars:::DataFrame.property_setters$columns #and even more obscure to see setter code
 
 

@@ -93,7 +93,7 @@ Series_print = function() {
 #' @param ... Series(s) or any object into Series meaning `pl$Series(object)` returns a series
 #' @return a combined Series
 #' @details append datatypes has to match. Combine does not rechunk.
-#' Read more about R vectors, Series and chunks in \code{\link[rpolars]{docs_translations}}:
+#' Read more about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
 #' @examples
 #' s = c(pl$Series(1:5),3:1,NA_integer_)
 #' s$chunk_lengths() #the series contain three unmerged chunks

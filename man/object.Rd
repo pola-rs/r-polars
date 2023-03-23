@@ -3,7 +3,7 @@
 \docType{data}
 \name{object}
 \alias{object}
-\title{Any rpolars class object is made of this}
+\title{Any polars class object is made of this}
 \format{
 An object of class \code{character} of length 1.
 }
@@ -22,8 +22,8 @@ See function macro_add_syntax_check_to_class().
 }
 }
 \examples{
-#all a rpolars object is made of:
-some_rpolars_object = pl$DataFrame(iris)
-str(some_rpolars_object) #External Pointer tagged with a class attribute.
+#all a polars object is made of:
+some_polars_object = pl$DataFrame(iris)
+str(some_polars_object) #External Pointer tagged with a class attribute.
 }
 \keyword{api_object}

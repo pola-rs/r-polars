@@ -2,7 +2,7 @@
 #'
 #' @name DataFrame_class
 #' @description The `DataFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the rpolars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instanciated
 #' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object.
 #' The pointer address is the only statefullness of the DataFrame object on the R side.
 #' Any other state resides on the rust side. The S3 method `.DollarNames.DataFrame`
@@ -265,7 +265,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @return value
 #' @keywords DataFrame
-#' @details settable rpolars object properties may appear to be R objects, but they are not.
+#' @details settable polars object properties may appear to be R objects, but they are not.
 #' See `[[method_name]]` example
 #'
 #' @export
@@ -293,13 +293,13 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
 #' #however Rstudio backticks it into df$`columns<-`
-#' #to make life simple, this is valid rpolars syntax also, and can be used in fast scripting
+#' #to make life simple, this is valid polars syntax also, and can be used in fast scripting
 #' df$`columns<-` = letters[5:1]
 #'
 #' #for stable code prefer e.g.  df$columns = letters[5:1]
 #'
 #' #to see inside code of a property use the [[]] syntax instead
-#' df[["columns"]] # to see property code, .pr is the internal rpolars api into rust polars
+#' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 #' polars:::DataFrame.property_setters$columns #and even more obscure to see setter code
 #'
 #'
@@ -790,7 +790,7 @@ DataFrame_to_struct = function(name = "") {
 }
 
 
-##TODO contribute polars add rpolars defaults for to_struct and unnest
+##TODO contribute polars add r-polars defaults for to_struct and unnest
 #' Unnest a DataFrame struct columns.
 #' @rdname DataFrame_to_Struct_unnest
 #' @param names names of struct columns to unnest, default NULL unnest any struct column

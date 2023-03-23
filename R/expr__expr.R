@@ -231,7 +231,7 @@ Expr_lt = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
@@ -252,7 +252,7 @@ Expr_gt = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
@@ -273,7 +273,7 @@ Expr_eq = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
@@ -295,7 +295,7 @@ Expr_neq = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
@@ -316,7 +316,7 @@ Expr_lt_eq = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
@@ -338,7 +338,7 @@ Expr_gt_eq = function(other) {
 }
 #' @export
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
@@ -450,7 +450,7 @@ Expr_len = "use_extendr_wrapper"
 #' Similar to R syntax `x[!(is.na(x) & !is.nan(x))]`
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = "use_extendr_wrapper"
@@ -466,7 +466,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #'  To drop null values, use method `drop_nulls`.
 #'
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @return Expr
 #' @examples
@@ -485,7 +485,7 @@ Expr_drop_nans = "use_extendr_wrapper"
 #' null polars about the same as R NA
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_null())
 Expr_is_null = "use_extendr_wrapper"
@@ -498,7 +498,7 @@ Expr_is_null = "use_extendr_wrapper"
 #' null polars about the same as R NA
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = "use_extendr_wrapper"
@@ -1048,7 +1048,7 @@ Expr_map_alias = function(fun) {
 #' @name Expr_is_finite
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_finite())
 Expr_is_finite = "use_extendr_wrapper"
@@ -1057,7 +1057,7 @@ Expr_is_finite = "use_extendr_wrapper"
 #' Are elements infinite
 #' @description Returns a boolean output indicating which values are infinite.
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_infinite
@@ -1075,7 +1075,7 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' @description Returns a boolean Series indicating which values are NaN.
 #' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
 #'  NA_real_(R).
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
 #' @aliases is_nan
@@ -1095,7 +1095,7 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @return Expr
 #' @aliases is_not_nan
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_is_not_nan
 #' @format a method
 #' @examples
@@ -1168,7 +1168,7 @@ Expr_append = function(other, upcast=TRUE) {
 #' @name Expr_rechunk
 #' @format a method
 #' @details
-#' See rechunk() explained here \code{\link[rpolars]{docs_translations}}
+#' See rechunk() explained here \code{\link[polars]{docs_translations}}
 #' @examples
 #' #get chunked lengths with/without rechunk
 #' series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
@@ -1231,7 +1231,7 @@ Expr_cumprod = function(reverse = FALSE) {
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1253,7 +1253,7 @@ Expr_cummin = function(reverse = FALSE) {
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(a=1:4))$select(
@@ -1385,7 +1385,7 @@ Expr_mode = "use_extendr_wrapper"
 #' @return Expr
 #' @aliases sort
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_sort
 #' @format a method
 #' @examples
@@ -1403,7 +1403,7 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' If 'reverse=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @param k numeric k top values to get
 #' @param reverse bool if true then k smallest values
@@ -1431,7 +1431,7 @@ Expr_top_k = function(k , reverse = FALSE) {
 #' @return Expr
 #' @aliases arg_sort
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_sort
 #' @format a method
 #' @examples
@@ -1448,7 +1448,7 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @keywords Expr
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_min
 #' @format a method
 #' @examples
@@ -1463,7 +1463,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @return Expr
 #' @aliases Expr_arg_max
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_max
 #' @format a method
 #' @examples
@@ -1509,7 +1509,7 @@ Expr_search_sorted = function(element) {
 #' In projection/ selection context the whole column is sorted.
 #' If used in a groupby context, the groups are sorted.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @format a method
 #' @examples
 #' df = pl$DataFrame(list(
@@ -1605,7 +1605,7 @@ Expr_take = function(indices) {
 #' @name Expr_shift
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @usage Expr_shift(periods)
 #' @examples
 #' pl$select(
@@ -1625,7 +1625,7 @@ Expr_shift = "use_extendr_wrapper"
 #' @name Expr_shift_and_fill
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$select(
 #'   pl$lit(0:3),
@@ -1649,7 +1649,7 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' @name Expr_fill_null
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' pl$select(
@@ -1685,7 +1685,7 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
 #' @name Expr_backward_fill
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' l = list(a=c(1L,rep(NA_integer_,3L),10))
@@ -1708,7 +1708,7 @@ Expr_backward_fill = function(limit = NULL) {
 #' @name Expr_forward_fill
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' l = list(a=c(1L,rep(NA_integer_,3L),10))
@@ -1734,7 +1734,7 @@ Expr_forward_fill = function(limit = NULL) {
 #' @name Expr_fill_nan
 #' @format a method
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' l = list(a=c(1,NaN,NaN,3))
 #' pl$DataFrame(l)$select(
@@ -1784,7 +1784,7 @@ Expr_var = function(ddof = 1) {
 #'
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 Expr_max = "use_extendr_wrapper"
@@ -1796,7 +1796,7 @@ Expr_max = "use_extendr_wrapper"
 #'
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$min()== 1 ) #is true
 Expr_min = "use_extendr_wrapper"
@@ -1813,7 +1813,7 @@ Expr_min = "use_extendr_wrapper"
 #' Get maximum value.
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NaN,Inf,3)))$select(pl$col("x")$nan_max()$is_nan()) #is true
 Expr_nan_max = "use_extendr_wrapper"
@@ -1824,7 +1824,7 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @description Get minimum value, but propagate/poison encountered `NaN` values.
 #' @return Expr
 #' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x=c(1,NaN,-Inf,3)))$select(pl$col("x")$nan_min()$is_nan()) #is true
 Expr_nan_min = "use_extendr_wrapper"
