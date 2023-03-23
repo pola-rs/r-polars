@@ -9,18 +9,18 @@
 badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io.html)
+[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io)
 <!-- badges: end -->
 
 The goal of this project is to bring the blazingly fast
-[polars](https://www.pola.rs/) data manipulation library to R. The
+[Polars](https://www.pola.rs/) data manipulation library to R. The
 underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
 Documentation can be found on the **rpolars**
-[homepage](https://rpolars.github.io.html).
+[homepage](https://rpolars.github.io).
 
-The primary developer of the upstream polars project is Ritchie Vink
+The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
 by Søren Welling ([@sorhawell](https://github.com/sorhawell)), together
 with other
@@ -28,10 +28,10 @@ with other
 Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
-**Update:** As of March 2023, **rpolars** has now reached approximately
-100% translation coverage of the underlying “lazy” Expr syntax. While
-not all of the “eager”” syntax has yet been translated, you should be
-able to do just about everything using `$select()` + `$with_columns()`.
+**Update:** As of March 2023, **rpolars** has now reached nearly 100%
+coverage of the underlying “lazy” Expr syntax. While translation of the
+“eager” syntax is still a little further behind, you should be able to
+do just about everything using `$select()` + `$with_columns()`.
 
 ## Install
 
@@ -231,13 +231,19 @@ Rust toolchain
 
 - Install [`rustup`](https://rustup.rs/), the cross-platform Rust
   installer. Then:
-  - `rustup toolchain install nightly`
-  - `rustup default nightly`
+
+  ``` sh
+  rustup toolchain install nightly
+  rustup default nightly
+  ```
+
 - Windows: Make sure the latest version of
   [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
   and on your PATH.
+
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
+
 - Install [CMake](https://cmake.org/) and added it to your PATH.
 
 #### Development workflow
