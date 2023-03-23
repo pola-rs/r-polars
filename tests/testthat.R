@@ -8,7 +8,7 @@
 
 library(testthat)
 
-test_check("rpolars")
+test_check("polars")
 
 
 
