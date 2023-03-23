@@ -1,8 +1,8 @@
 ---
-title: "Introduction to rpolars"
+title: "Introduction to polars in R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to rpolars}
+  %\VignetteIndexEntry{Introduction to polars in R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,9 +19,10 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 [Polars](http://pola.rs) is among the
 [fastest](https://h2oai.github.io/db-benchmark/) data table query 
-libraries available in any language. While the underlying computation engine is
-written in Rust, the original Polars bindings were implemented for Python. The
-**rpolars** package provides equivalent bindings from R.
+libraries available in any language. The underlying computation engine is
+written in Rust and can be used directly from via the polars crate. Orginally Polars bindings were implemented for Python. The **polars** R-package also provides equivalent bindings from R. Within
+R, python and rust each polars package is just called polars. The implemention polars in the
+different languages can be called rust-polars, py-polars, r-polars, nodejs-polars ...
 
 Polars syntax is similar to that of Spark, but the workflow is column-oriented
 rather than row-oriented. Since R is itself a column-oriented language, this
@@ -31,11 +32,11 @@ don't have to. However, unlike Spark, Polars is natively multithreaded instead
 of multinode(d). This makes (r)polars much simpler to install and can be used as
 one would any other R package.
 
-All told, **rpolars** users can probably expect a 5-10 speedup compared to
+All told, **polars** users can probably expect a 5-10 speedup compared to
 **dplyr** for simple transformations on datasets >500Mb. The automatic Polars
 optimization framework means that that this speed boost can be even greater for
 complex queries that chain together many operations. Performance is similar to
-that of **data.table**, although **rpolars** supports additional functionality
+that of **data.table**, although **polars** supports additional functionality
 via its relationship to the Apache Arrow memory model. For example, it can scan
 multiple Parquet files and datasets (e.g., directories with Hive-style
 partitioning) and selectively import random subsets without having to read all
@@ -45,13 +46,13 @@ out-of-core, enabling users to work with larger than RAM data.
 This R port relies on the excellent [**extendr**](https://github.com/extendr)
 package, which is the R equivalent to pyo3+maturin. **extendr** is very
 convenient for calling Rust from R, and vice versa, and is what we use to build
-the **rpolars** package. Once built, however, **rpolars** has no other
+the **polars** package. Once built, however, **polars** has no other
 dependencies other than R itself. This makes it very fast and lightweight to
-install, and so **rpolars** can immediately be used to tackle your big (or
+install, and so **polars** can immediately be used to tackle your big (or
 small!) data wrangling tasks.
 
 The rest of this vignette contains some simple examples to get you going. Note
-that the **rpolars** syntax and expressions are (deliberately) as close to the
+that the **polars** syntax and expressions are (deliberately) as close to the
 Python implementation as possible, so you can always refer to the
 [(py)polars book](https://pola-rs.github.io/polars-book/user-guide/) for more 
 ideas. Just remember to switch out any `.` (Python) for a `$` (R) when chaining
@@ -68,16 +69,16 @@ df$select(pl$col(c("A", "B"))$sum())
 
 ## Constructors, object types and data types
 
-Let's load the **rpolars** package and get our feet wet with a tongue-in-cheek
+Let's load the **polars** package and get our feet wet with a tongue-in-cheek
 version of "Hello, world".
 
 ```{r}
-library(rpolars)
+library(polars)
 
 pl$col("hello")$sum()$over("world", "from")$alias("polars")
 ```
 
-The key point of this example is the following: All **rpolars** constructors can
+The key point of this example is the following: All **polars** constructors can
 be accessed via the `pl$` prefix. We'll see this repeatedly in the examples that
 follow.
 
@@ -97,7 +98,7 @@ into your R console. These include _Boolean_, _Float32(64)_, _Int32(64)_,
 _Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
 they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
 R). This might occasionally require you to look up a specific type. But the good
-news is that **rpolars** generally does a good job of inferring types
+news is that **polars** generally does a good job of inferring types
 automatically. We'll see some examples of type coercion later on.
 
 ### `Series` and `DataFrames`
@@ -129,7 +130,7 @@ tasks on DataFrames.
 
 ## Common data tasks
 
-_Method chaining_ is a core part of the **rpolars** workflow. If you're coming
+_Method chaining_ is a core part of the **polars** workflow. If you're coming
 from one of the other popular data wrangling libraries in R, then you probably
 already have an innate sense of what this means. For instance,
 
@@ -137,7 +138,7 @@ already have an innate sense of what this means. For instance,
 - In **data.table** we use its indexing syntax, e.g. `DT[i, j, by][...]`
 - Etc.
 
-In **rpolars** our method chaining syntax takes the form `object$m1()$m2()`,
+In **polars** our method chaining syntax takes the form `object$m1()$m2()`,
 where `object` is our data object, and `m1()` and `m2()` are appropriate 
 [methods](https://rpolars.github.io/reference/index.html), like an subsetting
 or aggregation expressions.
@@ -146,7 +147,7 @@ This might all seem a little abstract, so let's walk through some quick
 examples to help make things concrete. Start by creating a polars "DataFrame"
 object.^[Similar to how (most) **data.table** operations are limited to objects
 of class `data.table`, we can only perform polars operations on objects that
-have been converted to an appropriate **rpolars** class.] Later on, we'll see
+have been converted to an appropriate **polars** class.] Later on, we'll see
 how to do this automatically when importing data from disk. But for the moment,
 it will suffice to coerce R's built-in `mtcars` dataset to a polars DataFrame.
 
@@ -156,7 +157,7 @@ dat = pl$DataFrame(mtcars)
 dat
 ```
 
-(As an aside, notice that **rpolars** DataFrames have their own "pretty" print
+(As an aside, notice that **polars** DataFrames have their own "pretty" print
 method.)
 
 With our DataFrame in hand, we can now start chaining together various methods 
@@ -212,7 +213,7 @@ dat$groupby(
 )
 ```
 
-(The final `sort()` call is optional, since **rpolars** doesn't sort the results
+(The final `sort()` call is optional, since **polars** doesn't sort the results
 of grouped operations by default. This is similar to what **data.table** does 
 and is also true for newer versions of **dplyr**.)
 
@@ -229,7 +230,7 @@ dat$groupby(
 )
 ```
 
-As a final example of how **rpolars** can be used for standard data wrangling
+As a final example of how **polars** can be used for standard data wrangling
 tasks, let's implement a (left) join. For this example, we'll borrow some
 datasets from the **nycflights13** package.
 
@@ -245,7 +246,7 @@ flights$join(
 )
 ```
 
-More information on the **rpolars** joining method can be found in the
+More information on the **polars** joining method can be found in the
 [reference manual](https://rpolars.github.io/reference/DataFrame_join.html).
 
 The package supports many other data manipulation operations, which we won't 
@@ -254,7 +255,7 @@ We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 
 ## Lazy execution
 
-While the "eager" execution engine of **rpolars** works perfectly well---as
+While the "eager" execution engine of **polars** works perfectly well---as
 evidenced by all of the previous examples---to get the most out of the package
 you need to go _lazy_.
 [Lazy execution](https://pola-rs.github.io/polars-book/user-guide/lazy-api/intro.html) 
@@ -308,7 +309,7 @@ subset_query$collect()
 
 ## Data import
 
-**rpolars** supports data import of both CSV and Parquet files formats. Here we
+**polars** supports data import of both CSV and Parquet files formats. Here we
 demonstrate using the `airquality` dataset that also comes bundled with base R.
 
 ```{r}
@@ -373,7 +374,7 @@ unlink("airquality-ds", recursive = TRUE)
 
 ## Execute R functions within a Polars query
 
-It is possible to mix R code with Polars by passing R functions to **rpolars**.
+It is possible to mix R code with Polars by passing R functions to **polars**.
 This can unlock a lot of flexibility, but note that it can inhibit performance.
 R functions are typically slower, so we recommend using native Polars functions
 and expressions wherever possible.
