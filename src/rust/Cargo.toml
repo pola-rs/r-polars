@@ -1,6 +1,6 @@
 [package]
-name = 'polars'
-version = '0.1.0'
+name = 'polars'   # r-polars
+version = '0.1.0' # this version no is not used
 edition = '2021'
 
 
