@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rpolars
+# polars
 
 <!-- badges: start -->
 
@@ -17,7 +17,7 @@ The goal of this project is to bring the blazingly fast
 underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
-Documentation can be found on the **rpolars**
+Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
@@ -28,7 +28,7 @@ with other
 Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
-**Update:** As of March 2023, **rpolars** has now reached nearly 100%
+**Update:** As of March 2023, **polars** has now reached nearly 100%
 coverage of the underlying “lazy” Expr syntax. While translation of the
 “eager” syntax is still a little further behind, you should be able to
 do just about everything using `$select()` + `$with_columns()`.
@@ -41,12 +41,12 @@ installation options for a variety of operating systems:
 ### R-universe
 
 [R-universe](https://rpolars.r-universe.dev/rpolars#install) provides
-pre-compiled **rpolars** binaries for Windows and MacOS (x86_64), with
+pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
 source builds for other platforms. Please see the GitHub release option
 below for binary install options on Linux.
 
 ``` r
-install.packages("rpolars", repos = "https://rpolars.r-universe.dev")
+install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
 Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for
@@ -59,29 +59,29 @@ well as source installs, on our [GitHub
 releases](https://github.com/pola-rs/r-polars/releases) page. You can
 download and install these files manually, or install directly from R.
 Simply match the URL for your operating system and the desired release.
-For example, to install the latest release of **rpolars** on Linux
+For example, to install the latest release of **polars** on Linux
 (x86_64) one would use:
 
 ``` r
 install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-pc-linux-gnu.gz",
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz",
   repos = NULL 
 )
 ```
 
 Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/rpolars.zip)
+([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip)
 and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/rpolars__x86_64-apple-darwin17.0.tgz)).
+[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
 One exception worth noting is MacOS (arm64), i.e. systems based on the
-new M1/M2 “Silicon” chips. To install **rpolars** on one of these
+new M1/M2 “Silicon” chips. To install **polars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**rpolars**. The corresponding `Makevars` script will download a \~200MB
+**polars**. The corresponding `Makevars` script will download a \~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -102,8 +102,8 @@ operating systems).
 
 ## Quickstart example
 
-The introductory vignette (`vignette("rpolars")`) contains a series of
-detailed examples. But here is a quick illustration of **rpolars** in
+The introductory vignette (`vignette("polars")`) contains a series of
+detailed examples. But here is a quick illustration of **polars** in
 action.
 
 Start by loading the package and creating a Polars `DataFrame` object.
@@ -111,7 +111,7 @@ Similar to the Python implementation, note that we use the `pl$` prefix
 to specify a Polars constructor.
 
 ``` r
-library(rpolars)
+library(polars)
 
 dat = pl$DataFrame(mtcars)
 dat
@@ -218,8 +218,8 @@ expression](https://rpolars.github.io/reference/Expr_cos.html):
 - Run `devtools::test()`. See below for how to set up your development
   environment correctly.
 
-Note that PRs to **rpolars** will be automatically be built and tested
-on all platforms as part of our GitHub Actions workflow. A more detailed
+Note that PRs to **polars** will be automatically be built and tested on
+all platforms as part of our GitHub Actions workflow. A more detailed
 description of the development environment and workflow for local builds
 is provided below.
 
@@ -249,9 +249,9 @@ Rust toolchain
 #### Development workflow
 
 Assuming the system dependencies have been met (above), the typical
-**rpolars** development workflow is as follows:
+**polars** development workflow is as follows:
 
-**Step 1:** Fork the **rpolars** repo on GitHub and then clone it
+**Step 1:** Fork the **polars** repo on GitHub and then clone it
 locally.
 
 ``` sh
@@ -286,10 +286,10 @@ devtools::test()     # run all unit tests
 **Step 4 (optional):** Build the package locally.
 
 ``` r
-R CMD INSTALL --no-multiarch --with-keep.source rpolars
+R CMD INSTALL --no-multiarch --with-keep.source polars
 ```
 
-**Step 5:** Commit your changes and submit a PR to the main **rpolars**
+**Step 5:** Commit your changes and submit a PR to the main **polars**
 repo.
 
 - As aside, notice that `./renv.lock` sets all R packages during the
@@ -307,7 +307,7 @@ Sys.sleep(5)
 unlink("check",recursive = TRUE, force =TRUE)
 ```
 
-- The `RPOLARS_RUST_SOURCE` environment variable allows **rpolars** to
+- The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to
   recover the Cargo cache even if source files have been moved. Replace
   with your own absolute path to your local clone!
 - `filter_rcmdcheck.R` removes known warnings from final check report.

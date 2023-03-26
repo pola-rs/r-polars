@@ -26,7 +26,7 @@ The goal of this project is to bring the blazingly fast
 computation engine is written in Rust and this R implementation has no other
 dependencies than R itself (≥ 4.1.0).
 
-Documentation can be found on the **rpolars**
+Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is 
