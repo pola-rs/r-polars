@@ -77,11 +77,10 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
   }
 
   if( is.character(x)) {
-    x = as.double(as.POSIXct(x, format = fmt)) - as.double(as.POSIXct("00:00:00", format = fmt))
+    x = as.double(as.POSIXct(x, format = fmt, tz = "GMT")) -
+      as.double(as.POSIXct("00:00:00", format = fmt, tz = "GMT"))
     x = x * time_unit_conv_factor[tu]
   }
-
-
 
   #type specific conciderations
   type_ok = FALSE
@@ -89,6 +88,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
     x = as.double(x)
     type_ok = TRUE
   }
+
   if(typeof(x)=="integer") {
     if(!tu %in% c("s","ms")) {stopf(
       "only 's' and 'ms' tu is supported for integer, set input x as double to use tu: [%s]", tu
