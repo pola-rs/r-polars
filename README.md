@@ -18,7 +18,7 @@ underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
 Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io).
+[homepage](https://rpolars.github.io/reference/index.html).
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained

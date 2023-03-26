@@ -9,6 +9,7 @@ use crate::lazy::dsl;
 use crate::lazy;
 use crate::rdatatype;
 use crate::rlib;
+use crate::utils::extendr_concurrent::ParRObj;
 pub use lazy::dataframe::*;
 
 use crate::conversion_r_to_s::robjname2series;
@@ -100,7 +101,7 @@ impl DataFrame {
 
     //internal use
     pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
-        robjname2series(&robj, name)
+        robjname2series(&ParRObj(robj), name)
             .and_then(|s| self.0.with_column(s).map(|_| ()))
             .map_err(|err| format!("in set_column_from_robj: {:?}", err))
     }
@@ -112,6 +113,18 @@ impl DataFrame {
             .with_column(s)
             .map(|_| ())
             .map_err(|err| format!("in set_column_from_series: {:?}", err))
+    }
+
+    pub fn new_par_from_list(robj_list: List) -> Result<DataFrame, String> {
+        let v: Vec<(ParRObj, String)> = robj_list
+            .iter()
+            .map(|(str, robj)| (ParRObj(robj.clone()), str.to_owned()))
+            .collect();
+
+        crate::conversion_r_to_s::par_read_robjs(v)
+            .and_then(|v_s| pl::DataFrame::new(v_s))
+            .map_err(|err| err.to_string())
+            .map(|df| DataFrame(df))
     }
 
     pub fn print(&self) -> Self {
