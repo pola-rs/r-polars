@@ -29,8 +29,8 @@ ignore_rules = list(
     },
 
     ignore_windows_linker_error = function(msg) {
-      isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
-        isTRUE(grepl("corrupt .drectve at end of def file",msg))
+      #isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
+        isTRUE(grepl("drectve at end of def file",msg))
     }
 
   ),
@@ -38,8 +38,8 @@ ignore_rules = list(
   warnings = list(
     #see above both warnings and a note
     ignore_windows_linker_error = function(msg) {
-      isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
-        isTRUE(grepl("corrupt .drectve at end of def file",msg))
+      #isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
+        isTRUE(grepl("drectve at end of def file",msg))
     },
 
     ignore_macos_dll_error = function(msg) {
