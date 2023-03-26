@@ -5,10 +5,10 @@
 \alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
-\alias{get_rpolars_options}
-\alias{rpolars_options}
-\alias{set_rpolars_options}
-\alias{reset_rpolars_options}
+\alias{get_polars_options}
+\alias{polars_options}
+\alias{set_polars_options}
+\alias{reset_polars_options}
 \title{polars options}
 \arguments{
 \item{strictly_immutable}{bool, default = TRUE, keep polars strictly immutable.
@@ -44,38 +44,38 @@ current settings as list
 list named by options of requirement function input must satisfy
 }
 \description{
-get, set, reset rpolars options
+get, set, reset polars options
 }
 \details{
-who likes rpolars package messages? use this option to turn them off.
+who likes polars package messages? use this option to turn them off.
 
 do not print the call causing the error in error messages
 
-modifing list takes no effect, pass it to pl$set_rpolars_options
-get/set/resest interact with internal env \code{polars:::rpolars_optenv}
+modifing list takes no effect, pass it to pl$set_polars_options
+get/set/resest interact with internal env \code{polars:::polars_optenv}
 
 setting an options may be rejected if not passing opt_requirements
 }
 \examples{
 #rename columns by naming expression, experimental requires option named_exprs = TRUE
-pl$set_rpolars_options(named_exprs = TRUE)
+pl$set_polars_options(named_exprs = TRUE)
 pl$DataFrame(iris)$with_columns(
   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
   SW_add_2 = (pl$col("Sepal.Width")+2)
 )
- pl$get_rpolars_options()
-pl$set_rpolars_options(strictly_immutable = FALSE)
-pl$get_rpolars_options()
+ pl$get_polars_options()
+pl$set_polars_options(strictly_immutable = FALSE)
+pl$get_polars_options()
 
 
 #setting strictly_immutable = 42 will be rejected as
 tryCatch(
-  pl$set_rpolars_options(strictly_immutable = 42),
+  pl$set_polars_options(strictly_immutable = 42),
   error= function(e) print(e)
 )
 
 #reset options like this
-pl$reset_rpolars_options()
-#use get_rpolars_opt_requirements() to requirements
-pl$get_rpolars_opt_requirements()
+pl$reset_polars_options()
+#use get_polars_opt_requirements() to requirements
+pl$get_polars_opt_requirements()
 }
