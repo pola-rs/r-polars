@@ -26,12 +26,22 @@ ignore_rules = list(
     ignore_macos_dll_error = function(msg) {
       isTRUE(Sys.info()["sysname"]=="Darwin") &&
         isTRUE(grepl("_IOBSDNameMatching",msg))
+    },
+
+    ignore_windows_linker_error = function(msg) {
+      isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
+        isTRUE(grepl("corrupt .drectve at end of def file",msg))
     }
 
   ),
 
   warnings = list(
     #see above both warnings and a note
+    ignore_windows_linker_error = function(msg) {
+      isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
+        isTRUE(grepl("corrupt .drectve at end of def file",msg))
+    },
+
     ignore_macos_dll_error = function(msg) {
       isTRUE(grepl("darwin",R.version$os)[1]) &&
         isTRUE(grepl("_IOBSDNameMatching",msg))
