@@ -22,7 +22,7 @@ Store Time in R
 \details{
 PTime should probably be replaced with package nanotime or similar.
 
-base R is missing encodinging of Time since midnight "s" "ms", "us" and "ns". The latter
+base R is missing encoding of Time since midnight "s" "ms", "us" and "ns". The latter
 "ns" is the standard for the polars Time type.
 
 Use PTime to convert R doubles and integers and use as input to polars functions which needs a

@@ -29,7 +29,7 @@ time_unit_conv_factor = c(
 #'
 #' PTime should probably be replaced with package nanotime or similar.
 #'
-#' base R is missing encodinging of Time since midnight "s" "ms", "us" and "ns". The latter
+#' base R is missing encoding of Time since midnight "s" "ms", "us" and "ns". The latter
 #' "ns" is the standard for the polars Time type.
 #'
 #' Use PTime to convert R doubles and integers and use as input to polars functions which needs a
@@ -77,11 +77,10 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
   }
 
   if( is.character(x)) {
-    x = as.double(as.POSIXct(x, format = fmt)) - as.double(as.POSIXct("00:00:00", format = fmt))
+    x = as.double(as.POSIXct(x, format = fmt, tz = "GMT")) -
+      as.double(as.POSIXct("00:00:00", format = fmt, tz = "GMT"))
     x = x * time_unit_conv_factor[tu]
   }
-
-
 
   #type specific conciderations
   type_ok = FALSE
@@ -89,6 +88,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
     x = as.double(x)
     type_ok = TRUE
   }
+
   if(typeof(x)=="integer") {
     if(!tu %in% c("s","ms")) {stopf(
       "only 's' and 'ms' tu is supported for integer, set input x as double to use tu: [%s]", tu
