@@ -313,7 +313,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (rpolars_optenv$strictly_immutable) self = self$clone()
+  if (polars_optenv$strictly_immutable) self = self$clone()
   func = DataFrame.property_setters[[name]]
   func(self,value)
   self
@@ -594,7 +594,7 @@ DataFrame_select = function(...) {
 #' )
 #'
 #' #rename columns by naming expression is concidered experimental
-#' pl$set_rpolars_options(named_exprs = TRUE) #unlock
+#' pl$set_polars_options(named_exprs = TRUE) #unlock
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width")+2)

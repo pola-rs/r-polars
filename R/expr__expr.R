@@ -540,9 +540,9 @@ construct_ProtoExprArray = function(...) {
   #if args named, convert string to col and alias any column by name if a name
   } else {
 
-    if(!rpolars_optenv$named_exprs) {
+    if(!polars_optenv$named_exprs) {
       stopf(
-        "not allowed naming expressions, use `pl$set_rpolars_options(named_exprs = TRUE)` %s",
+        "not allowed naming expressions, use `pl$set_polars_options(named_exprs = TRUE)` %s",
         "to enable column naming by expression"
       )
     }
@@ -1023,7 +1023,7 @@ Expr_keep_name = "use_extendr_wrapper"
 #' )
 Expr_map_alias = function(fun) {
   if (
-    !rpolars_optenv$no_messages &&
+    !polars_optenv$no_messages &&
     !exists(".warn_map_alias",envir = runtime_state)
   ) {
     assign(".warn_map_alias",1L,envir = runtime_state)

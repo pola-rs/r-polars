@@ -517,17 +517,17 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
 #'  #must deactivate this to allow to use immutable=FALSE
-#' pl$set_rpolars_options(strictly_immutable = FALSE)
+#' pl$set_polars_options(strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
 #' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 Series_append = function(other, immutable = TRUE) {
   if(!isFALSE(immutable)) {
     c(self,other)
   } else {
-    if(rpolars_optenv$strictly_immutable) {
+    if(polars_optenv$strictly_immutable) {
       stopf(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
+        "`pl$set_polars_options(strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self,other))
@@ -725,7 +725,7 @@ Series_is_sorted = function(reverse = FALSE, nulls_last= NULL) {
 #' @keywords Series
 #' @param reverse bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_rpolars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+#' pl$set_polars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases Series_set_sorted
@@ -733,10 +733,10 @@ Series_is_sorted = function(reverse = FALSE, nulls_last= NULL) {
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
 Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
-  if(in_place && rpolars_optenv$strictly_immutable) {
+  if(in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
+      "`pl$set_polars_options(strictly_immutable = FALSE)`"
     ))
   }
 
@@ -756,17 +756,17 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #' @param reverse bool reverse(descending) sort
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
+#' `pl$set_polars_options(strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
 #' @examples
 #' pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
 Series_sort = function(reverse = FALSE, in_place = FALSE) {
-  if(in_place && rpolars_optenv$strictly_immutable) {
+  if(in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_rpolars_options(strictly_immutable = FALSE)`"
+      "`pl$set_polars_options(strictly_immutable = FALSE)`"
     ))
   }
   if(!in_place) {
@@ -818,7 +818,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_rpolars_options(strictly_immutable = FALSE)`
+#' `pl$set_polars_options(strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -830,10 +830,10 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' pl$Series(1:4,"bob")$rename("alice")
 Series_rename = function(name, in_place = FALSE) {
   if (identical(self$name,name)) return(self) #no change needed
-  if(in_place && rpolars_optenv$strictly_immutable) {
+  if(in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_rpolars_options(strictly_immutable = FALSE)`"
+      "To enable mutable features run: `pl$set_polars_options(strictly_immutable = FALSE)`"
     ))
   }
 

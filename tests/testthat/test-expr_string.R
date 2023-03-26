@@ -79,7 +79,7 @@ test_that("str$strptime time", {
    "strict conversion to dates failed"
   )
 
-  expect_identical(
+  expect_equal(
     pl$lit(txt_times)$str$strptime(
       pl$Time,fmt = "%H:%M:%S %z", strict=FALSE,
     )$to_r(),

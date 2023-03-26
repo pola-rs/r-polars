@@ -120,7 +120,7 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
-  pl$set_rpolars_options(strictly_immutable = F)
+  pl$set_polars_options(strictly_immutable = F)
 
 
 
@@ -148,7 +148,7 @@ test_that("Series_append", {
   expect_identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 
 
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 })
 
 
@@ -284,13 +284,13 @@ test_that("sorted flags, sort", {
 # })
 
 test_that("set_sorted" , {
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 
   expect_error({
     pl$Series(c(1,3,2,4))$set_sorted(in_place=TRUE)
   })
 
-  pl$set_rpolars_options(strictly_immutable = F)
+  pl$set_polars_options(strictly_immutable = F)
 
   #teest in_place, test set_sorted
   expect_identical(
@@ -328,7 +328,7 @@ test_that("set_sorted" , {
     }
   )
 
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 })
 
 test_that("value counts", {

@@ -71,7 +71,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name
         "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         #add call to error messages
-        if(!rpolars_optenv$do_not_repeat_call) {
+        if(!polars_optenv$do_not_repeat_call) {
           paste(
             "\n when calling method:\n",
             paste(capture.output(print(call)),collapse="\n")
@@ -564,7 +564,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
 
   #turn of including call in err msg
   if(do_not_repeat_call) {
-    old_options = pl$set_rpolars_options(do_not_repeat_call=TRUE)
+    old_options = pl$set_polars_options(do_not_repeat_call=TRUE)
   }
 
   #capture err msg
@@ -572,7 +572,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   err = tryCatch(expr, error = function(e) {as.character(e)})
 
   #restore previous options state
-  if(do_not_repeat_call) do.call(pl$set_rpolars_options, old_options)
+  if(do_not_repeat_call) do.call(pl$set_polars_options, old_options)
 
   #check if error message contains pattern
   founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))

@@ -355,13 +355,13 @@ test_that("with_columns lazy/eager", {
 
 
   #check
-  pl$set_rpolars_options(named_exprs = TRUE)
+  pl$set_polars_options(named_exprs = TRUE)
   ldf_actual_kwarg_named = ldf$with_columns(
     "a*2" = (pl$col("a")*2),
     "b/2" = (pl$col("b")/2),
     "not c" = (!pl$col("c"))
   )
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 
   expect_identical(
     ldf_actual_kwarg_named$collect()$as_data_frame(check.names = FALSE),
