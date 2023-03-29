@@ -5,9 +5,9 @@ template:
 reference:
   # NSE
 
-  - title: rpolars classes
+  - title: polars classes
     desc: >
-      Are a classsystem that extends the extendr class system (let's call it "environment classes").
+      Polars class system extends the extendr class system.
       Below is the individual derived classes documented.
   - subtitle: DataFrame
     contents:
@@ -44,10 +44,10 @@ reference:
     contents:
       - has_keyword("Series_new")
       - has_keyword("Series")
-  - title: rpolars API and namespace
+  - title: polars API and namespace
     desc: >
-      rpolars api's is not exported in NAMESPACE, because it would collide badly with base R
-      and other popular functions. As rpolars strive to mimic the syntax and behavior
+      Polars api's is not exported in NAMESPACE, because it would collide badly with base R
+      and other popular functions. As polars strive to mimic the syntax and behavior
       of py-polars, vast majority of methods are internal accessed with `$`-operator.
       `pl` is the public api of functions and class constructors. All functions, objects and methods
       needed to interact with polars are accessed via `pl$` or `object$method()`.

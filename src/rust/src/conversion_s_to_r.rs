@@ -198,7 +198,7 @@ pub fn pl_series_to_list(
             }
             _ => Err(pl::PolarsError::InvalidOperation(
                 polars::error::ErrString::Owned(format!(
-                    "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
+                    "sorry polars has not yet implemented R conversion for Series.dtype: {}",
                     s.dtype()
                 )),
             )),

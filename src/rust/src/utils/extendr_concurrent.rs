@@ -241,7 +241,7 @@ where
                     //check if spawned thread has ended, first child thread should have
                     //dropped the last ThreadComs, so more likely waking up to a disconnect
                     if handle.is_finished() {
-                        rprintln!("rpolars: closing concurrent R handler");
+                        rprintln!("polars: closing concurrent R handler");
                         break;
                     }
                 }
