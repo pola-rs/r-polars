@@ -696,6 +696,20 @@ Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, of
 
 Expr$str_parse_int <- function(radix) .Call(wrap__Expr__str_parse_int, self, radix)
 
+Expr$bin_contains <- function(lit) .Call(wrap__Expr__bin_contains, self, lit)
+
+Expr$bin_starts_with <- function(sub) .Call(wrap__Expr__bin_starts_with, self, sub)
+
+Expr$bin_ends_with <- function(sub) .Call(wrap__Expr__bin_ends_with, self, sub)
+
+Expr$bin_encode_hex <- function() .Call(wrap__Expr__bin_encode_hex, self)
+
+Expr$bin_encode_bas64 <- function() .Call(wrap__Expr__bin_encode_bas64, self)
+
+Expr$bin_decode_hex <- function(strict) .Call(wrap__Expr__bin_decode_hex, self, strict)
+
+Expr$bin_decode_bas64 <- function(strict) .Call(wrap__Expr__bin_decode_bas64, self, strict)
+
 Expr$struct_field_by_name <- function(name) .Call(wrap__Expr__struct_field_by_name, self, name)
 
 Expr$struct_rename_fields <- function(names) .Call(wrap__Expr__struct_rename_fields, self, names)

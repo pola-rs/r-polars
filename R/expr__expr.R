@@ -4001,6 +4001,22 @@ Expr_str = method_as_property(function() {
   expr_str_make_sub_ns(self)
 })
 
+
+#' bin: binary related methods
+#' @description
+#' Create an object namespace of all binary related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases bin_ns
+#' @examples
+#'
+#' #missing
+#'
+Expr_bin = method_as_property(function() {
+  expr_bin_make_sub_ns(self)
+})
+
 #' dt: datetime related methods
 #' @description
 #' Create an object namespace of all datetime related methods.
