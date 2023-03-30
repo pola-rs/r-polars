@@ -2080,7 +2080,7 @@ impl Expr {
             .into()
     }
 
-    pub fn bin_encode_bas64(&self) -> Self {
+    pub fn bin_encode_base64(&self) -> Self {
         self.0.clone()
             .map(
                 move |s| s.binary().map(|s| Some(s.base64_encode().into_series())),
