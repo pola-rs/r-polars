@@ -19,6 +19,7 @@ use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
 use polars::error::ErrString as pl_err_string;
 use polars::lazy::dsl;
+use polars::prelude::BinaryNameSpaceImpl;
 use polars::prelude::DurationMethods;
 use polars::prelude::GetOutput;
 use polars::prelude::IntoSeries;
@@ -27,7 +28,6 @@ use polars::prelude::Utf8NameSpaceImpl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
-use polars::prelude::BinaryNameSpaceImpl;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
@@ -2058,12 +2058,12 @@ impl Expr {
             .into())
     }
 
-   pub fn bin_contains(&self, lit: &[u8]) -> Self {
+    pub fn bin_contains(&self, lit: &[u8]) -> Self {
         self.0.clone().binary().contains_literal(lit).into()
     }
 
-    pub fn bin_starts_with(&self, sub: &[u8]) -> Self {
-        self.0.clone().binary().starts_with(sub).into()
+    pub fn bin_starts_with(&self, sub: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().binary().starts_with(robj_to!(Raw, sub)?).into())
     }
 
     pub fn bin_ends_with(&self, sub: &[u8]) -> Self {
@@ -2071,7 +2071,8 @@ impl Expr {
     }
 
     pub fn bin_encode_hex(&self) -> Self {
-        self.0.clone()
+        self.0
+            .clone()
             .map(
                 move |s| s.binary().map(|s| Some(s.hex_encode().into_series())),
                 GetOutput::same_type(),
@@ -2081,7 +2082,8 @@ impl Expr {
     }
 
     pub fn bin_encode_base64(&self) -> Self {
-        self.0.clone()
+        self.0
+            .clone()
             .map(
                 move |s| s.binary().map(|s| Some(s.base64_encode().into_series())),
                 GetOutput::same_type(),
@@ -2090,8 +2092,9 @@ impl Expr {
             .into()
     }
 
-    pub fn bin_decode_hex(&self, strict : bool) -> Self {
-        self.0.clone()
+    pub fn bin_decode_hex(&self, strict: bool) -> Self {
+        self.0
+            .clone()
             .map(
                 move |s| {
                     s.binary()?
@@ -2104,8 +2107,9 @@ impl Expr {
             .into()
     }
 
-    pub fn bin_decode_bas64(&self, strict : bool) -> Self {
-        self.0.clone()
+    pub fn bin_decode_base64(&self, strict: bool) -> Self {
+        self.0
+            .clone()
             .map(
                 move |s| {
                     s.binary()?
