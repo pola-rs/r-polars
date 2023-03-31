@@ -2058,16 +2058,31 @@ impl Expr {
             .into())
     }
 
-    pub fn bin_contains(&self, lit: &[u8]) -> Self {
-        self.0.clone().binary().contains_literal(lit).into()
+    pub fn bin_contains(&self, lit: Robj) -> Result<Self, String> {
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .contains_literal(robj_to!(Raw, lit)?)
+            .into())
     }
 
     pub fn bin_starts_with(&self, sub: Robj) -> Result<Self, String> {
-        Ok(self.0.clone().binary().starts_with(robj_to!(Raw, sub)?).into())
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .starts_with(robj_to!(Raw, sub)?)
+            .into())
     }
 
-    pub fn bin_ends_with(&self, sub: &[u8]) -> Self {
-        self.0.clone().binary().ends_with(sub).into()
+    pub fn bin_ends_with(&self, sub: Robj) -> Result<Self, String> {
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .ends_with(robj_to!(Raw, sub)?)
+            .into())
     }
 
     pub fn bin_encode_hex(&self) -> Self {

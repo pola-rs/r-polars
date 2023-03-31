@@ -704,11 +704,11 @@ Expr$bin_ends_with <- function(sub) .Call(wrap__Expr__bin_ends_with, self, sub)
 
 Expr$bin_encode_hex <- function() .Call(wrap__Expr__bin_encode_hex, self)
 
-Expr$bin_encode_bas64 <- function() .Call(wrap__Expr__bin_encode_bas64, self)
+Expr$bin_encode_base64 <- function() .Call(wrap__Expr__bin_encode_base64, self)
 
 Expr$bin_decode_hex <- function(strict) .Call(wrap__Expr__bin_decode_hex, self, strict)
 
-Expr$bin_decode_bas64 <- function(strict) .Call(wrap__Expr__bin_decode_bas64, self, strict)
+Expr$bin_decode_base64 <- function(strict) .Call(wrap__Expr__bin_decode_base64, self, strict)
 
 Expr$struct_field_by_name <- function(name) .Call(wrap__Expr__struct_field_by_name, self, name)
 
