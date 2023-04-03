@@ -19,6 +19,7 @@ use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
 use polars::error::ErrString as pl_err_string;
 use polars::lazy::dsl;
+use polars::prelude::BinaryNameSpaceImpl;
 use polars::prelude::DurationMethods;
 use polars::prelude::GetOutput;
 use polars::prelude::IntoSeries;
@@ -2055,6 +2056,85 @@ impl Expr {
             .from_radix(robj_to!(Option, u32, radix)?)
             .with_fmt("str.parse_int")
             .into())
+    }
+
+    pub fn bin_contains(&self, lit: Robj) -> Result<Self, String> {
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .contains_literal(robj_to!(Raw, lit)?)
+            .into())
+    }
+
+    pub fn bin_starts_with(&self, sub: Robj) -> Result<Self, String> {
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .starts_with(robj_to!(Raw, sub)?)
+            .into())
+    }
+
+    pub fn bin_ends_with(&self, sub: Robj) -> Result<Self, String> {
+        Ok(self
+            .0
+            .clone()
+            .binary()
+            .ends_with(robj_to!(Raw, sub)?)
+            .into())
+    }
+
+    pub fn bin_encode_hex(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                move |s| s.binary().map(|s| Some(s.hex_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("binary.hex_encode")
+            .into()
+    }
+
+    pub fn bin_encode_base64(&self) -> Self {
+        self.0
+            .clone()
+            .map(
+                move |s| s.binary().map(|s| Some(s.base64_encode().into_series())),
+                GetOutput::same_type(),
+            )
+            .with_fmt("binary.base64_encode")
+            .into()
+    }
+
+    pub fn bin_decode_hex(&self, strict: bool) -> Self {
+        self.0
+            .clone()
+            .map(
+                move |s| {
+                    s.binary()?
+                        .hex_decode(strict)
+                        .map(|s| Some(s.into_series()))
+                },
+                GetOutput::same_type(),
+            )
+            .with_fmt("binary.hex_decode")
+            .into()
+    }
+
+    pub fn bin_decode_base64(&self, strict: bool) -> Self {
+        self.0
+            .clone()
+            .map(
+                move |s| {
+                    s.binary()?
+                        .base64_decode(strict)
+                        .map(|s| Some(s.into_series()))
+                },
+                GetOutput::same_type(),
+            )
+            .with_fmt("binary.base64_decode")
+            .into()
     }
 
     pub fn struct_field_by_name(&self, name: Robj) -> Result<Expr, String> {

@@ -61,7 +61,9 @@ expr_meta_make_sub_ns  = macro_new_subnamespace("^ExprMeta_" , "ExprMetaNameSpac
 `$.ExprCatNameSpace` = sub_name_space_accessor_function
 expr_cat_make_sub_ns  = macro_new_subnamespace("^ExprCat_" , "ExprCatNameSpace")
 
-
+#' @export
+`$.ExprBinNameSpace` = sub_name_space_accessor_function
+expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
 
 replace_private_with_pub_methods(When, "^When_")
 replace_private_with_pub_methods(WhenThen, "^WhenThen_")

@@ -581,6 +581,17 @@ pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String
     .ok_or_else(|| format!("is not a single bool as required, but {:?}", robj))
 }
 
+pub fn robj_to_binary_vec(robj: extendr_api::Robj) -> std::result::Result<Vec<u8>, String> {
+    let robj = unpack_r_result_list(robj)?;
+    let binary_vec: Vec<u8> = robj
+        .as_raw_slice()
+        .ok_or_else(|| format!("is not an R raw as required, but {:?}", robj))?
+        .iter()
+        .map(|byte| *byte)
+        .collect();
+    Ok(binary_vec)
+}
+
 pub fn robj_to_rarrow_schema(robj: extendr_api::Robj) -> std::result::Result<Robj, String> {
     let robj = unpack_r_result_list(robj)?;
 
@@ -694,6 +705,10 @@ macro_rules! robj_to_inner {
     };
     (bool, $a:ident) => {
         crate::utils::robj_to_bool($a)
+    };
+
+    (Raw, $a:ident) => {
+        crate::utils::robj_to_binary_vec($a)
     };
 
     (Expr, $a:ident) => {
