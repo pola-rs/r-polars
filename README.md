@@ -212,7 +212,7 @@ expression](https://rpolars.github.io/reference/Expr_cos.html):
 - Write a test
   [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/tests/testthat/test-expr.R#L1921).
 - Run `renv::restore()` and resolve all R packages
-- Run `extendr::document()` to recompile and confirm the added method
+- Run `rextendr::document()` to recompile and confirm the added method
   functions as intended,
   e.g. `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
 - Run `devtools::test()`. See below for how to set up your development
