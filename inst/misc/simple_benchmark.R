@@ -29,10 +29,10 @@ x = bench::mark(
   df_fa2 <- pl$from_arrow(arrow_table(nyf)),
   df6 <- pl$DataFrame(nycflights13::flights,parallel = TRUE),
   df7 <- pl$DataFrame(nyf,parallel = TRUE),
-  rpolars_df = df$as_data_frame(),
-  rpolars_list = df$to_list(),
-  rpolars_list_no_char = df_no_char$to_list(),
-  rpolars_uwind = .pr$DataFrame$to_list_unwind(df),
+  polars_df = df$as_data_frame(),
+  polars_list = df$to_list(),
+  polars_list_no_char = df_no_char$to_list(),
+  polars_uwind = .pr$DataFrame$to_list_unwind(df),
   check = FALSE,
   min_iterations = 15L
 )

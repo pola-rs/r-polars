@@ -209,7 +209,7 @@ l_to_vdf = function(l) {
 
 
 #' Clone env on level deep.
-#' @details Sometimes used in rpolars to produce different hashmaps(environments) containing
+#' @details Sometimes used in polars to produce different hashmaps(environments) containing
 #' some of the same, but not all elements.
 #'
 #' environments are used for collections of methods and types. This function can be used to make
@@ -600,11 +600,11 @@ str_string = function(x,collapse=" ") {
 }
 
 
-#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#not all R types may be immediately supported by polars but has reasonble conversion to a type
 #that is supported
 convert_to_fewer_types = function(x) {
   pcase(
-    #PSOIXlt not directly supported by rpolars but POSIXct is
+    #PSOIXlt not directly supported by polars but POSIXct is
     inherits(x, "POSIXlt"), as.POSIXct(x),
 
     #Date converted to  POSIXct, tz GMT is assumed
@@ -649,11 +649,11 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
 }
 
 
-#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#not all R types may be immediately supported by polars but has reasonble conversion to a type
 #that is supported
 convert_to_fewer_types = function(x) {
   pcase(
-    #PSOIXlt not directly supported by rpolars but POSIXct is
+    #PSOIXlt not directly supported by polars but POSIXct is
     inherits(x, "POSIXlt"), as.POSIXct(x),
 
     #Date converted to  POSIXct, tz GMT is assumed

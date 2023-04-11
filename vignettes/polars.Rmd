@@ -1,8 +1,8 @@
 ---
-title: "Introduction to polars in R"
+title: "An Introduction to Polars from R"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to polars in R}
+  %\VignetteIndexEntry{An Introduction to Polars from R}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
