@@ -170,7 +170,7 @@ Here are the steps required for an example contribution, where we are implementi
  - Notice we use `Expr_cos = "use_extendr_wrapper"`, it means we're just using unmodified the [extendr auto-generated wrapper](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/R/extendr-wrappers.R#L253)
  - Write a test [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/tests/testthat/test-expr.R#L1921).
  - Run `renv::restore()` and resolve all R packages
- - Run `extendr::document()` to recompile and confirm the added method functions as intended, e.g. `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
+ - Run `rextendr::document()` to recompile and confirm the added method functions as intended, e.g. `pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$cos())`
  - Run `devtools::test()`. See below for how to set up your development environment correctly.
  
 Note that PRs to **rpolars** will be automatically be built and tested on all
