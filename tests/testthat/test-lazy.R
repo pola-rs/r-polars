@@ -100,4 +100,10 @@ test_that("lazy filter", {
 })
 
 
+test_that("tail", {
+  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
+  b = tail(mtcars)
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+
 #TODO complete tests for lazy

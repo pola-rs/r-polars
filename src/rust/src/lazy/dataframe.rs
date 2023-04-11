@@ -4,6 +4,7 @@ use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
+use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -70,12 +71,8 @@ impl LazyFrame {
         )
     }
 
-    fn tail(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_u32(n)
-                .map(|n| LazyFrame(self.0.clone().tail(n)))
-                .map_err(|err| format!("tail: {}", err)),
-        )
+    fn tail(&self, n: Robj) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
     fn filter(&self, expr: &Expr) -> LazyFrame {

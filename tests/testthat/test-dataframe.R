@@ -429,5 +429,5 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
 test_that("tail", {
   a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
   b = tail(mtcars)
-  expect_true(all(a == b))
+  expect_equal(a, b, ignore_attr = TRUE)
 })

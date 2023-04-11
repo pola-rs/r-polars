@@ -222,7 +222,6 @@ LazyFrame_limit = function(n) {
 #'
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
-  if(!is.numeric(n)) stopf("tail: n must be numeric")
   unwrap(.pr$LazyFrame$tail(self,n))
 }
 
