@@ -70,6 +70,14 @@ impl LazyFrame {
         )
     }
 
+    fn tail(&self, n: f64) -> List {
+        r_result_list(
+            try_f64_into_u32(n)
+                .map(|n| LazyFrame(self.0.clone().tail(n)))
+                .map_err(|err| format!("tail: {}", err)),
+        )
+    }
+
     fn filter(&self, expr: &Expr) -> LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         LazyFrame(new_df)
