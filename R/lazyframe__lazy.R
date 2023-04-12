@@ -286,6 +286,19 @@ LazyFrame_reverse = function() {
   unwrap(.pr$LazyFrame$reverse(self))
 }
 
+#' @title Slice
+#' @description Get a slice of this DataFrame.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @param offset integer
+#' @param length integer or NULL
+#' @examples 
+#' pl$DataFrame(mtcars)$slice(2, 4)
+#' mtcars[2:6,]
+LazyFrame_slice = function(offset, length = NULL) {
+  unwrap(.pr$LazyFrame$slice(self, offset, length))
+}
+
 
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy

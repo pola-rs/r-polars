@@ -4,6 +4,7 @@ use crate::rdatatype::new_join_type;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
+use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -80,6 +81,10 @@ impl LazyFrame {
 
     fn reverse(&self) -> Result<LazyFrame, String> {
         Ok(LazyFrame(self.0.clone().reverse()))
+    }
+
+    fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().slice(robj_to!(i64, offset)?, robj_to!(u32, length)?)))
     }
 
     fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {

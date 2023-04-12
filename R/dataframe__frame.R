@@ -923,3 +923,17 @@ DataFrame_sum = function() {
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
+
+
+#' @title Slice
+#' @description Get a slice of this DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @param offset integer
+#' @param length integer or NULL
+#' @examples 
+#' pl$DataFrame(mtcars)$slice(2, 4)
+#' mtcars[2:6,]
+DataFrame_slice = function(offset, length = NULL) {
+  self$lazy()$slice(offset, length)$collect()
+}
