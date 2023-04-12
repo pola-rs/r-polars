@@ -1012,8 +1012,8 @@ test_that("sort_by", {
     expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(),"Expected length\\: 4")
     expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
     expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
-    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
-    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"of sequence not convertable into an Expr")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"not convertable into.* Expr")
+    expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"not convertable into.* Expr")
 
   #this test is minimal, if polars give better documentation on behaviour, expand the test.
 })
