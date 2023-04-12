@@ -424,3 +424,10 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
   expect_identical(df$as_data_frame(), df_e)
 })
 
+
+
+test_that("tail", {
+  a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
+  b = tail(mtcars)
+  expect_equal(a, b, ignore_attr = TRUE)
+})

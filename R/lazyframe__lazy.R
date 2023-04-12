@@ -213,6 +213,17 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self,n))
 }
 
+#' @title Tail
+#' @description take last n rows of query
+#' @keywords LazyFrame
+#' @param n positive numeric or integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#'
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_tail = function(n) {
+  unwrap(.pr$LazyFrame$tail(self,n))
+}
 
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy

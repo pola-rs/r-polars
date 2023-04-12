@@ -686,6 +686,19 @@ DataFrame_limit = function(n) {
 }
 
 
+#' Tail a DataFrame
+#' @name DataFrame_tail
+#' @description Get the last n rows.
+#' @param n positive numeric of integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#' @keywords  DataFrame
+#' @return DataFrame
+DataFrame_tail = function(n) {
+  self$lazy()$tail(n)$collect()
+}
+
+
 #' filter DataFrame
 #' @aliases DataFrame_filter
 #' @description DataFrame$filter(bool_expr)
