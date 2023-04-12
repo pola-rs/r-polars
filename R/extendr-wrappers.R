@@ -822,6 +822,8 @@ LazyFrame$min <- function() .Call(wrap__LazyFrame__min, self)
 
 LazyFrame$sum <- function() .Call(wrap__LazyFrame__sum, self)
 
+LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
 LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)

@@ -914,3 +914,12 @@ DataFrame_min = function() {
 DataFrame_sum = function() {
   self$lazy()$sum()$collect()
 }
+
+#' @title Reverse
+#' @description Reverse the DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$reverse()
+DataFrame_reverse = function() {
+  self$lazy()$reverse()$collect()
+}

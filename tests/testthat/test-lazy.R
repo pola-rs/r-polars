@@ -128,6 +128,11 @@ test_that("methods without arguments", {
   a = pl$DataFrame(mtcars)$lazy()$sum()$collect()$as_data_frame()
   b = data.frame(lapply(mtcars, sum))
   expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$as_data_frame()
+  b = mtcars[32:1,]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
 })
 
 

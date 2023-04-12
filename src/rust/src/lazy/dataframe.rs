@@ -78,6 +78,10 @@ impl LazyFrame {
         Ok(LazyFrame(self.0.clone().sum()))
     }
 
+    fn reverse(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().reverse()))
+    }
+
     fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
         let exprs: Vec<pl::Expr> = exprs
             .0

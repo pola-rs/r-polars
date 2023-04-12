@@ -277,6 +277,16 @@ LazyFrame_sum = function() {
 }
 
 
+#' @title Reverse
+#' @description Reverse the DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$reverse()
+LazyFrame_reverse = function() {
+  unwrap(.pr$LazyFrame$reverse(self))
+}
+
+
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy
 #' @keywords LazyFrame
