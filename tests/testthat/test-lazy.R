@@ -136,8 +136,11 @@ test_that("methods without arguments", {
   a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$as_data_frame()
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
-})
 
+  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
+  b = tail(mtcars)
+  expect_equal(a, b, ignore_attr = TRUE)
+})
 
 
 #TODO complete tests for lazy

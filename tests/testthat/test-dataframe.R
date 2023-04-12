@@ -461,4 +461,8 @@ test_that("methods without arguments", {
   a = pl$DataFrame(mtcars)$slice(2, 4)$as_data_frame()
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
+
+  a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
+  b = tail(mtcars)
+  expect_equal(a, b, ignore_attr = TRUE)
 })

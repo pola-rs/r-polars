@@ -107,6 +107,10 @@ impl LazyFrame {
         )
     }
 
+    fn tail(&self, n: Robj) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
+    }
+
     fn filter(&self, expr: &Expr) -> LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         LazyFrame(new_df)

@@ -213,6 +213,7 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self,n))
 }
 
+<<<<<<< HEAD
 #' @title First
 #' @description Get the first row of the DataFrame.  
 #' @keywords DataFrame
@@ -299,6 +300,17 @@ LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length))
 }
 
+#' @title Tail
+#' @description take last n rows of query
+#' @keywords LazyFrame
+#' @param n positive numeric or integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#'
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_tail = function(n) {
+  unwrap(.pr$LazyFrame$tail(self,n))
+}
 
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy
