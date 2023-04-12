@@ -424,3 +424,33 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
   expect_identical(df$as_data_frame(), df_e)
 })
 
+
+test_that("methods without arguments", {
+  a = pl$DataFrame(mtcars)$first()$as_data_frame()
+  b = data.frame(lapply(mtcars, head, 1))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$last()$as_data_frame()
+  b = data.frame(lapply(mtcars, tail, 1))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$max()$as_data_frame()
+  b = data.frame(lapply(mtcars, max))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$mean()$as_data_frame()
+  b = data.frame(lapply(mtcars, mean))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$median()$as_data_frame()
+  b = data.frame(lapply(mtcars, median))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$min()$as_data_frame()
+  b = data.frame(lapply(mtcars, min))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$sum()$as_data_frame()
+  b = data.frame(lapply(mtcars, sum))
+  expect_equal(a, b, ignore_attr = TRUE)
+})

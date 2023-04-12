@@ -851,3 +851,66 @@ DataFrame_unnest = function(names = NULL) {
 
 
 
+
+#' @title First
+#' @description Get the first row of the DataFrame.  
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @examples pl$DataFrame(mtcars)$first()
+DataFrame_first = function() {
+  self$lazy()$first()$collect()
+}
+
+#' @title Last
+#' @description Get the last row of the DataFrame.  
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @examples pl$DataFrame(mtcars)$last()
+DataFrame_last = function() {
+  self$lazy()$last()$collect()
+}
+
+#' @title Max
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$max()
+DataFrame_max = function() {
+  self$lazy()$max()$collect()
+}
+
+#' @title Mean
+#' @description Aggregate the columns in the DataFrame to their mean value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$mean()
+DataFrame_mean = function() {
+  self$lazy()$mean()$collect()
+}
+
+#' @title Median
+#' @description Aggregate the columns in the DataFrame to their median value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$median()
+DataFrame_median = function() {
+  self$lazy()$median()$collect()
+}
+
+#' @title Min
+#' @description Aggregate the columns in the DataFrame to their minimum value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$min()
+DataFrame_min = function() {
+  self$lazy()$min()$collect()
+}
+
+#' @title Sum
+#' @description Aggregate the columns of this DataFrame to their sum values.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$sum()
+DataFrame_sum = function() {
+  self$lazy()$sum()$collect()
+}

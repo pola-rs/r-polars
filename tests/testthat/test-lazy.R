@@ -100,4 +100,36 @@ test_that("lazy filter", {
 })
 
 
+test_that("methods without arguments", {
+  a = pl$DataFrame(mtcars)$lazy()$first()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, head, 1))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$last()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, tail, 1))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$max()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, max))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$mean()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, mean))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$median()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, median))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$min()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, min))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$sum()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, sum))
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+
+
+
 #TODO complete tests for lazy

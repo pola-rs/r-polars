@@ -49,6 +49,34 @@ impl LazyFrame {
         });
         r_result_list(result)
     }
+    
+    fn first(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().first()))
+    }
+
+    fn last(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().last()))
+    }
+
+    fn max(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().max()))
+    }
+
+    fn mean(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().mean()))
+    }
+
+    fn median(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().median()))
+    }
+
+    fn min(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().min()))
+    }
+
+    fn sum(&self) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().sum()))
+    }
 
     fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
         let exprs: Vec<pl::Expr> = exprs

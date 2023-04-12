@@ -213,6 +213,69 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self,n))
 }
 
+#' @title First
+#' @description Get the first row of the DataFrame.  
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
+LazyFrame_first = function() {
+  unwrap(.pr$LazyFrame$first(self))
+}
+
+#' @title Last
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
+LazyFrame_last = function() {
+  unwrap(.pr$LazyFrame$last(self))
+}
+
+#' @title Max
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$max()$collect()
+LazyFrame_max = function() {
+  unwrap(.pr$LazyFrame$max(self))
+}
+
+#' @title Mean
+#' @description Aggregate the columns in the DataFrame to their mean value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$mean()$collect()
+LazyFrame_mean = function() {
+  unwrap(.pr$LazyFrame$mean(self))
+}
+
+#' @title Median
+#' @description Aggregate the columns in the DataFrame to their median value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$median()$collect()
+LazyFrame_median = function() {
+  unwrap(.pr$LazyFrame$median(self))
+}
+
+#' @title Min
+#' @description Aggregate the columns in the DataFrame to their minimum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$min()$collect()
+LazyFrame_min = function() {
+  unwrap(.pr$LazyFrame$min(self))
+}
+
+#' @title Sum
+#' @description Aggregate the columns of this DataFrame to their sum values.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$sum()
+LazyFrame_sum = function() {
+  unwrap(.pr$LazyFrame$sum(self))
+}
+
 
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy

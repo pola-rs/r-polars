@@ -808,6 +808,20 @@ LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_backgr
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
+LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
+
+LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)
+
+LazyFrame$max <- function() .Call(wrap__LazyFrame__max, self)
+
+LazyFrame$mean <- function() .Call(wrap__LazyFrame__mean, self)
+
+LazyFrame$median <- function() .Call(wrap__LazyFrame__median, self)
+
+LazyFrame$min <- function() .Call(wrap__LazyFrame__min, self)
+
+LazyFrame$sum <- function() .Call(wrap__LazyFrame__sum, self)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
 LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
