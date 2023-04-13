@@ -213,7 +213,6 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self,n))
 }
 
-<<<<<<< HEAD
 #' @title First
 #' @description Get the first row of the DataFrame.  
 #' @keywords DataFrame
