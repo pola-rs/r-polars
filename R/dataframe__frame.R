@@ -970,3 +970,27 @@ DataFrame_reverse = function() {
 DataFrame_slice = function(offset, length = NULL) {
   self$lazy()$slice(offset, length)$collect()
 }
+
+
+#' @title Null count
+#' @description Create a new DataFrame that shows the null counts per column.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples 
+#' x = mtcars
+#' x[1, 2:3] = NA
+#' pl$DataFrame(x)$null_count()
+DataFrame_null_count <- function() {
+  .pr$DataFrame$null_count(self)
+}
+
+
+#' @title Estimated size
+#' @description Return an estimation of the total (heap) allocated size of the DataFrame.
+#' @keywords DataFrame
+#' @return Bytes
+#' @examples 
+#' pl$DataFrame(mtcars)$estimated_size()
+DataFrame_estimated_size <- function() {
+  .pr$DataFrame$estimated_size(self)
+}

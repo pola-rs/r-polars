@@ -102,6 +102,10 @@ DataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__DataFrame_
 
 DataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__DataFrame__from_arrow_record_batches, rbr)
 
+DataFrame$estimated_size <- function() .Call(wrap__DataFrame__estimated_size, self)
+
+DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 

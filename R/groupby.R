@@ -219,6 +219,18 @@ GroupBy_std = function() {
   self$agg(pl$all()$std())
 }
 
+#' @title GroupBy null count
+#' @description Create a new DataFrame that shows the null counts per column.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples 
+#' x = mtcars
+#' x[1:10, 3:5] = NA
+#' pl$DataFrame(x)$groupby("cyl")$null_count()
+GroupBy_null_count <- function() {
+  self$agg(pl$all()$null_count())
+}
+
 #' convert to data.frame
 #'
 #' @param ... any opt param passed to R as.data.frame
