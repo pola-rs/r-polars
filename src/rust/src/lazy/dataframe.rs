@@ -84,7 +84,10 @@ impl LazyFrame {
     }
 
     fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().slice(robj_to!(i64, offset)?, robj_to!(u32, length)?)))
+        Ok(LazyFrame(self.0.clone().slice(
+            robj_to!(i64, offset)?,
+            robj_to!(Option, u32, length)?.unwrap_or(u32::MAX),
+        )))
     }
 
     fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {

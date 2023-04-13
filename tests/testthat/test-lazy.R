@@ -137,6 +137,10 @@ test_that("methods without arguments", {
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
 
+  a = pl$DataFrame(mtcars)$lazy()$slice(30)$collect()$as_data_frame()
+  b = tail(mtcars, 2)
+  expect_equal(a, b, ignore_attr = TRUE)
+
   a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)

@@ -294,6 +294,7 @@ LazyFrame_reverse = function() {
 #' @param length integer or NULL
 #' @examples 
 #' pl$DataFrame(mtcars)$slice(2, 4)
+#' pl$DataFrame(mtcars)$slice(30)
 #' mtcars[2:6,]
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length))
