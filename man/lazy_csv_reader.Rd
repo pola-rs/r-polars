@@ -72,8 +72,9 @@ String : All values equal to this string will be null.
 Unnamed char vector: A null value per column.
 Named char vector.  A mapping from (names)column to a null value string(values).}
 
-\item{infer_schema_length}{(NULL is disable) Maximum number of lines to read to infer schema. If set to 0, all columns will
-be read as pl.Utf8. If set to None, a full table scan will be done (slow).}
+\item{infer_schema_length}{Maximum number of rows to read to infer the column
+types. If set to 0, all columns will be read as UTF-8. If \code{NULL}, a full
+table scan will be done (slow).}
 
 \item{skip_rows_after_header}{bool Skip this number of rows when the header is parsed.}
 
