@@ -36,10 +36,6 @@ length.LazyFrame = function(x, ...) x$collect()$width
 #' @noRd
 nrow.DataFrame = function(x, ...) x$height
 
-#' @export
-#' @noRd
-NROW.DataFrame = nrow.DataFrame
-
 # TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
@@ -47,24 +43,12 @@ nrow.LazyFrame = function(x, ...) x$collect()$height
 
 #' @export
 #' @noRd
-NROW.LazyFrame = nrow.LazyFrame
-
-#' @export
-#' @noRd
 ncol.DataFrame = function(x, ...) x$height
-
-#' @export
-#' @noRd
-NCOL.DataFrame = ncol.DataFrame
 
 # TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
 ncol.LazyFrame = function(x, ...) x$collect()$height
-
-#' @export
-#' @noRd
-NCOL.LazyFrame = ncol.LazyFrame
 
 #' @export
 #' @noRd
