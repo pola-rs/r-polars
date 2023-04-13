@@ -3,8 +3,11 @@
 \name{LazyFrame_sum}
 \alias{LazyFrame_sum}
 \title{Sum}
+\format{
+function
+}
 \usage{
-LazyFrame_sum()
+LazyFrame_sum
 }
 \value{
 LazyFrame

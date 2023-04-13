@@ -1,10 +1,10 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
+use crate::robj_to;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
-use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -13,6 +13,12 @@ use std::result::Result;
 
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
+
+impl From<pl::LazyFrame> for LazyFrame {
+    fn from(item: pl::LazyFrame) -> Self {
+        LazyFrame(item)
+    }
+}
 
 #[extendr]
 impl LazyFrame {
@@ -50,45 +56,45 @@ impl LazyFrame {
         });
         r_result_list(result)
     }
-    
-    fn first(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().first()))
+
+    fn first(&self) -> Self {
+        self.0.clone().first().into()
     }
 
-    fn last(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().last()))
+    fn last(&self) -> Self {
+        self.0.clone().last().into()
     }
 
-    fn max(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().max()))
+    fn max(&self) -> Self {
+        self.0.clone().max().into()
     }
 
-    fn mean(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().mean()))
+    fn min(&self) -> Self {
+        self.0.clone().min().into()
     }
 
-    fn median(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().median()))
+    fn mean(&self) -> Self {
+        self.0.clone().mean().into()
     }
 
-    fn min(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().min()))
+    fn median(&self) -> Self {
+        self.0.clone().median().into()
     }
 
-    fn sum(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().sum()))
+    fn sum(&self) -> Self {
+        self.0.clone().sum().into()
     }
 
-    fn var(&self, ddof: u8) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().var(ddof)))
+    fn var(&self, ddof: u8) -> Self {
+        self.0.clone().var(ddof).into()
     }
 
-    fn std(&self, ddof: u8) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().std(ddof)))
+    fn std(&self, ddof: u8) -> Self {
+        self.0.clone().std(ddof).into()
     }
 
-    fn reverse(&self) -> Result<LazyFrame, String> {
-        Ok(LazyFrame(self.0.clone().reverse()))
+    fn reverse(&self) -> Self {
+        self.0.clone().reverse().into()
     }
 
     fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
