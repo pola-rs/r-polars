@@ -156,11 +156,13 @@ test_that("methods without arguments", {
   a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$as_data_frame()
   b = data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
+})
 
+
+test_that("tail", {
   a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
 })
-
 
 #TODO complete tests for lazy
