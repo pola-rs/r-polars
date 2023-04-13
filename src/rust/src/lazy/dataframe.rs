@@ -79,6 +79,14 @@ impl LazyFrame {
         Ok(LazyFrame(self.0.clone().sum()))
     }
 
+    fn var(&self, ddof: u8) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().var(ddof)))
+    }
+
+    fn std(&self, ddof: u8) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().std(ddof)))
+    }
+
     fn reverse(&self) -> Result<LazyFrame, String> {
         Ok(LazyFrame(self.0.clone().reverse()))
     }

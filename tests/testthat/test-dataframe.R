@@ -454,6 +454,22 @@ test_that("methods without arguments", {
   b = data.frame(lapply(mtcars, sum))
   expect_equal(a, b, ignore_attr = TRUE)
   
+  a = pl$DataFrame(mtcars)$var()$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$var(10)$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_true(all(a != b))
+
+  a = pl$DataFrame(mtcars)$std()$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$std(10)$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_true(all(a != b))
+
   a = pl$DataFrame(mtcars)$reverse()$as_data_frame()
   b = mtcars[32:1,]
   expect_equal(a, b, ignore_attr = TRUE)

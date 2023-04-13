@@ -88,4 +88,14 @@ test_that("methods without arguments", {
   b = b[, colnames(b) != "cyl"]
   expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
 
+  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$var()$as_data_frame()
+  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, var))))
+  b = b[, colnames(b) != "cyl"]
+  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$std()$as_data_frame()
+  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, sd))))
+  b = b[, colnames(b) != "cyl"]
+  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
+
 })

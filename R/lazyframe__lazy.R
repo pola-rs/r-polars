@@ -276,6 +276,26 @@ LazyFrame_sum = function() {
   unwrap(.pr$LazyFrame$sum(self))
 }
 
+#' @title Var
+#' @description Aggregate the columns of this LazyFrame to their variance values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$LazyFrame(mtcars)$var()
+LazyFrame_var = function(ddof = 1) {
+  unwrap(.pr$LazyFrame$var(self, ddof))
+}
+
+#' @title Std
+#' @description Aggregate the columns of this LazyFrame to their standard deviation values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$LazyFrame(mtcars)$std()
+LazyFrame_std = function(ddof = 1) {
+  unwrap(.pr$LazyFrame$std(self, ddof))
+}
+
 
 #' @title Reverse
 #' @description Reverse the DataFrame.

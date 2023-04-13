@@ -187,6 +187,38 @@ GroupBy_sum = function() {
   self$agg(pl$all()$sum())
 }
 
+#' GroupBy Var
+#' @description Reduce the groups to the variance value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$var()
+GroupBy_var = function() {
+  self$agg(pl$all()$var())
+}
+
+#' GroupBy Std
+#' @description Reduce the groups to the standard deviation value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$std()
+GroupBy_std = function() {
+  self$agg(pl$all()$std())
+}
+
 #' convert to data.frame
 #'
 #' @param ... any opt param passed to R as.data.frame

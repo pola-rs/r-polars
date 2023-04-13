@@ -141,6 +141,22 @@ test_that("methods without arguments", {
   b = tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
 
+  a = pl$DataFrame(mtcars)$lazy()$var()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$var(10)$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_true(all(a != b))
+
+  a = pl$DataFrame(mtcars)$lazy()$std()$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_true(all(a != b))
+
   a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
