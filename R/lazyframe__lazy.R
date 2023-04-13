@@ -207,6 +207,7 @@ LazyFrame_collect_background = function() {
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
+#' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
   if(!is.numeric(n)) stopf("limit: n must be numeric")
@@ -271,7 +272,7 @@ LazyFrame_min = function() {
 #' @description Aggregate the columns of this DataFrame to their sum values.
 #' @keywords LazyFrame
 #' @return LazyFrame
-#' @examples pl$DataFrame(mtcars)$sum()
+#' @examples pl$DataFrame(mtcars)$lazy()$sum()$collect()
 LazyFrame_sum = function() {
   unwrap(.pr$LazyFrame$sum(self))
 }
@@ -281,7 +282,7 @@ LazyFrame_sum = function() {
 #' @keywords LazyFrame
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A new `LazyFrame` object with applied aggregation.
-#' @examples pl$LazyFrame(mtcars)$var()
+#' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
 LazyFrame_var = function(ddof = 1) {
   unwrap(.pr$LazyFrame$var(self, ddof))
 }
@@ -291,7 +292,7 @@ LazyFrame_var = function(ddof = 1) {
 #' @keywords LazyFrame
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A new `LazyFrame` object with applied aggregation.
-#' @examples pl$LazyFrame(mtcars)$std()
+#' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
 LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof))
 }
@@ -301,7 +302,7 @@ LazyFrame_std = function(ddof = 1) {
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame
 #' @return LazyFrame
-#' @examples pl$DataFrame(mtcars)$reverse()
+#' @examples pl$DataFrame(mtcars)$lazy()$reverse()$collect()
 LazyFrame_reverse = function() {
   unwrap(.pr$LazyFrame$reverse(self))
 }
@@ -313,8 +314,8 @@ LazyFrame_reverse = function() {
 #' @param offset integer
 #' @param length integer or NULL
 #' @examples 
-#' pl$DataFrame(mtcars)$slice(2, 4)
-#' pl$DataFrame(mtcars)$slice(30)
+#' pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
+#' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 #' mtcars[2:6,]
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length))
@@ -327,6 +328,7 @@ LazyFrame_slice = function(offset, length = NULL) {
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
+#' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self,n))

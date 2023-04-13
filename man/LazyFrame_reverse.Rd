@@ -13,6 +13,6 @@ LazyFrame
 Reverse the DataFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$reverse()
+pl$DataFrame(mtcars)$lazy()$reverse()$collect()
 }
 \keyword{LazyFrame}

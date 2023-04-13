@@ -16,6 +16,6 @@ A new \code{LazyFrame} object with applied aggregation.
 Aggregate the columns of this LazyFrame to their standard deviation values.
 }
 \examples{
-pl$LazyFrame(mtcars)$std()
+pl$DataFrame(mtcars)$lazy()$std()$collect()
 }
 \keyword{LazyFrame}

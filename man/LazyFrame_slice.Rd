@@ -18,8 +18,8 @@ DataFrame
 Get a slice of this DataFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$slice(2, 4)
-pl$DataFrame(mtcars)$slice(30)
+pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
+pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 mtcars[2:6,]
 }
 \keyword{DataFrame}

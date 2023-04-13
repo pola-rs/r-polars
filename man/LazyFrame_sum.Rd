@@ -13,6 +13,6 @@ LazyFrame
 Aggregate the columns of this DataFrame to their sum values.
 }
 \examples{
-pl$DataFrame(mtcars)$sum()
+pl$DataFrame(mtcars)$lazy()$sum()$collect()
 }
 \keyword{LazyFrame}

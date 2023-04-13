@@ -16,6 +16,6 @@ A new \code{LazyFrame} object with applied aggregation.
 Aggregate the columns of this LazyFrame to their variance values.
 }
 \examples{
-pl$LazyFrame(mtcars)$var()
+pl$DataFrame(mtcars)$lazy()$var()$collect()
 }
 \keyword{LazyFrame}
