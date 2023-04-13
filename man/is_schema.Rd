@@ -19,8 +19,8 @@ bool
 check if schema
 }
 \examples{
-rpolars:::is_schema(pl$DataFrame(iris)$schema)
+polars:::is_schema(pl$DataFrame(iris)$schema)
 pl$is_schema(pl$DataFrame(iris)$schema)
-rpolars:::is_schema(list("alice","bob"))
+polars:::is_schema(list("alice","bob"))
 
 }

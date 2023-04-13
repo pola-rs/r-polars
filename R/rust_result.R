@@ -127,7 +127,7 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
       paste(
         result$err,
 
-        if(!rpolars_optenv$do_not_repeat_call) {
+        if(!polars_optenv$do_not_repeat_call) {
           paste(
             "\n when calling :\n",
             paste(capture.output(print(call)),collapse="\n")
@@ -153,7 +153,7 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
 #' @return throws an error
 #'
 #' @examples
-#' f = function() rpolars:::pstop("this aint right!!")
+#' f = function() polars:::pstop("this aint right!!")
 #' tryCatch(f(), error = \(e) as.character(e))
 pstop = function(err, call=sys.call(1L)) {
   unwrap(list(ok=NULL,err=err),call=call)

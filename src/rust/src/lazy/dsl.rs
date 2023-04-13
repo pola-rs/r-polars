@@ -142,7 +142,10 @@ impl Expr {
                 Ok(x)
             }
 
-            (x, 1) => Err(format!("$lit(val): rpolars not yet support rtype {:?}", x)),
+            (x, 1) => Err(format!(
+                "$lit(val): polars not yet support this Rtype {:?}",
+                x
+            )),
             (_, n) => Err(format!(
                 "$lit(val), literals mush have length one, not length: {:?}",
                 n

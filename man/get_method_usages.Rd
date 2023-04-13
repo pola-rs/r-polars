@@ -21,6 +21,6 @@ Generate autocompletion suggestions for object
 used internally for auto completion in .DollarNames methods
 }
 \examples{
-rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
+polars:::get_method_usages(polars:::DataFrame, pattern="col")
 }
 \keyword{internal}

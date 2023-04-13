@@ -25,7 +25,7 @@ If 'reverse=True` the smallest elements will be given.
 \details{
 This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 pl$DataFrame(list(

@@ -22,6 +22,6 @@ The output is wrapped in a result, which can contain an ok or
 err value.
 }
 \examples{
-rpolars:::wrap_elist_result(list(pl$lit(42),42,1:3))
+polars:::wrap_elist_result(list(pl$lit(42),42,1:3))
 }
 \keyword{internal}

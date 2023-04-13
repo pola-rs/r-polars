@@ -1,5 +1,5 @@
 # all small functions in here are adapted/copied to mimic rlang functions
-# The purpose is to make rpolars have no install dependencies at all.
+# The purpose is to make polars have no install dependencies at all.
 
 #to reimplement list2(...) in rust would be great to allow trailing commas
 # no highlevel implemetaion seems stable e.g. http://r-de-jeu.blogspot.com/2013/03/r-and-last-comma.html

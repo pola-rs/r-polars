@@ -5,14 +5,14 @@
 \title{Inner workings of the Series-class}
 \description{
 The \code{Series}-class is simply two environments of respectively
-the public and private methods/function calls to the rpolars rust side. The instanciated
+the public and private methods/function calls to the polars rust side. The instanciated
 \code{Series}-object is an \code{externalptr} to a lowlevel rust polars Series  object. The pointer address
 is the only statefullness of the Series object on the R side. Any other state resides on the
 rust side. The S3 method \code{.DollarNames.Series} exposes all public \verb{$foobar()}-methods which are callable onto the object.
 Most methods return another \code{Series}-class instance or similar which allows for method chaining.
 This class system in lack of a better name could be called "environment classes" and is the same class
 system extendr provides, except here there is both a public and private set of methods. For implementation
-reasons, the private methods are external and must be called from rpolars:::.pr.$Series$methodname(), also
+reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also
 all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 }
@@ -24,10 +24,10 @@ are removed and replaced by any function prefixed \code{Series_}.
 }
 \examples{
 #see all exported methods
-ls(rpolars:::Series)
+ls(polars:::Series)
 
 #see all private methods (not intended for regular use)
-ls(rpolars:::.pr$Series)
+ls(polars:::.pr$Series)
 
 
 #make an object

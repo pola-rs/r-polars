@@ -29,7 +29,7 @@ if (FALSE){
   #https://github.com/r-lib/waldo/issues/150
   testthat::expect_identical(NA_real_,NaN)
 
-  rpolars:::expect_strictly_identical(NA_real_,NaN)
+  polars:::expect_strictly_identical(NA_real_,NaN)
 }
 }
 \keyword{internal}

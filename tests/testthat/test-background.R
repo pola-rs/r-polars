@@ -1,4 +1,4 @@
-test_that("run rpolars in background mode", {
+test_that("run polars in background mode", {
   lazy_df = pl$DataFrame(iris[1:3,])$lazy()$select(pl$all()$first())
   handle = lazy_df$collect_background()
   expect_true(inherits(handle,"PolarsBackgroundHandle"))

@@ -1,4 +1,4 @@
-library(rpolars)
+library(polars)
 library(arrow)
 library(nycflights13)
 
@@ -17,7 +17,7 @@ library(bench)
 # via arrow API
 system.time({
    rbr = as_record_batch_reader(big_arrow_table)
-      df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
+      df = polars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
 })
 
 system.time({
@@ -35,7 +35,7 @@ x = bench::mark(
   # much faster because strings are never materialized to R
   to_arrow = {
       rbr = as_record_batch_reader(big_arrow_table)
-      df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
+      df = polars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
   },
   from_arrow = {
       pl$from_arrow(big_arrow_table)
@@ -67,7 +67,7 @@ y = bench::mark(
   # much faster because strings are never materialized to R
   to_arrow = {
       rbr = as_record_batch_reader(bat)
-      df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
+      df = polars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
   },
   from_arrow = {
       pl$from_arrow(bat)
@@ -77,7 +77,7 @@ y = bench::mark(
   },
   to_arrow2 = {
       rbr = as_record_batch_reader(bat)
-      df = rpolars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
+      df = polars:::rb_list_to_df(rbr$batches(),rbr$schema$names)
   },
   # ,
   # DataFrame = {

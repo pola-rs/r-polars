@@ -2,14 +2,14 @@
 #'
 #' @name LazyFrame_class
 #' @description The `LazyFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the rpolars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instanciated
 #' `LazyFrame`-object is an `externalptr` to a lowlevel rust polars LazyFrame  object. The pointer address
 #' is the only statefullness of the LazyFrame object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which are callable onto the object.
 #' Most methods return another `LazyFrame`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from rpolars:::.pr.$LazyFrame$methodname(), also
+#' reasons, the private methods are external and must be called from polars:::.pr.$LazyFrame$methodname(), also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -17,7 +17,7 @@
 #' `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax of the dplyrpackage to
 #' interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
 #' as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
-#' and other data sources such parquet files simultanously. (#TODO implement rpolars SQL ;)
+#' and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
 #'
 #' @details Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
 #' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
@@ -27,10 +27,10 @@
 #' @keywords LazyFrame
 #' @examples
 #' #see all exported methods
-#' ls(rpolars:::LazyFrame)
+#' ls(polars:::LazyFrame)
 #'
 #' #see all private methods (not intended for regular use)
-#' ls(rpolars:::.pr$LazyFrame)
+#' ls(polars:::.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##

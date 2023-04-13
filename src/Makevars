@@ -1,9 +1,9 @@
 LIBDIR = ./rust/target/release
-STATLIB = $(LIBDIR)/librpolars.a
-PKG_LIBS = -L$(LIBDIR) -lrpolars
+STATLIB = $(LIBDIR)/libpolars.a
+PKG_LIBS = -L$(LIBDIR) -lpolars
 RPOLARS_RUST_SOURCE ?= ./rust
 RPOLARS_CARGO_CLEAN_DEPS ?= nope
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/librpolars.a"
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/libpolars.a"
 
 all: C_clean
 
@@ -17,7 +17,7 @@ $(STATLIB):
 		echo "no, file is NOT there: "; \
 		mkdir -p ./rust/target/release ; \
 		echo "trying to symlink in $(rpolars_ext_binary)"; \
-		ln -s $(rpolars_ext_binary) ./rust/target/release/librpolars.a ; \
+		ln -s $(rpolars_ext_binary) ./rust/target/release/libpolars.a ; \
 	fi
 
 	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \

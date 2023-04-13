@@ -26,6 +26,6 @@ inside. Composite DataTypes use DataType constructors.
 Any DataType can be found in pl$dtypes
 }
 \examples{
-rpolars:::DataType_new("Int64")
+polars:::DataType_new("Int64")
 }
 \keyword{internal}

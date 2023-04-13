@@ -29,7 +29,7 @@ against the error text with grepl()
 }
 \examples{
 # passes as "carrot" is in "orange and carrot"
-rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-rpolars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
+polars:::expect_grepl_error(stop("orange and carrot"),"carrot")
+polars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
 }
 \keyword{internal}

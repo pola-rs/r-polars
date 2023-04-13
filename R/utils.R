@@ -37,7 +37,7 @@ check_no_missing_args = function(
 #'   #https://github.com/r-lib/waldo/issues/150
 #'   testthat::expect_identical(NA_real_,NaN)
 #'
-#'   rpolars:::expect_strictly_identical(NA_real_,NaN)
+#'   polars:::expect_strictly_identical(NA_real_,NaN)
 #' }
 expect_strictly_identical = function(object,expected,...) {
   testthat::expect(identical(object,expected),
@@ -71,7 +71,7 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name
         "syntax error:", Method_name, "is not a method/attribute of the class", class_name,
 
         #add call to error messages
-        if(!rpolars_optenv$do_not_repeat_call) {
+        if(!polars_optenv$do_not_repeat_call) {
           paste(
             "\n when calling method:\n",
             paste(capture.output(print(call)),collapse="\n")
@@ -129,7 +129,7 @@ list2 = list
 #' @keywords internal
 #' @examples
 #' n = 7
-#' rpolars:::pcase(
+#' polars:::pcase(
 #'  n<5,"nope",
 #'  n>6,"yeah",
 #'  or_else = stopf("failed to have a case for n=%s",n)
@@ -194,7 +194,7 @@ l_to_vdf = function(l) {
         which(!do_inherit_DataFrame),
         collapse = ", "
       ),
-      "are not rpolars DataFrame(s)"
+      "are not polars DataFrame(s)"
     ))
   }
 
@@ -209,7 +209,7 @@ l_to_vdf = function(l) {
 
 
 #' Clone env on level deep.
-#' @details Sometimes used in rpolars to produce different hashmaps(environments) containing
+#' @details Sometimes used in polars to produce different hashmaps(environments) containing
 #' some of the same, but not all elements.
 #'
 #' environments are used for collections of methods and types. This function can be used to make
@@ -229,7 +229,7 @@ l_to_vdf = function(l) {
 #' env_1$fruit_env = fruit_env
 #'
 #' env_naive_copy = env_1
-#' env_shallow_clone = rpolars:::clone_env_one_level_deep(env_1)
+#' env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
 #'
 #' #modifying env_!
 #' env_1$minerals = new.env(parent = emptyenv())
@@ -333,7 +333,7 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #' @keywords internal
-#' @examples rpolars:::get_method_usages(rpolars:::DataFrame, pattern="col")
+#' @examples polars:::get_method_usages(polars:::DataFrame, pattern="col")
 get_method_usages = function(env,pattern="") {
 
   found_names = ls(env,pattern=pattern)
@@ -481,7 +481,7 @@ restruct_list = function(l) {
 #' @examples
 #'
 #' #macro_new_subnamespace() is not exported, export for this toy example
-#' #macro_new_subnamespace = rpolars:::macro_new_subnamespace
+#' #macro_new_subnamespace = polars:::macro_new_subnamespace
 #'
 #' ##define some new methods prefixed 'MyClass_'
 #' #MyClass_add2 = function() self + 2
@@ -493,7 +493,7 @@ restruct_list = function(l) {
 #' #here adding sub-namespace as a expr-class property/method during session-time,
 #' #which only is for this demo.
 #' #instead sourced method like Expr_arr() at package build time instead
-#' #env = rpolars:::Expr #get env of the Expr Class
+#' #env = polars:::Expr #get env of the Expr Class
 #' #env$my_sub_ns = method_as_property(function() { #add a property/method
 #' # my_class_sub_ns(self)
 #' #})
@@ -558,13 +558,13 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #'
 #' @examples
 #' # passes as "carrot" is in "orange and carrot"
-#' rpolars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-#' rpolars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
+#' polars:::expect_grepl_error(stop("orange and carrot"),"carrot")
+#' polars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
 
   #turn of including call in err msg
   if(do_not_repeat_call) {
-    old_options = pl$set_rpolars_options(do_not_repeat_call=TRUE)
+    old_options = pl$set_polars_options(do_not_repeat_call=TRUE)
   }
 
   #capture err msg
@@ -572,7 +572,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   err = tryCatch(expr, error = function(e) {as.character(e)})
 
   #restore previous options state
-  if(do_not_repeat_call) do.call(pl$set_rpolars_options, old_options)
+  if(do_not_repeat_call) do.call(pl$set_polars_options, old_options)
 
   #check if error message contains pattern
   founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))
@@ -594,17 +594,17 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
 #' @return string
 #'
 #' @examples
-#' rpolars:::str_string(list(a=42,c(1,2,3,NA)))
+#' polars:::str_string(list(a=42,c(1,2,3,NA)))
 str_string = function(x,collapse=" ") {
   paste(capture.output(str(x)),collapse = collapse)
 }
 
 
-#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#not all R types may be immediately supported by polars but has reasonble conversion to a type
 #that is supported
 convert_to_fewer_types = function(x) {
   pcase(
-    #PSOIXlt not directly supported by rpolars but POSIXct is
+    #PSOIXlt not directly supported by polars but POSIXct is
     inherits(x, "POSIXlt"), as.POSIXct(x),
 
     #Date converted to  POSIXct, tz GMT is assumed
@@ -625,7 +625,7 @@ convert_to_fewer_types = function(x) {
 #' @keywords internal
 #'
 #' @examples
-#'  check_tz_to_result = rpolars:::check_tz_to_result # expose internal
+#'  check_tz_to_result = polars:::check_tz_to_result # expose internal
 #'  #return Ok
 #'  check_tz_to_result("GMT")
 #'  check_tz_to_result(NULL)
@@ -649,11 +649,11 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
 }
 
 
-#not all R types may be immediately supported by rpolars but has reasonble conversion to a type
+#not all R types may be immediately supported by polars but has reasonble conversion to a type
 #that is supported
 convert_to_fewer_types = function(x) {
   pcase(
-    #PSOIXlt not directly supported by rpolars but POSIXct is
+    #PSOIXlt not directly supported by polars but POSIXct is
     inherits(x, "POSIXlt"), as.POSIXct(x),
 
     #Date converted to  POSIXct, tz GMT is assumed

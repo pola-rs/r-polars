@@ -10,7 +10,7 @@ Series_set_sorted(reverse = FALSE, in_place = FALSE)
 \item{reverse}{bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.}
 
 \item{in_place}{if TRUE, will set flag mutably and return NULL. Remember to use
-pl$set_rpolars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+pl$set_polars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 will return a cloned Series with set_flag which in the very most cases should be just fine.}
 }
 \value{
