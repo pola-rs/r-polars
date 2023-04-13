@@ -425,46 +425,35 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
 })
 
 
-test_that("methods without arguments", {
-  a = pl$DataFrame(mtcars)$first()$as_data_frame()
-  b = data.frame(lapply(mtcars, head, 1))
-  expect_equal(a, b, ignore_attr = TRUE)
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ pola,   ~ base,
+    "max",        "max",    max,
+    "mean",       "mean",   mean,
+    "median",     "median", median,
+    "max",        "max",    max,
+    "min",        "min",    min,
+    "std",        "std",    sd,
+    "sum",        "sum",    sum,
+    "var",        "var",    var,
+    "first",      "first",  function(x) head(x, 1),
+    "last",       "last",   function(x) tail(x, 1)
+  )
+}
 
-  a = pl$DataFrame(mtcars)$last()$as_data_frame()
-  b = data.frame(lapply(mtcars, tail, 1))
-  expect_equal(a, b, ignore_attr = TRUE)
+with_parameters_test_that(
+  "simple translations: eager", {
+    a = pl$DataFrame(mtcars)[[pola]]()$as_data_frame()
+    b = data.frame(lapply(mtcars, base))
+    testthat::expect_equal(a, b, ignore_attr = TRUE)
+  },
+  .cases = make_cases()
+)
 
-  a = pl$DataFrame(mtcars)$max()$as_data_frame()
-  b = data.frame(lapply(mtcars, max))
-  expect_equal(a, b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$mean()$as_data_frame()
-  b = data.frame(lapply(mtcars, mean))
-  expect_equal(a, b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$median()$as_data_frame()
-  b = data.frame(lapply(mtcars, median))
-  expect_equal(a, b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$min()$as_data_frame()
-  b = data.frame(lapply(mtcars, min))
-  expect_equal(a, b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$sum()$as_data_frame()
-  b = data.frame(lapply(mtcars, sum))
-  expect_equal(a, b, ignore_attr = TRUE)
-  
-  a = pl$DataFrame(mtcars)$var()$as_data_frame()
-  b = data.frame(lapply(mtcars, var))
-  expect_equal(a, b, ignore_attr = TRUE)
-
+test_that("simple translations", {
   a = pl$DataFrame(mtcars)$var(10)$as_data_frame()
   b = data.frame(lapply(mtcars, var))
   expect_true(all(a != b))
-
-  a = pl$DataFrame(mtcars)$std()$as_data_frame()
-  b = data.frame(lapply(mtcars, sd))
-  expect_equal(a, b, ignore_attr = TRUE)
 
   a = pl$DataFrame(mtcars)$std(10)$as_data_frame()
   b = data.frame(lapply(mtcars, sd))
