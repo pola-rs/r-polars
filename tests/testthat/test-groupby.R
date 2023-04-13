@@ -67,7 +67,7 @@ make_cases <- function() {
   )
 }
 
-with_parameters_test_that(
+patrick::with_parameters_test_that(
   "simple translations: eager", {
     a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
     b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))

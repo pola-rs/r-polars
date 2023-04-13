@@ -116,7 +116,7 @@ make_cases <- function() {
   )
 }
 
-with_parameters_test_that(
+patrick::with_parameters_test_that(
   "simple translations: lazy", {
     a = pl$DataFrame(mtcars)$lazy()[[pola]]()$collect()$as_data_frame()
     b = data.frame(lapply(mtcars, base))

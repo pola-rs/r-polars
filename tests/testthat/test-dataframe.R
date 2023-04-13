@@ -441,7 +441,7 @@ make_cases <- function() {
   )
 }
 
-with_parameters_test_that(
+patrick::with_parameters_test_that(
   "simple translations: eager", {
     a = pl$DataFrame(mtcars)[[pola]]()$as_data_frame()
     b = data.frame(lapply(mtcars, base))
