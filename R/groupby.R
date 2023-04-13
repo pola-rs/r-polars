@@ -75,6 +75,118 @@ GroupBy_agg = function(...) {
 }
 
 
+#' GroupBy First
+#' @description Reduce the groups to the first value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$first()
+GroupBy_first = function() {
+  self$agg(pl$all()$first())
+}
+
+#' GroupBy Last
+#' @description Reduce the groups to the last value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$last()
+GroupBy_last = function() {
+  self$agg(pl$all()$last())
+}
+
+#' GroupBy Max
+#' @description Reduce the groups to the maximum value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$max()
+GroupBy_max = function() {
+  self$agg(pl$all()$max())
+}
+
+#' GroupBy Mean
+#' @description Reduce the groups to the mean value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$mean()
+GroupBy_mean = function() {
+  self$agg(pl$all()$mean())
+}
+
+#' GroupBy Median
+#' @description Reduce the groups to the median value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$median()
+GroupBy_median = function() {
+  self$agg(pl$all()$median())
+}
+
+#' GroupBy Min
+#' @description Reduce the groups to the minimum value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$min()
+GroupBy_min = function() {
+  self$agg(pl$all()$min())
+}
+
+#' GroupBy Sum
+#' @description Reduce the groups to the sum value.
+#' @return aggregated DataFrame
+#' @keywords GroupBy
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1, 2, 2, 3, 4, 5),
+#'         b = c(0.5, 0.5, 4, 10, 13, 14),
+#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#' )
+#' df$groupby("d", maintain_order=TRUE)$sum()
+GroupBy_sum = function() {
+  self$agg(pl$all()$sum())
+}
+
 #' convert to data.frame
 #'
 #' @param ... any opt param passed to R as.data.frame
