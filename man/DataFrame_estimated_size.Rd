@@ -3,8 +3,11 @@
 \name{DataFrame_estimated_size}
 \alias{DataFrame_estimated_size}
 \title{Estimated size}
+\format{
+function
+}
 \usage{
-DataFrame_estimated_size()
+DataFrame_estimated_size
 }
 \value{
 Bytes

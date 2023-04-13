@@ -866,7 +866,7 @@ DataFrame_unnest = function(names = NULL) {
 
 
 #' @title First
-#' @description Get the first row of the DataFrame.  
+#' @description Get the first row of the DataFrame.
 #' @keywords DataFrame
 #' @return A new `DataFrame` object with applied filter.
 #' @examples pl$DataFrame(mtcars)$first()
@@ -875,7 +875,7 @@ DataFrame_first = function() {
 }
 
 #' @title Last
-#' @description Get the last row of the DataFrame.  
+#' @description Get the last row of the DataFrame.
 #' @keywords DataFrame
 #' @return A new `DataFrame` object with applied filter.
 #' @examples pl$DataFrame(mtcars)$last()
@@ -964,7 +964,7 @@ DataFrame_reverse = function() {
 #' @return LazyFrame
 #' @param offset integer
 #' @param length integer or NULL
-#' @examples 
+#' @examples
 #' pl$DataFrame(mtcars)$slice(2, 4)
 #' mtcars[2:6,]
 DataFrame_slice = function(offset, length = NULL) {
@@ -976,21 +976,21 @@ DataFrame_slice = function(offset, length = NULL) {
 #' @description Create a new DataFrame that shows the null counts per column.
 #' @keywords DataFrame
 #' @return DataFrame
-#' @examples 
+#' @docType NULL
+#' @format function
+#' @examples
 #' x = mtcars
 #' x[1, 2:3] = NA
 #' pl$DataFrame(x)$null_count()
-DataFrame_null_count <- function() {
-  .pr$DataFrame$null_count(self)
-}
+DataFrame_null_count = "use_extendr_wrapper"
 
 
 #' @title Estimated size
 #' @description Return an estimation of the total (heap) allocated size of the DataFrame.
 #' @keywords DataFrame
 #' @return Bytes
-#' @examples 
+#' @docType NULL
+#' @format function
+#' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
-DataFrame_estimated_size <- function() {
-  .pr$DataFrame$estimated_size(self)
-}
+DataFrame_estimated_size = "use_extendr_wrapper"

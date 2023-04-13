@@ -71,6 +71,12 @@ impl Iterator for OwnedDataFrameIterator {
 #[derive(Debug, Clone)]
 pub struct DataFrame(pub pl::DataFrame);
 
+impl From<pl::DataFrame> for DataFrame {
+    fn from(item: pl::DataFrame) -> Self {
+        DataFrame(item)
+    }
+}
+
 #[extendr]
 impl DataFrame {
     pub fn shape(&self) -> Robj {
@@ -317,13 +323,13 @@ impl DataFrame {
     pub fn from_arrow_record_batches(rbr: Robj) -> Result<DataFrame, String> {
         Ok(DataFrame(crate::arrow_interop::to_rust::to_rust_df(rbr)?))
     }
-    
-    pub fn estimated_size(&self) -> Result<usize, String> {
-        Ok(self.0.clone().estimated_size())
+
+    pub fn estimated_size(&self) -> f64 {
+        self.0.clone().estimated_size() as f64
     }
 
-    pub fn null_count(&self) -> Result<DataFrame, String> {
-        Ok(DataFrame(self.0.clone().null_count()))
+    pub fn null_count(&self) -> Self {
+        self.0.clone().null_count().into()
     }
 }
 use crate::utils::wrappers::null_to_opt;

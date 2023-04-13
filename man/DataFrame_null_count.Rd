@@ -3,8 +3,11 @@
 \name{DataFrame_null_count}
 \alias{DataFrame_null_count}
 \title{Null count}
+\format{
+function
+}
 \usage{
-DataFrame_null_count()
+DataFrame_null_count
 }
 \value{
 DataFrame
