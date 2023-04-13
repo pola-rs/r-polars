@@ -51,51 +51,28 @@ test_that("groupby", {
 })
 
 
-test_that("methods without arguments", {
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ pola,   ~ base,
+    "max",        "max",    max,
+    "mean",       "mean",   mean,
+    "median",     "median", median,
+    "max",        "max",    max,
+    "min",        "min",    min,
+    "std",        "std",    sd,
+    "sum",        "sum",    sum,
+    "var",        "var",    var,
+    "first",      "first",  function(x) head(x, 1),
+    "last",       "last",   function(x) tail(x, 1)
+  )
+}
 
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$last()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, tail, 1))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$max()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, max))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$mean()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, mean))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$median()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, median))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$min()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, min))))
-  b = b[order(b$cyl), colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$sum()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, sum))))
-  b = b[, colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$var()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, var))))
-  b = b[, colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-  a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$std()$as_data_frame()
-  b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, sd))))
-  b = b[, colnames(b) != "cyl"]
-  expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
-
-})
+with_parameters_test_that(
+  "simple translations: eager", {
+    a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
+    b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
+    b = b[order(b$cyl), colnames(b) != "cyl"]
+    expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
+  },
+  .cases = make_cases()
+)
