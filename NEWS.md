@@ -1,8 +1,20 @@
-# rpolars v0.4.6.9000 (development version)
+# polars (development version)
+
+## BREAKING CHANGE
+
+- The package name was changed from `rpolars` to `polars`. (#84)
+
+## What's changed
+
+- New methods implemented for DataFrame, LazyFrame, and GroupBy objects: min, max, mean, median, sum, std, var, first, last, head, tail, reverse, slice, null_count, estimated_size (#105 @vincentarelbundock)
+
+
+# rpolars v0.4.7
 
 ## What's changed
 
 - Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)
+- Misc documentation improvements
 
 # rpolars v0.4.6
 
