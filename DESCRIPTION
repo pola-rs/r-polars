@@ -34,6 +34,7 @@ Collate:
     'after-wrappers.R'
     'Field.R'
     'PTime.R'
+    'autocompletion.R'
     'construction.R'
     'convert.R'
     'csv.R'
