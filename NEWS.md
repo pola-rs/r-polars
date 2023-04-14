@@ -1,4 +1,4 @@
-# polars v0.4.7.9000 (development version)
+# polars (development version)
 
 ## BREAKING CHANGE
 
