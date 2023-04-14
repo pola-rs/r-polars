@@ -470,6 +470,9 @@ test_that("simple translations", {
   a = pl$DataFrame(mtcars)$slice(30)$as_data_frame()
   b = tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$estimated_size()
+  expect_equal(a, 2816, tolerance = .1)
 })
 
 
