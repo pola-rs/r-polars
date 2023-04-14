@@ -346,6 +346,14 @@ pub fn try_i64_into_u32(x: i64) -> std::result::Result<u32, String> {
     }
 }
 
+pub fn try_i64_into_u8(x: i64) -> std::result::Result<u8, String> {
+    match x {
+        _ if x < 0 => Err(format!("the value {} cannot be less than zero", x)),
+        _ if x > u8::MAX as i64 => Err("exceeds u8 max value".to_string()),
+        _ => Ok(x as u8),
+    }
+}
+
 use extendr_api::Robj;
 pub fn r_result_list<T, E>(result: Result<T, E>) -> list::List
 where
@@ -571,6 +579,11 @@ pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> 
     .and_then(|float| try_f64_into_u32(float))
 }
 
+pub fn robj_to_u8(robj: extendr_api::Robj) -> std::result::Result<u8, String> {
+    let robj = unpack_r_result_list(robj)?;
+    robj_to_i64(robj.clone()).and_then(try_i64_into_u8)
+}
+
 pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
@@ -692,6 +705,10 @@ macro_rules! robj_to_inner {
 
     (u32, $a:ident) => {
         crate::utils::robj_to_u32($a)
+    };
+
+    (u8, $a:ident) => {
+        crate::utils::robj_to_u8($a)
     };
 
     (char, $a:ident) => {
