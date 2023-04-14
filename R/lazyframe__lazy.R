@@ -207,10 +207,116 @@ LazyFrame_collect_background = function() {
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
+#' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
   if(!is.numeric(n)) stopf("limit: n must be numeric")
   unwrap(.pr$LazyFrame$limit(self,n))
+}
+
+#' @title First
+#' @description Get the first row of the DataFrame.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
+LazyFrame_first = "use_extendr_wrapper"
+
+#' @title Last
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
+LazyFrame_last = "use_extendr_wrapper"
+
+#' @title Max
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$max()$collect()
+LazyFrame_max = "use_extendr_wrapper"
+
+#' @title Mean
+#' @description Aggregate the columns in the DataFrame to their mean value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$mean()$collect()
+LazyFrame_mean = "use_extendr_wrapper"
+
+#' @title Median
+#' @description Aggregate the columns in the DataFrame to their median value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$median()$collect()
+LazyFrame_median = "use_extendr_wrapper"
+
+#' @title Min
+#' @description Aggregate the columns in the DataFrame to their minimum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$min()$collect()
+LazyFrame_min = "use_extendr_wrapper"
+
+#' @title Sum
+#' @description Aggregate the columns of this DataFrame to their sum values.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$sum()$collect()
+LazyFrame_sum = "use_extendr_wrapper"
+
+#' @title Var
+#' @description Aggregate the columns of this LazyFrame to their variance values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
+LazyFrame_var = function(ddof = 1) {
+  .pr$LazyFrame$var(self, ddof)
+}
+
+#' @title Std
+#' @description Aggregate the columns of this LazyFrame to their standard deviation values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
+LazyFrame_std = function(ddof = 1) {
+  .pr$LazyFrame$std(self, ddof)
+}
+
+
+#' @title Reverse
+#' @description Reverse the DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$reverse()$collect()
+LazyFrame_reverse = "use_extendr_wrapper"
+
+#' @title Slice
+#' @description Get a slice of this DataFrame.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @param offset integer
+#' @param length integer or NULL
+#' @examples
+#' pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
+#' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
+#' mtcars[2:6,]
+LazyFrame_slice = function(offset, length = NULL) {
+  unwrap(.pr$LazyFrame$slice(self, offset, length))
 }
 
 #' @title Tail
@@ -220,6 +326,7 @@ LazyFrame_limit = function(n) {
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
+#' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self,n))

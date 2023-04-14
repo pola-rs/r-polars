@@ -25,6 +25,7 @@ Suggests:
     patrick,
     bit64,
     knitr,
+    tibble,
     rmarkdown
 Config/testthat/edition: 3
 Collate: 

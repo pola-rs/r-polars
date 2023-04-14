@@ -864,3 +864,133 @@ DataFrame_unnest = function(names = NULL) {
 
 
 
+
+#' @title First
+#' @description Get the first row of the DataFrame.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @examples pl$DataFrame(mtcars)$first()
+DataFrame_first = function() {
+  self$lazy()$first()$collect()
+}
+
+#' @title Last
+#' @description Get the last row of the DataFrame.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @examples pl$DataFrame(mtcars)$last()
+DataFrame_last = function() {
+  self$lazy()$last()$collect()
+}
+
+#' @title Max
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$max()
+DataFrame_max = function() {
+  self$lazy()$max()$collect()
+}
+
+#' @title Mean
+#' @description Aggregate the columns in the DataFrame to their mean value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$mean()
+DataFrame_mean = function() {
+  self$lazy()$mean()$collect()
+}
+
+#' @title Median
+#' @description Aggregate the columns in the DataFrame to their median value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$median()
+DataFrame_median = function() {
+  self$lazy()$median()$collect()
+}
+
+#' @title Min
+#' @description Aggregate the columns in the DataFrame to their minimum value.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$min()
+DataFrame_min = function() {
+  self$lazy()$min()$collect()
+}
+
+#' @title Sum
+#' @description Aggregate the columns of this DataFrame to their sum values.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$sum()
+DataFrame_sum = function() {
+  self$lazy()$sum()$collect()
+}
+
+#' @title Var
+#' @description Aggregate the columns of this DataFrame to their variance values.
+#' @keywords DataFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$var()
+DataFrame_var = function(ddof = 1) {
+  self$lazy()$var(ddof)$collect()
+}
+
+#' @title Std
+#' @description Aggregate the columns of this DataFrame to their standard deviation values.
+#' @keywords DataFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `DataFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$std()
+DataFrame_std = function(ddof = 1) {
+  self$lazy()$std(ddof)$collect()
+}
+
+#' @title Reverse
+#' @description Reverse the DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$reverse()
+DataFrame_reverse = function() {
+  self$lazy()$reverse()$collect()
+}
+
+
+#' @title Slice
+#' @description Get a slice of this DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @param offset integer
+#' @param length integer or NULL
+#' @examples
+#' pl$DataFrame(mtcars)$slice(2, 4)
+#' mtcars[2:6,]
+DataFrame_slice = function(offset, length = NULL) {
+  self$lazy()$slice(offset, length)$collect()
+}
+
+
+#' @title Null count
+#' @description Create a new DataFrame that shows the null counts per column.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @docType NULL
+#' @format function
+#' @examples
+#' x = mtcars
+#' x[1, 2:3] = NA
+#' pl$DataFrame(x)$null_count()
+DataFrame_null_count = "use_extendr_wrapper"
+
+
+#' @title Estimated size
+#' @description Return an estimation of the total (heap) allocated size of the DataFrame.
+#' @keywords DataFrame
+#' @return Bytes
+#' @docType NULL
+#' @format function
+#' @examples
+#' pl$DataFrame(mtcars)$estimated_size()
+DataFrame_estimated_size = "use_extendr_wrapper"
