@@ -402,6 +402,71 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
   expect_identical(df$as_data_frame(), df_e)
 })
 
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ pola,   ~ base,
+    "max",        "max",    max,
+    "mean",       "mean",   mean,
+    "median",     "median", median,
+    "max",        "max",    max,
+    "min",        "min",    min,
+    "std",        "std",    sd,
+    "sum",        "sum",    sum,
+    "var",        "var",    var,
+    "first",      "first",  function(x) head(x, 1),
+    "last",       "last",   function(x) tail(x, 1)
+  )
+}
+
+patrick::with_parameters_test_that(
+  "simple translations: eager", {
+    a = pl$DataFrame(mtcars)[[pola]]()$as_data_frame()
+    b = data.frame(lapply(mtcars, base))
+    testthat::expect_equal(a, b, ignore_attr = TRUE)
+  },
+  .cases = make_cases()
+)
+
+test_that("simple translations", {
+  a = pl$DataFrame(mtcars)$var(10)$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_true(all(a != b))
+
+  a = pl$DataFrame(mtcars)$std(10)$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_true(all(a != b))
+
+  a = pl$DataFrame(mtcars)$reverse()$as_data_frame()
+  b = mtcars[32:1,]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = pl$DataFrame(mtcars)$slice(2, 4)$as_data_frame()
+  b = mtcars[3:6,]
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$slice(30)$as_data_frame()
+  b = tail(mtcars, 2)
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$estimated_size()
+  expect_equal(a, 2816, tolerance = .1)
+})
+
+
+test_that("null_count 64bit", {
+  skip_if_not_installed("bit64")
+  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
+  tmp = mtcars
+  tmp[1:2, 1:2] = NA
+  tmp[5, 3] = NA
+  a = pl$DataFrame(tmp)$null_count()$as_data_frame()
+  a = sapply(a, as.integer)
+  b = sapply(tmp, function(x) sum(is.na(x)))
+  expect_equal(a, b)
+  
+  a = pl$DataFrame(tmp)$groupby("vs")$null_count()$as_data_frame()
+  expect_equal(dim(a), c(2, 11))
+})
 
 test_that("tail", {
   a <- as.data.frame(pl$DataFrame(mtcars)$tail(6))

@@ -49,3 +49,30 @@ test_that("groupby", {
   )
 
 })
+
+
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ pola,   ~ base,
+    "max",        "max",    max,
+    "mean",       "mean",   mean,
+    "median",     "median", median,
+    "max",        "max",    max,
+    "min",        "min",    min,
+    "std",        "std",    sd,
+    "sum",        "sum",    sum,
+    "var",        "var",    var,
+    "first",      "first",  function(x) head(x, 1),
+    "last",       "last",   function(x) tail(x, 1)
+  )
+}
+
+patrick::with_parameters_test_that(
+  "simple translations: eager", {
+    a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
+    b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
+    b = b[order(b$cyl), colnames(b) != "cyl"]
+    expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
+  },
+  .cases = make_cases()
+)
