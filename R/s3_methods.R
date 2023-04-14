@@ -18,7 +18,6 @@ tail.LazyFrame = tail.DataFrame
 #' @noRd
 dim.DataFrame = function(x, ...) x$shape
 
-# TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
 dim.LazyFrame = function(x, ...) x$collect()$shape
@@ -31,28 +30,33 @@ length.DataFrame = function(x, ...) x$width
 #' @noRd
 length.Series = function(x, ...) x$len()
 
-# TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
 length.LazyFrame = function(x, ...) x$collect()$width
 
+#' The Number of Rows of a DataFrame 
+#' @param x DataFrame
+#' @return Integer
 #' @export
-#' @noRd
-nrow.DataFrame = function(x, ...) x$height
+nrow.DataFrame = function(x) x$height
 
-# TODO: inefficient to collect, but attribute is missing
+#' The Number of Rows of a LazyFrame 
+#' @param x LazyFrame
+#' @return Integer
 #' @export
-#' @noRd
-nrow.LazyFrame = function(x, ...) x$collect()$height
+nrow.LazyFrame = function(x) x$collect()$height
 
+#' The Number of Columns of a DataFrame 
+#' @param x DataFrame
+#' @return Integer
 #' @export
-#' @noRd
-ncol.DataFrame = function(x, ...) x$height
+ncol.DataFrame = function(x) x$height
 
-# TODO: inefficient to collect, but attribute is missing
+#' The Number of Columns of a LazyFrame 
+#' @param x LazyFrame
+#' @return Integer
 #' @export
-#' @noRd
-ncol.LazyFrame = function(x, ...) x$collect()$height
+ncol.LazyFrame = function(x) x$collect()$height
 
 #' @export
 #' @noRd
@@ -86,10 +90,12 @@ mean.DataFrame = function(x, ...) x$mean()
 mean.LazyFrame = function(x, ...) x$mean()
 
 #' @export
+#' @importFrom stats median
 #' @noRd
 median.DataFrame = function(x, ...) x$median()
 
 #' @export
+#' @importFrom stats median
 #' @noRd
 median.LazyFrame = function(x, ...) x$median()
 
