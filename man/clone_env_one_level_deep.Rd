@@ -16,7 +16,7 @@ shallow clone of R environment
 Clone env on level deep.
 }
 \details{
-Sometimes used in rpolars to produce different hashmaps(environments) containing
+Sometimes used in polars to produce different hashmaps(environments) containing
 some of the same, but not all elements.
 
 environments are used for collections of methods and types. This function can be used to make
@@ -33,7 +33,7 @@ env_1 = new.env(parent = emptyenv())
 env_1$fruit_env = fruit_env
 
 env_naive_copy = env_1
-env_shallow_clone = rpolars:::clone_env_one_level_deep(env_1)
+env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
 
 #modifying env_!
 env_1$minerals = new.env(parent = emptyenv())

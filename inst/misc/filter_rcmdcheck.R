@@ -14,7 +14,7 @@ ignore_rules = list(
   notes = list(
 
     #if note contains this phrase then skip it by returning TRUE.
-    #yes rpolars is huge way above 10Mb nothing to do about that
+    #yes polars is huge way above 10Mb nothing to do about that
     ignore_lib_size = function(msg) {
       isTRUE(grepl("checking installed package size ... NOTE",msg))
     },
@@ -71,7 +71,7 @@ drop_ignored = function(msg_set, rule_list) {
 #parse check report to object
 check_report_path = c(
   Sys.getenv("rcmdcheck_path"),
-  "./check/rpolars.Rcheck/"
+  "./check/polars.Rcheck/"
 ) |> (\(x) {x[nzchar(x)]})()
 check_obj = rcmdcheck::parse_check(check_report_path)
 

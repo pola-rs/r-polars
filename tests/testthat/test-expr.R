@@ -579,7 +579,7 @@ test_that("map_alias" , {
 
 
   #skip map_alias thread-guard message
-  pl$set_rpolars_options(no_messages = TRUE)
+  pl$set_polars_options(no_messages = TRUE)
 
   df = pl$DataFrame(list(alice=1:3))$select(
     pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x,"_and_bob"))
@@ -605,7 +605,7 @@ test_that("map_alias" , {
 
 
 
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 })
 
 

@@ -56,7 +56,7 @@ pl$dtypes
 
 
 ##read a csv file
-rpolars:::new_csv_r(
+polars:::new_csv_r(
   path = "a path",
   sep = ",",
   has_header = TRUE,
@@ -64,7 +64,7 @@ rpolars:::new_csv_r(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  rpolars:::DataType_vector$new()
+  polars:::DataType_vector$new()
 )
 
 

@@ -2,14 +2,14 @@
 #'
 #' @name LazyFrame_class
 #' @description The `LazyFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the rpolars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instanciated
 #' `LazyFrame`-object is an `externalptr` to a lowlevel rust polars LazyFrame  object. The pointer address
 #' is the only statefullness of the LazyFrame object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which are callable onto the object.
 #' Most methods return another `LazyFrame`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from rpolars:::.pr.$LazyFrame$methodname(), also
+#' reasons, the private methods are external and must be called from polars:::.pr.$LazyFrame$methodname(), also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -17,7 +17,7 @@
 #' `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax of the dplyrpackage to
 #' interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
 #' as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
-#' and other data sources such parquet files simultanously. (#TODO implement rpolars SQL ;)
+#' and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
 #'
 #' @details Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
 #' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
@@ -27,10 +27,10 @@
 #' @keywords LazyFrame
 #' @examples
 #' #see all exported methods
-#' ls(rpolars:::LazyFrame)
+#' ls(polars:::LazyFrame)
 #'
 #' #see all private methods (not intended for regular use)
-#' ls(rpolars:::.pr$LazyFrame)
+#' ls(polars:::.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##
@@ -207,12 +207,130 @@ LazyFrame_collect_background = function() {
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
+#' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
   if(!is.numeric(n)) stopf("limit: n must be numeric")
   unwrap(.pr$LazyFrame$limit(self,n))
 }
 
+#' @title First
+#' @description Get the first row of the DataFrame.
+#' @keywords DataFrame
+#' @return A new `DataFrame` object with applied filter.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
+LazyFrame_first = "use_extendr_wrapper"
+
+#' @title Last
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
+LazyFrame_last = "use_extendr_wrapper"
+
+#' @title Max
+#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$max()$collect()
+LazyFrame_max = "use_extendr_wrapper"
+
+#' @title Mean
+#' @description Aggregate the columns in the DataFrame to their mean value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$mean()$collect()
+LazyFrame_mean = "use_extendr_wrapper"
+
+#' @title Median
+#' @description Aggregate the columns in the DataFrame to their median value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$median()$collect()
+LazyFrame_median = "use_extendr_wrapper"
+
+#' @title Min
+#' @description Aggregate the columns in the DataFrame to their minimum value.
+#' @keywords LazyFrame
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$min()$collect()
+LazyFrame_min = "use_extendr_wrapper"
+
+#' @title Sum
+#' @description Aggregate the columns of this DataFrame to their sum values.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @docType NULL
+#' @format function
+#' @examples pl$DataFrame(mtcars)$lazy()$sum()$collect()
+LazyFrame_sum = "use_extendr_wrapper"
+
+#' @title Var
+#' @description Aggregate the columns of this LazyFrame to their variance values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
+LazyFrame_var = function(ddof = 1) {
+  .pr$LazyFrame$var(self, ddof)
+}
+
+#' @title Std
+#' @description Aggregate the columns of this LazyFrame to their standard deviation values.
+#' @keywords LazyFrame
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `LazyFrame` object with applied aggregation.
+#' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
+LazyFrame_std = function(ddof = 1) {
+  .pr$LazyFrame$std(self, ddof)
+}
+
+
+#' @title Reverse
+#' @description Reverse the DataFrame.
+#' @keywords LazyFrame
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$reverse()$collect()
+LazyFrame_reverse = "use_extendr_wrapper"
+
+#' @title Slice
+#' @description Get a slice of this DataFrame.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @param offset integer
+#' @param length integer or NULL
+#' @examples
+#' pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
+#' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
+#' mtcars[2:6,]
+LazyFrame_slice = function(offset, length = NULL) {
+  unwrap(.pr$LazyFrame$slice(self, offset, length))
+}
+
+#' @title Tail
+#' @description take last n rows of query
+#' @keywords LazyFrame
+#' @param n positive numeric or integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#'
+#' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_tail = function(n) {
+  unwrap(.pr$LazyFrame$tail(self,n))
+}
 
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy

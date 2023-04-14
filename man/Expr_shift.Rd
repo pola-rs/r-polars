@@ -21,7 +21,7 @@ Expr
 Shift values
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 pl$select(

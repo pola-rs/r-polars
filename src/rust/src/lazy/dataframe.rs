@@ -1,6 +1,7 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
+use crate::robj_to;
 use crate::utils::r_result_list;
 use crate::utils::try_f64_into_u32;
 use crate::utils::try_f64_into_usize;
@@ -12,6 +13,12 @@ use std::result::Result;
 
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
+
+impl From<pl::LazyFrame> for LazyFrame {
+    fn from(item: pl::LazyFrame) -> Self {
+        LazyFrame(item)
+    }
+}
 
 #[extendr]
 impl LazyFrame {
@@ -50,6 +57,53 @@ impl LazyFrame {
         r_result_list(result)
     }
 
+    fn first(&self) -> Self {
+        self.0.clone().first().into()
+    }
+
+    fn last(&self) -> Self {
+        self.0.clone().last().into()
+    }
+
+    fn max(&self) -> Self {
+        self.0.clone().max().into()
+    }
+
+    fn min(&self) -> Self {
+        self.0.clone().min().into()
+    }
+
+    fn mean(&self) -> Self {
+        self.0.clone().mean().into()
+    }
+
+    fn median(&self) -> Self {
+        self.0.clone().median().into()
+    }
+
+    fn sum(&self) -> Self {
+        self.0.clone().sum().into()
+    }
+
+    fn var(&self, ddof: u8) -> Self {
+        self.0.clone().var(ddof).into()
+    }
+
+    fn std(&self, ddof: u8) -> Self {
+        self.0.clone().std(ddof).into()
+    }
+
+    fn reverse(&self) -> Self {
+        self.0.clone().reverse().into()
+    }
+
+    fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().slice(
+            robj_to!(i64, offset)?,
+            robj_to!(Option, u32, length)?.unwrap_or(u32::MAX),
+        )))
+    }
+
     fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
         let exprs: Vec<pl::Expr> = exprs
             .0
@@ -68,6 +122,10 @@ impl LazyFrame {
                 .map(|n| LazyFrame(self.0.clone().limit(n)))
                 .map_err(|err| format!("limit: {}", err)),
         )
+    }
+
+    fn tail(&self, n: Robj) -> Result<LazyFrame, String> {
+        Ok(LazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
     fn filter(&self, expr: &Expr) -> LazyFrame {

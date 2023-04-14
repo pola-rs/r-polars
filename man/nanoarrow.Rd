@@ -14,15 +14,15 @@
 \alias{infer_nanoarrow_schema.DataFrame}
 \alias{as_arrow_table.DataFrame}
 \alias{as_record_batch_reader.DataFrame}
-\title{rpolars to nanoarrow and arrow}
+\title{polars to nanoarrow and arrow}
 \usage{
-\method{as_nanoarrow_array_stream}{DataFrame}(x, ..., schema = NULL)
+as_nanoarrow_array_stream.DataFrame(x, ..., schema = NULL)
 
-\method{infer_nanoarrow_schema}{DataFrame}(x, ...)
+infer_nanoarrow_schema.DataFrame(x, ...)
 
-\method{as_arrow_table}{DataFrame}(x, ...)
+as_arrow_table.DataFrame(x, ...)
 
-\method{as_record_batch_reader}{DataFrame}(x, ..., schema = NULL)
+as_record_batch_reader.DataFrame(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}

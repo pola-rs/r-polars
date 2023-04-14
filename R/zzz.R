@@ -6,29 +6,22 @@
 # package.
 if(build_debug_print) print(paste(
   "Modifying extendr bindings,",
-  "originals converted to pure functions and saved to rpolars:::.pr"
+  "originals converted to pure functions and saved to polars:::.pr"
 ))
 
 
 # modify these Dataframe methods
 replace_private_with_pub_methods(DataFrame, "^DataFrame_")
 
-
-env = GroupBy
-env$agg = GroupBy_agg
-env$as_data_frame = GroupBy_as_data_frame
-macro_add_syntax_check_to_class("GroupBy")
+# GroupBy - is special read header info in groupby.R
+replace_private_with_pub_methods(GroupBy, "^GroupBy_")
+macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
 
 # LazyFrame
 replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
-env = LazyGroupBy
-env$agg = LazyGroupBy_agg
-env$apply = LazyGroupBy_apply
-env$head = LazyGroupBy_head
-env$tail  = LazyGroupBy_tail
-rm(env)
+replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
 
 # PolarsBackgroundHandle
 replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")

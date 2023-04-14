@@ -68,23 +68,23 @@ pub fn pl_series_to_list(
                     .map(|opt| opt.map(|val| val as i32))
                     .collect_robj()
             }),
-            UInt32 if bit64 => s.u32().map(|ca| {
-                ca.into_iter()
-                    .map(|opt| match opt {
-                        Some(x) => {
-                            let x = unsafe { std::mem::transmute::<i64, f64>(x as i64) };
-                            Some(x)
-                        }
-                        _ => {
-                            let x = crate::utils::BIT64_NA_ECODING;
-                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
-                            Some(x)
-                        }
-                    })
-                    .collect_robj()
-                    .set_class(&["integer64"])
-                    .expect("internal error could not set class label 'integer64'")
-            }),
+            // UInt32 if bit64 => s.u32().map(|ca| {
+            //     ca.into_iter()
+            //         .map(|opt| match opt {
+            //             Some(x) => {
+            //                 let x = unsafe { std::mem::transmute::<i64, f64>(x as i64) };
+            //                 Some(x)
+            //             }
+            //             _ => {
+            //                 let x = crate::utils::BIT64_NA_ECODING;
+            //                 let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+            //                 Some(x)
+            //             }
+            //         })
+            //         .collect_robj()
+            //         .set_class(&["integer64"])
+            //         .expect("internal error could not set class label 'integer64'")
+            // }),
             UInt32 => s.u32().map(|ca| {
                 ca.into_iter()
                     .map(|opt| opt.map(|val| val as f64))
@@ -198,7 +198,7 @@ pub fn pl_series_to_list(
             }
             _ => Err(pl::PolarsError::InvalidOperation(
                 polars::error::ErrString::Owned(format!(
-                    "sorry rpolars has not yet implemented R conversion for Series.dtype: {}",
+                    "sorry polars has not yet implemented R conversion for Series.dtype: {}",
                     s.dtype()
                 )),
             )),

@@ -32,12 +32,12 @@ Get an array with the cumulative max computed at every element.
 Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 
 Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 pl$DataFrame(list(a=1:4))$select(

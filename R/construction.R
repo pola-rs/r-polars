@@ -30,7 +30,7 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
   #drop already converted columns
   at_new = at$SelectColumns(which(!names(at) %in% names(special_cols))-1L)
 
-  #convert remaining to rpolars DataFrame and rechunk
+  #convert remaining to polars DataFrame and rechunk
   record_batches = arrow::as_record_batch_reader(at_new)$batches()
   df = unwrap(.pr$DataFrame$from_arrow_record_batches(record_batches))
   if(rechunk) {

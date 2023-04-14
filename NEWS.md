@@ -1,8 +1,15 @@
-# rpolars v0.4.6.9000 (development version)
+# polars (development version)
+
+## BREAKING CHANGE
+
+- The package name was changed from `rpolars` to `polars`. (#84)
+
+# rpolars v0.4.7
 
 ## What's changed
 
 - Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)
+- Misc documentation improvements
 
 # rpolars v0.4.6
 

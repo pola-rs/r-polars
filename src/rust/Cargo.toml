@@ -1,6 +1,6 @@
 [package]
-name = 'rpolars'
-version = '0.1.0'
+name = 'polars'   # r-polars
+version = '0.1.0' # this version no is not used
 edition = '2021'
 
 
@@ -16,7 +16,7 @@ mimalloc = { version = "0.1.34", default-features = false }
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = {git = "https://github.com/rpolars/extendr", branch = "errorhandling", default-features = false, features= ["result_list"]} 
+extendr-api = {git = "https://github.com/rpolars/extendr", branch = "errorhandling", default-features = false, features= ["result_list"]}
 #extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
 
 flume = "0.10.14"

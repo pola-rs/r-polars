@@ -18,4 +18,7 @@ take limit of n rows of query
 \details{
 any number will converted to u32. Negative raises error
 }
+\examples{
+pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
+}
 \keyword{LazyFrame}

@@ -34,7 +34,7 @@ static CONFIG: Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Ser
 
 // Macro to generate exports
 extendr_module! {
-    mod rpolars;
+    mod polars;
     use rdataframe;
     use lazy;
     use series;

@@ -100,4 +100,58 @@ test_that("lazy filter", {
 })
 
 
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ pola,   ~ base,
+    "max",        "max",    max,
+    "mean",       "mean",   mean,
+    "median",     "median", median,
+    "max",        "max",    max,
+    "min",        "min",    min,
+    "std",        "std",    sd,
+    "sum",        "sum",    sum,
+    "var",        "var",    var,
+    "first",      "first",  function(x) head(x, 1),
+    "last",       "last",   function(x) tail(x, 1)
+  )
+}
+
+patrick::with_parameters_test_that(
+  "simple translations: lazy", {
+    a = pl$DataFrame(mtcars)$lazy()[[pola]]()$collect()$as_data_frame()
+    b = data.frame(lapply(mtcars, base))
+    testthat::expect_equal(a, b, ignore_attr = TRUE)
+  },
+  .cases = make_cases()
+)
+
+test_that("simple translations", {
+  a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$as_data_frame()
+  b = mtcars[32:1,]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$as_data_frame()
+  b = mtcars[3:6,]
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$slice(30)$collect()$as_data_frame()
+  b = tail(mtcars, 2)
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$var(10)$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, var))
+  expect_true(all(a != b))
+
+  a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$as_data_frame()
+  b = data.frame(lapply(mtcars, sd))
+  expect_true(all(a != b))
+})
+
+
+test_that("tail", {
+  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
+  b = tail(mtcars)
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+
 #TODO complete tests for lazy

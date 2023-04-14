@@ -20,7 +20,7 @@ Expr
 Fill missing values with the next to be seen values.
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 l = list(a=c(1L,rep(NA_integer_,3L),10))

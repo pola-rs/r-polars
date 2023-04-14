@@ -16,6 +16,6 @@ ProtoExprArray object
 construct proto Expr array from args
 }
 \examples{
-rpolars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
+polars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 }
 \keyword{internal}

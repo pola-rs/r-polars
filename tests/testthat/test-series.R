@@ -2,7 +2,7 @@ test_that("pl$Series_apply", {
 
 
   #non strict casting just yields null for wrong type
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     pl$Series(1:3,"integers")$apply(function(x) "wrong type",NULL,strict=FALSE)$to_r(),
     rep(NA_integer_,3)
   )
@@ -14,12 +14,12 @@ test_that("pl$Series_apply", {
 
   #check expect sees the difference between NA and NaN
   testthat::expect_error(
-    rpolars:::expect_strictly_identical(NA_real_,NaN)
+    polars:::expect_strictly_identical(NA_real_,NaN)
   )
 
 
   #handle na int
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     c(1:3, NA),
     (
       pl$Series(c(1:3,NA_integer_),"integers")
@@ -29,7 +29,7 @@ test_that("pl$Series_apply", {
   )
 
   #handle na nan double
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
       c(1,2, NA, NaN)*1.0,
       (
         pl$Series(c(1,2,NA_real_,NaN),"doubles")
@@ -38,7 +38,7 @@ test_that("pl$Series_apply", {
   )
 
   #handle na logical
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     (
       pl$Series(c(TRUE,FALSE,NA),"boolean")
       $apply(function(x) x ,NULL,FALSE)$to_r_vector()
@@ -47,7 +47,7 @@ test_that("pl$Series_apply", {
   )
 
   #handle na character
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     (
       pl$Series(c("A","B",NA_character_),"strings")
       $apply(function(x) {if(isTRUE(x=="B")) 2 else x} ,NULL,FALSE)$to_r_vector()
@@ -57,7 +57,7 @@ test_that("pl$Series_apply", {
 
 
   #Int32 -> Float64
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     c(1, 2, 3, NA),
     (
     pl$Series(c(1:3,NA_integer_),"integers")
@@ -72,7 +72,7 @@ test_that("pl$Series_apply", {
 
 
   #Float64 -> Int32
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     c(1:3, 42L),
     (
       pl$Series(c(1,2,3,NA_real_),"integers")
@@ -85,7 +85,7 @@ test_that("pl$Series_apply", {
 
   #global statefull variables can be used in R user function (so can browser() debugging, nice!)
   global_var = 0L
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     c(2L,  4L,  6L, NA_integer_),
     pl$Series(c(1:3,NA),"name")
       $apply(\(x) {global_var<<-global_var+1L;x+global_var},NULL,TRUE)
@@ -96,7 +96,7 @@ test_that("pl$Series_apply", {
 
 test_that("pl$Series_abs", {
   s = pl$Series(c(-42,42,NA_real_))
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     s$abs()$to_r_vector(),
     c(42,42,NA_real_)
   )
@@ -104,7 +104,7 @@ test_that("pl$Series_abs", {
   expect_identical(class(s$abs()),"Series")
 
   s_int = pl$Series(c(-42L,42L,NA_integer_))
-  rpolars:::expect_strictly_identical(
+  polars:::expect_strictly_identical(
     s_int$abs()$to_r_vector(),
     c(42L,42L,NA_integer_)
   )
@@ -120,7 +120,7 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
-  pl$set_rpolars_options(strictly_immutable = F)
+  pl$set_polars_options(strictly_immutable = F)
 
 
 
@@ -148,7 +148,7 @@ test_that("Series_append", {
   expect_identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
 
 
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 })
 
 
@@ -284,13 +284,13 @@ test_that("sorted flags, sort", {
 # })
 
 test_that("set_sorted" , {
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 
   expect_error({
     pl$Series(c(1,3,2,4))$set_sorted(in_place=TRUE)
   })
 
-  pl$set_rpolars_options(strictly_immutable = F)
+  pl$set_polars_options(strictly_immutable = F)
 
   #teest in_place, test set_sorted
   expect_identical(
@@ -328,7 +328,7 @@ test_that("set_sorted" , {
     }
   )
 
-  pl$reset_rpolars_options()
+  pl$reset_polars_options()
 })
 
 test_that("value counts", {

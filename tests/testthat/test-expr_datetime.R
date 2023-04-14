@@ -275,7 +275,7 @@ test_that("dt$year iso_year",{
 
 
 test_that("dt$quarter, month, day",{
-
+  skip_if_not_installed("bit64")
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -310,7 +310,7 @@ test_that("dt$quarter, month, day",{
 
 
 test_that("hour minute",{
-
+  skip_if_not_installed("bit64")
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -354,6 +354,9 @@ test_that("hour minute",{
 
 
 test_that("second, milli, micro, nano",{
+
+  skip_if_not_installed("bit64")
+
   df = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-12-25"),
@@ -464,6 +467,8 @@ test_that("offset_by",{
 
 test_that("dt$epoch", {
 
+  skip_if_not_installed("bit64")
+
   df = pl$select(
     pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("ns")$alias("e_ns"),
     pl$date_range(as.Date("2022-1-1"),lazy = TRUE)$dt$epoch("us")$alias("e_us"),
@@ -495,6 +500,7 @@ test_that("dt$epoch", {
 
 
 test_that("dt$timestamp", {
+  skip_if_not_installed("bit64")
 
   df = pl$DataFrame(
     date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
@@ -511,6 +517,7 @@ test_that("dt$timestamp", {
       as.POSIXct("2001-1-3",tz="GMT"),
       by = as.difftime(1,units="days")
   ))
+
 
   expect_identical(as.numeric(l_exp$timestamp_ms), base_r_s_timestamp*1E3)
   expect_identical(as.numeric(l_exp$timestamp_us), base_r_s_timestamp*1E6)

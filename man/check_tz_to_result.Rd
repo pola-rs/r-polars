@@ -18,7 +18,7 @@ a result object, with either a valid string or an Err
 Verify correct time zone
 }
 \examples{
- check_tz_to_result = rpolars:::check_tz_to_result # expose internal
+ check_tz_to_result = polars:::check_tz_to_result # expose internal
  #return Ok
  check_tz_to_result("GMT")
  check_tz_to_result(NULL)

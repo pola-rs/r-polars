@@ -40,8 +40,9 @@
 #' Unnamed char vector: A null value per column.
 #' Named char vector.  A mapping from (names)column to a null value string(values).
 #'
-#' @param infer_schema_length (NULL is disable) Maximum number of lines to read to infer schema. If set to 0, all columns will
-#' be read as pl.Utf8. If set to None, a full table scan will be done (slow).
+#' @param infer_schema_length Maximum number of rows to read to infer the column
+#'   types. If set to 0, all columns will be read as UTF-8. If `NULL`, a full
+#'   table scan will be done (slow).
 #' @param skip_rows_after_header bool Skip this number of rows when the header is parsed.
 #' @param encoding either "utf8" or "utf8-lossy". Lossy means that invalid utf8 values are replaced with "?" characters.
 #' @param row_count_name String(NULL is disable), name of a added row count column
@@ -56,7 +57,7 @@
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris,my_file)
-#' lazy_frame = rpolars:::lazy_csv_reader(path=my_file)
+#' lazy_frame = polars:::lazy_csv_reader(path=my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
 lazy_csv_reader = function(
@@ -67,7 +68,7 @@ lazy_csv_reader = function(
   skip_rows = 0,
   n_rows = NULL,
   cache = FALSE,
-  overwrite_dtype = NULL,  #rpolars:::DataTypeVector$new()$print()
+  overwrite_dtype = NULL,  #polars:::DataTypeVector$new()$print()
   low_memory = FALSE,
   comment_char = NULL,
   quote_char = '"',

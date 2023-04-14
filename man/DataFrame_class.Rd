@@ -5,7 +5,7 @@
 \title{Inner workings of the DataFrame-class}
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
-the public and private methods/function calls to the rpolars rust side. The instanciated
+the public and private methods/function calls to the polars rust side. The instanciated
 \code{DataFrame}-object is an \code{externalptr} to a lowlevel rust polars DataFrame  object.
 The pointer address is the only statefullness of the DataFrame object on the R side.
 Any other state resides on the rust side. The S3 method \code{.DollarNames.DataFrame}
@@ -14,7 +14,7 @@ another \code{DataFrame}-class instance or similar which allows for method chain
 This class system in lack of a better name could be called "environment classes"
 and is the same class system extendr provides, except here there is
 both a public and private set of methods. For implementation reasons, the private methods are
-external and must be called from rpolars:::.pr.$DataFrame$methodname(), also all private methods
+external and must be called from polars:::.pr.$DataFrame$methodname(), also all private methods
 must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 }
@@ -27,10 +27,10 @@ prefixed \code{DataFrame_}.
 }
 \examples{
 #see all exported methods
-ls(rpolars:::DataFrame)
+ls(polars:::DataFrame)
 
 #see all private methods (not intended for regular use)
-ls(rpolars:::.pr$DataFrame)
+ls(polars:::.pr$DataFrame)
 
 
 #make an object
@@ -40,7 +40,7 @@ df = pl$DataFrame(iris)
 df$shape
 df2 = df
 #use a private method, which has mutability
-result = rpolars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
+result = polars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
 
 #column exists in both dataframes-objects now, as they are just pointers to the same object
 # there are no public methods with mutability
@@ -58,7 +58,7 @@ df2$columns
 # method does not return any ok-value.
 
 #try unwrapping an error from polars due to unmatching column lengths
-err_result = rpolars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
+err_result = polars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
 tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
 }
 \keyword{DataFrame}

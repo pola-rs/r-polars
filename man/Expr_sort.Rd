@@ -23,7 +23,7 @@ Sort this column. In projection/ selection context the whole column is sorted.
 If used in a groupby context, the groups are sorted.
 }
 \details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[rpolars]{docs_translations}}
+See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
 pl$DataFrame(list(

@@ -157,7 +157,7 @@ pl$date_range = function(
   ) {
     low  = convert_time_unit_for_lazy(low, time_unit, time_zone)
     high = convert_time_unit_for_lazy(high, time_unit, time_zone)
-    result = rpolars:::r_date_range_lazy(low, high, interval, closed, name, time_zone)
+    result = polars:::r_date_range_lazy(low, high, interval, closed, name, time_zone)
     return(unwrap(result))
   }
 
@@ -166,7 +166,7 @@ pl$date_range = function(
   high = time_to_value_unit_tz(high, time_unit, time_zone)
 
   #eager date_range, create in ms precision and cast to desired precision
-  dt_series = unwrap(rpolars:::r_date_range(
+  dt_series = unwrap(polars:::r_date_range(
     start = convert_time_unit(low, "ms"),
     stop = convert_time_unit(high, "ms"),
     every = interval,
