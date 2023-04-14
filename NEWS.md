@@ -3,13 +3,6 @@
 ## What's changed
 
 - Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)
-- Misc documentation improvements
-- New methods implemented for DataFrame, LazyFrame, and GroupBy objects: min, max, mean, median, sum, std, var, first, last, head, tail, reverse, slice, null_count, estimated_size (#105 @vincentarelbundock)
-
-## New Contributors
-
-- @grantmcdermott made their first contribution in #81
-- @vincentarelbundock made their first contribution in #105
 
 # rpolars v0.4.6
 
