@@ -129,7 +129,7 @@ test_that("simple translations", {
   a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$as_data_frame()
   b = mtcars[32:1,]
   expect_equal(a, b, ignore_attr = TRUE)
-  
+
   a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$as_data_frame()
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
@@ -145,6 +145,13 @@ test_that("simple translations", {
   a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$as_data_frame()
   b = data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
+
+  #trigger u8 conversion errors
+  expect_grepl_error(pl$DataFrame(mtcars)$lazy()$std(256), c("ddof","exceeds u8 max value"))
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$lazy()$var(-1),
+    c("ddof", "the value -1 cannot be less than zero")
+  )
 })
 
 

@@ -439,7 +439,7 @@ test_that("simple translations", {
   a = pl$DataFrame(mtcars)$reverse()$as_data_frame()
   b = mtcars[32:1,]
   expect_equal(a, b, ignore_attr = TRUE)
-  
+
   a = pl$DataFrame(mtcars)$slice(2, 4)$as_data_frame()
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
@@ -450,6 +450,13 @@ test_that("simple translations", {
 
   a = pl$DataFrame(mtcars)$estimated_size()
   expect_equal(a, 2816, tolerance = .1)
+
+  #trigger u8 conversion errors
+  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof","exceeds u8 max value"))
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$var(-1),
+    c("ddof", "the value -1 cannot be less than zero")
+  )
 })
 
 
@@ -463,7 +470,7 @@ test_that("null_count 64bit", {
   a = sapply(a, as.integer)
   b = sapply(tmp, function(x) sum(is.na(x)))
   expect_equal(a, b)
-  
+
   a = pl$DataFrame(tmp)$groupby("vs")$null_count()$as_data_frame()
   expect_equal(dim(a), c(2, 11))
 })

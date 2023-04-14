@@ -882,7 +882,6 @@ Series_rep = function(n, rechunk = TRUE) {
 #' @examples
 #' pl$Series(1:4,"bob")$std()
 Series_std = function(ddof = 1) {
-  if (!self$is_numeric()) return(NULL) #TODO impl Series$is_numeric() and insert here
   self$to_frame()$select(pl$col(self$name)$std(ddof))$to_series()$to_r()
 }
 
@@ -899,7 +898,6 @@ Series_std = function(ddof = 1) {
 #' @examples
 #' pl$Series(1:4,"bob")$var()
 Series_var = function(ddof = 1) {
-  if (!self$is_numeric()) return(NULL) #TODO impl Series$is_numeric() and insert here
   self$to_frame()$select(pl$col(self$name)$var(ddof))$to_series()$to_r()
 }
 

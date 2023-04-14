@@ -1232,6 +1232,9 @@ test_that("std var", {
   )
   expect_true(pl$select(pl$lit(1:5)$var(3))$to_list()[[1L]] != var(1:5))
 
+  #trigger u8 conversion errors
+  expect_grepl_error(pl$lit(1:321)$std(256), c("ddof","exceeds u8 max value"))
+  expect_grepl_error(pl$lit(1:321)$var(-1), c("ddof","the value -1 cannot be less than zero"))
 
 })
 

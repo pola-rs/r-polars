@@ -28,6 +28,7 @@ use polars::prelude::Utf8NameSpaceImpl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
+
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
@@ -332,12 +333,12 @@ impl Expr {
         self.0.clone().reverse().into()
     }
 
-    pub fn std(&self, ddof: u8) -> Self {
-        self.0.clone().std(ddof).into()
+    pub fn std(&self, ddof: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.std(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn var(&self, ddof: u8) -> Self {
-        self.clone().0.var(ddof).into()
+    pub fn var(&self, ddof: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
     pub fn max(&self) -> Self {
