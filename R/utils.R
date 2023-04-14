@@ -21,36 +21,6 @@ check_no_missing_args = function(
   return(TRUE)
 }
 
-#' expect strictly identical
-#' @description stricter than testthat::expect_identical in regards of NaN an NA's
-#'
-#' @param object R object to test
-#' @param expected R object of how it exactly should be
-#' @param ... other args passed to expect_identical
-#' @details objects are evaluated on prints via utils::str()
-#' @return testthat::expect_identical return
-#' @keywords internal
-#' @examples
-#' if (FALSE){
-#'
-#'   #to testthat NA_real and NaN are the same !?
-#'   #https://github.com/r-lib/waldo/issues/150
-#'   testthat::expect_identical(NA_real_,NaN)
-#'
-#'   polars:::expect_strictly_identical(NA_real_,NaN)
-#' }
-expect_strictly_identical = function(object,expected,...) {
-  testthat::expect(identical(object,expected),
-                   failure_message  = paste(
-                     "not identical\n object:",testthat::capture_output(str(object)),
-                     "\n expected:",testthat::capture_output(str(expected))),
-                   ...
-  )
-}
-
-
-
-
 
 
 #' Verify user selected method/attribute exists
@@ -541,50 +511,6 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
   eval(parse(text=string))
 
 }
-
-
-
-#' expect grepl error
-#' @param expr an R expression to test
-#' @param expected_err one or several string patterns passed to grepl
-#' @param do_not_repeat_call bool, prevent error-handler to add call to err msg
-#' useful for grepping the same error message, without grep-patterns becomes
-#' included in the error message. Latter leads to false positive outcomes.
-#' @param ... args passed to expect_identical which will run if grepl fails
-#' @details expr must raise an error and expected_err pattern must match
-#' against the error text with grepl()
-#' @keywords internal
-#' @return invisble NULL
-#'
-#' @examples
-#' # passes as "carrot" is in "orange and carrot"
-#' polars:::expect_grepl_error(stop("orange and carrot"),"carrot")
-#' polars:::expect_grepl_error(stop("orange and carrot"),c("carrot","orange"))
-expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRUE, ...) {
-
-  #turn of including call in err msg
-  if(do_not_repeat_call) {
-    old_options = pl$set_polars_options(do_not_repeat_call=TRUE)
-  }
-
-  #capture err msg
-  err = NULL
-  err = tryCatch(expr, error = function(e) {as.character(e)})
-
-  #restore previous options state
-  if(do_not_repeat_call) do.call(pl$set_polars_options, old_options)
-
-  #check if error message contains pattern
-  founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))
-
-  if(!all(founds)) {
-    #... if not use testthat to point out the difference
-    testthat::expect_identical(err, expected_err[which(!founds)[1]],...)
-  }
-
-  invisible(err)
-}
-
 
 #' Simple viewer of an R object based on str()
 #'
