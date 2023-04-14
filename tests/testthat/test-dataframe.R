@@ -476,6 +476,21 @@ test_that("simple translations", {
 })
 
 
+test_that("null_count 64bit", {
+  skip_if_not_installed("bit64")
+  suppressPackageStartupMessages(library("bit64", quietly = TRUE))
+  tmp = mtcars
+  tmp[1:2, 1:2] = NA
+  tmp[5, 3] = NA
+  a = pl$DataFrame(tmp)$null_count()$as_data_frame()
+  a = sapply(a, as.integer)
+  b = sapply(tmp, function(x) sum(is.na(x)))
+  expect_equal(a, b)
+  
+  a = pl$DataFrame(tmp)$groupby("vs")$null_count()$as_data_frame()
+  expect_equal(dim(a), c(2, 11))
+})
+
 test_that("tail", {
   a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
   b = tail(mtcars)
