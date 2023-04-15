@@ -241,12 +241,11 @@ dat$with_columns(
 )
 ```
 
-For what it's worth, if we didn't care about overwriting the columns, the
-previous query could have been written more concisely as:
+For what it's worth, the previous query could have been written more concisely as:
 
 ```{r}
 dat$with_columns(
-  pl$col(c("mpg", "hp"))$sum()$over("cyl")
+  pl$col(c("mpg", "hp"))$sum()$over("cyl")$prefix("sum_")
 )
 ```
 
@@ -256,13 +255,14 @@ by groups instead of modifying them. We need simply invoke the `groupby()` and
 
 ```{r}
 dat$groupby(
-  "cyl"
+  "cyl",
+  maintain_order = TRUE
 )$agg(
-  pl$col(c("mpg", "hp"))$sum()$sort()
+  pl$col(c("mpg", "hp"))$sum()
 )
 ```
 
-(The final `sort()` call is optional, since **polars** doesn't sort the results
+(arg `maintain_order = TRUE` is optional, since **polars** doesn't sort the results
 of grouped operations by default. This is similar to what **data.table** does 
 and is also true for newer versions of **dplyr**.)
 
@@ -448,7 +448,6 @@ Polars is
 types can be created with the `dtypes` constructor. For example:
 
 ```{r}
-# pl$dypes # list all types
 pl$dtypes$Float64
 ```
 
@@ -458,5 +457,5 @@ _Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
 they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
 R). This might occasionally require you to look up a specific type. But the good
 news is that **polars** generally does a good job of inferring types
-automatically. We'll see some examples of type coercion later on.
+automatically.
 
