@@ -17,31 +17,28 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 
 ## What is Polars?
 
-Polars is a lightning fast DataFrame library/in-memory query engine. Its
-embarrassingly parallel execution, cache efficient algorithms and expressive
-API makes it perfect for efficient data wrangling, data pipelines, snappy APIs
-and so much more.
+Polars is [a lightning fast](https://h2oai.github.io/db-benchmark/) Data Frame
+library. Its embarrassingly parallel execution, cache efficient algorithms and
+expressive API makes it perfect for efficient data wrangling, data pipelines,
+snappy APIs and so much more. Polars also supports "streaming mode" for
+out-of-memory operations. This allows users to analyze datasets many times
+larger than RAM.
 
-[Polars](http://pola.rs) is among the
-[fastest](https://h2oai.github.io/db-benchmark/) data table query libraries
-available in any language. The underlying computation engine is written in Rust
-and can be used directly from via the polars crate. Orginally Polars bindings
-were implemented for Python. The **polars** R-package also provides equivalent
-bindings from R. Within R, python and rust each polars package is just called
-polars. The implemention polars in the different languages can be called
-rust-polars, py-polars, r-polars, nodejs-polars ...
+The underlying computation engine is written in Rust and is built on the Apache
+Arrow columnar memory format. It can be used in Rust or via Python bindings.
+The **polars** R-package provides equivalent bindings from R. Within R, python
+and rust each polars package is just called polars. The implemention polars in
+the different languages can be called rust-polars, py-polars, r-polars,
+nodejs-polars...
 
-
-All told, **polars** users can probably expect a 5-10 speedup compared to
-**dplyr** for simple transformations on datasets >500Mb. The automatic Polars
-optimization framework means that that this speed boost can be even greater for
-complex queries that chain together many operations. Performance is similar to
-that of **data.table**, although **polars** supports additional functionality
-via its relationship to the Apache Arrow memory model. For example, it can scan
-multiple Parquet files and datasets
-and selectively import random subsets without having to read all
-of the data. Furthermore, many operations can be performed efficiently
-out-of-core, enabling users to work with larger than RAM data.
+**polars** users can probably expect a 5-10 speedup compared to **dplyr** for
+simple transformations on datasets >500Mb. The automatic Polars optimization
+framework means that that this speed boost can be even greater for complex
+queries that chain together many operations. Performance is similar to that of
+**data.table**, although **polars** supports additional functionality via its
+relationship to the Apache Arrow memory model. For example, it can scan
+multiple Parquet files and datasets and selectively import random subsets
+without having to read all of the data.
 
 Polars syntax is similar to that of Spark, but the workflow is column-oriented
 rather than row-oriented. Since R is itself a column-oriented language, this
@@ -61,8 +58,6 @@ small!) data wrangling tasks.
 
 ## Documentation and tutorials
 
-The rest of this vignette contains some simple examples to get you going. 
-
 Users can find detailed documentation for all objects, functions, and methods [on the Reference page of this website.](https://rpolars.github.io/reference/index.html) This documentation can also be accessed from the R console using the typical `?` syntax. For example, we will later use the `DataFrame()` constructor function and apply the `groupby()` method to a `DataFrame` object. The documentation for these can be accessed by typing these commands:
 
 ```r
@@ -80,17 +75,19 @@ remember to switch out any `.` (Python) for a `$` (R) when chaining methods.
 For example, here are two equivalent lines of code for some hypothetical
 dataset.
 
-```
+```python
 # Python
 df.group_by("id").mean()
+```
 
+```r
 # R
 df$groupby("id")$mean()
 ```
 
 ## `Series` and `DataFrames`
 
-In `polars` objects of class `Series` are analogous to vectors in R. Objects of class `DataFrame` are analogous to data frames. To convert R vectors and data frames to Polars `Series` and `DataFrames`, we load the library and use constructor functions with the `pl$` prefix:
+In `polars` objects of class `Series` are analogous to R vectors. Objects of class `DataFrame` are analogous to R data frames. To convert R vectors and data frames to Polars `Series` and `DataFrames`, we load the library and use constructor functions with the `pl$` prefix:
 
 ```{r}
 library(polars)
@@ -155,8 +152,7 @@ One advantage of using methods is that many more operations are possible on
 Polars objects using methods than through base R functions. 
 
 A second advantage is _Methods Chaining_, a core part of the Polars workflow.
-
-If you're coming from one of the other popular data wrangling libraries in R,
+If you are coming from one of the other popular data wrangling libraries in R,
 then you probably already have an innate sense of what this means. For
 instance,
 
@@ -181,7 +177,7 @@ We use the `$max` method to compute the maximum value in each column:
 dat$max()
 ```
 
-Now, we add the `$tail` method to compute the maximum value only in the last 10 rows of the dataset:
+Now, we first use the `$tail` method to select the last 10 rows of the dataset, and then use the `$max` method to compute the maximums in those 10 rows:
 
 ```{r}
 dat$tail(10)$max()
@@ -193,7 +189,7 @@ Finally, we convert the result to a standard R data frame:
 dat$tail(10)$max()$as_data_frame()
 ```
 
-Below, we will introduce several other methods, including `$select`, `$filter`, and `$groupby` which allow us to do powerful data manipulations easily. In this example, we take group-wise means over each column, for each value of the `cyl` variable:
+Below, we will introduce several other methods, including `$select`, `$filter`, and `$groupby` which allow us to do powerful data manipulations easily. To give you a small taste, we now take group-wise means:
 
 ```{r}
 dat$groupby("cyl")$mean()
@@ -206,7 +202,17 @@ We can now start chaining together various methods
 data by rows
 ([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren.html))
 and also columns
-([`select()`](https://rpolars.github.io/reference/DataFrame_select.html)).
+([`select()`](https://rpolars.github.io/reference/DataFrame_select.html)):
+
+```{r}
+dat$filter(pl$col("cyl") == 6)
+
+dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
+
+dat$select(pl$col(c("mpg", "hp")))
+```
+
+Of course, we can chain those methods to create a pipeline: 
 
 ```{r}
 dat$filter(
