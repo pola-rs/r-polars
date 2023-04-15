@@ -14,7 +14,8 @@
 - @etiennebacher made their first contribution in #102
 - @vincentarelbundock made their first contribution in #103
 
-**Full Changelog**: https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.4.8
+Release date: 2023-04-16. Full changelog:
+[v0.4.6...v0.5.0](https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.5.0)
 
 # rpolars v0.4.7
 
