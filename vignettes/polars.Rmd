@@ -82,15 +82,15 @@ dataset.
 
 ```
 # Python
-df.select([pl.col(["A", "B"]).sum()]))
+df.group_by("id").mean()
 
 # R
-df$select(pl$col(c("A", "B"))$sum())
+df$groupby("id")$mean()
 ```
 
 ## `Series` and `DataFrames`
 
-In `polars` objects of class `Series` are analogous to vectors in R. Objects of class `DataFrame` are obviously analogous to data frames. To convert R vectors and data frames to Polars `Series` and `DataFrames`, we load the library and use constructor functions with the `pl$` prefix:
+In `polars` objects of class `Series` are analogous to vectors in R. Objects of class `DataFrame` are analogous to data frames. To convert R vectors and data frames to Polars `Series` and `DataFrames`, we load the library and use constructor functions with the `pl$` prefix:
 
 ```{r}
 library(polars)
@@ -101,6 +101,7 @@ ser
 dat = pl$DataFrame(mtcars)
 dat
 ```
+
 
 Both Polars and R are column-orientated. So you can think of `DataFrames`
 (data.frames) as being made up of a collection of `Series` (vectors). In fact,
@@ -136,21 +137,24 @@ head(dat, n = 2)
 
 ## Methods and pipelines
 
-Although some simple R functions work out of the box on **polars** objects, the full power of Polars realized via _methods_. In this R package, Polars methods are accessed using the `$` syntax. For example:
+Although some simple R functions work out of the box on **polars** objects, the full power of Polars is realized via _methods_. Polars methods are accessed using the `$` syntax. For example, to convert Polars `Series` and `DataFrames` back to standard R objects, we use the `$to_r_vector()` and `$as_data_frame()` methods:
+
+```{r}
+ser$to_r_vector()
+```
+
+There are numerous methods designed to accomplish various tasks:
 
 ```{r}
 ser$max()
 
-dat$columns
-
-dat$shape
-
-dat$tail(n = 3)
+dat$slice(offset = 2, length = 3)  
 ```
 
 One advantage of using methods is that many more operations are possible on
-Polars objects using methods than through base R functions. A second advantage
-is _Methods Chaining_, a core part of the Polars workflow.
+Polars objects using methods than through base R functions. 
+
+A second advantage is _Methods Chaining_, a core part of the Polars workflow.
 
 If you're coming from one of the other popular data wrangling libraries in R,
 then you probably already have an innate sense of what this means. For
@@ -170,14 +174,34 @@ examples to help make things concrete. We use the `mtcars` dataset that we
 coerced to a `DataFrame` in introduction.^[Similar to how (most) **data.table**
 operations are limited to objects of class `data.table`, we can only perform
 polars operations on objects that have been converted to an appropriate
-**polars** class.] Later on, we'll see how to read data from disk directly in
-Polars format.
+**polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
+We use the `$max` method to compute the maximum value in each column:
 
 ```{r}
-dat
+dat$max()
 ```
 
-With our DataFrame in hand, we can now start chaining together various methods 
+Now, we add the `$tail` method to compute the maximum value only in the last 10 rows of the dataset:
+
+```{r}
+dat$tail(10)$max()
+```
+
+Finally, we convert the result to a standard R data frame:
+
+```{r}
+dat$tail(10)$max()$as_data_frame()
+```
+
+Below, we will introduce several other methods, including `$select`, `$filter`, and `$groupby` which allow us to do powerful data manipulations easily. In this example, we take group-wise means over each column, for each value of the `cyl` variable:
+
+```{r}
+dat$groupby("cyl")$mean()
+```
+
+## `select` columns and `filter` rows
+
+We can now start chaining together various methods 
 (expressions) to manipulate it in different ways. For example, we can subset the
 data by rows
 ([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren.html))
@@ -186,15 +210,13 @@ and also columns
 
 ```{r}
 dat$filter(
-  pl$col("cyl")==6
+  pl$col("cyl") == 6
 )$select(
   pl$col(c("mpg", "hp", "cyl"))
 )
 ```
 
-For the rest of this vignette, we'll focus on how to perform some common query tasks on DataFrames.
-
-## Common data tasks
+## Aggretations and modifications
 
 The `select()` method that we introduced above also supports data modification, so you can simultaneously
 transform it while you are subsetting. However, the result will exclude any
@@ -250,6 +272,8 @@ dat$groupby(
   pl$col("hp")$median()$alias("med_hp")
 )
 ```
+
+## Join
 
 As a final example of how **polars** can be used for standard data wrangling
 tasks, let's implement a (left) join. For this example, we'll borrow some
