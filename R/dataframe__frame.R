@@ -645,6 +645,16 @@ DataFrame_drop_in_place = function(name) {
     .pr$DataFrame$drop_in_place(self, name)
 }
 
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords DataFrame
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$shift(2)
+DataFrame_shift = function(periods = 1) {
+    self$lazy()$shift(periods)$collect()
+}
+
 #' modify/append column(s)
 #' @description add or modify columns with expressions
 #' @name DataFrame_with_columns

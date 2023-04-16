@@ -297,6 +297,15 @@ LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof))
 }
 
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords LazyFrame
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
+LazyFrame_shift = function(periods = 1) {
+  unwrap(.pr$LazyFrame$shift(self, periods))
+}
 
 #' @title Reverse
 #' @description Reverse the DataFrame.

@@ -832,6 +832,8 @@ LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
 
 LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
 
+LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
+
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)

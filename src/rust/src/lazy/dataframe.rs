@@ -91,6 +91,10 @@ impl LazyFrame {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
+    pub fn shift(&self, periods: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
+    }
+
     fn reverse(&self) -> Self {
         self.0.clone().reverse().into()
     }

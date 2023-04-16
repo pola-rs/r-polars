@@ -161,4 +161,11 @@ test_that("tail", {
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
+test_that("shift", {
+  a = pl$DataFrame(iris)$lazy()$shift(2)$limit(3)$collect()$as_data_frame() 
+  for (i in seq_along(a)) {
+    expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
+  }
+})
+
 #TODO complete tests for lazy

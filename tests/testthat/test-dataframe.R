@@ -489,3 +489,11 @@ test_that("drop_in_place", {
   expect_false("Species" %in% dat$columns)
   expect_s3_class(x, "Series")
 })
+
+
+test_that("shift", {
+  a = pl$DataFrame(iris)$shift(2)$limit(3)$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
+  }
+})
