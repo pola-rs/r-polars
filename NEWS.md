@@ -8,7 +8,7 @@
 ## What's changed
 - Several new methods for DataFrame, LazyFrame & GroupBy translated (#103, #105 @vincentarelbundock)
 - Doc fixes (#102, #109  @etiennebacher)
-- Experimental opt-in auto completion by (#96 @sorhawell)
+- Experimental opt-in auto completion (#96 @sorhawell)
 
 ## New Contributors
 - @etiennebacher made their first contribution in #102
