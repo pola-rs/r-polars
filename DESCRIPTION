@@ -62,6 +62,7 @@ Collate:
     'pkg-nanoarrow.R'
     'rlang.R'
     'rust_result.R'
+    's3_methods.R'
     'series__series.R'
     'translation.R'
     'vctrs.R'

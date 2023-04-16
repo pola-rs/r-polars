@@ -15,33 +15,39 @@ knitr::opts_chunk$set(
 options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
+
 ## What is Polars?
 
-[Polars](http://pola.rs) is among the
-[fastest](https://h2oai.github.io/db-benchmark/) data table query 
-libraries available in any language. The underlying computation engine is
-written in Rust and can be used directly from via the polars crate. Orginally Polars bindings were implemented for Python. The **polars** R-package also provides equivalent bindings from R. Within
-R, python and rust each polars package is just called polars. The implemention polars in the
-different languages can be called rust-polars, py-polars, r-polars, nodejs-polars ...
+Polars is [a lightning fast](https://duckdblabs.github.io/db-benchmark/) Data Frame
+library. Its embarrassingly parallel execution, cache efficient algorithms and
+expressive API makes it perfect for efficient data wrangling, data pipelines,
+snappy APIs and so much more. Polars also supports "streaming mode" for
+out-of-memory operations. This allows users to analyze datasets many times
+larger than RAM.
+
+The underlying computation engine is written in Rust and is built on the Apache
+Arrow columnar memory format. It can be used in Rust or via Python bindings.
+The **polars** R-package provides equivalent bindings from R. Within R, python
+and rust each polars package is just called polars. The implemention polars in
+the different languages can be called rust-polars, py-polars, r-polars,
+nodejs-polars...
+
+**polars** users can expect orders of magnitude(s) improvement compared to
+**dplyr** for simple transformations on datasets >500Mb. The automatic Polars
+optimization framework means that that this speed boost can be even greater for
+complex queries that chain together many operations. Performance is similar to
+that of **data.table**, although **polars** supports additional functionality
+via its relationship to the Apache Arrow memory model. For example, it can scan
+multiple Parquet files and datasets and selectively import random subsets
+without having to read all of the data.
 
 Polars syntax is similar to that of Spark, but the workflow is column-oriented
 rather than row-oriented. Since R is itself a column-oriented language, this
 should immediately feel familiar to most R users. Like Spark and modern SQL
 variants, Polars optimizes queries for memory consumption and speed, so you
 don't have to. However, unlike Spark, Polars is natively multithreaded instead
-of multinode(d). This makes (r)polars much simpler to install and can be used as
+of multinoded. This makes (r)polars much simpler to install and can be used as
 one would any other R package.
-
-All told, **polars** users can probably expect a 5-10 speedup compared to
-**dplyr** for simple transformations on datasets >500Mb. The automatic Polars
-optimization framework means that that this speed boost can be even greater for
-complex queries that chain together many operations. Performance is similar to
-that of **data.table**, although **polars** supports additional functionality
-via its relationship to the Apache Arrow memory model. For example, it can scan
-multiple Parquet files and datasets
-and selectively import random subsets without having to read all
-of the data. Furthermore, many operations can be performed efficiently
-out-of-core, enabling users to work with larger than RAM data.
 
 This R port relies on the excellent [**extendr**](https://github.com/extendr)
 package, which is the R equivalent to pyo3+maturin. **extendr** is very
@@ -51,88 +57,119 @@ dependencies other than R itself. This makes it very fast and lightweight to
 install, and so **polars** can immediately be used to tackle your big (or
 small!) data wrangling tasks.
 
-The rest of this vignette contains some simple examples to get you going. Note
-that the **polars** syntax and expressions are (deliberately) as close to the
-Python implementation as possible, so you can always refer to the
-[(py)polars book](https://pola-rs.github.io/polars-book/user-guide/) for more 
-ideas. Just remember to switch out any `.` (Python) for a `$` (R) when chaining
-methods. For example, here are two equivalent lines of code for some
-hypothetical dataset.
+## Documentation and tutorials
 
+Users can find detailed documentation for all objects, functions, and methods
+[on the Reference page of this
+website.](https://rpolars.github.io/reference/index.html) This documentation
+can also be accessed from the R console using the typical `?` syntax. For
+example, we will later use the `DataFrame()` constructor function and apply the
+`groupby()` method to a `DataFrame` object. The documentation for these can be
+accessed by typing these commands:
+
+```r
+?DataFrame
+?DataFrame_groupby
 ```
+
+The [Polars book](https://pola-rs.github.io/polars-book/user-guide/) offers a
+great introduction to the Polars data frame library, with a very large number
+of examples in Python and Rust. The syntax and expressions in the `polars`
+package for R are (deliberately) as close to the Python implementation as
+possible, so you can always refer to the [polars
+book](https://pola-rs.github.io/polars-book/user-guide/) for more ideas. Just
+remember to switch out any "." (Python) for a "$" (R) when chaining methods.
+For example, here are two equivalent lines of code for some hypothetical
+dataset.
+
+```python
 # Python
-df.select([pl.col(["A", "B"]).sum()]))
-
-# R
-df$select(pl$col(c("A", "B"))$sum())
+df.group_by("id").mean()
 ```
 
-## Constructors, object types and data types
+```r
+# R
+df$groupby("id")$mean()
+```
 
-Let's load the **polars** package and get our feet wet with a tongue-in-cheek
-version of "Hello, world".
+## `Series` and `DataFrames`
+
+In `polars` objects of class `Series` are analogous to R vectors. Objects of
+class `DataFrame` are analogous to R data frames. To convert R vectors and data
+frames to Polars `Series` and `DataFrames`, we load the library and use
+constructor functions with the `pl$` prefix. This prefix is very important, as
+most of the `polars` functions are made available via `pl$`:
 
 ```{r}
 library(polars)
 
-pl$col("hello")$sum()$over("world", "from")$alias("polars")
+ser = pl$Series((1:5) * 5)
+ser
+
+dat = pl$DataFrame(mtcars)
+dat
 ```
 
-The key point of this example is the following: All **polars** constructors can
-be accessed via the `pl$` prefix. We'll see this repeatedly in the examples that
-follow.
 
-### Data types
-
-Polars is
-[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and new
-types can be created with the `dtypes` constructor. For example:
-
-```{r}
-# pl$dypes # list all types
-pl$dtypes$Float64
-```
-
-The full list of valid Polars types can be found by typing `pl$dtypes` 
-into your R console. These include _Boolean_, _Float32(64)_, _Int32(64)_,
-_Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
-they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
-R). This might occasionally require you to look up a specific type. But the good
-news is that **polars** generally does a good job of inferring types
-automatically. We'll see some examples of type coercion later on.
-
-### `Series` and `DataFrames`
-
-The Polars analog to an R vector is a `Series`.
-
-```{r}
-pl$Series((1:5)*5, name = "my_series")
-```
-
-Recall that Polars and R are both column-orientated. So you can think of
-`DataFrames` (data.frames) as being made up of a collection of `Series`
-(vectors). In fact, you can create a new Polars `DataFrame` as a mix of `Series`
-and/or regular R vectors.
+Both Polars and R are column-orientated. So you can think of `DataFrames`
+(data.frames) as being made up of a collection of `Series` (vectors). In fact,
+you can create a new Polars `DataFrame` as a mix of `Series` and/or regular R
+vectors.
 
 ```{r}
 pl$DataFrame(
-  pl$Series((1:5) * 5, "a"),
-  pl$Series(letters[1:5], "b"),
-  newname = pl$Series(c(1,2,3,4,5), "oldname"), # overwrite oldname with newname
-  c(5,4,3,2,1), # unnamed vector
-  named_vector = c(15,14,13,12,11) , # named provide
-  c(5,4,3,2,0)
+  a = pl$Series((1:5) * 5),
+  b = pl$Series(letters[1:5]),
+  c = pl$Series(c(1, 2, 3, 4, 5)),
+  d = c(15, 14, 13, 12, 11),
+  c(5, 4, 3, 2, 1),
+  1:5
 )
 ```
 
-For the rest of this vignette, we'll focus on how to perform some common query
-tasks on DataFrames.
+`Series` and `DataFrame` can be operated on using many standard R functions. For example:
 
-## Common data tasks
+```{r}
+# Series
+length(ser)
 
-_Method chaining_ is a core part of the **polars** workflow. If you're coming
-from one of the other popular data wrangling libraries in R, then you probably
-already have an innate sense of what this means. For instance,
+max(ser)
+
+# DataFrame
+names(dat)
+
+dim(dat)
+
+head(dat, n = 2)
+```
+
+## Methods and pipelines
+
+Although some simple R functions work out of the box on **polars** objects, the
+full power of Polars is realized via _methods_. Polars methods are accessed
+using the `$` syntax. For example, to convert Polars `Series` and `DataFrames`
+back to standard R objects, we use the `$to_r_vector()` and `$as_data_frame()`
+methods:
+
+```{r}
+ser$to_r_vector()
+```
+
+There are numerous methods designed to accomplish various tasks:
+
+```{r}
+ser$max()
+
+dat$slice(offset = 2, length = 3)  
+```
+
+One advantage of using methods is that many more operations are possible on
+Polars objects using methods than through base R functions. 
+
+A second advantage is _Methods Chaining_, a core part of the Polars workflow.
+If you are coming from one of the other popular data wrangling libraries in R,
+then you probably already have an innate sense of what this means. For
+instance,
 
 - In **dplyr** we use a pipe operator, e.g. `dat |> filter(...) |> select(...)`
 - In **data.table** we use its indexing syntax, e.g. `DT[i, j, by][...]`
@@ -144,45 +181,74 @@ where `object` is our data object, and `m1()` and `m2()` are appropriate
 or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
-examples to help make things concrete. Start by creating a Polars "DataFrame"
-object.^[Similar to how (most) **data.table** operations are limited to objects
-of class `data.table`, we can only perform polars operations on objects that
-have been converted to an appropriate **polars** class.] Later on, we'll see
-how to do this automatically when importing data from disk. But for the moment,
-it will suffice to coerce R's built-in `mtcars` dataset to a Polars DataFrame.
+examples to help make things concrete. We use the `mtcars` dataset that we
+coerced to a `DataFrame` in introduction.^[Similar to how (most) **data.table**
+operations are limited to objects of class `data.table`, we can only perform
+polars operations on objects that have been converted to an appropriate
+**polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
+We use the `$max` method to compute the maximum value in each column:
 
 ```{r}
-# Create a polars DataFrame from mtcars
-dat = pl$DataFrame(mtcars)
-dat
+dat$max()
 ```
 
-(As an aside, notice that **polars** DataFrames have their own "pretty" print
-method.)
+Now, we first use the `$tail` method to select the last 10 rows of the dataset,
+and then use the `$max` method to compute the maximums in those 10 rows:
 
-With our DataFrame in hand, we can now start chaining together various methods 
-(expressions) to manipulate it in different ways. For example, we can subset the
-data by rows
+```{r}
+dat$tail(10)$max()
+```
+
+Finally, we convert the result to a standard R data frame:
+
+```{r}
+dat$tail(10)$max()$as_data_frame()
+```
+
+Below, we will introduce several other methods, including `$select`, `$filter`,
+and `$groupby` which allow us to do powerful data manipulations easily. To give
+you a small taste, we now take group-wise means:
+
+```{r}
+dat$groupby("cyl")$mean()
+```
+
+## `select` columns and `filter` rows
+
+We can now start chaining together various methods (expressions) to manipulate
+it in different ways. For example, we can subset the data by rows
 ([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren.html))
 and also columns
-([`select()`](https://rpolars.github.io/reference/DataFrame_select.html)).
+([`select()`](https://rpolars.github.io/reference/DataFrame_select.html)):
+
+```{r}
+dat$filter(pl$col("cyl") == 6)
+
+dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
+
+dat$select(pl$col(c("mpg", "hp")))
+```
+
+Of course, we can chain those methods to create a pipeline: 
 
 ```{r}
 dat$filter(
-  pl$col("cyl")==6
+  pl$col("cyl") == 6
 )$select(
   pl$col(c("mpg", "hp", "cyl"))
 )
 ```
 
-The `select()` method also supports data modification, so you can simultaneously
-transform it while you are subsetting. However, the result will exclude any
-columns that weren't specified as part of the expression. To modify or add some 
-columns---whilst preserving all others in the dataset---it is therefore better 
-to use the
+## Aggregations and modifications
+
+The `select()` method that we introduced above also supports data modification,
+so you can simultaneously transform it while you are subsetting. However, the
+result will exclude any columns that weren't specified as part of the
+expression. To modify or add some columns---whilst preserving all others in the
+dataset---it is therefore better to use the
 [`with_columns()`](https://rpolars.github.io/reference/DataFrame_with_columns.html)
-method. This next code chunk is equivalent to 
-`mtcars |> dplyr::mutate(sum_mpg=sum(mpg), sum_hp=sum(hp), .by = cyl)`.
+method. This next code chunk is equivalent to `mtcars |>
+dplyr::mutate(sum_mpg=sum(mpg), sum_hp=sum(hp), .by = cyl)`.
 
 ```{r}
 # Add the grouped sums of some selected columns.
@@ -192,12 +258,11 @@ dat$with_columns(
 )
 ```
 
-For what it's worth, if we didn't care about overwriting the columns, the
-previous query could have been written more concisely as:
+For what it's worth, the previous query could have been written more concisely as:
 
 ```{r}
 dat$with_columns(
-  pl$col(c("mpg", "hp"))$sum()$over("cyl")
+  pl$col(c("mpg", "hp"))$sum()$over("cyl")$prefix("sum_")
 )
 ```
 
@@ -207,13 +272,14 @@ by groups instead of modifying them. We need simply invoke the `groupby()` and
 
 ```{r}
 dat$groupby(
-  "cyl"
+  "cyl",
+  maintain_order = TRUE
 )$agg(
-  pl$col(c("mpg", "hp"))$sum()$sort()
+  pl$col(c("mpg", "hp"))$sum()
 )
 ```
 
-(The final `sort()` call is optional, since **polars** doesn't sort the results
+(arg `maintain_order = TRUE` is optional, since **polars** doesn't sort the results
 of grouped operations by default. This is similar to what **data.table** does 
 and is also true for newer versions of **dplyr**.)
 
@@ -229,6 +295,11 @@ dat$groupby(
   pl$col("hp")$median()$alias("med_hp")
 )
 ```
+
+Note that we used the `cast` method to convert the data type of the `am`
+column. See the section below for more details on data types.
+
+## Join
 
 As a final example of how **polars** can be used for standard data wrangling
 tasks, let's implement a (left) join. For this example, we'll borrow some
@@ -389,4 +460,22 @@ pl$DataFrame(iris)$select(
     })
 )$as_data_frame()
 ```
+
+## Data types
+
+Polars is
+[strongly typed](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and new
+types can be created with the `dtypes` constructor. For example:
+
+```{r}
+pl$dtypes$Float64
+```
+
+The full list of valid Polars types can be found by typing `pl$dtypes` 
+into your R console. These include _Boolean_, _Float32(64)_, _Int32(64)_,
+_Utf8_, _Categorical_, _Date_, etc. Note that some type names differ from what
+they are called in R (e.g., _Boolean_ in Polars is equivalent to `logical()` in
+R). This might occasionally require you to look up a specific type. But the good
+news is that **polars** generally does a good job of inferring types
+automatically.
 
