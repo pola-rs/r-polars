@@ -12,7 +12,7 @@ GroupBy_quantile(quantile, interpolation = "nearest")
 \item{interpolation}{string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".}
 }
 \value{
-LazyFrame
+GroupBy
 }
 \description{
 Aggregate the columns in the DataFrame to their quantile value.
@@ -20,4 +20,4 @@ Aggregate the columns in the DataFrame to their quantile value.
 \examples{
 pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
 }
-\keyword{LazyFrame}
+\keyword{GroupBy}

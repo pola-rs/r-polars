@@ -318,6 +318,17 @@ LazyFrame_shift = function(periods = 1) {
   unwrap(.pr$LazyFrame$shift(self, periods))
 }
 
+#' @title Shift and fill
+#' @description Shift the values by a given period and fill the resulting null values.
+#' @keywords LazyFrame
+#' @param fill_value fill None values with the result of this expression.
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return LazyFrame
+#' @examples pl$LazyFrame(mtcars)$lazy()$shift_and_fill(0, 2)$collect()
+LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
+  unwrap(.pr$LazyFrame$shift_and_fill(self, fill_value, periods))
+}
+
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame

@@ -93,13 +93,17 @@ impl LazyFrame {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
     
-    pub fn quantile(&self, quantile: u32, interpolation: &str) -> Result<LazyFrame, String> {
+    pub fn quantile(&self, quantile: u32, interpolation: &str) -> Result<Self, String> {
         let res = new_quantile_interpolation_option(interpolation).unwrap();
         Ok(LazyFrame(self.clone().0.quantile(dsl::lit(quantile).clone(), res)))
     }
 
-    pub fn shift(&self, periods: Robj) -> Result<Self, String> {
+    fn shift(&self, periods: Robj) -> Result<Self, String> {
         Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
+    }
+
+    fn shift_and_fill(&self, fill_value: &Expr, periods: i64) -> Result<Self, String> {
+        Ok(self.clone().0.shift_and_fill(periods, fill_value.0.clone()).into())
     }
 
     fn reverse(&self) -> Self {

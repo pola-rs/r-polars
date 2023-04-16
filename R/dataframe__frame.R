@@ -672,6 +672,17 @@ DataFrame_shift = function(periods = 1) {
     self$lazy()$shift(periods)$collect()
 }
 
+#' @title Shift and fill
+#' @description Shift the values by a given period and fill the resulting null values.
+#' @keywords DataFrame
+#' @param fill_value fill None values with the result of this expression.
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
+DataFrame_shift_and_fill = function(fill_value, periods = 1) {
+    self$lazy()$shift_and_fill(periods)$collect()
+}
+
 #' modify/append column(s)
 #' @description add or modify columns with expressions
 #' @name DataFrame_with_columns

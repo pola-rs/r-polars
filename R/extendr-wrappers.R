@@ -838,6 +838,8 @@ LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__LazyFrame__q
 
 LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
 
+LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame__shift_and_fill, self, fill_value, periods)
+
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
