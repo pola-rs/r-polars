@@ -5,6 +5,8 @@ use crate::robj_to;
 use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
+use crate::rdatatype::new_quantile_interpolation_option;
+use polars::lazy::dsl;
 
 #[allow(unused_imports)]
 use std::result::Result;
@@ -89,6 +91,11 @@ impl LazyFrame {
 
     pub fn var(&self, ddof: Robj) -> Result<Self, String> {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
+    }
+    
+    pub fn quantile(&self, quantile: u32, interpolation: &str) -> Result<LazyFrame, String> {
+        let res = new_quantile_interpolation_option(interpolation).unwrap();
+        Ok(LazyFrame(self.clone().0.quantile(dsl::lit(quantile).clone(), res)))
     }
 
     pub fn shift(&self, periods: Robj) -> Result<Self, String> {

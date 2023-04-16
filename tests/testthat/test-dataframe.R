@@ -505,3 +505,20 @@ test_that("frame_equal", {
   expect_true(dat1$frame_equal(dat1))
   expect_false(dat1$frame_equal(dat2))
 })
+
+
+test_that("quantile", {
+  a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$max()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$quantile(0, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$min()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  # not sure why this is broken
+  a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$median()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+

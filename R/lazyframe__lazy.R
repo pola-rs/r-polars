@@ -297,6 +297,17 @@ LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof))
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords LazyFrame
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+LazyFrame_quantile = function(quantile, interpolation = "nearest") {
+  unwrap(.pr$LazyFrame$quantile(self, quantile, interpolation))
+}
+
 #' @title Shift
 #' @description Shift the values by a given period.
 #' @keywords LazyFrame

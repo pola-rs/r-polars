@@ -991,6 +991,17 @@ DataFrame_std = function(ddof = 1) {
   self$lazy()$std(ddof)$collect()
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords DataFrame
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$quantile(.4)
+DataFrame_quantile = function(quantile, interpolation = "nearest") {
+  self$lazy()$quantile(quantile, interpolation)$collect()
+}
+
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame

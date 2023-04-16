@@ -76,3 +76,17 @@ patrick::with_parameters_test_that(
   },
   .cases = make_cases()
 )
+
+test_that("quantile", {
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$min()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$max()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(.5, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$median()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+})

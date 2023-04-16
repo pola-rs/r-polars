@@ -219,6 +219,17 @@ GroupBy_std = function() {
   self$agg(pl$all()$std())
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords GroupBy
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+GroupBy_quantile = function(quantile, interpolation = "nearest") {
+  self$agg(pl$all()$quantile(quantile, interpolation))
+}
+
 #' @title GroupBy null count
 #' @description Create a new DataFrame that shows the null counts per column.
 #' @keywords DataFrame
