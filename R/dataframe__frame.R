@@ -645,6 +645,23 @@ DataFrame_drop_in_place = function(name) {
     .pr$DataFrame$drop_in_place(self, name)
 }
 
+#' Drop in place
+#' @name DataFrame_frame_equal
+#' @description Check if DataFrame is equal to other.
+#'
+#' @param other DataFrame to compare with.
+#' @return bool
+#' @keywords  DataFrame
+#' @examples
+#' dat1 = pl$DataFrame(iris)
+#' dat2 = pl$DataFrame(iris)
+#' dat3 = pl$DataFrame(mtcars)
+#' dat1$frame_equal(dat2)
+#' dat1$frame_equal(dat3)
+DataFrame_frame_equal = function(other) {
+    .pr$DataFrame$frame_equal(self, other)
+}
+
 #' @title Shift
 #' @description Shift the values by a given period.
 #' @keywords DataFrame

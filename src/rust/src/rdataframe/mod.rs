@@ -235,6 +235,10 @@ impl DataFrame {
 
         r_result_list(robj_list_res)
     }
+    
+    pub fn frame_equal(&self, other: &DataFrame) -> bool {
+        self.0.frame_equal(&other.0)
+    }
 
     pub fn select_at_idx(&self, idx: i32) -> List {
         let expr_result = || -> Result<Series, String> {
@@ -249,7 +253,7 @@ impl DataFrame {
     pub fn drop_in_place(&mut self, names: &str) -> Series {
         Series(self.0.drop_in_place(names).unwrap())
     }
-
+    
     pub fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
         LazyFrame(self.lazy().0.select(exprs)).collect()

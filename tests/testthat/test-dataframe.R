@@ -497,3 +497,11 @@ test_that("shift", {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
 })
+
+
+test_that("frame_equal", {
+  dat1 = pl$DataFrame(iris)
+  dat2 = pl$DataFrame(mtcars)
+  expect_true(dat1$frame_equal(dat1))
+  expect_false(dat1$frame_equal(dat2))
+})

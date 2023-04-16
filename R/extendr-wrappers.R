@@ -88,6 +88,8 @@ DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, se
 
 DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
 
+DataFrame$frame_equal <- function(other) .Call(wrap__DataFrame__frame_equal, self, other)
+
 DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
 
 DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
