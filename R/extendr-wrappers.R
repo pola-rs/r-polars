@@ -829,9 +829,9 @@ LazyFrame$median <- function() .Call(wrap__LazyFrame__median, self)
 
 LazyFrame$sum <- function() .Call(wrap__LazyFrame__sum, self)
 
-LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
-
 LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
+
+LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
 
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
 

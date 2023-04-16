@@ -2,9 +2,7 @@ use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
 use crate::robj_to;
-use crate::utils::r_result_list;
-use crate::utils::try_f64_into_u32;
-use crate::utils::try_f64_into_usize;
+use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -85,12 +83,12 @@ impl LazyFrame {
         self.0.clone().sum().into()
     }
 
-    fn var(&self, ddof: u8) -> Self {
-        self.0.clone().var(ddof).into()
+    pub fn std(&self, ddof: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.std(robj_to!(u8, ddof)?).into())
     }
 
-    fn std(&self, ddof: u8) -> Self {
-        self.0.clone().std(ddof).into()
+    pub fn var(&self, ddof: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
     fn reverse(&self) -> Self {

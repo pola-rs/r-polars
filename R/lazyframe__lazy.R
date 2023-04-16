@@ -284,7 +284,7 @@ LazyFrame_sum = "use_extendr_wrapper"
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
 LazyFrame_var = function(ddof = 1) {
-  .pr$LazyFrame$var(self, ddof)
+  unwrap(.pr$LazyFrame$var(self, ddof))
 }
 
 #' @title Std
@@ -294,7 +294,7 @@ LazyFrame_var = function(ddof = 1) {
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
 LazyFrame_std = function(ddof = 1) {
-  .pr$LazyFrame$std(self, ddof)
+  unwrap(.pr$LazyFrame$std(self, ddof))
 }
 
 

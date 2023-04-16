@@ -223,7 +223,7 @@ GroupBy_std = function() {
 #' @description Create a new DataFrame that shows the null counts per column.
 #' @keywords DataFrame
 #' @return DataFrame
-#' @examples 
+#' @examples
 #' x = mtcars
 #' x[1:10, 3:5] = NA
 #' pl$DataFrame(x)$groupby("cyl")$null_count()
