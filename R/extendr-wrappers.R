@@ -53,7 +53,26 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
+#' General class of Polars DataFrame
+#'
+#' @name DataFrame-class
+#'
+#' @export
+
 DataFrame <- new.env(parent = emptyenv())
+
+
+
+#' Shape of  DataFrame
+#'
+#' Get shape/dimensions of DataFrame
+#'
+#' @name DataFrame-shape
+#' @usage <DataFrame>$shape()
+#'
+#' @return Numeric vector of length two: number of rows, number of columns
+#' @examples
+#' df = pl$DataFrame(iris)$shape
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
 
@@ -81,7 +100,26 @@ DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, 
 
 DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
 
+
+#' DataFrame dtypes
+#'
+#' Get dtypes of columns in DataFrame. Dtypes can also be found in column
+#' headers when printing the DataFrame.
+#'
+#' @name DataFrame-dtypes
+#'
+#' @return width as numeric scalar
+#' @examples
+#' pl$DataFrame(iris)$dtypes
+
 DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
+
+
+#' DataFrame schema
+#' @name DataFrame_schema
+#'
+#' @examples
+#' pl$DataFrame(iris)$schema
 
 DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
 
@@ -803,11 +841,49 @@ WhenThenThen$print <- function() invisible(.Call(wrap__WhenThenThen__print, self
 #' @export
 `[[.WhenThenThen` <- `$.WhenThenThen`
 
+
+#' Describe the collect plan of a Polars LazyFrame
+#'
+#'
+#' @name LazyFrame-class
+#'
+#' @export
+
 LazyFrame <- new.env(parent = emptyenv())
+
+
+#' Print a Polars LazyFrame
+#'
+#' @usage
+#' <LazyFrame>$print()
+#'
+#' @name LazyFrame-print
+#'
+#' @export
 
 LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
 
+
+#' Describe the collect plan of a Polars LazyFrame
+#'
+#' @usage
+#' <LazyFrame>$describe_plan()
+#'
+#' @name LazyFrame-describe_plan
+#'
+#' @export
+
 LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
+
+
+#' Describe the optimized collect plan of a Polars LazyFrame
+#'
+#' @usage
+#' <LazyFrame>$describe_optimized_plan()
+#'
+#' @name LazyFrame-describe_optimized_plan
+#'
+#' @export
 
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
 

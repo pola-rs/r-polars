@@ -398,29 +398,12 @@ DataFrame.property_setters$columns =
 
 
 
-
-#' Shape of  DataFrame
-#' @name DataFrame_shape
-#' @description Get shape/dimensions of DataFrame
-#'
-#' @return two length numeric vector of c(nrows,ncols)
-#' @keywords  DataFrame
-#' @examples
-#' df = pl$DataFrame(iris)$shape
-#'
-DataFrame_shape = method_as_property(function() {
-  .pr$DataFrame$shape(self)
-})
-
-
-
 #' Height of DataFrame
 #' @name DataFrame_height
 #' @description Get height(nrow) of DataFrame
 #'
 #' @return height as numeric
 #' @aliases height nrow
-#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height
 #'
@@ -435,44 +418,11 @@ DataFrame_height = method_as_property(function() {
 #' @description Get width(ncol) of DataFrame
 #'
 #' @return width as numeric scalar
-#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
 #'
 DataFrame_width = method_as_property(function() {
     .pr$DataFrame$shape(self)[2L]
-})
-
-
-
-
-#' DataFrame dtypes
-#' @name DataFrame_dtypes
-#' @description Get dtypes of columns in DataFrame.
-#' Dtypes can also be found in column headers when printing the DataFrame.
-#'
-#' @return width as numeric scalar
-#' @keywords  DataFrame
-#' @examples
-#' pl$DataFrame(iris)$dtypes
-#'
-DataFrame_dtypes = method_as_property(function() {
-  .pr$DataFrame$dtypes(self)
-})
-
-
-#' DataFrame dtypes
-#' @name DataFrame_dtypes
-#' @description Get dtypes of columns in DataFrame.
-#' Dtypes can also be found in column headers when printing the DataFrame.
-#'
-#' @return width as numeric scalar
-#' @keywords  DataFrame
-#' @examples
-#' pl$DataFrame(iris)$schema
-#'
-DataFrame_schema = method_as_property(function() {
-  .pr$DataFrame$schema(self)
 })
 
 
@@ -529,7 +479,6 @@ DataFrame_lazy = "use_extendr_wrapper"
 #'
 #' @return DataFrame
 #' @aliases DataFrame_clone
-#' @keywords  DataFrame
 #' @examples
 #' df1 = pl$DataFrame(iris);
 #' df2 =  df1$clone();
@@ -546,7 +495,6 @@ DataFrame_clone = function() {
 #' @description get columns as list of series
 #'
 #' @return list of series
-#' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()
@@ -560,7 +508,6 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #'
 #' @return Series
 #' @aliases DataFrame_get_column
-#' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_column("Species")
@@ -578,7 +525,6 @@ DataFrame_get_column = function(name) {
 #' return a NULL, idx is zero idx.
 #'
 #' @return Series or NULL
-#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(a=1:4)$to_series()
 DataFrame_to_series = function(idx=0) {
@@ -608,7 +554,6 @@ DataFrame_to_series = function(idx=0) {
 #' @param ... expresssions or strings defining columns to select(keep) in context the DataFrame
 #'
 #' @aliases select
-#' @keywords  DataFrame
 #' #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
@@ -634,7 +579,6 @@ DataFrame_select = function(...) {
 #' @name DataFrame_with_columns
 #' @aliases with_columns
 #' @param ... any expressions or string column name, or same wrapped in a list
-#' @keywords  DataFrame
 #' @return DataFrame
 #' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
 #' @examples
@@ -664,7 +608,6 @@ DataFrame_with_columns = function(...) {
 #' @rdname DataFrame_with_columns
 #' @aliases with_column
 #' @param expr a single expression or string
-#' @keywords  DataFrame
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
@@ -679,7 +622,6 @@ DataFrame_with_column = function(expr) {
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
-#' @keywords  DataFrame
 #' @return DataFrame
 DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
@@ -692,7 +634,6 @@ DataFrame_limit = function(n) {
 #' @param n positive numeric of integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
-#' @keywords  DataFrame
 #' @return DataFrame
 DataFrame_tail = function(n) {
   self$lazy()$tail(n)$collect()
