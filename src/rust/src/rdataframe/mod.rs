@@ -79,11 +79,12 @@ impl From<pl::DataFrame> for DataFrame {
 
 #[extendr]
 impl DataFrame {
+
     pub fn shape(&self) -> Robj {
         let shp = self.0.shape();
         r!([shp.0, shp.1])
     }
-
+    
     //renamed back to clone
     pub fn clone_see_me_macro(&self) -> DataFrame {
         self.clone()
@@ -243,6 +244,10 @@ impl DataFrame {
                 .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
         }();
         r_result_list(expr_result)
+    }
+    
+    pub fn drop_in_place(&mut self, names: &str) -> Series {
+        Series(self.0.drop_in_place(names).unwrap())
     }
 
     pub fn select(&mut self, exprs: &ProtoExprArray) -> list::List {

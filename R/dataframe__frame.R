@@ -629,6 +629,22 @@ DataFrame_select = function(...) {
   df
 }
 
+#' Drop in place
+#' @name DataFrame_drop_in_place
+#' @description Drop a single column in-place and return the dropped column.
+#'
+#' @param name string Name of the column to drop.
+#' @return Series
+#' @keywords  DataFrame
+#' @examples
+#' dat = pl$DataFrame(iris)
+#' x = dat$drop_in_place("Species")
+#' x
+#' dat$columns
+DataFrame_drop_in_place = function(name) {
+    .pr$DataFrame$drop_in_place(self, name)
+}
+
 #' modify/append column(s)
 #' @description add or modify columns with expressions
 #' @name DataFrame_with_columns
