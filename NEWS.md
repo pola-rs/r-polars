@@ -1,8 +1,21 @@
 # polars (development version)
 
-## BREAKING CHANGE
+# polars v0.5.0
 
+## BREAKING CHANGE
 - The package name was changed from `rpolars` to `polars`. (#84)
+
+## What's changed
+- Several new methods for DataFrame, LazyFrame & GroupBy translated (#103, #105 @vincentarelbundock)
+- Doc fixes (#102, #109  @etiennebacher)
+- Experimental opt-in auto completion (#96 @sorhawell)
+
+## New Contributors
+- @etiennebacher made their first contribution in #102
+- @vincentarelbundock made their first contribution in #103
+
+Release date: 2023-04-16. Full changelog:
+[v0.4.6...v0.5.0](https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.5.0)
 
 # rpolars v0.4.7
 
