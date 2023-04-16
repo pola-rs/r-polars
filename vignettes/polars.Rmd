@@ -239,7 +239,7 @@ dat$filter(
 )
 ```
 
-## Aggretations and modifications
+## Aggregations and modifications
 
 The `select()` method that we introduced above also supports data modification,
 so you can simultaneously transform it while you are subsetting. However, the
