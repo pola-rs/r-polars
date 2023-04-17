@@ -6,10 +6,13 @@
 <!-- badges: start -->
 
 [![R-universe status
-badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
+badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io)
+[![Docs
+stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://rpolars.github.io)
+[![Docs
+dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
 
 The goal of this project is to bring the blazingly fast
@@ -18,7 +21,7 @@ underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
 Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io/reference/index.html).
+[homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
@@ -40,13 +43,27 @@ installation options for a variety of operating systems:
 
 ### R-universe
 
-[R-universe](https://rpolars.r-universe.dev/rpolars#install) provides
+[R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
-source builds for other platforms. Please see the GitHub release option
-below for binary install options on Linux.
+source builds for other platforms.
 
 ``` r
-install.packages("polars", repos = "https://rpolars.r-universe.dev")
+install.packages(
+  "polars", 
+  repos = "https://rpolars.r-universe.dev"
+)
+```
+
+Binary builds are also available for users running the latest release of
+R (4.2 at the time of writing) on Ubuntu 22.04 LTS (“Jammy Jellyfish”).
+Please see the GitHub release section below for binary install options
+on other Linux distros.
+
+``` r
+install.packages(
+  "polars", 
+  repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.2/"
+)
 ```
 
 Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for
@@ -70,7 +87,7 @@ install.packages(
 ```
 
 Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip)
+([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
 and MacOS (x86_64,
 [URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
@@ -112,6 +129,7 @@ to specify a Polars constructor.
 
 ``` r
 library(polars)
+#> Warning: package 'polars' was built under R version 4.2.3
 
 dat = pl$DataFrame(mtcars)
 dat
