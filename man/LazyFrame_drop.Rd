@@ -7,7 +7,7 @@
 LazyFrame_drop(columns)
 }
 \arguments{
-\item{character}{vector Name of the column(s) that should be removed from the dataframe.}
+\item{columns}{character vector Name of the column(s) that should be removed from the dataframe.}
 }
 \value{
 LazyFrame

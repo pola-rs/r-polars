@@ -18,6 +18,6 @@ LazyFrame
 Shift the values by a given period and fill the resulting null values.
 }
 \examples{
-pl$LazyFrame(mtcars)$lazy()$shift_and_fill(0, 2)$collect()
+pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$collect()$as_data_frame()
 }
 \keyword{LazyFrame}

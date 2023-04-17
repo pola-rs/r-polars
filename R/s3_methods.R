@@ -138,29 +138,37 @@ sum.Series = function(x, ...) x$sum()
 # Drop nulls from a LazyFrame
 #' @export
 #' @noRd
+#' @param object LazyFrame
+#' @param subset Character vector of column names to drop nulls from
+#' @param ... Additional arguments are ignored.
+#' @importFrom stats na.omit
 #' @examples 
 # 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
-na.omit.LazyFrame = function(x, subset = NULL) {
+na.omit.LazyFrame = function(object, subset = NULL, ...) {
     if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
         stop("subset must be NULL, a string, or a character vector")
     }
-    x$drop_nulls(subset)
+    object$drop_nulls(subset)
 }
 
 # Drop nulls from a DataFrame
 #' @export
 #' @noRd
+#' @param object DataFrame
+#' @param subset Character vector of column names to drop nulls from
+#' @param ... Additional arguments are ignored.
+#' @importFrom stats na.omit
 #' @examples 
 # 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
-na.omit.DataFrame = function(x, subset = NULL) {
+na.omit.DataFrame = function(object, subset = NULL, ...) {
     if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
         stop("subset must be NULL, a string, or a character vector")
     }
-    x$drop_nulls(subset)
+    object$drop_nulls(subset)
 }

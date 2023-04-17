@@ -399,7 +399,7 @@ DataFrame.property_setters$columns =
 #' @title Drop
 #' @description Remove columns from the dataframe.
 #' @keywords DataFrame
-#' @param character vector Name of the column(s) that should be removed from the dataframe.
+#' @param columns character vector Name of the column(s) that should be removed from the dataframe.
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
 DataFrame_drop = function(columns) {
