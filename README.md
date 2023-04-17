@@ -40,7 +40,7 @@ installation options for a variety of operating systems:
 
 ### R-universe
 
-[R-universe](https://rpolars.r-universe.dev/rpolars#install) provides
+[R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
 source builds for other platforms. Please see the GitHub release option
 below for binary install options on Linux.
