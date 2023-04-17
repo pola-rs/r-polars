@@ -1,12 +1,10 @@
-# `GroupBy_mean`
+# `mean`
 
 GroupBy Mean
-
 
 ## Description
 
 Reduce the groups to the mean value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the mean value.
 GroupBy_mean()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

@@ -307,6 +307,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
 #' generic setter method
 #'
+#' @name `<-_DataFrame`
+#'
 #' @param self DataFrame
 #' @param name name method/property to set
 #' @param value value to insert

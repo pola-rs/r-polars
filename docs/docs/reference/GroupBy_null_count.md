@@ -1,12 +1,10 @@
-# `GroupBy_null_count`
+# `null_count`
 
 GroupBy null count
-
 
 ## Description
 
 Create a new DataFrame that shows the null counts per column.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Create a new DataFrame that shows the null counts per column.
 GroupBy_null_count()
 ```
 
-
 ## Value
 
 DataFrame
-
 
 ## Examples
 

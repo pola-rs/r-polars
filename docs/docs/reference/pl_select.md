@@ -1,30 +1,25 @@
-# `pl_select`
+# `select`
 
 Select from an empty DataFrame
-
 
 ## Description
 
 Select from an empty DataFrame
 
-
 ## Format
 
 method
 
-
 ## Details
 
 param ... expressions passed to select
- `pl$select` is a shorthand for `pl$DataFrame(list())$select` 
- 
- NB param of this function
+`pl$select` is a shorthand for `pl$DataFrame(list())$select`
 
+NB param of this function
 
 ## Value
 
 DataFrame
-
 
 ## Examples
 

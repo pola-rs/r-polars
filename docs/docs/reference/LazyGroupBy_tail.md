@@ -1,12 +1,10 @@
-# `LazyGroupBy_tail`
+# `tail`
 
-LazyGroupBy_tail
-
+LazyGroupBy\_tail
 
 ## Description
 
 get n tail rows of group
-
 
 ## Usage
 
@@ -14,13 +12,11 @@ get n tail rows of group
 LazyGroupBy_tail(n = 1L)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`n`     |     integer number of rows to get
-
+| Argument | Description                   | 
+| -------- | ----------------------------- |
+| `n`         | integer number of rows to get | 
 
 ## Value
 

@@ -1,12 +1,10 @@
-# `LazyGroupBy_print`
+# `print`
 
-LazyGroupBy_print
-
+LazyGroupBy\_print
 
 ## Description
 
 prints opague groupby, not much to show
-
 
 ## Usage
 

@@ -36,6 +36,8 @@
       
     
     
+      <link rel="stylesheet" href="stylesheets/extra.css">
+    
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -205,6 +207,22 @@
   
   
   
+    <li class="md-tabs__item">
+      <a href="articles/polars/" class="md-tabs__link">
+        Articles
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
     
 
   
@@ -310,18 +328,66 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
       
       
       
         <label class="md-nav__link" for="__nav_2">
+          Articles
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="articles/polars/" class="md-nav__link">
+        An Introduction to Polars from R
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
           Reference
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Reference" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
+        <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Reference
         </label>
@@ -336,18 +402,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_1">
+        <label class="md-nav__link" for="__nav_3_1">
           DataFrame
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="DataFrame" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_1">
+        <label class="md-nav__title" for="__nav_3_1">
           <span class="md-nav__icon md-icon"></span>
           DataFrame
         </label>
@@ -831,18 +897,219 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_2">
+        <label class="md-nav__link" for="__nav_3_2">
+          GroupBy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="GroupBy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          GroupBy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_agg/" class="md-nav__link">
+        `agg`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_as_data_frame/" class="md-nav__link">
+        `as_data_frame`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_first/" class="md-nav__link">
+        `first`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_last/" class="md-nav__link">
+        `last`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_max/" class="md-nav__link">
+        `max`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_mean/" class="md-nav__link">
+        `mean`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_median/" class="md-nav__link">
+        `median`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_min/" class="md-nav__link">
+        `min`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_null_count/" class="md-nav__link">
+        `null_count`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_std/" class="md-nav__link">
+        `std`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_sum/" class="md-nav__link">
+        `sum`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/GroupBy_var/" class="md-nav__link">
+        `var`
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_3" type="checkbox" id="__nav_3_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_3">
           LazyFrame
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="LazyFrame" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_2">
+        <label class="md-nav__title" for="__nav_3_3">
           <span class="md-nav__icon md-icon"></span>
           LazyFrame
         </label>
@@ -1196,10 +1463,99 @@
   
   
   
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_4" type="checkbox" id="__nav_3_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_4">
+          LazyGroupBy
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="LazyGroupBy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_4">
+          <span class="md-nav__icon md-icon"></span>
+          LazyGroupBy
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
     <li class="md-nav__item">
-      <a href="reference/" class="md-nav__link">
-        macro_add_syntax_check_to
+      <a href="reference/LazyGroupBy_agg/" class="md-nav__link">
+        `agg`
       </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/LazyGroupBy_apply/" class="md-nav__link">
+        `apply`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/LazyGroupBy_head/" class="md-nav__link">
+        `head`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/LazyGroupBy_print/" class="md-nav__link">
+        `print`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/LazyGroupBy_tail/" class="md-nav__link">
+        `tail`
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
     </li>
   
 
@@ -1214,18 +1570,177 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_4" type="checkbox" id="__nav_2_4" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_5" type="checkbox" id="__nav_3_5" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_4">
+        <label class="md-nav__link" for="__nav_3_5">
+          pl
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="pl" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_5">
+          <span class="md-nav__icon md-icon"></span>
+          pl
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl-cash-from_arrow/" class="md-nav__link">
+        `pl$from_arrow`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_concat/" class="md-nav__link">
+        `concat`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_date_range/" class="md-nav__link">
+        `date_range`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_Datetime/" class="md-nav__link">
+        `Datetime`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_Field/" class="md-nav__link">
+        `Field`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_List/" class="md-nav__link">
+        `List`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_PTime/" class="md-nav__link">
+        `PTime`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_select/" class="md-nav__link">
+        `select`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/pl_Struct/" class="md-nav__link">
+        `Struct`
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_6" type="checkbox" id="__nav_3_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_6">
           Series
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Series" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_4">
+        <label class="md-nav__title" for="__nav_3_6">
           <span class="md-nav__icon md-icon"></span>
           Series
         </label>
@@ -1849,18 +2364,18 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2_5" type="checkbox" id="__nav_2_5" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_7" type="checkbox" id="__nav_3_7" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_5">
+        <label class="md-nav__link" for="__nav_3_7">
           Other
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Other" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_5">
+        <label class="md-nav__title" for="__nav_3_7">
           <span class="md-nav__icon md-icon"></span>
           Other
         </label>
@@ -2238,20 +2753,6 @@
     <li class="md-nav__item">
       <a href="reference/c.Series/" class="md-nav__link">
         `c.Series`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/cash-set-.DataFrame/" class="md-nav__link">
-        `$<-.DataFrame`
       </a>
     </li>
   
@@ -5974,174 +6475,6 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/GroupBy_agg/" class="md-nav__link">
-        `GroupBy_agg`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_as_data_frame/" class="md-nav__link">
-        `GroupBy_as_data_frame`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_first/" class="md-nav__link">
-        `GroupBy_first`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_last/" class="md-nav__link">
-        `GroupBy_last`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_max/" class="md-nav__link">
-        `GroupBy_max`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_mean/" class="md-nav__link">
-        `GroupBy_mean`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_median/" class="md-nav__link">
-        `GroupBy_median`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_min/" class="md-nav__link">
-        `GroupBy_min`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_null_count/" class="md-nav__link">
-        `GroupBy_null_count`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_std/" class="md-nav__link">
-        `GroupBy_std`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_sum/" class="md-nav__link">
-        `GroupBy_sum`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/GroupBy_var/" class="md-nav__link">
-        `GroupBy_var`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="reference/is_DataFrame_data_input/" class="md-nav__link">
         `is_DataFrame_data_input`
       </a>
@@ -6254,78 +6587,22 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/LazyGroupBy_agg/" class="md-nav__link">
-        `LazyGroupBy_agg`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/LazyGroupBy_apply/" class="md-nav__link">
-        `LazyGroupBy_apply`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/LazyGroupBy_head/" class="md-nav__link">
-        `LazyGroupBy_head`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/LazyGroupBy_print/" class="md-nav__link">
-        `LazyGroupBy_print`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/LazyGroupBy_tail/" class="md-nav__link">
-        `LazyGroupBy_tail`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="reference/length.Series/" class="md-nav__link">
         `length.Series`
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/macro_add_syntax_check_to/" class="md-nav__link">
+        `macro_add_syntax_check_to`
       </a>
     </li>
   
@@ -6564,146 +6841,6 @@
     <li class="md-nav__item">
       <a href="reference/pcase/" class="md-nav__link">
         `pcase`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl-cash-from_arrow/" class="md-nav__link">
-        `pl$from_arrow`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl/" class="md-nav__link">
-        `pl`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_concat/" class="md-nav__link">
-        `pl_concat`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_date_range/" class="md-nav__link">
-        `pl_date_range`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_Datetime/" class="md-nav__link">
-        `pl_Datetime`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_Field/" class="md-nav__link">
-        `pl_Field`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_List/" class="md-nav__link">
-        `pl_List`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_PTime/" class="md-nav__link">
-        `pl_PTime`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_select/" class="md-nav__link">
-        `pl_select`
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/pl_Struct/" class="md-nav__link">
-        `pl_Struct`
       </a>
     </li>
   
@@ -7136,6 +7273,20 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/tick-set-_DataFrame-tick/" class="md-nav__link">
+        ``<-_DataFrame``
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/to_list/" class="md-nav__link">
         `to_list`
       </a>
@@ -7371,8 +7522,8 @@ installation options for a variety of operating systems:</p>
 pre-compiled <strong>polars</strong> binaries for Windows and MacOS (x86_64), with
 source builds for other platforms. Please see the GitHub release option
 below for binary install options on Linux.</p>
-<pre><code class="language-r">install.packages(&quot;polars&quot;, repos = &quot;https://rpolars.r-universe.dev&quot;)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;polars&quot;</span><span class="p">,</span> <span class="n">repos</span> <span class="o">=</span> <span class="s">&quot;https://rpolars.r-universe.dev&quot;</span><span class="p">)</span>
+</code></pre></div>
 <p>Special thanks to Jeroen Ooms (<a href="https://github.com/jeroen">@jeroen</a>) for
 the excellent R-universe support.</p>
 <h4 id="github-releases">GitHub releases</h4>
@@ -7383,11 +7534,11 @@ download and install these files manually, or install directly from R.
 Simply match the URL for your operating system and the desired release.
 For example, to install the latest release of <strong>polars</strong> on Linux
 (x86_64) one would use:</p>
-<pre><code class="language-r">install.packages(
-  &quot;https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz&quot;,
-  repos = NULL 
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">install.packages</span><span class="p">(</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  <span class="s">&quot;https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  <span class="n">repos</span> <span class="o">=</span> <span class="kc">NULL</span> 
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="p">)</span>
+</code></pre></div>
 <p>Similarly for Windows
 (<a href="https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip">URL</a>
 and MacOS (x86_64,
@@ -7402,13 +7553,13 @@ Once Xcode is installed, you can run the below code chunk to build
 <strong>polars</strong>. The corresponding <code>Makevars</code> script will download a \~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.</p>
-<pre><code class="language-r"># install.packages(&quot;remotes&quot;)
-
-remotes::install_github(
-  &quot;https://github.com/pola-rs/r-polars&quot;,
-  ref = &quot;long_arms64&quot;, force =TRUE
-)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># install.packages(&quot;remotes&quot;)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">remotes</span><span class="o">::</span><span class="nf">install_github</span><span class="p">(</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  <span class="s">&quot;https://github.com/pola-rs/r-polars&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  <span class="n">ref</span> <span class="o">=</span> <span class="s">&quot;long_arms64&quot;</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span><span class="kc">TRUE</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">)</span>
+</code></pre></div>
 <p>Please <a href="https://github.com/pola-rs/r-polars/issues">file an issue</a> if
 you require a different target or operating system build. Finally, see
 the bottom of this README for details on how to install rust to build
@@ -7421,74 +7572,74 @@ action.</p>
 <p>Start by loading the package and creating a Polars <code>DataFrame</code> object.
 Similar to the Python implementation, note that we use the <code>pl$</code> prefix
 to specify a Polars constructor.</p>
-<pre><code class="language-r">library(polars)
-
-dat = pl$DataFrame(mtcars)
-dat
-#&gt; polars DataFrame: shape: (32, 11)
-#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
-#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
-#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
-#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
-#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡
-#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#&gt; │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
-#&gt; │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ ... ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
-#&gt; │ ...  ┆ ... ┆ ...   ┆ ...   ┆ ... ┆ ... ┆ ... ┆ ...  ┆ ...  │
-#&gt; │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
-#&gt; │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
-#&gt; │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
-#&gt; │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
-#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nf">library</span><span class="p">(</span><span class="n">polars</span><span class="p">)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">dat</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">dat</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">#&gt; polars DataFrame: shape: (32, 11)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">#&gt; │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="c1">#&gt; │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ ... ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1">#&gt; │ ...  ┆ ... ┆ ...   ┆ ...   ┆ ... ┆ ... ┆ ... ┆ ...  ┆ ...  │</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1">#&gt; │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1">#&gt; │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="c1">#&gt; │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1">#&gt; │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
+</code></pre></div>
 <p>Once our Polars DataFrame has been created, we can chain together a
 series of data manipulations as part of the same query. For example:</p>
-<pre><code class="language-r">dat$filter(
-  pl$col(&quot;cyl&quot;)&gt;=6
-)$groupby(
-  &quot;cyl&quot;, &quot;am&quot;
-)$agg(
-  pl$col(&quot;mpg&quot;)$mean()$alias(&quot;mean_mpg&quot;),
-  pl$col(&quot;hp&quot;)$median()$alias(&quot;med_hp&quot;)
-)
-#&gt; polars DataFrame: shape: (4, 4)
-#&gt; ┌─────┬─────┬───────────┬────────┐
-#&gt; │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
-#&gt; │ --- ┆ --- ┆ ---       ┆ ---    │
-#&gt; │ f64 ┆ f64 ┆ f64       ┆ f64    │
-#&gt; ╞═════╪═════╪═══════════╪════════╡
-#&gt; │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │
-#&gt; │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │
-#&gt; │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │
-#&gt; │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │
-#&gt; └─────┴─────┴───────────┴────────┘
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="m">6</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="p">)</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  <span class="s">&quot;cyl&quot;</span><span class="p">,</span> <span class="s">&quot;am&quot;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span><span class="o">$</span><span class="nf">agg</span><span class="p">(</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;mean_mpg&quot;</span><span class="p">),</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;hp&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">median</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;med_hp&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">#&gt; polars DataFrame: shape: (4, 4)</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">#&gt; ┌─────┬─────┬───────────┬────────┐</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">#&gt; │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">#&gt; │ --- ┆ --- ┆ ---       ┆ ---    │</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">#&gt; │ f64 ┆ f64 ┆ f64       ┆ f64    │</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1">#&gt; ╞═════╪═════╪═══════════╪════════╡</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">#&gt; │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="c1">#&gt; │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1">#&gt; │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="c1">#&gt; │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="c1">#&gt; └─────┴─────┴───────────┴────────┘</span>
+</code></pre></div>
 <p>The above is an example of Polars’ eager execution engine. But for
 maximum performance, it is preferable to use Polars’ lazy execution
 mode, which allows the package to apply additional query optimizations.</p>
-<pre><code class="language-r">ldat = dat$lazy()
-
-ldat$filter(
-  pl$col(&quot;cyl&quot;)&gt;=6
-)$groupby(
-  &quot;cyl&quot;, &quot;am&quot;
-)$agg(
-  pl$col(&quot;mpg&quot;)$mean()$alias(&quot;mean_mpg&quot;),
-  pl$col(&quot;hp&quot;)$median()$alias(&quot;med_hp&quot;)
-)$collect()
-#&gt; polars DataFrame: shape: (4, 4)
-#&gt; ┌─────┬─────┬───────────┬────────┐
-#&gt; │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
-#&gt; │ --- ┆ --- ┆ ---       ┆ ---    │
-#&gt; │ f64 ┆ f64 ┆ f64       ┆ f64    │
-#&gt; ╞═════╪═════╪═══════════╪════════╡
-#&gt; │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │
-#&gt; │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │
-#&gt; │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │
-#&gt; │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │
-#&gt; └─────┴─────┴───────────┴────────┘
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">ldat</span> <span class="o">=</span> <span class="n">dat</span><span class="o">$</span><span class="nf">lazy</span><span class="p">()</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">ldat</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">&gt;=</span><span class="m">6</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">)</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  <span class="s">&quot;cyl&quot;</span><span class="p">,</span> <span class="s">&quot;am&quot;</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">)</span><span class="o">$</span><span class="nf">agg</span><span class="p">(</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;mean_mpg&quot;</span><span class="p">),</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;hp&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">median</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;med_hp&quot;</span><span class="p">)</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">)</span><span class="o">$</span><span class="nf">collect</span><span class="p">()</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="c1">#&gt; polars DataFrame: shape: (4, 4)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1">#&gt; ┌─────┬─────┬───────────┬────────┐</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="c1">#&gt; │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">#&gt; │ --- ┆ --- ┆ ---       ┆ ---    │</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1">#&gt; │ f64 ┆ f64 ┆ f64       ┆ f64    │</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1">#&gt; ╞═════╪═════╪═══════════╪════════╡</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">#&gt; │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1">#&gt; │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="c1">#&gt; │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="c1">#&gt; │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1">#&gt; └─────┴─────┴───────────┴────────┘</span>
+</code></pre></div>
 <h3 id="contribute">Contribute</h3>
 <p>Contributions are very welcome!</p>
 <p>Here are the steps required for an example contribution, where we are
@@ -7530,9 +7681,9 @@ is provided below.</p>
 <li>Install <a href="https://rustup.rs/"><code>rustup</code></a>, the cross-platform Rust
   installer. Then:</li>
 </ul>
-<p><code>sh
-  rustup toolchain install nightly
-  rustup default nightly</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>rustup toolchain install nightly
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>rustup default nightly
+</code></pre></div>
 <ul>
 <li>
 <p>Windows: Make sure the latest version of
@@ -7552,30 +7703,30 @@ is provided below.</p>
 <strong>polars</strong> development workflow is as follows:</p>
 <p><strong>Step 1:</strong> Fork the <strong>polars</strong> repo on GitHub and then clone it
 locally.</p>
-<pre><code class="language-sh">git clone git@github.com:&lt;YOUR-GITHUB-ACCOUNT&gt;/r-polars.git
-cd r-polars
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git clone git@github.com:&lt;YOUR-GITHUB-ACCOUNT&gt;/r-polars.git
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span> r-polars
+</code></pre></div>
 <p><strong>Step 2:</strong> Build the package and install the suggested package
 dependencies.</p>
 <ul>
 <li>Option A: Using <strong>devtools</strong>.</li>
 </ul>
-<p><code>r
-  Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">Rscript</span> <span class="o">-</span><span class="n">e</span> <span class="s">&#39;devtools::install(pkg = &quot;.&quot;, dependencies = TRUE)&#39;</span> 
+</code></pre></div>
 <ul>
 <li>Option B: Using <strong>renv</strong>.</li>
 </ul>
-<p><code>r
-  # Rscript -e 'install.packages("renv")'
-  Rscript -e 'renv::activate(); renv::restore()'</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Rscript -e &#39;install.packages(&quot;renv&quot;)&#39;</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Rscript</span> <span class="o">-</span><span class="n">e</span> <span class="s">&#39;renv::activate(); renv::restore()&#39;</span>
+</code></pre></div>
 <p><strong>Step 3:</strong> Make your proposed changes to the R and/or Rust code. Don’t
 forget to run:</p>
-<pre><code class="language-r">rextendr::document() # compile Rust code + update wrappers &amp; docs
-devtools::test()     # run all unit tests
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">rextendr</span><span class="o">::</span><span class="nf">document</span><span class="p">()</span> <span class="c1"># compile Rust code + update wrappers &amp; docs</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">devtools</span><span class="o">::</span><span class="nf">test</span><span class="p">()</span>     <span class="c1"># run all unit tests</span>
+</code></pre></div>
 <p><strong>Step 4 (optional):</strong> Build the package locally.</p>
-<pre><code class="language-r">R CMD INSTALL --no-multiarch --with-keep.source polars
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">R</span> <span class="n">CMD</span> <span class="n">INSTALL</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">multiarch</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">keep.source</span> <span class="n">polars</span>
+</code></pre></div>
 <p><strong>Step 5:</strong> Commit your changes and submit a PR to the main <strong>polars</strong>
 repo.</p>
 <ul>
@@ -7583,14 +7734,14 @@ repo.</p>
   server build.</li>
 </ul>
 <p><em>Tip:</em> To speed up the local R CMD check, run the following:</p>
-<pre><code class="language-r">devtools::check(
-  env_vars = list(RPOLARS_RUST_SOURCE=&quot;/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust&quot;),
-  check_dir = &quot;./check/&quot;
-  )
-source(&quot;./inst/misc/filter_rcmdcheck.R&quot;)
-Sys.sleep(5)
-unlink(&quot;check&quot;,recursive = TRUE, force =TRUE)
-</code></pre>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">devtools</span><span class="o">::</span><span class="nf">check</span><span class="p">(</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  <span class="n">env_vars</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">RPOLARS_RUST_SOURCE</span><span class="o">=</span><span class="s">&quot;/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust&quot;</span><span class="p">),</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  <span class="n">check_dir</span> <span class="o">=</span> <span class="s">&quot;./check/&quot;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>  <span class="p">)</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nf">source</span><span class="p">(</span><span class="s">&quot;./inst/misc/filter_rcmdcheck.R&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="nf">Sys.sleep</span><span class="p">(</span><span class="m">5</span><span class="p">)</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="nf">unlink</span><span class="p">(</span><span class="s">&quot;check&quot;</span><span class="p">,</span><span class="n">recursive</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">force</span> <span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+</code></pre></div>
 <ul>
 <li>The <code>RPOLARS_RUST_SOURCE</code> environment variable allows <strong>polars</strong> to
   recover the Cargo cache even if source files have been moved. Replace
@@ -7622,13 +7773,13 @@ unlink(&quot;check&quot;,recursive = TRUE, force =TRUE)
       
       
         
-        <a href="reference/DataFrame/" class="md-footer__link md-footer__link--next" aria-label="Next: `DataFrame`" rel="next">
+        <a href="articles/polars/" class="md-footer__link md-footer__link--next" aria-label="Next: An Introduction to Polars from R" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              `DataFrame`
+              An Introduction to Polars from R
             </div>
           </div>
           <div class="md-footer__button md-icon">
@@ -7659,7 +7810,7 @@ unlink(&quot;check&quot;,recursive = TRUE, force =TRUE)
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.top", "navigation.expand"], "search": "assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": ".", "features": ["navigation.tabs", "navigation.top"], "search": "assets/javascripts/workers/search.ecf98df9.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
       <script src="assets/javascripts/bundle.9c69f0bc.min.js"></script>

@@ -1,42 +1,37 @@
-# `pl_date_range`
+# `date_range`
 
-new date_range
-
+new date\_range
 
 ## Description
 
-new date_range
-
+new date\_range
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`low`     |     POSIXt or Date preferably with time_zone or double or integer
-`high`     |     POSIXt or Date preferably with time_zone or double or integer. If high is and interval are missing, then single datetime is constructed.
-`interval`     |     string pl_duration or R difftime. Can be missing if high is missing also.
-`lazy`     |     bool, if TRUE return expression
-`closed`     |     option one of 'both'(default), 'left', 'none' or 'right'
-`name`     |     name of series
-`time_unit`     |     option string ("ns" "us" "ms") duration of one int64 value on polars side
-`time_zone`     |     optional string describing a timezone.
-
+| Argument | Description                                                                                                                              | 
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `low`         | POSIXt or Date preferably with time\_zone or double or integer                                                                            | 
+| `high`         | POSIXt or Date preferably with time\_zone or double or integer. If high is and interval are missing, then single datetime is constructed. | 
+| `interval`         | string pl\_duration or R difftime. Can be missing if high is missing also.                                                                | 
+| `lazy`         | bool, if TRUE return expression                                                                                                          | 
+| `closed`         | option one of 'both'(default), 'left', 'none' or 'right'                                                                                 | 
+| `name`         | name of series                                                                                                                           | 
+| `time_unit`         | option string ("ns" "us" "ms") duration of one int64 value on polars side                                                                | 
+| `time_zone`         | optional string describing a timezone.                                                                                                   | 
 
 ## Details
 
-If param time_zone is not defined the Series will have no time zone.
- 
- NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
- intuitive in R. It is recommended to always set the timezone of low and high. If not output will
- vary between local machine timezone, R and polars.
- 
- In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and high.
+If param time\_zone is not defined the Series will have no time zone.
 
+NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
+intuitive in R. It is recommended to always set the timezone of low and high. If not output will
+vary between local machine timezone, R and polars.
+
+In R/r-polars it is perfectly fine to mix timezones of params time\_zone, low and high.
 
 ## Value
 
 a datetime
-
 
 ## Examples
 

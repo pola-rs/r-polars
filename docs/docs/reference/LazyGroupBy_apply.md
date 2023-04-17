@@ -1,12 +1,10 @@
-# `LazyGroupBy_apply`
+# `apply`
 
-LazyGroupBy_apply
-
+LazyGroupBy\_apply
 
 ## Description
 
 one day this will apply
-
 
 ## Usage
 
@@ -14,13 +12,11 @@ one day this will apply
 LazyGroupBy_apply(f)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`f`     |     R function to apply
-
+| Argument | Description         | 
+| -------- | ------------------- |
+| `f`         | R function to apply | 
 
 ## Value
 

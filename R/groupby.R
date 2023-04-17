@@ -1,3 +1,10 @@
+#' Use groups on a Polars DataFrame
+#' @name GroupBy_class
+#'
+#' @return A grouped DataFrame
+NULL
+
+
 # The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in rust polars.
 # Groupby does not use the rust api for groupby+agg because the groupby-struct is a reference to a DataFrame
 # and that reference will share lifetime with its parent DataFrame. There is no way to expose lifetime

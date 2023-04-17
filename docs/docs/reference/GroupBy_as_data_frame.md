@@ -1,12 +1,10 @@
-# `GroupBy_as_data_frame`
+# `as_data_frame`
 
 convert to data.frame
-
 
 ## Description
 
 convert to data.frame
-
 
 ## Usage
 
@@ -14,18 +12,15 @@ convert to data.frame
 GroupBy_as_data_frame(...)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`...`     |     any opt param passed to R as.data.frame
-
+| Argument | Description                             | 
+| -------- | --------------------------------------- |
+| `...`         | any opt param passed to R as.data.frame | 
 
 ## Value
 
 R data.frame
-
 
 ## Examples
 

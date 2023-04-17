@@ -1,12 +1,10 @@
-# `LazyGroupBy_agg`
+# `agg`
 
-LazyGroupBy_agg
-
+LazyGroupBy\_agg
 
 ## Description
 
-aggregate a polar_lazy_groupby
-
+aggregate a polar\_lazy\_groupby
 
 ## Usage
 
@@ -14,13 +12,11 @@ aggregate a polar_lazy_groupby
 LazyGroupBy_agg(...)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`...`     |     any Expr or string
-
+| Argument | Description        | 
+| -------- | ------------------ |
+| `...`         | any Expr or string | 
 
 ## Value
 

@@ -1,12 +1,10 @@
-# `GroupBy_std`
+# `std`
 
 GroupBy Std
-
 
 ## Description
 
 Reduce the groups to the standard deviation value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the standard deviation value.
 GroupBy_std()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

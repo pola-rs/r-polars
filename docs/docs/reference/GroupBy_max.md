@@ -1,12 +1,10 @@
-# `GroupBy_max`
+# `max`
 
 GroupBy Max
-
 
 ## Description
 
 Reduce the groups to the maximum value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the maximum value.
 GroupBy_max()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

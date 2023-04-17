@@ -1,12 +1,10 @@
-# `GroupBy_last`
+# `last`
 
 GroupBy Last
-
 
 ## Description
 
 Reduce the groups to the last value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the last value.
 GroupBy_last()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

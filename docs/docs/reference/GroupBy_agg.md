@@ -1,12 +1,10 @@
-# `GroupBy_agg`
+# `agg`
 
 GroupBy Aggregate
-
 
 ## Description
 
 Aggregatete a DataFrame over a groupby
-
 
 ## Usage
 
@@ -14,18 +12,15 @@ Aggregatete a DataFrame over a groupby
 GroupBy_agg(...)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`...`     |     exprs to aggregate
-
+| Argument | Description        | 
+| -------- | ------------------ |
+| `...`         | exprs to aggregate | 
 
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

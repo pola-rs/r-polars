@@ -1,12 +1,10 @@
-# `GroupBy_min`
+# `min`
 
 GroupBy Min
-
 
 ## Description
 
 Reduce the groups to the minimum value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the minimum value.
 GroupBy_min()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

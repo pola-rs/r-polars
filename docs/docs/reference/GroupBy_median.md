@@ -1,12 +1,10 @@
-# `GroupBy_median`
+# `median`
 
 GroupBy Median
-
 
 ## Description
 
 Reduce the groups to the median value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the median value.
 GroupBy_median()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

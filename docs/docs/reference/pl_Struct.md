@@ -1,29 +1,24 @@
-# `pl_Struct`
+# `Struct`
 
 Create Struct DataType
-
 
 ## Description
 
 Struct DataType Constructor
 
-
 ## Format
 
 function
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`datatype`     |     an inner DataType
-
+| Argument | Description       | 
+| -------- | ----------------- |
+| `datatype`         | an inner DataType | 
 
 ## Value
 
 a list DataType with an inner DataType
-
 
 ## Examples
 

@@ -1,12 +1,10 @@
-# `GroupBy_var`
+# `var`
 
 GroupBy Var
-
 
 ## Description
 
 Reduce the groups to the variance value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the variance value.
 GroupBy_var()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

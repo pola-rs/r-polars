@@ -1,6 +1,14 @@
 ## ----- LazyGroupBy
 
 
+#' Use groups on a Polars lazy DataFrame
+#' @name LazyGroupBy_class
+#'
+#' @return A lazy grouped DataFrame
+NULL
+
+
+
 #' print LazyGroupBy
 #'
 #' @param x LazyGroupBy

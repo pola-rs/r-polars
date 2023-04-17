@@ -1,27 +1,23 @@
-# `pl_concat`
+# `concat`
 
 Concat polars objects
-
 
 ## Description
 
 Concat polars objects
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`l`     |     list of DataFrame, or Series, LazyFrame or Expr
-`rechunk`     |     perform a rechunk at last
-`how`     |     choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally
-`parallel`     |     BOOL default TRUE, only used for LazyFrames
-
+| Argument | Description                                                                          | 
+| -------- | ------------------------------------------------------------------------------------ |
+| `l`         | list of DataFrame, or Series, LazyFrame or Expr                                      | 
+| `rechunk`         | perform a rechunk at last                                                            | 
+| `how`         | choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally | 
+| `parallel`         | BOOL default TRUE, only used for LazyFrames                                          | 
 
 ## Value
 
 DataFrame, or Series, LazyFrame or Expr
-
 
 ## Examples
 

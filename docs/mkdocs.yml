@@ -23,6 +23,13 @@ markdown_extensions:
     - toc:
         baselevel: 2
         toc_depth: 1
+    - pymdownx.highlight:
+        anchor_linenums: true
+    - pymdownx.superfences
+
+
+extra_css:
+  - stylesheets/extra.css
 
 ### Repo information
 repo_url: https://github.com/pola-rs/r-polars
@@ -35,6 +42,8 @@ plugins:
 ### Navigation tree
 nav:
   - Home: README.md
+  - Articles:
+    - An Introduction to Polars from R: articles/polars.md
   - Reference:
     - DataFrame:
         - reference/DataFrame.md
@@ -70,6 +79,19 @@ nav:
         - reference/DataFrame_var.md
         - reference/DataFrame_width.md
         - reference/DataFrame_with_columns.md
+    - GroupBy:
+        - reference/GroupBy_agg.md
+        - reference/GroupBy_as_data_frame.md
+        - reference/GroupBy_first.md
+        - reference/GroupBy_last.md
+        - reference/GroupBy_max.md
+        - reference/GroupBy_mean.md
+        - reference/GroupBy_median.md
+        - reference/GroupBy_min.md
+        - reference/GroupBy_null_count.md
+        - reference/GroupBy_std.md
+        - reference/GroupBy_sum.md
+        - reference/GroupBy_var.md
     - LazyFrame:
         - reference/LazyFrame_collect.md
         - reference/LazyFrame_collect_background.md
@@ -95,7 +117,22 @@ nav:
         - reference/LazyFrame_var.md
         - reference/LazyFrame_with_column.md
         - reference/LazyFrame_with_columns.md
-    - macro_add_syntax_check_to: reference/
+    - LazyGroupBy:
+        - reference/LazyGroupBy_agg.md
+        - reference/LazyGroupBy_apply.md
+        - reference/LazyGroupBy_head.md
+        - reference/LazyGroupBy_print.md
+        - reference/LazyGroupBy_tail.md
+    - pl:
+        - reference/pl-cash-from_arrow.md
+        - reference/pl_concat.md
+        - reference/pl_date_range.md
+        - reference/pl_Datetime.md
+        - reference/pl_Field.md
+        - reference/pl_List.md
+        - reference/pl_PTime.md
+        - reference/pl_select.md
+        - reference/pl_Struct.md
     - Series:
         - reference/Series.md
         - reference/Series_abs.md
@@ -168,7 +205,6 @@ nav:
         - reference/arr_to_struct.md
         - reference/arr_unique.md
         - reference/c.Series.md
-        - reference/cash-set-.DataFrame.md
         - reference/check_no_missing_args.md
         - reference/check_tz_to_result.md
         - reference/clone_env_one_level_deep.md
@@ -434,18 +470,6 @@ nav:
         - reference/extra_auto_completion.md
         - reference/filter-open-paren-close-paren.md
         - reference/get_method_usages.md
-        - reference/GroupBy_agg.md
-        - reference/GroupBy_as_data_frame.md
-        - reference/GroupBy_first.md
-        - reference/GroupBy_last.md
-        - reference/GroupBy_max.md
-        - reference/GroupBy_mean.md
-        - reference/GroupBy_median.md
-        - reference/GroupBy_min.md
-        - reference/GroupBy_null_count.md
-        - reference/GroupBy_std.md
-        - reference/GroupBy_sum.md
-        - reference/GroupBy_var.md
         - reference/is_DataFrame_data_input.md
         - reference/is_err.md
         - reference/is_ok.md
@@ -454,12 +478,8 @@ nav:
         - reference/is_schema.md
         - reference/l_to_vdf.md
         - reference/lazy_csv_reader.md
-        - reference/LazyGroupBy_agg.md
-        - reference/LazyGroupBy_apply.md
-        - reference/LazyGroupBy_head.md
-        - reference/LazyGroupBy_print.md
-        - reference/LazyGroupBy_tail.md
         - reference/length.Series.md
+        - reference/macro_add_syntax_check_to.md
         - reference/macro_new_subnamespace.md
         - reference/map.md
         - reference/map_err.md
@@ -477,16 +497,6 @@ nav:
         - reference/Ok.md
         - reference/or_else.md
         - reference/pcase.md
-        - reference/pl-cash-from_arrow.md
-        - reference/pl.md
-        - reference/pl_concat.md
-        - reference/pl_date_range.md
-        - reference/pl_Datetime.md
-        - reference/pl_Field.md
-        - reference/pl_List.md
-        - reference/pl_PTime.md
-        - reference/pl_select.md
-        - reference/pl_Struct.md
         - reference/polars_options.md
         - reference/polars_runtime_flags.md
         - reference/PolarsBackgroundHandle_is_exhausted.md
@@ -517,6 +527,7 @@ nav:
         - reference/str_string.md
         - reference/struct.md
         - reference/sum.md
+        - reference/tick-set-_DataFrame-tick.md
         - reference/to_list.md
         - reference/unAsIs.md
         - reference/unwrap.md

@@ -1,12 +1,10 @@
-# `GroupBy_sum`
+# `sum`
 
 GroupBy Sum
-
 
 ## Description
 
 Reduce the groups to the sum value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the sum value.
 GroupBy_sum()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 

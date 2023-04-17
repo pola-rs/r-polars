@@ -1,12 +1,10 @@
-# `GroupBy_first`
+# `first`
 
 GroupBy First
-
 
 ## Description
 
 Reduce the groups to the first value.
-
 
 ## Usage
 
@@ -14,11 +12,9 @@ Reduce the groups to the first value.
 GroupBy_first()
 ```
 
-
 ## Value
 
 aggregated DataFrame
-
 
 ## Examples
 
