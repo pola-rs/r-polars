@@ -305,7 +305,7 @@ LazyFrame_std = function(ddof = 1) {
 #' @return LazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
 LazyFrame_quantile = function(quantile, interpolation = "nearest") {
-  unwrap(.pr$LazyFrame$quantile(self, quantile, interpolation))
+  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation))
 }
 
 #' @title Shift

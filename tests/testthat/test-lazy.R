@@ -172,7 +172,7 @@ test_that("shift", {
 })
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$lazy()$quantile(1, "midpoint")$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$quantile(1)$collect()$as_data_frame()
   b = pl$DataFrame(mtcars)$lazy()$max()$collect()$as_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
@@ -180,7 +180,6 @@ test_that("quantile", {
   b = pl$DataFrame(mtcars)$lazy()$min()$collect()$as_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  # not sure why this is broken
   a = pl$DataFrame(mtcars)$lazy()$quantile(0.5, "midpoint")$collect()$as_data_frame()
   b = pl$DataFrame(mtcars)$lazy()$median()$collect()$as_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)

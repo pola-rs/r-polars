@@ -516,7 +516,6 @@ test_that("quantile", {
   b = pl$DataFrame(mtcars)$min()$as_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  # not sure why this is broken
   a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$as_data_frame()
   b = pl$DataFrame(mtcars)$median()$as_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
