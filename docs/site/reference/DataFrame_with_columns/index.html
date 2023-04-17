@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#with_columns" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -816,78 +811,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `with_columns`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `with_columns`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,15 +7322,17 @@
 
 
 
-<h1 id="with_columns"><code>with_columns</code></h1>
+  <h1>`with_columns`</h1>
+
+<h2 id="with_columns"><code>with_columns</code></h2>
 <p>modify/append column(s)</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>add or modify columns with expressions</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">DataFrame_with_columns(...)
 DataFrame_with_column(expr)
 </code></pre>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7422,13 +7351,13 @@ DataFrame_with_column(expr)
 </tr>
 </tbody>
 </table>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>Like dplyr <code>mutate()</code> as it keeps unmentioned columns unlike $select().</p>
 <p>with_column is derived from with_columns but takes only one expression argument</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>DataFrame</p>
 <p>DataFrame</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">pl$DataFrame(iris)$with_columns(
 pl$col(&quot;Sepal.Length&quot;)$abs()$alias(&quot;abs_SL&quot;),
 (pl$col(&quot;Sepal.Length&quot;)+2)$alias(&quot;add_2_SL&quot;)

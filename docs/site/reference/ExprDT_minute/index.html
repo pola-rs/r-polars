@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#exprdt_minute" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -5087,64 +5082,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `ExprDT_minute`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `ExprDT_minute`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7381,17 +7322,19 @@
 
 
 
-<h1 id="exprdt_minute"><code>ExprDT_minute</code></h1>
+  <h1>`ExprDT_minute`</h1>
+
+<h2 id="exprdt_minute"><code>ExprDT_minute</code></h2>
 <p>Minute</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Extract minutes from underlying Datetime representation.
  Applies to Datetime columns.
  Returns the minute number from 0 to 59.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>function</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr of minute as UInt32</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">df = pl$DataFrame(
 date = pl$date_range(
 as.Date(&quot;2020-12-25&quot;),

@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#to_r" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -1806,71 +1801,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `to_r`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `to_r`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7388,25 +7322,27 @@
 
 
 
-<h1 id="to_r"><code>to_r</code></h1>
+  <h1>`to_r`</h1>
+
+<h2 id="to_r"><code>to_r</code></h2>
 <p>Get r vector/list</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>return R list (if polars Series is list)  or vector (any other polars Series type)</p>
 <p>return R vector (implicit unlist)</p>
 <p>return R list (implicit as.list)</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">Series_to_r()
 Series_to_r_vector()
 Series_to_r_list()
 </code></pre>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>Fun fact: Nested polars Series list must have same inner type, e.g. List(List(Int32))
 Thus every leaf(non list type) will be placed on the same depth of the tree, and be the same type.</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>R list or vector</p>
 <p>R vector</p>
 <p>R list</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#make polars Series_Utf8
 series_vec = pl$Series(letters[1:3])
 

@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#datatype_constructors" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -2385,78 +2380,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `DataType_constructors`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `DataType_constructors`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,25 +7322,27 @@
 
 
 
-<h1 id="datatype_constructors"><code>DataType_constructors</code></h1>
+  <h1>`DataType_constructors`</h1>
+
+<h2 id="datatype_constructors"><code>DataType_constructors</code></h2>
 <p>DataType_constructors (composite DataType's)</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>List of all composite DataType constructors</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>An object of class <code>list</code> of length 3.</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">DataType_constructors
 </code></pre>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>This list is mainly used in <code>zzz.R</code>  <code>.onLoad</code> to instantiate singletons of all
  flag-like DataTypes.</p>
 <p>Non-flag like DataType called composite DataTypes also carries extra information
  e.g. Datetime a timeunit and a TimeZone, or List which recursively carries another DataType
  inside. Composite DataTypes use DataType constructors.</p>
 <p>Any DataType can be found in pl$dtypes</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>DataType</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#constructors are finally available via pl$... or pl$dtypes$...
 pl$List(pl$List(pl$Int64))
 </code></pre>

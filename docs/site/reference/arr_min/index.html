@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#arr_min" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -2104,8 +2099,6 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
-      
-        
       
       
       <a href="./" class="md-nav__link md-nav__link--active">
@@ -7329,15 +7322,17 @@
 
 
 
-<h1 id="arr_min"><code>arr_min</code></h1>
-<h1 id="min-lists">' Min lists</h1>
-<h2 id="description">Description</h2>
+  <h1>`arr_min`</h1>
+
+<h2 id="arr_min"><code>arr_min</code></h2>
+<h2 id="min-lists">' Min lists</h2>
+<h3 id="description">Description</h3>
 <p>Compute the min value of the lists in the array.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>function</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 df$select(pl$col(&quot;values&quot;)$arr$min())
 </code></pre>

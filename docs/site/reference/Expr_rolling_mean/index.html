@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#expr_rolling_mean" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -4191,78 +4186,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `Expr_rolling_mean`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `Expr_rolling_mean`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,14 +7322,16 @@
 
 
 
-<h1 id="expr_rolling_mean"><code>Expr_rolling_mean</code></h1>
+  <h1>`Expr_rolling_mean`</h1>
+
+<h2 id="expr_rolling_mean"><code>Expr_rolling_mean</code></h2>
 <p>Rolling mean</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Apply a rolling mean (moving mean) over the values in this array.
  A window of length <code>window_size</code> will traverse the array. The values that fill
  this window will (optionally) be multiplied with the weights given by the
  <code>weight</code> vector. The resulting values will be aggregated to their sum.</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">Expr_rolling_mean(
   window_size,
   weights = NULL,
@@ -7412,7 +7341,7 @@
   closed = &quot;left&quot;
 )
 </code></pre>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7467,16 +7396,16 @@
 <code>closed</code>     |     : 'left', 'right', 'both', 'none'  Define whether the temporal window interval is closed or not.</p>
 </li>
 </ul>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>This functionality is experimental and may change without it being considered a
  breaking change.
  Notes:
  If you want to compute multiple aggregation statistics over the same dynamic
  window, consider using <code>groupby_rolling</code> this method can cache the window size
  computation.</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">pl$DataFrame(list(a=1:6))$select(pl$col(&quot;a&quot;)$rolling_mean(window_size = 2))
 </code></pre>
 

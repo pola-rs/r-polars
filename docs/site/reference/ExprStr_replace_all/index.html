@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#exprstr_replace_all" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -5717,71 +5712,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `ExprStr_replace_all`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `ExprStr_replace_all`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#seealso" class="md-nav__link">
-    Seealso
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7388,11 +7322,13 @@
 
 
 
-<h1 id="exprstr_replace_all"><code>ExprStr_replace_all</code></h1>
+  <h1>`ExprStr_replace_all`</h1>
+
+<h2 id="exprstr_replace_all"><code>ExprStr_replace_all</code></h2>
 <p>replace_all</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Replace all matching regex/literal substrings with a new string value.</p>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7415,11 +7351,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr of Utf8 Series</p>
-<h2 id="seealso">Seealso</h2>
+<h3 id="seealso">Seealso</h3>
 <p>replace : Replace first matching regex/literal substring.</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">df = pl$DataFrame(id = c(1, 2), text = c(&quot;abcabc&quot;, &quot;123a123&quot;))
 df$with_columns(
 pl$col(&quot;text&quot;)$str$replace_all(&quot;a&quot;, &quot;-&quot;)

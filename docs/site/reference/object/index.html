@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#object" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -6529,71 +6524,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `object`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `object`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7388,16 +7322,18 @@
 
 
 
-<h1 id="object"><code>object</code></h1>
+  <h1>`object`</h1>
+
+<h2 id="object"><code>object</code></h2>
 <p>Any polars class object is made of this</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>One SEXP of Rtype: "externalptr" + a class attribute</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>An object of class <code>character</code> of length 1.</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">object
 </code></pre>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <ul>
 <li>
 <p><code>object$method()</code> calls are facilitated by a $.ClassName - s3method see 'R/after-wrappers.R' </p>
@@ -7409,7 +7345,7 @@
 <p>Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to $.ClassName  See function macro_add_syntax_check_to_class().</p>
 </li>
 </ul>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#all a polars object is made of:
 some_polars_object = pl$DataFrame(iris)
 str(some_polars_object) #External Pointer tagged with a class attribute.

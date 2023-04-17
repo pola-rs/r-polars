@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#exprdt_combine" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -4919,78 +4914,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `ExprDT_combine`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `ExprDT_combine`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,17 +7322,19 @@
 
 
 
-<h1 id="exprdt_combine"><code>ExprDT_combine</code></h1>
+  <h1>`ExprDT_combine`</h1>
+
+<h2 id="exprdt_combine"><code>ExprDT_combine</code></h2>
 <p>Combine Data and Time</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Create a naive Datetime from an existing Date/Datetime expression and a Time.
  Each date/datetime in the first half of the interval
  is mapped to the start of its bucket.
  Each date/datetime in the second half of the interval
  is mapped to the end of its bucket.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>function</p>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7424,7 +7353,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>The <code>tu</code> allows the following time time units
  the following string language:</p>
 <ul>
@@ -7438,9 +7367,9 @@
 <p>1ms # 1 millisecond</p>
 </li>
 </ul>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Date/Datetime expr</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#Using pl$PTime
 pl$lit(as.Date(&quot;2021-01-01&quot;))$dt$combine(pl$PTime(&quot;02:34:12&quot;))$lit_to_s()
 pl$lit(as.Date(&quot;2021-01-01&quot;))$dt$combine(pl$PTime(3600 * 1.5, tu=&quot;s&quot;))$lit_to_s()

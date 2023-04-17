@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#expr_apply" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -2749,78 +2744,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `Expr_apply`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `Expr_apply`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,13 +7322,15 @@
 
 
 
-<h1 id="expr_apply"><code>Expr_apply</code></h1>
+  <h1>`Expr_apply`</h1>
+
+<h2 id="expr_apply"><code>Expr_apply</code></h2>
 <p>Expr_apply</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
  Depending on the context it has the following behavior:
  -Selection</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">Expr_apply(
   f,
   return_type = NULL,
@@ -7409,7 +7338,7 @@
   allow_fail_eval = FALSE
 )
 </code></pre>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7436,7 +7365,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>Apply a user function in a groupby or projection(select) context</p>
 <p>Depending on context the following behaviour:</p>
 <ul>
@@ -7456,9 +7385,9 @@
  - Polars-native expressions can be logically optimised (R functions cannot).
  Wherever possible you should strongly prefer the native expression API
  to achieve the best performance.</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#apply over groups - normal usage
 # s is a series of all values for one column within group, here Species
 e_all =pl$all() #perform groupby agg on all columns otherwise e.g. pl$col(&quot;Sepal.Length&quot;)

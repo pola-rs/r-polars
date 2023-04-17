@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#polars" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -297,110 +292,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Home
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="." class="md-nav__link md-nav__link--active">
         Home
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#install" class="md-nav__link">
-    Install
-  </a>
-  
-    <nav class="md-nav" aria-label="Install">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#r-universe" class="md-nav__link">
-    R-universe
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#github-releases" class="md-nav__link">
-    GitHub releases
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quickstart-example" class="md-nav__link">
-    Quickstart example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#contribute" class="md-nav__link">
-    Contribute
-  </a>
-  
-    <nav class="md-nav" aria-label="Contribute">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#development-environment-and-workflow" class="md-nav__link">
-    Development environment and workflow
-  </a>
-  
-    <nav class="md-nav" aria-label="Development environment and workflow">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#system-dependencies" class="md-nav__link">
-    System dependencies
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#development-workflow" class="md-nav__link">
-    Development workflow
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7423,9 +7318,11 @@
 
 
 
+  <h1>Home</h1>
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-<h1 id="polars">polars</h1>
+<h2 id="polars">polars</h2>
 <!-- badges: start -->
 
 <p><a href="https://rpolars.r-universe.dev"><img alt="R-universe status
@@ -7452,10 +7349,10 @@ Consider joining our <a href="https://discord.gg/4UfP5cfBE7">Discord</a>
 coverage of the underlying “lazy” Expr syntax. While translation of the
 “eager” syntax is still a little further behind, you should be able to
 do just about everything using <code>$select()</code> + <code>$with_columns()</code>.</p>
-<h2 id="install">Install</h2>
+<h3 id="install">Install</h3>
 <p>The package is not yet available on CRAN. But we provide convenient
 installation options for a variety of operating systems:</p>
-<h3 id="r-universe">R-universe</h3>
+<h4 id="r-universe">R-universe</h4>
 <p><a href="https://rpolars.r-universe.dev/rpolars#install">R-universe</a> provides
 pre-compiled <strong>polars</strong> binaries for Windows and MacOS (x86_64), with
 source builds for other platforms. Please see the GitHub release option
@@ -7464,7 +7361,7 @@ below for binary install options on Linux.</p>
 </code></pre>
 <p>Special thanks to Jeroen Ooms (<a href="https://github.com/jeroen">@jeroen</a>) for
 the excellent R-universe support.</p>
-<h3 id="github-releases">GitHub releases</h3>
+<h4 id="github-releases">GitHub releases</h4>
 <p>We also provide pre-compiled binaries for various operating systems, as
 well as source installs, on our <a href="https://github.com/pola-rs/r-polars/releases">GitHub
 releases</a> page. You can
@@ -7503,7 +7400,7 @@ you require a different target or operating system build. Finally, see
 the bottom of this README for details on how to install rust to build
 from source (only relevant for developers, or users of unsupported
 operating systems).</p>
-<h2 id="quickstart-example">Quickstart example</h2>
+<h3 id="quickstart-example">Quickstart example</h3>
 <p>The introductory vignette (<code>vignette("polars")</code>) contains a series of
 detailed examples. But here is a quick illustration of <strong>polars</strong> in
 action.</p>
@@ -7578,7 +7475,7 @@ ldat$filter(
 #&gt; │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │
 #&gt; └─────┴─────┴───────────┴────────┘
 </code></pre>
-<h2 id="contribute">Contribute</h2>
+<h3 id="contribute">Contribute</h3>
 <p>Contributions are very welcome!</p>
 <p>Here are the steps required for an example contribution, where we are
 implementing the <a href="https://rpolars.github.io/reference/Expr_cos.html">cosine
@@ -7612,8 +7509,8 @@ expression</a>:</p>
 all platforms as part of our GitHub Actions workflow. A more detailed
 description of the development environment and workflow for local builds
 is provided below.</p>
-<h3 id="development-environment-and-workflow">Development environment and workflow</h3>
-<h4 id="system-dependencies">System dependencies</h4>
+<h4 id="development-environment-and-workflow">Development environment and workflow</h4>
+<h5 id="system-dependencies">System dependencies</h5>
 <p>Rust toolchain</p>
 <ul>
 <li>Install <a href="https://rustup.rs/"><code>rustup</code></a>, the cross-platform Rust
@@ -7636,7 +7533,7 @@ is provided below.</p>
 <p>Install <a href="https://cmake.org/">CMake</a> and added it to your PATH.</p>
 </li>
 </ul>
-<h4 id="development-workflow">Development workflow</h4>
+<h5 id="development-workflow">Development workflow</h5>
 <p>Assuming the system dependencies have been met (above), the typical
 <strong>polars</strong> development workflow is as follows:</p>
 <p><strong>Step 1:</strong> Fork the <strong>polars</strong> repo on GitHub and then clone it

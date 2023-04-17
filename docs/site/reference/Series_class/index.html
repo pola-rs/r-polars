@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#class" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -7313,9 +7308,11 @@
 
 
 
-<h1 id="class"><code>class</code></h1>
+  <h1>`class`</h1>
+
+<h2 id="class"><code>class</code></h2>
 <p>Inner workings of the Series-class</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>The <code>Series</code> -class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The instanciated
 <code>Series</code> -object is an <code>externalptr</code> to a lowlevel rust polars Series  object. The pointer address
@@ -7327,12 +7324,12 @@ system extendr provides, except here there is both a public and private set of m
 reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also
 all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.</p>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>Check out the source code in R/Series_frame.R how public methods are derived from private methods.
 Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
 into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
 are removed and replaced by any function prefixed <code>Series_</code> .</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#see all exported methods
 ls(polars:::Series)
 

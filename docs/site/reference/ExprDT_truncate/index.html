@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#exprdt_truncate" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -5283,78 +5278,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `ExprDT_truncate`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `ExprDT_truncate`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7395,14 +7322,16 @@
 
 
 
-<h1 id="exprdt_truncate"><code>ExprDT_truncate</code></h1>
+  <h1>`ExprDT_truncate`</h1>
+
+<h2 id="exprdt_truncate"><code>ExprDT_truncate</code></h2>
 <p>Truncate datetime</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Divide the date/datetime range into buckets.
  Each date/datetime is mapped to the start of its bucket.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>function</p>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7421,7 +7350,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>The <code>every</code> and <code>offset</code> argument are created with the
  the following string language:</p>
 <ul>
@@ -7459,9 +7388,9 @@
 <p>3d12h4m25s # 3 days, 12 hours, 4 minutes, and 25 seconds</p>
 </li>
 </ul>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Date/Datetime expr</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">t1 = as.POSIXct(&quot;3040-01-01&quot;,tz = &quot;GMT&quot;)
 t2 = t1 + as.difftime(25,units = &quot;secs&quot;)
 s = pl$date_range(t1, t2, interval = &quot;2s&quot;, time_unit = &quot;ms&quot;)

@@ -19,6 +19,10 @@ theme:
     - navigation.tabs
     - toc.integrate
 
+markdown_extensions:
+    - toc:
+        baselevel: 2
+        toc_depth: 1
 
 ### Repo information
 repo_url: https://github.com/pola-rs/r-polars

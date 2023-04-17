@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#docs_translations" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -2413,43 +2408,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `docs_translations`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `docs_translations`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7360,17 +7322,19 @@
 
 
 
-<h1 id="docs_translations"><code>docs_translations</code></h1>
+  <h1>`docs_translations`</h1>
+
+<h2 id="docs_translations"><code>docs_translations</code></h2>
 <p>Translation definitions across python, R and polars.</p>
-<h2 id="description">Description</h2>
-<h1 id="comments-for-how-the-r-and-python-world-translates-into-polars">Comments for how the R and python world translates into polars:</h1>
+<h3 id="description">Description</h3>
+<h2 id="comments-for-how-the-r-and-python-world-translates-into-polars">Comments for how the R and python world translates into polars:</h2>
 <p>R and python are both high-level glue languages great for Data Science.
  Rust is a pedantic low-level language with similar use cases as C and C++.
  Polars is written in ~100k lines of rust and has a rust API. Py-polars the python API for polars,
  is implemented as an interface with the rust API.
  r-polars is very parallel to py-polars except it interfaces with R. The performance and behavior
  are unexpectedly quite similar as the 'engine' is the exact same rust code and data structures.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>info</p>
 
 

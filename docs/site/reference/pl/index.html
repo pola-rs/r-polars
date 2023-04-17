@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#pl" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -6599,71 +6594,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `pl`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `pl`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format" class="md-nav__link">
-    Format
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
-    Usage
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7388,23 +7322,25 @@
 
 
 
-<h1 id="pl"><code>pl</code></h1>
+  <h1>`pl`</h1>
+
+<h2 id="pl"><code>pl</code></h2>
 <p>The complete polars public API.</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p><code>pl</code> -object is a environment of all public functions and class constructors.
  Public functions are not exported as a normal package as it would be huge namespace
  collision with base:: and other functions. All object-methods are accessed with object$method()
  via the new class functions.</p>
 <p>Having all functions in an namespace is similar to the rust- and python- polars api.</p>
-<h2 id="format">Format</h2>
+<h3 id="format">Format</h3>
 <p>An object of class <code>environment</code> of length 57.</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">pl
 </code></pre>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>If someone do not particularly like the letter combination <code>pl</code> , they are free to
  bind the environment to another variable name as <code>simon_says = pl</code> or even do <code>attach(pl)</code></p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#how to use polars via `pl`
 pl$col(&quot;colname&quot;)$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
 

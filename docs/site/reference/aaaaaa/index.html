@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#as_data_frame" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -7313,15 +7308,17 @@
 
 
 
-<h1 id="as_data_frame"><code>as_data_frame</code></h1>
+  <h1>`as_data_frame`</h1>
+
+<h2 id="as_data_frame"><code>as_data_frame</code></h2>
 <p>return polars DataFrame as R data.frame</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>return polars DataFrame as R data.frame</p>
-<h2 id="usage">Usage</h2>
+<h3 id="usage">Usage</h3>
 <pre><code class="language-r">DataFrame_as_data_frame(...)
 list(list(&quot;as.data.frame&quot;), list(&quot;DataFrame&quot;))(x, ...)
 </code></pre>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7340,10 +7337,10 @@ list(list(&quot;as.data.frame&quot;), list(&quot;DataFrame&quot;))(x, ...)
 </tr>
 </tbody>
 </table>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>data.frame</p>
 <p>data.frame</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">df = pl$DataFrame(iris[1:3,])
 df$as_data_frame()
 </code></pre>

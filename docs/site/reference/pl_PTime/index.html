@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#pl_ptime" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -6683,71 +6678,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `pl_PTime`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `pl_PTime`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arguments" class="md-nav__link">
-    Arguments
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#details" class="md-nav__link">
-    Details
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7388,11 +7322,13 @@
 
 
 
-<h1 id="pl_ptime"><code>pl_PTime</code></h1>
+  <h1>`pl_PTime`</h1>
+
+<h2 id="pl_ptime"><code>pl_PTime</code></h2>
 <p>Store Time in R</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Store Time in R</p>
-<h2 id="arguments">Arguments</h2>
+<h3 id="arguments">Arguments</h3>
 <table>
 <thead>
 <tr>
@@ -7415,7 +7351,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="details">Details</h2>
+<h3 id="details">Details</h3>
 <p>PTime should probably be replaced with package nanotime or similar.</p>
 <p>base R is missing encoding of Time since midnight "s" "ms", "us" and "ns". The latter
  "ns" is the standard for the polars Time type.</p>
@@ -7432,10 +7368,10 @@
  intuitive.</p>
 <p>It appears behavior of R timezones is subject to change a bit in R 4.3.0, see polars unit test
  test-expr_datetime.R/"pl$date_range Date lazy/eager".</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>a PTime vector either double or integer, with class "PTime" and attribute "tu" being
  either "s","ms","us" or "ns"</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">#make PTime in all time units
 pl$PTime(runif(5)*3600*24*1E0, tu = &quot;s&quot;)
 pl$PTime(runif(5)*3600*24*1E3, tu = &quot;ms&quot;)

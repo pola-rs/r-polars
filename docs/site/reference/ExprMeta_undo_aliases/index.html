@@ -63,11 +63,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#exprmeta_undo_aliases" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -5465,57 +5460,10 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
       
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          `ExprMeta_undo_aliases`
-          <span class="md-nav__icon md-icon"></span>
-        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         `ExprMeta_undo_aliases`
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#description" class="md-nav__link">
-    Description
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#value" class="md-nav__link">
-    Value
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    Examples
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -7374,13 +7322,15 @@
 
 
 
-<h1 id="exprmeta_undo_aliases"><code>ExprMeta_undo_aliases</code></h1>
+  <h1>`ExprMeta_undo_aliases`</h1>
+
+<h2 id="exprmeta_undo_aliases"><code>ExprMeta_undo_aliases</code></h2>
 <p>Undo aliases</p>
-<h2 id="description">Description</h2>
+<h3 id="description">Description</h3>
 <p>Undo any renaming operation like <code>alias</code> or <code>keep_name</code> .</p>
-<h2 id="value">Value</h2>
+<h3 id="value">Value</h3>
 <p>Expr with aliases undone</p>
-<h2 id="examples">Examples</h2>
+<h3 id="examples">Examples</h3>
 <pre><code class="language-r">e = pl$col(&quot;alice&quot;)$alias(&quot;bob&quot;)
 e$meta$root_names() == &quot;alice&quot;
 e$meta$output_name() == &quot;bob&quot;
