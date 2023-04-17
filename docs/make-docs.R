@@ -19,13 +19,16 @@ make_doc_hierarchy <- function() {
   all_rd <- list.files("man", pattern = "\\.Rd")
 
   hierarchy <- list()
-  for (i in general_classes) {
-    components <- list.files("man", pattern = paste0("^", i))
+  for (i in seq_along(general_classes)) {
+    components <- list.files("man", pattern = paste0("^", general_classes[i]))
     all_rd <<- all_rd[-which(components %in% all_rd)]
     components <- components[-which(grepl("_class\\.Rd$", components))]
     components <- gsub("\\.Rd", "\\.md", components)
     components <- paste0("reference/", components)
-    hierarchy[[i]] <- sort(components)
+    components <- sort(components)
+    foo <- list(components)
+    names(foo) <- general_classes[i]
+    hierarchy[[i]] <- foo
   }
 
   remaining <- grep(paste0("^(", paste(general_classes, collapse = "|"), ")"),
@@ -33,8 +36,10 @@ make_doc_hierarchy <- function() {
   remaining <- all_rd[remaining]
   remaining <- gsub("\\.Rd", "\\.md", remaining)
   remaining <- paste0("reference/", remaining)
-
-  hierarchy[["Other"]] <-remaining
+  remaining <- sort(remaining)
+  foo <- list(remaining)
+  names(foo) <- "Other"
+  hierarchy[[length(hierarchy) + 1]] <- foo
 
   hierarchy
 }
@@ -74,18 +79,23 @@ clean_md <- function() {
   }
 }
 
-
-
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
-  final_hierarchy <- list(Reference = hierarchy)
-  out <- as.yaml(final_hierarchy, indent = 2,
-                 indent.mapping.sequence = TRUE,
-                 omap = TRUE)
-  out <- gsub("!!omap", "", out)
-  cat(out)
 
-  cat("\n^^^^^^^^^^^^^^ Copy this in `docs/mkdocs.yml`")
+  new_yaml <- orig_yaml <- yaml.load_file(
+    "docs/mkdocs.yml"
+  )
+
+  if (!is.null(orig_yaml$plugins) && !is.list(length(orig_yaml$plugins))) {
+    new_yaml$plugins <- as.list(new_yaml$plugins)
+  }
+
+  reference_idx <- which(
+    unlist(lapply(orig_yaml$nav, \(x) names(x) == "Reference"))
+  )
+
+  new_yaml$nav[[reference_idx]]$Reference <- hierarchy
+  write_yaml(new_yaml, "docs/mkdocs.yml", indent.mapping.sequence = TRUE)
 }
 
 convert_to_md()
