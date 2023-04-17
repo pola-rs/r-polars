@@ -706,7 +706,7 @@ DataFrame_shift = function(periods = 1) {
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
 DataFrame_shift_and_fill = function(fill_value, periods = 1) {
-    self$lazy()$shift_and_fill(periods)$collect()
+    self$lazy()$shift_and_fill(fill_value, periods)$collect()
 }
 
 #' modify/append column(s)

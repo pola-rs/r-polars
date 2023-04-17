@@ -90,3 +90,10 @@ test_that("quantile", {
   b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$median()$as_data_frame()
   expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
 })
+
+test_that("shift    _and_fill", {
+  a = pl$DataFrame(mtcars)$groupby("cyl")$shift(2)$as_data_frame()
+  expect_equal(a[["mpg"]][[1]][1:2], c(NA_real_, NA_real_))
+  a = pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 2)$as_data_frame()
+  expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
+})

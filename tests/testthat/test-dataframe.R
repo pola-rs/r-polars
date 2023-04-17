@@ -491,10 +491,14 @@ test_that("drop_in_place", {
 })
 
 
-test_that("shift", {
-  a = pl$DataFrame(iris)$shift(2)$limit(3)$as_data_frame()
+test_that("shift   _and_fill", {
+  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$as_data_frame() 
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
+  }
+  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$limit(3)$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }
 })
 
