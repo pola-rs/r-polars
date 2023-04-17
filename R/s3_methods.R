@@ -134,3 +134,33 @@ sum.LazyFrame = function(x, ...) x$sum()
 #' @export
 #' @noRd
 sum.Series = function(x, ...) x$sum()
+
+# Drop nulls from a LazyFrame
+#' @export
+#' @noRd
+#' @examples 
+# 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
+#' na.omit(df)
+#' na.omit(df, subset = "a")
+#' na.omit(df, subset = c("a", "b"))
+na.omit.LazyFrame = function(x, subset = NULL) {
+    if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
+        stop("subset must be NULL, a string, or a character vector")
+    }
+    x$drop_nulls(subset)
+}
+
+# Drop nulls from a DataFrame
+#' @export
+#' @noRd
+#' @examples 
+# 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))
+#' na.omit(df)
+#' na.omit(df, subset = "a")
+#' na.omit(df, subset = c("a", "b"))
+na.omit.DataFrame = function(x, subset = NULL) {
+    if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
+        stop("subset must be NULL, a string, or a character vector")
+    }
+    x$drop_nulls(subset)
+}
