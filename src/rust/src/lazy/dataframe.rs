@@ -97,6 +97,10 @@ impl LazyFrame {
         Ok(self.clone().0.quantile(robj_to!(Expr, quantile)?.0.clone(), res).into())
     }
 
+    fn shift(&self, periods: i64) -> Result<Self, String> {
+        Ok(self.clone().0.shift(periods).into())
+    }
+
     fn shift_and_fill(&self, fill_value: &Expr, periods: i64) -> Result<Self, String> {
         Ok(self.clone().0.shift_and_fill(periods, fill_value.0.clone()).into())
     }

@@ -166,8 +166,6 @@ test_that("shift", {
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-
-  expect_false(TRUE)
   a = pl$DataFrame(iris)$lazy()$shift_and_fill(0, 2)$limit(3)$collect()$as_data_frame() 
 })
 

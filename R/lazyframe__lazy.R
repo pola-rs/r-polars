@@ -326,7 +326,7 @@ LazyFrame_shift = function(periods = 1) {
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$lazy()$shift_and_fill(0, 2)$collect()
 LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
-  unwrap(.pr$LazyFrame$shift_and_fill(self, fill_value, periods))
+  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e_result(fill_value), periods))
 }
 
 #' @title Reverse
