@@ -105,8 +105,8 @@ impl LazyFrame {
         Ok(self.clone().0.shift_and_fill(periods, fill_value.0.clone()).into())
     }
     
-    fn reverse(&self) -> Result<Self, String> {
-        Ok(self.0.clone().reverse().into())
+    fn reverse(&self) -> Self {
+        self.0.clone().reverse().into()
     }
     
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
