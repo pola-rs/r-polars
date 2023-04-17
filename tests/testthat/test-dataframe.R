@@ -1,5 +1,3 @@
-
-
 expected_iris_select_df <- structure(list(miah = c(
   171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
   171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
@@ -162,9 +160,9 @@ test_that("map unity", {
   x <- pl$
     DataFrame(iris)$
     select(
-      pl$col("Sepal.Length")$
-        map(\(s) s)
-    )$
+    pl$col("Sepal.Length")$
+      map(\(s) s)
+  )$
     as_data_frame()[, 1, drop = FALSE]
 
   # float is preserved
@@ -179,9 +177,9 @@ test_that("map unity", {
   x <- pl$
     DataFrame(int_iris)$
     select(
-      pl$col("Sepal.Length")$
-        map(\(s) s)
-    )$
+    pl$col("Sepal.Length")$
+      map(\(s) s)
+  )$
     as_data_frame()[, 1, drop = FALSE]
 
   expect_identical(
@@ -404,7 +402,7 @@ test_that("to_Struct, unnest, to_frame, as_data_frame", {
 
 make_cases <- function() {
   tibble::tribble(
-    ~ .test_name, ~ pola,   ~ base,
+    ~.test_name, ~pola,   ~base,
     "max",        "max",    max,
     "mean",       "mean",   mean,
     "median",     "median", median,
@@ -419,41 +417,42 @@ make_cases <- function() {
 }
 
 patrick::with_parameters_test_that(
-  "simple translations: eager", {
-    a = pl$DataFrame(mtcars)[[pola]]()$as_data_frame()
-    b = data.frame(lapply(mtcars, base))
-    testthat::expect_equal(a, b, ignore_attr = TRUE)
+  "simple translations: eager",
+  {
+    a <- pl$DataFrame(mtcars)[[pola]]()$as_data_frame()
+    b <- data.frame(lapply(mtcars, base))
+    expect_equal(a, b, ignore_attr = TRUE)
   },
   .cases = make_cases()
 )
 
 test_that("simple translations", {
-  a = pl$DataFrame(mtcars)$var(10)$as_data_frame()
-  b = data.frame(lapply(mtcars, var))
+  a <- pl$DataFrame(mtcars)$var(10)$as_data_frame()
+  b <- data.frame(lapply(mtcars, var))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$std(10)$as_data_frame()
-  b = data.frame(lapply(mtcars, sd))
+  a <- pl$DataFrame(mtcars)$std(10)$as_data_frame()
+  b <- data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$reverse()$as_data_frame()
-  b = mtcars[32:1,]
+  a <- pl$DataFrame(mtcars)$reverse()$as_data_frame()
+  b <- mtcars[32:1, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$slice(2, 4)$as_data_frame()
-  b = mtcars[3:6,]
+  a <- pl$DataFrame(mtcars)$slice(2, 4)$as_data_frame()
+  b <- mtcars[3:6, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$slice(30)$as_data_frame()
-  b = tail(mtcars, 2)
+  a <- pl$DataFrame(mtcars)$slice(30)$as_data_frame()
+  b <- tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$estimated_size()
+  a <- pl$DataFrame(mtcars)$estimated_size()
   expect_equal(a, 2816, tolerance = .1)
 
-  #trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof","exceeds u8 max value"))
-  expect_grepl_error(
+  # trigger u8 conversion errors
+  expect_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceeds u8 max value"))
+  expect_error(
     pl$DataFrame(mtcars)$var(-1),
     c("ddof", "the value -1 cannot be less than zero")
   )
@@ -463,15 +462,15 @@ test_that("simple translations", {
 test_that("null_count 64bit", {
   skip_if_not_installed("bit64")
   suppressPackageStartupMessages(library("bit64", quietly = TRUE))
-  tmp = mtcars
-  tmp[1:2, 1:2] = NA
-  tmp[5, 3] = NA
-  a = pl$DataFrame(tmp)$null_count()$as_data_frame()
-  a = sapply(a, as.integer)
-  b = sapply(tmp, function(x) sum(is.na(x)))
+  tmp <- mtcars
+  tmp[1:2, 1:2] <- NA
+  tmp[5, 3] <- NA
+  a <- pl$DataFrame(tmp)$null_count()$as_data_frame()
+  a <- sapply(a, as.integer)
+  b <- sapply(tmp, function(x) sum(is.na(x)))
   expect_equal(a, b)
 
-  a = pl$DataFrame(tmp)$groupby("vs")$null_count()$as_data_frame()
+  a <- pl$DataFrame(tmp)$groupby("vs")$null_count()$as_data_frame()
   expect_equal(dim(a), c(2, 11))
 })
 

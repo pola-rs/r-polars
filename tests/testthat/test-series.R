@@ -15,8 +15,8 @@ test_that("pl$Series_apply", {
   # handle na int
   expect_identical(
     pl$Series(c(1:3, NA_integer_), "integers")
-      $apply(function(x) x, NULL, TRUE)
-      $to_r_vector(),
+    $apply(function(x) x, NULL, TRUE)
+    $to_r_vector(),
     c(1:3, NA)
   )
 
@@ -40,8 +40,8 @@ test_that("pl$Series_apply", {
   expect_identical(
     pl$Series(c("A", "B", NA_character_), "strings")$
       apply(function(x) {
-        if (isTRUE(x == "B")) 2 else x
-      }, NULL, FALSE)$
+      if (isTRUE(x == "B")) 2 else x
+    }, NULL, FALSE)$
       to_r_vector(),
     c("A", NA_character_, NA_character_)
   )
@@ -51,12 +51,12 @@ test_that("pl$Series_apply", {
   expect_identical(
     pl$Series(c(1:3, NA_integer_), "integers")$
       apply(
-        function(x) {
-          if (is.na(x)) NA_real_ else as.double(x)
-        },
-        pl$dtypes$Float64,
-        TRUE
-      )$
+      function(x) {
+        if (is.na(x)) NA_real_ else as.double(x)
+      },
+      pl$dtypes$Float64,
+      TRUE
+    )$
       to_r_vector(),
     c(1, 2, 3, NA)
   )
@@ -66,8 +66,8 @@ test_that("pl$Series_apply", {
   expect_identical(
     pl$Series(c(1, 2, 3, NA_real_), "integers")$
       apply(function(x) {
-        if (is.na(x)) 42L else as.integer(x)
-      }, datatype = pl$dtypes$Int32)$
+      if (is.na(x)) 42L else as.integer(x)
+    }, datatype = pl$dtypes$Int32)$
       to_r_vector(),
     c(1:3, 42L)
   )
@@ -78,9 +78,9 @@ test_that("pl$Series_apply", {
   expect_identical(
     pl$Series(c(1:3, NA), "name")$
       apply(\(x) {
-        global_var <<- global_var + 1L
-        x + global_var
-      }, NULL, TRUE)$
+      global_var <<- global_var + 1L
+      x + global_var
+    }, NULL, TRUE)$
       to_r_vector(),
     c(2L, 4L, 6L, NA_integer_)
   )

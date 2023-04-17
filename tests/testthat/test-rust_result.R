@@ -59,7 +59,7 @@
 #   for(i in are_err_result) expect_true( is_err(i), info = paste("testcase was ",str_string(i)))
 #
 #   #test unwrap
-#   for(i in not_results) expect_grepl_error(
+#   for(i in not_results) expect_error(
 #     unwrap(i), "cannot unwrap non resul", info = paste("testcase was ",str_string(i))
 #   )
 #   for(i in are_ok_result) expect_identical(
@@ -72,36 +72,34 @@
 # })
 
 test_that("Err does not take NULL, OK does", {
-    expect_grepl_error(Err(NULL),"x cannot be a NULL")
-    expect_no_error(Ok(NULL))
+  expect_error(Err(NULL), "x cannot be a NULL")
+  expect_no_error(Ok(NULL))
 })
 
 
 test_that("map map_err", {
-  #map
-  expect_identical(map(Ok(1),\(x) x+1),Ok(2))
-  expect_identical(map(Err(1),\(x) x+1),Err(1))
-  expect_identical(map(Ok(1),\(x) Ok(x+1)),Ok(Ok(2)))
+  # map
+  expect_identical(map(Ok(1), \(x) x + 1), Ok(2))
+  expect_identical(map(Err(1), \(x) x + 1), Err(1))
+  expect_identical(map(Ok(1), \(x) Ok(x + 1)), Ok(Ok(2)))
 
-  #pass through err ok
-  expect_identical(map_err(Err(1),\(x) x+1),Err(2))
-  expect_identical(map_err(Ok(1),\(x) x+1),Ok(1))
-  expect_identical(map_err(Err(1),\(x) Err(x+1)),Err(Err(2)))
+  # pass through err ok
+  expect_identical(map_err(Err(1), \(x) x + 1), Err(2))
+  expect_identical(map_err(Ok(1), \(x) x + 1), Ok(1))
+  expect_identical(map_err(Err(1), \(x) Err(x + 1)), Err(Err(2)))
 
-  #fail to map non result
-  expect_grepl_error(map(1,\(x) x+1),"internal error: expected a Result-type")
-  expect_grepl_error(map_err(1,\(x) x+1),"internal error: expected a Result-type")
+  # fail to map non result
+  expect_error(map(1, \(x) x + 1), "internal error: expected a Result-type")
+  expect_error(map_err(1, \(x) x + 1), "internal error: expected a Result-type")
 
   NULL
 })
 
 test_that("and_then or_else", {
-  expect_identical(and_then(Ok(1),\(x) Ok(x+1)),Ok(2))
-  expect_identical(and_then(Err(1),\(x) Err(x+1)),Err(1))
-  expect_grepl_error(and_then(Ok(1),\(x) x+1),"f must return a result")
-  expect_identical(or_else(Ok(1),\(x) Ok(x+1)),Ok(1))
-  expect_identical(or_else(Err(1),\(x) Err(x+1)),Err(2))
-  expect_grepl_error(or_else(Err(1),\(x) x+1),"f must return a result")
+  expect_identical(and_then(Ok(1), \(x) Ok(x + 1)), Ok(2))
+  expect_identical(and_then(Err(1), \(x) Err(x + 1)), Err(1))
+  expect_error(and_then(Ok(1), \(x) x + 1), "f must return a result")
+  expect_identical(or_else(Ok(1), \(x) Ok(x + 1)), Ok(1))
+  expect_identical(or_else(Err(1), \(x) Err(x + 1)), Err(2))
+  expect_error(or_else(Err(1), \(x) x + 1), "f must return a result")
 })
-
-

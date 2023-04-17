@@ -1,16 +1,17 @@
 test_that("groupby", {
-  df = pl$DataFrame(
+  df <- pl$DataFrame(
     list(
       foo = c("one", "two", "two", "one", "two"),
       bar = c(5, 3, 2, 4, 1)
     )
   )
 
-  gb = df$groupby("foo",maintain_order=TRUE)
+  gb <- df$groupby("foo", maintain_order = TRUE)
 
   expect_equal(
     capture.output(print(gb)),
-    c("polars GroupBy: shape: (5, 2)",
+    c(
+      "polars GroupBy: shape: (5, 2)",
       "┌─────┬─────┐",
       "│ foo ┆ bar │",
       "│ --- ┆ --- │",
@@ -37,7 +38,7 @@ test_that("groupby", {
 
 
 
-  df2 = gb$agg(
+  df2 <- gb$agg(
     pl$col("bar")$sum()$alias("bar_sum"),
     pl$col("bar")$mean()$alias("bar_tail_sum")
   )$as_data_frame()
@@ -45,15 +46,14 @@ test_that("groupby", {
 
   expect_equal(
     df2,
-    data.frame(foo=c("one","two"),bar_sum=c(9,6),bar_tail_sum=c(4.5,2))
+    data.frame(foo = c("one", "two"), bar_sum = c(9, 6), bar_tail_sum = c(4.5, 2))
   )
-
 })
 
 
 make_cases <- function() {
   tibble::tribble(
-    ~ .test_name, ~ pola,   ~ base,
+    ~.test_name, ~pola,   ~base,
     "max",        "max",    max,
     "mean",       "mean",   mean,
     "median",     "median", median,
@@ -68,10 +68,11 @@ make_cases <- function() {
 }
 
 patrick::with_parameters_test_that(
-  "simple translations: eager", {
-    a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
-    b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
-    b = b[order(b$cyl), colnames(b) != "cyl"]
+  "simple translations: eager",
+  {
+    a <- pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
+    b <- as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
+    b <- b[order(b$cyl), colnames(b) != "cyl"]
     expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)
   },
   .cases = make_cases()
