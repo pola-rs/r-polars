@@ -842,6 +842,8 @@ LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame_
 
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
 
+LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
+
 LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)

@@ -190,6 +190,17 @@ test_that("fill_nan", {
   expect_equal(sum(a[[2]] == 99), 2)
 })
 
+
+test_that("drop", {
+  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))$collect()$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$lazy()$drop("mpg")$collect()$columns
+  expect_true("hp" %in% a)
+  expect_false("mpg" %in% a)
+})
+
+
 #TODO complete tests for lazy
 
 

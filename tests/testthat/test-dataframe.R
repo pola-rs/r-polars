@@ -527,3 +527,12 @@ test_that("quantile", {
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
+
+test_that("drop", {
+  a = pl$DataFrame(mtcars)$drop(c("mpg", "hp"))$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$drop("mpg")$columns
+  expect_true("hp" %in% a)
+  expect_false("mpg" %in% a)
+})

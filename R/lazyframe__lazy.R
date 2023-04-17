@@ -333,6 +333,16 @@ LazyFrame_shift = function(periods = 1) {
   unwrap(.pr$LazyFrame$shift(self, periods))
 }
 
+#' @title Drop
+#' @description Remove columns from the dataframe.
+#' @keywords LazyFrame
+#' @param character vector Name of the column(s) that should be removed from the dataframe.
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
+LazyFrame_drop = function(columns) {
+  unwrap(.pr$LazyFrame$drop(self, columns))
+}
+
 #' @title Shift and fill
 #' @description Shift the values by a given period and fill the resulting null values.
 #' @keywords LazyFrame

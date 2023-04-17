@@ -109,6 +109,10 @@ impl LazyFrame {
         self.0.clone().reverse().into()
     }
     
+    fn drop(&self, columns: Vec<String>) -> Result<Self, String> {
+        Ok(self.0.clone().drop_columns(columns).into())
+    }
+    
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
         Ok(self.0.clone().fill_nan(robj_to!(Expr, fill_value)?.0).into())
     }
@@ -131,6 +135,7 @@ impl LazyFrame {
 
         LazyFrame(new_df)
     }
+
 
     fn limit(&self, n: f64) -> List {
         r_result_list(
