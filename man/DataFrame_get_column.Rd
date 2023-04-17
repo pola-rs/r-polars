@@ -19,4 +19,3 @@ get one column by name as series
 df = pl$DataFrame(iris[1,])
 df$get_column("Species")
 }
-\keyword{DataFrame}

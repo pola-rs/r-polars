@@ -3,6 +3,11 @@
 \name{DataFrame_select}
 \alias{DataFrame_select}
 \alias{select}
+\alias{#'}
+\alias{pl$DataFrame(iris)$select(}
+\alias{pl$col("Sepal.Length")$abs()$alias("abs_SL"),}
+\alias{(pl$col("Sepal.Length")+2)$alias("add_2_SL")}
+\alias{)}
 \title{perform select on DataFrame}
 \usage{
 DataFrame_select(...)
@@ -13,9 +18,3 @@ DataFrame_select(...)
 \description{
 related to dplyr \code{mutate()} However discards unmentioned columns as data.table \code{.()}.
 }
-\keyword{#'}
-\keyword{(pl$col("Sepal.Length")+2)$alias("add_2_SL")}
-\keyword{)}
-\keyword{DataFrame}
-\keyword{pl$DataFrame(iris)$select(}
-\keyword{pl$col("Sepal.Length")$abs()$alias("abs_SL"),}

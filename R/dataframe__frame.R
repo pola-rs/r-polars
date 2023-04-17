@@ -396,6 +396,18 @@ DataFrame.property_setters$columns =
   function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
 
+#' Shape of  DataFrame
+#' @name DataFrame_shape
+#' @description Get shape/dimensions of DataFrame
+#'
+#' @return two length numeric vector of c(nrows,ncols)
+#' @keywords  DataFrame
+#' @examples
+#' df = pl$DataFrame(iris)$shape
+#'
+DataFrame_shape = method_as_property(function() {
+  .pr$DataFrame$shape(self)
+})
 
 
 #' Height of DataFrame
@@ -423,6 +435,37 @@ DataFrame_height = method_as_property(function() {
 #'
 DataFrame_width = method_as_property(function() {
     .pr$DataFrame$shape(self)[2L]
+})
+
+
+
+#' DataFrame dtypes
+#' @name DataFrame_dtypes
+#' @description Get dtypes of columns in DataFrame.
+#' Dtypes can also be found in column headers when printing the DataFrame.
+#'
+#' @return width as numeric scalar
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$dtypes
+#'
+DataFrame_dtypes = method_as_property(function() {
+  .pr$DataFrame$dtypes(self)
+})
+
+
+#' DataFrame dtypes
+#' @name DataFrame_dtypes
+#' @description Get dtypes of columns in DataFrame.
+#' Dtypes can also be found in column headers when printing the DataFrame.
+#'
+#' @return width as numeric scalar
+#' @keywords  DataFrame
+#' @examples
+#' pl$DataFrame(iris)$schema
+#'
+DataFrame_schema = method_as_property(function() {
+  .pr$DataFrame$schema(self)
 })
 
 

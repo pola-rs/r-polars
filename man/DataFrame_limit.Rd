@@ -18,4 +18,3 @@ take limit of n rows of query
 \details{
 any number will converted to u32. Negative raises error
 }
-\keyword{DataFrame}

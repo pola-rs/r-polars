@@ -20,4 +20,4 @@ get columns as list of series
 df = pl$DataFrame(iris[1,])
 df$get_columns()
 }
-\keyword{DataFrame}
+\keyword{datasets}

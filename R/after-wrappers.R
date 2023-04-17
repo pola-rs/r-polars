@@ -61,6 +61,7 @@ extendr_method_to_pure_functions = function(env) {
 ##this macro must be defined now
 
 #' @title add syntax verification to class
+#' @name macro_add_syntax_check_to
 #' @include utils.R
 #' @param Class_name string name of env class
 #'

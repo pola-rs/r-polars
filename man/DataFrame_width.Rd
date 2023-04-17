@@ -16,4 +16,3 @@ Get width(ncol) of DataFrame
 pl$DataFrame(iris)$width
 
 }
-\keyword{DataFrame}

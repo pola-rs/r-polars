@@ -1,0 +1,47 @@
+# `Expr_eq`
+
+Equal ==
+
+
+## Description
+
+eq method and operator
+
+
+## Usage
+
+```r
+Expr_eq(other)
+list(list("=="), list("Expr"))(e1, e2)
+```
+
+
+## Arguments
+
+Argument      |Description
+------------- |----------------
+`other`     |     literal or Robj which can become a literal
+`e1`     |     lhs Expr
+`e2`     |     rhs Expr or anything which can become a literal Expression
+
+
+## Details
+
+See Inf,NaN,NULL,Null/NA translations here [`docs_translations`](#docstranslations)
+
+
+## Value
+
+Exprs
+
+
+## Examples
+
+```r
+#' #three syntaxes same result
+pl$lit(2) == 2
+pl$lit(2) ==  pl$lit(2)
+pl$lit(2)$eq(pl$lit(2))
+```
+
+

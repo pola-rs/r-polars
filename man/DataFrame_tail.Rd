@@ -18,4 +18,3 @@ Get the last n rows.
 \details{
 any number will converted to u32. Negative raises error
 }
-\keyword{DataFrame}

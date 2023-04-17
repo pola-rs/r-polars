@@ -20,4 +20,3 @@ return a NULL, idx is zero idx.
 \examples{
 pl$DataFrame(a=1:4)$to_series()
 }
-\keyword{DataFrame}

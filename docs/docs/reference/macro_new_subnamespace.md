@@ -1,0 +1,76 @@
+# `macro_new_subnamespace`
+
+Macro - New subnamespace
+
+
+## Description
+
+Bundle class methods into an environment (subname space)
+
+
+## Usage
+
+```r
+macro_new_subnamespace(class_pattern, subclass_env = NULL, remove_f = TRUE)
+```
+
+
+## Arguments
+
+Argument      |Description
+------------- |----------------
+`class_pattern`     |     regex to select functions
+`subclass_env`     |     optional subclass of
+`remove_f`     |     drop sourced functions from package ns after bundling into sub ns
+
+
+## Details
+
+This function is used to emulate py-polars subnamespace-methods
+ All R functions coined 'macro_'-functions use eval(parse()) but only at package build time
+ to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
+ , go ahead.
+
+
+## Value
+
+A function which returns a subclass environment of bundled class functions.
+
+
+## Examples
+
+```r
+#macro_new_subnamespace() is not exported, export for this toy example
+#macro_new_subnamespace = polars:::macro_new_subnamespace
+
+##define some new methods prefixed 'MyClass_'
+#MyClass_add2 = function() self + 2
+#MyClass_mul2 = function() self * 2
+
+##grab any sourced function prefixed 'MyClass_'
+#my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")
+
+#here adding sub-namespace as a expr-class property/method during session-time,
+#which only is for this demo.
+#instead sourced method like Expr_arr() at package build time instead
+#env = polars:::Expr #get env of the Expr Class
+#env$my_sub_ns = method_as_property(function() { #add a property/method
+# my_class_sub_ns(self)
+#})
+#rm(env) #optional clean up
+
+#add user defined S3 method the subclass 'myclass_sub_ns'
+#print.myclass_sub_ns = function(x, ...) { #add ... even if not used
+#   print("hello world, I'm myclass_sub_ns")
+#   print("methods in sub namespace are:")
+#  print(ls(x))
+#  }
+
+#test
+# e = pl$lit(1:5)  #make an Expr
+#print(e$my_sub_ns) #inspect
+#e$my_sub_ns$add2() #use the sub namespace
+#e$my_sub_ns$mul2()
+```
+
+

@@ -42,4 +42,3 @@ pl$DataFrame(iris)$with_columns(
   SW_add_2 = (pl$col("Sepal.Width")+2)
 )
 }
-\keyword{DataFrame}
