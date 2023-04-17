@@ -153,6 +153,15 @@ impl LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         LazyFrame(new_df)
     }
+    
+    fn drop_nulls(&self, subset: &ProtoExprArray) -> LazyFrame {
+        if subset.0.len() == 0 {
+            LazyFrame(self.0.clone().drop_nulls(None))
+        } else {
+            let vec = pra_to_vec(subset, "select");
+            LazyFrame(self.0.clone().drop_nulls(Some(vec)))
+        }
+    }
 
     fn groupby(&self, exprs: &ProtoExprArray, maintain_order: bool) -> LazyGroupBy {
         let expr_vec = pra_to_vec(exprs, "select");

@@ -536,3 +536,16 @@ test_that("drop", {
   expect_true("hp" %in% a)
   expect_false("mpg" %in% a)
 })
+
+
+test_that("drop_nulls", {
+  tmp = mtcars
+  tmp[1:3, "mpg"] = NA
+  expect_equal(pl$DataFrame(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
+  expect_error(pl$DataFrame(mtcars)$drop_nulls("bad")$height, pattern = "ColumnNotFound")
+})

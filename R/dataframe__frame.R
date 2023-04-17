@@ -407,6 +407,24 @@ DataFrame_drop = function(columns) {
 }
 
 
+#' @title Drop nulls
+#' @description Drop all rows that contain null values.
+#' @keywords DataFrame
+#' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
+#'
+#' @return DataFrame
+#' @examples
+#' tmp = mtcars
+#' tmp[1:3, "mpg"] = NA
+#' tmp[4, "hp"] = NA
+#' pl$DataFrame(tmp)$drop_nulls()$height
+#' pl$DataFrame(tmp)$drop_nulls("mpg")$height
+#' pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height
+DataFrame_drop_nulls = function(subset = NULL) {
+  self$lazy()$drop_nulls(subset)$collect()
+}
+
+
 #' Shape of  DataFrame
 #' @name DataFrame_shape
 #' @description Get shape/dimensions of DataFrame

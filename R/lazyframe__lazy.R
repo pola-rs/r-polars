@@ -388,6 +388,24 @@ LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self,n))
 }
 
+#' @title Lazy_drop_nulls
+#' @description Drop all rows that contain null values.
+#' @keywords LazyFrame
+#' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
+#'
+#' @return LazyFrame
+#' @examples
+#' tmp = mtcars
+#' tmp[1:3, "mpg"] = NA
+#' tmp[4, "hp"] = NA
+#' pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height
+#' pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height
+#' pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height
+LazyFrame_drop_nulls = function(subset = NULL) {
+  pra = do.call(construct_ProtoExprArray, as.list(subset))
+  .pr$LazyFrame$drop_nulls(self, pra)
+}
+
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy
 #' @keywords LazyFrame
