@@ -506,6 +506,12 @@ test_that("frame_equal", {
   expect_false(dat1$frame_equal(dat2))
 })
 
+test_that("fill_nan", {
+  a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))
+  a = a$fill_nan(99)$as_data_frame()
+  expect_equal(sum(a[[1]] == 99), 1)
+  expect_equal(sum(a[[2]] == 99), 2)
+})
 
 test_that("quantile", {
   a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$as_data_frame()

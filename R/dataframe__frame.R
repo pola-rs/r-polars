@@ -1022,6 +1022,20 @@ DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
 
+#' @title Fill NaN
+#' @description Fill floating point NaN values by an Expression evaluation.
+#' @keywords DataFrame
+#' @param fill_value Value to fill NaN with.
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1.5, 2, NaN, 4),
+#'         b = c(1.5, NaN, NaN, 4)
+#' )
+#' df$fill_nan(99)
+DataFrame_fill_nan = function(fill_value) {
+  self$lazy()$fill_nan(fill_value)$collect()
+}
 
 #' @title Slice
 #' @description Get a slice of this DataFrame.

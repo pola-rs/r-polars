@@ -308,6 +308,21 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation))
 }
 
+#' @title Fill NaN
+#' @description Fill floating point NaN values by an Expression evaluation.
+#' @keywords LazyFrame
+#' @param fill_value Value to fill NaN with.
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1.5, 2, NaN, 4),
+#'         b = c(1.5, NaN, NaN, 4)
+#' )$lazy()
+#' df$fill_nan(99)$collect()
+LazyFrame_fill_nan = function(fill_value) {
+  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)))
+}
+
 #' @title Shift
 #' @description Shift the values by a given period.
 #' @keywords LazyFrame

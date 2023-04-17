@@ -104,9 +104,13 @@ impl LazyFrame {
     fn shift_and_fill(&self, fill_value: &Expr, periods: i64) -> Result<Self, String> {
         Ok(self.clone().0.shift_and_fill(periods, fill_value.0.clone()).into())
     }
-
-    fn reverse(&self) -> Self {
-        self.0.clone().reverse().into()
+    
+    fn reverse(&self) -> Result<Self, String> {
+        Ok(self.0.clone().reverse().into())
+    }
+    
+    fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().fill_nan(robj_to!(Expr, fill_value)?.0).into())
     }
 
     fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {

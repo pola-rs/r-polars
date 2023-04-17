@@ -16,6 +16,6 @@ GroupBy
 Shift the values by a given period.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
+pl$DataFrame(mtcars)$groupby("cyl")$shift(2)
 }
 \keyword{GroupBy}

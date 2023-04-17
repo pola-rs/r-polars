@@ -183,5 +183,13 @@ test_that("quantile", {
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
+test_that("fill_nan", {
+  a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))$lazy()
+  a = a$fill_nan(99)$collect()$as_data_frame()
+  expect_equal(sum(a[[1]] == 99), 1)
+  expect_equal(sum(a[[2]] == 99), 2)
+})
 
 #TODO complete tests for lazy
+
+
