@@ -27,6 +27,7 @@ df = pl$DataFrame(
   x = as.numeric(c(1, 1:5)),
   y = as.numeric(c(1, 1:5)),
   z = as.numeric(c(1, 1, 1:4)))
-df$lazy()$unique("z", "last")$collect()$height
+df$lazy()$unique()$collect()$height
+df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
 }
 \keyword{LazyFrame}

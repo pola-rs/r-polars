@@ -440,7 +440,8 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #'   x = as.numeric(c(1, 1:5)),
 #'   y = as.numeric(c(1, 1:5)),
 #'   z = as.numeric(c(1, 1, 1:4)))
-#' df$unique("z", "last")$height
+#' df$unique()$height
+#' df$unique(subset = c("x", "z"), keep = "last")$height
 DataFrame_unique = function(subset = NULL, keep = "first") {
   self$lazy()$unique(subset, keep)$collect()
 }

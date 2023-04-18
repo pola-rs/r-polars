@@ -232,6 +232,7 @@ test_that("unique", {
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4)))
+  v = df$lazy()$unique()$collect()$height
   w = df$lazy()$unique("z", "first")$collect()$height
   x = df$lazy()$unique(c("x", "y", "z"), "first")$collect()$height
   y = df$lazy()$unique(c("x"), "first")$collect()$height

@@ -570,10 +570,12 @@ test_that("unique", {
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4)))
+  v = df$unique()$height
   w = df$unique("z", "first")$height
   x = df$unique(c("x", "y", "z"), "first")$height
   y = df$unique(c("x"), "first")$height
   z = df$unique(c("y", "z"), "first")$height
+  expect_equal(v, 5)
   expect_equal(w, 4)
   expect_equal(x, 5)
   expect_equal(y, 5)
