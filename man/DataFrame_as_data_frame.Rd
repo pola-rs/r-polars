@@ -5,9 +5,10 @@
 \alias{as.data.frame.DataFrame}
 \title{return polars DataFrame as R data.frame}
 \usage{
-DataFrame_as_data_frame(...)
+<DataFrame>$as_data_frame()
 
-\method{as.data.frame}{DataFrame}(x, ...)
+# S3 method
+as.data.frame.DataFrame()
 }
 \arguments{
 \item{...}{any params passed to as.data.frame}

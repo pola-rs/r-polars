@@ -721,6 +721,8 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 
 #' return polars DataFrame as R data.frame
 #'
+#' @usage <DataFrame>$as_data_frame()
+#'
 #' @param ... any args pased to as.data.frame()
 #'
 #' @return data.frame
@@ -748,7 +750,11 @@ DataFrame_as_data_frame = function(...) {
 # #' @keywords DataFrame
 # DataFrame_to_data_frame = DataFrame_as_data_frame
 
+#' @usage
+#' # S3 method
+#' as.data.frame.DataFrame()
 #' @rdname DataFrame_as_data_frame
+#'
 #' @param x DataFrame
 #' @param ... any params passed to as.data.frame
 #'

@@ -31,6 +31,7 @@ nav:
       - An Introduction to Polars from R: articles/polars.md
   - Reference:
       - DataFrame:
+          - reference/DataFrame.md
           - reference/DataFrame_as_data_frame.md
           - reference/DataFrame_clone.md
           - reference/DataFrame_columns.md
@@ -63,7 +64,6 @@ nav:
           - reference/DataFrame_var.md
           - reference/DataFrame_width.md
           - reference/DataFrame_with_columns.md
-          - reference/DataFrame.md
       - GroupBy:
           - reference/GroupBy_agg.md
           - reference/GroupBy_as_data_frame.md
@@ -78,8 +78,8 @@ nav:
           - reference/GroupBy_sum.md
           - reference/GroupBy_var.md
       - LazyFrame:
-          - reference/LazyFrame_collect_background.md
           - reference/LazyFrame_collect.md
+          - reference/LazyFrame_collect_background.md
           - reference/LazyFrame_describe_optimized_plan.md
           - reference/LazyFrame_describe_plan.md
           - reference/LazyFrame_filter.md
@@ -109,6 +109,7 @@ nav:
           - reference/LazyGroupBy_print.md
           - reference/LazyGroupBy_tail.md
       - pl:
+          - reference/pl-cash-from_arrow.md
           - reference/pl_concat.md
           - reference/pl_date_range.md
           - reference/pl_Datetime.md
@@ -117,8 +118,8 @@ nav:
           - reference/pl_PTime.md
           - reference/pl_select.md
           - reference/pl_Struct.md
-          - reference/pl-cash-from_arrow.md
       - Series:
+          - reference/Series.md
           - reference/Series_abs.md
           - reference/Series_add.md
           - reference/Series_alias.md
@@ -161,7 +162,6 @@ nav:
           - reference/Series_to_r.md
           - reference/Series_value_count.md
           - reference/Series_var.md
-          - reference/Series.md
       - Other:
           - reference/all.md
           - reference/and_then.md
@@ -197,9 +197,9 @@ nav:
           - reference/col.md
           - reference/construct_DataTypeVector.md
           - reference/construct_ProtoExprArray.md
+          - reference/DataType.md
           - reference/DataType_constructors.md
           - reference/DataType_new.md
-          - reference/DataType.md
           - reference/docs_translations.md
           - reference/dot-DollarNames.DataFrame.md
           - reference/dot-DollarNames.Expr.md
@@ -214,6 +214,8 @@ nav:
           - reference/dot-pr.md
           - reference/element.md
           - reference/Err.md
+          - reference/Expr-cash-print-open-paren-close-paren.md
+          - reference/Expr.md
           - reference/Expr_abs.md
           - reference/Expr_add.md
           - reference/Expr_agg_groups.md
@@ -268,8 +270,8 @@ nav:
           - reference/Expr_first.md
           - reference/Expr_floor.md
           - reference/Expr_forward_fill.md
-          - reference/Expr_gt_eq.md
           - reference/Expr_gt.md
+          - reference/Expr_gt_eq.md
           - reference/Expr_hash.md
           - reference/Expr_head.md
           - reference/Expr_inspect.md
@@ -281,9 +283,9 @@ nav:
           - reference/Expr_is_in.md
           - reference/Expr_is_infinite.md
           - reference/Expr_is_nan.md
+          - reference/Expr_is_not.md
           - reference/Expr_is_not_nan.md
           - reference/Expr_is_not_null.md
-          - reference/Expr_is_not.md
           - reference/Expr_is_null.md
           - reference/Expr_is_unique.md
           - reference/Expr_keep_name.md
@@ -295,10 +297,10 @@ nav:
           - reference/Expr_lit_to_s.md
           - reference/Expr_log.md
           - reference/Expr_log10.md
-          - reference/Expr_lt_eq.md
           - reference/Expr_lt.md
-          - reference/Expr_map_alias.md
+          - reference/Expr_lt_eq.md
           - reference/Expr_map.md
+          - reference/Expr_map_alias.md
           - reference/Expr_max.md
           - reference/Expr_mean.md
           - reference/Expr_median.md
@@ -320,8 +322,8 @@ nav:
           - reference/Expr_rank.md
           - reference/Expr_rechunk.md
           - reference/Expr_reinterpret.md
-          - reference/Expr_rep_extend.md
           - reference/Expr_rep.md
+          - reference/Expr_rep_extend.md
           - reference/Expr_repeat_by.md
           - reference/Expr_reshape.md
           - reference/Expr_rolling_max.md
@@ -338,8 +340,8 @@ nav:
           - reference/Expr_sample.md
           - reference/Expr_search_sorted.md
           - reference/Expr_set_sorted.md
-          - reference/Expr_shift_and_fill.md
           - reference/Expr_shift.md
+          - reference/Expr_shift_and_fill.md
           - reference/Expr_shrink_dtype.md
           - reference/Expr_shuffle.md
           - reference/Expr_sign.md
@@ -347,8 +349,8 @@ nav:
           - reference/Expr_sinh.md
           - reference/Expr_skew.md
           - reference/Expr_slice.md
-          - reference/Expr_sort_by.md
           - reference/Expr_sort.md
+          - reference/Expr_sort_by.md
           - reference/Expr_sqrt.md
           - reference/Expr_std.md
           - reference/Expr_str.md
@@ -356,22 +358,20 @@ nav:
           - reference/Expr_sub.md
           - reference/Expr_sum.md
           - reference/Expr_tail.md
-          - reference/Expr_take_every.md
           - reference/Expr_take.md
+          - reference/Expr_take_every.md
           - reference/Expr_tan.md
           - reference/Expr_tanh.md
           - reference/Expr_to_physical.md
           - reference/Expr_to_r.md
           - reference/Expr_to_struct.md
           - reference/Expr_top_k.md
-          - reference/Expr_unique_counts.md
           - reference/Expr_unique.md
+          - reference/Expr_unique_counts.md
           - reference/Expr_upper_lower_bound.md
           - reference/Expr_value_counts.md
           - reference/Expr_var.md
           - reference/Expr_xor.md
-          - reference/Expr-cash-print-open-paren-close-paren.md
-          - reference/Expr.md
           - reference/ExprBin_contains.md
           - reference/ExprBin_decode.md
           - reference/ExprBin_encode.md
@@ -426,8 +426,8 @@ nav:
           - reference/ExprStr_encode.md
           - reference/ExprStr_ends_with.md
           - reference/ExprStr_explode.md
-          - reference/ExprStr_extract_all.md
           - reference/ExprStr_extract.md
+          - reference/ExprStr_extract_all.md
           - reference/ExprStr_json_extract.md
           - reference/ExprStr_json_path_match.md
           - reference/ExprStr_lengths.md
@@ -435,13 +435,13 @@ nav:
           - reference/ExprStr_lstrip.md
           - reference/ExprStr_n_chars.md
           - reference/ExprStr_parse_int.md
-          - reference/ExprStr_replace_all.md
           - reference/ExprStr_replace.md
+          - reference/ExprStr_replace_all.md
           - reference/ExprStr_rjust.md
           - reference/ExprStr_rstrip.md
           - reference/ExprStr_slice.md
-          - reference/ExprStr_split_exact.md
           - reference/ExprStr_split.md
+          - reference/ExprStr_split_exact.md
           - reference/ExprStr_splitn.md
           - reference/ExprStr_starts_with.md
           - reference/ExprStr_strip.md
@@ -466,8 +466,8 @@ nav:
           - reference/length.Series.md
           - reference/macro_add_syntax_check_to.md
           - reference/macro_new_subnamespace.md
-          - reference/map_err.md
           - reference/map.md
+          - reference/map_err.md
           - reference/max.md
           - reference/mem_address.md
           - reference/method_as_property.md
@@ -487,7 +487,6 @@ nav:
           - reference/PolarsBackgroundHandle_is_exhausted.md
           - reference/PolarsBackgroundHandle_join.md
           - reference/prepare_alpha.md
-          - reference/print_env.md
           - reference/print-open-paren-close-paren.md
           - reference/print.Expr.md
           - reference/print.GroupBy.md
@@ -500,6 +499,7 @@ nav:
           - reference/print.When.md
           - reference/print.WhenThen.md
           - reference/print.WhenThenThen.md
+          - reference/print_env.md
           - reference/pstop.md
           - reference/read_csv_.md
           - reference/replace_private_with_pub_methods.md
@@ -518,8 +518,8 @@ nav:
           - reference/unwrap.md
           - reference/verify_method_call.md
           - reference/when_then_otherwise.md
-          - reference/wrap_e_result.md
           - reference/wrap_e.md
+          - reference/wrap_e_result.md
           - reference/wrap_elist_result.md
           - reference/wrap_proto_schema.md
           - reference/wrap_s.md

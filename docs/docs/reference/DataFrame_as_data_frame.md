@@ -9,8 +9,9 @@ return polars DataFrame as R data.frame
 ## Usage
 
 ```r
-DataFrame_as_data_frame(...)
-list(list("as.data.frame"), list("DataFrame"))(x, ...)
+<DataFrame>$as_data_frame()
+# S3 method
+as.data.frame.DataFrame()
 ```
 
 ## Arguments
