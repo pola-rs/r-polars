@@ -1,6 +1,6 @@
 .knit_file <- function(file_name) {
-  file <- file.path("files", file_name)
-  output <- tempfile(fileext = "md")
+  file = file.path("files", file_name)
+  output = tempfile(fileext = "md")
   on.exit(unlink(output))
 
   suppressWarnings(knitr::knit(file, output, quiet = TRUE, envir = new.env()))
