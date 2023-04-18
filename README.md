@@ -10,7 +10,7 @@ badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-univers
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs
-stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://rpolars.github.io)
+release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
 [![Docs
 dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
@@ -45,25 +45,11 @@ installation options for a variety of operating systems:
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
-source builds for other platforms.
+source builds for other platforms. Please see further below for binary
+install options on Linux.
 
 ``` r
-install.packages(
-  "polars", 
-  repos = "https://rpolars.r-universe.dev"
-)
-```
-
-Binary builds are also available for users running the latest release of
-R (4.2 at the time of writing) on Ubuntu 22.04 LTS (“Jammy Jellyfish”).
-Please see the GitHub release section below for binary install options
-on other Linux distros.
-
-``` r
-install.packages(
-  "polars", 
-  repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.2/"
-)
+install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
 Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for
@@ -129,7 +115,6 @@ to specify a Polars constructor.
 
 ``` r
 library(polars)
-#> Warning: package 'polars' was built under R version 4.2.3
 
 dat = pl$DataFrame(mtcars)
 dat
@@ -262,7 +247,7 @@ Rust toolchain
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
-- Install [CMake](https://cmake.org/) and added it to your PATH.
+- Install [CMake](https://cmake.org/) and add it to your PATH.
 
 #### Development workflow
 
