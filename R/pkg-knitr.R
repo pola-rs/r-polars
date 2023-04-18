@@ -16,7 +16,7 @@ knit_print.DataFrame = function(x, ...) {
   out <- capture.output(print(x))
 
   # Needs to insert a blank line
-  out <- c(out[1], "", out[-1]) |>
+  out = c(out[1], "", out[-1]) |>
     paste(collapse = "\n")
 
   knitr::asis_output(out)
