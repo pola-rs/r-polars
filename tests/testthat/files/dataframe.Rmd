@@ -1,3 +1,4 @@
 ```{r}
-pl$DataFrame(mtcars)
+df = data.frame(a = 1:3, b = letters[1:3])
+pl$DataFrame(df)
 ```
