@@ -1,9 +1,5 @@
 # polars (development version)
 
-## What's changed
-
-* Base R functions work on DataFrame and LazyFrame objects via S3 methods: as.data.frame, as.matrix, dim, head, length, max, mean, median, min, na.omit, names, sum, tail, unique, ncol, nrow (#107 @vincentarelbundock).
-
 # polars v0.5.0
 
 ## BREAKING CHANGE
@@ -13,6 +9,7 @@
 - Several new methods for DataFrame, LazyFrame & GroupBy translated (#103, #105 @vincentarelbundock)
 - Doc fixes (#102, #109  @etiennebacher)
 - Experimental opt-in auto completion (#96 @sorhawell)
+- Base R functions work on DataFrame and LazyFrame objects via S3 methods: as.data.frame, as.matrix, dim, head, length, max, mean, median, min, na.omit, names, sum, tail, unique, ncol, nrow (#107 @vincentarelbundock).
 
 ## New Contributors
 - @etiennebacher made their first contribution in #102
