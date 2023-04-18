@@ -1,25 +1,20 @@
-# `clone`
+data
 
-Clone a Series
-
-## Description
-
-Rarely useful as Series are nearly 100% immutable
-Any modification of a Series should lead to a clone anyways.
+# Clone a Series
 
 ## Format
 
 An object of class `character` of length 1.
 
-## Usage
-
 ```r
 Series_clone
 ```
 
-## Value
+## Returns
 
 Series
+
+Rarely useful as Series are nearly 100% immutable Any modification of a Series should lead to a clone anyways.
 
 ## Examples
 
@@ -30,5 +25,3 @@ s3 = s1
 pl$mem_address(s1) != pl$mem_address(s2)
 pl$mem_address(s1) == pl$mem_address(s3)
 ```
-
-

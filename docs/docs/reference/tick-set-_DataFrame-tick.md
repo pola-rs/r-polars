@@ -1,39 +1,25 @@
-# ``<-_DataFrame``
-
-generic setter method
-
-
-## Description
-
-set value of properties of DataFrames
-
-
-## Usage
+# generic setter method
 
 ```r
-list(list("$"), list("DataFrame"))(self, name) <- value
+## S3 replacement method for class 'DataFrame'
+self$name <- value
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`self`     |     DataFrame
-`name`     |     name method/property to set
-`value`     |     value to insert
+- `self`: DataFrame
+- `name`: name method/property to set
+- `value`: value to insert
 
-
-## Details
-
-settable polars object properties may appear to be R objects, but they are not.
- See [[method_name]] example
-
-
-## Value
+## Returns
 
 value
 
+set value of properties of DataFrames
+
+## Details
+
+settable polars object properties may appear to be R objects, but they are not. See `[[method_name]]` example
 
 ## Examples
 
@@ -70,5 +56,3 @@ df$`columns<-` = letters[5:1]
 df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 polars:::DataFrame.property_setters$columns #and even more obscure to see setter code
 ```
-
-

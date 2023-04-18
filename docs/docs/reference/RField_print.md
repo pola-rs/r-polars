@@ -1,29 +1,17 @@
-# `RField_print`
-
-Print a polars Field
-
-
-## Description
-
-Print a polars Field
-
-
-## Usage
+# Print a polars Field
 
 ```r
 RField_print()
 ```
 
-
-## Value
+## Returns
 
 self
 
+Print a polars Field
 
 ## Examples
 
 ```r
 print(pl$Field("foo",pl$List(pl$UInt64)))
 ```
-
-

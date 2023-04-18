@@ -1,30 +1,17 @@
-# `Expr_cat`
-
-cat: related methods
-
-
-## Description
-
-Create an object namespace of all cat related methods.
- See the individual method pages for full details
-
-
-## Usage
+# cat: related methods
 
 ```r
 Expr_cat()
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Create an object namespace of all cat related methods. See the individual method pages for full details
 
 ## Examples
 
 ```r
 #missing
 ```
-
-

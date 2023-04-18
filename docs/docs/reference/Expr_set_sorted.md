@@ -1,31 +1,18 @@
-# `Expr_set_sorted`
-
-Set_sorted
-
-
-## Description
-
-Flags the expression as 'sorted'.
-
-
-## Usage
+# Set_sorted
 
 ```r
 Expr_set_sorted(reverse = FALSE)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`reverse`     |     bool if TRUE Descending else Ascending
+- `reverse`: bool if TRUE Descending else Ascending
 
-
-## Value
+## Returns
 
 Expr
 
+Flags the expression as 'sorted'.
 
 ## Examples
 
@@ -38,5 +25,3 @@ s$flags # see flags
 s2 = pl$select(pl$lit(c(1,3,2,4))$set_sorted()$alias("a"))$get_column("a")
 s2$sort() #sorting skipped, although not actually sorted
 ```
-
-

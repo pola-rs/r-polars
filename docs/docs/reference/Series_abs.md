@@ -1,25 +1,17 @@
-# `abs`
-
-Take absolute value of Series
-
-## Description
-
-Take absolute value of Series
-
-## Usage
+# Take absolute value of Series
 
 ```r
 Series_abs()
 ```
 
-## Value
+## Returns
 
 Series
+
+Take absolute value of Series
 
 ## Examples
 
 ```r
 pl$Series(-2:2)$abs()
 ```
-
-

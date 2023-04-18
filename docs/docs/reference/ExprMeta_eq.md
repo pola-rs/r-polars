@@ -1,24 +1,14 @@
-# `ExprMeta_eq`
-
-Meta Equal
-
-
-## Description
-
-Are two expressions on a meta level equal
-
+# Meta Equal
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     Expr to compare with
+- `other`: Expr to compare with
 
-
-## Value
+## Returns
 
 bool: TRUE if equal
 
+Are two expressions on a meta level equal
 
 ## Examples
 
@@ -40,5 +30,3 @@ e_test$to_r()
 #e1 and e2 are on the meta-level NOT identical expressions
 e1$meta$neq(e2)
 ```
-
-

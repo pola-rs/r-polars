@@ -1,22 +1,14 @@
-# `arr_arg_max`
-
-Arg max sublists
-
-
-## Description
-
-Retrieve the index of the maximum value in every sublist.
-
+# Arg max sublists
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Retrieve the index of the maximum value in every sublist.
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(list(s = list(1:2,2:1)))
 df$select(pl$col("s")$arr$arg_max())
 ```
-
-

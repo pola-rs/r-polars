@@ -1,29 +1,15 @@
-# `is_ok`
-
-check if x ss a result and an ok
-
-
-## Description
-
-check if x ss a result and an ok
-
-
-## Usage
+# check if x ss a result and an ok
 
 ```r
 is_ok(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     R object which could be a rust-like result of a list with two elements, ok and err
+- `x`: R object which could be a rust-like result of a list with two elements, ok and err
 
-
-## Value
+## Returns
 
 bool if is a result object which is an ok
 
-
+check if x ss a result and an ok

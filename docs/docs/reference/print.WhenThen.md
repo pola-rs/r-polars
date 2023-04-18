@@ -1,37 +1,23 @@
-# `print.WhenThen`
-
-print When
-
-
-## Description
-
-print When
-
-
-## Usage
+# print When
 
 ```r
-list(list("print"), list("WhenThen"))(x, ...)
+## S3 method for class 'WhenThen'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     When object
-`...`     |     not used
+- `x`: When object
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+print When
 
 ## Examples
 
 ```r
 print(pl$when(pl$col("a")>2)$then(pl$lit("more than two")))
 ```
-
-

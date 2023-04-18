@@ -1,12 +1,4 @@
-# `as_data_frame`
-
-convert to data.frame
-
-## Description
-
-convert to data.frame
-
-## Usage
+# convert to data.frame
 
 ```r
 GroupBy_as_data_frame(...)
@@ -14,18 +6,16 @@ GroupBy_as_data_frame(...)
 
 ## Arguments
 
-| Argument | Description                             | 
-| -------- | --------------------------------------- |
-| `...`         | any opt param passed to R as.data.frame | 
+- `...`: any opt param passed to R as.data.frame
 
-## Value
+## Returns
 
 R data.frame
+
+convert to data.frame
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
 ```
-
-

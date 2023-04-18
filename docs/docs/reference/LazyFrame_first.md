@@ -1,29 +1,21 @@
-# `first`
-
-First
-
-## Description
-
-Get the first row of the DataFrame.
+# First
 
 ## Format
 
 function
 
-## Usage
-
 ```r
 LazyFrame_first
 ```
 
-## Value
+## Returns
 
 A new `DataFrame` object with applied filter.
+
+Get the first row of the DataFrame.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$lazy()$first()$collect()
 ```
-
-

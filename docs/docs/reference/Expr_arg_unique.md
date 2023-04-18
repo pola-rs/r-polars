@@ -1,34 +1,23 @@
-# `Expr_arg_unique`
+data
 
-Index of First Unique Value.
-
-
-## Description
-
-Index of First Unique Value.
-
+# Index of First Unique Value.
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_arg_unique
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Index of First Unique Value.
 
 ## Examples
 
 ```r
 pl$select(pl$lit(c(1:2,1:3))$arg_unique())
 ```
-
-

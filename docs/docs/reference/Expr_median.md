@@ -1,34 +1,23 @@
-# `Expr_median`
+data
 
-median
-
-
-## Description
-
-Get median value.
-
+# median
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_median
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Get median value.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
 ```
-
-

@@ -1,25 +1,17 @@
-# `first`
-
-First
-
-## Description
-
-Get the first row of the DataFrame.
-
-## Usage
+# First
 
 ```r
 DataFrame_first()
 ```
 
-## Value
+## Returns
 
 A new `DataFrame` object with applied filter.
+
+Get the first row of the DataFrame.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$first()
 ```
-
-

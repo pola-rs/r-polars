@@ -1,15 +1,7 @@
-# `ExprBin_ends_with`
+# ends_with
 
-ends_with
-
-
-## Description
-
-Check if string values end with a binary substring.
-
-
-## Value
+## Returns
 
 Expr returning a Boolean
 
-
+Check if string values end with a binary substring.

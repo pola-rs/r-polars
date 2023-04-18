@@ -1,24 +1,14 @@
-# `RField_name`
-
-get/set Field name
-
-
-## Description
-
-get/set Field name
-
-
-## Usage
+# get/set Field name
 
 ```r
 RField_name()
 ```
 
-
-## Value
+## Returns
 
 name
 
+get/set Field name
 
 ## Examples
 
@@ -35,5 +25,3 @@ field$datatype = pl$UInt32
 
 print(field)
 ```
-
-

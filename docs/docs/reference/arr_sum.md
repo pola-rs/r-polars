@@ -1,22 +1,14 @@
-# `arr_sum`
-
-Sum lists
-
-
-## Description
-
-Sum all the lists in the array.
-
+# Sum lists
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Sum all the lists in the array.
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 df$select(pl$col("values")$arr$sum())
 ```
-
-

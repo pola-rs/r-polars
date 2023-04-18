@@ -1,39 +1,27 @@
-# `Expr_ceil`
+data
 
-Ceiling
-
-
-## Description
-
-Rounds up to the nearest integer value.
- Only works on floating point Series.
-
+# Ceiling
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_ceil
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Rounds up to the nearest integer value. Only works on floating point Series.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(
-a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+  a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
 ))$select(
-pl$col("a")$ceil()
+  pl$col("a")$ceil()
 )
 ```
-
-

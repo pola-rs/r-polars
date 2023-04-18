@@ -1,36 +1,24 @@
-# `Expr_or`
+data
 
-Or
-
-
-## Description
-
-combine to boolean expresions with OR
-
+# Or
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_or(other)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     Expr or into Expr
+- `other`: Expr or into Expr
 
-
-## Value
+## Returns
 
 Expr
 
+combine to boolean expresions with OR
 
 ## Examples
 
@@ -38,5 +26,3 @@ Expr
 pl$lit(TRUE) | FALSE
 pl$lit(TRUE)$or(pl$lit(TRUE))
 ```
-
-

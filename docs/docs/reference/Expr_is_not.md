@@ -1,38 +1,28 @@
-# `Expr_is_not`
+data
 
-Not !
-
-
-## Description
-
-not method and operator
-
+# Not !
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_is_not(other)
-list(list("!"), list("Expr"))(x)
-```
 
+## S3 method for class 'Expr'
+!x
+```
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     Expr
-`other`     |     literal or Robj which can become a literal
+- `x`: Expr
+- `other`: literal or Robj which can become a literal
 
-
-## Value
+## Returns
 
 Exprs
 
+not method and operator
 
 ## Examples
 
@@ -41,5 +31,3 @@ Exprs
 pl$lit(TRUE)$is_not()
 !pl$lit(TRUE)
 ```
-
-

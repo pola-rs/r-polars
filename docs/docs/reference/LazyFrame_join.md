@@ -1,12 +1,4 @@
-# `join`
-
-LazyFrame join
-
-## Description
-
-join a LazyFrame
-
-## Usage
+# LazyFrame join
 
 ```r
 LazyFrame_join(
@@ -23,19 +15,17 @@ LazyFrame_join(
 
 ## Arguments
 
-| Argument | Description                                                                            | 
-| -------- | -------------------------------------------------------------------------------------- |
-| `other`         | LazyFrame                                                                              | 
-| `left_on`         | names of columns in self LazyFrame, order should match. Type, see on param.            | 
-| `right_on`         | names of columns in other LazyFrame, order should match. Type, see on param.           | 
-| `on`         | named columns as char vector of named columns, or list of expressions and/or strings.  | 
-| `how`         | a string selecting one of the following methods: inner, left, outer, semi, anti, cross | 
-| `suffix`         | name to added right table                                                              | 
-| `allow_parallel`         | bool                                                                                   | 
-| `force_parallel`         | bool                                                                                   | 
+- `other`: LazyFrame
+- `left_on`: names of columns in self LazyFrame, order should match. Type, see on param.
+- `right_on`: names of columns in other LazyFrame, order should match. Type, see on param.
+- `on`: named columns as char vector of named columns, or list of expressions and/or strings.
+- `how`: a string selecting one of the following methods: inner, left, outer, semi, anti, cross
+- `suffix`: name to added right table
+- `allow_parallel`: bool
+- `force_parallel`: bool
 
-## Value
+## Returns
 
 A new `LazyFrame` object with applied join.
 
-
+join a LazyFrame

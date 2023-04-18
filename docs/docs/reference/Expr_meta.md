@@ -1,30 +1,17 @@
-# `Expr_meta`
-
-meta: related methods
-
-
-## Description
-
-Create an object namespace of all meta related methods.
- See the individual method pages for full details
-
-
-## Usage
+# meta: related methods
 
 ```r
 Expr_meta()
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Create an object namespace of all meta related methods. See the individual method pages for full details
 
 ## Examples
 
 ```r
 #missing
 ```
-
-

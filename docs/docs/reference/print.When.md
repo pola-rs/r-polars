@@ -1,37 +1,23 @@
-# `print.When`
-
-print When
-
-
-## Description
-
-print When
-
-
-## Usage
+# print When
 
 ```r
-list(list("print"), list("When"))(x, ...)
+## S3 method for class 'When'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     When object
-`...`     |     not used
+- `x`: When object
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+print When
 
 ## Examples
 
 ```r
 print(pl$when(pl$col("a")>2))
 ```
-
-

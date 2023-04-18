@@ -1,37 +1,23 @@
-# `print()`
-
-s3 method print DataFrame
-
-
-## Description
-
-s3 method print DataFrame
-
-
-## Usage
+# s3 method print DataFrame
 
 ```r
-list(list("print"), list("DataFrame"))(x, ...)
+## S3 method for class 'DataFrame'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataFrame
-`...`     |     not used
+- `x`: DataFrame
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+s3 method print DataFrame
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)
 ```
-
-

@@ -1,47 +1,36 @@
-# `Expr`
-
-Polars Expr
-
-
-## Description
-
-Polars pl$Expr
-
-
-## Usage
+# Polars Expr
 
 ```r
 Expr_lit(x)
+
 Expr_suffix(suffix)
+
 Expr_prefix(prefix)
+
 Expr_reverse()
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     an R Scalar, or R vector/list (via Series) into Expr
-`suffix`     |     string suffix to be added to a name
-`prefix`     |     string suffix to be added to a name
+- `x`: an R Scalar, or R vector/list (via Series) into Expr
+- `suffix`: string suffix to be added to a name
+- `prefix`: string suffix to be added to a name
 
+## Returns
+
+Expr, literal of that value
+
+Expr
+
+Expr
+
+Expr
+
+Polars pl$Expr
 
 ## Details
 
 pl$lit(NULL) translates into a typeless polars Null
-
-
-## Value
-
-Expr, literal of that value
- 
- Expr
- 
- Expr
- 
- Expr
-
 
 ## Examples
 
@@ -73,5 +62,3 @@ pl$col("some")$suffix("_column")
 pl$col("some")$suffix("_column")
 pl$DataFrame(list(a=1:5))$select(pl$col("a")$reverse())
 ```
-
-

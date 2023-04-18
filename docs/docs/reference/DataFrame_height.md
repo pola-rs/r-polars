@@ -1,25 +1,17 @@
-# `height`
-
-Height of DataFrame
-
-## Description
-
-Get height(nrow) of DataFrame
-
-## Usage
+# Height of DataFrame
 
 ```r
 DataFrame_height()
 ```
 
-## Value
+## Returns
 
 height as numeric
+
+Get height(nrow) of DataFrame
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$height
 ```
-
-

@@ -1,25 +1,17 @@
-# `collect_background`
-
-New DataFrame from LazyFrame\_object$collect()
-
-## Description
-
-collect DataFrame by lazy query
-
-## Usage
+# New DataFrame from LazyFrame_object$collect()
 
 ```r
 LazyFrame_collect_background()
 ```
 
-## Value
+## Returns
 
 collected `DataFrame`
+
+collect DataFrame by lazy query
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 ```
-
-

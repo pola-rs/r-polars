@@ -1,12 +1,4 @@
-# `apply`
-
-Apply every value with an R fun
-
-## Description
-
-About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
-
-## Usage
+# Apply every value with an R fun
 
 ```r
 Series_apply(
@@ -19,16 +11,16 @@ Series_apply(
 
 ## Arguments
 
-| Argument | Description                                                                  | 
-| -------- | ---------------------------------------------------------------------------- |
-| `fun`         | r function, should take a scalar value as input and return one.              | 
-| `datatype`         | DataType of return value. Default NULL means same as input.                  | 
-| `strict_return_type`         | bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null | 
-| `allow_fail_eval`         | bool, default FALSE: raise R fun error, TRUE: convert to polars Null         | 
+- `fun`: r function, should take a scalar value as input and return one.
+- `datatype`: DataType of return value. Default NULL means same as input.
+- `strict_return_type`: bool, default TRUE: fail on wrong return type, FALSE: convert to polars Null
+- `allow_fail_eval`: bool, default FALSE: raise R fun error, TRUE: convert to polars Null
 
-## Value
+## Returns
 
 Series
+
+About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
 
 ## Examples
 
@@ -40,5 +32,3 @@ s$apply(f,pl$Utf8)
 #same as
 pl$Series(sapply(s$to_r(),f),s$name)
 ```
-
-

@@ -1,25 +1,17 @@
-# `ceil`
-
-Series\_ceil
-
-## Description
-
-Ceil of this Series
-
-## Usage
+# Series_ceil
 
 ```r
 Series_ceil()
 ```
 
-## Value
+## Returns
 
 bool
+
+Ceil of this Series
 
 ## Examples
 
 ```r
 pl$Series(c(.5,1.999))$ceil()
 ```
-
-

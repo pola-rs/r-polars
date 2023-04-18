@@ -1,41 +1,25 @@
-# `Expr_std`
-
-Get Standard Deviation
-
-
-## Description
-
-Get Standard Deviation
-
+# Get Standard Deviation
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_std(ddof = 1)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`ddof`     |     integer in range [0;255] degrees of freedom
+- `ddof`: integer in range `[0;255]` degrees of freedom
 
-
-## Value
+## Returns
 
 Expr (f64 scalar)
 
+Get Standard Deviation
 
 ## Examples
 
 ```r
 pl$select(pl$lit(1:5)$std())
 ```
-
-

@@ -1,17 +1,10 @@
-# `ExprMeta_undo_aliases`
+# Undo aliases
 
-Undo aliases
-
-
-## Description
-
-Undo any renaming operation like `alias` or `keep_name` .
-
-
-## Value
+## Returns
 
 Expr with aliases undone
 
+Undo any renaming operation like `alias` or `keep_name`.
 
 ## Examples
 
@@ -21,5 +14,3 @@ e$meta$root_names() == "alice"
 e$meta$output_name() == "bob"
 e$meta$undo_aliases()$meta$output_name() == "alice"
 ```
-
-

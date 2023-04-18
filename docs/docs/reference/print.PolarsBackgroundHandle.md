@@ -1,32 +1,20 @@
-# `print.PolarsBackgroundHandle`
-
-print LazyFrame s3 method
-
-
-## Description
-
-print LazyFrame s3 method
-
-
-## Usage
+# print LazyFrame s3 method
 
 ```r
-list(list("print"), list("PolarsBackgroundHandle"))(x, ...)
+## S3 method for class 'PolarsBackgroundHandle'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataFrame
-`...`     |     not used
+- `x`: DataFrame
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+print LazyFrame s3 method
 
 ## Examples
 
@@ -37,5 +25,3 @@ handle$is_exhausted()
 df = handle$join()
 handle$is_exhausted()
 ```
-
-

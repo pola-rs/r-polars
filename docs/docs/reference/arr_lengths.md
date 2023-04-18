@@ -1,22 +1,14 @@
-# `arr_lengths`
-
-Lengths arrays in list
-
-
-## Description
-
-Get the length of the arrays as UInt32
-
+# Lengths arrays in list
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Get the length of the arrays as UInt32
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(list_of_strs = pl$Series(list(c("a","b"),"c")))
 df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
 ```
-
-

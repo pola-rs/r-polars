@@ -1,47 +1,27 @@
-# `ExprDT_combine`
-
-Combine Data and Time
-
-
-## Description
-
-Create a naive Datetime from an existing Date/Datetime expression and a Time.
- Each date/datetime in the first half of the interval
- is mapped to the start of its bucket.
- Each date/datetime in the second half of the interval
- is mapped to the end of its bucket.
-
+# Combine Data and Time
 
 ## Format
 
 function
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`tm`     |     Expr or numeric or PTime, the number of epoch since or before(if negative) the Date or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.
-`tu`     |     time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.
+- `tm`: Expr or numeric or PTime, the number of epoch since or before(if negative) the Date or tm is an Expr e.g. a column of DataType 'Time' or something into an Expr.
+- `tu`: time unit of epochs, default is "us", if tm is a PTime, then tz passed via PTime.
 
-
-## Details
-
-The `tu` allows the following time time units
- the following string language:
-  
-
-*  1ns # 1 nanosecond 
-
-*  1us # 1 microsecond 
-
-*  1ms # 1 millisecond
-
-
-## Value
+## Returns
 
 Date/Datetime expr
 
+Create a naive Datetime from an existing Date/Datetime expression and a Time. Each date/datetime in the first half of the interval is mapped to the start of its bucket. Each date/datetime in the second half of the interval is mapped to the end of its bucket.
+
+## Details
+
+The `tu` allows the following time time units the following string language:
+
+ * 1ns # 1 nanosecond
+ * 1us # 1 microsecond
+ * 1ms # 1 millisecond
 
 ## Examples
 
@@ -58,5 +38,3 @@ pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")$lit_to_s()
 expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")
 expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
 ```
-
-

@@ -1,41 +1,24 @@
-# `macro_new_subnamespace`
-
-Macro - New subnamespace
-
-
-## Description
-
-Bundle class methods into an environment (subname space)
-
-
-## Usage
+# Macro - New subnamespace
 
 ```r
 macro_new_subnamespace(class_pattern, subclass_env = NULL, remove_f = TRUE)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`class_pattern`     |     regex to select functions
-`subclass_env`     |     optional subclass of
-`remove_f`     |     drop sourced functions from package ns after bundling into sub ns
+- `class_pattern`: regex to select functions
+- `subclass_env`: optional subclass of
+- `remove_f`: drop sourced functions from package ns after bundling into sub ns
 
-
-## Details
-
-This function is used to emulate py-polars subnamespace-methods
- All R functions coined 'macro_'-functions use eval(parse()) but only at package build time
- to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
- , go ahead.
-
-
-## Value
+## Returns
 
 A function which returns a subclass environment of bundled class functions.
 
+Bundle class methods into an environment (subname space)
+
+## Details
+
+This function is used to emulate py-polars subnamespace-methods All R functions coined 'macro_'-functions use eval(parse()) but only at package build time to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way , go ahead.
 
 ## Examples
 
@@ -72,5 +55,3 @@ A function which returns a subclass environment of bundled class functions.
 #e$my_sub_ns$add2() #use the sub namespace
 #e$my_sub_ns$mul2()
 ```
-
-

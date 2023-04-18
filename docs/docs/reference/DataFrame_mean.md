@@ -1,25 +1,17 @@
-# `mean`
-
-Mean
-
-## Description
-
-Aggregate the columns in the DataFrame to their mean value.
-
-## Usage
+# Mean
 
 ```r
 DataFrame_mean()
 ```
 
-## Value
+## Returns
 
 A new `DataFrame` object with applied aggregation.
+
+Aggregate the columns in the DataFrame to their mean value.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$mean()
 ```
-
-

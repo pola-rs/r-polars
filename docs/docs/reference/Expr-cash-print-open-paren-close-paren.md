@@ -1,24 +1,13 @@
-# `Expr$print()`
-
-internal method print Expr
-
-
-## Description
-
-internal method print Expr
-
-
-## Usage
+# internal method print Expr
 
 ```r
 Expr_print()
 ```
 
+internal method print Expr
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)
 ```
-
-

@@ -1,23 +1,13 @@
-# `polars_runtime_flags`
+data
 
-internal keeping of state at runtime
-
-
-## Description
-
-This environment is used internally for the package to remember
- what has been going on. Currently only used to throw one-time warnings()
-
+# internal keeping of state at runtime
 
 ## Format
 
 An object of class `environment` of length 0.
 
-
-## Usage
-
 ```r
 runtime_state
 ```
 
-
+This environment is used internally for the package to remember what has been going on. Currently only used to throw one-time warnings()

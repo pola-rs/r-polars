@@ -1,32 +1,26 @@
-# `print`
-
-Print Series
-
-## Description
-
-Print Series
-
-Print Series
-
-## Usage
+# Print Series
 
 ```r
-list(list("print"), list("Series"))(x, ...)
+## S3 method for class 'Series'
+print(x, ...)
+
 Series_print()
 ```
 
 ## Arguments
 
-| Argument | Description | 
-| -------- | ----------- |
-| `x`         | Series      | 
-| `...`         | not used    | 
+- `x`: Series
+- `...`: not used
 
-## Value
+## Returns
 
 invisible(self)
 
 self
+
+Print Series
+
+Print Series
 
 ## Examples
 
@@ -34,5 +28,3 @@ self
 print(pl$Series(1:3))
 pl$Series(1:3)
 ```
-
-

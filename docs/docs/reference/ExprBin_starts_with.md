@@ -1,17 +1,7 @@
-# `ExprBin_starts_with`
-
-starts_with
-
-
-## Description
-
-Check if values starts with a binary substring.
-
+# starts_with
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`sub`     |     Prefix substring.
+- `sub`: Prefix substring.
 
-
+Check if values starts with a binary substring.

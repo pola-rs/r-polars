@@ -1,30 +1,17 @@
-# `Expr_str`
-
-str: string related methods
-
-
-## Description
-
-Create an object namespace of all string related methods.
- See the individual method pages for full details
-
-
-## Usage
+# str: string related methods
 
 ```r
 Expr_str()
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Create an object namespace of all string related methods. See the individual method pages for full details
 
 ## Examples
 
 ```r
 #missing
 ```
-
-

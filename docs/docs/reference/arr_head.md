@@ -1,29 +1,18 @@
-# `arr_head`
-
-Heads of sublists
-
-
-## Description
-
-head the first `n` values of every sublist.
-
+# Heads of sublists
 
 ## Format
 
 function
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`n`     |     Numeric or Expr, number of values to return for each sublist.
+- `n`: Numeric or Expr, number of values to return for each sublist.
 
-
-## Value
+## Returns
 
 Expr
 
+head the first `n` values of every sublist.
 
 ## Examples
 
@@ -31,5 +20,3 @@ Expr
 df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("a")$arr$head(2))
 ```
-
-

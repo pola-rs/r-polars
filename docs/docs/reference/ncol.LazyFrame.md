@@ -1,29 +1,15 @@
-# `ncol.LazyFrame`
-
-The Number of Columns of a LazyFrame
-
-
-## Description
-
-The Number of Columns of a LazyFrame
-
-
-## Usage
+# The Number of Columns of a LazyFrame
 
 ```r
 ncol.LazyFrame(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     LazyFrame
+- `x`: LazyFrame
 
-
-## Value
+## Returns
 
 Integer
 
-
+The Number of Columns of a LazyFrame

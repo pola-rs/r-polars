@@ -1,13 +1,7 @@
-# `class`
+# Use groups on a Polars lazy DataFrame
 
-Use groups on a Polars lazy DataFrame
-
-## Description
-
-Use groups on a Polars lazy DataFrame
-
-## Value
+## Returns
 
 A lazy grouped DataFrame
 
-
+Use groups on a Polars lazy DataFrame

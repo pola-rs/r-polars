@@ -1,34 +1,23 @@
-# `Expr_log10`
+data
 
-10-base log
-
-
-## Description
-
-Compute the base 10 logarithm of the input array, element-wise.
-
+# 10-base log
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_log10
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Compute the base 10 logarithm of the input array, element-wise.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
 ```
-
-

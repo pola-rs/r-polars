@@ -1,29 +1,18 @@
-# `arr_contains`
-
-Sublists contains
-
-
-## Description
-
-Check if sublists contain the given item.
-
+# Sublists contains
 
 ## Format
 
 function
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`item`     |     any into Expr/literal
+- `item`: any into Expr/literal
 
-
-## Value
+## Returns
 
 Expr of a boolean mask
 
+Check if sublists contain the given item.
 
 ## Examples
 
@@ -31,5 +20,3 @@ Expr of a boolean mask
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 df$select(pl$col("a")$arr$contains(1L))
 ```
-
-

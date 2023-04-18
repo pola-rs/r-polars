@@ -1,32 +1,25 @@
-# `to_Struct_unnest`
-
-to\_struct and unnest again
-
-## Description
-
-to\_struct and unnest again
-
-Unnest a DataFrame struct columns.
-
-## Usage
+# to_struct and unnest again
 
 ```r
 DataFrame_to_struct(name = "")
+
 DataFrame_unnest(names = NULL)
 ```
 
 ## Arguments
 
-| Argument | Description                                                              | 
-| -------- | ------------------------------------------------------------------------ |
-| `name`         | name of new Series                                                       | 
-| `names`         | names of struct columns to unnest, default NULL unnest any struct column | 
+- `name`: name of new Series
+- `names`: names of struct columns to unnest, default NULL unnest any struct column
 
-## Value
+## Returns
 
-@to\_struct() returns a Series
+@to_struct() returns a Series
 
 $unnest() returns a DataFrame with all column including any that has been unnested
+
+to_struct and unnest again
+
+Unnest a DataFrame struct columns.
 
 ## Examples
 
@@ -39,5 +32,3 @@ s$to_r() # to r list
 df_s = s$to_frame() #place series in a new DataFrame
 df_s$unnest() # back to starting df
 ```
-
-

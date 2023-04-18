@@ -1,29 +1,21 @@
-# `mean`
-
-Mean
-
-## Description
-
-Aggregate the columns in the DataFrame to their mean value.
+# Mean
 
 ## Format
 
 function
 
-## Usage
-
 ```r
 LazyFrame_mean
 ```
 
-## Value
+## Returns
 
 A new `LazyFrame` object with applied aggregation.
+
+Aggregate the columns in the DataFrame to their mean value.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$lazy()$mean()$collect()
 ```
-
-

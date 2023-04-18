@@ -1,37 +1,23 @@
-# `print.GroupBy`
-
-print GroupBy
-
-
-## Description
-
-print GroupBy
-
-
-## Usage
+# print GroupBy
 
 ```r
-list(list("print"), list("GroupBy"))(x, ...)
+## S3 method for class 'GroupBy'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataFrame
-`...`     |     not used
+- `x`: DataFrame
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+print GroupBy
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$groupby("Species")
 ```
-
-

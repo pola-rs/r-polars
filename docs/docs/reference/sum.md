@@ -1,32 +1,21 @@
-# `sum`
-
-sum across expressions / literals / Series
-
-
-## Description
-
-syntactic sugar for starting a expression with sum
-
+# sum across expressions / literals / Series
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`...`     |     is a: If one arg:  
+- `...`: is a: If one arg:
+    
+     * Series or Expr, same as `column$sum()`
+     * string, same as `pl$col(column)$sum()`
+     * numeric, same as `pl$lit(column)$sum()`
+     * list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+    
+    If several args, then wrapped in a list and handled as above.
 
-*  Series or Expr, same as `column$sum()`  
-
-*  string, same as `pl$col(column)$sum()`  
-
-*  numeric, same as `pl$lit(column)$sum()`  
-
-*  list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...   If several args, then wrapped in a list and handled as above.
-
-
-## Value
+## Returns
 
 Expr
 
+syntactic sugar for starting a expression with sum
 
 ## Examples
 
@@ -49,5 +38,3 @@ pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a"
 pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
 pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
 ```
-
-

@@ -1,37 +1,23 @@
-# `print.RPolarsDataType`
-
-print a polars datatype
-
-
-## Description
-
-print a polars datatype
-
-
-## Usage
+# print a polars datatype
 
 ```r
-list(list("print"), list("RPolarsDataType"))(x, ...)
+## S3 method for class 'RPolarsDataType'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataType
-`...`     |     not used
+- `x`: DataType
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+print a polars datatype
 
 ## Examples
 
 ```r
 pl$dtypes$Boolean #implicit print
 ```
-
-

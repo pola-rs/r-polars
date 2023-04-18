@@ -1,29 +1,15 @@
-# `Err`
-
-Wrap in Err
-
-
-## Description
-
-Wrap in Err
-
-
-## Usage
+# Wrap in Err
 
 ```r
 Err(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     any R object
+- `x`: any R object
 
-
-## Value
+## Returns
 
 same R object wrapped in a Err-result
 
-
+Wrap in Err

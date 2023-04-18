@@ -1,34 +1,22 @@
-# `ExprStr_slice`
-
-slice
-
-
-## Description
-
-Create subslices of the string values of a Utf8 Series.
-
+# slice
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`pattern`     |     Into list(list("html"), list(list("<Expr>"))) , regex pattern
-`value`     |     Into list(list("html"), list(list("<Expr>"))) replcacement
-`literal`     |     bool, treat pattern as a literal string.
+- `pattern`: Into  , regex pattern
+- `value`: Into  replcacement
+- `literal`: bool, treat pattern as a literal string.
 
-
-## Value
+## Returns
 
 Expr: Series of dtype Utf8.
 
+Create subslices of the string values of a Utf8 Series.
 
 ## Examples
 
 ```r
 df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
 df$with_columns(
-pl$col("s")$str$slice(-3)$alias("s_sliced")
+   pl$col("s")$str$slice(-3)$alias("s_sliced")
 )
 ```
-
-

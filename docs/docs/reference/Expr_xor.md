@@ -1,41 +1,27 @@
-# `Expr_xor`
+data
 
-Xor
-
-
-## Description
-
-combine to boolean expresions with XOR
-
+# Xor
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_xor(other)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     literal or Robj which can become a literal
+- `other`: literal or Robj which can become a literal
 
-
-## Value
+## Returns
 
 Expr
 
+combine to boolean expresions with XOR
 
 ## Examples
 
 ```r
 pl$lit(TRUE)$xor(pl$lit(FALSE))
 ```
-
-

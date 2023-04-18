@@ -1,12 +1,4 @@
-# `tail`
-
-Tail a DataFrame
-
-## Description
-
-Get the last n rows.
-
-## Usage
+# Tail a DataFrame
 
 ```r
 DataFrame_tail(n)
@@ -14,16 +6,14 @@ DataFrame_tail(n)
 
 ## Arguments
 
-| Argument | Description                                             | 
-| -------- | ------------------------------------------------------- |
-| `n`         | positive numeric of integer number not larger than 2^32 | 
+- `n`: positive numeric of integer number not larger than 2^32
+
+## Returns
+
+DataFrame
+
+Get the last n rows.
 
 ## Details
 
 any number will converted to u32. Negative raises error
-
-## Value
-
-DataFrame
-
-

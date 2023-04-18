@@ -1,13 +1,7 @@
-# `class`
+# Use groups on a Polars DataFrame
 
-Use groups on a Polars DataFrame
-
-## Description
-
-Use groups on a Polars DataFrame
-
-## Value
+## Returns
 
 A grouped DataFrame
 
-
+Use groups on a Polars DataFrame

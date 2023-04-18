@@ -1,10 +1,4 @@
-# `List`
-
-Create List DataType
-
-## Description
-
-Create List DataType
+# Create List DataType
 
 ## Format
 
@@ -12,18 +6,16 @@ function
 
 ## Arguments
 
-| Argument | Description       | 
-| -------- | ----------------- |
-| `datatype`         | an inner DataType | 
+- `datatype`: an inner DataType
 
-## Value
+## Returns
 
 a list DataType with an inner DataType
+
+Create List DataType
 
 ## Examples
 
 ```r
 pl$List(pl$List(pl$Boolean))
 ```
-
-

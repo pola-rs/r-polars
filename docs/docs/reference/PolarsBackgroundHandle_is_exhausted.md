@@ -1,24 +1,14 @@
-# `PolarsBackgroundHandle_is_exhausted`
-
-PolarsBackgroundHandle
-
-
-## Description
-
-PolarsBackgroundHandle
-
-
-## Usage
+# PolarsBackgroundHandle
 
 ```r
 PolarsBackgroundHandle_is_exhausted()
 ```
 
-
-## Value
+## Returns
 
 Bool
 
+PolarsBackgroundHandle
 
 ## Examples
 
@@ -29,5 +19,3 @@ handle$is_exhausted()
 df = handle$join()
 handle$is_exhausted()
 ```
-
-

@@ -1,25 +1,17 @@
-# `reverse`
-
-Reverse
-
-## Description
-
-Reverse the DataFrame.
-
-## Usage
+# Reverse
 
 ```r
 DataFrame_reverse()
 ```
 
-## Value
+## Returns
 
 LazyFrame
+
+Reverse the DataFrame.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$reverse()
 ```
-
-

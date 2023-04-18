@@ -1,30 +1,16 @@
-# `and_then`
-
-map an ok-value or pass on an err-value
-
-
-## Description
-
-map an ok-value or pass on an err-value
-
-
-## Usage
+# map an ok-value or pass on an err-value
 
 ```r
 and_then(x, f)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     any R object
-`f`     |     a closure that takes the ok part as input
+- `x`: any R object
+- `f`: a closure that takes the ok part as input
 
-
-## Value
+## Returns
 
 same R object wrapped in a Err-result
 
-
+map an ok-value or pass on an err-value

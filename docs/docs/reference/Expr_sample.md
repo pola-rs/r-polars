@@ -1,19 +1,8 @@
-# `Expr_sample`
-
-Sample
-
-
-## Description
-
-#' Sample from this expression.
-
+# Sample
 
 ## Format
 
 Method
-
-
-## Usage
 
 ```r
 Expr_sample(
@@ -25,22 +14,19 @@ Expr_sample(
 )
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`frac`     |     Fraction of items to return. Cannot be used with `n` .
-`with_replacement`     |     Allow values to be sampled more than once.
-`shuffle`     |     Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)
-`seed`     |     Seed for the random number generator. If set to None (default), a random seed is used.
-`n`     |     Number of items to return. Cannot be used with `frac` .
+- `frac`: Fraction of items to return. Cannot be used with `n`.
+- `with_replacement`: Allow values to be sampled more than once.
+- `shuffle`: Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)
+- `seed`: Seed for the random number generator. If set to None (default), a random seed is used.
+- `n`: Number of items to return. Cannot be used with `frac`.
 
-
-## Value
+## Returns
 
 Expr
 
+#' Sample from this expression.
 
 ## Examples
 
@@ -52,5 +38,3 @@ df$select(pl$col("a")$sample(frac=2,with_replacement=TRUE,seed=1L))
 
 df$select(pl$col("a")$sample(n=2,with_replacement=FALSE,seed=1L))
 ```
-
-

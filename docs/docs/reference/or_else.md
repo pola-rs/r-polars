@@ -1,30 +1,16 @@
-# `or_else`
-
-map an Err part of Result
-
-
-## Description
-
-map an Err part of Result
-
-
-## Usage
+# map an Err part of Result
 
 ```r
 or_else(x, f)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     any R object
-`f`     |     a closure that takes the ok part as input, must return a result itself
+- `x`: any R object
+- `f`: a closure that takes the ok part as input, must return a result itself
 
-
-## Value
+## Returns
 
 same R object wrapped in a Err-result
 
-
+map an Err part of Result

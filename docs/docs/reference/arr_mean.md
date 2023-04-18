@@ -1,22 +1,14 @@
-# `arr_mean`
-
-Mean of lists
-
-
-## Description
-
-Compute the mean value of the lists in the array.
-
+# Mean of lists
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Compute the mean value of the lists in the array.
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 df$select(pl$col("values")$arr$mean())
 ```
-
-

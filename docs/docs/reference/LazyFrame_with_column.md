@@ -1,16 +1,10 @@
-# `with_column`
+data
 
-Lazy with column
-
-## Description
-
-add or replace columns of LazyFrame
+# Lazy with column
 
 ## Format
 
 An object of class `character` of length 1.
-
-## Usage
 
 ```r
 LazyFrame_with_column(expr)
@@ -18,12 +12,10 @@ LazyFrame_with_column(expr)
 
 ## Arguments
 
-| Argument | Description                        | 
-| -------- | ---------------------------------- |
-| `expr`         | one Expr or string naming a column | 
+- `expr`: one Expr or string naming a column
 
-## Value
+## Returns
 
 A new `LazyFrame` object with add/modified column.
 
-
+add or replace columns of LazyFrame

@@ -1,29 +1,15 @@
-# `construct_DataTypeVector`
-
-construct data type vector
-
-
-## Description
-
-lifecycle: Deprecate, move to rust side
-
-
-## Usage
+# construct data type vector
 
 ```r
 construct_DataTypeVector(l)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`l`     |     list of Expr or string
+- `l`: list of Expr or string
 
-
-## Value
+## Returns
 
 extptr to rust vector of RPolarsDataType's
 
-
+lifecycle: Deprecate, move to rust side

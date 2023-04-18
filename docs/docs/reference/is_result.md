@@ -1,35 +1,19 @@
-# `is_result`
-
-check if z is a result
-
-
-## Description
-
-check if z is a result
-
-
-## Usage
+# check if z is a result
 
 ```r
 is_result(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     R object which could be a rust-like result of a list with two elements, ok and err
+- `x`: R object which could be a rust-like result of a list with two elements, ok and err
 
-
-## Details
-
-both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
- If both ok and err has value then this is an invalid result
-
-
-## Value
+## Returns
 
 bool if is a result object
 
+check if z is a result
 
+## Details
+
+both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL If both ok and err has value then this is an invalid result

@@ -1,15 +1,7 @@
-# `describe_optimized_plan`
-
-Print the optmized plan of LazyFrame
-
-## Description
-
-select on a LazyFrame
-
-## Usage
+# Print the optmized plan of LazyFrame
 
 ```r
 LazyFrame_describe_optimized_plan()
 ```
 
-
+select on a LazyFrame

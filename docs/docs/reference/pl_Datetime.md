@@ -1,10 +1,4 @@
-# `Datetime`
-
-Create Datetime DataType
-
-## Description
-
-Datetime DataType constructor
+# Create Datetime DataType
 
 ## Format
 
@@ -12,23 +6,21 @@ function
 
 ## Arguments
 
-| Argument | Description                             | 
-| -------- | --------------------------------------- |
-| `tu`         | string option either "ms", "us" or "ns" | 
-| `tz`         | string the Time Zone, see details       | 
+- `tu`: string option either "ms", "us" or "ns"
+- `tz`: string the Time Zone, see details
+
+## Returns
+
+Datetime DataType
+
+Datetime DataType constructor
 
 ## Details
 
 all allowed TimeZone designations can be found in `base::OlsonNames()`
-
-## Value
-
-Datetime DataType
 
 ## Examples
 
 ```r
 pl$Datetime("ns","Pacific/Samoa")
 ```
-
-

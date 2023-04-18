@@ -1,16 +1,4 @@
-# `Expr_apply`
-
-Expr_apply
-
-
-## Description
-
-Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
- Depending on the context it has the following behavior:
- -Selection
-
-
-## Usage
+# Expr_apply
 
 ```r
 Expr_apply(
@@ -21,43 +9,31 @@ Expr_apply(
 )
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`f`     |     r function see details depending on context
-`return_type`     |     NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
-`strict_return_type`     |     bool (default TRUE), error if not correct datatype returned from R, if FALSE will convert to a Polars Null and carry on.
-`allow_fail_eval`     |     bool (default FALSE), if TRUE will not raise user function error but convert result to a polars Null and carry on.
+- `f`: r function see details depending on context
+- `return_type`: NULL or one of pl$dtypes, the output datatype, NULL is the same as input.
+- `strict_return_type`: bool (default TRUE), error if not correct datatype returned from R, if FALSE will convert to a Polars Null and carry on.
+- `allow_fail_eval`: bool (default FALSE), if TRUE will not raise user function error but convert result to a polars Null and carry on.
 
+## Returns
+
+Expr
+
+Apply a custom/user-defined function (UDF) in a GroupBy or Projection context. Depending on the context it has the following behavior: -Selection
 
 ## Details
 
 Apply a user function in a groupby or projection(select) context
- 
- Depending on context the following behaviour:
-  
 
-*  Projection/Selection: Expects an `f` to operate on R scalar values. Polars will convert each element into an R value and pass it to the function The output of the user function will be converted back into a polars type. Return type must match. See param return type. Apply in selection context should be avoided as a `lapply()` has half the overhead. 
+Depending on context the following behaviour:
 
-*  Groupby Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to `Series` , eg. R vector. GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration is only across the groups. The r user function could e.g. do vectorized operations and stay quite performant. use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and `s$to_r_list()` to force conversion to vector or list. 
- 
- Implementing logic using an R function is almost always significantly 
- slower and more memory intensive than implementing the same logic using
- the native expression API because:
- - The native expression engine runs in Rust; functions run in R.
- - Use of R functions forces the DataFrame to be materialized in memory.
- - Polars-native expressions can be parallelised (R functions cannot*).
- - Polars-native expressions can be logically optimised (R functions cannot).
- Wherever possible you should strongly prefer the native expression API
- to achieve the best performance.
+ * Projection/Selection: Expects an `f` to operate on R scalar values. Polars will convert each element into an R value and pass it to the function The output of the user function will be converted back into a polars type. Return type must match. See param return type. Apply in selection context should be avoided as a `lapply()` has half the overhead.
+ * Groupby Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than number of rows, as the iteration is only across the groups. The r user function could e.g. do vectorized operations and stay quite performant. use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and `s$to_r_list()` to force conversion to vector or list.
 
+Implementing logic using an R function is almost always **significantly**
 
-## Value
-
-Expr
-
+slower and more memory intensive than implementing the same logic using the native expression API because: - The native expression engine runs in Rust; functions run in R. - Use of R functions forces the DataFrame to be materialized in memory. - Polars-native expressions can be parallelised (R functions cannot*). - Polars-native expressions can be logically optimised (R functions cannot). Wherever possible you should strongly prefer the native expression API to achieve the best performance.
 
 ## Examples
 
@@ -86,34 +62,32 @@ pl$DataFrame(iris)$select(e_add10,e_letter)
 n = 1000000L
 set.seed(1)
 df = pl$DataFrame(list(
-a = 1:n,
-b = sample(letters,n,replace=TRUE)
-))
+  a = 1:n,
+  b = sample(letters,n,replace=TRUE)
+ ))
 
 print("apply over 1 million values takes ~2.5 sec on 2015 MacBook Pro")
 system.time({
-rdf = df$with_columns(
-pl$col("a")$apply(\(x) {
-x*2L
-})$alias("bob")
-)
+  rdf = df$with_columns(
+    pl$col("a")$apply(\(x) {
+     x*2L
+   })$alias("bob")
+ )
 })
 
 print("R lapply 1 million values take ~1sec on 2015 MacBook Pro")
 system.time({
-lapply(df$get_column("a")$to_r(),\(x) x*2L )
+ lapply(df$get_column("a")$to_r(),\(x) x*2L )
 })
 print("using polars syntax takes ~1ms")
 system.time({
-(df$get_column("a") * 2L)
+ (df$get_column("a") * 2L)
 })
 
 
 print("using R vector syntax takes ~4ms")
 r_vec = df$get_column("a")$to_r()
 system.time({
-r_vec * 2L
+ r_vec * 2L
 })
 ```
-
-

@@ -1,25 +1,17 @@
-# `shape`
-
-Shape of series
-
-## Description
-
-Shape of series
-
-## Usage
+# Shape of series
 
 ```r
 Series_shape()
 ```
 
-## Value
+## Returns
 
 dimension vector of Series
+
+Shape of series
 
 ## Examples
 
 ```r
 identical(pl$Series(1:2)$shape, 2:1)
 ```
-
-

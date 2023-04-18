@@ -1,19 +1,13 @@
-# `describe_plan`
+data
 
-Print the non-optimized plan plan of LazyFrame
-
-## Description
-
-select on a LazyFrame
+# Print the non-optimized plan plan of LazyFrame
 
 ## Format
 
 An object of class `character` of length 1.
 
-## Usage
-
 ```r
 LazyFrame_describe_plan
 ```
 
-
+select on a LazyFrame

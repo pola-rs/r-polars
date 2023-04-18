@@ -1,12 +1,4 @@
-# `select`
-
-Lazy\_select
-
-## Description
-
-select on a LazyFrame
-
-## Usage
+# Lazy_select
 
 ```r
 LazyFrame_select(...)
@@ -14,12 +6,10 @@ LazyFrame_select(...)
 
 ## Arguments
 
-| Argument | Description                               | 
-| -------- | ----------------------------------------- |
-| `...`         | any single Expr or string naming a column | 
+- `...`: any single Expr or string naming a column
 
-## Value
+## Returns
 
 A new `LazyFrame` object with applied filter.
 
-
+select on a LazyFrame

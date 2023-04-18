@@ -1,37 +1,23 @@
-# `Expr_append`
-
-Append expressions
-
-
-## Description
-
-This is done by adding the chunks of `other` to this `output` .
-
+# Append expressions
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_append(other, upcast = TRUE)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     Expr, into Expr
-`upcast`     |     bool upcast to, if any supertype of two non equal datatypes.
+- `other`: Expr, into Expr
+- `upcast`: bool upcast to, if any supertype of two non equal datatypes.
 
-
-## Value
+## Returns
 
 Expr
 
+This is done by adding the chunks of `other` to this `output`.
 
 ## Examples
 
@@ -45,5 +31,3 @@ pl$DataFrame(list())$select(pl$lit(42)$append(42L))
 pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))
 pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))
 ```
-
-

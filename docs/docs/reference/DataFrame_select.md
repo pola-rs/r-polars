@@ -1,12 +1,4 @@
-# `select`
-
-perform select on DataFrame
-
-## Description
-
-related to dplyr `mutate()` However discards unmentioned columns as data.table `.()` .
-
-## Usage
+# perform select on DataFrame
 
 ```r
 DataFrame_select(...)
@@ -14,8 +6,6 @@ DataFrame_select(...)
 
 ## Arguments
 
-| Argument | Description                                                                       | 
-| -------- | --------------------------------------------------------------------------------- |
-| `...`         | expresssions or strings defining columns to select(keep) in context the DataFrame | 
+- `...`: expresssions or strings defining columns to select(keep) in context the DataFrame
 
-
+related to dplyr `mutate()` However discards unmentioned columns as data.table `.()`.

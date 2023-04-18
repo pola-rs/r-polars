@@ -1,22 +1,11 @@
-# `ExprBin_contains`
-
-contains
-
-
-## Description
-
-R Check if binaries in Series contain a binary substring.
-
+# contains
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`lit`     |     The binary substring to look for
+- `lit`: The binary substring to look for
 
-
-## Value
+## Returns
 
 Expr returning a Boolean
 
-
+R Check if binaries in Series contain a binary substring.

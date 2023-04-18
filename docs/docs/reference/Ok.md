@@ -1,29 +1,15 @@
-# `Ok`
-
-Wrap in Ok
-
-
-## Description
-
-Wrap in Ok
-
-
-## Usage
+# Wrap in Ok
 
 ```r
 Ok(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     any R object
+- `x`: any R object
 
-
-## Value
+## Returns
 
 same R object wrapped in a Ok-result
 
-
+Wrap in Ok

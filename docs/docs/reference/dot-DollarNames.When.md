@@ -1,25 +1,13 @@
-# `.DollarNames.When`
-
-auto complete $-access into a polars object
-
-
-## Description
-
-called by the interactive R session internally
-
-
-## Usage
+# auto complete $-access into a polars object
 
 ```r
-list(list(".DollarNames"), list("When"))(x, pattern = "")
+## S3 method for class 'When'
+.DollarNames(x, pattern = "")
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     When
-`pattern`     |     code-stump as string to auto-complete
+- `x`: When
+- `pattern`: code-stump as string to auto-complete
 
-
+called by the interactive R session internally

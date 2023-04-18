@@ -1,25 +1,17 @@
-# `shape`
-
-Shape of  DataFrame
-
-## Description
-
-Get shape/dimensions of DataFrame
-
-## Usage
+# Shape of DataFrame
 
 ```r
 DataFrame_shape()
 ```
 
-## Value
+## Returns
 
 two length numeric vector of c(nrows,ncols)
+
+Get shape/dimensions of DataFrame
 
 ## Examples
 
 ```r
 df = pl$DataFrame(iris)$shape
 ```
-
-

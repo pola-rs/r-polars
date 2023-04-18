@@ -1,25 +1,17 @@
-# `name`
-
-Property: Name
-
-## Description
-
-Get name of Series
-
-## Usage
+# Property: Name
 
 ```r
 Series_name()
 ```
 
-## Value
+## Returns
 
 String the name
+
+Get name of Series
 
 ## Examples
 
 ```r
 pl$Series(1:3,name = "alice")$name
 ```
-
-

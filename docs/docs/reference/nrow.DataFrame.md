@@ -1,29 +1,15 @@
-# `nrow.DataFrame`
-
-The Number of Rows of a DataFrame
-
-
-## Description
-
-The Number of Rows of a DataFrame
-
-
-## Usage
+# The Number of Rows of a DataFrame
 
 ```r
 nrow.DataFrame(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataFrame
+- `x`: DataFrame
 
-
-## Value
+## Returns
 
 Integer
 
-
+The Number of Rows of a DataFrame

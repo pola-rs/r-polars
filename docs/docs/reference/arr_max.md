@@ -1,22 +1,14 @@
-# `arr_max`
-
-Max lists
-
-
-## Description
-
-Compute the max value of the lists in the array.
-
+# Max lists
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Compute the max value of the lists in the array.
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(values = pl$Series(list(1L,2:3)))
 df$select(pl$col("values")$arr$max())
 ```
-
-

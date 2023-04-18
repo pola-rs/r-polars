@@ -1,42 +1,28 @@
-# `arr_get`
-
-Get list
-
-
-## Description
-
-Get the value by index in the sublists.
-
+# Get list
 
 ## Format
 
 function
 
-
-## Usage
-
 ```r
-list(list("["), list("ExprArrNameSpace"))(x, index)
+## S3 method for class 'ExprArrNameSpace'
+x[index]
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     ExprArrNameSpace
-`index`     |     value to get
+- `x`: ExprArrNameSpace
+- `index`: value to get
 
-
-## Details
-
-[.ExprArrNameSpace used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
-
-
-## Value
+## Returns
 
 Expr
 
+Get the value by index in the sublists.
+
+## Details
+
+`[.ExprArrNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
 
 ## Examples
 
@@ -48,5 +34,3 @@ df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
 df$select(pl$col("a")$arr[0])
 df$select(pl$col("a")$arr[c(2,0,-1)])
 ```
-
-

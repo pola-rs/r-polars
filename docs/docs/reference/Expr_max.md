@@ -1,39 +1,27 @@
-# `Expr_max`
+data
 
-max
-
-
-## Description
-
-Get maximum value.
-
+# max
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_max
 ```
 
-
-## Details
-
-See Inf,NaN,NULL,Null/NA translations here [`docs_translations`](#docstranslations)
-
-
-## Value
+## Returns
 
 Expr
 
+Get maximum value.
+
+## Details
+
+See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 
 ## Examples
 
 ```r
 pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
 ```
-
-

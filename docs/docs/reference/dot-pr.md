@@ -1,25 +1,18 @@
-# `.pr`
+data
 
-polars-API: private calls to rust-polars
-
-
-## Description
-
-`.pr` 
- Original extendr bindings converted into pure functions
-
+# polars-API: private calls to rust-polars
 
 ## Format
 
 An object of class `environment` of length 16.
 
-
-## Usage
-
 ```r
 .pr
 ```
 
+`.pr`
+
+Original extendr bindings converted into pure functions
 
 ## Examples
 
@@ -28,5 +21,3 @@ An object of class `environment` of length 16.
 polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
 polars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 ```
-
-

@@ -1,25 +1,15 @@
-# `same_outer_datatype`
-
-check if x is a valid RPolarsDataType
-
-
-## Description
-
-check if x is a valid RPolarsDataType
-
+# check if x is a valid RPolarsDataType
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`lhs`     |     an RPolarsDataType
-`rhs`     |     an RPolarsDataType
+- `lhs`: an RPolarsDataType
+- `rhs`: an RPolarsDataType
 
-
-## Value
+## Returns
 
 bool TRUE if outer datatype is the same.
 
+check if x is a valid RPolarsDataType
 
 ## Examples
 
@@ -31,5 +21,3 @@ pl$same_outer_dt(pl$List(pl$Int64),pl$List(pl$Float32))
 #FALSE
 pl$same_outer_dt(pl$Int64,pl$Float64)
 ```
-
-

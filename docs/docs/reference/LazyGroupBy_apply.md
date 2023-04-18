@@ -1,12 +1,4 @@
-# `apply`
-
-LazyGroupBy\_apply
-
-## Description
-
-one day this will apply
-
-## Usage
+# LazyGroupBy_apply
 
 ```r
 LazyGroupBy_apply(f)
@@ -14,12 +6,10 @@ LazyGroupBy_apply(f)
 
 ## Arguments
 
-| Argument | Description         | 
-| -------- | ------------------- |
-| `f`         | R function to apply | 
+- `f`: R function to apply
 
-## Value
+## Returns
 
 A new `LazyFrame` object.
 
-
+one day this will apply

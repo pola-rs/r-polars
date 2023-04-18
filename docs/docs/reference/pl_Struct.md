@@ -1,10 +1,4 @@
-# `Struct`
-
-Create Struct DataType
-
-## Description
-
-Struct DataType Constructor
+# Create Struct DataType
 
 ## Format
 
@@ -12,13 +6,13 @@ function
 
 ## Arguments
 
-| Argument | Description       | 
-| -------- | ----------------- |
-| `datatype`         | an inner DataType | 
+- `datatype`: an inner DataType
 
-## Value
+## Returns
 
 a list DataType with an inner DataType
+
+Struct DataType Constructor
 
 ## Examples
 
@@ -29,5 +23,3 @@ pl$List(pl$List(pl$Boolean))
 # Find any DataType via pl$dtypes
 print(pl$dtypes)
 ```
-
-

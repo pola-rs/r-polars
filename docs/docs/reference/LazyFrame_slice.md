@@ -1,12 +1,4 @@
-# `slice`
-
-Slice
-
-## Description
-
-Get a slice of this DataFrame.
-
-## Usage
+# Slice
 
 ```r
 LazyFrame_slice(offset, length = NULL)
@@ -14,14 +6,14 @@ LazyFrame_slice(offset, length = NULL)
 
 ## Arguments
 
-| Argument | Description     | 
-| -------- | --------------- |
-| `offset`         | integer         | 
-| `length`         | integer or NULL | 
+- `offset`: integer
+- `length`: integer or NULL
 
-## Value
+## Returns
 
 DataFrame
+
+Get a slice of this DataFrame.
 
 ## Examples
 
@@ -30,5 +22,3 @@ pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
 pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 mtcars[2:6,]
 ```
-
-

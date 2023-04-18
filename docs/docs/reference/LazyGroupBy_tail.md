@@ -1,12 +1,4 @@
-# `tail`
-
-LazyGroupBy\_tail
-
-## Description
-
-get n tail rows of group
-
-## Usage
+# LazyGroupBy_tail
 
 ```r
 LazyGroupBy_tail(n = 1L)
@@ -14,12 +6,10 @@ LazyGroupBy_tail(n = 1L)
 
 ## Arguments
 
-| Argument | Description                   | 
-| -------- | ----------------------------- |
-| `n`         | integer number of rows to get | 
+- `n`: integer number of rows to get
 
-## Value
+## Returns
 
 A new `LazyFrame` object.
 
-
+get n tail rows of group

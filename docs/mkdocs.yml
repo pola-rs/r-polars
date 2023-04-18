@@ -31,496 +31,496 @@ nav:
       - An Introduction to Polars from R: articles/polars.md
   - Reference:
       - DataFrame:
-          - reference/DataFrame.md
-          - reference/DataFrame_as_data_frame.md
-          - reference/DataFrame_clone.md
-          - reference/DataFrame_columns.md
-          - reference/DataFrame_dtypes.md
-          - reference/DataFrame_estimated_size.md
-          - reference/DataFrame_first.md
-          - reference/DataFrame_get_column.md
-          - reference/DataFrame_get_columns.md
-          - reference/DataFrame_groupby.md
-          - reference/DataFrame_height.md
-          - reference/DataFrame_join.md
-          - reference/DataFrame_last.md
-          - reference/DataFrame_lazy.md
-          - reference/DataFrame_limit.md
-          - reference/DataFrame_max.md
-          - reference/DataFrame_mean.md
-          - reference/DataFrame_median.md
-          - reference/DataFrame_min.md
-          - reference/DataFrame_null_count.md
-          - reference/DataFrame_print.md
-          - reference/DataFrame_reverse.md
-          - reference/DataFrame_select.md
-          - reference/DataFrame_shape.md
-          - reference/DataFrame_slice.md
-          - reference/DataFrame_std.md
-          - reference/DataFrame_sum.md
-          - reference/DataFrame_tail.md
-          - reference/DataFrame_to_series.md
-          - reference/DataFrame_to_Struct_unnest.md
-          - reference/DataFrame_var.md
-          - reference/DataFrame_width.md
-          - reference/DataFrame_with_columns.md
+          - DataFrame: reference/DataFrame.md
+          - as_data_frame: reference/DataFrame_as_data_frame.md
+          - clone: reference/DataFrame_clone.md
+          - columns: reference/DataFrame_columns.md
+          - dtypes: reference/DataFrame_dtypes.md
+          - estimated_size: reference/DataFrame_estimated_size.md
+          - first: reference/DataFrame_first.md
+          - get_column: reference/DataFrame_get_column.md
+          - get_columns: reference/DataFrame_get_columns.md
+          - groupby: reference/DataFrame_groupby.md
+          - height: reference/DataFrame_height.md
+          - join: reference/DataFrame_join.md
+          - last: reference/DataFrame_last.md
+          - lazy: reference/DataFrame_lazy.md
+          - limit: reference/DataFrame_limit.md
+          - max: reference/DataFrame_max.md
+          - mean: reference/DataFrame_mean.md
+          - median: reference/DataFrame_median.md
+          - min: reference/DataFrame_min.md
+          - null_count: reference/DataFrame_null_count.md
+          - print: reference/DataFrame_print.md
+          - reverse: reference/DataFrame_reverse.md
+          - select: reference/DataFrame_select.md
+          - shape: reference/DataFrame_shape.md
+          - slice: reference/DataFrame_slice.md
+          - std: reference/DataFrame_std.md
+          - sum: reference/DataFrame_sum.md
+          - tail: reference/DataFrame_tail.md
+          - to_series: reference/DataFrame_to_series.md
+          - to_Struct_unnest: reference/DataFrame_to_Struct_unnest.md
+          - var: reference/DataFrame_var.md
+          - width: reference/DataFrame_width.md
+          - with_columns: reference/DataFrame_with_columns.md
       - GroupBy:
-          - reference/GroupBy_agg.md
-          - reference/GroupBy_as_data_frame.md
-          - reference/GroupBy_first.md
-          - reference/GroupBy_last.md
-          - reference/GroupBy_max.md
-          - reference/GroupBy_mean.md
-          - reference/GroupBy_median.md
-          - reference/GroupBy_min.md
-          - reference/GroupBy_null_count.md
-          - reference/GroupBy_std.md
-          - reference/GroupBy_sum.md
-          - reference/GroupBy_var.md
+          - agg: reference/GroupBy_agg.md
+          - as_data_frame: reference/GroupBy_as_data_frame.md
+          - first: reference/GroupBy_first.md
+          - last: reference/GroupBy_last.md
+          - max: reference/GroupBy_max.md
+          - mean: reference/GroupBy_mean.md
+          - median: reference/GroupBy_median.md
+          - min: reference/GroupBy_min.md
+          - null_count: reference/GroupBy_null_count.md
+          - std: reference/GroupBy_std.md
+          - sum: reference/GroupBy_sum.md
+          - var: reference/GroupBy_var.md
       - LazyFrame:
-          - reference/LazyFrame_collect.md
-          - reference/LazyFrame_collect_background.md
-          - reference/LazyFrame_describe_optimized_plan.md
-          - reference/LazyFrame_describe_plan.md
-          - reference/LazyFrame_filter.md
-          - reference/LazyFrame_first.md
-          - reference/LazyFrame_groupby.md
-          - reference/LazyFrame_join.md
-          - reference/LazyFrame_last.md
-          - reference/LazyFrame_limit.md
-          - reference/LazyFrame_max.md
-          - reference/LazyFrame_mean.md
-          - reference/LazyFrame_median.md
-          - reference/LazyFrame_min.md
-          - reference/LazyFrame_print.md
-          - reference/LazyFrame_reverse.md
-          - reference/LazyFrame_select.md
-          - reference/LazyFrame_slice.md
-          - reference/LazyFrame_std.md
-          - reference/LazyFrame_sum.md
-          - reference/LazyFrame_tail.md
-          - reference/LazyFrame_var.md
-          - reference/LazyFrame_with_column.md
-          - reference/LazyFrame_with_columns.md
+          - collect: reference/LazyFrame_collect.md
+          - collect_background: reference/LazyFrame_collect_background.md
+          - describe_optimized_plan: reference/LazyFrame_describe_optimized_plan.md
+          - describe_plan: reference/LazyFrame_describe_plan.md
+          - filter: reference/LazyFrame_filter.md
+          - first: reference/LazyFrame_first.md
+          - groupby: reference/LazyFrame_groupby.md
+          - join: reference/LazyFrame_join.md
+          - last: reference/LazyFrame_last.md
+          - limit: reference/LazyFrame_limit.md
+          - max: reference/LazyFrame_max.md
+          - mean: reference/LazyFrame_mean.md
+          - median: reference/LazyFrame_median.md
+          - min: reference/LazyFrame_min.md
+          - print: reference/LazyFrame_print.md
+          - reverse: reference/LazyFrame_reverse.md
+          - select: reference/LazyFrame_select.md
+          - slice: reference/LazyFrame_slice.md
+          - std: reference/LazyFrame_std.md
+          - sum: reference/LazyFrame_sum.md
+          - tail: reference/LazyFrame_tail.md
+          - var: reference/LazyFrame_var.md
+          - with_column: reference/LazyFrame_with_column.md
+          - with_columns: reference/LazyFrame_with_columns.md
       - LazyGroupBy:
-          - reference/LazyGroupBy_agg.md
-          - reference/LazyGroupBy_apply.md
-          - reference/LazyGroupBy_head.md
-          - reference/LazyGroupBy_print.md
-          - reference/LazyGroupBy_tail.md
+          - agg: reference/LazyGroupBy_agg.md
+          - apply: reference/LazyGroupBy_apply.md
+          - head: reference/LazyGroupBy_head.md
+          - print: reference/LazyGroupBy_print.md
+          - tail: reference/LazyGroupBy_tail.md
       - pl:
-          - reference/pl-cash-from_arrow.md
-          - reference/pl_concat.md
-          - reference/pl_date_range.md
-          - reference/pl_Datetime.md
-          - reference/pl_Field.md
-          - reference/pl_List.md
-          - reference/pl_PTime.md
-          - reference/pl_select.md
-          - reference/pl_Struct.md
+          - pl-cash-from_arrow: reference/pl-cash-from_arrow.md
+          - concat: reference/pl_concat.md
+          - date_range: reference/pl_date_range.md
+          - Datetime: reference/pl_Datetime.md
+          - Field: reference/pl_Field.md
+          - List: reference/pl_List.md
+          - PTime: reference/pl_PTime.md
+          - select: reference/pl_select.md
+          - Struct: reference/pl_Struct.md
       - Series:
-          - reference/Series.md
-          - reference/Series_abs.md
-          - reference/Series_add.md
-          - reference/Series_alias.md
-          - reference/Series_all.md
-          - reference/Series_any.md
-          - reference/Series_append.md
-          - reference/Series_apply.md
-          - reference/Series_arg_max.md
-          - reference/Series_arg_min.md
-          - reference/Series_arr.md
-          - reference/Series_ceil.md
-          - reference/Series_chunk_lengths.md
-          - reference/Series_clone.md
-          - reference/Series_compare.md
-          - reference/Series_cumsum.md
-          - reference/Series_div.md
-          - reference/Series_dtype.md
-          - reference/Series_expr.md
-          - reference/Series_floor.md
-          - reference/Series_is_numeric.md
-          - reference/Series_is_sorted.md
-          - reference/Series_len.md
-          - reference/Series_max.md
-          - reference/Series_min.md
-          - reference/Series_mul.md
-          - reference/Series_name.md
-          - reference/Series_print.md
-          - reference/Series_rem.md
-          - reference/Series_rename.md
-          - reference/Series_rep.md
-          - reference/Series_series_equal.md
-          - reference/Series_set_sorted.md
-          - reference/Series_shape.md
-          - reference/Series_sort.md
-          - reference/Series_std.md
-          - reference/Series_sub.md
-          - reference/Series_sum.md
-          - reference/Series_to_frames.md
-          - reference/Series_to_lit.md
-          - reference/Series_to_r.md
-          - reference/Series_value_count.md
-          - reference/Series_var.md
+          - Series: reference/Series.md
+          - abs: reference/Series_abs.md
+          - add: reference/Series_add.md
+          - alias: reference/Series_alias.md
+          - all: reference/Series_all.md
+          - any: reference/Series_any.md
+          - append: reference/Series_append.md
+          - apply: reference/Series_apply.md
+          - arg_max: reference/Series_arg_max.md
+          - arg_min: reference/Series_arg_min.md
+          - arr: reference/Series_arr.md
+          - ceil: reference/Series_ceil.md
+          - chunk_lengths: reference/Series_chunk_lengths.md
+          - clone: reference/Series_clone.md
+          - compare: reference/Series_compare.md
+          - cumsum: reference/Series_cumsum.md
+          - div: reference/Series_div.md
+          - dtype: reference/Series_dtype.md
+          - expr: reference/Series_expr.md
+          - floor: reference/Series_floor.md
+          - is_numeric: reference/Series_is_numeric.md
+          - is_sorted: reference/Series_is_sorted.md
+          - len: reference/Series_len.md
+          - max: reference/Series_max.md
+          - min: reference/Series_min.md
+          - mul: reference/Series_mul.md
+          - name: reference/Series_name.md
+          - print: reference/Series_print.md
+          - rem: reference/Series_rem.md
+          - rename: reference/Series_rename.md
+          - rep: reference/Series_rep.md
+          - series_equal: reference/Series_series_equal.md
+          - set_sorted: reference/Series_set_sorted.md
+          - shape: reference/Series_shape.md
+          - sort: reference/Series_sort.md
+          - std: reference/Series_std.md
+          - sub: reference/Series_sub.md
+          - sum: reference/Series_sum.md
+          - to_frames: reference/Series_to_frames.md
+          - to_lit: reference/Series_to_lit.md
+          - to_r: reference/Series_to_r.md
+          - value_count: reference/Series_value_count.md
+          - var: reference/Series_var.md
       - Other:
-          - reference/all.md
-          - reference/and_then.md
-          - reference/arr_arg_max.md
-          - reference/arr_arg_min.md
-          - reference/arr_concat.md
-          - reference/arr_contains.md
-          - reference/arr_diff.md
-          - reference/arr_eval.md
-          - reference/arr_first.md
-          - reference/arr_get.md
-          - reference/arr_head.md
-          - reference/arr_join.md
-          - reference/arr_last.md
-          - reference/arr_lengths.md
-          - reference/arr_max.md
-          - reference/arr_mean.md
-          - reference/arr_min.md
-          - reference/arr_reverse.md
-          - reference/arr_shift.md
-          - reference/arr_slice.md
-          - reference/arr_sort.md
-          - reference/arr_sum.md
-          - reference/arr_tail.md
-          - reference/arr_take.md
-          - reference/arr_to_struct.md
-          - reference/arr_unique.md
-          - reference/c.Series.md
-          - reference/check_no_missing_args.md
-          - reference/check_tz_to_result.md
-          - reference/clone_env_one_level_deep.md
-          - reference/coalesce.md
-          - reference/col.md
-          - reference/construct_DataTypeVector.md
-          - reference/construct_ProtoExprArray.md
-          - reference/DataType.md
-          - reference/DataType_constructors.md
-          - reference/DataType_new.md
-          - reference/docs_translations.md
-          - reference/dot-DollarNames.DataFrame.md
-          - reference/dot-DollarNames.Expr.md
-          - reference/dot-DollarNames.GroupBy.md
-          - reference/dot-DollarNames.LazyFrame.md
-          - reference/dot-DollarNames.PolarsBackgroundHandle.md
-          - reference/dot-DollarNames.Series.md
-          - reference/dot-DollarNames.VecDataFrame.md
-          - reference/dot-DollarNames.When.md
-          - reference/dot-DollarNames.WhenThen.md
-          - reference/dot-DollarNames.WhenThenThen.md
-          - reference/dot-pr.md
-          - reference/element.md
-          - reference/Err.md
-          - reference/Expr-cash-print-open-paren-close-paren.md
-          - reference/Expr.md
-          - reference/Expr_abs.md
-          - reference/Expr_add.md
-          - reference/Expr_agg_groups.md
-          - reference/Expr_alias.md
-          - reference/Expr_all.md
-          - reference/Expr_and.md
-          - reference/Expr_any.md
-          - reference/Expr_append.md
-          - reference/Expr_apply.md
-          - reference/Expr_arccos.md
-          - reference/Expr_arccosh.md
-          - reference/Expr_arcsin.md
-          - reference/Expr_arcsinh.md
-          - reference/Expr_arctan.md
-          - reference/Expr_arctanh.md
-          - reference/Expr_arg_max.md
-          - reference/Expr_arg_min.md
-          - reference/Expr_arg_sort.md
-          - reference/Expr_arg_unique.md
-          - reference/Expr_arr.md
-          - reference/Expr_backward_fill.md
-          - reference/Expr_bin.md
-          - reference/Expr_cast.md
-          - reference/Expr_cat.md
-          - reference/Expr_ceil.md
-          - reference/Expr_clip.md
-          - reference/Expr_cos.md
-          - reference/Expr_cosh.md
-          - reference/Expr_count.md
-          - reference/Expr_cumcount.md
-          - reference/Expr_cummin.md
-          - reference/Expr_cumprod.md
-          - reference/Expr_cumsum.md
-          - reference/Expr_cumulative_eval.md
-          - reference/Expr_diff.md
-          - reference/Expr_div.md
-          - reference/Expr_dot.md
-          - reference/Expr_drop_nans.md
-          - reference/Expr_drop_nulls.md
-          - reference/Expr_dt.md
-          - reference/Expr_entropy.md
-          - reference/Expr_eq.md
-          - reference/Expr_ewm_mean_std_var.md
-          - reference/Expr_exclude.md
-          - reference/Expr_exp.md
-          - reference/Expr_explode.md
-          - reference/Expr_extend_constant.md
-          - reference/Expr_extend_expr.md
-          - reference/Expr_fill_nan.md
-          - reference/Expr_fill_null.md
-          - reference/Expr_filter.md
-          - reference/Expr_first.md
-          - reference/Expr_floor.md
-          - reference/Expr_forward_fill.md
-          - reference/Expr_gt.md
-          - reference/Expr_gt_eq.md
-          - reference/Expr_hash.md
-          - reference/Expr_head.md
-          - reference/Expr_inspect.md
-          - reference/Expr_interpolate.md
-          - reference/Expr_is_between.md
-          - reference/Expr_is_duplicated.md
-          - reference/Expr_is_finite.md
-          - reference/Expr_is_first.md
-          - reference/Expr_is_in.md
-          - reference/Expr_is_infinite.md
-          - reference/Expr_is_nan.md
-          - reference/Expr_is_not.md
-          - reference/Expr_is_not_nan.md
-          - reference/Expr_is_not_null.md
-          - reference/Expr_is_null.md
-          - reference/Expr_is_unique.md
-          - reference/Expr_keep_name.md
-          - reference/Expr_kurtosis.md
-          - reference/Expr_last.md
-          - reference/Expr_limit.md
-          - reference/Expr_list.md
-          - reference/Expr_lit_to_df.md
-          - reference/Expr_lit_to_s.md
-          - reference/Expr_log.md
-          - reference/Expr_log10.md
-          - reference/Expr_lt.md
-          - reference/Expr_lt_eq.md
-          - reference/Expr_map.md
-          - reference/Expr_map_alias.md
-          - reference/Expr_max.md
-          - reference/Expr_mean.md
-          - reference/Expr_median.md
-          - reference/Expr_meta.md
-          - reference/Expr_min.md
-          - reference/Expr_mode.md
-          - reference/Expr_mul.md
-          - reference/Expr_n_unique.md
-          - reference/Expr_nan_max.md
-          - reference/Expr_nan_min.md
-          - reference/Expr_neq.md
-          - reference/Expr_null_count.md
-          - reference/Expr_or.md
-          - reference/Expr_over.md
-          - reference/Expr_pct_change.md
-          - reference/Expr_pow.md
-          - reference/Expr_product.md
-          - reference/Expr_quantile.md
-          - reference/Expr_rank.md
-          - reference/Expr_rechunk.md
-          - reference/Expr_reinterpret.md
-          - reference/Expr_rep.md
-          - reference/Expr_rep_extend.md
-          - reference/Expr_repeat_by.md
-          - reference/Expr_reshape.md
-          - reference/Expr_rolling_max.md
-          - reference/Expr_rolling_mean.md
-          - reference/Expr_rolling_median.md
-          - reference/Expr_rolling_min.md
-          - reference/Expr_rolling_quantile.md
-          - reference/Expr_rolling_skew.md
-          - reference/Expr_rolling_std.md
-          - reference/Expr_rolling_sum.md
-          - reference/Expr_rolling_var.md
-          - reference/Expr_round.md
-          - reference/Expr_rpow.md
-          - reference/Expr_sample.md
-          - reference/Expr_search_sorted.md
-          - reference/Expr_set_sorted.md
-          - reference/Expr_shift.md
-          - reference/Expr_shift_and_fill.md
-          - reference/Expr_shrink_dtype.md
-          - reference/Expr_shuffle.md
-          - reference/Expr_sign.md
-          - reference/Expr_sin.md
-          - reference/Expr_sinh.md
-          - reference/Expr_skew.md
-          - reference/Expr_slice.md
-          - reference/Expr_sort.md
-          - reference/Expr_sort_by.md
-          - reference/Expr_sqrt.md
-          - reference/Expr_std.md
-          - reference/Expr_str.md
-          - reference/Expr_struct.md
-          - reference/Expr_sub.md
-          - reference/Expr_sum.md
-          - reference/Expr_tail.md
-          - reference/Expr_take.md
-          - reference/Expr_take_every.md
-          - reference/Expr_tan.md
-          - reference/Expr_tanh.md
-          - reference/Expr_to_physical.md
-          - reference/Expr_to_r.md
-          - reference/Expr_to_struct.md
-          - reference/Expr_top_k.md
-          - reference/Expr_unique.md
-          - reference/Expr_unique_counts.md
-          - reference/Expr_upper_lower_bound.md
-          - reference/Expr_value_counts.md
-          - reference/Expr_var.md
-          - reference/Expr_xor.md
-          - reference/ExprBin_contains.md
-          - reference/ExprBin_decode.md
-          - reference/ExprBin_encode.md
-          - reference/ExprBin_ends_with.md
-          - reference/ExprBin_starts_with.md
-          - reference/ExprCat_set_ordering.md
-          - reference/ExprDT_cast_time_unit.md
-          - reference/ExprDT_combine.md
-          - reference/ExprDT_convert_time_zone.md
-          - reference/ExprDT_day.md
-          - reference/ExprDT_days.md
-          - reference/ExprDT_epoch.md
-          - reference/ExprDT_hour.md
-          - reference/ExprDT_hours.md
-          - reference/ExprDT_iso_year.md
-          - reference/ExprDT_microsecond.md
-          - reference/ExprDT_microseconds.md
-          - reference/ExprDT_millisecond.md
-          - reference/ExprDT_milliseconds.md
-          - reference/ExprDT_minute.md
-          - reference/ExprDT_minutes.md
-          - reference/ExprDT_month.md
-          - reference/ExprDT_nanosecond.md
-          - reference/ExprDT_nanoseconds.md
-          - reference/ExprDT_offset_by.md
-          - reference/ExprDT_ordinal_day.md
-          - reference/ExprDT_quarter.md
-          - reference/ExprDT_replace_time_zone.md
-          - reference/ExprDT_round.md
-          - reference/ExprDT_second.md
-          - reference/ExprDT_seconds.md
-          - reference/ExprDT_strftime.md
-          - reference/ExprDT_timestamp.md
-          - reference/ExprDT_truncate.md
-          - reference/ExprDT_tz_localize.md
-          - reference/ExprDT_week.md
-          - reference/ExprDT_weekday.md
-          - reference/ExprDT_with_time_unit.md
-          - reference/ExprDT_year.md
-          - reference/ExprMeta_eq.md
-          - reference/ExprMeta_has_multiple_outputs.md
-          - reference/ExprMeta_is_regex_projection.md
-          - reference/ExprMeta_neq.md
-          - reference/ExprMeta_output_name.md
-          - reference/ExprMeta_pop.md
-          - reference/ExprMeta_root_names.md
-          - reference/ExprMeta_undo_aliases.md
-          - reference/ExprStr_concat.md
-          - reference/ExprStr_contains.md
-          - reference/ExprStr_count_match.md
-          - reference/ExprStr_decode.md
-          - reference/ExprStr_encode.md
-          - reference/ExprStr_ends_with.md
-          - reference/ExprStr_explode.md
-          - reference/ExprStr_extract.md
-          - reference/ExprStr_extract_all.md
-          - reference/ExprStr_json_extract.md
-          - reference/ExprStr_json_path_match.md
-          - reference/ExprStr_lengths.md
-          - reference/ExprStr_ljust.md
-          - reference/ExprStr_lstrip.md
-          - reference/ExprStr_n_chars.md
-          - reference/ExprStr_parse_int.md
-          - reference/ExprStr_replace.md
-          - reference/ExprStr_replace_all.md
-          - reference/ExprStr_rjust.md
-          - reference/ExprStr_rstrip.md
-          - reference/ExprStr_slice.md
-          - reference/ExprStr_split.md
-          - reference/ExprStr_split_exact.md
-          - reference/ExprStr_splitn.md
-          - reference/ExprStr_starts_with.md
-          - reference/ExprStr_strip.md
-          - reference/ExprStr_strptime.md
-          - reference/ExprStr_to_lowercase.md
-          - reference/ExprStr_to_uppercase.md
-          - reference/ExprStr_zfill.md
-          - reference/ExprStruct_field.md
-          - reference/ExprStruct_rename_fields.md
-          - reference/extendr_method_to_pure_functions.md
-          - reference/extra_auto_completion.md
-          - reference/filter-open-paren-close-paren.md
-          - reference/get_method_usages.md
-          - reference/is_DataFrame_data_input.md
-          - reference/is_err.md
-          - reference/is_ok.md
-          - reference/is_polars_dtype.md
-          - reference/is_result.md
-          - reference/is_schema.md
-          - reference/l_to_vdf.md
-          - reference/lazy_csv_reader.md
-          - reference/length.Series.md
-          - reference/macro_add_syntax_check_to.md
-          - reference/macro_new_subnamespace.md
-          - reference/map.md
-          - reference/map_err.md
-          - reference/max.md
-          - reference/mem_address.md
-          - reference/method_as_property.md
-          - reference/min.md
-          - reference/move_env_elements.md
-          - reference/nanoarrow.md
-          - reference/ncol.DataFrame.md
-          - reference/ncol.LazyFrame.md
-          - reference/nrow.DataFrame.md
-          - reference/nrow.LazyFrame.md
-          - reference/object.md
-          - reference/Ok.md
-          - reference/or_else.md
-          - reference/pcase.md
-          - reference/polars_options.md
-          - reference/polars_runtime_flags.md
-          - reference/PolarsBackgroundHandle_is_exhausted.md
-          - reference/PolarsBackgroundHandle_join.md
-          - reference/prepare_alpha.md
-          - reference/print-open-paren-close-paren.md
-          - reference/print.Expr.md
-          - reference/print.GroupBy.md
-          - reference/print.LazyFrame.md
-          - reference/print.LazyGroupBy.md
-          - reference/print.PolarsBackgroundHandle.md
-          - reference/print.PTime.md
-          - reference/print.RField.md
-          - reference/print.RPolarsDataType.md
-          - reference/print.When.md
-          - reference/print.WhenThen.md
-          - reference/print.WhenThenThen.md
-          - reference/print_env.md
-          - reference/pstop.md
-          - reference/read_csv_.md
-          - reference/replace_private_with_pub_methods.md
-          - reference/restruct_list.md
-          - reference/RField_name.md
-          - reference/RField_print.md
-          - reference/same_outer_datatype.md
-          - reference/scan_arrow_ipc.md
-          - reference/scan_parquet.md
-          - reference/str_string.md
-          - reference/struct.md
-          - reference/sum.md
-          - reference/tick-set-_DataFrame-tick.md
-          - reference/to_list.md
-          - reference/unAsIs.md
-          - reference/unwrap.md
-          - reference/verify_method_call.md
-          - reference/when_then_otherwise.md
-          - reference/wrap_e.md
-          - reference/wrap_e_result.md
-          - reference/wrap_elist_result.md
-          - reference/wrap_proto_schema.md
-          - reference/wrap_s.md
+          - all: reference/all.md
+          - and_then: reference/and_then.md
+          - arr_arg_max: reference/arr_arg_max.md
+          - arr_arg_min: reference/arr_arg_min.md
+          - arr_concat: reference/arr_concat.md
+          - arr_contains: reference/arr_contains.md
+          - arr_diff: reference/arr_diff.md
+          - arr_eval: reference/arr_eval.md
+          - arr_first: reference/arr_first.md
+          - arr_get: reference/arr_get.md
+          - arr_head: reference/arr_head.md
+          - arr_join: reference/arr_join.md
+          - arr_last: reference/arr_last.md
+          - arr_lengths: reference/arr_lengths.md
+          - arr_max: reference/arr_max.md
+          - arr_mean: reference/arr_mean.md
+          - arr_min: reference/arr_min.md
+          - arr_reverse: reference/arr_reverse.md
+          - arr_shift: reference/arr_shift.md
+          - arr_slice: reference/arr_slice.md
+          - arr_sort: reference/arr_sort.md
+          - arr_sum: reference/arr_sum.md
+          - arr_tail: reference/arr_tail.md
+          - arr_take: reference/arr_take.md
+          - arr_to_struct: reference/arr_to_struct.md
+          - arr_unique: reference/arr_unique.md
+          - c.Series: reference/c.Series.md
+          - check_no_missing_args: reference/check_no_missing_args.md
+          - check_tz_to_result: reference/check_tz_to_result.md
+          - clone_env_one_level_deep: reference/clone_env_one_level_deep.md
+          - coalesce: reference/coalesce.md
+          - col: reference/col.md
+          - construct_DataTypeVector: reference/construct_DataTypeVector.md
+          - construct_ProtoExprArray: reference/construct_ProtoExprArray.md
+          - DataType: reference/DataType.md
+          - DataType_constructors: reference/DataType_constructors.md
+          - DataType_new: reference/DataType_new.md
+          - docs_translations: reference/docs_translations.md
+          - dot-DollarNames.DataFrame: reference/dot-DollarNames.DataFrame.md
+          - dot-DollarNames.Expr: reference/dot-DollarNames.Expr.md
+          - dot-DollarNames.GroupBy: reference/dot-DollarNames.GroupBy.md
+          - dot-DollarNames.LazyFrame: reference/dot-DollarNames.LazyFrame.md
+          - dot-DollarNames.PolarsBackgroundHandle: reference/dot-DollarNames.PolarsBackgroundHandle.md
+          - dot-DollarNames.Series: reference/dot-DollarNames.Series.md
+          - dot-DollarNames.VecDataFrame: reference/dot-DollarNames.VecDataFrame.md
+          - dot-DollarNames.When: reference/dot-DollarNames.When.md
+          - dot-DollarNames.WhenThen: reference/dot-DollarNames.WhenThen.md
+          - dot-DollarNames.WhenThenThen: reference/dot-DollarNames.WhenThenThen.md
+          - dot-pr: reference/dot-pr.md
+          - element: reference/element.md
+          - Err: reference/Err.md
+          - Expr-cash-print-open-paren-close-paren: reference/Expr-cash-print-open-paren-close-paren.md
+          - Expr: reference/Expr.md
+          - Expr_abs: reference/Expr_abs.md
+          - Expr_add: reference/Expr_add.md
+          - Expr_agg_groups: reference/Expr_agg_groups.md
+          - Expr_alias: reference/Expr_alias.md
+          - Expr_all: reference/Expr_all.md
+          - Expr_and: reference/Expr_and.md
+          - Expr_any: reference/Expr_any.md
+          - Expr_append: reference/Expr_append.md
+          - Expr_apply: reference/Expr_apply.md
+          - Expr_arccos: reference/Expr_arccos.md
+          - Expr_arccosh: reference/Expr_arccosh.md
+          - Expr_arcsin: reference/Expr_arcsin.md
+          - Expr_arcsinh: reference/Expr_arcsinh.md
+          - Expr_arctan: reference/Expr_arctan.md
+          - Expr_arctanh: reference/Expr_arctanh.md
+          - Expr_arg_max: reference/Expr_arg_max.md
+          - Expr_arg_min: reference/Expr_arg_min.md
+          - Expr_arg_sort: reference/Expr_arg_sort.md
+          - Expr_arg_unique: reference/Expr_arg_unique.md
+          - Expr_arr: reference/Expr_arr.md
+          - Expr_backward_fill: reference/Expr_backward_fill.md
+          - Expr_bin: reference/Expr_bin.md
+          - Expr_cast: reference/Expr_cast.md
+          - Expr_cat: reference/Expr_cat.md
+          - Expr_ceil: reference/Expr_ceil.md
+          - Expr_clip: reference/Expr_clip.md
+          - Expr_cos: reference/Expr_cos.md
+          - Expr_cosh: reference/Expr_cosh.md
+          - Expr_count: reference/Expr_count.md
+          - Expr_cumcount: reference/Expr_cumcount.md
+          - Expr_cummin: reference/Expr_cummin.md
+          - Expr_cumprod: reference/Expr_cumprod.md
+          - Expr_cumsum: reference/Expr_cumsum.md
+          - Expr_cumulative_eval: reference/Expr_cumulative_eval.md
+          - Expr_diff: reference/Expr_diff.md
+          - Expr_div: reference/Expr_div.md
+          - Expr_dot: reference/Expr_dot.md
+          - Expr_drop_nans: reference/Expr_drop_nans.md
+          - Expr_drop_nulls: reference/Expr_drop_nulls.md
+          - Expr_dt: reference/Expr_dt.md
+          - Expr_entropy: reference/Expr_entropy.md
+          - Expr_eq: reference/Expr_eq.md
+          - Expr_ewm_mean_std_var: reference/Expr_ewm_mean_std_var.md
+          - Expr_exclude: reference/Expr_exclude.md
+          - Expr_exp: reference/Expr_exp.md
+          - Expr_explode: reference/Expr_explode.md
+          - Expr_extend_constant: reference/Expr_extend_constant.md
+          - Expr_extend_expr: reference/Expr_extend_expr.md
+          - Expr_fill_nan: reference/Expr_fill_nan.md
+          - Expr_fill_null: reference/Expr_fill_null.md
+          - Expr_filter: reference/Expr_filter.md
+          - Expr_first: reference/Expr_first.md
+          - Expr_floor: reference/Expr_floor.md
+          - Expr_forward_fill: reference/Expr_forward_fill.md
+          - Expr_gt: reference/Expr_gt.md
+          - Expr_gt_eq: reference/Expr_gt_eq.md
+          - Expr_hash: reference/Expr_hash.md
+          - Expr_head: reference/Expr_head.md
+          - Expr_inspect: reference/Expr_inspect.md
+          - Expr_interpolate: reference/Expr_interpolate.md
+          - Expr_is_between: reference/Expr_is_between.md
+          - Expr_is_duplicated: reference/Expr_is_duplicated.md
+          - Expr_is_finite: reference/Expr_is_finite.md
+          - Expr_is_first: reference/Expr_is_first.md
+          - Expr_is_in: reference/Expr_is_in.md
+          - Expr_is_infinite: reference/Expr_is_infinite.md
+          - Expr_is_nan: reference/Expr_is_nan.md
+          - Expr_is_not: reference/Expr_is_not.md
+          - Expr_is_not_nan: reference/Expr_is_not_nan.md
+          - Expr_is_not_null: reference/Expr_is_not_null.md
+          - Expr_is_null: reference/Expr_is_null.md
+          - Expr_is_unique: reference/Expr_is_unique.md
+          - Expr_keep_name: reference/Expr_keep_name.md
+          - Expr_kurtosis: reference/Expr_kurtosis.md
+          - Expr_last: reference/Expr_last.md
+          - Expr_limit: reference/Expr_limit.md
+          - Expr_list: reference/Expr_list.md
+          - Expr_lit_to_df: reference/Expr_lit_to_df.md
+          - Expr_lit_to_s: reference/Expr_lit_to_s.md
+          - Expr_log: reference/Expr_log.md
+          - Expr_log10: reference/Expr_log10.md
+          - Expr_lt: reference/Expr_lt.md
+          - Expr_lt_eq: reference/Expr_lt_eq.md
+          - Expr_map: reference/Expr_map.md
+          - Expr_map_alias: reference/Expr_map_alias.md
+          - Expr_max: reference/Expr_max.md
+          - Expr_mean: reference/Expr_mean.md
+          - Expr_median: reference/Expr_median.md
+          - Expr_meta: reference/Expr_meta.md
+          - Expr_min: reference/Expr_min.md
+          - Expr_mode: reference/Expr_mode.md
+          - Expr_mul: reference/Expr_mul.md
+          - Expr_n_unique: reference/Expr_n_unique.md
+          - Expr_nan_max: reference/Expr_nan_max.md
+          - Expr_nan_min: reference/Expr_nan_min.md
+          - Expr_neq: reference/Expr_neq.md
+          - Expr_null_count: reference/Expr_null_count.md
+          - Expr_or: reference/Expr_or.md
+          - Expr_over: reference/Expr_over.md
+          - Expr_pct_change: reference/Expr_pct_change.md
+          - Expr_pow: reference/Expr_pow.md
+          - Expr_product: reference/Expr_product.md
+          - Expr_quantile: reference/Expr_quantile.md
+          - Expr_rank: reference/Expr_rank.md
+          - Expr_rechunk: reference/Expr_rechunk.md
+          - Expr_reinterpret: reference/Expr_reinterpret.md
+          - Expr_rep: reference/Expr_rep.md
+          - Expr_rep_extend: reference/Expr_rep_extend.md
+          - Expr_repeat_by: reference/Expr_repeat_by.md
+          - Expr_reshape: reference/Expr_reshape.md
+          - Expr_rolling_max: reference/Expr_rolling_max.md
+          - Expr_rolling_mean: reference/Expr_rolling_mean.md
+          - Expr_rolling_median: reference/Expr_rolling_median.md
+          - Expr_rolling_min: reference/Expr_rolling_min.md
+          - Expr_rolling_quantile: reference/Expr_rolling_quantile.md
+          - Expr_rolling_skew: reference/Expr_rolling_skew.md
+          - Expr_rolling_std: reference/Expr_rolling_std.md
+          - Expr_rolling_sum: reference/Expr_rolling_sum.md
+          - Expr_rolling_var: reference/Expr_rolling_var.md
+          - Expr_round: reference/Expr_round.md
+          - Expr_rpow: reference/Expr_rpow.md
+          - Expr_sample: reference/Expr_sample.md
+          - Expr_search_sorted: reference/Expr_search_sorted.md
+          - Expr_set_sorted: reference/Expr_set_sorted.md
+          - Expr_shift: reference/Expr_shift.md
+          - Expr_shift_and_fill: reference/Expr_shift_and_fill.md
+          - Expr_shrink_dtype: reference/Expr_shrink_dtype.md
+          - Expr_shuffle: reference/Expr_shuffle.md
+          - Expr_sign: reference/Expr_sign.md
+          - Expr_sin: reference/Expr_sin.md
+          - Expr_sinh: reference/Expr_sinh.md
+          - Expr_skew: reference/Expr_skew.md
+          - Expr_slice: reference/Expr_slice.md
+          - Expr_sort: reference/Expr_sort.md
+          - Expr_sort_by: reference/Expr_sort_by.md
+          - Expr_sqrt: reference/Expr_sqrt.md
+          - Expr_std: reference/Expr_std.md
+          - Expr_str: reference/Expr_str.md
+          - Expr_struct: reference/Expr_struct.md
+          - Expr_sub: reference/Expr_sub.md
+          - Expr_sum: reference/Expr_sum.md
+          - Expr_tail: reference/Expr_tail.md
+          - Expr_take: reference/Expr_take.md
+          - Expr_take_every: reference/Expr_take_every.md
+          - Expr_tan: reference/Expr_tan.md
+          - Expr_tanh: reference/Expr_tanh.md
+          - Expr_to_physical: reference/Expr_to_physical.md
+          - Expr_to_r: reference/Expr_to_r.md
+          - Expr_to_struct: reference/Expr_to_struct.md
+          - Expr_top_k: reference/Expr_top_k.md
+          - Expr_unique: reference/Expr_unique.md
+          - Expr_unique_counts: reference/Expr_unique_counts.md
+          - Expr_upper_lower_bound: reference/Expr_upper_lower_bound.md
+          - Expr_value_counts: reference/Expr_value_counts.md
+          - Expr_var: reference/Expr_var.md
+          - Expr_xor: reference/Expr_xor.md
+          - ExprBin_contains: reference/ExprBin_contains.md
+          - ExprBin_decode: reference/ExprBin_decode.md
+          - ExprBin_encode: reference/ExprBin_encode.md
+          - ExprBin_ends_with: reference/ExprBin_ends_with.md
+          - ExprBin_starts_with: reference/ExprBin_starts_with.md
+          - ExprCat_set_ordering: reference/ExprCat_set_ordering.md
+          - ExprDT_cast_time_unit: reference/ExprDT_cast_time_unit.md
+          - ExprDT_combine: reference/ExprDT_combine.md
+          - ExprDT_convert_time_zone: reference/ExprDT_convert_time_zone.md
+          - ExprDT_day: reference/ExprDT_day.md
+          - ExprDT_days: reference/ExprDT_days.md
+          - ExprDT_epoch: reference/ExprDT_epoch.md
+          - ExprDT_hour: reference/ExprDT_hour.md
+          - ExprDT_hours: reference/ExprDT_hours.md
+          - ExprDT_iso_year: reference/ExprDT_iso_year.md
+          - ExprDT_microsecond: reference/ExprDT_microsecond.md
+          - ExprDT_microseconds: reference/ExprDT_microseconds.md
+          - ExprDT_millisecond: reference/ExprDT_millisecond.md
+          - ExprDT_milliseconds: reference/ExprDT_milliseconds.md
+          - ExprDT_minute: reference/ExprDT_minute.md
+          - ExprDT_minutes: reference/ExprDT_minutes.md
+          - ExprDT_month: reference/ExprDT_month.md
+          - ExprDT_nanosecond: reference/ExprDT_nanosecond.md
+          - ExprDT_nanoseconds: reference/ExprDT_nanoseconds.md
+          - ExprDT_offset_by: reference/ExprDT_offset_by.md
+          - ExprDT_ordinal_day: reference/ExprDT_ordinal_day.md
+          - ExprDT_quarter: reference/ExprDT_quarter.md
+          - ExprDT_replace_time_zone: reference/ExprDT_replace_time_zone.md
+          - ExprDT_round: reference/ExprDT_round.md
+          - ExprDT_second: reference/ExprDT_second.md
+          - ExprDT_seconds: reference/ExprDT_seconds.md
+          - ExprDT_strftime: reference/ExprDT_strftime.md
+          - ExprDT_timestamp: reference/ExprDT_timestamp.md
+          - ExprDT_truncate: reference/ExprDT_truncate.md
+          - ExprDT_tz_localize: reference/ExprDT_tz_localize.md
+          - ExprDT_week: reference/ExprDT_week.md
+          - ExprDT_weekday: reference/ExprDT_weekday.md
+          - ExprDT_with_time_unit: reference/ExprDT_with_time_unit.md
+          - ExprDT_year: reference/ExprDT_year.md
+          - ExprMeta_eq: reference/ExprMeta_eq.md
+          - ExprMeta_has_multiple_outputs: reference/ExprMeta_has_multiple_outputs.md
+          - ExprMeta_is_regex_projection: reference/ExprMeta_is_regex_projection.md
+          - ExprMeta_neq: reference/ExprMeta_neq.md
+          - ExprMeta_output_name: reference/ExprMeta_output_name.md
+          - ExprMeta_pop: reference/ExprMeta_pop.md
+          - ExprMeta_root_names: reference/ExprMeta_root_names.md
+          - ExprMeta_undo_aliases: reference/ExprMeta_undo_aliases.md
+          - ExprStr_concat: reference/ExprStr_concat.md
+          - ExprStr_contains: reference/ExprStr_contains.md
+          - ExprStr_count_match: reference/ExprStr_count_match.md
+          - ExprStr_decode: reference/ExprStr_decode.md
+          - ExprStr_encode: reference/ExprStr_encode.md
+          - ExprStr_ends_with: reference/ExprStr_ends_with.md
+          - ExprStr_explode: reference/ExprStr_explode.md
+          - ExprStr_extract: reference/ExprStr_extract.md
+          - ExprStr_extract_all: reference/ExprStr_extract_all.md
+          - ExprStr_json_extract: reference/ExprStr_json_extract.md
+          - ExprStr_json_path_match: reference/ExprStr_json_path_match.md
+          - ExprStr_lengths: reference/ExprStr_lengths.md
+          - ExprStr_ljust: reference/ExprStr_ljust.md
+          - ExprStr_lstrip: reference/ExprStr_lstrip.md
+          - ExprStr_n_chars: reference/ExprStr_n_chars.md
+          - ExprStr_parse_int: reference/ExprStr_parse_int.md
+          - ExprStr_replace: reference/ExprStr_replace.md
+          - ExprStr_replace_all: reference/ExprStr_replace_all.md
+          - ExprStr_rjust: reference/ExprStr_rjust.md
+          - ExprStr_rstrip: reference/ExprStr_rstrip.md
+          - ExprStr_slice: reference/ExprStr_slice.md
+          - ExprStr_split: reference/ExprStr_split.md
+          - ExprStr_split_exact: reference/ExprStr_split_exact.md
+          - ExprStr_splitn: reference/ExprStr_splitn.md
+          - ExprStr_starts_with: reference/ExprStr_starts_with.md
+          - ExprStr_strip: reference/ExprStr_strip.md
+          - ExprStr_strptime: reference/ExprStr_strptime.md
+          - ExprStr_to_lowercase: reference/ExprStr_to_lowercase.md
+          - ExprStr_to_uppercase: reference/ExprStr_to_uppercase.md
+          - ExprStr_zfill: reference/ExprStr_zfill.md
+          - ExprStruct_field: reference/ExprStruct_field.md
+          - ExprStruct_rename_fields: reference/ExprStruct_rename_fields.md
+          - extendr_method_to_pure_functions: reference/extendr_method_to_pure_functions.md
+          - extra_auto_completion: reference/extra_auto_completion.md
+          - filter-open-paren-close-paren: reference/filter-open-paren-close-paren.md
+          - get_method_usages: reference/get_method_usages.md
+          - is_DataFrame_data_input: reference/is_DataFrame_data_input.md
+          - is_err: reference/is_err.md
+          - is_ok: reference/is_ok.md
+          - is_polars_dtype: reference/is_polars_dtype.md
+          - is_result: reference/is_result.md
+          - is_schema: reference/is_schema.md
+          - l_to_vdf: reference/l_to_vdf.md
+          - lazy_csv_reader: reference/lazy_csv_reader.md
+          - length.Series: reference/length.Series.md
+          - macro_add_syntax_check_to: reference/macro_add_syntax_check_to.md
+          - macro_new_subnamespace: reference/macro_new_subnamespace.md
+          - map: reference/map.md
+          - map_err: reference/map_err.md
+          - max: reference/max.md
+          - mem_address: reference/mem_address.md
+          - method_as_property: reference/method_as_property.md
+          - min: reference/min.md
+          - move_env_elements: reference/move_env_elements.md
+          - nanoarrow: reference/nanoarrow.md
+          - ncol.DataFrame: reference/ncol.DataFrame.md
+          - ncol.LazyFrame: reference/ncol.LazyFrame.md
+          - nrow.DataFrame: reference/nrow.DataFrame.md
+          - nrow.LazyFrame: reference/nrow.LazyFrame.md
+          - object: reference/object.md
+          - Ok: reference/Ok.md
+          - or_else: reference/or_else.md
+          - pcase: reference/pcase.md
+          - polars_options: reference/polars_options.md
+          - polars_runtime_flags: reference/polars_runtime_flags.md
+          - PolarsBackgroundHandle_is_exhausted: reference/PolarsBackgroundHandle_is_exhausted.md
+          - PolarsBackgroundHandle_join: reference/PolarsBackgroundHandle_join.md
+          - prepare_alpha: reference/prepare_alpha.md
+          - print-open-paren-close-paren: reference/print-open-paren-close-paren.md
+          - print.Expr: reference/print.Expr.md
+          - print.GroupBy: reference/print.GroupBy.md
+          - print.LazyFrame: reference/print.LazyFrame.md
+          - print.LazyGroupBy: reference/print.LazyGroupBy.md
+          - print.PolarsBackgroundHandle: reference/print.PolarsBackgroundHandle.md
+          - print.PTime: reference/print.PTime.md
+          - print.RField: reference/print.RField.md
+          - print.RPolarsDataType: reference/print.RPolarsDataType.md
+          - print.When: reference/print.When.md
+          - print.WhenThen: reference/print.WhenThen.md
+          - print.WhenThenThen: reference/print.WhenThenThen.md
+          - print_env: reference/print_env.md
+          - pstop: reference/pstop.md
+          - read_csv_: reference/read_csv_.md
+          - replace_private_with_pub_methods: reference/replace_private_with_pub_methods.md
+          - restruct_list: reference/restruct_list.md
+          - RField_name: reference/RField_name.md
+          - RField_print: reference/RField_print.md
+          - same_outer_datatype: reference/same_outer_datatype.md
+          - scan_arrow_ipc: reference/scan_arrow_ipc.md
+          - scan_parquet: reference/scan_parquet.md
+          - str_string: reference/str_string.md
+          - struct: reference/struct.md
+          - sum: reference/sum.md
+          - tick-set-_DataFrame-tick: reference/tick-set-_DataFrame-tick.md
+          - to_list: reference/to_list.md
+          - unAsIs: reference/unAsIs.md
+          - unwrap: reference/unwrap.md
+          - verify_method_call: reference/verify_method_call.md
+          - when_then_otherwise: reference/when_then_otherwise.md
+          - wrap_e: reference/wrap_e.md
+          - wrap_e_result: reference/wrap_e_result.md
+          - wrap_elist_result: reference/wrap_elist_result.md
+          - wrap_proto_schema: reference/wrap_proto_schema.md
+          - wrap_s: reference/wrap_s.md
   - License: LICENSE.md

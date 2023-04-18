@@ -1,35 +1,23 @@
-# `Expr_n_unique`
+data
 
-Count number of unique values
-
-
-## Description
-
-Count number of unique values.
- Similar to R length(unique(x))
-
+# Count number of unique values
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_n_unique
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Count number of unique values. Similar to R length(unique(x))
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
 ```
-
-

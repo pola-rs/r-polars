@@ -1,36 +1,24 @@
-# `Expr_and`
+data
 
-And
-
-
-## Description
-
-combine to boolean exprresions with AND
-
+# And
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_and(other)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     literal or Robj which can become a literal
+- `other`: literal or Robj which can become a literal
 
-
-## Value
+## Returns
 
 Expr
 
+combine to boolean exprresions with AND
 
 ## Examples
 
@@ -38,5 +26,3 @@ Expr
 pl$lit(TRUE) & TRUE
 pl$lit(TRUE)$and(pl$lit(TRUE))
 ```
-
-

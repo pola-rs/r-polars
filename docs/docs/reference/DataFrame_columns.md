@@ -1,25 +1,20 @@
-# `columns`
-
-get/set columns (the names columns)
-
-## Description
-
-get/set column names of DataFrame object
-
-get/set column names of DataFrame object
-
-## Usage
+# get/set columns (the names columns)
 
 ```r
 RField_datatype()
+
 DataFrame_columns()
 ```
 
-## Value
+## Returns
 
 char vec of column names
 
 char vec of column names
+
+get/set column names of DataFrame object
+
+get/set column names of DataFrame object
 
 ## Examples
 
@@ -41,5 +36,3 @@ df$columns
 df$columns = letters[1:5] #<- is fine too
 df$columns
 ```
-
-

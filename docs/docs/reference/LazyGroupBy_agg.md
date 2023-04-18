@@ -1,12 +1,4 @@
-# `agg`
-
-LazyGroupBy\_agg
-
-## Description
-
-aggregate a polar\_lazy\_groupby
-
-## Usage
+# LazyGroupBy_agg
 
 ```r
 LazyGroupBy_agg(...)
@@ -14,12 +6,10 @@ LazyGroupBy_agg(...)
 
 ## Arguments
 
-| Argument | Description        | 
-| -------- | ------------------ |
-| `...`         | any Expr or string | 
+- `...`: any Expr or string
 
-## Value
+## Returns
 
 A new `LazyFrame` object.
 
-
+aggregate a polar_lazy_groupby

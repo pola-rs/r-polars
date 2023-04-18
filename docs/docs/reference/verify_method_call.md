@@ -1,14 +1,4 @@
-# `verify_method_call`
-
-Verify user selected method/attribute exists
-
-
-## Description
-
-internal function to check method call of env_classes
-
-
-## Usage
+# Verify user selected method/attribute exists
 
 ```r
 verify_method_call(
@@ -19,19 +9,15 @@ verify_method_call(
 )
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`Class_env`     |     env_class object (the classes created by extendr-wrappers.R)
-`Method_name`     |     name of method requested by user
-`call`     |     context to throw user error, just use default
-`class_name`     |     NULLs
+- `Class_env`: env_class object (the classes created by extendr-wrappers.R)
+- `Method_name`: name of method requested by user
+- `call`: context to throw user error, just use default
+- `class_name`: NULLs
 
-
-## Value
+## Returns
 
 invisible(NULL)
 
-
+internal function to check method call of env_classes

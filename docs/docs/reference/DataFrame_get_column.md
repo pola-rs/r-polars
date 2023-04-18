@@ -1,12 +1,4 @@
-# `get_column`
-
-Get Column (as one Series)
-
-## Description
-
-get one column by name as series
-
-## Usage
+# Get Column (as one Series)
 
 ```r
 DataFrame_get_column(name)
@@ -14,13 +6,13 @@ DataFrame_get_column(name)
 
 ## Arguments
 
-| Argument | Description                         | 
-| -------- | ----------------------------------- |
-| `name`         | name of column to extract as Series | 
+- `name`: name of column to extract as Series
 
-## Value
+## Returns
 
 Series
+
+get one column by name as series
 
 ## Examples
 
@@ -28,5 +20,3 @@ Series
 df = pl$DataFrame(iris[1,])
 df$get_column("Species")
 ```
-
-

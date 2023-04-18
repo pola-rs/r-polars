@@ -1,25 +1,15 @@
-# `ExprStr_split`
-
-split
-
-
-## Description
-
-Split the string by a substring.
-
+# split
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`by`     |     Substring to split by.
-`inclusive`     |     If True, include the split character/string in the results.
+- `by`: Substring to split by.
+- `inclusive`: If True, include the split character/string in the results.
 
-
-## Value
+## Returns
 
 List of Utf8 type
 
+Split the string by a substring.
 
 ## Examples
 
@@ -27,5 +17,3 @@ List of Utf8 type
 df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 df$select( pl$col("s")$str$split(by=" "))
 ```
-
-

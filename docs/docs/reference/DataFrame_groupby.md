@@ -1,12 +1,4 @@
-# `groupby`
-
-groupby DataFrame
-
-## Description
-
-DataFrame$groupby(..., maintain\_order = FALSE)
-
-## Usage
+# groupby DataFrame
 
 ```r
 DataFrame_groupby(..., maintain_order = FALSE)
@@ -14,13 +6,11 @@ DataFrame_groupby(..., maintain_order = FALSE)
 
 ## Arguments
 
-| Argument | Description    | 
-| -------- | -------------- |
-| `...`         | any expression | 
-| `maintain_order`         | bool           | 
+- `...`: any expression
+- `maintain_order`: bool
 
-## Value
+## Returns
 
 GroupBy (subclass of DataFrame)
 
-
+DataFrame$groupby(..., maintain_order = FALSE)

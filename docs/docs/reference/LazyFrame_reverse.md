@@ -1,29 +1,23 @@
-# `reverse`
+data
 
-Reverse
-
-## Description
-
-Reverse the DataFrame.
+# Reverse
 
 ## Format
 
 An object of class `character` of length 1.
 
-## Usage
-
 ```r
 LazyFrame_reverse
 ```
 
-## Value
+## Returns
 
 LazyFrame
+
+Reverse the DataFrame.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$lazy()$reverse()$collect()
 ```
-
-

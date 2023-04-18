@@ -1,29 +1,23 @@
-# `sub`
-
-sub Series
-
-## Description
-
-Series arithmetics
-
-## Usage
+# sub Series
 
 ```r
 Series_sub(other)
-list(list("-"), list("Series"))(s1, s2)
+
+## S3 method for class 'Series'
+s1 - s2
 ```
 
 ## Arguments
 
-| Argument | Description                   | 
-| -------- | ----------------------------- |
-| `other`         | Series or into Series         | 
-| `s1`         | lhs Series                    | 
-| `s2`         | rhs Series or any into Series | 
+- `other`: Series or into Series
+- `s1`: lhs Series
+- `s2`: rhs Series or any into Series
 
-## Value
+## Returns
 
 Series
+
+Series arithmetics
 
 ## Examples
 
@@ -34,5 +28,3 @@ pl$Series(1:3)$sub(1L)
 1L - pl$Series(1:3)
 pl$Series(1:3) - 1L
 ```
-
-

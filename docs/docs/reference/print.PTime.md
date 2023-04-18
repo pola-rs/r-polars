@@ -1,30 +1,17 @@
-# `print.PTime`
-
-print PTime
-
-
-## Description
-
-print PTime
-
-
-## Usage
+# print PTime
 
 ```r
-list(list("print"), list("PTime"))(x, ...)
+## S3 method for class 'PTime'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     a PTime vector
-`...`     |     not used
+- `x`: a PTime vector
+- `...`: not used
 
-
-## Value
+## Returns
 
 invisible x
 
-
+print PTime

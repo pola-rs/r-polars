@@ -1,35 +1,23 @@
-# `Expr_last`
+data
 
-Last
-
-
-## Description
-
-Get the lastvalue.
- Similar to R syntax tail(x,1)
-
+# Last
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_last
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Get the lastvalue. Similar to R syntax tail(x,1)
 
 ## Examples
 
 ```r
 pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
 ```
-
-

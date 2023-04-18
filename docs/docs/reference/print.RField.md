@@ -1,37 +1,23 @@
-# `print.RField`
-
-Print a polars Field
-
-
-## Description
-
-Print a polars Field
-
-
-## Usage
+# Print a polars Field
 
 ```r
-list(list("print"), list("RField"))(x, ...)
+## S3 method for class 'RField'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataType
-`...`     |     not used
+- `x`: DataType
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+Print a polars Field
 
 ## Examples
 
 ```r
 print(pl$Field("foo",pl$List(pl$UInt64)))
 ```
-
-

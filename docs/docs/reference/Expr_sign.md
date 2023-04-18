@@ -1,34 +1,23 @@
-# `Expr_sign`
+data
 
-Sign
-
-
-## Description
-
-Compute the element-wise indication of the sign.
-
+# Sign
 
 ## Format
 
 Method
 
-
-## Usage
-
 ```r
 Expr_sign
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Compute the element-wise indication of the sign.
 
 ## Examples
 
 ```r
 pl$DataFrame(a=c(.9,-0,0,4,NA_real_))$select(pl$col("a")$sign())
 ```
-
-

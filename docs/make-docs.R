@@ -2,6 +2,7 @@ library(altdoc)
 library(yaml)
 library(tinkr)
 library(magrittr)
+library(stringr)
 
 if (fs::dir_exists(here::here("docs/docs/reference"))) {
   fs::dir_delete(here::here("docs/docs/reference"))
@@ -26,6 +27,12 @@ make_doc_hierarchy <- function() {
     components <- gsub("\\.Rd", "\\.md", components)
     components <- paste0("reference/", components)
     components <- sort(components)
+    components <- paste0(
+      gsub(paste0("^reference/", general_classes[i], "\\_"), "", components),
+      ": ", components
+    )
+    components <- gsub("\\.md:", ":", components)
+    components <- gsub("^reference/", "", components)
     foo <- list(components)
     names(foo) <- general_classes[i]
     hierarchy[[i]] <- foo
@@ -37,6 +44,12 @@ make_doc_hierarchy <- function() {
   remaining <- gsub("\\.Rd", "\\.md", remaining)
   remaining <- paste0("reference/", remaining)
   remaining <- sort(remaining)
+  remaining <- paste0(
+    gsub(paste0("^Other\\_"), "", remaining),
+    ": ", remaining
+  )
+  remaining <- gsub("^reference/", "", remaining)
+  remaining <- gsub("\\.md:", ":", remaining)
   foo <- list(remaining)
   names(foo) <- "Other"
   hierarchy[[length(hierarchy) + 1]] <- foo
@@ -47,37 +60,11 @@ make_doc_hierarchy <- function() {
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
   for (i in rd_files) {
-    Rd2md::Rd2markdown(
-      paste0("man/", i),
-      paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i))
-    )
+    out <- rd2markdown::rd2markdown(file = paste0("man/", i))
+    cat(out, file = paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i)))
   }
 }
 
-
-clean_md <- function() {
-  general_classes <- get_general_classes()
-  for (i in general_classes) {
-    files <- list.files(paste0("docs/docs/reference/"),
-                        pattern = paste0("^", i, "_"),
-                        full.names = TRUE)
-    for (j in files) {
-      tmp <- tinkr::yarn$new(j)
-      # transform level 3 headers into level 1 headers
-      replacement <- tmp$body %>%
-        xml2::xml_find_all(xpath = ".//md:heading[@level='1']", tmp$ns) %>%
-        xml2::xml_text() %>%
-        gsub(paste0("^", i, "_"), "", .)
-
-      tmp$body %>%
-        xml2::xml_find_all(xpath = ".//md:heading[@level='1']", tmp$ns) |>
-        xml2::xml_set_text(replacement) |>
-        invisible()
-
-      tmp$write(j)
-    }
-  }
-}
 
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
@@ -95,11 +82,49 @@ convert_hierarchy_to_yml <- function() {
   )
 
   new_yaml$nav[[reference_idx]]$Reference <- hierarchy
-  write_yaml(new_yaml, "docs/mkdocs.yml", indent.mapping.sequence = TRUE)
+
+  out = as.yaml(new_yaml, indent.mapping.sequence = TRUE)
+  out = gsub("- '", "- ", out)
+  out = gsub("\\.md'", "\\.md", out)
+
+  cat(out, file = "docs/mkdocs.yml")
 }
 
+eval_reference_examples <- function() {
+
+  pkgload::load_all()
+
+  orig_ex <- rd2markdown::rd2markdown(file = "man/DataFrame_as_data_frame.Rd", fragments = "examples")
+
+  # subset_even <- function(x) x[!seq_along(x) %% 2]
+  #
+  # lines <- orig_ex %>%
+  #   stringr::str_split("```.*", simplify = TRUE) %>%
+  #   subset_even() %>%
+  #   stringr::str_flatten("\n## new chunk \n")
+  #
+  # file_output <- tempfile(fileext = ".R")
+  # writeLines(lines, file_output)
+  #
+  # knitr::knit(file_output)
+  #
+  # eval(parse(text = lines))
+
+
+
+
+  # gsub("```r", "```{r}", orig_ex) |>
+  #   cat(_, file = )
+
+}
+
+
+
+
+
+
+
 convert_to_md()
-clean_md()
 convert_hierarchy_to_yml()
 
 

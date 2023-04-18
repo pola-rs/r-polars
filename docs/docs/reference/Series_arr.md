@@ -1,21 +1,14 @@
-# `arr`
-
-arr: list related methods on Series of dtype List
-
-## Description
-
-Create an object namespace of all list related methods.
-See the individual method pages for full details
-
-## Usage
+# arr: list related methods on Series of dtype List
 
 ```r
 Series_arr()
 ```
 
-## Value
+## Returns
 
 Expr
+
+Create an object namespace of all list related methods. See the individual method pages for full details
 
 ## Examples
 
@@ -24,5 +17,3 @@ s = pl$Series(list(1:3,1:2,NULL))
 s
 s$arr$first()
 ```
-
-

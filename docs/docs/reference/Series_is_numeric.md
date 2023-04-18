@@ -1,35 +1,27 @@
-# `is_numeric`
-
-is\_numeric
-
-## Description
-
-return bool whether series is numeric
+# is_numeric
 
 ## Format
 
 method
 
-## Usage
-
 ```r
 Series_is_numeric()
 ```
 
-## Details
-
-true of series dtype is member of pl$numeric\_dtypes
-
-## Value
+## Returns
 
 bool
+
+return bool whether series is numeric
+
+## Details
+
+true of series dtype is member of pl$numeric_dtypes
 
 ## Examples
 
 ```r
 pl$Series(1:4)$is_numeric()
-pl$Series(c("a","b","c"))$is_numeric()
-pl$numeric_dtypes
+ pl$Series(c("a","b","c"))$is_numeric()
+ pl$numeric_dtypes
 ```
-
-

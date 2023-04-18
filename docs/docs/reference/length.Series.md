@@ -1,29 +1,16 @@
-# `length.Series`
-
-Length of series
-
-
-## Description
-
-Length of series
-
-
-## Usage
+# Length of series
 
 ```r
-list(list("length"), list("Series"))(x)
+## S3 method for class 'Series'
+length(x)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     a Series
+- `x`: a Series
 
-
-## Value
+## Returns
 
 the length as a double
 
-
+Length of series

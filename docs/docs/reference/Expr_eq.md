@@ -1,39 +1,27 @@
-# `Expr_eq`
-
-Equal ==
-
-
-## Description
-
-eq method and operator
-
-
-## Usage
+# Equal ==
 
 ```r
 Expr_eq(other)
-list(list("=="), list("Expr"))(e1, e2)
-```
 
+## S3 method for class 'Expr'
+e1 == e2
+```
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`other`     |     literal or Robj which can become a literal
-`e1`     |     lhs Expr
-`e2`     |     rhs Expr or anything which can become a literal Expression
+- `other`: literal or Robj which can become a literal
+- `e1`: lhs Expr
+- `e2`: rhs Expr or anything which can become a literal Expression
 
-
-## Details
-
-See Inf,NaN,NULL,Null/NA translations here [`docs_translations`](#docstranslations)
-
-
-## Value
+## Returns
 
 Exprs
 
+eq method and operator
+
+## Details
+
+See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 
 ## Examples
 
@@ -43,5 +31,3 @@ pl$lit(2) == 2
 pl$lit(2) ==  pl$lit(2)
 pl$lit(2)$eq(pl$lit(2))
 ```
-
-

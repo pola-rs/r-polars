@@ -1,24 +1,20 @@
-# `chunk_lengths`
+data
 
-Lengths of Series memory chunks
-
-## Description
-
-Get the Lengths of Series memory chunks as vector.
+# Lengths of Series memory chunks
 
 ## Format
 
 An object of class `character` of length 1.
 
-## Usage
-
 ```r
 Series_chunk_lengths
 ```
 
-## Value
+## Returns
 
 numeric vector. Length is number of chunks. Sum of lengths is equal to size of Series.
+
+Get the Lengths of Series memory chunks as vector.
 
 ## Examples
 
@@ -26,5 +22,3 @@ numeric vector. Length is number of chunks. Sum of lengths is equal to size of S
 chunked_series = c(pl$Series(1:3),pl$Series(1:10))
 chunked_series$chunk_lengths()
 ```
-
-

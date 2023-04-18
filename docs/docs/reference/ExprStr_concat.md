@@ -1,24 +1,14 @@
-# `ExprStr_concat`
-
-Concat
-
-
-## Description
-
-Vertically concat the values in the Series to a single string value.
-
+# Concat
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`delimiter`     |     string The delimiter to insert between consecutive string values.
+- `delimiter`: string The delimiter to insert between consecutive string values.
 
-
-## Value
+## Returns
 
 Expr of Utf8 concatenated
 
+Vertically concat the values in the Series to a single string value.
 
 ## Examples
 
@@ -31,5 +21,3 @@ df$select(pl$col("foo")$str$concat("-"))
 df = pl$DataFrame(list(bar = list(c("a","b", "c"), c("1","2",NA))))
 df$select(pl$col("bar")$arr$eval(pl$col()$str$concat())$arr$first())
 ```
-
-

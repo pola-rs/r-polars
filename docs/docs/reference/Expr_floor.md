@@ -1,39 +1,27 @@
-# `Expr_floor`
+data
 
-Floor
-
-
-## Description
-
-Rounds down to the nearest integer value.
- Only works on floating point Series.
-
+# Floor
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_floor
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Rounds down to the nearest integer value. Only works on floating point Series.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(
-a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+  a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
 ))$select(
-pl$col("a")$floor()
+  pl$col("a")$floor()
 )
 ```
-
-

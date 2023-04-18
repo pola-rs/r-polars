@@ -1,34 +1,23 @@
-# `Expr_keep_name`
+data
 
-Keep the original root name of the expression.
-
-
-## Description
-
-Keep the original root name of the expression.
-
+# Keep the original root name of the expression.
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_keep_name
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Keep the original root name of the expression.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
 ```
-
-

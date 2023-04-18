@@ -1,29 +1,15 @@
-# `l_to_vdf`
-
-DataFrame-list to rust vector of DataFrame
-
-
-## Description
-
-lifecycle: DEPRECATE, imple on rust side as a function
-
-
-## Usage
+# DataFrame-list to rust vector of DataFrame
 
 ```r
 l_to_vdf(l)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`l`     |     list of DataFrame
+- `l`: list of DataFrame
 
-
-## Value
+## Returns
 
 VecDataFrame
 
-
+lifecycle: DEPRECATE, imple on rust side as a function

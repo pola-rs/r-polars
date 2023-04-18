@@ -1,16 +1,10 @@
-# `alias`
+data
 
-Alias
-
-## Description
-
-Change name of Series
+# Alias
 
 ## Format
 
 An object of class `character` of length 1.
-
-## Usage
 
 ```r
 Series_alias(name)
@@ -18,18 +12,16 @@ Series_alias(name)
 
 ## Arguments
 
-| Argument | Description              | 
-| -------- | ------------------------ |
-| `name`         | a String as the new name | 
+- `name`: a String as the new name
 
-## Value
+## Returns
 
 Series
+
+Change name of Series
 
 ## Examples
 
 ```r
 pl$Series(1:3,name = "alice")$alias("bob")
 ```
-
-

@@ -1,25 +1,17 @@
-# `all`
-
-Reduce Boolean Series with ALL
-
-## Description
-
-Reduce Boolean Series with ALL
-
-## Usage
+# Reduce Boolean Series with ALL
 
 ```r
 Series_all()
 ```
 
-## Value
+## Returns
 
 bool
+
+Reduce Boolean Series with ALL
 
 ## Examples
 
 ```r
 pl$Series(c(TRUE,TRUE,NA))$all()
 ```
-
-

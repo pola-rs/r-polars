@@ -1,29 +1,21 @@
-# `last`
-
-Last
-
-## Description
-
-Aggregate the columns in the DataFrame to their maximum value.
+# Last
 
 ## Format
 
 function
 
-## Usage
-
 ```r
 LazyFrame_last
 ```
 
-## Value
+## Returns
 
 A new `LazyFrame` object with applied aggregation.
+
+Aggregate the columns in the DataFrame to their maximum value.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$lazy()$last()$collect()
 ```
-
-

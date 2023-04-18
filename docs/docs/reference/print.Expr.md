@@ -1,37 +1,23 @@
-# `print.Expr`
-
-Print expr
-
-
-## Description
-
-Print expr
-
-
-## Usage
+# Print expr
 
 ```r
-list(list("print"), list("Expr"))(x, ...)
+## S3 method for class 'Expr'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     Expr
-`...`     |     not used
+- `x`: Expr
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
+Print expr
 
 ## Examples
 
 ```r
 pl$col("some_column")$sum()$over("some_other_column")
 ```
-
-

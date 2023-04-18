@@ -1,41 +1,24 @@
-# `clone_env_one_level_deep`
-
-Clone env on level deep.
-
-
-## Description
-
-Clone env on level deep.
-
-
-## Usage
+# Clone env on level deep.
 
 ```r
 clone_env_one_level_deep(env)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`env`     |     an R environment.
+- `env`: an R environment.
 
-
-## Details
-
-Sometimes used in polars to produce different hashmaps(environments) containing
- some of the same, but not all elements.
- 
- environments are used for collections of methods and types. This function can be used to make
- a parallel collection pointing to some of the same types. Simply copying an environment, does
- apparently not spawn a new hashmap, and therefore the collections stay identical.
-
-
-## Value
+## Returns
 
 shallow clone of R environment
 
+Clone env on level deep.
+
+## Details
+
+Sometimes used in polars to produce different hashmaps(environments) containing some of the same, but not all elements.
+
+environments are used for collections of methods and types. This function can be used to make a parallel collection pointing to some of the same types. Simply copying an environment, does apparently not spawn a new hashmap, and therefore the collections stay identical.
 
 ## Examples
 
@@ -63,5 +46,3 @@ ls(env_shallow_clone)
 # at time of cloning
 env_shallow_clone$fruit_env$apple
 ```
-
-

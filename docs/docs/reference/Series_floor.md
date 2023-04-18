@@ -1,25 +1,17 @@
-# `floor`
-
-Series\_floor
-
-## Description
-
-Floor of this Series
-
-## Usage
+# Series_floor
 
 ```r
 Series_floor()
 ```
 
-## Value
+## Returns
 
 numeric
+
+Floor of this Series
 
 ## Examples
 
 ```r
 pl$Series(c(.5,1.999))$floor()
 ```
-
-

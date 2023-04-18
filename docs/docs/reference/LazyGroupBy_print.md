@@ -1,15 +1,7 @@
-# `print`
-
-LazyGroupBy\_print
-
-## Description
-
-prints opague groupby, not much to show
-
-## Usage
+# LazyGroupBy_print
 
 ```r
 LazyGroupBy_print()
 ```
 
-
+prints opague groupby, not much to show

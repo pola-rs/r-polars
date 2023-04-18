@@ -1,22 +1,13 @@
-# `ExprStr_to_uppercase`
+# To uppercase
 
-To uppercase
-
-
-## Description
-
-Transform to uppercase variant.
-
-
-## Value
+## Returns
 
 Expr of Utf8 uppercase chars
 
+Transform to uppercase variant.
 
 ## Examples
 
 ```r
 pl$lit(c("A","b", "c", "1", NA))$str$to_uppercase()$lit_to_s()
 ```
-
-

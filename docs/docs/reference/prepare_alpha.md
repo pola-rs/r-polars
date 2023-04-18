@@ -1,32 +1,18 @@
-# `prepare_alpha`
-
-preapare alpha
-
-
-## Description
-
-internal function for emw_x expressions
-
-
-## Usage
+# preapare alpha
 
 ```r
 prepare_alpha(com = NULL, span = NULL, half_life = NULL, alpha = NULL)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`com`     |     numeric or NULL
-`span`     |     numeric or NULL
-`half_life`     |     numeric or NULL
-`alpha`     |     numeric or NULL
+- `com`: numeric or NULL
+- `span`: numeric or NULL
+- `half_life`: numeric or NULL
+- `alpha`: numeric or NULL
 
-
-## Value
+## Returns
 
 numeric
 
-
+internal function for emw_x expressions

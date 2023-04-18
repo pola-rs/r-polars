@@ -1,29 +1,15 @@
-# `nrow.LazyFrame`
-
-The Number of Rows of a LazyFrame
-
-
-## Description
-
-The Number of Rows of a LazyFrame
-
-
-## Usage
+# The Number of Rows of a LazyFrame
 
 ```r
 nrow.LazyFrame(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     LazyFrame
+- `x`: LazyFrame
 
-
-## Value
+## Returns
 
 Integer
 
-
+The Number of Rows of a LazyFrame

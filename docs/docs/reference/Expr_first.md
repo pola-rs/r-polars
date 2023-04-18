@@ -1,35 +1,23 @@
-# `Expr_first`
+data
 
-First
-
-
-## Description
-
-Get the first value.
- Similar to R head(x,1)
-
+# First
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_first
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Get the first value. Similar to R head(x,1)
 
 ## Examples
 
 ```r
 pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
 ```
-
-

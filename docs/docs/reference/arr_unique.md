@@ -1,22 +1,14 @@
-# `arr_unique`
-
-Unique list
-
-
-## Description
-
-Get the unique/distinct values in the list.
-
+# Unique list
 
 ## Format
 
 function
 
-
-## Value
+## Returns
 
 Expr
 
+Get the unique/distinct values in the list.
 
 ## Examples
 
@@ -24,5 +16,3 @@ Expr
 df = pl$DataFrame(list(a = list(1, 1, 2)))
 df$select(pl$col("a")$arr$unique())
 ```
-
-

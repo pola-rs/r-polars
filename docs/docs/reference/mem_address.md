@@ -1,29 +1,17 @@
-# `mem_address`
-
-Get Memory Address
-
-
-## Description
-
-mimics pl$mem_address
-
+# Get Memory Address
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`robj`     |     an R object
+- `robj`: an R object
 
-
-## Value
+## Returns
 
 String of mem address
 
+mimics pl$mem_address
 
 ## Examples
 
 ```r
 pl$mem_address(pl$Series(1:3))
 ```
-
-

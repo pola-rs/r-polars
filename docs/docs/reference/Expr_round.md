@@ -1,45 +1,29 @@
-# `Expr_round`
-
-round
-
-
-## Description
-
-Round underlying floating point data by `decimals` digits.
-
+# round
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_round(decimals)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`decimals`     |     integer Number of decimals to round by.
+- `decimals`: integer Number of decimals to round by.
 
-
-## Value
+## Returns
 
 Expr
 
+Round underlying floating point data by `decimals` digits.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(
-a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
+  a = c(0.33, 0.5, 1.02, 1.5, NaN , NA, Inf, -Inf)
 ))$select(
-pl$col("a")$round(0)
+  pl$col("a")$round(0)
 )
 ```
-
-

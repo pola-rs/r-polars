@@ -1,17 +1,10 @@
-# `ExprStr_explode`
+# explode
 
-explode
-
-
-## Description
-
-Returns a column with a separate row for every string character.
-
-
-## Value
+## Returns
 
 Expr: Series of dtype Utf8.
 
+Returns a column with a separate row for every string character.
 
 ## Examples
 
@@ -19,5 +12,3 @@ Expr: Series of dtype Utf8.
 df = pl$DataFrame(a = c("foo", "bar"))
 df$select(pl$col("a")$str$explode())
 ```
-
-

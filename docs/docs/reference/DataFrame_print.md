@@ -1,25 +1,17 @@
-# `print`
-
-internal method print DataFrame
-
-## Description
-
-internal method print DataFrame
-
-## Usage
+# internal method print DataFrame
 
 ```r
 DataFrame_print()
 ```
 
-## Value
+## Returns
 
 self
+
+internal method print DataFrame
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)
 ```
-
-

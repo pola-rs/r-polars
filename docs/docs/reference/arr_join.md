@@ -1,30 +1,18 @@
-# `arr_join`
-
-Join sublists
-
-
-## Description
-
-Join all string items in a sublist and place a separator between them.
- This errors if inner type of list != Utf8 .
-
+# Join sublists
 
 ## Format
 
 function
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`separator`     |     string to separate the items with
+- `separator`: string to separate the items with
 
-
-## Value
+## Returns
 
 Series of dtype Utf8
 
+Join all string items in a sublist and place a separator between them. This errors if inner type of list `!= Utf8`.
 
 ## Examples
 
@@ -32,5 +20,3 @@ Series of dtype Utf8
 df = pl$DataFrame(list(s = list(c("a","b","c"), c("x","y"))))
 df$select(pl$col("s")$arr$join(" "))
 ```
-
-

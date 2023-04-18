@@ -1,25 +1,13 @@
-# `.DollarNames.GroupBy`
-
-auto complete $-access into a polars object
-
-
-## Description
-
-called by the interactive R session internally
-
-
-## Usage
+# auto complete $-access into a polars object
 
 ```r
-list(list(".DollarNames"), list("GroupBy"))(x, pattern = "")
+## S3 method for class 'GroupBy'
+.DollarNames(x, pattern = "")
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     GroupBy
-`pattern`     |     code-stump as string to auto-complete
+- `x`: GroupBy
+- `pattern`: code-stump as string to auto-complete
 
-
+called by the interactive R session internally

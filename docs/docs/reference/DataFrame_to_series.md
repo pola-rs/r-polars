@@ -1,14 +1,4 @@
-# `to_series`
-
-Get Series by idx, if there
-
-## Description
-
-get one column by idx as series from DataFrame.
-Unlike get\_column this method will not fail if no series found at idx but
-return a NULL, idx is zero idx.
-
-## Usage
+# Get Series by idx, if there
 
 ```r
 DataFrame_to_series(idx = 0)
@@ -16,18 +6,16 @@ DataFrame_to_series(idx = 0)
 
 ## Arguments
 
-| Argument | Description                                                      | 
-| -------- | ---------------------------------------------------------------- |
-| `idx`         | numeric default 0, zero-index of what column to return as Series | 
+- `idx`: numeric default 0, zero-index of what column to return as Series
 
-## Value
+## Returns
 
 Series or NULL
+
+get one column by idx as series from DataFrame. Unlike get_column this method will not fail if no series found at idx but return a NULL, idx is zero idx.
 
 ## Examples
 
 ```r
 pl$DataFrame(a=1:4)$to_series()
 ```
-
-

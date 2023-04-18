@@ -1,32 +1,19 @@
-# `pstop`
-
-Internal preferred function to throw errors
-
-
-## Description
-
-DEPRECATED USE stopf instead
-
-
-## Usage
+# Internal preferred function to throw errors
 
 ```r
 pstop(err, call = sys.call(1L))
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`err`     |     error msg string
-`call`     |     calling context
+- `err`: error msg string
+- `call`: calling context
 
-
-## Value
+## Returns
 
 throws an error
 
+DEPRECATED USE stopf instead
 
 ## Examples
 
@@ -34,5 +21,3 @@ throws an error
 f = function() polars:::pstop("this aint right!!")
 tryCatch(f(), error = \(e) as.character(e))
 ```
-
-

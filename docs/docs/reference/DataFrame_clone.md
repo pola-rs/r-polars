@@ -1,21 +1,14 @@
-# `clone`
-
-Clone a DataFrame
-
-## Description
-
-Rarely useful as DataFrame is nearly 100% immutable
-Any modification of a DataFrame would lead to a clone anyways.
-
-## Usage
+# Clone a DataFrame
 
 ```r
 DataFrame_clone()
 ```
 
-## Value
+## Returns
 
 DataFrame
+
+Rarely useful as DataFrame is nearly 100% immutable Any modification of a DataFrame would lead to a clone anyways.
 
 ## Examples
 
@@ -26,5 +19,3 @@ df3 = df1
 pl$mem_address(df1) != pl$mem_address(df2)
 pl$mem_address(df1) == pl$mem_address(df3)
 ```
-
-

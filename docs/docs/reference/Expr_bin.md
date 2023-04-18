@@ -1,30 +1,17 @@
-# `Expr_bin`
-
-bin: binary related methods
-
-
-## Description
-
-Create an object namespace of all binary related methods.
- See the individual method pages for full details
-
-
-## Usage
+# bin: binary related methods
 
 ```r
 Expr_bin()
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Create an object namespace of all binary related methods. See the individual method pages for full details
 
 ## Examples
 
 ```r
 #missing
 ```
-
-

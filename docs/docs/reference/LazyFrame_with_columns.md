@@ -1,12 +1,4 @@
-# `with_columns`
-
-Lazy with columns
-
-## Description
-
-add or replace columns of LazyFrame
-
-## Usage
+# Lazy with columns
 
 ```r
 LazyFrame_with_columns(...)
@@ -14,12 +6,10 @@ LazyFrame_with_columns(...)
 
 ## Arguments
 
-| Argument | Description                               | 
-| -------- | ----------------------------------------- |
-| `...`         | any single Expr or string naming a column | 
+- `...`: any single Expr or string naming a column
 
-## Value
+## Returns
 
 A new `LazyFrame` object with added/modified columns.
 
-
+add or replace columns of LazyFrame

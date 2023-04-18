@@ -1,36 +1,21 @@
-# `col`
-
-Start Expression with a column
-
-
-## Description
-
-Return an expression representing a column in a DataFrame.
-
+# Start Expression with a column
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`name`     |      
+- `name`:  * a single column by a string
+     * all columns by using a wildcard `"*"`
+     * multiple columns as vector of strings
+     * column by regular expression if the regex starts with `^` and ends with `$`
+       
+       e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
+     * a single DataType or an R list of DataTypes, select any column of any such DataType
+     * Series of utf8 strings abiding to above options
 
-*  a single column by a string 
-
-*  all columns by using a wildcard `"*"`  
-
-*  multiple columns as vector of strings 
-
-*  column by regular expression if the regex starts with `^` and ends with `$`  e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$"))) 
-
-*  a single DataType or an R list of DataTypes, select any column of any such DataType 
-
-*  Series of utf8 strings abiding to above options
-
-
-## Value
+## Returns
 
 Column Exprression
 
+Return an expression representing a column in a DataFrame.
 
 ## Examples
 
@@ -59,5 +44,3 @@ df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
 # from Series of names
 df$select(pl$col(pl$Series(c("bar","foobar"))))
 ```
-
-

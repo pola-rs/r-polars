@@ -1,32 +1,18 @@
-# `Expr_tail`
-
-Tail
-
-
-## Description
-
-Get the tail n elements.
- Similar to R tail(x)
-
-
-## Usage
+# Tail
 
 ```r
 Expr_tail(n = 10)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`n`     |     numeric number of elements to select from tail
+- `n`: numeric number of elements to select from tail
 
-
-## Value
+## Returns
 
 Expr
 
+Get the tail n elements. Similar to R tail(x)
 
 ## Examples
 
@@ -34,5 +20,3 @@ Expr
 #get 3 last elements
 pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
 ```
-
-

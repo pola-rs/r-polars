@@ -1,36 +1,21 @@
-# `construct_ProtoExprArray`
-
-construct proto Expr array from args
-
-
-## Description
-
-construct proto Expr array from args
-
-
-## Usage
+# construct proto Expr array from args
 
 ```r
 construct_ProtoExprArray(...)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`...`     |     any Expr or string
+- `...`: any Expr or string
 
-
-## Value
+## Returns
 
 ProtoExprArray object
 
+construct proto Expr array from args
 
 ## Examples
 
 ```r
 polars:::construct_ProtoExprArray(pl$col("Species"),"Sepal.Width")
 ```
-
-

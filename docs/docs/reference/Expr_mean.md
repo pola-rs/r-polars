@@ -1,34 +1,23 @@
-# `Expr_mean`
+data
 
-mean
-
-
-## Description
-
-Get mean value.
-
+# mean
 
 ## Format
 
 An object of class `character` of length 1.
 
-
-## Usage
-
 ```r
 Expr_mean
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Get mean value.
 
 ## Examples
 
 ```r
 pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$mean()==2) #is true
 ```
-
-

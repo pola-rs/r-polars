@@ -1,17 +1,10 @@
-# `ExprMeta_pop`
+# Pop
 
-Pop
-
-
-## Description
-
-Pop the latest expression and return the input(s) of the popped expression.
-
-
-## Value
+## Returns
 
 R list of Expr(s) usually one, only multiple if top Expr took more Expr as input.
 
+Pop the latest expression and return the input(s) of the popped expression.
 
 ## Examples
 
@@ -25,5 +18,3 @@ e1$meta$pop()
 e2
 e2$meta$pop()
 ```
-
-

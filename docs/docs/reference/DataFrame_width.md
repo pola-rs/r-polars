@@ -1,25 +1,17 @@
-# `width`
-
-Width of DataFrame
-
-## Description
-
-Get width(ncol) of DataFrame
-
-## Usage
+# Width of DataFrame
 
 ```r
 DataFrame_width()
 ```
 
-## Value
+## Returns
 
 width as numeric scalar
+
+Get width(ncol) of DataFrame
 
 ## Examples
 
 ```r
 pl$DataFrame(iris)$width
 ```
-
-

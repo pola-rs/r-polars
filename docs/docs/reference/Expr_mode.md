@@ -1,29 +1,20 @@
-# `Expr_mode`
+data
 
-Mode
-
-
-## Description
-
-Compute the most occurring value(s). Can return multiple Values.
-
+# Mode
 
 ## Format
 
 a method
 
-
-## Usage
-
 ```r
 Expr_mode
 ```
 
-
-## Value
+## Returns
 
 Expr
 
+Compute the most occurring value(s). Can return multiple Values.
 
 ## Examples
 
@@ -33,5 +24,3 @@ df$select(pl$col("a")$mode())
 df$select(pl$col("b")$mode())
 df$select(pl$col("c")$mode())
 ```
-
-

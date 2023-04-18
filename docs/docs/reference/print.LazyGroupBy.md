@@ -1,30 +1,17 @@
-# `print.LazyGroupBy`
-
-print LazyGroupBy
-
-
-## Description
-
-print LazyGroupBy
-
-
-## Usage
+# print LazyGroupBy
 
 ```r
-list(list("print"), list("LazyGroupBy"))(x, ...)
+## S3 method for class 'LazyGroupBy'
+print(x, ...)
 ```
-
 
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     LazyGroupBy
-`...`     |     not used
+- `x`: LazyGroupBy
+- `...`: not used
 
-
-## Value
+## Returns
 
 self
 
-
+print LazyGroupBy

@@ -1,29 +1,21 @@
-# `sum`
-
-Sum
-
-## Description
-
-Aggregate the columns of this DataFrame to their sum values.
+# Sum
 
 ## Format
 
 function
 
-## Usage
-
 ```r
 LazyFrame_sum
 ```
 
-## Value
+## Returns
 
 LazyFrame
+
+Aggregate the columns of this DataFrame to their sum values.
 
 ## Examples
 
 ```r
 pl$DataFrame(mtcars)$lazy()$sum()$collect()
 ```
-
-

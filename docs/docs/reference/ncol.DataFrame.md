@@ -1,29 +1,15 @@
-# `ncol.DataFrame`
-
-The Number of Columns of a DataFrame
-
-
-## Description
-
-The Number of Columns of a DataFrame
-
-
-## Usage
+# The Number of Columns of a DataFrame
 
 ```r
 ncol.DataFrame(x)
 ```
 
-
 ## Arguments
 
-Argument      |Description
-------------- |----------------
-`x`     |     DataFrame
+- `x`: DataFrame
 
-
-## Value
+## Returns
 
 Integer
 
-
+The Number of Columns of a DataFrame
