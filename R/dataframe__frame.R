@@ -429,6 +429,10 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @description Drop duplicate rows from this dataframe.
 #' @keywords DataFrame
 #' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#' @param keep string. Which of the duplicate rows to keep:
+#' * "first": Keep first unique row.
+#' * "last": Keep last unique row.
+#' * "none": Don’t keep duplicate rows.
 #'
 #' @return DataFrame
 #' @examples

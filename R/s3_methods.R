@@ -180,6 +180,7 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
 #' @param x DataFrame
 #' @param subset Character vector of column names to drop nulls from
 #' @param keep string: "first", "last", or "none".
+#' @param incomparables: Not used. Here for S3 method consistency.
 #' @param ... Additional arguments are ignored.
 #' @examples 
 #' df = pl$DataFrame(
@@ -187,11 +188,11 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
 #'     y = as.numeric(c(1, 1:5)),
 #'     z = as.numeric(c(1, 1, 1:4)))
 #' unique(df)
-unique.DataFrame = function(object, subset = NULL, keep = "first", ...) {
+unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
     if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
         stop("subset must be NULL, a string, or a character vector")
     }
-    object$unique(subset = subset, keep = keep)
+    x$unique(subset = subset, keep = keep)
 }
 
 
@@ -201,6 +202,7 @@ unique.DataFrame = function(object, subset = NULL, keep = "first", ...) {
 #' @param x LazyFrame
 #' @param subset Character vector of column names to drop nulls from
 #' @param keep string: "first", "last", or "none".
+#' @param incomparables: Not used. Here for S3 method consistency.
 #' @param ... Additional arguments are ignored.
 #' @examples 
 #' df = pl$DataFrame(
@@ -208,9 +210,9 @@ unique.DataFrame = function(object, subset = NULL, keep = "first", ...) {
 #'     y = as.numeric(c(1, 1:5)),
 #'     z = as.numeric(c(1, 1, 1:4)))$lazy()
 #' unique(df)$collect()
-unique.LazyFrame = function(object, subset = NULL, keep = "first", ...) {
+unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
     if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
         stop("subset must be NULL, a string, or a character vector")
     }
-    object$unique(subset = subset, keep = keep)
+    x$unique(subset = subset, keep = keep)
 }

@@ -96,10 +96,10 @@ test_that("unique", {
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4)))
-  expect_equal(unique(df, "z")$height, 4)
+  expect_equal(unique(df, subset = "z")$height, 4)
   df = pl$DataFrame(
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
     z = as.numeric(c(1, 1, 1:4)))$lazy()
-  expect_equal(unique(df, "z")$collect()$height, 4)
+  expect_equal(unique(df, subset = "z")$collect()$height, 4)
 })

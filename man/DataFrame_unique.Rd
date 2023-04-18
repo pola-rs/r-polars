@@ -8,6 +8,13 @@ DataFrame_unique(subset = NULL, keep = "first")
 }
 \arguments{
 \item{subset}{string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.}
+
+\item{keep}{string. Which of the duplicate rows to keep:
+\itemize{
+\item "first": Keep first unique row.
+\item "last": Keep last unique row.
+\item "none": Don’t keep duplicate rows.
+}}
 }
 \value{
 DataFrame
