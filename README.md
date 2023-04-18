@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R-universe status
-badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
+badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io)
@@ -18,7 +18,7 @@ underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
 Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io/reference/index.html).
+[homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
@@ -40,7 +40,7 @@ installation options for a variety of operating systems:
 
 ### R-universe
 
-[R-universe](https://rpolars.r-universe.dev/rpolars#install) provides
+[R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
 source builds for other platforms. Please see the GitHub release option
 below for binary install options on Linux.
@@ -99,6 +99,17 @@ you require a different target or operating system build. Finally, see
 the bottom of this README for details on how to install rust to build
 from source (only relevant for developers, or users of unsupported
 operating systems).
+
+### r2u
+
+Speeding up your workflow? On Ubuntu, install polars + arrow from
+binaries and resolve system dependencies reliably and quickly with r2u
+([see link for configuration](https://eddelbuettel.github.io/r2u/)).
+
+``` r
+rp <- c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+install.packages(c("rpolars", "arrow"), repos = rp)
+```
 
 ## Quickstart example
 
