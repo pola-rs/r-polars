@@ -13,7 +13,7 @@ knit_print.DataFrame = function(x, ...) {
     Sys.setenv(POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE = "1")
   }
 
-  out <- capture.output(print(x))
+  out = capture.output(print(x))
 
   # Needs to insert a blank line
   out = c(out[1], "", out[-1]) |>
