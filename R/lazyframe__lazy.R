@@ -440,7 +440,7 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
 LazyFrame_unique = function(subset = NULL, keep = "first") {
   if (is.null(subset)) subset = vector("character")
-  .pr$LazyFrame$unique(self, subset, keep)
+  unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
 }
 
 #' @title Lazy_groupby

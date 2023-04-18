@@ -1,12 +1,12 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
+use crate::rdatatype::new_quantile_interpolation_option;
+use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
 use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-use crate::rdatatype::new_quantile_interpolation_option;
-use crate::rdatatype::new_unique_keep_strategy;
 
 #[allow(unused_imports)]
 use std::result::Result;
@@ -92,34 +92,54 @@ impl LazyFrame {
     pub fn var(&self, ddof: Robj) -> Result<Self, String> {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
-    
-    pub fn quantile(&self, quantile: Robj, interpolation: &str) -> Result<Self, String> {
-        let res = new_quantile_interpolation_option(interpolation).unwrap();
-        Ok(self.clone().0.quantile(robj_to!(Expr, quantile)?.0.clone(), res).into())
+
+    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> Result<Self, String> {
+        let res = new_quantile_interpolation_option(robj_to!(str, interpolation)?).unwrap();
+        Ok(self
+            .clone()
+            .0
+            .quantile(robj_to!(Expr, quantile)?.0.clone(), res)
+            .into())
     }
 
-    fn shift(&self, periods: i64) -> Result<Self, String> {
-        Ok(self.clone().0.shift(periods).into())
+    fn shift(&self, periods: Robj) -> Result<Self, String> {
+        Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
     }
 
-    fn shift_and_fill(&self, fill_value: &Expr, periods: i64) -> Result<Self, String> {
-        Ok(self.clone().0.shift_and_fill(periods, fill_value.0.clone()).into())
+    fn shift_and_fill(&self, fill_value: Robj, periods: Robj) -> Result<Self, String> {
+        Ok(self
+            .clone()
+            .0
+            .shift_and_fill(robj_to!(i64, periods)?, robj_to!(Expr, fill_value)?.0)
+            .into())
     }
-    
+
     fn reverse(&self) -> Self {
         self.0.clone().reverse().into()
     }
-    
-    fn drop(&self, columns: Vec<String>) -> Result<Self, String> {
-        Ok(self.0.clone().drop_columns(columns).into())
+
+    fn drop(&self, columns: Robj) -> Result<LazyFrame, String> {
+        Ok(self
+            .0
+            .clone()
+            .drop_columns(robj_to!(Vec, String, columns)?)
+            .into())
     }
-    
+
     fn fill_nan(&self, fill_value: Robj) -> Result<Self, String> {
-        Ok(self.0.clone().fill_nan(robj_to!(Expr, fill_value)?.0).into())
+        Ok(self
+            .0
+            .clone()
+            .fill_nan(robj_to!(Expr, fill_value)?.0)
+            .into())
     }
 
     fn fill_null(&self, fill_value: Robj) -> Result<Self, String> {
-        Ok(self.0.clone().fill_null(robj_to!(Expr, fill_value)?.0).into())
+        Ok(self
+            .0
+            .clone()
+            .fill_null(robj_to!(Expr, fill_value)?.0)
+            .into())
     }
 
     fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
@@ -141,7 +161,6 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
-
     fn limit(&self, n: f64) -> List {
         r_result_list(
             try_f64_into_u32(n)
@@ -158,7 +177,7 @@ impl LazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         LazyFrame(new_df)
     }
-    
+
     fn drop_nulls(&self, subset: &ProtoExprArray) -> LazyFrame {
         if subset.0.len() == 0 {
             LazyFrame(self.0.clone().drop_nulls(None))
@@ -168,13 +187,17 @@ impl LazyFrame {
         }
     }
 
-    fn unique(&self, subset: Vec<String>, keep: &str) -> LazyFrame {
-        let ke = new_unique_keep_strategy(keep).unwrap();
-        if subset.len() == 0 {
+    fn unique(&self, subset: Robj, keep: Robj) -> Result<LazyFrame, String> {
+        let ke = new_unique_keep_strategy(robj_to!(str, keep)?).unwrap();
+        Ok(if subset.len() == 0 {
             LazyFrame(self.0.clone().unique(None, ke))
         } else {
-            LazyFrame(self.0.clone().unique(Some(subset), ke))
-        }
+            LazyFrame(
+                self.0
+                    .clone()
+                    .unique(Some(robj_to!(Vec, String, subset)?), ke),
+            )
+        })
     }
 
     fn groupby(&self, exprs: &ProtoExprArray, maintain_order: bool) -> LazyGroupBy {
