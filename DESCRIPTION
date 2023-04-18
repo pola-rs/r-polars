@@ -59,6 +59,7 @@ Collate:
     'namespace.R'
     'options.R'
     'parquet.R'
+    'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'rlang.R'
     'rust_result.R'
