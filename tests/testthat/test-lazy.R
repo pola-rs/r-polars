@@ -218,6 +218,15 @@ test_that("drop_nulls", {
   expect_error(pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect()$height, pattern = "ColumnNotFound")
 })
 
+test_that("fill_nulls", {
+  df = pl$DataFrame(
+    a = c(1.5, 2, NA, 4),
+    b = c(1.5, NA, NA, 4)
+  )$lazy()$fill_null(99)$collect()$as_data_frame()
+  expect_equal(sum(df$a == 99), 1)
+  expect_equal(sum(df$b == 99), 2)
+})
+
 
 
 #TODO complete tests for lazy

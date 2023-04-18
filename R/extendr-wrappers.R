@@ -846,6 +846,8 @@ LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
 
 LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
 
+LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, self, fill_value)
+
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)

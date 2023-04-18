@@ -117,6 +117,10 @@ impl LazyFrame {
         Ok(self.0.clone().fill_nan(robj_to!(Expr, fill_value)?.0).into())
     }
 
+    fn fill_null(&self, fill_value: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().fill_null(robj_to!(Expr, fill_value)?.0).into())
+    }
+
     fn slice(&self, offset: Robj, length: Robj) -> Result<LazyFrame, String> {
         Ok(LazyFrame(self.0.clone().slice(
             robj_to!(i64, offset)?,

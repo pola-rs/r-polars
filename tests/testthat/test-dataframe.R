@@ -553,3 +553,13 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
   expect_error(pl$DataFrame(mtcars)$drop_nulls("bad")$height, pattern = "ColumnNotFound")
 })
+
+
+test_that("fill_nulls", {
+  df = pl$DataFrame(
+    a = c(1.5, 2, NA, 4),
+    b = c(1.5, NA, NA, 4)
+  )$fill_null(99)$as_data_frame()
+  expect_equal(sum(df$a == 99), 1)
+  expect_equal(sum(df$b == 99), 2)
+})

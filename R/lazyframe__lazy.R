@@ -323,6 +323,21 @@ LazyFrame_fill_nan = function(fill_value) {
   unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)))
 }
 
+#' @title Fill null
+#' @description Fill null values using the specified value or strategy.
+#' @keywords LazyFrame
+#' @param fill_value Value to fill `NA` with.
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1.5, 2, NA, 4),
+#'         b = c(1.5, NA, NA, 4)
+#' )$lazy()
+#' df$fill_null(99)$collect()
+LazyFrame_fill_null = function(fill_value) {
+  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)))
+}
+
 #' @title Shift
 #' @description Shift the values by a given period.
 #' @keywords LazyFrame

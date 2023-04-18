@@ -1063,6 +1063,20 @@ DataFrame_fill_nan = function(fill_value) {
   self$lazy()$fill_nan(fill_value)$collect()
 }
 
+#' @title Fill null
+#' @description Fill null values using the specified value or strategy.
+#' @keywords DataFrame
+#' @param fill_value Value to fill `NA` with.
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(
+#'         a = c(1.5, 2, NA, 4),
+#'         b = c(1.5, NA, NA, 4)
+#' )$fill_null(99)
+DataFrame_fill_null = function(fill_value) {
+  self$lazy()$fill_null(fill_value)$collect()
+}
+
 #' @title Slice
 #' @description Get a slice of this DataFrame.
 #' @keywords LazyFrame
