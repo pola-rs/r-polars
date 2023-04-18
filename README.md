@@ -103,6 +103,17 @@ the bottom of this README for details on how to install rust to build
 from source (only relevant for developers, or users of unsupported
 operating systems).
 
+### r2u
+
+Speeding up your workflow? On Ubuntu, install polars + arrow from
+binaries and resolve system dependencies reliably and quickly with r2u
+([see link for configuration](https://eddelbuettel.github.io/r2u/)).
+
+``` r
+rp <- c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+install.packages(c("rpolars", "arrow"), repos = rp)
+```
+
 ## Quickstart example
 
 The introductory vignette (`vignette("polars")`) contains a series of
