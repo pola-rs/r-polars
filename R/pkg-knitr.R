@@ -1,7 +1,7 @@
 #' @export
 knit_print.DataFrame = function(x, ...) {
   .env_formatting = Sys.getenv("POLARS_FMT_TABLE_FORMATTING")
-  .env_inline_data_type <- tolower(Sys.getenv("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE"))
+  .env_inline_data_type = tolower(Sys.getenv("POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE"))
 
   on.exit({
     Sys.setenv(POLARS_FMT_TABLE_FORMATTING = .env_formatting)
