@@ -4,7 +4,7 @@
 \alias{DataFrame_clone}
 \title{Clone a DataFrame}
 \usage{
-DataFrame_clone()
+<DataFrame>$clone()
 }
 \value{
 DataFrame

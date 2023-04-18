@@ -530,6 +530,7 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' @return DataFrame
 #' @aliases DataFrame_clone
 #' @keywords  DataFrame
+#' @usage <DataFrame>$clone()
 #' @examples
 #' df1 = pl$DataFrame(iris);
 #' df2 =  df1$clone();
