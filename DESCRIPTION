@@ -3,8 +3,9 @@ Title: Polars ported to R
 Version: 0.5.0
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
-Authors@R: 
-    person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre"))
+Authors@R:
+  c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
+    person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre")))
 Description: This package ports the polars data query library to R.
 License: MIT + file LICENSE
 Encoding: UTF-8
