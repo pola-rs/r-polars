@@ -89,3 +89,17 @@ test_that("drop_nulls", {
   expect_equal(nrow(na.omit(dl, subset = c("mpg", "hp"))), 28)
   expect_error(na.omit(dl, "bad")$collect(),"ColumnNotFound")
 })
+
+
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  expect_equal(unique(df, "z")$height, 4)
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))$lazy()
+  expect_equal(unique(df, "z")$collect()$height, 4)
+})

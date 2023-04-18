@@ -860,6 +860,8 @@ LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
 LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
 
+LazyFrame$unique <- function(subset, keep) .Call(wrap__LazyFrame__unique, self, subset, keep)
+
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)

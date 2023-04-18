@@ -421,6 +421,22 @@ LazyFrame_drop_nulls = function(subset = NULL) {
   .pr$LazyFrame$drop_nulls(self, pra)
 }
 
+#' @title Lazy_unique
+#' @description Drop duplicate rows from this dataframe.
+#' @keywords LazyFrame
+#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#'
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   x = as.numeric(c(1, 1:5)),
+#'   y = as.numeric(c(1, 1:5)),
+#'   z = as.numeric(c(1, 1, 1:4)))
+#' df$lazy()$unique("z", "last")$collect()$height
+LazyFrame_unique = function(subset = NULL, keep = "first") {
+  .pr$LazyFrame$unique(self, subset, keep)
+}
+
 #' @title Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy
 #' @keywords LazyFrame

@@ -563,3 +563,19 @@ test_that("fill_nulls", {
   expect_equal(sum(df$a == 99), 1)
   expect_equal(sum(df$b == 99), 2)
 })
+
+
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  w = df$unique("z", "first")$height
+  x = df$unique(c("x", "y", "z"), "first")$height
+  y = df$unique(c("x"), "first")$height
+  z = df$unique(c("y", "z"), "first")$height
+  expect_equal(w, 4)
+  expect_equal(x, 5)
+  expect_equal(y, 5)
+  expect_equal(z, 5)
+})

@@ -425,6 +425,23 @@ DataFrame_drop_nulls = function(subset = NULL) {
 }
 
 
+#' @title DataFrame_unique
+#' @description Drop duplicate rows from this dataframe.
+#' @keywords DataFrame
+#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#'
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   x = as.numeric(c(1, 1:5)),
+#'   y = as.numeric(c(1, 1:5)),
+#'   z = as.numeric(c(1, 1, 1:4)))
+#' df$unique("z", "last")$height
+DataFrame_unique = function(subset = NULL, keep = "first") {
+  self$lazy()$unique(subset, keep)$collect()
+}
+
+
 #' Shape of  DataFrame
 #' @name DataFrame_shape
 #' @description Get shape/dimensions of DataFrame

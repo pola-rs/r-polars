@@ -6,6 +6,7 @@ use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use crate::rdatatype::new_quantile_interpolation_option;
+use crate::rdatatype::new_unique_keep_strategy;
 
 #[allow(unused_imports)]
 use std::result::Result;
@@ -164,6 +165,15 @@ impl LazyFrame {
         } else {
             let vec = pra_to_vec(subset, "select");
             LazyFrame(self.0.clone().drop_nulls(Some(vec)))
+        }
+    }
+
+    fn unique(&self, subset: Vec<String>, keep: &str) -> LazyFrame {
+        let ke = new_unique_keep_strategy(keep).unwrap();
+        if subset.len() == 0 {
+            LazyFrame(self.0.clone().unique(None, ke))
+        } else {
+            LazyFrame(self.0.clone().unique(Some(subset), ke))
         }
     }
 

@@ -154,7 +154,7 @@ na.omit.LazyFrame = function(object, subset = NULL, ...) {
     object$drop_nulls(subset)
 }
 
-# Drop nulls from a DataFrame
+#' Drop nulls from a DataFrame
 #' @export
 #' @noRd
 #' @param object DataFrame
@@ -171,4 +171,46 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
         stop("subset must be NULL, a string, or a character vector")
     }
     object$drop_nulls(subset)
+}
+
+
+#' Drop duplicate rows from this dataframe.
+#' @export
+#' @noRd
+#' @param x DataFrame
+#' @param subset Character vector of column names to drop nulls from
+#' @param keep string: "first", "last", or "none".
+#' @param ... Additional arguments are ignored.
+#' @examples 
+#' df = pl$DataFrame(
+#'     x = as.numeric(c(1, 1:5)),
+#'     y = as.numeric(c(1, 1:5)),
+#'     z = as.numeric(c(1, 1, 1:4)))
+#' unique(df)
+unique.DataFrame = function(object, subset = NULL, keep = "first", ...) {
+    if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
+        stop("subset must be NULL, a string, or a character vector")
+    }
+    object$unique(subset = subset, keep = keep)
+}
+
+
+#' Drop duplicate rows from this dataframe.
+#' @export
+#' @noRd
+#' @param x LazyFrame
+#' @param subset Character vector of column names to drop nulls from
+#' @param keep string: "first", "last", or "none".
+#' @param ... Additional arguments are ignored.
+#' @examples 
+#' df = pl$DataFrame(
+#'     x = as.numeric(c(1, 1:5)),
+#'     y = as.numeric(c(1, 1:5)),
+#'     z = as.numeric(c(1, 1, 1:4)))$lazy()
+#' unique(df)$collect()
+unique.LazyFrame = function(object, subset = NULL, keep = "first", ...) {
+    if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
+        stop("subset must be NULL, a string, or a character vector")
+    }
+    object$unique(subset = subset, keep = keep)
 }

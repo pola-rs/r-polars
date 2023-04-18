@@ -227,6 +227,20 @@ test_that("fill_nulls", {
   expect_equal(sum(df$b == 99), 2)
 })
 
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  w = df$lazy()$unique("z", "first")$collect()$height
+  x = df$lazy()$unique(c("x", "y", "z"), "first")$collect()$height
+  y = df$lazy()$unique(c("x"), "first")$collect()$height
+  z = df$lazy()$unique(c("y", "z"), "first")$collect()$height
+  expect_equal(w, 4)
+  expect_equal(x, 5)
+  expect_equal(y, 5)
+  expect_equal(z, 5)
+})
 
 
 #TODO complete tests for lazy
