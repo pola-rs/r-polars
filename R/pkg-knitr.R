@@ -1,3 +1,8 @@
+#' knit print polars DataFrame
+#' @name knit_print.DataFrame
+#' @param x a polars DataFrame to knit_print
+#' @param ... additional arguments, not used
+#' @keywords DataFrame
 #' @export
 knit_print.DataFrame = function(x, ...) {
   .env_formatting = Sys.getenv("POLARS_FMT_TABLE_FORMATTING")
