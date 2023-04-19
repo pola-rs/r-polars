@@ -9,7 +9,10 @@
 badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io)
+[![Docs
+release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
+[![Docs
+dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
 
 The goal of this project is to bring the blazingly fast
@@ -42,8 +45,8 @@ installation options for a variety of operating systems:
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
-source builds for other platforms. Please see the GitHub release option
-below for binary install options on Linux.
+source builds for other platforms. Please see further below for binary
+install options on Linux.
 
 ``` r
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
@@ -70,7 +73,7 @@ install.packages(
 ```
 
 Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip)
+([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
 and MacOS (x86_64,
 [URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
@@ -255,7 +258,7 @@ Rust toolchain
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
-- Install [CMake](https://cmake.org/) and added it to your PATH.
+- Install [CMake](https://cmake.org/) and add it to your PATH.
 
 #### Development workflow
 

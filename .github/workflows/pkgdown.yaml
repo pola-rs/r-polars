@@ -103,7 +103,7 @@ jobs:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
       - name: Deploy to GitHub pages 🚀
-        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
+        if: runner.os == 'Linux' && github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           clean: false
