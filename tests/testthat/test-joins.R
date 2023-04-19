@@ -14,14 +14,14 @@ test_that("lazyframe join examples", {
   #inner default join
   df_inner = df$join(other_df, on="ham")$collect()
   expect_identical(
-    df_inner$as_data_frame(),
+    df_inner$to_data_frame(),
     data.frame(foo = 1:2, bar = c(6, 7), ham = c("a", "b"), apple = c("x","y"))
   )
 
   #outer
   df_outer = df$join(other_df, on="ham", how = "outer")$collect()
   expect_identical(
-    df_outer$as_data_frame(),
+    df_outer$to_data_frame(),
     data.frame(
       foo = c(1L, 2L, NA, 3L),
       bar = c(6, 7, NA, 8),
@@ -42,21 +42,21 @@ test_that("test_semi_anti_join", {
 
   #eager1
   expect_identical(
-    df_a$join(df_b,on="key",how="anti")$as_data_frame(),
+    df_a$join(df_b,on="key",how="anti")$to_data_frame(),
     data.frame(key = 1:2, payload = c("f","i"))
   )
   expect_identical(
-    df_a$join(df_b,on="key",how="semi")$as_data_frame(),
+    df_a$join(df_b,on="key",how="semi")$to_data_frame(),
     data.frame(key = 3L, payload = NA_character_)
   )
 
   #lazy1
   expect_identical(
-    df_a$lazy()$join(df_b$lazy(),on="key",how="anti")$collect()$as_data_frame(),
+    df_a$lazy()$join(df_b$lazy(),on="key",how="anti")$collect()$to_data_frame(),
     data.frame(key = 1:2, payload = c("f","i"))
   )
   expect_identical(
-    df_a$lazy()$join(df_b$lazy(),on="key",how="semi")$collect()$as_data_frame(),
+    df_a$lazy()$join(df_b$lazy(),on="key",how="semi")$collect()$to_data_frame(),
     data.frame(key = 3L, payload = NA_character_)
   )
 
@@ -66,21 +66,21 @@ test_that("test_semi_anti_join", {
 
   #eager2
   expect_identical(
-    df_a$join(df_b,on=c("a","b"),how="anti")$as_data_frame(),
+    df_a$join(df_b,on=c("a","b"),how="anti")$to_data_frame(),
     data.frame(a = c(1:2,1L), b = c("a","b","a"), payload = c(10L,20L,40L))
   )
   expect_identical(
-    df_a$join(df_b,on=c("a","b"),how="semi")$as_data_frame(),
+    df_a$join(df_b,on=c("a","b"),how="semi")$to_data_frame(),
     data.frame(a = 3L, b = "c", payload = 30L)
   )
 
   #lazy2
   expect_identical(
-    df_a$lazy()$join(df_b$lazy(),on=c("a","b"),how="anti")$collect()$as_data_frame(),
+    df_a$lazy()$join(df_b$lazy(),on=c("a","b"),how="anti")$collect()$to_data_frame(),
     data.frame(a = c(1:2,1L), b = c("a","b","a"), payload = c(10L,20L,40L))
   )
   expect_identical(
-    df_a$lazy()$join(df_b$lazy(),on=c("a","b"),how="semi")$collect()$as_data_frame(),
+    df_a$lazy()$join(df_b$lazy(),on=c("a","b"),how="semi")$collect()$to_data_frame(),
     data.frame(a = 3L, b = "c", payload = 30L)
   )
 

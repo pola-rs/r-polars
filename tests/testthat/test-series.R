@@ -238,7 +238,7 @@ test_that("to_frame", {
   expect_identical(
     pl$Series(1:3, "foo")$
       to_frame()$
-      as_data_frame(),
+      to_data_frame(),
     data.frame(foo = 1:3)
   )
 })
@@ -328,8 +328,8 @@ test_that("value counts", {
   s <- pl$Series(c(1, 4, 4, 4, 4, 3, 3, 3, 2, 2, NA))
   s_st <- s$value_counts(sorted = TRUE, multithreaded = FALSE)
   s_mt <- s$value_counts(sorted = TRUE, multithreaded = FALSE)
-  df_st <- s_st$as_data_frame()
-  df_mt <- s_st$as_data_frame()
+  df_st <- s_st$to_data_frame()
+  df_mt <- s_st$to_data_frame()
 
   expect_identical(df_st[[1L]], c(4, 3, 2, 1, NA))
   expect_identical(df_mt[[1L]], c(4, 3, 2, 1, NA))

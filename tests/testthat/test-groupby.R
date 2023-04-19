@@ -40,7 +40,7 @@ test_that("groupby", {
   df2 = gb$agg(
     pl$col("bar")$sum()$alias("bar_sum"),
     pl$col("bar")$mean()$alias("bar_tail_sum")
-  )$as_data_frame()
+  )$to_data_frame()
 
 
   expect_equal(
@@ -69,7 +69,7 @@ make_cases <- function() {
 
 patrick::with_parameters_test_that(
   "simple translations: eager", {
-    a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$as_data_frame()
+    a = pl$DataFrame(mtcars)$groupby(pl$col("cyl"))$first()$to_data_frame()
     b = as.data.frame(do.call(rbind, by(mtcars, mtcars$cyl, \(x) apply(x, 2, head, 1))))
     b = b[order(b$cyl), colnames(b) != "cyl"]
     expect_equal(a[order(a$cyl), 2:ncol(a)], b, ignore_attr = TRUE)

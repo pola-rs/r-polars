@@ -379,7 +379,7 @@ pl$concat_list = function(exprs) {
 #' identical(df$select(e1)$to_list(),df$select(e2)$to_list())
 #'
 #' df$select(e2)
-#' df$select(e2)$as_data_frame()
+#' df$select(e2)$to_data_frame()
 pl$struct = function(
   exprs, # list of exprs, str or Series or Expr or Series,
   eager = FALSE,
