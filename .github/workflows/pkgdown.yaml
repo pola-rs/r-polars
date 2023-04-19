@@ -2,6 +2,8 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
+    branches:
+      - main
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
@@ -98,7 +100,7 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
 
       - uses: webfactory/ssh-agent@v0.6.0
-        if: startsWith(github.ref, 'refs/tags/') && runner.os == 'Linux' && github.event_name != 'pull_request'
+        if: runner.os == 'Linux' && github.event_name != 'pull_request'
         with:
           ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
 
