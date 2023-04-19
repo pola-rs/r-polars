@@ -33,7 +33,6 @@ GroupBy <- new.env(parent = emptyenv())
 #'
 #' @examples pl$DataFrame(iris)$groupby("Species")
 print.GroupBy = function(x, ...) {
-  cat("polars GroupBy: ")
   .pr$DataFrame$print(x)
   cat("groups: ")
   .pr$ProtoExprArray$print(attr(x,"private")$groupby_input)

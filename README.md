@@ -129,7 +129,7 @@ library(polars)
 
 dat = pl$DataFrame(mtcars)
 dat
-#> polars DataFrame: shape: (32, 11)
+#> shape: (32, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -159,7 +159,7 @@ dat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )
-#> polars DataFrame: shape: (4, 4)
+#> shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
@@ -187,7 +187,7 @@ ldat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )$collect()
-#> polars DataFrame: shape: (4, 4)
+#> shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
