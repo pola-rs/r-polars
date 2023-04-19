@@ -636,39 +636,36 @@ DataFrame_to_series = function(idx=0) {
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
 
-#' Get Series by idx, if there
+#' DataFrame Sort
+#' @description sort a DataFrame by on or more Expr.
 #'
-#' @param idx numeric default 0, zero-index of what column to return as Series
+#' @param by  Iterable Into<Expr>, e.g. one Expr, or list mixed Expr and column name strings, or a
+#' charachter vector of column names. The column(s) to sort by.
+#' @param ... more columns to sort by as above but provided one Expr per argument.
+#' @param descending Sort descending? Defulat = FALSE logical vector of length 1 or same length
+#' as number of Expr's from above by + ....
+#' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
+#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
+#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
-#' @name DataFrame_to_series
-#' @description get one column by idx as series from DataFrame.
-#' Unlike get_column this method will not fail if no series found at idx but
-#' return a NULL, idx is zero idx.
-#'
-#' @return Series or NULL
+#' @return LazyFrame
 #' @keywords  DataFrame
 #' @examples
+#' df = pl$DataFrame(
+#'  a = c(1L, 2L, NA),
+#'  b = c(6, 5, 4),
+#'  c = c("a", "b", "c")
+#' )
+#' df$sort("a")
 DataFrame_sort = function(
   by, # : IntoExpr | List[IntoExpr],
   ..., # unnamed Into expr
   descending = FALSE, #  bool | vector[bool] = False,
-  nulls_last =FALSE
+  nulls_last = FALSE
 ) {
-  largs = list2(...)
-  nargs = names(largs)
-  largs_result = if(!is.null(nargs) && length(nargs) && any(nchar(nargs))) {
-    Err("additional ... args cannot be named")
-  } else {
-    Ok(largs)
-  }
-
-  # self$lazy()$sort(
-  #   wrap_e_result(by), largs_result, descending, nulls_last
-  # )
-
-
-
-
+  #args after ... must be named
+  self$lazy()$sort(by, ..., descending = descending, nulls_last = nulls_last)$collect()
 }
 
 

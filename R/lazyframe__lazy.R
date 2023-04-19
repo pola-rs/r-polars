@@ -520,19 +520,18 @@ LazyFrame_join = function(
 #' LazyFrame Sort
 #' @description sort a LazyFrame by on or more Expr
 #'
-#' @param by  Column(s) to sort by. Iterable Into<Expr>, e.g. one Expr or list of two, or plain
-#' charvec naming columns.
-#' @param ... more columns to sort by. Into<Expr> as above but not e.g. in a list, can be combined
-#' with above
-#' @param descending Sort desceding? logical vector of len 1 or same as number of Expr's above
-#' @param nulls_last place all nulls_last? Bool
+#' @param by  Iterable Into<Expr>, e.g. one Expr, or list mixed Expr and column name strings, or a
+#' charachter vector of column names. The column(s) to sort by.
+#' @param ... more columns to sort by as above but provided one Expr per argument.
+#' @param descending Sort descending? Defulat = FALSE logical vector of length 1 or same length
+#' as number of Expr's from above by + ....
+#' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
+#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
+#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
-#' @name DataFrame_to_series
-#' @description get one column by idx as series from DataFrame.
-#' Unlike get_column this method will not fail if no series found at idx but
-#' return a NULL, idx is zero idx.
 #'
-#' @return Series or NULL
+#' @return LazyFrame
 #' @keywords  DataFrame
 #' @examples
 LazyFrame_sort = function(
