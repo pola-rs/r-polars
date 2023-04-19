@@ -8,34 +8,9 @@ test_that("groupby", {
 
   gb = df$groupby("foo",maintain_order=TRUE)
 
-  expect_equal(
-    capture.output(print(gb)),
-    c("polars GroupBy: shape: (5, 2)",
-      "┌─────┬─────┐",
-      "│ foo ┆ bar │",
-      "│ --- ┆ --- │",
-      "│ str ┆ f64 │",
-      "╞═════╪═════╡",
-      "│ one ┆ 5.0 │",
-      "│ two ┆ 3.0 │",
-      "│ two ┆ 2.0 │",
-      "│ one ┆ 4.0 │",
-      "│ two ┆ 1.0 │",
-      "└─────┴─────┘",
-      "groups: ProtoExprArray(",
-      "    [",
-      "        Expr(",
-      "            Expr(",
-      "                col(\"foo\"),",
-      "            ),",
-      "        ),",
-      "    ],",
-      ")",
-      "maintain order:  TRUE"
-    )
-  )
-
-
+  expect_snapshot(gb)
+  withr::with_envvar(c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW" = "1"), expect_snapshot(gb))
+  withr::with_envvar(c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION" = "1"), expect_snapshot(gb))
 
   df2 = gb$agg(
     pl$col("bar")$sum()$alias("bar_sum"),

@@ -72,7 +72,10 @@ test_that("DataFrame, mixed input, create and print", {
 
   # clone into DataFrame and change one name
   df <- pl$DataFrame(input_vectors_and_series)
+
   expect_snapshot(df)
+  withr::with_envvar(c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW" = "1"), expect_snapshot(df))
+  withr::with_envvar(c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION" = "1"), expect_snapshot(df))
 })
 
 test_that("DataFrame, input free vectors, input empty", {
