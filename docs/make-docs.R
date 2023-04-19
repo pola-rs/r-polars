@@ -33,16 +33,20 @@ make_doc_hierarchy <- function() {
   for (i in seq_along(general_classes)) {
     components <- list.files("man", pattern = paste0("^", general_classes[i]))
     all_rd <<- all_rd[-which(components %in% all_rd)]
-    components <- components[-which(grepl("_class\\.Rd$", components))]
-    components <- gsub("\\.Rd", "\\.md", components)
-    components <- paste0("reference/", components)
-    components <- sort(components)
-    components <- paste0(
-      gsub(paste0("^reference/", general_classes[i], "\\_"), "", components),
-      ": ", components
-    )
-    components <- gsub("\\.md:", ":", components)
-    components <- gsub("^reference/", "", components)
+    components <- components[-which(grepl("_class\\.Rd$", components))] %>%
+      gsub("\\.Rd", "\\.md", x = .) %>%
+      paste0("reference/", .) %>%
+      sort(x = .) %>%
+      paste0(
+        gsub(
+          paste0("^reference/", general_classes[i], "\\_"),
+          "", x = .
+        ),
+        ": ", .
+      ) %>%
+      gsub("\\.md:", ":", x = .) %>%
+      gsub("^reference/", "", x = .)
+
     foo <- list(components)
     names(foo) <- general_classes[i]
     hierarchy[[i]] <- foo
@@ -50,16 +54,20 @@ make_doc_hierarchy <- function() {
 
   remaining <- grep(paste0("^(", paste(general_classes, collapse = "|"), ")"),
                     all_rd, invert = TRUE)
-  remaining <- all_rd[remaining]
-  remaining <- gsub("\\.Rd", "\\.md", remaining)
-  remaining <- paste0("reference/", remaining)
-  remaining <- sort(remaining)
-  remaining <- paste0(
-    gsub(paste0("^Other\\_"), "", remaining),
-    ": ", remaining
-  )
-  remaining <- gsub("^reference/", "", remaining)
-  remaining <- gsub("\\.md:", ":", remaining)
+  remaining <- all_rd[remaining] %>%
+    gsub("\\.Rd", "\\.md", x = .) %>%
+    paste0("reference/", .) %>%
+    sort(x = .) %>%
+    paste0(
+      gsub(
+        paste0("^reference/", general_classes[i], "\\_"),
+        "", x = .
+      ),
+      ": ", .
+    ) %>%
+    gsub("\\.md:", ":", x = .) %>%
+    gsub("^reference/", "", x = .)
+
   foo <- list(remaining)
   names(foo) <- "Other"
   hierarchy[[length(hierarchy) + 1]] <- foo
