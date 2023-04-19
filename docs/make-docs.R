@@ -124,20 +124,15 @@ eval_reference_examples <- function() {
 
   orig_ex <- rd2markdown::rd2markdown(file = "man/DataFrame_as_data_frame.Rd", fragments = "examples")
 
-  # subset_even <- function(x) x[!seq_along(x) %% 2]
-  #
-  # lines <- orig_ex %>%
-  #   stringr::str_split("```.*", simplify = TRUE) %>%
-  #   subset_even() %>%
-  #   stringr::str_flatten("\n## new chunk \n")
-  #
-  # file_output <- tempfile(fileext = ".R")
-  # writeLines(lines, file_output)
-  #
-  # knitr::knit(file_output)
-  #
-  # eval(parse(text = lines))
+  subset_even <- function(x) x[!seq_along(x) %% 2]
 
+  lines <- orig_ex %>%
+    stringr::str_split("```.*", simplify = TRUE) %>%
+    subset_even() %>%
+    stringr::str_flatten("\n## new chunk \n")
+
+
+  downlit::evaluate_and_highlight(lines)
 
 
 
