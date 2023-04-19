@@ -1,4 +1,4 @@
-# DataFrame, mixed input, create and print
+# DataFrame, mixed input, create and print .name=dummy, .value=dummy
 
     Code
       df
@@ -16,7 +16,7 @@
       │ 5.0     ┆ 25.0 ┆ e   ┆ 1.0        ┆ 11.0         ┆ 0.0          │
       └─────────┴──────┴─────┴────────────┴──────────────┴──────────────┘
 
----
+# DataFrame, mixed input, create and print .name=POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW, .value=1
 
     Code
       df
@@ -34,7 +34,7 @@
       └─────────┴──────┴─────┴────────────┴──────────────┴──────────────┘
       shape: (5, 6)
 
----
+# DataFrame, mixed input, create and print .name=POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION, .value=1
 
     Code
       df

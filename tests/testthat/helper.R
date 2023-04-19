@@ -46,3 +46,12 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
 
   invisible(err)
 }
+
+make_print_cases = function() {
+  tibble::tribble(
+    ~ .name, ~ .value,
+    "dummy", "dummy",
+    "POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "1",
+    "POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION", "1"
+  )
+}

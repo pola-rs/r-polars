@@ -1,4 +1,4 @@
-# groupby
+# groupby print .name=dummy, .value=dummy
 
     Code
       gb
@@ -26,7 +26,7 @@
       )
       maintain order:  TRUE
 
----
+# groupby print .name=POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW, .value=1
 
     Code
       gb
@@ -54,7 +54,7 @@
       )
       maintain order:  TRUE
 
----
+# groupby print .name=POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION, .value=1
 
     Code
       gb

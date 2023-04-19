@@ -1,28 +1,31 @@
-test_that("groupby", {
-  df = pl$DataFrame(
-    list(
-      foo = c("one", "two", "two", "one", "two"),
-      bar = c(5, 3, 2, 4, 1)
-    )
+df = pl$DataFrame(
+  list(
+    foo = c("one", "two", "two", "one", "two"),
+    bar = c(5, 3, 2, 4, 1)
   )
+)
 
-  gb = df$groupby("foo",maintain_order=TRUE)
+gb = df$groupby("foo", maintain_order = TRUE)
 
-  expect_snapshot(gb)
-  withr::with_envvar(c("POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW" = "1"), expect_snapshot(gb))
-  withr::with_envvar(c("POLARS_FMT_TABLE_HIDE_DATAFRAME_SHAPE_INFORMATION" = "1"), expect_snapshot(gb))
+patrick::with_parameters_test_that("groupby print",
+  {
+    .env_var <- .value
+    names(.env_var) <- .name
+    withr::with_envvar(.env_var, expect_snapshot(gb))
+  },
+  .cases = make_print_cases()
+)
 
-  df2 = gb$agg(
+test_that("groupby", {
+  df2 <- gb$agg(
     pl$col("bar")$sum()$alias("bar_sum"),
     pl$col("bar")$mean()$alias("bar_tail_sum")
   )$as_data_frame()
 
-
   expect_equal(
     df2,
-    data.frame(foo=c("one","two"),bar_sum=c(9,6),bar_tail_sum=c(4.5,2))
+    data.frame(foo = c("one", "two"), bar_sum = c(9, 6), bar_tail_sum = c(4.5, 2))
   )
-
 })
 
 
