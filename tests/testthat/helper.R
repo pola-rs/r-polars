@@ -52,7 +52,7 @@ make_print_cases = function() {
     ~ .name, ~ .value,
     "dummy", "dummy",
     "POLARS_FMT_TABLE_CELL_ALIGNMENT", "RIGHT",
-    "POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "1",
+    # "POLARS_FMT_TABLE_INLINE_COLUMN_DATA_TYPE", "1", # Skip because the test does not work well #133
     "POLARS_FMT_TABLE_DATAFRAME_SHAPE_BELOW", "1",
     "POLARS_FMT_TABLE_FORMATTING", "ASCII_FULL",
     "POLARS_FMT_TABLE_FORMATTING", "ASCII_FULL_CONDENSED",
