@@ -636,7 +636,40 @@ DataFrame_to_series = function(idx=0) {
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
 
+#' Get Series by idx, if there
+#'
+#' @param idx numeric default 0, zero-index of what column to return as Series
+#'
+#' @name DataFrame_to_series
+#' @description get one column by idx as series from DataFrame.
+#' Unlike get_column this method will not fail if no series found at idx but
+#' return a NULL, idx is zero idx.
+#'
+#' @return Series or NULL
+#' @keywords  DataFrame
+#' @examples
+DataFrame_sort = function(
+  by, # : IntoExpr | List[IntoExpr],
+  ..., # unnamed Into expr
+  descending = FALSE, #  bool | vector[bool] = False,
+  nulls_last =FALSE
+) {
+  largs = list2(...)
+  nargs = names(largs)
+  largs_result = if(!is.null(nargs) && length(nargs) && any(nchar(nargs))) {
+    Err("additional ... args cannot be named")
+  } else {
+    Ok(largs)
+  }
 
+  # self$lazy()$sort(
+  #   wrap_e_result(by), largs_result, descending, nulls_last
+  # )
+
+
+
+
+}
 
 
 
@@ -1135,3 +1168,6 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
 DataFrame_estimated_size = "use_extendr_wrapper"
+
+
+

@@ -517,5 +517,58 @@ LazyFrame_join = function(
 
 
 
+#' LazyFrame Sort
+#' @description sort a LazyFrame by on or more Expr
+#'
+#' @param by  Column(s) to sort by. Iterable Into<Expr>, e.g. one Expr or list of two, or plain
+#' charvec naming columns.
+#' @param ... more columns to sort by. Into<Expr> as above but not e.g. in a list, can be combined
+#' with above
+#' @param descending Sort desceding? logical vector of len 1 or same as number of Expr's above
+#' @param nulls_last place all nulls_last? Bool
+#'
+#' @name DataFrame_to_series
+#' @description get one column by idx as series from DataFrame.
+#' Unlike get_column this method will not fail if no series found at idx but
+#' return a NULL, idx is zero idx.
+#'
+#' @return Series or NULL
+#' @keywords  DataFrame
+#' @examples
+LazyFrame_sort = function(
+  by, # : IntoExpr | List[IntoExpr],
+  ..., # unnamed Into expr
+  descending = FALSE, #  bool | vector[bool] = False,
+  nulls_last =FALSE
+) {
+
+  largs = list2(...)
+  nargs = names(largs)
+
+  #match on args to check for ...
+  pcase(
+    # all the bad stuff
+    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
+    missing(by), Err("arg [by] is missing"),
+
+    #iterate over by + ... to wrap into Expr. Capture ok/err in results
+    or_else = Ok(c(
+        lapply(by, wrap_e_result, str_to_lit = FALSE),
+        lapply(largs, wrap_e_result, str_to_lit = FALSE)
+      ))
+  ) |>
+
+
+  #and_then skips step, if input is an Error otherwise call rust wrapper
+  and_then(\(by_combined) { #by_combined has Rtyp" List<Result<Expr,String>>
+    .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
+  }) |>
+
+
+  #add same context to any Error
+  unwrap("in sort():")
+
+}
+
 
 

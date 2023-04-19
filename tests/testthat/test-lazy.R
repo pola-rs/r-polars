@@ -163,7 +163,7 @@ test_that("tail", {
 
 
 test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$as_data_frame() 
+  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$as_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
@@ -241,6 +241,71 @@ test_that("unique", {
   expect_equal(x, 5)
   expect_equal(y, 5)
   expect_equal(z, 5)
+})
+
+
+#TODO only tested error msg of sort, missing tests for arguments are correctly connected to rust
+test_that("sort", {
+
+  expect_no_error(
+    pl$DataFrame(mtcars)$lazy()$sort(
+        by = list("cyl",pl$col("gear")), #mixed types which implements Into<Expr>
+        "disp", # ... args other unamed args Into<Expr>
+        descending = c(T,T,F) #vector of same length as number of Expr's
+    )$collect()
+  )
+
+
+  #check expect_grepl_error fails on unmet expectation
+  expect_error(expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl",complex(1))),
+     "not_in_error_text"
+  ))
+
+
+   #test arg by raises error for unsported type
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl",complex(1))),
+     c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
+  )
+
+  #test arg ... raises error for unsported type
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
+     c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
+  )
+
+  #test raise error for ... named arg
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by="cyl",name_dotdotdot=42),
+     c("arg" ,"...", "cannot be named")
+  )
+
+  #test raise error for missing by
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(),
+     c("arg" ,"by", "is missing")
+  )
+
+  #test raise error for missing by
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = c(T,F))$collect(),
+     c("The amount of ordering booleans", "2 does not match that no. of Series", "3")
+  )
+
+  #TODO refine this error msg in robj_to! it does not have to be a "single" here
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = 42)$collect(),
+     c("the arg", "descending", "is not a single bool as required, but 42")
+  )
+
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), nulls_last = 42)$collect(),
+     c("the arg", "nulls_last", "is not a single bool as required, but 42")
+  )
+
+
+
 })
 
 

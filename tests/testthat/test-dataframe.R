@@ -492,7 +492,7 @@ test_that("drop_in_place", {
 
 
 test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$as_data_frame() 
+  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$as_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
@@ -581,3 +581,4 @@ test_that("unique", {
   expect_equal(y, 5)
   expect_equal(z, 5)
 })
+
