@@ -2,13 +2,13 @@
 % Please edit documentation in R/series__series.R
 \name{Series_to_r}
 \alias{Series_to_r}
-\alias{Series_to_r_vector}
+\alias{Series_to_vector}
 \alias{Series_to_r_list}
 \title{Get r vector/list}
 \usage{
 Series_to_r()
 
-Series_to_r_vector()
+Series_to_vector()
 
 Series_to_r_list()
 }
@@ -38,7 +38,7 @@ series_vec = pl$Series(letters[1:3])
 #Series_non_list
 series_vec$to_r() #as vector because Series DataType is not list (is Utf8)
 series_vec$to_r_list() #implicit call as.list(), convert to list
-series_vec$to_r_vector() #implicit call unlist(), same as to_r() as already vector
+series_vec$to_vector() #implicit call unlist(), same as to_r() as already vector
 
 
 #make nested Series_list of Series_list of Series_Int32
@@ -56,7 +56,7 @@ series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
 #Series_list
 series_list$to_r() #as list because Series DataType is list
 series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
-series_list$to_r_vector() #implicit call unlist(), append into a vector
+series_list$to_vector() #implicit call unlist(), append into a vector
  #
  #
 }

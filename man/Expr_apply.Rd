@@ -46,7 +46,7 @@ Expects a user function \code{f} to take a \code{Series} and return a \code{Seri
 \code{Series}, eg. R vector. GroupBy context much faster if number groups are quite fewer than
 number of rows, as the iteration is only across the groups.
 The r user function could e.g. do vectorized operations and stay quite performant.
-use \code{s$to_r()} to convert input Series to an r vector or list. use \code{s$to_r_vector} and
+use \code{s$to_r()} to convert input Series to an r vector or list. use \code{s$to_vector} and
 \code{s$to_r_list()} to force conversion to vector or list.
 }
 

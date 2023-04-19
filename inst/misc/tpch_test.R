@@ -43,7 +43,7 @@
 #
 #
 # df
-# df$as_data_frame()
+# df$to_data_frame()
 #
 #
 #   .filter(pl.col("l_shipdate") > var1)
