@@ -67,7 +67,7 @@ pl$col = function(name="") {
 
   #preconvert Series into char name(s)
 
-  if(inherits(name,"Series")) name = name$to_r_vector()
+  if(inherits(name,"Series")) name = name$to_vector()
 
   if(is_string(name)) return(.pr$Expr$col(name))
   if(is.character(name)) {

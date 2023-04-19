@@ -27,7 +27,7 @@ investigate.
 }
 \examples{
 pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
-  paste("cheese",as.character(x$to_r_vector()))
+  paste("cheese",as.character(x$to_vector()))
 }, pl$dtypes$Utf8))
 }
 \keyword{Expr}

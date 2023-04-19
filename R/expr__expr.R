@@ -593,7 +593,7 @@ construct_ProtoExprArray = function(...) {
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
-#'   paste("cheese",as.character(x$to_r_vector()))
+#'   paste("cheese",as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
 Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
   .pr$Expr$map(self, f, output_type, agg_list)
@@ -635,7 +635,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
 #'   number of rows, as the iteration is only across the groups.
 #'   The r user function could e.g. do vectorized operations and stay quite performant.
-#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and
+#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_vector` and
 #'   `s$to_r_list()` to force conversion to vector or list.
 #'
 #'  Implementing logic using an R function is almost always _significantly_

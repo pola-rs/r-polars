@@ -65,8 +65,8 @@ patrick::with_parameters_test_that("Series",
         x = base(mtcars$mpg)
         y = base(d)
         z = d[[pola]]()
-        if (inherits(y, "Series")) y = y$to_r_vector()
-        if (inherits(z, "Series")) z = z$to_r_vector()
+        if (inherits(y, "Series")) y = y$to_vector()
+        if (inherits(z, "Series")) z = z$to_vector()
         expect_equal(x, y, ignore_attr = TRUE)
         expect_equal(x, z, ignore_attr = TRUE)
     },
