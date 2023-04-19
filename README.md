@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![R-universe status
-badge](https://rpolars.r-universe.dev/badges/rpolars)](https://rpolars.r-universe.dev)
+badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs
