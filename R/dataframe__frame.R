@@ -265,7 +265,6 @@ pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
 #'
 #' @examples pl$DataFrame(iris)
 print.DataFrame = function(x, ...) {
-  cat("polars DataFrame: ")
   x$print()
   invisible(x)
 }
