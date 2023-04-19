@@ -95,7 +95,7 @@ test_that("pl$std pl$var", {
 
 test_that("pl$struct", {
   expr = pl$struct(names(iris))$alias("struct")
-  df_act = pl$DataFrame(iris[1:150,])$select(expr)$as_data_frame()
+  df_act = pl$DataFrame(iris[1:150,])$select(expr)$to_data_frame()
 
   df_exp = structure(
     list(struct = unname(lapply(1:150,\(i) as.list(iris[i,])))),

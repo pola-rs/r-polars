@@ -41,42 +41,42 @@ test_that("lazy filter", {
 
   #filter ==
   expect_identical(
-    pdf$lazy()$filter(pl$col("Species")=="setosa")$collect()$as_data_frame(),
+    pdf$lazy()$filter(pl$col("Species")=="setosa")$collect()$to_data_frame(),
     test_df[test_df$Species=="setosa",] |> df_enumerate_rows()
   )
   expect_identical(
-    pdf$lazy()$filter(pl$col("Sepal.Length")==5.0)$collect()$as_data_frame(),
+    pdf$lazy()$filter(pl$col("Sepal.Length")==5.0)$collect()$to_data_frame(),
     test_df[test_df$Sepal.Length == 5.0,,] |> df_enumerate_rows()
   )
   expect_identical(
-    pdf$lazy()$filter(pl$col("is_long"))$collect()$as_data_frame(),
+    pdf$lazy()$filter(pl$col("is_long"))$collect()$to_data_frame(),
     test_df[test_df$is_long,] |> df_enumerate_rows()
   )
 
 
   #filter >=
-  expect_identical(pdf$lazy()$filter(pl$col("Species")>="versicolor")$collect()$as_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
-  expect_identical(pdf$lazy()$filter(pl$col("Sepal.Length")>=5.0)$collect()$as_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
-  expect_identical(pdf$lazy()$filter(pl$col("is_long")>=TRUE)$collect()$as_data_frame(),test_df[test_df$is_long >= TRUE,,] |> df_enumerate_rows())
+  expect_identical(pdf$lazy()$filter(pl$col("Species")>="versicolor")$collect()$to_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
+  expect_identical(pdf$lazy()$filter(pl$col("Sepal.Length")>=5.0)$collect()$to_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
+  expect_identical(pdf$lazy()$filter(pl$col("is_long")>=TRUE)$collect()$to_data_frame(),test_df[test_df$is_long >= TRUE,,] |> df_enumerate_rows())
 
   #no trues                                       #flip signs here
-  expect_not_equal(pdf$lazy()$filter(pl$col("Species")<"versicolor")$collect()$as_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
-  expect_not_equal(pdf$lazy()$filter(pl$col("Species")<="versicolor")$collect()$as_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
-  expect_not_equal(pdf$lazy()$filter(pl$col("Sepal.Length")< 5.0)$collect()$as_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
-  expect_not_equal(pdf$lazy()$filter(pl$col("Sepal.Length")<=5.0)$collect()$as_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
-  expect_not_equal(pdf$lazy()$filter(pl$col("is_long")<TRUE)$collect()$as_data_frame(),test_df[test_df$is_long >= TRUE,,] |> df_enumerate_rows())
+  expect_not_equal(pdf$lazy()$filter(pl$col("Species")<"versicolor")$collect()$to_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
+  expect_not_equal(pdf$lazy()$filter(pl$col("Species")<="versicolor")$collect()$to_data_frame(), test_df[test_df$Species>="versicolor",] |> df_enumerate_rows())
+  expect_not_equal(pdf$lazy()$filter(pl$col("Sepal.Length")< 5.0)$collect()$to_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
+  expect_not_equal(pdf$lazy()$filter(pl$col("Sepal.Length")<=5.0)$collect()$to_data_frame(), test_df[test_df$Sepal.Length >= 5.0,,] |> df_enumerate_rows())
+  expect_not_equal(pdf$lazy()$filter(pl$col("is_long")<TRUE)$collect()$to_data_frame(),test_df[test_df$is_long >= TRUE,,] |> df_enumerate_rows())
 
 
   #bool specific
-  expect_identical(pdf$lazy()$filter(pl$col("is_long")!=TRUE )$collect()$as_data_frame(),test_df[test_df$is_long != TRUE ,,] |> df_enumerate_rows())
-  expect_identical(pdf$lazy()$filter(pl$col("is_long")!=FALSE)$collect()$as_data_frame(),test_df[test_df$is_long != FALSE,,] |> df_enumerate_rows())
+  expect_identical(pdf$lazy()$filter(pl$col("is_long")!=TRUE )$collect()$to_data_frame(),test_df[test_df$is_long != TRUE ,,] |> df_enumerate_rows())
+  expect_identical(pdf$lazy()$filter(pl$col("is_long")!=FALSE)$collect()$to_data_frame(),test_df[test_df$is_long != FALSE,,] |> df_enumerate_rows())
 
 
   #and
   expect_identical(
     pdf$lazy()$filter(
       pl$col("is_long") & (pl$col("Sepal.Length")> 5.0)
-    )$collect()$as_data_frame(),
+    )$collect()$to_data_frame(),
     test_df[test_df$is_long & test_df$Sepal.Length>5 ,,] |> df_enumerate_rows()
   )
 
@@ -84,7 +84,7 @@ test_that("lazy filter", {
   expect_identical(
     pdf$lazy()$filter(
       pl$col("is_long") | (pl$col("Sepal.Length")> 5.0)
-    )$collect()$as_data_frame(),
+    )$collect()$to_data_frame(),
     test_df[test_df$is_long | test_df$Sepal.Length>5 ,,] |> df_enumerate_rows()
   )
 
@@ -92,7 +92,7 @@ test_that("lazy filter", {
   expect_identical(
     pdf$lazy()$filter(
       pl$col("is_long")$xor(pl$col("Sepal.Length")> 5.0)
-    )$collect()$as_data_frame(),
+    )$collect()$to_data_frame(),
     test_df[xor(test_df$is_long,test_df$Sepal.Length>5),] |> df_enumerate_rows()
   )
 
@@ -118,7 +118,7 @@ make_cases <- function() {
 
 patrick::with_parameters_test_that(
   "simple translations: lazy", {
-    a = pl$DataFrame(mtcars)$lazy()[[pola]]()$collect()$as_data_frame()
+    a = pl$DataFrame(mtcars)$lazy()[[pola]]()$collect()$to_data_frame()
     b = data.frame(lapply(mtcars, base))
     testthat::expect_equal(a, b, ignore_attr = TRUE)
   },
@@ -126,23 +126,23 @@ patrick::with_parameters_test_that(
 )
 
 test_that("simple translations", {
-  a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$reverse()$collect()$to_data_frame()
   b = mtcars[32:1,]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()$to_data_frame()
   b = mtcars[3:6,]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$slice(30)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$slice(30)$collect()$to_data_frame()
   b = tail(mtcars, 2)
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$var(10)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$var(10)$collect()$to_data_frame()
   b = data.frame(lapply(mtcars, var))
   expect_true(all(a != b))
 
-  a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$std(10)$collect()$to_data_frame()
   b = data.frame(lapply(mtcars, sd))
   expect_true(all(a != b))
 
@@ -156,7 +156,7 @@ test_that("simple translations", {
 
 
 test_that("tail", {
-  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$tail(6)$collect()$to_data_frame()
   b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
 })

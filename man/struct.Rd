@@ -70,5 +70,5 @@ df = pl$DataFrame(
 identical(df$select(e1)$to_list(),df$select(e2)$to_list())
 
 df$select(e2)
-df$select(e2)$as_data_frame()
+df$select(e2)$to_data_frame()
 }

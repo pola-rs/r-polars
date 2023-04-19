@@ -1,6 +1,10 @@
 url: https://rpolars.github.io/
+
 template:
   bootstrap: 5
+
+development:
+  mode: auto
 
 reference:
   # NSE

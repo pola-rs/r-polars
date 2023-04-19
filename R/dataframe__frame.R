@@ -265,7 +265,6 @@ pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
 #'
 #' @examples pl$DataFrame(iris)
 print.DataFrame = function(x, ...) {
-  cat("polars DataFrame: ")
   x$print()
   invisible(x)
 }
@@ -873,8 +872,8 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3,])
-#' df$as_data_frame()
-DataFrame_as_data_frame = function(...) {
+#' df$to_data_frame()
+DataFrame_to_data_frame = function(...) {
 
   #do not unnest structs and mark with I to also preserve categoricals as is
   l = lapply(self$to_list(unnest_structs=FALSE), I)
@@ -889,19 +888,23 @@ DataFrame_as_data_frame = function(...) {
   df
 }
 
-# #' @rdname DataFrame_as_data_frame
+#' Alias for to_data_frame (backward compatibility)
+#' @noRd
+DataFrame_as_data_frame = DataFrame_to_data_frame
+
+# #' @rdname DataFrame_to_data_frame
 # #' @description to_data_frame is an alias
 # #' @keywords DataFrame
-# DataFrame_to_data_frame = DataFrame_as_data_frame
+# DataFrame_to_data_frame = DataFrame_to_data_frame
 
-#' @rdname DataFrame_as_data_frame
+#' @rdname DataFrame_to_data_frame
 #' @param x DataFrame
 #' @param ... any params passed to as.data.frame
 #'
 #' @return data.frame
 #' @export
 as.data.frame.DataFrame = function(x, ...) {
-  x$as_data_frame(...)
+  x$to_data_frame(...)
 }
 
 #' return polars DataFrame as R lit of vectors

@@ -11,7 +11,7 @@
 #       df$filter(pl$col("sepal_length") > pl$lit(5))
 #       $groupby("species",maintain_order = TRUE)
 #       $agg(pl$all()$sum())
-#       $as_data_frame()
+#       $to_data_frame()
 #       $sepal_length
 #   )
 #
@@ -28,7 +28,7 @@
 #   l = l$agg(pl$col("sepal_length")$sum())
 #   capture.output(l$describe_optimized_plan())
 #   df = l$collect()
-#   three_lazy_sums = df$as_data_frame()$sepal_length
+#   three_lazy_sums = df$to_data_frame()$sepal_length
 #
 #   testthat::expect_equal(
 #     object = three_lazy_sums,
@@ -54,7 +54,7 @@ test_that("Expression examples // types/NAS in-out", {
    "groups" =  c("A", "A", "B", "C", "B")
   )
   pf = pl$DataFrame(df_in)
-  df_out = pf$as_data_frame()
+  df_out = pf$to_data_frame()
 
   expect_equal(df_in,df_out)
 
@@ -68,7 +68,7 @@ test_that("Expression examples // types/NAS in-out", {
   ##u32 type is converted to R real which gracefully avoids overflow u32->i32
   ## however it is a bit silly to perform a count a get a double as result
   ## but that's R ;)
-  three_counts = as.list(pf2$as_data_frame()) |> lapply(as.numeric)
+  three_counts = as.list(pf2$to_data_frame()) |> lapply(as.numeric)
 
   expect_equal(  three_counts, list(
     unique_names_1 = 5,

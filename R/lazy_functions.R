@@ -67,7 +67,7 @@ pl$col = function(name="") {
 
   #preconvert Series into char name(s)
 
-  if(inherits(name,"Series")) name = name$to_r_vector()
+  if(inherits(name,"Series")) name = name$to_vector()
 
   if(is_string(name)) return(.pr$Expr$col(name))
   if(is.character(name)) {
@@ -379,7 +379,7 @@ pl$concat_list = function(exprs) {
 #' identical(df$select(e1)$to_list(),df$select(e2)$to_list())
 #'
 #' df$select(e2)
-#' df$select(e2)$as_data_frame()
+#' df$select(e2)$to_data_frame()
 pl$struct = function(
   exprs, # list of exprs, str or Series or Expr or Series,
   eager = FALSE,

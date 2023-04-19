@@ -15,7 +15,7 @@ test_that("Expr_apply works", {
   rdf
 
   expect_equal(
-    rdf$as_data_frame(),
+    rdf$to_data_frame(),
     data.frame(
       b = c("a","b","c","d",NA_character_),
       a_which_max=c(1L,1L,2L,NA_integer_,2L),
@@ -32,12 +32,12 @@ test_that("Expr_apply works", {
   ))
 
   #in groupby context
-  edf = df$as_data_frame()[1:10,c("a","b")]
+  edf = df$to_data_frame()[1:10,c("a","b")]
   edf$count = c(rep(1,9),2)
   expect_identical(
     df$groupby("a","b",maintain_order = TRUE)$agg(
       pl$col("val1")$apply(function(s) {s$len()})$alias("count")
-    )$as_data_frame(),
+    )$to_data_frame(),
     edf
   )
 
@@ -47,7 +47,7 @@ test_that("Expr_apply works", {
     df$select(
       pl$col("val1")$apply(function(x) {x+5L})$alias("val1_add5"),
       pl$col("b")$apply(function(x) {toupper(x)})$alias("b_toupper")
-    )$as_data_frame(),
+    )$to_data_frame(),
     data.frame(
       val1_add5 = df$get_column("val1")$to_r() + 5L,
       b_toupper = toupper(df$get_column("b")$to_r())
@@ -60,7 +60,7 @@ test_that("Expr_apply works", {
     df$with_columns(
       pl$col("val1")$apply(function(x) {x+5L})$alias("val1_add5"),
       pl$col("b")$apply(function(x) {toupper(x)})$alias("b_toupper")
-    )$as_data_frame(),
+    )$to_data_frame(),
     cbind(
       df,
       data.frame(

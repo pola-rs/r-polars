@@ -70,16 +70,16 @@ names.LazyFrame = function(x) x$collect()$columns
 # TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
-as.data.frame.LazyFrame = function(x, ...) x$collect()$as_data_frame(...)
+as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' @export
 #' @noRd
-as.matrix.DataFrame = function(x, ...) as.matrix(x$as_data_frame(...))
+as.matrix.DataFrame = function(x, ...) as.matrix(x$to_data_frame(...))
 
 # TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
-as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$as_data_frame(...))
+as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
 
 #' @export
 #' @noRd

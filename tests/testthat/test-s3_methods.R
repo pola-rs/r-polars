@@ -11,9 +11,9 @@ make_cases <- function() {
 patrick::with_parameters_test_that("aggregations",
     {
         d = pl$DataFrame(mtcars)
-        w = d[[pola]]()$as_data_frame()
-        x = base(d)$as_data_frame()
-        y = base(d$lazy())$collect()$as_data_frame()
+        w = d[[pola]]()$to_data_frame()
+        x = base(d)$to_data_frame()
+        y = base(d$lazy())$collect()$to_data_frame()
         z = data.frame(t(sapply(mtcars, base)))
         expect_equal(w, x, ignore_attr = TRUE)
         expect_equal(w, y, ignore_attr = TRUE)
@@ -41,8 +41,8 @@ patrick::with_parameters_test_that("inspection",
         x = FUN(mtcars)
         y = FUN(d)
         z = FUN(d$lazy())
-        if (inherits(y, "DataFrame")) y = y$as_data_frame()
-        if (inherits(z, "LazyFrame")) z = z$collect()$as_data_frame()
+        if (inherits(y, "DataFrame")) y = y$to_data_frame()
+        if (inherits(z, "LazyFrame")) z = z$collect()$to_data_frame()
         expect_equal(x, y, ignore_attr = TRUE)
         expect_equal(x, z, ignore_attr = TRUE)
     },
@@ -65,8 +65,8 @@ patrick::with_parameters_test_that("Series",
         x = base(mtcars$mpg)
         y = base(d)
         z = d[[pola]]()
-        if (inherits(y, "Series")) y = y$to_r_vector()
-        if (inherits(z, "Series")) z = z$to_r_vector()
+        if (inherits(y, "Series")) y = y$to_vector()
+        if (inherits(z, "Series")) z = z$to_vector()
         expect_equal(x, y, ignore_attr = TRUE)
         expect_equal(x, z, ignore_attr = TRUE)
     },

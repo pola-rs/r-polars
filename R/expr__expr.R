@@ -612,7 +612,7 @@ construct_ProtoExprArray = function(...) {
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
-#'   paste("cheese",as.character(x$to_r_vector()))
+#'   paste("cheese",as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
 Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
   .pr$Expr$map(self, f, output_type, agg_list)
@@ -654,7 +654,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
 #'   number of rows, as the iteration is only across the groups.
 #'   The r user function could e.g. do vectorized operations and stay quite performant.
-#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_r_vector` and
+#'   use `s$to_r()` to convert input Series to an r vector or list. use `s$to_vector` and
 #'   `s$to_r_list()` to force conversion to vector or list.
 #'
 #'  Implementing logic using an R function is almost always _significantly_
@@ -956,7 +956,7 @@ Expr_sqrt = function() {
 #' @examples
 #' log10123 = suppressWarnings(log(-1:3))
 #' all.equal(
-#'   pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$as_data_frame()$a,
+#'   pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
 #'   exp(1)^log10123
 #' )
 Expr_exp  = "use_extendr_wrapper"
@@ -2274,7 +2274,7 @@ Expr_pow = function(exponent) {
 #' #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
 #' pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
 #'   pl$col("a")$is_in(pl$lit(NA_real_))
-#' )$as_data_frame()[[1L]]
+#' )$to_data_frame()[[1L]]
 #'
 #'
 #'
@@ -2385,7 +2385,7 @@ Expr_hash = function(seed = 0, seed_1=NULL,seed_2=NULL, seed_3=NULL) {
 #' @aliases reinterpret
 #' @examples
 #' df = pl$DataFrame(iris)
-#' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
+#' df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$to_data_frame()
 Expr_reinterpret = function(signed = TRUE) {
   if(!is_bool(signed)) stopf("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self,signed)
@@ -3832,7 +3832,7 @@ pl$expr_to_r = function(expr, df = NULL, i=0) {
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
-#' df$unnest()$as_data_frame() #recommended to unnest structs before converting to R
+#' df$unnest()$to_data_frame() #recommended to unnest structs before converting to R
 Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
   .pr$Expr$value_counts(self, multithreaded, sort)
 }
