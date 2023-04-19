@@ -19,7 +19,48 @@
 
 ### Function documentation in R files
 
+
+#### General class
+
 Template:
+
+```
+#' Title + description
+#'
+#' @params
+#'
+#' @return 
+#'
+#' @rdname CATEGORY_class <----------- IMPORTANT
+#'
+#' @examples
+
+foo = function()
+```
+
+Example:
+```
+#' Create polars DataFrame
+#' 
+#' Some description if needed...
+#'
+#' @return data.frame
+#'
+#' @rdname DataFrame_class <----------- IMPORTANT
+#'
+#' @examples
+#' df = pl$DataFrame(iris[1:3,])
+#' df$as_data_frame()
+
+DataFrame = function(...) {
+  ...
+}
+```
+
+
+#### Method
+
+Template for method:
 
 ```
 #' Title + description
@@ -46,7 +87,7 @@ Example:
 #'
 #' @return data.frame
 #'
-#' @rdname DataFrame_as_data_frame
+#' @rdname DataFrame_as_data_frame <----------- IMPORTANT
 #'
 #' @examples
 #' df = pl$DataFrame(iris[1:3,])
