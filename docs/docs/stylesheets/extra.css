@@ -1,9 +1,52 @@
-pre.chroma {
-	background-color: var(--md-code-bg-color);
-	border-radius: .1rem;
-	-webkit-box-decoration-break: clone;
-	box-decoration-break: clone;
-	font-size: .85em;
-	padding: 0 .2941176471em;
-	word-break: break-word;
+pre.chroma, pre.r-example {
+	display: block;
+	margin-top: 0;
+	margin-bottom: 1rem;
+	overflow: auto;
+	font-size: .875em;
+	color: #000;
+	background-color: #f6f6f6;
+	border: 1px solid #dee2e6;
+	border-radius: .375rem;
+  word-break: break-word;
 }
+
+
+/*
+
+For syntax highlighting after evaluating the examples in "reference"
+
+https://github.com/r-lib/pkgdown/blob/main/inst/highlight-styles/github-light.scss
+
+*/
+
+span.al /* Alert          */ {color:#ff5555; font-weight: bold}
+span.an /* Annotation     */ {color:#6a737d}
+span.at /* Attribute      */ {color:#d73a49}
+span.bn /* BaseN          */ {color:#005cc5}
+span.bu /* BuiltIn        */ {color:#d73a49}
+span.cf /* ControlFlow    */ {color:#d73a49}
+span.ch /* Char           */ {color:#032f62}
+span.cn /* Constant       */ {color:#005cc5}
+span.co /* Comment        */ {color:#6a737d}
+span.cv /* CommentVar     */ {color:#6a737d}
+span.do /* Documentation  */ {color:#6a737d}
+span.dt /* DataType       */ {color:#d73a49}
+span.dv /* DecVal         */ {color:#005cc5}
+span.er /* Error          */ {color:#ff5555; text-decoration: underline}
+span.ex /* Extension      */ {color:#d73a49; font-weight: bold}
+span.fl /* Float          */ {color:#005cc5}
+span.fu /* Function       */ {color:#6f42c1}
+span.im /* Import         */ {color:#032f62}
+span.in /* Information    */ {color:#6a737d}
+span.kw /* Keyword        */ {color:#d73a49}
+span.op /* Operator       */ {color:#24292e}
+span.ot /* Others         */ {color:#6f42c1}
+span.pp /* Preprocessor   */ {color:#d73a49}
+span.re /* RegionMarker   */ {color:#6a737d}
+span.sc /* SpecialChar    */ {color:#005cc5}
+span.ss /* SpecialString  */ {color:#032f62}
+span.st /* String         */ {color:#032f62}
+span.va /* Variable       */ {color:#e36209}
+span.vs /* VerbatimString */ {color:#032f62}
+span.wa /* Warning        */ {color:#ff5555}
