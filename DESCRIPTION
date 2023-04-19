@@ -26,7 +26,8 @@ Suggests:
     bit64,
     knitr,
     tibble,
-    rmarkdown
+    rmarkdown,
+    withr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
