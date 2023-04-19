@@ -1,0 +1,9 @@
+pre.chroma {
+	background-color: var(--md-code-bg-color);
+	border-radius: .1rem;
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+	font-size: .85em;
+	padding: 0 .2941176471em;
+	word-break: break-word;
+}

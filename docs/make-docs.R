@@ -89,8 +89,10 @@ convert_hierarchy_to_yml <- function() {
     "docs/mkdocs.yml"
   )
 
-  if (!is.null(orig_yaml$plugins) && !is.list(length(orig_yaml$plugins))) {
-    new_yaml$plugins <- as.list(new_yaml$plugins)
+  for (i in c("extra_css", "plugins")) {
+    if (!is.null(orig_yaml[[i]]) && !is.list(length(orig_yaml[[i]]))) {
+      new_yaml[[i]] <- as.list(new_yaml[[i]])
+    }
   }
 
   reference_idx <- which(
