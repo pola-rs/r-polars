@@ -3,16 +3,26 @@ library(yaml)
 library(tinkr)
 library(magrittr)
 library(stringr)
+library(rd2markdown) # Genentech/rd2markdown (github only)
+
+
 
 if (fs::dir_exists(here::here("docs/docs/reference"))) {
   fs::dir_delete(here::here("docs/docs/reference"))
 }
 fs::dir_create(here::here("docs/docs/reference"))
 
+
+# find general classes: DataFrame, GroupBy, etc.
+
 get_general_classes <- function() {
   rd_files <- list.files("man", pattern = "_class\\.Rd")
   gsub("_class\\.Rd$", "", rd_files)
 }
+
+
+# nested list with general classes as titles and methods for these classes
+# as children
 
 make_doc_hierarchy <- function() {
   general_classes <- get_general_classes()
@@ -57,6 +67,9 @@ make_doc_hierarchy <- function() {
   hierarchy
 }
 
+
+# copy Rd files to "docs" folder and convert them to markdown
+
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
   for (i in rd_files) {
@@ -65,6 +78,9 @@ convert_to_md <- function() {
   }
 }
 
+
+# insert the "Reference" structure in the yaml (requires to overwrite the full
+# mkdocs.yml)
 
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
@@ -90,6 +106,8 @@ convert_hierarchy_to_yml <- function() {
   cat(out, file = "docs/mkdocs.yml")
 }
 
+
+# TODO: evaluate examples in reference pages
 eval_reference_examples <- function() {
 
   pkgload::load_all()
@@ -117,9 +135,6 @@ eval_reference_examples <- function() {
   #   cat(_, file = )
 
 }
-
-
-
 
 
 
