@@ -7,12 +7,13 @@
 DataFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{by}{Iterable Into\if{html}{\out{<Expr>}}, e.g. one Expr, or list mixed Expr and column name strings, or a
-charachter vector of column names. The column(s) to sort by.}
+\item{by}{Column(s) to sort by. Column name strings, character vector of
+column names, or Iterable Into\if{html}{\out{<Expr>}} (e.g. one Expr, or list mixed Expr and
+column name strings).}
 
 \item{...}{more columns to sort by as above but provided one Expr per argument.}
 
-\item{descending}{Sort descending? Defulat = FALSE logical vector of length 1 or same length
+\item{descending}{Sort descending? Default = FALSE logical vector of length 1 or same length
 as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
@@ -29,11 +30,15 @@ be converted into an Expr e.g. \verb{$sort(list(e1,e2,e3))},
 or provide each Expr as an individual argument \verb{$sort(e1,e2,e3)}´ ... or both.
 }
 \examples{
-df = pl$DataFrame(
- a = c(1L, 2L, NA),
- b = c(6, 5, 4),
- c = c("a", "b", "c")
-)
-df$sort("a")
+df = mtcars
+df$mpg[1] = NA
+df = pl$DataFrame(df)
+df$sort("mpg")
+df$sort("mpg", nulls_last = TRUE)
+df$sort("cyl", "mpg")
+df$sort(c("cyl", "mpg"))
+df$sort(c("cyl", "mpg"), descending = TRUE)
+df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
+df$sort(pl$col("cyl"), pl$col("mpg"))
 }
 \keyword{DataFrame}

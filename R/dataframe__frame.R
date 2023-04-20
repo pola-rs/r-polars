@@ -638,10 +638,11 @@ DataFrame_to_series = function(idx=0) {
 #' DataFrame Sort
 #' @description sort a DataFrame by on or more Expr.
 #'
-#' @param by  Iterable Into<Expr>, e.g. one Expr, or list mixed Expr and column name strings, or a
-#' charachter vector of column names. The column(s) to sort by.
+#' @param by Column(s) to sort by. Column name strings, character vector of
+#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Defulat = FALSE logical vector of length 1 or same length
+#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
 #' as number of Expr's from above by + ....
 #' @param nulls_last Bool default FALSE, place all nulls_last?
 #' @details by and ... args allow to either provide e.g. a list of Expr or something which can
@@ -651,12 +652,16 @@ DataFrame_to_series = function(idx=0) {
 #' @return LazyFrame
 #' @keywords  DataFrame
 #' @examples
-#' df = pl$DataFrame(
-#'  a = c(1L, 2L, NA),
-#'  b = c(6, 5, 4),
-#'  c = c("a", "b", "c")
-#' )
-#' df$sort("a")
+#' df = mtcars
+#' df$mpg[1] = NA
+#' df = pl$DataFrame(df)
+#' df$sort("mpg")
+#' df$sort("mpg", nulls_last = TRUE)
+#' df$sort("cyl", "mpg")
+#' df$sort(c("cyl", "mpg"))
+#' df$sort(c("cyl", "mpg"), descending = TRUE)
+#' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
+#' df$sort(pl$col("cyl"), pl$col("mpg"))
 DataFrame_sort = function(
   by, # : IntoExpr | List[IntoExpr],
   ..., # unnamed Into expr
@@ -1110,8 +1115,8 @@ DataFrame_reverse = function() {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1.5, 2, NaN, 4),
-#'         b = c(1.5, NaN, NaN, 4)
+#'   a = c(1.5, 2, NaN, 4),
+#'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)
 DataFrame_fill_nan = function(fill_value) {
@@ -1125,8 +1130,8 @@ DataFrame_fill_nan = function(fill_value) {
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(
-#'         a = c(1.5, 2, NA, 4),
-#'         b = c(1.5, NA, NA, 4)
+#'   a = c(1.5, 2, NA, 4),
+#'   b = c(1.5, NA, NA, 4)
 #' )$fill_null(99)
 DataFrame_fill_null = function(fill_value) {
   self$lazy()$fill_null(fill_value)$collect()

@@ -580,6 +580,10 @@ test_that("unique", {
   expect_equal(x, 5)
   expect_equal(y, 5)
   expect_equal(z, 5)
+
+  x = df$unique("z", "first")$to_data_frame()
+  y = df$unique("z", "last")$to_data_frame()
+  expect_false(all(x == y))
 })
 
 test_that("as_data_frame (backward compatibility)", {
@@ -590,3 +594,48 @@ test_that("as_data_frame (backward compatibility)", {
   expect_equal(w, y, ignore_attr = TRUE)
 })
 
+
+test_that("sort", {
+  df = pl$DataFrame(mtcars)
+  
+  w = df$sort("mpg")$to_data_frame()
+  x = df$sort(pl$col("mpg"))$to_data_frame()
+  y = mtcars[order(mtcars$mpg),]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  w = df$sort(pl$col("cyl"), pl$col("mpg"))$to_data_frame()
+  x = df$sort("cyl", "mpg")$to_data_frame()
+  y = df$sort(c("cyl", "mpg"))$to_data_frame()
+  z = mtcars[order(mtcars$cyl, mtcars$mpg),]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+  expect_equal(w, z, ignore_attr = TRUE)
+
+  # expr: one increasing and one decreasing
+  x = df$sort(-pl$col("cyl"), pl$col("hp"))$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$hp), ]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  # descending arg
+  w = df$sort("cyl", "mpg", descending = TRUE)$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = TRUE)$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, -mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # descending arg: vector of boolean
+  w = df$sort("cyl", "mpg", descending = c(TRUE, FALSE))$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # nulls_last
+  df = mtcars
+  df$mpg[1] = NA
+  df = pl$DataFrame(df)
+  a = df$sort("mpg", nulls_last = TRUE)$to_data_frame()
+  b = df$sort("mpg", nulls_last = FALSE)$to_data_frame()
+  expect_true(is.na(a$mpg[32]))
+  expect_true(is.na(b$mpg[1]))
+})

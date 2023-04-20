@@ -520,10 +520,11 @@ LazyFrame_join = function(
 #' LazyFrame Sort
 #' @description sort a LazyFrame by on or more Expr
 #'
-#' @param by  Iterable Into<Expr>, e.g. one Expr, or list mixed Expr and column name strings, or a
-#' charachter vector of column names. The column(s) to sort by.
+#' @param by Column(s) to sort by. Column name strings, character vector of
+#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Defulat = FALSE logical vector of length 1 or same length
+#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
 #' as number of Expr's from above by + ....
 #' @param nulls_last Bool default FALSE, place all nulls_last?
 #' @details by and ... args allow to either provide e.g. a list of Expr or something which can
@@ -534,6 +535,16 @@ LazyFrame_join = function(
 #' @return LazyFrame
 #' @keywords  DataFrame
 #' @examples
+#' df = mtcars
+#' df$mpg[1] = NA
+#' df = pl$DataFrame(df)
+#' df$lazy()$sort("mpg")$collect()
+#' df$lazy()$sort("mpg", nulls_last = TRUE)$collect()
+#' df$lazy()$sort("cyl", "mpg")$collect()
+#' df$lazy()$sort(c("cyl", "mpg"))$collect()
+#' df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
+#' df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
+#' df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 LazyFrame_sort = function(
   by, # : IntoExpr | List[IntoExpr],
   ..., # unnamed Into expr

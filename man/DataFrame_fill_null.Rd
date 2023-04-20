@@ -17,8 +17,8 @@ Fill null values using the specified value or strategy.
 }
 \examples{
 pl$DataFrame(
-        a = c(1.5, 2, NA, 4),
-        b = c(1.5, NA, NA, 4)
+  a = c(1.5, 2, NA, 4),
+  b = c(1.5, NA, NA, 4)
 )$fill_null(99)
 }
 \keyword{DataFrame}

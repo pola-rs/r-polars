@@ -17,8 +17,8 @@ Fill floating point NaN values by an Expression evaluation.
 }
 \examples{
 df = pl$DataFrame(
-        a = c(1.5, 2, NaN, 4),
-        b = c(1.5, NaN, NaN, 4)
+  a = c(1.5, 2, NaN, 4),
+  b = c(1.5, NaN, NaN, 4)
 )
 df$fill_nan(99)
 }

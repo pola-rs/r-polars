@@ -7,12 +7,13 @@
 LazyFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{by}{Iterable Into\if{html}{\out{<Expr>}}, e.g. one Expr, or list mixed Expr and column name strings, or a
-charachter vector of column names. The column(s) to sort by.}
+\item{by}{Column(s) to sort by. Column name strings, character vector of
+column names, or Iterable Into\if{html}{\out{<Expr>}} (e.g. one Expr, or list mixed Expr and
+column name strings).}
 
 \item{...}{more columns to sort by as above but provided one Expr per argument.}
 
-\item{descending}{Sort descending? Defulat = FALSE logical vector of length 1 or same length
+\item{descending}{Sort descending? Default = FALSE logical vector of length 1 or same length
 as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
@@ -27,5 +28,17 @@ sort a LazyFrame by on or more Expr
 by and ... args allow to either provide e.g. a list of Expr or something which can
 be converted into an Expr e.g. \verb{$sort(list(e1,e2,e3))},
 or provide each Expr as an individual argument \verb{$sort(e1,e2,e3)}´ ... or both.
+}
+\examples{
+df = mtcars
+df$mpg[1] = NA
+df = pl$DataFrame(df)
+df$lazy()$sort("mpg")$collect()
+df$lazy()$sort("mpg", nulls_last = TRUE)$collect()
+df$lazy()$sort("cyl", "mpg")$collect()
+df$lazy()$sort(c("cyl", "mpg"))$collect()
+df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
+df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
+df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 }
 \keyword{DataFrame}
