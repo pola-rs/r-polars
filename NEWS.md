@@ -1,5 +1,8 @@
 # polars (development version)
 
+## What's changed
+- `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
+
 # polars v0.5.0
 
 ## BREAKING CHANGE
