@@ -84,7 +84,7 @@ dataset.
 
 ```python
 # Python
-df.group_by("id").mean()
+df.groupby("id").mean()
 ```
 
 ```r
