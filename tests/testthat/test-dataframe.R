@@ -490,3 +490,8 @@ test_that("as_data_frame (backward compatibility)", {
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
 })
+
+test_that("dtype_strings", {
+  df_1 <- pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
+  expect_equal(df_1$dtype_strings(), c("i32", "f64", "str", "list[f64]"))
+})
