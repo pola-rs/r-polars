@@ -25,6 +25,7 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
+use std::convert::TryInto;
 use std::result::Result;
 
 #[derive(Debug, Clone)]
@@ -147,6 +148,29 @@ impl Series {
             self.0.series_equal_missing(&other.0)
         } else {
             self.0.series_equal(&other.0)
+        }
+    }
+
+    //panics, if index out of bound
+    fn get_fmt(&self, index: u32, str_length: u32) -> String {
+        let val = format!(
+            "{}",
+            self.0.get(index.try_into().expect("usize>u32")).unwrap()
+        );
+        if let DataType::Utf8 | DataType::Categorical(_) = self.0.dtype() {
+            let v_trunc = &val[..val
+                .char_indices()
+                .take(str_length.try_into().expect("usize>u32"))
+                .last()
+                .map(|(i, c)| i + c.len_utf8())
+                .unwrap_or(0)];
+            if val == v_trunc {
+                val
+            } else {
+                format!("{v_trunc}…",)
+            }
+        } else {
+            val
         }
     }
 
