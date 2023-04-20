@@ -67,6 +67,14 @@ names.DataFrame = function(x) x$columns
 #' @noRd
 names.LazyFrame = function(x) x$collect()$columns
 
+#' @export
+#' @noRd
+row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
+
+#' @export
+#' @noRd
+dimnames.DataFrame = function(x) list(row.names(x), names(x))
+
 # TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
