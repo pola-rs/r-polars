@@ -1631,7 +1631,9 @@ Expr_take = function(indices) {
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
 #'   pl$lit(0:3)$shift(2)$alias("shift+2")
 #' )
-Expr_shift = "use_extendr_wrapper"
+Expr_shift = function(periods = 1) {
+  .pr$Expr$shift(self, periods)
+}
 
 #' Shift and fill values
 #' @description Shift the values by a given period and fill the resulting null values.
