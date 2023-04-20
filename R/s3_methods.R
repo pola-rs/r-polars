@@ -20,7 +20,9 @@ dim.DataFrame = function(x, ...) x$shape
 
 #' @export
 #' @noRd
-dim.LazyFrame = function(x, ...) x$collect()$shape
+dim.LazyFrame = function(x, ...) {
+    stop("The lazy data frame must be collected before calling this function: `dim(x$collect())`", call. = FALSE)
+}
 
 #' @export
 #' @noRd
@@ -32,7 +34,9 @@ length.Series = function(x, ...) x$len()
 
 #' @export
 #' @noRd
-length.LazyFrame = function(x, ...) x$collect()$width
+length.LazyFrame = function(x, ...) {
+    stop("The lazy data frame must be collected before using calling this function: `length(x$collect())`", call. = FALSE)
+}
 
 #' The Number of Rows of a DataFrame 
 #' @param x DataFrame
@@ -44,7 +48,9 @@ nrow.DataFrame = function(x) x$height
 #' @param x LazyFrame
 #' @return Integer
 #' @export
-nrow.LazyFrame = function(x) x$collect()$height
+nrow.LazyFrame = function(x) {
+    stop("The lazy data frame must be collected before using calling this function: `nrow(x$collect())`", call. = FALSE)
+}
 
 #' The Number of Columns of a DataFrame 
 #' @param x DataFrame
@@ -62,12 +68,12 @@ ncol.LazyFrame = function(x) x$collect()$height
 #' @noRd
 names.DataFrame = function(x) x$columns
 
-# TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
-names.LazyFrame = function(x) x$collect()$columns
+names.LazyFrame = function(x) {
+    stop("The lazy data frame must be collected before using calling this function: `names(x$collect())`", call. = FALSE)
+}
 
-# TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
 as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
@@ -76,7 +82,6 @@ as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 #' @noRd
 as.matrix.DataFrame = function(x, ...) as.matrix(x$to_data_frame(...))
 
-# TODO: inefficient to collect, but attribute is missing
 #' @export
 #' @noRd
 as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
