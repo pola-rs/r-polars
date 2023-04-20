@@ -459,6 +459,15 @@ DataFrame_dtypes = method_as_property(function() {
   .pr$DataFrame$dtypes(self)
 })
 
+#' DataFrame dtype strings
+#' @name DataFrame_dtype_strings
+#' @description Get column types as strings.
+#'
+#' @return string vector
+#' @keywords DataFrame
+#' @examples
+#' pl$DataFrame(iris)$dtype_strings()
+DataFrame_dtype_strings = "use_extendr_wrapper"
 
 #' DataFrame dtypes
 #' @name DataFrame_dtypes
