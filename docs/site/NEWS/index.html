@@ -7719,73 +7719,73 @@
 <h2 id="polars-v050">polars v0.5.0</h2>
 <h3 id="breaking-change">BREAKING CHANGE</h3>
 <ul>
-<li>The package name was changed from <code>rpolars</code> to <code>polars</code>. (#84)</li>
+<li>The package name was changed from <code>rpolars</code> to <code>polars</code>. (<a href="https://github.com/pola-rs/r-polars/issues/84">#84</a>)</li>
 </ul>
 <h3 id="whats-changed">What's changed</h3>
 <ul>
-<li>Several new methods for DataFrame, LazyFrame \&amp; GroupBy translated (#103, #105 @vincentarelbundock)</li>
-<li>Doc fixes (#102, #109  @etiennebacher)</li>
-<li>Experimental opt-in auto completion (#96 @sorhawell)</li>
+<li>Several new methods for DataFrame, LazyFrame \&amp; GroupBy translated (<a href="https://github.com/pola-rs/r-polars/issues/103">#103</a>, <a href="https://github.com/pola-rs/r-polars/issues/105">#105</a> <a href="https://github.com/vincentarelbundock">@vincentarelbundock</a>)</li>
+<li>Doc fixes (<a href="https://github.com/pola-rs/r-polars/issues/102">#102</a>, <a href="https://github.com/pola-rs/r-polars/issues/109">#109</a>  <a href="https://github.com/etiennebacher">@etiennebacher</a>)</li>
+<li>Experimental opt-in auto completion (<a href="https://github.com/pola-rs/r-polars/issues/96">#96</a> <a href="https://github.com/sorhawell">@sorhawell</a>)</li>
 </ul>
 <h3 id="new-contributors">New Contributors</h3>
 <ul>
-<li>@etiennebacher made their first contribution in #102</li>
-<li>@vincentarelbundock made their first contribution in #103</li>
+<li><a href="https://github.com/etiennebacher">@etiennebacher</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/102">#102</a></li>
+<li><a href="https://github.com/vincentarelbundock">@vincentarelbundock</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/103">#103</a></li>
 </ul>
 <p>Release date: 2023-04-16. Full changelog:
 <a href="https://github.com/pola-rs/r-polars/compare/v0.4.7...v0.5.0">v0.4.6...v0.5.0</a></p>
 <h2 id="rpolars-v047">rpolars v0.4.7</h2>
 <h3 id="whats-changed_1">What's changed</h3>
 <ul>
-<li>Revamped docs that includes a new introductory vignette (#81 @grantmcdermott)</li>
+<li>Revamped docs that includes a new introductory vignette (<a href="https://github.com/pola-rs/r-polars/issues/81">#81</a> <a href="https://github.com/grantmcdermott">@grantmcdermott</a>)</li>
 <li>Misc documentation improvements</li>
 </ul>
 <h2 id="rpolars-v046">rpolars v0.4.6</h2>
 <p>Release date: 2023-03-13. Full changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.4.5...v0.4.6">v0.4.5...v0.4.6</a></p>
 <h3 id="whats-new">What's new</h3>
 <ul>
-<li>Almost all Expr translated, only missing 'binary'-expr now. #52 #53</li>
-<li>Run polars queries in detached background threads, no need for any parallel libraries or cluster config #56 #59</li>
-<li>Full support for when-then-otherwise-syntax #65</li>
-<li><strong>rpolars</strong> now uses bit64 integer64 vectors as input/output for i64 vectors: #68 #69</li>
-<li>use <code>pl$from_arrow</code> to zero-copy(almost) import <code>Table</code>/<code>Array</code> from <strong>r-arrow</strong>. #67</li>
+<li>Almost all Expr translated, only missing 'binary'-expr now. <a href="https://github.com/pola-rs/r-polars/issues/52">#52</a> <a href="https://github.com/pola-rs/r-polars/issues/53">#53</a></li>
+<li>Run polars queries in detached background threads, no need for any parallel libraries or cluster config <a href="https://github.com/pola-rs/r-polars/issues/56">#56</a> <a href="https://github.com/pola-rs/r-polars/issues/59">#59</a></li>
+<li>Full support for when-then-otherwise-syntax <a href="https://github.com/pola-rs/r-polars/issues/65">#65</a></li>
+<li><strong>rpolars</strong> now uses bit64 integer64 vectors as input/output for i64 vectors: <a href="https://github.com/pola-rs/r-polars/issues/68">#68</a> <a href="https://github.com/pola-rs/r-polars/issues/69">#69</a></li>
+<li>use <code>pl$from_arrow</code> to zero-copy(almost) import <code>Table</code>/<code>Array</code> from <strong>r-arrow</strong>. <a href="https://github.com/pola-rs/r-polars/issues/67">#67</a></li>
 <li>Support inter process connections with <code>scan_ipc</code></li>
-<li>Implement <code>scan_ipc</code> by @Sicheng-Pan in #63</li>
+<li>Implement <code>scan_ipc</code> by <a href="https://github.com/Sicheng">@Sicheng</a>-Pan in <a href="https://github.com/pola-rs/r-polars/issues/63">#63</a></li>
 <li>'Backend' improvements</li>
-<li>(prepare support for aarch64-linux) Touch libgcc_eh.a by @yutannihilation in #49</li>
-<li>Use py-polars rust file structure (to help devs) by @sorhawell in #55</li>
-<li>Refactor Makefiles by @eitsupi in #58</li>
-<li>Build <strong>rpolars</strong> from Nix by @Sicheng-Pan in #54</li>
-<li><code>extendr_api</code> 0.4 by @sorhawell in #6</li>
-<li>Add r-universe URL by @jeroen in #71</li>
-<li>chore: install <strong>nanoarrow</strong> from cran by @eitsupi in #72</li>
-<li>chore: install <strong>nanoarrow</strong> from cran (#72) by @sorhawell in #73</li>
-<li>Fix pdf latex errors by @sorhawell in #74</li>
-<li>re-enable devel test, <strong>pak</strong> R-devel issue went away by @sorhawell in #75</li>
-<li>DO NOT MERGE: tracking hello_r_universe branch by @eitsupi in #38</li>
-<li>revert to nightly by @sorhawell in #78</li>
+<li>(prepare support for aarch64-linux) Touch libgcc_eh.a by <a href="https://github.com/yutannihilation">@yutannihilation</a> in <a href="https://github.com/pola-rs/r-polars/issues/49">#49</a></li>
+<li>Use py-polars rust file structure (to help devs) by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/55">#55</a></li>
+<li>Refactor Makefiles by <a href="https://github.com/eitsupi">@eitsupi</a> in <a href="https://github.com/pola-rs/r-polars/issues/58">#58</a></li>
+<li>Build <strong>rpolars</strong> from Nix by <a href="https://github.com/Sicheng">@Sicheng</a>-Pan in <a href="https://github.com/pola-rs/r-polars/issues/54">#54</a></li>
+<li><code>extendr_api</code> 0.4 by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/6">#6</a></li>
+<li>Add r-universe URL by <a href="https://github.com/jeroen">@jeroen</a> in <a href="https://github.com/pola-rs/r-polars/issues/71">#71</a></li>
+<li>chore: install <strong>nanoarrow</strong> from cran by <a href="https://github.com/eitsupi">@eitsupi</a> in <a href="https://github.com/pola-rs/r-polars/issues/72">#72</a></li>
+<li>chore: install <strong>nanoarrow</strong> from cran (<a href="https://github.com/pola-rs/r-polars/issues/72">#72</a>) by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/73">#73</a></li>
+<li>Fix pdf latex errors by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/74">#74</a></li>
+<li>re-enable devel test, <strong>pak</strong> R-devel issue went away by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/75">#75</a></li>
+<li>DO NOT MERGE: tracking hello_r_universe branch by <a href="https://github.com/eitsupi">@eitsupi</a> in <a href="https://github.com/pola-rs/r-polars/issues/38">#38</a></li>
+<li>revert to nightly by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/78">#78</a></li>
 </ul>
 <h3 id="new-contributors_1">New Contributors</h3>
 <ul>
-<li>@Sicheng-Pan made their first contribution in #54</li>
-<li>@jeroen made their first contribution in #71</li>
+<li><a href="https://github.com/Sicheng">@Sicheng</a>-Pan made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/54">#54</a></li>
+<li><a href="https://github.com/jeroen">@jeroen</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/71">#71</a></li>
 </ul>
 <h2 id="rpolars-v045">rpolars v0.4.5</h2>
 <p>Release date: 2023-02-21. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.4.3...v0.4.5">v0.4.3...v0.4.5</a></p>
 <h3 id="whats-changed_2">What's Changed</h3>
 <ul>
-<li>bump rust polars to latest rust-polars and fix all errors by @sorhawell in #42</li>
+<li>bump rust polars to latest rust-polars and fix all errors by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/42">#42</a></li>
 <li>Customize <strong>extendr</strong> to better support cross Rust-R/R-Rust error handling</li>
-<li>bump extendr_api by @sorhawell in #44</li>
-<li>Str even more by @sorhawell in #47</li>
-<li><strong>rpolars</strong> is now available for install from <a href="https://rpolars.r-universe.dev/rpolars#install">rpolars.r-universe.dev</a> @eitsupi</li>
-<li>advertise R-universe by @sorhawell in #39</li>
+<li>bump extendr_api by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/44">#44</a></li>
+<li>Str even more by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/47">#47</a></li>
+<li><strong>rpolars</strong> is now available for install from <a href="https://rpolars.r-universe.dev/rpolars#install">rpolars.r-universe.dev</a> <a href="https://github.com/eitsupi">@eitsupi</a></li>
+<li>advertise R-universe by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/39">#39</a></li>
 <li>Includes reasonably easy pre-compiled installation for arm64-MacBooks</li>
 <li>All string Expressions available</li>
-<li>Expr str strptime by @sorhawell in #40</li>
-<li>rust_result tests + fixes by @sorhawell in #41</li>
-<li>Str continued by @sorhawell in #43</li>
-<li>Str even more by @sorhawell in #47</li>
+<li>Expr str strptime by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/40">#40</a></li>
+<li>rust_result tests + fixes by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/41">#41</a></li>
+<li>Str continued by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/43">#43</a></li>
+<li>Str even more by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/47">#47</a></li>
 <li>Starting to roll out new error-handling and type-conversions between R and rust.</li>
 <li>Precise source of error should be very clear even in a long method-chain e.g.
   <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="s">&quot;hey-you-there&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">str</span><span class="o">$</span><span class="nf">splitn</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="m">-3</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;struct_of_words&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">to_r</span><span class="p">()</span>
@@ -7794,93 +7794,93 @@
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="s">&quot;hey-you-there&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">str</span><span class="o">$</span><span class="nf">splitn</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="m">-3</span><span class="p">)</span>
 </code></pre></div></li>
 <li>Misc</li>
-<li>Clippy + tiny optimization by @sorhawell in #45</li>
-<li>Tidying by @sorhawell in #37</li>
+<li>Clippy + tiny optimization by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/45">#45</a></li>
+<li>Tidying by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/37">#37</a></li>
 </ul>
 <h2 id="rpolars-v043">rpolars v0.4.3</h2>
 <p>Release date: 2023-02-01. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.4.2...v0.4.3">v0.4.2...v0.4.3</a></p>
 <h3 id="whats-changed_3">What's Changed</h3>
 <ul>
 <li>All DateTime expresssions implemented + update rust-polars to latest commit.</li>
-<li>Arr str by @sorhawell in #32</li>
-<li>Datetime continued by @sorhawell in #33</li>
-<li>Datatime remaining tests + tidy util functions by @sorhawell in #36</li>
+<li>Arr str by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/32">#32</a></li>
+<li>Datetime continued by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/33">#33</a></li>
+<li>Datatime remaining tests + tidy util functions by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/36">#36</a></li>
 </ul>
 <h3 id="developer-changes">Developer changes</h3>
 <ul>
-<li>Refactoring GitHub Actions workflows by @eitsupi in #24</li>
-<li>Fix cache and check scan by @sorhawell in #30</li>
+<li>Refactoring GitHub Actions workflows by <a href="https://github.com/eitsupi">@eitsupi</a> in <a href="https://github.com/pola-rs/r-polars/issues/24">#24</a></li>
+<li>Fix cache and check scan by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/30">#30</a></li>
 </ul>
 <h2 id="rpolars-v042">rpolars v0.4.2</h2>
 <p>Release date: 2023-01-17. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/V0.4.1...v0.4.2">V0.4.1...v0.4.2</a></p>
 <h3 id="whats-changed_4">What's Changed</h3>
 <ul>
-<li>fix minor Series syntax issue #8 @sorhawell in #22</li>
-<li>nanoarrow followup: docs + adjust test by @sorhawell in #21</li>
-<li>Add R CMD check workflow by @eitsupi in #23</li>
-<li><code>usethis::use_mit_license()</code> by @yutannihilation in #27</li>
-<li>Fix check errors by @sorhawell in #26</li>
+<li>fix minor Series syntax issue <a href="https://github.com/pola-rs/r-polars/issues/8">#8</a> <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/22">#22</a></li>
+<li>nanoarrow followup: docs + adjust test by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/21">#21</a></li>
+<li>Add R CMD check workflow by <a href="https://github.com/eitsupi">@eitsupi</a> in <a href="https://github.com/pola-rs/r-polars/issues/23">#23</a></li>
+<li><code>usethis::use_mit_license()</code> by <a href="https://github.com/yutannihilation">@yutannihilation</a> in <a href="https://github.com/pola-rs/r-polars/issues/27">#27</a></li>
+<li>Fix check errors by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/26">#26</a></li>
 </ul>
 <h3 id="new-contributors_2">New Contributors</h3>
 <ul>
-<li>@eitsupi made their first contribution in #23</li>
-<li>@yutannihilation made their first contribution in #27</li>
+<li><a href="https://github.com/eitsupi">@eitsupi</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/23">#23</a></li>
+<li><a href="https://github.com/yutannihilation">@yutannihilation</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/27">#27</a></li>
 </ul>
 <h2 id="rpolars-v041">rpolars v0.4.1</h2>
 <p>Release date: 2023-01-12. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.4.0...V0.4.1">v0.4.0...V0.4.1</a></p>
 <h3 id="whats-changed_5">What's Changed</h3>
 <ul>
-<li>Export ArrowArrayStream from polars data frame by @paleolimbot in #5</li>
-<li>Minor arithmetics syntax improvement @sorhawell in #20</li>
+<li>Export ArrowArrayStream from polars data frame by <a href="https://github.com/paleolimbot">@paleolimbot</a> in <a href="https://github.com/pola-rs/r-polars/issues/5">#5</a></li>
+<li>Minor arithmetics syntax improvement <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/20">#20</a></li>
 </ul>
 <h3 id="dev-env">Dev env</h3>
 <ul>
-<li>Renv is deactivated as default. Renv.lock still defines package stack on build server @sorhawell in #19</li>
+<li>Renv is deactivated as default. Renv.lock still defines package stack on build server <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/19">#19</a></li>
 </ul>
 <h3 id="minor-stuff">Minor stuff</h3>
 <ul>
-<li>Improve docs by @sorhawell in #16</li>
-<li>Update rust polars to +26.1 by @sorhawell in #18</li>
+<li>Improve docs by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/16">#16</a></li>
+<li>Update rust polars to +26.1 by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/18">#18</a></li>
 </ul>
 <h3 id="new-contributors_3">New Contributors</h3>
 <ul>
-<li>@paleolimbot made their first contribution in #5</li>
+<li><a href="https://github.com/paleolimbot">@paleolimbot</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/5">#5</a></li>
 </ul>
 <h2 id="rpolars-v040">rpolars v0.4.0</h2>
 <p>Release date: 2023-01-11. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/V0.3.1...v0.4.0">v0.3.1...v0.4.0</a></p>
 <h3 id="breaking-changes">Breaking changes</h3>
 <ul>
 <li>Class label "DataType" is now called "RPolarsDataType". Syntax wise 'DataType' can still be used, e.g. <code>.pr$DataType$</code></li>
-<li>try fix name space collision with arrow by @sorhawell in #15</li>
+<li>try fix name space collision with arrow by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/15">#15</a></li>
 </ul>
 <h3 id="new-features">New features</h3>
 <ul>
 <li>all list Expr$arr$list functions have been translated:</li>
-<li>Expr list 2.0 by @sorhawell in #10</li>
-<li>Expr list 3.0 by @sorhawell in #12</li>
+<li>Expr list 2.0 by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/10">#10</a></li>
+<li>Expr list 3.0 by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/12">#12</a></li>
 </ul>
 <h3 id="dev-environment">Dev environment</h3>
 <ul>
-<li>update rextendr by @sorhawell in #13</li>
+<li>update rextendr by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/13">#13</a></li>
 </ul>
 <h2 id="rpolars-v031">rpolars v0.3.1</h2>
 <p>Release date: 2023-01-07. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.3.0...V0.3.1">v0.3.0...v0.3.1</a></p>
 <h3 id="whats-changed_6">What's Changed</h3>
 <ul>
-<li>drop github action upload pre-release of PR's by @sorhawell in #7</li>
-<li>Fix readme typo by @erjanmx in #6</li>
-<li>Expr arr list functions + rework r_to_series by @sorhawell in #2</li>
+<li>drop github action upload pre-release of PR's by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/7">#7</a></li>
+<li>Fix readme typo by <a href="https://github.com/erjanmx">@erjanmx</a> in <a href="https://github.com/pola-rs/r-polars/issues/6">#6</a></li>
+<li>Expr arr list functions + rework r_to_series by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/2">#2</a></li>
 </ul>
 <h3 id="new-contributors_4">New Contributors</h3>
 <ul>
-<li>@erjanmx made their first contribution in #6</li>
+<li><a href="https://github.com/erjanmx">@erjanmx</a> made their first contribution in <a href="https://github.com/pola-rs/r-polars/issues/6">#6</a></li>
 </ul>
 <h2 id="rpolars-v030">rpolars v0.3.0</h2>
 <p>Release date: 2022-12-31. Full Changelog: <a href="https://github.com/pola-rs/r-polars/compare/v0.2.1...v0.3.0">v0.2.1...v0.3.0</a></p>
 <h3 id="whats-changed_7">What's Changed</h3>
 <ul>
-<li>use jemalloc(linux) else mimallac as py-polars by @sorhawell in #1</li>
-<li>Bump rust polars 26.1 by @sorhawell in #3</li>
+<li>use jemalloc(linux) else mimallac as py-polars by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/1">#1</a></li>
+<li>Bump rust polars 26.1 by <a href="https://github.com/sorhawell">@sorhawell</a> in <a href="https://github.com/pola-rs/r-polars/issues/3">#3</a></li>
 <li>Expr_interpolate now has two methods, linear, nearest</li>
 <li>Expr_quantile also takes quantile value as an expression</li>
 <li>map_alias improved error handling</li>
