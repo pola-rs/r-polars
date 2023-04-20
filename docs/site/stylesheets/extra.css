@@ -9,6 +9,7 @@ pre.chroma, pre.r-example {
 	border: 1px solid #dee2e6;
 	border-radius: .375rem;
   word-break: break-word;
+	font-size: 0.7rem;
 }
 
 .md-typeset pre > code {
@@ -17,7 +18,7 @@ pre.chroma, pre.r-example {
 
 
 /*
-Same as pkgdown websites (otherwise tables not properly formatted)
+Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 */
 :root {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
