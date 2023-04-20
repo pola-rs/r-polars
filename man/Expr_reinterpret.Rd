@@ -20,6 +20,6 @@ you can safely use that cast operation.
 }
 \examples{
 df = pl$DataFrame(iris)
-df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$as_data_frame()
+df$select(pl$all()$head(2)$hash(1,2,3,4)$reinterpret())$to_data_frame()
 }
 \keyword{Expr}

@@ -83,8 +83,8 @@ Pdf_best = Ldf_best$collect()
 
 #verify tables would be the same
 all.equal(
-  Pdf_okay$as_data_frame(),
-  Pdf_best$as_data_frame()
+  Pdf_okay$to_data_frame(),
+  Pdf_best$to_data_frame()
 )
 
 #a user might write it as a one-liner like so:

@@ -24,7 +24,7 @@ combine to boolean expresions with similar to \code{\%in\%}
 #R Na_integer -> polars Null(Int32) is in polars Null(Int32)
 pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
   pl$col("a")$is_in(pl$lit(NA_real_))
-)$as_data_frame()[[1L]]
+)$to_data_frame()[[1L]]
 
 
 

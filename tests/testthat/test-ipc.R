@@ -11,11 +11,11 @@ test_that("Test reading data from Apache Arrow IPC", {
   # Collect data from Apache Arrow IPC
   read_limit = 27
   testthat::expect_equal(
-    pl$scan_arrow_ipc(tmpf)$collect()$as_data_frame(),
+    pl$scan_arrow_ipc(tmpf)$collect()$to_data_frame(),
     iris
   )
   testthat::expect_equal(
-    pl$scan_arrow_ipc(tmpf, n_rows = read_limit)$collect()$as_data_frame(),
+    pl$scan_arrow_ipc(tmpf, n_rows = read_limit)$collect()$to_data_frame(),
     droplevels(head(iris, read_limit))
   )
   testthat::expect_equal(
@@ -24,7 +24,7 @@ test_that("Test reading data from Apache Arrow IPC", {
       n_rows = read_limit,
       row_count_name = "rc",
       row_count_offset = read_limit
-    )$collect()$as_data_frame()$rc),
+    )$collect()$to_data_frame()$rc),
     read_limit:(2 * read_limit - 1)
   )
 

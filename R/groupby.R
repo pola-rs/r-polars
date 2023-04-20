@@ -237,11 +237,15 @@ GroupBy_null_count <- function() {
 #' @return R data.frame
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
-GroupBy_as_data_frame = function(...) {
+#' @examples pl$DataFrame(iris)$to_data_frame() #R-polars back and forth
+GroupBy_to_data_frame = function(...) {
   as.data.frame(
     x = unwrap(.pr$DataFrame$to_list(self)),
     col.names = .pr$DataFrame$columns(self),
     ...
   )
 }
+
+#' Alias to GroupBy_to_data_frame (backward compatibility)
+#' @noRd
+GroupBy_as_data_frame = GroupBy_to_data_frame
