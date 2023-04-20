@@ -11,6 +11,11 @@ pre.chroma, pre.r-example {
   word-break: break-word;
 }
 
+:root {
+  --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+
 
 /*
 

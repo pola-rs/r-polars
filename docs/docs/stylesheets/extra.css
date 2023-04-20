@@ -13,6 +13,15 @@ pre.chroma, pre.r-example {
 
 
 /*
+Same as pkgdown websites (otherwise tables not properly formatted)
+*/
+:root {
+  --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+
+
+/*
 
 For syntax highlighting after evaluating the examples in "reference"
 
