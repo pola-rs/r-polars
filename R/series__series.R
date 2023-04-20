@@ -251,16 +251,6 @@ Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
 
-#' @param index index of the Series (0-base)
-#' @param str_length length of string to show
-#' @return a string
-#' @examples
-#' pl$Series(c("foo", "bar"))$get_fmt(index = 1, str_length = 3)
-#' @noRd
-Series_get_fmt = function(index, str_length) {
-  .pr$Series$get_fmt(self, index, str_length)
-}
-
 #TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare
