@@ -528,3 +528,4 @@ nav:
           - wrap_proto_schema: reference/wrap_proto_schema.md
           - wrap_s: reference/wrap_s.md
   - License: LICENSE.md
+  - Changelog: NEWS.md
