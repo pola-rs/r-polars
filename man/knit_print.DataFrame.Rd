@@ -12,6 +12,8 @@ knit_print.DataFrame(x, ...)
 \item{...}{additional arguments, not used}
 }
 \description{
-knit print polars DataFrame
+Mimics \link{python-polars' NotebookFormatter}
+(https://github.com/pola-rs/polars/blob/4ffcb7461302a580255a9d910d70f1f7b2508675/py-polars/polars/dataframe/_html.py)
+for HTML outputs.
 }
-\keyword{internals}
+\keyword{DataFrame}
