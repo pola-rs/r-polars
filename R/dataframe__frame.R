@@ -540,6 +540,7 @@ DataFrame_clone = function() {
 #' @description get columns as list of series
 #'
 #' @return list of series
+#' @docType NULL
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()

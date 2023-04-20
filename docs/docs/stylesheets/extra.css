@@ -11,6 +11,10 @@ pre.chroma, pre.r-example {
   word-break: break-word;
 }
 
+.md-typeset pre > code {
+	font-size: 0.7rem;
+}
+
 
 /*
 Same as pkgdown websites (otherwise tables not properly formatted)
