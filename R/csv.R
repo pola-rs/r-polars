@@ -83,6 +83,8 @@ lazy_csv_reader = function(
 
   #capture all args and modify some to match lower level function
   args = as.list(environment())
+  
+  args[["path"]] = path.expand(path)
 
   #overwrite_dtype: convert named list of DataType's to DataTypeVector obj
   if(!is.null(args$overwrite_dtype)) {

@@ -169,6 +169,14 @@ impl DataFrame {
         List::from_values(iter)
     }
 
+    pub fn dtype_strings(&self) -> Vec<String> {
+        self.0
+            .get_columns()
+            .iter()
+            .map(|s| format!("{}", s.dtype()))
+            .collect()
+    }
+
     pub fn schema(&self) -> List {
         let mut l = self.dtypes();
         l.set_names(self.0.get_column_names()).unwrap();

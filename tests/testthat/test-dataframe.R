@@ -639,3 +639,8 @@ test_that("sort", {
   expect_true(is.na(a$mpg[32]))
   expect_true(is.na(b$mpg[1]))
 })
+
+test_that("dtype_strings", {
+  df_1 <- pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
+  expect_equal(df_1$dtype_strings(), c("i32", "f64", "str", "list[f64]"))
+})
