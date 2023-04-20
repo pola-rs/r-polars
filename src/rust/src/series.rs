@@ -151,12 +151,16 @@ impl Series {
         }
     }
 
-    pub fn get_fmt(&self, index: u32, str_length: u32) -> String {
-        let val = format!("{}", self.0.get(index.try_into().unwrap()).unwrap());
+    //panics, if index out of bound
+    fn get_fmt(&self, index: u32, str_length: u32) -> String {
+        let val = format!(
+            "{}",
+            self.0.get(index.try_into().expect("usize>u32")).unwrap()
+        );
         if let DataType::Utf8 | DataType::Categorical(_) = self.0.dtype() {
             let v_trunc = &val[..val
                 .char_indices()
-                .take(str_length.try_into().unwrap())
+                .take(str_length.try_into().expect("usize>u32"))
                 .last()
                 .map(|(i, c)| i + c.len_utf8())
                 .unwrap_or(0)];
