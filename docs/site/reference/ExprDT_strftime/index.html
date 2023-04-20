@@ -7595,8 +7595,10 @@
 <p>Date/Datetime expr</p>
 <p>Format Date/Datetime with a formatting rule. See <code>chrono strftime/strptime&lt;https://docs.rs/chrono/latest/chrono/format/strftime/index.html&gt;</code>_.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;2021-01-02 12:13:14&quot;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&quot;GMT&quot;</span><span class="p">))</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">strftime</span><span class="p">(</span><span class="s">&quot;this is the year: %Y&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">to_r</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2021-01-02 12:13:14"</span>,tz<span class='op'>=</span><span class='st'>"GMT"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>strftime</span><span class='op'>(</span><span class='st'>"this is the year: %Y"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "this is the year: 2021"</span>
+ </code></pre>
 
 
 

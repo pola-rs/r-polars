@@ -27,35 +27,70 @@ In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and
 
 ## Examples
 
-```r
-# All in GMT, straight forward, no mental confusion
-s_gmt = pl$date_range(
-  as.POSIXct("2022-01-01",tz = "GMT"),
-  as.POSIXct("2022-01-02",tz = "GMT"),
-  interval = "6h", time_unit = "ms", time_zone = "GMT"
-)
-s_gmt
-s_gmt$to_r() #printed same way in R and polars becuase tagged with a time_zone/tzone
-
-# polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print
-s_null = pl$date_range(
-  as.POSIXct("2022-01-01",tz = "GMT"),
-  as.POSIXct("2022-01-02",tz = "GMT"),
-  interval = "6h", time_unit = "ms", time_zone = NULL
-)
-s_null$to_r() #back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
-
-
-#Any mixing of timezones is fine, just set them all, and it works as expected.
-t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
-t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
-s_mix = pl$date_range(low = t1, high = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
-s_mix
-s_mix$to_r()
-
-
-#use of ISOdate
-t1 = ISOdate(2022,1,1,0) #preset GMT
-t2 = ISOdate(2022,1,2,0) #preset GMT
-pl$date_range(t1,t2,interval = "4h", time_unit = "ms", time_zone = "GMT")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># All in GMT, straight forward, no mental confusion</span></span></span>
+<span class='r-in'><span><span class='va'>s_gmt</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-01"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-02"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  interval <span class='op'>=</span> <span class='st'>"6h"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span>, time_zone <span class='op'>=</span> <span class='st'>"GMT"</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s_gmt</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ms, GMT]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 00:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 06:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 12:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 18:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-02 00:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>s_gmt</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#printed same way in R and polars becuase tagged with a time_zone/tzone</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 00:00:00 GMT" "2022-01-01 06:00:00 GMT" "2022-01-01 12:00:00 GMT" "2022-01-01 18:00:00 GMT"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "2022-01-02 00:00:00 GMT"</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print</span></span></span>
+<span class='r-in'><span><span class='va'>s_null</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-01"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-02"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  interval <span class='op'>=</span> <span class='st'>"6h"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span>, time_zone <span class='op'>=</span> <span class='cn'>NULL</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s_null</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 01:00:00 CET" "2022-01-01 07:00:00 CET" "2022-01-01 13:00:00 CET" "2022-01-01 19:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "2022-01-02 01:00:00 CET"</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#Any mixing of timezones is fine, just set them all, and it works as expected.</span></span></span>
+<span class='r-in'><span><span class='va'>t1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-01"</span>, tz <span class='op'>=</span> <span class='st'>"Etc/GMT+2"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>t2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2022-01-01 08:00:00"</span>, tz <span class='op'>=</span> <span class='st'>"Etc/GMT-2"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s_mix</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span>low <span class='op'>=</span> <span class='va'>t1</span>, high <span class='op'>=</span> <span class='va'>t2</span>, interval <span class='op'>=</span> <span class='st'>"1h"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span>, time_zone <span class='op'>=</span> <span class='st'>"CET"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s_mix</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ms, CET]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 03:00:00 CET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 04:00:00 CET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 05:00:00 CET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 06:00:00 CET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 07:00:00 CET</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>s_mix</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 03:00:00 CET" "2022-01-01 04:00:00 CET" "2022-01-01 05:00:00 CET" "2022-01-01 06:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "2022-01-01 07:00:00 CET"</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#use of ISOdate</span></span></span>
+<span class='r-in'><span><span class='va'>t1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ISOdatetime.html'>ISOdate</a></span><span class='op'>(</span><span class='fl'>2022</span>,<span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span> <span class='co'>#preset GMT</span></span></span>
+<span class='r-in'><span><span class='va'>t2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ISOdatetime.html'>ISOdate</a></span><span class='op'>(</span><span class='fl'>2022</span>,<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>0</span><span class='op'>)</span> <span class='co'>#preset GMT</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='va'>t1</span>,<span class='va'>t2</span>,interval <span class='op'>=</span> <span class='st'>"4h"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span>, time_zone <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (7,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ms, GMT]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 00:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 04:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 08:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 12:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 16:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 20:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-02 00:00:00 GMT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>

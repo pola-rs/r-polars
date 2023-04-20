@@ -21,10 +21,14 @@ Addition
 
 ## Examples
 
-```r
-#three syntaxes same result
-pl$lit(5) + 10
-pl$lit(5) + pl$lit(10)
-pl$lit(5)$add(pl$lit(10))
-+pl$lit(5) #unary use resolves to same as pl$lit(5)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#three syntaxes same result</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>10</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(5f64) + (10f64)]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(5f64) + (10f64)]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>add</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(5f64) + (10f64)]</span>
+<span class='r-in'><span><span class='op'>+</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span> <span class='co'>#unary use resolves to same as pl$lit(5)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 5f64</span>
+ </code></pre>

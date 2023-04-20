@@ -7579,23 +7579,27 @@
 <p>bool: TRUE if equal</p>
 <p>Are two expressions on a meta level equal</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">#three naive expression literals</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">e1</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">40</span><span class="p">)</span> <span class="o">+</span> <span class="m">2</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">e2</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">e3</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">40</span><span class="p">)</span> <span class="m">+2</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">#e1 and e3 are identical expressions</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">e1</span><span class="o">$</span><span class="n">meta</span><span class="o">$</span><span class="nf">eq</span><span class="p">(</span><span class="n">e3</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">#e_test is an expression testing whether e1 and e2 evaluates to the same value.</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">e_test</span> <span class="o">=</span> <span class="n">e1</span> <span class="o">==</span> <span class="n">e2</span> <span class="c1"># or e_test = e1$eq(e2)</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1">#direct evaluate e_test, possible because only made up of literals</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">e_test</span><span class="o">$</span><span class="nf">to_r</span><span class="p">()</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">#e1 and e2 are on the meta-level NOT identical expressions</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">e1</span><span class="o">$</span><span class="n">meta</span><span class="o">$</span><span class="nf">neq</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#three naive expression literals</span></span></span>
+<span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span></span></span>
+<span class='r-in'><span><span class='va'>e2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>e3</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span><span class='fl'>2</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#e1 and e3 are identical expressions</span></span></span>
+<span class='r-in'><span><span class='va'>e1</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>eq</span><span class='op'>(</span><span class='va'>e3</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#e_test is an expression testing whether e1 and e2 evaluates to the same value.</span></span></span>
+<span class='r-in'><span><span class='va'>e_test</span> <span class='op'>=</span> <span class='va'>e1</span> <span class='op'>==</span> <span class='va'>e2</span> <span class='co'># or e_test = e1$eq(e2)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#direct evaluate e_test, possible because only made up of literals</span></span></span>
+<span class='r-in'><span><span class='va'>e_test</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#e1 and e2 are on the meta-level NOT identical expressions</span></span></span>
+<span class='r-in'><span><span class='va'>e1</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>neq</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+ </code></pre>
 
 
 

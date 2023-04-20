@@ -7579,14 +7579,32 @@
 <p>Expr of Utf8 concatenated</p>
 <p>Vertically concat the values in the Series to a single string value.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">#concatenate a Series of strings to a single string</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">foo</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">str</span><span class="o">$</span><span class="nf">concat</span><span class="p">(</span><span class="s">&quot;-&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">#Series list of strings to Series of concatenated strings</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">bar</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="s">&quot;c&quot;</span><span class="p">),</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="kc">NA</span><span class="p">))))</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;bar&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">arr</span><span class="o">$</span><span class="nf">eval</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">()</span><span class="o">$</span><span class="n">str</span><span class="o">$</span><span class="nf">concat</span><span class="p">())</span><span class="o">$</span><span class="n">arr</span><span class="o">$</span><span class="nf">first</span><span class="p">())</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#concatenate a Series of strings to a single string</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>foo <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"1"</span>, <span class='cn'>NA</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>concat</span><span class='op'>(</span><span class='st'>"-"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1-null-2 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#Series list of strings to Series of concatenated strings</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>bar <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"b"</span>, <span class='st'>"c"</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"1"</span>,<span class='st'>"2"</span>,<span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"bar"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>arr</span><span class='op'>$</span><span class='fu'>eval</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>concat</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>arr</span><span class='op'>$</span><span class='fu'>first</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ bar      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a-b-c    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1-2-null │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────┘</span>
+ </code></pre>
 
 
 

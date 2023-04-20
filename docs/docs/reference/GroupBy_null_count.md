@@ -12,8 +12,18 @@ Create a new DataFrame that shows the null counts per column.
 
 ## Examples
 
-```r
-x = mtcars
-x[1:10, 3:5] = NA
-pl$DataFrame(x)$groupby("cyl")$null_count()
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>x</span> <span class='op'>=</span> <span class='va'>mtcars</span></span></span>
+<span class='r-in'><span><span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>=</span> <span class='cn'>NA</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>groupby</span><span class='op'>(</span><span class='st'>"cyl"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>null_count</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 11)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬──────┬─────┬─────┬─────┬─────┬──────┬──────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cyl ┆ mpg ┆ disp ┆ hp  ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  ┆ --- ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ u32 ┆ u32  ┆ u32 ┆     ┆ u32 ┆ u32 ┆ u32  ┆ u32  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪══════╪═════╪═════╪═════╪═════╪══════╪══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 0   ┆ 3    ┆ 3   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.0 ┆ 0   ┆ 5    ┆ 5   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 8.0 ┆ 0   ┆ 2    ┆ 2   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴──────┴─────┴─────┴─────┴─────┴──────┴──────┘</span>
+ </code></pre>

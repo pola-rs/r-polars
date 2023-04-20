@@ -122,29 +122,45 @@ eval_reference_examples <- function() {
 
   pkgload::load_all()
 
-  orig_ex <- rd2markdown::rd2markdown(file = "man/DataFrame_as_data_frame.Rd", fragments = "examples")
+  rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
+  md_files <- gsub("^man/", "docs/docs/reference/", rd_files)
+  md_files <- gsub("\\.Rd$", "\\.md", md_files)
 
-  subset_even <- function(x) x[!seq_along(x) %% 2]
+  for (i in seq_along(rd_files)) {
 
-  lines <- orig_ex %>%
-    stringr::str_split("```.*", simplify = TRUE) %>%
-    subset_even() %>%
-    stringr::str_flatten("\n## new chunk \n")
+    cat(paste0("Evaluating examples for file ", md_files[i], "\n"))
 
+    orig_ex <- rd2markdown::rd2markdown(file = rd_files[i], fragments = "examples")
 
-  downlit::evaluate_and_highlight(lines)
+    if (orig_ex == "") next
 
+    subset_even <- function(x) x[!seq_along(x) %% 2]
 
+    lines <- orig_ex %>%
+      stringr::str_split("```.*", simplify = TRUE) %>%
+      subset_even() %>%
+      stringr::str_flatten("\n## new chunk \n")
 
-  # gsub("```r", "```{r}", orig_ex) |>
-  #   cat(_, file = )
+    evaluated_ex <- paste(
+      "## Examples\n\n<pre class='r-example'> <code>",
+      downlit::evaluate_and_highlight(lines),
+      "</code></pre>"
+    )
+
+    orig_md <- readLines(md_files[i], warn = FALSE) %>%
+      paste(., collapse = "\n")
+
+    new_md <- gsub("## Examples.*", "", orig_md)
+    new_md <- paste0(new_md, evaluated_ex)
+
+    cat(new_md, file = md_files[i])
+
+  }
 
 }
 
 
-
-
 convert_to_md()
 convert_hierarchy_to_yml()
-
+eval_reference_examples()
 

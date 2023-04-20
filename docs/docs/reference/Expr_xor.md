@@ -22,6 +22,7 @@ combine to boolean expresions with XOR
 
 ## Examples
 
-```r
-pl$lit(TRUE)$xor(pl$lit(FALSE))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>xor</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(true) ^ (false)]</span>
+ </code></pre>

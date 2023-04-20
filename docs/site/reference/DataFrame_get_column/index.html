@@ -7581,9 +7581,15 @@
 <p>Series</p>
 <p>get one column by name as series</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">iris</span><span class="p">[</span><span class="m">1</span><span class="p">,])</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">$</span><span class="nf">get_column</span><span class="p">(</span><span class="s">&quot;Species&quot;</span><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>get_column</span><span class='op'>(</span><span class='st'>"Species"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'Species' [cat]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  "setosa"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>
 
 
 

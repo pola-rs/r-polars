@@ -21,16 +21,38 @@ Extend the Series with given number of values.
 
 ## Examples
 
-```r
-pl$select(
-  pl$lit(c("5","Bob_is_not_a_number"))
-  $cast(pl$dtypes$UInt64, strict = FALSE)
-  $extend_constant(10.1, 2)
-)
-
-pl$select(
-  pl$lit(c("5","Bob_is_not_a_number"))
-  $cast(pl$dtypes$Utf8, strict = FALSE)
-  $extend_constant("chuchu", 2)
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"5"</span>,<span class='st'>"Bob_is_not_a_number"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>UInt64</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>$</span><span class='fu'>extend_constant</span><span class='op'>(</span><span class='fl'>10.1</span>, <span class='fl'>2</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ u64  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 10   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 10   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"5"</span>,<span class='st'>"Bob_is_not_a_number"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Utf8</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>$</span><span class='fu'>extend_constant</span><span class='op'>(</span><span class='st'>"chuchu"</span>, <span class='fl'>2</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │                     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5                   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ Bob_is_not_a_number │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ chuchu              │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ chuchu              │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────┘</span>
+ </code></pre>

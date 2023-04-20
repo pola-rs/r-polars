@@ -7563,8 +7563,15 @@
 <p>self</p>
 <p>Print a polars Field</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">print</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">Field</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="n">pl</span><span class="o">$</span><span class="nf">List</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">UInt64</span><span class="p">)))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Field</span><span class='op'>(</span><span class='st'>"foo"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>UInt64</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     name: "foo",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     dtype: List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         UInt64,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ),</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+ </code></pre>
 
 
 

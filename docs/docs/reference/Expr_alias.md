@@ -22,6 +22,7 @@ Rename the output of an expression.
 
 ## Examples
 
-```r
-pl$col("bob")$alias("alice")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"bob"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"alice"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: col("bob").alias("alice")</span>
+ </code></pre>

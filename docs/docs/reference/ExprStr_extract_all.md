@@ -12,9 +12,18 @@ Extracts all matches for the given regex pattern. Extracts each successive non-o
 
 ## Examples
 
-```r
-df = pl$DataFrame( foo = c("123 bla 45 asd", "xyz 678 910t"))
-df$select(
-  pl$col("foo")$str$extract_all(r"((\d+))")$alias("extracted_nrs")
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span> foo <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"123 bla 45 asd"</span>, <span class='st'>"xyz 678 910t"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>extract_all</span><span class='op'>(</span><span class='st'>r"((\d+))"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"extracted_nrs"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ extracted_nrs  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[str]      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ["123", "45"]  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ["678", "910"] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └────────────────┘</span>
+ </code></pre>

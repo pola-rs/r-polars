@@ -46,6 +46,19 @@ This functionality is experimental and may change without it being considered a 
 
 ## Examples
 
-```r
-pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_median(window_size = 2))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>rolling_median</span><span class='op'>(</span>window_size <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.5  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2.5  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3.5  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.5  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.5  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┘</span>
+ </code></pre>

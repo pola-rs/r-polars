@@ -7602,11 +7602,45 @@
 <h2 id="details">Details</h2>
 <p>Only works for numerical types. If you want to clip other dtypes, consider writing a "when, then, otherwise" expression. See :func:<code>when</code> for more information.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">foo</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">-50L</span><span class="p">,</span> <span class="m">5L</span><span class="p">,</span> <span class="kc">NA_integer_</span><span class="p">,</span><span class="m">50L</span><span class="p">))</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">$</span><span class="nf">with_column</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">clip</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span><span class="m">10L</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;foo_clipped&quot;</span><span class="p">))</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">df</span><span class="o">$</span><span class="nf">with_column</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">clip_min</span><span class="p">(</span><span class="m">1L</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;foo_clipped&quot;</span><span class="p">))</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">df</span><span class="o">$</span><span class="nf">with_column</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">clip_max</span><span class="p">(</span><span class="m">10L</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;foo_clipped&quot;</span><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>foo <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>50L</span>, <span class='fl'>5L</span>, <span class='cn'>NA_integer_</span>,<span class='fl'>50L</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>clip</span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>10L</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"foo_clipped"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo  ┆ foo_clipped │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32  ┆ i32         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╪═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ -50  ┆ 1           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5    ┆ 5           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null ┆ null        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 50   ┆ 10          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┴─────────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>clip_min</span><span class='op'>(</span><span class='fl'>1L</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"foo_clipped"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo  ┆ foo_clipped │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32  ┆ i32         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╪═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ -50  ┆ 1           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5    ┆ 5           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null ┆ null        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 50   ┆ 50          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┴─────────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>clip_max</span><span class='op'>(</span><span class='fl'>10L</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"foo_clipped"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo  ┆ foo_clipped │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32  ┆ i32         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╪═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ -50  ┆ -50         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5    ┆ 5           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null ┆ null        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 50   ┆ 10          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┴─────────────┘</span>
+ </code></pre>
 
 
 

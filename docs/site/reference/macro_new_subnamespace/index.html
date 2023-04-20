@@ -7599,38 +7599,40 @@
 <h2 id="details">Details</h2>
 <p>This function is used to emulate py-polars subnamespace-methods All R functions coined 'macro_'-functions use eval(parse()) but only at package build time to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way , go ahead.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">#macro_new_subnamespace() is not exported, export for this toy example</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c1">#macro_new_subnamespace = polars:::macro_new_subnamespace</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1">##define some new methods prefixed &#39;MyClass_&#39;</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">#MyClass_add2 = function() self + 2</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1">#MyClass_mul2 = function() self * 2</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1">##grab any sourced function prefixed &#39;MyClass_&#39;</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">#my_class_sub_ns = macro_new_subnamespace(&quot;^MyClass_&quot;, &quot;myclass_sub_ns&quot;)</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1">#here adding sub-namespace as a expr-class property/method during session-time,</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">#which only is for this demo.</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">#instead sourced method like Expr_arr() at package build time instead</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1">#env = polars:::Expr #get env of the Expr Class</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1">#env$my_sub_ns = method_as_property(function() { #add a property/method</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># my_class_sub_ns(self)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1">#})</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">#rm(env) #optional clean up</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1">#add user defined S3 method the subclass &#39;myclass_sub_ns&#39;</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1">#print.myclass_sub_ns = function(x, ...) { #add ... even if not used</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1">#   print(&quot;hello world, I&#39;m myclass_sub_ns&quot;)</span>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1">#   print(&quot;methods in sub namespace are:&quot;)</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1">#  print(ls(x))</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1">#  }</span>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="c1">#test</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="c1"># e = pl$lit(1:5)  #make an Expr</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="c1">#print(e$my_sub_ns) #inspect</span>
-<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="c1">#e$my_sub_ns$add2() #use the sub namespace</span>
-<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="c1">#e$my_sub_ns$mul2()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#macro_new_subnamespace() is not exported, export for this toy example</span></span></span>
+<span class='r-in'><span><span class='co'>#macro_new_subnamespace = polars:::macro_new_subnamespace</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>##define some new methods prefixed 'MyClass_'</span></span></span>
+<span class='r-in'><span><span class='co'>#MyClass_add2 = function() self + 2</span></span></span>
+<span class='r-in'><span><span class='co'>#MyClass_mul2 = function() self * 2</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>##grab any sourced function prefixed 'MyClass_'</span></span></span>
+<span class='r-in'><span><span class='co'>#my_class_sub_ns = macro_new_subnamespace("^MyClass_", "myclass_sub_ns")</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#here adding sub-namespace as a expr-class property/method during session-time,</span></span></span>
+<span class='r-in'><span><span class='co'>#which only is for this demo.</span></span></span>
+<span class='r-in'><span><span class='co'>#instead sourced method like Expr_arr() at package build time instead</span></span></span>
+<span class='r-in'><span><span class='co'>#env = polars:::Expr #get env of the Expr Class</span></span></span>
+<span class='r-in'><span><span class='co'>#env$my_sub_ns = method_as_property(function() { #add a property/method</span></span></span>
+<span class='r-in'><span><span class='co'># my_class_sub_ns(self)</span></span></span>
+<span class='r-in'><span><span class='co'>#})</span></span></span>
+<span class='r-in'><span><span class='co'>#rm(env) #optional clean up</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#add user defined S3 method the subclass 'myclass_sub_ns'</span></span></span>
+<span class='r-in'><span><span class='co'>#print.myclass_sub_ns = function(x, ...) { #add ... even if not used</span></span></span>
+<span class='r-in'><span><span class='co'>#   print("hello world, I'm myclass_sub_ns")</span></span></span>
+<span class='r-in'><span><span class='co'>#   print("methods in sub namespace are:")</span></span></span>
+<span class='r-in'><span><span class='co'>#  print(ls(x))</span></span></span>
+<span class='r-in'><span><span class='co'>#  }</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#test</span></span></span>
+<span class='r-in'><span><span class='co'># e = pl$lit(1:5)  #make an Expr</span></span></span>
+<span class='r-in'><span><span class='co'>#print(e$my_sub_ns) #inspect</span></span></span>
+<span class='r-in'><span><span class='co'>#e$my_sub_ns$add2() #use the sub namespace</span></span></span>
+<span class='r-in'><span><span class='co'>#e$my_sub_ns$mul2()</span></span></span>
+<span class='r-in'></span>
+ </code></pre>
 
 
 

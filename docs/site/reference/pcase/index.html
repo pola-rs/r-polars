@@ -7598,13 +7598,15 @@
 <h2 id="details">Details</h2>
 <p>Lifecycle: perhaps replace with something written in rust to speed up a bit</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">n</span> <span class="o">=</span> <span class="m">7</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">polars</span><span class="o">:::</span><span class="nf">pcase</span><span class="p">(</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a> <span class="n">n</span><span class="o">&lt;</span><span class="m">5</span><span class="p">,</span><span class="s">&quot;nope&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a> <span class="n">n</span><span class="o">&gt;</span><span class="m">6</span><span class="p">,</span><span class="s">&quot;yeah&quot;</span><span class="p">,</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a> <span class="n">or_else</span> <span class="o">=</span> <span class="nf">stopf</span><span class="p">(</span><span class="s">&quot;failed to have a case for n=%s&quot;</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>n</span> <span class='op'>=</span> <span class='fl'>7</span></span></span>
+<span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/pcase.html'>pcase</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span> <span class='va'>n</span><span class='op'>&lt;</span><span class='fl'>5</span>,<span class='st'>"nope"</span>,</span></span>
+<span class='r-in'><span> <span class='va'>n</span><span class='op'>&gt;</span><span class='fl'>6</span>,<span class='st'>"yeah"</span>,</span></span>
+<span class='r-in'><span> or_else <span class='op'>=</span> <span class='fu'>stopf</span><span class='op'>(</span><span class='st'>"failed to have a case for n=%s"</span>,<span class='va'>n</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "yeah"</span>
+ </code></pre>
 
 
 

@@ -24,6 +24,7 @@ Any DataType can be found in pl$dtypes
 
 ## Examples
 
-```r
-polars:::DataType_new("Int64")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/DataType_new.html'>DataType_new</a></span><span class='op'>(</span><span class='st'>"Int64"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Int64</span>
+ </code></pre>

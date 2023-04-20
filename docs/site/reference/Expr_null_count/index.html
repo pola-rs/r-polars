@@ -7580,8 +7580,17 @@
 <p>Expr</p>
 <p>Count <code>Nulls</code></p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="kc">NA</span><span class="p">,</span><span class="s">&quot;b&quot;</span><span class="p">))</span><span class="o">$</span><span class="nf">null_count</span><span class="p">())</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>NA</span>,<span class='st'>"a"</span>,<span class='cn'>NA</span>,<span class='st'>"b"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>null_count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ u32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+ </code></pre>
 
 
 

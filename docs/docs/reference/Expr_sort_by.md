@@ -27,57 +27,97 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 
 ## Examples
 
-```r
-df = pl$DataFrame(list(
-  group = c("a","a","a","b","b","b"),
-  value1 = c(98,1,3,2,99,100),
-  value2 = c("d","f","b","e","c","a")
-))
-
-# by one column/expression
-df$select(
-  pl$col("group")$sort_by("value1")
-)
-
-# by two columns/expressions
-df$select(
-  pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
-)
-
-
-# by some expression
-df$select(
-  pl$col("group")$sort_by(pl$col("value1")$sort(reverse=TRUE))
-)
-
-#quite similar usecase as R function `order()`
-l = list(
-  ab = c(rep("a",6),rep("b",6)),
-  v4 = rep(1:4, 3),
-  v3 = rep(1:3, 4),
-  v2 = rep(1:2,6),
-  v1 = 1:12
-)
-df = pl$DataFrame(l)
-
-
-#examples of order versus sort_by
-all.equal(
-  df$select(
-    pl$col("ab")$sort_by("v4")$alias("ab4"),
-    pl$col("ab")$sort_by("v3")$alias("ab3"),
-    pl$col("ab")$sort_by("v2")$alias("ab2"),
-    pl$col("ab")$sort_by("v1")$alias("ab1"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
-  )$to_list(),
-  list(
-    ab4 = l$ab[order(l$v4)],
-    ab3 = l$ab[order(l$v3)],
-    ab2 = l$ab[order(l$v2)],
-    ab1 = l$ab[order(l$v1)],
-    ab13FT= l$ab[order(l$v3,rev(l$v1))],
-    ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
-  )
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"a"</span>,<span class='st'>"a"</span>,<span class='st'>"b"</span>,<span class='st'>"b"</span>,<span class='st'>"b"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  value1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>98</span>,<span class='fl'>1</span>,<span class='fl'>3</span>,<span class='fl'>2</span>,<span class='fl'>99</span>,<span class='fl'>100</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  value2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"d"</span>,<span class='st'>"f"</span>,<span class='st'>"b"</span>,<span class='st'>"e"</span>,<span class='st'>"c"</span>,<span class='st'>"a"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># by one column/expression</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># by two columns/expressions</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"value2"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span><span class='op'>)</span>, reverse <span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>,<span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># by some expression</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#quite similar usecase as R function `order()`</span></span></span>
+<span class='r-in'><span><span class='va'>l</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  ab <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='fl'>6</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='st'>"b"</span>,<span class='fl'>6</span><span class='op'>)</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  v4 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, <span class='fl'>3</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  v3 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>4</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  v2 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>6</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  v1 <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>l</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#examples of order versus sort_by</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"v4"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab4"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"v3"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab3"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"v2"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab2"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"v1"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab1"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"v3"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"v1"</span><span class='op'>)</span><span class='op'>)</span>,reverse<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>,<span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab13FT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"ab"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"v3"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"v1"</span><span class='op'>)</span><span class='op'>)</span>,reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ab13T"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>)</span><span class='op'>$</span><span class='fu'>to_list</span><span class='op'>(</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>    ab4 <span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v4</span><span class='op'>)</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>    ab3 <span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v3</span><span class='op'>)</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>    ab2 <span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v2</span><span class='op'>)</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>    ab1 <span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>)</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>    ab13FT<span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v3</span>,<span class='fu'><a href='https://rdrr.io/r/base/rev.html'>rev</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>    ab13T <span class='op'>=</span> <span class='va'>l</span><span class='op'>$</span><span class='va'>ab</span><span class='op'>[</span><span class='fu'><a href='https://rdrr.io/r/base/order.html'>order</a></span><span class='op'>(</span><span class='va'>l</span><span class='op'>$</span><span class='va'>v3</span>,<span class='va'>l</span><span class='op'>$</span><span class='va'>v1</span>,decreasing<span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>]</span></span></span>
+<span class='r-in'><span>  <span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+ </code></pre>

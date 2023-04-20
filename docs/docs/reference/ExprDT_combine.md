@@ -25,16 +25,37 @@ The `tu` allows the following time time units the following string language:
 
 ## Examples
 
-```r
-#Using pl$PTime
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime("02:34:12"))$lit_to_s()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5, tu="s"))$lit_to_s()
-pl$lit(as.Date("2021-01-01"))$dt$combine(pl$PTime(3600 * 1.5E6 + 123, tu="us"))$lit_to_s()
-
-#pass double and set tu manually
-pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")$lit_to_s()
-
-#if needed to convert back to R it is more intuitive to set a specific time zone
-expr = pl$lit(as.Date("2021-01-01"))$dt$combine(3600 * 1.5E6 + 123, tu="us")
-expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#Using pl$PTime</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='st'>"02:34:12"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ns]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2021-01-01 02:34:12</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fl'>3600</span> <span class='op'>*</span> <span class='fl'>1.5</span>, tu<span class='op'>=</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ns]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2021-01-01 01:30:00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fl'>3600</span> <span class='op'>*</span> <span class='fl'>1.5E6</span> <span class='op'>+</span> <span class='fl'>123</span>, tu<span class='op'>=</span><span class='st'>"us"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ns]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2021-01-01 01:30:00.000123</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#pass double and set tu manually</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='fl'>3600</span> <span class='op'>*</span> <span class='fl'>1.5E6</span> <span class='op'>+</span> <span class='fl'>123</span>, tu<span class='op'>=</span><span class='st'>"us"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[μs]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2021-01-01 01:30:00.000123</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#if needed to convert back to R it is more intuitive to set a specific time zone</span></span></span>
+<span class='r-in'><span><span class='va'>expr</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='fl'>3600</span> <span class='op'>*</span> <span class='fl'>1.5E6</span> <span class='op'>+</span> <span class='fl'>123</span>, tu<span class='op'>=</span><span class='st'>"us"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>expr</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Datetime</span><span class='op'>(</span>tu <span class='op'>=</span> <span class='st'>"us"</span>, tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2021-01-01 01:30:00 GMT"</span>
+ </code></pre>

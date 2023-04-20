@@ -21,10 +21,45 @@ Series arithmetics
 
 ## Examples
 
-```r
-pl$Series(1:3)$sub(11:13)
-pl$Series(1:3)$sub(pl$Series(11:13))
-pl$Series(1:3)$sub(1L)
-1L - pl$Series(1:3)
-pl$Series(1:3) - 1L
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sub</span><span class='op'>(</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sub</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sub</span><span class='op'>(</span><span class='fl'>1L</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='fl'>1L</span> <span class='op'>-</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	-2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span> <span class='op'>-</span> <span class='fl'>1L</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>

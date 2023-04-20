@@ -12,6 +12,6 @@ Get shape/dimensions of DataFrame
 
 ## Examples
 
-```r
-df = pl$DataFrame(iris)$shape
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='va'>shape</span></span></span>
+ </code></pre>

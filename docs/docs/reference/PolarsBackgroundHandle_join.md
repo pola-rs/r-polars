@@ -12,8 +12,8 @@ PolarsBackgroundHandle
 
 ## Examples
 
-```r
-lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())
-handle = lazy_df$collect_background()
-df = handle$join()
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>lazy_df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>[</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lazy</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>first</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>handle</span> <span class='op'>=</span> <span class='va'>lazy_df</span><span class='op'>$</span><span class='fu'>collect_background</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>handle</span><span class='op'>$</span><span class='fu'>join</span><span class='op'>(</span><span class='op'>)</span></span></span>
+ </code></pre>

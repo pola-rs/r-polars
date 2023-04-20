@@ -7597,47 +7597,95 @@
 <h2 id="details">Details</h2>
 <p>pl$struct creates Expr or Series of DataType Struct() pl$Struct creates the DataType Struct() In polars a schema is a named list of DataTypes. #' A schema describes e.g. a DataFrame. More formally schemas consist of Fields. A Field is an object describing the name and DataType of a column/Series, but same same. A struct is a DataFrame wrapped into a Series, the DataType is Struct, and each sub-datatype within are Fields. In a dynamic language schema and a Struct (the DataType) are quite the same, except schemas describe DataFrame and Struct's describe some Series.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">#isolated expression to wrap all columns in a struct aliased &#39;my_struct&#39;</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">pl</span><span class="o">$</span><span class="nf">struct</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">all</span><span class="p">())</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;my_struct&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">#wrap all column into on column/Series</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  <span class="n">int</span> <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  <span class="n">str</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  <span class="n">bool</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">,</span> <span class="kc">NA</span><span class="p">),</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  <span class="n">list</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span> <span class="m">3L</span><span class="p">)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">struct</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">all</span><span class="p">())</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;my_struct&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">schema</span><span class="p">)</span> <span class="c1">#returns a schema, a named list containing one element a Struct named my_struct</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># wrap two columns in a struct and provide a schema to set all or some DataTypes by name</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">e1</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">struct</span><span class="p">(</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;int&quot;</span><span class="p">,</span><span class="s">&quot;str&quot;</span><span class="p">)),</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  <span class="n">schema</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">int</span><span class="o">=</span><span class="n">pl</span><span class="o">$</span><span class="n">Int64</span><span class="p">,</span> <span class="n">str</span><span class="o">=</span><span class="n">pl</span><span class="o">$</span><span class="n">Utf8</span><span class="p">)</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;my_struct&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># same result as e.g. wrapping the columns in a struct and casting afterwards</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">e2</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">struct</span><span class="p">(</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>  <span class="nf">list</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;int&quot;</span><span class="p">),</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;str&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">)</span><span class="o">$</span><span class="nf">cast</span><span class="p">(</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">Struct</span><span class="p">(</span><span class="n">int</span><span class="o">=</span><span class="n">pl</span><span class="o">$</span><span class="n">Int64</span><span class="p">,</span><span class="n">str</span><span class="o">=</span><span class="n">pl</span><span class="o">$</span><span class="n">Utf8</span><span class="p">)</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;my_struct&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>  <span class="n">int</span> <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>  <span class="n">str</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>  <span class="n">bool</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">,</span> <span class="kc">NA</span><span class="p">),</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>  <span class="n">list</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span> <span class="m">3L</span><span class="p">)</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="p">)</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="c1">#verify equality in R</span>
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="nf">identical</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">e1</span><span class="p">)</span><span class="o">$</span><span class="nf">to_list</span><span class="p">(),</span><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span><span class="o">$</span><span class="nf">to_list</span><span class="p">())</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">e2</span><span class="p">)</span><span class="o">$</span><span class="nf">as_data_frame</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#isolated expression to wrap all columns in a struct aliased 'my_struct'</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"my_struct"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: *.as_struct().alias("my_struct")</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#wrap all column into on column/Series</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  int <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,</span></span>
+<span class='r-in'><span>  str <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  bool <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>NA</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  list <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>3L</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"my_struct"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ my_struct           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[4]           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {1,"a",true,[1, 2]} │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {2,"b",null,[3]}    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────┘</span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='va'>schema</span><span class='op'>)</span> <span class='co'>#returns a schema, a named list containing one element a Struct named my_struct</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $my_struct</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Struct(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             name: "int",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             dtype: Int32,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         },</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             name: "str",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             dtype: Utf8,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         },</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             name: "bool",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             dtype: Boolean,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         },</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             name: "list",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             dtype: List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                 Int32,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             ),</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         },</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ],</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># wrap two columns in a struct and provide a schema to set all or some DataTypes by name</span></span></span>
+<span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"int"</span>,<span class='st'>"str"</span><span class='op'>)</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  schema <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>int<span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span>, str<span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"my_struct"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># same result as e.g. wrapping the columns in a struct and casting afterwards</span></span></span>
+<span class='r-in'><span><span class='va'>e2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"int"</span><span class='op'>)</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"str"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Struct</span><span class='op'>(</span>int<span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span>,str<span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"my_struct"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  int <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,</span></span>
+<span class='r-in'><span>  str <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  bool <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>NA</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  list <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>3L</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#verify equality in R</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e1</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_list</span><span class='op'>(</span><span class='op'>)</span>,<span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_list</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ my_struct │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[2] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {1,"a"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {2,"b"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  my_struct</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 4.94065645841247e-324, a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 9.88131291682493e-324, b</span>
+ </code></pre>
 
 
 

@@ -7579,20 +7579,30 @@
 <p>Expr: Series of same and name selected field.</p>
 <p>Retrieve a <code>Struct</code> field as a new Series. By default base 2.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     <span class="n">aaa</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>     <span class="n">bbb</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;ab&quot;</span><span class="p">,</span> <span class="s">&quot;cd&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>     <span class="n">ccc</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">,</span> <span class="kc">NA</span><span class="p">),</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>     <span class="n">ddd</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> <span class="m">3</span><span class="p">)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">struct</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">all</span><span class="p">())</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;struct_col&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">#struct field into a new Series</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;struct_col&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">struct</span><span class="o">$</span><span class="nf">field</span><span class="p">(</span><span class="s">&quot;bbb&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;struct_col&quot;</span><span class="p">)</span><span class="o">$</span><span class="n">struct</span><span class="o">$</span><span class="nf">field</span><span class="p">(</span><span class="s">&quot;ddd&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>     aaa <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>     bbb <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"ab"</span>, <span class='st'>"cd"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>     ccc <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>, <span class='cn'>NA</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>     ddd <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span>, <span class='fl'>3</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'>#struct field into a new Series</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>struct</span><span class='op'>$</span><span class='fu'>field</span><span class='op'>(</span><span class='st'>"bbb"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>struct</span><span class='op'>$</span><span class='fu'>field</span><span class='op'>(</span><span class='st'>"ddd"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ bbb ┆ ddd        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str ┆ list[f64]  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ab  ┆ [1.0, 2.0] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cd  ┆ [3.0]      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴────────────┘</span>
+ </code></pre>
 
 
 

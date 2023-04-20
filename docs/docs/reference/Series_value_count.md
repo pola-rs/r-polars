@@ -17,6 +17,16 @@ Value Counts as DataFrame
 
 ## Examples
 
-```r
-pl$Series(iris$Species,"flower species")$value_counts()
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>$</span><span class='va'>Species</span>,<span class='st'>"flower species"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>value_counts</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ flower species ┆ counts │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---            ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cat            ┆ u32    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════════════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ setosa         ┆ 50     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ versicolor     ┆ 50     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ virginica      ┆ 50     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └────────────────┴────────┘</span>
+ </code></pre>

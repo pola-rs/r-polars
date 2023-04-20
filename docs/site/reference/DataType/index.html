@@ -7545,24 +7545,55 @@
 <h1 id="datatypes-polars-types">DataTypes polars types</h1>
 <p><code>DataType</code> any polars type (ported so far)</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">print</span><span class="p">(</span><span class="nf">ls</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="p">))</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Float64</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Utf8</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">pl</span><span class="o">$</span><span class="nf">List</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">List</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">UInt64</span><span class="p">))</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">pl</span><span class="o">$</span><span class="nf">Struct</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">Field</span><span class="p">(</span><span class="s">&quot;CityNames&quot;</span><span class="p">,</span> <span class="n">pl</span><span class="o">$</span><span class="n">Utf8</span><span class="p">))</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Some DataType use case, this user function fails because....</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">## Not run:</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">Series</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">)</span><span class="o">$</span><span class="nf">apply</span><span class="p">(</span>\<span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="kc">letters</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">## End(Not run)</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">#The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1">#specifying the output DataType: Utf8 solves the problem</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">pl</span><span class="o">$</span><span class="nf">Series</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">)</span><span class="o">$</span><span class="nf">apply</span><span class="p">(</span>\<span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="kc">letters</span><span class="p">[</span><span class="n">x</span><span class="p">],</span><span class="n">datatype</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Utf8</span><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "Binary"      "Boolean"     "Categorical" "Date"        "Datetime"    "Float32"     "Float64"     "Int16"      </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "Int32"       "Int64"       "Int8"        "List"        "Null"        "Struct"      "Time"        "UInt16"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "UInt32"      "UInt64"      "UInt8"       "Unknown"     "Utf8"       </span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Float64</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Float64</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Utf8</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Utf8</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>UInt64</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         UInt64,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ),</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Field</span><span class='op'>(</span><span class='st'>"CityNames"</span>, <span class='va'>pl</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Struct(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             name: "CityNames",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>             dtype: Utf8,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         },</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ],</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># Some DataType use case, this user function fails because....</span></span></span>
+<span class='r-in'><span><span class='co'>## Not run:</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>apply</span><span class='op'>(</span>\<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>letters</span><span class='op'>[</span><span class='va'>x</span><span class='op'>]</span><span class='op'>)</span></span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> a lambda returned Strings and not the expected Integers .  Try strict=FALSE, or change expected output type or rewrite lambda </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span>  when calling :</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span>  source("C:/Users/etienne/Desktop/Divers/r-polars/docs/make-docs.R", </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span>     echo = TRUE)</span>
+<span class='r-in'><span><span class='co'>## End(Not run)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]</span></span></span>
+<span class='r-in'><span><span class='co'>#specifying the output DataType: Utf8 solves the problem</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>apply</span><span class='op'>(</span>\<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>letters</span><span class='op'>[</span><span class='va'>x</span><span class='op'>]</span>,datatype <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (4,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '_apply' [str]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  "a"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  "b"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  "c"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  "d"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>
 
 
 

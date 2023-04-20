@@ -69,9 +69,39 @@ Ewm_var
 
 ## Examples
 
-```r
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com=1))
-
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>ewm_mean</span><span class='op'>(</span>com<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.666667 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2.428571 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>ewm_std</span><span class='op'>(</span>com<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.0      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.707107 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.963624 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>ewm_std</span><span class='op'>(</span>com<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.0      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.707107 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.963624 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────┘</span>
+ </code></pre>

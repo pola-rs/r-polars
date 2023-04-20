@@ -13,15 +13,25 @@ Extract the target capture group from provided patterns.
 
 ## Examples
 
-```r
-df = pl$DataFrame(
-  a =  c(
-    "http://vote.com/ballon_dor?candidate=messi&ref=polars",
-    "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
-    "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"
-  )
-)
-df$select(
-  pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>    <span class='st'>"http://vote.com/ballon_dor?candidate=messi&amp;ref=polars"</span>,</span></span>
+<span class='r-in'><span>    <span class='st'>"http://vote.com/ballon_dor?candidat=jorginho&amp;ref=polars"</span>,</span></span>
+<span class='r-in'><span>    <span class='st'>"http://vote.com/ballon_dor?candidate=ronaldo&amp;ref=polars"</span></span></span>
+<span class='r-in'><span>  <span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>extract</span><span class='op'>(</span><span class='st'>r"(candidate=(\w+))"</span>, <span class='fl'>1</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ str     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ messi   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ronaldo │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────┘</span>
+ </code></pre>

@@ -32,6 +32,7 @@ new LazyFrame from parquet file
 
 ## Examples
 
-```r
-#TODO write parquet example
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#TODO write parquet example</span></span></span>
+<span class='r-in'></span>
+ </code></pre>

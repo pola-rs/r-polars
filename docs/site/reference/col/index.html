@@ -7589,30 +7589,95 @@
 <p>Column Exprression</p>
 <p>Return an expression representing a column in a DataFrame.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">foo</span><span class="o">=</span><span class="m">1</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="m">2L</span><span class="p">,</span><span class="n">foobar</span><span class="o">=</span><span class="s">&quot;3&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1">#a single column by a string</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">#all columns by wildcard</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">all</span><span class="p">())</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">#multiple columns as vector of strings</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;bar&quot;</span><span class="p">)))</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">#column by regular expression if the regex starts with `^` and ends with `$`</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;^foo.*$&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1">#a single DataType</span>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Float64</span><span class="p">))</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="c1"># ... or an R list of DataTypes, select any column of any such DataType</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Float64</span><span class="p">,</span> <span class="n">pl</span><span class="o">$</span><span class="n">dtypes</span><span class="o">$</span><span class="n">Utf8</span><span class="p">)))</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># from Series of names</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">Series</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;bar&quot;</span><span class="p">,</span><span class="s">&quot;foobar&quot;</span><span class="p">))))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>foo<span class='op'>=</span><span class='fl'>1</span>, bar<span class='op'>=</span><span class='fl'>2L</span>,foobar<span class='op'>=</span><span class='st'>"3"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#a single column by a string</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#all columns by wildcard</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"*"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ bar ┆ foobar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ i32 ┆ str    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 2   ┆ 3      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ bar ┆ foobar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ i32 ┆ str    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 2   ┆ 3      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#multiple columns as vector of strings</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"foo"</span>,<span class='st'>"bar"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ bar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 2   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column by regular expression if the regex starts with `^` and ends with `$`</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"^foo.*$"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ foobar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ str    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 3      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#a single DataType</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Float64</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># ... or an R list of DataTypes, select any column of any such DataType</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Float64</span>, <span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ foobar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ str    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 3      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># from Series of names</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"bar"</span>,<span class='st'>"foobar"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ bar ┆ foobar │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ str    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 3      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴────────┘</span>
+ </code></pre>
 
 
 

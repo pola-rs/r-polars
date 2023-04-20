@@ -7581,8 +7581,17 @@
 <p>Series or NULL</p>
 <p>get one column by idx as series from DataFrame. Unlike get_column this method will not fail if no series found at idx but return a NULL, idx is zero idx.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">)</span><span class="o">$</span><span class="nf">to_series</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_series</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (4,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'a' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>
 
 
 

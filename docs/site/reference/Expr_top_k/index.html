@@ -7615,10 +7615,23 @@
 <p>This has time complexity: <code>O(n + k \\log{}n - \frac{k}{2})</code></p>
 <p>See Inf,NaN,NULL,Null/NA translations here <code>docs_translations</code></p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  <span class="n">a</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="kc">NA</span><span class="p">,</span> <span class="kc">Inf</span><span class="p">,</span> <span class="kc">NaN</span><span class="p">)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">))</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">top_k</span><span class="p">(</span><span class="m">5</span><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>6</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='cn'>NA</span>, <span class='cn'>Inf</span>, <span class='cn'>NaN</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>top_k</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ NaN │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ inf │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 0.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+ </code></pre>
 
 
 

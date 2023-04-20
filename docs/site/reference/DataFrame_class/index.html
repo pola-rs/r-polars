@@ -7508,41 +7508,62 @@
 <h2 id="details">Details</h2>
 <p>Check out the source code in R/dataframe_frame.R how public methods are derived from private methods. Check out extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods are removed and replaced by any function prefixed <code>DataFrame_</code>.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">#see all exported methods</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nf">ls</span><span class="p">(</span><span class="n">polars</span><span class="o">:::</span><span class="n">DataFrame</span><span class="p">)</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1">#see all private methods (not intended for regular use)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nf">ls</span><span class="p">(</span><span class="n">polars</span><span class="o">:::</span><span class="n">.pr</span><span class="o">$</span><span class="n">DataFrame</span><span class="p">)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">#make an object</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">iris</span><span class="p">)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">#use a public method/property</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">df</span><span class="o">$</span><span class="n">shape</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">df2</span> <span class="o">=</span> <span class="n">df</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1">#use a private method, which has mutability</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">result</span> <span class="o">=</span> <span class="n">polars</span><span class="o">:::</span><span class="n">.pr</span><span class="o">$</span><span class="n">DataFrame</span><span class="o">$</span><span class="nf">set_column_from_robj</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="m">150</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="s">&quot;some_ints&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1">#column exists in both dataframes-objects now, as they are just pointers to the same object</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># there are no public methods with mutability</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">df</span><span class="o">$</span><span class="n">columns</span>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">df2</span><span class="o">$</span><span class="n">columns</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># set_column_from_robj-method is fallible and returned a result which could be ok or an err.</span>
-<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1"># No public method or function will ever return a result.</span>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># The `result` is very close to the same as output from functions decorated with purrr::safely.</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="c1"># To use results on R side, these must be unwrapped first such that</span>
-<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1"># potentially errors can be thrown. unwrap(result) is a way to</span>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="c1"># would case some unneccesary confusing and  some very verbose error messages on the inner</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="c1"># method does not return any ok-value.</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="c1">#try unwrapping an error from polars due to unmatching column lengths</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="n">err_result</span> <span class="o">=</span> <span class="n">polars</span><span class="o">:::</span><span class="n">.pr</span><span class="o">$</span><span class="n">DataFrame</span><span class="o">$</span><span class="nf">set_column_from_robj</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">10000</span><span class="p">,</span><span class="s">&quot;wrong_length&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="nf">tryCatch</span><span class="p">(</span><span class="nf">unwrap</span><span class="p">(</span><span class="n">err_result</span><span class="p">,</span><span class="n">call</span><span class="o">=</span><span class="kc">NULL</span><span class="p">),</span><span class="n">error</span><span class="o">=</span>\<span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="nf">cat</span><span class="p">(</span><span class="nf">as.character</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/DataFrame.html'>DataFrame</a></span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "as_data_frame"  "clone"          "columns"        "dtypes"         "estimated_size" "filter"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "first"          "get_column"     "get_columns"    "groupby"        "height"         "join"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "last"           "lazy"           "limit"          "max"            "mean"           "median"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19] "min"            "null_count"     "print"          "reverse"        "schema"         "select"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "shape"          "slice"          "std"            "sum"            "tail"           "to_list"       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31] "to_series"      "to_struct"      "unnest"         "var"            "width"          "with_column"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [37] "with_columns"  </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>DataFrame</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "by_agg"                    "clone_see_me_macro"        "columns"                   "dtypes"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "estimated_size"            "export_stream"             "from_arrow_record_batches" "get_column"               </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "get_columns"               "lazy"                      "new"                       "new_par_from_list"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "new_with_capacity"         "null_count"                "print"                     "schema"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "select"                    "select_at_idx"             "set_column_from_robj"      "set_column_from_series"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "set_column_names_mut"      "shape"                     "to_list"                   "to_list_tag_structs"      </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "to_list_unwind"            "to_struct"                 "unnest"                   </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#make an object</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#use a public method/property</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='va'>shape</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 150   5</span>
+<span class='r-in'><span><span class='va'>df2</span> <span class='op'>=</span> <span class='va'>df</span></span></span>
+<span class='r-in'><span><span class='co'>#use a private method, which has mutability</span></span></span>
+<span class='r-in'><span><span class='va'>result</span> <span class='op'>=</span> <span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>DataFrame</span><span class='op'>$</span><span class='fu'>set_column_from_robj</span><span class='op'>(</span><span class='va'>df</span>,<span class='fl'>150</span><span class='op'>:</span><span class='fl'>1</span>,<span class='st'>"some_ints"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column exists in both dataframes-objects now, as they are just pointers to the same object</span></span></span>
+<span class='r-in'><span><span class='co'># there are no public methods with mutability</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='va'>columns</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"      "some_ints"   </span>
+<span class='r-in'><span><span class='va'>df2</span><span class='op'>$</span><span class='va'>columns</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"      "some_ints"   </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># set_column_from_robj-method is fallible and returned a result which could be ok or an err.</span></span></span>
+<span class='r-in'><span><span class='co'># No public method or function will ever return a result.</span></span></span>
+<span class='r-in'><span><span class='co'># The `result` is very close to the same as output from functions decorated with purrr::safely.</span></span></span>
+<span class='r-in'><span><span class='co'># To use results on R side, these must be unwrapped first such that</span></span></span>
+<span class='r-in'><span><span class='co'># potentially errors can be thrown. unwrap(result) is a way to</span></span></span>
+<span class='r-in'><span><span class='co'># bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which</span></span></span>
+<span class='r-in'><span><span class='co'># would case some unneccesary confusing and  some very verbose error messages on the inner</span></span></span>
+<span class='r-in'><span><span class='co'># workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable</span></span></span>
+<span class='r-in'><span><span class='co'># method does not return any ok-value.</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#try unwrapping an error from polars due to unmatching column lengths</span></span></span>
+<span class='r-in'><span><span class='va'>err_result</span> <span class='op'>=</span> <span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>DataFrame</span><span class='op'>$</span><span class='fu'>set_column_from_robj</span><span class='op'>(</span><span class='va'>df</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>10000</span>,<span class='st'>"wrong_length"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='kw'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span><span class='op'>(</span><span class='fu'>unwrap</span><span class='op'>(</span><span class='va'>err_result</span>,call<span class='op'>=</span><span class='cn'>NULL</span><span class='op'>)</span>,error<span class='op'>=</span>\<span class='op'>(</span><span class='va'>e</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>e</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Error: in set_column_from_robj: ShapeMisMatch(Owned("Could not add column. The Series length 10000 differs from the DataFrame height: 150")) </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  when calling :</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  NULL</span>
+ </code></pre>
 
 
 

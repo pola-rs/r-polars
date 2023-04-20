@@ -7580,13 +7580,17 @@
 <p>bool TRUE if outer datatype is the same.</p>
 <p>check if x is a valid RPolarsDataType</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># TRUE</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">pl</span><span class="o">$</span><span class="nf">same_outer_dt</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">Datetime</span><span class="p">(</span><span class="s">&quot;us&quot;</span><span class="p">),</span><span class="n">pl</span><span class="o">$</span><span class="nf">Datetime</span><span class="p">(</span><span class="s">&quot;ms&quot;</span><span class="p">))</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">pl</span><span class="o">$</span><span class="nf">same_outer_dt</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">List</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">Int64</span><span class="p">),</span><span class="n">pl</span><span class="o">$</span><span class="nf">List</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">Float32</span><span class="p">))</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">#FALSE</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">pl</span><span class="o">$</span><span class="nf">same_outer_dt</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="n">Int64</span><span class="p">,</span><span class="n">pl</span><span class="o">$</span><span class="n">Float64</span><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># TRUE</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>same_outer_dt</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Datetime</span><span class='op'>(</span><span class='st'>"us"</span><span class='op'>)</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>Datetime</span><span class='op'>(</span><span class='st'>"ms"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>same_outer_dt</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span><span class='op'>)</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Float32</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#FALSE</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>same_outer_dt</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span>,<span class='va'>pl</span><span class='op'>$</span><span class='va'>Float64</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] FALSE</span>
+ </code></pre>
 
 
 

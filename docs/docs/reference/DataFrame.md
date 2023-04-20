@@ -18,19 +18,43 @@ Create new DataFrame
 
 ## Examples
 
-```r
-pl$DataFrame(
-  a = list(c(1,2,3,4,5)), #NB if first column should be a list, wrap it in a Series
-  b = 1:5,
-  c = letters[1:5],
-  d = list(1:1,1:2,1:3,1:4,1:5)
-) #directly from vectors
-
-#from a list of vectors or data.frame
-pl$DataFrame(list(
-  a= c(1,2,3,4,5),
-  b=1:5,
-  c = letters[1:5],
-  d = list(1L,1:2,1:3,1:4,1:5)
-))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>, <span class='co'>#NB if first column should be a list, wrap it in a Series</span></span></span>
+<span class='r-in'><span>  b <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span></span>
+<span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span> <span class='co'>#directly from vectors</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬─────┬─────┬───────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a                   ┆ b   ┆ c   ┆ d             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ --- ┆ --- ┆ ---           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[f64]           ┆ i32 ┆ str ┆ list[i32]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════╪═════╪═════╪═══════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 1   ┆ a   ┆ [1]           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 2   ┆ b   ┆ [1, 2]        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 3   ┆ c   ┆ [1, 2, 3]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 4   ┆ d   ┆ [1, 2, ... 4] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 5   ┆ e   ┆ [1, 2, ... 5] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────┴─────┴─────┴───────────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#from a list of vectors or data.frame</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  b<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span></span>
+<span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬───────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ d             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ ---           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ i32 ┆ str ┆ list[i32]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═══════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 1   ┆ a   ┆ [1]           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2.0 ┆ 2   ┆ b   ┆ [1, 2]        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3.0 ┆ 3   ┆ c   ┆ [1, 2, 3]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 4   ┆ d   ┆ [1, 2, ... 4] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.0 ┆ 5   ┆ e   ┆ [1, 2, ... 5] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴───────────────┘</span>
+ </code></pre>

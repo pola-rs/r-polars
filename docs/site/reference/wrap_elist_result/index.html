@@ -7597,8 +7597,25 @@
 <h2 id="details">Details</h2>
 <p>Used internally to ensure an object is a list of expression The output is wrapped in a result, which can contain an ok or err value.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">polars</span><span class="o">:::</span><span class="nf">wrap_elist_result</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">42</span><span class="p">),</span><span class="m">42</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/wrap_elist_result.html'>wrap_elist_result</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span>,<span class='fl'>42</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok[[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok[[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok[[3]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: Series</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+ </code></pre>
 
 
 

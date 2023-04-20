@@ -18,10 +18,12 @@ Rarely useful as Series are nearly 100% immutable Any modification of a Series s
 
 ## Examples
 
-```r
-s1 = pl$Series(1:3);
-s2 =  s1$clone();
-s3 = s1
-pl$mem_address(s1) != pl$mem_address(s2)
-pl$mem_address(s1) == pl$mem_address(s3)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>s1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>;</span></span>
+<span class='r-in'><span><span class='va'>s2</span> <span class='op'>=</span>  <span class='va'>s1</span><span class='op'>$</span><span class='fu'>clone</span><span class='op'>(</span><span class='op'>)</span>;</span></span>
+<span class='r-in'><span><span class='va'>s3</span> <span class='op'>=</span> <span class='va'>s1</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>mem_address</span><span class='op'>(</span><span class='va'>s1</span><span class='op'>)</span> <span class='op'>!=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>mem_address</span><span class='op'>(</span><span class='va'>s2</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>mem_address</span><span class='op'>(</span><span class='va'>s1</span><span class='op'>)</span> <span class='op'>==</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>mem_address</span><span class='op'>(</span><span class='va'>s3</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+ </code></pre>

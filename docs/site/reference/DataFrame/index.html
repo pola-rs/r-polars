@@ -7588,21 +7588,46 @@
 <p>DataFrame</p>
 <p>Create new DataFrame</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="n">a</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="p">)),</span> <span class="c1">#NB if first column should be a list, wrap it in a Series</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  <span class="n">b</span> <span class="o">=</span> <span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  <span class="n">c</span> <span class="o">=</span> <span class="kc">letters</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  <span class="n">d</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="c1">#directly from vectors</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">#from a list of vectors or data.frame</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  <span class="n">a</span><span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="p">),</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="n">b</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  <span class="n">c</span> <span class="o">=</span> <span class="kc">letters</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">],</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="n">d</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="m">1L</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">)</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>, <span class='co'>#NB if first column should be a list, wrap it in a Series</span></span></span>
+<span class='r-in'><span>  b <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span></span>
+<span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span> <span class='co'>#directly from vectors</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬─────┬─────┬───────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a                   ┆ b   ┆ c   ┆ d             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ --- ┆ --- ┆ ---           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[f64]           ┆ i32 ┆ str ┆ list[i32]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════╪═════╪═════╪═══════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 1   ┆ a   ┆ [1]           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 2   ┆ b   ┆ [1, 2]        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 3   ┆ c   ┆ [1, 2, 3]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 4   ┆ d   ┆ [1, 2, ... 4] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1.0, 2.0, ... 5.0] ┆ 5   ┆ e   ┆ [1, 2, ... 5] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────┴─────┴─────┴───────────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#from a list of vectors or data.frame</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  a<span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  b<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,</span></span>
+<span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
+<span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬───────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ d             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ ---           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ i32 ┆ str ┆ list[i32]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═══════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0 ┆ 1   ┆ a   ┆ [1]           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2.0 ┆ 2   ┆ b   ┆ [1, 2]        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3.0 ┆ 3   ┆ c   ┆ [1, 2, 3]     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 4   ┆ d   ┆ [1, 2, ... 4] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.0 ┆ 5   ┆ e   ┆ [1, 2, ... 5] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴───────────────┘</span>
+ </code></pre>
 
 
 

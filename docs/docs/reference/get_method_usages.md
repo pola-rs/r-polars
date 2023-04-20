@@ -21,6 +21,7 @@ used internally for auto completion in .DollarNames methods
 
 ## Examples
 
-```r
-polars:::get_method_usages(polars:::DataFrame, pattern="col")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/get_method_usages.html'>get_method_usages</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/DataFrame.html'>DataFrame</a></span>, pattern<span class='op'>=</span><span class='st'>"col"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "columns"        "columns&lt;-"      "get_column()"   "get_columns()"  "with_column()"  "with_columns()"</span>
+ </code></pre>

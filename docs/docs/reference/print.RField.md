@@ -18,6 +18,12 @@ Print a polars Field
 
 ## Examples
 
-```r
-print(pl$Field("foo",pl$List(pl$UInt64)))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Field</span><span class='op'>(</span><span class='st'>"foo"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>UInt64</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Field {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     name: "foo",</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     dtype: List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         UInt64,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ),</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
+ </code></pre>

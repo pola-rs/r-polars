@@ -18,16 +18,25 @@ rust-like unwrapping of result. Useful to keep error handling on the R side.
 
 ## Examples
 
-```r
-structure(list(ok = "foo", err = NULL), class = "extendr_result")
-
-tryCatch(
-  unwrap(
-    structure(
-      list(ok = NULL, err = "something happen on the rust side"),
-      class = "extendr_result"
-    )
-  ),
-  error = function(err) as.character(err)
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/structure.html'>structure</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ok <span class='op'>=</span> <span class='st'>"foo"</span>, err <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>, class <span class='op'>=</span> <span class='st'>"extendr_result"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "foo"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'><a href='https://rdrr.io/r/base/conditions.html'>tryCatch</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='fu'>unwrap</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>    <span class='fu'><a href='https://rdrr.io/r/base/structure.html'>structure</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>      <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>ok <span class='op'>=</span> <span class='cn'>NULL</span>, err <span class='op'>=</span> <span class='st'>"something happen on the rust side"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>      class <span class='op'>=</span> <span class='st'>"extendr_result"</span></span></span>
+<span class='r-in'><span>    <span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  error <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Error: something happen on the rust side \n when calling :\n source(\"C:/Users/etienne/Desktop/Divers/r-polars/docs/make-docs.R\", \n    echo = TRUE)\n"</span>
+ </code></pre>

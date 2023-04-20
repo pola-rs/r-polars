@@ -8,23 +8,51 @@ Check out the source code in R/Series_frame.R how public methods are derived fro
 
 ## Examples
 
-```r
-#see all exported methods
-ls(polars:::Series)
-
-#see all private methods (not intended for regular use)
-ls(polars:::.pr$Series)
-
-
-#make an object
-s = pl$Series(1:3)
-
-#use a public method/property
-s$shape
-
-
-#use a private method (mutable append not allowed in public api)
-s_copy = s
-.pr$Series$append_mut(s, pl$Series(5:1))
-identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/Series.html'>Series</a></span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"           "add"           "alias"         "all"           "any"           "append"        "apply"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8] "arg_max"       "arg_min"       "arr"           "ceil"          "chunk_lengths" "clone"         "compare"      </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [15] "cumsum"        "div"           "dtype"         "expr"          "flags"         "floor"         "is_numeric"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [22] "is_sorted"     "len"           "max"           "min"           "mul"           "name"          "print"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "rem"           "rename"        "rep"           "series_equal"  "set_sorted"    "shape"         "sort"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [36] "std"           "sub"           "sum"           "to_frame"      "to_lit"        "to_r"          "to_r_list"    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [43] "to_r_vector"   "value_counts"  "var"          </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>Series</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"                    "add"                    "alias"                  "all"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "any"                    "append_mut"             "apply"                  "arg_max"               </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "arg_min"                "ceil"                   "chunk_lengths"          "clone"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "compare"                "cumsum"                 "div"                    "dtype"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "floor"                  "from_arrow"             "is_sorted"              "is_sorted_flag"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "is_sorted_reverse_flag" "len"                    "max"                    "min"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "mul"                    "name"                   "new"                    "panic"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "print"                  "rem"                    "rename_mut"             "rep"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "series_equal"           "set_sorted_mut"         "shape"                  "sleep"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [37] "sort_mut"               "sub"                    "sum"                    "to_frame"              </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [41] "to_r"                   "value_counts"          </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#make an object</span></span></span>
+<span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#use a public method/property</span></span></span>
+<span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='va'>shape</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 3 1</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#use a private method (mutable append not allowed in public api)</span></span></span>
+<span class='r-in'><span><span class='va'>s_copy</span> <span class='op'>=</span> <span class='va'>s</span></span></span>
+<span class='r-in'><span><span class='va'>.pr</span><span class='op'>$</span><span class='va'>Series</span><span class='op'>$</span><span class='fu'>append_mut</span><span class='op'>(</span><span class='va'>s</span>, <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span><span class='op'>(</span><span class='va'>s_copy</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>s</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># s_copy was modified when s was modified</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+ </code></pre>

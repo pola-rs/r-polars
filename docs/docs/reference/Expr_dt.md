@@ -12,6 +12,7 @@ Create an object namespace of all datetime related methods. See the individual m
 
 ## Examples
 
-```r
-#missing
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#missing</span></span></span>
+<span class='r-in'></span>
+ </code></pre>

@@ -61,10 +61,26 @@ Read a file from path into a polars lazy frame. Not yet supporting eol_char and 
 
 ## Examples
 
-```r
-my_file = tempfile()
-write.csv(iris,my_file)
-lazy_frame = polars:::lazy_csv_reader(path=my_file)
-lazy_frame$collect()
-unlink(my_file)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>my_file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/utils/write.table.html'>write.csv</a></span><span class='op'>(</span><span class='va'>iris</span>,<span class='va'>my_file</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>lazy_frame</span> <span class='op'>=</span> <span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/lazy_csv_reader.html'>lazy_csv_reader</a></span><span class='op'>(</span>path<span class='op'>=</span><span class='va'>my_file</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>lazy_frame</span><span class='op'>$</span><span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬──────────────┬─────────────┬──────────────┬─────────────┬───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i64 ┆ f64          ┆ f64         ┆ f64          ┆ f64         ┆ str       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪══════════════╪═════════════╪══════════════╪═════════════╪═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 5.1          ┆ 3.5         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4.9          ┆ 3.0         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3   ┆ 4.7          ┆ 3.2         ┆ 1.3          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4   ┆ 4.6          ┆ 3.1         ┆ 1.5          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ... ┆ ...          ┆ ...         ┆ ...          ┆ ...         ┆ ...       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 147 ┆ 6.3          ┆ 2.5         ┆ 5.0          ┆ 1.9         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 148 ┆ 6.5          ┆ 3.0         ┆ 5.2          ┆ 2.0         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 149 ┆ 6.2          ┆ 3.4         ┆ 5.4          ┆ 2.3         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 150 ┆ 5.9          ┆ 3.0         ┆ 5.1          ┆ 1.8         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴──────────────┴─────────────┴──────────────┴─────────────┴───────────┘</span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/unlink.html'>unlink</a></span><span class='op'>(</span><span class='va'>my_file</span><span class='op'>)</span></span></span>
+ </code></pre>

@@ -24,11 +24,29 @@ About as slow as regular non-vectorized R. Similar to using R sapply on a vector
 
 ## Examples
 
-```r
-s = pl$Series(letters[1:5],"ltrs")
-f = \(x) paste(x,":",as.integer(charToRaw(x)))
-s$apply(f,pl$Utf8)
-
-#same as
-pl$Series(sapply(s$to_r(),f),s$name)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,<span class='st'>"ltrs"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>f</span> <span class='op'>=</span> \<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='va'>x</span>,<span class='st'>":"</span>,<span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rawConversion.html'>charToRaw</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='fu'>apply</span><span class='op'>(</span><span class='va'>f</span>,<span class='va'>pl</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'ltrs_apply' [str]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"a : 97"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"b : 98"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"c : 99"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"d : 100"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"e : 101"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#same as</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span>,<span class='va'>f</span><span class='op'>)</span>,<span class='va'>s</span><span class='op'>$</span><span class='va'>name</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'ltrs' [str]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"a : 97"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"b : 98"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"c : 99"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"d : 100"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	"e : 101"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>

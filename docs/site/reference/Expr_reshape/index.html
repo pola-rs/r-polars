@@ -7597,9 +7597,30 @@
 <p>Expr</p>
 <p>Reshape this Expr to a flat Series or a Series of Lists.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">)</span><span class="o">$</span><span class="nf">reshape</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">)))</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">pl</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">12</span><span class="p">)</span><span class="o">$</span><span class="nf">reshape</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">3</span><span class="p">,</span><span class="m">-1</span><span class="p">)))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>reshape</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[i32]       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1, 2, ... 4]   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [5, 6, ... 8]   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [9, 10, ... 12] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>reshape</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='op'>-</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[i32]       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [1, 2, ... 4]   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [5, 6, ... 8]   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ [9, 10, ... 12] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────┘</span>
+ </code></pre>
 
 
 

@@ -7581,9 +7581,20 @@
 <p>Expr</p>
 <p>Repeat the elements in this Series as specified in the given expression. The repeated elements are expanded into a <code>List</code>.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">a</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span><span class="s">&quot;y&quot;</span><span class="p">,</span><span class="s">&quot;z&quot;</span><span class="p">),</span> <span class="n">n</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">2</span><span class="p">)))</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">repeat_by</span><span class="p">(</span><span class="s">&quot;n&quot;</span><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"x"</span>,<span class='st'>"y"</span>,<span class='st'>"z"</span><span class='op'>)</span>, n <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>repeat_by</span><span class='op'>(</span><span class='st'>"n"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ list[str]  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ []         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ["y"]      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ["z", "z"] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └────────────┘</span>
+ </code></pre>
 
 
 

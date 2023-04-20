@@ -37,6 +37,15 @@ compare two Series
 
 ## Examples
 
-```r
-pl$Series(1:5) == pl$Series(c(1:3,NA_integer_,10L))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span> <span class='op'>==</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='cn'>NA_integer_</span>,<span class='fl'>10L</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [bool]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	true</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	true</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	true</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	false</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 	false</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>

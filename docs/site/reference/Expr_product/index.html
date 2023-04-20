@@ -7596,8 +7596,17 @@
 <h2 id="details">Details</h2>
 <p>does not support integer32 currently, .cast() to f64 or i64 first.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">)))</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">product</span><span class="p">()</span><span class="o">==</span><span class="m">6</span><span class="p">)</span> <span class="c1">#is true</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"x"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>product</span><span class='op'>(</span><span class='op'>)</span><span class='op'>==</span><span class='fl'>6</span><span class='op'>)</span> <span class='co'>#is true</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ x    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ bool │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ true │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┘</span>
+ </code></pre>
 
 
 

@@ -7582,18 +7582,51 @@
 <p>DataFrame or Series</p>
 <p>import Arrow Table or Array</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">from_arrow</span><span class="p">(</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="n">data</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">::</span><span class="nf">arrow_table</span><span class="p">(</span><span class="n">iris</span><span class="p">),</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  <span class="n">schema_overrides</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">Sepal.Length</span><span class="o">=</span><span class="n">pl</span><span class="o">$</span><span class="n">Float32</span><span class="p">,</span> <span class="n">Species</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="n">Utf8</span><span class="p">)</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">char_schema</span> <span class="o">=</span> <span class="nf">names</span><span class="p">(</span><span class="n">iris</span><span class="p">)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">char_schema</span><span class="p">[</span><span class="m">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;Alice&quot;</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">pl</span><span class="o">$</span><span class="nf">from_arrow</span><span class="p">(</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  <span class="n">data</span> <span class="o">=</span> <span class="n">arrow</span><span class="o">::</span><span class="nf">arrow_table</span><span class="p">(</span><span class="n">iris</span><span class="p">),</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  <span class="n">schema</span> <span class="o">=</span> <span class="n">char_schema</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>from_arrow</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  data <span class='op'>=</span> <span class='fu'>arrow</span><span class='fu'>::</span><span class='fu'><a href='https://arrow.apache.org/docs/r/reference/Table.html'>arrow_table</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  schema_overrides <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Sepal.Length<span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Float32</span>, Species <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='va'>Utf8</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 5)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f32          ┆ f64         ┆ f64          ┆ f64         ┆ str       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════════════╪═════════════╪══════════════╪═════════════╪═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.1          ┆ 3.5         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.9          ┆ 3.0         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.7          ┆ 3.2         ┆ 1.3          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.6          ┆ 3.1         ┆ 1.5          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ...          ┆ ...         ┆ ...          ┆ ...         ┆ ...       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.3          ┆ 2.5         ┆ 5.0          ┆ 1.9         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.5          ┆ 3.0         ┆ 5.2          ┆ 2.0         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.2          ┆ 3.4         ┆ 5.4          ┆ 2.3         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.9          ┆ 3.0         ┆ 5.1          ┆ 1.8         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────────┴─────────────┴──────────────┴─────────────┴───────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>char_schema</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>char_schema</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span> <span class='op'>=</span> <span class='st'>"Alice"</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>from_arrow</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  data <span class='op'>=</span> <span class='fu'>arrow</span><span class='fu'>::</span><span class='fu'><a href='https://arrow.apache.org/docs/r/reference/Table.html'>arrow_table</a></span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  schema <span class='op'>=</span> <span class='va'>char_schema</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 5)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┬─────────────┬──────────────┬─────────────┬───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ Alice ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   ┆ ---         ┆ ---          ┆ ---         ┆ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64   ┆ f64         ┆ f64          ┆ f64         ┆ cat       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════╪═════════════╪══════════════╪═════════════╪═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.1   ┆ 3.5         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.9   ┆ 3.0         ┆ 1.4          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.7   ┆ 3.2         ┆ 1.3          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.6   ┆ 3.1         ┆ 1.5          ┆ 0.2         ┆ setosa    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ...   ┆ ...         ┆ ...          ┆ ...         ┆ ...       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.3   ┆ 2.5         ┆ 5.0          ┆ 1.9         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.5   ┆ 3.0         ┆ 5.2          ┆ 2.0         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.2   ┆ 3.4         ┆ 5.4          ┆ 2.3         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.9   ┆ 3.0         ┆ 5.1          ┆ 1.8         ┆ virginica │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────┴─────────────┴──────────────┴─────────────┴───────────┘</span>
+ </code></pre>
 
 
 

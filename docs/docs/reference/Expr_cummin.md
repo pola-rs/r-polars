@@ -38,13 +38,35 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 
 ## Examples
 
-```r
-pl$DataFrame(list(a=1:4))$select(
-  pl$col("a")$cummin()$alias("cummin"),
-  pl$col("a")$cummin(reverse=TRUE)$alias("cummin_reversed")
-)
-pl$DataFrame(list(a=1:4))$select(
-  pl$col("a")$cummax()$alias("cummux"),
-  pl$col("a")$cummax(reverse=TRUE)$alias("cummax_reversed")
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummin</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummin"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummin</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummin_reversed"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cummin ┆ cummin_reversed │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32    ┆ i32             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════╪═════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1      ┆ 1               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1      ┆ 2               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1      ┆ 3               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1      ┆ 4               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └────────┴─────────────────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummax</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummux"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummax</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummax_reversed"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cummux ┆ cummax_reversed │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32    ┆ i32             │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════╪═════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1      ┆ 4               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2      ┆ 4               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3      ┆ 4               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4      ┆ 4               │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └────────┴─────────────────┘</span>
+ </code></pre>

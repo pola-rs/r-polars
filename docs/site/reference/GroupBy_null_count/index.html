@@ -7563,10 +7563,21 @@
 <p>DataFrame</p>
 <p>Create a new DataFrame that shows the null counts per column.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">x</span> <span class="o">=</span> <span class="n">mtcars</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">x</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span> <span class="m">3</span><span class="o">:</span><span class="m">5</span><span class="p">]</span> <span class="o">=</span> <span class="kc">NA</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">null_count</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>x</span> <span class='op'>=</span> <span class='va'>mtcars</span></span></span>
+<span class='r-in'><span><span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span> <span class='op'>=</span> <span class='cn'>NA</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>groupby</span><span class='op'>(</span><span class='st'>"cyl"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>null_count</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 11)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬──────┬─────┬─────┬─────┬─────┬──────┬──────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ cyl ┆ mpg ┆ disp ┆ hp  ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  ┆ --- ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ u32 ┆ u32  ┆ u32 ┆     ┆ u32 ┆ u32 ┆ u32  ┆ u32  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪══════╪═════╪═════╪═════╪═════╪══════╪══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 0   ┆ 3    ┆ 3   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.0 ┆ 0   ┆ 5    ┆ 5   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 8.0 ┆ 0   ┆ 2    ┆ 2   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴──────┴─────┴─────┴─────┴─────┴──────┴──────┘</span>
+ </code></pre>
 
 
 

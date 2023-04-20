@@ -8,13 +8,24 @@ Pop the latest expression and return the input(s) of the popped expression.
 
 ## Examples
 
-```r
-e1 = pl$lit(40) + 2
-e2 = pl$lit(42)$sum()
-
-e1
-e1$meta$pop()
-
-e2
-e2$meta$pop()
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span></span></span>
+<span class='r-in'><span><span class='va'>e2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e1</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(40f64) + (2f64)]</span>
+<span class='r-in'><span><span class='va'>e1</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>pop</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 2f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 40f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e2</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64.sum()</span>
+<span class='r-in'><span><span class='va'>e2</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>pop</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+ </code></pre>

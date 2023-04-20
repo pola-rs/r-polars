@@ -7585,10 +7585,12 @@
 </ul>
 <p>See function macro_add_syntax_check_to_class().</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">#all a polars object is made of:</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">some_polars_object</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">iris</span><span class="p">)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nf">str</span><span class="p">(</span><span class="n">some_polars_object</span><span class="p">)</span> <span class="c1">#External Pointer tagged with a class attribute.</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#all a polars object is made of:</span></span></span>
+<span class='r-in'><span><span class='va'>some_polars_object</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>some_polars_object</span><span class='op'>)</span> <span class='co'>#External Pointer tagged with a class attribute.</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Class 'DataFrame' &lt;externalptr&gt; </span>
+ </code></pre>
 
 
 

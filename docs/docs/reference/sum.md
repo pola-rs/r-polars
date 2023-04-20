@@ -19,22 +19,91 @@ syntactic sugar for starting a expression with sum
 
 ## Examples
 
-```r
-#column as string
-pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
-
-#column as Expr (prefer pl$col("Petal.Width")$sum())
-pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
-
-#column as numeric
-pl$DataFrame()$select(pl$sum(1:5))
-
-#column as list
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c")))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", 42L)))
-
-#three eqivalent lines
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b","c")))))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column as string</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='st'>"Petal.Width"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ Petal.Width │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 179.9       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column as Expr (prefer pl$col("Petal.Width")$sum())</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Petal.Width"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ Petal.Width │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 179.9       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column as numeric</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 15  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#column as list</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,b<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>,c<span class='op'>=</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"c"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ sum │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ i32 ┆ i32 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 3   ┆ 5   ┆ 6   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4   ┆ 6   ┆ 8   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,b<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>,c<span class='op'>=</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"c"</span>, <span class='fl'>42L</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ sum │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ i32 ┆ i32 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 3   ┆ 5   ┆ 48  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4   ┆ 6   ┆ 50  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┘</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#three eqivalent lines</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,b<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>,c<span class='op'>=</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"c"</span>, <span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"b"</span>,<span class='st'>"c"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ sum │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ i32 ┆ i32 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 3   ┆ 5   ┆ 15  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4   ┆ 6   ┆ 20  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,b<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>,c<span class='op'>=</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>+</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span>,<span class='st'>"c"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ sum │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ i32 ┆ i32 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 3   ┆ 5   ┆ 9   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4   ┆ 6   ┆ 12  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┘</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,b<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>,c<span class='op'>=</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"*"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ sum │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ i32 ┆ i32 ┆ i32 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪═════╪═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ 3   ┆ 5   ┆ 9   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ 4   ┆ 6   ┆ 12  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┘</span>
+ </code></pre>

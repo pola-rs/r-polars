@@ -18,6 +18,16 @@ Keep the original root name of the expression.
 
 ## Examples
 
-```r
-pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>alice<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"alice"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"bob"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>keep_name</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ alice │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────┘</span>
+ </code></pre>

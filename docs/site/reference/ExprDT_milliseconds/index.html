@@ -7577,16 +7577,33 @@
 <p>Expr of i64</p>
 <p>Extract the milliseconds from a Duration type.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">date</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">date_range</span><span class="p">(</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">low</span> <span class="o">=</span> <span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;2020-1-1&quot;</span><span class="p">,</span> <span class="n">tz</span> <span class="o">=</span> <span class="s">&quot;GMT&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">high</span> <span class="o">=</span> <span class="nf">as.POSIXct</span><span class="p">(</span><span class="s">&quot;2020-1-1 00:00:01&quot;</span><span class="p">,</span> <span class="n">tz</span> <span class="o">=</span> <span class="s">&quot;GMT&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">interval</span> <span class="o">=</span> <span class="s">&quot;1ms&quot;</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">))</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">df</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">),</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;date&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">diff</span><span class="p">()</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">milliseconds</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;seconds_diff&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>date <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>    low <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2020-1-1"</span>, tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    high <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2020-1-1 00:00:01"</span>, tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>    interval <span class='op'>=</span> <span class='st'>"1ms"</span></span></span>
+<span class='r-in'><span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>diff</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>milliseconds</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"seconds_diff"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1001, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────────┬──────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                    ┆ seconds_diff │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                     ┆ ---          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ datetime[μs]            ┆ i64          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════════╪══════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00     ┆ null         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.001 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.002 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.003 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ...                     ┆ ...          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.997 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.998 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:00.999 ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2020-01-01 00:00:01     ┆ 1            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────────┴──────────────┘</span>
+ </code></pre>
 
 
 

@@ -25,9 +25,12 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 
 ## Examples
 
-```r
-#' #three syntaxes same result
-pl$lit(2) > 1
-pl$lit(2) > pl$lit(1)
-pl$lit(2)$gt(pl$lit(1))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#' #three syntaxes same result</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span> <span class='op'>&gt;</span> <span class='fl'>1</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(2f64) &gt; (1f64)]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span> <span class='op'>&gt;</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(2f64) &gt; (1f64)]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>gt</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(2f64) &gt; (1f64)]</span>
+ </code></pre>

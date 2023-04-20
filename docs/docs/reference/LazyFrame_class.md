@@ -10,65 +10,91 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 
 ## Examples
 
-```r
-#see all exported methods
-ls(polars:::LazyFrame)
-
-#see all private methods (not intended for regular use)
-ls(polars:::.pr$LazyFrame)
-
-
-## Practical example ##
-# First writing R iris dataset to disk, to illustrte a difference
-temp_filepath = tempfile()
-write.csv(iris, temp_filepath,row.names = FALSE)
-
-# Following example illustrates 2 ways to obtain a LazyFrame
-
-# The-Okay-way: convert an in-memory DataFrame to LazyFrame
-
-#eager in-mem R data.frame
-Rdf = read.csv(temp_filepath)
-
-#eager in-mem polars DataFrame
-Pdf = pl$DataFrame(Rdf)
-
-#lazy frame starting from in-mem DataFrame
-Ldf_okay = Pdf$lazy()
-
-#The-Best-Way:  LazyFrame created directly from a data source is best...
-Ldf_best = pl$lazy_csv_reader(temp_filepath)
-
-# ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
-# pushed down in the executation stack to the csv_reader, and thereby only bringing into
-# memory the rows matching to filter.
-# apply filter:
-filter_expr = pl$col("Species") == "setosa" #get only rows where Species is setosa
-Ldf_okay = Ldf_okay$filter(filter_expr) #overwrite LazyFrame with new
-Ldf_best = Ldf_best$filter(filter_expr)
-
-# the non optimized plans are similar, on entire in-mem csv, apply filter
-Ldf_okay$describe_plan()
-Ldf_best$describe_plan()
-
-# NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
-
-#The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
-Ldf_okay$describe_optimized_plan()
-Ldf_best$describe_optimized_plan()
-
-
-#To acquire result in-mem use $colelct()
-Pdf_okay = Ldf_okay$collect()
-Pdf_best = Ldf_best$collect()
-
-
-#verify tables would be the same
-all.equal(
-  Pdf_okay$as_data_frame(),
-  Pdf_best$as_data_frame()
-)
-
-#a user might write it as a one-liner like so:
-Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'>LazyFrame</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan" "describe_plan"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "filter"                  "first"                   "groupby"                 "join"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "last"                    "limit"                   "max"                     "mean"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "median"                  "min"                     "print"                   "reverse"                </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "select"                  "slice"                   "std"                     "sum"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "tail"                    "var"                     "with_column"             "with_columns"           </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>LazyFrame</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan" "describe_plan"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "filter"                  "first"                   "groupby"                 "join"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "last"                    "limit"                   "max"                     "mean"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "median"                  "min"                     "print"                   "reverse"                </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "select"                  "slice"                   "std"                     "sum"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "tail"                    "var"                     "with_column"             "with_columns"           </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## Practical example ##</span></span></span>
+<span class='r-in'><span><span class='co'># First writing R iris dataset to disk, to illustrte a difference</span></span></span>
+<span class='r-in'><span><span class='va'>temp_filepath</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/utils/write.table.html'>write.csv</a></span><span class='op'>(</span><span class='va'>iris</span>, <span class='va'>temp_filepath</span>,row.names <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># Following example illustrates 2 ways to obtain a LazyFrame</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># The-Okay-way: convert an in-memory DataFrame to LazyFrame</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#eager in-mem R data.frame</span></span></span>
+<span class='r-in'><span><span class='va'>Rdf</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/utils/read.table.html'>read.csv</a></span><span class='op'>(</span><span class='va'>temp_filepath</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#eager in-mem polars DataFrame</span></span></span>
+<span class='r-in'><span><span class='va'>Pdf</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>Rdf</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#lazy frame starting from in-mem DataFrame</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_okay</span> <span class='op'>=</span> <span class='va'>Pdf</span><span class='op'>$</span><span class='fu'>lazy</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#The-Best-Way:  LazyFrame created directly from a data source is best...</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_best</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lazy_csv_reader</span><span class='op'>(</span><span class='va'>temp_filepath</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be</span></span></span>
+<span class='r-in'><span><span class='co'># pushed down in the executation stack to the csv_reader, and thereby only bringing into</span></span></span>
+<span class='r-in'><span><span class='co'># memory the rows matching to filter.</span></span></span>
+<span class='r-in'><span><span class='co'># apply filter:</span></span></span>
+<span class='r-in'><span><span class='va'>filter_expr</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Species"</span><span class='op'>)</span> <span class='op'>==</span> <span class='st'>"setosa"</span> <span class='co'>#get only rows where Species is setosa</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_okay</span> <span class='op'>=</span> <span class='va'>Ldf_okay</span><span class='op'>$</span><span class='fu'>filter</span><span class='op'>(</span><span class='va'>filter_expr</span><span class='op'>)</span> <span class='co'>#overwrite LazyFrame with new</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_best</span> <span class='op'>=</span> <span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>filter</span><span class='op'>(</span><span class='va'>filter_expr</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># the non optimized plans are similar, on entire in-mem csv, apply filter</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_okay</span><span class='op'>$</span><span class='fu'>describe_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   FILTER [(col("Species")) == (Utf8(setosa))] FROM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]; PROJECT */5 COLUMNS; SELECTION: "None"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   FILTER [(col("Species")) == (Utf8(setosa))] FROM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     CSV SCAN C:\Users\etienne\AppData\Local\Temp\Rtmpq68bWo\file1cc475d251ff</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     PROJECT */5 COLUMNS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously</span></span></span>
+<span class='r-in'><span><span class='va'>Ldf_okay</span><span class='op'>$</span><span class='fu'>describe_optimized_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]; PROJECT */5 COLUMNS; SELECTION: "[(col(\"Species\")) == (Utf8(setosa))]"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_optimized_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   CSV SCAN C:\Users\etienne\AppData\Local\Temp\Rtmpq68bWo\file1cc475d251ff</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   PROJECT */5 COLUMNS</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   SELECTION: [(col("Species")) == (Utf8(setosa))]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#To acquire result in-mem use $colelct()</span></span></span>
+<span class='r-in'><span><span class='va'>Pdf_okay</span> <span class='op'>=</span> <span class='va'>Ldf_okay</span><span class='op'>$</span><span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>Pdf_best</span> <span class='op'>=</span> <span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#verify tables would be the same</span></span></span>
+<span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>Pdf_okay</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>Pdf_best</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#a user might write it as a one-liner like so:</span></span></span>
+<span class='r-in'><span><span class='va'>Pdf_best2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lazy_csv_reader</span><span class='op'>(</span><span class='va'>temp_filepath</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>filter</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Species"</span><span class='op'>)</span> <span class='op'>==</span> <span class='st'>"setosa"</span><span class='op'>)</span></span></span>
+ </code></pre>

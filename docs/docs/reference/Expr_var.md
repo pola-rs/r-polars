@@ -20,6 +20,14 @@ Get Variance
 
 ## Examples
 
-```r
-pl$select(pl$lit(1:5)$var())
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>var</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2.5 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
+ </code></pre>

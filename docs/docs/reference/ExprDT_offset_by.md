@@ -36,12 +36,25 @@ These strings can be combined:
 
 ## Examples
 
-```r
-df = pl$DataFrame(
-  dates = pl$date_range(as.Date("2000-1-1"),as.Date("2005-1-1"), "1y")
-)
-df$select(
-  pl$col("dates")$dt$offset_by("1y")$alias("date_plus_1y"),
-  pl$col("dates")$dt$offset_by("-1y2mo")$alias("date_min")
-)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  dates <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2000-1-1"</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2005-1-1"</span><span class='op'>)</span>, <span class='st'>"1y"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"dates"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>offset_by</span><span class='op'>(</span><span class='st'>"1y"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"date_plus_1y"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"dates"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>offset_by</span><span class='op'>(</span><span class='st'>"-1y2mo"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"date_min"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬─────────────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ date_plus_1y        ┆ date_min            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ ---                 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ datetime[μs]        ┆ datetime[μs]        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════════════╪═════════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2001-01-01 00:00:00 ┆ 1998-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2002-01-01 00:00:00 ┆ 1999-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2003-01-01 00:00:00 ┆ 2000-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2004-01-01 00:00:00 ┆ 2001-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2005-01-01 00:00:00 ┆ 2002-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2006-01-01 00:00:00 ┆ 2003-11-01 00:00:00 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────────────┴─────────────────────┘</span>
+ </code></pre>

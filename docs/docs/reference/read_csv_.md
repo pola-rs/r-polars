@@ -19,6 +19,8 @@ high level csv_reader, will download if path is url
 
 ## Examples
 
-```r
-df = pl$read_csv("https://j.mp/iriscsv")
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>read_csv</span><span class='op'>(</span><span class='st'>"https://j.mp/iriscsv"</span><span class='op'>)</span></span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> tmp file placed in </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  C:\Users\etienne\AppData\Local\Temp\Rtmpq68bWo/https...j.mp.iriscsv</span>
+ </code></pre>

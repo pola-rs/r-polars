@@ -26,7 +26,12 @@ Any DataType can be found in pl$dtypes
 
 ## Examples
 
-```r
-#constructors are finally available via pl$... or pl$dtypes$...
-pl$List(pl$List(pl$Int64))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#constructors are finally available via pl$... or pl$dtypes$...</span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>List</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     List(</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Int64,</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ),</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> )</span>
+ </code></pre>

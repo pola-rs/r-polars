@@ -7582,16 +7582,57 @@
 <p>a result object, with either a valid string or an Err</p>
 <p>Verify correct time zone</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">check_tz_to_result</span> <span class="o">=</span> <span class="n">polars</span><span class="o">:::</span><span class="n">check_tz_to_result</span> <span class="c1"># expose internal</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a> <span class="c1">#return Ok</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a> <span class="nf">check_tz_to_result</span><span class="p">(</span><span class="s">&quot;GMT&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a> <span class="nf">check_tz_to_result</span><span class="p">(</span><span class="kc">NULL</span><span class="p">)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a> <span class="c1">#return Err</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a> <span class="nf">check_tz_to_result</span><span class="p">(</span><span class="s">&quot;Alice&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a> <span class="nf">check_tz_to_result</span><span class="p">(</span><span class="m">42</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a> <span class="nf">check_tz_to_result</span><span class="p">(</span><span class="kc">NULL</span><span class="p">,</span> <span class="n">allow_null</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>check_tz_to_result</span> <span class='op'>=</span> <span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/check_tz_to_result.html'>check_tz_to_result</a></span> <span class='co'># expose internal</span></span></span>
+<span class='r-in'><span> <span class='co'>#return Ok</span></span></span>
+<span class='r-in'><span> <span class='fu'>check_tz_to_result</span><span class='op'>(</span><span class='st'>"GMT"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "GMT"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span> <span class='fu'>check_tz_to_result</span><span class='op'>(</span><span class='cn'>NULL</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span> <span class='co'>#return Err</span></span></span>
+<span class='r-in'><span> <span class='fu'>check_tz_to_result</span><span class='op'>(</span><span class='st'>"Alice"</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "pre-check tz: the tz 'Alice' is not a valid string from base::OlsonNames() or NULL"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span> <span class='fu'>check_tz_to_result</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "pre-check tz: the tz '42' is not a valid string from base::OlsonNames() or NULL"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+<span class='r-in'><span> <span class='fu'>check_tz_to_result</span><span class='op'>(</span><span class='cn'>NULL</span>, allow_null <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $ok</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $err</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "pre-check tz: here NULL tz is not allowed"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "extendr_result"</span>
+ </code></pre>
 
 
 

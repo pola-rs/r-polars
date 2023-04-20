@@ -7586,14 +7586,44 @@
 <p>to_struct and unnest again</p>
 <p>Unnest a DataFrame struct columns.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">#round-trip conversion from DataFrame with two columns</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">5</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;one&quot;</span><span class="p">,</span><span class="s">&quot;two&quot;</span><span class="p">,</span><span class="s">&quot;three&quot;</span><span class="p">,</span><span class="s">&quot;four&quot;</span><span class="p">,</span><span class="s">&quot;five&quot;</span><span class="p">))</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">s</span> <span class="o">=</span> <span class="n">df</span><span class="o">$</span><span class="nf">to_struct</span><span class="p">()</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">s</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">s</span><span class="o">$</span><span class="nf">to_r</span><span class="p">()</span> <span class="c1"># to r list</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">df_s</span> <span class="o">=</span> <span class="n">s</span><span class="o">$</span><span class="nf">to_frame</span><span class="p">()</span> <span class="c1">#place series in a new DataFrame</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">df_s</span><span class="o">$</span><span class="nf">unnest</span><span class="p">()</span> <span class="c1"># back to starting df</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>#round-trip conversion from DataFrame with two columns</span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,b<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"one"</span>,<span class='st'>"two"</span>,<span class='st'>"three"</span>,<span class='st'>"four"</span>,<span class='st'>"five"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>to_struct</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>s</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (5,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [struct[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  {1,"one"}</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  {2,"two"}</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  {3,"three"}</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  {4,"four"}</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  {5,"five"}</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span> <span class='co'># to r list</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $a</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1 2 3 4 5</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "one"   "two"   "three" "four"  "five" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"is_struct")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+<span class='r-in'><span><span class='va'>df_s</span> <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='fu'>to_frame</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#place series in a new DataFrame</span></span></span>
+<span class='r-in'><span><span class='va'>df_s</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span> <span class='co'># back to starting df</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬───────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 ┆ str   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═══════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   ┆ one   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   ┆ two   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3   ┆ three │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4   ┆ four  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5   ┆ five  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴───────┘</span>
+ </code></pre>
 
 
 

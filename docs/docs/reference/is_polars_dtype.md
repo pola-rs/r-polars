@@ -16,6 +16,7 @@ chek if x is a valid RPolarsDataType
 
 ## Examples
 
-```r
-polars:::is_polars_dtype(pl$Int64)
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/is_polars_dtype.html'>is_polars_dtype</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
+ </code></pre>

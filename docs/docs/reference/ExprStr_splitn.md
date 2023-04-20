@@ -13,9 +13,39 @@ Split the string by a substring, restricted to returning at most `n` items. If t
 
 ## Examples
 
-```r
-df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select( pl$col("s")$str$splitn(by="_",0))
-df$select( pl$col("s")$str$splitn(by="_",1))
-df$select( pl$col("s")$str$splitn(by="_",2))
-```
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>s <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a_1"</span>, <span class='cn'>NA</span>, <span class='st'>"c"</span>, <span class='st'>"d_4"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>splitn</span><span class='op'>(</span>by<span class='op'>=</span><span class='st'>"_"</span>,<span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[1] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {null}    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>splitn</span><span class='op'>(</span>by<span class='op'>=</span><span class='st'>"_"</span>,<span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[1] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"a_1"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {null}    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"c"}     │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"d_4"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────┘</span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>splitn</span><span class='op'>(</span>by<span class='op'>=</span><span class='st'>"_"</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s           │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---         │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[2]   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"a","1"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {null,null} │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"c",null}  │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"d","4"}   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └─────────────┘</span>
+ </code></pre>

@@ -7581,9 +7581,22 @@
 <p>Expr</p>
 <p>Computes percentage change between values. Percentage change (as fraction) between current element and most-recent non-null element at least <code>n</code> period(s) before the current element. Computes the change from the previous row by default.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span> <span class="n">a</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">10L</span><span class="p">,</span> <span class="m">11L</span><span class="p">,</span> <span class="m">12L</span><span class="p">,</span> <span class="kc">NA_integer_</span><span class="p">,</span> <span class="m">12L</span><span class="p">)))</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">$</span><span class="nf">with_column</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">pct_change</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;pct_change&quot;</span><span class="p">))</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span> a<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10L</span>, <span class='fl'>11L</span>, <span class='fl'>12L</span>, <span class='cn'>NA_integer_</span>, <span class='fl'>12L</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>pct_change</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"pct_change"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬────────────┐</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a    ┆ pct_change │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32  ┆ f64        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ╞══════╪════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 10   ┆ null       │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 11   ┆ 0.1        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 12   ┆ 0.090909   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ null ┆ 0.0        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 12   ┆ 0.0        │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> └──────┴────────────┘</span>
+ </code></pre>
 
 
 

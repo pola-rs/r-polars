@@ -7561,15 +7561,27 @@
 <p>R list of Expr(s) usually one, only multiple if top Expr took more Expr as input.</p>
 <p>Pop the latest expression and return the input(s) of the popped expression.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">e1</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">40</span><span class="p">)</span> <span class="o">+</span> <span class="m">2</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">e2</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">lit</span><span class="p">(</span><span class="m">42</span><span class="p">)</span><span class="o">$</span><span class="nf">sum</span><span class="p">()</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">e1</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">e1</span><span class="o">$</span><span class="n">meta</span><span class="o">$</span><span class="nf">pop</span><span class="p">()</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">e2</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">e2</span><span class="o">$</span><span class="n">meta</span><span class="o">$</span><span class="nf">pop</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span></span></span>
+<span class='r-in'><span><span class='va'>e2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e1</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(40f64) + (2f64)]</span>
+<span class='r-in'><span><span class='va'>e1</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>pop</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 2f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[2]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 40f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>e2</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64.sum()</span>
+<span class='r-in'><span><span class='va'>e2</span><span class='op'>$</span><span class='va'>meta</span><span class='op'>$</span><span class='fu'>pop</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: 42f64</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+ </code></pre>
 
 
 

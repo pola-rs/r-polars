@@ -7611,11 +7611,32 @@
 <h2 id="details">Details</h2>
 <p>ns and perhaps us will exceed integerish limit if returning to R as flaot64/double.</p>
 <h2 id="examples">Examples</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">date_range</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2022-1-1&quot;</span><span class="p">),</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">epoch</span><span class="p">(</span><span class="s">&quot;ns&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">lit_to_s</span><span class="p">()</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">pl</span><span class="o">$</span><span class="nf">date_range</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2022-1-1&quot;</span><span class="p">),</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">epoch</span><span class="p">(</span><span class="s">&quot;ms&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">lit_to_s</span><span class="p">()</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">pl</span><span class="o">$</span><span class="nf">date_range</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2022-1-1&quot;</span><span class="p">),</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">epoch</span><span class="p">(</span><span class="s">&quot;s&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">lit_to_s</span><span class="p">()</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">pl</span><span class="o">$</span><span class="nf">date_range</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2022-1-1&quot;</span><span class="p">),</span><span class="n">lazy</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="o">$</span><span class="n">dt</span><span class="o">$</span><span class="nf">epoch</span><span class="p">(</span><span class="s">&quot;d&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">lit_to_s</span><span class="p">()</span>
-</code></pre></div>
+<pre class='r-example'> <code> <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2022-1-1"</span><span class='op'>)</span>,lazy <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>epoch</span><span class='op'>(</span><span class='st'>"ns"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'literal' [i64]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1640995200000000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2022-1-1"</span><span class='op'>)</span>,lazy <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>epoch</span><span class='op'>(</span><span class='st'>"ms"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'literal' [i64]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1640995200000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2022-1-1"</span><span class='op'>)</span>,lazy <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>epoch</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'literal' [i64]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1640995200</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2022-1-1"</span><span class='op'>)</span>,lazy <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>epoch</span><span class='op'>(</span><span class='st'>"d"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Series: 'literal' [i32]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  18993</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
+ </code></pre>
 
 
 
