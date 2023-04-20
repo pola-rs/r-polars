@@ -40,11 +40,17 @@ patrick::with_parameters_test_that("inspection",
         d = pl$DataFrame(mtcars)
         x = FUN(mtcars)
         y = FUN(d)
-        z = FUN(d$lazy())
         if (inherits(y, "DataFrame")) y = y$to_data_frame()
-        if (inherits(z, "LazyFrame")) z = z$collect()$to_data_frame()
         expect_equal(x, y, ignore_attr = TRUE)
-        expect_equal(x, z, ignore_attr = TRUE)
+        if (.test_name %in% c("length", "nrow", "ncol", "names")) {
+          expect_error(FUN(d$lazy()))
+        } else if (.test_name == "as.matrix") {
+          z = FUN(d$lazy())
+          expect_equal(x, z, ignore_attr = TRUE)
+        } else {
+          z = FUN(d$lazy())$collect()$to_data_frame()
+          expect_equal(x, z, ignore_attr = TRUE)
+        }
     },
     .cases = make_cases()
 )
