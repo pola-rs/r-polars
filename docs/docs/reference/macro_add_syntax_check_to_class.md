@@ -1,5 +1,7 @@
 # add syntax verification to class
 
+*Source: [R/after-wrappers.R](https://github.com/pola-rs/r-polars/tree/main/R/after-wrappers.R)*
+
 ```r
 macro_add_syntax_check_to_class(Class_name)
 ```

@@ -1,5 +1,7 @@
 # Set sorted
 
+*Source: [R/series__series.R](https://github.com/pola-rs/r-polars/tree/main/R/series__series.R)*
+
 ```r
 Series_set_sorted(reverse = FALSE, in_place = FALSE)
 ```

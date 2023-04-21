@@ -1,5 +1,7 @@
 # rstrip
 
+*Source: [R/expr__string.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__string.R)*
+
 ## Arguments
 
 - `matches`: The set of characters to be removed. All combinations of this set of characters will be stripped. If set to NULL (default), all whitespace is removed instead.

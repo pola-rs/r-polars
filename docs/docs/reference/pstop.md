@@ -1,5 +1,7 @@
 # Internal preferred function to throw errors
 
+*Source: [R/rust_result.R](https://github.com/pola-rs/r-polars/tree/main/R/rust_result.R)*
+
 ```r
 pstop(err, call = sys.call(1L))
 ```

@@ -1,5 +1,7 @@
 # To uppercase
 
+*Source: [R/expr__string.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__string.R)*
+
 ## Returns
 
 Expr of Utf8 uppercase chars

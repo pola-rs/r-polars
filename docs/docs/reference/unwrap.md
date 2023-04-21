@@ -1,5 +1,7 @@
 # rust-like unwrapping of result. Useful to keep error handling on the R side.
 
+*Source: [R/rust_result.R](https://github.com/pola-rs/r-polars/tree/main/R/rust_result.R)*
+
 ```r
 unwrap(result, context = NULL, call = sys.call(1L))
 ```

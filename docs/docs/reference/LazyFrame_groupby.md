@@ -1,5 +1,7 @@
 # Lazy_groupby
 
+*Source: [R/lazyframe__lazy.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__lazy.R)*
+
 ```r
 LazyFrame_groupby(..., maintain_order = FALSE)
 ```

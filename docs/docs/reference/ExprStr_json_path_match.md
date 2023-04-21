@@ -1,5 +1,7 @@
 # json_path_match
 
+*Source: [R/expr__string.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__string.R)*
+
 ## Arguments
 
 - `json_path`: A valid JSON path query string.

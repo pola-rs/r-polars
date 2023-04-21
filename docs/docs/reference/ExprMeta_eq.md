@@ -1,5 +1,7 @@
 # Meta Equal
 
+*Source: [R/expr__meta.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__meta.R)*
+
 ## Arguments
 
 - `other`: Expr to compare with

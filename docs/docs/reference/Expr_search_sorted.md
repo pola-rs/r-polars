@@ -1,5 +1,7 @@
 # Where to inject element(s) to maintain sorting
 
+*Source: [R/expr__expr.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__expr.R)*
+
 ## Format
 
 a method

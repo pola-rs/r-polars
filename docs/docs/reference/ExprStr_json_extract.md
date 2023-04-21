@@ -1,5 +1,7 @@
 # json_extract
 
+*Source: [R/expr__string.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__string.R)*
+
 ## Arguments
 
 - `dtype`: The dtype to cast the extracted value to. If None, the dtype will be inferred from the JSON value.

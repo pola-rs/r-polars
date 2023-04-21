@@ -1,5 +1,7 @@
 # struct
 
+*Source: [R/lazy_functions.R](https://github.com/pola-rs/r-polars/tree/main/R/lazy_functions.R)*
+
 ## Arguments
 
 - `exprs`: Columns/Expressions to collect into a Struct.

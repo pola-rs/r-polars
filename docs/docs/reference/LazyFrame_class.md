@@ -1,5 +1,7 @@
 # Inner workings of the LazyFrame-class
 
+*Source: [R/lazyframe__lazy.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__lazy.R)*
+
 The `LazyFrame`-class is simply two environments of respectively the public and private methods/function calls to the polars rust side. The instanciated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars LazyFrame object. The pointer address is the only statefullness of the LazyFrame object on the R side. Any other state resides on the rust side. The S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which are callable onto the object. Most methods return another `LazyFrame`-class instance or similar which allows for method chaining. This class system in lack of a better name could be called "environment classes" and is the same class system extendr provides, except here there is both a public and private set of methods. For implementation reasons, the private methods are external and must be called from polars:::.pr.$LazyFrame$methodname(), also all private methods must take any self as an argument, thus they are pure functions. Having the private methods as pure functions solved/simplified self-referential complications.
 
 `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax of the dplyrpackage to interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
@@ -75,7 +77,7 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   FILTER [(col("Species")) == (Utf8(setosa))] FROM</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CSV SCAN /tmp/RtmpvLvapT/file1735696541ed</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     CSV SCAN /tmp/RtmpvLvapT/file17352f6a307f</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>     PROJECT */5 COLUMNS</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span></span></span>
@@ -86,7 +88,7 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]; PROJECT */5 COLUMNS; SELECTION: "[(col(\"Species\")) == (Utf8(setosa))]"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_optimized_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   CSV SCAN /tmp/RtmpvLvapT/file1735696541ed</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   CSV SCAN /tmp/RtmpvLvapT/file17352f6a307f</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   PROJECT */5 COLUMNS</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   SELECTION: [(col("Species")) == (Utf8(setosa))]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>

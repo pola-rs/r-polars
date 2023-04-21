@@ -1,5 +1,7 @@
 # rename fields
 
+*Source: [R/expr__struct.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__struct.R)*
+
 ## Arguments
 
 - `names`: char vec or list of strings given in the same order as the struct's fields. Providing fewer names will drop the latter fields. Providing too many names is ignored.

@@ -1,5 +1,7 @@
 # print LazyFrame s3 method
 
+*Source: [R/lazyframe__lazy.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__lazy.R)*
+
 ```r
 ## S3 method for class 'LazyFrame'
 print(x, ...)

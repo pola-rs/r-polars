@@ -1,5 +1,7 @@
 # check if x ss a result and an ok
 
+*Source: [R/rust_result.R](https://github.com/pola-rs/r-polars/tree/main/R/rust_result.R)*
+
 ```r
 is_ok(x)
 ```

@@ -1,5 +1,7 @@
 # print GroupBy
 
+*Source: [R/groupby.R](https://github.com/pola-rs/r-polars/tree/main/R/groupby.R)*
+
 ```r
 ## S3 method for class 'GroupBy'
 print(x, ...)

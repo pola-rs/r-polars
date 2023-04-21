@@ -1,5 +1,7 @@
 # Inner workings of the Series-class
 
+*Source: [R/series__series.R](https://github.com/pola-rs/r-polars/tree/main/R/series__series.R)*
+
 The `Series`-class is simply two environments of respectively the public and private methods/function calls to the polars rust side. The instanciated `Series`-object is an `externalptr` to a lowlevel rust polars Series object. The pointer address is the only statefullness of the Series object on the R side. Any other state resides on the rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object. Most methods return another `Series`-class instance or similar which allows for method chaining. This class system in lack of a better name could be called "environment classes" and is the same class system extendr provides, except here there is both a public and private set of methods. For implementation reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also all private methods must take any self as an argument, thus they are pure functions. Having the private methods as pure functions solved/simplified self-referential complications.
 
 ## Details

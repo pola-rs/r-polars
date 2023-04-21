@@ -1,5 +1,7 @@
 # Shift
 
+*Source: [R/groupby.R](https://github.com/pola-rs/r-polars/tree/main/R/groupby.R)*
+
 ```r
 GroupBy_shift(periods = 1)
 ```
@@ -23,14 +25,14 @@ Shift the values by a given period.
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---        ┆ ---        ┆ ---        ┆     ┆ ---       ┆ ---       ┆ ---       ┆ ---       │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ list[f64]  ┆ list[f64]  ┆ list[f64]  ┆     ┆ list[f64] ┆ list[f64] ┆ list[f64] ┆ list[f64] │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪════════════╪════════════╪════════════╪═════╪═══════════╪═══════════╪═══════════╪═══════════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ [null,     ┆ [null,     ┆ [null,     ┆ ... ┆ [null,    ┆ [null,    ┆ [null,    ┆ [null,    │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ null, ...  ┆ null, ...  ┆ null, ...  ┆     ┆ null, ... ┆ null, ... ┆ null, ... ┆ null, ... │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ 26.0]      ┆ 120.3]     ┆ 91.0]      ┆     ┆ 0.0]      ┆ 1.0]      ┆ 5.0]      ┆ 2.0]      │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 8.0 ┆ [null,     ┆ [null,     ┆ [null,     ┆ ... ┆ [null,    ┆ [null,    ┆ [null,    ┆ [null,    │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ null, ...  ┆ null, ...  ┆ null, ...  ┆     ┆ null, ... ┆ null, ... ┆ null, ... ┆ null, ... │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ 19.2]      ┆ 400.0]     ┆ 175.0]     ┆     ┆ 0.0]      ┆ 0.0]      ┆ 3.0]      ┆ 2.0]      │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.0 ┆ [null,     ┆ [null,     ┆ [null,     ┆ ... ┆ [null,    ┆ [null,    ┆ [null,    ┆ [null,    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ null, ...  ┆ null, ...  ┆ null, ...  ┆     ┆ null, ... ┆ null, ... ┆ null, ... ┆ null, ... │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ 19.2]      ┆ 167.6]     ┆ 123.0]     ┆     ┆ 1.0]      ┆ 0.0]      ┆ 4.0]      ┆ 4.0]      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 8.0 ┆ [null,     ┆ [null,     ┆ [null,     ┆ ... ┆ [null,    ┆ [null,    ┆ [null,    ┆ [null,    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ null, ...  ┆ null, ...  ┆ null, ...  ┆     ┆ null, ... ┆ null, ... ┆ null, ... ┆ null, ... │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ 19.2]      ┆ 400.0]     ┆ 175.0]     ┆     ┆ 0.0]      ┆ 0.0]      ┆ 3.0]      ┆ 2.0]      │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ [null,     ┆ [null,     ┆ [null,     ┆ ... ┆ [null,    ┆ [null,    ┆ [null,    ┆ [null,    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ null, ...  ┆ null, ...  ┆ null, ...  ┆     ┆ null, ... ┆ null, ... ┆ null, ... ┆ null, ... │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ 26.0]      ┆ 120.3]     ┆ 91.0]      ┆     ┆ 0.0]      ┆ 1.0]      ┆ 5.0]      ┆ 2.0]      │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴────────────┴────────────┴────────────┴─────┴───────────┴───────────┴───────────┴───────────┘</span>
  </code></pre>

@@ -1,5 +1,7 @@
 # Import data in Apache Arrow IPC format
 
+*Source: [R/ipc.R](https://github.com/pola-rs/r-polars/tree/main/R/ipc.R)*
+
 ```r
 scan_arrow_ipc(
   path,

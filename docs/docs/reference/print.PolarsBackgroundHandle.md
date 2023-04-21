@@ -1,5 +1,7 @@
 # print LazyFrame s3 method
 
+*Source: [R/lazyframe__background.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__background.R)*
+
 ```r
 ## S3 method for class 'PolarsBackgroundHandle'
 print(x, ...)

@@ -1,5 +1,7 @@
 # an element in 'eval'-expr
 
+*Source: [R/lazy_functions.R](https://github.com/pola-rs/r-polars/tree/main/R/lazy_functions.R)*
+
 ## Returns
 
 Expr

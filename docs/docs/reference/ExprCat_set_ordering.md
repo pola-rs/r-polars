@@ -1,5 +1,7 @@
 # Set Ordering
 
+*Source: [R/expr__categorical.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__categorical.R)*
+
 ## Arguments
 
 - `ordering`: string either 'physical' or 'lexical'

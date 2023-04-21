@@ -1,5 +1,7 @@
 # Extra polars auto completion
 
+*Source: [R/autocompletion.R](https://github.com/pola-rs/r-polars/tree/main/R/autocompletion.R)*
+
 ## Arguments
 
 - `activate`: bool default TRUE, enable chained auto-completion

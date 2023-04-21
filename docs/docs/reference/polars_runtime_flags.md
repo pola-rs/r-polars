@@ -1,5 +1,7 @@
 data
 
+*Source: [R/options.R](https://github.com/pola-rs/r-polars/tree/main/R/options.R)*
+
 # internal keeping of state at runtime
 
 ## Format

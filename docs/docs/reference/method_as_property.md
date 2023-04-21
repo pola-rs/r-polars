@@ -1,5 +1,7 @@
 # Give a class method property behavior
 
+*Source: [R/after-wrappers.R](https://github.com/pola-rs/r-polars/tree/main/R/after-wrappers.R)*
+
 ```r
 method_as_property(f, setter = FALSE)
 ```

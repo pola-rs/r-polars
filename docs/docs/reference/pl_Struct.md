@@ -1,5 +1,7 @@
 # Create Struct DataType
 
+*Source: [R/datatype.R](https://github.com/pola-rs/r-polars/tree/main/R/datatype.R)*
+
 ## Format
 
 function
@@ -133,7 +135,7 @@ Struct DataType Constructor
 <span class='r-out co'><span class='r-pr'>#&gt;</span>       and_then(DataType$new_struct) |&gt;</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>       unwrap("in pl$Struct:")</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;bytecode: 0x5644bf1cc018&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;bytecode: 0x5644bfb4a7a0&gt;</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;environment: namespace:polars&gt;</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
  </code></pre>

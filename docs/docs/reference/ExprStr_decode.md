@@ -1,5 +1,7 @@
 # decode
 
+*Source: [R/expr__string.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__string.R)*
+
 ## Arguments
 
 - `encoding`: string choice either 'hex' or 'base64'

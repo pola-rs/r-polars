@@ -1,5 +1,7 @@
 # LazyFrame Sort
 
+*Source: [R/lazyframe__lazy.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__lazy.R)*
+
 ```r
 LazyFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
 ```

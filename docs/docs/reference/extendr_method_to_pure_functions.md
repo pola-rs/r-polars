@@ -1,5 +1,7 @@
 # extendr methods into pure functions
 
+*Source: [R/after-wrappers.R](https://github.com/pola-rs/r-polars/tree/main/R/after-wrappers.R)*
+
 ```r
 extendr_method_to_pure_functions(env)
 ```

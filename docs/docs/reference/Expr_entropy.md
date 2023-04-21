@@ -1,5 +1,7 @@
 # Entropy
 
+*Source: [R/expr__expr.R](https://github.com/pola-rs/r-polars/tree/main/R/expr__expr.R)*
+
 ```r
 Expr_entropy(base = base::exp(1), normalize = TRUE)
 ```

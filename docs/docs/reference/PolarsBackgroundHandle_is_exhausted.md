@@ -1,5 +1,7 @@
 # PolarsBackgroundHandle
 
+*Source: [R/lazyframe__background.R](https://github.com/pola-rs/r-polars/tree/main/R/lazyframe__background.R)*
+
 ```r
 PolarsBackgroundHandle_is_exhausted()
 ```

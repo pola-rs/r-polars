@@ -1,5 +1,7 @@
 # high level csv_reader, will download if path is url
 
+*Source: [R/csv.R](https://github.com/pola-rs/r-polars/tree/main/R/csv.R)*
+
 ```r
 read_csv_(path, lazy = FALSE, reuse_downloaded = TRUE, ...)
 ```

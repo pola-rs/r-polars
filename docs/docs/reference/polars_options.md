@@ -1,5 +1,7 @@
 # polars options
 
+*Source: [R/options.R](https://github.com/pola-rs/r-polars/tree/main/R/options.R)*
+
 ## Arguments
 
 - `strictly_immutable`: bool, default = TRUE, keep polars strictly immutable. Polars/arrow is in general pro "immutable objects". However pypolars API has some minor exceptions. All settable property elements of classes are mutable. Why?, I guess python just do not have strong stance on immutability. R strongly suggests immutable objects, so why not make polars strictly immutable where little performance costs? However, if to mimic pypolars as much as possible, set this to FALSE.

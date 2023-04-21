@@ -1,5 +1,7 @@
 # new LazyFrame from parquet file
 
+*Source: [R/parquet.R](https://github.com/pola-rs/r-polars/tree/main/R/parquet.R)*
+
 ```r
 scan_parquet(
   file,

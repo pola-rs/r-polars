@@ -1,5 +1,7 @@
 # Translation definitions across python, R and polars.
 
+*Source: [R/docs.R](https://github.com/pola-rs/r-polars/tree/main/R/docs.R)*
+
 ## Format
 
 info

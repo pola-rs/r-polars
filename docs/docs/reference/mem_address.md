@@ -1,5 +1,7 @@
 # Get Memory Address
 
+*Source: [R/zzz.R](https://github.com/pola-rs/r-polars/tree/main/R/zzz.R)*
+
 ## Arguments
 
 - `robj`: an R object
@@ -13,5 +15,5 @@ mimics pl$mem_address
 ## Examples
 
 <pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>mem_address</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "0x7f9a58281520"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "0x7f9a0721e3d0"</span>
  </code></pre>
