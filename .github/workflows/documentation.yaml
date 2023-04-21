@@ -1,4 +1,5 @@
 # This workflow is a mix of:
+# - https://github.com/pola-rs/r-polars/blob/main/.github/workflows/check.yaml
 # - https://github.com/r-lib/actions/blob/v2-branch/examples/pkgdown.yaml
 # - https://squidfunk.github.io/mkdocs-material/publishing-your-site/?h=deploy#material-for-mkdocs
 
@@ -30,7 +31,8 @@ jobs:
 
     steps:
 
-      # Github actions and Python stuff
+       ##### Github actions and Python stuff #####
+
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
@@ -41,7 +43,46 @@ jobs:
           path: .cache
       - run: pip install mkdocs-material
 
-       # R stuff
+
+        ##### Rust stuff #####
+
+      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust-toolchain }}
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
+
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        run: |
+          sudo apt-get update \
+          && sudo apt-get install -y \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libfribidi-dev \
+            libharfbuzz-dev \
+            libcurl4-openssl-dev \
+            libgit2-dev \
+            libicu-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libxml2-dev \
+            libssl-dev
+
+      - name: find polars rust source/cache, used by Makevars in check step
+        run: |
+          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
+        shell: bash
+
+        ##### R stuff #####
+
       - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -53,6 +94,9 @@ jobs:
         run: pak::pak("etiennebacher/altdoc")
         shell: Rscript {0}
 
+
+        ##### Build documentation and put it on "gh-pages" branch
+
       - name: Build docs folder
         run: |
           altdoc::use_mkdocs(theme = "material",
@@ -62,6 +106,6 @@ jobs:
                                                 # ^^^^^^^^^^ where should we put this?
         shell: Rscript {0}
 
-      # https://www.mkdocs.org/user-guide/deploying-your-docs/
+        # https://www.mkdocs.org/user-guide/deploying-your-docs/
       - name: Build site and deploy to GitHub pages
         run: cd docs && mkdocs gh-deploy --force
