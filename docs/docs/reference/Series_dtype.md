@@ -22,8 +22,7 @@ property sorted flags are not settable, use set_sorted
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dtype</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dtype</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Int32</span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dtype</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Float64</span>

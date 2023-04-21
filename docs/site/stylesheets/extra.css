@@ -1,9 +1,8 @@
-pre.chroma, pre.r-example {
+pre.r-example {
 	display: block;
 	margin-top: 0;
 	margin-bottom: 1rem;
 	overflow: auto;
-	font-size: .875em;
 	color: #000;
 	background-color: #f6f6f6;
 	border: 1px solid #dee2e6;

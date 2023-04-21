@@ -22,8 +22,7 @@ This function is used to emulate py-polars subnamespace-methods All R functions 
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#macro_new_subnamespace() is not exported, export for this toy example</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#macro_new_subnamespace() is not exported, export for this toy example</span></span></span>
 <span class='r-in'><span><span class='co'>#macro_new_subnamespace = polars:::macro_new_subnamespace</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>##define some new methods prefixed 'MyClass_'</span></span></span>

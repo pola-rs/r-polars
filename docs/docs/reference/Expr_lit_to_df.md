@@ -12,8 +12,7 @@ collect an expression based on literals into a DataFrame
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='op'>(</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>to_lit</span><span class='op'>(</span><span class='op'>)</span></span></span>

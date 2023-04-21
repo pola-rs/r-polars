@@ -16,8 +16,7 @@ Throw errors if encounter invalid json strings.
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  json_val <span class='op'>=</span>  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'{"a":1, "b": true}'</span>, <span class='cn'>NA</span>, <span class='st'>'{"a":2, "b": false}'</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>dtype</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Field</span><span class='op'>(</span><span class='st'>"a"</span>, <span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span><span class='op'>)</span>, <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Field</span><span class='op'>(</span><span class='st'>"b"</span>, <span class='va'>pl</span><span class='op'>$</span><span class='va'>Boolean</span><span class='op'>)</span><span class='op'>)</span></span></span>

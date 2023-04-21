@@ -34,8 +34,7 @@ The `every` and `offset` argument are created with the the following string lang
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>t1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"3040-01-01"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>t1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"3040-01-01"</span>,tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>t2</span> <span class='op'>=</span> <span class='va'>t1</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/difftime.html'>as.difftime</a></span><span class='op'>(</span><span class='fl'>25</span>,units <span class='op'>=</span> <span class='st'>"secs"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span><span class='va'>t1</span>, <span class='va'>t2</span>, interval <span class='op'>=</span> <span class='st'>"2s"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>

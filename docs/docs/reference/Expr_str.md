@@ -12,7 +12,6 @@ Create an object namespace of all string related methods. See the individual met
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#missing</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#missing</span></span></span>
 <span class='r-in'></span>
  </code></pre>

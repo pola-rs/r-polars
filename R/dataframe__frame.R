@@ -722,8 +722,6 @@ DataFrame_groupby = function(..., maintain_order = FALSE) {
 
 #' return polars DataFrame as R data.frame
 #'
-#' @usage <DataFrame>$as_data_frame()
-#'
 #' @param ... any args pased to as.data.frame()
 #'
 #' @return data.frame

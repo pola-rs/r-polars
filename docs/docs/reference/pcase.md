@@ -21,8 +21,7 @@ Lifecycle: perhaps replace with something written in rust to speed up a bit
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>n</span> <span class='op'>=</span> <span class='fl'>7</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>n</span> <span class='op'>=</span> <span class='fl'>7</span></span></span>
 <span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/pcase.html'>pcase</a></span><span class='op'>(</span></span></span>
 <span class='r-in'><span> <span class='va'>n</span><span class='op'>&lt;</span><span class='fl'>5</span>,<span class='st'>"nope"</span>,</span></span>
 <span class='r-in'><span> <span class='va'>n</span><span class='op'>&gt;</span><span class='fl'>6</span>,<span class='st'>"yeah"</span>,</span></span>

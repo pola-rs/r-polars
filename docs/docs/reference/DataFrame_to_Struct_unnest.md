@@ -23,8 +23,7 @@ Unnest a DataFrame struct columns.
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#round-trip conversion from DataFrame with two columns</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#round-trip conversion from DataFrame with two columns</span></span></span>
 <span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>a<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span>,b<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"one"</span>,<span class='st'>"two"</span>,<span class='st'>"three"</span>,<span class='st'>"four"</span>,<span class='st'>"five"</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>to_struct</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s</span></span></span>

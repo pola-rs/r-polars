@@ -5,7 +5,7 @@
 \alias{as.data.frame.DataFrame}
 \title{return polars DataFrame as R data.frame}
 \usage{
-<DataFrame>$as_data_frame()
+DataFrame_as_data_frame(...)
 
 # S3 method
 as.data.frame.DataFrame()

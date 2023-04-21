@@ -8,8 +8,7 @@ Pop the latest expression and return the input(s) of the popped expression.
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>e1</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>40</span><span class='op'>)</span> <span class='op'>+</span> <span class='fl'>2</span></span></span>
 <span class='r-in'><span><span class='va'>e2</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='va'>e1</span></span></span>

@@ -28,8 +28,7 @@ Fun fact: Nested polars Series list must have same inner type, e.g. List(List(In
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#make polars Series_Utf8</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#make polars Series_Utf8</span></span></span>
 <span class='r-in'><span><span class='va'>series_vec</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#Series_non_list</span></span></span>

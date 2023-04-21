@@ -16,8 +16,7 @@ Original extendr bindings converted into pure functions
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#.pr$DataFrame$print() is an external function where self is passed as arg</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#.pr$DataFrame$print() is an external function where self is passed as arg</span></span></span>
 <span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>DataFrame</span><span class='op'>$</span><span class='fu'>print</span><span class='op'>(</span>self <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 5)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┐</span>

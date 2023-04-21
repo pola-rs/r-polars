@@ -37,8 +37,7 @@ slower and more memory intensive than implementing the same logic using the nati
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#apply over groups - normal usage</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#apply over groups - normal usage</span></span></span>
 <span class='r-in'><span><span class='co'># s is a series of all values for one column within group, here Species</span></span></span>
 <span class='r-in'><span><span class='va'>e_all</span> <span class='op'>=</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")</span></span></span>
 <span class='r-in'><span><span class='va'>e_sum</span>  <span class='op'>=</span> <span class='va'>e_all</span><span class='op'>$</span><span class='fu'>apply</span><span class='op'>(</span>\<span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>  <span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>suffix</span><span class='op'>(</span><span class='st'>"_sum"</span><span class='op'>)</span></span></span>
@@ -60,6 +59,15 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ t ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══╪════════════╪════════════╪════════════╪═════╪════════════╪════════════╪════════════╪════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ v ┆ 329.4      ┆ 148.7      ┆ 277.6      ┆ ... ┆ [6.3, 5.8] ┆ [3.3, 2.7] ┆ [6.0, 5.1] ┆ [2.5, 1.9] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ r ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ g ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ n ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ c ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ s ┆ 250.3      ┆ 171.4      ┆ 73.1       ┆ ... ┆ [5.1, 4.9] ┆ [3.5, 3.0] ┆ [1.4, 1.4] ┆ [0.2, 0.2] │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ e ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ t ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
@@ -76,15 +84,6 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ l ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ o ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ r ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ v ┆ 329.4      ┆ 148.7      ┆ 277.6      ┆ ... ┆ [6.3, 5.8] ┆ [3.3, 2.7] ┆ [6.0, 5.1] ┆ [2.5, 1.9] │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ r ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ g ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ n ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ c ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └───┴────────────┴────────────┴────────────┴─────┴────────────┴────────────┴────────────┴────────────┘</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
@@ -135,7 +134,7 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-in'><span> <span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    2.30    0.33    2.95 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    1.70    0.06    1.76 </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='st'>"R lapply 1 million values take ~1sec on 2015 MacBook Pro"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "R lapply 1 million values take ~1sec on 2015 MacBook Pro"</span>
@@ -143,7 +142,7 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-in'><span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='fu'>get_column</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span>,\<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>x</span><span class='op'>*</span><span class='fl'>2L</span> <span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    1.11    0.00    1.11 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    0.68    0.00    0.69 </span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='st'>"using polars syntax takes ~1ms"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "using polars syntax takes ~1ms"</span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='op'>{</span></span></span>
@@ -160,5 +159,5 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-in'><span> <span class='va'>r_vec</span> <span class='op'>*</span> <span class='fl'>2L</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    0.02    0.00    0.02 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    0.00    0.02    0.01 </span>
  </code></pre>

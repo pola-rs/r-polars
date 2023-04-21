@@ -18,8 +18,7 @@ Get dtypes of columns in DataFrame. Dtypes can also be found in column headers w
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dtypes</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dtypes</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [[1]]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> DataType: Float64</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>

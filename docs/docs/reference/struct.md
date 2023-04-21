@@ -18,8 +18,7 @@ pl$struct creates Expr or Series of DataType Struct() pl$Struct creates the Data
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#isolated expression to wrap all columns in a struct aliased 'my_struct'</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#isolated expression to wrap all columns in a struct aliased 'my_struct'</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>struct</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"my_struct"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: *.as_struct().alias("my_struct")</span>
 <span class='r-in'><span></span></span>

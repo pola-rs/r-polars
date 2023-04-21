@@ -126,6 +126,8 @@ eval_reference_examples <- function() {
   md_files <- gsub("^man/", "docs/docs/reference/", rd_files)
   md_files <- gsub("\\.Rd$", "\\.md", md_files)
 
+  subset_even <- function(x) x[!seq_along(x) %% 2]
+
   for (i in seq_along(rd_files)) {
 
     cat(paste0("Evaluating examples for file ", md_files[i], "\n"))
@@ -134,18 +136,21 @@ eval_reference_examples <- function() {
 
     if (orig_ex == "") next
 
-    subset_even <- function(x) x[!seq_along(x) %% 2]
-
     lines <- orig_ex %>%
       stringr::str_split("```.*", simplify = TRUE) %>%
       subset_even() %>%
-      stringr::str_flatten("\n## new chunk \n")
+      stringr::str_flatten("\n## new chunk \n") %>%
+      stringr::str_remove("^\\\n")
 
     evaluated_ex <- paste(
-      "## Examples\n\n<pre class='r-example'> <code>",
+      "## Examples\n\n<pre class='r-example'><code>",
       downlit::evaluate_and_highlight(lines),
       "</code></pre>"
     )
+
+    evaluated_ex <- gsub("class='r-example'><code> <span ",
+                         "class='r-example'><code><span ",
+                         evaluated_ex)
 
     orig_md <- readLines(md_files[i], warn = FALSE) %>%
       paste(., collapse = "\n")

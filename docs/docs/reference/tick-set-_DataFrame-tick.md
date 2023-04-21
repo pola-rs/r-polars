@@ -23,8 +23,7 @@ settable polars object properties may appear to be R objects, but they are not. 
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#For internal use</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#For internal use</span></span></span>
 <span class='r-in'><span><span class='co'>#is only activated for following methods of DataFrame</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'>DataFrame.property_setters</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "columns"</span>
@@ -60,7 +59,7 @@ settable polars object properties may appear to be R objects, but they are not. 
 <span class='r-out co'><span class='r-pr'>#&gt;</span> function() {</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   .pr$DataFrame$columns(self)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;environment: 0x00000185db641788&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;environment: 0x0000011a4787c0f0&gt;</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "setter"   "property" "function"</span>
 <span class='r-in'><span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'>DataFrame.property_setters</span><span class='op'>$</span><span class='va'>columns</span> <span class='co'>#and even more obscure to see setter code</span></span></span>

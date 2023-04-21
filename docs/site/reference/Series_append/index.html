@@ -7625,8 +7625,7 @@
 <h2 id="details">Details</h2>
 <p>if immutable = FLASE, the Series object will not behave as immutable. This mean appending to this Series will affect any variable pointing to this memory location. This will break normal scoping rules of R. Polars-clones are cheap. Mutable operations are likely never needed in any sense.</p>
 <h2 id="examples">Examples</h2>
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#default immutable behaviour, s_imut and s_imut_copy stay the same</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#default immutable behaviour, s_imut and s_imut_copy stay the same</span></span></span>
 <span class='r-in'><span><span class='va'>s_imut</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s_imut_copy</span> <span class='op'>=</span> <span class='va'>s_imut</span></span></span>
 <span class='r-in'><span><span class='va'>s_new</span> <span class='op'>=</span> <span class='va'>s_imut</span><span class='op'>$</span><span class='fu'>append</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span></span>

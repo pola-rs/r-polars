@@ -16,8 +16,7 @@ Flags the expression as 'sorted'.
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#correct use flag something correctly as ascendingly sorted</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#correct use flag something correctly as ascendingly sorted</span></span></span>
 <span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>set_sorted</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>get_column</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='va'>flags</span> <span class='co'># see flags</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $SORTED_ASC</span>

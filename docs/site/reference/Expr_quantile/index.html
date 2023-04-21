@@ -7641,8 +7641,7 @@
 <h2 id="details">Details</h2>
 <p><code>Nulls</code> are ignored and <code>NaNs</code> are ranked as the largest value. For linear interpolation <code>NaN</code> poisons <code>Inf</code>, that poisons any other value.</p>
 <h2 id="examples">Examples</h2>
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='op'>-</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>quantile</span><span class='op'>(</span><span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='op'>-</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>quantile</span><span class='op'>(</span><span class='fl'>.5</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>

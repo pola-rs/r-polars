@@ -16,8 +16,7 @@ Fill nulls with linear interpolation over missing values. Can also be used to re
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='cn'>NA</span>,<span class='fl'>4</span>,<span class='cn'>NA</span>,<span class='fl'>100</span>,<span class='cn'>NaN</span>,<span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>interpolate</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='cn'>NA</span>,<span class='fl'>4</span>,<span class='cn'>NA</span>,<span class='fl'>100</span>,<span class='cn'>NaN</span>,<span class='fl'>150</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>interpolate</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (7, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │       │</span>

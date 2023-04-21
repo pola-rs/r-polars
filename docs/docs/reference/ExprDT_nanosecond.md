@@ -12,8 +12,7 @@ Extract seconds from underlying Datetime representation. Applies to Datetime col
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>date <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>date <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2001-1-1"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>1E9</span><span class='op'>+</span><span class='fl'>123456789</span>, <span class='co'>#manually convert to us</span></span></span>
 <span class='r-in'><span>  <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2001-1-1 00:00:6"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>1E9</span>,</span></span>
 <span class='r-in'><span>  interval <span class='op'>=</span> <span class='st'>"1s987654321ns"</span>,</span></span>

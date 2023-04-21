@@ -8,29 +8,25 @@ Check out the source code in R/Series_frame.R how public methods are derived fro
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/Series.html'>Series</a></span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"           "add"           "alias"         "all"           "any"           "append"        "apply"        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [8] "arg_max"       "arg_min"       "arr"           "ceil"          "chunk_lengths" "clone"         "compare"      </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [15] "cumsum"        "div"           "dtype"         "expr"          "flags"         "floor"         "is_numeric"   </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [22] "is_sorted"     "len"           "max"           "min"           "mul"           "name"          "print"        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "rem"           "rename"        "rep"           "series_equal"  "set_sorted"    "shape"         "sort"         </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [36] "std"           "sub"           "sum"           "to_frame"      "to_lit"        "to_r"          "to_r_list"    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [43] "to_r_vector"   "value_counts"  "var"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"           "add"           "alias"         "all"           "any"           "append"        "apply"         "arg_max"      </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "arg_min"       "arr"           "ceil"          "chunk_lengths" "clone"         "compare"       "cumsum"        "div"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "dtype"         "expr"          "flags"         "floor"         "is_numeric"    "is_sorted"     "len"           "max"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "min"           "mul"           "name"          "print"         "rem"           "rename"        "rep"           "series_equal" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "set_sorted"    "shape"         "sort"          "std"           "sub"           "sum"           "to_frame"      "to_lit"       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [41] "to_r"          "to_r_list"     "to_r_vector"   "value_counts"  "var"          </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>Series</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"                    "add"                    "alias"                  "all"                   </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "any"                    "append_mut"             "apply"                  "arg_max"               </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "arg_min"                "ceil"                   "chunk_lengths"          "clone"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "compare"                "cumsum"                 "div"                    "dtype"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "floor"                  "from_arrow"             "is_sorted"              "is_sorted_flag"        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "is_sorted_reverse_flag" "len"                    "max"                    "min"                   </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "mul"                    "name"                   "new"                    "panic"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "print"                  "rem"                    "rename_mut"             "rep"                   </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "series_equal"           "set_sorted_mut"         "shape"                  "sleep"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [37] "sort_mut"               "sub"                    "sum"                    "to_frame"              </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "abs"                    "add"                    "alias"                  "all"                    "any"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6] "append_mut"             "apply"                  "arg_max"                "arg_min"                "ceil"                  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "chunk_lengths"          "clone"                  "compare"                "cumsum"                 "div"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "dtype"                  "floor"                  "from_arrow"             "is_sorted"              "is_sorted_flag"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "is_sorted_reverse_flag" "len"                    "max"                    "min"                    "mul"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [26] "name"                   "new"                    "panic"                  "print"                  "rem"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31] "rename_mut"             "rep"                    "series_equal"           "set_sorted_mut"         "shape"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [36] "sleep"                  "sort_mut"               "sub"                    "sum"                    "to_frame"              </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [41] "to_r"                   "value_counts"          </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>

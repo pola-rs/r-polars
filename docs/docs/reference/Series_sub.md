@@ -21,8 +21,7 @@ Series arithmetics
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sub</span><span class='op'>(</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sub</span><span class='op'>(</span><span class='fl'>11</span><span class='op'>:</span><span class='fl'>13</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (3,)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [i32]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [</span>

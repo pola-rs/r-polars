@@ -12,8 +12,7 @@ Extract the milliseconds from a Duration type.
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>date <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span>date <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>    low <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2020-1-1"</span>, tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>    high <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/as.POSIXlt.html'>as.POSIXct</a></span><span class='op'>(</span><span class='st'>"2020-1-1 00:00:01"</span>, tz <span class='op'>=</span> <span class='st'>"GMT"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>    interval <span class='op'>=</span> <span class='st'>"1ms"</span></span></span>

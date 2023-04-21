@@ -7625,8 +7625,7 @@
 <p>Sometimes used in polars to produce different hashmaps(environments) containing some of the same, but not all elements.</p>
 <p>environments are used for collections of methods and types. This function can be used to make a parallel collection pointing to some of the same types. Simply copying an environment, does apparently not spawn a new hashmap, and therefore the collections stay identical.</p>
 <h2 id="examples">Examples</h2>
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>fruit_env</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span><span class='op'>(</span>parent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>emptyenv</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>fruit_env</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span><span class='op'>(</span>parent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>emptyenv</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>fruit_env</span><span class='op'>$</span><span class='va'>banana</span> <span class='op'>=</span> <span class='cn'>TRUE</span></span></span>
 <span class='r-in'><span><span class='va'>fruit_env</span><span class='op'>$</span><span class='va'>apple</span> <span class='op'>=</span> <span class='cn'>FALSE</span></span></span>
 <span class='r-in'><span></span></span>

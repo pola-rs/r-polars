@@ -14,8 +14,7 @@ This feature experimental and not perfect. Any feedback is appreciated. Currentl
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#auto completion via .DollarNames method</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#auto completion via .DollarNames method</span></span></span>
 <span class='r-in'><span><span class='va'>e</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span> <span class='co'># to autocomplete pl$lit(42) save to variable</span></span></span>
 <span class='r-in'><span><span class='co'># then write `e$`  and press tab to see available methods</span></span></span>
 <span class='r-in'><span></span></span>

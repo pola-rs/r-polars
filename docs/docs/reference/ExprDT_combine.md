@@ -25,8 +25,7 @@ The `tu` allows the following time time units the following string language:
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#Using pl$PTime</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#Using pl$PTime</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/as.Date.html'>as.Date</a></span><span class='op'>(</span><span class='st'>"2021-01-01"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>combine</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='st'>"02:34:12"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>lit_to_s</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars Series: shape: (1,)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Series: '' [datetime[ns]]</span>

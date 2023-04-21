@@ -20,8 +20,7 @@ If someone do not particularly like the letter combination `pl`, they are free t
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#how to use polars via `pl`</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#how to use polars via `pl`</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"colname"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>/</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>42L</span><span class='op'>)</span>  <span class='co'>#expression ~ chain-method / literal-expression</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: [(col("colname").sum()) / (42i32)]</span>
 <span class='r-in'><span></span></span>

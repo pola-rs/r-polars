@@ -22,8 +22,7 @@ environments are used for collections of methods and types. This function can be
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>fruit_env</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span><span class='op'>(</span>parent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>emptyenv</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>fruit_env</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span><span class='op'>(</span>parent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>emptyenv</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>fruit_env</span><span class='op'>$</span><span class='va'>banana</span> <span class='op'>=</span> <span class='cn'>TRUE</span></span></span>
 <span class='r-in'><span><span class='va'>fruit_env</span><span class='op'>$</span><span class='va'>apple</span> <span class='op'>=</span> <span class='cn'>FALSE</span></span></span>
 <span class='r-in'><span></span></span>

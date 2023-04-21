@@ -21,8 +21,7 @@ You may also use regexes in the exclude list. They must start with `^` and end w
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#make DataFrame</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#make DataFrame</span></span></span>
 <span class='r-in'><span> <span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span> <span class='co'>#by name(s)</span></span></span>

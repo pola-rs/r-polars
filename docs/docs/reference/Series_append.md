@@ -21,8 +21,7 @@ if immutable = FLASE, the Series object will not behave as immutable. This mean 
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#default immutable behaviour, s_imut and s_imut_copy stay the same</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#default immutable behaviour, s_imut and s_imut_copy stay the same</span></span></span>
 <span class='r-in'><span><span class='va'>s_imut</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s_imut_copy</span> <span class='op'>=</span> <span class='va'>s_imut</span></span></span>
 <span class='r-in'><span><span class='va'>s_new</span> <span class='op'>=</span> <span class='va'>s_imut</span><span class='op'>$</span><span class='fu'>append</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span></span></span>

@@ -31,8 +31,7 @@ setting an options may be rejected if not passing opt_requirements
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='co'>#rename columns by naming expression, experimental requires option named_exprs = TRUE</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='co'>#rename columns by naming expression, experimental requires option named_exprs = TRUE</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>set_polars_options</span><span class='op'>(</span>named_exprs <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $named_exprs</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>

@@ -17,8 +17,7 @@ Set sorted
 
 ## Examples
 
-<pre class='r-example'> <code> <span class='r-in'><span></span></span>
-<span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>set_sorted</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<pre class='r-example'><code><span class='r-in'><span><span class='va'>s</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>set_sorted</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='va'>flags</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $SORTED_ASC</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
