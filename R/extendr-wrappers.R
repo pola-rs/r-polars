@@ -93,7 +93,11 @@ DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, se
 
 DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
 
+DataFrame$frame_equal <- function(other) .Call(wrap__DataFrame__frame_equal, self, other)
+
 DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
+
+DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
@@ -887,7 +891,19 @@ LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
 
 LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
 
+LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__LazyFrame__quantile, self, quantile, interpolation)
+
+LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
+
+LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame__shift_and_fill, self, fill_value, periods)
+
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
+
+LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
+
+LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
+
+LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, self, fill_value)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
@@ -899,6 +915,10 @@ LazyFrame$tail <- function(n) .Call(wrap__LazyFrame__tail, self, n)
 
 LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
+LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
+
+LazyFrame$unique <- function(subset, keep) .Call(wrap__LazyFrame__unique, self, subset, keep)
+
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
@@ -906,6 +926,8 @@ LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, s
 LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
+LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__LazyFrame__sort_by_exprs, self, by, descending, nulls_last)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }

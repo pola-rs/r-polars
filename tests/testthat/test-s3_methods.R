@@ -42,12 +42,10 @@ patrick::with_parameters_test_that("inspection",
         y = FUN(d)
         if (inherits(y, "DataFrame")) y = y$to_data_frame()
         expect_equal(x, y, ignore_attr = TRUE)
-        if (.test_name %in% c("length", "nrow", "ncol", "names")) {
-          expect_error(FUN(d$lazy()))
-        } else if (.test_name == "as.matrix") {
+        if (.test_name == "as.matrix") {
           z = FUN(d$lazy())
           expect_equal(x, z, ignore_attr = TRUE)
-        } else {
+        } else if (!.test_name %in% c("length", "nrow", "ncol", "names")) {
           z = FUN(d$lazy())$collect()$to_data_frame()
           expect_equal(x, z, ignore_attr = TRUE)
         }
@@ -79,6 +77,38 @@ patrick::with_parameters_test_that("Series",
     .cases = make_cases()
 )
 
+
+test_that("drop_nulls", {
+  tmp = mtcars
+  tmp[1:3, "mpg"] = NA
+  tmp[4, "hp"] = NA
+  d = pl$DataFrame(tmp)
+  dl = pl$DataFrame(tmp)$lazy()
+  expect_equal(nrow(na.omit(d)), 28)
+  expect_equal(nrow(na.omit(d, subset = "hp")), 31)
+  expect_equal(nrow(na.omit(d, subset = c("mpg", "hp"))), 28)
+  expect_error(na.omit(d, "bad"),"ColumnNotFound")
+  expect_equal(nrow(na.omit(dl)$collect()), 28)
+  expect_equal(nrow(na.omit(dl, subset = "hp")$collect()), 31)
+  expect_equal(nrow(na.omit(dl, subset = c("mpg", "hp"))$collect()), 28)
+  expect_error(na.omit(dl, "bad")$collect(),"ColumnNotFound")
+})
+
+
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  expect_equal(unique(df)$height, 5)
+  expect_equal(unique(df, subset = "z")$height, 4)
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))$lazy()
+  expect_equal(unique(df)$collect()$height, 5)
+  expect_equal(unique(df, subset = "z")$collect()$height, 4)
+})
 
 test_that("brackets", {
   # informative errors
