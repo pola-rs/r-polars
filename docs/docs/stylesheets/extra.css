@@ -22,7 +22,13 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 :root {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --md-primary-fg-color: #3973ac;
+  --md-primary-fg-color: #ecf4ff;
+  --md-primary-bg-color: #646464;
+
+  --md-typeset-a-color: #459db9;
+  --md-typeset-a-color-hover: #8fc5d6;
+
+  --search-bar-border: #cccccc;
 
   --span-op-color: #24292e;
   --span-fu-color: #6f42c1;
@@ -32,12 +38,42 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 
 /* Dark theme */
 [data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #333333;
+  --md-primary-bg-color: #a6a6a6;
+  --md-default-bg-color: #121212;
+
+  --md-typeset-a-color: #79a6d2;
+  --md-typeset-a-color-hover: #538cc6;
+
+  --search-bar-border: #666666;
+
   --span-op-color: #d9d9d9;
   --span-fu-color: #a78bda;
   --span-fl-color: #3392ff;
   --span-st-color: #39ac73;
-  --md-typeset-a-color: #79a6d2;
 }
+
+.md-search__form {
+  background-color: transparent; 
+  border: solid 1px var(--search-bar-border);
+}
+
+.md-search__input::placeholder {
+	color: var(--md-primary-bg-color);
+}
+
+.md-tabs__link--active, .md-tabs__link:is(:focus, :hover) {
+	color: var(--md-typeset-a-color);
+}
+
+.md-typeset a:focus, .md-typeset a:hover {
+	color: var(--md-typeset-a-color-hover);
+}
+
+.md-tabs__link--active {
+  font-weight: bold;
+}
+
 
 
 /*
