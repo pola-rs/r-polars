@@ -22,6 +22,8 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 :root {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
+  --md-primary-fg-color: #3973ac;
+
   --span-op-color: #24292e;
   --span-fu-color: #6f42c1;
   --span-fl-color: #005cc5;
