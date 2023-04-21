@@ -23,7 +23,6 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --md-primary-fg-color: #3973ac;
-  --md-typeset-a-color: #79a6d2;
 
   --span-op-color: #24292e;
   --span-fu-color: #6f42c1;
@@ -37,6 +36,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
   --span-fu-color: #a78bda;
   --span-fl-color: #3392ff;
   --span-st-color: #39ac73;
+  --md-typeset-a-color: #79a6d2;
 }
 
 
