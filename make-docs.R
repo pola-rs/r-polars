@@ -6,6 +6,11 @@ library(stringr)
 library(rd2markdown) # Genentech/rd2markdown (github only)
 
 
+if (fs::dir_exists(here::here("docs/docs/reference"))) {
+  fs::dir_delete(here::here("docs/docs/reference"))
+}
+fs::dir_create(here::here("docs/docs/reference"))
+
 is_internal <- function(file) {
   y <- capture.output(tools::Rd2latex(file))
   z <- grepl("\\\\keyword\\{", y)
@@ -20,13 +25,6 @@ is_internal <- function(file) {
 
   any(test)
 }
-
-
-
-if (fs::dir_exists(here::here("docs/docs/reference"))) {
-  fs::dir_delete(here::here("docs/docs/reference"))
-}
-fs::dir_create(here::here("docs/docs/reference"))
 
 
 # find general classes: DataFrame, GroupBy, etc.
@@ -95,6 +93,8 @@ make_doc_hierarchy <- function() {
   names(foo) <- "Other"
   hierarchy[[length(hierarchy) + 1]] <- foo
 
+  hierarchy <- Filter(Negate(is.null), hierarchy)
+
   hierarchy
 }
 
@@ -154,9 +154,14 @@ eval_reference_examples <- function() {
 
   for (i in seq_along(rd_files)) {
 
+    if (is_internal(rd_files[i])) next
+
     cat(paste0("Evaluating examples for file ", md_files[i], "\n"))
 
-    orig_ex <- rd2markdown::rd2markdown(file = rd_files[i], fragments = "examples")
+    orig_ex <- rd2markdown::rd2markdown(
+      file = rd_files[i],
+      fragments = "examples"
+    )
 
     if (orig_ex == "") next
 
