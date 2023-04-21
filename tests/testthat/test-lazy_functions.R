@@ -108,3 +108,74 @@ test_that("pl$struct", {
   #TODO test pl$struct when meta_eq is impl
 
 })
+
+
+
+test_that("pl$first pl$last", {
+
+  l = list(
+    a = c(1, 8, 3),
+    b = c(4:6),
+    c = c("foo", "bar", "foo")
+  )
+  df = pl$DataFrame(l)
+
+  #input NULL in selection context
+  expect_identical(df$select(pl$first())$to_list(), l[1])
+  expect_identical(df$select(pl$last())$to_list() , l[3])
+
+  #input str in selection context
+  expect_identical(df$select(pl$first("b"))$to_list(), list(b=4L))
+  expect_identical(df$select(pl$last("b"))$to_list() , list(b=6L))
+
+
+  #take from Series
+  expect_identical(pl$first(pl$Series(1:3)), 1L)
+  expect_identical(pl$last(pl$Series(1:3)), 3L)
+
+
+  expect_grepl_error(
+    pl$first(pl$Series(integer())),
+    c("first()", "The series is empty, so no first value can be returned")
+  )
+  expect_grepl_error(
+    pl$last(pl$Series(integer())),
+    c("last()", "The series is empty, so no last value can be returned")
+  )
+
+  #caught errors via pl$col
+  expect_grepl_error(
+    pl$first(1),
+    c("first()", "not supported implement input")
+  )
+  expect_grepl_error(
+    pl$last(1),
+    c("last()", "not supported implement input")
+  )
+
+})
+
+
+test_that("pl$count", {
+
+  l = list(
+    a = c(1, 8, 3),
+    b = c(4:6),
+    c = c("foo", "bar", "foo")
+  )
+  df = pl$DataFrame(l)
+  s =pl$Series(1:3)
+
+  expect_identical( df$select(pl$count("b"))$to_list(),list(b = 3))
+  expect_identical( df$select(pl$count())$to_list(),list(count = 3))
+  expect_identical(pl$count(s), s$len())
+
+  #pass invalid column name type to pl$col
+  expect_grepl_error(pl$count(1),c( "count()", "not supported implement input"))
+
+})
+
+
+
+
+

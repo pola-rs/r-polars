@@ -743,6 +743,12 @@ Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_proj
 
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
+Expr$new_count <- function() .Call(wrap__Expr__new_count)
+
+Expr$new_first <- function() .Call(wrap__Expr__new_first)
+
+Expr$new_last <- function() .Call(wrap__Expr__new_last)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
