@@ -99,10 +99,8 @@ jobs:
 
       - name: Build docs folder
         run: |
-          altdoc::use_mkdocs(theme = "material",
-                             overwrite = TRUE,
-                             convert_vignettes = TRUE,
-                             custom_reference = "make-docs.R")
+          altdoc::update_docs(convert_vignettes = TRUE,
+                              custom_reference = "make-docs.R")
                                                 # ^^^^^^^^^^ where should we put this?
         shell: Rscript {0}
 
