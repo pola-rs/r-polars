@@ -11,6 +11,8 @@ if (fs::dir_exists(here::here("docs/docs/reference"))) {
 }
 fs::dir_create(here::here("docs/docs/reference"))
 
+
+
 is_internal <- function(file) {
   y <- capture.output(tools::Rd2latex(file))
   z <- grepl("\\\\keyword\\{", y)
@@ -24,6 +26,26 @@ is_internal <- function(file) {
   }, FUN.VALUE = logical(1L))
 
   any(test)
+}
+
+
+get_r_source <- function() {
+  rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
+  out <- list()
+
+  for (i in seq_along(rd_files)) {
+    parsed <- as.character(tools::parse_Rd(rd_files[i], encoding = "UTF-8"))
+    contains_source <- grep("% Please edit documentation in", parsed)
+
+    r_source <- gsub("% Please edit documentation in ", "",
+                     parsed[contains_source])
+    rd <- gsub("^man/", "", rd_files[i])
+    out[[i]] <- list(rd, r_source)
+  }
+
+  out <- as.data.frame(do.call(rbind, out))
+  colnames(out) <- c("rd", "r_source")
+  out
 }
 
 
@@ -103,9 +125,18 @@ make_doc_hierarchy <- function() {
 
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
+
+  r_source <- get_r_source()
+
   for (i in rd_files) {
     if (is_internal(paste0("man/", i))) next
     out <- rd2markdown::rd2markdown(file = paste0("man/", i))
+    corr_source <- unlist(r_source[r_source$rd == i, "r_source"])
+    out <- sub("\\\n\\\n",
+               paste0("\\\n\\\n*Source: [", corr_source,
+                      "](https://github.com/pola-rs/r-polars/tree/main/",
+                      corr_source, ")*\\\n\\\n"),
+               out)
     cat(out, file = paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i)))
   }
 }
