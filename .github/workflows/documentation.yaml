@@ -90,8 +90,10 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: local::., any::pak
-      - name: Install dev version of altdoc
-        run: pak::pak("etiennebacher/altdoc@custom-reference")
+      - name: Install required packages
+        run: |
+          pak::pak(c("etiennebacher/altdoc@custom-reference", "yaml", "magrittr",
+                     "tinkr", "stringr", "Genentech/rd2markdown@c4fb386")
         shell: Rscript {0}
 
 
