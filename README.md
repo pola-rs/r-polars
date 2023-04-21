@@ -129,7 +129,7 @@ library(polars)
 
 dat = pl$DataFrame(mtcars)
 dat
-#> shape: (32, 11)
+#> polars DataFrame: shape: (32, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -159,7 +159,7 @@ dat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )
-#> shape: (4, 4)
+#> polars DataFrame: shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
@@ -187,7 +187,7 @@ ldat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )$collect()
-#> shape: (4, 4)
+#> polars DataFrame: shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
@@ -253,7 +253,8 @@ Rust toolchain
 
 - Windows: Make sure the latest version of
   [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
-  and on your PATH.
+  and on your PATH. Add gnu target
+  e.g. `rustup target add x86_64-pc-windows-gnu`
 
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.

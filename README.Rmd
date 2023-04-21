@@ -198,7 +198,7 @@ Rust toolchain
   rustup toolchain install nightly
   rustup default nightly
   ```
-- Windows: Make sure the latest version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed and on your PATH.
+- Windows: Make sure the latest version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed and on your PATH. Add gnu target e.g. `rustup target add x86_64-pc-windows-gnu`
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/) is installed.
 - Install [CMake](https://cmake.org/) and add it to your PATH.
 
