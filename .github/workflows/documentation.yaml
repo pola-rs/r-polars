@@ -93,7 +93,7 @@ jobs:
       - name: Install required packages
         run: |
           pak::pak(c("etiennebacher/altdoc@custom-reference", "yaml", "magrittr",
-                     "tinkr", "stringr", "Genentech/rd2markdown@c4fb386")
+                     "tinkr", "stringr", "Genentech/rd2markdown@c4fb386"))
         shell: Rscript {0}
 
 
