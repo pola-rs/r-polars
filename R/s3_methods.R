@@ -96,12 +96,6 @@ nrow.DataFrame = function(x) x$height
 #' @export
 ncol.DataFrame = function(x) x$height
 
-#' The Number of Columns of a LazyFrame 
-#' @param x LazyFrame
-#' @return Integer
-#' @export
-ncol.LazyFrame = function(x) x$collect()$height
-
 #' @export
 #' @noRd
 names.DataFrame = function(x) x$columns
