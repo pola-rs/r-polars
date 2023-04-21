@@ -307,8 +307,6 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
 #' generic setter method
 #'
-#' @name `<-_DataFrame`
-#'
 #' @param self DataFrame
 #' @param name name method/property to set
 #' @param value value to insert
@@ -398,6 +396,9 @@ DataFrame.property_setters$columns =
   function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
 
+
+
+
 #' Shape of  DataFrame
 #' @name DataFrame_shape
 #' @description Get shape/dimensions of DataFrame
@@ -412,12 +413,14 @@ DataFrame_shape = method_as_property(function() {
 })
 
 
+
 #' Height of DataFrame
 #' @name DataFrame_height
 #' @description Get height(nrow) of DataFrame
 #'
 #' @return height as numeric
 #' @aliases height nrow
+#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height
 #'
@@ -432,12 +435,14 @@ DataFrame_height = method_as_property(function() {
 #' @description Get width(ncol) of DataFrame
 #'
 #' @return width as numeric scalar
+#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
 #'
 DataFrame_width = method_as_property(function() {
     .pr$DataFrame$shape(self)[2L]
 })
+
 
 
 
@@ -524,6 +529,7 @@ DataFrame_lazy = "use_extendr_wrapper"
 #'
 #' @return DataFrame
 #' @aliases DataFrame_clone
+#' @keywords  DataFrame
 #' @examples
 #' df1 = pl$DataFrame(iris);
 #' df2 =  df1$clone();
@@ -540,7 +546,8 @@ DataFrame_clone = function() {
 #' @description get columns as list of series
 #'
 #' @return list of series
-#' @docType NULL
+#' @keywords  DataFrame
+#' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()
@@ -554,6 +561,7 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #'
 #' @return Series
 #' @aliases DataFrame_get_column
+#' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_column("Species")
@@ -571,6 +579,7 @@ DataFrame_get_column = function(name) {
 #' return a NULL, idx is zero idx.
 #'
 #' @return Series or NULL
+#' @keywords  DataFrame
 #' @examples
 #' pl$DataFrame(a=1:4)$to_series()
 DataFrame_to_series = function(idx=0) {
@@ -625,6 +634,7 @@ DataFrame_select = function(...) {
 #' @name DataFrame_with_columns
 #' @aliases with_columns
 #' @param ... any expressions or string column name, or same wrapped in a list
+#' @keywords  DataFrame
 #' @return DataFrame
 #' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
 #' @examples
@@ -654,6 +664,7 @@ DataFrame_with_columns = function(...) {
 #' @rdname DataFrame_with_columns
 #' @aliases with_column
 #' @param expr a single expression or string
+#' @keywords  DataFrame
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
@@ -668,6 +679,7 @@ DataFrame_with_column = function(expr) {
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
+#' @keywords  DataFrame
 #' @return DataFrame
 DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
@@ -680,6 +692,7 @@ DataFrame_limit = function(n) {
 #' @param n positive numeric of integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
+#' @keywords  DataFrame
 #' @return DataFrame
 DataFrame_tail = function(n) {
   self$lazy()$tail(n)$collect()
@@ -749,11 +762,7 @@ DataFrame_as_data_frame = function(...) {
 # #' @keywords DataFrame
 # DataFrame_to_data_frame = DataFrame_as_data_frame
 
-#' @usage
-#' # S3 method
-#' as.data.frame.DataFrame()
 #' @rdname DataFrame_as_data_frame
-#'
 #' @param x DataFrame
 #' @param ... any params passed to as.data.frame
 #'

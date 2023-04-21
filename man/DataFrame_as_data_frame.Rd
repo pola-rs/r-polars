@@ -7,8 +7,7 @@
 \usage{
 DataFrame_as_data_frame(...)
 
-# S3 method
-as.data.frame.DataFrame()
+\method{as.data.frame}{DataFrame}(x, ...)
 }
 \arguments{
 \item{...}{any params passed to as.data.frame}

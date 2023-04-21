@@ -61,7 +61,6 @@ extendr_method_to_pure_functions = function(env) {
 ##this macro must be defined now
 
 #' @title add syntax verification to class
-#' @name macro_add_syntax_check_to
 #' @include utils.R
 #' @param Class_name string name of env class
 #'
@@ -134,6 +133,7 @@ method_as_property = function(f, setter=FALSE) {
 #' via the new class functions.
 #'
 #' Having all functions in an namespace is similar to the rust- and python- polars api.
+#' @rdname pl_class
 #' @name pl_class
 #' @aliases pl
 #' @keywords api

@@ -21,3 +21,4 @@ pl$mem_address(df1) != pl$mem_address(df2)
 pl$mem_address(df1) == pl$mem_address(df3)
 
 }
+\keyword{DataFrame}
