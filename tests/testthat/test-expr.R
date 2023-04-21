@@ -55,7 +55,7 @@ test_that("expression Arithmetics", {
     (pl$lit(1)$add(pl$lit(2)) == (1+2))$alias("1$add(2) == (1+2)"),
     (pl$lit(1)$mul(pl$lit(2)) == (1*2))$alias("1$mul(2) == (1*2)"),
     (pl$lit(1)$sub(pl$lit(2)) == (1-2))$alias("1$sub(2) == (1-2)")
-  )$as_data_frame(check.names=FALSE)
+  )$to_data_frame(check.names=FALSE)
 
   results  = unlist(check_list)
   fails = results[!unlist(results)]
@@ -122,7 +122,7 @@ test_that("first last heaad tail", {
     (pl$col("a")$first() == 1L)$alias("1 is first"),
     (pl$col("a")$last() == 11L)$alias("11 is last")
 
-  )$as_data_frame(check.names=FALSE)
+  )$to_data_frame(check.names=FALSE)
 
   results  = unlist(check_list)
   fails = results[!unlist(results)]
@@ -131,7 +131,7 @@ test_that("first last heaad tail", {
   df = pl$DataFrame(list(a=1:11))$select(
     pl$col("a")$head()$alias("head10"),
     pl$col("a")$tail()$alias("tail10")
-  )$as_data_frame()
+  )$to_data_frame()
 
   expect_equal(
     df,
@@ -141,7 +141,7 @@ test_that("first last heaad tail", {
   df = pl$DataFrame(list(a=1:11))$select(
     pl$col("a")$head(2)$alias("head2"),
     pl$col("a")$tail(2)$alias("tail2")
-  )$as_data_frame()
+  )$to_data_frame()
   expect_equal(
     df,
     data.frame(head2 = 1:2, tail2=10:11)
@@ -151,7 +151,7 @@ test_that("first last heaad tail", {
   df = pl$DataFrame(list(a=1:11))$select(
     pl$col("a")$limit(2)$alias("limit2"),
     pl$col("a")$tail(2)$alias("tail2")
-  )$as_data_frame()
+  )$to_data_frame()
   expect_equal(
     df,
     data.frame(limit2 = 1:2, tail2=10:11)
@@ -169,7 +169,7 @@ test_that("is_null", {
   )
 
   expect_equal(
-    df$with_columns(pl$all()$is_null()$suffix("_isnull"))$as_data_frame(),
+    df$with_columns(pl$all()$is_null()$suffix("_isnull"))$to_data_frame(),
     data.frame(
       a=c(1:2,NA_integer_,1L,5L),
       b=c(1,2,NaN,1,5),
@@ -179,8 +179,8 @@ test_that("is_null", {
   )
 
   expect_equal(
-    df$with_columns(pl$all()$is_not_null()$suffix("_isnull"))$as_data_frame(),
-    df$with_columns(pl$all()$is_null()$is_not()$suffix("_isnull"))$as_data_frame()
+    df$with_columns(pl$all()$is_not_null()$suffix("_isnull"))$to_data_frame(),
+    df$with_columns(pl$all()$is_null()$is_not()$suffix("_isnull"))$to_data_frame()
   )
 
 })
@@ -190,7 +190,7 @@ test_that("min max", {
   check_list = pl$DataFrame(list(x=c(1,NA,3)))$select(
     (pl$col("x")$max() == 3L)$alias("3 is max"),
     (pl$col("x")$min() == 1L)$alias("1 not null is min")
-  )$as_data_frame()
+  )$to_data_frame()
 
   results  = unlist(check_list)
   fails = results[!unlist(results)]
@@ -221,26 +221,26 @@ test_that("col DataType + col(s) + col regex", {
 
   #one Datatype
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(pl$dtypes$Float64))$as_data_frame(),
+    pl$DataFrame(iris)$select(pl$col(pl$dtypes$Float64))$to_data_frame(),
     iris[,sapply(iris,is.numeric)]
   )
 
   #multiple
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(list(pl$Float64,pl$Categorical)))$as_data_frame(),
+    pl$DataFrame(iris)$select(pl$col(list(pl$Float64,pl$Categorical)))$to_data_frame(),
     iris
   )
 
   #multiple cols
   Names = c("Sepal.Length","Sepal.Width")
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col(Names))$as_data_frame(),
+    pl$DataFrame(iris)$select(pl$col(Names))$to_data_frame(),
     iris[,Names]
   )
 
   #regex
   expect_equal(
-    pl$DataFrame(iris)$select(pl$col("^Sepal.*$"))$as_data_frame(),
+    pl$DataFrame(iris)$select(pl$col("^Sepal.*$"))$to_data_frame(),
     iris[,Names]
   )
 
@@ -257,17 +257,17 @@ test_that("col DataType + col(s) + col regex", {
 test_that("lit expr", {
 
   expect_identical(
-    pl$DataFrame(list(a = 1:4))$filter(pl$col("a")>2L)$as_data_frame()$a,
+    pl$DataFrame(list(a = 1:4))$filter(pl$col("a")>2L)$to_data_frame()$a,
     3:4
   )
 
   expect_identical(
-    pl$DataFrame(list(a = letters))$filter(pl$col("a")>="x")$as_data_frame()$a,
+    pl$DataFrame(list(a = letters))$filter(pl$col("a")>="x")$to_data_frame()$a,
     c("x","y","z")
   )
 
   expect_identical(
-    pl$DataFrame(list(a = letters))$filter(pl$col("a")>=pl$lit(NULL))$as_data_frame(),
+    pl$DataFrame(list(a = letters))$filter(pl$col("a")>=pl$lit(NULL))$to_data_frame(),
     data.frame(a=character())
   )
 
@@ -336,31 +336,31 @@ test_that("prefix suffix reverse", {
 
 test_that("and or is_in xor", {
   df = pl$DataFrame(list())
-  expect_true( df$select(pl$lit(T)&T)$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(T)&F)$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F)&T)$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F)&F)$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)&T)$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(T)&F)$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)&T)$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)&F)$to_data_frame()[[1L]])
 
-  expect_true( df$select(pl$lit(T)|T)$as_data_frame()[[1L]])
-  expect_true( df$select(pl$lit(T)|F)$as_data_frame()[[1L]])
-  expect_true( df$select(pl$lit(F)|T)$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F)|F)$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)|T)$to_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)|F)$to_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(F)|T)$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)|F)$to_data_frame()[[1L]])
 
-  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$as_data_frame()[[1L]])
-  expect_true( df$select(pl$lit(T)$xor(pl$lit(F)))$as_data_frame()[[1L]])
-  expect_true( df$select(pl$lit(F)$xor(pl$lit(T)))$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$as_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(T)$xor(pl$lit(T)))$to_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(T)$xor(pl$lit(F)))$to_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(F)$xor(pl$lit(T)))$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(F)$xor(pl$lit(F)))$to_data_frame()[[1L]])
 
   df = pl$DataFrame(list(a=c(1:3,NA_integer_)))
-  expect_true( df$select(pl$lit(1L)$is_in(pl$col("a")))$as_data_frame()[[1L]])
-  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$as_data_frame()[[1L]])
+  expect_true( df$select(pl$lit(1L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
+  expect_true(!df$select(pl$lit(4L)$is_in(pl$col("a")))$to_data_frame()[[1L]])
 
 
   #NA_int == NA_int
   expect_identical(
     pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_integer_))
-    )$as_data_frame()[[1L]],
+    )$to_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 
@@ -368,7 +368,7 @@ test_that("and or is_in xor", {
   expect_identical(
     pl$DataFrame(list(a=c(1:4,NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_real_))
-    )$as_data_frame()[[1L]],
+    )$to_data_frame()[[1L]],
     c(1:4,NA_integer_) %in% NA_real_
   )
 
@@ -393,7 +393,7 @@ test_that("and or is_in xor", {
       #neither typed nor untyped NULL is IN NULL
       pl$lit(NA_real_)$is_in(pl$lit(NULL))$is_not()$alias("NULL typed is in NULL, NOT"),
       pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
-    )$as_data_frame() |> unlist() |> all()
+    )$to_data_frame() |> unlist() |> all()
   )
 
 
@@ -414,7 +414,7 @@ test_that("to_physical + cast", {
       $alias("vals_physical")
   )
 
-  df_act = df$as_data_frame()
+  df_act = df$to_data_frame()
   df_act$vals_physical = as.numeric(df_act$vals_physical)
   expect_identical(
     df_act,
@@ -443,19 +443,19 @@ test_that("to_physical + cast", {
 
   #NA_int for strict_
   expect_identical(
-    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE))$as_data_frame()$big,
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE))$to_data_frame()$big,
     NA_integer_
   )
 
   #strict = FALSE yield NULL for overflow
   expect_identical(
-    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE)$is_null())$as_data_frame()$big,
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int32,strict=FALSE)$is_null())$to_data_frame()$big,
     TRUE
   )
 
   #no overflow to Int64
   expect_identical(
-    df_big_n$with_columns(pl$col("big")$cast(pl$Int64)$is_null())$as_data_frame()$big,
+    df_big_n$with_columns(pl$col("big")$cast(pl$Int64)$is_null())$to_data_frame()$big,
     FALSE
   )
 
@@ -484,18 +484,18 @@ test_that("pow, rpow, sqrt, log10", {
 
   #log10
   expect_equal(
-    pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())$as_data_frame()$a,
+    pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())$to_data_frame()$a,
     -1:3
   )
 
   #log
-  expect_equal(pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$as_data_frame()$a,-1:3)
-  expect_equal(pl$DataFrame(list(a = .42^(-1:3)))$select(pl$col("a")$log(0.42))$as_data_frame()$a,-1:3)
+  expect_equal(pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())$to_data_frame()$a,-1:3)
+  expect_equal(pl$DataFrame(list(a = .42^(-1:3)))$select(pl$col("a")$log(0.42))$to_data_frame()$a,-1:3)
 
   #exp
   log10123 = suppressWarnings(log(-1:3))
   expect_equal(
-    pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$as_data_frame()$a,
+    pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
     exp(1)^log10123
   )
 
@@ -1431,7 +1431,7 @@ test_that("Expr_filter", {
   df = pdf$groupby("group_col")$agg(
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
-  )$as_data_frame() |> (\(x) x[order(x$group_col),])()
+  )$to_data_frame() |> (\(x) x[order(x$group_col),])()
   row.names(df) = NULL
 
   expect_identical(
@@ -1451,7 +1451,7 @@ test_that("Expr explode/flatten", {
   df = pl$DataFrame(list(a=letters))$select(pl$col("a")$explode()$take(0:5))
 
   expect_identical(
-    df$as_data_frame()$a,
+    df$to_data_frame()$a,
     letters[1:6]
   )
 
@@ -1461,7 +1461,7 @@ test_that("Expr explode/flatten", {
     pl$col(c("Sepal.Width","Sepal.Length"))$explode()
   )
 
-  df = listed_group_df$as_data_frame()
+  df = listed_group_df$to_data_frame()
 
 
   # yikes kinda like by(), but all details are different
@@ -1614,7 +1614,7 @@ test_that("Expr_rolling_", {
         quantile=.33,window_size = 2,interpolation = "linear"
       )$alias("quantile_linear")
 
-    )$as_data_frame(),
+    )$to_data_frame(),
     df_expected
   )
 
@@ -2341,7 +2341,7 @@ test_that("concat_list", {
    )
   )
   expect_identical(
-    df_act$as_data_frame(),
+    df_act$to_data_frame(),
     structure(list(
       A_rolling = list(
         c(NA, NA, 1), c(NA, 1, 2),
@@ -2361,7 +2361,7 @@ test_that("concat_list", {
   ))$alias("alice")$lit_to_df()
 
   expect_identical(
-    df_act$as_data_frame(),
+    df_act$to_data_frame(),
     structure(list(alice = list(
       c(1L, 5L, 0L),
       c(2L, 4L, 0L),

@@ -33,7 +33,6 @@ GroupBy <- new.env(parent = emptyenv())
 #'
 #' @examples pl$DataFrame(iris)$groupby("Species")
 print.GroupBy = function(x, ...) {
-  cat("polars GroupBy: ")
   .pr$DataFrame$print(x)
   cat("groups: ")
   .pr$ProtoExprArray$print(attr(x,"private")$groupby_input)
@@ -219,6 +218,38 @@ GroupBy_std = function() {
   self$agg(pl$all()$std())
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords GroupBy
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+GroupBy_quantile = function(quantile, interpolation = "nearest") {
+  self$agg(pl$all()$quantile(quantile, interpolation))
+}
+
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords GroupBy
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift(2)
+GroupBy_shift = function(periods = 1) {
+  self$agg(pl$all()$shift(periods))
+}
+
+#' @title Shift and fill
+#' @description Shift and fill the values by a given period.
+#' @keywords GroupBy
+#' @param fill_value fill None values with the result of this expression.
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 1)
+GroupBy_shift_and_fill = function(fill_value, periods = 1) {
+  self$agg(pl$all()$shift_and_fill(periods, fill_value))
+}
+
 #' @title GroupBy null count
 #' @description Create a new DataFrame that shows the null counts per column.
 #' @keywords DataFrame
@@ -238,11 +269,15 @@ GroupBy_null_count <- function() {
 #' @return R data.frame
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$as_data_frame() #R-polars back and forth
-GroupBy_as_data_frame = function(...) {
+#' @examples pl$DataFrame(iris)$to_data_frame() #R-polars back and forth
+GroupBy_to_data_frame = function(...) {
   as.data.frame(
     x = unwrap(.pr$DataFrame$to_list(self)),
     col.names = .pr$DataFrame$columns(self),
     ...
   )
 }
+
+#' Alias to GroupBy_to_data_frame (backward compatibility)
+#' @noRd
+GroupBy_as_data_frame = GroupBy_to_data_frame

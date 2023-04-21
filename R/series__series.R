@@ -251,7 +251,6 @@ Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
 
-
 #TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare
@@ -328,7 +327,7 @@ Series_shape = method_as_property(function() {
 #' #Series_non_list
 #' series_vec$to_r() #as vector because Series DataType is not list (is Utf8)
 #' series_vec$to_r_list() #implicit call as.list(), convert to list
-#' series_vec$to_r_vector() #implicit call unlist(), same as to_r() as already vector
+#' series_vec$to_vector() #implicit call unlist(), same as to_r() as already vector
 #'
 #'
 #' #make nested Series_list of Series_list of Series_Int32
@@ -346,21 +345,25 @@ Series_shape = method_as_property(function() {
 #' #Series_list
 #' series_list$to_r() #as list because Series DataType is list
 #' series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
-#' series_list$to_r_vector() #implicit call unlist(), append into a vector
+#' series_list$to_vector() #implicit call unlist(), append into a vector
 Series_to_r = \() {
   unwrap(.pr$Series$to_r(self))
 }
 #TODO replace list example with Series only syntax
 
 #' @rdname Series_to_r
-#' @name Series_to_r_vector
+#' @name Series_to_vector
 #' @description return R vector (implicit unlist)
 #' @return R vector
 #' @keywords Series
 #' @examples  #
-Series_to_r_vector = \() {
+Series_to_vector = \() {
   unlist(unwrap(.pr$Series$to_r(self)))
 }
+
+#' Alias to Series_to_vector (backward compatibility)
+#' @noRd
+Series_to_r_vector = Series_to_vector
 
 #' @rdname Series_to_r
 #' @name Series_to_r_list
@@ -511,7 +514,7 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' s_imut = pl$Series(1:3)
 #' s_imut_copy = s_imut
 #' s_new = s_imut$append(pl$Series(1:3))
-#' identical(s_imut$to_r_vector(),s_imut_copy$to_r_vector())
+#' identical(s_imut$to_vector(),s_imut_copy$to_vector())
 #'
 #' #pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
@@ -519,7 +522,7 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #'  #must deactivate this to allow to use immutable=FALSE
 #' pl$set_polars_options(strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
-#' identical(s_new$to_r_vector(),s_mut_copy$to_r_vector())
+#' identical(s_new$to_vector(),s_mut_copy$to_vector())
 Series_append = function(other, immutable = TRUE) {
   if(!isFALSE(immutable)) {
     c(self,other)

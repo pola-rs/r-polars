@@ -80,8 +80,8 @@
 #'
 #' #verify tables would be the same
 #' all.equal(
-#'   Pdf_okay$as_data_frame(),
-#'   Pdf_best$as_data_frame()
+#'   Pdf_okay$to_data_frame(),
+#'   Pdf_best$to_data_frame()
 #' )
 #'
 #' #a user might write it as a one-liner like so:
@@ -297,6 +297,77 @@ LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof))
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords LazyFrame
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+LazyFrame_quantile = function(quantile, interpolation = "nearest") {
+  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation))
+}
+
+#' @title Fill NaN
+#' @description Fill floating point NaN values by an Expression evaluation.
+#' @keywords LazyFrame
+#' @param fill_value Value to fill NaN with.
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1.5, 2, NaN, 4),
+#'         b = c(1.5, NaN, NaN, 4)
+#' )$lazy()
+#' df$fill_nan(99)$collect()
+LazyFrame_fill_nan = function(fill_value) {
+  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)))
+}
+
+#' @title Fill null
+#' @description Fill null values using the specified value or strategy.
+#' @keywords LazyFrame
+#' @param fill_value Value to fill `NA` with.
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'         a = c(1.5, 2, NA, 4),
+#'         b = c(1.5, NA, NA, 4)
+#' )$lazy()
+#' df$fill_null(99)$collect()
+LazyFrame_fill_null = function(fill_value) {
+  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)))
+}
+
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords LazyFrame
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
+LazyFrame_shift = function(periods = 1) {
+  unwrap(.pr$LazyFrame$shift(self, periods))
+}
+
+#' @title Shift and fill
+#' @description Shift the values by a given period and fill the resulting null values.
+#' @keywords LazyFrame
+#' @param fill_value fill None values with the result of this expression.
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$collect()$as_data_frame()
+LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
+  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods))
+}
+
+#' @title Drop
+#' @description Remove columns from the dataframe.
+#' @keywords LazyFrame
+#' @param columns character vector Name of the column(s) that should be removed from the dataframe.
+#' @return LazyFrame
+#' @examples pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
+LazyFrame_drop = function(columns) {
+  unwrap(.pr$LazyFrame$drop(self, columns))
+}
 
 #' @title Reverse
 #' @description Reverse the DataFrame.
@@ -330,6 +401,46 @@ LazyFrame_slice = function(offset, length = NULL) {
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self,n))
+}
+
+#' @title Lazy_drop_nulls
+#' @description Drop all rows that contain null values.
+#' @keywords LazyFrame
+#' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
+#'
+#' @return LazyFrame
+#' @examples
+#' tmp = mtcars
+#' tmp[1:3, "mpg"] = NA
+#' tmp[4, "hp"] = NA
+#' pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height
+#' pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height
+#' pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height
+LazyFrame_drop_nulls = function(subset = NULL) {
+  pra = do.call(construct_ProtoExprArray, as.list(subset))
+  .pr$LazyFrame$drop_nulls(self, pra)
+}
+
+#' @title Lazy_unique
+#' @description Drop duplicate rows from this dataframe.
+#' @keywords LazyFrame
+#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#' @param keep string. Which of the duplicate rows to keep:
+#' * "first": Keep first unique row.
+#' * "last": Keep last unique row.
+#' * "none": Don’t keep duplicate rows.
+#'
+#' @return LazyFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   x = as.numeric(c(1, 1:5)),
+#'   y = as.numeric(c(1, 1:5)),
+#'   z = as.numeric(c(1, 1, 1:4)))
+#' df$lazy()$unique()$collect()$height
+#' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
+LazyFrame_unique = function(subset = NULL, keep = "first") {
+  if (is.null(subset)) subset = vector("character")
+  unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
 }
 
 #' @title Lazy_groupby
@@ -405,6 +516,69 @@ LazyFrame_join = function(
 
 
 
+
+#' LazyFrame Sort
+#' @description sort a LazyFrame by on or more Expr
+#'
+#' @param by Column(s) to sort by. Column name strings, character vector of
+#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column name strings).
+#' @param ... more columns to sort by as above but provided one Expr per argument.
+#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
+#' as number of Expr's from above by + ....
+#' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
+#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
+#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
+#'
+#'
+#' @return LazyFrame
+#' @keywords  DataFrame
+#' @examples
+#' df = mtcars
+#' df$mpg[1] = NA
+#' df = pl$DataFrame(df)
+#' df$lazy()$sort("mpg")$collect()
+#' df$lazy()$sort("mpg", nulls_last = TRUE)$collect()
+#' df$lazy()$sort("cyl", "mpg")$collect()
+#' df$lazy()$sort(c("cyl", "mpg"))$collect()
+#' df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
+#' df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
+#' df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
+LazyFrame_sort = function(
+  by, # : IntoExpr | List[IntoExpr],
+  ..., # unnamed Into expr
+  descending = FALSE, #  bool | vector[bool] = False,
+  nulls_last =FALSE
+) {
+
+  largs = list2(...)
+  nargs = names(largs)
+
+  #match on args to check for ...
+  pcase(
+    # all the bad stuff
+    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
+    missing(by), Err("arg [by] is missing"),
+
+    #iterate over by + ... to wrap into Expr. Capture ok/err in results
+    or_else = Ok(c(
+        lapply(by, wrap_e_result, str_to_lit = FALSE),
+        lapply(largs, wrap_e_result, str_to_lit = FALSE)
+      ))
+  ) |>
+
+
+  #and_then skips step, if input is an Error otherwise call rust wrapper
+  and_then(\(by_combined) { #by_combined has Rtyp" List<Result<Expr,String>>
+    .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
+  }) |>
+
+
+  #add same context to any Error
+  unwrap("in sort():")
+
+}
 
 
 

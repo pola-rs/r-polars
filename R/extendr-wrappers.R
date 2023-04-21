@@ -83,6 +83,8 @@ DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
 
 DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
 
+DataFrame$dtype_strings <- function() .Call(wrap__DataFrame__dtype_strings, self)
+
 DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
 
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
@@ -91,7 +93,11 @@ DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, se
 
 DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
 
+DataFrame$frame_equal <- function(other) .Call(wrap__DataFrame__frame_equal, self, other)
+
 DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
+
+DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
@@ -114,6 +120,58 @@ DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
 
 #' @export
 `[[.DataFrame` <- `$.DataFrame`
+
+#' @export
+`[.DataFrame` <- function(x, i, j) {
+    # selecting `j` is usually faster, so we start here.
+    if (!missing(j)) {
+        if (is.atomic(j) && is.vector(j)) {
+            if (is.logical(j)) {
+                if (length(j) != ncol(x)) {
+                    stop(sprintf("`j` must be of length %s.", ncol(x)), call. = FALSE)
+                }
+                cols = x$columns[j]
+            } else if (is.character(j)) {
+                if (!all(j %in% x$columns)) {
+                    stop("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", "), call. = FALSE)
+                }
+                cols = j
+            } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
+                if (max(j) > ncol(x)) {
+                    stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
+                }
+                if (min(j) < 1) {
+                    stop("Elements of `j` must be greater than or equal to 1.", call. = FALSE)
+                }
+                cols = x$columns[j]
+            }
+            x = do.call(x$select, lapply(cols, pl$col))
+        } else {
+            stop("`j` must be an atomic vector of class logical, character, or integer.", call. = FALSE)
+        }
+    }
+
+    if (!missing(i)) {
+        if (is.atomic(i) && is.vector(i)) {
+            if (is.logical(i)) {
+                if (length(i) != nrow(x)) {
+                    stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
+                }
+                idx = i
+            } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
+                if (any(diff(i) < 0)) {
+                    stop("Elements of `i` must be in increasing order.", call. = FALSE)
+                }
+                idx = seq_len(x$height) %in% i
+            }
+            x = x$filter(pl$lit(idx))
+        } else {
+            stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
+        }
+    }
+
+    x
+}
 
 VecDataFrame <- new.env(parent = emptyenv())
 
@@ -833,7 +891,19 @@ LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
 
 LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
 
+LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__LazyFrame__quantile, self, quantile, interpolation)
+
+LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
+
+LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame__shift_and_fill, self, fill_value, periods)
+
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
+
+LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
+
+LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
+
+LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, self, fill_value)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
@@ -845,6 +915,10 @@ LazyFrame$tail <- function(n) .Call(wrap__LazyFrame__tail, self, n)
 
 LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
+LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
+
+LazyFrame$unique <- function(subset, keep) .Call(wrap__LazyFrame__unique, self, subset, keep)
+
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
@@ -853,11 +927,17 @@ LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self
 
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 
+LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__LazyFrame__sort_by_exprs, self, by, descending, nulls_last)
+
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 
 #' @export
 `[[.LazyFrame` <- `$.LazyFrame`
+
+# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
+# #' @export
+# `[.LazyFrame` <- `[.DataFrame`
 
 LazyGroupBy <- new.env(parent = emptyenv())
 
@@ -908,6 +988,8 @@ Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_revers
 Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted, self, reverse, nulls_last)
 
 Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
+
+Series$get_fmt <- function(index, str_length) .Call(wrap__Series__get_fmt, self, index, str_length)
 
 Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 

@@ -5,7 +5,7 @@ test_that("from_arrow", {
     df |>
     arrow::as_arrow_table() |>
     pl$from_arrow() |>
-    (\(x) x$as_data_frame())()
+    (\(x) x$to_data_frame())()
   }
 
   expect_identical(f_round_trip(iris),iris)

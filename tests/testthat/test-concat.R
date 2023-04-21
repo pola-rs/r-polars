@@ -10,8 +10,8 @@ test_that("concat dataframe", {
   })
   df_ver = pl$concat(l_ver, how="vertical")
   expect_equal(
-    df_ver$as_data_frame(),
-    do.call(rbind,lapply(l_ver,function(df) df$as_data_frame()))
+    df_ver$to_data_frame(),
+    do.call(rbind,lapply(l_ver,function(df) df$to_data_frame()))
   )
 
   #horizontal
@@ -25,14 +25,14 @@ test_that("concat dataframe", {
   })
   df_hor = pl$concat(l_hor, how = "horizontal")
   expect_equal(
-    df_hor$as_data_frame(),
-    do.call(cbind,lapply(l_hor,function(df) df$as_data_frame()))
+    df_hor$to_data_frame(),
+    do.call(cbind,lapply(l_hor,function(df) df$to_data_frame()))
   )
 
   #diagonal
   df_dia = pl$concat(l_hor, how = "diagonal")
   expect_equal(df_dia$shape,c(50,20))
-  expect_equal(mean(is.na(df_dia$as_data_frame())),9/10)
+  expect_equal(mean(is.na(df_dia$to_data_frame())),9/10)
 
 
 })
