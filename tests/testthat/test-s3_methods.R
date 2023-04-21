@@ -88,9 +88,9 @@ test_that("drop_nulls", {
   expect_equal(nrow(na.omit(d, subset = "hp")), 31)
   expect_equal(nrow(na.omit(d, subset = c("mpg", "hp"))), 28)
   expect_error(na.omit(d, "bad"),"ColumnNotFound")
-  expect_equal(nrow(na.omit(dl)), 28)
-  expect_equal(nrow(na.omit(dl, subset = "hp")), 31)
-  expect_equal(nrow(na.omit(dl, subset = c("mpg", "hp"))), 28)
+  expect_equal(nrow(na.omit(dl)$collect()), 28)
+  expect_equal(nrow(na.omit(dl, subset = "hp")$collect()), 31)
+  expect_equal(nrow(na.omit(dl, subset = c("mpg", "hp"))$collect()), 28)
   expect_error(na.omit(dl, "bad")$collect(),"ColumnNotFound")
 })
 
