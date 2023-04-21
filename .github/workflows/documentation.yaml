@@ -91,7 +91,7 @@ jobs:
         with:
           extra-packages: local::., any::pak
       - name: Install dev version of altdoc
-        run: pak::pak("etiennebacher/altdoc")
+        run: pak::pak("etiennebacher/altdoc@custom-reference")
         shell: Rscript {0}
 
 
