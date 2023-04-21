@@ -72,7 +72,7 @@ code for some hypothetical dataset.
 
 ``` python
 # Python
-df.group_by("id").mean()
+df.groupby("id").mean()
 ```
 
 ``` r
@@ -106,7 +106,7 @@ ser
 
 dat = pl$DataFrame(mtcars)
 dat
-#> polars DataFrame: shape: (32, 11)
+#> shape: (32, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -138,7 +138,7 @@ pl$DataFrame(
   c(5, 4, 3, 2, 1),
   1:5
 )
-#> polars DataFrame: shape: (5, 6)
+#> shape: (5, 6)
 #> ┌──────┬─────┬─────┬──────┬────────────┬──────────────┐
 #> │ a    ┆ b   ┆ c   ┆ d    ┆ new_column ┆ new_column_1 │
 #> │ ---  ┆ --- ┆ --- ┆ ---  ┆ ---        ┆ ---          │
@@ -168,6 +168,19 @@ max(ser)
 #> ]
 
 # DataFrame
+dat[c(1:3, 12), c("mpg", "hp")]
+#> shape: (4, 2)
+#> ┌──────┬───────┐
+#> │ mpg  ┆ hp    │
+#> │ ---  ┆ ---   │
+#> │ f64  ┆ f64   │
+#> ╞══════╪═══════╡
+#> │ 21.0 ┆ 110.0 │
+#> │ 21.0 ┆ 110.0 │
+#> │ 22.8 ┆ 93.0  │
+#> │ 16.4 ┆ 180.0 │
+#> └──────┴───────┘
+
 names(dat)
 #>  [1] "mpg"  "cyl"  "disp" "hp"   "drat" "wt"   "qsec" "vs"   "am"   "gear" "carb"
 
@@ -175,7 +188,7 @@ dim(dat)
 #> [1] 32 11
 
 head(dat, n = 2)
-#> polars DataFrame: shape: (2, 11)
+#> shape: (2, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -192,10 +205,10 @@ Although some simple R functions work out of the box on **polars**
 objects, the full power of Polars is realized via *methods*. Polars
 methods are accessed using the `$` syntax. For example, to convert
 Polars `Series` and `DataFrames` back to standard R objects, we use the
-`$to_r_vector()` and `$as_data_frame()` methods:
+`$to_vector()` and `$to_data_frame()` methods:
 
 ``` r
-ser$to_r_vector()
+ser$to_vector()
 #> [1]  5 10 15 20 25
 ```
 
@@ -210,7 +223,7 @@ ser$max()
 #> ]
 
 dat$slice(offset = 2, length = 3)  
-#> polars DataFrame: shape: (3, 11)
+#> shape: (3, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -248,7 +261,7 @@ method to compute the maximum value in each column:
 
 ``` r
 dat$max()
-#> polars DataFrame: shape: (1, 11)
+#> shape: (1, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -264,7 +277,7 @@ dataset, and then use the `$max` method to compute the maximums in those
 
 ``` r
 dat$tail(10)$max()
-#> polars DataFrame: shape: (1, 11)
+#> shape: (1, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -277,7 +290,7 @@ dat$tail(10)$max()
 Finally, we convert the result to a standard R data frame:
 
 ``` r
-dat$tail(10)$max()$as_data_frame()
+dat$tail(10)$max()$to_data_frame()
 #>    mpg cyl disp  hp drat    wt qsec vs am gear carb
 #> 1 30.4   8  400 335 4.43 3.845 18.9  1  1    5    8
 ```
@@ -289,15 +302,15 @@ means:
 
 ``` r
 dat$groupby("cyl")$mean()
-#> polars DataFrame: shape: (3, 11)
+#> shape: (3, 11)
 #> ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐
 #> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │
 #> │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
 #> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
 #> ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡
-#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
-#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
 #> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
+#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
 #> └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
@@ -312,7 +325,7 @@ and also columns
 
 ``` r
 dat$filter(pl$col("cyl") == 6)
-#> polars DataFrame: shape: (7, 11)
+#> shape: (7, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -328,7 +341,7 @@ dat$filter(pl$col("cyl") == 6)
 #> └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
 
 dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
-#> polars DataFrame: shape: (3, 11)
+#> shape: (3, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -340,7 +353,7 @@ dat$filter(pl$col("cyl") == 6 & pl$col("am") == 1)
 #> └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
 
 dat$select(pl$col(c("mpg", "hp")))
-#> polars DataFrame: shape: (32, 2)
+#> shape: (32, 2)
 #> ┌──────┬───────┐
 #> │ mpg  ┆ hp    │
 #> │ ---  ┆ ---   │
@@ -366,7 +379,7 @@ dat$filter(
 )$select(
   pl$col(c("mpg", "hp", "cyl"))
 )
-#> polars DataFrame: shape: (7, 3)
+#> shape: (7, 3)
 #> ┌──────┬───────┬─────┐
 #> │ mpg  ┆ hp    ┆ cyl │
 #> │ ---  ┆ ---   ┆ --- │
@@ -400,7 +413,7 @@ dat$with_columns(
   pl$col("mpg")$sum()$over("cyl")$alias("sum_mpg"),
   pl$col("hp")$sum()$over("cyl")$alias("sum_hp")
 )
-#> polars DataFrame: shape: (32, 13)
+#> shape: (32, 13)
 #> ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │
@@ -425,7 +438,7 @@ concisely as:
 dat$with_columns(
   pl$col(c("mpg", "hp"))$sum()$over("cyl")$prefix("sum_")
 )
-#> polars DataFrame: shape: (32, 13)
+#> shape: (32, 13)
 #> ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │
@@ -456,7 +469,7 @@ dat$groupby(
 )$agg(
   pl$col(c("mpg", "hp"))$sum()
 )
-#> polars DataFrame: shape: (3, 3)
+#> shape: (3, 3)
 #> ┌─────┬───────┬────────┐
 #> │ cyl ┆ mpg   ┆ hp     │
 #> │ --- ┆ ---   ┆ ---    │
@@ -483,18 +496,18 @@ dat$groupby(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )
-#> polars DataFrame: shape: (6, 4)
+#> shape: (6, 4)
 #> ┌─────┬────────┬───────────┬────────┐
 #> │ cyl ┆ manual ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ ---    ┆ ---       ┆ ---    │
 #> │ f64 ┆ bool   ┆ f64       ┆ f64    │
 #> ╞═════╪════════╪═══════════╪════════╡
-#> │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │
-#> │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │
-#> │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │
 #> │ 6.0 ┆ true   ┆ 20.566667 ┆ 110.0  │
 #> │ 4.0 ┆ true   ┆ 28.075    ┆ 78.5   │
 #> │ 8.0 ┆ true   ┆ 15.4      ┆ 299.5  │
+#> │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │
+#> │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │
+#> │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │
 #> └─────┴────────┴───────────┴────────┘
 ```
 
@@ -517,7 +530,7 @@ flights$join(
   on = "tailnum", 
   how = "left"
 )
-#> polars DataFrame: shape: (336776, 27)
+#> shape: (336776, 27)
 #> ┌──────┬───────┬─────┬──────────┬─────┬─────────┬───────┬───────┬───────────┐
 #> │ year ┆ month ┆ day ┆ dep_time ┆ ... ┆ engines ┆ seats ┆ speed ┆ engine    │
 #> │ ---  ┆ ---   ┆ --- ┆ ---      ┆     ┆ ---     ┆ ---   ┆ ---   ┆ ---       │
@@ -608,7 +621,7 @@ lazy execution engines like those provided by **arrow** or **dbplyr**.
 
 ``` r
 subset_query$collect()
-#> polars DataFrame: shape: (7, 3)
+#> shape: (7, 3)
 #> ┌──────┬───────┬─────┐
 #> │ mpg  ┆ hp    ┆ cyl │
 #> │ ---  ┆ ---   ┆ --- │
@@ -634,7 +647,7 @@ bundled with base R.
 write.csv(airquality, "airquality.csv")
 
 pl$read_csv("airquality.csv")
-#> polars DataFrame: shape: (153, 7)
+#> shape: (153, 7)
 #> ┌─────┬───────┬─────────┬──────┬──────┬───────┬─────┐
 #> │     ┆ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Month ┆ Day │
 #> │ --- ┆ ---   ┆ ---     ┆ ---  ┆ ---  ┆ ---   ┆ --- │
@@ -668,6 +681,14 @@ storage format on disk. Let’s see an example.
 
 ``` r
 library(arrow)
+#> 
+#> Attaching package: 'arrow'
+#> The following object is masked from 'package:testthat':
+#> 
+#>     matches
+#> The following object is masked from 'package:utils':
+#> 
+#>     timestamp
 
 write_parquet(airquality, "airquality.parquet")
 
@@ -681,14 +702,14 @@ aq$filter(
 )$agg(
   pl$col(c("Ozone", "Temp"))$mean()
 )$collect()
-#> polars DataFrame: shape: (2, 3)
+#> shape: (2, 3)
 #> ┌───────┬───────────┬───────────┐
 #> │ Month ┆ Ozone     ┆ Temp      │
 #> │ ---   ┆ ---       ┆ ---       │
 #> │ i32   ┆ f64       ┆ f64       │
 #> ╞═══════╪═══════════╪═══════════╡
-#> │ 6     ┆ 29.444444 ┆ 79.1      │
 #> │ 5     ┆ 23.615385 ┆ 65.548387 │
+#> │ 6     ┆ 29.444444 ┆ 79.1      │
 #> └───────┴───────────┴───────────┘
 ```
 
@@ -709,7 +730,7 @@ aq2 = scan_parquet("airquality-ds/*/*.parquet")
 # Just print the first two rows. But note that the Month column
 # (which we used for partitioning) is missing.
 aq2$limit(2)$collect()
-#> polars DataFrame: shape: (2, 5)
+#> shape: (2, 5)
 #> ┌───────┬─────────┬──────┬──────┬─────┐
 #> │ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Day │
 #> │ ---   ┆ ---     ┆ ---  ┆ ---  ┆ --- │
@@ -739,11 +760,11 @@ using native Polars functions and expressions wherever possible.
 ``` r
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$map(\(s) { # map with a R function
-    x = s$to_r_vector() # convert from Polars Series to a native R vector
+    x = s$to_vector() # convert from Polars Series to a native R vector
     x[x>=5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
     })
-)$as_data_frame()
+)$to_data_frame()
 #>    Sepal.Length
 #> 1          10.0
 #> 2           4.9

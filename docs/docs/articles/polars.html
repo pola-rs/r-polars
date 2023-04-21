@@ -665,7 +665,7 @@ for more ideas. Just remember to switch out any “.” (Python) for a “$”
 (R) when chaining methods. For example, here are two equivalent lines of
 code for some hypothetical dataset.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Python</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>df.group_by(<span class="st">&quot;id&quot;</span>).mean()</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>df.groupby(<span class="st">&quot;id&quot;</span>).mean()</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># R</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>df<span class="sc">$</span><span class="fu">groupby</span>(<span class="st">&quot;id&quot;</span>)<span class="sc">$</span><span class="fu">mean</span>()</span></code></pre></div>
 <h2 id="series-and-dataframes"><code>Series</code> and
@@ -693,7 +693,7 @@ functions are made available via <code>pl$</code>:</p>
 <span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
 <span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>dat <span class="ot">=</span> pl<span class="sc">$</span><span class="fu">DataFrame</span>(mtcars)</span>
 <span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>dat</span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (32, 11)</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt; shape: (32, 11)</span></span>
 <span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -722,7 +722,7 @@ vectors.</p>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>),</span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>)</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (5, 6)</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; shape: (5, 6)</span></span>
 <span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬─────┬──────┬────────────┬──────────────┐</span></span>
 <span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; │ a    ┆ b   ┆ c   ┆ d    ┆ new_column ┆ new_column_1 │</span></span>
 <span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ --- ┆ ---  ┆ ---        ┆ ---          │</span></span>
@@ -748,31 +748,44 @@ using many standard R functions. For example:</p>
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; ]</span></span>
 <span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># DataFrame</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">names</span>(dat)</span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">dim</span>(dat)</span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; [1] 32 11</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="fu">head</span>(dat, <span class="at">n =</span> <span class="dv">2</span>)</span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (2, 11)</span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │</span></span>
-<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡</span></span>
-<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span></span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span></span>
-<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span></span></code></pre></div>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>dat[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">12</span>), <span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>)]</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; shape: (4, 2)</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; ┌──────┬───────┐</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ hp    │</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ ---   │</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; │ f64  ┆ f64   │</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; ╞══════╪═══════╡</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 110.0 │</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 110.0 │</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt; │ 22.8 ┆ 93.0  │</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; │ 16.4 ┆ 180.0 │</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; └──────┴───────┘</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="fu">names</span>(dat)</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="fu">dim</span>(dat)</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">#&gt; [1] 32 11</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="fu">head</span>(dat, <span class="at">n =</span> <span class="dv">2</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">#&gt; shape: (2, 11)</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="co">#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a><span class="co">#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a><span class="co">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span></span></code></pre></div>
 <h2 id="methods-and-pipelines">Methods and pipelines</h2>
 <p>Although some simple R functions work out of the box on
 <strong>polars</strong> objects, the full power of Polars is realized
 via <em>methods</em>. Polars methods are accessed using the
 <code>$</code> syntax. For example, to convert Polars
 <code>Series</code> and <code>DataFrames</code> back to standard R
-objects, we use the <code>$to_r_vector()</code> and
-<code>$as_data_frame()</code> methods:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ser<span class="sc">$</span><span class="fu">to_r_vector</span>()</span>
+objects, we use the <code>$to_vector()</code> and
+<code>$to_data_frame()</code> methods:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>ser<span class="sc">$</span><span class="fu">to_vector</span>()</span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1]  5 10 15 20 25</span></span></code></pre></div>
 <p>There are numerous methods designed to accomplish various tasks:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>ser<span class="sc">$</span><span class="fu">max</span>()</span>
@@ -783,7 +796,7 @@ objects, we use the <code>$to_r_vector()</code> and
 <span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; ]</span></span>
 <span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
 <span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">slice</span>(<span class="at">offset =</span> <span class="dv">2</span>, <span class="at">length =</span> <span class="dv">3</span>)  </span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (3, 11)</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; shape: (3, 11)</span></span>
 <span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -817,7 +830,7 @@ quick examples to help make things concrete. We use the
 in introduction.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> We use the <code>$max</code> method to
 compute the maximum value in each column:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">max</span>()</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (1, 11)</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; shape: (1, 11)</span></span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -829,7 +842,7 @@ compute the maximum value in each column:</p>
 rows of the dataset, and then use the <code>$max</code> method to
 compute the maximums in those 10 rows:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">tail</span>(<span class="dv">10</span>)<span class="sc">$</span><span class="fu">max</span>()</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (1, 11)</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; shape: (1, 11)</span></span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -838,7 +851,7 @@ compute the maximums in those 10 rows:</p>
 <span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; │ 30.4 ┆ 8.0 ┆ 400.0 ┆ 335.0 ┆ ... ┆ 1.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │</span></span>
 <span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span></span></code></pre></div>
 <p>Finally, we convert the result to a standard R data frame:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">tail</span>(<span class="dv">10</span>)<span class="sc">$</span><span class="fu">max</span>()<span class="sc">$</span><span class="fu">as_data_frame</span>()</span>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">tail</span>(<span class="dv">10</span>)<span class="sc">$</span><span class="fu">max</span>()<span class="sc">$</span><span class="fu">to_data_frame</span>()</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt;    mpg cyl disp  hp drat    wt qsec vs am gear carb</span></span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; 1 30.4   8  400 335 4.43 3.845 18.9  1  1    5    8</span></span></code></pre></div>
 <p>Below, we will introduce several other methods, including
@@ -846,15 +859,15 @@ compute the maximums in those 10 rows:</p>
 which allow us to do powerful data manipulations easily. To give you a
 small taste, we now take group-wise means:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">groupby</span>(<span class="st">&quot;cyl&quot;</span>)<span class="sc">$</span><span class="fu">mean</span>()</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (3, 11)</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt; shape: (3, 11)</span></span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐</span></span>
 <span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co">#&gt; │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │</span></span>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │</span></span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │</span></span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡</span></span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span></span>
 <span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │</span></span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span></span>
 <span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘</span></span></code></pre></div>
 <h2 id="select-columns-and-filter-rows"><code>select</code> columns and
 <code>filter</code> rows</h2>
@@ -863,7 +876,7 @@ manipulate it in different ways. For example, we can subset the data by
 rows (<a href="https://rpolars.github.io/reference/filter-open-paren-close-paren.html"><code>filter()</code></a>)
 and also columns (<a href="https://rpolars.github.io/reference/DataFrame_select.html"><code>select()</code></a>):</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">filter</span>(pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;cyl&quot;</span>) <span class="sc">==</span> <span class="dv">6</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (7, 11)</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt; shape: (7, 11)</span></span>
 <span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -879,7 +892,7 @@ and also columns (<a href="https://rpolars.github.io/reference/DataFrame_select.
 <span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span></span>
 <span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a></span>
 <span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">filter</span>(pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;cyl&quot;</span>) <span class="sc">==</span> <span class="dv">6</span> <span class="sc">&amp;</span> pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;am&quot;</span>) <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (3, 11)</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co">#&gt; shape: (3, 11)</span></span>
 <span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span></span>
 <span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span></span>
 <span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span></span>
@@ -891,7 +904,7 @@ and also columns (<a href="https://rpolars.github.io/reference/DataFrame_select.
 <span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a><span class="co">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span></span>
 <span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a></span>
 <span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">select</span>(pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>)))</span>
-<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (32, 2)</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co">#&gt; shape: (32, 2)</span></span>
 <span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a><span class="co">#&gt; ┌──────┬───────┐</span></span>
 <span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ hp    │</span></span>
 <span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ ---   │</span></span>
@@ -913,7 +926,7 @@ and also columns (<a href="https://rpolars.github.io/reference/DataFrame_select.
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">select</span>(</span>
 <span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;cyl&quot;</span>))</span>
 <span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>)</span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (7, 3)</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; shape: (7, 3)</span></span>
 <span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; ┌──────┬───────┬─────┐</span></span>
 <span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ hp    ┆ cyl │</span></span>
 <span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ ---   ┆ --- │</span></span>
@@ -942,7 +955,7 @@ method. This next code chunk is equivalent to
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;mpg&quot;</span>)<span class="sc">$</span><span class="fu">sum</span>()<span class="sc">$</span><span class="fu">over</span>(<span class="st">&quot;cyl&quot;</span>)<span class="sc">$</span><span class="fu">alias</span>(<span class="st">&quot;sum_mpg&quot;</span>),</span>
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;hp&quot;</span>)<span class="sc">$</span><span class="fu">sum</span>()<span class="sc">$</span><span class="fu">over</span>(<span class="st">&quot;cyl&quot;</span>)<span class="sc">$</span><span class="fu">alias</span>(<span class="st">&quot;sum_hp&quot;</span>)</span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>)</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (32, 13)</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; shape: (32, 13)</span></span>
 <span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐</span></span>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │</span></span>
 <span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │</span></span>
@@ -963,7 +976,7 @@ concisely as:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dat<span class="sc">$</span><span class="fu">with_columns</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>))<span class="sc">$</span><span class="fu">sum</span>()<span class="sc">$</span><span class="fu">over</span>(<span class="st">&quot;cyl&quot;</span>)<span class="sc">$</span><span class="fu">prefix</span>(<span class="st">&quot;sum_&quot;</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>)</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (32, 13)</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; shape: (32, 13)</span></span>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐</span></span>
 <span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │</span></span>
 <span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │</span></span>
@@ -989,7 +1002,7 @@ methods.</p>
 <span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">agg</span>(</span>
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;mpg&quot;</span>, <span class="st">&quot;hp&quot;</span>))<span class="sc">$</span><span class="fu">sum</span>()</span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>)</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (3, 3)</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; shape: (3, 3)</span></span>
 <span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt; ┌─────┬───────┬────────┐</span></span>
 <span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; │ cyl ┆ mpg   ┆ hp     │</span></span>
 <span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt; │ --- ┆ ---   ┆ ---    │</span></span>
@@ -1012,18 +1025,18 @@ to group by multiple variables and aggregation types.</p>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;mpg&quot;</span>)<span class="sc">$</span><span class="fu">mean</span>()<span class="sc">$</span><span class="fu">alias</span>(<span class="st">&quot;mean_mpg&quot;</span>),</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;hp&quot;</span>)<span class="sc">$</span><span class="fu">median</span>()<span class="sc">$</span><span class="fu">alias</span>(<span class="st">&quot;med_hp&quot;</span>)</span>
 <span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>)</span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (6, 4)</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt; shape: (6, 4)</span></span>
 <span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; ┌─────┬────────┬───────────┬────────┐</span></span>
 <span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; │ cyl ┆ manual ┆ mean_mpg  ┆ med_hp │</span></span>
 <span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; │ --- ┆ ---    ┆ ---       ┆ ---    │</span></span>
 <span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; │ f64 ┆ bool   ┆ f64       ┆ f64    │</span></span>
 <span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt; ╞═════╪════════╪═══════════╪════════╡</span></span>
-<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │</span></span>
-<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │</span></span>
-<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │</span></span>
-<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ true   ┆ 20.566667 ┆ 110.0  │</span></span>
-<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ true   ┆ 28.075    ┆ 78.5   │</span></span>
-<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ true   ┆ 15.4      ┆ 299.5  │</span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ true   ┆ 20.566667 ┆ 110.0  │</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ true   ┆ 28.075    ┆ 78.5   │</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ true   ┆ 15.4      ┆ 299.5  │</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │</span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │</span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │</span></span>
 <span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="co">#&gt; └─────┴────────┴───────────┴────────┘</span></span></code></pre></div>
 <p>Note that we used the <code>cast</code> method to convert the data
 type of the <code>am</code> column. See the section below for more
@@ -1042,7 +1055,7 @@ example, we’ll borrow some datasets from the
 <span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>  <span class="at">on =</span> <span class="st">&quot;tailnum&quot;</span>, </span>
 <span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>  <span class="at">how =</span> <span class="st">&quot;left&quot;</span></span>
 <span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>)</span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (336776, 27)</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; shape: (336776, 27)</span></span>
 <span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; ┌──────┬───────┬─────┬──────────┬─────┬─────────┬───────┬───────┬───────────┐</span></span>
 <span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; │ year ┆ month ┆ day ┆ dep_time ┆ ... ┆ engines ┆ seats ┆ speed ┆ engine    │</span></span>
 <span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ ---   ┆ --- ┆ ---      ┆     ┆ ---     ┆ ---   ┆ ---   ┆ ---       │</span></span>
@@ -1111,7 +1124,7 @@ datasets and more complex queries.</p>
 have previously used other lazy execution engines like those provided by
 <strong>arrow</strong> or <strong>dbplyr</strong>.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>subset_query<span class="sc">$</span><span class="fu">collect</span>()</span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (7, 3)</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="co">#&gt; shape: (7, 3)</span></span>
 <span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; ┌──────┬───────┬─────┐</span></span>
 <span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt; │ mpg  ┆ hp    ┆ cyl │</span></span>
 <span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt; │ ---  ┆ ---   ┆ --- │</span></span>
@@ -1132,7 +1145,7 @@ dataset that also comes bundled with base R.</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">write.csv</span>(airquality, <span class="st">&quot;airquality.csv&quot;</span>)</span>
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>pl<span class="sc">$</span><span class="fu">read_csv</span>(<span class="st">&quot;airquality.csv&quot;</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (153, 7)</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt; shape: (153, 7)</span></span>
 <span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt; ┌─────┬───────┬─────────┬──────┬──────┬───────┬─────┐</span></span>
 <span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt; │     ┆ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Month ┆ Day │</span></span>
 <span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; │ --- ┆ ---   ┆ ---     ┆ ---  ┆ ---  ┆ ---   ┆ --- │</span></span>
@@ -1159,28 +1172,36 @@ LazyFrame and then collect the results. However, this workflow is even
 better suited to Parquet files, since we can leverage their efficient
 storage format on disk. Let’s see an example.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">write_parquet</span>(airquality, <span class="st">&quot;airquality.parquet&quot;</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>aq <span class="ot">=</span> <span class="fu">scan_parquet</span>(<span class="st">&quot;airquality.parquet&quot;</span>)  <span class="co"># lazy version (better)</span></span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>aq<span class="sc">$</span><span class="fu">filter</span>(</span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;Month&quot;</span>) <span class="sc">&lt;=</span> <span class="dv">6</span></span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">groupby</span>(</span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>  <span class="st">&quot;Month&quot;</span></span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">agg</span>(</span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;Ozone&quot;</span>, <span class="st">&quot;Temp&quot;</span>))<span class="sc">$</span><span class="fu">mean</span>()</span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">collect</span>()</span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (2, 3)</span></span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="co">#&gt; ┌───────┬───────────┬───────────┐</span></span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="co">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span></span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="co">#&gt; │ ---   ┆ ---       ┆ ---       │</span></span>
-<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a><span class="co">#&gt; │ i32   ┆ f64       ┆ f64       │</span></span>
-<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a><span class="co">#&gt; ╞═══════╪═══════════╪═══════════╡</span></span>
-<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a><span class="co">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span></span>
-<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a><span class="co">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span></span>
-<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co">#&gt; └───────┴───────────┴───────────┘</span></span></code></pre></div>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;arrow&#39;</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:testthat&#39;:</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt;     matches</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt;     timestamp</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="fu">write_parquet</span>(airquality, <span class="st">&quot;airquality.parquet&quot;</span>)</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a><span class="co"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>aq <span class="ot">=</span> <span class="fu">scan_parquet</span>(<span class="st">&quot;airquality.parquet&quot;</span>)  <span class="co"># lazy version (better)</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>aq<span class="sc">$</span><span class="fu">filter</span>(</span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;Month&quot;</span>) <span class="sc">&lt;=</span> <span class="dv">6</span></span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">groupby</span>(</span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a>  <span class="st">&quot;Month&quot;</span></span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">agg</span>(</span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;Ozone&quot;</span>, <span class="st">&quot;Temp&quot;</span>))<span class="sc">$</span><span class="fu">mean</span>()</span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">collect</span>()</span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co">#&gt; shape: (2, 3)</span></span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a><span class="co">#&gt; ┌───────┬───────────┬───────────┐</span></span>
+<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a><span class="co">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span></span>
+<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a><span class="co">#&gt; │ ---   ┆ ---       ┆ ---       │</span></span>
+<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a><span class="co">#&gt; │ i32   ┆ f64       ┆ f64       │</span></span>
+<span id="cb26-28"><a href="#cb26-28" tabindex="-1"></a><span class="co">#&gt; ╞═══════╪═══════════╪═══════════╡</span></span>
+<span id="cb26-29"><a href="#cb26-29" tabindex="-1"></a><span class="co">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span></span>
+<span id="cb26-30"><a href="#cb26-30" tabindex="-1"></a><span class="co">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span></span>
+<span id="cb26-31"><a href="#cb26-31" tabindex="-1"></a><span class="co">#&gt; └───────┴───────────┴───────────┘</span></span></code></pre></div>
 <p>Finally, can read/scan multiple files in the same directory through
 pattern globbing. However, please note that partition-aware scanning is
 not yet supported out of the box (e.g., Hive-style partitioned
@@ -1195,7 +1216,7 @@ more details about when this will be resolved.</p>
 <span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co"># Just print the first two rows. But note that the Month column</span></span>
 <span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co"># (which we used for partitioning) is missing.</span></span>
 <span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a>aq2<span class="sc">$</span><span class="fu">limit</span>(<span class="dv">2</span>)<span class="sc">$</span><span class="fu">collect</span>()</span>
-<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a><span class="co">#&gt; polars DataFrame: shape: (2, 5)</span></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a><span class="co">#&gt; shape: (2, 5)</span></span>
 <span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a><span class="co">#&gt; ┌───────┬─────────┬──────┬──────┬─────┐</span></span>
 <span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co">#&gt; │ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Day │</span></span>
 <span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a><span class="co">#&gt; │ ---   ┆ ---     ┆ ---  ┆ ---  ┆ --- │</span></span>
@@ -1218,11 +1239,11 @@ recommend using native Polars functions and expressions wherever
 possible.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>pl<span class="sc">$</span><span class="fu">DataFrame</span>(iris)<span class="sc">$</span><span class="fu">select</span>(</span>
 <span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;Sepal.Length&quot;</span>)<span class="sc">$</span><span class="fu">map</span>(\(s) { <span class="co"># map with a R function</span></span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>    x <span class="ot">=</span> s<span class="sc">$</span><span class="fu">to_r_vector</span>() <span class="co"># convert from Polars Series to a native R vector</span></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>    x <span class="ot">=</span> s<span class="sc">$</span><span class="fu">to_vector</span>() <span class="co"># convert from Polars Series to a native R vector</span></span>
 <span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>    x[x<span class="sc">&gt;=</span><span class="dv">5</span>] <span class="ot">=</span> <span class="dv">10</span></span>
 <span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>    x[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] <span class="co"># if return is R vector, it will automatically be converted to Polars Series again</span></span>
 <span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>    })</span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">as_data_frame</span>()</span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">to_data_frame</span>()</span>
 <span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="co">#&gt;    Sepal.Length</span></span>
 <span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="co">#&gt; 1          10.0</span></span>
 <span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a><span class="co">#&gt; 2           4.9</span></span>

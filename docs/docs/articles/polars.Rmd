@@ -83,7 +83,7 @@ dataset.
 
 ```python
 # Python
-df.group_by("id").mean()
+df.groupby("id").mean()
 ```
 
 ```r
@@ -135,6 +135,8 @@ length(ser)
 max(ser)
 
 # DataFrame
+dat[c(1:3, 12), c("mpg", "hp")]
+
 names(dat)
 
 dim(dat)
@@ -147,11 +149,11 @@ head(dat, n = 2)
 Although some simple R functions work out of the box on **polars** objects, the
 full power of Polars is realized via _methods_. Polars methods are accessed
 using the `$` syntax. For example, to convert Polars `Series` and `DataFrames`
-back to standard R objects, we use the `$to_r_vector()` and `$as_data_frame()`
+back to standard R objects, we use the `$to_vector()` and `$to_data_frame()`
 methods:
 
 ```{r}
-ser$to_r_vector()
+ser$to_vector()
 ```
 
 There are numerous methods designed to accomplish various tasks:
@@ -201,7 +203,7 @@ dat$tail(10)$max()
 Finally, we convert the result to a standard R data frame:
 
 ```{r}
-dat$tail(10)$max()$as_data_frame()
+dat$tail(10)$max()$to_data_frame()
 ```
 
 Below, we will introduce several other methods, including `$select`, `$filter`,
@@ -453,11 +455,11 @@ and expressions wherever possible.
 ```{r}
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$map(\(s) { # map with a R function
-    x = s$to_r_vector() # convert from Polars Series to a native R vector
+    x = s$to_vector() # convert from Polars Series to a native R vector
     x[x>=5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
     })
-)$as_data_frame()
+)$to_data_frame()
 ```
 
 ## Data types

@@ -32,8 +32,10 @@ extra_css:
   - stylesheets/extra.css
 nav:
   - Home: README.md
-  - Articles:
-      - An Introduction to Polars from R: articles/polars.md
+  - Get started: articles/polars.md
+  ### Uncomment once we have articles
+  # - Articles:
+  #      - Article name: articles/article_name.md
   - Reference:
       - DataFrame:
           - DataFrame: reference/DataFrame.md

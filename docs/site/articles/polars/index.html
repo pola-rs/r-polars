@@ -13,7 +13,7 @@
     
     
       
-        <title>An Introduction to Polars from R - polars</title>
+        <title>Get started - polars</title>
       
     
     
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              An Introduction to Polars from R
+              Get started
             
           </span>
         </div>
@@ -208,15 +208,11 @@
   
 
 
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="./" class="md-tabs__link md-tabs__link--active">
-        Articles
-      </a>
-    </li>
-  
+  <li class="md-tabs__item">
+    <a href="./" class="md-tabs__link md-tabs__link--active">
+      Get started
+    </a>
+  </li>
 
       
         
@@ -333,34 +329,6 @@
     
   
   
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2">
-          Articles
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Articles" data-md-level="1">
-        <label class="md-nav__title" for="__nav_2">
-          <span class="md-nav__icon md-icon"></span>
-          Articles
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-    
-  
-  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
@@ -370,12 +338,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          An Introduction to Polars from R
+          Get started
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
-        An Introduction to Polars from R
+        Get started
       </a>
       
         
@@ -474,13 +442,6 @@
   
 </nav>
       
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
     </li>
   
 
@@ -7765,7 +7726,7 @@ more ideas. Just remember to switch out any “.” (Python) for a “\$” (R)
 when chaining methods. For example, here are two equivalent lines of
 code for some hypothetical dataset.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Python</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">.</span><span class="n">group_by</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># R</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">df</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span>
@@ -7793,7 +7754,7 @@ available via <code>pl$</code>:</p>
 <a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
 <a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">dat</span> <span class="o">=</span> <span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span>
 <a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">dat</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1">#&gt; polars DataFrame: shape: (32, 11)</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="c1">#&gt; shape: (32, 11)</span>
 <a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7822,7 +7783,7 @@ available via <code>pl$</code>:</p>
 <a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  <span class="nf">c</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span>
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  <span class="m">1</span><span class="o">:</span><span class="m">5</span>
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">#&gt; polars DataFrame: shape: (5, 6)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1">#&gt; shape: (5, 6)</span>
 <a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">#&gt; ┌──────┬─────┬─────┬──────┬────────────┬──────────────┐</span>
 <a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1">#&gt; │ a    ┆ b   ┆ c   ┆ d    ┆ new_column ┆ new_column_1 │</span>
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ --- ┆ ---  ┆ ---        ┆ ---          │</span>
@@ -7849,30 +7810,43 @@ functions. For example:</p>
 <a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="c1">#&gt; ]</span>
 <a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
 <a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># DataFrame</span>
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="nf">names</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">#&gt;  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="nf">dim</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">#&gt; [1] 32 11</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="nf">head</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="c1">#&gt; polars DataFrame: shape: (2, 11)</span>
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="c1">#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │</span>
-<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="c1">#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡</span>
-<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
-<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
-<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">dat</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="m">3</span><span class="p">,</span> <span class="m">12</span><span class="p">),</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;hp&quot;</span><span class="p">)]</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">#&gt; shape: (4, 2)</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1">#&gt; ┌──────┬───────┐</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1">#&gt; │ mpg  ┆ hp    │</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1">#&gt; │ ---  ┆ ---   │</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1">#&gt; │ f64  ┆ f64   │</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="c1">#&gt; ╞══════╪═══════╡</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="c1">#&gt; │ 21.0 ┆ 110.0 │</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="c1">#&gt; │ 21.0 ┆ 110.0 │</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="c1">#&gt; │ 22.8 ┆ 93.0  │</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="c1">#&gt; │ 16.4 ┆ 180.0 │</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="c1">#&gt; └──────┴───────┘</span>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="nf">names</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="c1">#&gt;  [1] &quot;mpg&quot;  &quot;cyl&quot;  &quot;disp&quot; &quot;hp&quot;   &quot;drat&quot; &quot;wt&quot;   &quot;qsec&quot; &quot;vs&quot;   &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="nf">dim</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="c1">#&gt; [1] 32 11</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="nf">head</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="m">2</span><span class="p">)</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="c1">#&gt; shape: (2, 11)</span>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
+<a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
+<a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
+<a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a><span class="c1">#&gt; │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │</span>
+<a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a><span class="c1">#&gt; ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡</span>
+<a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
+<a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a><span class="c1">#&gt; │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │</span>
+<a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
 </code></pre></div>
 <h2 id="methods-and-pipelines">Methods and pipelines</h2>
 <p>Although some simple R functions work out of the box on <strong>polars</strong>
 objects, the full power of Polars is realized via <em>methods</em>. Polars
 methods are accessed using the <code>$</code> syntax. For example, to convert
 Polars <code>Series</code> and <code>DataFrames</code> back to standard R objects, we use the
-<code>$to_r_vector()</code> and <code>$as_data_frame()</code> methods:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ser</span><span class="o">$</span><span class="nf">to_r_vector</span><span class="p">()</span>
+<code>$to_vector()</code> and <code>$to_data_frame()</code> methods:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ser</span><span class="o">$</span><span class="nf">to_vector</span><span class="p">()</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">#&gt; [1]  5 10 15 20 25</span>
 </code></pre></div>
 <p>There are numerous methods designed to accomplish various tasks:</p>
@@ -7884,7 +7858,7 @@ Polars <code>Series</code> and <code>DataFrames</code> back to standard R object
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">#&gt; ]</span>
 <a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
 <a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">dat</span><span class="o">$</span><span class="nf">slice</span><span class="p">(</span><span class="n">offset</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="m">3</span><span class="p">)</span>  
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">#&gt; polars DataFrame: shape: (3, 11)</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">#&gt; shape: (3, 11)</span>
 <a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7917,7 +7891,7 @@ examples to help make things concrete. We use the <code>mtcars</code> dataset th
 we coerced to a <code>DataFrame</code> in introduction.[^1] We use the <code>$max</code>
 method to compute the maximum value in each column:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">max</span><span class="p">()</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">#&gt; polars DataFrame: shape: (1, 11)</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1">#&gt; shape: (1, 11)</span>
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7930,7 +7904,7 @@ method to compute the maximum value in each column:</p>
 dataset, and then use the <code>$max</code> method to compute the maximums in those
 10 rows:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">tail</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="o">$</span><span class="nf">max</span><span class="p">()</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">#&gt; polars DataFrame: shape: (1, 11)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1">#&gt; shape: (1, 11)</span>
 <a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7940,7 +7914,7 @@ dataset, and then use the <code>$max</code> method to compute the maximums in th
 <a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
 </code></pre></div>
 <p>Finally, we convert the result to a standard R data frame:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">tail</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="o">$</span><span class="nf">max</span><span class="p">()</span><span class="o">$</span><span class="nf">as_data_frame</span><span class="p">()</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">tail</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="o">$</span><span class="nf">max</span><span class="p">()</span><span class="o">$</span><span class="nf">to_data_frame</span><span class="p">()</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1">#&gt;    mpg cyl disp  hp drat    wt qsec vs am gear carb</span>
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">#&gt; 1 30.4   8  400 335 4.43 3.845 18.9  1  1    5    8</span>
 </code></pre></div>
@@ -7949,15 +7923,15 @@ dataset, and then use the <code>$max</code> method to compute the maximums in th
 manipulations easily. To give you a small taste, we now take group-wise
 means:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1">#&gt; polars DataFrame: shape: (3, 11)</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="c1">#&gt; shape: (3, 11)</span>
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1">#&gt; ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐</span>
 <a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1">#&gt; │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │</span>
 <a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">#&gt; │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │</span>
 <a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1">#&gt; │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │</span>
 <a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1">#&gt; ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="c1">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span>
 <a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="c1">#&gt; │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span>
 <a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="c1">#&gt; └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘</span>
 </code></pre></div>
 <h2 id="select-columns-and-filter-rows"><code>select</code> columns and <code>filter</code> rows</h2>
@@ -7968,7 +7942,7 @@ rows
 and also columns
 (<a href="https://rpolars.github.io/reference/DataFrame_select.html"><code>select()</code></a>):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="m">6</span><span class="p">)</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">#&gt; polars DataFrame: shape: (7, 11)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">#&gt; shape: (7, 11)</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7984,7 +7958,7 @@ and also columns
 <a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
 <a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
 <a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="n">dat</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="m">6</span> <span class="o">&amp;</span> <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;am&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="m">1</span><span class="p">)</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1">#&gt; polars DataFrame: shape: (3, 11)</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1">#&gt; shape: (3, 11)</span>
 <a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐</span>
 <a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │</span>
 <a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
@@ -7996,7 +7970,7 @@ and also columns
 <a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="c1">#&gt; └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘</span>
 <a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>
 <a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a><span class="n">dat</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span><span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;hp&quot;</span><span class="p">)))</span>
-<a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="c1">#&gt; polars DataFrame: shape: (32, 2)</span>
+<a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a><span class="c1">#&gt; shape: (32, 2)</span>
 <a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a><span class="c1">#&gt; ┌──────┬───────┐</span>
 <a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a><span class="c1">#&gt; │ mpg  ┆ hp    │</span>
 <a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a><span class="c1">#&gt; │ ---  ┆ ---   │</span>
@@ -8019,7 +7993,7 @@ and also columns
 <a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="p">)</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
 <a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;hp&quot;</span><span class="p">,</span> <span class="s">&quot;cyl&quot;</span><span class="p">))</span>
 <a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="p">)</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1">#&gt; polars DataFrame: shape: (7, 3)</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="c1">#&gt; shape: (7, 3)</span>
 <a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1">#&gt; ┌──────┬───────┬─────┐</span>
 <a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1">#&gt; │ mpg  ┆ hp    ┆ cyl │</span>
 <a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="c1">#&gt; │ ---  ┆ ---   ┆ --- │</span>
@@ -8049,7 +8023,7 @@ method. This next code chunk is equivalent to
 <a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">sum</span><span class="p">()</span><span class="o">$</span><span class="nf">over</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;sum_mpg&quot;</span><span class="p">),</span>
 <a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;hp&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">sum</span><span class="p">()</span><span class="o">$</span><span class="nf">over</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;sum_hp&quot;</span><span class="p">)</span>
 <a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="p">)</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1">#&gt; polars DataFrame: shape: (32, 13)</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1">#&gt; shape: (32, 13)</span>
 <a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐</span>
 <a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │</span>
 <a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │</span>
@@ -8071,7 +8045,7 @@ concisely as:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">dat</span><span class="o">$</span><span class="nf">with_columns</span><span class="p">(</span>
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;hp&quot;</span><span class="p">))</span><span class="o">$</span><span class="nf">sum</span><span class="p">()</span><span class="o">$</span><span class="nf">over</span><span class="p">(</span><span class="s">&quot;cyl&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">prefix</span><span class="p">(</span><span class="s">&quot;sum_&quot;</span><span class="p">)</span>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="p">)</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1">#&gt; polars DataFrame: shape: (32, 13)</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1">#&gt; shape: (32, 13)</span>
 <a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">#&gt; ┌──────┬─────┬───────┬───────┬─────┬──────┬──────┬─────────┬────────┐</span>
 <a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="c1">#&gt; │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ gear ┆ carb ┆ sum_mpg ┆ sum_hp │</span>
 <a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1">#&gt; │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ ---  ┆ ---  ┆ ---     ┆ ---    │</span>
@@ -8099,7 +8073,7 @@ methods.</p>
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">)</span><span class="o">$</span><span class="nf">agg</span><span class="p">(</span>
 <a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">,</span> <span class="s">&quot;hp&quot;</span><span class="p">))</span><span class="o">$</span><span class="nf">sum</span><span class="p">()</span>
 <a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="p">)</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1">#&gt; polars DataFrame: shape: (3, 3)</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1">#&gt; shape: (3, 3)</span>
 <a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="c1">#&gt; ┌─────┬───────┬────────┐</span>
 <a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="c1">#&gt; │ cyl ┆ mpg   ┆ hp     │</span>
 <a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="c1">#&gt; │ --- ┆ ---   ┆ ---    │</span>
@@ -8122,18 +8096,18 @@ group by multiple variables and aggregation types.</p>
 <a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;mpg&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;mean_mpg&quot;</span><span class="p">),</span>
 <a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;hp&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">median</span><span class="p">()</span><span class="o">$</span><span class="nf">alias</span><span class="p">(</span><span class="s">&quot;med_hp&quot;</span><span class="p">)</span>
 <a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="p">)</span>
-<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="c1">#&gt; polars DataFrame: shape: (6, 4)</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="c1">#&gt; shape: (6, 4)</span>
 <a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c1">#&gt; ┌─────┬────────┬───────────┬────────┐</span>
 <a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="c1">#&gt; │ cyl ┆ manual ┆ mean_mpg  ┆ med_hp │</span>
 <a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="c1">#&gt; │ --- ┆ ---    ┆ ---       ┆ ---    │</span>
 <a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="c1">#&gt; │ f64 ┆ bool   ┆ f64       ┆ f64    │</span>
 <a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="c1">#&gt; ╞═════╪════════╪═══════════╪════════╡</span>
-<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="c1">#&gt; │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │</span>
-<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="c1">#&gt; │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │</span>
-<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="c1">#&gt; │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │</span>
-<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="c1">#&gt; │ 6.0 ┆ true   ┆ 20.566667 ┆ 110.0  │</span>
-<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="c1">#&gt; │ 4.0 ┆ true   ┆ 28.075    ┆ 78.5   │</span>
-<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="c1">#&gt; │ 8.0 ┆ true   ┆ 15.4      ┆ 299.5  │</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="c1">#&gt; │ 6.0 ┆ true   ┆ 20.566667 ┆ 110.0  │</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="c1">#&gt; │ 4.0 ┆ true   ┆ 28.075    ┆ 78.5   │</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="c1">#&gt; │ 8.0 ┆ true   ┆ 15.4      ┆ 299.5  │</span>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="c1">#&gt; │ 6.0 ┆ false  ┆ 19.125    ┆ 116.5  │</span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="c1">#&gt; │ 8.0 ┆ false  ┆ 15.05     ┆ 180.0  │</span>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="c1">#&gt; │ 4.0 ┆ false  ┆ 22.9      ┆ 95.0   │</span>
 <a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="c1">#&gt; └─────┴────────┴───────────┴────────┘</span>
 </code></pre></div>
 <p>Note that we used the <code>cast</code> method to convert the data type of the <code>am</code>
@@ -8151,7 +8125,7 @@ borrow some datasets from the <strong>nycflights13</strong> package.</p>
 <a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>  <span class="n">on</span> <span class="o">=</span> <span class="s">&quot;tailnum&quot;</span><span class="p">,</span> 
 <a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>  <span class="n">how</span> <span class="o">=</span> <span class="s">&quot;left&quot;</span>
 <a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="p">)</span>
-<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1">#&gt; polars DataFrame: shape: (336776, 27)</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="c1">#&gt; shape: (336776, 27)</span>
 <a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="c1">#&gt; ┌──────┬───────┬─────┬──────────┬─────┬─────────┬───────┬───────┬───────────┐</span>
 <a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="c1">#&gt; │ year ┆ month ┆ day ┆ dep_time ┆ ... ┆ engines ┆ seats ┆ speed ┆ engine    │</span>
 <a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="c1">#&gt; │ ---  ┆ ---   ┆ --- ┆ ---      ┆     ┆ ---     ┆ ---   ┆ ---   ┆ ---       │</span>
@@ -8225,7 +8199,7 @@ complex queries.</p>
 method. This should feel very familiar if you have previously used other
 lazy execution engines like those provided by <strong>arrow</strong> or <strong>dbplyr</strong>.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">subset_query</span><span class="o">$</span><span class="nf">collect</span><span class="p">()</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="c1">#&gt; polars DataFrame: shape: (7, 3)</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="c1">#&gt; shape: (7, 3)</span>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1">#&gt; ┌──────┬───────┬─────┐</span>
 <a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">#&gt; │ mpg  ┆ hp    ┆ cyl │</span>
 <a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1">#&gt; │ ---  ┆ ---   ┆ --- │</span>
@@ -8247,7 +8221,7 @@ bundled with base R.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nf">write.csv</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span> <span class="s">&quot;airquality.csv&quot;</span><span class="p">)</span>
 <a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
 <a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">pl</span><span class="o">$</span><span class="nf">read_csv</span><span class="p">(</span><span class="s">&quot;airquality.csv&quot;</span><span class="p">)</span>
-<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1">#&gt; polars DataFrame: shape: (153, 7)</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1">#&gt; shape: (153, 7)</span>
 <a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1">#&gt; ┌─────┬───────┬─────────┬──────┬──────┬───────┬─────┐</span>
 <a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="c1">#&gt; │     ┆ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Month ┆ Day │</span>
 <a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="c1">#&gt; │ --- ┆ ---   ┆ ---     ┆ ---  ┆ ---  ┆ ---   ┆ --- │</span>
@@ -8275,28 +8249,36 @@ LazyFrame and then collect the results. However, this workflow is even
 better suited to Parquet files, since we can leverage their efficient
 storage format on disk. Let’s see an example.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nf">library</span><span class="p">(</span><span class="n">arrow</span><span class="p">)</span>
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="nf">write_parquet</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span> <span class="s">&quot;airquality.parquet&quot;</span><span class="p">)</span>
-<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>
-<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="c1"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span>
-<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="n">aq</span> <span class="o">=</span> <span class="nf">scan_parquet</span><span class="p">(</span><span class="s">&quot;airquality.parquet&quot;</span><span class="p">)</span>  <span class="c1"># lazy version (better)</span>
-<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>
-<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="n">aq</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span>
-<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;Month&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="m">6</span>
-<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="p">)</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span>
-<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>  <span class="s">&quot;Month&quot;</span>
-<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="p">)</span><span class="o">$</span><span class="nf">agg</span><span class="p">(</span>
-<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Ozone&quot;</span><span class="p">,</span> <span class="s">&quot;Temp&quot;</span><span class="p">))</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span>
-<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="p">)</span><span class="o">$</span><span class="nf">collect</span><span class="p">()</span>
-<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="c1">#&gt; polars DataFrame: shape: (2, 3)</span>
-<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="c1">#&gt; ┌───────┬───────────┬───────────┐</span>
-<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="c1">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span>
-<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="c1">#&gt; │ ---   ┆ ---       ┆ ---       │</span>
-<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="c1">#&gt; │ i32   ┆ f64       ┆ f64       │</span>
-<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="c1">#&gt; ╞═══════╪═══════════╪═══════════╡</span>
-<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="c1">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span>
-<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a><span class="c1">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span>
-<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="c1">#&gt; └───────┴───────────┴───────────┘</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="c1">#&gt; </span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">#&gt; Attaching package: &#39;arrow&#39;</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1">#&gt; The following object is masked from &#39;package:testthat&#39;:</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="c1">#&gt; </span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="c1">#&gt;     matches</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1">#&gt; The following object is masked from &#39;package:utils&#39;:</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="c1">#&gt; </span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="c1">#&gt;     timestamp</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="nf">write_parquet</span><span class="p">(</span><span class="n">airquality</span><span class="p">,</span> <span class="s">&quot;airquality.parquet&quot;</span><span class="p">)</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="c1"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span>
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="n">aq</span> <span class="o">=</span> <span class="nf">scan_parquet</span><span class="p">(</span><span class="s">&quot;airquality.parquet&quot;</span><span class="p">)</span>  <span class="c1"># lazy version (better)</span>
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="n">aq</span><span class="o">$</span><span class="nf">filter</span><span class="p">(</span>
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;Month&quot;</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="m">6</span>
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="p">)</span><span class="o">$</span><span class="nf">groupby</span><span class="p">(</span>
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a>  <span class="s">&quot;Month&quot;</span>
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="p">)</span><span class="o">$</span><span class="nf">agg</span><span class="p">(</span>
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;Ozone&quot;</span><span class="p">,</span> <span class="s">&quot;Temp&quot;</span><span class="p">))</span><span class="o">$</span><span class="nf">mean</span><span class="p">()</span>
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a><span class="p">)</span><span class="o">$</span><span class="nf">collect</span><span class="p">()</span>
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="c1">#&gt; shape: (2, 3)</span>
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="c1">#&gt; ┌───────┬───────────┬───────────┐</span>
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a><span class="c1">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span>
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a><span class="c1">#&gt; │ ---   ┆ ---       ┆ ---       │</span>
+<a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a><span class="c1">#&gt; │ i32   ┆ f64       ┆ f64       │</span>
+<a id="__codelineno-25-28" name="__codelineno-25-28" href="#__codelineno-25-28"></a><span class="c1">#&gt; ╞═══════╪═══════════╪═══════════╡</span>
+<a id="__codelineno-25-29" name="__codelineno-25-29" href="#__codelineno-25-29"></a><span class="c1">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span>
+<a id="__codelineno-25-30" name="__codelineno-25-30" href="#__codelineno-25-30"></a><span class="c1">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span>
+<a id="__codelineno-25-31" name="__codelineno-25-31" href="#__codelineno-25-31"></a><span class="c1">#&gt; └───────┴───────────┴───────────┘</span>
 </code></pre></div>
 <p>Finally, can read/scan multiple files in the same directory through
 pattern globbing. However, please note that partition-aware scanning is
@@ -8313,7 +8295,7 @@ about when this will be resolved.</p>
 <a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="c1"># Just print the first two rows. But note that the Month column</span>
 <a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="c1"># (which we used for partitioning) is missing.</span>
 <a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="n">aq2</span><span class="o">$</span><span class="nf">limit</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="o">$</span><span class="nf">collect</span><span class="p">()</span>
-<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="c1">#&gt; polars DataFrame: shape: (2, 5)</span>
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="c1">#&gt; shape: (2, 5)</span>
 <a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="c1">#&gt; ┌───────┬─────────┬──────┬──────┬─────┐</span>
 <a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="c1">#&gt; │ Ozone ┆ Solar.R ┆ Wind ┆ Temp ┆ Day │</span>
 <a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="c1">#&gt; │ ---   ┆ ---     ┆ ---  ┆ ---  ┆ --- │</span>
@@ -8336,11 +8318,11 @@ inhibit performance. R functions are typically slower, so we recommend
 using native Polars functions and expressions wherever possible.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="n">pl</span><span class="o">$</span><span class="nf">DataFrame</span><span class="p">(</span><span class="n">iris</span><span class="p">)</span><span class="o">$</span><span class="nf">select</span><span class="p">(</span>
 <a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>  <span class="n">pl</span><span class="o">$</span><span class="nf">col</span><span class="p">(</span><span class="s">&quot;Sepal.Length&quot;</span><span class="p">)</span><span class="o">$</span><span class="nf">map</span><span class="p">(</span>\<span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="c1"># map with a R function</span>
-<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">s</span><span class="o">$</span><span class="nf">to_r_vector</span><span class="p">()</span> <span class="c1"># convert from Polars Series to a native R vector</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">s</span><span class="o">$</span><span class="nf">to_vector</span><span class="p">()</span> <span class="c1"># convert from Polars Series to a native R vector</span>
 <a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>    <span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="o">&gt;=</span><span class="m">5</span><span class="p">]</span> <span class="o">=</span> <span class="m">10</span>
 <a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>    <span class="n">x</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="m">10</span><span class="p">]</span> <span class="c1"># if return is R vector, it will automatically be converted to Polars Series again</span>
 <a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>    <span class="p">})</span>
-<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="p">)</span><span class="o">$</span><span class="nf">as_data_frame</span><span class="p">()</span>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="p">)</span><span class="o">$</span><span class="nf">to_data_frame</span><span class="p">()</span>
 <a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="c1">#&gt;    Sepal.Length</span>
 <a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="c1">#&gt; 1          10.0</span>
 <a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="c1">#&gt; 2           4.9</span>
