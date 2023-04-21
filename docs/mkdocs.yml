@@ -1,6 +1,7 @@
 site_name: polars
 theme:
   name: material
+  logo: polars-logo.png
   font:
     text: Roboto
   palette:
