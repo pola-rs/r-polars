@@ -1,0 +1,67 @@
+# This workflow is a mix of:
+# - https://github.com/r-lib/actions/blob/v2-branch/examples/pkgdown.yaml
+# - https://squidfunk.github.io/mkdocs-material/publishing-your-site/?h=deploy#material-for-mkdocs
+
+name: mkdocs
+
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  documentation:
+
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    # Only restrict concurrency for non-PR jobs
+    concurrency:
+      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
+
+    steps:
+
+      # Github actions and Python stuff
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - run: pip install mkdocs-material
+
+       # R stuff
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: local::., any::pak
+      - name: Install dev version of altdoc
+        run: pak::pak("etiennebacher/altdoc")
+        shell: Rscript {0}
+
+      - name: Build docs folder
+        run: |
+          altdoc::use_mkdocs(theme = "material",
+                             overwrite = TRUE,
+                             convert_vignettes = TRUE,
+                             custom_reference = "make-docs.R")
+                                                # ^^^^^^^^^^ where should we put this?
+        shell: Rscript {0}
+
+      # https://www.mkdocs.org/user-guide/deploying-your-docs/
+      - name: Build site and deploy to GitHub pages
+        run: cd docs && mkdocs gh-deploy --force
