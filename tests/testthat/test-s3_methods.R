@@ -42,12 +42,10 @@ patrick::with_parameters_test_that("inspection",
         y = FUN(d)
         if (inherits(y, "DataFrame")) y = y$to_data_frame()
         expect_equal(x, y, ignore_attr = TRUE)
-        if (.test_name %in% c("length", "nrow", "ncol", "names")) {
-          expect_error(FUN(d$lazy()))
-        } else if (.test_name == "as.matrix") {
+        if (.test_name == "as.matrix") {
           z = FUN(d$lazy())
           expect_equal(x, z, ignore_attr = TRUE)
-        } else {
+        } else if (!.test_name %in% c("length", "nrow", "ncol", "names")) {
           z = FUN(d$lazy())$collect()$to_data_frame()
           expect_equal(x, z, ignore_attr = TRUE)
         }

@@ -20,37 +20,17 @@ dim.DataFrame = function(x, ...) x$shape
 
 #' @export
 #' @noRd
-dim.LazyFrame = function(x, ...) {
-    stop("The lazy data frame must be collected before calling this function: `dim(x$collect())`", call. = FALSE)
-}
-
-#' @export
-#' @noRd
 length.DataFrame = function(x, ...) x$width
 
 #' @export
 #' @noRd
 length.Series = function(x, ...) x$len()
 
-#' @export
-#' @noRd
-length.LazyFrame = function(x, ...) {
-    stop("The lazy data frame must be collected before using calling this function: `length(x$collect())`", call. = FALSE)
-}
-
 #' The Number of Rows of a DataFrame 
 #' @param x DataFrame
 #' @return Integer
 #' @export
 nrow.DataFrame = function(x) x$height
-
-#' The Number of Rows of a LazyFrame 
-#' @param x LazyFrame
-#' @return Integer
-#' @export
-nrow.LazyFrame = function(x) {
-    stop("The lazy data frame must be collected before using calling this function: `nrow(x$collect())`", call. = FALSE)
-}
 
 #' The Number of Columns of a DataFrame 
 #' @param x DataFrame
@@ -67,12 +47,6 @@ ncol.LazyFrame = function(x) x$collect()$height
 #' @export
 #' @noRd
 names.DataFrame = function(x) x$columns
-
-#' @export
-#' @noRd
-names.LazyFrame = function(x) {
-    stop("The lazy data frame must be collected before using calling this function: `names(x$collect())`", call. = FALSE)
-}
 
 #' @export
 #' @noRd
