@@ -6,6 +6,22 @@ library(stringr)
 library(rd2markdown) # Genentech/rd2markdown (github only)
 
 
+is_internal <- function(file) {
+  y <- capture.output(tools::Rd2latex(file))
+  z <- grepl("\\\\keyword\\{", y)
+
+  if (!any(z)) return(FALSE)
+
+  reg <- regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl=TRUE))
+
+  test <- vapply(seq_along(y), function(foo) {
+    z[foo] && "internal" %in% reg[[foo]]
+  }, FUN.VALUE = logical(1L))
+
+  any(test)
+}
+
+
 
 if (fs::dir_exists(here::here("docs/docs/reference"))) {
   fs::dir_delete(here::here("docs/docs/reference"))
@@ -32,7 +48,12 @@ make_doc_hierarchy <- function() {
   hierarchy <- list()
   for (i in seq_along(general_classes)) {
     components <- list.files("man", pattern = paste0("^", general_classes[i]))
-    all_rd <<- all_rd[-which(components %in% all_rd)]
+    components <- Filter(Negate(is_internal), paste0("man/", components))
+    components <- gsub("^man/", "", components)
+
+    if (length(components) <= 1) next
+
+    all_rd <<- all_rd[-which(all_rd %in% components)]
     components <- components[-which(grepl("_class\\.Rd$", components))] %>%
       gsub("\\.Rd", "\\.md", x = .) %>%
       paste0("reference/", .) %>%
@@ -54,7 +75,9 @@ make_doc_hierarchy <- function() {
 
   remaining <- grep(paste0("^(", paste(general_classes, collapse = "|"), ")"),
                     all_rd, invert = TRUE)
-  remaining <- all_rd[remaining] %>%
+  remaining <- Filter(Negate(is_internal), paste0("man/", all_rd[remaining]))
+  remaining <- gsub("^man/", "", remaining)
+  remaining <- remaining %>%
     gsub("\\.Rd", "\\.md", x = .) %>%
     paste0("reference/", .) %>%
     sort(x = .) %>%
@@ -81,6 +104,7 @@ make_doc_hierarchy <- function() {
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
   for (i in rd_files) {
+    if (is_internal(paste0("man/", i))) next
     out <- rd2markdown::rd2markdown(file = paste0("man/", i))
     cat(out, file = paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i)))
   }
