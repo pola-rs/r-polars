@@ -547,7 +547,6 @@ DataFrame_clone = function() {
 #'
 #' @return list of series
 #' @keywords  DataFrame
-#' @keywords  DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()
@@ -609,6 +608,7 @@ DataFrame_to_series = function(idx=0) {
 #' @param ... expresssions or strings defining columns to select(keep) in context the DataFrame
 #'
 #' @aliases select
+#' @keywords  DataFrame
 #' #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
