@@ -10,7 +10,7 @@ name: R-CMD-check
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  #cancel-in-progress: true
 
 jobs:
   R-CMD-check:
@@ -22,12 +22,15 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macos-latest, r: "release" }
-          - { os: windows-latest, r: "release", rtools-version: "43" }
+          #- { os: macos-latest, r: "release" }
+          - { os: windows-latest, r: "release", rtools-version: "42" }
+          - { os: windows-latest, r: "release", rtools-version: "" }
           - { os: windows-latest, r: "devel", rtools-version: "43" }
+          - { os: windows-latest, r: "devel", rtools-version: "" }
           - { os: windows-latest, r: "oldrel-1", rtools-version: "42" }
-          - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
-          - { os: ubuntu-latest, r: "release" }
+          - { os: windows-latest, r: "oldrel-1", rtools-version: "" }
+          #- { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
+          #- { os: ubuntu-latest, r: "release" }
           #- { os: ubuntu-latest, r: "oldrel-1" }
 
     env:
@@ -89,7 +92,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          update-rtools: true
           rtools-version: ${{ matrix.config.rtools-version }}
           Ncpus: 2
 
