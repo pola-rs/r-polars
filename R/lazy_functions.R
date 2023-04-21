@@ -101,6 +101,124 @@ pl$col = function(name="") {
 pl$element = function() pl$col("")
 
 
+#TODO move all lazy functions to a new keyword lazy functions
+
+#' pl$count
+#' @name count
+#' @description Count the number of values in this column/context.
+#' @param column if dtype is:
+#' - Series: count length of Series
+#' - str: count values of this column
+#' - NULL: count the number of value in this context.
+#'
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or value-count in case Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$count())
+#'
+#'
+#' df$groupby("c", maintain_order=TRUE)$agg(pl$count())
+pl$count = function(column = NULL)  { # -> Expr | int:
+  if(is.null(column)) return(.pr$Expr$new_count())
+  if(inherits(column,"Series")) return(column$len())
+  #add context to any error from pl$col
+  unwrap(result(pl$col(column)$count()), "in pl$count():")
+}
+
+
+#' pl$first
+#' @name first
+#' @description  Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take first value in `Series`
+#' - str: syntactic sugar for `pl.col(..).first()`
+#' - NULL: expression to take first column of a context.
+#'
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or first value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$first())
+#'
+#' df$select(pl$first("a"))
+#'
+#' pl$first(df$get_column("a"))
+#'
+pl$first = function(column = NULL) {#-> Expr | Any:
+  pcase(
+    is.null(column),  Ok(.pr$Expr$new_first()),
+    inherits(column,"Series"), if(column$len()==0) {
+      Err("The series is empty, so no first value can be returned.")
+    } else {
+      #TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
+      # or if rust series has a dedicated method.
+      Ok(pl$lit(column)$slice(0,1)$to_r())
+    },
+    #pl$col is fallible catch any error result and add new calling context
+    or_else = result(pl$col(column)$first())
+  ) |>
+    unwrap("in pl$first():")
+}
+
+
+#' pl$last
+#' @name last
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take last value in `Series`
+#' - str: syntactic sugar for `pl.col(..).last()`
+#' - NULL: expression to take last column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or last value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$last())
+#'
+#' df$select(pl$last("a"))
+#'
+#' pl$last(df$get_column("a"))
+#'
+pl$last = function(column = NULL) {#-> Expr | Any:
+  pcase(
+    is.null(column),  Ok(.pr$Expr$new_last()),
+    inherits(column,"Series"), if(column$len()==0) {
+      Err("The series is empty, so no last value can be returned.")
+    } else {
+      #TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
+      # or if rust series has a dedicated method.
+      Ok(pl$lit(column)$slice(-1,1)$to_r())
+    },
+    #pl$col is fallible catch any error result and add new calling context
+    or_else = result(pl$col(column)$last())
+  ) |>
+    unwrap("in pl$last():")
+}
+
 
 #TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
 #docs should reflect that

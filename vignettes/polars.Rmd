@@ -84,7 +84,7 @@ dataset.
 
 ```python
 # Python
-df.group_by("id").mean()
+df.groupby("id").mean()
 ```
 
 ```r
@@ -136,6 +136,8 @@ length(ser)
 max(ser)
 
 # DataFrame
+dat[c(1:3, 12), c("mpg", "hp")]
+
 names(dat)
 
 dim(dat)

@@ -161,4 +161,195 @@ test_that("tail", {
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
+
+test_that("shift   _and_fill", {
+  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
+  }
+  a = pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$limit(3)$collect()$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
+  }
+})
+
+
+test_that("quantile", {
+  a = pl$DataFrame(mtcars)$lazy()$quantile(1)$collect()$as_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$max()$collect()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$quantile(0, "midpoint")$collect()$as_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$min()$collect()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$lazy()$quantile(0.5, "midpoint")$collect()$as_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$median()$collect()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+
+test_that("fill_nan", {
+  a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))$lazy()
+  a = a$fill_nan(99)$collect()$as_data_frame()
+  expect_equal(sum(a[[1]] == 99), 1)
+  expect_equal(sum(a[[2]] == 99), 2)
+})
+
+
+test_that("drop", {
+  a = pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))$collect()$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$lazy()$drop("mpg")$collect()$columns
+  expect_true("hp" %in% a)
+  expect_false("mpg" %in% a)
+})
+
+
+test_that("drop_nulls", {
+  tmp = mtcars
+  tmp[1:3, "mpg"] = NA
+  expect_equal(pl$DataFrame(mtcars)$lazy()$drop_nulls()$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(mtcars)$lazy()$drop_nulls("mpg")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
+  expect_error(pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect()$height, pattern = "ColumnNotFound")
+})
+
+test_that("fill_nulls", {
+  df = pl$DataFrame(
+    a = c(1.5, 2, NA, 4),
+    b = c(1.5, NA, NA, 4)
+  )$lazy()$fill_null(99)$collect()$as_data_frame()
+  expect_equal(sum(df$a == 99), 1)
+  expect_equal(sum(df$b == 99), 2)
+})
+
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  v = df$lazy()$unique()$collect()$height
+  w = df$lazy()$unique("z", "first")$collect()$height
+  x = df$lazy()$unique(c("x", "y", "z"), "first")$collect()$height
+  y = df$lazy()$unique(c("x"), "first")$collect()$height
+  z = df$lazy()$unique(c("y", "z"), "first")$collect()$height
+  expect_equal(w, 4)
+  expect_equal(x, 5)
+  expect_equal(y, 5)
+  expect_equal(z, 5)
+})
+
+
+#TODO only tested error msg of sort, missing tests for arguments are correctly connected to rust
+test_that("sort", {
+
+  expect_no_error(
+    pl$DataFrame(mtcars)$lazy()$sort(
+        by = list("cyl",pl$col("gear")), #mixed types which implements Into<Expr>
+        "disp", # ... args other unamed args Into<Expr>
+        descending = c(T,T,F) #vector of same length as number of Expr's
+    )$collect()
+  )
+
+
+  #check expect_grepl_error fails on unmet expectation
+  expect_error(expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl",complex(1))),
+     "not_in_error_text"
+  ))
+
+
+   #test arg by raises error for unsported type
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl",complex(1))),
+     c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
+  )
+
+  #test arg ... raises error for unsported type
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
+     c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
+  )
+
+  #test raise error for ... named arg
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by="cyl",name_dotdotdot=42),
+     c("arg" ,"...", "cannot be named")
+  )
+
+  #test raise error for missing by
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(),
+     c("arg" ,"by", "is missing")
+  )
+
+  #test raise error for missing by
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = c(T,F))$collect(),
+     c("The amount of ordering booleans", "2 does not match that no. of Series", "3")
+  )
+
+  #TODO refine this error msg in robj_to! it does not have to be a "single" here
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = 42)$collect(),
+     c("the arg", "descending", "is not a single bool as required, but 42")
+  )
+
+  expect_grepl_error(
+     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), nulls_last = 42)$collect(),
+     c("the arg", "nulls_last", "is not a single bool as required, but 42")
+  )
+
+  df = pl$DataFrame(mtcars)$lazy()
+  
+  w = df$sort("mpg")$collect()$to_data_frame()
+  x = df$sort(pl$col("mpg"))$collect()$to_data_frame()
+  y = mtcars[order(mtcars$mpg),]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  w = df$sort(pl$col("cyl"), pl$col("mpg"))$collect()$to_data_frame()
+  x = df$sort("cyl", "mpg")$collect()$to_data_frame()
+  y = df$sort(c("cyl", "mpg"))$collect()$to_data_frame()
+  z = mtcars[order(mtcars$cyl, mtcars$mpg),]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+  expect_equal(w, z, ignore_attr = TRUE)
+
+  # expr: one increasing and one decreasing
+  x = df$sort(-pl$col("cyl"), pl$col("hp"))$collect()$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$hp), ]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  # descending arg
+  w = df$sort("cyl", "mpg", descending = TRUE)$collect()$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = TRUE)$collect()$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, -mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # descending arg: vector of boolean
+  w = df$sort("cyl", "mpg", descending = c(TRUE, FALSE))$collect()$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # nulls_last
+  df = mtcars
+  df$mpg[1] = NA
+  df = pl$DataFrame(df)$lazy()
+  a = df$sort("mpg", nulls_last = TRUE)$collect()$to_data_frame()
+  b = df$sort("mpg", nulls_last = FALSE)$collect()$to_data_frame()
+  expect_true(is.na(a$mpg[32]))
+  expect_true(is.na(b$mpg[1]))
+
+})
+
+
 #TODO complete tests for lazy
+
+

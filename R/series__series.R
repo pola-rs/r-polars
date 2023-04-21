@@ -251,7 +251,6 @@ Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
 
-
 #TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare

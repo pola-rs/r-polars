@@ -54,3 +54,24 @@ patrick::with_parameters_test_that(
   },
   .cases = make_cases()
 )
+
+test_that("quantile", {
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$min()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$max()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$quantile(.5, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$groupby("cyl", maintain_order = FALSE)$median()$as_data_frame()
+  expect_equal(a[order(a$cyl),], b[order(b$cyl),], ignore_attr = TRUE)
+})
+
+test_that("shift    _and_fill", {
+  a = pl$DataFrame(mtcars)$groupby("cyl")$shift(2)$as_data_frame()
+  expect_equal(a[["mpg"]][[1]][1:2], c(NA_real_, NA_real_))
+  a = pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 2)$as_data_frame()
+  expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
+})

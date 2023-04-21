@@ -2211,6 +2211,21 @@ impl Expr {
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }
+
+    // external expression function which typically starts a new expression chain
+    // to avoid name space collisions in R, these static methods are not free functions
+    // as in py-polars. prefix with new_ to not collide with other methods in class
+    pub fn new_count() -> Expr {
+        dsl::count().into()
+    }
+
+    pub fn new_first() -> Expr {
+        dsl::first().into()
+    }
+
+    pub fn new_last() -> Expr {
+        dsl::last().into()
+    }
 }
 
 //allow proto expression that yet only are strings
