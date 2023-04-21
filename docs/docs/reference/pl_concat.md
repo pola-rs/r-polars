@@ -24,7 +24,7 @@ Concat polars objects
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>l_internal</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>concat</span><span class='op'>(</span><span class='va'>l_ver</span>, how<span class='op'>=</span><span class='st'>"vertical"</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (50, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (50, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- │</span>
@@ -52,7 +52,7 @@ Concat polars objects
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>l_internal</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>concat</span><span class='op'>(</span><span class='va'>l_hor</span>, how <span class='op'>=</span> <span class='st'>"horizontal"</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 20)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 20)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a1  ┆ b1  ┆ a2  ┆ b2  ┆ ... ┆ a9  ┆ b9  ┆ a10 ┆ b10 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ --- ┆     ┆ --- ┆ --- ┆ --- ┆ --- │</span>
@@ -66,7 +66,7 @@ Concat polars objects
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┴─────┘</span>
 <span class='r-in'><span><span class='co'>#diagonal</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>concat</span><span class='op'>(</span><span class='va'>l_hor</span>, how <span class='op'>=</span> <span class='st'>"diagonal"</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (50, 20)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (50, 20)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬──────┬──────┬──────┬─────┬──────┬──────┬──────┬──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a1   ┆ b1   ┆ a2   ┆ b2   ┆ ... ┆ a9   ┆ b9   ┆ a10  ┆ b10  │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---  ┆ ---  ┆ ---  ┆     ┆ ---  ┆ ---  ┆ ---  ┆ ---  │</span>

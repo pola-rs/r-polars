@@ -34,7 +34,7 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.2          ┆ 3.4         ┆ 5.4          ┆ 2.3         ┆ virginica │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.9          ┆ 3.0         ┆ 5.1          ┆ 1.8         ┆ virginica │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────────┴─────────────┴──────────────┴─────────────┴───────────┘</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 5)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 5)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       │</span>
@@ -59,9 +59,12 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ by_agg ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ clone_see_me_macro ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ columns ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ drop_in_place ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ dtype_strings ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ dtypes ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ estimated_size ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ export_stream ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ frame_equal ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ from_arrow_record_batches ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ get_column ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ get_columns ; function ]</span>
@@ -376,6 +379,10 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ collect_background ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ describe_optimized_plan ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ describe_plan ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ drop ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ drop_nulls ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ fill_nan ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ fill_null ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ filter ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ first ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ groupby ; function ]</span>
@@ -387,12 +394,17 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ median ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ min ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ print ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ quantile ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ reverse ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ select ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ shift ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ shift_and_fill ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ slice ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ sort_by_exprs ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ std ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ sum ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ tail ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ unique ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ var ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ with_column ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ with_columns ; function ]</span>
@@ -453,6 +465,7 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ dtype ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ floor ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ from_arrow ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ get_fmt ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ is_sorted ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ is_sorted_flag ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ is_sorted_reverse_flag ; function ]</span>

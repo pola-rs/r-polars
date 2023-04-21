@@ -22,7 +22,7 @@ Create an object namespace of all list related methods. See the individual metho
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	[]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
 <span class='r-in'><span><span class='va'>s</span><span class='op'>$</span><span class='va'>arr</span><span class='op'>$</span><span class='fu'>first</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │      │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>

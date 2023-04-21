@@ -25,7 +25,7 @@ Check if any boolean value in a Boolean column is `TRUE`.
 <span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>any</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬──────┬───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ all  ┆ any  ┆ none  │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---  ┆ ---   │</span>

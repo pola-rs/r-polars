@@ -30,7 +30,7 @@ if self$len() > 1 , then the expression instructs the series to append onto itse
 <pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='st'>"alice"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>rep</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ literal │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---     │</span>
@@ -44,7 +44,7 @@ if self$len() > 1 , then the expression instructs the series to append onto itse
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>rep</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (6, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>

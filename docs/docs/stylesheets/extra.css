@@ -25,7 +25,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
   --md-primary-fg-color: #ecf4ff;
   --md-primary-bg-color: #646464;
 
-  --md-typeset-a-color: #459db9;
+  --md-typeset-a-color-custom: #459db9;
   --md-typeset-a-color-hover: #8fc5d6;
 
   --search-bar-border: #cccccc;
@@ -42,7 +42,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
   --md-primary-bg-color: #a6a6a6;
   --md-default-bg-color: #121212;
 
-  --md-typeset-a-color: #79a6d2;
+  --md-typeset-a-color-custom: #79a6d2;
   --md-typeset-a-color-hover: #538cc6;
 
   --search-bar-border: #666666;
@@ -54,7 +54,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 }
 
 .md-search__form {
-  background-color: transparent; 
+  background-color: transparent;
   border: solid 1px var(--search-bar-border);
 }
 
@@ -62,11 +62,13 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 	color: var(--md-primary-bg-color);
 }
 
-.md-tabs__link--active, .md-tabs__link:is(:focus, :hover) {
-	color: var(--md-typeset-a-color);
+.md-tabs__link--active, .md-nav__item .md-nav__link--active,
+.md-tabs__link:is(:focus, :hover), .md-typeset a {
+	color: var(--md-typeset-a-color-custom);
 }
 
-.md-typeset a:focus, .md-typeset a:hover {
+.md-typeset a:focus, .md-typeset a:hover,
+.md-nav__link:focus, .md-nav__link:hover {
 	color: var(--md-typeset-a-color-hover);
 }
 

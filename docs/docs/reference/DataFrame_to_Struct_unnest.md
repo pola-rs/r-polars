@@ -47,7 +47,7 @@ Unnest a DataFrame struct columns.
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
 <span class='r-in'><span><span class='va'>df_s</span> <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='fu'>to_frame</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#place series in a new DataFrame</span></span></span>
 <span class='r-in'><span><span class='va'>df_s</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span> <span class='co'># back to starting df</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---   │</span>

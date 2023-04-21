@@ -24,7 +24,7 @@ Extract year from underlying Date representation. Applies to Date and Datetime c
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>year</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"year"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>iso_year</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"iso_year"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (12, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (12, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────────┬──────┬──────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                    ┆ year ┆ iso_year │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                     ┆ ---  ┆ ---      │</span>

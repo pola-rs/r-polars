@@ -29,7 +29,7 @@ collect an expression based on literals into a DataFrame
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	[1, 2, 3]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	[1, 2, ... 4]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>

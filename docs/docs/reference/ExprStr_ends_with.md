@@ -21,7 +21,7 @@ contains : Check if string contains a substring that matches a regex. starts_wit
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"fruits"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"fruits"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>ends_with</span><span class='op'>(</span><span class='st'>"go"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"has_suffix"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ fruits ┆ has_suffix │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---        │</span>

@@ -65,7 +65,7 @@ Read a file from path into a polars lazy frame. Not yet supporting eol_char and 
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/utils/write.table.html'>write.csv</a></span><span class='op'>(</span><span class='va'>iris</span>,<span class='va'>my_file</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>lazy_frame</span> <span class='op'>=</span> <span class='fu'>polars</span><span class='fu'>:::</span><span class='fu'><a href='https://rdrr.io/pkg/polars/man/lazy_csv_reader.html'>lazy_csv_reader</a></span><span class='op'>(</span>path<span class='op'>=</span><span class='va'>my_file</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>lazy_frame</span><span class='op'>$</span><span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 6)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬──────────────┬─────────────┬──────────────┬─────────────┬───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     ┆ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       │</span>

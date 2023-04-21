@@ -23,7 +23,7 @@ The returned lengths are equal to the number of bytes in the UTF8 string. If you
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>lengths</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"lengths"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"s"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>n_chars</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"n_chars"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬─────────┬─────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ s    ┆ lengths ┆ n_chars │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---     ┆ ---     │</span>

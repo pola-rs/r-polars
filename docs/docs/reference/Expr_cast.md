@@ -22,7 +22,7 @@ Cast between DataType(s)
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Float64</span>, <span class='cn'>TRUE</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Int32</span>, <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- │</span>

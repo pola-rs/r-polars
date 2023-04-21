@@ -24,7 +24,7 @@ Return a timestamp in the given time unit.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>timestamp</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"timestamp_ns"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>timestamp</span><span class='op'>(</span>tu<span class='op'>=</span><span class='st'>"ms"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"timestamp_ms"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬────────────────────┬──────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                ┆ timestamp_ns       ┆ timestamp_ms │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ ---                ┆ ---          │</span>

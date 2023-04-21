@@ -39,7 +39,7 @@ Cast time zone for a Series of type Datetime. Different from `convert_time_zone`
 <span class='r-in'><span>    <span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"strip tz from with-'Europe/Amsterdam'"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df2</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 5)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 5)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────────┬─────────────────────┬─────────────────────┬─────────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date         ┆ london_timezone ┆ cast                ┆ with                ┆ strip tz from with- │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---             ┆ London_to_Amsterdam ┆ London_to_Amsterdam ┆ 'Europe/Amste...    │</span>

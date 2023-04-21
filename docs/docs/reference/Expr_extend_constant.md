@@ -26,7 +26,7 @@ Extend the Series with given number of values.
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>UInt64</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>extend_constant</span><span class='op'>(</span><span class='fl'>10.1</span>, <span class='fl'>2</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │      │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>
@@ -43,7 +43,7 @@ Extend the Series with given number of values.
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>dtypes</span><span class='op'>$</span><span class='va'>Utf8</span>, strict <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>  <span class='op'>$</span><span class='fu'>extend_constant</span><span class='op'>(</span><span class='st'>"chuchu"</span>, <span class='fl'>2</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │                     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 │</span>

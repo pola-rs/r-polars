@@ -3,7 +3,7 @@
 ```r
 Series_to_r()
 
-Series_to_r_vector()
+Series_to_vector()
 
 Series_to_r_list()
 ```
@@ -44,7 +44,7 @@ Fun fact: Nested polars Series list must have same inner type, e.g. List(List(In
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [[3]]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "c"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'><span><span class='va'>series_vec</span><span class='op'>$</span><span class='fu'>to_r_vector</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#implicit call unlist(), same as to_r() as already vector</span></span></span>
+<span class='r-in'><span><span class='va'>series_vec</span><span class='op'>$</span><span class='fu'>to_vector</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#implicit call unlist(), same as to_r() as already vector</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "a" "b" "c"</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
@@ -89,7 +89,7 @@ Fun fact: Nested polars Series list must have same inner type, e.g. List(List(In
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] NA</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'><span><span class='va'>series_list</span><span class='op'>$</span><span class='fu'>to_r_vector</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#implicit call unlist(), append into a vector</span></span></span>
+<span class='r-in'><span><span class='va'>series_list</span><span class='op'>$</span><span class='fu'>to_vector</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#implicit call unlist(), append into a vector</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  1  2  3  4  5 NA  1  2 NA</span>
 <span class='r-in'><span> <span class='co'>#</span></span></span>
 <span class='r-in'><span> <span class='co'>#</span></span></span>

@@ -22,7 +22,7 @@ Determine how this categorical series should be sorted.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"cats"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Categorical</span><span class='op'>)</span><span class='op'>$</span><span class='va'>cat</span><span class='op'>$</span><span class='fu'>set_ordering</span><span class='op'>(</span><span class='st'>"physical"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ cats ┆ vals │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---  │</span>

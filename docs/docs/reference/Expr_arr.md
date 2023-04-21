@@ -23,7 +23,7 @@ Create an object namespace of all list related methods. See the individual metho
 <span class='r-in'><span><span class='va'>df_with_list</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"value"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>arr</span><span class='op'>$</span><span class='fu'>lengths</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"group_size"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┬───────────┬────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ group ┆ value     ┆ group_size │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   ┆ ---       ┆ ---        │</span>

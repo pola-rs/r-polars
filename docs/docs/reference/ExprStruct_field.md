@@ -25,7 +25,7 @@ Retrieve a `Struct` field as a new Series. By default base 2.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>struct</span><span class='op'>$</span><span class='fu'>field</span><span class='op'>(</span><span class='st'>"bbb"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>struct</span><span class='op'>$</span><span class='fu'>field</span><span class='op'>(</span><span class='st'>"ddd"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ bbb ┆ ddd        │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---        │</span>

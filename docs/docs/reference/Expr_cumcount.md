@@ -30,7 +30,7 @@ cumcount does not seem to count within lists.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cumcount</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cumcount"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cumcount</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cumcount_reversed"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┬───────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ cumcount ┆ cumcount_reversed │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      ┆ ---               │</span>

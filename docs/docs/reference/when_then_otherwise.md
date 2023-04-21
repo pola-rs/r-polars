@@ -35,7 +35,7 @@ For the impl nerds: pl$when returns a whenthen object and whenthen returns whent
 <span class='r-out co'><span class='r-pr'>#&gt;</span> OTHERWISE</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	Utf8(&gt;6cyl).alias("cyl_groups")</span>
 <span class='r-in'><span>  <span class='va'>df</span><span class='op'>$</span><span class='fu'>with_columns</span><span class='op'>(</span><span class='va'>wtt</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (32, 12)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (32, 12)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬─────┬───────┬───────┬─────┬─────┬──────┬──────┬────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ am  ┆ gear ┆ carb ┆ cyl_groups │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ ---  ┆ ---  ┆ ---        │</span>

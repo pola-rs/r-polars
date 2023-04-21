@@ -23,19 +23,19 @@ Count all unique values and create a struct mapping value to count.
 
 <pre class='r-example'><code><span class='r-in'><span><span class='va'>df</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Species"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>value_counts</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Species           │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---               │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ struct[2]         │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════════════════╡</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"setosa",50}     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"versicolor",50} │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"virginica",50}  │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ {"setosa",50}     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────────────┘</span>
-<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#recommended to unnest structs before converting to R</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_data_frame</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#recommended to unnest structs before converting to R</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>      Species counts</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 versicolor     50</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  virginica     50</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3     setosa     50</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1     setosa     50</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 versicolor     50</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3  virginica     50</span>
  </code></pre>

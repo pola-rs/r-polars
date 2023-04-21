@@ -29,7 +29,7 @@ Print the value that this expression evaluates to and pass on the value. The pri
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	5</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> and not it is dropped</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>

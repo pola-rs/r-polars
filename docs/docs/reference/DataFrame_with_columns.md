@@ -31,7 +31,7 @@ with_column is derived from with_columns but takes only one expression argument
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Length"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>abs</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"abs_SL"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Length"</span><span class='op'>)</span><span class='op'>+</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"add_2_SL"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 7)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 7)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┬────────┬──────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   ┆ abs_SL ┆ add_2_SL │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       ┆ ---    ┆ ---      │</span>
@@ -57,7 +57,7 @@ with_column is derived from with_columns but takes only one expression argument
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Length"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>abs</span><span class='op'>(</span><span class='op'>)</span>, <span class='co'>#not named expr will keep name "Sepal.Length"</span></span></span>
 <span class='r-in'><span>  SW_add_2 <span class='op'>=</span> <span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Width"</span><span class='op'>)</span><span class='op'>+</span><span class='fl'>2</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 6)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┬──────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   ┆ SW_add_2 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       ┆ ---      │</span>

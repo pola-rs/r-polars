@@ -40,7 +40,7 @@ setting an options may be rejected if not passing opt_requirements
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Length"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>abs</span><span class='op'>(</span><span class='op'>)</span>, <span class='co'>#not named expr will keep name "Sepal.Length"</span></span></span>
 <span class='r-in'><span>  SW_add_2 <span class='op'>=</span> <span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"Sepal.Width"</span><span class='op'>)</span><span class='op'>+</span><span class='fl'>2</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 6)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┬───────────┬──────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width ┆ Species   ┆ SW_add_2 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         ┆ ---       ┆ ---      │</span>

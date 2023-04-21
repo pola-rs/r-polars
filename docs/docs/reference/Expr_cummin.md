@@ -42,7 +42,7 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummin</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummin"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummin</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummin_reversed"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ cummin ┆ cummin_reversed │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---             │</span>
@@ -57,7 +57,7 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummax</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummux"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cummax</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cummax_reversed"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ cummux ┆ cummax_reversed │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---             │</span>

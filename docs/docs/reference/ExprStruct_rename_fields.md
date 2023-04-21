@@ -23,7 +23,7 @@ Rename the fields of the struct. By default base 2.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"struct_col"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>struct</span><span class='op'>$</span><span class='fu'>rename_fields</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"www"</span>, <span class='st'>"xxx"</span>, <span class='st'>"yyy"</span>, <span class='st'>"zzz"</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬──────┬───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ www ┆ xxx ┆ yyy  ┆ zzz       │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  ┆ ---       │</span>

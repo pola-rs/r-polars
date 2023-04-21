@@ -23,7 +23,7 @@ Apply window function over a subgroup. This is similar to a groupby + aggregatio
 <span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"val"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>count</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>over</span><span class='op'>(</span><span class='st'>"a"</span>,<span class='st'>"b"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ val │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>

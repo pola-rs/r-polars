@@ -29,7 +29,7 @@ Folds the expressions from left to right, keeping the first non-null value.
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_column</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>min</span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"c"</span>, <span class='fl'>99.9</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"d"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬──────┬──────┬──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a    ┆ b    ┆ c    ┆ d    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---  ┆ ---  ┆ ---  │</span>

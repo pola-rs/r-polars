@@ -16,7 +16,7 @@ pass expr to pl$struct
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>e</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> polars Expr: *.as_struct().alias("my_struct")</span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>DataFrame</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────────────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ my_struct                     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                           │</span>

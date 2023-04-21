@@ -23,7 +23,7 @@ Extract ordinal day from underlying Date representation. Applies to Date and Dat
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_columns</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>ordinal_day</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"ordinal_day"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (12, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (12, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────────┬─────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                    ┆ ordinal_day │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                     ┆ ---         │</span>

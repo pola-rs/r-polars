@@ -25,7 +25,7 @@ Round underlying floating point data by `decimals` digits.
 <span class='r-in'><span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>round</span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (8, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (8, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  │</span>

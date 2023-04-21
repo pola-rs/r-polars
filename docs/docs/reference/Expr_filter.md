@@ -33,13 +33,13 @@ where() is an alias for pl$filter
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>filter</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span> <span class='op'>&lt;</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"lt"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>filter</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span> <span class='op'>&gt;=</span> <span class='fl'>2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"gte"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────┬──────┬─────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ group_col ┆ lt   ┆ gte │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---       ┆ ---  ┆ --- │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ str       ┆ f64  ┆ f64 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═══════════╪══════╪═════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ g1        ┆ 1.0  ┆ 2.0 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ g2        ┆ null ┆ 3.0 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ g1        ┆ 1.0  ┆ 2.0 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────┴──────┴─────┘</span>
  </code></pre>

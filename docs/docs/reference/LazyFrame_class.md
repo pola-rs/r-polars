@@ -12,19 +12,31 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 
 <pre class='r-example'><code><span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'>LazyFrame</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan" "describe_plan"           "filter"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6] "first"                   "groupby"                 "join"                    "last"                    "limit"                  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "max"                     "mean"                    "median"                  "min"                     "print"                  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "reverse"                 "select"                  "slice"                   "std"                     "sum"                    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "tail"                    "var"                     "with_column"             "with_columns"           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4] "describe_plan"           "drop"                    "drop_nulls"             </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "fill_nan"                "fill_null"               "filter"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10] "first"                   "groupby"                 "join"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "last"                    "limit"                   "max"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "mean"                    "median"                  "min"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19] "print"                   "quantile"                "reverse"                </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [22] "select"                  "shift"                   "shift_and_fill"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "slice"                   "sort"                    "std"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [28] "sum"                     "tail"                    "unique"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31] "var"                     "with_column"             "with_columns"           </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>LazyFrame</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan" "describe_plan"           "filter"                 </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6] "first"                   "groupby"                 "join"                    "last"                    "limit"                  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "max"                     "mean"                    "median"                  "min"                     "print"                  </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "reverse"                 "select"                  "slice"                   "std"                     "sum"                    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "tail"                    "var"                     "with_column"             "with_columns"           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "collect"                 "collect_background"      "describe_optimized_plan"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [4] "describe_plan"           "drop"                    "drop_nulls"             </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "fill_nan"                "fill_null"               "filter"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [10] "first"                   "groupby"                 "join"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "last"                    "limit"                   "max"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "mean"                    "median"                  "min"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19] "print"                   "quantile"                "reverse"                </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [22] "select"                  "shift"                   "shift_and_fill"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "slice"                   "sort_by_exprs"           "std"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [28] "sum"                     "tail"                    "unique"                 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [31] "var"                     "with_column"             "with_columns"           </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## Practical example ##</span></span></span>
@@ -63,7 +75,7 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   FILTER [(col("Species")) == (Utf8(setosa))] FROM</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CSV SCAN C:\Users\etienne\AppData\Local\Temp\RtmpsNFprJ\file2bb85ca7782b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     CSV SCAN /tmp/RtmpvLvapT/file1735696541ed</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>     PROJECT */5 COLUMNS</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span></span></span>
@@ -74,7 +86,7 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   DF ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]; PROJECT */5 COLUMNS; SELECTION: "[(col(\"Species\")) == (Utf8(setosa))]"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-in'><span><span class='va'>Ldf_best</span><span class='op'>$</span><span class='fu'>describe_optimized_plan</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   CSV SCAN C:\Users\etienne\AppData\Local\Temp\RtmpsNFprJ\file2bb85ca7782b</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   CSV SCAN /tmp/RtmpvLvapT/file1735696541ed</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   PROJECT */5 COLUMNS</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>   SELECTION: [(col("Species")) == (Utf8(setosa))]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
@@ -87,8 +99,8 @@ Check out the source code in R/LazyFrame__lazy.R how public methods are derived 
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#verify tables would be the same</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span><span class='op'>(</span></span></span>
-<span class='r-in'><span>  <span class='va'>Pdf_okay</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span>,</span></span>
-<span class='r-in'><span>  <span class='va'>Pdf_best</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span>  <span class='va'>Pdf_okay</span><span class='op'>$</span><span class='fu'>to_data_frame</span><span class='op'>(</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  <span class='va'>Pdf_best</span><span class='op'>$</span><span class='fu'>to_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
 <span class='r-in'><span></span></span>

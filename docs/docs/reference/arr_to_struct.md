@@ -23,7 +23,7 @@ List to Struct
 <span class='r-in'><span>  name_generator <span class='op'>=</span>  \<span class='op'>(</span><span class='va'>idx</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"hello_you_"</span>,<span class='va'>idx</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>  <span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df2</span><span class='op'>$</span><span class='fu'>unnest</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────┬─────────────┬─────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ hello_you_0 ┆ hello_you_1 ┆ hello_you_2 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---         ┆ ---         ┆ ---         │</span>

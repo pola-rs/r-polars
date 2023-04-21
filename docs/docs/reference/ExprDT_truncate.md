@@ -44,7 +44,7 @@ The `every` and `offset` argument are created with the the following string lang
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"datetime"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>truncate</span><span class='op'>(</span><span class='st'>"4s"</span>,<span class='fu'><a href='https://rdrr.io/r/stats/offset.html'>offset</a></span><span class='op'>(</span><span class='st'>"3s"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"truncated_4s_offset_2s"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (13, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (13, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬─────────────────────┬────────────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ datetime            ┆ truncated_4s        ┆ truncated_4s_offset_2s │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ ---                 ┆ ---                    │</span>

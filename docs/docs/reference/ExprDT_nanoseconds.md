@@ -21,7 +21,7 @@ Extract the nanoseconds from a Duration type.
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>diff</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>nanoseconds</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"seconds_diff"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1001, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1001, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────────┬──────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                    ┆ seconds_diff │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                     ┆ ---          │</span>

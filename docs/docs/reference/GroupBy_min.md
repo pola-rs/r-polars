@@ -19,7 +19,7 @@ Reduce the groups to the minimum value.
 <span class='r-in'><span>        d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Apple"</span>, <span class='st'>"Orange"</span>, <span class='st'>"Apple"</span>, <span class='st'>"Apple"</span>, <span class='st'>"Banana"</span>, <span class='st'>"Banana"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>groupby</span><span class='op'>(</span><span class='st'>"d"</span>, maintain_order<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>min</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────┬──────┬───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ d      ┆ a   ┆ b    ┆ c     │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ --- ┆ ---  ┆ ---   │</span>

@@ -21,7 +21,7 @@ Extract seconds from underlying Datetime representation. Applies to Datetime col
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cast</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Int64</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"datetime int64"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"date"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>dt</span><span class='op'>$</span><span class='fu'>nanosecond</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"nanosecond"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────────┬────────────────────┬────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date                    ┆ datetime int64     ┆ nanosecond │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                     ┆ ---                ┆ ---        │</span>

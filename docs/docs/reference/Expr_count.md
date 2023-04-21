@@ -31,7 +31,7 @@ Count the number of values in this expression. Similar to R length()
 <span class='r-in'><span><span class='op'>)</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>count</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬──────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ all ┆ any ┆ none │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  │</span>
@@ -47,7 +47,7 @@ Count the number of values in this expression. Similar to R length()
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>len</span><span class='op'>(</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"all"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>first</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>len</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"all_first"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬──────┬───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ all ┆ any ┆ none ┆ all_first │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  ┆ ---       │</span>

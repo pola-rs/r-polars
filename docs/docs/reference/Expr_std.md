@@ -21,7 +21,7 @@ Get Standard Deviation
 ## Examples
 
 <pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>lit</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>std</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (1, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (1, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---      │</span>

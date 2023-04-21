@@ -27,7 +27,7 @@ expression request underlying physical base representation
 <span class='r-in'><span>    <span class='op'>$</span><span class='fu'>to_physical</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span>    <span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"vals_physical"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────┬───────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ vals ┆ vals_physical │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---  ┆ ---           │</span>

@@ -33,7 +33,7 @@ pl$struct creates Expr or Series of DataType Struct() pl$Struct creates the Data
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ my_struct           │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 │</span>
@@ -92,7 +92,7 @@ pl$struct creates Expr or Series of DataType Struct() pl$Struct creates the Data
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] TRUE</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ my_struct │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---       │</span>
@@ -101,7 +101,7 @@ pl$struct creates Expr or Series of DataType Struct() pl$Struct creates the Data
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ {1,"a"}   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ {2,"b"}   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └───────────┘</span>
-<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>as_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>e2</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_data_frame</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>                  my_struct</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 1 4.94065645841247e-324, a</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 2 9.88131291682493e-324, b</span>

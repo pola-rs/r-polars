@@ -44,7 +44,8 @@ In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-02 00:00:00 GMT</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
 <span class='r-in'><span><span class='va'>s_gmt</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#printed same way in R and polars becuase tagged with a time_zone/tzone</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 00:00:00 GMT" "2022-01-01 06:00:00 GMT" "2022-01-01 12:00:00 GMT" "2022-01-01 18:00:00 GMT" "2022-01-02 00:00:00 GMT"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 00:00:00 GMT" "2022-01-01 06:00:00 GMT" "2022-01-01 12:00:00 GMT"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "2022-01-01 18:00:00 GMT" "2022-01-02 00:00:00 GMT"</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'># polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print</span></span></span>
 <span class='r-in'><span><span class='va'>s_null</span> <span class='op'>=</span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>date_range</span><span class='op'>(</span></span></span>
@@ -53,7 +54,8 @@ In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and
 <span class='r-in'><span>  interval <span class='op'>=</span> <span class='st'>"6h"</span>, time_unit <span class='op'>=</span> <span class='st'>"ms"</span>, time_zone <span class='op'>=</span> <span class='cn'>NULL</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>s_null</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span> <span class='co'>#back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 01:00:00 CET" "2022-01-01 07:00:00 CET" "2022-01-01 13:00:00 CET" "2022-01-01 19:00:00 CET" "2022-01-02 01:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 01:00:00 CET" "2022-01-01 07:00:00 CET" "2022-01-01 13:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "2022-01-01 19:00:00 CET" "2022-01-02 01:00:00 CET"</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#Any mixing of timezones is fine, just set them all, and it works as expected.</span></span></span>
@@ -71,7 +73,8 @@ In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 	2022-01-01 07:00:00 CET</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ]</span>
 <span class='r-in'><span><span class='va'>s_mix</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 03:00:00 CET" "2022-01-01 04:00:00 CET" "2022-01-01 05:00:00 CET" "2022-01-01 06:00:00 CET" "2022-01-01 07:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "2022-01-01 03:00:00 CET" "2022-01-01 04:00:00 CET" "2022-01-01 05:00:00 CET"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "2022-01-01 06:00:00 CET" "2022-01-01 07:00:00 CET"</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#use of ISOdate</span></span></span>

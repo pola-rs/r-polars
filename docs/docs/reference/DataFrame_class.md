@@ -12,20 +12,37 @@ Check out the source code in R/dataframe_frame.R how public methods are derived 
 
 <pre class='r-example'><code><span class='r-in'><span><span class='co'>#see all exported methods</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/DataFrame.html'>DataFrame</a></span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "as_data_frame"  "clone"          "columns"        "dtypes"         "estimated_size" "filter"         "first"          "get_column"    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "get_columns"    "groupby"        "height"         "join"           "last"           "lazy"           "limit"          "max"           </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "mean"           "median"         "min"            "null_count"     "print"          "reverse"        "schema"         "select"        </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "shape"          "slice"          "std"            "sum"            "tail"           "to_list"        "to_series"      "to_struct"     </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "unnest"         "var"            "width"          "with_column"    "with_columns"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "as_data_frame"  "clone"          "columns"        "drop"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "drop_in_place"  "drop_nulls"     "dtype_strings"  "dtypes"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "estimated_size" "fill_nan"       "fill_null"      "filter"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "first"          "frame_equal"    "get_column"     "get_columns"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "groupby"        "height"         "join"           "last"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "lazy"           "limit"          "max"            "mean"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "median"         "min"            "null_count"     "print"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "quantile"       "reverse"        "schema"         "select"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [33] "shape"          "shift"          "shift_and_fill" "slice"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [37] "sort"           "std"            "sum"            "tail"          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [41] "to_data_frame"  "to_list"        "to_series"      "to_struct"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [45] "unique"         "unnest"         "var"            "width"         </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [49] "with_column"    "with_columns"  </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#see all private methods (not intended for regular use)</span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span><span class='op'>(</span><span class='fu'>polars</span><span class='fu'>:::</span><span class='va'><a href='https://rdrr.io/pkg/polars/man/dot-pr.html'>.pr</a></span><span class='op'>$</span><span class='va'>DataFrame</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "by_agg"                    "clone_see_me_macro"        "columns"                   "dtypes"                    "estimated_size"           </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>  [6] "export_stream"             "from_arrow_record_batches" "get_column"                "get_columns"               "lazy"                     </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "new"                       "new_par_from_list"         "new_with_capacity"         "null_count"                "print"                    </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [16] "schema"                    "select"                    "select_at_idx"             "set_column_from_robj"      "set_column_from_series"   </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "set_column_names_mut"      "shape"                     "to_list"                   "to_list_tag_structs"       "to_list_unwind"           </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [26] "to_struct"                 "unnest"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] "by_agg"                    "clone_see_me_macro"       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [3] "columns"                   "drop_in_place"            </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [5] "dtype_strings"             "dtypes"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [7] "estimated_size"            "export_stream"            </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [9] "frame_equal"               "from_arrow_record_batches"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [11] "get_column"                "get_columns"              </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] "lazy"                      "new"                      </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [15] "new_par_from_list"         "new_with_capacity"        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [17] "null_count"                "print"                    </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [19] "schema"                    "select"                   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [21] "select_at_idx"             "set_column_from_robj"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [23] "set_column_from_series"    "set_column_names_mut"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] "shape"                     "to_list"                  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [27] "to_list_tag_structs"       "to_list_unwind"           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [29] "to_struct"                 "unnest"                   </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>#make an object</span></span></span>
@@ -41,9 +58,11 @@ Check out the source code in R/dataframe_frame.R how public methods are derived 
 <span class='r-in'><span><span class='co'>#column exists in both dataframes-objects now, as they are just pointers to the same object</span></span></span>
 <span class='r-in'><span><span class='co'># there are no public methods with mutability</span></span></span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='va'>columns</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"      "some_ints"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6] "some_ints"   </span>
 <span class='r-in'><span><span class='va'>df2</span><span class='op'>$</span><span class='va'>columns</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"      "some_ints"   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [6] "some_ints"   </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'># set_column_from_robj-method is fallible and returned a result which could be ok or an err.</span></span></span>
 <span class='r-in'><span><span class='co'># No public method or function will ever return a result.</span></span></span>

@@ -18,7 +18,7 @@ Value Counts as DataFrame
 ## Examples
 
 <pre class='r-example'><code><span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>Series</span><span class='op'>(</span><span class='va'>iris</span><span class='op'>$</span><span class='va'>Species</span>,<span class='st'>"flower species"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>value_counts</span><span class='op'>(</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (3, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (3, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────────┬────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ flower species ┆ counts │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---            ┆ ---    │</span>

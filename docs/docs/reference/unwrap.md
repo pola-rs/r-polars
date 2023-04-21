@@ -37,5 +37,5 @@ rust-like unwrapping of result. Useful to keep error handling on the R side.
 <span class='r-in'><span>  <span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  error <span class='op'>=</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>as.character</a></span><span class='op'>(</span><span class='va'>err</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Error: something happen on the rust side \n when calling :\n source(\"C:/Users/etienne/Desktop/Divers/r-polars/make-docs.R\", \n    echo = TRUE)\n"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Error: something happen on the rust side \n when calling :\n source(\"~/Bureau/Git/not_my_packages/r-polars/make-docs.R\", echo = TRUE)\n"</span>
  </code></pre>

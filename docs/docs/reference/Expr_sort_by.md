@@ -37,7 +37,7 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (6, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
@@ -55,7 +55,7 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='st'>"value2"</span>,<span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span><span class='op'>)</span>, reverse <span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>TRUE</span>,<span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (6, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>
@@ -74,7 +74,7 @@ See Inf,NaN,NULL,Null/NA translations here `docs_translations`
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"group"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort_by</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"value1"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sort</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (6, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (6, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌───────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ group │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---   │</span>

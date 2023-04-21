@@ -26,7 +26,7 @@ You may also use regexes in the exclude list. They must start with `^` and end w
 <span class='r-in'><span></span></span>
 <span class='r-in'><span> <span class='co'>#by name(s)</span></span></span>
 <span class='r-in'><span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>exclude</span><span class='op'>(</span><span class='st'>"Species"</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         │</span>
@@ -45,7 +45,7 @@ You may also use regexes in the exclude list. They must start with `^` and end w
 <span class='r-in'><span></span></span>
 <span class='r-in'><span> <span class='co'>#by type</span></span></span>
 <span class='r-in'><span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>exclude</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Categorical</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬──────────────┬─────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Sepal.Length ┆ Sepal.Width ┆ Petal.Length ┆ Petal.Width │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---          ┆ ---         │</span>
@@ -62,14 +62,14 @@ You may also use regexes in the exclude list. They must start with `^` and end w
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5.9          ┆ 3.0         ┆ 5.1          ┆ 1.8         │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └──────────────┴─────────────┴──────────────┴─────────────┘</span>
 <span class='r-in'><span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>exclude</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='va'>Categorical</span>,<span class='va'>pl</span><span class='op'>$</span><span class='va'>Float64</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (0, 0)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (0, 0)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞╡</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └┘</span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span> <span class='co'>#by regex</span></span></span>
 <span class='r-in'><span> <span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>all</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>exclude</span><span class='op'>(</span><span class='st'>"^Sepal.*$"</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (150, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (150, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌──────────────┬─────────────┬───────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ Petal.Length ┆ Petal.Width ┆ Species   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---          ┆ ---         ┆ ---       │</span>

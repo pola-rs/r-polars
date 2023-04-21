@@ -18,7 +18,7 @@ Replace all matching regex/literal substrings with a new string value.
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>with_columns</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>   <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"text"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>replace_all</span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"-"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ id  ┆ text    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---     │</span>

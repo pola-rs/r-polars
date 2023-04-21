@@ -24,7 +24,7 @@ Create new DataFrame
 <span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
 <span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>1</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span> <span class='co'>#directly from vectors</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────────────┬─────┬─────┬───────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a                   ┆ b   ┆ c   ┆ d             │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---                 ┆ --- ┆ --- ┆ ---           │</span>
@@ -44,7 +44,7 @@ Create new DataFrame
 <span class='r-in'><span>  c <span class='op'>=</span> <span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,</span></span>
 <span class='r-in'><span>  d <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fl'>1L</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 4)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 4)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────┬─────┬───────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a   ┆ b   ┆ c   ┆ d             │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ --- ┆ ---           │</span>

@@ -46,7 +46,7 @@ In R as modifying tzone attribute manually but takes into account summertime. Se
 <span class='r-in'><span>    <span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"strip tz from with-'Europe/Amsterdam'"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>df2</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (5, 6)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (5, 6)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────────┬────────────────┬────────────────┬───────────────┬───────────────┬───────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ date           ┆ london_timezon ┆ tz_loc_london  ┆ cast London_t ┆ with London_t ┆ strip tz from │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---            ┆ e              ┆ ---            ┆ o_Amsterdam   ┆ o_Amsterdam   ┆ with-'Europe/ │</span>

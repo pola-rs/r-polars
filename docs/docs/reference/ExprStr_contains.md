@@ -24,7 +24,7 @@ starts_with : Check if string values start with a substring. ends_with : Check i
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>contains</span><span class='op'>(</span><span class='st'>"cat|bit"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"regex"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>contains</span><span class='op'>(</span><span class='st'>"rab$"</span>, literal<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"literal"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────────────┬───────┬─────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a           ┆ regex ┆ literal │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---         ┆ ---   ┆ ---     │</span>

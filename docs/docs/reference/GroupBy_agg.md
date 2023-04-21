@@ -27,13 +27,13 @@ Aggregatete a DataFrame over a groupby
 <span class='r-in'><span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"bar"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>sum</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"bar_sum"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span> <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"bar"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>mean</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"bar_tail_sum"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 3)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 3)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌─────┬─────────┬──────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ foo ┆ bar_sum ┆ bar_tail_sum │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---     ┆ ---          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ str ┆ f64     ┆ f64          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════════╪══════════════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ one ┆ 9.0     ┆ 4.5          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ two ┆ 6.0     ┆ 2.0          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ one ┆ 9.0     ┆ 4.5          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────────┴──────────────┘</span>
  </code></pre>

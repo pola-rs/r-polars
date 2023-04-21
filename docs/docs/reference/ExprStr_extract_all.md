@@ -16,7 +16,7 @@ Extracts all matches for the given regex pattern. Extracts each successive non-o
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span></span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"foo"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>str</span><span class='op'>$</span><span class='fu'>extract_all</span><span class='op'>(</span><span class='st'>r"((\d+))"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"extracted_nrs"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (2, 1)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 1)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ extracted_nrs  │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---            │</span>

@@ -28,7 +28,7 @@ Dtypes in Int8, UInt8, Int16, UInt16 are cast to Int64 before summing to prevent
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cumsum</span><span class='op'>(</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cumsum"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>  <span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>cumsum</span><span class='op'>(</span>reverse<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"cumsum_reversed"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> polars DataFrame: shape: (4, 2)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (4, 2)</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ┌────────┬─────────────────┐</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ cumsum ┆ cumsum_reversed │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ ---    ┆ ---             │</span>
