@@ -1,6 +1,6 @@
 #' @export
 #' @noRd
-`[.DataFrame` <- function(x, i, j) {
+`[.DataFrame` <- function(x, i, j, ..., drop = TRUE) {
     # selecting `j` is usually faster, so we start here.
     if (!missing(j)) {
         if (is.atomic(j) && is.vector(j)) {
@@ -46,6 +46,10 @@
         } else {
             stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
         }
+    }
+
+    if (drop && x$width == 1L) {
+        x = x$to_series()
     }
 
     x
