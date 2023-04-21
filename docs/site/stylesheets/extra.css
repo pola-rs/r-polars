@@ -22,8 +22,20 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 */
 :root {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --span-op-color: #24292e;
+  --span-fu-color: #6f42c1;
+  --span-fl-color: #005cc5;
+  --span-st-color: #032f62;
 }
 
+/* Dark theme */
+[data-md-color-scheme="slate"] {
+  --span-op-color: #d9d9d9;
+  --span-fu-color: #a78bda;
+  --span-fl-color: #3392ff;
+  --span-st-color: #39ac73;
+}
 
 
 /*
@@ -40,7 +52,7 @@ span.at /* Attribute      */ {color:#d73a49}
 span.bn /* BaseN          */ {color:#005cc5}
 span.bu /* BuiltIn        */ {color:#d73a49}
 span.cf /* ControlFlow    */ {color:#d73a49}
-span.ch /* Char           */ {color:#032f62}
+span.ch /* Char           */ {color:var(--span-st-color)}
 span.cn /* Constant       */ {color:#005cc5}
 span.co /* Comment        */ {color:#6a737d}
 span.cv /* CommentVar     */ {color:#6a737d}
@@ -49,18 +61,18 @@ span.dt /* DataType       */ {color:#d73a49}
 span.dv /* DecVal         */ {color:#005cc5}
 span.er /* Error          */ {color:#ff5555; text-decoration: underline}
 span.ex /* Extension      */ {color:#d73a49; font-weight: bold}
-span.fl /* Float          */ {color:#005cc5}
-span.fu /* Function       */ {color:#6f42c1}
-span.im /* Import         */ {color:#032f62}
+span.fl /* Float          */ {color:var(--span-fl-color)}
+span.fu, span.fu > a /* Function       */ {color:var(--span-fu-color)}
+span.im /* Import         */ {color:var(--span-st-color)}
 span.in /* Information    */ {color:#6a737d}
 span.kw /* Keyword        */ {color:#d73a49}
-span.op /* Operator       */ {color:#24292e}
-span.ot /* Others         */ {color:#6f42c1}
+span.op /* Operator       */ {color:var(--span-op-color)}
+span.ot /* Others         */ {color:var(--span-fu-color)}
 span.pp /* Preprocessor   */ {color:#d73a49}
 span.re /* RegionMarker   */ {color:#6a737d}
 span.sc /* SpecialChar    */ {color:#005cc5}
-span.ss /* SpecialString  */ {color:#032f62}
-span.st /* String         */ {color:#032f62}
+span.ss /* SpecialString  */ {color:var(--span-st-color)}
+span.st /* String         */ {color:var(--span-st-color)}
 span.va /* Variable       */ {color:#e36209}
-span.vs /* VerbatimString */ {color:#032f62}
+span.vs /* VerbatimString */ {color:var(--span-st-color)}
 span.wa /* Warning        */ {color:#ff5555}
