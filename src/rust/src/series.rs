@@ -174,6 +174,15 @@ impl Series {
         }
     }
 
+    fn to_fmt_char(&self, str_length: u32) -> Vec<String> {
+        let len = self.0.len();
+        let mut res = Vec::with_capacity(len);
+        for i in 0..len {
+            res.push(self.get_fmt(i.try_into().expect("usize>u32"), str_length));
+        }
+        res
+    }
+
     pub fn compare(&self, other: &Series, op: String) -> List {
         //try cast other to self, downcast(dc) to chunkedarray and compare with operator(op) elementwise
         macro_rules! comp {
