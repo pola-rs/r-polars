@@ -77,6 +77,32 @@ patrick::with_parameters_test_that("Series",
     .cases = make_cases()
 )
 
+vecs_to_test = list(
+  letters,
+  1:10,
+  as.double(1:10),
+  c("foo" = "bar"),
+  c(TRUE, FALSE),
+  as.factor(letters),
+  c("foooo", "barrrrr")
+)
+
+patrick::with_parameters_test_that("Series as.vector",
+  {
+    expect_equal(as.vector(pl$Series(v)), v, ignore_attr = TRUE)
+  },
+  v = vecs_to_test
+)
+
+patrick::with_parameters_test_that("Series as.character",
+  {
+    expect_equal(as.character(pl$Series(v)), as.character(v), ignore_attr = TRUE)
+    expect_snapshot(as.character(pl$Series(v)), cran = TRUE)
+    expect_snapshot(as.character(pl$Series(v), format = TRUE), cran = TRUE)
+    expect_snapshot(as.character(pl$Series(v), format = TRUE, str_length = 2), cran = TRUE)
+  },
+  v = vecs_to_test
+)
 
 test_that("drop_nulls", {
   tmp = mtcars
@@ -149,6 +175,12 @@ test_that("brackets", {
   a = df[3:7, 1:3]$to_data_frame()
   b = mtcars[3:7, 1:3]
   expect_equal(a, b, ignore_attr = TRUE)
+
+  expect_equal(df[, "cyl"]$to_vector(), mtcars[, "cyl"])
+  expect_equal(df[, 1]$to_vector(), mtcars[, 1])
+  expect_equal(df[1:5, 1]$to_vector(), mtcars[1:5, 1])
+
+  expect_equal(df[, "cyl", drop = FALSE]$to_data_frame(), mtcars[, "cyl", drop = FALSE], ignore_attr = TRUE)
 
   # un-comment when the `LazyFrame.columns` attribute is implemented
 
