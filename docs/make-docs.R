@@ -1,3 +1,10 @@
+###### Custom script:
+######
+###### - get the Rd files, convert them to markdown in "docs/docs/reference" and
+######   put them in "mkdocs.yaml"
+###### - run the examples in the "Reference" files
+
+
 library(altdoc)
 library(yaml)
 library(tinkr)
@@ -12,6 +19,9 @@ if (fs::dir_exists(here::here("docs/docs/reference"))) {
 fs::dir_create(here::here("docs/docs/reference"))
 
 
+
+# Is the Rd file for internal documentation only (if so, it won't be included
+# in the website)
 
 is_internal <- function(file) {
   y <- capture.output(tools::Rd2latex(file))
@@ -28,6 +38,8 @@ is_internal <- function(file) {
   any(test)
 }
 
+
+# Find the R file in which the function was documented
 
 get_r_source <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
@@ -49,7 +61,7 @@ get_r_source <- function() {
 }
 
 
-# find general classes: DataFrame, GroupBy, etc.
+# Find general classes: DataFrame, GroupBy, etc.
 
 get_general_classes <- function() {
   rd_files <- list.files("man", pattern = "_class\\.Rd")
@@ -57,7 +69,7 @@ get_general_classes <- function() {
 }
 
 
-# nested list with general classes as titles and methods for these classes
+# Nested list with general classes as titles and methods for these classes
 # as children
 
 make_doc_hierarchy <- function() {
@@ -121,7 +133,7 @@ make_doc_hierarchy <- function() {
 }
 
 
-# copy Rd files to "docs" folder and convert them to markdown
+# Copy Rd files to "docs" folder and convert them to markdown
 
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
@@ -142,7 +154,7 @@ convert_to_md <- function() {
 }
 
 
-# insert the "Reference" structure in the yaml (requires to overwrite the full
+# Insert the "Reference" structure in the yaml (requires to overwrite the full
 # mkdocs.yml)
 
 convert_hierarchy_to_yml <- function() {
@@ -172,7 +184,8 @@ convert_hierarchy_to_yml <- function() {
 }
 
 
-# TODO: evaluate examples in reference pages
+# Evaluate examples in "Reference" files and plug them back
+
 eval_reference_examples <- function() {
 
   pkgload::load_all()
@@ -224,6 +237,8 @@ eval_reference_examples <- function() {
 
 }
 
+
+# Run all
 
 convert_to_md()
 convert_hierarchy_to_yml()
