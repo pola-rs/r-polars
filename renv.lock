@@ -722,16 +722,10 @@
     },
     "nanoarrow": {
       "Package": "nanoarrow",
-      "Version": "0.1.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteUsername": "apache",
-      "RemoteRepo": "arrow-nanoarrow",
-      "RemoteSubdir": "r",
-      "RemoteRef": "main",
-      "RemoteSha": "43e2093a682cadb5801a4fa1b90aca77ac65ccb6",
-      "RemoteHost": "api.github.com",
-      "Hash": "cf5b08597a00271257566517da1bd1b8"
+      "Version": "0.1.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "8f36b9fd7e0133d290e4c9f4b3b662c1"
     },
     "nycflights13": {
       "Package": "nycflights13",
