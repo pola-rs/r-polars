@@ -485,7 +485,7 @@ test_that("Backward compatibility: to_r_vector", {
   expect_identical(pl$Series(1:3)$to_r_vector(), 1:3)
 })
 
-test_that("internal method get_fmt", {
+test_that("internal method get_fmt and to_fmt_char", {
   s_1 <- pl$Series(c("foo", "bar"))
   expect_equal(
     .pr$Series$get_fmt(s_1, index = 1, str_length = 3),
@@ -494,5 +494,13 @@ test_that("internal method get_fmt", {
   expect_equal(
     .pr$Series$get_fmt(s_1, index = 0, str_length = 100),
     '"foo"'
+  )
+  expect_equal(
+    .pr$Series$to_fmt_char(s_1, 3),
+    c('"fo…', '"ba…')
+  )
+  expect_equal(
+    .pr$Series$to_fmt_char(s_1, 100),
+    c('"foo"', '"bar"')
   )
 })

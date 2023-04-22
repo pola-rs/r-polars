@@ -1,6 +1,6 @@
 #' @export
 #' @noRd
-`[.DataFrame` <- function(x, i, j) {
+`[.DataFrame` <- function(x, i, j, ..., drop = TRUE) {
     # selecting `j` is usually faster, so we start here.
     if (!missing(j)) {
         if (is.atomic(j) && is.vector(j)) {
@@ -46,6 +46,10 @@
         } else {
             stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
         }
+    }
+
+    if (drop && x$width == 1L) {
+        x = x$to_series()
     }
 
     x
@@ -95,12 +99,6 @@ nrow.DataFrame = function(x) x$height
 #' @return Integer
 #' @export
 ncol.DataFrame = function(x) x$height
-
-#' The Number of Columns of a LazyFrame 
-#' @param x LazyFrame
-#' @return Integer
-#' @export
-ncol.LazyFrame = function(x) x$collect()$height
 
 #' @export
 #' @noRd
@@ -155,6 +153,29 @@ max.DataFrame = function(x, ...) x$max()
 #' @export
 #' @noRd
 max.LazyFrame = function(x, ...) x$max()
+
+#' @export
+#' @noRd
+as.vector.Series = function(x, mode) x$to_vector()
+
+#' @param x Series
+#' @param format a logical. If `TRUE`, the Series will be formatted.
+#' @param str_length an integer. If `format = TRUE`,
+#' utf8 or categorical type Series will be formatted to a string of this length.
+#' @examples
+#' s = pl$Series(c("foo", "barbaz"))
+#' as.character(s)
+#' as.character(s, format = TRUE)
+#' as.character(s, format = TRUE, str_length = 3)
+#' @export
+as.character.Series = function(x, ..., format = FALSE, str_length = 15) {
+    if (isTRUE(format)) {
+        .pr$Series$to_fmt_char(x, str_length = str_length)
+    } else {
+        x$to_vector() |>
+            as.character()
+    }
+}
 
 #' @export
 #' @noRd
