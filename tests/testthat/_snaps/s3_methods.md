@@ -45,6 +45,27 @@
     Output
        [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
 
+---
+
+    Code
+      as.character(pl$Series(v))
+    Output
+       [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
+
+---
+
+    Code
+      as.character(pl$Series(v), format = TRUE)
+    Output
+       [1] "1.0"  "2.0"  "3.0"  "4.0"  "5.0"  "6.0"  "7.0"  "8.0"  "9.0"  "10.0"
+
+---
+
+    Code
+      as.character(pl$Series(v), format = TRUE, str_length = 2)
+    Output
+       [1] "1.0"  "2.0"  "3.0"  "4.0"  "5.0"  "6.0"  "7.0"  "8.0"  "9.0"  "10.0"
+
 # Series as.character v=bar
 
     Code

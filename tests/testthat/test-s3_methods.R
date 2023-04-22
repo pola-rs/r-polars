@@ -80,6 +80,7 @@ patrick::with_parameters_test_that("Series",
 vecs_to_test = list(
   letters,
   1:10,
+  as.double(1:10),
   c("foo" = "bar"),
   c(TRUE, FALSE),
   as.factor(letters),
@@ -95,6 +96,7 @@ patrick::with_parameters_test_that("Series as.vector",
 
 patrick::with_parameters_test_that("Series as.character",
   {
+    expect_equal(as.character(pl$Series(v)), as.character(v), ignore_attr = TRUE)
     expect_snapshot(as.character(pl$Series(v)), cran = TRUE)
     expect_snapshot(as.character(pl$Series(v), format = TRUE), cran = TRUE)
     expect_snapshot(as.character(pl$Series(v), format = TRUE, str_length = 2), cran = TRUE)
