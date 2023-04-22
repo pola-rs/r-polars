@@ -28,9 +28,9 @@ Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
-(\[@ritchie46\](<https://github.com/ritchie46>)). This R port is
+([@ritchie46](https://github.com/ritchie46)). This R port is
 maintained by Søren Welling
-(\[@sorhawell\](<https://github.com/sorhawell>)) and
+([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
@@ -51,7 +51,7 @@ install options on Linux.
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
-Special thanks to Jeroen Ooms (\[@jeroen\](<https://github.com/jeroen>))
+Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen))
 for the excellent R-universe support.
 
 ### GitHub releases
