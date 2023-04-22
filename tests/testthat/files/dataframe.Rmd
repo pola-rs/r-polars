@@ -1,6 +1,8 @@
 ---
 output:
-  github_document: default
+  github_document:
+    df_print: kable
+    html_preview: false
 ---
 
 ```{r}

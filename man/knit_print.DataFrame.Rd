@@ -12,8 +12,17 @@ knit_print.DataFrame(x, ...)
 \item{...}{additional arguments, not used}
 }
 \description{
-Mimics \link{python-polars' NotebookFormatter}
-(https://github.com/pola-rs/polars/blob/4ffcb7461302a580255a9d910d70f1f7b2508675/py-polars/polars/dataframe/_html.py)
+Mimics python-polars' NotebookFormatter
 for HTML outputs.
+}
+\details{
+Outputs HTML tables if the output format is HTML
+and the document's \code{df_print} option is not \code{"default"} or \code{"tibble"}.
+
+Or, the output format can be enforced with R's \code{options} function as follows:
+\itemize{
+\item \code{options(polars.df_print = "default")} for the default print method.
+\item \code{options(polars.df_print = "html")} for the HTML table.
+}
 }
 \keyword{DataFrame}

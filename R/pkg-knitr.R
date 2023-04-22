@@ -1,16 +1,27 @@
 #' knit print polars DataFrame
 #'
-#' Mimics [python-polars' NotebookFormatter]
-#' (https://github.com/pola-rs/polars/blob/4ffcb7461302a580255a9d910d70f1f7b2508675/py-polars/polars/dataframe/_html.py)
+#' Mimics python-polars' NotebookFormatter
 #' for HTML outputs.
+#'
+#' Outputs HTML tables if the output format is HTML
+#' and the document's `df_print` option is not `"default"` or `"tibble"`.
+#'
+#' Or, the output format can be enforced with R's `options` function as follows:
+#'
+#' - `options(polars.df_print = "default")` for the default print method.
+#' - `options(polars.df_print = "html")` for the HTML table.
 #' @name knit_print.DataFrame
 #' @param x a polars DataFrame to knit_print
 #' @param ... additional arguments, not used
 #' @keywords DataFrame
 #' @export
 knit_print.DataFrame <- function(x, ...) {
-  .print_opt = getOption("polars.df_print", "auto")
-  if (.print_opt != "default" && (knitr::is_html_output() || (.print_opt == "html"))) {
+  .print_opt <- getOption("polars.df_print", "auto")
+  .rmd_df_print <- knitr::opts_knit$get("rmarkdown.df_print")
+  if (.print_opt == "html" ||
+    (.print_opt != "default" &&
+      !isTRUE(.rmd_df_print %in% c("default", "tibble")) &&
+      knitr::is_html_output())) {
     x |>
       to_html_table() |>
       knitr::asis_output()
