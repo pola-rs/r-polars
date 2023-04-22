@@ -15,18 +15,20 @@ concurrency:
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
     strategy:
       fail-fast: false
       matrix:
         config:
+          #- { os: macos-latest, r: "devel" }
           - { os: macos-latest, r: "release" }
-          #- { os: windows-latest, r: "release", rtools-version: "43" }
+          #- { os: macos-latest, r: "oldrel-1" }
+          - { os: windows-latest, r: "devel", rtools-version: "43" }
+          - { os: windows-latest, r: "release", rtools-version: "" }
+          - { os: windows-latest, r: "oldrel-1", rtools-version: "42" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
-          #- { os: ubuntu-latest, r: "oldrel-1" }
+          - { os: ubuntu-latest, r: "oldrel-1" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
