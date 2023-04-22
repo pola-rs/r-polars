@@ -193,10 +193,11 @@ more examples of how to use the package to:
 - Modify and create new columns.
 - Sort data.
 - Join, group, and aggregate data.
-- Handl missing values.
+- Join and concatenate datasets.
+- Group and aggregate.
+- Handle missing values.
 - Work with dates and times.
-- Use the lazy execution engine for maximum performance and
-  memory-efficient operations.
+- Use the lazy execution engine for maximum performance and memory-efficient operations.
 
 ## Development and Contributions
 
@@ -244,7 +245,7 @@ expression](https://rpolars.github.io/reference/Expr_cos.html):
 - Look up the [polars.Expr.cos method in py-polars
   documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
 - Press the `[source]` button to see the [Python
-  impl](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)
+  implementation](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)
 - Find the cos [py-polars rust
   implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L396)
   (likely just a simple call to the Rust-Polars API)
