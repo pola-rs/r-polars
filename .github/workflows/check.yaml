@@ -10,28 +10,25 @@ name: R-CMD-check
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  #cancel-in-progress: true
+  cancel-in-progress: true
 
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
     strategy:
       fail-fast: false
       matrix:
         config:
-          #- { os: macos-latest, r: "release" }
-          - { os: windows-latest, r: "release", rtools-version: "42" }
-          - { os: windows-latest, r: "release", rtools-version: "" }
+          - { os: macos-latest, r: "devel" }
+          - { os: macos-latest, r: "release" }
+          - { os: macos-latest, r: "oldrel-1" }
           - { os: windows-latest, r: "devel", rtools-version: "43" }
-          - { os: windows-latest, r: "devel", rtools-version: "" }
+          - { os: windows-latest, r: "release", rtools-version: "42" }
           - { os: windows-latest, r: "oldrel-1", rtools-version: "42" }
-          - { os: windows-latest, r: "oldrel-1", rtools-version: "" }
-          #- { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
-          #- { os: ubuntu-latest, r: "release" }
-          #- { os: ubuntu-latest, r: "oldrel-1" }
+          - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
+          - { os: ubuntu-latest, r: "release" }
+          - { os: ubuntu-latest, r: "oldrel-1" }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -43,32 +40,6 @@ jobs:
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
-
-      # - name: Fix path for Windows caching
-      #   if: runner.os == 'Windows'
-      #   shell: bash
-      #   run: |
-      #     echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
-      #     echo "${GITHUB_PATH}"
-
-      # - name: Get Date
-      #   id: get-date
-      #   run: |
-      #     echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
-      #   shell: bash
-
-      # - name: cache polars rust targets
-      #   id: cache-rust-targets
-      #   uses: actions/cache@v3.2.2
-      #   env:
-      #     cache-name: cache-rust-targets
-      #   with:
-      #     path: ./src/rust/target/
-      #     key: check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
-      #     restore-keys: |
-      #       check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}-${{ steps.get-date.outputs.date }}
-      #       check_v5-${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml', './src/rust/Cargo.lock') }}
-      #       check_v5-${{ runner.os }}-cargo-target
 
       - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
       - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
@@ -164,4 +135,3 @@ jobs:
          print(getwd());
          source("./inst/misc/filter_rcmdcheck.R");
         shell: Rscript {0}
-
