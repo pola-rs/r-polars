@@ -52,7 +52,7 @@ pl$extra_auto_completion = function(activate = TRUE) {
       last_char = substr(lb,nchar(lb),nchar(lb))
       if(last_char == "$" && nchar(lb)>1L) {
         x = eval(parse(text=substr(lb,1,nchar(lb)-1)))
-        if(inherits(x, c(rpolars:::pl_class_names,"method_environment"))) {
+        if(inherits(x, c(polars:::pl_class_names,"method_environment"))) {
           your_comps = .DollarNames(x)
           # append your suggestions to the vanilla suggestions/completions
           CE$comps = c(your_comps,CE$comps)
