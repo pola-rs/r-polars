@@ -2547,6 +2547,45 @@ Expr_rolling_min = function(
   ))
 }
 
+#' Rolling apply
+#' @keywords Expr
+#' @description
+#' Apply a custom rolling apply  over the values in this array.
+#' A window of length `window_size` will traverse the array. The values that fill
+#' this window will (optionally) be multiplied with the weights given by the
+#' `weight` vector. The resulting values will be aggregated to their sum.
+#' 
+#' @param function
+#' Aggregation function
+#' @param window_size
+#' The length of the window.
+#' @param weights
+#' An optional slice with the same length as the window that will be multiplied
+#' elementwise with the values in the window.
+#' @param min_periods
+#' The number of values in the window that should be non-null before computing
+#' a result. If None, it will be set equal to window size.
+#' @param center
+#' Set the labels at the center of the window
+#' 
+#' @details
+#' @return Expr
+#' @aliases interpolate
+#' @examples
+#' pl$DataFrame(list(a=c(1,2,9,2,13)))$select(pl$col("a")$rolling_apply(lapply$std,window_size = 3))
+Expr_rolling_apply = function(
+    window_size= int,
+    weights = NULL,
+    min_periods = NULL,
+    center = FALSE,#:bool,
+) {
+  wargs = prepare_rolling_window_args(window_size, min_periods)
+  unwrap(.pr$Expr$rolling_apply(
+    self, wargs$window_size, weights,
+    wargs$min_periods, center
+  ))
+}
+
 #' Rolling max
 #' @keywords Expr
 #' @description

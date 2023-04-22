@@ -487,6 +487,24 @@ impl Expr {
         r_result_list(expr)
     }
 
+    pub fn rolling_apply(
+        &self,
+        window_size: &str,
+        weights_robj: Nullable<Vec<f64>>,
+        min_periods_float: f64,
+        center: bool,
+    ) -> List {
+        let expr = make_rolling_options(
+            window_size,
+            weights_robj,
+            min_periods_float,
+            center
+        )
+        .map_err(|err| format!("rolling_apply: {}", err))
+        .map(|opts| Expr(self.0.clone().rolling_apply(opts)));
+        r_result_list(expr)
+    }
+
     pub fn rolling_max(
         &self,
         window_size: &str,
