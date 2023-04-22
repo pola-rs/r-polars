@@ -121,58 +121,6 @@ DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
 #' @export
 `[[.DataFrame` <- `$.DataFrame`
 
-#' @export
-`[.DataFrame` <- function(x, i, j) {
-    # selecting `j` is usually faster, so we start here.
-    if (!missing(j)) {
-        if (is.atomic(j) && is.vector(j)) {
-            if (is.logical(j)) {
-                if (length(j) != ncol(x)) {
-                    stop(sprintf("`j` must be of length %s.", ncol(x)), call. = FALSE)
-                }
-                cols = x$columns[j]
-            } else if (is.character(j)) {
-                if (!all(j %in% x$columns)) {
-                    stop("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", "), call. = FALSE)
-                }
-                cols = j
-            } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
-                if (max(j) > ncol(x)) {
-                    stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
-                }
-                if (min(j) < 1) {
-                    stop("Elements of `j` must be greater than or equal to 1.", call. = FALSE)
-                }
-                cols = x$columns[j]
-            }
-            x = do.call(x$select, lapply(cols, pl$col))
-        } else {
-            stop("`j` must be an atomic vector of class logical, character, or integer.", call. = FALSE)
-        }
-    }
-
-    if (!missing(i)) {
-        if (is.atomic(i) && is.vector(i)) {
-            if (is.logical(i)) {
-                if (length(i) != nrow(x)) {
-                    stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
-                }
-                idx = i
-            } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
-                if (any(diff(i) < 0)) {
-                    stop("Elements of `i` must be in increasing order.", call. = FALSE)
-                }
-                idx = seq_len(x$height) %in% i
-            }
-            x = x$filter(pl$lit(idx))
-        } else {
-            stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
-        }
-    }
-
-    x
-}
-
 VecDataFrame <- new.env(parent = emptyenv())
 
 VecDataFrame$new <- function() .Call(wrap__VecDataFrame__new)
@@ -795,6 +743,12 @@ Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_proj
 
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
+Expr$new_count <- function() .Call(wrap__Expr__new_count)
+
+Expr$new_first <- function() .Call(wrap__Expr__new_first)
+
+Expr$new_last <- function() .Call(wrap__Expr__new_last)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
@@ -934,10 +888,6 @@ LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__Lazy
 
 #' @export
 `[[.LazyFrame` <- `$.LazyFrame`
-
-# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
-# #' @export
-# `[.LazyFrame` <- `[.DataFrame`
 
 LazyGroupBy <- new.env(parent = emptyenv())
 

@@ -1,5 +1,63 @@
 #' @export
 #' @noRd
+`[.DataFrame` <- function(x, i, j) {
+    # selecting `j` is usually faster, so we start here.
+    if (!missing(j)) {
+        if (is.atomic(j) && is.vector(j)) {
+            if (is.logical(j)) {
+                if (length(j) != ncol(x)) {
+                    stop(sprintf("`j` must be of length %s.", ncol(x)), call. = FALSE)
+                }
+                cols = x$columns[j]
+            } else if (is.character(j)) {
+                if (!all(j %in% x$columns)) {
+                    stop("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", "), call. = FALSE)
+                }
+                cols = j
+            } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
+                if (max(j) > ncol(x)) {
+                    stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
+                }
+                if (min(j) < 1) {
+                    stop("Elements of `j` must be greater than or equal to 1.", call. = FALSE)
+                }
+                cols = x$columns[j]
+            }
+            x = do.call(x$select, lapply(cols, pl$col))
+        } else {
+            stop("`j` must be an atomic vector of class logical, character, or integer.", call. = FALSE)
+        }
+    }
+
+    if (!missing(i)) {
+        if (is.atomic(i) && is.vector(i)) {
+            if (is.logical(i)) {
+                if (length(i) != nrow(x)) {
+                    stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
+                }
+                idx = i
+            } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
+                if (any(diff(i) < 0)) {
+                    stop("Elements of `i` must be in increasing order.", call. = FALSE)
+                }
+                idx = seq_len(x$height) %in% i
+            }
+            x = x$filter(pl$lit(idx))
+        } else {
+            stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
+        }
+    }
+
+    x
+}
+
+# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
+# #' @export
+# #' @noRd
+# `[.LazyFrame` <- `[.DataFrame`
+
+#' @export
+#' @noRd
 head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
 
 #' @export
