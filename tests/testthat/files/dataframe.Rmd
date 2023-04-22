@@ -1,7 +1,6 @@
 ---
 output:
-  github_document:
-    df_print: kable
+  github_document: default
 ---
 
 ```{r}

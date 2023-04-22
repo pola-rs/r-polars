@@ -27,6 +27,7 @@ Suggests:
     bit64,
     knitr,
     tibble,
+    pillar,
     rmarkdown,
     withr
 Config/testthat/edition: 3

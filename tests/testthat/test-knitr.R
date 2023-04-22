@@ -17,12 +17,17 @@
 test_that("Snapshot test of knitr", {
   expect_snapshot(.knit_file("dataframe.Rmd"), cran = TRUE)
   withr::with_options(
-    new = list("polars.df_print" = "kable"),
+    new = list("polars.df_print" = "html"),
     expect_snapshot(.knit_file("dataframe.Rmd"), cran = TRUE)
   )
   expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = TRUE)
-  withr::with_envvar(
-    new = c("POLARS_FMT_TABLE_HIDE_COLUMN_DATA_TYPES" = "1"),
+  withr::with_options(
+    new = list("polars.df_print" = "default"),
     expect_snapshot(.knit_file("dataframe.Rmd", use = "rmarkdown"), cran = TRUE)
   )
+})
+
+test_that("to_html_table", {
+  expect_snapshot(to_html_table(mtcars, 3, 3), cran = TRUE)
+  expect_snapshot(to_html_table(mtcars), cran = TRUE)
 })
