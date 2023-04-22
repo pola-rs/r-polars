@@ -159,6 +159,15 @@ test_that("DataFrame, select sum over", {
   )
 })
 
+test_that("Select with p$col", {
+  x = pl$DataFrame(mtcars)$select(pl$col("mpg", "hp"))
+  y = pl$DataFrame(mtcars)$select(pl$col(c("mpg", "hp")))
+  z = pl$DataFrame(mtcars)$select(pl$col("mpg"), pl$col("hp"))
+  expect_equal(x$columns, c("mpg", "hp"))
+  expect_equal(y$columns, c("mpg", "hp"))
+  expect_equal(z$columns, c("mpg", "hp"))
+})
+
 test_that("map unity", {
   x <- pl$
     DataFrame(iris)$
