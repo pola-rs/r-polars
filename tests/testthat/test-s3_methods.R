@@ -77,6 +77,18 @@ patrick::with_parameters_test_that("Series",
     .cases = make_cases()
 )
 
+patrick::with_parameters_test_that("Series as.vector",
+  {
+    expect_equal(as.vector(pl$Series(v)), v, ignore_attr = TRUE)
+  },
+  v = list(
+    letters,
+    1:10,
+    c("foo" = "bar"),
+    c(TRUE, FALSE),
+    as.factor(letters)
+  )
+)
 
 test_that("drop_nulls", {
   tmp = mtcars

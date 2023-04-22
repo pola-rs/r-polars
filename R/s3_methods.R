@@ -152,6 +152,10 @@ max.LazyFrame = function(x, ...) x$max()
 
 #' @export
 #' @noRd
+as.vector.Series = function(x, mode) x$to_vector()
+
+#' @export
+#' @noRd
 max.Series = function(x, ...) x$max()
 
 #' @export
