@@ -9,8 +9,10 @@
 \arguments{
 \item{x}{Series}
 
-\item{str_length}{an integer. If specified,
+\item{...}{Additional arguments are ignored.
 utf8 or categorical type Series will be formatted to a string of this length.}
+
+\item{str_length}{an integer. If specified,}
 }
 \description{
 as.character for polars Series
