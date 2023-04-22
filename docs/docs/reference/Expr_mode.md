@@ -28,12 +28,12 @@ Compute the most occurring value(s). Can return multiple Values.
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ i32 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1   │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 3   │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 5   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 2   │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4   │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┘</span>
 <span class='r-in'><span><span class='va'>df</span><span class='op'>$</span><span class='fu'>select</span><span class='op'>(</span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>col</span><span class='op'>(</span><span class='st'>"b"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>mode</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> shape: (2, 1)</span>

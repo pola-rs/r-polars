@@ -35,11 +35,12 @@ nav:
   - Get started: articles/polars.md
   - Reference:
       - DataFrame:
+          - DataFrame: reference/DataFrame.md
           - clone: reference/DataFrame_clone.md
           - columns: reference/DataFrame_columns.md
+          - drop: reference/DataFrame_drop.md
           - drop_in_place: reference/DataFrame_drop_in_place.md
           - drop_nulls: reference/DataFrame_drop_nulls.md
-          - drop: reference/DataFrame_drop.md
           - dtype_strings: reference/DataFrame_dtype_strings.md
           - dtypes: reference/DataFrame_dtypes.md
           - estimated_size: reference/DataFrame_estimated_size.md
@@ -65,8 +66,8 @@ nav:
           - reverse: reference/DataFrame_reverse.md
           - select: reference/DataFrame_select.md
           - shape: reference/DataFrame_shape.md
-          - shift_and_fill: reference/DataFrame_shift_and_fill.md
           - shift: reference/DataFrame_shift.md
+          - shift_and_fill: reference/DataFrame_shift_and_fill.md
           - slice: reference/DataFrame_slice.md
           - sort: reference/DataFrame_sort.md
           - std: reference/DataFrame_std.md
@@ -79,14 +80,13 @@ nav:
           - var: reference/DataFrame_var.md
           - width: reference/DataFrame_width.md
           - with_columns: reference/DataFrame_with_columns.md
-          - DataFrame: reference/DataFrame.md
       - LazyFrame:
-          - collect_background: reference/LazyFrame_collect_background.md
           - collect: reference/LazyFrame_collect.md
+          - collect_background: reference/LazyFrame_collect_background.md
           - describe_optimized_plan: reference/LazyFrame_describe_optimized_plan.md
           - describe_plan: reference/LazyFrame_describe_plan.md
-          - drop_nulls: reference/LazyFrame_drop_nulls.md
           - drop: reference/LazyFrame_drop.md
+          - drop_nulls: reference/LazyFrame_drop_nulls.md
           - fill_nan: reference/LazyFrame_fill_nan.md
           - fill_null: reference/LazyFrame_fill_null.md
           - filter: reference/LazyFrame_filter.md
@@ -103,8 +103,8 @@ nav:
           - quantile: reference/LazyFrame_quantile.md
           - reverse: reference/LazyFrame_reverse.md
           - select: reference/LazyFrame_select.md
-          - shift_and_fill: reference/LazyFrame_shift_and_fill.md
           - shift: reference/LazyFrame_shift.md
+          - shift_and_fill: reference/LazyFrame_shift_and_fill.md
           - slice: reference/LazyFrame_slice.md
           - sort: reference/LazyFrame_sort.md
           - std: reference/LazyFrame_std.md
@@ -115,6 +115,7 @@ nav:
           - with_column: reference/LazyFrame_with_column.md
           - with_columns: reference/LazyFrame_with_columns.md
       - Series:
+          - Series: reference/Series.md
           - abs: reference/Series_abs.md
           - add: reference/Series_add.md
           - alias: reference/Series_alias.md
@@ -157,7 +158,6 @@ nav:
           - to_r: reference/Series_to_r.md
           - value_count: reference/Series_value_count.md
           - var: reference/Series_var.md
-          - Series: reference/Series.md
       - Other:
           - all: reference/all.md
           - and_then: reference/and_then.md
@@ -190,11 +190,14 @@ nav:
           - cash-set-.DataFrame: reference/cash-set-.DataFrame.md
           - coalesce: reference/coalesce.md
           - col: reference/col.md
+          - count: reference/count.md
           - DataType: reference/DataType.md
           - docs_translations: reference/docs_translations.md
           - dot-pr: reference/dot-pr.md
           - element: reference/element.md
           - Err: reference/Err.md
+          - Expr-cash-print-open-paren-close-paren: reference/Expr-cash-print-open-paren-close-paren.md
+          - Expr: reference/Expr.md
           - Expr_abs: reference/Expr_abs.md
           - Expr_add: reference/Expr_add.md
           - Expr_agg_groups: reference/Expr_agg_groups.md
@@ -249,8 +252,8 @@ nav:
           - Expr_first: reference/Expr_first.md
           - Expr_floor: reference/Expr_floor.md
           - Expr_forward_fill: reference/Expr_forward_fill.md
-          - Expr_gt_eq: reference/Expr_gt_eq.md
           - Expr_gt: reference/Expr_gt.md
+          - Expr_gt_eq: reference/Expr_gt_eq.md
           - Expr_hash: reference/Expr_hash.md
           - Expr_head: reference/Expr_head.md
           - Expr_inspect: reference/Expr_inspect.md
@@ -262,9 +265,9 @@ nav:
           - Expr_is_in: reference/Expr_is_in.md
           - Expr_is_infinite: reference/Expr_is_infinite.md
           - Expr_is_nan: reference/Expr_is_nan.md
+          - Expr_is_not: reference/Expr_is_not.md
           - Expr_is_not_nan: reference/Expr_is_not_nan.md
           - Expr_is_not_null: reference/Expr_is_not_null.md
-          - Expr_is_not: reference/Expr_is_not.md
           - Expr_is_null: reference/Expr_is_null.md
           - Expr_is_unique: reference/Expr_is_unique.md
           - Expr_keep_name: reference/Expr_keep_name.md
@@ -276,10 +279,10 @@ nav:
           - Expr_lit_to_s: reference/Expr_lit_to_s.md
           - Expr_log: reference/Expr_log.md
           - Expr_log10: reference/Expr_log10.md
-          - Expr_lt_eq: reference/Expr_lt_eq.md
           - Expr_lt: reference/Expr_lt.md
-          - Expr_map_alias: reference/Expr_map_alias.md
+          - Expr_lt_eq: reference/Expr_lt_eq.md
           - Expr_map: reference/Expr_map.md
+          - Expr_map_alias: reference/Expr_map_alias.md
           - Expr_max: reference/Expr_max.md
           - Expr_mean: reference/Expr_mean.md
           - Expr_median: reference/Expr_median.md
@@ -301,8 +304,8 @@ nav:
           - Expr_rank: reference/Expr_rank.md
           - Expr_rechunk: reference/Expr_rechunk.md
           - Expr_reinterpret: reference/Expr_reinterpret.md
-          - Expr_rep_extend: reference/Expr_rep_extend.md
           - Expr_rep: reference/Expr_rep.md
+          - Expr_rep_extend: reference/Expr_rep_extend.md
           - Expr_repeat_by: reference/Expr_repeat_by.md
           - Expr_reshape: reference/Expr_reshape.md
           - Expr_rolling_max: reference/Expr_rolling_max.md
@@ -319,8 +322,8 @@ nav:
           - Expr_sample: reference/Expr_sample.md
           - Expr_search_sorted: reference/Expr_search_sorted.md
           - Expr_set_sorted: reference/Expr_set_sorted.md
-          - Expr_shift_and_fill: reference/Expr_shift_and_fill.md
           - Expr_shift: reference/Expr_shift.md
+          - Expr_shift_and_fill: reference/Expr_shift_and_fill.md
           - Expr_shrink_dtype: reference/Expr_shrink_dtype.md
           - Expr_shuffle: reference/Expr_shuffle.md
           - Expr_sign: reference/Expr_sign.md
@@ -328,8 +331,8 @@ nav:
           - Expr_sinh: reference/Expr_sinh.md
           - Expr_skew: reference/Expr_skew.md
           - Expr_slice: reference/Expr_slice.md
-          - Expr_sort_by: reference/Expr_sort_by.md
           - Expr_sort: reference/Expr_sort.md
+          - Expr_sort_by: reference/Expr_sort_by.md
           - Expr_sqrt: reference/Expr_sqrt.md
           - Expr_std: reference/Expr_std.md
           - Expr_str: reference/Expr_str.md
@@ -337,22 +340,20 @@ nav:
           - Expr_sub: reference/Expr_sub.md
           - Expr_sum: reference/Expr_sum.md
           - Expr_tail: reference/Expr_tail.md
-          - Expr_take_every: reference/Expr_take_every.md
           - Expr_take: reference/Expr_take.md
+          - Expr_take_every: reference/Expr_take_every.md
           - Expr_tan: reference/Expr_tan.md
           - Expr_tanh: reference/Expr_tanh.md
           - Expr_to_physical: reference/Expr_to_physical.md
           - Expr_to_r: reference/Expr_to_r.md
           - Expr_to_struct: reference/Expr_to_struct.md
           - Expr_top_k: reference/Expr_top_k.md
-          - Expr_unique_counts: reference/Expr_unique_counts.md
           - Expr_unique: reference/Expr_unique.md
+          - Expr_unique_counts: reference/Expr_unique_counts.md
           - Expr_upper_lower_bound: reference/Expr_upper_lower_bound.md
           - Expr_value_counts: reference/Expr_value_counts.md
           - Expr_var: reference/Expr_var.md
           - Expr_xor: reference/Expr_xor.md
-          - Expr-cash-print-open-paren-close-paren: reference/Expr-cash-print-open-paren-close-paren.md
-          - Expr: reference/Expr.md
           - ExprBin_contains: reference/ExprBin_contains.md
           - ExprBin_decode: reference/ExprBin_decode.md
           - ExprBin_encode: reference/ExprBin_encode.md
@@ -407,8 +408,8 @@ nav:
           - ExprStr_encode: reference/ExprStr_encode.md
           - ExprStr_ends_with: reference/ExprStr_ends_with.md
           - ExprStr_explode: reference/ExprStr_explode.md
-          - ExprStr_extract_all: reference/ExprStr_extract_all.md
           - ExprStr_extract: reference/ExprStr_extract.md
+          - ExprStr_extract_all: reference/ExprStr_extract_all.md
           - ExprStr_json_extract: reference/ExprStr_json_extract.md
           - ExprStr_json_path_match: reference/ExprStr_json_path_match.md
           - ExprStr_lengths: reference/ExprStr_lengths.md
@@ -416,13 +417,13 @@ nav:
           - ExprStr_lstrip: reference/ExprStr_lstrip.md
           - ExprStr_n_chars: reference/ExprStr_n_chars.md
           - ExprStr_parse_int: reference/ExprStr_parse_int.md
-          - ExprStr_replace_all: reference/ExprStr_replace_all.md
           - ExprStr_replace: reference/ExprStr_replace.md
+          - ExprStr_replace_all: reference/ExprStr_replace_all.md
           - ExprStr_rjust: reference/ExprStr_rjust.md
           - ExprStr_rstrip: reference/ExprStr_rstrip.md
           - ExprStr_slice: reference/ExprStr_slice.md
-          - ExprStr_split_exact: reference/ExprStr_split_exact.md
           - ExprStr_split: reference/ExprStr_split.md
+          - ExprStr_split_exact: reference/ExprStr_split_exact.md
           - ExprStr_splitn: reference/ExprStr_splitn.md
           - ExprStr_starts_with: reference/ExprStr_starts_with.md
           - ExprStr_strip: reference/ExprStr_strip.md
@@ -435,6 +436,7 @@ nav:
           - extendr_method_to_pure_functions: reference/extendr_method_to_pure_functions.md
           - extra_auto_completion: reference/extra_auto_completion.md
           - filter-open-paren-close-paren: reference/filter-open-paren-close-paren.md
+          - first: reference/first.md
           - GroupBy_agg: reference/GroupBy_agg.md
           - GroupBy_first: reference/GroupBy_first.md
           - GroupBy_last: reference/GroupBy_last.md
@@ -444,8 +446,8 @@ nav:
           - GroupBy_min: reference/GroupBy_min.md
           - GroupBy_null_count: reference/GroupBy_null_count.md
           - GroupBy_quantile: reference/GroupBy_quantile.md
-          - GroupBy_shift_and_fill: reference/GroupBy_shift_and_fill.md
           - GroupBy_shift: reference/GroupBy_shift.md
+          - GroupBy_shift_and_fill: reference/GroupBy_shift_and_fill.md
           - GroupBy_std: reference/GroupBy_std.md
           - GroupBy_sum: reference/GroupBy_sum.md
           - GroupBy_to_data_frame: reference/GroupBy_to_data_frame.md
@@ -455,6 +457,7 @@ nav:
           - is_ok: reference/is_ok.md
           - is_result: reference/is_result.md
           - is_schema: reference/is_schema.md
+          - last: reference/last.md
           - lazy_csv_reader: reference/lazy_csv_reader.md
           - LazyGroupBy_agg: reference/LazyGroupBy_agg.md
           - LazyGroupBy_apply: reference/LazyGroupBy_apply.md
@@ -462,19 +465,20 @@ nav:
           - LazyGroupBy_print: reference/LazyGroupBy_print.md
           - LazyGroupBy_tail: reference/LazyGroupBy_tail.md
           - length.Series: reference/length.Series.md
-          - map_err: reference/map_err.md
           - map: reference/map.md
+          - map_err: reference/map_err.md
           - max: reference/max.md
           - mem_address: reference/mem_address.md
           - method_as_property: reference/method_as_property.md
           - min: reference/min.md
           - nanoarrow: reference/nanoarrow.md
           - ncol.DataFrame: reference/ncol.DataFrame.md
-          - ncol.LazyFrame: reference/ncol.LazyFrame.md
           - nrow.DataFrame: reference/nrow.DataFrame.md
           - object: reference/object.md
           - Ok: reference/Ok.md
           - or_else: reference/or_else.md
+          - pl-cash-from_arrow: reference/pl-cash-from_arrow.md
+          - pl: reference/pl.md
           - pl_concat: reference/pl_concat.md
           - pl_date_range: reference/pl_date_range.md
           - pl_Datetime: reference/pl_Datetime.md
@@ -483,8 +487,6 @@ nav:
           - pl_PTime: reference/pl_PTime.md
           - pl_select: reference/pl_select.md
           - pl_Struct: reference/pl_Struct.md
-          - pl-cash-from_arrow: reference/pl-cash-from_arrow.md
-          - pl: reference/pl.md
           - polars_options: reference/polars_options.md
           - polars_runtime_flags: reference/polars_runtime_flags.md
           - PolarsBackgroundHandle_is_exhausted: reference/PolarsBackgroundHandle_is_exhausted.md

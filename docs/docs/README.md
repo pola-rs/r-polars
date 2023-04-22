@@ -9,7 +9,10 @@
 badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
-[![Docs](https://img.shields.io/badge/docs-homepage-blue.svg)](https://rpolars.github.io)
+[![Docs
+release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
+[![Docs
+dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
 
 The goal of this project is to bring the blazingly fast
@@ -18,7 +21,7 @@ underlying computation engine is written in Rust and this R
 implementation has no other dependencies than R itself (≥ 4.1.0).
 
 Documentation can be found on the **r-polars**
-[homepage](https://rpolars.github.io/reference/index.html).
+[homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
@@ -40,10 +43,10 @@ installation options for a variety of operating systems:
 
 ### R-universe
 
-[R-universe](https://rpolars.r-universe.dev/rpolars#install) provides
+[R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
-source builds for other platforms. Please see the GitHub release option
-below for binary install options on Linux.
+source builds for other platforms. Please see further below for binary
+install options on Linux.
 
 ``` r
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
@@ -70,7 +73,7 @@ install.packages(
 ```
 
 Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip)
+([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
 and MacOS (x86_64,
 [URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
@@ -100,6 +103,17 @@ the bottom of this README for details on how to install rust to build
 from source (only relevant for developers, or users of unsupported
 operating systems).
 
+### r2u
+
+Speeding up your workflow? On Ubuntu, install polars + arrow from
+binaries and resolve system dependencies reliably and quickly with r2u
+([see link for configuration](https://eddelbuettel.github.io/r2u/)).
+
+``` r
+rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+install.packages(c("polars", "arrow"), repos = rp)
+```
+
 ## Quickstart example
 
 The introductory vignette (`vignette("polars")`) contains a series of
@@ -115,7 +129,7 @@ library(polars)
 
 dat = pl$DataFrame(mtcars)
 dat
-#> polars DataFrame: shape: (32, 11)
+#> shape: (32, 11)
 #> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
 #> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
 #> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
@@ -145,7 +159,7 @@ dat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )
-#> polars DataFrame: shape: (4, 4)
+#> shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
@@ -173,7 +187,7 @@ ldat$filter(
   pl$col("mpg")$mean()$alias("mean_mpg"),
   pl$col("hp")$median()$alias("med_hp")
 )$collect()
-#> polars DataFrame: shape: (4, 4)
+#> shape: (4, 4)
 #> ┌─────┬─────┬───────────┬────────┐
 #> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
 #> │ --- ┆ --- ┆ ---       ┆ ---    │
@@ -244,7 +258,7 @@ Rust toolchain
 - MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
-- Install [CMake](https://cmake.org/) and added it to your PATH.
+- Install [CMake](https://cmake.org/) and add it to your PATH.
 
 #### Development workflow
 

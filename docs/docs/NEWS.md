@@ -1,5 +1,9 @@
 ## polars (development version)
 
+### What's changed
+
+- `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` ([#140](https://github.com/pola-rs/r-polars/issues/140) [@vincentarelbundock](https://github.com/vincentarelbundock))
+
 ## polars v0.5.0
 
 ### BREAKING CHANGE
@@ -11,6 +15,7 @@
 - Several new methods for DataFrame, LazyFrame \& GroupBy translated ([#103](https://github.com/pola-rs/r-polars/issues/103), [#105](https://github.com/pola-rs/r-polars/issues/105) [@vincentarelbundock](https://github.com/vincentarelbundock))
 - Doc fixes ([#102](https://github.com/pola-rs/r-polars/issues/102), [#109](https://github.com/pola-rs/r-polars/issues/109)  [@etiennebacher](https://github.com/etiennebacher))
 - Experimental opt-in auto completion ([#96](https://github.com/pola-rs/r-polars/issues/96) [@sorhawell](https://github.com/sorhawell))
+- Base R functions work on DataFrame and LazyFrame objects via S3 methods: as.data.frame, as.matrix, dim, head, length, max, mean, median, min, na.omit, names, sum, tail, unique, ncol, nrow ([#107](https://github.com/pola-rs/r-polars/issues/107) [@vincentarelbundock](https://github.com/vincentarelbundock)).
 
 ### New Contributors
 

@@ -35,7 +35,7 @@ Aggregatete a DataFrame over a groupby
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ ---     ┆ ---          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ str ┆ f64     ┆ f64          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════════╪══════════════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ two ┆ 6.0     ┆ 2.0          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ one ┆ 9.0     ┆ 4.5          │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ two ┆ 6.0     ┆ 2.0          │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────────┴──────────────┘</span>
  </code></pre>

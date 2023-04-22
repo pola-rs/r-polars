@@ -35,25 +35,19 @@ It appears behavior of R timezones is subject to change a bit in R 4.3.0, see po
 <pre class='r-example'><code><span class='r-in'><span><span class='co'>#make PTime in all time units</span></span></span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>3600</span><span class='op'>*</span><span class='fl'>24</span><span class='op'>*</span><span class='fl'>1E0</span>, tu <span class='op'>=</span> <span class='st'>"s"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> PTime [ double ]: number of epochs [ s ] since midnight</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "15:33:05 val: 55985" "00:01:10 val: 70"    "20:05:31 val: 72331"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "04:48:10 val: 17290" "04:54:24 val: 17664"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "15:33:05 val: 55985" "00:01:10 val: 70"    "20:05:31 val: 72331" "04:48:10 val: 17290" "04:54:24 val: 17664"</span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>3600</span><span class='op'>*</span><span class='fl'>24</span><span class='op'>*</span><span class='fl'>1E3</span>, tu <span class='op'>=</span> <span class='st'>"ms"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> PTime [ double ]: number of epochs [ ms ] since midnight</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "02:05:17:738ms val: 7517738"  "11:28:33:197ms val: 41313197"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "10:25:47:991ms val: 37547991" "17:49:40:318ms val: 64180318"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "02:05:17:738ms val: 7517738"  "11:28:33:197ms val: 41313197" "10:25:47:991ms val: 37547991" "17:49:40:318ms val: 64180318"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "17:25:24:491ms val: 62724491"</span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>3600</span><span class='op'>*</span><span class='fl'>24</span><span class='op'>*</span><span class='fl'>1E6</span>, tu <span class='op'>=</span> <span class='st'>"us"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> PTime [ double ]: number of epochs [ us ] since midnight</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "17:33:31:997_227us val: 63211997227" "18:47:28:183_022us val: 67648183022"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "11:43:51:610_804us val: 42231610804" "20:24:44:574_399us val: 73484574399"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "01:39:31:990_983us val: 5971990983" </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "17:33:31:997_227us val: 63211997227" "18:47:28:183_022us val: 67648183022" "11:43:51:610_804us val: 42231610804"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "20:24:44:574_399us val: 73484574399" "01:39:31:990_983us val: 5971990983" </span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>*</span><span class='fl'>3600</span><span class='op'>*</span><span class='fl'>24</span><span class='op'>*</span><span class='fl'>1E9</span>, tu <span class='op'>=</span> <span class='st'>"ns"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> PTime [ double ]: number of epochs [ ns ] since midnight</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "19:39:54:338_377_565ns val: 70794338377565"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [2] "21:04:11:798_473_298ns val: 75851798473298"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [3] "16:14:51:179_843_991ns val: 58491179843991"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "18:35:02:355_766_296ns val: 66902355766296"</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "12:48:53:771_131_932ns val: 46133771131932"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "19:39:54:338_377_565ns val: 70794338377565" "21:04:11:798_473_298ns val: 75851798473298" "16:14:51:179_843_991ns val: 58491179843991"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [4] "18:35:02:355_766_296ns val: 66902355766296" "12:48:53:771_131_932ns val: 46133771131932"</span>
 <span class='r-in'><span><span class='va'>pl</span><span class='op'>$</span><span class='fu'>PTime</span><span class='op'>(</span><span class='st'>"23:59:59"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> PTime [ double ]: number of epochs [ s ] since midnight</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "23:59:59 val: 86399"</span>

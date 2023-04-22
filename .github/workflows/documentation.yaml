@@ -92,7 +92,7 @@ jobs:
           extra-packages: local::., any::pak
       - name: Install required packages
         run: |
-          pak::pak(c("etiennebacher/altdoc", "yaml", "magrittr",
+          pak::pak(c("etiennebacher/altdoc", "yaml", "magrittr", "cli",
                      "tinkr", "stringr", "Genentech/rd2markdown@c4fb386"))
         shell: Rscript {0}
 

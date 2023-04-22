@@ -5,13 +5,14 @@
 ###### - run the examples in the "Reference" files
 
 
-library(altdoc)
+library(cli)
 library(yaml)
 library(tinkr)
 library(magrittr)
 library(stringr)
 library(rd2markdown) # Genentech/rd2markdown (github only)
 
+pkgload::load_all(quiet = TRUE)
 
 if (fs::dir_exists(here::here("docs/docs/reference"))) {
   fs::dir_delete(here::here("docs/docs/reference"))
@@ -188,19 +189,25 @@ convert_hierarchy_to_yml <- function() {
 
 eval_reference_examples <- function() {
 
-  pkgload::load_all()
-
   rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
+  rd_files <- Filter(Negate(is_internal), rd_files)
   md_files <- gsub("^man/", "docs/docs/reference/", rd_files)
   md_files <- gsub("\\.Rd$", "\\.md", md_files)
 
   subset_even <- function(x) x[!seq_along(x) %% 2]
 
+  cli_progress_bar(
+    format = paste0(
+      "{pb_spin} Evaluating examples for file {.path {md_files[i]}} ",
+      "[{pb_current}/{pb_total}]   ETA:{pb_eta}"
+    ),
+    format_done = "{col_green(symbol$tick)} Done",
+    total = length(rd_files)
+  )
+
   for (i in seq_along(rd_files)) {
 
-    if (is_internal(rd_files[i])) next
-
-    cat(paste0("Evaluating examples for file ", md_files[i], "\n"))
+    cli_progress_update()
 
     orig_ex <- rd2markdown::rd2markdown(
       file = rd_files[i],
@@ -240,7 +247,10 @@ eval_reference_examples <- function() {
 
 # Run all
 
+cli_alert_info("Converting Rd files to markdown...")
 convert_to_md()
+cli_alert_info("Updating {.file docs/mkdocs.yaml}...")
 convert_hierarchy_to_yml()
+cli_alert_info("Running examples...")
 eval_reference_examples()
 

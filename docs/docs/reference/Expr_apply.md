@@ -71,6 +71,12 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ l ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ o ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ r ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s ┆ 250.3      ┆ 171.4      ┆ 73.1       ┆ ... ┆ [5.1, 4.9] ┆ [3.5, 3.0] ┆ [1.4, 1.4] ┆ [0.2, 0.2] │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ e ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ t ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ o ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ v ┆ 329.4      ┆ 148.7      ┆ 277.6      ┆ ... ┆ [6.3, 5.8] ┆ [3.3, 2.7] ┆ [6.0, 5.1] ┆ [2.5, 1.9] │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ r ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
@@ -79,12 +85,6 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ n ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ i ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ c ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s ┆ 250.3      ┆ 171.4      ┆ 73.1       ┆ ... ┆ [5.1, 4.9] ┆ [3.5, 3.0] ┆ [1.4, 1.4] ┆ [0.2, 0.2] │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ e ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ t ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ o ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ s ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ a ┆            ┆            ┆            ┆     ┆            ┆            ┆            ┆            │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └───┴────────────┴────────────┴────────────┴─────┴────────────┴────────────┴────────────┴────────────┘</span>
 <span class='r-in'><span></span></span>
@@ -135,23 +135,23 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-in'><span>   <span class='op'>}</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>alias</span><span class='op'>(</span><span class='st'>"bob"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span> <span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> utilisateur     système      écoulé </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       2.059       0.046       2.104 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    1.46    0.01    1.47 </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='st'>"R lapply 1 million values take ~1sec on 2015 MacBook Pro"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "R lapply 1 million values take ~1sec on 2015 MacBook Pro"</span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='op'>{</span></span></span>
 <span class='r-in'><span> <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='fu'>get_column</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span><span class='op'>$</span><span class='fu'>to_r</span><span class='op'>(</span><span class='op'>)</span>,\<span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='va'>x</span><span class='op'>*</span><span class='fl'>2L</span> <span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> utilisateur     système      écoulé </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       0.904       0.002       0.906 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    0.64    0.00    0.64 </span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='st'>"using polars syntax takes ~1ms"</span><span class='op'>)</span></span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "using polars syntax takes ~1ms"</span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='op'>{</span></span></span>
 <span class='r-in'><span> <span class='op'>(</span><span class='va'>df</span><span class='op'>$</span><span class='fu'>get_column</span><span class='op'>(</span><span class='st'>"a"</span><span class='op'>)</span> <span class='op'>*</span> <span class='fl'>2L</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> utilisateur     système      écoulé </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       0.000       0.003       0.003 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       0       0       0 </span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='st'>"using R vector syntax takes ~4ms"</span><span class='op'>)</span></span></span>
@@ -160,6 +160,6 @@ slower and more memory intensive than implementing the same logic using the nati
 <span class='r-in'><span><span class='fu'><a href='https://rdrr.io/r/base/system.time.html'>system.time</a></span><span class='op'>(</span><span class='op'>{</span></span></span>
 <span class='r-in'><span> <span class='va'>r_vec</span> <span class='op'>*</span> <span class='fl'>2L</span></span></span>
 <span class='r-in'><span><span class='op'>}</span><span class='op'>)</span></span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> utilisateur     système      écoulé </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       0.002       0.004       0.006 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    user  system elapsed </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       0       0       0 </span>
  </code></pre>

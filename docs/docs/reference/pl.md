@@ -6,7 +6,7 @@ data
 
 ## Format
 
-An object of class `environment` of length 57.
+An object of class `environment` of length 60.
 
 ```r
 pl
@@ -39,6 +39,7 @@ If someone do not particularly like the letter combination `pl`, they are free t
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ col ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ concat ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ concat_list ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        [ count ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ csv_reader ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ DataFrame ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Date ; RPolarsDataType ]</span>
@@ -72,6 +73,7 @@ If someone do not particularly like the letter combination `pl`, they are free t
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ expr_to_r ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ extra_auto_completion ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Field ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        [ first ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Float32 ; RPolarsDataType ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Float64 ; RPolarsDataType ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ from_arrow ; function ]</span>
@@ -82,6 +84,7 @@ If someone do not particularly like the letter combination `pl`, they are free t
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Int64 ; RPolarsDataType ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ Int8 ; RPolarsDataType ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ is_schema ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        [ last ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ lazy_csv_reader ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ List ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>        [ lit ; function ]</span>

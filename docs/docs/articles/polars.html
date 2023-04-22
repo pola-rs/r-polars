@@ -865,9 +865,9 @@ small taste, we now take group-wise means:</p>
 <span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │</span></span>
 <span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="co">#&gt; │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │</span></span>
 <span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡</span></span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span></span>
 <span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │</span></span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │</span></span>
 <span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘</span></span></code></pre></div>
 <h2 id="select-columns-and-filter-rows"><code>select</code> columns and
 <code>filter</code> rows</h2>
@@ -1172,36 +1172,28 @@ LazyFrame and then collect the results. However, this workflow is even
 better suited to Parquet files, since we can leverage their efficient
 storage format on disk. Let’s see an example.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;arrow&#39;</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:testthat&#39;:</span></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt;     matches</span></span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt;     timestamp</span></span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="fu">write_parquet</span>(airquality, <span class="st">&quot;airquality.parquet&quot;</span>)</span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a></span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a><span class="co"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span></span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>aq <span class="ot">=</span> <span class="fu">scan_parquet</span>(<span class="st">&quot;airquality.parquet&quot;</span>)  <span class="co"># lazy version (better)</span></span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a></span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>aq<span class="sc">$</span><span class="fu">filter</span>(</span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;Month&quot;</span>) <span class="sc">&lt;=</span> <span class="dv">6</span></span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">groupby</span>(</span>
-<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a>  <span class="st">&quot;Month&quot;</span></span>
-<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">agg</span>(</span>
-<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;Ozone&quot;</span>, <span class="st">&quot;Temp&quot;</span>))<span class="sc">$</span><span class="fu">mean</span>()</span>
-<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">collect</span>()</span>
-<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co">#&gt; shape: (2, 3)</span></span>
-<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a><span class="co">#&gt; ┌───────┬───────────┬───────────┐</span></span>
-<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a><span class="co">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span></span>
-<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a><span class="co">#&gt; │ ---   ┆ ---       ┆ ---       │</span></span>
-<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a><span class="co">#&gt; │ i32   ┆ f64       ┆ f64       │</span></span>
-<span id="cb26-28"><a href="#cb26-28" tabindex="-1"></a><span class="co">#&gt; ╞═══════╪═══════════╪═══════════╡</span></span>
-<span id="cb26-29"><a href="#cb26-29" tabindex="-1"></a><span class="co">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span></span>
-<span id="cb26-30"><a href="#cb26-30" tabindex="-1"></a><span class="co">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span></span>
-<span id="cb26-31"><a href="#cb26-31" tabindex="-1"></a><span class="co">#&gt; └───────┴───────────┴───────────┘</span></span></code></pre></div>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">write_parquet</span>(airquality, <span class="st">&quot;airquality.parquet&quot;</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># aq = read_parquet(&quot;airquality.parquet) # eager version (okay)</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>aq <span class="ot">=</span> <span class="fu">scan_parquet</span>(<span class="st">&quot;airquality.parquet&quot;</span>)  <span class="co"># lazy version (better)</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>aq<span class="sc">$</span><span class="fu">filter</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="st">&quot;Month&quot;</span>) <span class="sc">&lt;=</span> <span class="dv">6</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">groupby</span>(</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>  <span class="st">&quot;Month&quot;</span></span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">agg</span>(</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>  pl<span class="sc">$</span><span class="fu">col</span>(<span class="fu">c</span>(<span class="st">&quot;Ozone&quot;</span>, <span class="st">&quot;Temp&quot;</span>))<span class="sc">$</span><span class="fu">mean</span>()</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>)<span class="sc">$</span><span class="fu">collect</span>()</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="co">#&gt; shape: (2, 3)</span></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="co">#&gt; ┌───────┬───────────┬───────────┐</span></span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="co">#&gt; │ Month ┆ Ozone     ┆ Temp      │</span></span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="co">#&gt; │ ---   ┆ ---       ┆ ---       │</span></span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a><span class="co">#&gt; │ i32   ┆ f64       ┆ f64       │</span></span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a><span class="co">#&gt; ╞═══════╪═══════════╪═══════════╡</span></span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a><span class="co">#&gt; │ 5     ┆ 23.615385 ┆ 65.548387 │</span></span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a><span class="co">#&gt; │ 6     ┆ 29.444444 ┆ 79.1      │</span></span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co">#&gt; └───────┴───────────┴───────────┘</span></span></code></pre></div>
 <p>Finally, can read/scan multiple files in the same directory through
 pattern globbing. However, please note that partition-aware scanning is
 not yet supported out of the box (e.g., Hive-style partitioned

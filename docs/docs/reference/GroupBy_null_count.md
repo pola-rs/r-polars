@@ -23,8 +23,8 @@ Create a new DataFrame that shows the null counts per column.
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ --- ┆ --- ┆ ---  ┆ --- ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64 ┆ u32 ┆ u32  ┆ u32 ┆     ┆ u32 ┆ u32 ┆ u32  ┆ u32  │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞═════╪═════╪══════╪═════╪═════╪═════╪═════╪══════╪══════╡</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 0   ┆ 3    ┆ 3   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.0 ┆ 0   ┆ 5    ┆ 5   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 8.0 ┆ 0   ┆ 2    ┆ 2   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 4.0 ┆ 0   ┆ 3    ┆ 3   ┆ ... ┆ 0   ┆ 0   ┆ 0    ┆ 0    │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └─────┴─────┴──────┴─────┴─────┴─────┴─────┴──────┴──────┘</span>
  </code></pre>

@@ -32,7 +32,7 @@ Evaluated Series has dtype Float64
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ f64        │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> ╞════════════╡</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ 1.0        │</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.1232e-17 │</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> │ 6.1230e-17 │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ -1.0       │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> │ null       │</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> └────────────┘</span>

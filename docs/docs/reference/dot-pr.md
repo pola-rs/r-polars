@@ -279,6 +279,9 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ nan_max ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ nan_min ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ neq ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ new_count ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ new_first ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ new_last ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ null_count ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ or ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ over ; function ]</span>
@@ -489,6 +492,7 @@ Original extendr bindings converted into pure functions
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ sort_mut ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ sub ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ sum ; function ]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           [ to_fmt_char ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ to_frame ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ to_r ; function ]</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>           [ value_counts ; function ]</span>
