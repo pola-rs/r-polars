@@ -162,6 +162,12 @@ test_that("brackets", {
   b = mtcars[3:7, 1:3]
   expect_equal(a, b, ignore_attr = TRUE)
 
+  expect_equal(df[, "cyl"]$to_vector(), mtcars[, "cyl"])
+  expect_equal(df[, 1]$to_vector(), mtcars[, 1])
+  expect_equal(df[1:5, 1]$to_vector(), mtcars[1:5, 1])
+
+  expect_equal(df[, "cyl", drop = FALSE]$to_data_frame(), mtcars[, "cyl", drop = FALSE], ignore_attr = TRUE)
+
   # un-comment when the `LazyFrame.columns` attribute is implemented
 
   # # lazy
