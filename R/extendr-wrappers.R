@@ -941,6 +941,8 @@ Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__s
 
 Series$get_fmt <- function(index, str_length) .Call(wrap__Series__get_fmt, self, index, str_length)
 
+Series$to_fmt_char <- function(str_length) .Call(wrap__Series__to_fmt_char, self, str_length)
+
 Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 
 Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
