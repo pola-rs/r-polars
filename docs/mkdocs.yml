@@ -1,4 +1,4 @@
-site_name: polars
+site_name: Polars R Package
 theme:
   name: material
   logo: polars-logo.png
