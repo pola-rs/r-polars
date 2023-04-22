@@ -78,7 +78,7 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
   .env_str_len <- Sys.getenv("POLARS_FMT_STR_LEN")
   .str_len <- ifelse(.env_str_len == "", 15, as.integer(.env_str_len))
 
-  chr_mat <- sapply(cols, \(col) as.character(x[row_idx, col, drop = TRUE], format = TRUE, str_length = .str_len)) |>
+  chr_mat <- sapply(cols, \(col) as.character(x[row_idx, col, drop = TRUE], str_length = .str_len)) |>
     escape_html() |>
     matrix(nrow = length(row_idx))
 
