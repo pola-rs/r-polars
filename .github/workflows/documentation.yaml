@@ -92,7 +92,7 @@ jobs:
           extra-packages: local::., any::pak
       - name: Install required packages
         run: |
-          pak::pak(c("etiennebacher/altdoc@custom-reference", "yaml", "magrittr",
+          pak::pak(c("etiennebacher/altdoc", "yaml", "magrittr",
                      "tinkr", "stringr", "Genentech/rd2markdown@c4fb386"))
         shell: Rscript {0}
 
@@ -101,9 +101,7 @@ jobs:
 
       - name: Build docs folder
         run: |
-          altdoc::update_docs(convert_vignettes = TRUE,
-                              custom_reference = "make-docs.R")
-                                                # ^^^^^^^^^^ where should we put this?
+          altdoc::update_docs(custom_reference = "docs/make-docs.R")
         shell: Rscript {0}
 
         # https://www.mkdocs.org/user-guide/deploying-your-docs/
