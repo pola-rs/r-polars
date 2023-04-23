@@ -120,7 +120,7 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          clean: false
+          clean: true
           branch: main
           folder: docs/site
           repository-name: rpolars/rpolars.github.io
