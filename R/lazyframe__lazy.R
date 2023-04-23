@@ -582,3 +582,38 @@ LazyFrame_sort = function(
 
 
 
+LazyFrame_join_asof = function(
+  other, #LazyFrame
+  ..., #
+  left_on = NULL,         # , : str | None | Expr = None,
+  right_on = NULL,        # , : str | None | Expr = None,
+  on= NULL,               # ,: str | None | Expr = None,
+  by_left = NULL,         #, : str | Sequence[str] | None = None,
+  by_right = NULL,        #,: str | Sequence[str] | None = None,
+  by = NULL,              #,: str | Sequence[str] | None = None,
+  strategy = "backward",        #: AsofJoinStrategy = "backward",
+  suffix = "_right",
+  tolerance = NULL,       #: str | int | float | None = None,
+  allow_parallel = TRUE,  #: bool = True,
+  force_parallel = FALSE  #: bool = False,
+){
+
+  if(!is.null(by)) by_left = by_right = by
+  if(!is.null(on)) left_on = right_on = on
+  tolerance_str = if(is.character(tolerance)) tolerance else NULL
+  tolerance_num = if(!is.character(tolerance)) NULL else tolerance
+
+  .pr$LazyFrame$join_asof(
+    self, other,
+    left_on, right_on,
+    by_left, by_right,
+    allow_parallel, force_parallel,
+    suffix, strategy,
+    tolerance_num, tolerance_str
+  ) %>%
+    unwrap("in join_asof( ):")
+
+}
+
+
+

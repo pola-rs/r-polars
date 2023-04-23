@@ -305,12 +305,12 @@ test_that("sort", {
   )
 
   df = pl$DataFrame(mtcars)$lazy()
-  
+
   w = df$sort("mpg")$collect()$to_data_frame()
   x = df$sort(pl$col("mpg"))$collect()$to_data_frame()
   y = mtcars[order(mtcars$mpg),]
   expect_equal(x, y, ignore_attr = TRUE)
-  
+
   w = df$sort(pl$col("cyl"), pl$col("mpg"))$collect()$to_data_frame()
   x = df$sort("cyl", "mpg")$collect()$to_data_frame()
   y = df$sort(c("cyl", "mpg"))$collect()$to_data_frame()
@@ -323,7 +323,7 @@ test_that("sort", {
   x = df$sort(-pl$col("cyl"), pl$col("hp"))$collect()$to_data_frame()
   y = mtcars[order(-mtcars$cyl, mtcars$hp), ]
   expect_equal(x, y, ignore_attr = TRUE)
-  
+
   # descending arg
   w = df$sort("cyl", "mpg", descending = TRUE)$collect()$to_data_frame()
   x = df$sort(c("cyl", "mpg"), descending = TRUE)$collect()$to_data_frame()
@@ -350,6 +350,58 @@ test_that("sort", {
 })
 
 
-#TODO complete tests for lazy
+test_that("join_asof_simple", {
+  l_gdp = list(
+    date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+    gdp = c(4164, 4411, 4566, 4696),
+    group_right = c("a", "a", "b", "b")
+  )
+  l_pop = list(
+    date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+    population = c(82.19, 82.66, 83.12, 83.52),
+    group = c("b", "b", "a", "a")
+  )
+
+  gdp = pl$DataFrame(l_gdp)$lazy()
+  pop = pl$DataFrame(l_pop)$lazy()
+
+  # strategy param
+  expect_identical(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "backward")$collect()$to_list(),
+    c(l_pop, l_gdp[c("gdp", "group_right")])
+  )
+  expect_identical(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "forward")$collect()$to_list(),
+    c(l_pop, gdp$shift(-1)$collect()$to_list()[c("gdp", "group_right")])
+  )
+  expect_grepl_error(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "fruitcake"),
+    c("join_asof", "strategy choice", "fruitcake")
+  )
+
+  # shared left_right on
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list(),
+    c(l_pop, l_gdp[c("gdp", "group_right")])
+  )
+
+  # test by
+  expect_identical(
+    pop$join_asof(
+      gdp,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "backward"
+    )$collect()$to_list(),
+    c(l_pop, list(gdp = l_gdp$gdp[c(NA, NA, 2, 2)]))
+  )
+  expect_identical(
+    pop$join_asof(
+      gdp,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "forward"
+    )$collect()$to_list(),
+    c(l_pop, list(gdp = l_gdp$gdp[c(3, 3, NA, NA)]))
+  )
+})
 
 

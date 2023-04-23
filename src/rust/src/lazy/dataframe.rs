@@ -1,11 +1,14 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
+use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
 use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
 use extendr_api::prelude::*;
+use polars::chunked_array::object::AsOfOptions;
+use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 
 #[allow(unused_imports)]
@@ -13,6 +16,12 @@ use std::result::Result;
 
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
+
+impl std::fmt::Debug for LazyFrame {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "LazyFrame:")
+    }
+}
 
 impl From<pl::LazyFrame> for LazyFrame {
     fn from(item: pl::LazyFrame) -> Self {
@@ -215,6 +224,62 @@ impl LazyFrame {
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
+    }
+
+    pub fn join_asof(
+        &self,
+        other: Robj,              //PyLazyFrame,
+        left_on: Robj,            //PyExpr,
+        right_on: Robj,           //PyExpr,
+        left_by: Nullable<Robj>,  //Option<Vec<&str>>,
+        right_by: Nullable<Robj>, //Option<Vec<&str>>,
+        allow_parallel: Robj,     //bool,
+        force_parallel: Robj,     //bool,
+        suffix: Robj,             //String,
+        strategy: Robj,           //Wrap<AsofStrategy>,
+        tolerance: Robj,          //Option<Wrap<AnyValue<'_>>>,
+        tolerance_str: Robj,      //Option<String>,
+    ) -> Result<Self, String> {
+        use crate::utils::wrappers::null_to_opt;
+        let ldf = self.0.clone();
+        let other = robj_to!(LazyFrame, other)?;
+        let left_on = robj_to!(ExprCol, left_on)?.0;
+        let right_on = robj_to!(ExprCol, right_on)?.0;
+
+        //TODO upgrade robj_to to handle variadic composed types, as
+        // robj_to!(Option, Vec, left_by), instead of this ad-hoc conversion
+        let left_by = null_to_opt(left_by)
+            .map(|left_by| robj_to!(Vec, String, left_by))
+            .transpose()?;
+        let right_by = null_to_opt(right_by)
+            .map(|right_by| robj_to!(Vec, String, right_by))
+            .transpose()?;
+
+        let tolerance = robj_to!(Option, Expr, tolerance)?
+            .map(|e| crate::rdatatype::expr_to_any_value(e.0))
+            .transpose()?;
+        let tolerance_str = robj_to!(Option, String, tolerance_str)?;
+
+        Ok(ldf
+            .join_builder()
+            .with(other.0)
+            .left_on([left_on])
+            .right_on([right_on])
+            .allow_parallel(robj_to!(bool, allow_parallel)?)
+            .force_parallel(robj_to!(bool, force_parallel)?)
+            .how(JoinType::AsOf(AsOfOptions {
+                strategy: robj_to!(str, strategy).and_then(|s| {
+                    new_asof_strategy(s)
+                        .map_err(|err| format!("param [strategy] error because {}", err))
+                })?,
+                left_by: left_by,
+                right_by: right_by,
+                tolerance: tolerance,
+                tolerance_str: tolerance_str,
+            }))
+            .suffix(robj_to!(str, suffix)?)
+            .finish()
+            .into())
     }
 
     fn join(
