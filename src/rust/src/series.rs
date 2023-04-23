@@ -9,6 +9,7 @@ use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
 use crate::utils::{r_error_list, r_result_list};
+use crate::robj_to;
 
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -453,6 +454,14 @@ impl Series {
     //     Wrap(self.series.min_as_series().get(0)).into_py(py)
     // }
 
+    pub fn mean(&self) -> Series {
+        self.0.mean_as_series().into()
+    }
+
+    pub fn median(&self) -> Series {
+        self.0.median_as_series().into()
+    }
+
     pub fn min(&self) -> Series {
         self.0.min_as_series().into()
     }
@@ -463,6 +472,14 @@ impl Series {
 
     pub fn sum(&self) -> Series {
         self.0.sum_as_series().into()
+    }
+
+    pub fn std(&self, ddof: u8) ->  Series {
+        self.0.std_as_series(ddof).into()
+    }
+
+    pub fn var(&self, ddof: u8) ->  Series {
+        self.0.var_as_series(ddof).into()
     }
 
     pub fn ceil(&self) -> List {

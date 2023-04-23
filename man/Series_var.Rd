@@ -2,11 +2,13 @@
 % Please edit documentation in R/series__series.R
 \name{Series_var}
 \alias{Series_var}
-\title{Get the standard deviation of this Series.}
+\title{Var}
 \format{
 method
 }
 \usage{
+Series_var(ddof = 1)
+
 Series_var(ddof = 1)
 }
 \arguments{
@@ -15,12 +17,15 @@ where N represents the number of elements.
 By default ddof is 1.}
 }
 \value{
+A new \code{Series} object with applied aggregation.
+
 bool
 }
 \description{
-Get the standard deviation of this Series.
+Aggregate the columns of this Series to their variance values.
 }
 \examples{
+pl$Series(1:10)$var()
 pl$Series(1:4,"bob")$var()
 }
 \keyword{Series}

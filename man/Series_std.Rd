@@ -2,11 +2,13 @@
 % Please edit documentation in R/series__series.R
 \name{Series_std}
 \alias{Series_std}
-\title{Get the standard deviation of this Series.}
+\title{Std}
 \format{
 method
 }
 \usage{
+Series_std(ddof = 1)
+
 Series_std(ddof = 1)
 }
 \arguments{
@@ -15,12 +17,15 @@ where N represents the number of elements.
 By default ddof is 1.}
 }
 \value{
+A new \code{Series} object with applied aggregation.
+
 bool
 }
 \description{
-Get the standard deviation of this Series.
+Aggregate the columns of this Series to their standard deviation.
 }
 \examples{
+pl$Series(1:10)$std()
 pl$Series(1:4,"bob")$std()
 }
 \keyword{Series}

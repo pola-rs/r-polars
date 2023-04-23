@@ -653,6 +653,32 @@ Series_cumsum = function(reverse = FALSE) {
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$sum() # Inf-Inf is NaN
 Series_sum = "use_extendr_wrapper"
 
+#' Mean
+#' @description  Reduce Series with mean
+#' @return Series
+#' @keywords Series
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before meanming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$mean() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$mean() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$mean() # Inf-Inf is NaN
+Series_mean = "use_extendr_wrapper"
+
+#' Median
+#' @description  Reduce Series with median
+#' @return Series
+#' @keywords Series
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before medianming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$median() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$median() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$median() # Inf-Inf is NaN
+Series_median = "use_extendr_wrapper"
+
 #' max
 #' @description  Reduce Series with max
 #' @return Series
@@ -678,6 +704,26 @@ Series_max = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$min() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$min() # Inf-Inf is NaN
 Series_min = "use_extendr_wrapper"
+
+#' @title Var
+#' @description Aggregate the columns of this Series to their variance values.
+#' @keywords Series
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `Series` object with applied aggregation.
+#' @examples pl$Series(1:10)$var()
+Series_var = function(ddof = 1) {
+  unwrap(.pr$Series$var(self, ddof))
+}
+
+#' @title Std
+#' @description Aggregate the columns of this Series to their standard deviation.
+#' @keywords Series
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `Series` object with applied aggregation.
+#' @examples pl$Series(1:10)$std()
+Series_std = function(ddof = 1) {
+  unwrap(.pr$Series$std(self, ddof))
+}
 
 #' Get data type of Series
 #' @keywords Series
