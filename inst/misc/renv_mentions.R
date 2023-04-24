@@ -1,0 +1,1 @@
+library("styler.equals")
