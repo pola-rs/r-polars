@@ -96,6 +96,8 @@ jobs:
         with:
           extra-packages: local::.
           needs: website
+        env:
+          CI: false
 
         ##### Build documentation and put it on "rpolars/rpolars.github.io" repo
 
