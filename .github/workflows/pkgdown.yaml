@@ -100,6 +100,7 @@ jobs:
 
       - name: Build docs folder
         run: |
+          file.copy("docs/mkdocs.orig.yml", "docs/mkdocs.yml")
           altdoc::update_docs(custom_reference = "docs/make-docs.R")
         shell: Rscript {0}
 
