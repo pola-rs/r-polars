@@ -24,6 +24,7 @@ knit_print.DataFrame <- function(x, ...) {
       knitr::is_html_output())) {
     x |>
       to_html_table() |>
+      knitr::raw_html() |>
       knitr::asis_output()
   } else {
     print(x)

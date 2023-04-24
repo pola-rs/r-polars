@@ -47,6 +47,7 @@
       pl$DataFrame(df)
       ```
       
+      ```{=html}
       <div><style>
       .dataframe > thead > tr > th,
       .dataframe > tbody > tr > td {
@@ -54,6 +55,7 @@
       }
       </style>
       <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;a&quot;</td></tr><tr><td>2</td><td>&quot;b&quot;</td></tr><tr><td>3</td><td>&quot;c&quot;</td></tr></tbody></table></div>
+      ```
 
 ---
 
@@ -66,63 +68,13 @@
       pl$DataFrame(df)
       ```
       
-      <div>
-      
-      <style>
+      <div><style>
       .dataframe > thead > tr > th,
       .dataframe > tbody > tr > td {
         text-align: right;
       }
       </style>
-      <small>shape: (3, 2)</small>
-      <table border="1" class="dataframe">
-      <thead>
-      <tr>
-      <th>
-      a
-      </th>
-      <th>
-      b
-      </th>
-      </tr>
-      <tr>
-      <td>
-      i32
-      </td>
-      <td>
-      str
-      </td>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-      <td>
-      1
-      </td>
-      <td>
-      "a"
-      </td>
-      </tr>
-      <tr>
-      <td>
-      2
-      </td>
-      <td>
-      "b"
-      </td>
-      </tr>
-      <tr>
-      <td>
-      3
-      </td>
-      <td>
-      "c"
-      </td>
-      </tr>
-      </tbody>
-      </table>
-      
-      </div>
+      <small>shape: (3, 2)</small><table border="1" class="dataframe"><thead><tr><th>a</th><th>b</th></tr><tr><td>i32</td><td>str</td></tr></thead><tbody><tr><td>1</td><td>&quot;a&quot;</td></tr><tr><td>2</td><td>&quot;b&quot;</td></tr><tr><td>3</td><td>&quot;c&quot;</td></tr></tbody></table></div>
 
 ---
 
