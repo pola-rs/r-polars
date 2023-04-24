@@ -101,13 +101,13 @@ length.DataFrame = function(x, ...) x$width
 #' @noRd
 length.Series = function(x, ...) x$len()
 
-#' The Number of Rows of a DataFrame 
+#' The Number of Rows of a DataFrame
 #' @param x DataFrame
 #' @return Integer
 #' @export
 nrow.DataFrame = function(x) x$height
 
-#' The Number of Columns of a DataFrame 
+#' The Number of Columns of a DataFrame
 #' @param x DataFrame
 #' @return Integer
 #' @export
@@ -171,7 +171,9 @@ max.LazyFrame = function(x, ...) x$max()
 #' @noRd
 as.vector.Series = function(x, mode) x$to_vector()
 
+#' as.character.Series
 #' @param x Series
+#' @param ... not used
 #' @param format a logical. If `TRUE`, the Series will be formatted.
 #' @param str_length an integer. If `format = TRUE`,
 #' utf8 or categorical type Series will be formatted to a string of this length.
@@ -213,7 +215,7 @@ sum.Series = function(x, ...) x$sum()
 #' @param subset Character vector of column names to drop nulls from
 #' @param ... Additional arguments are ignored.
 #' @importFrom stats na.omit
-#' @examples 
+#' @examples
 # 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 #' na.omit(df)
 #' na.omit(df, subset = "a")
@@ -232,7 +234,7 @@ na.omit.LazyFrame = function(object, subset = NULL, ...) {
 #' @param subset Character vector of column names to drop nulls from
 #' @param ... Additional arguments are ignored.
 #' @importFrom stats na.omit
-#' @examples 
+#' @examples
 # 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))
 #' na.omit(df)
 #' na.omit(df, subset = "a")
@@ -253,7 +255,7 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
 #' @param keep string: "first", "last", or "none".
 #' @param incomparables: Not used. Here for S3 method consistency.
 #' @param ... Additional arguments are ignored.
-#' @examples 
+#' @examples
 #' df = pl$DataFrame(
 #'     x = as.numeric(c(1, 1:5)),
 #'     y = as.numeric(c(1, 1:5)),
@@ -275,7 +277,7 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
 #' @param keep string: "first", "last", or "none".
 #' @param incomparables: Not used. Here for S3 method consistency.
 #' @param ... Additional arguments are ignored.
-#' @examples 
+#' @examples
 #' df = pl$DataFrame(
 #'     x = as.numeric(c(1, 1:5)),
 #'     y = as.numeric(c(1, 1:5)),
