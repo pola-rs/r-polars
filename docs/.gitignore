@@ -1,0 +1,4 @@
+docs/*
+
+!docs/stylesheets/extra.css
+!docs/polars-logo.png
