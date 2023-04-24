@@ -610,7 +610,7 @@ LazyFrame_join_asof = function(
     allow_parallel, force_parallel,
     suffix, strategy,
     tolerance_num, tolerance_str
-  ) %>%
+  ) |>
     unwrap("in join_asof( ):")
 
 }

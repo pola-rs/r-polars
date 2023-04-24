@@ -627,7 +627,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 #     r_time$mon<-i_mon
 #     class(r_time) = c("POSIXlt","POSIXt")
 #     r_time
-#   }) %>% do.call(what=c)
+#   }) |> do.call(what=c)
 #
 #
 #   r_time_eu_london = r_time_naive
