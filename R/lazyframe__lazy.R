@@ -581,7 +581,69 @@ LazyFrame_sort = function(
 }
 
 
-
+#' join_asof
+#'
+#' @param other LazyFrame
+#' @param ...  not used, blocks use of further positional arguments
+#' @param left_on column name or Expr,  join column of left table
+#' @param right_on column name or Expr, join column of right (other) table
+#' @param on column name or Expr, sets both left_on and right_on
+#' @param by_left Default NULL (no grouping) or character vector of columns to group by in left
+#' table.
+#' @param by_right Default NULL (no grouping) or character vector of columns to group by in right
+#' table.
+#' @param by Default NULL, optional set/override by_left and by_right simultaneously
+#' @param strategy Default "backward". Strategy for where to find match. "Backward" searches in a
+#' descending direction and "Forward" searches in Ascending direction.
+#' @param suffix append suffix to right (other) columns, if duplicated names
+#' @param tolerance
+#' Numeric tolerance. By setting this the join will only be done if the near
+#' keys are within this distance. If an asof join is done on columns of dtype
+#' "Date", "Datetime", "Duration" or "Time" you use the following string
+#' language:
+#'
+#'     - 1ns   (1 nanosecond)
+#'     - 1us   (1 microsecond)
+#'     - 1ms   (1 millisecond)
+#'     - 1s    (1 second)
+#'     - 1m    (1 minute)
+#'     - 1h    (1 hour)
+#'     - 1d    (1 day)
+#'     - 1w    (1 week)
+#'     - 1mo   (1 calendar month)
+#'     - 1y    (1 calendar year)
+#'     - 1i    (1 index count)
+#'
+#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+#'
+#' There may be a circumstance where R types are not sufficient to express a numeric tolerance.
+#' For that case expression syntax is also enabled like e.g.
+#' `tolerance = pl$lit(42)$cast(pl$Uint64)`
+#'
+#' @param allow_parallel Default TRUE, Allow the physical plan to optionally evaluate the
+#' computation of both DataFrames up to the join in parallel.
+#' @param force_parallel Default FALSE, Force the physical plan to evaluate the computation of both
+#' DataFrames up to the join in parallel.
+#'
+#' @name LazyFrame_join_asof
+#' @description Perform an asof join.
+#' @details
+#' This is similar to a left-join except that we match on nearest key rather than equal keys.
+#'
+#' Both DataFrames must be sorted by the asof_join key.
+#'
+#' For each row in the left DataFrame:
+#'
+#'   - A "backward" search selects the last row in the right DataFrame whose
+#'     'on' key is less than or equal to the left's key.
+#'
+#'   - A "forward" search selects the first row in the right DataFrame whose
+#'     'on' key is greater than or equal to the left's key.
+#'
+#' The default is "backward".
+#' @keywords LazyFrame
+#' @return joined LazyFrame
+#' @examples #
 LazyFrame_join_asof = function(
   other, #LazyFrame
   ..., #
