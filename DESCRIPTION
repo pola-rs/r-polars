@@ -29,6 +29,14 @@ Suggests:
     tibble,
     rmarkdown,
     withr
+Config/Needs/website:
+    etiennebacher/altdoc,
+    Genentech/rd2markdown@c4fb386,
+    yaml,
+    magrittr,
+    cli,
+    tinkr,
+    stringr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
