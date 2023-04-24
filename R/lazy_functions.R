@@ -34,6 +34,7 @@ pl$all = function(name=NULL) {
 #' e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
 #' - a single DataType or an R list of DataTypes, select any column of any such DataType
 #' - Series of utf8 strings abiding to above options
+#' @param ... Additional column names can be passed as strings, separated by commas.
 #'
 #' @return Column Exprression
 #'
@@ -44,6 +45,9 @@ pl$all = function(name=NULL) {
 #'
 #' #a single column by a string
 #' df$select(pl$col("foo"))
+#'
+#' # two columns as strings separated by commas
+#' df$select(pl$col("foo", "bar"))
 #'
 #' #all columns by wildcard
 #' df$select(pl$col("*"))
@@ -63,11 +67,19 @@ pl$all = function(name=NULL) {
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar","foobar"))))
-pl$col = function(name="") {
+pl$col = function(name="", ...) {
 
   #preconvert Series into char name(s)
-
   if(inherits(name,"Series")) name = name$to_vector()
+  
+  name_add = list(...)
+  if (length(name_add) > 0) {
+    if (is_string(name) && all(sapply(name_add, is_string))) {
+      name = c(name, unlist(name_add))
+    } else {
+      warning("Additional arguments supplied to `pl$col()` are ignored because one of `name` or the additional arguments is not a string.")
+    }
+  }
 
   if(is_string(name)) return(.pr$Expr$col(name))
   if(is.character(name)) {
@@ -83,10 +95,10 @@ pl$col = function(name="") {
     if(all(sapply(name, inherits,"RPolarsDataType"))) {
       return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
     } else {
-      stopf("all elements of list must be a RPolarsDataType")
+     stopf("all elements of list must be a RPolarsDataType")
     }
   }
-  #TODO implement series, DataType
+  # TODO implement series, DataType
   stopf("not supported implement input")
 }
 

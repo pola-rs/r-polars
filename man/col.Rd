@@ -13,6 +13,8 @@ e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
 \item a single DataType or an R list of DataTypes, select any column of any such DataType
 \item Series of utf8 strings abiding to above options
 }}
+
+\item{...}{Additional column names can be passed as strings, separated by commas.}
 }
 \value{
 Column Exprression
@@ -26,6 +28,9 @@ df = pl$DataFrame(list(foo=1, bar=2L,foobar="3"))
 
 #a single column by a string
 df$select(pl$col("foo"))
+
+# two columns as strings separated by commas
+df$select(pl$col("foo", "bar"))
 
 #all columns by wildcard
 df$select(pl$col("*"))
