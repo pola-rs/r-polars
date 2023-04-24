@@ -75,7 +75,8 @@ jobs:
             libpng-dev \
             libtiff-dev \
             libxml2-dev \
-            libssl-dev
+            libssl-dev \
+            libxslt1-dev
 
       - name: find polars rust source/cache, used by Makevars in check step
         run: |
