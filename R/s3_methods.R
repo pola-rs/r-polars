@@ -15,13 +15,18 @@
                 }
                 cols = j
             } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
-                if (max(j) > ncol(x)) {
+                if (max(abs(j)) > ncol(x)) {
                     stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
                 }
-                if (min(j) < 1) {
-                    stop("Elements of `j` must be greater than or equal to 1.", call. = FALSE)
+                negative = any(j < 0)
+                if (isTRUE(negative)) {
+                    if (any(j > 0)) {
+                        stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+                    }
+                    cols = x$columns[!seq_along(x$columns) %in% abs(j)]
+                } else {
+                    cols = x$columns[j]
                 }
-                cols = x$columns[j]
             }
             x = do.call(x$select, lapply(cols, pl$col))
         } else {
@@ -37,10 +42,18 @@
                 }
                 idx = i
             } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
-                if (any(diff(i) < 0)) {
-                    stop("Elements of `i` must be in increasing order.", call. = FALSE)
+                negative = any(i < 0)
+                if (isTRUE(negative)) {
+                    if (any(i > 0)) {
+                        stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+                    }
+                    idx = !seq_len(x$height) %in% abs(i)
+                } else {
+                    if (any(diff(i) < 0)) {
+                        stop("Elements of `i` must be in increasing order.", call. = FALSE)
+                    }
+                    idx = seq_len(x$height) %in% i
                 }
-                idx = seq_len(x$height) %in% i
             }
             x = x$filter(pl$lit(idx))
         } else {
