@@ -90,9 +90,9 @@ DataFrame
 #' Create new DataFrame
 #' @name DataFrame
 #'
-#' @param ...
-#'  - one data.frame or something that inherits data.frame or DataFrame
-#'  - one list of mixed vectors and Series of equal length
+#' @param ... One of the following:
+#'  - a data.frame or something that inherits data.frame or DataFrame
+#'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'
 #' Columns will be named as of named arguments or alternatively by names of Series or given a

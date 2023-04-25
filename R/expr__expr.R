@@ -1,19 +1,21 @@
-#' @title Polars Expr
+#' @title Polars Expressions
 #'
-#' @description Polars pl$Expr
-#' @rdname Expr
-#' @name Expr
-#' @keywords Expr
+#' @name Expr_class
+#' @description `Expr`essions are all the functions and methods that are applicable
+#' to a Polars DataFrame. They can be split into the following categories (following
+#' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions):
+#'  * Aggregate
+#'  * Binary
+#'  * Categorical
+#'  * Computation
+#'  * Functions
+#'  * List
+#'  * Meta
+#'  * String
+#'  * Struct
+#'  * Temporal
 #'
-#' @aliases Expr
-#'
-#' @examples
-#' 2+2
-#' #Expr has the following methods/constructors
-#' ls(polars:::Expr)
-#'
-#' pl$col("this_column")$sum()$over("that_column")
-42
+NULL
 
 
 #' Print expr

@@ -19,7 +19,7 @@ pre.r-example {
 /*
 Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 */
-:root {
+[data-md-color-scheme="default"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --md-primary-fg-color: #ecf4ff;

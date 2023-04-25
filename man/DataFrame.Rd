@@ -4,9 +4,10 @@
 \alias{DataFrame}
 \title{Create new DataFrame}
 \arguments{
-\item{...}{\itemize{
-\item one data.frame or something that inherits data.frame or DataFrame
-\item one list of mixed vectors and Series of equal length
+\item{...}{One of the following:
+\itemize{
+\item a data.frame or something that inherits data.frame or DataFrame
+\item a list of mixed vectors and Series of equal length
 \item mixed vectors and/or Series of equal length
 }
 
