@@ -3,29 +3,19 @@
 \name{Series_var}
 \alias{Series_var}
 \title{Var}
-\format{
-method
-}
 \usage{
-Series_var(ddof = 1)
-
 Series_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{“Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
-where N represents the number of elements.
-By default ddof is 1.}
+\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
 A new \code{Series} object with applied aggregation.
-
-bool
 }
 \description{
 Aggregate the columns of this Series to their variance values.
 }
 \examples{
 pl$Series(1:10)$var()
-pl$Series(1:4,"bob")$var()
 }
 \keyword{Series}

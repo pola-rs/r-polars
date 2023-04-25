@@ -258,8 +258,8 @@ test_that("cloning", {
 })
 
 
-test_that("get column(s)", {
-  # TODO figure out why this test fails. Expected and Actual do appear very much equal
+# TODO figure out why this test fails. Expected and Actual do appear very much equal
+# test_that("get column(s)", {
   # df = pl$DataFrame(iris)
   # expected_list_of_series = {
   #   expected = lapply(
@@ -283,7 +283,7 @@ test_that("get column(s)", {
   #   list_of_vectors,
   #   as.list(iris)
   # )
-})
+# })
 
 
 test_that("get column", {

@@ -474,12 +474,12 @@ impl Series {
         self.0.sum_as_series().into()
     }
 
-    pub fn std(&self, ddof: u8) ->  Series {
-        self.0.std_as_series(ddof).into()
+    pub fn std(&self, ddof: Robj) ->  Result<Series, String> {
+        Ok(self.0.std_as_series(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn var(&self, ddof: u8) ->  Series {
-        self.0.var_as_series(ddof).into()
+    pub fn var(&self, ddof: Robj) ->  Result<Series, String> {
+        Ok(self.0.var_as_series(robj_to!(u8, ddof)?).into())
     }
 
     pub fn ceil(&self) -> List {
