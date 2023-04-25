@@ -210,7 +210,6 @@ LazyFrame_collect_background = function() {
 #' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
-  if(!is.numeric(n)) stopf("limit: n must be numeric")
   unwrap(.pr$LazyFrame$limit(self,n), "in $limit():")
 }
 

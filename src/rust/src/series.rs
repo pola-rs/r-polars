@@ -8,8 +8,8 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
-use crate::utils::{r_error_list, r_result_list};
 use crate::robj_to;
+use crate::utils::{r_error_list, r_result_list};
 
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -474,11 +474,11 @@ impl Series {
         self.0.sum_as_series().into()
     }
 
-    pub fn std(&self, ddof: Robj) ->  Result<Series, String> {
+    pub fn std(&self, ddof: Robj) -> Result<Series, String> {
         Ok(self.0.std_as_series(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn var(&self, ddof: Robj) ->  Result<Series, String> {
+    pub fn var(&self, ddof: Robj) -> Result<Series, String> {
         Ok(self.0.var_as_series(robj_to!(u8, ddof)?).into())
     }
 
