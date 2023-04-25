@@ -4,6 +4,7 @@ site_name: Polars R Package
 theme:
   name: material
   logo: polars-logo.png
+  favicon: polars-logo.png
   font:
     text: Roboto
   palette:
