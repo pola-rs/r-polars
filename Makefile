@@ -39,8 +39,8 @@ requirements-rs:
 build: ## Compile polars R package and generate Rd files
 	Rscript -e 'rextendr::document()'
 
-.PHONY: build-all
-build-all: build README.md ## Build the package and update files included in the R package
+.PHONY: all
+all: build test README.md ## build -> test -> Update README.md
 
 .PHONY: docs
 docs: build README.md ## Generate docs
