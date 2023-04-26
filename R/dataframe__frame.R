@@ -494,8 +494,8 @@ DataFrame_width = method_as_property(function() {
 
 #' DataFrame dtypes
 #' @name DataFrame_dtypes
-#' @description Get dtypes of columns in DataFrame.
-#' Dtypes can also be found in column headers when printing the DataFrame.
+#' @description Get the data types of columns in DataFrame.
+#' Data types can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
 #' @keywords  DataFrame
@@ -510,6 +510,7 @@ DataFrame_dtypes = method_as_property(function() {
 #' @name DataFrame_dtype_strings
 #' @description Get column types as strings.
 #'
+#' @docType NULL
 #' @return string vector
 #' @keywords DataFrame
 #' @examples
@@ -569,6 +570,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #' @name DataFrame_lazy
 #' @description Start a new lazy query from a DataFrame.
 #'
+#' @docType NULL
 #' @return A LazyFrame
 #' @aliases lazy
 #' @keywords  DataFrame LazyFrame_new
@@ -681,16 +683,6 @@ DataFrame_sort = function(
 }
 
 
-
-
-#' @name DataFrame_lazy
-#'
-#' @examples
-#' #use of lazy method
-#' pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
-42
-
-
 #' perform select on DataFrame
 #' @name DataFrame_select
 #' @description  related to dplyr `mutate()` However discards unmentioned columns as data.table `.()`.
@@ -765,16 +757,17 @@ DataFrame_shift = function(periods = 1) {
 #' @title Shift and fill
 #' @description Shift the values by a given period and fill the resulting null values.
 #' @keywords DataFrame
-#' @param fill_value fill None values with the result of this expression.
-#' @param periods integer Number of periods to shift (may be negative).
+#' @param fill_value Fill values with the result of this expression.
+#' @param periods Integer indicating the number of periods to shift (may be
+#' negative).
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
 DataFrame_shift_and_fill = function(fill_value, periods = 1) {
     self$lazy()$shift_and_fill(fill_value, periods)$collect()
 }
 
-#' modify/append column(s)
-#' @description add or modify columns with expressions
+#' @title Modify/append column(s)
+#' @description Add or modify columns with expressions
 #' @name DataFrame_with_columns
 #' @aliases with_columns
 #' @param ... any expressions or string column name, or same wrapped in a list
@@ -819,12 +812,15 @@ DataFrame_with_column = function(expr) {
 
 #' Limit a DataFrame
 #' @name DataFrame_limit
-#' @description take limit of n rows of query
-#' @param n positive numeric or integer number not larger than 2^32
+#' @description Take some maximum number of rows.
+#' @param n Positive numeric or integer number not larger than 2^32
 #'
-#' @details any number will converted to u32. Negative raises error
+#' @details Any number will converted to u32.
 #' @keywords  DataFrame
 #' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$limit(6)
+#'
 DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
 }
