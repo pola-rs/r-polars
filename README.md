@@ -15,26 +15,24 @@ release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.gi
 dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
 
-The goal of this project is to bring the blazingly fast
-[Polars](https://www.pola.rs/) data manipulation library to R. The
-underlying computation engine is written in Rust and this R
-implementation has no other dependencies than R itself (≥ 4.1.0).
+The **polars** package for R gives users access to [a lightning
+fast](https://duckdblabs.github.io/db-benchmark/) Data Frame library
+written in Rust. [Polars](https://www.pola.rs/)’ embarrassingly parallel
+execution, cache efficient algorithms and expressive API makes it
+perfect for efficient data wrangling, data pipelines, snappy APIs and so
+much more. Polars also supports “streaming mode” for out-of-memory
+operations. This allows users to analyze datasets many times larger than
+RAM.
 
 Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
-by Søren Welling ([@sorhawell](https://github.com/sorhawell)), together
-with other
+by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
-
-**Update:** As of March 2023, **polars** has now reached nearly 100%
-coverage of the underlying “lazy” Expr syntax. While translation of the
-“eager” syntax is still a little further behind, you should be able to
-do just about everything using `$select()` + `$with_columns()`.
 
 ## Install
 
@@ -116,13 +114,15 @@ install.packages(c("polars", "arrow"), repos = rp)
 
 ## Quickstart example
 
-The introductory vignette (`vignette("polars")`) contains a series of
-detailed examples. But here is a quick illustration of **polars** in
-action.
+The [Get Started](https://rpolars.github.io/articles/polars.html)
+vignette (`vignette("polars")`) contains a series of detailed examples,
+but here is a quick illustration.
 
-Start by loading the package and creating a Polars `DataFrame` object.
-Similar to the Python implementation, note that we use the `pl$` prefix
-to specify a Polars constructor.
+**polars** is a very powerful package with many functions. To avoid
+conflicts with other packages and base R function names, **polars**’s
+top level functions are hosted in the `pl` namespace, and accessible via
+the `pl$` prefix. To convert an R data frame to a Polars `DataFrame`, we
+call:
 
 ``` r
 library(polars)
@@ -147,62 +147,96 @@ dat
 #> └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
 ```
 
-Once our Polars DataFrame has been created, we can chain together a
-series of data manipulations as part of the same query. For example:
+This `DataFrame` object can be manipulated using many of the usual R
+functions and accessors, e.g.:
 
 ``` r
-dat$filter(
-  pl$col("cyl")>=6
-)$groupby(
-  "cyl", "am"
-)$agg(
-  pl$col("mpg")$mean()$alias("mean_mpg"),
-  pl$col("hp")$median()$alias("med_hp")
-)
-#> shape: (4, 4)
-#> ┌─────┬─────┬───────────┬────────┐
-#> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
-#> │ --- ┆ --- ┆ ---       ┆ ---    │
-#> │ f64 ┆ f64 ┆ f64       ┆ f64    │
-#> ╞═════╪═════╪═══════════╪════════╡
-#> │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │
-#> │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │
-#> │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │
-#> │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │
-#> └─────┴─────┴───────────┴────────┘
+dat[1:4, c("mpg", "qsec", "hp")]
+#> shape: (4, 3)
+#> ┌──────┬───────┬───────┐
+#> │ mpg  ┆ qsec  ┆ hp    │
+#> │ ---  ┆ ---   ┆ ---   │
+#> │ f64  ┆ f64   ┆ f64   │
+#> ╞══════╪═══════╪═══════╡
+#> │ 21.0 ┆ 16.46 ┆ 110.0 │
+#> │ 21.0 ┆ 17.02 ┆ 110.0 │
+#> │ 22.8 ┆ 18.61 ┆ 93.0  │
+#> │ 21.4 ┆ 19.44 ┆ 110.0 │
+#> └──────┴───────┴───────┘
 ```
 
-The above is an example of Polars’ eager execution engine. But for
-maximum performance, it is preferable to use Polars’ lazy execution
-mode, which allows the package to apply additional query optimizations.
+However, the true power of Polars is unlocked by using *methods*, which
+are encapsulated in the `DataFrame` object itself. For example, we can
+chain the `$groupby()` and the `$mean()` methods to compute group-wise
+means for each column of the dataset:
 
 ``` r
-ldat = dat$lazy()
-
-ldat$filter(
-  pl$col("cyl")>=6
-)$groupby(
-  "cyl", "am"
-)$agg(
-  pl$col("mpg")$mean()$alias("mean_mpg"),
-  pl$col("hp")$median()$alias("med_hp")
-)$collect()
-#> shape: (4, 4)
-#> ┌─────┬─────┬───────────┬────────┐
-#> │ cyl ┆ am  ┆ mean_mpg  ┆ med_hp │
-#> │ --- ┆ --- ┆ ---       ┆ ---    │
-#> │ f64 ┆ f64 ┆ f64       ┆ f64    │
-#> ╞═════╪═════╪═══════════╪════════╡
-#> │ 6.0 ┆ 1.0 ┆ 20.566667 ┆ 110.0  │
-#> │ 6.0 ┆ 0.0 ┆ 19.125    ┆ 116.5  │
-#> │ 8.0 ┆ 0.0 ┆ 15.05     ┆ 180.0  │
-#> │ 8.0 ┆ 1.0 ┆ 15.4      ┆ 299.5  │
-#> └─────┴─────┴───────────┴────────┘
+dat$groupby("cyl")$mean()
+#> shape: (3, 11)
+#> ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐
+#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │
+#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
+#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
+#> ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡
+#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
+#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
+#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-## Contribute
+[The **polars**
+vignette](https://rpolars.github.io/articles/polars.html) contains many
+more examples of how to use the package to:
+
+- Read CSV, JSON, Parquet, and other file formats.
+- Filter rows and select columns.
+- Modify and create new columns.
+- Sort data.
+- Join, group, and aggregate data.
+- Join and concatenate datasets.
+- Group and aggregate.
+- Handle missing values.
+- Work with dates and times.
+- Use the lazy execution engine for maximum performance and memory-efficient operations.
+
+## Development and Contributions
 
 Contributions are very welcome!
+
+As of March 2023, **polars** has now reached nearly 100% coverage of the
+underlying “lazy” Expr syntax. While translation of the “eager” syntax
+is still a little further behind, you should be able to do just about
+everything using `$select()` + `$with_columns()`. Most of the methods
+associated with `DataFrame` and `LazyFrame` classes have been
+implemented, but not all. There is still much to do, and your help would
+be much appreciated!
+
+If you spot missing functionality—implemented in Python but not R—please
+let us know on Github.
+
+### System dependencies
+
+To install the development version of Polars or develop new features,
+you will to install the Rust toolchain:
+
+- Install [`rustup`](https://rustup.rs/), the cross-platform Rust
+  installer. Then:
+
+  ``` sh
+  rustup toolchain install nightly
+  rustup default nightly
+  ```
+
+- Windows: Make sure the latest version of
+  [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
+  and on your PATH.
+
+- MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
+  is installed.
+
+- Install [CMake](https://cmake.org/) and add it to your PATH.
+
+### Implementing new features
 
 Here are the steps required for an example contribution, where we are
 implementing the [cosine
@@ -211,9 +245,9 @@ expression](https://rpolars.github.io/reference/Expr_cos.html):
 - Look up the [polars.Expr.cos method in py-polars
   documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
 - Press the `[source]` button to see the [Python
-  impl](https://github.com/pola-rs/polars/blob/master/py-polars/polars/internals/expr/expr.py#L5057-L5079)
+  implementation](https://github.com/pola-rs/polars/blob/d23bbd2f14f1cd7ae2e27e1954a2dc4276501eef/py-polars/polars/expr/expr.py#L5892-L5914)
 - Find the cos [py-polars rust
-  implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L418)
+  implementation](https://github.com/pola-rs/polars/blob/a1afbc4b78f5850314351f7e85ded95fd68b6453/py-polars/src/lazy/dsl.rs#L396)
   (likely just a simple call to the Rust-Polars API)
 - Adapt the Rust part and place it
   [here](https://github.com/pola-rs/r-polars/blob/c56c49a6fc172685f50c15fffe3d14231297ad97/src/rust/src/rdataframe/rexpr.rs#L754).
@@ -237,30 +271,7 @@ all platforms as part of our GitHub Actions workflow. A more detailed
 description of the development environment and workflow for local builds
 is provided below.
 
-### Development environment and workflow
-
-#### System dependencies
-
-Rust toolchain
-
-- Install [`rustup`](https://rustup.rs/), the cross-platform Rust
-  installer. Then:
-
-  ``` sh
-  rustup toolchain install nightly
-  rustup default nightly
-  ```
-
-- Windows: Make sure the latest version of
-  [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
-  and on your PATH.
-
-- MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
-  is installed.
-
-- Install [CMake](https://cmake.org/) and add it to your PATH.
-
-#### Development workflow
+### Development workflow
 
 Assuming the system dependencies have been met (above), the typical
 **polars** development workflow is as follows:

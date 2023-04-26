@@ -1,6 +1,6 @@
 Package: polars
 Title: Polars ported to R
-Version: 0.5.0.9000
+Version: 0.5.0.9002
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
@@ -10,7 +10,7 @@ Description: This package ports the polars data query library to R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3.9000
+RoxygenNote: 7.2.3
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
 Suggests: 
@@ -30,6 +30,14 @@ Suggests:
     pillar,
     rmarkdown,
     withr
+Config/Needs/website:
+    etiennebacher/altdoc,
+    Genentech/rd2markdown@c4fb386,
+    yaml,
+    magrittr,
+    cli,
+    tinkr,
+    stringr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'

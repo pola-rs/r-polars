@@ -504,3 +504,24 @@ test_that("internal method get_fmt and to_fmt_char", {
     c('"foo"', '"bar"')
   )
 })
+
+
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ base,
+    "mean",       mean,
+    "median",     median,
+    "std",        sd,
+    "var",        var,
+  )
+}
+patrick::with_parameters_test_that("mean, median, std, var", {
+  s = pl$Series(rnorm(100))
+  a = s[[.test_name]]()
+  # upstream .std_as_series() does not appear to return Series
+  if (inherits(a, "Series")) a = a$to_vector()
+  b = base(s$to_vector())
+  expect_equal(a, b)
+  },
+  .cases = make_cases()
+)
