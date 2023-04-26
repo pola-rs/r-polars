@@ -11,8 +11,6 @@ badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs
 release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
-[![Docs
-dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://rpolars.github.io/dev)
 <!-- badges: end -->
 
 The **polars** package for R gives users access to [a lightning
@@ -82,7 +80,7 @@ new M1/M2 “Silicon” chips. To install **polars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**polars**. The corresponding `Makevars` script will download a \~200MB
+**polars**. The corresponding `Makevars` script will download a ~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -114,9 +112,9 @@ install.packages(c("polars", "arrow"), repos = rp)
 
 ## Quickstart example
 
-The [Get Started](https://rpolars.github.io/articles/polars.html)
-vignette (`vignette("polars")`) contains a series of detailed examples,
-but here is a quick illustration.
+The [Get Started](https://rpolars.github.io/articles/polars/) vignette
+(`vignette("polars")`) contains a series of detailed examples, but here
+is a quick illustration.
 
 **polars** is a very powerful package with many functions. To avoid
 conflicts with other packages and base R function names, **polars**’s
@@ -179,14 +177,13 @@ dat$groupby("cyl")$mean()
 #> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
 #> ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡
 #> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
-#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
 #> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
 #> └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘
 ```
 
-[The **polars**
-vignette](https://rpolars.github.io/articles/polars.html) contains many
-more examples of how to use the package to:
+[The **polars** vignette](https://rpolars.github.io/articles/polars/)
+contains many more examples of how to use the package to:
 
 - Read CSV, JSON, Parquet, and other file formats.
 - Filter rows and select columns.
@@ -197,7 +194,8 @@ more examples of how to use the package to:
 - Group and aggregate.
 - Handle missing values.
 - Work with dates and times.
-- Use the lazy execution engine for maximum performance and memory-efficient operations.
+- Use the lazy execution engine for maximum performance and
+  memory-efficient operations.
 
 ## Development and Contributions
 
