@@ -38,7 +38,7 @@ knit_print.DataFrame <- function(x, ...) {
 #' @return A string of HTML code
 #' @examples
 #' to_html_table(mtcars, 3, 3)
-#' @export
+#' @noRd
 #' @importFrom utils getFromNamespace
 to_html_table <- function(x, max_cols = 75, max_rows = 40) {
   escape_html <- getFromNamespace("escape_html", "knitr")
