@@ -2,25 +2,20 @@
 % Please edit documentation in R/series__series.R
 \name{Series_std}
 \alias{Series_std}
-\title{Get the standard deviation of this Series.}
-\format{
-method
-}
+\title{Std}
 \usage{
 Series_std(ddof = 1)
 }
 \arguments{
-\item{ddof}{“Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
-where N represents the number of elements.
-By default ddof is 1.}
+\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
-bool
+A new \code{Series} object with applied aggregation.
 }
 \description{
-Get the standard deviation of this Series.
+Aggregate the columns of this Series to their standard deviation.
 }
 \examples{
-pl$Series(1:4,"bob")$std()
+pl$Series(1:10)$std()
 }
 \keyword{Series}

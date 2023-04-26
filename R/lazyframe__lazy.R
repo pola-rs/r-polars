@@ -2,27 +2,37 @@
 #'
 #' @name LazyFrame_class
 #' @description The `LazyFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the polars rust side. The instanciated
-#' `LazyFrame`-object is an `externalptr` to a lowlevel rust polars LazyFrame  object. The pointer address
-#' is the only statefullness of the LazyFrame object on the R side. Any other state resides on the
-#' rust side. The S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which are callable onto the object.
-#' Most methods return another `LazyFrame`-class instance or similar which allows for method chaining.
-#' This class system in lack of a better name could be called "environment classes" and is the same class
-#' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from polars:::.pr.$LazyFrame$methodname(), also
-#' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
+#' the public and private methods/function calls to the polars rust side. The
+#' instanciated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
+#' LazyFrame  object. The pointer address is the only statefullness of the
+#' LazyFrame object on the R side. Any other state resides on the rust side. The
+#' S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which
+#' are callable onto the object.
+#'
+#' Most methods return another `LazyFrame`-class instance or similar which allows
+#' for method chaining. This class system in lack of a better name could be called
+#' "environment classes" and is the same class system extendr provides, except
+#' here there is both a public and private set of methods. For implementation
+#' reasons, the private methods are external and must be called from
+#' `polars:::.pr.$LazyFrame$methodname()`. Also, all private methods must take
+#' any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
-#' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use `DataFrame_object$lazy() -> LazyFrame_object` and
-#' `LazyFrame_object$collect() -> DataFrame_object`. This is quite similar to the lazy-collect syntax of the dplyrpackage to
-#' interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
-#' as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
-#' and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
+#' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use
+#' `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`.
+#' This is quite similar to the lazy-collect syntax of the dplyrpackage to
+#' interact with database connections such as SQL variants. Most SQL databases
+#' would be able to perform the same otimizations as polars such Predicate Pushdown
+#' and Projection. However polars can intertact and optimize queries with both
+#' SQL DBs and other data sources such parquet files simultanously. (#TODO
+#' implement r-polars SQL ;).
 #'
-#' @details Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
-#' Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
-#' into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
-#' are removed and replaced by any function prefixed `LazyFrame_`.
+#' @details Check out the source code in R/LazyFrame__lazy.R how public methods
+#' are derived from private methods. Check out  extendr-wrappers.R to see the
+#' extendr-auto-generated methods. These are moved to `.pr` and converted into
+#' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
+#' file sourced) the extendr-methods are removed and replaced by any function
+#' prefixed `LazyFrame_`.
 #'
 #' @keywords LazyFrame
 #' @examples
@@ -134,7 +144,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #'
 LazyFrame_describe_optimized_plan  = function() {
-  unwrap(.pr$LazyFrame$describe_optimized_plan(self))
+  unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
 }
 
@@ -188,7 +198,7 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 LazyFrame_collect = function() {
-  unwrap(.pr$LazyFrame$collect(self))
+  unwrap(.pr$LazyFrame$collect(self), "in $collect():")
 }
 
 #' @title New DataFrame from LazyFrame_object$collect()
@@ -210,8 +220,7 @@ LazyFrame_collect_background = function() {
 #' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
-  if(!is.numeric(n)) stopf("limit: n must be numeric")
-  unwrap(.pr$LazyFrame$limit(self,n))
+  unwrap(.pr$LazyFrame$limit(self,n), "in $limit():")
 }
 
 #' @title First
@@ -284,7 +293,7 @@ LazyFrame_sum = "use_extendr_wrapper"
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
 LazyFrame_var = function(ddof = 1) {
-  unwrap(.pr$LazyFrame$var(self, ddof))
+  unwrap(.pr$LazyFrame$var(self, ddof), "in $var():")
 }
 
 #' @title Std
@@ -294,7 +303,7 @@ LazyFrame_var = function(ddof = 1) {
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
 LazyFrame_std = function(ddof = 1) {
-  unwrap(.pr$LazyFrame$std(self, ddof))
+  unwrap(.pr$LazyFrame$std(self, ddof), "in $std():")
 }
 
 #' @title Quantile
@@ -305,7 +314,7 @@ LazyFrame_std = function(ddof = 1) {
 #' @return LazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
 LazyFrame_quantile = function(quantile, interpolation = "nearest") {
-  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation))
+  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
 
 #' @title Fill NaN
@@ -320,7 +329,7 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
 #' )$lazy()
 #' df$fill_nan(99)$collect()
 LazyFrame_fill_nan = function(fill_value) {
-  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)))
+  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
 }
 
 #' @title Fill null
@@ -335,7 +344,7 @@ LazyFrame_fill_nan = function(fill_value) {
 #' )$lazy()
 #' df$fill_null(99)$collect()
 LazyFrame_fill_null = function(fill_value) {
-  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)))
+  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
 }
 
 #' @title Shift
@@ -345,7 +354,7 @@ LazyFrame_fill_null = function(fill_value) {
 #' @return LazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
 LazyFrame_shift = function(periods = 1) {
-  unwrap(.pr$LazyFrame$shift(self, periods))
+  unwrap(.pr$LazyFrame$shift(self, periods), "in $shift():")
 }
 
 #' @title Shift and fill
@@ -356,7 +365,7 @@ LazyFrame_shift = function(periods = 1) {
 #' @return LazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$collect()$as_data_frame()
 LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
-  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods))
+  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
 
 #' @title Drop
@@ -366,7 +375,7 @@ LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' @return LazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
 LazyFrame_drop = function(columns) {
-  unwrap(.pr$LazyFrame$drop(self, columns))
+  unwrap(.pr$LazyFrame$drop(self, columns), "in $drop():")
 }
 
 #' @title Reverse
@@ -387,7 +396,7 @@ LazyFrame_reverse = "use_extendr_wrapper"
 #' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 #' mtcars[2:6,]
 LazyFrame_slice = function(offset, length = NULL) {
-  unwrap(.pr$LazyFrame$slice(self, offset, length))
+  unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
 }
 
 #' @title Tail
@@ -400,7 +409,7 @@ LazyFrame_slice = function(offset, length = NULL) {
 #' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
-  unwrap(.pr$LazyFrame$tail(self,n))
+  unwrap(.pr$LazyFrame$tail(self,n), "in $tail():")
 }
 
 #' @title Lazy_drop_nulls

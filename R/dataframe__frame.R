@@ -621,7 +621,7 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' df = pl$DataFrame(iris[1,])
 #' df$get_column("Species")
 DataFrame_get_column = function(name) {
-  unwrap(.pr$DataFrame$get_column(self, name))
+  unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
 }
 
 #' Get Series by idx, if there
@@ -1008,7 +1008,7 @@ DataFrame_to_struct = function(name = "") {
 #' @param names names of struct columns to unnest, default NULL unnest any struct column
 #' @return $unnest() returns a DataFrame with all column including any that has been unnested
 DataFrame_unnest = function(names = NULL) {
-  unwrap(.pr$DataFrame$unnest(self, names))
+  unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
 
 

@@ -221,7 +221,7 @@ We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
 ([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren.html))
 and also columns
-([`select()`](https://rpolars.github.io/reference/DataFrame_select.html)):
+([`select()`](https://rpolars.github.io/reference/DataFrame_select/)):
 
 ```{r}
 dat$filter(pl$col("cyl") == 6)
@@ -248,7 +248,7 @@ so you can simultaneously transform it while you are subsetting. However, the
 result will exclude any columns that weren't specified as part of the
 expression. To modify or add some columns---whilst preserving all others in the
 dataset---it is therefore better to use the
-[`with_columns()`](https://rpolars.github.io/reference/DataFrame_with_columns.html)
+[`with_columns()`](https://rpolars.github.io/reference/DataFrame_with_columns)
 method. This next code chunk is equivalent to `mtcars |>
 dplyr::mutate(sum_mpg=sum(mpg), sum_hp=sum(hp), .by = cyl)`.
 
@@ -320,7 +320,7 @@ flights$join(
 ```
 
 More information on the **polars** joining method can be found in the
-[reference manual](https://rpolars.github.io/reference/DataFrame_join.html).
+[reference manual](https://rpolars.github.io/reference/DataFrame_join).
 
 The package supports many other data manipulation operations, which we won't 
 cover here. Hopefully, you will already have a sense of the key syntax features.
@@ -337,7 +337,7 @@ performance. Delaying execution until the last possible moment allows Polars to
 apply automatic optimization to every query. Let's take a quick look.
 
 To create a so-called
-"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class.html)" from an
+"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class)" from an
 existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}
