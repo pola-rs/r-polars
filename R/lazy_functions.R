@@ -258,24 +258,22 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 #'
 pl$mean = function(...) { #-> Expr | Any:
   column = list2(...)
-  if (length(column) == 0L) {
-    out = Err("pl$mean() needs at least one argument.")
-  } else if (length(column) > 1L && !all(sapply(column, is_string))) {
-    out = Err("When there are more than one arguments in pl$mean(), all arguments must be strings.")
-  } else {
-    if (length(column) > 1L) {
-      column = unlist(column)
-    } else {
-      column = column[[1L]]
-    }
-    out = Ok(pcase(
-      inherits(column, "Series") && column$len() == 0, Err("The series is empty, so no mean value can be returned."),
-      inherits(column, "Series") && column$len() > 0, column$mean(),
-      inherits(column, "DataFrame"), column$mean(),
-      or_else = pl$col(column)$mean()
-    ))
-  }
-  unwrap(out, "in pl$mean():")
+  lc = length(column)
+  stringflag = all(sapply(column, is_string))
+  pcase(
+    lc == 0L,
+    Err("pl$mean() needs at least one argument."),
+    lc > 1L && !stringflag,
+    Err("When there are more than one arguments in pl$mean(), all arguments must be strings."),
+    lc > 1L && stringflag,
+    Ok(pl$col(unlist(column))$mean()),
+    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    Err("The series is empty, so no mean value can be returned."),
+    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    Ok(column[[1]]$mean()),
+    or_else = Ok(pl$col(column[[1]])$mean())
+  ) |>
+  unwrap("in pl$mean():")
 }
 
 
@@ -305,25 +303,24 @@ pl$mean = function(...) { #-> Expr | Any:
 #'
 pl$median = function(...) { #-> Expr | Any:
   column = list2(...)
-  if (length(column) == 0L) {
-    out = Err("pl$median() needs at least one argument.")
-  } else if (length(column) > 1L && !all(sapply(column, is_string))) {
-    out = Err("When there are more than one arguments in pl$median(), all arguments must be strings.")
-  } else {
-    if (length(column) > 1L) {
-      column = unlist(column)
-    } else {
-      column = column[[1L]]
-    }
-    out = Ok(pcase(
-      inherits(column, "Series") && column$len() == 0, Err("The series is empty, so no median value can be returned."),
-      inherits(column, "Series") && column$len() > 0, column$median(),
-      inherits(column, "DataFrame"), column$median(),
-      or_else = pl$col(column)$median()
-    ))
-  }
-  unwrap(out, "in pl$median():")
+  lc = length(column)
+  stringflag = all(sapply(column, is_string))
+  pcase(
+    lc == 0L,
+    Err("pl$median() needs at least one argument."),
+    lc > 1L && !stringflag,
+    Err("When there are more than one arguments in pl$median(), all arguments must be strings."),
+    lc > 1L && stringflag,
+    Ok(pl$col(unlist(column))$median()),
+    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    Err("The series is empty, so no median value can be returned."),
+    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    Ok(column[[1]]$median()),
+    or_else = Ok(pl$col(column[[1]])$median())
+  ) |>
+  unwrap("in pl$median():")
 }
+
 
 
 #TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
