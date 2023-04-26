@@ -20,6 +20,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.top
+    - content.code.copy
 markdown_extensions:
   - toc:
       baselevel: 1
