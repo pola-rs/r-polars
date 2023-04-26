@@ -370,22 +370,21 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
 
 
-#' get/set columns (the names columns)
-#' @description get/set column names of DataFrame object
+#' Get and set column names of a DataFrame
 #' @name DataFrame_columns
 #' @rdname DataFrame_columns
 #'
-#' @return char vec of column names
+#' @return A character vector with the column names.
 #' @keywords DataFrame
 #'
 #' @examples
 #' df = pl$DataFrame(iris)
 #'
-#' #get values
+#' # get values
 #' df$columns
 #'
-#' #set + get values
-#' df$columns = letters[1:5] #<- is fine too
+#' # set + get values
+#' df$columns = letters[1:5] # <- is fine too
 #' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
@@ -395,10 +394,10 @@ DataFrame.property_setters$columns =
   function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
 
-#' @title Drop
-#' @description Remove columns from the dataframe.
+#' @title Drop columns of a DataFrame
 #' @keywords DataFrame
-#' @param columns character vector Name of the column(s) that should be removed from the dataframe.
+#' @param columns A character vector containing the names of the column(s) to
+#' remove from the DataFrame.
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
 DataFrame_drop = function(columns) {
@@ -566,11 +565,11 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 
 
 
-#' New LazyFrame from DataFrame_object$lazy()
+#' Convert an existing DataFrame to a LazyFrame
 #' @name DataFrame_lazy
-#' @description Start a new lazy query from a DataFrame
+#' @description Start a new lazy query from a DataFrame.
 #'
-#' @return a LazyFrame
+#' @return A LazyFrame
 #' @aliases lazy
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
@@ -580,10 +579,10 @@ DataFrame_lazy = "use_extendr_wrapper"
 
 #' Clone a DataFrame
 #' @name DataFrame_clone
-#' @description Rarely useful as DataFrame is nearly 100% immutable
-#' Any modification of a DataFrame would lead to a clone anyways.
+#' @description This is rarely useful as a DataFrame is nearly 100% immutable.
+#' Any modification of a DataFrame would lead to a clone anyway.
 #'
-#' @return DataFrame
+#' @return A DataFrame
 #' @aliases DataFrame_clone
 #' @keywords  DataFrame
 #' @examples

@@ -4,7 +4,7 @@
 \name{DataFrame_lazy}
 \alias{DataFrame_lazy}
 \alias{lazy}
-\title{New LazyFrame from DataFrame_object$lazy()}
+\title{Convert an existing DataFrame to a LazyFrame}
 \format{
 An object of class \code{character} of length 1.
 }
@@ -12,10 +12,10 @@ An object of class \code{character} of length 1.
 DataFrame_lazy
 }
 \value{
-a LazyFrame
+A LazyFrame
 }
 \description{
-Start a new lazy query from a DataFrame
+Start a new lazy query from a DataFrame.
 }
 \examples{
 pl$DataFrame(iris)$lazy()

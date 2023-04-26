@@ -2,18 +2,19 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_drop}
 \alias{DataFrame_drop}
-\title{Drop}
+\title{Drop columns of a DataFrame}
 \usage{
 DataFrame_drop(columns)
 }
 \arguments{
-\item{columns}{character vector Name of the column(s) that should be removed from the dataframe.}
+\item{columns}{A character vector containing the names of the column(s) to
+remove from the DataFrame.}
 }
 \value{
 DataFrame
 }
 \description{
-Remove columns from the dataframe.
+Drop columns of a DataFrame
 }
 \examples{
 pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
