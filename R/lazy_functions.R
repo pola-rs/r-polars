@@ -232,6 +232,100 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 }
 
 
+#' pl$mean
+#' @name mean
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take mean value in `Series`
+#' - DataFrame or LazyFrame: Take mean value of each column
+#' - str: syntactic sugar for `pl$col(..)$mean()`
+#' - NULL: expression to take mean column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or mean value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$mean("a"))
+#'
+#' df$select(pl$mean("a", "b"))
+#'
+pl$mean = function(...) { #-> Expr | Any:
+  column = list2(...)
+  if (length(column) == 0L) {
+    out = Err("pl$mean() needs at least one argument.")
+  } else if (length(column) > 1L && !all(sapply(column, is_string))) {
+    out = Err("When there are more than one arguments in pl$mean(), all arguments must be strings.")
+  } else {
+    if (length(column) > 1L) {
+      column = unlist(column)
+    } else {
+      column = column[[1L]]
+    }
+    out = Ok(pcase(
+      inherits(column, "Series") && column$len() == 0, Err("The series is empty, so no mean value can be returned."),
+      inherits(column, "Series") && column$len() > 0, column$mean(),
+      inherits(column, "DataFrame"), column$mean(),
+      or_else = pl$col(column)$mean()
+    ))
+  }
+  unwrap(out, "in pl$mean():")
+}
+
+
+#' pl$median
+#' @name median
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take median value in `Series`
+#' - DataFrame or LazyFrame: Take median value of each column
+#' - str: syntactic sugar for `pl$col(..)$median()`
+#' - NULL: expression to take median column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or median value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$median("a"))
+#'
+#' df$select(pl$median("a", "b"))
+#'
+pl$median = function(...) { #-> Expr | Any:
+  column = list2(...)
+  if (length(column) == 0L) {
+    out = Err("pl$median() needs at least one argument.")
+  } else if (length(column) > 1L && !all(sapply(column, is_string))) {
+    out = Err("When there are more than one arguments in pl$median(), all arguments must be strings.")
+  } else {
+    if (length(column) > 1L) {
+      column = unlist(column)
+    } else {
+      column = column[[1L]]
+    }
+    out = Ok(pcase(
+      inherits(column, "Series") && column$len() == 0, Err("The series is empty, so no median value can be returned."),
+      inherits(column, "Series") && column$len() > 0, column$median(),
+      inherits(column, "DataFrame"), column$median(),
+      or_else = pl$col(column)$median()
+    ))
+  }
+  unwrap(out, "in pl$median():")
+}
+
+
 #TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
 #docs should reflect that
 
