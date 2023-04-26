@@ -139,18 +139,39 @@ LazyFrame_print = "use_extendr_wrapper"
 
 #TODO write missing examples in this file
 
-#' @title Print the optmized plan of LazyFrame
-#' @description select on a LazyFrame
-#' @keywords LazyFrame
+#' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
+#' @rdname LazyFrame_describe_plan
+#'
+#' @description `$describe_plan()` shows our query in the format that `polars`
+#' understands. `$describe_optimized_plan()` shows the optimized query plan that
+#' `polars` will execute when `$collect()` or `$compute()` is called. It is possible
+#' that both plans are identical if `polars` doesn't find any way to optimize the
+#' query.
+#' @keywords LazyFrame
+#' @examples
+#' my_file = tempfile()
+#' write.csv(iris, my_file)
+#'
+#' # Read the file and make a LazyFrame
+#' lazy_frame = lazy_csv_reader(path = my_file)
+#'
+#' # Prepare your query
+#' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
+#'
+#' # This is the query as `polars` understands it
+#' lazy_query$describe_plan()
+#'
+#' # This is the query after `polars` optimizes it: instead of sorting first and
+#' # then filtering, it is faster to filter first and then sort the rest.
+#' lazy_query$describe_optimized_plan()
+
 LazyFrame_describe_optimized_plan  = function() {
   unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
 }
 
-#' @title Print the non-optimized plan plan of LazyFrame
-#' @description select on a LazyFrame
-#' @keywords LazyFrame
+#' @rdname LazyFrame_describe_plan
 LazyFrame_describe_plan  = "use_extendr_wrapper"
 
 #' @title Lazy_select
