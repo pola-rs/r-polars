@@ -9,8 +9,7 @@
 \arguments{
 \item{x}{Series}
 
-\item{...}{Additional arguments are ignored.
-utf8 or categorical type Series will be formatted to a string of this length.}
+\item{...}{Additional characters are ignored.}
 
 \item{str_length}{an integer. If specified,}
 }
