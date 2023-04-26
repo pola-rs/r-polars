@@ -58,3 +58,7 @@ README.md: README.Rmd build ## Update README.md
 .PHONY: test
 test: build ## Run fast unittests
 	Rscript -e 'devtools::load_all(); devtools::test()'
+
+.PHONY: install
+install: ## Install this R package locally
+	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
