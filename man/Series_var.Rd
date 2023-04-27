@@ -18,4 +18,6 @@ Aggregate the columns of this Series to their variance values.
 \examples{
 pl$Series(1:10)$var()
 }
-\keyword{Series}
+\keyword{R}
+\keyword{scalar}
+\keyword{value}

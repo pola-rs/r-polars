@@ -18,4 +18,6 @@ Aggregate the columns of this Series to their standard deviation.
 \examples{
 pl$Series(1:10)$std()
 }
-\keyword{Series}
+\keyword{R}
+\keyword{scalar}
+\keyword{value}
