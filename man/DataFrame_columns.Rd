@@ -12,11 +12,9 @@ DataFrame_columns()
 \value{
 char vec of column names
 
-char vec of column names
+A character vector with the column names.
 }
 \description{
-get/set column names of DataFrame object
-
 get/set column names of DataFrame object
 }
 \examples{
@@ -30,11 +28,11 @@ df$columns = letters[1:5] #<- is fine too
 df$columns
 df = pl$DataFrame(iris)
 
-#get values
+# get values
 df$columns
 
-#set + get values
-df$columns = letters[1:5] #<- is fine too
+# set + get values
+df$columns = letters[1:5] # <- is fine too
 df$columns
 }
 \keyword{DataFrame}

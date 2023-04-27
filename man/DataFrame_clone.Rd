@@ -7,11 +7,11 @@
 DataFrame_clone()
 }
 \value{
-DataFrame
+A DataFrame
 }
 \description{
-Rarely useful as DataFrame is nearly 100\% immutable
-Any modification of a DataFrame would lead to a clone anyways.
+This is rarely useful as a DataFrame is nearly 100\% immutable.
+Any modification of a DataFrame would lead to a clone anyway.
 }
 \examples{
 df1 = pl$DataFrame(iris);
