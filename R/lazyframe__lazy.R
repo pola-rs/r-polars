@@ -213,6 +213,19 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self,n), "in $limit():")
 }
 
+#' @title Head
+#' @description Get the first n rows.
+#' @keywords LazyFrame
+#' @param n positive numeric or integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#'
+#' @examples pl$DataFrame(mtcars)$lazy()$head(4)$collect()
+#' @return A new `LazyFrame` object with applied filter.
+LazyFrame_head = function(n) {
+  unwrap(.pr$LazyFrame$limit(self, n), "in $head():")
+}
+
 #' @title First
 #' @description Get the first row of the DataFrame.
 #' @keywords DataFrame

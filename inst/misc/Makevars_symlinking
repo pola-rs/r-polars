@@ -1,8 +1,8 @@
 LIBDIR = ./rust/target/release
-STATLIB = $(LIBDIR)/libpolars.a
+STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lrpolars
 CARGO_MANIFEST ?= ./rust/Cargo.toml
-CARGO_RELEASE = /Users/sorenwelling/Documents/projs/r-polars/src/rust/target/release/libpolars.a
+CARGO_RELEASE = /Users/sorenwelling/Documents/projs/r-polars/src/rust/target/release/libr_polars.a
 
 all: C_clean
 
@@ -10,13 +10,13 @@ $(SHLIB): $(STATLIB)
 
 $(STATLIB):
   cargo build --lib --release --manifest-path=$(CARGO_MANIFEST)
-if [ -s "./rust/target/release/libpolars.a" ]; \
+if [ -s "./rust/target/release/libr_polars.a" ]; \
 then \
 echo "dir was there" ; \
 else \
 echo "dir was not there" ; \
 mkdir -p ./rust/target/release ; \
-ln -s $(CARGO_RELEASE) ./rust/target/release/libpolars.a ; \
+ln -s $(CARGO_RELEASE) ./rust/target/release/libr_polars.a ; \
 fi;
 echo "done"
 
