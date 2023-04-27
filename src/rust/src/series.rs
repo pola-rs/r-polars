@@ -571,7 +571,7 @@ impl Series {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {
                     //convert any error from R to a polars error
-                    pl::PolarsError::ComputeError(polars::error::ErrString::Owned(err.to_string()))
+                    pl::PolarsError::ComputeError(err.into())
                 })?
                 .0
         };
@@ -585,22 +585,23 @@ impl Series {
         let s = s?.0.cast(self.0.dtype())?;
 
         let n_series = n_series_result.map_err(|err| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
+            pl::PolarsError::InvalidOperation(
+                format!(
                 "extend_expr: when casting n as UInt64 [{}], n should be a non-negative integer",
                 err
-            )))
+            )
+                .into(),
+            )
         })?;
 
         let opt_n_u64 = n_series.0.u64()?.into_iter().next().ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: expr n had no length"
-            )))
+            pl::PolarsError::InvalidOperation(format!("extend_expr: expr n had no length").into())
         })?;
 
         let n_usize = opt_n_u64.ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: expr n cannot be a Null"
-            )))
+            pl::PolarsError::InvalidOperation(
+                format!("extend_expr: expr n cannot be a Null").into(),
+            )
         })? as usize;
         let to_append = s.new_from_index(0, n_usize);
         let mut out = self.0.clone();

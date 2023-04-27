@@ -17,7 +17,6 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
-use polars::error::ErrString as pl_err_string;
 use polars::lazy::dsl;
 use polars::prelude::BinaryNameSpaceImpl;
 use polars::prelude::DurationMethods;
@@ -1124,17 +1123,24 @@ impl Expr {
         use crate::rdatatype::new_width_strategy;
         use crate::utils::extendr_concurrent::ParRObj;
         use pl::NamedFrom;
+        use smartstring::{LazyCompact, SmartString};
+        use std::sync::Arc;
         // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
         // here a usize is wrapped in Series
-        let name_gen = if let Some(robj) = null_to_opt(name_gen) {
+        let name_gen: std::option::Option<
+            Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
+        > = if let Some(robj) = null_to_opt(name_gen) {
             let probj: ParRObj = robj.clone().into();
-            let x = Some(pl::Arc::new(move |idx: usize| {
+            let x: std::option::Option<
+                Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
+            > = Some(pl::Arc::new(move |idx: usize| {
                 let thread_com = ThreadCom::from_global(&CONFIG);
                 let s = pl::Series::new("", &[idx as u64]);
                 thread_com.send((probj.clone(), s));
                 let s = thread_com.recv();
-                s.0.name().to_string()
-            }) as NameGenerator);
+                let s: SmartString<LazyCompact> = s.0.name().to_string().into();
+                s
+            }));
             x
         } else {
             None
@@ -1732,19 +1738,15 @@ impl Expr {
                 .expect("internal error: this is not an R function");
 
             let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
-                let es = pl_err_string::Owned(format!(
-                    "in map_alias: user function raised this error: {:?}",
-                    err
-                ));
+                let es = format!("in map_alias: user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
             })?;
 
             newname_robj
                 .as_str()
                 .ok_or_else(|| {
-                    let es = pl_err_string::Owned(format!(
-                        "in map_alias: R function return value was not a string"
-                    ));
+                    let es =
+                        format!("in map_alias: R function return value was not a string").into();
                     pl_error::ComputeError(es)
                 })
                 .map(|str| str.to_string())

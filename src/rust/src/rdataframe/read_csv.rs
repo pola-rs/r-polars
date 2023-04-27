@@ -14,6 +14,7 @@ use std::result::Result;
 //see param, null_values
 #[derive(Clone, Debug)]
 pub struct RNullValues(pl::NullValues);
+use polars::prelude::LazyFileListReader;
 
 #[extendr]
 impl RNullValues {
@@ -93,7 +94,7 @@ pub fn rlazy_csv_reader(
             offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
         });
 
-    //TODO expose new ignore_errors bahavior
+    //TODO expose rework latest rust-polars features
     let _ = ignore_errors;
     let r = pl::LazyCsvReader::new(path)
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
@@ -110,7 +111,7 @@ pub fn rlazy_csv_reader(
         .with_skip_rows_after_header(skip_rows_after_header as usize)
         .with_encoding(encoding)
         .with_row_count(row_count)
-        .with_parse_dates(parse_dates)
+        .with_try_parse_dates(parse_dates)
         .with_null_values(Wrap(null_values).into());
 
     let result = r

@@ -5,6 +5,7 @@ use polars::prelude as pl;
 use polars::prelude::NamedFrom;
 use rayon::prelude::IntoParallelIterator;
 use crate::utils::collect_hinted_result;
+use polars::prelude::IntoSeries;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -160,10 +161,10 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         }
 
         _ => Err(pl::PolarsError::InvalidOperation(
-            polars::error::ErrString::Owned(format!(
+            format!(
                 "new series from rtype {:?} is not supported (yet)",
                 rtype
-            )),
+            ).into(),
         )),
     };
 
@@ -203,10 +204,10 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 .map(|robj| robj.as_str())
                 .flatten()
                 .ok_or_else(|| {
-                    pl::PolarsError::SchemaMismatch(polars::error::ErrString::Owned(
+                    pl::PolarsError::SchemaMismatch(
                         "failure to convert class PTime as attribute tu is not a string or there"
-                            .to_string(),
-                    ))
+                            .into(),
+                    )
                 })?;
             let i_conv: i64 = match tu_str {
                 "ns" => 1,
@@ -214,11 +215,10 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 "ms" => 1_000_000,
                 "s" => 1_000_000_000,
                 _ => Err(pl::PolarsError::SchemaMismatch(
-                    polars::error::ErrString::Owned(
                         "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'"
-                            .to_string(),
+                            .into(),
                     ),
-                ))?,
+                )?,
             };
             Ok(SeriesTree::Series(
                 (s.cast(&pl::DataType::Int64)? * i_conv).cast(&pl::DataType::Time)?,
@@ -237,10 +237,11 @@ fn concat_series_tree(
     leaf_dtype: &Option<pl::DataType>,
     name: &str,
 ) -> pl::PolarsResult<pl::Series> {
+
     match st {
         SeriesTree::Series(s) => Ok(s), // SeriesTree is just a regular Series, return as is
         SeriesTree::SeriesEmptyVec => { // Create Series of empty array and cast to the found leaf_dtype.
-            let empty_list_series = pl::Series::new(name, [0f64; 0]).to_list()?.slice(0, 0);
+            let empty_list_series = pl::Series::new(name, [0f64; 0]).list()?.slice(0, 0);
             let s = empty_list_series.into_series();
             if let Some(leaf_dt_ref) = leaf_dtype {
                 s.cast(leaf_dt_ref)
@@ -269,10 +270,10 @@ fn concat_series_tree(
             let first_s = s_iter.next();
             for s_ref in s_iter {
                 if s_ref.dtype() != first_s.expect("could not loop if none first_s").dtype() {
-                    Err(pl::PolarsError::SchemaMismatch(polars::error::ErrString::Owned(format!(
+                    Err(pl::PolarsError::SchemaMismatch(format!(
                         "When building series from R list; some parsed sub-elements did not match: One element was {} and another was {}",
                         first_s.expect("dont worry about it").dtype(),s_ref.dtype()
-                    ))))?;
+                    ).into()))?;
                 }
             }
 
