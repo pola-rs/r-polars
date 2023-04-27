@@ -244,8 +244,12 @@ impl Expr {
             .into()
     }
 
-    pub fn top_k(&self, k: f64, reverse: bool) -> Self {
-        self.0.clone().top_k(k as usize, reverse).into()
+    pub fn top_k(&self, k: f64) -> Self {
+        self.0.clone().top_k(k as usize).into()
+    }
+
+    pub fn bottom_k(&self, k: f64) -> Self {
+        self.0.clone().bottom_k(k as usize).into()
     }
 
     pub fn arg_max(&self) -> Self {
@@ -665,6 +669,7 @@ impl Expr {
         self.0.clone().abs().into()
     }
 
+    // TODO: support seed option
     fn rank(&self, method: &str, reverse: bool) -> List {
         let expr_res = new_rank_method(method)
             .map(|rank_method| {
@@ -672,7 +677,7 @@ impl Expr {
                     method: rank_method,
                     descending: reverse,
                 };
-                Expr(self.0.clone().rank(options))
+                Expr(self.0.clone().rank(options, Some(0u64)))
             })
             .map_err(|err| format!("rank: {}", err));
 
@@ -682,7 +687,7 @@ impl Expr {
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().diff(
-                try_f64_into_usize(n_float)?,
+                try_f64_into_i64(n_float)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -691,8 +696,8 @@ impl Expr {
     }
 
     fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_usize(n_float)
-            .map(|n_usize| Expr(self.0.clone().pct_change(n_usize)))
+        let expr_res = try_f64_into_i64(n_float)
+            .map(|n| Expr(self.0.clone().pct_change(n)))
             .map_err(|err| format!("pct_change: {}", err));
         r_result_list(expr_res)
     }
@@ -1001,7 +1006,7 @@ impl Expr {
     }
 
     pub fn list(&self) -> Self {
-        self.clone().0.list().into()
+        self.clone().0.implode().into()
     }
 
     pub fn shrink_dtype(&self) -> Self {
@@ -1086,7 +1091,7 @@ impl Expr {
     fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().arr().diff(
-                try_f64_into_usize(n)?,
+                try_f64_into_i64(n)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -1159,7 +1164,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Date,
-                fmt: null_to_opt(fmt),
+                format: null_to_opt(fmt),
                 strict,
                 exact,
                 cache,
@@ -1171,7 +1176,7 @@ impl Expr {
 
     pub fn str_parse_datetime(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1181,17 +1186,17 @@ impl Expr {
     ) -> List {
         let res = || -> Result<Expr, String> {
             let tu = null_to_opt(tu).map(|tu| robj_to_timeunit(tu)).transpose()?;
-            let fmt = null_to_opt(fmt);
-            let result_tu = match (&fmt, tu) {
+            let format = null_to_opt(format);
+            let result_tu = match (&format, tu) {
                 (_, Some(tu)) => tu,
-                (Some(fmt), None) => {
-                    if fmt.contains("%.9f")
-                        || fmt.contains("%9f")
-                        || fmt.contains("%f")
-                        || fmt.contains("%.f")
+                (Some(format), None) => {
+                    if format.contains("%.9f")
+                        || format.contains("%9f")
+                        || format.contains("%f")
+                        || format.contains("%.f")
                     {
                         pl::TimeUnit::Nanoseconds
-                    } else if fmt.contains("%.3f") || fmt.contains("%3f") {
+                    } else if format.contains("%.3f") || format.contains("%3f") {
                         pl::TimeUnit::Milliseconds
                     } else {
                         pl::TimeUnit::Microseconds
@@ -1205,7 +1210,7 @@ impl Expr {
                 .str()
                 .strptime(pl::StrpTimeOptions {
                     date_dtype: pl::DataType::Datetime(result_tu, None),
-                    fmt,
+                    format,
                     strict,
                     exact,
                     cache,
@@ -1229,7 +1234,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Time,
-                fmt: null_to_opt(fmt),
+                format: null_to_opt(fmt),
                 strict,
                 exact,
                 cache,
@@ -1343,11 +1348,11 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>) -> Self {
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Option<bool>) -> Self {
         self.0
             .clone()
             .dt()
-            .replace_time_zone(tz.into_option())
+            .replace_time_zone(tz.into_option(), use_earliest)
             .into()
     }
 
@@ -2052,12 +2057,12 @@ impl Expr {
             .into())
     }
 
-    pub fn str_parse_int(&self, radix: Robj) -> Result<Expr, String> {
+    pub fn str_parse_int(&self, radix: Robj, strict: Option<bool>) -> Result<Expr, String> {
         Ok(self
             .0
             .clone()
             .str()
-            .from_radix(robj_to!(Option, u32, radix)?)
+            .from_radix(robj_to!(u32, radix)?, strict.unwrap_or_default())
             .with_fmt("str.parse_int")
             .into())
     }

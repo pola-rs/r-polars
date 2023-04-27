@@ -2,7 +2,7 @@ use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
 use polars::prelude as pl;
-use polars::prelude::{IntoSeries, NamedFrom};
+use polars::prelude::NamedFrom;
 use rayon::prelude::IntoParallelIterator;
 use crate::utils::collect_hinted_result;
 // Internal tree structure to contain Series of fully parsed nested Robject.
@@ -203,7 +203,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 .map(|robj| robj.as_str())
                 .flatten()
                 .ok_or_else(|| {
-                    pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(
+                    pl::PolarsError::SchemaMismatch(polars::error::ErrString::Owned(
                         "failure to convert class PTime as attribute tu is not a string or there"
                             .to_string(),
                     ))
@@ -213,7 +213,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 "us" => 1_000,
                 "ms" => 1_000_000,
                 "s" => 1_000_000_000,
-                _ => Err(pl::PolarsError::SchemaMisMatch(
+                _ => Err(pl::PolarsError::SchemaMismatch(
                     polars::error::ErrString::Owned(
                         "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'"
                             .to_string(),
@@ -269,7 +269,7 @@ fn concat_series_tree(
             let first_s = s_iter.next();
             for s_ref in s_iter {
                 if s_ref.dtype() != first_s.expect("could not loop if none first_s").dtype() {
-                    Err(pl::PolarsError::SchemaMisMatch(polars::error::ErrString::Owned(format!(
+                    Err(pl::PolarsError::SchemaMismatch(polars::error::ErrString::Owned(format!(
                         "When building series from R list; some parsed sub-elements did not match: One element was {} and another was {}",
                         first_s.expect("dont worry about it").dtype(),s_ref.dtype()
                     ))))?;

@@ -4,7 +4,7 @@ use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
-use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
@@ -46,7 +46,7 @@ impl LazyFrame {
         let result = handle_thread_r_requests(self.clone().0).map_err(|err| {
             //improve err messages
             let err_string = match err {
-                pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(x)) => {
+                pl::PolarsError::InvalidOperation(x) => {
                     format!("Something (Likely a Column) named {:?} was not found", x)
                 }
                 x => format!("{:?}", x),

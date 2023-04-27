@@ -95,7 +95,6 @@ pub fn rlazy_csv_reader(
 
     //TODO expose new ignore_errors bahavior
     let _ = ignore_errors;
-    use polars::prelude::LazyFileListReader;
     let r = pl::LazyCsvReader::new(path)
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
         .with_delimiter(sep.as_bytes()[0])
