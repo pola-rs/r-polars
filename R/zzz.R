@@ -137,6 +137,7 @@ pl$mem_address = mem_address
   s3_register("nanoarrow::infer_nanoarrow_schema", "DataFrame")
   s3_register("arrow::as_record_batch_reader", "DataFrame")
   s3_register("arrow::as_arrow_table", "DataFrame")
+  s3_register("knitr::knit_print", "DataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes),1,3) %in% c("Int","Flo")]
 
