@@ -63,6 +63,7 @@ extendr_method_to_pure_functions = function(env) {
 #' @title add syntax verification to class
 #' @include utils.R
 #' @param Class_name string name of env class
+#' @rdname macro_add_syntax_check_to
 #'
 #' @return dollarsign method with syntax verification
 #'

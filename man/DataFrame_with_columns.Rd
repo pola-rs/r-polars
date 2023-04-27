@@ -5,7 +5,7 @@
 \alias{with_columns}
 \alias{DataFrame_with_column}
 \alias{with_column}
-\title{modify/append column(s)}
+\title{Modify/append column(s)}
 \usage{
 DataFrame_with_columns(...)
 
@@ -22,7 +22,7 @@ DataFrame
 DataFrame
 }
 \description{
-add or modify columns with expressions
+Add or modify columns with expressions
 }
 \details{
 Like dplyr \code{mutate()} as it keeps unmentioned columns unlike $select().
