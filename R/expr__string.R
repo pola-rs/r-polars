@@ -724,10 +724,12 @@ ExprStr_explode = function() {
 #' By default base 2.
 #' @keywords ExprStr
 #' @param radix Positive integer which is the base of the string we are parsing. Default: 2
+#' @param strict Bool, Default=TRUE will raise any ParseError or overflow as ComputeError.
+#' False silently convert to Null.
 #' @return Expr: Series of dtype i32.
 #' @examples
 #' df = pl$DataFrame(bin = c("110", "101", "010"))
 #' df$select(pl$col("bin")$str$parse_int(2))
-ExprStr_parse_int = function(radix = NULL) {
-  .pr$Expr$str_parse_int(self, result(radix)) |> unwrap("in str$parse_int:")
+ExprStr_parse_int = function(radix = NULL, strict = TRUE) {
+  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int:")
 }

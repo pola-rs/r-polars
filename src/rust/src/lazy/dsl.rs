@@ -2059,12 +2059,12 @@ impl Expr {
             .into())
     }
 
-    pub fn str_parse_int(&self, radix: Robj, strict: Option<bool>) -> Result<Expr, String> {
+    pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> Result<Expr, String> {
         Ok(self
             .0
             .clone()
             .str()
-            .from_radix(robj_to!(u32, radix)?, strict.unwrap_or_default())
+            .from_radix(robj_to!(u32, radix)?, robj_to!(bool, strict)?)
             .with_fmt("str.parse_int")
             .into())
     }
