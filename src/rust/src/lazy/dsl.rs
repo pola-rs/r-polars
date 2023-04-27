@@ -1154,7 +1154,7 @@ impl Expr {
 
     pub fn str_parse_date(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1164,7 +1164,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Date,
-                format: null_to_opt(fmt),
+                format: null_to_opt(format),
                 strict,
                 exact,
                 cache,
@@ -1224,7 +1224,7 @@ impl Expr {
 
     pub fn str_parse_time(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1234,7 +1234,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Time,
-                format: null_to_opt(fmt),
+                format: null_to_opt(format),
                 strict,
                 exact,
                 cache,
