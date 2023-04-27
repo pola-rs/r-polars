@@ -54,10 +54,12 @@
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #'
+#' @export
+#'
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris,my_file)
-#' lazy_frame = polars:::lazy_csv_reader(path=my_file)
+#' lazy_frame = lazy_csv_reader(path=my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
 lazy_csv_reader = function(
@@ -83,6 +85,8 @@ lazy_csv_reader = function(
 
   #capture all args and modify some to match lower level function
   args = as.list(environment())
+
+  args[["path"]] = path.expand(path)
 
   #overwrite_dtype: convert named list of DataType's to DataTypeVector obj
   if(!is.null(args$overwrite_dtype)) {

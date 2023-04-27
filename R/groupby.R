@@ -1,3 +1,10 @@
+#' @title Operations on Polars grouped DataFrame
+#'
+#' @name GroupBy_class
+NULL
+
+
+
 # The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in rust polars.
 # Groupby does not use the rust api for groupby+agg because the groupby-struct is a reference to a DataFrame
 # and that reference will share lifetime with its parent DataFrame. There is no way to expose lifetime
@@ -216,6 +223,38 @@ GroupBy_var = function() {
 #' df$groupby("d", maintain_order=TRUE)$std()
 GroupBy_std = function() {
   self$agg(pl$all()$std())
+}
+
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords GroupBy
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+GroupBy_quantile = function(quantile, interpolation = "nearest") {
+  self$agg(pl$all()$quantile(quantile, interpolation))
+}
+
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords GroupBy
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift(2)
+GroupBy_shift = function(periods = 1) {
+  self$agg(pl$all()$shift(periods))
+}
+
+#' @title Shift and fill
+#' @description Shift and fill the values by a given period.
+#' @keywords GroupBy
+#' @param fill_value fill None values with the result of this expression.
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return GroupBy
+#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 1)
+GroupBy_shift_and_fill = function(fill_value, periods = 1) {
+  self$agg(pl$all()$shift_and_fill(periods, fill_value))
 }
 
 #' @title GroupBy null count

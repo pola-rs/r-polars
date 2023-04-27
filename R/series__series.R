@@ -102,7 +102,7 @@ c.Series = \(x,...) {
   l = list2(...)
   x = x$clone() #clone to retain an immutable api, append_mut is not immutable
   for(i in seq_along(l)) { #append each element of i being either Series or Into<Series>
-    unwrap(.pr$Series$append_mut(x,wrap_s(l[[i]])))
+    unwrap(.pr$Series$append_mut(x,wrap_s(l[[i]])), "in $c:")
   }
   x
 }
@@ -251,7 +251,6 @@ Series_rem = function(other) {
   .pr$Series$rem(self, wrap_s(other))
 }
 
-
 #TODO contribute polars pl$Series(1) == pl$Series(c(NA_integer_)) yields FALSE, != yields TRUE, and =< => yields Null
 #' Compare Series
 #' @name Series_compare
@@ -348,7 +347,7 @@ Series_shape = method_as_property(function() {
 #' series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
 #' series_list$to_vector() #implicit call unlist(), append into a vector
 Series_to_r = \() {
-  unwrap(.pr$Series$to_r(self))
+  unwrap(.pr$Series$to_r(self), "in $to_r():")
 }
 #TODO replace list example with Series only syntax
 
@@ -359,7 +358,7 @@ Series_to_r = \() {
 #' @keywords Series
 #' @examples  #
 Series_to_vector = \() {
-  unlist(unwrap(.pr$Series$to_r(self)))
+  unlist(unwrap(.pr$Series$to_r(self)), "in $to_vector():")
 }
 
 #' Alias to Series_to_vector (backward compatibility)
@@ -373,7 +372,7 @@ Series_to_r_vector = Series_to_vector
 #' @keywords Series
 #' @examples  #
 Series_to_r_list = \() {
-  as.list(unwrap(.pr$Series$to_r(self)))
+  as.list(unwrap(.pr$Series$to_r(self)), "in $to_r_list():")
 }
 
 
@@ -386,7 +385,7 @@ Series_to_r_list = \() {
 #' @examples
 #' pl$Series(-2:2)$abs()
 Series_abs  = function() {
-  unwrap(.pr$Series$abs(self))
+  unwrap(.pr$Series$abs(self), "in $abs():")
 }
 
 
@@ -403,7 +402,7 @@ Series_abs  = function() {
 #' @examples
 #' pl$Series(iris$Species,"flower species")$value_counts()
 Series_value_counts = function(sorted=TRUE, multithreaded=FALSE) {
-  unwrap(.pr$Series$value_counts(self, multithreaded, sorted))
+  unwrap(.pr$Series$value_counts(self, multithreaded, sorted), "in $value_counts():")
 }
 
 
@@ -433,7 +432,7 @@ Series_apply   = function(
 ) {
   unwrap(.pr$Series$apply(
     self, fun, datatype, strict_return_type, allow_fail_eval
-  ))
+  ), "in $apply():")
 }
 
 
@@ -463,7 +462,7 @@ Series_len = "use_extendr_wrapper"
 #' pl$Series(c(.5,1.999))$floor()
 #'
 Series_floor = function() {
-  unwrap(.pr$Series$floor(self))
+  unwrap(.pr$Series$floor(self), "in $floor():")
 }
 
 
@@ -478,7 +477,7 @@ Series_floor = function() {
 #' pl$Series(c(.5,1.999))$ceil()
 #'
 Series_ceil = function() {
-  unwrap(.pr$Series$ceil(self))
+  unwrap(.pr$Series$ceil(self), "in $ceil():")
 }
 
 #' Lengths of Series memory chunks
@@ -534,7 +533,7 @@ Series_append = function(other, immutable = TRUE) {
         "`pl$set_polars_options(strictly_immutable = FALSE)`"
       ))
     }
-    unwrap(.pr$Series$append_mut(self,other))
+    unwrap(.pr$Series$append_mut(self,other), "in $append():")
     self
   }
 }
@@ -572,7 +571,7 @@ Series_name = method_as_property(function() {
 #' @examples
 #' pl$Series(c(TRUE,FALSE,NA))$any()
 Series_any = function() {
-  unwrap(.pr$Series$any(self))
+  unwrap(.pr$Series$any(self), "in $any():")
 }
 
 #' Reduce Boolean Series with ALL
@@ -584,7 +583,7 @@ Series_any = function() {
 #' @examples
 #' pl$Series(c(TRUE,TRUE,NA))$all()
 Series_all = function() {
-  unwrap(.pr$Series$all(self))
+  unwrap(.pr$Series$all(self), "in $all():")
 }
 
 #' idx to max value
@@ -654,6 +653,32 @@ Series_cumsum = function(reverse = FALSE) {
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$sum() # Inf-Inf is NaN
 Series_sum = "use_extendr_wrapper"
 
+#' Mean
+#' @description  Reduce Series with mean
+#' @return Series
+#' @keywords Series
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before meanming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$mean() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$mean() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$mean() # Inf-Inf is NaN
+Series_mean = "use_extendr_wrapper"
+
+#' Median
+#' @description  Reduce Series with median
+#' @return Series
+#' @keywords Series
+#' @details
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Int64 before medianming to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2,NA,3,5))$median() # a NA is dropped always
+#' pl$Series(c(1:2,NA,3,NaN,4,Inf))$median() # NaN carries / poisons
+#' pl$Series(c(1:2,3,Inf,4,-Inf,5))$median() # Inf-Inf is NaN
+Series_median = "use_extendr_wrapper"
+
 #' max
 #' @description  Reduce Series with max
 #' @return Series
@@ -679,6 +704,26 @@ Series_max = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$min() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$min() # Inf-Inf is NaN
 Series_min = "use_extendr_wrapper"
+
+#' @title Var
+#' @description Aggregate the columns of this Series to their variance values.
+#' @keywords Series
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `Series` object with applied aggregation.
+#' @examples pl$Series(1:10)$var()
+Series_var = function(ddof = 1) {
+  unwrap(.pr$Series$var(self, ddof), "in $var():")
+}
+
+#' @title Std
+#' @description Aggregate the columns of this Series to their standard deviation.
+#' @keywords Series
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A new `Series` object with applied aggregation.
+#' @examples pl$Series(1:10)$std()
+Series_std = function(ddof = 1) {
+  unwrap(.pr$Series$std(self, ddof), "in $std():")
+}
 
 #' Get data type of Series
 #' @keywords Series
@@ -791,7 +836,7 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
 #' @examples
 #' pl$Series(1:4,"bob")$to_frame()
 Series_to_frame = function() {
-  unwrap(.pr$Series$to_frame(self))
+  unwrap(.pr$Series$to_frame(self), "in $to_frame():")
 }
 
 
@@ -867,43 +912,11 @@ Series_rename = function(name, in_place = FALSE) {
 Series_rep = function(n, rechunk = TRUE) {
   if(!is.numeric(n)) stopf("n must be numeric")
   if(!is_bool(rechunk)) stopf("rechunk must be a bool")
-  unwrap(.pr$Series$rep(self, n, rechunk))
+  unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
 
 
 #TODO contribute polars suprisingly pl$Series(1:3,"bob")$std(3) yields Inf
-
-#' Get the standard deviation of this Series.
-#'
-#' @param ddof
-#' “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
-#' where N represents the number of elements.
-#' By default ddof is 1.
-#' @return bool
-#' @keywords Series
-#' @format method
-#'
-#' @examples
-#' pl$Series(1:4,"bob")$std()
-Series_std = function(ddof = 1) {
-  self$to_frame()$select(pl$col(self$name)$std(ddof))$to_series()$to_r()
-}
-
-#' Get the standard deviation of this Series.
-#'
-#' @param ddof
-#' “Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
-#' where N represents the number of elements.
-#' By default ddof is 1.
-#' @return bool
-#' @keywords Series
-#' @format method
-#'
-#' @examples
-#' pl$Series(1:4,"bob")$var()
-Series_var = function(ddof = 1) {
-  self$to_frame()$select(pl$col(self$name)$var(ddof))$to_series()$to_r()
-}
 
 in_DataType = function(l,rs) any(sapply(rs, function(r) l==r))
 

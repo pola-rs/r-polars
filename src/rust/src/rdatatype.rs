@@ -9,6 +9,7 @@ use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RField(pub pl::Field);
+use pl::UniqueKeepStrategy;
 
 #[extendr]
 impl RField {
@@ -290,6 +291,18 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
         "semi" => pl::JoinType::Semi,
         "anti" => pl::JoinType::Anti,
         _ => panic!("polars internal error: jointype not recognized"),
+    }
+}
+
+pub fn new_unique_keep_strategy(
+    s: &str,
+) -> std::result::Result<UniqueKeepStrategy, String> {
+    match s {
+        // "any" => Ok(pl::UniqueKeepStrategy::Any),
+        "first" => Ok(pl::UniqueKeepStrategy::First),
+        "last" => Ok(pl::UniqueKeepStrategy::Last),
+        "none" => Ok(pl::UniqueKeepStrategy::None),
+        _ => Err(format!("keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",s))
     }
 }
 

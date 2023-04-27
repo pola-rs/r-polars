@@ -159,6 +159,15 @@ test_that("DataFrame, select sum over", {
   )
 })
 
+test_that("Select with p$col", {
+  x = pl$DataFrame(mtcars)$select(pl$col("mpg", "hp"))
+  y = pl$DataFrame(mtcars)$select(pl$col(c("mpg", "hp")))
+  z = pl$DataFrame(mtcars)$select(pl$col("mpg"), pl$col("hp"))
+  expect_equal(x$columns, c("mpg", "hp"))
+  expect_equal(y$columns, c("mpg", "hp"))
+  expect_equal(z$columns, c("mpg", "hp"))
+})
+
 test_that("map unity", {
   x <- pl$
     DataFrame(iris)$
@@ -249,8 +258,8 @@ test_that("cloning", {
 })
 
 
-test_that("get column(s)", {
-  # TODO figure out why this test fails. Expected and Actual do appear very much equal
+# TODO figure out why this test fails. Expected and Actual do appear very much equal
+# test_that("get column(s)", {
   # df = pl$DataFrame(iris)
   # expected_list_of_series = {
   #   expected = lapply(
@@ -274,7 +283,7 @@ test_that("get column(s)", {
   #   list_of_vectors,
   #   as.list(iris)
   # )
-})
+# })
 
 
 test_that("get column", {
@@ -482,6 +491,109 @@ test_that("tail", {
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
+test_that("drop_in_place", {
+  dat = pl$DataFrame(iris)
+  expect_true("Species" %in% dat$columns)
+  x = dat$drop_in_place("Species")
+  expect_false("Species" %in% dat$columns)
+  expect_s3_class(x, "Series")
+})
+
+
+test_that("shift   _and_fill", {
+  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
+  }
+  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$limit(3)$as_data_frame()
+  for (i in seq_along(a)) {
+    expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
+  }
+})
+
+
+test_that("frame_equal", {
+  dat1 = pl$DataFrame(iris)
+  dat2 = pl$DataFrame(mtcars)
+  expect_true(dat1$frame_equal(dat1))
+  expect_false(dat1$frame_equal(dat2))
+})
+
+test_that("fill_nan", {
+  a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))
+  a = a$fill_nan(99)$as_data_frame()
+  expect_equal(sum(a[[1]] == 99), 1)
+  expect_equal(sum(a[[2]] == 99), 2)
+})
+
+test_that("quantile", {
+  a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$max()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$quantile(0, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$min()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$as_data_frame()
+  b = pl$DataFrame(mtcars)$median()$as_data_frame()
+  expect_equal(a, b, ignore_attr = TRUE)
+})
+
+
+test_that("drop", {
+  a = pl$DataFrame(mtcars)$drop(c("mpg", "hp"))$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  a = pl$DataFrame(mtcars)$drop("mpg")$columns
+  expect_true("hp" %in% a)
+  expect_false("mpg" %in% a)
+})
+
+
+test_that("drop_nulls", {
+  tmp = mtcars
+  tmp[1:3, "mpg"] = NA
+  expect_equal(pl$DataFrame(mtcars)$drop_nulls()$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls()$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(mtcars)$drop_nulls("mpg")$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
+  expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
+  expect_error(pl$DataFrame(mtcars)$drop_nulls("bad")$height, pattern = "ColumnNotFound")
+})
+
+
+test_that("fill_nulls", {
+  df = pl$DataFrame(
+    a = c(1.5, 2, NA, 4),
+    b = c(1.5, NA, NA, 4)
+  )$fill_null(99)$as_data_frame()
+  expect_equal(sum(df$a == 99), 1)
+  expect_equal(sum(df$b == 99), 2)
+})
+
+
+test_that("unique", {
+  df = pl$DataFrame(
+    x = as.numeric(c(1, 1:5)),
+    y = as.numeric(c(1, 1:5)),
+    z = as.numeric(c(1, 1, 1:4)))
+  v = df$unique()$height
+  w = df$unique("z", "first")$height
+  x = df$unique(c("x", "y", "z"), "first")$height
+  y = df$unique(c("x"), "first")$height
+  z = df$unique(c("y", "z"), "first")$height
+  expect_equal(v, 5)
+  expect_equal(w, 4)
+  expect_equal(x, 5)
+  expect_equal(y, 5)
+  expect_equal(z, 5)
+
+  x = df$unique("z", "first")$to_data_frame()
+  y = df$unique("z", "last")$to_data_frame()
+  expect_false(all(x == y))
+})
 
 test_that("as_data_frame (backward compatibility)", {
   w <- as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
@@ -489,4 +601,55 @@ test_that("as_data_frame (backward compatibility)", {
   y <- mtcars
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
+})
+
+
+test_that("sort", {
+  df = pl$DataFrame(mtcars)
+  
+  w = df$sort("mpg")$to_data_frame()
+  x = df$sort(pl$col("mpg"))$to_data_frame()
+  y = mtcars[order(mtcars$mpg),]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  w = df$sort(pl$col("cyl"), pl$col("mpg"))$to_data_frame()
+  x = df$sort("cyl", "mpg")$to_data_frame()
+  y = df$sort(c("cyl", "mpg"))$to_data_frame()
+  z = mtcars[order(mtcars$cyl, mtcars$mpg),]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+  expect_equal(w, z, ignore_attr = TRUE)
+
+  # expr: one increasing and one decreasing
+  x = df$sort(-pl$col("cyl"), pl$col("hp"))$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$hp), ]
+  expect_equal(x, y, ignore_attr = TRUE)
+  
+  # descending arg
+  w = df$sort("cyl", "mpg", descending = TRUE)$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = TRUE)$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, -mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # descending arg: vector of boolean
+  w = df$sort("cyl", "mpg", descending = c(TRUE, FALSE))$to_data_frame()
+  x = df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$to_data_frame()
+  y = mtcars[order(-mtcars$cyl, mtcars$mpg), ]
+  expect_equal(w, x, ignore_attr = TRUE)
+  expect_equal(w, y, ignore_attr = TRUE)
+
+  # nulls_last
+  df = mtcars
+  df$mpg[1] = NA
+  df = pl$DataFrame(df)
+  a = df$sort("mpg", nulls_last = TRUE)$to_data_frame()
+  b = df$sort("mpg", nulls_last = FALSE)$to_data_frame()
+  expect_true(is.na(a$mpg[32]))
+  expect_true(is.na(b$mpg[1]))
+})
+
+test_that("dtype_strings", {
+  df_1 <- pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
+  expect_equal(df_1$dtype_strings(), c("i32", "f64", "str", "list[f64]"))
 })

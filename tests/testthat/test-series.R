@@ -484,3 +484,44 @@ test_that("to_series", {
 test_that("Backward compatibility: to_r_vector", {
   expect_identical(pl$Series(1:3)$to_r_vector(), 1:3)
 })
+
+test_that("internal method get_fmt and to_fmt_char", {
+  s_1 <- pl$Series(c("foo", "bar"))
+  expect_equal(
+    .pr$Series$get_fmt(s_1, index = 1, str_length = 3),
+    '"ba…'
+  )
+  expect_equal(
+    .pr$Series$get_fmt(s_1, index = 0, str_length = 100),
+    '"foo"'
+  )
+  expect_equal(
+    .pr$Series$to_fmt_char(s_1, 3),
+    c('"fo…', '"ba…')
+  )
+  expect_equal(
+    .pr$Series$to_fmt_char(s_1, 100),
+    c('"foo"', '"bar"')
+  )
+})
+
+
+make_cases <- function() {
+  tibble::tribble(
+    ~ .test_name, ~ base,
+    "mean",       mean,
+    "median",     median,
+    "std",        sd,
+    "var",        var,
+  )
+}
+patrick::with_parameters_test_that("mean, median, std, var", {
+  s = pl$Series(rnorm(100))
+  a = s[[.test_name]]()
+  # upstream .std_as_series() does not appear to return Series
+  if (inherits(a, "Series")) a = a$to_vector()
+  b = base(s$to_vector())
+  expect_equal(a, b)
+  },
+  .cases = make_cases()
+)

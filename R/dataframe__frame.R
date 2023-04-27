@@ -90,9 +90,9 @@ DataFrame
 #' Create new DataFrame
 #' @name DataFrame
 #'
-#' @param ...
-#'  - one data.frame or something that inherits data.frame or DataFrame
-#'  - one list of mixed vectors and Series of equal length
+#' @param ... One of the following:
+#'  - a data.frame or something that inherits data.frame or DataFrame
+#'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'
 #' Columns will be named as of named arguments or alternatively by names of Series or given a
@@ -370,22 +370,21 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 
 
 
-#' get/set columns (the names columns)
-#' @description get/set column names of DataFrame object
+#' Get and set column names of a DataFrame
 #' @name DataFrame_columns
 #' @rdname DataFrame_columns
 #'
-#' @return char vec of column names
+#' @return A character vector with the column names.
 #' @keywords DataFrame
 #'
 #' @examples
 #' df = pl$DataFrame(iris)
 #'
-#' #get values
+#' # get values
 #' df$columns
 #'
-#' #set + get values
-#' df$columns = letters[1:5] #<- is fine too
+#' # set + get values
+#' df$columns = letters[1:5] # <- is fine too
 #' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
@@ -395,7 +394,55 @@ DataFrame.property_setters$columns =
   function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
 
 
+#' @title Drop columns of a DataFrame
+#' @keywords DataFrame
+#' @param columns A character vector containing the names of the column(s) to
+#' remove from the DataFrame.
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+DataFrame_drop = function(columns) {
+  self$lazy()$drop(columns)$collect()
+}
 
+
+#' @title Drop nulls
+#' @description Drop all rows that contain null values.
+#' @keywords DataFrame
+#' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
+#'
+#' @return DataFrame
+#' @examples
+#' tmp = mtcars
+#' tmp[1:3, "mpg"] = NA
+#' tmp[4, "hp"] = NA
+#' pl$DataFrame(tmp)$drop_nulls()$height
+#' pl$DataFrame(tmp)$drop_nulls("mpg")$height
+#' pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height
+DataFrame_drop_nulls = function(subset = NULL) {
+  self$lazy()$drop_nulls(subset)$collect()
+}
+
+
+#' @title DataFrame_unique
+#' @description Drop duplicate rows from this dataframe.
+#' @keywords DataFrame
+#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#' @param keep string. Which of the duplicate rows to keep:
+#' * "first": Keep first unique row.
+#' * "last": Keep last unique row.
+#' * "none": Don’t keep duplicate rows.
+#'
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   x = as.numeric(c(1, 1:5)),
+#'   y = as.numeric(c(1, 1:5)),
+#'   z = as.numeric(c(1, 1, 1:4)))
+#' df$unique()$height
+#' df$unique(subset = c("x", "z"), keep = "last")$height
+DataFrame_unique = function(subset = NULL, keep = "first") {
+  self$lazy()$unique(subset, keep)$collect()
+}
 
 
 #' Shape of  DataFrame
@@ -447,8 +494,8 @@ DataFrame_width = method_as_property(function() {
 
 #' DataFrame dtypes
 #' @name DataFrame_dtypes
-#' @description Get dtypes of columns in DataFrame.
-#' Dtypes can also be found in column headers when printing the DataFrame.
+#' @description Get the data types of columns in DataFrame.
+#' Data types can also be found in column headers when printing the DataFrame.
 #'
 #' @return width as numeric scalar
 #' @keywords  DataFrame
@@ -459,6 +506,16 @@ DataFrame_dtypes = method_as_property(function() {
   .pr$DataFrame$dtypes(self)
 })
 
+#' DataFrame dtype strings
+#' @name DataFrame_dtype_strings
+#' @description Get column types as strings.
+#'
+#' @docType NULL
+#' @return string vector
+#' @keywords DataFrame
+#' @examples
+#' pl$DataFrame(iris)$dtype_strings()
+DataFrame_dtype_strings = "use_extendr_wrapper"
 
 #' DataFrame dtypes
 #' @name DataFrame_dtypes
@@ -509,11 +566,12 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 
 
 
-#' New LazyFrame from DataFrame_object$lazy()
+#' Convert an existing DataFrame to a LazyFrame
 #' @name DataFrame_lazy
-#' @description Start a new lazy query from a DataFrame
+#' @description Start a new lazy query from a DataFrame.
 #'
-#' @return a LazyFrame
+#' @docType NULL
+#' @return A LazyFrame
 #' @aliases lazy
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
@@ -523,10 +581,10 @@ DataFrame_lazy = "use_extendr_wrapper"
 
 #' Clone a DataFrame
 #' @name DataFrame_clone
-#' @description Rarely useful as DataFrame is nearly 100% immutable
-#' Any modification of a DataFrame would lead to a clone anyways.
+#' @description This is rarely useful as a DataFrame is nearly 100% immutable.
+#' Any modification of a DataFrame would lead to a clone anyway.
 #'
-#' @return DataFrame
+#' @return A DataFrame
 #' @aliases DataFrame_clone
 #' @keywords  DataFrame
 #' @examples
@@ -564,7 +622,7 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' df = pl$DataFrame(iris[1,])
 #' df$get_column("Species")
 DataFrame_get_column = function(name) {
-  unwrap(.pr$DataFrame$get_column(self, name))
+  unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
 }
 
 #' Get Series by idx, if there
@@ -587,17 +645,42 @@ DataFrame_to_series = function(idx=0) {
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
 
-
-
-
-
-
-#' @name DataFrame_lazy
+#' DataFrame Sort
+#' @description sort a DataFrame by on or more Expr.
 #'
+#' @param by Column(s) to sort by. Column name strings, character vector of
+#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column name strings).
+#' @param ... more columns to sort by as above but provided one Expr per argument.
+#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
+#' as number of Expr's from above by + ....
+#' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
+#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
+#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
+#'
+#' @return LazyFrame
+#' @keywords  DataFrame
 #' @examples
-#' #use of lazy method
-#' pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") >= 7.7)$collect()
-42
+#' df = mtcars
+#' df$mpg[1] = NA
+#' df = pl$DataFrame(df)
+#' df$sort("mpg")
+#' df$sort("mpg", nulls_last = TRUE)
+#' df$sort("cyl", "mpg")
+#' df$sort(c("cyl", "mpg"))
+#' df$sort(c("cyl", "mpg"), descending = TRUE)
+#' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
+#' df$sort(pl$col("cyl"), pl$col("mpg"))
+DataFrame_sort = function(
+  by, # : IntoExpr | List[IntoExpr],
+  ..., # unnamed Into expr
+  descending = FALSE, #  bool | vector[bool] = False,
+  nulls_last = FALSE
+) {
+  #args after ... must be named
+  self$lazy()$sort(by, ..., descending = descending, nulls_last = nulls_last)$collect()
+}
 
 
 #' perform select on DataFrame
@@ -628,8 +711,63 @@ DataFrame_select = function(...) {
   df
 }
 
-#' modify/append column(s)
-#' @description add or modify columns with expressions
+#' Drop in place
+#' @name DataFrame_drop_in_place
+#' @description Drop a single column in-place and return the dropped column.
+#'
+#' @param name string Name of the column to drop.
+#' @return Series
+#' @keywords  DataFrame
+#' @examples
+#' dat = pl$DataFrame(iris)
+#' x = dat$drop_in_place("Species")
+#' x
+#' dat$columns
+DataFrame_drop_in_place = function(name) {
+    .pr$DataFrame$drop_in_place(self, name)
+}
+
+#' Drop in place
+#' @name DataFrame_frame_equal
+#' @description Check if DataFrame is equal to other.
+#'
+#' @param other DataFrame to compare with.
+#' @return bool
+#' @keywords  DataFrame
+#' @examples
+#' dat1 = pl$DataFrame(iris)
+#' dat2 = pl$DataFrame(iris)
+#' dat3 = pl$DataFrame(mtcars)
+#' dat1$frame_equal(dat2)
+#' dat1$frame_equal(dat3)
+DataFrame_frame_equal = function(other) {
+    .pr$DataFrame$frame_equal(self, other)
+}
+
+#' @title Shift
+#' @description Shift the values by a given period.
+#' @keywords DataFrame
+#' @param periods integer Number of periods to shift (may be negative).
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$shift(2)
+DataFrame_shift = function(periods = 1) {
+    self$lazy()$shift(periods)$collect()
+}
+
+#' @title Shift and fill
+#' @description Shift the values by a given period and fill the resulting null values.
+#' @keywords DataFrame
+#' @param fill_value Fill values with the result of this expression.
+#' @param periods Integer indicating the number of periods to shift (may be
+#' negative).
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
+DataFrame_shift_and_fill = function(fill_value, periods = 1) {
+    self$lazy()$shift_and_fill(fill_value, periods)$collect()
+}
+
+#' @title Modify/append column(s)
+#' @description Add or modify columns with expressions
 #' @name DataFrame_with_columns
 #' @aliases with_columns
 #' @param ... any expressions or string column name, or same wrapped in a list
@@ -674,16 +812,30 @@ DataFrame_with_column = function(expr) {
 
 #' Limit a DataFrame
 #' @name DataFrame_limit
-#' @description take limit of n rows of query
+#' @description Take some maximum number of rows.
+#' @param n Positive numeric or integer number not larger than 2^32
+#'
+#' @details Any number will converted to u32.
+#' @keywords  DataFrame
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$limit(6)
+#'
+DataFrame_limit = function(n) {
+  self$lazy()$limit(n)$collect()
+}
+
+#' Head of a DataFrame
+#' @name DataFrame_head
+#' @description Get the first n rows of the query.
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
 #' @keywords  DataFrame
 #' @return DataFrame
-DataFrame_limit = function(n) {
-  self$lazy()$limit(n)$collect()
+DataFrame_head = function(n) {
+  self$lazy()$head(n)$collect()
 }
-
 
 #' Tail a DataFrame
 #' @name DataFrame_tail
@@ -862,7 +1014,7 @@ DataFrame_to_struct = function(name = "") {
 #' @param names names of struct columns to unnest, default NULL unnest any struct column
 #' @return $unnest() returns a DataFrame with all column including any that has been unnested
 DataFrame_unnest = function(names = NULL) {
-  unwrap(.pr$DataFrame$unnest(self, names))
+  unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
 
 
@@ -951,6 +1103,17 @@ DataFrame_std = function(ddof = 1) {
   self$lazy()$std(ddof)$collect()
 }
 
+#' @title Quantile
+#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @keywords DataFrame
+#' @param quantile numeric Quantile between 0.0 and 1.0.
+#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @return DataFrame
+#' @examples pl$DataFrame(mtcars)$quantile(.4)
+DataFrame_quantile = function(quantile, interpolation = "nearest") {
+  self$lazy()$quantile(quantile, interpolation)$collect()
+}
+
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame
@@ -960,6 +1123,34 @@ DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
 
+#' @title Fill NaN
+#' @description Fill floating point NaN values by an Expression evaluation.
+#' @keywords DataFrame
+#' @param fill_value Value to fill NaN with.
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1.5, 2, NaN, 4),
+#'   b = c(1.5, NaN, NaN, 4)
+#' )
+#' df$fill_nan(99)
+DataFrame_fill_nan = function(fill_value) {
+  self$lazy()$fill_nan(fill_value)$collect()
+}
+
+#' @title Fill null
+#' @description Fill null values using the specified value or strategy.
+#' @keywords DataFrame
+#' @param fill_value Value to fill `NA` with.
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(
+#'   a = c(1.5, 2, NA, 4),
+#'   b = c(1.5, NA, NA, 4)
+#' )$fill_null(99)
+DataFrame_fill_null = function(fill_value) {
+  self$lazy()$fill_null(fill_value)$collect()
+}
 
 #' @title Slice
 #' @description Get a slice of this DataFrame.
@@ -997,3 +1188,6 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
 DataFrame_estimated_size = "use_extendr_wrapper"
+
+
+

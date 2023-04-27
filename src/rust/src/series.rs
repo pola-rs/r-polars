@@ -8,6 +8,7 @@ use crate::apply_output;
 use crate::handle_type;
 use crate::make_r_na_fun;
 use crate::rdatatype::RPolarsDataType;
+use crate::robj_to;
 use crate::utils::{r_error_list, r_result_list};
 
 use crate::conversion_r_to_s::robjname2series;
@@ -25,6 +26,7 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 
+use std::convert::TryInto;
 use std::result::Result;
 
 #[derive(Debug, Clone)]
@@ -148,6 +150,38 @@ impl Series {
         } else {
             self.0.series_equal(&other.0)
         }
+    }
+
+    //panics, if index out of bound
+    fn get_fmt(&self, index: u32, str_length: u32) -> String {
+        let val = format!(
+            "{}",
+            self.0.get(index.try_into().expect("usize>u32")).unwrap()
+        );
+        if let DataType::Utf8 | DataType::Categorical(_) = self.0.dtype() {
+            let v_trunc = &val[..val
+                .char_indices()
+                .take(str_length.try_into().expect("usize>u32"))
+                .last()
+                .map(|(i, c)| i + c.len_utf8())
+                .unwrap_or(0)];
+            if val == v_trunc {
+                val
+            } else {
+                format!("{v_trunc}…",)
+            }
+        } else {
+            val
+        }
+    }
+
+    fn to_fmt_char(&self, str_length: u32) -> Vec<String> {
+        let len = self.0.len();
+        let mut res = Vec::with_capacity(len);
+        for i in 0..len {
+            res.push(self.get_fmt(i.try_into().expect("usize>u32"), str_length));
+        }
+        res
     }
 
     pub fn compare(&self, other: &Series, op: String) -> List {
@@ -420,6 +454,14 @@ impl Series {
     //     Wrap(self.series.min_as_series().get(0)).into_py(py)
     // }
 
+    pub fn mean(&self) -> Series {
+        self.0.mean_as_series().into()
+    }
+
+    pub fn median(&self) -> Series {
+        self.0.median_as_series().into()
+    }
+
     pub fn min(&self) -> Series {
         self.0.min_as_series().into()
     }
@@ -430,6 +472,14 @@ impl Series {
 
     pub fn sum(&self) -> Series {
         self.0.sum_as_series().into()
+    }
+
+    pub fn std(&self, ddof: Robj) -> Result<Series, String> {
+        Ok(self.0.std_as_series(robj_to!(u8, ddof)?).into())
+    }
+
+    pub fn var(&self, ddof: Robj) -> Result<Series, String> {
+        Ok(self.0.var_as_series(robj_to!(u8, ddof)?).into())
     }
 
     pub fn ceil(&self) -> List {

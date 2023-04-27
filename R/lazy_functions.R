@@ -34,6 +34,7 @@ pl$all = function(name=NULL) {
 #' e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
 #' - a single DataType or an R list of DataTypes, select any column of any such DataType
 #' - Series of utf8 strings abiding to above options
+#' @param ... Additional column names can be passed as strings, separated by commas.
 #'
 #' @return Column Exprression
 #'
@@ -44,6 +45,9 @@ pl$all = function(name=NULL) {
 #'
 #' #a single column by a string
 #' df$select(pl$col("foo"))
+#'
+#' # two columns as strings separated by commas
+#' df$select(pl$col("foo", "bar"))
 #'
 #' #all columns by wildcard
 #' df$select(pl$col("*"))
@@ -63,11 +67,19 @@ pl$all = function(name=NULL) {
 #'
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar","foobar"))))
-pl$col = function(name="") {
+pl$col = function(name="", ...) {
 
   #preconvert Series into char name(s)
-
   if(inherits(name,"Series")) name = name$to_vector()
+  
+  name_add = list(...)
+  if (length(name_add) > 0) {
+    if (is_string(name) && all(sapply(name_add, is_string))) {
+      name = c(name, unlist(name_add))
+    } else {
+      warning("Additional arguments supplied to `pl$col()` are ignored because one of `name` or the additional arguments is not a string.")
+    }
+  }
 
   if(is_string(name)) return(.pr$Expr$col(name))
   if(is.character(name)) {
@@ -83,10 +95,10 @@ pl$col = function(name="") {
     if(all(sapply(name, inherits,"RPolarsDataType"))) {
       return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
     } else {
-      stopf("all elements of list must be a RPolarsDataType")
+     stopf("all elements of list must be a RPolarsDataType")
     }
   }
-  #TODO implement series, DataType
+  # TODO implement series, DataType
   stopf("not supported implement input")
 }
 
@@ -99,6 +111,215 @@ pl$col = function(name="") {
 #' @examples
 #' pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r()
 pl$element = function() pl$col("")
+
+
+#TODO move all lazy functions to a new keyword lazy functions
+
+#' pl$count
+#' @name count
+#' @description Count the number of values in this column/context.
+#' @param column if dtype is:
+#' - Series: count length of Series
+#' - str: count values of this column
+#' - NULL: count the number of value in this context.
+#'
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or value-count in case Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$count())
+#'
+#'
+#' df$groupby("c", maintain_order=TRUE)$agg(pl$count())
+pl$count = function(column = NULL)  { # -> Expr | int:
+  if(is.null(column)) return(.pr$Expr$new_count())
+  if(inherits(column,"Series")) return(column$len())
+  #add context to any error from pl$col
+  unwrap(result(pl$col(column)$count()), "in pl$count():")
+}
+
+
+#' pl$first
+#' @name first
+#' @description  Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take first value in `Series`
+#' - str: syntactic sugar for `pl.col(..).first()`
+#' - NULL: expression to take first column of a context.
+#'
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or first value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$first())
+#'
+#' df$select(pl$first("a"))
+#'
+#' pl$first(df$get_column("a"))
+#'
+pl$first = function(column = NULL) {#-> Expr | Any:
+  pcase(
+    is.null(column),  Ok(.pr$Expr$new_first()),
+    inherits(column,"Series"), if(column$len()==0) {
+      Err("The series is empty, so no first value can be returned.")
+    } else {
+      #TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
+      # or if rust series has a dedicated method.
+      Ok(pl$lit(column)$slice(0,1)$to_r())
+    },
+    #pl$col is fallible catch any error result and add new calling context
+    or_else = result(pl$col(column)$first())
+  ) |>
+    unwrap("in pl$first():")
+}
+
+
+#' pl$last
+#' @name last
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take last value in `Series`
+#' - str: syntactic sugar for `pl.col(..).last()`
+#' - NULL: expression to take last column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or last value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$last())
+#'
+#' df$select(pl$last("a"))
+#'
+#' pl$last(df$get_column("a"))
+#'
+pl$last = function(column = NULL) {#-> Expr | Any:
+  pcase(
+    is.null(column),  Ok(.pr$Expr$new_last()),
+    inherits(column,"Series"), if(column$len()==0) {
+      Err("The series is empty, so no last value can be returned.")
+    } else {
+      #TODO impl a direct slicing Series e.g. as pl$lit(series)$slice(x,y)$to_r()
+      # or if rust series has a dedicated method.
+      Ok(pl$lit(column)$slice(-1,1)$to_r())
+    },
+    #pl$col is fallible catch any error result and add new calling context
+    or_else = result(pl$col(column)$last())
+  ) |>
+    unwrap("in pl$last():")
+}
+
+
+#' pl$mean
+#' @name mean
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take mean value in `Series`
+#' - DataFrame or LazyFrame: Take mean value of each column
+#' - str: syntactic sugar for `pl$col(..)$mean()`
+#' - NULL: expression to take mean column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or mean value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$mean("a"))
+#'
+#' df$select(pl$mean("a", "b"))
+#'
+pl$mean = function(...) { #-> Expr | Any:
+  column = list2(...)
+  lc = length(column)
+  stringflag = all(sapply(column, is_string))
+  pcase(
+    lc == 0L,
+    Err("pl$mean() needs at least one argument."),
+    lc > 1L && !stringflag,
+    Err("When there are more than one arguments in pl$mean(), all arguments must be strings."),
+    lc > 1L && stringflag,
+    Ok(pl$col(unlist(column))$mean()),
+    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    Err("The series is empty, so no mean value can be returned."),
+    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    Ok(column[[1]]$mean()),
+    or_else = Ok(pl$col(column[[1]])$mean())
+  ) |>
+  unwrap("in pl$mean():")
+}
+
+
+#' pl$median
+#' @name median
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: Take median value in `Series`
+#' - DataFrame or LazyFrame: Take median value of each column
+#' - str: syntactic sugar for `pl$col(..)$median()`
+#' - NULL: expression to take median column of a context.
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or median value of input Series
+#'
+#' @examples
+#'
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#' df$select(pl$median("a"))
+#'
+#' df$select(pl$median("a", "b"))
+#'
+pl$median = function(...) { #-> Expr | Any:
+  column = list2(...)
+  lc = length(column)
+  stringflag = all(sapply(column, is_string))
+  pcase(
+    lc == 0L,
+    Err("pl$median() needs at least one argument."),
+    lc > 1L && !stringflag,
+    Err("When there are more than one arguments in pl$median(), all arguments must be strings."),
+    lc > 1L && stringflag,
+    Ok(pl$col(unlist(column))$median()),
+    lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
+    Err("The series is empty, so no median value can be returned."),
+    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    Ok(column[[1]]$median()),
+    or_else = Ok(pl$col(column[[1]])$median())
+  ) |>
+  unwrap("in pl$median():")
+}
 
 
 

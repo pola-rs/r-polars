@@ -1,19 +1,21 @@
-#' @title Polars Expr
+#' @title Polars Expressions
 #'
-#' @description Polars pl$Expr
-#' @rdname Expr
-#' @name Expr
-#' @keywords Expr
+#' @name Expr_class
+#' @description `Expr`essions are all the functions and methods that are applicable
+#' to a Polars DataFrame. They can be split into the following categories (following
+#' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions)):
+#'  * Aggregate
+#'  * Binary
+#'  * Categorical
+#'  * Computation
+#'  * Functions
+#'  * List
+#'  * Meta
+#'  * String
+#'  * Struct
+#'  * Temporal
 #'
-#' @aliases Expr
-#'
-#' @examples
-#' 2+2
-#' #Expr has the following methods/constructors
-#' ls(polars:::Expr)
-#'
-#' pl$col("this_column")$sum()$over("that_column")
-42
+NULL
 
 
 #' Print expr
@@ -52,6 +54,16 @@ Expr_print = function() {
   paste0(ls(Expr, pattern = pattern ),"()")
 }
 
+#' @title as.list Expr
+#' @description wraps an Expr in a list
+#' @param x Expr
+#' @param ... not used
+#' @export
+#' @keywords Expr
+as.list.Expr = function(x, ...) {
+  list(x)
+}
+
 #' wrap as literal
 #' @param e an Expr(polars) or any R expression
 #' @details
@@ -81,13 +93,22 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @return Expr
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname=NULL) {
-  result(
+  #disable call info
+  old_option = pl$set_polars_options(do_not_repeat_call=TRUE)
+
+  #wrap_e and catch nay error in a result
+  expr_result = result(
     wrap_e(e, str_to_lit),
     paste(
       {if (!is.null(argname)) paste0("argument [",argname,"]") else NULL},
       "not convertable into Expr because:\n"
     )
   )
+
+  #restore options
+  do.call(pl$set_polars_options, old_option)
+
+  expr_result
 }
 
 #' wrap_elist_result
@@ -1612,7 +1633,9 @@ Expr_take = function(indices) {
 #'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
 #'   pl$lit(0:3)$shift(2)$alias("shift+2")
 #' )
-Expr_shift = "use_extendr_wrapper"
+Expr_shift = function(periods = 1) {
+  .pr$Expr$shift(self, periods)
+}
 
 #' Shift and fill values
 #' @description Shift the values by a given period and fill the resulting null values.

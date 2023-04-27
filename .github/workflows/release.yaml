@@ -27,7 +27,7 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release', rtools-version: "42"}
+          - {os: windows-latest, r: 'release', rtools-version: ""}
           - {os: ubuntu-latest,   r: 'release'}
 
     steps:

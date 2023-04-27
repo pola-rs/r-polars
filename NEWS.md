@@ -1,5 +1,11 @@
 # polars (development version)
 
+## What's changed
+- `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
+- An experimental `knit_print()` method has been added to DataFrame that outputs HTML tables
+  (similar to py-polars' HTML output) (#125 @eitsupi)
+- `Series` gains new methods: `$mean`, `$median`, `$std`, `$var` (#170 @vincentarelbundock)
+
 # polars v0.5.0
 
 ## BREAKING CHANGE

@@ -83,6 +83,8 @@ DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
 
 DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
 
+DataFrame$dtype_strings <- function() .Call(wrap__DataFrame__dtype_strings, self)
+
 DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
 
 DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
@@ -91,7 +93,11 @@ DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, se
 
 DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
 
+DataFrame$frame_equal <- function(other) .Call(wrap__DataFrame__frame_equal, self, other)
+
 DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
+
+DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
@@ -737,6 +743,12 @@ Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_proj
 
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
+Expr$new_count <- function() .Call(wrap__Expr__new_count)
+
+Expr$new_first <- function() .Call(wrap__Expr__new_first)
+
+Expr$new_last <- function() .Call(wrap__Expr__new_last)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
@@ -833,7 +845,19 @@ LazyFrame$std <- function(ddof) .Call(wrap__LazyFrame__std, self, ddof)
 
 LazyFrame$var <- function(ddof) .Call(wrap__LazyFrame__var, self, ddof)
 
+LazyFrame$quantile <- function(quantile, interpolation) .Call(wrap__LazyFrame__quantile, self, quantile, interpolation)
+
+LazyFrame$shift <- function(periods) .Call(wrap__LazyFrame__shift, self, periods)
+
+LazyFrame$shift_and_fill <- function(fill_value, periods) .Call(wrap__LazyFrame__shift_and_fill, self, fill_value, periods)
+
 LazyFrame$reverse <- function() .Call(wrap__LazyFrame__reverse, self)
+
+LazyFrame$drop <- function(columns) .Call(wrap__LazyFrame__drop, self, columns)
+
+LazyFrame$fill_nan <- function(fill_value) .Call(wrap__LazyFrame__fill_nan, self, fill_value)
+
+LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, self, fill_value)
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
@@ -845,6 +869,10 @@ LazyFrame$tail <- function(n) .Call(wrap__LazyFrame__tail, self, n)
 
 LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
+LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
+
+LazyFrame$unique <- function(subset, keep) .Call(wrap__LazyFrame__unique, self, subset, keep)
+
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
@@ -852,6 +880,8 @@ LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, s
 LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
+
+LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__LazyFrame__sort_by_exprs, self, by, descending, nulls_last)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
@@ -909,6 +939,10 @@ Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted,
 
 Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
 
+Series$get_fmt <- function(index, str_length) .Call(wrap__Series__get_fmt, self, index, str_length)
+
+Series$to_fmt_char <- function(str_length) .Call(wrap__Series__to_fmt_char, self, str_length)
+
 Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
 
 Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
@@ -941,11 +975,19 @@ Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other
 
 Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
 
+Series$mean <- function() .Call(wrap__Series__mean, self)
+
+Series$median <- function() .Call(wrap__Series__median, self)
+
 Series$min <- function() .Call(wrap__Series__min, self)
 
 Series$max <- function() .Call(wrap__Series__max, self)
 
 Series$sum <- function() .Call(wrap__Series__sum, self)
+
+Series$std <- function(ddof) .Call(wrap__Series__std, self, ddof)
+
+Series$var <- function(ddof) .Call(wrap__Series__var, self, ddof)
 
 Series$ceil <- function() .Call(wrap__Series__ceil, self)
 

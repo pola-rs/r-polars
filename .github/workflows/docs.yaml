@@ -1,0 +1,129 @@
+# This workflow is a mix of:
+# - https://github.com/pola-rs/r-polars/blob/main/.github/workflows/check.yaml
+# - https://github.com/r-lib/actions/blob/v2-branch/examples/pkgdown.yaml
+# - https://squidfunk.github.io/mkdocs-material/publishing-your-site/?h=deploy#material-for-mkdocs
+
+name: pkgdown
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      docs_key: ${{ secrets.DEPLOY_DOCS }}
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+    permissions:
+      contents: write
+
+    steps:
+
+       ##### Github actions and Python stuff #####
+
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+      - run: python3 -m pip install mkdocs-material
+
+
+        ##### Rust stuff #####
+
+      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust-toolchain }}
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
+
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        run: |
+          sudo apt-get update \
+          && sudo apt-get install -y \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libfribidi-dev \
+            libharfbuzz-dev \
+            libcurl4-openssl-dev \
+            libgit2-dev \
+            libicu-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libxml2-dev \
+            libssl-dev \
+            libxslt1-dev
+
+      - name: find polars rust source/cache, used by Makevars in check step
+        run: |
+          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
+        shell: bash
+
+        ##### R stuff #####
+
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          Ncpus: 2
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: local::.
+          needs: website
+        env:
+          CI: false
+
+        ##### Build documentation and put it on "rpolars/rpolars.github.io" repo
+
+      - name: Build docs folder
+        run: |
+          file.copy("docs/mkdocs.orig.yml", "docs/mkdocs.yml")
+          altdoc::update_docs(custom_reference = "docs/make-docs.R")
+        shell: Rscript {0}
+
+      - name: Build site
+        run: cd docs && mkdocs build
+
+      - uses: webfactory/ssh-agent@v0.6.0
+        if: github.event_name != 'pull_request'
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
+
+        # https://www.mkdocs.org/user-guide/deploying-your-docs/
+      - name: Build site and deploy to GitHub pages
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          clean: true
+          branch: main
+          folder: docs/site
+          repository-name: rpolars/rpolars.github.io
+          ssh-key: true
+          clean-exclude: |
+            .nojekyll
