@@ -16,6 +16,7 @@
 
 test_that("Snapshot test of knitr", {
   skip_if(!requireNamespace("knitr", quietly = TRUE))
+  skip_if(!requireNamespace("pillar", quietly = TRUE))
 
   expect_snapshot(.knit_file("dataframe.Rmd"), cran = TRUE)
   withr::with_options(

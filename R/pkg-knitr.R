@@ -42,7 +42,7 @@ knit_print.DataFrame <- function(x, ...) {
 #' @importFrom utils getFromNamespace
 to_html_table <- function(x, max_cols = 75, max_rows = 40) {
   if (!requireNamespace("knitr", quietly = TRUE)) {
-    stop("Please install the `knitr` package` to use `to_html_table`.")
+    stop("Please install the `knitr` package to use `to_html_table`.")
   }
 
   escape_html <- getFromNamespace("escape_html", "knitr")
@@ -168,6 +168,9 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
   if (inherits(df, "DataFrame")) {
     df$dtype_strings()
   } else {
+    if (!requireNamespace("pillar", quietly = TRUE)) {
+      stop("Please install the `pillar` package to use `to_html_table` for non-polars objects.")
+    }
     sapply(names(df), \(x) pillar::type_sum(df[, x, drop = TRUE])) |>
       unname()
   }
