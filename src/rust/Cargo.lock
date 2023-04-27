@@ -1563,21 +1563,6 @@ dependencies = [
 
 [[package]]
 name = "polars"
-version = "0.1.0"
-dependencies = [
- "extendr-api",
- "flume",
- "jemallocator",
- "mimalloc",
- "polars 0.27.2",
- "polars-core",
- "rayon",
- "smartstring",
- "state",
-]
-
-[[package]]
-name = "polars"
 version = "0.27.2"
 source = "git+https://github.com/pola-rs/polars.git?rev=01126f2524108ac8fe567e1dbb24a74ca9ec39e7#01126f2524108ac8fe567e1dbb24a74ca9ec39e7"
 dependencies = [
@@ -1795,6 +1780,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8856d8364d252a14d474036ea1358d63c9e6965c8e5c1885c18f73d70bff9c7b"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "r-polars"
+version = "0.1.0"
+dependencies = [
+ "extendr-api",
+ "flume",
+ "jemallocator",
+ "mimalloc",
+ "polars",
+ "polars-core",
+ "rayon",
+ "smartstring",
+ "state",
 ]
 
 [[package]]
