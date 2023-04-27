@@ -41,6 +41,10 @@ knit_print.DataFrame <- function(x, ...) {
 #' @noRd
 #' @importFrom utils getFromNamespace
 to_html_table <- function(x, max_cols = 75, max_rows = 40) {
+  if (!requireNamespace("knitr", quietly = TRUE)) {
+    stop("Please install the `knitr` package` to use `to_html_table`.")
+  }
+
   escape_html <- getFromNamespace("escape_html", "knitr")
   omit_chr <- "&hellip;"
 
