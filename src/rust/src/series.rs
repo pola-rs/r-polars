@@ -456,10 +456,6 @@ impl Series {
         Series(self.0.sum_as_series()).to_r()
     }
 
-    pub fn set_column_from_series(&self) -> Result<Robj, String> {
-        Series(self.0.sum_as_series()).to_r()
-    }
-
     pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
         Series(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
     }
