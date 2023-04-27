@@ -85,6 +85,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 	scrollbar-color: var(--custom-scrollbar-col);
 }
 
+
 .md-top:hover {
 	background: var(--md-typeset-a-color-hover);
 }
