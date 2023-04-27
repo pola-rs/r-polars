@@ -60,8 +60,7 @@ small!) data wrangling tasks.
 ## Documentation and tutorials
 
 Users can find detailed documentation for all objects, functions, and methods
-[on the Reference page of this
-website.](https://rpolars.github.io/reference/index.html) This documentation
+on the Reference page of [this website](https://rpolars.github.io/). This documentation
 can also be accessed from the R console using the typical `?` syntax. For
 example, we will later use the `DataFrame()` constructor function and apply the
 `groupby()` method to a `DataFrame` object. The documentation for these can be
@@ -179,8 +178,7 @@ instance,
 
 In **polars** our method chaining syntax takes the form `object$m1()$m2()`,
 where `object` is our data object, and `m1()` and `m2()` are appropriate 
-[methods](https://rpolars.github.io/reference/index.html), like subsetting
-or aggregation expressions.
+methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
 examples to help make things concrete. We use the `mtcars` dataset that we
@@ -219,7 +217,7 @@ dat$groupby("cyl")$mean()
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
-([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren.html))
+([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren/))
 and also columns
 ([`select()`](https://rpolars.github.io/reference/DataFrame_select/)):
 
@@ -248,7 +246,7 @@ so you can simultaneously transform it while you are subsetting. However, the
 result will exclude any columns that weren't specified as part of the
 expression. To modify or add some columns---whilst preserving all others in the
 dataset---it is therefore better to use the
-[`with_columns()`](https://rpolars.github.io/reference/DataFrame_with_columns)
+[`with_columns()`](https://rpolars.github.io/reference/DataFrame_with_columns/)
 method. This next code chunk is equivalent to `mtcars |>
 dplyr::mutate(sum_mpg=sum(mpg), sum_hp=sum(hp), .by = cyl)`.
 
@@ -270,7 +268,7 @@ dat$with_columns(
 
 Similarly, here's how we could have aggregated (i.e., collapsed) the dataset
 by groups instead of modifying them. We need simply invoke the `groupby()` and
-[`agg()`](https://rpolars.github.io/reference/Expr_agg_groups.html) methods.
+[`agg()`](https://rpolars.github.io/reference/Expr_agg_groups/) methods.
 
 ```{r}
 dat$groupby(
@@ -331,7 +329,7 @@ We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 While the "eager" execution engine of **polars** works perfectly well---as
 evidenced by all of the previous examples---to get the most out of the package
 you need to go _lazy_.
-[Lazy execution](https://pola-rs.github.io/polars-book/user-guide/lazy-api/intro.html) 
+[Lazy execution](https://pola-rs.github.io/polars-book/user-guide/lazy-api/)
 enables several benefits, but the most important is that it improves
 performance. Delaying execution until the last possible moment allows Polars to
 apply automatic optimization to every query. Let's take a quick look.
