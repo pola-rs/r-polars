@@ -9,7 +9,7 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
        [1] "\"a\"" "\"b\"" "\"c\"" "\"d\"" "\"e\"" "\"f\"" "\"g\"" "\"h\"" "\"i\""
       [10] "\"j\"" "\"k\"" "\"l\"" "\"m\"" "\"n\"" "\"o\"" "\"p\"" "\"q\"" "\"r\""
@@ -18,7 +18,7 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
        [1] "\"a…" "\"b…" "\"c…" "\"d…" "\"e…" "\"f…" "\"g…" "\"h…" "\"i…" "\"j…"
       [11] "\"k…" "\"l…" "\"m…" "\"n…" "\"o…" "\"p…" "\"q…" "\"r…" "\"s…" "\"t…"
@@ -34,14 +34,14 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
        [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
 
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
        [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10"
 
@@ -55,14 +55,14 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
        [1] "1.0"  "2.0"  "3.0"  "4.0"  "5.0"  "6.0"  "7.0"  "8.0"  "9.0"  "10.0"
 
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
        [1] "1.0"  "2.0"  "3.0"  "4.0"  "5.0"  "6.0"  "7.0"  "8.0"  "9.0"  "10.0"
 
@@ -76,14 +76,14 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
       [1] "\"bar\""
 
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
       [1] "\"b…"
 
@@ -97,14 +97,14 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
       [1] "true"  "false"
 
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
       [1] "true"  "false"
 
@@ -119,7 +119,7 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
        [1] "\"a\"" "\"b\"" "\"c\"" "\"d\"" "\"e\"" "\"f\"" "\"g\"" "\"h\"" "\"i\""
       [10] "\"j\"" "\"k\"" "\"l\"" "\"m\"" "\"n\"" "\"o\"" "\"p\"" "\"q\"" "\"r\""
@@ -128,7 +128,7 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
        [1] "\"a…" "\"b…" "\"c…" "\"d…" "\"e…" "\"f…" "\"g…" "\"h…" "\"i…" "\"j…"
       [11] "\"k…" "\"l…" "\"m…" "\"n…" "\"o…" "\"p…" "\"q…" "\"r…" "\"s…" "\"t…"
@@ -144,14 +144,14 @@
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE)
+      as.character(pl$Series(v), str_length = 15)
     Output
       [1] "\"foooo\""   "\"barrrrr\""
 
 ---
 
     Code
-      as.character(pl$Series(v), format = TRUE, str_length = 2)
+      as.character(pl$Series(v), str_length = 2)
     Output
       [1] "\"f…" "\"b…"
 
