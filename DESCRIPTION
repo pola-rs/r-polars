@@ -27,6 +27,7 @@ Suggests:
     bit64,
     knitr,
     tibble,
+    pillar,
     rmarkdown,
     withr
 Config/Needs/website:
@@ -69,6 +70,7 @@ Collate:
     'namespace.R'
     'options.R'
     'parquet.R'
+    'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'rlang.R'
     'rust_result.R'
