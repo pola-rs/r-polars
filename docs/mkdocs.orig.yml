@@ -29,7 +29,7 @@ markdown_extensions:
       anchor_linenums: yes
   - pymdownx.superfences
 repo_url: https://github.com/pola-rs/r-polars
-repo_name: polars
+repo_name: r-polars
 plugins:
   - search
 extra_css:
