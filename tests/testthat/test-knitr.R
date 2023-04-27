@@ -1,4 +1,4 @@
-.knit_file <- function(file_name, use = "knitr") {
+.knit_file = function(file_name, use = "knitr") {
   file = file.path("files", file_name)
   output = tempfile(fileext = ".md")
   on.exit(unlink(output))

@@ -15,9 +15,9 @@
 #' @param ... additional arguments, not used
 #' @keywords DataFrame
 #' @export
-knit_print.DataFrame <- function(x, ...) {
-  .print_opt <- getOption("polars.df_print", "auto")
-  .rmd_df_print <- knitr::opts_knit$get("rmarkdown.df_print")
+knit_print.DataFrame = function(x, ...) {
+  .print_opt = getOption("polars.df_print", "auto")
+  .rmd_df_print = knitr::opts_knit$get("rmarkdown.df_print")
   if (isTRUE(.print_opt == "html") ||
     (isTRUE(.print_opt != "default") &&
       !isTRUE(.rmd_df_print %in% c("default", "tibble")) &&
@@ -40,56 +40,56 @@ knit_print.DataFrame <- function(x, ...) {
 #' to_html_table(mtcars, 3, 3)
 #' @noRd
 #' @importFrom utils getFromNamespace
-to_html_table <- function(x, max_cols = 75, max_rows = 40) {
+to_html_table = function(x, max_cols = 75, max_rows = 40) {
   if (!requireNamespace("knitr", quietly = TRUE)) {
     stop("Please install the `knitr` package to use `to_html_table`.")
   }
 
-  escape_html <- getFromNamespace("escape_html", "knitr")
-  omit_chr <- "&hellip;"
+  escape_html = getFromNamespace("escape_html", "knitr")
+  omit_chr = "&hellip;"
 
-  .dim <- dim(x)
+  .dim = dim(x)
 
-  df_height <- .dim[1]
-  df_width <- .dim[2]
+  df_height = .dim[1]
+  df_width = .dim[2]
 
-  row_idx <- .idx(max_rows, df_height)
-  col_idx <- .idx(max_cols, df_width)
+  row_idx = .idx(max_rows, df_height)
+  col_idx = .idx(max_cols, df_width)
 
-  cols <- names(x)[col_idx]
-  col_names <- cols |>
+  cols = names(x)[col_idx]
+  col_names = cols |>
     escape_html()
-  col_types <- x |>
+  col_types = x |>
     .get_dtype_strings() |>
     escape_html()
 
   if (max_cols <= df_width) {
-    col_names <- .cut_off(col_names, max_cols, omit_chr)
-    col_types <- .cut_off(col_types, max_cols, omit_chr)
+    col_names = .cut_off(col_names, max_cols, omit_chr)
+    col_types = .cut_off(col_types, max_cols, omit_chr)
   }
 
-  .header_names <- col_names |>
+  .header_names = col_names |>
     .tag("th") |>
     .tag("tr")
 
-  .header_dtypes <- col_types |>
+  .header_dtypes = col_types |>
     .tag("td") |>
     .tag("tr")
 
-  .header_all <- .header_names |>
+  .header_all = .header_names |>
     paste0(.header_dtypes) |>
     .tag("thead")
 
-  .env_str_len <- Sys.getenv("POLARS_FMT_STR_LEN")
-  .str_len <- ifelse(.env_str_len == "", 15, as.integer(.env_str_len))
+  .env_str_len = Sys.getenv("POLARS_FMT_STR_LEN")
+  .str_len = ifelse(.env_str_len == "", 15, as.integer(.env_str_len))
 
-  chr_mat <- sapply(cols, \(col) as.character(x[row_idx, col, drop = TRUE], str_length = .str_len)) |>
+  chr_mat = sapply(cols, \(col) as.character(x[row_idx, col, drop = TRUE], str_length = .str_len)) |>
     escape_html() |>
     matrix(nrow = length(row_idx))
 
   if (max_cols <= df_width) {
-    .seq <- seq_along(cols)
-    chr_mat <- cbind(
+    .seq = seq_along(cols)
+    chr_mat = cbind(
       chr_mat[, head(.seq, max_cols %/% 2)],
       omit_chr,
       chr_mat[, tail(.seq, max_cols %/% 2)]
@@ -97,22 +97,22 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
   }
 
   if (max_rows <= df_height) {
-    .seq <- seq_along(row_idx)
-    chr_mat <- rbind(
+    .seq = seq_along(row_idx)
+    chr_mat = rbind(
       chr_mat[head(.seq, max_rows %/% 2), ],
       omit_chr,
       chr_mat[tail(.seq, max_rows %/% 2), ]
     )
   }
 
-  .body <- chr_mat |>
+  .body = chr_mat |>
     t() |>
     as.data.frame() |>
     sapply(\(x) .tag(x, "td")) |>
     .tag("tr") |>
     .tag("tbody")
 
-  .style <- "<style>
+  .style = "<style>
 .dataframe > thead > tr > th,
 .dataframe > tbody > tr > td {
   text-align: right;
@@ -120,7 +120,7 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
 </style>
 "
 
-  .shape <- sprintf("<small>shape: (%s, %s)</small>", .dim[1], .dim[2])
+  .shape = sprintf("<small>shape: (%s, %s)</small>", .dim[1], .dim[2])
 
   paste0(.header_all, .body) |>
     .tag("table", c(border = "1", class = "dataframe")) |>
@@ -128,16 +128,16 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
     .tag("div")
 }
 
-.idx <- function(.max, .length) {
+.idx = function(.max, .length) {
   if (.max <= .length) {
-    out <- c(seq_len(.max %/% 2), seq(.length - .max %/% 2 + 1L, .length))
+    out = c(seq_len(.max %/% 2), seq(.length - .max %/% 2 + 1L, .length))
   } else {
-    out <- seq_len(.length)
+    out = seq_len(.length)
   }
   out
 }
 
-.cut_off <- function(.vec, .max, omit_chr) {
+.cut_off = function(.vec, .max, omit_chr) {
   c(head(.vec, .max %/% 2), omit_chr, tail(.vec, .max %/% 2))
 }
 
@@ -148,14 +148,14 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
 #' @examples
 #' .tag(letters[1:2], "tr")
 #' @noRd
-.tag <- function(.elements, .tag, .attr = NULL) {
+.tag = function(.elements, .tag, .attr = NULL) {
   if (!is.null(.attr)) {
-    .pre <- paste0("<", .tag, " ", paste0(sprintf('%s="%s"', names(.attr), .attr), collapse = " "), ">")
+    .pre = paste0("<", .tag, " ", paste0(sprintf('%s="%s"', names(.attr), .attr), collapse = " "), ">")
   } else {
-    .pre <- c(paste0("<", .tag, ">"))
+    .pre = c(paste0("<", .tag, ">"))
   }
 
-  .post <- paste0("</", .tag, ">")
+  .post = paste0("</", .tag, ">")
 
   paste0(.pre, .elements, .post, collapse = "")
 }
@@ -164,7 +164,7 @@ to_html_table <- function(x, max_cols = 75, max_rows = 40) {
 #' @param df DataFrame like object
 #' @return string vector of column type names
 #' @noRd
-.get_dtype_strings <- function(df) {
+.get_dtype_strings = function(df) {
   if (inherits(df, "DataFrame")) {
     df$dtype_strings()
   } else {
