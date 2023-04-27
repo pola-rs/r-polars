@@ -7,15 +7,19 @@
 DataFrame_limit(n)
 }
 \arguments{
-\item{n}{positive numeric or integer number not larger than 2^32}
+\item{n}{Positive numeric or integer number not larger than 2^32}
 }
 \value{
 DataFrame
 }
 \description{
-take limit of n rows of query
+Take some maximum number of rows.
 }
 \details{
-any number will converted to u32. Negative raises error
+Any number will converted to u32.
+}
+\examples{
+pl$DataFrame(iris)$limit(6)
+
 }
 \keyword{DataFrame}

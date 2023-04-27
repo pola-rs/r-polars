@@ -5,28 +5,38 @@
 \title{Inner workings of the LazyFrame-class}
 \description{
 The \code{LazyFrame}-class is simply two environments of respectively
-the public and private methods/function calls to the polars rust side. The instanciated
-\code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars LazyFrame  object. The pointer address
-is the only statefullness of the LazyFrame object on the R side. Any other state resides on the
-rust side. The S3 method \code{.DollarNames.LazyFrame} exposes all public \verb{$foobar()}-methods which are callable onto the object.
-Most methods return another \code{LazyFrame}-class instance or similar which allows for method chaining.
-This class system in lack of a better name could be called "environment classes" and is the same class
-system extendr provides, except here there is both a public and private set of methods. For implementation
-reasons, the private methods are external and must be called from polars:::.pr.$LazyFrame$methodname(), also
-all private methods must take any self as an argument, thus they are pure functions. Having the private methods
+the public and private methods/function calls to the polars rust side. The
+instanciated \code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars
+LazyFrame  object. The pointer address is the only statefullness of the
+LazyFrame object on the R side. Any other state resides on the rust side. The
+S3 method \code{.DollarNames.LazyFrame} exposes all public \verb{$foobar()}-methods which
+are callable onto the object.
+
+Most methods return another \code{LazyFrame}-class instance or similar which allows
+for method chaining. This class system in lack of a better name could be called
+"environment classes" and is the same class system extendr provides, except
+here there is both a public and private set of methods. For implementation
+reasons, the private methods are external and must be called from
+\code{polars:::.pr.$LazyFrame$methodname()}. Also, all private methods must take
+any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 
-\code{DataFrame} and \code{LazyFrame} can both be said to be a \code{Frame}. To convert use \code{DataFrame_object$lazy() -> LazyFrame_object} and
-\code{LazyFrame_object$collect() -> DataFrame_object}. This is quite similar to the lazy-collect syntax of the dplyrpackage to
-interact with database connections such as SQL variants. Most SQL databases would be able to perform the same otimizations
-as polars such Predicate Pushdown and Projection. However polars can intertact and optimize queries with both SQL DBs
-and other data sources such parquet files simultanously. (#TODO implement r-polars SQL ;)
+\code{DataFrame} and \code{LazyFrame} can both be said to be a \code{Frame}. To convert use
+\code{DataFrame_object$lazy() -> LazyFrame_object} and \code{LazyFrame_object$collect() -> DataFrame_object}.
+This is quite similar to the lazy-collect syntax of the dplyrpackage to
+interact with database connections such as SQL variants. Most SQL databases
+would be able to perform the same otimizations as polars such Predicate Pushdown
+and Projection. However polars can intertact and optimize queries with both
+SQL DBs and other data sources such parquet files simultanously. (#TODO
+implement r-polars SQL ;).
 }
 \details{
-Check out the source code in R/LazyFrame__lazy.R how public methods are derived from private methods.
-Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These are moved to .pr and converted
-into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last file sourced) the extendr-methods
-are removed and replaced by any function prefixed \code{LazyFrame_}.
+Check out the source code in R/LazyFrame__lazy.R how public methods
+are derived from private methods. Check out  extendr-wrappers.R to see the
+extendr-auto-generated methods. These are moved to \code{.pr} and converted into
+pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
+file sourced) the extendr-methods are removed and replaced by any function
+prefixed \code{LazyFrame_}.
 }
 \examples{
 #see all exported methods
