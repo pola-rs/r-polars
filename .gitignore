@@ -32,8 +32,10 @@ vignettes/*.pdf
 .Rproj.user
 my.csv
 test.csv
-docs
 .Rprofile
 check
 inst/doc
 .DS_Store
+
+# Python
+.venv

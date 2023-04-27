@@ -977,11 +977,19 @@ Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other
 
 Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
 
+Series$mean <- function() .Call(wrap__Series__mean, self)
+
+Series$median <- function() .Call(wrap__Series__median, self)
+
 Series$min <- function() .Call(wrap__Series__min, self)
 
 Series$max <- function() .Call(wrap__Series__max, self)
 
 Series$sum <- function() .Call(wrap__Series__sum, self)
+
+Series$std <- function(ddof) .Call(wrap__Series__std, self, ddof)
+
+Series$var <- function(ddof) .Call(wrap__Series__var, self, ddof)
 
 Series$ceil <- function() .Call(wrap__Series__ceil, self)
 

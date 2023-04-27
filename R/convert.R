@@ -1,4 +1,3 @@
-
 #' pl$from_arrow
 #' @description import Arrow Table or Array
 #' @name pl$from_arrow
@@ -16,7 +15,7 @@
 #' @examples
 #' pl$from_arrow(
 #'   data = arrow::arrow_table(iris),
-#'   schema_overrides = list(Sepal.Length=pl$Float32, Species = pl$Utf8)
+#'   schema_overrides = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
 #' )
 #'
 #' char_schema = names(iris)
@@ -25,35 +24,34 @@
 #'   data = arrow::arrow_table(iris),
 #'   schema = char_schema
 #' )
-pl$from_arrow = function(data, rechunk= TRUE, schema = NULL, schema_overrides = NULL) {
-
-  if(!requireNamespace("arrow", quietly = TRUE)) {
+pl$from_arrow = function(data, rechunk = TRUE, schema = NULL, schema_overrides = NULL) {
+  if (!requireNamespace("arrow", quietly = TRUE)) {
     stopf("in pl$from_arrow: cannot import from arrow without R package arrow installed")
   }
 
-  ##dispatch conversion on data class
+  ## dispatch conversion on data class
   f = (\() {
-
     # 1 import as DataFrame
-    if(
-      identical(class(data),c("Table", "ArrowTabular", "ArrowObject", "R6")) ||
-      identical(class(data),c("RecordBatchReader",     "ArrowObject", "R6" ))
+    if (
+      identical(class(data), c("Table", "ArrowTabular", "ArrowObject", "R6")) ||
+        identical(class(data), c("RecordBatchReader", "ArrowObject", "R6"))
     ) {
       df = arrow_to_rdf(
-        data, rechunk = rechunk, schema = schema, schema_overrides = schema_overrides
+        data,
+        rechunk = rechunk, schema = schema, schema_overrides = schema_overrides
       )
       return(df)
     }
 
     # 2 both Array and ChunkedArray
-    if(identical(class(data)[-1L],c("ArrowDatum","ArrowObject","R6"))) {
-       return(unwrap(arrow_to_rseries_result("", data, rechunk = rechunk)))
+    if (identical(class(data)[-1L], c("ArrowDatum", "ArrowObject", "R6"))) {
+      return(unwrap(arrow_to_rseries_result("", data, rechunk = rechunk)))
     }
 
     # 0 no suitable method found, raise error
     stopf("arg [data] given class is not yet supported: %s", str_string(class(data)))
   })
 
-  #add context to any errors
-  unwrap(result(f()),"in pl$from_arrow:")
+  # add context to any errors
+  unwrap(result(f()), "in pl$from_arrow:")
 }

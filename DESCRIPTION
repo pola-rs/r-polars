@@ -1,6 +1,6 @@
 Package: polars
 Title: Polars ported to R
-Version: 0.5.0.9000
+Version: 0.5.0.9003
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
@@ -27,8 +27,17 @@ Suggests:
     bit64,
     knitr,
     tibble,
+    pillar,
     rmarkdown,
     withr
+Config/Needs/website:
+    etiennebacher/altdoc,
+    Genentech/rd2markdown@c4fb386,
+    yaml,
+    magrittr,
+    cli,
+    tinkr,
+    stringr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
@@ -61,6 +70,7 @@ Collate:
     'namespace.R'
     'options.R'
     'parquet.R'
+    'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'rlang.R'
     'rust_result.R'

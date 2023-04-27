@@ -2,26 +2,24 @@
 % Please edit documentation in R/s3_methods.R
 \name{as.character.Series}
 \alias{as.character.Series}
-\title{as.character.Series}
+\title{as.character for polars Series}
 \usage{
-\method{as.character}{Series}(x, ..., format = FALSE, str_length = 15)
+\method{as.character}{Series}(x, ..., str_length = NULL)
 }
 \arguments{
 \item{x}{Series}
 
-\item{...}{not used}
 
-\item{format}{a logical. If \code{TRUE}, the Series will be formatted.}
+\item{...}{Additional characters are ignored.}
 
-\item{str_length}{an integer. If \code{format = TRUE},
-utf8 or categorical type Series will be formatted to a string of this length.}
+\item{str_length}{an integer. If specified,}
 }
 \description{
-as.character.Series
+as.character for polars Series
 }
 \examples{
 s = pl$Series(c("foo", "barbaz"))
 as.character(s)
-as.character(s, format = TRUE)
-as.character(s, format = TRUE, str_length = 3)
+as.character(s, str_length = 3)
+
 }

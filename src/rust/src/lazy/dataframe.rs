@@ -171,12 +171,8 @@ impl LazyFrame {
         LazyFrame(new_df)
     }
 
-    fn limit(&self, n: f64) -> List {
-        r_result_list(
-            try_f64_into_u32(n)
-                .map(|n| LazyFrame(self.0.clone().limit(n)))
-                .map_err(|err| format!("limit: {}", err)),
-        )
+    fn limit(&self, n: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().limit(robj_to!(u32, n)?).into())
     }
 
     fn tail(&self, n: Robj) -> Result<LazyFrame, String> {

@@ -7,9 +7,10 @@
 DataFrame_shift_and_fill(fill_value, periods = 1)
 }
 \arguments{
-\item{fill_value}{fill None values with the result of this expression.}
+\item{fill_value}{Fill values with the result of this expression.}
 
-\item{periods}{integer Number of periods to shift (may be negative).}
+\item{periods}{Integer indicating the number of periods to shift (may be
+negative).}
 }
 \value{
 DataFrame

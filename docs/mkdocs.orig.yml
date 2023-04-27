@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://json.schemastore.org/mkdocs-1.0.json
+
+site_name: Polars R Package
+theme:
+  name: material
+  logo: polars-logo.png
+  favicon: polars-logo.png
+  font:
+    text: Roboto
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+markdown_extensions:
+  - toc:
+      baselevel: 1
+      toc_depth: 2
+  - pymdownx.highlight:
+      anchor_linenums: yes
+  - pymdownx.superfences
+repo_url: https://github.com/pola-rs/r-polars
+repo_name: r-polars
+plugins:
+  - search
+extra_css:
+  - stylesheets/extra.css
+nav:
+  - Home: README.md
+  - Get started: articles/polars.md
+  - Reference: # Auto updated by altdoc
+  - License: LICENSE.md
+  - Changelog: NEWS.md

@@ -171,20 +171,20 @@ max.LazyFrame = function(x, ...) x$max()
 #' @noRd
 as.vector.Series = function(x, mode) x$to_vector()
 
-#' as.character.Series
+
+#' as.character for polars Series
 #' @param x Series
-#' @param ... not used
-#' @param format a logical. If `TRUE`, the Series will be formatted.
-#' @param str_length an integer. If `format = TRUE`,
+#' @param str_length an integer. If specified,
+#' @param ... Additional arguments are ignored.
 #' utf8 or categorical type Series will be formatted to a string of this length.
+#' @param ... Additional characters are ignored.
 #' @examples
 #' s = pl$Series(c("foo", "barbaz"))
 #' as.character(s)
-#' as.character(s, format = TRUE)
-#' as.character(s, format = TRUE, str_length = 3)
+#' as.character(s, str_length = 3)
 #' @export
-as.character.Series = function(x, ..., format = FALSE, str_length = 15) {
-    if (isTRUE(format)) {
+as.character.Series = function(x, ..., str_length = NULL) {
+    if (is.numeric(str_length) && str_length > 0) {
         .pr$Series$to_fmt_char(x, str_length = str_length)
     } else {
         x$to_vector() |>
