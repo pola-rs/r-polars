@@ -15,3 +15,4 @@ bool if is a result object which is an err
 \description{
 check if x ss a result and an err
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ print LazyFrame s3 method
 print(pl$DataFrame(iris)$lazy())
 }
 \keyword{LazyFrame}
+\keyword{internal}

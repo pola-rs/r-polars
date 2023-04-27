@@ -25,4 +25,4 @@ Or, the output format can be enforced with R's \code{options} function as follow
 \item \code{options(polars.df_print = "html")} for the HTML table.
 }
 }
-\keyword{DataFrame}
+\keyword{internal}

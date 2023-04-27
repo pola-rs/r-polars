@@ -65,6 +65,7 @@ extendr_method_to_pure_functions = function(env) {
 #' @param Class_name string name of env class
 #' @rdname macro_add_syntax_check_to
 #'
+#' @keywords internal
 #' @return dollarsign method with syntax verification
 #'
 #' @details this function overrides dollarclass method of a extendr env_class

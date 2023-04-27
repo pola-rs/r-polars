@@ -12,7 +12,7 @@
 #' @keywords LazyFrame
 #' @param x DataFrame
 #' @param ... not used
-#' @keywords LazyFrame
+#' @keywords internal
 #'
 #' @return self
 #' @export

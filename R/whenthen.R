@@ -99,7 +99,7 @@ print.When = function(x, ...) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords WhenThen
+#' @keywords WhenThen internal
 #' @return self
 #' @export
 #' @examples
@@ -113,7 +113,7 @@ print.WhenThen = function(x, ...) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords WhenThen
+#' @keywords WhenThen internal
 #' @return self
 #' @export
 #' @examples

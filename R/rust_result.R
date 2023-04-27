@@ -3,6 +3,7 @@
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @details both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
 #' If both ok and err has value then this is an invalid result
+#' @keywords internal
 #' @return bool if is a result object
 is_result = function(x) {
   identical(class(x),"extendr_result")
@@ -17,6 +18,7 @@ guard_result = function(x, msg="") {
 #' check if x ss a result and an err
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an err
+#' @keywords internal
 is_err = function(x) {
   guard_result(x)
   !is.null(x$err)
@@ -25,6 +27,7 @@ is_err = function(x) {
 #' check if x ss a result and an ok
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @return bool if is a result object which is an ok
+#' @keywords internal
 is_ok = function(x) {
   guard_result(x)
   is.null(x$err)
@@ -33,6 +36,7 @@ is_ok = function(x) {
 #' Wrap in Ok
 #' @param x any R object
 #' @return same R object wrapped in a Ok-result
+#' @keywords internal
 Ok = function(x) {
   structure(list(ok = x, err = NULL), class = "extendr_result")
 }
@@ -75,6 +79,7 @@ and_then = function(x, f) {
 
 #' map an Err part of Result
 #' @param x any R object
+#' @keywords internal
 #' @param f a closure that takes the ok part as input, must return a result itself
 #' @return same R object wrapped in a Err-result
 or_else = function(x, f) {

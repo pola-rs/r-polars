@@ -58,6 +58,9 @@ series_list$to_r() #as list because Series DataType is list
 series_list$to_r_list() #implicit call as.list(), same as to_r() as already list
 series_list$to_vector() #implicit call unlist(), append into a vector
  #
- #
 }
+\keyword{=}
 \keyword{Series}
+\keyword{pl$Series(letters[1:3])}
+\keyword{series_vec}
+\keyword{series_vec$to_vector()}

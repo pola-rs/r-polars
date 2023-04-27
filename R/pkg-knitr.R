@@ -13,7 +13,7 @@
 #' @name knit_print.DataFrame
 #' @param x a polars DataFrame to knit_print
 #' @param ... additional arguments, not used
-#' @keywords DataFrame
+#' @keywords internal
 #' @export
 knit_print.DataFrame = function(x, ...) {
   .print_opt = getOption("polars.df_print", "auto")

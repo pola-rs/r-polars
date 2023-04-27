@@ -3,7 +3,7 @@
 \name{pl$from_arrow}
 \alias{pl$from_arrow}
 \alias{from_arrow}
-\title{pl$from_arrow}
+\title{from_arrow}
 \arguments{
 \item{data}{arrow Table or Array or ChunkedArray}
 
@@ -36,4 +36,4 @@ pl$from_arrow(
   schema = char_schema
 )
 }
-\keyword{conversion}
+\keyword{pl}

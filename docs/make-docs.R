@@ -72,7 +72,6 @@ get_general_classes <- function() {
 
 # Nested list with general classes as titles and methods for these classes
 # as children
-
 make_doc_hierarchy <- function() {
   general_classes <- get_general_classes()
 
@@ -87,7 +86,10 @@ make_doc_hierarchy <- function() {
     if (length(components) <= 1) next
 
     all_rd <<- all_rd[-which(all_rd %in% components)]
-    components <- components[-which(grepl("_class\\.Rd$", components))] %>%
+    idx <- grepl("_http://127.0.0.1:8000/reference/class\\.Rd$", components)
+    if (any(idx)) components <- components[-which(idx)] 
+
+    components <- components %>%
       gsub("\\.Rd", "\\.md", x = .) %>%
       paste0("reference/", .) %>%
       sort(x = .) %>%
@@ -133,6 +135,24 @@ make_doc_hierarchy <- function() {
   hierarchy
 }
 
+### Hierarchy
+make_doc_hierarchy = function() {
+  other = list.files("man", pattern = "\\.Rd")
+  hierarchy <- list()
+  for (x in c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy", "LazyGroupBy", "ExprBin", "ExprDT", "ExprStr", "Expr")) {
+    regex = paste0("^", x, "_")
+    files = grep(regex, other, value = TRUE)
+    tmp = lapply(files, \(x) paste0("reference/", x))
+    hierarchy[[x]] = setNames(tmp, sub("\\.Rd$", "", sub(".*_", "", files)))
+    other = setdiff(other, files)
+  }
+  # tmp = lapply(other, \(x) paste0("reference/", x))
+  # hierarchy[["Other"]] = setNames(tmp, sub("\\.Rd$", "", sub(".*_", "", other)))
+  # hierarchy[["Expr"]] = hierarchy[grepl("^Expr", names(hierarchy))]
+  # out = hierarchy[!grepl("^Expr\\w", names(hierarchy))]
+  # out = lapply(names(out), function(i) setNames(list(out[[i]]), i))
+  hierarchy
+}
 
 # Copy Rd files to "docs" folder and convert them to markdown
 

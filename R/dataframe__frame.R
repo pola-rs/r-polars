@@ -989,10 +989,9 @@ DataFrame_join = function(
 
 }
 
-#' to_struct and unnest again
-#' @name DataFrame_to_Struct_unnest
+#' to_struct
 #' @param name name of new Series
-#' @return @to_struct() returns a Series
+#' @return to_struct() returns a Series
 #' @aliases to_struct
 #' @keywords DataFrame
 #' @examples
@@ -1010,7 +1009,7 @@ DataFrame_to_struct = function(name = "") {
 
 ##TODO contribute polars add r-polars defaults for to_struct and unnest
 #' Unnest a DataFrame struct columns.
-#' @rdname DataFrame_to_Struct_unnest
+#' @keywords DataFrame
 #' @param names names of struct columns to unnest, default NULL unnest any struct column
 #' @return $unnest() returns a DataFrame with all column including any that has been unnested
 DataFrame_unnest = function(names = NULL) {

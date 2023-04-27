@@ -26,6 +26,7 @@ NULL
 #'
 #' @return self
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")

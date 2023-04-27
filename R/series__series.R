@@ -356,7 +356,8 @@ Series_to_r = \() {
 #' @description return R vector (implicit unlist)
 #' @return R vector
 #' @keywords Series
-#' @examples  #
+#' series_vec = pl$Series(letters[1:3])
+#' series_vec$to_vector()
 Series_to_vector = \() {
   unlist(unwrap(.pr$Series$to_r(self)), "in $to_vector():")
 }

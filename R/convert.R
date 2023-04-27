@@ -1,4 +1,4 @@
-#' pl$from_arrow
+#' from_arrow
 #' @description import Arrow Table or Array
 #' @name pl$from_arrow
 #' @param data arrow Table or Array or ChunkedArray
@@ -11,7 +11,7 @@
 #' Takes not effect for Array or ChunkedArray
 #' @return DataFrame or Series
 #' @aliases from_arrow
-#' @keywords conversion
+#' @keywords pl
 #' @examples
 #' pl$from_arrow(
 #'   data = arrow::arrow_table(iris),
