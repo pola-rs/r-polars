@@ -1,5 +1,5 @@
 [package]
-name = 'polars'   # r-polars
+name = 'r-polars'   # r-polars
 version = '0.1.0' # this version no is not used
 edition = '2021'
 

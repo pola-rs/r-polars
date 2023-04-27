@@ -830,6 +830,17 @@ DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
 }
 
+#' Head of a DataFrame
+#' @name DataFrame_head
+#' @description Get the first n rows of the query.
+#' @param n positive numeric or integer number not larger than 2^32
+#'
+#' @details any number will converted to u32. Negative raises error
+#' @keywords  DataFrame
+#' @return DataFrame
+DataFrame_head = function(n) {
+  self$lazy()$head(n)$collect()
+}
 
 #' Tail a DataFrame
 #' @name DataFrame_tail
