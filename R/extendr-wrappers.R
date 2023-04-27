@@ -985,8 +985,6 @@ Series$max <- function() .Call(wrap__Series__max, self)
 
 Series$sum <- function() .Call(wrap__Series__sum, self)
 
-Series$set_column_from_series <- function() .Call(wrap__Series__set_column_from_series, self)
-
 Series$std <- function(ddof) .Call(wrap__Series__std, self, ddof)
 
 Series$var <- function(ddof) .Call(wrap__Series__var, self, ddof)
