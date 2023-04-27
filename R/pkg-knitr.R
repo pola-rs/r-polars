@@ -18,8 +18,8 @@
 knit_print.DataFrame <- function(x, ...) {
   .print_opt <- getOption("polars.df_print", "auto")
   .rmd_df_print <- knitr::opts_knit$get("rmarkdown.df_print")
-  if (.print_opt == "html" ||
-    (.print_opt != "default" &&
+  if (isTRUE(.print_opt == "html") ||
+    (isTRUE(.print_opt != "default") &&
       !isTRUE(.rmd_df_print %in% c("default", "tibble")) &&
       knitr::is_html_output())) {
     x |>
