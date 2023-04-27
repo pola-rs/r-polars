@@ -30,7 +30,7 @@ requirements-py: .venv
 	$(VENV_BIN)/python -m pip install --upgrade pip
 	$(VENV_BIN)/pip install --upgrade mkdocs-material
 
-.PHONY: requirements-rs
+.PHONY: requirements-rs # TODO: Windows support?
 requirements-rs:
 	rustup toolchain install nightly
 	rustup default nightly
