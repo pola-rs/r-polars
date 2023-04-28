@@ -49,12 +49,20 @@ rd2md = function(src) {
   chunks = lapply(2:length(idx), function(i) tmp[idx[i - 1]:(idx[i] - 1)])
   for (i in seq_along(chunks)) {
     if (any(grepl("<h3>Usage</h3>", chunks[[i]], fixed = TRUE))) {
-      for (cl in c("DataFrame_", "Series_", "Expr_", "GroupBy_", "LazyFrame_", "LazyGroupBy_", "RField_")) {
+      # order is important
+      for (cl in c("DataFrame_", "Series_", "Expr_", "LazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_")) {
         chunks[[i]] = gsub(cl, paste0("&lt", sub("_$", "", cl), "&gt$"), chunks[[i]])
       }
     }
   }
   tmp = unlist(chunks)
+
+  # Title cleanup
+  tmp = tmp[3:length(tmp)]
+  tmp = paste(tmp, collapse = "\n")
+  tmp[1:3] = sub("<p>", "<h3>", tmp[1:3], fixed = TRUE)
+  tmp[1:3] = sub("</p>", "</h3>", tmp[1:3], fixed = TRUE)
+  tmp = na.omit(tmp)
 
   # write to file
   fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
