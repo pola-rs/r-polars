@@ -36,7 +36,7 @@ Config/Needs/website:
     Genentech/rd2markdown@c4fb386,
     magrittr,
     Rd2md,
-    stringr
+    stringr,
     tinkr,
     yaml
 Config/testthat/edition: 3
