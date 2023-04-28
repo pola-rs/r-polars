@@ -137,8 +137,7 @@ method_as_property = function(f, setter=FALSE) {
 #' via the new class functions.
 #'
 #' Having all functions in an namespace is similar to the rust- and python- polars api.
-#' @rdname pl
-#' @name pl
+#' @name pl_pl
 #' @aliases pl
 #' @keywords api
 #' @details If someone do not particularly like the letter combination `pl`, they are free to

@@ -1,5 +1,5 @@
 #' New Expr referring to all columns
-#' @name all
+#' @name pl_all
 #' @description
 #' Not to mix up with `Expr_object$all()` which is a 'reduce Boolean columns by AND' method.
 #'
@@ -23,7 +23,7 @@ pl$all = function(name=NULL) {
 
 
 #' Start Expression with a column
-#' @name col
+#' @name pl_col
 #' @description
 #'Return an expression representing a column in a DataFrame.
 #' @param name
@@ -103,7 +103,7 @@ pl$col = function(name="", ...) {
 }
 
 #' an element in 'eval'-expr
-#' @name element
+#' @name pl_element
 #' @description Alias for an element in evaluated in an `eval` expression.
 #' @keywords Expr
 #' @return Expr
@@ -116,7 +116,7 @@ pl$element = function() pl$col("")
 #TODO move all lazy functions to a new keyword lazy functions
 
 #' pl$count
-#' @name count
+#' @name pl_count
 #' @description Count the number of values in this column/context.
 #' @param column if dtype is:
 #' - Series: count length of Series
@@ -148,7 +148,7 @@ pl$count = function(column = NULL)  { # -> Expr | int:
 
 
 #' pl$first
-#' @name first
+#' @name pl_first
 #' @description  Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take first value in `Series`
@@ -191,7 +191,7 @@ pl$first = function(column = NULL) {#-> Expr | Any:
 
 
 #' pl$last
-#' @name last
+#' @name pl_last
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take last value in `Series`
@@ -233,7 +233,7 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 
 
 #' pl$mean
-#' @name mean
+#' @name pl_mean
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take mean value in `Series`
@@ -278,7 +278,7 @@ pl$mean = function(...) { #-> Expr | Any:
 
 
 #' pl$median
-#' @name median
+#' @name pl_median
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take median value in `Series`
@@ -328,7 +328,7 @@ pl$median = function(...) { #-> Expr | Any:
 
 #' sum across expressions / literals / Series
 #' @description  syntactic sugar for starting a expression with sum
-#' @name sum
+#' @name pl_sum
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -373,7 +373,7 @@ pl$sum = function(...) {
 
 #' min across expressions / literals / Series
 #' @description Folds the expressions from left to right, keeping the first non-null value.
-#' @name min
+#' @name pl_min
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -415,7 +415,7 @@ pl$min = function(...) {
 
 #' max across expressions / literals / Series
 #' @description Folds the expressions from left to right, keeping the first non-null value.
-#' @name max
+#' @name pl_max
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -455,7 +455,7 @@ pl$max = function(...) {
 
 #' Coalesce
 #' @description Folds the expressions from left to right, keeping the first non-null value.
-#' @name coalesce
+#' @name pl_coalesce
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -486,6 +486,10 @@ pl$coalesce = function(...) {
 
 
 
+#' Standard deviation
+#' @description  syntactic sugar for starting a expression with std
+#' @name pl_std
+#' @inheritParams LazyFrame_std
 pl$std = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$std(ddof))
   if (is_string(column)) return(pl$col(column)$std(ddof))
@@ -493,6 +497,11 @@ pl$std = function(column, ddof = 1) {
   stopf("pl$std: this input is not supported")
 }
 
+
+#' Variance
+#' @description  syntactic sugar for starting a expression with var
+#' @name pl_var
+#' @inheritParams LazyFrame_var
 pl$var = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$var(ddof))
   if (is_string(column)) return(pl$col(column)$var(ddof))
@@ -505,7 +514,7 @@ pl$var = function(column, ddof = 1) {
 
 #' Concat the arrays in a Series dtype List in linear time.
 #' @description Folds the expressions from left to right, keeping the first non-null value.
-#' @name coalesce
+#' @name pl_concat_list
 #' @param exprs list of Expr or Series or strings or a mix, or a char vector
 #' @return Expr
 #'
@@ -538,7 +547,7 @@ pl$concat_list = function(exprs) {
 
 
 #' struct
-#' @name struct
+#' @name pl_struct
 #' @aliases struct
 #' @description Collect several columns into a Series of dtype Struct.
 #' @param exprs Columns/Expressions to collect into a Struct.

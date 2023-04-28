@@ -1,6 +1,6 @@
 #' from_arrow
 #' @description import Arrow Table or Array
-#' @name pl$from_arrow
+#' @name pl_from_arrow
 #' @param data arrow Table or Array or ChunkedArray
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
 #' Array is already contiguous. Not implemented for Table. C

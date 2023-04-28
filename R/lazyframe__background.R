@@ -50,6 +50,7 @@ PolarsBackgroundHandle_join = function() {
 #'
 #' @return Bool
 #'
+#' @keywords internal
 #' @examples
 #' lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())
 #' handle = lazy_df$collect_background()

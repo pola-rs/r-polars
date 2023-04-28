@@ -69,7 +69,7 @@ get_general_classes <- function() {
   gsub("_class\\.Rd$", "", rd_files)
 }
 
-# Hierarchy
+# Reference hierarchy
 # output structure example:
 # list(
 #   list("DataFrame" = c("class: reference/DataFrame_class.md")),
@@ -86,7 +86,8 @@ make_doc_hierarchy = function() {
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
-    out = append(out, setNames(list(tmp), cl))
+    cl_label = ifelse(cl == "pl", "Polars", cl)
+    out = append(out, setNames(list(tmp), cl_label))
     other = setdiff(other, files)
   }
   # expr: nested
@@ -106,11 +107,6 @@ make_doc_hierarchy = function() {
   out = append(out, setNames(list(tmp), "Other"))
   out
 }
-
-
-# Minimal Working Example
-# make_doc_hierarchy = function() {
-# }
 
 
 # Copy Rd files to "docs" folder and convert them to markdown

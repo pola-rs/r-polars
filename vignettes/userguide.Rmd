@@ -35,9 +35,11 @@ Requires new Polars version:
 * `df$describe()`
 ````
 
-[The Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/) is an introduction to the Polars DataFrame library. Its goal is to introduce you to Polars by going through examples and comparing it to other solutions. Some design choices are introduced here. The guide will also introduce you to optimal usage of Polars.
+[The Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/) is a detailed tutorial about the Polars DataFrame library. Its goal is to introduce you to Polars by going through examples and comparing it to other solutions. Some design choices are introduced there. The guide also introduces you to optimal usage of Polars. The Polars User Guide is available at this link:
 
-Currently, the Polars User Guide includes code examples in Python and Rust. The goal of this guide is to add examples in R. The R examples are not complete yet; when they are complete, our goal is to merge the R examples into the main User Guide. If you want to help, please submit a pull request to the [R polars Github repository.](https://github.com/pola-rs/r-polars)
+https://pola-rs.github.io/polars-book/user-guide/
+
+Currently, the User Guide includes code examples in Python and Rust. This page complements the guide with examples in R. The R examples are not complete yet; when they are complete, our goal is to merge them into the main User Guide. If you want to help, please submit a pull request to the [R polars Github repository.](https://github.com/pola-rs/r-polars)
 
 The current page works as a reference document, for side-by-side comparisons with the Python and Rust examples in the main User Guide.
 
