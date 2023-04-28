@@ -42,6 +42,16 @@ rd2md = function(src) {
     ex = downlit::evaluate_and_highlight(ex)
     tmp = c(tmp[seq_len(idx)], "\n<pre class='r-example'><code>", ex, "</code></pre>")
   }
+  
+  # Usage cleanup
+  tmp = paste(tmp, collapse = "\n")
+  for (cl in c("DataFrame", "Series", "Expr", "GroupBy", "LazyFrame", "LazyGroupBy")) {
+    x = sprintf("<h3>Usage</h3>\n\n<pre><code class='r-example'>%s_", cl)
+    y = sprintf("<h3>Usage</h3>\n\n<pre><code class='r-example'>&lt%s&gt$", cl)
+    tmp = sub(x, y, tmp)
+    tmp = sub("language-R", "r-example", tmp)
+  }
+  tmp = strsplit(tmp, split = "\n")[[1]]
 
   # write to file
   fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
