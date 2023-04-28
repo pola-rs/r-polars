@@ -40,7 +40,8 @@ rd2md = function(src) {
     ex = tmp[(idx + 1):length(tmp)]
     ex = gsub("<.*>", "", ex)
     ex = downlit::evaluate_and_highlight(ex)
-    tmp = c(tmp[seq_len(idx)], "\n<pre class='r-example'><code>", ex, "</code></pre>")
+    ex = sub("<span class='r-in'><span></span></span>\n", "", ex, fixed = TRUE)
+    tmp = c(tmp[2:idx], "\n<pre class='r-example'><code>", ex, "</code></pre>")
   }
   
   # Usage cleanup
