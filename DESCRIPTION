@@ -38,7 +38,7 @@ Config/Needs/website:
     Rd2md,
     stringr
     tinkr,
-    yaml,
+    yaml
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
