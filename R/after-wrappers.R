@@ -5,7 +5,7 @@ build_debug_print = FALSE
 #' extendr methods into pure functions
 #'
 #' @param env environment object output from extendr-wrappers.R classes
-#' @keywords internals
+#' @keywords internal
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
 #' modify formals to have a self argument
@@ -28,11 +28,12 @@ extendr_method_to_pure_functions = function(env) {
 #' @description `.pr`
 #' Original extendr bindings converted into pure functions
 #' @aliases  .pr
-#' @keywords api_private
+#' @keywords internal api_private
 #' @export
 #' @examples
 #' #.pr$DataFrame$print() is an external function where self is passed as arg
 #' polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
+#' @keywords internal
 #' @examples
 #' polars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
 .pr            = new.env(parent=emptyenv())
@@ -117,6 +118,7 @@ if (build_debug_print) cat("\n")
 #' @description Internal function, see use in source
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
+#' @keywords internal
 #' @return function subclassed into c("property","function") or c("setter","property","function")
 method_as_property = function(f, setter=FALSE) {
   class(f) = if(setter) {

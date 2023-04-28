@@ -44,6 +44,7 @@ Series
 
 
 #' Wrap as Series
+#' @keywords internal
 #' @description input is either already a Series of will be passed to the Series constructor
 #' @param x a Series or something-turned-into-Series
 #' @return Series
@@ -57,7 +58,7 @@ wrap_s = function(x) {
 #' @export
 #' @param x Series
 #' @param ... not used
-#' @keywords Series
+#' @keywords internal
 #' @name Series_print
 #'
 #' @return invisible(self)
@@ -119,12 +120,11 @@ length.Series = \(x) x$len()
 
 
 #' Create new Series
-#' @name Series
 #' @description found in api as pl$Series named Series_constructor internally
 #'
 #' @param x any vector
 #' @param name string
-#' @rdname Series
+#' @name pl_Series
 #' @keywords Series_new
 #' @return Series
 #' @aliases Series

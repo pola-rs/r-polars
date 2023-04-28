@@ -37,7 +37,7 @@ print.Expr = function(x, ...) {
 }
 
 #' internal method print Expr
-#' @name Expr$print()
+#' @name Expr_print
 #' @keywords Expr
 #' @examples pl$DataFrame(iris)
 Expr_print = function() {

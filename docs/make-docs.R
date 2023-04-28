@@ -33,7 +33,7 @@ is_internal <- function(file) {
   reg <- regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl=TRUE))
 
   test <- vapply(seq_along(y), function(foo) {
-    z[foo] && "internal" %in% reg[[foo]]
+    z[foo] && ("internal" %in% reg[[foo]] || "docs" %in% reg[[foo]])
   }, FUN.VALUE = logical(1L))
 
   any(test)
@@ -69,90 +69,49 @@ get_general_classes <- function() {
   gsub("_class\\.Rd$", "", rd_files)
 }
 
-
-# Nested list with general classes as titles and methods for these classes
-# as children
-make_doc_hierarchy <- function() {
-  general_classes <- get_general_classes()
-
-  all_rd <- list.files("man", pattern = "\\.Rd")
-
-  hierarchy <- list()
-  for (i in seq_along(general_classes)) {
-    components <- list.files("man", pattern = paste0("^", general_classes[i]))
-    components <- Filter(Negate(is_internal), paste0("man/", components))
-    components <- gsub("^man/", "", components)
-
-    if (length(components) <= 1) next
-
-    all_rd <<- all_rd[-which(all_rd %in% components)]
-    idx <- grepl("_http://127.0.0.1:8000/reference/class\\.Rd$", components)
-    if (any(idx)) components <- components[-which(idx)] 
-
-    components <- components %>%
-      gsub("\\.Rd", "\\.md", x = .) %>%
-      paste0("reference/", .) %>%
-      sort(x = .) %>%
-      paste0(
-        gsub(
-          paste0("^reference/", general_classes[i], "\\_"),
-          "", x = .
-        ),
-        ": ", .
-      ) %>%
-      gsub("\\.md:", ":", x = .) %>%
-      gsub("^reference/", "", x = .)
-
-    foo <- list(components)
-    names(foo) <- general_classes[i]
-    hierarchy[[i]] <- foo
-  }
-
-  remaining <- grep(paste0("^(", paste(general_classes, collapse = "|"), ")"),
-                    all_rd, invert = TRUE)
-  remaining <- Filter(Negate(is_internal), paste0("man/", all_rd[remaining]))
-  remaining <- gsub("^man/", "", remaining)
-  remaining <- remaining %>%
-    gsub("\\.Rd", "\\.md", x = .) %>%
-    paste0("reference/", .) %>%
-    sort(x = .) %>%
-    paste0(
-      gsub(
-        paste0("^reference/", general_classes[i], "\\_"),
-        "", x = .
-      ),
-      ": ", .
-    ) %>%
-    gsub("\\.md:", ":", x = .) %>%
-    gsub("^reference/", "", x = .)
-
-  foo <- list(remaining)
-  names(foo) <- "Other"
-  hierarchy[[length(hierarchy) + 1]] <- foo
-
-  hierarchy <- Filter(Negate(is.null), hierarchy)
-
-  hierarchy
-}
-
-### Hierarchy
+# Hierarchy
+# output structure example:
+# list(
+#   list("DataFrame" = c("class: reference/DataFrame_class.md")),
+#   list("Expr" = c("abs: reference/Expr_abs.md", "add: reference/Expr_add.md"))
+# )
 make_doc_hierarchy = function() {
   other = list.files("man", pattern = "\\.Rd")
-  hierarchy <- list()
-  for (x in c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy", "LazyGroupBy", "ExprBin", "ExprDT", "ExprStr", "Expr")) {
-    regex = paste0("^", x, "_")
-    files = grep(regex, other, value = TRUE)
-    tmp = lapply(files, \(x) paste0("reference/", x))
-    hierarchy[[x]] = setNames(tmp, sub("\\.Rd$", "", sub(".*_", "", files)))
+  other = Filter(\(x) !is_internal(paste0("man/", x)), other)
+  other = sub("Rd$", "md", other)
+  out = list()
+  # order determines order in navbar
+  classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
+              "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
+  for (cl in classes) {
+    files = grep(paste0("^", cl, "_"), other, value = TRUE)
+    tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
+    out = append(out, setNames(list(tmp), cl))
     other = setdiff(other, files)
   }
-  # tmp = lapply(other, \(x) paste0("reference/", x))
-  # hierarchy[["Other"]] = setNames(tmp, sub("\\.Rd$", "", sub(".*_", "", other)))
-  # hierarchy[["Expr"]] = hierarchy[grepl("^Expr", names(hierarchy))]
-  # out = hierarchy[!grepl("^Expr\\w", names(hierarchy))]
-  # out = lapply(names(out), function(i) setNames(list(out[[i]]), i))
-  hierarchy
+  # expr: nested
+  nam = c(
+    "arr" = "Array",
+    "ExprBin" = "Binary",
+    "ExprDT" = "DateTime",
+    "ExprMeta" = "Meta",
+    "ExprStr" = "String",
+    "ExprStruct" = "Struct",
+    "Expr" = "Other")
+  tmp = lapply(names(nam), \(n) setNames(list(out[[n]]), nam[n]))
+  out = out[!names(out) %in% names(nam)]
+  out[["Expr"]] = tmp
+  # other
+  tmp = sprintf("%s: reference/%s", sub("\\.md$", "", other), other)
+  out = append(out, setNames(list(tmp), "Other"))
+  out
 }
+
+
+# Minimal Working Example
+# make_doc_hierarchy = function() {
+# }
+
 
 # Copy Rd files to "docs" folder and convert them to markdown
 
@@ -180,9 +139,6 @@ convert_to_md <- function() {
 
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
-
-  ### Uncomment to add a reference homepage
-  hierarchy <- append(list(list("Reference" = "reference.md")), hierarchy)
 
   new_yaml <- orig_yaml <- yaml.load_file(
     "docs/mkdocs.yml"

@@ -43,6 +43,7 @@ Ok = function(x) {
 
 #' Wrap in Err
 #' @param x any R object
+#' @keywords internal
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
   if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL, not allowed")
@@ -51,6 +52,7 @@ Err = function(x) {
 
 
 #' map an Err part of Result
+#' @keywords internal
 #' @param x any R object
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
@@ -72,6 +74,7 @@ map = function(x, f) {
 #' @param x any R object
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
+#' @keywords internal
 and_then = function(x, f) {
   if(is_err(x)) return(x)
   guard_result(f(x$ok), msg ="in and_then(x, f): f must return a result")
@@ -96,6 +99,7 @@ or_else = function(x, f) {
 #' @param context a msg to prefix a raised error with
 #'
 #' @return the ok-element of list , or a error will be thrown
+#' @keywords internal
 #' @export
 #'
 #' @examples
@@ -153,7 +157,7 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
 #' @param call calling context
-#' @keywords internals
+#' @keywords internal
 #'
 #' @return throws an error
 #'

@@ -46,6 +46,7 @@ print.RField = function(x, ...) {
 
 #' Print a polars Field
 #'
+#' @keywords internal
 #' @return self
 #'
 #' @examples
@@ -65,6 +66,7 @@ RField.property_setters = new.env(parent = emptyenv())
 #' get/set Field name
 #' @description get/set Field name
 #'
+#' @name pl_Field
 #' @return name
 #' @keywords DataType
 #'

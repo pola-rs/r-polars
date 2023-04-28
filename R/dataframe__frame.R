@@ -88,7 +88,7 @@ DataFrame
 
 
 #' Create new DataFrame
-#' @name DataFrame
+#' @name pl_DataFrame
 #'
 #' @param ... One of the following:
 #'  - a data.frame or something that inherits data.frame or DataFrame
@@ -255,6 +255,7 @@ pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
 
 #' s3 method print DataFrame
 #'
+#' @keywords internal
 #' @param x DataFrame
 #' @param ... not used
 #'
@@ -858,7 +859,7 @@ DataFrame_tail = function(n) {
 #' @keywords DataFrame
 #' @return filtered DataFrame
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
-#' @name filter()
+#' @name DataFrame_filter
 DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }

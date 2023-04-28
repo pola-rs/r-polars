@@ -17,3 +17,4 @@ same R object wrapped in a Err-result
 \description{
 map an ok-value or pass on an err-value
 }
+\keyword{internal}

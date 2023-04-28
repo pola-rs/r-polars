@@ -1,7 +1,7 @@
 
 #' Extra polars auto completion
-#' @name extra_auto_completion
 #' @param activate bool default TRUE, enable chained auto-completion
+#' @name extra_auto_completion
 #' @return NULL
 #'
 #' @details polars always supports auto completetion via .DollarNames.

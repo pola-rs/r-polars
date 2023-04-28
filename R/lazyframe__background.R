@@ -14,6 +14,7 @@
 #' @param ... not used
 #' @keywords internal
 #'
+#' @keywords internal
 #' @return self
 #' @export
 #'
@@ -33,6 +34,7 @@ print.PolarsBackgroundHandle = function(x, ...) {
 #' PolarsBackgroundHandle
 #'
 #' @return DataFrame
+#' @keywords internal
 #'
 #' @examples
 #' lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())

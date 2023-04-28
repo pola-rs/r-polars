@@ -35,6 +35,7 @@ GroupBy <- new.env(parent = emptyenv())
 #'
 #' @param x DataFrame
 #' @param ... not used
+#' @keywords internal
 #' @return self
 #' @export
 #'
