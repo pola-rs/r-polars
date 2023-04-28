@@ -43,7 +43,6 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 /* Dark theme */
 [data-md-color-scheme="slate"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --md-primary-fg-color: #333333;
   --md-primary-bg-color: #a6a6a6;
   --md-default-bg-color: #121212;
@@ -84,10 +83,6 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 
 .md-tabs__link--active {
   font-weight: bold;
-}
-
-.md-sidebar__scrollwrap:hover {
-	scrollbar-color: var(--custom-scrollbar-col);
 }
 
 .md-sidebar__scrollwrap:hover {
