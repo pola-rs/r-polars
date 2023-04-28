@@ -1,9 +1,25 @@
-The primary developer of the upstream Polars project is Ritchie Vink
-(\[@ritchie46\](<https://github.com/ritchie46>)). This R port is
-maintained by Søren Welling
-(\[@sorhawell\](<https://github.com/sorhawell>)) and
-[contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
+---
+title: "About"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{About}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+The primary developer of the upstream Polars project is Ritchie Vink
+([@ritchie46](https://github.com/ritchie46)). This R port is
+maintained by Søren Welling
+([@sorhawell](https://github.com/sorhawell)) and
+[contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
 
 Development occurs on Github: https://github.com/pola-rs/r-polars
 

@@ -40,5 +40,5 @@ nav:
     - Get started: articles/polars.md
     - Polars User Guide: articles/userguide.md
   - Reference: # Auto updated by altdoc
-  - About: about.md
+  - About: articles/about.md
   - Changelog: NEWS.md
