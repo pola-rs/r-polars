@@ -1371,7 +1371,7 @@ Expr_round = function(decimals) {
 #' @examples
 #' pl$DataFrame(
 #'   a=1:4,b=c(1,2,3,4),c="bob"
-#' )$select(
+#' )$select(2
 #'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
 #'   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 #' )
@@ -2578,11 +2578,14 @@ Expr_rolling_apply = function(
     weights = NULL,
     min_periods = NULL,
     center = FALSE,#:bool,
+    by = NULL,#: Nullable<String>,
+    closed = "left" #;: Nullable<String>,
+
 ) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   unwrap(.pr$Expr$rolling_apply(
     self, wargs$window_size, weights,
-    wargs$min_periods, center
+    wargs$min_periods, center, by, closed
   ))
 }
 
