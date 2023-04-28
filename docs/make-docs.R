@@ -44,14 +44,17 @@ rd2md = function(src) {
   }
   
   # Usage cleanup
-  tmp = paste(tmp, collapse = "\n")
-  for (cl in c("DataFrame", "Series", "Expr", "GroupBy", "LazyFrame", "LazyGroupBy")) {
-    x = sprintf("<h3>Usage</h3>\n\n<pre><code class='r-example'>%s_", cl)
-    y = sprintf("<h3>Usage</h3>\n\n<pre><code class='r-example'>&lt%s&gt$", cl)
-    tmp = sub(x, y, tmp)
-    tmp = sub("language-R", "r-example", tmp)
+  idx = grep("<h3>", tmp)
+  idx = c(idx, length(tmp) + 1)
+  chunks = lapply(2:length(idx), function(i) tmp[idx[i - 1]:(idx[i] - 1)])
+  for (i in seq_along(chunks)) {
+    if (any(grepl("<h3>Usage</h3>", chunks[[i]], fixed = TRUE))) {
+      for (cl in c("DataFrame_", "Series_", "Expr_", "GroupBy_", "LazyFrame_", "LazyGroupBy_", "RField_")) {
+        chunks[[i]] = gsub(cl, paste0("&lt", sub("_$", "", cl), "&gt$"), chunks[[i]])
+      }
+    }
   }
-  tmp = strsplit(tmp, split = "\n")[[1]]
+  tmp = unlist(chunks)
 
   # write to file
   fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
