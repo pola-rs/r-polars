@@ -687,7 +687,10 @@ ExprDT_convert_time_zone = function(tz) {
 #' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 #'
 #' @name ExprDT_replace_time_zone
-#' @param tz Null or string time zone from base::OlsonNames()
+#' @param tz NULL or string time zone from base::OlsonNames()
+#' @param use_earliest NULL or logical.
+#' If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
+#' If NULL (the default), then ambiguous datetimes will raise.
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @format function
@@ -716,9 +719,9 @@ ExprDT_convert_time_zone = function(tz) {
 #'     $alias("strip tz from with-'Europe/Amsterdam'")
 #' )
 #' df2
-ExprDT_replace_time_zone = function(tz) {
+ExprDT_replace_time_zone = function(tz, use_earliest = NULL) {
   check_tz_to_result(tz) |>
-    map(\(valid_tz) .pr$Expr$dt_replace_time_zone(self, valid_tz)) |>
+    map(\(valid_tz) .pr$Expr$dt_replace_time_zone(self, valid_tz, use_earliest)) |>
     map_err(\(err) paste("in dt$replace_time_zone:", err)) |>
     unwrap()
 }

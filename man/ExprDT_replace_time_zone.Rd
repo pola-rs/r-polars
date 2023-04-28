@@ -8,7 +8,11 @@
 function
 }
 \arguments{
-\item{tz}{Null or string time zone from base::OlsonNames()}
+\item{tz}{NULL or string time zone from base::OlsonNames()}
+
+\item{use_earliest}{NULL or logical.
+If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
+If NULL (the default), then ambiguous datetimes will raise.}
 }
 \value{
 Expr of i64
