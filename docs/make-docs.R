@@ -11,6 +11,8 @@ library(tinkr)
 library(magrittr)
 library(stringr)
 library(rd2markdown) # Genentech/rd2markdown (github only)
+library(Rd2md) # for "arguments" section in Rd files
+
 
 pkgload::load_all(quiet = TRUE)
 
@@ -138,18 +140,67 @@ make_doc_hierarchy <- function() {
 
 convert_to_md <- function() {
   rd_files <- list.files("man", pattern = "\\.Rd")
-
+  possible_classes <- get_general_classes()
   r_source <- get_r_source()
 
   for (i in rd_files) {
     if (is_internal(paste0("man/", i))) next
-    out <- rd2markdown::rd2markdown(file = paste0("man/", i))
+
+    # Get content of Rd and get corresponding R source
+    rd <- get_rd(file = paste0("man/", i))
     corr_source <- unlist(r_source[r_source$rd == i, "r_source"])
-    out <- sub("\\\n\\\n",
-               paste0("\\\n\\\n*Source: [", corr_source,
-                      "](https://github.com/pola-rs/r-polars/tree/main/",
-                      corr_source, ")*\\\n\\\n"),
-               out)
+
+    # Get important sections one by one, in the right order, and format them
+    # in markdown individually
+    tmp <- list()
+    for (frag in c("title", "source", "description", "usage", "arguments",
+                   "details", "value", "examples")) {
+
+      if (frag == "source") {
+        tmp[[frag]] <- paste0("*Source: [", corr_source,
+                              "](https://github.com/pola-rs/r-polars/tree/main/",
+                              corr_source, ")*")
+        next
+      }
+
+      if (frag == "arguments") {
+        other_rd <- Rd2md::parseRd(tools::parse_Rd(paste0("man/", i)))
+        if (is.null(other_rd$arguments)) next
+
+        args <- c()
+        for (arg in seq_along(other_rd$arguments)) {
+          args[arg] <- paste0("`", names(other_rd$arguments)[arg], "`\n\n:  ",
+                            other_rd$arguments[arg], "\n")
+        }
+        tmp[[frag]] <- paste0("## Arguments\n\n", paste(args, collapse = "\n"))
+      } else {
+
+        tmp[[frag]] <- rd2markdown(rd, fragments = frag)
+
+      }
+
+      if (frag == "usage") {
+        for (cl in possible_classes) {
+          tmp[[frag]] <- gsub(
+            paste0("\\\n", cl, "\\_"),
+            paste0("\\\n<", cl, ">\\$"),
+            tmp[[frag]]
+          )
+        }
+
+        # Need to hardcode the usage for `pl$DataFrame()` because not supported
+        # by Rd files without warning in R CMD check
+        if (tmp[[frag]] == "" && i == "DataFrame.Rd") {
+          tmp[[frag]] <- "```r\npl$DataFrame(..., make_names_unique = TRUE, parallel = FALSE)\n```"
+        }
+        tmp[[frag]] <- paste0("## Usage\n\n", tmp[[frag]])
+      }
+    }
+
+    # Remove empty sections and collapse the list into a unique markdown file
+    tmp <- Filter(\(x) x != "", tmp)
+    out <- paste(tmp, collapse = "\n\n")
+
     cat(out, file = paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i)))
   }
 }

@@ -28,6 +28,7 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: yes
   - pymdownx.superfences
+  - def_list
 repo_url: https://github.com/pola-rs/r-polars
 repo_name: r-polars
 plugins:

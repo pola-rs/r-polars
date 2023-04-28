@@ -31,13 +31,14 @@ Suggests:
     rmarkdown,
     withr
 Config/Needs/website:
+    cli,
     etiennebacher/altdoc,
     Genentech/rd2markdown@c4fb386,
-    yaml,
     magrittr,
-    cli,
-    tinkr,
+    Rd2md,
     stringr
+    tinkr,
+    yaml,
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
