@@ -53,6 +53,16 @@ patrick::with_parameters_test_that("inspection",
     .cases = make_cases()
 )
 
+patrick::with_parameters_test_that("dimnames",
+  {
+    df_r = mtcars |>
+      `rownames<-`(NULL) # Drop row names
+    df_pl = pl$DataFrame(mtcars)
+
+    expect_equal(.fn(df_r), .fn(df_pl))
+  },
+  .fn = c(dimnames, colnames, rownames, row.names, names)
+)
 
 make_cases <- function() {
   tibble::tribble(
