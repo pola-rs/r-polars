@@ -62,9 +62,15 @@ rd2md = function(src) {
   # Title cleanup
   tmp = tmp[3:length(tmp)]
   tmp = paste(tmp, collapse = "\n")
-  tmp[1:3] = sub("<p>", "<h3>", tmp[1:3], fixed = TRUE)
-  tmp[1:3] = sub("</p>", "</h3>", tmp[1:3], fixed = TRUE)
+  tmp[1:3] = sub("<p>", "<h2>", tmp[1:3], fixed = TRUE)
+  tmp[1:3] = sub("</p>", "</h2>", tmp[1:3], fixed = TRUE)
   tmp = na.omit(tmp)
+
+  # R file source
+  source_file = get_r_source(rd)
+  to_add = paste0("<em>Source: <a href='", source_file$link, "'>",
+                  source_file$file, "</a></em>")
+  tmp = sub("</h2>", paste0("</h2>\n\n", to_add), tmp)
 
   # write to file
   fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
@@ -81,6 +87,19 @@ is_internal <- function(file) {
     z[foo] && ("internal" %in% reg[[foo]] || "docs" %in% reg[[foo]])
   }, FUN.VALUE = logical(1L))
   any(test)
+}
+
+get_r_source <- function(src) {
+  parsed <- as.character(rd)
+  contains_source <- grep("% Please edit documentation in", parsed)
+  r_source <- sub("% Please edit documentation in ", "",
+                 parsed[contains_source])
+  return(
+    list(
+      file = r_source,
+      link = paste0("https://github.com/pola-rs/r-polars/tree/main/", r_source)
+    )
+  )
 }
 
 
