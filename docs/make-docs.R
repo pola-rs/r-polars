@@ -97,7 +97,7 @@ make_doc_hierarchy = function() {
   other = Filter(\(x) !is_internal(paste0("man/", x)), other)
   other = sub("Rd$", "md", other)
   out = list()
-  # order determines order in navbar
+  # order determines order in sidebar
   classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
               "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
   for (cl in classes) {
