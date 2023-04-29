@@ -99,7 +99,7 @@ is_internal <- function(file) {
 }
 
 get_r_source <- function(src) {
-  parsed <- as.character(rd)
+  parsed <- as.character(src)
   contains_source <- grep("% Please edit documentation in", parsed)
   r_source <- sub("% Please edit documentation in ", "",
                  parsed[contains_source])
@@ -180,10 +180,9 @@ convert_hierarchy_to_yml <- function() {
 # Run all
 message("Converting Rd files to markdown...\n")
 rd_files <- list.files(here("man"), pattern = "\\.Rd")
-for (i in rd_files) {
-  if (is_internal(paste0("man/", i))) next
-  rd2md(here(paste0("man/", i)))
+for (i in seq_along(rd_files)) {
+  message(paste0("Updating file ", rd_files[i], " [", i, "/", length(rd_files), "]"))
+  if (is_internal(paste0("man/", rd_files[i]))) next
+  rd2md(here(paste0("man/", rd_files[i])))
 }
-
-message("Updating {.file docs/mkdocs.yaml}...\n")
 convert_hierarchy_to_yml()
