@@ -3,161 +3,150 @@
 ###### - get the Rd files, convert them to markdown in "docs/docs/reference" and
 ######   put them in "mkdocs.yaml"
 ###### - run the examples in the "Reference" files
-
-
-library(cli)
 library(yaml)
-library(tinkr)
-library(magrittr)
-library(stringr)
-library(rd2markdown) # Genentech/rd2markdown (github only)
+library(here)
+library(pkgload)
 
+# use latest version of polars
 pkgload::load_all(quiet = TRUE)
 
-if (fs::dir_exists(here::here("docs/docs/reference"))) {
-  fs::dir_delete(here::here("docs/docs/reference"))
+
+# delete old .md files
+if (dir.exists(here("docs/docs/reference"))) {
+  unlink(here::here("docs/docs/reference"), recursive = TRUE, force = TRUE)
 }
-fs::dir_create(here::here("docs/docs/reference"))
+dir.create(here("docs/docs/reference"))
 
 
+get_title <- function(file_path) {
+  text <- readLines(file_path)
+  title_line <- grep("\\\\title\\{.*\\}", text)
+  if (length(title_line) == 0) return(NULL)
+  title_text <- sub("\\\\title\\{(.*?)\\}", "\\1", text[title_line])
+  return(title_text)
+}
 
-# Is the Rd file for internal documentation only (if so, it won't be included
-# in the website)
+
+rd2md = function(src) {
+  # Rd -> html
+  rd = tools::parse_Rd(here(src))
+  tmp_html = paste0(tempfile(), ".html")
+  tools::Rd2HTML(rd, out = tmp_html)
+
+  # superfluous header and footer
+  tmp = readLines(tmp_html)
+  tmp = tmp[(grep("</table>$", tmp)[1] + 1):length(tmp)]
+  tmp = tmp[seq_len(which("</div>" == tmp) - 3)]
+
+  # first column (odd entries) of table in Arguments should not be wrapped
+  idx = grep("<td>", tmp)
+  idx = idx[seq_along(idx) %% 2 == 1]
+  tmp[idx] = sub("<td>", '<td style = "white-space: nowrap; font-family: monospace;>"', tmp[idx])
+
+  # examples: evaluate code blocks (assume examples are always last)
+  idx = which(tmp == "<h3>Examples</h3>")
+  if (length(idx) == 1) {
+    ex = tmp[(idx + 1):length(tmp)]
+    ex = gsub("<.*>", "", ex)
+    ex = gsub("&lt;-", "<-", ex)
+    ex = downlit::evaluate_and_highlight(ex)
+    ex = sub("<span class='r-in'><span></span></span>\n", "", ex, fixed = TRUE)
+    tmp = c(tmp[2:idx], "\n<pre class='r-example'><code>", ex, "</code></pre>")
+  }
+
+  # Usage cleanup
+  idx = grep("<h3>", tmp)
+  idx = c(idx, length(tmp) + 1)
+  chunks = lapply(2:length(idx), function(i) tmp[idx[i - 1]:(idx[i] - 1)])
+  for (i in seq_along(chunks)) {
+    if (any(grepl("<h3>Usage</h3>", chunks[[i]], fixed = TRUE))) {
+      # order is important
+      for (cl in c("DataFrame_", "Series_", "Expr_", "LazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_")) {
+        chunks[[i]] = gsub(cl, paste0("&lt", sub("_$", "", cl), "&gt$"), chunks[[i]])
+      }
+    }
+  }
+  tmp = unlist(chunks)
+
+  # title
+  title = get_title(here(src))
+  if (!is.null(title)) {
+    # tmp = c("---", paste("title: ", title), "---", "", tmp)
+    tmp = c(paste0("<h1>", title, "</h1>"), tmp)
+  }
+
+  # R file source
+  source_file = get_r_source(rd)
+  to_add = paste0("<em>Source: <a href='", source_file$link, "'>",
+                  source_file$file, "</a></em>")
+  tmp = sub("</h1>", paste0("</h1>\n\n", to_add), tmp)
+
+  # write to file
+  fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
+  writeLines(tmp, con = fn)
+}
+
 
 is_internal <- function(file) {
   y <- capture.output(tools::Rd2latex(file))
   z <- grepl("\\\\keyword\\{", y)
-
   if (!any(z)) return(FALSE)
-
-  reg <- regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl=TRUE))
-
+  reg <- regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl = TRUE))
   test <- vapply(seq_along(y), function(foo) {
-    z[foo] && "internal" %in% reg[[foo]]
+    z[foo] && ("internal" %in% reg[[foo]] || "docs" %in% reg[[foo]])
   }, FUN.VALUE = logical(1L))
-
   any(test)
 }
 
+get_r_source <- function(src) {
+  parsed <- as.character(src)
+  contains_source <- grep("% Please edit documentation in", parsed)
+  r_source <- sub("% Please edit documentation in ", "",
+                 parsed[contains_source])
+  return(
+    list(
+      file = r_source,
+      link = paste0("https://github.com/pola-rs/r-polars/tree/main/", r_source)
+    )
+  )
+}
 
-# Find the R file in which the function was documented
 
-get_r_source <- function() {
-  rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
-  out <- list()
-
-  for (i in seq_along(rd_files)) {
-    parsed <- as.character(tools::parse_Rd(rd_files[i], encoding = "UTF-8"))
-    contains_source <- grep("% Please edit documentation in", parsed)
-
-    r_source <- gsub("% Please edit documentation in ", "",
-                     parsed[contains_source])
-    rd <- gsub("^man/", "", rd_files[i])
-    out[[i]] <- list(rd, r_source)
+make_doc_hierarchy = function() {
+  other = list.files("man", pattern = "\\.Rd")
+  other = Filter(\(x) !is_internal(paste0("man/", x)), other)
+  other = sub("Rd$", "md", other)
+  out = list()
+  # order determines order in sidebar
+  classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
+              "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
+  for (cl in classes) {
+    files = grep(paste0("^", cl, "_"), other, value = TRUE)
+    tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
+    cl_label = ifelse(cl == "pl", "Polars", cl)
+    out = append(out, setNames(list(tmp), cl_label))
+    other = setdiff(other, files)
   }
-
-  out <- as.data.frame(do.call(rbind, out))
-  colnames(out) <- c("rd", "r_source")
+  # expr: nested
+  nam = c(
+    "arr" = "Array",
+    "ExprBin" = "Binary",
+    "ExprDT" = "DateTime",
+    "ExprMeta" = "Meta",
+    "ExprStr" = "String",
+    "ExprStruct" = "Struct",
+    "Expr" = "Other")
+  tmp = lapply(names(nam), \(n) setNames(list(out[[n]]), nam[n]))
+  out = out[!names(out) %in% names(nam)]
+  out[["Expr"]] = tmp
+  # other
+  tmp = sprintf("%s: reference/%s", sub("\\.md$", "", other), other)
+  out = append(out, setNames(list(tmp), "Other"))
   out
 }
 
 
-# Find general classes: DataFrame, GroupBy, etc.
-
-get_general_classes <- function() {
-  rd_files <- list.files("man", pattern = "_class\\.Rd")
-  gsub("_class\\.Rd$", "", rd_files)
-}
-
-
-# Nested list with general classes as titles and methods for these classes
-# as children
-
-make_doc_hierarchy <- function() {
-  general_classes <- get_general_classes()
-
-  all_rd <- list.files("man", pattern = "\\.Rd")
-
-  hierarchy <- list()
-  for (i in seq_along(general_classes)) {
-    components <- list.files("man", pattern = paste0("^", general_classes[i]))
-    components <- Filter(Negate(is_internal), paste0("man/", components))
-    components <- gsub("^man/", "", components)
-
-    if (length(components) <= 1) next
-
-    all_rd <<- all_rd[-which(all_rd %in% components)]
-    components <- components[-which(grepl("_class\\.Rd$", components))] %>%
-      gsub("\\.Rd", "\\.md", x = .) %>%
-      paste0("reference/", .) %>%
-      sort(x = .) %>%
-      paste0(
-        gsub(
-          paste0("^reference/", general_classes[i], "\\_"),
-          "", x = .
-        ),
-        ": ", .
-      ) %>%
-      gsub("\\.md:", ":", x = .) %>%
-      gsub("^reference/", "", x = .)
-
-    foo <- list(components)
-    names(foo) <- general_classes[i]
-    hierarchy[[i]] <- foo
-  }
-
-  remaining <- grep(paste0("^(", paste(general_classes, collapse = "|"), ")"),
-                    all_rd, invert = TRUE)
-  remaining <- Filter(Negate(is_internal), paste0("man/", all_rd[remaining]))
-  remaining <- gsub("^man/", "", remaining)
-  remaining <- remaining %>%
-    gsub("\\.Rd", "\\.md", x = .) %>%
-    paste0("reference/", .) %>%
-    sort(x = .) %>%
-    paste0(
-      gsub(
-        paste0("^reference/", general_classes[i], "\\_"),
-        "", x = .
-      ),
-      ": ", .
-    ) %>%
-    gsub("\\.md:", ":", x = .) %>%
-    gsub("^reference/", "", x = .)
-
-  foo <- list(remaining)
-  names(foo) <- "Other"
-  hierarchy[[length(hierarchy) + 1]] <- foo
-
-  hierarchy <- Filter(Negate(is.null), hierarchy)
-
-  hierarchy
-}
-
-
-# Copy Rd files to "docs" folder and convert them to markdown
-
-convert_to_md <- function() {
-  rd_files <- list.files("man", pattern = "\\.Rd")
-
-  r_source <- get_r_source()
-
-  for (i in rd_files) {
-    if (is_internal(paste0("man/", i))) next
-    out <- rd2markdown::rd2markdown(file = paste0("man/", i))
-    corr_source <- unlist(r_source[r_source$rd == i, "r_source"])
-    out <- sub("\\\n\\\n",
-               paste0("\\\n\\\n*Source: [", corr_source,
-                      "](https://github.com/pola-rs/r-polars/tree/main/",
-                      corr_source, ")*\\\n\\\n"),
-               out)
-    cat(out, file = paste0("docs/docs/reference/", gsub("\\.Rd", "\\.md", i)))
-  }
-}
-
-
-# Insert the "Reference" structure in the yaml (requires to overwrite the full
-# mkdocs.yml)
-
+# Insert the "Reference" structure in the yaml (requires to overwrite the full mkdocs.yml)
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
 
@@ -188,72 +177,12 @@ convert_hierarchy_to_yml <- function() {
 }
 
 
-# Evaluate examples in "Reference" files and plug them back
-
-eval_reference_examples <- function() {
-
-  rd_files <- list.files("man", pattern = "\\.Rd", full.names = TRUE)
-  rd_files <- Filter(Negate(is_internal), rd_files)
-  md_files <- gsub("^man/", "docs/docs/reference/", rd_files)
-  md_files <- gsub("\\.Rd$", "\\.md", md_files)
-
-  subset_even <- function(x) x[!seq_along(x) %% 2]
-
-  cli_progress_bar(
-    format = paste0(
-      "{pb_spin} Evaluating examples for file {.path {md_files[i]}} ",
-      "[{pb_current}/{pb_total}]   ETA:{pb_eta}"
-    ),
-    format_done = "{col_green(symbol$tick)} Done",
-    total = length(rd_files)
-  )
-
-  for (i in seq_along(rd_files)) {
-
-    cli_progress_update()
-
-    orig_ex <- rd2markdown::rd2markdown(
-      file = rd_files[i],
-      fragments = "examples"
-    )
-
-    if (orig_ex == "") next
-
-    lines <- orig_ex %>%
-      stringr::str_split("```.*", simplify = TRUE) %>%
-      subset_even() %>%
-      stringr::str_flatten("\n## new chunk \n") %>%
-      stringr::str_remove("^\\\n")
-
-    evaluated_ex <- paste(
-      "## Examples\n\n<pre class='r-example'><code>",
-      downlit::evaluate_and_highlight(lines),
-      "</code></pre>"
-    )
-
-    evaluated_ex <- gsub("class='r-example'><code> <span ",
-                         "class='r-example'><code><span ",
-                         evaluated_ex)
-
-    orig_md <- readLines(md_files[i], warn = FALSE) %>%
-      paste(., collapse = "\n")
-
-    new_md <- gsub("## Examples.*", "", orig_md)
-    new_md <- paste0(new_md, evaluated_ex)
-
-    cat(new_md, file = md_files[i])
-
-  }
-
-}
-
-
 # Run all
-
-cli_alert_info("Converting Rd files to markdown...")
-convert_to_md()
-cli_alert_info("Updating {.file docs/mkdocs.yaml}...")
+message("Converting Rd files to markdown...\n")
+rd_files <- list.files(here("man"), pattern = "\\.Rd")
+for (i in seq_along(rd_files)) {
+  message(paste0("Updating file ", rd_files[i], " [", i, "/", length(rd_files), "]"))
+  if (is_internal(paste0("man/", rd_files[i]))) next
+  rd2md(here(paste0("man/", rd_files[i])))
+}
 convert_hierarchy_to_yml()
-cli_alert_info("Running examples...")
-eval_reference_examples()
-

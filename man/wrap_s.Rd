@@ -15,3 +15,4 @@ Series
 \description{
 input is either already a Series of will be passed to the Series constructor
 }
+\keyword{internal}

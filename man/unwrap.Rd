@@ -33,3 +33,4 @@ tryCatch(
   error = function(err) as.character(err)
 )
 }
+\keyword{internal}

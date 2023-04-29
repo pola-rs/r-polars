@@ -20,3 +20,4 @@ print GroupBy
 \examples{
 pl$DataFrame(iris)$groupby("Species")
 }
+\keyword{internal}

@@ -19,3 +19,4 @@ check if z is a result
 both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
 If both ok and err has value then this is an invalid result
 }
+\keyword{internal}

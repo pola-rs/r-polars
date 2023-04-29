@@ -15,3 +15,4 @@ same R object wrapped in a Ok-result
 \description{
 Wrap in Ok
 }
+\keyword{internal}

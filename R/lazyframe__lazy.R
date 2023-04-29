@@ -115,6 +115,7 @@ LazyFrame
 #' @param ... not used
 #' @keywords LazyFrame
 #'
+#' @keywords internal
 #' @return self
 #' @export
 #'

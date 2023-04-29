@@ -195,6 +195,7 @@ pl$get_polars_opt_requirements = function() {
 
 #' internal keeping of state at runtime
 #' @name polars_runtime_flags
+#' @keywords internal
 #' @description This environment is used internally for the package to remember
 #' what has been going on. Currently only used to throw one-time warnings()
 runtime_state = new.env(parent = emptyenv())

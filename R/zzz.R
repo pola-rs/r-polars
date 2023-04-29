@@ -105,7 +105,7 @@ pl$scan_arrow_ipc = scan_arrow_ipc
 
 
 #' Get Memory Address
-#' @name mem_address
+#' @name pl_mem_address
 #' @description mimics pl$mem_address
 #' @param robj an R object
 #' @aliases mem_address

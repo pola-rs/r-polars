@@ -21,3 +21,4 @@ Print expr
 pl$col("some_column")$sum()$over("some_other_column")
 }
 \keyword{Expr}
+\keyword{internal}

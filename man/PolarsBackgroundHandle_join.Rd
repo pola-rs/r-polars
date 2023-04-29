@@ -18,3 +18,4 @@ handle = lazy_df$collect_background()
 df = handle$join()
 
 }
+\keyword{internal}

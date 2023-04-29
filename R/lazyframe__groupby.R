@@ -6,6 +6,7 @@
 #' @param x LazyGroupBy
 #' @param ... not used
 #' @return self
+#' @keywords internal
 #' @export
 #'
 print.LazyGroupBy = function(x, ...) {
