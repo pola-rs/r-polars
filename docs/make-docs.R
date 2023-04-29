@@ -72,14 +72,14 @@ rd2md = function(src) {
   title = get_title(here(src))
   if (!is.null(title)) {
     # tmp = c("---", paste("title: ", title), "---", "", tmp)
-    tmp = c(paste("#", title), tmp)
+    tmp = c(paste0("<h1>", title, "</h1>"), tmp)
   }
 
   # R file source
   source_file = get_r_source(rd)
   to_add = paste0("<em>Source: <a href='", source_file$link, "'>",
                   source_file$file, "</a></em>")
-  tmp = sub("</h2>", paste0("</h2>\n\n", to_add), tmp)
+  tmp = sub("</h1>", paste0("</h1>\n\n", to_add), tmp)
 
   # write to file
   fn = file.path(here("docs/docs/reference"), sub("Rd$", "md", basename(src)))
