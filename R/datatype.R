@@ -225,7 +225,7 @@ DataType_constructors = list(
 NULL
 
 #' Create Struct DataType
-#' @name pl_Struct
+#' @name pl_Struct_datatype
 #' @description Struct DataType Constructor
 #' @param datatype an inner DataType
 #' @return a list DataType with an inner DataType
