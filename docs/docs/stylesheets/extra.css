@@ -32,8 +32,6 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 
   --custom-scrollbar-col: var(--md-typeset-a-color-custom) white;
 
-  --custom-scrollbar-col: var(--md-typeset-a-color-custom) white;
-
   --span-op-color: #24292e;
   --span-fu-color: #6f42c1;
   --span-fl-color: #005cc5;
@@ -51,8 +49,6 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
   --md-typeset-a-color-hover: #538cc6;
 
   --search-bar-border: #666666;
-
-  --custom-scrollbar-col: var(--md-typeset-a-color-custom) #000;
 
   --custom-scrollbar-col: var(--md-typeset-a-color-custom) #000;
 
