@@ -29,21 +29,22 @@ rd2md = function(src) {
   tmp = readLines(tmp_html)
   tmp = tmp[(grep("</table>$", tmp)[1] + 1):length(tmp)]
   tmp = tmp[seq_len(which("</div>" == tmp) - 3)]
-  
+
   # first column of Arguments should not be wrapped
   tmp = sub('vertical-align: top;', 'white-space: nowrap;>', tmp, fixed = TRUE)
   idx = grep("<td>", tmp)
-  
+
   # examples: evaluate code blocks (assume examples are always last)
   idx = which(tmp == "<h3>Examples</h3>")
   if (length(idx) == 1) {
     ex = tmp[(idx + 1):length(tmp)]
     ex = gsub("<.*>", "", ex)
+    ex = gsub("&lt;-", "<-", ex)
     ex = downlit::evaluate_and_highlight(ex)
     ex = sub("<span class='r-in'><span></span></span>\n", "", ex, fixed = TRUE)
     tmp = c(tmp[2:idx], "\n<pre class='r-example'><code>", ex, "</code></pre>")
   }
-  
+
   # Usage cleanup
   idx = grep("<h3>", tmp)
   idx = c(idx, length(tmp) + 1)
