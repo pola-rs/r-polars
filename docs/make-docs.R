@@ -18,10 +18,18 @@ if (dir.exists(here("docs/docs/reference"))) {
 dir.create(here("docs/docs/reference"))
 
 
+get_title <- function(file_path) {
+  text <- readLines(file_path)
+  title_line <- grep("\\\\title\\{.*\\}", text)
+  if (length(title_line) == 0) return(NULL)
+  title_text <- sub("\\\\title\\{(.*?)\\}", "\\1", text[title_line])
+  return(title_text)
+}
+
+
 rd2md = function(src) {
   # Rd -> html
   rd = tools::parse_Rd(here(src))
-  tmp_md = paste0(tempfile(), ".md")
   tmp_html = paste0(tempfile(), ".html")
   tools::Rd2HTML(rd, out = tmp_html)
 
@@ -30,9 +38,10 @@ rd2md = function(src) {
   tmp = tmp[(grep("</table>$", tmp)[1] + 1):length(tmp)]
   tmp = tmp[seq_len(which("</div>" == tmp) - 3)]
 
-  # first column of Arguments should not be wrapped
-  tmp = sub('vertical-align: top;', 'white-space: nowrap;>', tmp, fixed = TRUE)
+  # first column (odd entries) of table in Arguments should not be wrapped
   idx = grep("<td>", tmp)
+  idx = idx[seq_along(idx) %% 2 == 1]
+  tmp[idx] = sub("<td>", '<td style = "white-space: nowrap; font-family: monospace;>"', tmp[idx])
 
   # examples: evaluate code blocks (assume examples are always last)
   idx = which(tmp == "<h3>Examples</h3>")
@@ -59,12 +68,12 @@ rd2md = function(src) {
   }
   tmp = unlist(chunks)
 
-  # Title cleanup
-  tmp = tmp[3:length(tmp)]
-  tmp = paste(tmp, collapse = "\n")
-  tmp[1:3] = sub("<p>", "<h2>", tmp[1:3], fixed = TRUE)
-  tmp[1:3] = sub("</p>", "</h2>", tmp[1:3], fixed = TRUE)
-  tmp = na.omit(tmp)
+  # title
+  title = get_title(here(src))
+  if (!is.null(title)) {
+    # tmp = c("---", paste("title: ", title), "---", "", tmp)
+    tmp = c(paste("#", title), tmp)
+  }
 
   # R file source
   source_file = get_r_source(rd)
@@ -108,7 +117,7 @@ make_doc_hierarchy = function() {
   other = Filter(\(x) !is_internal(paste0("man/", x)), other)
   other = sub("Rd$", "md", other)
   out = list()
-  # order determines order in navbar
+  # order determines order in sidebar
   classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
               "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
   for (cl in classes) {

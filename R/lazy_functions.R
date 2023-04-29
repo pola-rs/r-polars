@@ -488,8 +488,8 @@ pl$coalesce = function(...) {
 
 #' Standard deviation
 #' @description  syntactic sugar for starting a expression with std
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @name pl_std
-#' @inheritParams LazyFrame_std
 pl$std = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$std(ddof))
   if (is_string(column)) return(pl$col(column)$std(ddof))
@@ -500,8 +500,8 @@ pl$std = function(column, ddof = 1) {
 
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @name pl_var
-#' @inheritParams LazyFrame_var
 pl$var = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) return(column$var(ddof))
   if (is_string(column)) return(pl$col(column)$var(ddof))
