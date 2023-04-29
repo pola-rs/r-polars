@@ -130,6 +130,9 @@ make_doc_hierarchy = function() {
 convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
 
+  ### Uncomment to add a reference homepage
+  # hierarchy <- append(list(list("Reference" = "reference_home.md")), hierarchy)
+
   new_yaml <- orig_yaml <- yaml.load_file(
     "docs/mkdocs.yml"
   )
