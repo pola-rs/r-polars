@@ -1,19 +1,4 @@
----
-title: "About"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{About}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-options(rmarkdown.html_vignette.check_title = FALSE)
-```
+## Developers
 
 The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is
@@ -28,7 +13,7 @@ Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 
 The **polars** package for R is published under the MIT license.
 
-# MIT License
+## MIT License
 
 Copyright (c) 2023 rpolars authors
 
