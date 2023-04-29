@@ -2,11 +2,7 @@
 % Please edit documentation in R/Field.R
 \name{pl_Field}
 \alias{pl_Field}
-\alias{RField_name}
 \title{Create Field}
-\usage{
-RField_name()
-}
 \arguments{
 \item{name}{string name}
 
@@ -14,11 +10,9 @@ RField_name()
 }
 \value{
 a list DataType with an inner DataType
-
-name
 }
 \description{
-get/set Field name
+Create Field
 }
 \details{
 A Field is not a DataType but a name + DataType
@@ -32,17 +26,5 @@ pl$Field("city_names",pl$Utf8)
 # find any DataType bundled pl$dtypes
 print(pl$dtypes)
 
-field = pl$Field("Cities",pl$Utf8)
-
-#get name / datatype
-field$name
-field$datatype
-
-#set + get values
-field$name = "CityPoPulations" #<- is fine too
-field$datatype = pl$UInt32
-
-print(field)
 }
-\keyword{DataType}
 \keyword{pl}
