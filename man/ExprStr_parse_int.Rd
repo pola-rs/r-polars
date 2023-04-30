@@ -6,6 +6,9 @@
 \title{parse_int}
 \arguments{
 \item{radix}{Positive integer which is the base of the string we are parsing. Default: 2}
+
+\item{strict}{Bool, Default=TRUE will raise any ParseError or overflow as ComputeError.
+False silently convert to Null.}
 }
 \value{
 Expr: Series of dtype i32.
