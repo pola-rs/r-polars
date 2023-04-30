@@ -1421,13 +1421,11 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
 #' Top k values
 #' @description  Return the `k` largest elements.
-#' If 'reverse=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @param k numeric k top values to get
-#' @param reverse bool if true then k smallest values
 #' @return Expr
 #' @aliases top_k
 #' @name Expr_top_k
@@ -1436,11 +1434,31 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k , reverse = FALSE) {
+Expr_top_k = function(k) {
   if(!is.numeric(k) || k<0) stopf("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self,k , reverse)
+  .pr$Expr$top_k(self,k)
 }
 
+# TODO contribute polars, add arguments for Null/NaN/inf last/first, bottom_k unwraps k> len column
+#' Bottom k values
+#' @description  Return the `k` smallest elements.
+#' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+#' @keywords Expr
+#' @param k numeric k bottom values to get
+#' @return Expr
+#' @aliases bottom_k
+#' @name Expr_bottom_k
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$bottom_k(5))
+Expr_bottom_k = function(k) {
+  if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
+  .pr$Expr$bottom_k(self, k)
+}
 
 
 #' Index of a sort

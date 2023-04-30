@@ -896,21 +896,16 @@ test_that("Expr_k_top", {
 
   l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
 
-  #TODO contribute polars k_top always places NaN first no matter reverse,
-  # this behavour does not match Expr_sort
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$top_k(3)$alias("k_top"),
-    pl$col("a")$top_k(3,reverse=TRUE)$alias("k_top_rev")
-  )$to_list()
-
-  expect_identical(
-    l_actual,
-    list(
-      k_top = c(NaN, Inf,6),
-      k_top_rev = c(NaN,-Inf,0) #NaN lower and higher than any value
-    )
+    pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-
+  known = structure(list(k_top = c(Inf, 6, NaN), k_bot = c(NA, -Inf, 0)),
+   row.names = c( NA, -3L), class = "data.frame")
+  expect_equal(l_actual$to_data_frame(), known)
+  
+  #TODO contribute polars k_top always places NaN first no matter reverse,
+  # this behavour does not match Expr_sort
 })
 
 
