@@ -9,7 +9,6 @@
 \arguments{
 \item{x}{Series}
 
-
 \item{...}{Additional characters are ignored.}
 
 \item{str_length}{an integer. If specified,}
@@ -21,5 +20,4 @@ as.character for polars Series
 s = pl$Series(c("foo", "barbaz"))
 as.character(s)
 as.character(s, str_length = 3)
-
 }
