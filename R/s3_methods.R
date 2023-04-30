@@ -119,6 +119,14 @@ names.DataFrame = function(x) x$columns
 
 #' @export
 #' @noRd
+row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
+
+#' @export
+#' @noRd
+dimnames.DataFrame = function(x) list(row.names(x), names(x))
+
+#' @export
+#' @noRd
 as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' @export
@@ -289,3 +297,4 @@ unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
     }
     x$unique(subset = subset, keep = keep)
 }
+

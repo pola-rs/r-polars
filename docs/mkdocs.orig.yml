@@ -22,6 +22,7 @@ theme:
     - navigation.top
     - content.code.copy
 markdown_extensions:
+  - footnotes
   - toc:
       baselevel: 1
       toc_depth: 2
@@ -36,7 +37,9 @@ extra_css:
   - stylesheets/extra.css
 nav:
   - Home: README.md
-  - Get started: articles/polars.md
+  - Articles:
+    - Get started: articles/polars.md
+    - Polars User Guide: articles/userguide.md
   - Reference: # Auto updated by altdoc
-  - License: LICENSE.md
+  - About: about.md
   - Changelog: NEWS.md

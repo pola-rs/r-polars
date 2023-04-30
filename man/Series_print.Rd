@@ -28,4 +28,4 @@ Print Series
 print(pl$Series(1:3))
 pl$Series(1:3)
 }
-\keyword{Series}
+\keyword{internal}

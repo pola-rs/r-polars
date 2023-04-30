@@ -29,3 +29,4 @@ see zzz.R for usage examples
 \seealso{
 verify_method_call
 }
+\keyword{internal}

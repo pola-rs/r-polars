@@ -21,3 +21,4 @@ print When
 print(pl$when(pl$col("a")>2)$then(pl$lit("more than two")))
 }
 \keyword{WhenThen}
+\keyword{internal}

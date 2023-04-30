@@ -17,3 +17,4 @@ function subclassed into c("property","function") or c("setter","property","func
 \description{
 Internal function, see use in source
 }
+\keyword{internal}

@@ -21,3 +21,4 @@ s3 method print DataFrame
 \examples{
 pl$DataFrame(iris)
 }
+\keyword{internal}

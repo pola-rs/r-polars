@@ -23,6 +23,7 @@ pl$is_schema = is_schema
 #' mean undefinesd.
 #' @return bool
 #' @format function
+#' @keywords internal
 #' @examples
 #' polars:::wrap_proto_schema(c("alice","bob"))
 #' polars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
@@ -43,7 +44,7 @@ wrap_proto_schema = function(x) {
 
 #' @title DataTypes polars types
 #'
-#' @name DataType
+#' @name pl_dtypes
 #' @description `DataType` any polars type (ported so far)
 #' @examples
 #' print(ls(pl$dtypes))
@@ -74,6 +75,7 @@ NULL
 #' @return self
 #' @export
 #'
+#' @keywords internal
 #' @examples
 #' pl$dtypes$Boolean #implicit print
 print.RPolarsDataType = function(x, ...) {
@@ -215,6 +217,7 @@ DataType_constructors = list(
 #' @param tu string option either "ms", "us" or "ns"
 #' @param tz string the Time Zone, see details
 #' @details all allowed TimeZone designations can be found in `base::OlsonNames()`
+#' @keywords pl
 #' @format function
 #' @return Datetime DataType
 #' @examples
@@ -222,7 +225,7 @@ DataType_constructors = list(
 NULL
 
 #' Create Struct DataType
-#' @name pl_Struct
+#' @name pl_Struct_datatype
 #' @description Struct DataType Constructor
 #' @param datatype an inner DataType
 #' @return a list DataType with an inner DataType
@@ -236,6 +239,7 @@ NULL
 NULL
 
 #' Create List DataType
+#' @keywords pl
 #' @name pl_List
 #' @param datatype an inner DataType
 #' @return a list DataType with an inner DataType
