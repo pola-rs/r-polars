@@ -705,8 +705,8 @@ LazyFrame_join_asof = function(
 
   if(!is.null(by)) by_left = by_right = by
   if(!is.null(on)) left_on = right_on = on
-  tolerance_str = if(is.character(tolerance)) tolerance else NULL
-  tolerance_num = if(!is.character(tolerance)) NULL else tolerance
+  tolerance_str = if(  is.character(tolerance)) tolerance else NULL
+  tolerance_num = if( !is.character(tolerance)) tolerance else NULL
 
   .pr$LazyFrame$join_asof(
     self, other,

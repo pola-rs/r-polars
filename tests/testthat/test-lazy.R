@@ -402,6 +402,40 @@ test_that("join_asof_simple", {
     )$collect()$to_list(),
     c(l_pop, list(gdp = l_gdp$gdp[c(3, 3, NA, NA)]))
   )
+
+
+  #str_tolerance within 19w
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "19w")$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list()
+  )
+
+  #exceeding 18w
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "18w")$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+       pl$lit(NA_character_)$alias("group_right")
+    )$collect()$to_list()
+  )
+
+  #num_tolerance within 19w = 19*7 days
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 19*7)$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list()
+  )
+
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18*7)$collect()$to_list(),
+     pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+       pl$lit(NA_character_)$alias("group_right")
+    )$collect()$to_list()
+  )
+
+
+
+
 })
 
 
