@@ -730,6 +730,6 @@ ExprStr_explode = function() {
 #' @examples
 #' df = pl$DataFrame(bin = c("110", "101", "010"))
 #' df$select(pl$col("bin")$str$parse_int(2))
-ExprStr_parse_int = function(radix = NULL, strict = TRUE) {
+ExprStr_parse_int = function(radix = 2, strict = TRUE) {
   .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int:")
 }
