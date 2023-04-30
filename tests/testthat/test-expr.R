@@ -1680,9 +1680,18 @@ test_that("Expr_diff", {
     )
   )
 
+  # negative diff values are now accepted upstream
+  df = pl$DataFrame(mtcars)$select(
+    pl$col("mpg")$diff(1)$alias("positive"),
+    pl$col("mpg")$diff(-1)$alias("negative")
+  )$to_data_frame()
+  known = data.frame(
+    positive = c(NA, diff(mtcars$mpg)),
+    negative = c(mtcars$mpg[1:31] - mtcars$mpg[2:32], NA)
+  )
+  expect_equal(df, known, ignore_attr = TRUE)
 
-  pl$select(pl$lit(1:5)$diff(0)) #no error
-  expect_error(pl$lit(1:5)$diff(-1))
+  expect_error(pl$select(pl$lit(1:5)$diff(0)), NA)
   expect_error(pl$lit(1:5)$diff(99^99))
   expect_error(pl$lit(1:5)$diff(5,"not a null behavior"))
 
