@@ -687,7 +687,7 @@ ExprDT_convert_time_zone = function(tz) {
 #' Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 #'
 #' @name ExprDT_replace_time_zone
-#' @param tz NULL or string time zone from base::OlsonNames()
+#' @param tz NULL or string time zone from [base::OlsonNames()]
 #' @param use_earliest NULL or logical.
 #' If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
 #' If NULL (the default), then ambiguous datetimes will raise.
