@@ -26,6 +26,7 @@ NULL
 #'
 #' @return self
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")
@@ -36,7 +37,7 @@ print.Expr = function(x, ...) {
 }
 
 #' internal method print Expr
-#' @name Expr$print()
+#' @name Expr_print
 #' @keywords Expr
 #' @examples pl$DataFrame(iris)
 Expr_print = function() {

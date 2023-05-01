@@ -19,3 +19,4 @@ handle$is_exhausted()
 df = handle$join()
 handle$is_exhausted()
 }
+\keyword{internal}

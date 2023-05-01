@@ -15,3 +15,4 @@ bool if is a result object which is an ok
 \description{
 check if x ss a result and an ok
 }
+\keyword{internal}

@@ -1,0 +1,679 @@
+---
+title: "Polars - User Guide for R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Polars - User Guide for R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+
+````{comment}
+These functions/methods are either missing, broken, or Vincent can't figure out how to use them.
+
+* `Series_shift`
+* `pl$exclude()`
+* `LazyGroupBy$filter()`
+* `LazyGroupBy$collect()`
+* `pl$concat_str`
+* `pl$col("Defense")$mean()$over(c("Type 1", "Type 2"))$alias("avg_defense_by_type_combination"),`
+* `pl$fold`
+* `DataFrame.explode`
+* Custom R function in an agg on groupby
+  
+Requires new Polars version:
+
+* `df$sample()`
+* `df$describe()`
+````
+
+[The Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/) is a detailed tutorial about the Polars DataFrame library. Its goal is to introduce you to Polars by going through examples and comparing it to other solutions. Some design choices are introduced there. The guide also introduces you to optimal usage of Polars. The Polars User Guide is available at this link:
+
+https://pola-rs.github.io/polars-book/user-guide/
+
+Currently, the User Guide includes code examples in Python and Rust. This page complements the guide with examples in R. The R examples are not complete yet; when they are complete, our goal is to merge them into the main User Guide. If you want to help, please submit a pull request to the [R polars Github repository.](https://github.com/pola-rs/r-polars)
+
+The current page works as a reference document, for side-by-side comparisons with the Python and Rust examples in the main User Guide.
+
+# Introduction
+
+```{r}
+library(polars)
+```
+
+# Getting started
+
+```{r, include = FALSE}
+df = pl$read_csv("https://j.mp/iriscsv")
+```
+
+```{.r}
+df = pl$read_csv("https://j.mp/iriscsv")
+```
+```{r}
+df$filter(pl$col("sepal_length") > 5)$
+  groupby("species", maintain_order = TRUE)$
+  agg(pl$all()$sum())
+
+df$
+  lazy()$
+  filter(pl$col("sepal_length") > 5)$
+  groupby("species", maintain_order = TRUE)$
+  agg(pl$all()$sum())$
+  collect()
+```
+
+
+# Polars quick exploration guide
+
+```{r}
+series = pl$Series(c(1, 2, 3, 4, 5))
+series
+
+df = pl$DataFrame(
+  "integer" = c(1, 2, 3),
+  "date" = as.Date(c("2022-1-1", "2022-1-2", "2022-1-3")),
+  "float" = c(4.0, 5.0, 6.0))
+df
+
+# df$write_csv('output.csv')
+# df_csv_with_dates = pl.read_csv("output.csv", parse_dates=True)
+# print(df_csv_with_dates)
+
+# dataframe.write_json('output.json')
+# df_json = pl.read_json("output.json")
+# print(df_json)
+
+# dataframe.write_parquet('output.parquet')
+# df_parquet = pl.read_parquet("output.parquet")
+# print(df_parquet)
+
+df = pl$DataFrame(
+  "a" = as.numeric(0:7),
+  "b" = runif(8),
+  "c" = as.Date(sprintf("2022-12-%s", 1:8)),
+  "d" = c(1, 2.0, NaN, NaN, 0, -5, -42, NA)
+)
+df$head(5)
+
+df$tail(5)
+
+## not implemented yet
+# df$sample(3)
+
+## not implemented yet
+# df$describe()
+
+df$select(pl$col("*"))
+
+df$select(pl$col(c("a", "b")))
+
+df$select(pl$col(c("a", "b")))
+
+df$select(pl$col("a"), pl$col("b"))$limit(3)
+
+df$select(pl$all()$exclude("a"))
+
+df$filter(
+    pl$col("c")$is_between(as.Date("2022-12-2"), as.Date("2022-12-8"))
+)
+
+df$filter((pl$col("a") <= 3) & (pl$col("d")$is_not_nan()))
+
+df$with_columns(pl$col("b")$sum()$alias("e"), (pl$col("b") + 42)$alias("b+42"))
+
+df$with_columns((pl$col("a") * pl$col("b"))$alias("a * b"))$select(pl$all()$exclude(c("c", "d")))
+
+df = pl$DataFrame("x" = 0:7, "y" = c("A", "A", "A", "B", "B", "C", "X", "X"))
+
+df$
+  groupby("y", maintain_order = FALSE)$
+  agg(
+    pl$col("*")$count()$alias("count"),
+    pl$col("*")$sum()$alias("sum")
+  )
+
+df1 = pl$DataFrame(
+  "a" = 0:7,
+  "b" = runif(8),
+  "c" = as.Date(sprintf("2022-12-%s", 1:8)),
+  "d" = c(1, 2.0, NaN, NaN, 0, -5, -42, NA)
+)
+df2 = pl$DataFrame("x" = 0:7, "y" = c("A", "A", "A", "B", "B", "C", "X", "X"))
+
+pl$concat(c(df1, df2), how = "horizontal")
+```
+
+# Polars expressions
+
+## Expressions
+
+```{r}
+df = pl$DataFrame(
+  "nrs" = c(1, 2, 3, NA, 5),
+  "names" = c("foo", "ham", "spam", "egg", NA),
+  "random" = runif(5),
+  "groups" = c("A", "A", "B", "C", "B")
+)
+df
+
+df$select(
+  pl$col("names")$n_unique()$alias("unique_names_1"),
+  pl$col("names")$unique()$count()$alias("unique_names_2")
+)
+
+df$select(
+  pl$sum("random")$alias("sum"),
+  pl$min("random")$alias("min"),
+  pl$max("random")$alias("max"),
+  pl$col("random")$max()$alias("other_max"),
+  pl$std("random")$alias("std dev"),
+  pl$var("random")$alias("variance")
+)
+
+df$select(
+  pl$col("names")$filter(pl$col("names")$str$contains("am$"))$count()
+)
+
+df$select(
+  pl$when(pl$col("random") > 0.5)$then(0)$otherwise(pl$col("random")) * pl$sum("nrs")
+)
+
+df$select(
+  pl$when(pl$col("groups") == "A")$then(1)$when(pl$col("random") > 0.5)$then(0)$otherwise(pl$col("random"))
+)
+
+df$select(
+  pl$col("*"),  # select all
+  pl$col("random")$sum()$over("groups")$alias("sumc(random)/groups"),
+  pl$col("random")$list()$over("names")$alias("random/name")
+)
+```
+
+## Contexts
+
+```{r}
+df$select(
+  pl$sum("nrs"),
+  pl$col("names")$sort(),
+  pl$col("names")$first()$alias("first name"),
+  (pl$mean("nrs") * 10)$alias("10xnrs")
+)
+
+df$with_columns(
+  pl$sum("nrs")$alias("nrs_sum"),
+  pl$col("random")$count()$alias("count")
+)
+
+df$groupby("groups")$agg(
+  pl$sum("nrs"),  # sum nrs by groups
+  pl$col("random")$count()$alias("count"),  # count group members
+  # sum random where name != null
+  pl$col("random")$filter(pl$col("names")$is_not_null())$sum()$suffix("_sum"),
+  pl$col("names")$reverse()$alias(("reversed names"))
+)
+```
+
+## GroupBy
+
+```{r}
+url = "https://theunitedstates.io/congress-legislators/legislators-historical.csv"
+
+dtypes = list(
+    "first_name" = pl$Categorical,
+    "gender" = pl$Categorical,
+    "type" = pl$Categorical,
+    "state" = pl$Categorical,
+    "party" = pl$Categorical
+)
+
+# dtypes argument
+dataset = pl$read_csv(url)$with_columns(pl$col("birthday")$str$strptime(pl$Date, "%Y-%m-%d"))
+
+pl$DataFrame(mtcars)$groupby("cyl")$agg(pl$count())
+
+dataset$
+  lazy()$
+  groupby("first_name")$
+  agg(
+    pl$count(),
+    pl$col("gender"),
+    pl$first("last_name"))$
+  sort("count", descending = TRUE)$
+  limit(5)$
+  collect()
+
+dataset$lazy()$
+  groupby("state")$
+  agg(
+    (pl$col("party") == "Anti-Administration")$sum()$alias("anti"),
+    (pl$col("party") == "Pro-Administration")$sum()$alias("pro"))$
+  sort("pro", descending = TRUE)$
+  limit(5)$
+  collect()
+
+dataset$
+  lazy()$
+  groupby(c("state", "party"))$
+  agg(pl$count("party")$alias("count"))$
+  filter((pl$col("party") == "Anti-Administration") | (pl$col("party") == "Pro-Administration"))$
+  sort("count", descending = TRUE)$
+  head(5)$
+  collect()
+```
+
+````{comment}
+```{r}
+compute_age = function() 2021 - pl$col("birthday")$dt$year()
+
+avg_birthday = function(gender) {
+    compute_age()$filter(pl$col("gender") == gender)$mean()$alias(sprintf("avg %s birthday", gender))
+}
+
+q = (
+    dataset$lazy()$
+    groupby("state")$
+    agg(avg_birthday("M"),
+        avg_birthday("F"),
+        (pl$col("gender") == "M")$sum()$alias("# male"),
+        (pl$col("gender") == "F")$sum()$alias("# female")
+    )$
+    limit(5)
+)
+q$collect()
+
+#
+# get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name")
+# q = (
+#     dataset$lazy()
+#     $sort("birthday", descending=True)
+#     $groupby(["state"])
+#     $agg(
+#         [
+#             get_person()$first()$alias("youngest"),
+#             get_person()$last()$alias("oldest"),
+#         ]
+#     )
+#     $limit(5)
+# )
+# q$collect()
+#
+# get_person <- function() pl$col("first_name") + pl$lit(" ") + pl$col("last_name")
+# q = (
+#     dataset$lazy()
+#     $sort("birthday", descending=True)
+#     $groupby(["state"])
+#     $agg(
+#         [
+#             get_person()$first()$alias("youngest"),
+#             get_person()$last()$alias("oldest"),
+#             get_person()$sort()$first()$alias("alphabetical_first"),
+#         ]
+#     )
+#     $limit(5)
+# )
+# q$collect()
+#
+# q = (
+#     dataset$lazy()
+#     $sort("birthday", descending=True)
+#     $groupby(["state"])
+#     $agg(
+#         [
+#             get_person()$first()$alias("youngest"),
+#             get_person()$last()$alias("oldest"),
+#             get_person()$sort()$first()$alias("alphabetical_first"),
+#             pl$col("gender")$sort_by("first_name")$first()$alias("gender"),
+#         ]
+#     )
+#     $sort("state")
+#     $limit(5)
+# )
+# q$collect()
+```
+````
+
+
+## Folds
+
+
+```{comment}
+df = pl$DataFrame(
+  "a" = c(1, 2, 3),
+  "b" = c(10, 20, 30)
+)
+
+df$select(
+  pl$fold(acc=pl$lit(0), function (x) acc, x = acc + x, exprs=pl$all())$alias("sum")
+)
+
+df = pl$DataFrame(
+  "a" = c(1, 2, 3),
+  "b" = c(0, 1, 2)
+)
+
+out = df$
+  filter(
+    pl$fold(
+        acc=pl$lit(TRUE),
+        function=lambda acc, x = acc & x,
+        exprs=pl$col("*") > 1,
+    )
+)
+print(out)
+
+df = pl$DataFrame(
+  "a" = c("a", "b", "c"),
+  "b" = c(1, 2, 3)
+)
+
+df$select(
+  pl$concat_str("a", "b")
+)
+```
+
+
+## Window functions
+
+```{r, include = FALSE}
+df = pl$read_csv(
+  "https://gist.githubusercontent.com/ritchie46/cac6b337ea52281aa23c049250a4ff03/raw/89a957ff3919d90e6ef2d34235e6bf22304f3366/pokemon.csv"
+)
+```
+
+```{.r}
+df = pl$read_csv(
+  "https://gist.githubusercontent.com/ritchie46/cac6b337ea52281aa23c049250a4ff03/raw/89a957ff3919d90e6ef2d34235e6bf22304f3366/pokemon.csv"
+)
+```
+
+```{comment}
+df$select(
+  "Type 1",
+  "Type 2",
+  pl$col("Attack")$mean()$over("Type 1")$alias("avg_attack_by_type"),
+  pl$col("Defense")$mean()$over(c("Type 1", "Type 2"))$alias("avg_defense_by_type_combination"),
+  pl$col("Attack")$mean()$alias("avg_attack")
+)
+```
+
+
+```{r}
+filtered = df$
+  filter(pl$col("Type 2") == "Psychic")$
+  select(c("Name", "Type 1", "Speed"))
+filtered
+
+filtered$with_columns(
+  pl$col(c("Name", "Speed"))$sort()$over("Type 1")
+)
+
+# aggregate and broadcast within a group
+# output type: -> Int32
+pl$sum("foo")$over("groups")
+
+# sum within a group and multiply with group elements
+# output type: -> Int32
+(pl$col("x")$sum() * pl$col("y"))$over("groups")
+
+# sum within a group and multiply with group elements 
+# and aggregate the group to a list
+# output type: -> List(Int32)
+(pl$col("x")$sum() * pl$col("y"))$list()$over("groups")
+
+# note that it will require an explicit `list()` call
+# sum within a group and multiply with group elements 
+# and aggregate the group to a list
+# the flatten call explodes that list
+
+# This is the fastest method to do things over groups when the groups are sorted
+(pl$col("x")$sum() * pl$col("y"))$list()$over("groups")$flatten()
+
+df$sort("Type 1")$select(
+  pl$col("Type 1")$head(3)$list()$over("Type 1")$flatten(),
+  pl$col("Name")$sort_by(pl$col("Speed"))$head(3)$list()$over("Type 1")$flatten()$alias("fastest/group"),
+  pl$col("Name")$sort_by(pl$col("Attack"))$head(3)$list()$over("Type 1")$flatten()$alias("strongest/group"),
+  pl$col("Name")$sort()$head(3)$list()$over("Type 1")$flatten()$alias("sorted_by_alphabet")
+)
+```
+
+
+# List context and row wise computations
+
+````{comment}
+
+```{r}
+grades = pl$DataFrame(
+        "student" = c("bas", "laura", "tim", "jenny"),
+        "arithmetic" = c(10, 5, 6, 8),
+        "biology" = c(4, 6, 2, 7),
+        "geography" = c(8, 4, 9, 7)
+)
+grades
+
+# grades$select(c(pl$concat_list(pl$all()$exclude("student"))$alias("all_grades")))
+
+# the percentage rank expression
+# rank_pct = pl$element()$rank(descending = TRUE) / pl$col("")$count()
+rank_pct = pl$element()$rank() / pl$col("")$count()
+
+grades$with_columns(
+    # create the list of homogeneous data
+    pl$concat_list(pl$all()$exclude("student"))$alias("all_grades")
+)$select(c(
+    # select all columns except the intermediate list
+    pl$all()$exclude("all_grades"),
+    # compute the rank by calling `arr$eval`
+    pl$col("all_grades")$arr$eval(rank_pct, parallel = TRUE)$alias("grades_rank")
+))
+```
+
+# Custom functions
+
+```{r}
+df = pl$DataFrame(
+  "keys" = c("a", "a", "b"),
+  "values" = c(10, 7, 1)
+)
+
+df$groupby("keys")$agg(
+        pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
+        pl$col("values")$shift()$alias("shift_expression")
+)
+
+df$groupby("keys")$agg(
+        pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
+        pl$col("values")$shift()$alias("shift_expression")
+)
+
+df$groupby("keys")$agg(
+  pl$col("values")$apply(function(s) s$shift())$alias("shift_map"),
+  pl$col("values")$shift()$alias("shift_expression")
+)
+
+counter = 0
+add_counter = function(val) {
+  counter <<- counter + 1
+  counter + val
+}
+
+out = df$select(
+  pl$col("values")$apply(add_counter)$alias("solution_apply"),
+  (pl$col("values") + pl$arange(1, pl$count() + 1))$alias("solution_expr")
+)
+
+print(out)
+
+out = df$select(
+  pl$struct(c("keys", "values"))$apply(lambda x = len(xc("keys")) + xc("values"))$alias("solution_apply"),
+  (pl$col("keys")$str$lengths() + pl$col("values"))$alias("solution_expr")
+)
+print(out)
+```
+````
+
+
+# R examples
+
+```{r}
+df = pl$DataFrame(
+  "A" = c(1, 2, 3, 4, 5),
+  "fruits" = c("banana", "banana", "apple", "apple", "banana"),
+  "B" = c(5, 4, 3, 2, 1),
+  "cars" = c("beetle", "audi", "beetle", "beetle", "beetle"),
+  "optional" = c(28, 300, NA, 2, -30)
+)
+df
+
+# Within select, we can use the col function to refer to columns$
+# If we are not applying any function to the column, we can also use the column name as a string$
+df$select(
+  pl$col("A"),
+  "B",         # the col part is inferred
+  pl$lit("B")  # the pl$lit functions tell polars we mean the literal "B"
+)
+
+# We can use a list within select (example above) or a comma-separated list of expressions (this example)$
+df$select(
+  pl$col("A"),
+  "B",      
+  pl$lit("B")
+)
+
+# We can select columns with a regex if the regex starts with '^' and ends with '$'
+df$select(    
+  pl$col("^A|B$")$sum()
+)
+
+# We can select multiple columns by name
+df$select(
+  pl$col(c("A", "B"))$sum()
+)
+
+# We select everything in normal order
+# Then we select everything in reversed order
+df$select(
+  pl$all(),
+  pl$all()$reverse()$suffix("_reverse")
+)
+
+# All expressions run in parallel
+# Single valued `Series` are broadcasted to the shape of the `DataFrame`
+df$select(
+  pl$all(),
+  pl$all()$sum()$suffix("_sum") # This is a single valued Series broadcasted to the shape of the DataFrame
+)
+
+# Filters can also be applied within an expression
+df$select(
+  # Sum the values of A where the fruits column starts with 'b'
+  pl$col("A")$filter(pl$col("fruits")$str$contains("^b$*"))$sum()
+)
+
+# We can do arithmetic on columns
+df$select(
+  ((pl$col("A") / 124.0 * pl$col("B")) / pl$sum("B"))$alias("computed")
+)
+
+# We can combine columns by a predicate
+# For example when the `fruits` column is 'banana' we set the value equal to the
+# value in `B` column for that row, otherwise we set the value to be -1
+df$select(
+  "fruits",
+  "B",
+  pl$when(pl$col("fruits") == "banana")$then(pl$col("B"))$otherwise(-1)$alias("b")
+)
+
+# We can combine columns by a fold operation on column level$
+# For example we do a horizontal sum where we:
+# - start with 0
+# - add the value in the `A` column
+# - add the value in the `B` column
+# - add the value in the `B` column squared
+# df$select(
+#   "A",
+#   "B",
+#   pl$fold(0, function(a, b) a + b, c( pl$col("A"), "B", pl$col("B")**2,))$alias("fold")
+# )
+
+df$groupby("fruits")$
+  agg(
+    pl$col("B")$count()$alias("B_count"),
+    pl$col("B")$sum()$alias("B_sum")
+  )
+
+# We can aggregate many expressions at once
+df$groupby("fruits")$
+  agg(
+            pl$col("B")$sum()$alias("B_sum"),# Sum of B
+            # pl$first("fruits")$alias("fruits_first"),# First value of fruits
+            # pl$count("A")$alias("count"),# Count of A
+            pl$col("cars")$reverse() # Reverse the cars column - not an aggregation
+            # so the output is a pl$List
+  )
+```
+
+
+```{comment}
+# We can explode the list column "cars" to a new row for each element in the list
+df$
+  # sort("cars")$
+  groupby("fruits")$
+  agg(
+    # pl$col("B")$sum()$alias("B_sum"),
+    # pl$col("B")$sum()$alias("B_sum2"),  # syntactic sugar for the first
+    pl$col("fruits")$first()$alias("fruits_first"),
+    # pl$first("fruits")$alias("fruits_first"),
+    pl$col("A")$count()$alias("count"),
+    # pl$count("A")$alias("count"),
+    pl$col("cars")$reverse()
+    )$
+  explode("cars")
+```
+
+```{r}
+# We can also get a list of the row indices for each group with `agg_groups()`
+df$
+  groupby("fruits")$
+  agg(pl$col("B")$agg_groups()$alias("group_row_indices"))
+
+# We can also do filter predicates in groupby
+# In this example we do not include values of B that are smaller than 1
+# in the sum
+df$
+  groupby("fruits")$
+  agg(pl$col("B")$filter(pl$col("B") > 1)$sum())
+
+
+# Here we add a new column with the sum of B grouped by fruits
+df$
+  select(
+    "fruits",
+    "cars",
+    "B",
+    pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"))
+
+# We can also use window functions to do groupby over multiple columns
+df$
+  select(
+    "fruits",
+    "cars",
+    "B",
+    pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"),
+    pl$col("B")$sum()$over("cars")$alias("B_sum_by_cars"))
+
+# Here we use a window function to lag column B within "fruits"
+df$
+  select(
+    "fruits",
+    "B",
+    pl$col("B")$shift()$over("fruits")$alias("lag_B_by_fruits"))
+```

@@ -1,6 +1,6 @@
 
 #' when-then-otherwise Expr
-#' @name when_then_otherwise
+#' @name Expr_when_then_otherwise
 #' @description Start a “when, then, otherwise” expression.
 #' @keywords Expr
 #' @param predicate Into Expr into a boolean mask to branch by
@@ -84,7 +84,7 @@ WhenThenThen_peak_inside = function() {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords WhenThen
+#' @keywords internal WhenThen
 #'
 #' @return self
 #' @export
@@ -99,7 +99,7 @@ print.When = function(x, ...) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords WhenThen
+#' @keywords WhenThen internal
 #' @return self
 #' @export
 #' @examples
@@ -113,7 +113,7 @@ print.WhenThen = function(x, ...) {
 #' print When
 #' @param x When object
 #' @param ... not used
-#' @keywords WhenThen
+#' @keywords WhenThen internal
 #' @return self
 #' @export
 #' @examples

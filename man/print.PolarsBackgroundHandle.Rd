@@ -25,3 +25,4 @@ df = handle$join()
 handle$is_exhausted()
 }
 \keyword{LazyFrame}
+\keyword{internal}

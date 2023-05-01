@@ -126,6 +126,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
 #' @param x a PTime vector
 #' @param ... not used
 #' @return invisible x
+#' @keywords internal
 #' @exportS3Method
 print.PTime = function(x, ...) {
   tu = attr(x,"tu")

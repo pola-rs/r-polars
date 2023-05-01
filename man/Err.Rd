@@ -15,3 +15,4 @@ same R object wrapped in a Err-result
 \description{
 Wrap in Err
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ same R object wrapped in a Err-result
 \description{
 map an Err part of Result
 }
+\keyword{internal}

@@ -4,6 +4,7 @@
 #' @name pl_Field
 #' @param name string name
 #' @param datatype DataType
+#' @keywords pl
 #' @details A Field is not a DataType but a name + DataType
 #' Fields are used in Structs-datatypes and Schemas to represent
 #' everything of the Series/Column except the raw values.
@@ -27,6 +28,7 @@ pl$Field = function(name, datatype) {
 #'
 #' @return self
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #' print(pl$Field("foo",pl$List(pl$UInt64)))
@@ -44,6 +46,7 @@ print.RField = function(x, ...) {
 
 #' Print a polars Field
 #'
+#' @keywords internal
 #' @return self
 #'
 #' @examples

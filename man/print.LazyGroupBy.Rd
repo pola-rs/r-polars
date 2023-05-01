@@ -17,3 +17,4 @@ self
 \description{
 print LazyGroupBy
 }
+\keyword{internal}

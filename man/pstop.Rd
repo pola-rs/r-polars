@@ -21,4 +21,4 @@ DEPRECATED USE stopf instead
 f = function() polars:::pstop("this aint right!!")
 tryCatch(f(), error = \(e) as.character(e))
 }
-\keyword{internals}
+\keyword{internal}

@@ -4,7 +4,7 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 
 
-#' strptime
+#' Parse a Date or DateTime Series
 #' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
 #' @name ExprStr_strptime
 #' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
