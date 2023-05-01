@@ -1354,11 +1354,11 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Option<bool>) -> Self {
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Nullable<bool>) -> Self {
         self.0
             .clone()
             .dt()
-            .replace_time_zone(tz.into_option(), use_earliest)
+            .replace_time_zone(tz.into_option(), use_earliest.into_option())
             .into()
     }
 
