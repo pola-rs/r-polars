@@ -31,8 +31,8 @@ test_that("expression boolean operators", {
     (pl$lit(2)!=1)$alias("2 not eq 1"),
     (pl$lit(2)!=2)$alias("2 not eq 1 not")$is_not(),
 
-    pl$lit(TRUE)$is_not() == pl$lit(FALSE)$alias("not true == false"),
-    pl$lit(TRUE) != pl$lit(FALSE)$alias("true != false"),
+    (pl$lit(TRUE)$is_not() == pl$lit(FALSE))$alias("not true == false"),
+    (pl$lit(TRUE) != pl$lit(FALSE))$alias("true != false"),
 
     (pl$lit(TRUE)$is_not() == FALSE)$alias("not true == false wrap"),
     (pl$lit(TRUE) != FALSE)$alias("true != false wrap")
