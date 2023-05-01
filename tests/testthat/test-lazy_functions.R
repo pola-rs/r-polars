@@ -1,9 +1,9 @@
 test_that("pl$sum", {
 
   #from series
-  s = pl$sum(pl$Series(1:5))
-  expect_true(inherits(s,"Series"))
-  expect_identical(s$to_r(), 15L  )
+  r_val = pl$sum(pl$Series(1:5))
+  expect_true(is.numeric(r_val))
+  expect_identical(r_val, 15L)
 
   #from string
   df = pl$DataFrame(a=1:5)$select(pl$sum("a"))
@@ -41,8 +41,8 @@ test_that("pl$sum", {
 test_that("pl$min pl$max", {
 
   #from series
-  s = pl$min(pl$Series(1:5)); expect_identical(s$to_r(), 1L  )
-  s = pl$max(pl$Series(1:5)); expect_identical(s$to_r(), 5L  )
+  s = pl$min(pl$Series(1:5)); expect_identical(s, 1L  )
+  s = pl$max(pl$Series(1:5)); expect_identical(s, 5L  )
 
   #from string
   df = pl$DataFrame(a=1:5)$select(pl$min("a")); expect_identical(df$to_list()$a,1L)

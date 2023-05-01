@@ -4,7 +4,7 @@ use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
-use crate::utils::{r_result_list, try_f64_into_u32, try_f64_into_usize};
+use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 
