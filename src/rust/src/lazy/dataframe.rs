@@ -41,6 +41,15 @@ impl LazyFrame {
         rprintln!("{}", self.0.describe_plan());
     }
 
+    //low level version of describe_plan, mainly for arg testing
+    pub fn debug_plan(&self) -> Result<String, String> {
+        use crate::serde_json::value::Serializer;
+        use polars_core::export::serde::Serialize;
+        Serialize::serialize(&self.0.logical_plan.clone(), Serializer)
+            .map_err(|err| err.to_string())
+            .map(|val| format!("{:?}", val))
+    }
+
     pub fn describe_optimized_plan(&self) -> List {
         let result = self.0.describe_optimized_plan().map(|opt_plan| {
             rprintln!("{}", opt_plan);

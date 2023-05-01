@@ -24,7 +24,7 @@ state = "0.5.3"
 rayon = "1.6.1"
 smartstring = "1.0.1"
 polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "01126f2524108ac8fe567e1dbb24a74ca9ec39e7", default_features= false}
-
+serde_json = "*"
 
 
 #try to trigger new hashFiles hash value

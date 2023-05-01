@@ -1793,6 +1793,7 @@ dependencies = [
  "polars",
  "polars-core",
  "rayon",
+ "serde_json",
  "smartstring",
  "state",
 ]
