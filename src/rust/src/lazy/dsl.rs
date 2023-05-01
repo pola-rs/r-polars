@@ -109,13 +109,10 @@ impl Expr {
                 }
             }
             (Rtype::Strings, 1) => {
-                let opt_val = robj.as_str();
-                if let Some(val) = opt_val.clone() {
-                    Ok(dsl::lit(val))
-                } else if robj.is_na() {
+                if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
                 } else {
-                    Err(err_msg.into())
+                    Ok(dsl::lit(robj.as_str().unwrap()))
                 }
             }
             (Rtype::Logicals, 1) => {
