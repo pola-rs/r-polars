@@ -434,6 +434,27 @@ test_that("join_asof_simple", {
   )
 
 
+  #test allow_parallel and force_parallel
+
+  #export LogicalPlan as json string
+  logical_json_plan_TT =
+    pop$join_asof(gdp, on = "date", allow_parallel = TRUE, force_parallel = TRUE) |>
+    .pr$LazyFrame$debug_plan() |> unwrap()
+  logical_json_plan_FF =
+    pop$join_asof(gdp, on = "date", allow_parallel = FALSE, force_parallel = FALSE) |>
+    .pr$LazyFrame$debug_plan() |> unwrap()
+
+  #prepare regex query
+  get_reg = \(str,pat) regmatches(str,regexpr(pat,str)) #shorthand for get first regex match
+  allow_p_pat = r"{*"allow_parallel":\s*([^,]*)}" #find allow_parallel value in json string
+  force_p_pat = r"{*"force_parallel":\s*([^,]*)}"
+
+  #test if setting was as expected in LogicalPlan
+  expect_identical(get_reg(logical_json_plan_TT,allow_p_pat),"\"allow_parallel\": Bool(true)")
+  # contribute polars: enable back test when merged https://github.com/pola-rs/polars/pull/8617
+  #expect_identical(get_reg(logical_json_plan_TT,force_p_pat),"\"force_parallel\": Bool(true)")
+  expect_identical(get_reg(logical_json_plan_FF,allow_p_pat), "\"allow_parallel\": Bool(false)")
+  expect_identical(get_reg(logical_json_plan_FF,force_p_pat), "\"force_parallel\": Bool(false)")
 
 
 })
