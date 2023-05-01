@@ -2383,6 +2383,10 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
 #' @param seed_3 Random seed parameter. Defaults to arg seed.
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
+#'
+#' @details WARNING in this version of r-polars seed / seed_x takes no effect.
+#' Possibly a bug in upstream rust-polars project.
+#'
 #' @return Expr
 #' @aliases hash
 #' @examples
