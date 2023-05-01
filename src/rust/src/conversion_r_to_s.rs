@@ -241,12 +241,15 @@ fn concat_series_tree(
     match st {
         SeriesTree::Series(s) => Ok(s), // SeriesTree is just a regular Series, return as is
         SeriesTree::SeriesEmptyVec => { // Create Series of empty array and cast to the found leaf_dtype.
-            let empty_list_series = pl::Series::new(name, [0f64; 0]).list()?.slice(0, 0);
-            let s = empty_list_series.into_series();
+            use polars::prelude::ListBuilderTrait;
+            let empty_list_series = pl::ListBinaryChunkedBuilder::new(name, 0,0).finish().into_series();
+          
+            //cast to any discovered leaftype to allow concatenation without Error
             if let Some(leaf_dt_ref) = leaf_dtype {
-                s.cast(leaf_dt_ref)
+                empty_list_series.cast(leaf_dt_ref)
             } else {
-                Ok(s) //use float as default DataType for empty lists of lists all the way down
+                // no other leaftype, use Null as py-polars
+                empty_list_series.cast(&pl::DataType::Null) 
             }
         },
         SeriesTree::SeriesVec(sv) if sv.len() == 0 => unreachable!(
