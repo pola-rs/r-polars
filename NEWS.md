@@ -3,6 +3,8 @@
 ## BREAKING CHANGES
 
 - Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
+  - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
+  - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
 
 ## What's changed
 - `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
