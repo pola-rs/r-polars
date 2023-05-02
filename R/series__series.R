@@ -643,7 +643,7 @@ Series_cumsum = function(reverse = FALSE) {
 
 #' Sum
 #' @description  Reduce Series with sum
-#' @return Series
+#' @return R scalar value
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -652,11 +652,13 @@ Series_cumsum = function(reverse = FALSE) {
 #' pl$Series(c(1:2,NA,3,5))$sum() # a NA is dropped always
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$sum() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$sum() # Inf-Inf is NaN
-Series_sum = "use_extendr_wrapper"
+Series_sum = function() {
+  unwrap(.pr$Series$sum(self), "in $sum()")
+}
 
 #' Mean
 #' @description  Reduce Series with mean
-#' @return Series
+#' @return R scalar value
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -665,11 +667,13 @@ Series_sum = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,5))$mean() # a NA is dropped always
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$mean() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$mean() # Inf-Inf is NaN
-Series_mean = "use_extendr_wrapper"
+Series_mean = function() {
+  unwrap(.pr$Series$mean(self), "in $mean()")
+}
 
 #' Median
 #' @description  Reduce Series with median
-#' @return Series
+#' @return  R scalar value
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -678,11 +682,13 @@ Series_mean = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,5))$median() # a NA is dropped always
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$median() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$median() # Inf-Inf is NaN
-Series_median = "use_extendr_wrapper"
+Series_median = function() {
+  unwrap(.pr$Series$median(self), "in $median()")
+}
 
 #' max
 #' @description  Reduce Series with max
-#' @return Series
+#' @return R scalar value
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -691,11 +697,13 @@ Series_median = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,5))$max() # a NA is dropped always
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$max() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$max() # Inf-Inf is NaN
-Series_max = "use_extendr_wrapper"
+Series_max = function() {
+  unwrap(.pr$Series$max(self), "in $max()")
+}
 
 #' min
 #' @description  Reduce Series with min
-#' @return Series
+#' @return R scalar value
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
@@ -704,11 +712,13 @@ Series_max = "use_extendr_wrapper"
 #' pl$Series(c(1:2,NA,3,5))$min() # a NA is dropped always
 #' pl$Series(c(1:2,NA,3,NaN,4,Inf))$min() # NaN carries / poisons
 #' pl$Series(c(1:2,3,Inf,4,-Inf,5))$min() # Inf-Inf is NaN
-Series_min = "use_extendr_wrapper"
+Series_min = function() {
+  unwrap(.pr$Series$min(self), "in $min()")
+}
 
 #' @title Var
 #' @description Aggregate the columns of this Series to their variance values.
-#' @keywords Series
+#' @keywords R scalar value
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A new `Series` object with applied aggregation.
 #' @examples pl$Series(1:10)$var()
@@ -718,7 +728,7 @@ Series_var = function(ddof = 1) {
 
 #' @title Std
 #' @description Aggregate the columns of this Series to their standard deviation.
-#' @keywords Series
+#' @keywords R scalar value
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A new `Series` object with applied aggregation.
 #' @examples pl$Series(1:10)$std()

@@ -13,7 +13,7 @@ patrick::with_parameters_test_that("lazy functions in context", {
     z = data.frame(test = base(mtcars$mpg) * 10)
     expect_equal(x, y, ignore_attr = TRUE)
     expect_equal(x, z, ignore_attr = TRUE)
-    expect_equal(pl[[pola]](pl$Series(1:6))$to_vector(), base(1:6))
+    expect_equal(pl[[pola]](pl$Series(1:6)), base(1:6))
     expect_equal(unlist(pl[[pola]](df)$to_data_frame()), sapply(mtcars, base))
     x = df$select(pl[[pola]]("mpg", "hp"))$to_data_frame()
     y = data.frame(lapply(mtcars[, c("mpg", "hp")], base))
