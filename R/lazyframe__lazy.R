@@ -626,7 +626,6 @@ LazyFrame_sort = function(
 
 
 #' join_asof
-#'
 #' @param other LazyFrame
 #' @param ...  not used, blocks use of further positional arguments
 #' @param left_on column name or Expr,  join column of left table
@@ -654,8 +653,8 @@ LazyFrame_sort = function(
 #'     - 1h    (1 hour)
 #'     - 1d    (1 day)
 #'     - 1w    (1 week)
-#'     - 1mo   (1 calendar month)
-#'     - 1y    (1 calendar year)
+#'     - 1mo   (1 calendar month) // currently not available, as interval is not fixed
+#'     - 1y    (1 calendar year)  // currently not available, as interval is not fixed
 #'     - 1i    (1 index count)
 #'
 #' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
@@ -669,7 +668,6 @@ LazyFrame_sort = function(
 #' @param force_parallel Default FALSE, Force the physical plan to evaluate the computation of both
 #' DataFrames up to the join in parallel.
 #'
-#' @name LazyFrame_join_asof
 #' @description Perform an asof join.
 #' @details
 #' This is similar to a left-join except that we match on nearest key rather than equal keys.
@@ -688,20 +686,53 @@ LazyFrame_sort = function(
 #' @keywords LazyFrame
 #' @return joined LazyFrame
 #' @examples #
+#' #create two LazyFrame to join asof
+#' gdp = pl$DataFrame(
+#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   gdp = c(4321, 4164, 4411, 4566, 4696),
+#'   group = c("b" ,"a", "a", "b", "b")
+#' )$lazy()
+#'
+#' pop = pl$DataFrame(
+#'   date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+#'   population = c(82.19, 82.66, 83.12, 83.52),
+#'   group = c("b", "b", "a", "a")
+#' )$lazy()
+#'
+#' #optional make sure tables are already sorted with "on" join-key
+#' gdp = gdp$sort("date")
+#' pop = pop$sort("date")
+#'
+#'
+#' # Left-join_asof LazyFrame pop with gdp on "date"
+#' # Look backward in gdp to find closest matching date
+#' pop$join_asof(gdp, on = "date", strategy = "backward")$collect()
+#'
+#' # .... and forward
+#' pop$join_asof(gdp, on = "date", strategy = "forward")$collect()
+#'
+#' # join by a group: "only look within within group"
+#' pop$join_asof(gdp, on = "date", by = "group", strategy = "backward")$collect()
+#'
+#' # only look 2 weeks and 2 days back
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "2w2d")$collect()
+#'
+#' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)$collect()
 LazyFrame_join_asof = function(
-  other, #LazyFrame
-  ..., #
-  left_on = NULL,         # , : str | None | Expr = None,
-  right_on = NULL,        # , : str | None | Expr = None,
-  on= NULL,               # ,: str | None | Expr = None,
-  by_left = NULL,         #, : str | Sequence[str] | None = None,
-  by_right = NULL,        #,: str | Sequence[str] | None = None,
-  by = NULL,              #,: str | Sequence[str] | None = None,
-  strategy = "backward",        #: AsofJoinStrategy = "backward",
+  other,
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  on= NULL,
+  by_left = NULL,
+  by_right = NULL,
+  by = NULL,
+  strategy = "backward",
   suffix = "_right",
-  tolerance = NULL,       #: str | int | float | None = None,
-  allow_parallel = TRUE,  #: bool = True,
-  force_parallel = FALSE  #: bool = False,
+  tolerance = NULL,
+  allow_parallel = TRUE,
+  force_parallel = FALSE
 ){
 
   if(!is.null(by)) by_left = by_right = by
