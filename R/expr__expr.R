@@ -871,9 +871,9 @@ Expr_xor = "use_extendr_wrapper"
 #' )$with_columns(
 #'   pl$col("vals")$cast(pl$Categorical),
 #'   pl$col("vals")
-#'     $cast(pl$Categorical)
-#'     $to_physical()
-#'     $alias("vals_physical")
+#'   $cast(pl$Categorical)
+#'   $to_physical()
+#'   $alias("vals_physical")
 #' )
 Expr_to_physical = "use_extendr_wrapper"
 
