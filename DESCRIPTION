@@ -18,13 +18,11 @@ Suggests:
     bench,
     bit64,
     data.table,
-    devtools,
     knitr,
     nanoarrow,
     nycflights13,
     patrick,
     pillar,
-    rextendr,
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
@@ -35,6 +33,9 @@ Config/Needs/website:
     magrittr,
     pkgload,
     yaml
+Config/Needs/dev:
+    devtools,
+    rextendr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
