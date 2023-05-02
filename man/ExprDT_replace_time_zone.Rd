@@ -8,7 +8,7 @@
 function
 }
 \arguments{
-\item{tz}{NULL or string time zone from base::OlsonNames()}
+\item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 
 \item{use_earliest}{NULL or logical.
 If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
