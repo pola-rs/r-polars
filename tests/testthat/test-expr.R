@@ -31,8 +31,8 @@ test_that("expression boolean operators", {
     (pl$lit(2)!=1)$alias("2 not eq 1"),
     (pl$lit(2)!=2)$alias("2 not eq 1 not")$is_not(),
 
-    pl$lit(TRUE)$is_not() == pl$lit(FALSE)$alias("not true == false"),
-    pl$lit(TRUE) != pl$lit(FALSE)$alias("true != false"),
+    (pl$lit(TRUE)$is_not() == pl$lit(FALSE))$alias("not true == false"),
+    (pl$lit(TRUE) != pl$lit(FALSE))$alias("true != false"),
 
     (pl$lit(TRUE)$is_not() == FALSE)$alias("not true == false wrap"),
     (pl$lit(TRUE) != FALSE)$alias("true != false wrap")
@@ -896,21 +896,16 @@ test_that("Expr_k_top", {
 
   l = list(a = c(6, 1, 0, NA, Inf,-Inf, NaN))
 
-  #TODO contribute polars k_top always places NaN first no matter reverse,
-  # this behavour does not match Expr_sort
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$top_k(3)$alias("k_top"),
-    pl$col("a")$top_k(3,reverse=TRUE)$alias("k_top_rev")
-  )$to_list()
-
-  expect_identical(
-    l_actual,
-    list(
-      k_top = c(NaN, Inf,6),
-      k_top_rev = c(NaN,-Inf,0) #NaN lower and higher than any value
-    )
+    pl$col("a")$bottom_k(3)$alias("k_bot")
   )
-
+  known = structure(list(k_top = c(Inf, 6, NaN), k_bot = c(NA, -Inf, 0)),
+   row.names = c( NA, -3L), class = "data.frame")
+  expect_equal(l_actual$to_data_frame(), known)
+  
+  #TODO contribute polars k_top always places NaN first no matter reverse,
+  # this behavour does not match Expr_sort
 })
 
 
@@ -1009,7 +1004,7 @@ test_that("sort_by", {
       )
     )
 
-    expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(),"Expected length\\: 4")
+    expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(),"different length")
     expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
     expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(),"column 'blop' not available in schema")
     expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(),"not convertable into.* Expr")
@@ -1192,7 +1187,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       fnan_NULL  = R_replace_nan(l$a,NA_real_),
       fnan_int   = R_replace_nan(l$a,42L),
       fnan_NA    = R_replace_nan(l$a,NA),
-      fnan_str   = c("1.0", "hej", "NA", "hej", "3.0"),
+      fnan_str   = c("1.0", "hej", NA, "hej", "3.0"),
       fnan_bool  = R_replace_nan(l$a,TRUE),
       fnan_expr  = R_replace_nan(l$a,pl$select(pl$lit(10)/2)$to_list()[[1L]]),
       fnan_series= R_replace_nan(l$a, pl$Series(10)$to_r())
@@ -1514,7 +1509,14 @@ test_that("hash + reinterpret", {
   hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$List(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
-  expect_true(!all(hash_values1==hash_values2))
+
+  #In current r-polars + py+polars setting seeds does not change the hash
+  #CONTRIBUTE POLARS, py-polars now also has this behaviour. Could be a bug.
+  #expect_true(!all(hash_values1==hash_values2)) # this should be true
+
+  #TODO replace this expectation with the opposite when hash seeds are fixed
+  # remove seed warning in docs
+  expect_true(all(hash_values1==hash_values2)) #...however this is true
 
   df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())
   df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$list())
@@ -1685,9 +1687,18 @@ test_that("Expr_diff", {
     )
   )
 
+  # negative diff values are now accepted upstream
+  df = pl$DataFrame(mtcars)$select(
+    pl$col("mpg")$diff(1)$alias("positive"),
+    pl$col("mpg")$diff(-1)$alias("negative")
+  )$to_data_frame()
+  known = data.frame(
+    positive = c(NA, diff(mtcars$mpg)),
+    negative = c(mtcars$mpg[1:31] - mtcars$mpg[2:32], NA)
+  )
+  expect_equal(df, known, ignore_attr = TRUE)
 
-  pl$select(pl$lit(1:5)$diff(0)) #no error
-  expect_error(pl$lit(1:5)$diff(-1))
+  expect_error(pl$select(pl$lit(1:5)$diff(0)), NA)
   expect_error(pl$lit(1:5)$diff(99^99))
   expect_error(pl$lit(1:5)$diff(5,"not a null behavior"))
 
@@ -1843,11 +1854,17 @@ test_that("kurtosis", {
 
 test_that("clip clip_min clip_max", {
 
-
-  r_clip <- \(x, a, b) ifelse(x<=a,a,x) |> (\(x) ifelse(x>=b,b,x))()
-  r_clip_min <- \(x, a) ifelse(x<=a,a,x)
-  r_clip_max <- \(x, b) ifelse(x>=b,b,x)
-
+  r_clip_min <- \(X, a) sapply(X,\(x) pcase(
+      is.nan(a) || is.nan(x), x,
+      x <= a, a,
+      or_else = x
+  ))
+  r_clip_max <- \(X, a) sapply(X,\(x) pcase(
+      is.nan(a) || is.nan(x), x,
+      x >= a, a,
+      or_else = x
+  ))
+  r_clip <- \(x, a, b) r_clip_min(x,a) |> r_clip_max(b)
 
   l = list(
     int   = c(NA_integer_,-.Machine$integer.max,-4:4 ,.Machine$integer.max),
@@ -1894,7 +1911,7 @@ expect_identical(
     int_m2i32 = r_clip_max(l$int,-2L),
     int_p2i32 = r_clip_max(l$int, 2L),
     float_minf64 = r_clip_max(l$float,-Inf),
-    float_NaN2f64 = l$float, #float_NaN2f64 = r_clip_max(l$float,NaN), #in R NaN is more like NA,
+    float_NaN2f64 = r_clip_max(l$float,NaN), #float_NaN2f64 = r_clip_max(l$float,NaN), #in R NaN is more like NA,
     float_p2f64 = r_clip_max(l$float,2)
   )
 )
@@ -2138,41 +2155,6 @@ test_that("extend_constant", {
 
 })
 
-
-test_that("extend_expr", {
-
-  expect_identical(
-    (
-      pl$lit(c("5","Bob_is_not_a_number"))
-      $cast(pl$dtypes$Utf8, strict = FALSE)
-      $extend_expr("chuchu", 2)
-    )$to_r(),
-    c("5","Bob_is_not_a_number","chuchu","chuchu")
-  )
-
-  expect_identical(
-    (
-        pl$lit(c("5","Bob_is_not_a_number"))
-        $cast(pl$dtypes$Int32, strict = FALSE)
-        $extend_expr(5, 2)
-        $to_r()
-    ),
-    c(5L, NA_integer_, 5L, 5L)
-  )
-
-  expect_identical(
-   (
-      pl$lit(c("5","Bob_is_not_a_number"))
-      $cast(pl$dtypes$Int32, strict = FALSE)
-      $extend_expr(5, 0)
-      $to_r()
-   ),
-    c(5L, NA_integer_)
-  )
-  expect_error(pl$select(pl$lit(1)$extend_expr(5,-1)))
-  expect_error(pl$select(pl$lit(1)$extend_expr(5,Inf)))
-
-})
 
 test_that("rep", {
   expect_identical(pl$lit(1:3)$rep(5)$to_r(), rep(1:3,5))

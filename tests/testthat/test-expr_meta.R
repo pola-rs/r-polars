@@ -56,7 +56,7 @@ test_that("meta$output_name", {
   )
   expect_grepl_error(
     pl$all()$meta$output_name(),
-    c("\\$meta\\$output_name","Cannot determine an output column")
+    c("\\$meta\\$output_name","Cannot determine.*output column")
   )
 
 })

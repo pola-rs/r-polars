@@ -7,7 +7,7 @@ test_that("str$strptime datetime", {
 
   expect_grepl_error(
    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(),fmt = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
-   "strict conversion to dates failed"
+   "strict conversion to date"
   )
 
   expect_grepl_error(
@@ -42,7 +42,7 @@ test_that("str$strptime date", {
 
   expect_grepl_error(
    pl$lit(txt_dates)$str$strptime(pl$Date,fmt = "%Y-%m-%d ")$lit_to_s(),
-   "strict conversion to dates failed"
+   "strict conversion to date"
   )
 
   expect_identical(
@@ -76,7 +76,7 @@ test_that("str$strptime time", {
 
   expect_grepl_error(
     pl$lit(txt_times)$str$strptime(pl$Time,fmt = "%H:%M:%S %z")$lit_to_s(),
-   "strict conversion to dates failed"
+   "strict conversion to date"
   )
 
   expect_equal(
@@ -357,7 +357,7 @@ test_that("encode decode", {
 
   expect_grepl_error(
     pl$lit("?")$str$decode("base64")$to_r(),
-    "Invalid 'base64' encoding found"
+    "invalid .base64. encoding found"
   )
 
   expect_grepl_error(
@@ -631,8 +631,10 @@ test_that("str$parse_int", {
     c(110L,101L,10L)
   )
 
-  #TODO check if parse_int now supports faulty strings,
-  #currently causes a deep panic!
-  #pl$lit(c("110", "101", "hej"))$str$parse_int(10)$to_r(),
+  expect_identical(
+    pl$lit(c("110", "101", "hej"))$str$parse_int(10, FALSE)$to_r(),
+    c(110L, 101L, NA)
+  )
 
+  expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })

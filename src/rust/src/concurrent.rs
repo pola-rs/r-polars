@@ -69,10 +69,9 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
 
     //bubble on concurrent errors
     let res_df = res_res_df.map_err(|err| {
-        pl::PolarsError::ComputeError(polars::error::ErrString::Owned(format!(
-            "error via polars concurrent R handler {:?}",
-            err
-        )))
+        pl::polars_err!(
+            ComputeError: "error via polars concurrent R handler {:?}", err,
+        )
     })?;
 
     //bubble polars errors

@@ -230,7 +230,7 @@ pub fn parse_fill_null_strategy(
         "one" => One,
         e => {
             return Err(pl::PolarsError::InvalidOperation(
-                polars::error::ErrString::Owned(format!("Strategy named not found: {}", e)),
+                format!("Strategy named not found: {}", e).into(),
             ))
         }
     };
