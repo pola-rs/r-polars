@@ -29,6 +29,7 @@ Suggests:
     tibble,
     pillar,
     rmarkdown,
+    lubridate,
     withr
 Config/Needs/website:
     etiennebacher/altdoc,

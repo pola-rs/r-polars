@@ -290,7 +290,7 @@ test_that("sort", {
   #test raise error for missing by
   expect_grepl_error(
      pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = c(T,F))$collect(),
-     c("The amount of ordering booleans", "2 does not match that no. of Series", "3")
+     c("The amount of ordering booleans", "2 does not match .*of Series", "3")
   )
 
   #TODO refine this error msg in robj_to! it does not have to be a "single" here

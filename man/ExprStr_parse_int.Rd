@@ -6,6 +6,10 @@
 \title{parse_int}
 \arguments{
 \item{radix}{Positive integer which is the base of the string we are parsing. Default: 2}
+
+\item{strict}{a logical. default is \code{TRUE},
+which will raise any ParseError or overflow as ComputeError.
+False silently convert to \code{null}.}
 }
 \value{
 Expr: Series of dtype i32.
@@ -16,6 +20,11 @@ By default base 2.
 }
 \examples{
 df = pl$DataFrame(bin = c("110", "101", "010"))
-df$select(pl$col("bin")$str$parse_int(2))
+df$select(pl$col("bin")$str$parse_int())
+df$select(pl$col("bin")$str$parse_int(10))
+
+# Convert to null if the string is not a valid integer when `strict = FALSE`
+df = pl$DataFrame(x = c("1", "2", "foo"))
+df$select(pl$col("x")$str$parse_int(10, FALSE))
 }
 \keyword{ExprStr}

@@ -261,7 +261,9 @@ Expr$sort <- function(descending, nulls_last) .Call(wrap__Expr__sort, self, desc
 
 Expr$arg_sort <- function(descending, nulls_last) .Call(wrap__Expr__arg_sort, self, descending, nulls_last)
 
-Expr$top_k <- function(k, reverse) .Call(wrap__Expr__top_k, self, k, reverse)
+Expr$top_k <- function(k) .Call(wrap__Expr__top_k, self, k)
+
+Expr$bottom_k <- function(k) .Call(wrap__Expr__bottom_k, self, k)
 
 Expr$arg_max <- function() .Call(wrap__Expr__arg_max, self)
 
@@ -415,8 +417,6 @@ Expr$ewm_var <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(w
 
 Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, self, value, n)
 
-Expr$extend_expr <- function(value, n) .Call(wrap__Expr__extend_expr, self, value, n)
-
 Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
 Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)
@@ -469,11 +469,11 @@ Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr
 
 Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
 
-Expr$str_parse_date <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, fmt, strict, exact, cache)
+Expr$str_parse_date <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, format, strict, exact, cache)
 
-Expr$str_parse_datetime <- function(fmt, strict, exact, cache, tz_aware, utc, tu) .Call(wrap__Expr__str_parse_datetime, self, fmt, strict, exact, cache, tz_aware, utc, tu)
+Expr$str_parse_datetime <- function(format, strict, exact, cache, tz_aware, utc, tu) .Call(wrap__Expr__str_parse_datetime, self, format, strict, exact, cache, tz_aware, utc, tu)
 
-Expr$str_parse_time <- function(fmt, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, fmt, strict, exact, cache)
+Expr$str_parse_time <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, format, strict, exact, cache)
 
 Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
@@ -521,7 +521,7 @@ Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self
 
 Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
-Expr$dt_replace_time_zone <- function(tz) .Call(wrap__Expr__dt_replace_time_zone, self, tz)
+Expr$dt_replace_time_zone <- function(tz, use_earliest) .Call(wrap__Expr__dt_replace_time_zone, self, tz, use_earliest)
 
 Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
 
@@ -707,7 +707,7 @@ Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_
 
 Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, offset, length)
 
-Expr$str_parse_int <- function(radix) .Call(wrap__Expr__str_parse_int, self, radix)
+Expr$str_parse_int <- function(radix, strict) .Call(wrap__Expr__str_parse_int, self, radix, strict)
 
 Expr$bin_contains <- function(lit) .Call(wrap__Expr__bin_contains, self, lit)
 

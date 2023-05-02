@@ -8,7 +8,12 @@
 function
 }
 \arguments{
-\item{tz}{Null or string time zone from base::OlsonNames()}
+\item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
+
+\item{use_earliest}{NULL or logical.
+If localizing an ambiguous datetime (say, due to daylight saving time),
+determine whether to localize to the earliest datetime or not.
+If NULL (the default), then ambiguous datetimes will raise.}
 }
 \value{
 Expr of i64
@@ -19,28 +24,25 @@ Different from \code{convert_time_zone}, this will also modify the underlying ti
 Use to correct a wrong time zone annotation. This will change the corresponding global timepoint.
 }
 \examples{
-df = pl$DataFrame(
-  date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")
-)
-df = df$with_columns(
-  pl$col("date")
-    $dt$replace_time_zone("Europe/Amsterdam")
-    $dt$convert_time_zone("Europe/London")
-    $alias("london_timezone")
+df_1 = pl$DataFrame(x = as.POSIXct("2009-08-07 00:00:01", tz = "America/New_York"))
+
+df_1$with_columns(
+  pl$col("x")$dt$replace_time_zone("UTC")$alias("utc"),
+  pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
 )
 
-df2 = df$with_columns(
-  pl$col("london_timezone")
-    $dt$replace_time_zone("Europe/Amsterdam")
-    $alias("cast London_to_Amsterdam"),
-  pl$col("london_timezone")
-    $dt$convert_time_zone("Europe/Amsterdam")
-    $alias("with London_to_Amsterdam"),
-  pl$col("london_timezone")
-    $dt$convert_time_zone("Europe/Amsterdam")
-    $dt$replace_time_zone(NULL)
-    $alias("strip tz from with-'Europe/Amsterdam'")
+# You can use use_earliest to deal with ambiguous datetimes
+df_2 = pl$DataFrame(
+  x = seq(
+    as.POSIXct("2018-10-28 01:30", tz = "UTC"),
+    as.POSIXct("2018-10-28 02:30", tz = "UTC"),
+    by = "30 min"
+  )
 )
-df2
+
+df_2$with_columns(
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", TRUE)$alias("use_earliest_true"),
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", FALSE)$alias("use_earliest_false")
+)
 }
 \keyword{ExprDT}

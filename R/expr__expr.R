@@ -871,9 +871,9 @@ Expr_xor = "use_extendr_wrapper"
 #' )$with_columns(
 #'   pl$col("vals")$cast(pl$Categorical),
 #'   pl$col("vals")
-#'     $cast(pl$Categorical)
-#'     $to_physical()
-#'     $alias("vals_physical")
+#'   $cast(pl$Categorical)
+#'   $to_physical()
+#'   $alias("vals_physical")
 #' )
 Expr_to_physical = "use_extendr_wrapper"
 
@@ -887,11 +887,20 @@ Expr_to_physical = "use_extendr_wrapper"
 #' @name Expr_cast
 #' @aliases cast
 #' @examples
-#' df = pl$DataFrame(list(a = 1:3, b = 1:3))
-#' df$with_columns(
-#'   pl$col("a")$cast(pl$dtypes$Float64, TRUE),
-#'   pl$col("a")$cast(pl$dtypes$Int32, TRUE)
+#' df = pl$DataFrame(a = 1:3, b = c(1,2,3))
+#' df$print()$with_columns(
+#'   pl$col("a")$cast(pl$dtypes$Float64),
+#'   pl$col("b")$cast(pl$dtypes$Int32)
 #' )
+#'
+#' #strict FALSE, inserts null for any cast failure
+#' pl$lit(c(100,200,300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+#'
+#'
+#' #strict TRUE, raise any failure as an error when query is executed.
+#' tryCatch({
+#'   pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+#' }, error = as.character)
 Expr_cast = function(dtype, strict = TRUE) {
   .pr$Expr$cast(self, dtype, strict)
 }
@@ -1422,13 +1431,11 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
 #' Top k values
 #' @description  Return the `k` largest elements.
-#' If 'reverse=True` the smallest elements will be given.
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @param k numeric k top values to get
-#' @param reverse bool if true then k smallest values
 #' @return Expr
 #' @aliases top_k
 #' @name Expr_top_k
@@ -1437,11 +1444,31 @@ Expr_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse named
 #' pl$DataFrame(list(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$top_k(5))
-Expr_top_k = function(k , reverse = FALSE) {
+Expr_top_k = function(k) {
   if(!is.numeric(k) || k<0) stopf("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self,k , reverse)
+  .pr$Expr$top_k(self,k)
 }
 
+# TODO contribute polars, add arguments for Null/NaN/inf last/first, bottom_k unwraps k> len column
+#' Bottom k values
+#' @description  Return the `k` smallest elements.
+#' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
+#'
+#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+#' @keywords Expr
+#' @param k numeric k bottom values to get
+#' @return Expr
+#' @aliases bottom_k
+#' @name Expr_bottom_k
+#' @format a method
+#' @examples
+#' pl$DataFrame(list(
+#'   a = c(6, 1, 0, NA, Inf, NaN)
+#' ))$select(pl$col("a")$bottom_k(5))
+Expr_bottom_k = function(k) {
+  if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
+  .pr$Expr$bottom_k(self, k)
+}
 
 
 #' Index of a sort
@@ -2365,6 +2392,10 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
 #' @param seed_3 Random seed parameter. Defaults to arg seed.
 #' The column will be coerced to UInt32. Give this dtype to make the coercion a
 #' no-op.
+#'
+#' @details WARNING in this version of r-polars seed / seed_x takes no effect.
+#' Possibly a bug in upstream rust-polars project.
+#'
 #' @return Expr
 #' @aliases hash
 #' @examples
@@ -3710,34 +3741,6 @@ Expr_extend_constant = function(value, n) {
   unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
 }
 
-
-##further improvement, support value has length, I prefer Expr_rep_extend now
-##
-#' Extend_expr
-#' @description
-#' Extend the Series with a expression repeated a number of times
-#' @param value The expr to extend the Series with.
-#' This value may be None to fill with nulls.
-#' @param n The number of values to extend.
-#' @return  Expr
-#' @aliases Expr_extend_expr
-#' @format Method
-#' @keywords Expr
-#' @examples
-#' pl$select(
-#'   pl$lit(c("5","Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$UInt64, strict = FALSE)
-#'   $extend_expr(10.1, 2)
-#' )
-#'
-#' pl$select(
-#'   pl$lit(c("5","Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$Utf8, strict = FALSE)
-#'   $extend_expr("chuchu", 2)
-#' )
-Expr_extend_expr = function(value, n) {
-  .pr$Expr$extend_expr(self, wrap_e(value), wrap_e(n))
-}
 
 #' expression: repeat series
 #' @description
