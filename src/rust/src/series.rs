@@ -578,37 +578,6 @@ impl Series {
         Ok(s)
     }
 
-    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> pl::PolarsResult<Self> {
-        //let expr = value.0.clone().repeat_by(n.clone().0);
-        let s: pl::PolarsResult<Self> = value.into(); //(&Expr(expr)).into();
-        let n_series_result: pl::PolarsResult<Series> = n.into();
-        let s = s?.0.cast(self.0.dtype())?;
-
-        let n_series = n_series_result.map_err(|err| {
-            pl::PolarsError::InvalidOperation(
-                format!(
-                "extend_expr: when casting n as UInt64 [{}], n should be a non-negative integer",
-                err
-            )
-                .into(),
-            )
-        })?;
-
-        let opt_n_u64 = n_series.0.u64()?.into_iter().next().ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(format!("extend_expr: expr n had no length").into())
-        })?;
-
-        let n_usize = opt_n_u64.ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(
-                format!("extend_expr: expr n cannot be a Null").into(),
-            )
-        })? as usize;
-        let to_append = s.new_from_index(0, n_usize);
-        let mut out = self.0.clone();
-        out.append(&to_append)?;
-        Ok(Series(out))
-    }
-
     pub fn rep_impl(&self, n: usize, rechunk: bool) -> pl::PolarsResult<Self> {
         if n == 0 {
             return Ok(Series(self.clone().0.slice(0, 0)));

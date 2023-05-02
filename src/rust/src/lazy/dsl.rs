@@ -942,21 +942,6 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> Self {
-        let v = value.clone();
-        let n = Expr(n.0.clone().strict_cast(pl::DataType::UInt64));
-
-        Expr(
-            self.0
-                .clone()
-                .apply(
-                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0).map(Some),
-                    GetOutput::same_type(),
-                )
-                .with_fmt("extend"),
-        )
-    }
-
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
         match try_f64_into_usize(n) {
             Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),

@@ -417,8 +417,6 @@ Expr$ewm_var <- function(alpha, adjust, bias, min_periods, ignore_nulls) .Call(w
 
 Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, self, value, n)
 
-Expr$extend_expr <- function(value, n) .Call(wrap__Expr__extend_expr, self, value, n)
-
 Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
 Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)

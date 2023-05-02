@@ -3733,34 +3733,6 @@ Expr_extend_constant = function(value, n) {
 }
 
 
-##further improvement, support value has length, I prefer Expr_rep_extend now
-##
-#' Extend_expr
-#' @description
-#' Extend the Series with a expression repeated a number of times
-#' @param value The expr to extend the Series with.
-#' This value may be None to fill with nulls.
-#' @param n The number of values to extend.
-#' @return  Expr
-#' @aliases Expr_extend_expr
-#' @format Method
-#' @keywords Expr
-#' @examples
-#' pl$select(
-#'   pl$lit(c("5","Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$UInt64, strict = FALSE)
-#'   $extend_expr(10.1, 2)
-#' )
-#'
-#' pl$select(
-#'   pl$lit(c("5","Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$Utf8, strict = FALSE)
-#'   $extend_expr("chuchu", 2)
-#' )
-Expr_extend_expr = function(value, n) {
-  .pr$Expr$extend_expr(self, wrap_e(value), wrap_e(n))
-}
-
 #' expression: repeat series
 #' @description
 #' This expression takes input and repeats it n times and append chunk
