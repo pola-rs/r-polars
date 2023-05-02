@@ -689,7 +689,8 @@ ExprDT_convert_time_zone = function(tz) {
 #' @name ExprDT_replace_time_zone
 #' @param tz NULL or string time zone from [base::OlsonNames()]
 #' @param use_earliest NULL or logical.
-#' If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
+#' If localizing an ambiguous datetime (say, due to daylight saving time),
+#' determine whether to localize to the earliest datetime or not.
 #' If NULL (the default), then ambiguous datetimes will raise.
 #' @return Expr of i64
 #' @keywords ExprDT
@@ -705,7 +706,11 @@ ExprDT_convert_time_zone = function(tz) {
 #'
 #' # You can use use_earliest to deal with ambiguous datetimes
 #' df_2 = pl$DataFrame(
-#'   x = seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
+#'   x = seq(
+#'     as.POSIXct("2018-10-28 01:30", tz = "UTC"),
+#'     as.POSIXct("2018-10-28 02:30", tz = "UTC"),
+#'     by = "30 min"
+#'   )
 #' )
 #'
 #' df_2$with_columns(

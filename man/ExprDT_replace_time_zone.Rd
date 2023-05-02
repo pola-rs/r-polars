@@ -11,7 +11,8 @@ function
 \item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 
 \item{use_earliest}{NULL or logical.
-If localizing an ambiguous datetime (say, due to daylight saving time), determine whether to localize to the earliest datetime or not.
+If localizing an ambiguous datetime (say, due to daylight saving time),
+determine whether to localize to the earliest datetime or not.
 If NULL (the default), then ambiguous datetimes will raise.}
 }
 \value{
@@ -32,7 +33,11 @@ df_1$with_columns(
 
 # You can use use_earliest to deal with ambiguous datetimes
 df_2 = pl$DataFrame(
-  x = seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
+  x = seq(
+    as.POSIXct("2018-10-28 01:30", tz = "UTC"),
+    as.POSIXct("2018-10-28 02:30", tz = "UTC"),
+    by = "30 min"
+  )
 )
 
 df_2$with_columns(
