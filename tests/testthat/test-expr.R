@@ -2156,41 +2156,6 @@ test_that("extend_constant", {
 })
 
 
-test_that("extend_expr", {
-
-  expect_identical(
-    (
-      pl$lit(c("5","Bob_is_not_a_number"))
-      $cast(pl$dtypes$Utf8, strict = FALSE)
-      $extend_expr("chuchu", 2)
-    )$to_r(),
-    c("5","Bob_is_not_a_number","chuchu","chuchu")
-  )
-
-  expect_identical(
-    (
-        pl$lit(c("5","Bob_is_not_a_number"))
-        $cast(pl$dtypes$Int32, strict = FALSE)
-        $extend_expr(5, 2)
-        $to_r()
-    ),
-    c(5L, NA_integer_, 5L, 5L)
-  )
-
-  expect_identical(
-   (
-      pl$lit(c("5","Bob_is_not_a_number"))
-      $cast(pl$dtypes$Int32, strict = FALSE)
-      $extend_expr(5, 0)
-      $to_r()
-   ),
-    c(5L, NA_integer_)
-  )
-  expect_error(pl$select(pl$lit(1)$extend_expr(5,-1)))
-  expect_error(pl$select(pl$lit(1)$extend_expr(5,Inf)))
-
-})
-
 test_that("rep", {
   expect_identical(pl$lit(1:3)$rep(5)$to_r(), rep(1:3,5))
   expect_identical(pl$lit(c("a","b"))$rep(5)$to_r(), rep(c("a","b"),5))
