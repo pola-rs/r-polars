@@ -281,10 +281,11 @@ impl LazyFrame {
                     new_asof_strategy(s)
                         .map_err(|err| format!("param [strategy] error because {}", err))
                 })?,
-                left_by: left_by,
-                right_by: right_by,
+                left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
+                right_by: right_by
+                    .map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
                 tolerance: tolerance,
-                tolerance_str: tolerance_str,
+                tolerance_str: tolerance_str.map(|s| s.into()),
             }))
             .suffix(robj_to!(str, suffix)?)
             .finish()
