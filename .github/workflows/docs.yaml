@@ -96,6 +96,7 @@ jobs:
         with:
           extra-packages: local::.
           needs: website
+          pak-version: devel
         env:
           CI: false
 
