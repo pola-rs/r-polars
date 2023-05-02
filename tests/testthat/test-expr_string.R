@@ -631,8 +631,10 @@ test_that("str$parse_int", {
     c(110L,101L,10L)
   )
 
-  #TODO check if parse_int now supports faulty strings,
-  #currently causes a deep panic!
-  #pl$lit(c("110", "101", "hej"))$str$parse_int(10)$to_r(),
+  expect_identical(
+    pl$lit(c("110", "101", "hej"))$str$parse_int(10, FALSE)$to_r(),
+    c(110L, 101L, NA)
+  )
 
+  expect_error(pl$lit("foo")$str$parse_int()$to_r(), "strict integer parsing failed for 1 value")
 })
