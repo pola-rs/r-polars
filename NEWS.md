@@ -1,5 +1,9 @@
 # polars (development version)
 
+## BREAKING CHANGES
+
+- Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
+
 ## What's changed
 - `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
 - An experimental `knit_print()` method has been added to DataFrame that outputs HTML tables
