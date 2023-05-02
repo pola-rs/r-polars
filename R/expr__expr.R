@@ -871,9 +871,9 @@ Expr_xor = "use_extendr_wrapper"
 #' )$with_columns(
 #'   pl$col("vals")$cast(pl$Categorical),
 #'   pl$col("vals")
-#'     $cast(pl$Categorical)
-#'     $to_physical()
-#'     $alias("vals_physical")
+#'   $cast(pl$Categorical)
+#'   $to_physical()
+#'   $alias("vals_physical")
 #' )
 Expr_to_physical = "use_extendr_wrapper"
 
@@ -889,8 +889,8 @@ Expr_to_physical = "use_extendr_wrapper"
 #' @examples
 #' df = pl$DataFrame(list(a = 1:3, b = 1:3))
 #' df$with_columns(
-#'   pl$col("a")$cast(pl$dtypes$Float64, TRUE),
-#'   pl$col("a")$cast(pl$dtypes$Int32, TRUE)
+#'   pl$col("a")$cast(pl$dtypes$Float64, TRUE)$alias("f64"),
+#'   pl$col("a")$cast(pl$dtypes$Int32, TRUE)$alias("i32")
 #' )
 Expr_cast = function(dtype, strict = TRUE) {
   .pr$Expr$cast(self, dtype, strict)
