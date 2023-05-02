@@ -9,6 +9,8 @@
 - An experimental `knit_print()` method has been added to DataFrame that outputs HTML tables
   (similar to py-polars' HTML output) (#125 @eitsupi)
 - `Series` gains new methods: `$mean`, `$median`, `$std`, `$var` (#170 @vincentarelbundock)
+- A new option `use_earliest` of `replace_time_zone`. (#183)
+- A new option `strict` of `parse_int`. (#183)
 
 # polars v0.5.0
 
