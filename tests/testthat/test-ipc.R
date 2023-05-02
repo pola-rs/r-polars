@@ -6,7 +6,7 @@ test_that("Test reading data from Apache Arrow IPC", {
   # Put data in Apache Arrow IPC format
   tmpf = tempfile()
   on.exit(unlink(tmpf))
-  arrow::write_ipc_file(iris, tmpf)
+  arrow::write_ipc_file(iris, tmpf, compression = "uncompressed")
 
   # Collect data from Apache Arrow IPC
   read_limit = 27
