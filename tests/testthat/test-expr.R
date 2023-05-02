@@ -1187,7 +1187,7 @@ test_that("fill_null  + forward backward _fill + fill_nan", {
       fnan_NULL  = R_replace_nan(l$a,NA_real_),
       fnan_int   = R_replace_nan(l$a,42L),
       fnan_NA    = R_replace_nan(l$a,NA),
-      fnan_str   = c("1.0", "hej", "NA", "hej", "3.0"),
+      fnan_str   = c("1.0", "hej", NA, "hej", "3.0"),
       fnan_bool  = R_replace_nan(l$a,TRUE),
       fnan_expr  = R_replace_nan(l$a,pl$select(pl$lit(10)/2)$to_list()[[1L]]),
       fnan_series= R_replace_nan(l$a, pl$Series(10)$to_r())
@@ -1854,11 +1854,17 @@ test_that("kurtosis", {
 
 test_that("clip clip_min clip_max", {
 
-
-  r_clip <- \(x, a, b) ifelse(x<=a,a,x) |> (\(x) ifelse(x>=b,b,x))()
-  r_clip_min <- \(x, a) ifelse(x<=a,a,x)
-  r_clip_max <- \(x, b) ifelse(x>=b,b,x)
-
+  r_clip_min <- \(X, a) sapply(X,\(x) pcase(
+      is.nan(a) || is.nan(x), x,
+      x <= a, a,
+      or_else = x
+  ))
+  r_clip_max <- \(X, a) sapply(X,\(x) pcase(
+      is.nan(a) || is.nan(x), x,
+      x >= a, a,
+      or_else = x
+  ))
+  r_clip <- \(x, a, b) r_clip_min(x,a) |> r_clip_max(b)
 
   l = list(
     int   = c(NA_integer_,-.Machine$integer.max,-4:4 ,.Machine$integer.max),
@@ -1905,7 +1911,7 @@ expect_identical(
     int_m2i32 = r_clip_max(l$int,-2L),
     int_p2i32 = r_clip_max(l$int, 2L),
     float_minf64 = r_clip_max(l$float,-Inf),
-    float_NaN2f64 = l$float, #float_NaN2f64 = r_clip_max(l$float,NaN), #in R NaN is more like NA,
+    float_NaN2f64 = r_clip_max(l$float,NaN), #float_NaN2f64 = r_clip_max(l$float,NaN), #in R NaN is more like NA,
     float_p2f64 = r_clip_max(l$float,2)
   )
 )
