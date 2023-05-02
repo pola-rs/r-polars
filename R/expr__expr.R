@@ -887,11 +887,20 @@ Expr_to_physical = "use_extendr_wrapper"
 #' @name Expr_cast
 #' @aliases cast
 #' @examples
-#' df = pl$DataFrame(list(a = 1:3, b = 1:3))
-#' df$with_columns(
-#'   pl$col("a")$cast(pl$dtypes$Float64, TRUE),
-#'   pl$col("a")$cast(pl$dtypes$Int32, TRUE)
+#' df = pl$DataFrame(a = 1:3, b = c(1,2,3))
+#' df$print()$with_columns(
+#'   pl$col("a")$cast(pl$dtypes$Float64),
+#'   pl$col("b")$cast(pl$dtypes$Int32)
 #' )
+#'
+#' #strict FALSE, inserts null for any cast failure
+#' pl$lit(c(100,200,300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+#'
+#'
+#' #strict TRUE, raise any failure as an error when query is executed.
+#' tryCatch({
+#'   pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+#' }, error = as.character)
 Expr_cast = function(dtype, strict = TRUE) {
   .pr$Expr$cast(self, dtype, strict)
 }
