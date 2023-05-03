@@ -75,7 +75,7 @@ computation of both DataFrames up to the join in parallel.}
 DataFrames up to the join in parallel.}
 }
 \value{
-joined LazyFrame
+new joined LazyFrame
 }
 \description{
 Perform an asof join.

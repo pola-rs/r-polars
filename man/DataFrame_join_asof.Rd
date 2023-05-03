@@ -75,7 +75,7 @@ computation of both DataFrames up to the join in parallel.}
 DataFrames up to the join in parallel.}
 }
 \value{
-joined DataFrame
+new joined DataFrame
 }
 \description{
 Perform an asof join.

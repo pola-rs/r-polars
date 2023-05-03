@@ -684,7 +684,7 @@ LazyFrame_sort = function(
 #'
 #' The default is "backward".
 #' @keywords LazyFrame
-#' @return joined LazyFrame
+#' @return new joined LazyFrame
 #' @examples #
 #' #create two LazyFrame to join asof
 #' gdp = pl$DataFrame(
