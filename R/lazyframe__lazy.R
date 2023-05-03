@@ -638,7 +638,7 @@ LazyFrame_sort = function(
 #' @param by Default NULL, optional set/override by_left and by_right simultaneously
 #' @param strategy Default "backward". Strategy for where to find match. "Backward" searches in a
 #' descending direction and "Forward" searches in Ascending direction.
-#' @param suffix append suffix to right (other) columns, if duplicated names
+#' @param suffix Suffix to append to the right (other) columns, if there are duplicated names
 #' @param tolerance
 #' Numeric tolerance. By setting this the join will only be done if the near
 #' keys are within this distance. If an asof join is done on columns of dtype
