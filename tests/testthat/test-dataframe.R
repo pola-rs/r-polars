@@ -715,15 +715,15 @@ test_that("join_asof_simple", {
     pop$join_asof(gdp, on = "date", strategy = "backward")$to_list()
   )
 
-  ##TODO fix this test after fixing Series conversion of NA
+
   #exceeding 18w
-  # expect_identical(
-  #   pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "18w")$to_list(),
-  #   pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
-  #     pl$lit(NA_real_)$alias("gdp"),
-  #     pl$lit(NA_character_)$alias("group_right")
-  #   )$to_list()
-  # )
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "18w")$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+      pl$lit(NA_character_)$alias("group_right")
+    )$to_list()
+  )
 
   #num_tolerance within 19w = 19*7 days
   expect_identical(
@@ -731,13 +731,12 @@ test_that("join_asof_simple", {
     pop$join_asof(gdp, on = "date", strategy = "backward")$to_list()
   )
 
-  ##TODO fix this test after fixing Series conversion of NA
-  # expect_identical(
-  #   pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18*7)$to_list(),
-  #    pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
-  #     pl$lit(NA_real_)$alias("gdp"),
-  #      pl$lit(NA_character_)$alias("group_right")
-  #   )$to_list()
-  # )
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18*7)$to_list(),
+     pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+       pl$lit(NA_character_)$alias("group_right")
+    )$to_list()
+  )
 
 })
