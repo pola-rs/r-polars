@@ -92,23 +92,9 @@ jobs:
         with:
           use-public-rspm: true
           Ncpus: 2
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: local::.
-          needs: website
-        env:
-          CI: false
 
-        ##### Build documentation and put it on "rpolars/rpolars.github.io" repo
-
-      - name: Build docs folder
-        run: |
-          file.copy("docs/mkdocs.orig.yml", "docs/mkdocs.yml")
-          altdoc::update_docs(custom_reference = "docs/make-docs.R")
-        shell: Rscript {0}
-
-      - name: Build site
-        run: cd docs && mkdocs build
+      - name: Build docs
+        run: make docs
 
       - uses: webfactory/ssh-agent@v0.6.0
         if: github.event_name != 'pull_request'
