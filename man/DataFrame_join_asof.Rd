@@ -42,12 +42,11 @@ table.}
 \item{strategy}{Default "backward". Strategy for where to find match. "Backward" searches in a
 descending direction and "Forward" searches in Ascending direction.}
 
-\item{suffix}{append suffix to right (other) columns, if duplicated names}
+\item{suffix}{Suffix to append to the right (other) columns, if there are duplicated names}
 
 \item{tolerance}{Numeric tolerance. By setting this the join will only be done if the near
 keys are within this distance. If an asof join is done on columns of dtype
-"Date", "Datetime", "Duration" or "Time" you use the following string
-language:
+"Date", "Datetime", "Duration" or "Time" you can use the following values:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{- 1ns   (1 nanosecond)
 - 1us   (1 microsecond)
@@ -71,7 +70,7 @@ For that case expression syntax is also enabled like e.g.
 \item{allow_parallel}{Default TRUE, Allow the physical plan to optionally evaluate the
 computation of both DataFrames up to the join in parallel.}
 
-\item{force_parallel}{Default FALSE, Force the physical plan to evaluate the computation of both
+\item{force_parallel}{Default FALSE. Force the physical plan to evaluate the computation of both
 DataFrames up to the join in parallel.}
 }
 \value{
