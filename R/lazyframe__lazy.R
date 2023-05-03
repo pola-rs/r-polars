@@ -642,8 +642,7 @@ LazyFrame_sort = function(
 #' @param tolerance
 #' Numeric tolerance. By setting this the join will only be done if the near
 #' keys are within this distance. If an asof join is done on columns of dtype
-#' "Date", "Datetime", "Duration" or "Time" you use the following string
-#' language:
+#' "Date", "Datetime", "Duration" or "Time" you can use the following values:
 #'
 #'     - 1ns   (1 nanosecond)
 #'     - 1us   (1 microsecond)
