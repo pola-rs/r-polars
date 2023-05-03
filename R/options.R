@@ -75,6 +75,18 @@ polars_optreq$do_not_repeat_call = list( #set requirement functions of default v
   }
 )
 
+#' @rdname polars_options
+#' @name debug_polars
+#' @details prints any call to public or private polars method
+#' @param debug_polars bool, default = FALSE,
+#' turn of messages
+polars_optenv$debug_polars = FALSE #set default value
+polars_optreq$debug_polars = list( #set requirement functions of default value
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
+)
+
 
 ## END OF DEFINED OPTIONS
 
@@ -201,5 +213,12 @@ pl$get_polars_opt_requirements = function() {
 runtime_state = new.env(parent = emptyenv())
 
 
+
+subtimer_ms = function() {
+  last = runtime_state$last_subtime %||% 0
+  this = as.numeric(Sys.time())
+  runtime_state$last_subtime = this
+  min((this - last)*1000,9999)
+}
 
 

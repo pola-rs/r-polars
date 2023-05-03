@@ -5,6 +5,7 @@
 \alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
+\alias{debug_polars}
 \alias{get_polars_options}
 \alias{polars_options}
 \alias{set_polars_options}
@@ -31,6 +32,9 @@ turn of messages}
 \item{do_not_repeat_call}{bool, default = FALSE,
 turn of messages}
 
+\item{debug_polars}{bool, default = FALSE,
+turn of messages}
+
 \item{...}{any options to modify}
 
 \item{return_replaced_options}{return previous state of modified options
@@ -50,6 +54,8 @@ get, set, reset polars options
 who likes polars package messages? use this option to turn them off.
 
 do not print the call causing the error in error messages
+
+prints any call to public or private polars method
 
 modifing list takes no effect, pass it to pl$set_polars_options
 get/set/resest interact with internal env \code{polars:::polars_optenv}

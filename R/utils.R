@@ -23,6 +23,8 @@ check_no_missing_args = function(
 
 
 
+
+
 #' Verify user selected method/attribute exists
 #' @description internal function to check method call of env_classes
 #'
@@ -34,6 +36,10 @@ check_no_missing_args = function(
 #' @return invisible(NULL)
 verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name =NULL) {
 
+  if(polars_optenv$debug_polars) {
+    class_name = class_name %||%  as.character(as.list(match.call())$Class_env)
+    cat("[",format(subtimer_ms(),digits = 4),"ms]\n",class_name,"$",Method_name,"() -> ",sep = "")
+  }
   if(!Method_name %in% names(Class_env)) {
     class_name = class_name %||%  as.character(as.list(match.call())$Class_env)
     stop(
