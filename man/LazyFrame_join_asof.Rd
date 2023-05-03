@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_join_asof}
 \alias{LazyFrame_join_asof}
-\title{join_asof}
+\title{Perform joins on nearest keys}
 \usage{
 LazyFrame_join_asof(
   other,

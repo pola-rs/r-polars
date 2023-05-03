@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_join_asof}
 \alias{DataFrame_join_asof}
-\title{join_asof}
+\title{Perform joins on nearest keys}
 \usage{
 DataFrame_join_asof(
   other,
