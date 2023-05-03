@@ -44,7 +44,6 @@ jobs:
         with:
           key: ${{ github.ref }}
           path: .cache
-      - run: python3 -m pip install mkdocs-material
 
 
         ##### Rust stuff #####
@@ -92,6 +91,9 @@ jobs:
         with:
           use-public-rspm: true
           Ncpus: 2
+
+      - name: Get Python and R requirements
+        run: make requirements-py requirements-r
 
       - name: Build docs
         run: make docs
