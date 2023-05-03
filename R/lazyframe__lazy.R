@@ -662,7 +662,7 @@ LazyFrame_sort = function(
 #' For that case expression syntax is also enabled like e.g.
 #' `tolerance = pl$lit(42)$cast(pl$Uint64)`
 #'
-#' @param allow_parallel Default TRUE, Allow the physical plan to optionally evaluate the
+#' @param allow_parallel Default TRUE. Allow the physical plan to optionally evaluate the
 #' computation of both DataFrames up to the join in parallel.
 #' @param force_parallel Default FALSE. Force the physical plan to evaluate the computation of both
 #' DataFrames up to the join in parallel.
