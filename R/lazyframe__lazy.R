@@ -625,7 +625,7 @@ LazyFrame_sort = function(
 }
 
 
-#' join_asof
+#' Perform joins on nearest keys
 #' @param other LazyFrame
 #' @param ...  not used, blocks use of further positional arguments
 #' @param left_on column name or Expr,  join column of left table

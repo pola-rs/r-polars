@@ -1191,7 +1191,7 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 
 
 
-#' join_asof
+#' Perform joins on nearest keys
 #' @inherit LazyFrame_join_asof
 #' @param other DataFrame or LazyFrame
 #' @keywords DataFrame
