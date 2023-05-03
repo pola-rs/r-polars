@@ -110,8 +110,6 @@ jobs:
       - name: Build site
         run: cd docs && mkdocs build
 
-      - name: Build docs
-        run: make docs
 
       - uses: webfactory/ssh-agent@v0.6.0
         if: github.event_name != 'pull_request'
