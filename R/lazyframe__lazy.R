@@ -710,7 +710,7 @@ LazyFrame_sort = function(
 #' # .... and forward
 #' pop$join_asof(gdp, on = "date", strategy = "forward")$collect()
 #'
-#' # join by a group: "only look within within group"
+#' # join by a group: "only look within groups"
 #' pop$join_asof(gdp, on = "date", by = "group", strategy = "backward")$collect()
 #'
 #' # only look 2 weeks and 2 days back
