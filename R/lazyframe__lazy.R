@@ -664,7 +664,7 @@ LazyFrame_sort = function(
 #'
 #' @param allow_parallel Default TRUE, Allow the physical plan to optionally evaluate the
 #' computation of both DataFrames up to the join in parallel.
-#' @param force_parallel Default FALSE, Force the physical plan to evaluate the computation of both
+#' @param force_parallel Default FALSE. Force the physical plan to evaluate the computation of both
 #' DataFrames up to the join in parallel.
 #'
 #' @description Perform an asof join.
