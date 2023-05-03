@@ -14,6 +14,7 @@ use pl::UniqueKeepStrategy;
 #[extendr]
 impl RField {
     fn new(name: String, datatype: &RPolarsDataType) -> RField {
+        let name = name.into();
         RField(pl::Field {
             name,
             dtype: datatype.0.clone(),
@@ -30,14 +31,14 @@ impl RField {
     }
 
     pub fn get_name(&self) -> String {
-        self.0.name.clone()
+        self.0.name.to_string()
     }
     pub fn get_datatype(&self) -> RPolarsDataType {
         RPolarsDataType(self.0.dtype.clone())
     }
 
     pub fn set_name_mut(&mut self, name: &str) {
-        self.0.name = name.to_string()
+        self.0.name = name.into()
     }
 
     pub fn set_datatype_mut(&mut self, datatype: &RPolarsDataType) {
@@ -60,7 +61,7 @@ impl RField {
     //         Series::inner_from_robj_clone(&robj)
     //             .map_err(|err| {
     //                 //convert any error from R to a polars error
-    //                 pl::PolarsError::ComputeError(polars::error::ErrString::Owned(err.to_string()))
+    //                 pl::PolarsError::ComputeError(err.into()))
     //             })?
     //             .0
     //     };
@@ -294,15 +295,16 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
     }
 }
 
-pub fn new_unique_keep_strategy(
-    s: &str,
-) -> std::result::Result<UniqueKeepStrategy, String> {
+pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrategy, String> {
     match s {
         // "any" => Ok(pl::UniqueKeepStrategy::Any),
         "first" => Ok(pl::UniqueKeepStrategy::First),
         "last" => Ok(pl::UniqueKeepStrategy::Last),
         "none" => Ok(pl::UniqueKeepStrategy::None),
-        _ => Err(format!("keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",s))
+        _ => Err(format!(
+            "keep strategy choice: [{}] is not any of 'any', 'first', 'last', 'none'",
+            s
+        )),
     }
 }
 

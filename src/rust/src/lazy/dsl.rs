@@ -17,7 +17,6 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use polars::chunked_array::object::SortOptions;
-use polars::error::ErrString as pl_err_string;
 use polars::lazy::dsl;
 use polars::prelude::BinaryNameSpaceImpl;
 use polars::prelude::DurationMethods;
@@ -110,13 +109,10 @@ impl Expr {
                 }
             }
             (Rtype::Strings, 1) => {
-                let opt_val = robj.as_str();
-                if let Some(val) = opt_val.clone() {
-                    Ok(dsl::lit(val))
-                } else if robj.is_na() {
+                if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Utf8))
                 } else {
-                    Err(err_msg.into())
+                    Ok(dsl::lit(robj.as_str().unwrap()))
                 }
             }
             (Rtype::Logicals, 1) => {
@@ -244,8 +240,12 @@ impl Expr {
             .into()
     }
 
-    pub fn top_k(&self, k: f64, reverse: bool) -> Self {
-        self.0.clone().top_k(k as usize, reverse).into()
+    pub fn top_k(&self, k: f64) -> Self {
+        self.0.clone().top_k(k as usize).into()
+    }
+
+    pub fn bottom_k(&self, k: f64) -> Self {
+        self.0.clone().bottom_k(k as usize).into()
     }
 
     pub fn arg_max(&self) -> Self {
@@ -665,6 +665,7 @@ impl Expr {
         self.0.clone().abs().into()
     }
 
+    // TODO: support seed option
     fn rank(&self, method: &str, reverse: bool) -> List {
         let expr_res = new_rank_method(method)
             .map(|rank_method| {
@@ -672,7 +673,7 @@ impl Expr {
                     method: rank_method,
                     descending: reverse,
                 };
-                Expr(self.0.clone().rank(options))
+                Expr(self.0.clone().rank(options, Some(0u64)))
             })
             .map_err(|err| format!("rank: {}", err));
 
@@ -682,7 +683,7 @@ impl Expr {
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().diff(
-                try_f64_into_usize(n_float)?,
+                try_f64_into_i64(n_float)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -691,8 +692,8 @@ impl Expr {
     }
 
     fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_usize(n_float)
-            .map(|n_usize| Expr(self.0.clone().pct_change(n_usize)))
+        let expr_res = try_f64_into_i64(n_float)
+            .map(|n| Expr(self.0.clone().pct_change(n)))
             .map_err(|err| format!("pct_change: {}", err));
         r_result_list(expr_res)
     }
@@ -941,21 +942,6 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> Self {
-        let v = value.clone();
-        let n = Expr(n.0.clone().strict_cast(pl::DataType::UInt64));
-
-        Expr(
-            self.0
-                .clone()
-                .apply(
-                    move |s| Series(s).extend_expr(&v, &n).map(|s| s.0).map(Some),
-                    GetOutput::same_type(),
-                )
-                .with_fmt("extend"),
-        )
-    }
-
     pub fn rep(&self, n: f64, rechunk: bool) -> List {
         match try_f64_into_usize(n) {
             Err(err) => r_error_list(format!("rep: arg n invalid, {}", err)),
@@ -1001,7 +987,7 @@ impl Expr {
     }
 
     pub fn list(&self) -> Self {
-        self.clone().0.list().into()
+        self.clone().0.implode().into()
     }
 
     pub fn shrink_dtype(&self) -> Self {
@@ -1086,7 +1072,7 @@ impl Expr {
     fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().arr().diff(
-                try_f64_into_usize(n)?,
+                try_f64_into_i64(n)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
@@ -1119,17 +1105,24 @@ impl Expr {
         use crate::rdatatype::new_width_strategy;
         use crate::utils::extendr_concurrent::ParRObj;
         use pl::NamedFrom;
+        use smartstring::{LazyCompact, SmartString};
+        use std::sync::Arc;
         // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
         // here a usize is wrapped in Series
-        let name_gen = if let Some(robj) = null_to_opt(name_gen) {
+        let name_gen: std::option::Option<
+            Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
+        > = if let Some(robj) = null_to_opt(name_gen) {
             let probj: ParRObj = robj.clone().into();
-            let x = Some(pl::Arc::new(move |idx: usize| {
+            let x: std::option::Option<
+                Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
+            > = Some(pl::Arc::new(move |idx: usize| {
                 let thread_com = ThreadCom::from_global(&CONFIG);
                 let s = pl::Series::new("", &[idx as u64]);
                 thread_com.send((probj.clone(), s));
                 let s = thread_com.recv();
-                s.0.name().to_string()
-            }) as NameGenerator);
+                let s: SmartString<LazyCompact> = s.0.name().to_string().into();
+                s
+            }));
             x
         } else {
             None
@@ -1149,7 +1142,7 @@ impl Expr {
 
     pub fn str_parse_date(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1159,7 +1152,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Date,
-                fmt: null_to_opt(fmt),
+                format: null_to_opt(format),
                 strict,
                 exact,
                 cache,
@@ -1171,7 +1164,7 @@ impl Expr {
 
     pub fn str_parse_datetime(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1181,17 +1174,17 @@ impl Expr {
     ) -> List {
         let res = || -> Result<Expr, String> {
             let tu = null_to_opt(tu).map(|tu| robj_to_timeunit(tu)).transpose()?;
-            let fmt = null_to_opt(fmt);
-            let result_tu = match (&fmt, tu) {
+            let format = null_to_opt(format);
+            let result_tu = match (&format, tu) {
                 (_, Some(tu)) => tu,
-                (Some(fmt), None) => {
-                    if fmt.contains("%.9f")
-                        || fmt.contains("%9f")
-                        || fmt.contains("%f")
-                        || fmt.contains("%.f")
+                (Some(format), None) => {
+                    if format.contains("%.9f")
+                        || format.contains("%9f")
+                        || format.contains("%f")
+                        || format.contains("%.f")
                     {
                         pl::TimeUnit::Nanoseconds
-                    } else if fmt.contains("%.3f") || fmt.contains("%3f") {
+                    } else if format.contains("%.3f") || format.contains("%3f") {
                         pl::TimeUnit::Milliseconds
                     } else {
                         pl::TimeUnit::Microseconds
@@ -1205,7 +1198,7 @@ impl Expr {
                 .str()
                 .strptime(pl::StrpTimeOptions {
                     date_dtype: pl::DataType::Datetime(result_tu, None),
-                    fmt,
+                    format,
                     strict,
                     exact,
                     cache,
@@ -1219,7 +1212,7 @@ impl Expr {
 
     pub fn str_parse_time(
         &self,
-        fmt: Nullable<String>,
+        format: Nullable<String>,
         strict: bool,
         exact: bool,
         cache: bool,
@@ -1229,7 +1222,7 @@ impl Expr {
             .str()
             .strptime(pl::StrpTimeOptions {
                 date_dtype: pl::DataType::Time,
-                fmt: null_to_opt(fmt),
+                format: null_to_opt(format),
                 strict,
                 exact,
                 cache,
@@ -1343,11 +1336,11 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>) -> Self {
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Nullable<bool>) -> Self {
         self.0
             .clone()
             .dt()
-            .replace_time_zone(tz.into_option())
+            .replace_time_zone(tz.into_option(), use_earliest.into_option())
             .into()
     }
 
@@ -1727,19 +1720,15 @@ impl Expr {
                 .expect("internal error: this is not an R function");
 
             let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
-                let es = pl_err_string::Owned(format!(
-                    "in map_alias: user function raised this error: {:?}",
-                    err
-                ));
+                let es = format!("in map_alias: user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
             })?;
 
             newname_robj
                 .as_str()
                 .ok_or_else(|| {
-                    let es = pl_err_string::Owned(format!(
-                        "in map_alias: R function return value was not a string"
-                    ));
+                    let es =
+                        format!("in map_alias: R function return value was not a string").into();
                     pl_error::ComputeError(es)
                 })
                 .map(|str| str.to_string())
@@ -2052,12 +2041,12 @@ impl Expr {
             .into())
     }
 
-    pub fn str_parse_int(&self, radix: Robj) -> Result<Expr, String> {
+    pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> Result<Expr, String> {
         Ok(self
             .0
             .clone()
             .str()
-            .from_radix(robj_to!(Option, u32, radix)?)
+            .from_radix(robj_to!(u32, radix)?, robj_to!(bool, strict)?)
             .with_fmt("str.parse_int")
             .into())
     }

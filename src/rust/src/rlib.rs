@@ -86,9 +86,11 @@ fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
 }
 
 #[extendr]
-fn concat_lst(exprs: &ProtoExprArray) -> Expr {
+fn concat_lst(exprs: &ProtoExprArray) -> Result<Expr, String> {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::concat_lst(exprs).into()
+    Ok(Expr(
+        polars::lazy::dsl::concat_lst(exprs).map_err(|err| err.to_string())?,
+    ))
 }
 
 #[extendr]

@@ -25,6 +25,10 @@ Expr
 Hash the elements in the selection.
 The hash value is of type \code{UInt64}.
 }
+\details{
+WARNING in this version of r-polars seed / seed_x takes no effect.
+Possibly a bug in upstream rust-polars project.
+}
 \examples{
 df = pl$DataFrame(iris)
 df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()

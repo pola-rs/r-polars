@@ -1,10 +1,18 @@
 # polars (development version)
 
+## BREAKING CHANGES
+
+- Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
+  - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
+  - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
+
 ## What's changed
 - `DataFrame` objects can be subsetted using brackets like standard R data frames: `pl$DataFrame(mtcars)[2:4, c("mpg", "hp")]` (#140 @vincentarelbundock)
 - An experimental `knit_print()` method has been added to DataFrame that outputs HTML tables
   (similar to py-polars' HTML output) (#125 @eitsupi)
 - `Series` gains new methods: `$mean`, `$median`, `$std`, `$var` (#170 @vincentarelbundock)
+- A new option `use_earliest` of `replace_time_zone`. (#183)
+- A new option `strict` of `parse_int`. (#183)
 
 # polars v0.5.0
 

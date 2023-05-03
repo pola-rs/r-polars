@@ -36,9 +36,9 @@ impl OwnedDataFrameIterator {
     fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-
+        let vs = df.get_columns().into_iter().map(|s| s.clone()).collect();
         Self {
-            columns: df.get_columns().clone(),
+            columns: vs,
             data_type,
             idx: 0,
             n_chunks: df.n_chunks(),
@@ -139,7 +139,11 @@ impl DataFrame {
     }
 
     pub fn columns(&self) -> Vec<String> {
-        self.0.get_column_names_owned()
+        self.0
+            .get_column_names_owned()
+            .iter()
+            .map(|ss| ss.to_string())
+            .collect()
     }
 
     pub fn set_column_names_mut(&mut self, names: Vec<String>) -> Result<(), String> {
@@ -242,7 +246,7 @@ impl DataFrame {
 
         r_result_list(robj_list_res)
     }
-    
+
     pub fn frame_equal(&self, other: &DataFrame) -> bool {
         self.0.frame_equal(&other.0)
     }
@@ -260,7 +264,7 @@ impl DataFrame {
     pub fn drop_in_place(&mut self, names: &str) -> Series {
         Series(self.0.drop_in_place(names).unwrap())
     }
-    
+
     pub fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
         LazyFrame(self.lazy().0.select(exprs)).collect()

@@ -23,9 +23,9 @@ pl$DataFrame(
 )$with_columns(
   pl$col("vals")$cast(pl$Categorical),
   pl$col("vals")
-    $cast(pl$Categorical)
-    $to_physical()
-    $alias("vals_physical")
+  $cast(pl$Categorical)
+  $to_physical()
+  $alias("vals_physical")
 )
 }
 \keyword{Expr}
