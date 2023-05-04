@@ -59,10 +59,11 @@ Collate:
     'expr__meta.R'
     'expr__string.R'
     'expr__struct.R'
-    'functions.R'
+    'functions__eager.R'
+    'functions__lazy.R'
+    'functions__whenthen.R'
     'groupby.R'
     'ipc.R'
-    'lazy_functions.R'
     'lazyframe__background.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
@@ -77,7 +78,6 @@ Collate:
     'series__series.R'
     'translation.R'
     'vctrs.R'
-    'whenthen.R'
     'zzz.R'
 Config/rextendr/version: 0.2.0.9000
 VignetteBuilder: knitr

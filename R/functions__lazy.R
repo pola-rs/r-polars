@@ -71,7 +71,7 @@ pl$col = function(name="", ...) {
 
   #preconvert Series into char name(s)
   if(inherits(name,"Series")) name = name$to_vector()
-  
+
   name_add = list(...)
   if (length(name_add) > 0) {
     if (is_string(name) && all(sapply(name_add, is_string))) {
