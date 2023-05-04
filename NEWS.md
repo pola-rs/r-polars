@@ -13,6 +13,7 @@
 - `Series` gains new methods: `$mean`, `$median`, `$std`, `$var` (#170 @vincentarelbundock)
 - A new option `use_earliest` of `replace_time_zone`. (#183)
 - A new option `strict` of `parse_int`. (#183)
+- Perform joins on nearest keys with method `join_asof`. (#172)
 
 # polars v0.5.0
 

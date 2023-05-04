@@ -821,6 +821,8 @@ LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
 
 LazyFrame$describe_plan <- function() invisible(.Call(wrap__LazyFrame__describe_plan, self))
 
+LazyFrame$debug_plan <- function() .Call(wrap__LazyFrame__debug_plan, self)
+
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
 
 LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_background, self)
@@ -878,6 +880,8 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
 LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+
+LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__LazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 

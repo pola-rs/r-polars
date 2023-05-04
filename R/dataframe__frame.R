@@ -1191,3 +1191,79 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 
 
 
+#' Perform joins on nearest keys
+#' @inherit LazyFrame_join_asof
+#' @param other DataFrame or LazyFrame
+#' @keywords DataFrame
+#' @return new joined DataFrame
+#' @examples
+#' #create two DataFrame to join asof
+#' gdp = pl$DataFrame(
+#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   gdp = c(4321, 4164, 4411, 4566, 4696),
+#'   group = c("b" ,"a", "a", "b", "b")
+#' )
+#'
+#' pop = pl$DataFrame(
+#'   date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+#'   population = c(82.19, 82.66, 83.12, 83.52),
+#'   group = c("b", "b", "a", "a")
+#' )
+#'
+#' #optional make sure tables are already sorted with "on" join-key
+#' gdp = gdp$sort("date")
+#' pop = pop$sort("date")
+#'
+#' # Left-join_asof DataFrame pop with gdp on "date"
+#' # Look backward in gdp to find closest matching date
+#' pop$join_asof(gdp, on = "date", strategy = "backward")
+#'
+#' # .... and forward
+#' pop$join_asof(gdp, on = "date", strategy = "forward")
+#'
+#' # join by a group: "only look within within group"
+#' pop$join_asof(gdp, on = "date", by = "group", strategy = "backward")
+#'
+#' # only look 2 weeks and 2 days back
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "2w2d")
+#'
+#' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
+DataFrame_join_asof = function(
+  other,
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  on= NULL,
+  by_left = NULL,
+  by_right = NULL,
+  by = NULL,
+  strategy = "backward",
+  suffix = "_right",
+  tolerance = NULL,
+  allow_parallel = TRUE,
+  force_parallel = FALSE
+){
+  #convert other to LazyFrame, capture any Error as a result, and pass it on
+
+  other_df_result = pcase(
+    inherits(other,"DataFrame"), Ok(other$lazy()),
+    inherits(other,"LazyFrame"), Ok(other),
+    or_else = Err(" not a LazyFrame or DataFrame")
+  )
+
+  self$lazy()$join_asof(
+    other = other_df_result,
+    on = on,
+    left_on = left_on,
+    right_on = right_on,
+    by = by,
+    by_left = by_left,
+    by_right = by_right,
+    allow_parallel = allow_parallel,
+    force_parallel = force_parallel,
+    suffix = suffix,
+    strategy = strategy,
+    tolerance = tolerance
+  )$collect()
+}

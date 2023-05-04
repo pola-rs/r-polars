@@ -1,11 +1,15 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::lazy::dsl::*;
+use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
+use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
+use polars::chunked_array::object::AsOfOptions;
+use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 
 #[allow(unused_imports)]
@@ -13,6 +17,12 @@ use std::result::Result;
 
 #[derive(Clone)]
 pub struct LazyFrame(pub pl::LazyFrame);
+
+impl std::fmt::Debug for LazyFrame {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "LazyFrame:")
+    }
+}
 
 impl From<pl::LazyFrame> for LazyFrame {
     fn from(item: pl::LazyFrame) -> Self {
@@ -29,6 +39,15 @@ impl LazyFrame {
 
     pub fn describe_plan(&self) {
         rprintln!("{}", self.0.describe_plan());
+    }
+
+    //low level version of describe_plan, mainly for arg testing
+    pub fn debug_plan(&self) -> Result<String, String> {
+        use crate::serde_json::value::Serializer;
+        use polars_core::export::serde::Serialize;
+        Serialize::serialize(&self.0.logical_plan.clone(), Serializer)
+            .map_err(|err| err.to_string())
+            .map(|val| format!("{:?}", val))
     }
 
     pub fn describe_optimized_plan(&self) -> List {
@@ -211,6 +230,66 @@ impl LazyFrame {
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
+    }
+
+    pub fn join_asof(
+        &self,
+        other: Robj,
+        left_on: Robj,
+        right_on: Robj,
+        left_by: Nullable<Robj>,
+        right_by: Nullable<Robj>,
+        allow_parallel: Robj,
+        force_parallel: Robj,
+        suffix: Robj,
+        strategy: Robj,
+        tolerance: Robj,
+        tolerance_str: Robj,
+    ) -> Result<Self, String> {
+        //TODO upgrade robj_to to handle variadic composed types, as
+        // robj_to!(Option, Vec, left_by), instead of this ad-hoc conversion
+        // using Nullable to handle outer Option and robj_to! for inner Vec<String>
+        let left_by = null_to_opt(left_by)
+            .map(|left_by| robj_to!(Vec, String, left_by))
+            .transpose()?;
+        let right_by = null_to_opt(right_by)
+            .map(|right_by| robj_to!(Vec, String, right_by))
+            .transpose()?;
+
+        // polars AnyValue<&str> is not self owned, therefore rust-polars
+        // chose to handle tolerance_str isolated as a String. Only one, if any,
+        // of tolerance and tolerance_str is ecpected to be Some<T> and not None.
+        // R might lack types to express any AnyValue. Using Expr allows for casting
+        // like tolerance = pl$lit(42)$cast(pl$UInt64).
+
+        let tolerance = robj_to!(Option, Expr, tolerance)?
+            .map(|e| crate::rdatatype::expr_to_any_value(e.0))
+            .transpose()?;
+        let tolerance_str = robj_to!(Option, String, tolerance_str)?;
+
+        Ok(self
+            .0
+            .clone()
+            .join_builder()
+            .with(robj_to!(LazyFrame, other)?.0)
+            .left_on([robj_to!(ExprCol, left_on)?.0])
+            .right_on([robj_to!(ExprCol, right_on)?.0])
+            .allow_parallel(robj_to!(bool, allow_parallel)?)
+            .force_parallel(robj_to!(bool, force_parallel)?)
+            .how(JoinType::AsOf(AsOfOptions {
+                strategy: robj_to!(str, strategy).and_then(|s| {
+                    new_asof_strategy(s)
+                        .map_err(|err| format!("param [strategy] error because {}", err))
+                })?,
+                left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
+                right_by: right_by
+                    .map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
+                tolerance: tolerance,
+                tolerance_str: tolerance_str.map(|s| s.into()),
+            }))
+            .suffix(robj_to!(str, suffix)?)
+            .finish()
+            .into())
     }
 
     fn join(

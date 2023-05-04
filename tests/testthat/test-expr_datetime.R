@@ -627,7 +627,7 @@ test_that("dt$with_time_unit cast_time_unit", {
 #     r_time$mon<-i_mon
 #     class(r_time) = c("POSIXlt","POSIXt")
 #     r_time
-#   }) %>% do.call(what=c)
+#   }) |> do.call(what=c)
 #
 #
 #   r_time_eu_london = r_time_naive
@@ -685,6 +685,9 @@ test_that("dt$replace_time_zone", {
 })
 
 test_that("replace_time_zone for ambiguous time", {
+
+  skip_if_not_installed("lubridate")
+
   x = seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
 
   pl_out = pl$DataFrame(x = x)$with_columns(

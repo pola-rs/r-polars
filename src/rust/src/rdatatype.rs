@@ -295,6 +295,17 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
     }
 }
 
+pub fn new_asof_strategy(s: &str) -> Result<polars::chunked_array::object::AsofStrategy, String> {
+    match s {
+        "forward" => Ok(polars::chunked_array::object::AsofStrategy::Forward),
+        "backward" => Ok(polars::chunked_array::object::AsofStrategy::Backward),
+        _ => Err(format!(
+            "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
+            s
+        )),
+    }
+}
+
 pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrategy, String> {
     match s {
         // "any" => Ok(pl::UniqueKeepStrategy::Any),
@@ -406,25 +417,23 @@ pub fn literal_to_any_value(
     }
 }
 
-// // this function seemed nifty as it would be possible to evalute casted literals into a anyvalue
-// // that would have made it easy from R to express anyvalue as a casted literal.
-// // but could not return the AnyValue due to lifetime stuff
-// pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
-//     use pl::*;
-//     let x = Ok(pl::DataFrame::default()
-//         .lazy()
-//         .select(&[e])
-//         .collect()
-//         .map_err(|err| err.to_string())?
-//         .iter()
-//         .next()
-//         .ok_or_else(|| String::from("expr made now value"))?
-//         .iter()
-//         .next()
-//         .ok_or_else(|| String::from("expr made now value"))?
-//         );
-//     x
-// }
+pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
+    use pl::*;
+    let x = Ok(pl::DataFrame::default()
+        .lazy()
+        .select(&[e])
+        .collect()
+        .map_err(|err| err.to_string())?
+        .iter()
+        .next()
+        .ok_or_else(|| String::from("expr made no series"))?
+        .iter()
+        .next()
+        .ok_or_else(|| String::from("series had no first value"))?
+        .into_static()
+        .map_err(|err| err.to_string())?);
+    x
+}
 
 pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
     use pl::InterpolationMethod as IM;
