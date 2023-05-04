@@ -333,12 +333,12 @@ Series_shape = method_as_property(function() {
 #' #make nested Series_list of Series_list of Series_Int32
 #' #using Expr syntax because currently more complete translated
 #' series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
-#'   pl$col("a")$list()$list()$append(
+#'   pl$col("a")$implode()$implode()$append(
 #'     (
-#'       pl$col("a")$head(2)$list()$append(
-#'         pl$col("a")$tail(1)$list()
+#'       pl$col("a")$head(2)$implode()$append(
+#'         pl$col("a")$tail(1)$implode()
 #'       )
-#'     )$list()
+#'     )$implode()
 #'   )
 #' )$get_column("a") # get series from DataFrame
 #'

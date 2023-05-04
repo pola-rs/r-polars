@@ -986,7 +986,7 @@ impl Expr {
         }))
     }
 
-    pub fn list(&self) -> Self {
+    pub fn implode(&self) -> Self {
         self.clone().0.implode().into()
     }
 

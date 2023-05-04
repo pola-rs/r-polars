@@ -427,7 +427,7 @@ Expr$entropy <- function(base, normalize) .Call(wrap__Expr__entropy, self, base,
 
 Expr$cumulative_eval <- function(expr, min_periods, parallel) .Call(wrap__Expr__cumulative_eval, self, expr, min_periods, parallel)
 
-Expr$list <- function() .Call(wrap__Expr__list, self)
+Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 

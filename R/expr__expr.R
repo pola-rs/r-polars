@@ -3952,16 +3952,29 @@ Expr_set_sorted = function(reverse = FALSE) {
 
 
 #' Wrap column in list
-#' @description  Aggregate to list.
+#' @description  Aggregate values into a list.
 #' @keywords Expr
 #' @return Expr
 #' @aliases list
 #' @name Expr_list
-#' @details use to_struct to wrap a DataFrame
+#' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
+#' as list() .
 #' @format a method
 #' @examples
-#' pl$select(pl$lit(1:4)$list(), pl$lit(c("a")))
-Expr_list = "use_extendr_wrapper"
+#' df = pl$DataFrame(
+#'   a = 1:3,
+#'   b = 4:6
+#' )
+#' df$select(pl$all()$implode())
+Expr_implode = "use_extendr_wrapper"
+
+# TODO remove #deprecation-error eventually
+Expr_list = function() {
+  unwrap(
+    Err("<Expr>$list() is deprecated and rebranded as <Expr>$implode()"),
+    "when calling deprecated <Expr>$list()"
+  )
+}
 
 
 

@@ -146,7 +146,6 @@ pl$count = function(column = NULL)  { # -> Expr | int:
   unwrap(result(pl$col(column)$count()), "in pl$count():")
 }
 
-
 #' pl$first
 #' @name pl_first
 #' @description  Depending on the input type this function does different things:

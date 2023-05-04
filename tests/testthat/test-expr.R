@@ -1334,9 +1334,9 @@ test_that("arg_unique", {
 
   expect_identical(
     pl$DataFrame(l)$select(
-      pl$col("a")$arg_unique()$list(),
-      pl$col("b")$arg_unique()$list(),
-      pl$col("c")$arg_unique()$list()
+      pl$col("a")$arg_unique()$implode(),
+      pl$col("b")$arg_unique()$implode(),
+      pl$col("c")$arg_unique()$implode()
     )$to_list() |> lapply(\(x) x[[1]]) |>lapply(as.numeric)  ,
     list(
       a = which(!duplicated(l$a))-1.0,
@@ -1504,9 +1504,9 @@ test_that("is_between", {
 test_that("hash + reinterpret", {
   df = pl$DataFrame(iris)
 
-  hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$list())$to_list()))
-  hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())$to_list()))
-  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list()$cast(pl$List(pl$Utf8)))$to_list()))
+  hash_values1 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash()$implode())$to_list()))
+  hash_values2 = unname(unlist(df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$implode())$to_list()))
+  hash_values3 = unname((df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$implode()$cast(pl$List(pl$Utf8)))$to_list()))
   expect_true(!any(duplicated(hash_values1)))
   expect_true(!any(sapply(hash_values3,\(x) any(duplicated(x)))))
 
@@ -1518,9 +1518,9 @@ test_that("hash + reinterpret", {
   # remove seed warning in docs
   expect_true(all(hash_values1==hash_values2)) #...however this is true
 
-  df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$list())
-  df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$list())
-  df_hash_rein = df_hash$select(pl$all()$flatten()$reinterpret(TRUE)$list())
+  df_hash = df$select(pl$col(c("Sepal.Width","Species"))$unique()$hash(1,2,3,4)$implode())
+  df_hash_same = df_hash$select(pl$all()$flatten()$reinterpret(FALSE)$implode())
+  df_hash_rein = df_hash$select(pl$all()$flatten()$reinterpret(TRUE)$implode())
 
 
   expect_identical(df_hash$to_list(),df_hash_same$to_list())
@@ -2009,8 +2009,8 @@ test_that("reshape", {
 
   expect_identical(
     pl$select(
-      pl$lit(1:12)$reshape(c(3,4))$alias("rs_3_4")$list(),
-      pl$lit(1:12)$reshape(c(4,3))$alias("rs_4_3")$list()
+      pl$lit(1:12)$reshape(c(3,4))$alias("rs_3_4")$implode(),
+      pl$lit(1:12)$reshape(c(4,3))$alias("rs_4_3")$implode()
     )$to_list(),
     list(
       rs_3_4 = list(r_reshape(1:12,c(4,3))),
@@ -2060,14 +2060,14 @@ test_that("shuffle", {
 test_that("sample", {
   df = pl$DataFrame(a=1:10)
   res = df$select(
-    pl$col("a")$sample(seed=1)$alias("default")$list(),
-    pl$col("a")$sample(n=3,seed=1)$alias("n3")$list(),
-    pl$col("a")$sample(frac=.4,seed=1)$alias("frac.4")$list(),
-    pl$col("a")$sample(frac=1,seed=1)$alias("frac2")$list(),
-    pl$col("a")$sample(frac=1,with_replacement=FALSE,seed=1)$alias("frac1norep")$list(),
-    pl$col("a")$sample(n = 10,with_replacement=FALSE,seed=1)$alias("n10norep")$list(),
-    pl$col("a")$sample(frac=1,with_replacement=FALSE,shuffle= TRUE,seed=1)$alias("frac1norepshuffle")$list(),
-    pl$col("a")$sample(n = 10,with_replacement=FALSE,shuffle= TRUE,seed=1)$alias("n10norep_shuffle")$list()
+    pl$col("a")$sample(seed=1)$alias("default")$implode(),
+    pl$col("a")$sample(n=3,seed=1)$alias("n3")$implode(),
+    pl$col("a")$sample(frac=.4,seed=1)$alias("frac.4")$implode(),
+    pl$col("a")$sample(frac=1,seed=1)$alias("frac2")$implode(),
+    pl$col("a")$sample(frac=1,with_replacement=FALSE,seed=1)$alias("frac1norep")$implode(),
+    pl$col("a")$sample(n = 10,with_replacement=FALSE,seed=1)$alias("n10norep")$implode(),
+    pl$col("a")$sample(frac=1,with_replacement=FALSE,shuffle= TRUE,seed=1)$alias("frac1norepshuffle")$implode(),
+    pl$col("a")$sample(n = 10,with_replacement=FALSE,shuffle= TRUE,seed=1)$alias("n10norep_shuffle")$implode()
   )$to_list() |> lapply(unlist)
 
   expect_identical(
