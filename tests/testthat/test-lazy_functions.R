@@ -177,5 +177,11 @@ test_that("pl$count", {
 
 
 
+test_that("pl$implode", {
+  act = pl$implode("bob")
+  exp = pl$col("bob")$implode()
+  expect_true(act$meta$eq(exp))
+  expect_grepl_error(pl$implode(42),c("in pl\\$implode()","not supported"))
+})
 
 

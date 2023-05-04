@@ -146,6 +146,19 @@ pl$count = function(column = NULL)  { # -> Expr | int:
   unwrap(result(pl$col(column)$count()), "in pl$count():")
 }
 
+#' Aggregate all column values into a list.
+#' @name pl_implode
+#' @param name Name of the column(s) that should be imploded, passed to pl$col()
+#' @keywords Expr
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$implode("Species"))
+pl$implode = function(name) { # -> Expr
+  result(pl$col(name)) |>
+    map(.pr$Expr$implode) |>
+    unwrap("in pl$implode():")
+}
+
 #' pl$first
 #' @name pl_first
 #' @description  Depending on the input type this function does different things:
