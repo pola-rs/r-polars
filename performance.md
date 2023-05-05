@@ -58,8 +58,8 @@ bench::mark(
     ## # A tibble: 2 × 6
     ##   expression       min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>  <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 sort_filter   10.75s   10.75s    0.0930    87.2MB    0.372
-    ## 2 filter_sort    2.48s    2.48s    0.402     67.1MB    1.21
+    ## 1 sort_filter     9.3s     9.3s     0.108    87.2MB    0.430
+    ## 2 filter_sort    2.41s    2.41s     0.415    67.1MB    1.24
 
 ## How does `polars` help?
 
@@ -97,22 +97,22 @@ df_test$
   )
 ```
 
-    ## shape: (3000835, 3)
-    ## ┌─────────┬─────┬─────┐
-    ## │ country ┆ x   ┆ y   │
-    ## │ ---     ┆ --- ┆ --- │
-    ## │ str     ┆ i64 ┆ i64 │
-    ## ╞═════════╪═════╪═════╡
-    ## │ Japan   ┆ 97  ┆ 7   │
-    ## │ Japan   ┆ 96  ┆ 672 │
-    ## │ Japan   ┆ 17  ┆ 710 │
-    ## │ Japan   ┆ 68  ┆ 41  │
-    ## │ ...     ┆ ... ┆ ... │
-    ## │ Vietnam ┆ 62  ┆ 8   │
-    ## │ Vietnam ┆ 52  ┆ 988 │
-    ## │ Vietnam ┆ 85  ┆ 982 │
-    ## │ Vietnam ┆ 74  ┆ 692 │
-    ## └─────────┴─────┴─────┘
+    ## shape: (3000835, 4)
+    ## ┌─────────┬─────────┬─────┬─────┐
+    ## │         ┆ country ┆ x   ┆ y   │
+    ## │ ---     ┆ ---     ┆ --- ┆ --- │
+    ## │ i64     ┆ str     ┆ i64 ┆ i64 │
+    ## ╞═════════╪═════════╪═════╪═════╡
+    ## │ 7       ┆ Japan   ┆ 97  ┆ 7   │
+    ## │ 23      ┆ Japan   ┆ 96  ┆ 672 │
+    ## │ 49      ┆ Japan   ┆ 17  ┆ 710 │
+    ## │ 60      ┆ Japan   ┆ 68  ┆ 41  │
+    ## │ ...     ┆ ...     ┆ ... ┆ ... │
+    ## │ 9999959 ┆ Vietnam ┆ 62  ┆ 8   │
+    ## │ 9999962 ┆ Vietnam ┆ 52  ┆ 988 │
+    ## │ 9999983 ┆ Vietnam ┆ 85  ┆ 982 │
+    ## │ 9999998 ┆ Vietnam ┆ 74  ┆ 692 │
+    ## └─────────┴─────────┴─────┴─────┘
 
 This works for the `DataFrame`, that uses eager execution. For the
 `LazyFrame`, we can write the same query:
@@ -131,18 +131,23 @@ lazy_query
     ##   FILTER col("country").is_in([Series]) FROM
     ##     SORT BY [col("country")]
     ##       CSV SCAN data/test.csv
-    ##       PROJECT */3 COLUMNS
+    ##       PROJECT */4 COLUMNS
 
 However, this doesn’t do anything to the data until we call `collect()`
-at the end. We can now compare the two approaches:
+at the end. We can now compare the two approaches (in the `lazy` timing,
+calling `collect()` both reads the data and process it, so we include
+the data loading part in the `eager` timing as well):
 
 ``` r
 bench::mark(
-  eager = df_test$
+  eager = {
+    df_test = csv_reader("data/test.csv")
+    df_test$
     sort(pl$col("country"))$
     filter(
       pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-    ),
+    )
+  },
   lazy = lazy_query$collect(),
   iterations = 10
 )
@@ -151,16 +156,17 @@ bench::mark(
     ## # A tibble: 2 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 eager         1.13s    1.18s     0.839    7.94KB        0
-    ## 2 lazy       524.08ms  557.8ms     1.78       640B        0
+    ## 1 eager         1.68s       2s     0.387     9.8KB        0
+    ## 2 lazy        835.9ms    884ms     1.06       640B        0
 
 On this very simple query, using lazy execution instead of eager
 execution lead to a 1.7-2.2x decrease in time.
 
 So what happened? Under the hood, `polars` reorganized the query so that
-it filters the data first, and then sorts the remaining data. This can
-be seen by comparing the original query (`describe_plan()`) and the
-optimized query (`describe_optimized_plan()`):
+it filters rows while reading the csv into memory, and then sorts the
+remaining data. This can be seen by comparing the original query
+(`describe_plan()`) and the optimized query
+(`describe_optimized_plan()`):
 
 ``` r
 lazy_query$describe_plan()
@@ -169,7 +175,7 @@ lazy_query$describe_plan()
     ##   FILTER col("country").is_in([Series]) FROM
     ##     SORT BY [col("country")]
     ##       CSV SCAN data/test.csv
-    ##       PROJECT */3 COLUMNS
+    ##       PROJECT */4 COLUMNS
 
 ``` r
 lazy_query$describe_optimized_plan()
@@ -177,7 +183,7 @@ lazy_query$describe_optimized_plan()
 
     ##   SORT BY [col("country")]
     ##     CSV SCAN data/test.csv
-    ##     PROJECT */3 COLUMNS
+    ##     PROJECT */4 COLUMNS
     ##     SELECTION: col("country").is_in([Series])
 
 Note that the queries must be read from bottom to top, i.e the optimized
@@ -215,8 +221,8 @@ bench::mark(
     ## # A tibble: 2 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 contains   344.01ms 377.98ms     2.63      447KB     0   
-    ## 2 grepl         2.04s    2.07s     0.479     115MB     1.60
+    ## 1 contains   356.18ms 516.19ms     1.98      447KB    0    
+    ## 2 grepl         2.01s    2.05s     0.481     115MB    0.721
 
 Using custom R functions can be useful, but when possible, you should
 use the functions provided by `polars`. See the Reference tab for a

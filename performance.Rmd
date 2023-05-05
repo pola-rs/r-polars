@@ -79,7 +79,7 @@ test = data.frame(
   x = sample(1:100, 1e7, TRUE),
   y = sample(1:1000, 1e7, TRUE)
 )
-readr::write_csv(test, "data/test.csv")
+write.csv(test, "data/test.csv")
 ```
 
 
@@ -113,15 +113,20 @@ lazy_query
 ```
 
 However, this doesn't do anything to the data until we call `collect()` at the 
-end. We can now compare the two approaches:
+end. We can now compare the two approaches (in the `lazy` timing, calling `collect()`
+both reads the data and process it, so we include the data loading part in the
+`eager` timing as well):
 
 ```{r}
 bench::mark(
-  eager = df_test$
+  eager = {
+    df_test = csv_reader("data/test.csv")
+    df_test$
     sort(pl$col("country"))$
     filter(
       pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-    ),
+    )
+  },
   lazy = lazy_query$collect(),
   iterations = 10
 )
@@ -131,9 +136,10 @@ bench::mark(
 On this very simple query, using lazy execution instead of eager execution lead
 to a 1.7-2.2x decrease in time. 
 
-So what happened? Under the hood, `polars` reorganized the query so that it filters
-the data first, and then sorts the remaining data. This can be seen by comparing 
-the original query (`describe_plan()`) and the optimized query (`describe_optimized_plan()`):
+So what happened? Under the hood, `polars` reorganized the query so that it
+filters rows while reading the csv into memory, and then sorts the remaining 
+data. This can be seen by comparing the original query (`describe_plan()`) and 
+the optimized query (`describe_optimized_plan()`):
 
 ```{r}
 lazy_query$describe_plan()
