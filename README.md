@@ -106,7 +106,7 @@ binaries and resolve system dependencies reliably and quickly with r2u
 ([see link for configuration](https://eddelbuettel.github.io/r2u/)).
 
 ``` r
-rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.3", "https://cloud.r-project.org")
 install.packages(c("polars", "arrow"), repos = rp)
 ```
 
