@@ -3,6 +3,40 @@ title: "Optimize `polars` performance"
 output: github_document
 ---
 
+
+As highlighted by the [DuckDB benchmarks](https://duckdblabs.github.io/db-benchmark/),
+`polars` is very efficient to deal with large datasets. Let's take a very basic
+example dataset of 10M rows and compute the mean of every column per group:
+
+```{r}
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(polars)
+  library(data.table)
+})
+
+N = 1e7
+df = data.frame(matrix(runif(25 * N), nrow = N))
+df$letters = sample(letters, N, replace = TRUE)
+
+df_dt = setDT(df)
+setkey(df_dt, letters)
+df_pl = pl$DataFrame(df)
+
+# comparison
+bench::mark(
+    "base" = by(df, df$letters, \(x) colMeans(x[, -26])),
+    "dplyr" = df %>% group_by(letters) %>% summarise_all(mean),
+    "data.table" = df_dt[, lapply(.SD, mean), keyby = "letters"],
+    "polars" = df_pl$groupby("letters")$mean(),
+    check = FALSE,
+    relative = TRUE
+)
+```
+
+Still, one can make `polars` even faster by following some good practices.
+
+
 # Lazy vs eager execution
 
 ## Order of operations
@@ -84,8 +118,6 @@ write.csv(test, "data/test.csv")
 
 
 ```{r}
-library(polars)
-
 df_test = csv_reader("data/test.csv")
 lf_test = lazy_csv_reader("data/test.csv")
 ```
@@ -175,6 +207,11 @@ bench::mark(
     pl$col("country")$map(\(s) { # map with a R function
       grepl("na", s)
     })
+  ),
+  grepl_nv = df_test$limit(1e6)$with_column( 
+    pl$col("country")$apply(\(str) {
+      grepl("na", str)
+    }, return_type = pl$Boolean)
   ),
   iterations = 10
 )

@@ -1,6 +1,52 @@
 Optimize `polars` performance
 ================
 
+As highlighted by the [DuckDB
+benchmarks](https://duckdblabs.github.io/db-benchmark/), `polars` is
+very efficient to deal with large datasets. Let’s take a very basic
+example dataset of 10M rows and compute the mean of every column per
+group:
+
+``` r
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(polars)
+  library(data.table)
+})
+
+N = 1e7
+df = data.frame(matrix(runif(25 * N), nrow = N))
+df$letters = sample(letters, N, replace = TRUE)
+
+df_dt = setDT(df)
+setkey(df_dt, letters)
+df_pl = pl$DataFrame(df)
+
+# comparison
+bench::mark(
+    "base" = by(df, df$letters, \(x) colMeans(x[, -26])),
+    "dplyr" = df %>% group_by(letters) %>% summarise_all(mean),
+    "data.table" = df_dt[, lapply(.SD, mean), keyby = "letters"],
+    "polars" = df_pl$groupby("letters")$mean(),
+    check = FALSE,
+    relative = TRUE
+)
+```
+
+    ## Warning: Some expressions had a GC in every iteration; so filtering is
+    ## disabled.
+
+    ## # A tibble: 4 × 6
+    ##   expression   min median `itr/sec` mem_alloc `gc/sec`
+    ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+    ## 1 base       17.0   16.5       1        5805.      Inf
+    ## 2 dplyr       8.33   8.07      2.04     1810.      Inf
+    ## 3 data.table  3.36   3.26      5.06      277.      NaN
+    ## 4 polars      1      1        16.5         1       NaN
+
+Still, one can make `polars` even faster by following some good
+practices.
+
 # Lazy vs eager execution
 
 ## Order of operations
@@ -52,14 +98,11 @@ bench::mark(
 )
 ```
 
-    ## Warning: Some expressions had a GC in every iteration; so filtering is
-    ## disabled.
-
     ## # A tibble: 2 × 6
     ##   expression       min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>  <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 sort_filter     9.3s     9.3s     0.108    87.2MB    0.430
-    ## 2 filter_sort    2.41s    2.41s     0.415    67.1MB    1.24
+    ## 1 sort_filter     9.8s     9.8s     0.102    87.2MB        0
+    ## 2 filter_sort    2.39s    2.39s     0.419    67.1MB        0
 
 ## How does `polars` help?
 
@@ -81,8 +124,6 @@ already have in memory to a `LazyFrame` so first we have to export it as
 CSV and then we can read it lazily with `lazy_csv_reader()`:
 
 ``` r
-library(polars)
-
 df_test = csv_reader("data/test.csv")
 lf_test = lazy_csv_reader("data/test.csv")
 ```
@@ -156,8 +197,8 @@ bench::mark(
     ## # A tibble: 2 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 eager         1.68s       2s     0.387     9.8KB        0
-    ## 2 lazy        835.9ms    884ms     1.06       640B        0
+    ## 1 eager         1.68s    2.06s     0.479     9.8KB        0
+    ## 2 lazy          791ms  821.7ms     1.15       640B        0
 
 On this very simple query, using lazy execution instead of eager
 execution lead to a 1.7-2.2x decrease in time.
@@ -214,15 +255,24 @@ bench::mark(
       grepl("na", s)
     })
   ),
+  grepl_nv = df_test$limit(1e6)$with_column( 
+    pl$col("country")$apply(\(str) {
+      grepl("na", str)
+    }, return_type = pl$Boolean)
+  ),
   iterations = 10
 )
 ```
 
-    ## # A tibble: 2 × 6
+    ## Warning: Some expressions had a GC in every iteration; so filtering is
+    ## disabled.
+
+    ## # A tibble: 3 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 contains   356.18ms 516.19ms     1.98      447KB    0    
-    ## 2 grepl         2.01s    2.05s     0.481     115MB    0.721
+    ## 1 contains   310.29ms 363.13ms     2.79      388KB    0    
+    ## 2 grepl         1.96s    2.01s     0.497   114.8MB    0    
+    ## 3 grepl_nv      6.14s    6.56s     0.149    42.7MB    0.657
 
 Using custom R functions can be useful, but when possible, you should
 use the functions provided by `polars`. See the Reference tab for a
