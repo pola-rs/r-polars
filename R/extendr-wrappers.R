@@ -925,6 +925,8 @@ Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, se
 
 Series$dtype <- function() .Call(wrap__Series__dtype, self)
 
+Series$n_unique <- function() .Call(wrap__Series__n_unique, self)
+
 Series$name <- function() .Call(wrap__Series__name, self)
 
 Series$sort_mut <- function(reverse) .Call(wrap__Series__sort_mut, self, reverse)

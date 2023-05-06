@@ -342,12 +342,37 @@ pl$median = function(...) { #-> Expr | Any:
   unwrap("in pl$median():")
 }
 
-
-# TODO n_unique
-
-
-#TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
-#docs should reflect that
+#' count n unique values
+#' @name pl_unique
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: call method n_unique() to return value of unique values.
+#' - String: syntactic sugar for `pl$col(column)$n_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$n_unique()`, returns Expr
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or value
+#'
+#' @examples
+#' #column as Series
+#' pl$n_unique(pl$Series(1:4)) == 4
+#'
+#' #column as String
+#' expr = pl$n_unique("bob")
+#' print(expr)
+#' pl$DataFrame(bob = 1:4)$select(expr)
+#'
+#' #colum as Expr
+#' pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
+pl$n_unique = function(column) { #-> int or Expr
+  pcase(
+    inherits(column, c("Series","Expr")), result(column$n_unique()),
+    is_string(column), result(pl$col(column)$n_unique()),
+    or_else = Err(paste("arg [column] is neither Series, Expr or String, but", str_string(column)))
+  ) |>
+    unwrap("in pl$n_unique():")
+}
 
 #' sum across expressions / literals / Series
 #' @description  syntactic sugar for starting a expression with sum

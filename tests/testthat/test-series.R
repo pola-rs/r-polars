@@ -525,3 +525,10 @@ patrick::with_parameters_test_that("mean, median, std, var", {
   },
   .cases = make_cases()
 )
+
+
+test_that("n_unique", {
+  x = c(1:4, NA, NaN, 1) #6 unique one repeated
+  expect_identical(pl$Series(x)$n_unique(),6)
+  expect_grepl_error(pl$Series(c())$n_unique(),"operation not supported for dtype")
+})

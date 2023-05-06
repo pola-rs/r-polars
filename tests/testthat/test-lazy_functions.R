@@ -185,3 +185,18 @@ test_that("pl$implode", {
 })
 
 
+test_that("pl$n_unique", {
+
+  x = c(1:4, NA, NaN, 1) #6 unique one repeated
+  expect_identical(pl$n_unique(pl$Series(x)),6)
+
+  expr_act = pl$n_unique("bob")
+  expect_true(expr_act$meta$eq(pl$col("bob")$n_unique()))
+
+  expr_act_2 = pl$n_unique(pl$all())
+  expect_true(expr_act_2$meta$eq(pl$all()$n_unique()))
+
+  expect_grepl_error(pl$n_unique(1:99),c("in pl\\$n_unique","is neither","1 2 3"))
+})
+
+

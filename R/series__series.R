@@ -1046,3 +1046,13 @@ Series_expr = method_as_property(function() {
 Series_to_lit = function() {
   pl$lit(self)
 }
+
+#' Series n_unique
+#' @description return count of unique values in Series
+#' @keywords Series
+#' @return Expr
+#' @examples
+#' pl$Series(1:4)$n_unique()
+Series_n_unique = function() {
+  unwrap(.pr$Series$n_unique(self), "in $n_unique():")
+}
