@@ -3968,12 +3968,13 @@ Expr_set_sorted = function(reverse = FALSE) {
 #' df$select(pl$all()$implode())
 Expr_implode = "use_extendr_wrapper"
 
-# TODO remove #deprecation-error eventually
+##TODO REMOVE AT A BREAKING CHANGE
 Expr_list = function() {
-  unwrap(
-    Err("<Expr>$list() is deprecated and rebranded as <Expr>$implode()"),
-    "when calling deprecated <Expr>$list()"
-  )
+  if ( is.null(runtime_state$warned_deprecate_list)) {
+    runtime_state$warned_deprecate_list = TRUE
+    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
+  }
+  self$implode()
 }
 
 

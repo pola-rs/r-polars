@@ -903,7 +903,7 @@ test_that("Expr_k_top", {
   known = structure(list(k_top = c(Inf, 6, NaN), k_bot = c(NA, -Inf, 0)),
    row.names = c( NA, -3L), class = "data.frame")
   expect_equal(l_actual$to_data_frame(), known)
-  
+
   #TODO contribute polars k_top always places NaN first no matter reverse,
   # this behavour does not match Expr_sort
 })
@@ -2356,3 +2356,12 @@ test_that("concat_list", {
   )
 
 })
+
+
+test_that("implode", {
+  expect_identical(pl$lit(1:4)$implode()$explode()$to_r(),1:4)
+  expect_identical(pl$lit(1:4)$implode()$to_r(),list(1:4))
+  expect_identical(pl$lit(1:4)$implode()$to_r(),pl$lit(list(1:4))$to_r())
+  expect_grepl_error(pl$lit(42)$implode(42),c("unused argument"))
+})
+
