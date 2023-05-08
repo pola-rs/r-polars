@@ -3,8 +3,6 @@
 #' @name GroupBy_class
 NULL
 
-
-
 # The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in rust polars.
 # Groupby does not use the rust api for groupby+agg because the groupby-struct is a reference to a DataFrame
 # and that reference will share lifetime with its parent DataFrame. There is no way to expose lifetime
@@ -31,6 +29,18 @@ GroupBy <- new.env(parent = emptyenv())
   paste0(ls(GroupBy, pattern = pattern ),"()")
 }
 
+
+#' The internal GroupBy constructor
+#' @noRd
+construct_groupby = function(df, groupby_input, maintain_order) {
+  if(!inherits(df,"DataFrame")) fstop("internal error: construct_group called not on DataFrame")
+  df = df$clone()
+  attr(df,"private") = list(groupby_input  = groupby_input, maintain_order = maintain_order)
+  class(df) = "GroupBy"
+  df
+}
+
+
 #' print GroupBy
 #'
 #' @param x DataFrame
@@ -43,8 +53,9 @@ GroupBy <- new.env(parent = emptyenv())
 print.GroupBy = function(x, ...) {
   .pr$DataFrame$print(x)
   cat("groups: ")
-  .pr$ProtoExprArray$print(attr(x,"private")$groupby_input)
-  cat("maintain order: ", attr(x,"private")$maintain_order)
+  prv = attr(x,"private")
+  print(prv$groupby_input)
+  cat("maintain order: ", prv$maintain_order)
   invisible(x)
 }
 
@@ -71,14 +82,14 @@ print.GroupBy = function(x, ...) {
 #' )
 #'
 GroupBy_agg = function(...) {
-  unwrap(
-    .pr$DataFrame$by_agg(
-      self = self,
-      group_exprs = attr(self,"private")$groupby_input,
-      agg_exprs   = construct_ProtoExprArray(...),
-      maintain_order = attr(self,"private")$maintain_order
-    )
-  )
+
+  .pr$DataFrame$by_agg(
+    self = self,
+    group_exprs = attr(self,"private")$groupby_input,
+    agg_exprs   = list2(...),
+    maintain_order = attr(self,"private")$maintain_order
+  ) |>
+    unwrap("in $agg():")
 }
 
 
@@ -272,20 +283,18 @@ GroupBy_null_count <- function() {
 
 #' convert to data.frame
 #'
-#' @param ... any opt param passed to R as.data.frame
+#' @param ... not used
 #'
 #' @return R data.frame
 #' @export
 #'
 #' @examples pl$DataFrame(iris)$to_data_frame() #R-polars back and forth
 GroupBy_to_data_frame = function(...) {
-  as.data.frame(
-    x = unwrap(.pr$DataFrame$to_list(self)),
-    col.names = .pr$DataFrame$columns(self),
-    ...
-  )
+  class(self) = "DataFrame"
+  self$to_data_frame(...)
 }
 
+#TODO REMOVE_AT_BREAKING_CHANGE
 #' Alias to GroupBy_to_data_frame (backward compatibility)
 #' @noRd
 GroupBy_as_data_frame = GroupBy_to_data_frame

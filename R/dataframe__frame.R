@@ -864,21 +864,20 @@ DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }
 
-#' groupby DataFrame
-#' @aliases groupby
-#' @description DataFrame$groupby(..., maintain_order = FALSE)
-#'
-#' @param ... any expression
-#' @param  maintain_order bool
+#' groupby a DataFrame
+#' @inherit LazyFrame_groupby
 #' @keywords DataFrame
-#' @return GroupBy (subclass of DataFrame)
-#'
-DataFrame_groupby = function(..., maintain_order = FALSE) {
-  self_copy = self$clone()
-  attr(self_copy,"private")$groupby_input =  construct_ProtoExprArray(...)
-  attr(self_copy,"private")$maintain_order = maintain_order
-  class(self_copy) = "GroupBy"
-  self_copy
+#' @return GroupBy (a DataFrame with special groupby methods)
+DataFrame_groupby = function(..., maintain_order = NULL) {
+
+  #guard and set maintain_order
+  if( !(is_bool(maintain_order) || is.null(maintain_order))) {
+    return(unwrap(Err("arg [maintain_order] must be either NULL or a bool"), "in $groupby():"))
+  }
+  maintain_order = maintain_order %||% polars_optenv$default_maintain_order %||% FALSE
+
+  #clone the DataFrame, bundle args.
+  construct_groupby(self, groupby_input = list2(...), maintain_order = maintain_order)
 }
 
 
@@ -900,7 +899,7 @@ DataFrame_to_data_frame = function(...) {
   l = lapply(self$to_list(unnest_structs=FALSE), I)
 
   #similar to as.data.frame, but avoid checks, whcih would edit structs
-  df = data.frame(seq_along(l[[1L]]))
+  df = data.frame(seq_along(l[[1L]]), ...)
   for(i in seq_along(l)) df[[i]] = l[[i]]
   names(df) = .pr$DataFrame$columns(self)
 

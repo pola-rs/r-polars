@@ -4,12 +4,14 @@
 \alias{LazyFrame_groupby}
 \title{Lazy_groupby}
 \usage{
-LazyFrame_groupby(..., maintain_order = FALSE)
+LazyFrame_groupby(..., maintain_order = NULL)
 }
 \arguments{
 \item{...}{any single Expr or string naming a column}
 
-\item{maintain_order}{bool should an aggregate of groupby retain order of groups or FALSE = random, slightly faster?}
+\item{maintain_order}{Nullable bool,  should an aggregate of groupby retain order of groups?
+FALSE = random, slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
+\code{pl$set_polars_options(default_maintain_order = TRUE)}, then NULL mean TRUE.}
 }
 \value{
 A new \code{LazyGroupBy} object with applied groups.

@@ -61,8 +61,8 @@ impl LazyFrame {
         PolarsBackgroundHandle::new(self)
     }
 
-    pub fn collect(&self) -> List {
-        let result = handle_thread_r_requests(self.clone().0).map_err(|err| {
+    pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {
+        handle_thread_r_requests(self.clone().0).map_err(|err| {
             //improve err messages
             let err_string = match err {
                 pl::PolarsError::InvalidOperation(x) => {
@@ -72,8 +72,7 @@ impl LazyFrame {
             };
 
             format!("when calling $collect() on LazyFrame:\n{}", err_string)
-        });
-        r_result_list(result)
+        })
     }
 
     fn first(&self) -> Self {
@@ -215,12 +214,13 @@ impl LazyFrame {
         })
     }
 
-    fn groupby(&self, exprs: &ProtoExprArray, maintain_order: bool) -> LazyGroupBy {
-        let expr_vec = pra_to_vec(exprs, "select");
+    fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
+        let expr_vec = robj_to!(VecPLExpr, exprs)?;
+        let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
-            LazyGroupBy(self.0.clone().groupby_stable(expr_vec))
+            Ok(LazyGroupBy(self.0.clone().groupby_stable(expr_vec)))
         } else {
-            LazyGroupBy(self.0.clone().groupby(expr_vec))
+            Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
         }
     }
 
@@ -344,9 +344,9 @@ impl LazyGroupBy {
         rprintln!(" The insides of this object is a mystery, inspect the lazyframe instead.");
     }
 
-    fn agg(&self, exprs: &ProtoExprArray) -> LazyFrame {
-        let expr_vec = pra_to_vec(exprs, "select");
-        LazyFrame(self.0.clone().agg(expr_vec))
+    fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
+        let expr_vec: Vec<pl::Expr> = robj_to!(VecPLExpr, exprs)?;
+        Ok(LazyFrame(self.0.clone().agg(expr_vec)))
     }
 
     fn head(&self, n: f64) -> List {

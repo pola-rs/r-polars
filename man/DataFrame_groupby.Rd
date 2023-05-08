@@ -2,20 +2,21 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_groupby}
 \alias{DataFrame_groupby}
-\alias{groupby}
-\title{groupby DataFrame}
+\title{groupby a DataFrame}
 \usage{
-DataFrame_groupby(..., maintain_order = FALSE)
+DataFrame_groupby(..., maintain_order = NULL)
 }
 \arguments{
-\item{...}{any expression}
+\item{...}{any single Expr or string naming a column}
 
-\item{maintain_order}{bool}
+\item{maintain_order}{Nullable bool,  should an aggregate of groupby retain order of groups?
+FALSE = random, slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
+\code{pl$set_polars_options(default_maintain_order = TRUE)}, then NULL mean TRUE.}
 }
 \value{
-GroupBy (subclass of DataFrame)
+GroupBy (a DataFrame with special groupby methods)
 }
 \description{
-DataFrame$groupby(..., maintain_order = FALSE)
+apply groupby on LazyFrame, return LazyGroupBy
 }
 \keyword{DataFrame}

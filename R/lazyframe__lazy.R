@@ -487,18 +487,21 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
   unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
 }
 
-#' @title Lazy_groupby
+#' Lazy_groupby
 #' @description apply groupby on LazyFrame, return LazyGroupBy
 #' @keywords LazyFrame
 #' groupby on LazyFrame.
 #'
 #' @param ... any single Expr or string naming a column
-#' @param maintain_order bool should an aggregate of groupby retain order of groups or FALSE = random, slightly faster?
+#' @param maintain_order Nullable bool,  should an aggregate of groupby retain order of groups?
+#' FALSE = random, slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
+#' `pl$set_polars_options(default_maintain_order = TRUE)`, then NULL mean TRUE.
 #'
 #' @return A new `LazyGroupBy` object with applied groups.
-LazyFrame_groupby = function(..., maintain_order = FALSE) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$groupby(self,pra,maintain_order)
+LazyFrame_groupby = function(..., maintain_order = NULL) {
+  largs  = list2(...)
+  maintain_order = maintain_order %||% polars_optenv$default_maintain_order
+  unwrap(.pr$LazyFrame$groupby(self,largs,maintain_order))
 }
 
 #' @title LazyFrame join

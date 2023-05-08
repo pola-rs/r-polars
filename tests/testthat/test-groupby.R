@@ -75,3 +75,4 @@ test_that("shift    _and_fill", {
   a = pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 2)$as_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
 })
+

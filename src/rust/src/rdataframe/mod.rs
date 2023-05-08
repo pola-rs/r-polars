@@ -4,11 +4,11 @@ use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
 pub mod read_parquet;
-use crate::lazy::dsl;
-
 use crate::lazy;
+use crate::lazy::dsl;
 use crate::rdatatype;
 use crate::rlib;
+use crate::robj_to;
 use crate::utils::extendr_concurrent::ParRObj;
 pub use lazy::dataframe::*;
 
@@ -265,7 +265,7 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&mut self, exprs: &ProtoExprArray) -> list::List {
+    pub fn select(&mut self, exprs: &ProtoExprArray) -> Result<DataFrame, String> {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
         LazyFrame(self.lazy().0.select(exprs)).collect()
     }
@@ -273,22 +273,20 @@ impl DataFrame {
     //used in GroupBy, not DataFrame
     pub fn by_agg(
         &mut self,
-        group_exprs: &ProtoExprArray,
-        agg_exprs: &ProtoExprArray,
-        maintain_order: bool,
-    ) -> List {
-        let group_exprs: Vec<pl::Expr> = pra_to_vec(group_exprs, "select");
-        let agg_exprs: Vec<pl::Expr> = pra_to_vec(agg_exprs, "select");
-
+        group_exprs: Robj,
+        agg_exprs: Robj,
+        maintain_order: Robj,
+    ) -> Result<DataFrame, String> {
+        let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
+        let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, agg_exprs)?;
+        let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         let lazy_df = self.clone().0.lazy();
-
-        let gb = if maintain_order {
+        let lgb = if maintain_order {
             lazy_df.groupby_stable(group_exprs)
         } else {
             lazy_df.groupby(group_exprs)
         };
-
-        LazyFrame(gb.agg(agg_exprs)).collect()
+        LazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
     pub fn to_struct(&self, name: &str) -> Series {
