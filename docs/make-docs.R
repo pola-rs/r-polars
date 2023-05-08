@@ -48,7 +48,8 @@ rd2md = function(src) {
   if (length(idx) == 1) {
     ex = tmp[(idx + 1):length(tmp)]
     ex = gsub("<.*>", "", ex)
-    ex = gsub("&lt;-", "<-", ex)
+    ex = gsub("&lt;", "<", ex)
+    ex = gsub("&gt;", ">", ex)
     ex = downlit::evaluate_and_highlight(ex)
     ex = sub("<span class='r-in'><span></span></span>\n", "", ex, fixed = TRUE)
     tmp = c(tmp[2:idx], "\n<pre class='r-example'><code>", ex, "</code></pre>")
