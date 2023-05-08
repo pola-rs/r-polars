@@ -33,7 +33,7 @@ GroupBy <- new.env(parent = emptyenv())
 #' The internal GroupBy constructor
 #' @noRd
 construct_groupby = function(df, groupby_input, maintain_order) {
-  if(!inherits(df,"DataFrame")) fstop("internal error: construct_group called not on DataFrame")
+  if(!inherits(df,"DataFrame")) stopf("internal error: construct_group called not on DataFrame")
   df = df$clone()
   attr(df,"private") = list(groupby_input  = groupby_input, maintain_order = maintain_order)
   class(df) = "GroupBy"

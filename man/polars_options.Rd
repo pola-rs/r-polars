@@ -32,8 +32,7 @@ turn of messages}
 \item{do_not_repeat_call}{bool, default = FALSE,
 turn of messages}
 
-\item{defualt_maintain_orderr}{bool, default = FALSE,
-turn of messages}
+\item{defualt_maintain_orderr}{bool, default = FALSE}
 
 \item{...}{any options to modify}
 
