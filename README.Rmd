@@ -146,8 +146,11 @@ encapsulated in the `DataFrame` object itself. For example, we can chain the
 column of the dataset:
 
 ```{r}
-dat$groupby("cyl")$mean()
+dat$groupby("cyl", maintain_order = TRUE)$mean()
 ```
+
+Note that we use `maintain_order = TRUE` so that `polars` always keeps the groups
+in the same order as they are in the original data.
 
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
 contains many more examples of how to use the package to:
