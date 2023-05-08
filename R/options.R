@@ -80,8 +80,7 @@ polars_optreq$do_not_repeat_call = list( #set requirement functions of default v
 #' @name defualt_maintain_order
 #' @details sets maintain_order = TRUE as default
 #' implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby.
-#' @param defualt_maintain_orderr bool, default = FALSE,
-#' turn of messages
+#' @param defualt_maintain_orderr bool, default = FALSE
 polars_optenv$defualt_maintain_order = FALSE #set default value
 polars_optreq$defualt_maintain_order = list( #set requirement functions of default value
   is_bool = function (x) {
