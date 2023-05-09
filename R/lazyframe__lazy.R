@@ -494,7 +494,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @param maintain_order bool, should an aggregate of a GroupBy retain order of groups?
 #' FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
-#' `pl$options$default_maintain_order <- TRUE` .
+#' `pl$options$default_maintain_order(TRUE)` .
 #' @return A new `LazyGroupBy` object with applied groups.
 #' @examples
 #' pl$DataFrame(
@@ -508,7 +508,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
 #'  pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #' collect()
-LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order) {
+LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
 }

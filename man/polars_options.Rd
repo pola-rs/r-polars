@@ -61,8 +61,8 @@ implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby
 modifing list takes no effect, pass it to pl$set_polars_options
 get/set/resest interact with internal env \code{polars:::polars_optenv}
 
-Every option can be accessed via \verb{pl$options$<name>}. It is not possible
-to set an invalid type/value on an option.
+Every option can be accessed via \verb{pl$options$<name>()} or changed
+with \verb{pl$options$<name>(<value>)}
 
 setting an options may be rejected if not passing opt_requirements
 }
@@ -74,13 +74,16 @@ pl$DataFrame(iris)$with_columns(
   SW_add_2 = (pl$col("Sepal.Width")+2)
 )
  pl$get_polars_options()
-# polars options access with `pl$options`
-pl$options
-pl$options$strictly_immutable
-pl$options$default_maintain_order
+# polars options read via `pl$options$<name>()`
+pl$options$strictly_immutable()
+pl$options$default_maintain_order()
 
-# cannot write wrong arguments to options
-tryCatch({pl$options$default_maintain_order <- 42}, error = function(err) cat(as.character(err)))
+# write via `pl$options$<name>(<value>)`, invalided values/types are rejected
+pl$options$default_maintain_order(TRUE)
+tryCatch(
+  {pl$options$default_maintain_order(42)},
+  error = function(err) cat(as.character(err))
+)
 pl$set_polars_options(strictly_immutable = FALSE)
 pl$get_polars_options()
 

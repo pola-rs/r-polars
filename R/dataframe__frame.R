@@ -880,7 +880,7 @@ DataFrame_filter = function(bool_expr) {
 #'  pl$col("bar")$sum()$suffix("_sum"),
 #'  pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order) {
+DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   #clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }

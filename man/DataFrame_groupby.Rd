@@ -4,7 +4,7 @@
 \alias{DataFrame_groupby}
 \title{groupby a DataFrame}
 \usage{
-DataFrame_groupby(..., maintain_order = pl$options$default_maintain_order)
+DataFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
 }
 \arguments{
 \item{...}{any Expr(s) or string(s) naming a column
@@ -12,7 +12,7 @@ DataFrame_groupby(..., maintain_order = pl$options$default_maintain_order)
 
 \item{maintain_order}{bool, should an aggregate of a GroupBy retain order of groups?
 FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
-\code{pl$options$default_maintain_order <- TRUE} .}
+\code{pl$options$default_maintain_order(TRUE)} .}
 }
 \value{
 GroupBy (a DataFrame with special groupby methods like \verb{$agg()})
