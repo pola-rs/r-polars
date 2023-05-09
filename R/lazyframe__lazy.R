@@ -488,16 +488,26 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
 }
 
 #' Lazy_groupby
-#' @description apply groupby on LazyFrame, return LazyGroupBy
+#' @description Create a LazyGroupBy from a LazyFrame.
 #' @keywords LazyFrame
-#' groupby on LazyFrame.
-#'
-#' @param ... any single Expr or string naming a column
-#' @param maintain_order Nullable bool,  should an aggregate of groupby retain order of groups?
-#' FALSE = random, slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
+#' @param ... any Expr(s) or string(s) naming a column
+#' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
+#' @param maintain_order Nullable bool, should an aggregate of groupby retain order of groups?
+#' FALSE = slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
 #' `pl$set_polars_options(default_maintain_order = TRUE)`, then NULL mean TRUE.
-#'
 #' @return A new `LazyGroupBy` object with applied groups.
+#' @examples
+#' pl$DataFrame(
+#'     foo = c("one", "two", "two", "one", "two"),
+#'     bar = c(5, 3, 2, 4, 1)
+#' )$
+#' lazy()$
+#' groupby("foo")$
+#' agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
+#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#' )$
+#' collect()
 LazyFrame_groupby = function(..., maintain_order = NULL) {
   largs  = unpack_list(...)
   maintain_order = maintain_order %||% polars_optenv$default_maintain_order

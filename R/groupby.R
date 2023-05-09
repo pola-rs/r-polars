@@ -60,29 +60,24 @@ print.GroupBy = function(x, ...) {
 }
 
 
-#' GroupBy Aggregate
+#' Aggregate over a GroupBy
 #' @description Aggregatete a DataFrame over a groupby
-#' @param ... exprs to aggregate
-#'
+#' @param ... exprs to aggregate over.
+#' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @return aggregated DataFrame
 #' @export
 #' @aliases agg
-#'
 #' @examples
 #' pl$DataFrame(
-#'   list(
 #'     foo = c("one", "two", "two", "one", "two"),
 #'     bar = c(5, 3, 2, 4, 1)
-#'   )
-#' )$groupby(
-#' "foo"
-#' )$agg(
-#'  pl$col("bar")$sum()$alias("bar_sum"),
+#' )$
+#' groupby("foo")$
+#' agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
 #'  pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-#'
 GroupBy_agg = function(...) {
-
   .pr$DataFrame$by_agg(
     self = self,
     group_exprs = attr(self,"private")$groupby_input,

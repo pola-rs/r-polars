@@ -341,7 +341,7 @@ pub struct LazyGroupBy(pub pl::LazyGroupBy);
 #[extendr]
 impl LazyGroupBy {
     fn print(&self) {
-        rprintln!(" The insides of this object is a mystery, inspect the lazyframe instead.");
+        rprintln!("LazyGroupBy (internals are opaque)");
     }
 
     fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {

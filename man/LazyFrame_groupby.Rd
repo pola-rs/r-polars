@@ -7,19 +7,30 @@
 LazyFrame_groupby(..., maintain_order = NULL)
 }
 \arguments{
-\item{...}{any single Expr or string naming a column}
+\item{...}{any Expr(s) or string(s) naming a column
+... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
 
-\item{maintain_order}{Nullable bool,  should an aggregate of groupby retain order of groups?
-FALSE = random, slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
+\item{maintain_order}{Nullable bool, should an aggregate of groupby retain order of groups?
+FALSE = slightly faster, but not dertimistic order. Default is NULL means FALSE, unless
 \code{pl$set_polars_options(default_maintain_order = TRUE)}, then NULL mean TRUE.}
 }
 \value{
 A new \code{LazyGroupBy} object with applied groups.
 }
 \description{
-apply groupby on LazyFrame, return LazyGroupBy
+Create a LazyGroupBy from a LazyFrame.
+}
+\examples{
+pl$DataFrame(
+    foo = c("one", "two", "two", "one", "two"),
+    bar = c(5, 3, 2, 4, 1)
+)$
+lazy()$
+groupby("foo")$
+agg(
+ pl$col("bar")$sum()$suffix("_sum"),
+ pl$col("bar")$mean()$alias("bar_tail_sum")
+)$
+collect()
 }
 \keyword{LazyFrame}
-\keyword{LazyFrame.}
-\keyword{groupby}
-\keyword{on}

@@ -865,9 +865,21 @@ DataFrame_filter = function(bool_expr) {
 }
 
 #' groupby a DataFrame
+#' @description create GroupBy from DataFrame
 #' @inherit LazyFrame_groupby
 #' @keywords DataFrame
-#' @return GroupBy (a DataFrame with special groupby methods)
+#' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
+#' @examples
+#' gb = pl$DataFrame(
+#'     foo = c("one", "two", "two", "one", "two"),
+#'     bar = c(5, 3, 2, 4, 1)
+#' )$groupby("foo", maintain_order = TRUE)
+#' print(gb)
+#'
+#' gb$agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
+#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#' )
 DataFrame_groupby = function(..., maintain_order = NULL) {
 
   #guard and set maintain_order
@@ -876,7 +888,7 @@ DataFrame_groupby = function(..., maintain_order = NULL) {
   }
   maintain_order = maintain_order %||% polars_optenv$default_maintain_order %||% FALSE
 
-  #clone the DataFrame, bundle args.
+  #clone the DataFrame, bundle args. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
