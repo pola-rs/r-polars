@@ -110,6 +110,71 @@ pl$get_polars_options = function() {
 }
 
 
+#' @details Every option can be accessed via `pl$options$<name>`. It is not possible
+#' to set an invalid type/value on an option.
+#' @rdname polars_options
+#' @name pl_options
+#' @examples
+#' # polars options read/write via `pl$options`
+#' pl$options
+#' pl$options$strictly_immutable
+#' pl$options$default_maintain_order
+#'
+#' # cannot write wrong arguments to options
+#' tryCatch({pl$options$default_maintain_order <- 42}, error = function(err) cat(as.character(err)))
+pl$options <- function(name) {
+  opts = pl$get_polars_options()
+   if (!name %in% names(opts)) {
+     stopf("in pl$options : tried to access non option %s", name)
+   }
+   opts[[name]]
+}
+class(pl$options) = c("polars_option_list")
+#' @export
+.DollarNames.polars_option_list = function(x, pattern = "") {
+  ls(polars_optenv, pattern = pattern )
+}
+#' @export
+`$.polars_option_list` = function(self, name) {
+   self(name)
+}
+#' @export
+`[[.polars_option_list` = `$.polars_option_list`
+#' @export
+`$<-.polars_option_list` = function(self, name, value) {
+  larg = list()
+  larg[[name]] = value
+  do.call(pl$set_polars_options,larg)
+  self
+}
+#' @export
+`[[<-.polars_option_list` = `$.polars_option_list`
+#' @export
+`print.polars_option_list` = function(x, ...) {
+  print("pl$options (polars_options, list-like with value validation):")
+  print(pl$get_polars_options())
+}
+#' @export
+`as.list.polars_option_list` = function(x, ...) {
+  pl$get_polars_options()
+}
+#' @export
+`as.vector.polars_option_list` = function(x, ...) {
+  as.vector(pl$get_polars_options())
+}
+#' @export
+`[.polars_option_list` = function(self, x, ...) {
+  pl$get_polars_options()[x]
+}
+#' @export
+`<-.polars_option_list` = function(self, value) {
+  warning("cannot replace the options list, only the values")
+  self
+}
+#' @export
+`=.polars_option_list` = `<-.polars_option_list`
+
+
 #' @param ... any options to modify
 #'
 #' @param return_replaced_options return previous state of modified options
@@ -204,6 +269,8 @@ pl$reset_polars_options = function() {
 pl$get_polars_opt_requirements = function() {
   polars_optreq
 }
+
+
 
 
 #' internal keeping of state at runtime

@@ -146,6 +146,7 @@ pl$mem_address = mem_address
   pl$select = .pr$DataFrame$new()$select
 
   lockEnvironment(pl,bindings = TRUE)
+  unlockBinding("options",pl)
 
 }
 

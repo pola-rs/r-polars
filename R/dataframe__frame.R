@@ -880,15 +880,8 @@ DataFrame_filter = function(bool_expr) {
 #'  pl$col("bar")$sum()$suffix("_sum"),
 #'  pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = NULL) {
-
-  #guard and set maintain_order
-  if( !(is_bool(maintain_order) || is.null(maintain_order))) {
-    return(unwrap(Err("arg [maintain_order] must be either NULL or a bool"), "in $groupby():"))
-  }
-  maintain_order = maintain_order %||% polars_optenv$default_maintain_order %||% FALSE
-
-  #clone the DataFrame, bundle args. Non fallible.
+DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order) {
+  #clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
