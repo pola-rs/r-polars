@@ -215,7 +215,7 @@ impl LazyFrame {
     }
 
     fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
-        let expr_vec = robj_to!(VecPLExpr, exprs)?;
+        let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
             Ok(LazyGroupBy(self.0.clone().groupby_stable(expr_vec)))
@@ -345,7 +345,7 @@ impl LazyGroupBy {
     }
 
     fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
-        let expr_vec: Vec<pl::Expr> = robj_to!(VecPLExpr, exprs)?;
+        let expr_vec: Vec<pl::Expr> = robj_to!(VecPLExprCol, exprs)?;
         Ok(LazyFrame(self.0.clone().agg(expr_vec)))
     }
 

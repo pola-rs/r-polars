@@ -499,7 +499,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
 #'
 #' @return A new `LazyGroupBy` object with applied groups.
 LazyFrame_groupby = function(..., maintain_order = NULL) {
-  largs  = list2(...)
+  largs  = unpack_list(...)
   maintain_order = maintain_order %||% polars_optenv$default_maintain_order
   unwrap(.pr$LazyFrame$groupby(self,largs,maintain_order))
 }

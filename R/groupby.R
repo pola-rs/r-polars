@@ -86,7 +86,7 @@ GroupBy_agg = function(...) {
   .pr$DataFrame$by_agg(
     self = self,
     group_exprs = attr(self,"private")$groupby_input,
-    agg_exprs   = list2(...),
+    agg_exprs   = unpack_list(...),
     maintain_order = attr(self,"private")$maintain_order
   ) |>
     unwrap("in $agg():")

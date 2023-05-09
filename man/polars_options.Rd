@@ -5,7 +5,7 @@
 \alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
-\alias{defualt_maintain_order}
+\alias{default_maintain_order}
 \alias{get_polars_options}
 \alias{polars_options}
 \alias{set_polars_options}
@@ -32,7 +32,7 @@ turn of messages}
 \item{do_not_repeat_call}{bool, default = FALSE,
 turn of messages}
 
-\item{defualt_maintain_orderr}{bool, default = FALSE}
+\item{default_maintain_orderr}{bool, default = FALSE}
 
 \item{...}{any options to modify}
 

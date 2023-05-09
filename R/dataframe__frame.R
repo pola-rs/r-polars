@@ -877,7 +877,7 @@ DataFrame_groupby = function(..., maintain_order = NULL) {
   maintain_order = maintain_order %||% polars_optenv$default_maintain_order %||% FALSE
 
   #clone the DataFrame, bundle args.
-  construct_groupby(self, groupby_input = list2(...), maintain_order = maintain_order)
+  construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
 

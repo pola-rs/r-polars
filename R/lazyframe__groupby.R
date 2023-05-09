@@ -20,8 +20,8 @@ print.LazyGroupBy = function(x, ...) {
 #' @param ... any Expr or string
 #' @return A new `LazyFrame` object.
 LazyGroupBy_agg = agg = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyGroupBy$agg(self,pra)
+  .pr$LazyGroupBy$agg(self,unpack_list(...)) |>
+    unwrap("in $agg():")
 }
 
 #' @title LazyGroupBy_apply
