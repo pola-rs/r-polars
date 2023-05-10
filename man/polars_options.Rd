@@ -38,7 +38,8 @@ turn of messages}
 \item{...}{any options to modify}
 
 \item{return_replaced_options}{return previous state of modified options
-Convenient for temporarily swapping of options during testing.}
+Convenient for temporarily swapping of options during testing. The immediate
+return value is invisible.}
 }
 \value{
 current settings as list
