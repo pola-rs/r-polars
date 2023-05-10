@@ -67,13 +67,13 @@ with \verb{pl$options$<name>(<value>)}
 setting an options may be rejected if not passing opt_requirements
 }
 \examples{
-#rename columns by naming expression, experimental requires option named_exprs = TRUE
+# rename columns by naming expression, experimental requires option named_exprs = TRUE
 pl$set_polars_options(named_exprs = TRUE)
 pl$DataFrame(iris)$with_columns(
-  pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
-  SW_add_2 = (pl$col("Sepal.Width")+2)
+  pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
+  SW_add_2 = (pl$col("Sepal.Width") + 2)
 )
- pl$get_polars_options()
+pl$get_polars_options()
 # polars options read via `pl$options$<name>()`
 pl$options$strictly_immutable()
 pl$options$default_maintain_order()
@@ -81,21 +81,23 @@ pl$options$default_maintain_order()
 # write via `pl$options$<name>(<value>)`, invalided values/types are rejected
 pl$options$default_maintain_order(TRUE)
 tryCatch(
-  {pl$options$default_maintain_order(42)},
+  {
+    pl$options$default_maintain_order(42)
+  },
   error = function(err) cat(as.character(err))
 )
 pl$set_polars_options(strictly_immutable = FALSE)
 pl$get_polars_options()
 
 
-#setting strictly_immutable = 42 will be rejected as
+# setting strictly_immutable = 42 will be rejected as
 tryCatch(
   pl$set_polars_options(strictly_immutable = 42),
-  error= function(e) print(e)
+  error = function(e) print(e)
 )
 
-#reset options like this
+# reset options like this
 pl$reset_polars_options()
-#use get_polars_opt_requirements() to requirements
+# use get_polars_opt_requirements() to requirements
 pl$get_polars_opt_requirements()
 }

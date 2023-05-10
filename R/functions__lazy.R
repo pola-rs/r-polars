@@ -272,7 +272,7 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 #' df$select(pl$head("a",2))
 #'
 #' pl$head(df$get_column("a"),2)
-pl$head = function(column = NULL, n = 10) {#-> Expr | Any:
+pl$head = function(column, n = 10) {#-> Expr | Any:
   pcase(
     inherits(column,"Series"), result(column$expr$head(n)),
     is.character(column), result(pl$col(column)$head(n)),
@@ -304,7 +304,7 @@ pl$head = function(column = NULL, n = 10) {#-> Expr | Any:
 #' df$select(pl$tail("a",2))
 #'
 #' pl$tail(df$get_column("a"),2)
-pl$tail = function(column = NULL, n = 10) {#-> Expr | Any:
+pl$tail = function(column, n = 10) {#-> Expr | Any:
   pcase(
     inherits(column,"Series"), result(column$expr$tail(n)),
     is.character(column), result(pl$col(column)$tail(n)),
