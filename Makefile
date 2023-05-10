@@ -37,7 +37,8 @@ requirements-rs:
 
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
-	Rscript -e 'rextendr::document()'
+	Rscript -e 'if(!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd");rextendr::document()'
+
 
 .PHONY: all
 all: build test README.md ## build -> test -> Update README.md
