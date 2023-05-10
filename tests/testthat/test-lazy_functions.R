@@ -216,3 +216,71 @@ test_that("pl$approx_unique", {
 
   expect_grepl_error(pl$approx_unique(1:99),c("in pl\\$approx_unique","is neither","1 2 3"))
 })
+
+
+test_that("pl$head", {
+  df = pl$DataFrame(
+    a = c(1, 8, 3),
+    b = c(4, 5, 2),
+    c = c("foo", "bar", "foo")
+  )
+  expect_identical(
+    df$select(pl$head("a"))$to_data_frame()$a,
+    head(df$to_data_frame())$a
+  )
+
+  expect_identical(
+    df$select(pl$head("a",2))$to_data_frame()$a,
+    head(df$to_data_frame(),2)$a
+  )
+
+  expect_identical(
+    df$select(pl$head(pl$col("a"),2))$to_data_frame()$a,
+    head(df$to_data_frame(),2)$a
+  )
+
+  expect_identical(
+    pl$head(df$get_column("a"),2)$to_r(),
+    head(df$to_list()$a,2)
+  )
+
+  expect_grepl_error(
+    pl$head(df$get_column("a"),-2),
+    "the arg \\[n\\] the value -2 cannot be less than zero"
+  )
+
+})
+
+
+test_that("pl$tail", {
+  df = pl$DataFrame(
+    a = c(1, 8, 3),
+    b = c(4, 5, 2),
+    c = c("foo", "bar", "foo")
+  )
+  expect_identical(
+    df$select(pl$tail("a"))$to_data_frame()$a,
+    tail(df$to_data_frame())$a
+  )
+
+  expect_identical(
+    df$select(pl$tail("a",2))$to_data_frame()$a,
+    tail(df$to_data_frame(),2)$a
+  )
+
+  expect_identical(
+    df$select(pl$tail(pl$col("a"),2))$to_data_frame()$a,
+    tail(df$to_data_frame(),2)$a
+  )
+
+  expect_identical(
+    pl$tail(df$get_column("a"),2)$to_r(),
+    tail(df$to_list()$a,2)
+  )
+
+  expect_grepl_error(
+    pl$tail(df$get_column("a"),-2),
+    "the arg \\[n\\] the value -2 cannot be less than zero"
+  )
+
+})

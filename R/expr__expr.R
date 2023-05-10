@@ -2240,9 +2240,8 @@ Expr_take_every = function(n) {
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
-Expr_head = function(n=10) {
-  if(!is.numeric(n)) stopf("n must be numeric")
-  unwrap(.pr$Expr$head(self,n=n))
+Expr_head = function(n = 10) {
+  unwrap(.pr$Expr$head(self, n = n), "in $head():")
 }
 
 #' Tail
@@ -2256,9 +2255,8 @@ Expr_head = function(n=10) {
 #' @examples
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
-Expr_tail = function(n=10) {
-  if(!is.numeric(n)) stopf("n must be numeric")
-  unwrap(.pr$Expr$tail(self,n=n))
+Expr_tail = function(n = 10) {
+  unwrap(.pr$Expr$tail(self, n = n), "in $tail():")
 }
 
 

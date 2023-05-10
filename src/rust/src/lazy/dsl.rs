@@ -1541,18 +1541,12 @@ impl Expr {
         self.0.clone().last().into()
     }
 
-    pub fn head(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n)
-            .map_err(|err| format!("in head: {}", err))
-            .map(|n| Expr(self.0.clone().head(Some(n))));
-        r_result_list(res)
+    pub fn head(&self, n: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().head(Some(robj_to!(usize, n)?)).into())
     }
 
-    pub fn tail(&self, n: f64) -> List {
-        let res = try_f64_into_usize(n)
-            .map_err(|err| format!("in tail: {}", err))
-            .map(|n| Expr(self.0.clone().tail(Some(n))));
-        r_result_list(res)
+    pub fn tail(&self, n: Robj) -> Result<Self, String> {
+        Ok(self.0.clone().tail(Some(robj_to!(usize, n)?)).into())
     }
 
     //chaining methods
