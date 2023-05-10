@@ -112,7 +112,8 @@ pl$get_polars_options = function() {
 #' @param ... any options to modify
 #'
 #' @param return_replaced_options return previous state of modified options
-#' Convenient for temporarily swapping of options during testing.
+#' Convenient for temporarily swapping of options during testing. The immediate
+#' return value is invisible.
 #'
 #' @rdname polars_options
 #' @name set_polars_options
@@ -170,7 +171,7 @@ pl$set_polars_options = function(
   }
 
   if(return_replaced_options) {
-    return(replaced_opts_list)
+    return(invisible(replaced_opts_list))
   }
 
   #return current option set invisible
