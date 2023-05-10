@@ -80,7 +80,7 @@ new M1/M2 “Silicon” chips. To install **polars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**polars**. The corresponding `Makevars` script will download a ~200MB
+**polars**. The corresponding `Makevars` script will download a \~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -128,21 +128,21 @@ library(polars)
 dat = pl$DataFrame(mtcars)
 dat
 #> shape: (32, 11)
-#> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
-#> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
-#> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
-#> │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
-#> ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
-#> │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ ... ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
-#> │ ...  ┆ ... ┆ ...   ┆ ...   ┆ ... ┆ ... ┆ ... ┆ ...  ┆ ...  │
-#> │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
-#> │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
-#> │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
-#> │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
-#> └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
+#> ┌──────┬─────┬───────┬───────┬───┬─────┬─────┬──────┬──────┐
+#> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ … ┆ vs  ┆ am  ┆ gear ┆ carb │
+#> │ ---  ┆ --- ┆ ---   ┆ ---   ┆   ┆ --- ┆ --- ┆ ---  ┆ ---  │
+#> │ f64  ┆ f64 ┆ f64   ┆ f64   ┆   ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
+#> ╞══════╪═════╪═══════╪═══════╪═══╪═════╪═════╪══════╪══════╡
+#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
+#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
+#> │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
+#> │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ … ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
+#> │ …    ┆ …   ┆ …     ┆ …     ┆ … ┆ …   ┆ …   ┆ …    ┆ …    │
+#> │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
+#> │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
+#> │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
+#> │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
+#> └──────┴─────┴───────┴───────┴───┴─────┴─────┴──────┴──────┘
 ```
 
 This `DataFrame` object can be manipulated using many of the usual R
@@ -171,15 +171,15 @@ means for each column of the dataset:
 ``` r
 dat$groupby("cyl")$mean()
 #> shape: (3, 11)
-#> ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐
-#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │
-#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
-#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
-#> ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡
-#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
-#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
-#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
-#> └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘
+#> ┌─────┬───────────┬────────────┬────────────┬───┬──────────┬──────────┬──────────┬──────────┐
+#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ … ┆ vs       ┆ am       ┆ gear     ┆ carb     │
+#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆   ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
+#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆   ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
+#> ╞═════╪═══════════╪════════════╪════════════╪═══╪══════════╪══════════╪══════════╪══════════╡
+#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ … ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
+#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ … ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
+#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ … ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> └─────┴───────────┴────────────┴────────────┴───┴──────────┴──────────┴──────────┴──────────┘
 ```
 
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
@@ -335,3 +335,47 @@ unlink("check",recursive = TRUE, force =TRUE)
   with your own absolute path to your local clone!
 - `filter_rcmdcheck.R` removes known warnings from final check report.
 - `unlink("check")` cleans up.
+
+### Misc
+
+If experiencing unexpected sluggish performance, when using polars in a
+given IDE, we like to here about it. You can try to activate
+`pl$set_polars_options(debug_polars = TRUE)` to profile what methods are
+being touched (not necessarily run) and how fast. Below is printed an
+example of good behavior.
+
+``` r
+#run e.g. an eager query after setting debug_polars = TRUE
+pl$DataFrame(iris)$select("Species")
+
+[TIME? ms]
+pl$DataFrame() -> [0.73ms]
+   .pr$DataFrame$new_with_capacity() -> [0.56ms]
+   .pr$DataFrame$set_column_from_robj() -> [11.04ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.3309ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.283ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.2761ms]
+   .pr$DataFrame$set_column_from_robj() -> [12.54ms]
+DataFrame$select() -> [0.3681ms]
+ProtoExprArray$push_back_rexpr() -> [0.21ms]
+pl$col() -> [0.1669ms]
+   .pr$Expr$col() -> [0.212ms]
+   .pr$DataFrame$select() -> [1.229ms]
+DataFrame$print() -> [0.1781ms]
+   .pr$DataFrame$print() -> shape: (150, 1)
+┌───────────┐
+│ Species   │
+│ ---       │
+│ cat       │
+╞═══════════╡
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ …         │
+│ virginica │
+│ virginica │
+│ virginica │
+│ virginica │
+└───────────┘
+```
