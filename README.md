@@ -341,11 +341,11 @@ unlink("check",recursive = TRUE, force =TRUE)
 
 ### Misc
 
-If experiencing unexpected sluggish performance, when using polars in a
-given IDE, we like to here about it. You can try to activate
+If you experience unexpected sluggish performance, when using polars in
+a given IDE, we’d like to hear about it. You can try to activate
 `pl$set_polars_options(debug_polars = TRUE)` to profile what methods are
-being touched (not necessarily run) and how fast. Below is printed an
-example of good behavior.
+being touched (not necessarily run) and how fast. Below is an example of
+good behavior.
 
 ``` r
 #run e.g. an eager query after setting debug_polars = TRUE
