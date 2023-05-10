@@ -487,18 +487,30 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
   unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
 }
 
-#' @title Lazy_groupby
-#' @description apply groupby on LazyFrame, return LazyGroupBy
+#' Lazy_groupby
+#' @description Create a LazyGroupBy from a LazyFrame.
 #' @keywords LazyFrame
-#' groupby on LazyFrame.
-#'
-#' @param ... any single Expr or string naming a column
-#' @param maintain_order bool should an aggregate of groupby retain order of groups or FALSE = random, slightly faster?
-#'
+#' @param ... any Expr(s) or string(s) naming a column
+#' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
+#' @param maintain_order bool, should an aggregate of a GroupBy retain order of groups?
+#' FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
+#' `pl$options$default_maintain_order(TRUE)` .
 #' @return A new `LazyGroupBy` object with applied groups.
-LazyFrame_groupby = function(..., maintain_order = FALSE) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$groupby(self,pra,maintain_order)
+#' @examples
+#' pl$DataFrame(
+#'     foo = c("one", "two", "two", "one", "two"),
+#'     bar = c(5, 3, 2, 4, 1)
+#' )$
+#' lazy()$
+#' groupby("foo")$
+#' agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
+#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#' )$
+#' collect()
+LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
+    unwrap("in $groupby():")
 }
 
 #' @title LazyFrame join

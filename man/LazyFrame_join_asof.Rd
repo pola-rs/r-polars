@@ -67,7 +67,7 @@ There may be a circumstance where R types are not sufficient to express a numeri
 For that case expression syntax is also enabled like e.g.
 \code{tolerance = pl$lit(42)$cast(pl$Uint64)}}
 
-\item{allow_parallel}{Default TRUE, Allow the physical plan to optionally evaluate the
+\item{allow_parallel}{Default TRUE. Allow the physical plan to optionally evaluate the
 computation of both DataFrames up to the join in parallel.}
 
 \item{force_parallel}{Default FALSE. Force the physical plan to evaluate the computation of both

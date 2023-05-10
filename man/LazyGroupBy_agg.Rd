@@ -7,11 +7,30 @@
 LazyGroupBy_agg(...)
 }
 \arguments{
-\item{...}{any Expr or string}
+\item{...}{exprs to aggregate over.
+... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
 }
 \value{
 A new \code{LazyFrame} object.
 }
 \description{
 aggregate a polar_lazy_groupby
+}
+\examples{
+lgb = pl$DataFrame(
+    foo = c("one", "two", "two", "one", "two"),
+    bar = c(5, 3, 2, 4, 1)
+)$
+lazy()$
+groupby("foo")
+
+#
+print(lgb)
+
+lgb$
+
+agg(
+ pl$col("bar")$sum()$suffix("_sum"),
+ pl$col("bar")$mean()$alias("bar_tail_sum")
+)
 }

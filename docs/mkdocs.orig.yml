@@ -21,11 +21,12 @@ theme:
     - navigation.tabs
     - navigation.top
     - content.code.copy
+    - toc.follow
 markdown_extensions:
   - footnotes
   - toc:
       baselevel: 1
-      toc_depth: 2
+      toc_depth: 3
   - pymdownx.highlight:
       anchor_linenums: yes
   - pymdownx.superfences

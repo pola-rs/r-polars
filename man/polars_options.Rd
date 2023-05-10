@@ -5,8 +5,10 @@
 \alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
+\alias{default_maintain_order}
 \alias{get_polars_options}
 \alias{polars_options}
+\alias{pl_options}
 \alias{set_polars_options}
 \alias{reset_polars_options}
 \title{polars options}
@@ -31,6 +33,8 @@ turn of messages}
 \item{do_not_repeat_call}{bool, default = FALSE,
 turn of messages}
 
+\item{default_maintain_orderr}{bool, default = FALSE}
+
 \item{...}{any options to modify}
 
 \item{return_replaced_options}{return previous state of modified options
@@ -51,8 +55,14 @@ who likes polars package messages? use this option to turn them off.
 
 do not print the call causing the error in error messages
 
+sets maintain_order = TRUE as default
+implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby.
+
 modifing list takes no effect, pass it to pl$set_polars_options
 get/set/resest interact with internal env \code{polars:::polars_optenv}
+
+Every option can be accessed via \verb{pl$options$<name>()} or changed
+with \verb{pl$options$<name>(<value>)}
 
 setting an options may be rejected if not passing opt_requirements
 }
@@ -64,6 +74,16 @@ pl$DataFrame(iris)$with_columns(
   SW_add_2 = (pl$col("Sepal.Width")+2)
 )
  pl$get_polars_options()
+# polars options read via `pl$options$<name>()`
+pl$options$strictly_immutable()
+pl$options$default_maintain_order()
+
+# write via `pl$options$<name>(<value>)`, invalided values/types are rejected
+pl$options$default_maintain_order(TRUE)
+tryCatch(
+  {pl$options$default_maintain_order(42)},
+  error = function(err) cat(as.character(err))
+)
 pl$set_polars_options(strictly_immutable = FALSE)
 pl$get_polars_options()
 
