@@ -62,3 +62,12 @@ test: build ## Run fast unittests
 .PHONY: install
 install: ## Install this R package locally
 	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
+
+
+.PHONY: git_untrack
+git_untrack: ## Some files renders differently often, but should not change. Untrack to not see/commit.
+	git update-index --skip-worktree ./man/nanoarrow.Rd
+
+.PHONY: git_retrack
+git_retrack: ## Retrack untracked files to see changes and/or commit file in a PR.
+	git update-index --no-skip-worktree ./man/nanoarrow.Rd
