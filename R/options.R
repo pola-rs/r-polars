@@ -214,11 +214,12 @@ runtime_state = new.env(parent = emptyenv())
 
 
 
-subtimer_ms = function() {
+subtimer_ms = function(cap_name = NULL,cap=9999) {
   last = runtime_state$last_subtime %||% 0
   this = as.numeric(Sys.time())
   runtime_state$last_subtime = this
-  min((this - last)*1000,9999)
+  time = min((this - last)*1000, cap)
+  if(!is.null(cap_name) && time==cap) cap_name else time
 }
 
 

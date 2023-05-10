@@ -36,7 +36,7 @@ extendr_method_to_pure_functions = function(env,class_name=NULL) {
   #print called private class in debug mode
   if(polars_optenv$debug_polars) {
     cat(
-      "[",format(subtimer_ms(),digits = 4),"ms]\n   .pr$",
+      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\n   .pr$",
       substr(class(self)[2],4,99), "$",name,"() -> ", sep= ""
     )
   }
@@ -191,7 +191,7 @@ class(pl) = c("pl_polars_env", "environment")
   #print called private class in debug mode
   if(polars_optenv$debug_polars) {
     cat(
-      "[",format(subtimer_ms(),digits = 4),"ms]\npl$",name,"() -> ", sep= ""
+      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\npl$",name,"() -> ", sep= ""
     )
   }
   self[[name]]
