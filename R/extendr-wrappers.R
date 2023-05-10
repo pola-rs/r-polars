@@ -641,6 +641,8 @@ Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self,
 
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
+Expr$approx_unique <- function() .Call(wrap__Expr__approx_unique, self)
+
 Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
 Expr$map_alias <- function(lambda) .Call(wrap__Expr__map_alias, self, lambda)

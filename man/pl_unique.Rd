@@ -6,16 +6,19 @@
 \arguments{
 \item{column}{if dtype is:
 \itemize{
-\item Series: call method n_unique() to return value of unique values.
-\item String: syntactic sugar for \code{pl$col(column)$n_unique()}, returns Expr
-\item Expr: syntactic sugar for \code{column$n_unique()}, returns Expr
+\item String: syntactic sugar for \code{pl$col(column)$approx_unique()}, returns Expr
+\item Expr: syntactic sugar for \code{column$approx_unique()}, returns Expr
 }}
 }
 \value{
 Expr or value
+
+Expr or value
 }
 \description{
 Depending on the input type this function does different things:
+
+This is done using the HyperLogLog++ algorithm for cardinality estimation.
 }
 \examples{
 #column as Series
@@ -28,5 +31,15 @@ pl$DataFrame(bob = 1:4)$select(expr)
 
 #colum as Expr
 pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
+#column as Series
+pl$approx_unique(pl$Series(1:4)) == 4
+
+#column as String
+expr = pl$approx_unique("bob")
+print(expr)
+pl$DataFrame(bob = 1:4)$select(expr)
+
+#colum as Expr
+pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
 }
 \keyword{Expr_new}

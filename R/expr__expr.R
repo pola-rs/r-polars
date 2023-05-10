@@ -1942,7 +1942,15 @@ Expr_product = "use_extendr_wrapper"
 #' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
 Expr_n_unique = "use_extendr_wrapper"
 
-
+#'  Approx count unique values
+#' @keywords Expr
+#' @description
+#' This is done using the HyperLogLog++ algorithm for cardinality estimation.
+#' @aliases approx_unique
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$approx_unique())
+Expr_approx_unique = "use_extendr_wrapper"
 
 #' Count `Nulls`
 #' @keywords Expr

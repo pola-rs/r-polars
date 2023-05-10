@@ -374,6 +374,37 @@ pl$n_unique = function(column) { #-> int or Expr
     unwrap("in pl$n_unique():")
 }
 
+#' Approx count unique values.
+#' @name pl_unique
+#' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
+#' @param column if dtype is:
+#' - String: syntactic sugar for `pl$col(column)$approx_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$approx_unique()`, returns Expr
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or value
+#'
+#' @examples
+#' #column as Series
+#' pl$approx_unique(pl$Series(1:4)) == 4
+#'
+#' #column as String
+#' expr = pl$approx_unique("bob")
+#' print(expr)
+#' pl$DataFrame(bob = 1:4)$select(expr)
+#'
+#' #colum as Expr
+#' pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
+pl$approx_unique = function(column) { #-> int or Expr
+  pcase(
+    inherits(column, "Expr"), result(column$approx_unique()),
+    is_string(column), result(pl$col(column)$approx_unique()),
+    or_else = Err(paste("arg [column] is neither Expr or String, but", str_string(column)))
+  ) |>
+    unwrap("in pl$approx_unique():")
+}
+
 #' sum across expressions / literals / Series
 #' @description  syntactic sugar for starting a expression with sum
 #' @name pl_sum

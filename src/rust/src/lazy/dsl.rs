@@ -1684,6 +1684,10 @@ impl Expr {
         self.0.clone().is_unique().into()
     }
 
+    pub fn approx_unique(&self) -> Self {
+        self.clone().0.approx_unique().into()
+    }
+
     pub fn is_first(&self) -> Self {
         self.clone().0.is_first().into()
     }
