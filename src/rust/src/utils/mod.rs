@@ -682,13 +682,16 @@ pub fn robj_to_lazyframe(
     Ok(LazyFrame(ext_ldf.0.clone()))
 }
 
-pub fn list_expr_to_vec_pl_expr(robj: Robj) -> std::result::Result<Vec<pl::Expr>, String> {
+pub fn list_expr_to_vec_pl_expr(
+    robj: Robj,
+    str_to_lit: bool,
+) -> std::result::Result<Vec<pl::Expr>, String> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
     let l = robj.as_list().ok_or_else(|| "is not a list".to_string())?;
     let iter = l
         .iter()
-        .map(|(_, robj)| robj_to_rexpr(robj, true).map(|e| e.0));
+        .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));
     crate::utils::collect_hinted_result::<pl::Expr, String>(l.len(), iter)
 }
 
@@ -750,7 +753,11 @@ macro_rules! robj_to_inner {
     };
 
     (VecPLExpr, $a:ident) => {
-        crate::utils::list_expr_to_vec_pl_expr($a)
+        crate::utils::list_expr_to_vec_pl_expr($a, true)
+    };
+
+    (VecPLExprCol, $a:ident) => {
+        crate::utils::list_expr_to_vec_pl_expr($a, false)
     };
 
     (RPolarsDataType, $a:ident) => {

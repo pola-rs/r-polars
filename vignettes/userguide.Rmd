@@ -238,8 +238,6 @@ dtypes = list(
 # dtypes argument
 dataset = pl$read_csv(url)$with_columns(pl$col("birthday")$str$strptime(pl$Date, "%Y-%m-%d"))
 
-pl$DataFrame(mtcars)$groupby("cyl")$agg(pl$count())
-
 dataset$
   lazy()$
   groupby("first_name")$

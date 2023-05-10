@@ -7,7 +7,7 @@
 GroupBy_to_data_frame(...)
 }
 \arguments{
-\item{...}{any opt param passed to R as.data.frame}
+\item{...}{not used}
 }
 \value{
 R data.frame

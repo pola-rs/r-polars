@@ -113,7 +113,7 @@ relevant for developers, or users of unsupported operating systems).
 Speeding up your workflow? On Ubuntu, install polars + arrow from binaries and resolve
 system dependencies reliably and quickly with r2u ([see link for configuration](https://eddelbuettel.github.io/r2u/)).
 ```r
-rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.3", "https://cloud.r-project.org")
 install.packages(c("polars", "arrow"), repos = rp)
 ```
 
@@ -146,8 +146,11 @@ encapsulated in the `DataFrame` object itself. For example, we can chain the
 column of the dataset:
 
 ```{r}
-dat$groupby("cyl")$mean()
+dat$groupby("cyl", maintain_order = TRUE)$mean()
 ```
+
+Note that we use `maintain_order = TRUE` so that `polars` always keeps the groups
+in the same order as they are in the original data.
 
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
 contains many more examples of how to use the package to:

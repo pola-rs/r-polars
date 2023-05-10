@@ -3,12 +3,13 @@
 \name{GroupBy_agg}
 \alias{GroupBy_agg}
 \alias{agg}
-\title{GroupBy Aggregate}
+\title{Aggregate over a GroupBy}
 \usage{
 GroupBy_agg(...)
 }
 \arguments{
-\item{...}{exprs to aggregate}
+\item{...}{exprs to aggregate over.
+... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
 }
 \value{
 aggregated DataFrame
@@ -18,15 +19,12 @@ Aggregatete a DataFrame over a groupby
 }
 \examples{
 pl$DataFrame(
-  list(
     foo = c("one", "two", "two", "one", "two"),
     bar = c(5, 3, 2, 4, 1)
-  )
-)$groupby(
-"foo"
-)$agg(
- pl$col("bar")$sum()$alias("bar_sum"),
+)$
+groupby("foo")$
+agg(
+ pl$col("bar")$sum()$suffix("_sum"),
  pl$col("bar")$mean()$alias("bar_tail_sum")
 )
-
 }
