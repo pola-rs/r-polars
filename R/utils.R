@@ -82,11 +82,35 @@ verify_method_call = function(Class_env,Method_name,call=sys.call(1L),class_name
 # list3 = ok.comma(list,which = 2)
 
 
-#disable trailing commas for now
+#' list2 - one day like rlang
+#' list2 placeholder for future rust-impl
+#' @noRd
+#' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
+#' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
+#' trailing commas.
 list2 = list
 
-
-
+#' Internal unpack list
+#' @noRd
+#' @param l any list
+#' @details py-polars syntax only allows e.g. `df.select([expr1, expr2,])` and not
+#' `df.select(expr1, expr2,)`. r-polars also allows user to directly write
+#' `df$select(expr1, expr2)` or `df$select(list(expr1,expr2))`. Unpack list
+#' checks whether first and only arg is a list and unpacks it, to bridge the
+#' allowed patterns of passing expr to methods with ... param input.
+#' @return a list
+#' @examples
+#' f = \(...) unpack_list(list(...))
+#' identical(f(list(1L,2L,3L)), f(1L,2L,3L)) #is TRUE
+#' identical(f(list(1L,2L),3L), f(1L,2L,3L)) #is FALSE
+unpack_list = function(...) {
+  l = list(...)
+  if(length(l) == 1L && is.list(l[[1L]])) {
+    l[[1L]]
+  } else {
+    l
+  }
+}
 
 
 

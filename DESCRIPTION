@@ -1,6 +1,6 @@
 Package: polars
 Title: Polars ported to R
-Version: 0.5.0.9003
+Version: 0.6.0.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
@@ -14,31 +14,29 @@ RoxygenNote: 7.2.3
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
 Suggests: 
-    devtools,
-    testthat (>= 3.0.0),
-    rextendr,
-    data.table,
-    pkgdown,
-    nanoarrow,
-    arrow,
+    arrow, 
     bench,
+    bit64,
+    data.table,
+    knitr,
+    lubridate,
+    nanoarrow,
     nycflights13,
     patrick,
-    bit64,
-    knitr,
-    tibble,
     pillar,
     rmarkdown,
-    lubridate,
+    testthat (>= 3.0.0),
+    tibble,
     withr
 Config/Needs/website:
     etiennebacher/altdoc,
-    Genentech/rd2markdown@c4fb386,
-    yaml,
+    here,
     magrittr,
-    cli,
-    tinkr,
-    stringr
+    pkgload,
+    yaml
+Config/Needs/dev:
+    devtools,
+    rextendr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
