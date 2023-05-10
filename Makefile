@@ -20,7 +20,7 @@ requirements: requirements-r requirements-py requirements-rs ## Install all proj
 .PHONY: requirements-r
 requirements-r:
 	Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$$pkgType, R.Version()$$os, R.Version()$$arch))'
-	Rscript -e 'pak::repo_add(extendr = "https://extendr.r-universe.dev"); pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
+	Rscript -e 'pak::repo_add(extendr = "https://extendr.r-universe.dev"); pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"), upgrade = FALSE)'
 
 .venv:
 	python3 -m venv $(VENV)
