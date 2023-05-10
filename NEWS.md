@@ -1,5 +1,8 @@
 # polars (development version)
 
+## What's changed
+ - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
+
 ## BREAKING CHANGES
 
 - Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
