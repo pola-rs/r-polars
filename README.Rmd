@@ -81,7 +81,7 @@ install.packages(
 Similarly for Windows
 ([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip)) 
 and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
+[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are installing these
 binary builds directly from within R.
 
