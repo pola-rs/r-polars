@@ -71,7 +71,7 @@ install.packages(
 Similarly for Windows
 ([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
 and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
+[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
@@ -106,7 +106,7 @@ binaries and resolve system dependencies reliably and quickly with r2u
 ([see link for configuration](https://eddelbuettel.github.io/r2u/)).
 
 ``` r
-rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.3", "https://cloud.r-project.org")
 install.packages(c("polars", "arrow"), repos = rp)
 ```
 
@@ -169,18 +169,21 @@ chain the `$groupby()` and the `$mean()` methods to compute group-wise
 means for each column of the dataset:
 
 ``` r
-dat$groupby("cyl")$mean()
+dat$groupby("cyl", maintain_order = TRUE)$mean()
 #> shape: (3, 11)
 #> ┌─────┬───────────┬────────────┬────────────┬───┬──────────┬──────────┬──────────┬──────────┐
 #> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ … ┆ vs       ┆ am       ┆ gear     ┆ carb     │
 #> │ --- ┆ ---       ┆ ---        ┆ ---        ┆   ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
 #> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆   ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
 #> ╞═════╪═══════════╪════════════╪════════════╪═══╪══════════╪══════════╪══════════╪══════════╡
-#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ … ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
-#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ … ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
 #> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ … ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ … ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
+#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ … ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
 #> └─────┴───────────┴────────────┴────────────┴───┴──────────┴──────────┴──────────┴──────────┘
 ```
+
+Note that we use `maintain_order = TRUE` so that `polars` always keeps
+the groups in the same order as they are in the original data.
 
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
 contains many more examples of how to use the package to:

@@ -654,28 +654,44 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> std::result::Result<RPolarsD
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
-pub fn robj_to_rexpr(robj: extendr_api::Robj) -> std::result::Result<Expr, String> {
+pub fn robj_to_rexpr(
+    robj: extendr_api::Robj,
+    str_to_lit: bool,
+) -> std::result::Result<Expr, String> {
     let robj = unpack_r_result_list(robj)?;
 
-    let res = if let Some(str) = robj.as_str() {
-        use extendr_api::*;
-        let new_col_expr = extendr_api::call!("wrap_e", str).map_err(|err| err.to_string())?;
-        let x = robj_to_rexpr(new_col_expr);
-        x?
-    } else {
-        let res: ExtendrResult<ExternalPtr<Expr>> = robj.try_into();
-        let ext_expr = res.map_err(|err| format!("not an Expr, because {:?}", err))?;
-        Expr(ext_expr.0.clone())
-    };
+    //call wrap_e on R side
+    use extendr_api::*;
+    let new_col_expr =
+        extendr_api::call!("polars:::wrap_e", robj, str_to_lit).map_err(|err| err.to_string())?;
 
-    Ok(res)
+    //convert output into Expr
+    let res: ExtendrResult<ExternalPtr<Expr>> = new_col_expr.try_into();
+    let ext_expr = res.map_err(|err| format!("not an Expr, because {:?}", err))?;
+    Ok(Expr(ext_expr.0.clone()))
 }
 
-pub fn list_expr_to_vec_pl_expr(robj: Robj) -> std::result::Result<Vec<pl::Expr>, String> {
+pub fn robj_to_lazyframe(
+    robj: extendr_api::Robj,
+) -> std::result::Result<crate::rdataframe::LazyFrame, String> {
+    let robj = unpack_r_result_list(robj)?;
+    use crate::rdataframe::LazyFrame;
+    let res: Result<ExternalPtr<LazyFrame>, _> = robj.try_into();
+
+    let ext_ldf = res.map_err(|err| format!("not an LazyFrame, because {:?}", err))?;
+    Ok(LazyFrame(ext_ldf.0.clone()))
+}
+
+pub fn list_expr_to_vec_pl_expr(
+    robj: Robj,
+    str_to_lit: bool,
+) -> std::result::Result<Vec<pl::Expr>, String> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
     let l = robj.as_list().ok_or_else(|| "is not a list".to_string())?;
-    let iter = l.iter().map(|(_, robj)| robj_to_rexpr(robj).map(|e| e.0));
+    let iter = l
+        .iter()
+        .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));
     crate::utils::collect_hinted_result::<pl::Expr, String>(l.len(), iter)
 }
 
@@ -729,11 +745,19 @@ macro_rules! robj_to_inner {
     };
 
     (Expr, $a:ident) => {
-        crate::utils::robj_to_rexpr($a)
+        crate::utils::robj_to_rexpr($a, true)
+    };
+
+    (ExprCol, $a:ident) => {
+        crate::utils::robj_to_rexpr($a, false)
     };
 
     (VecPLExpr, $a:ident) => {
-        crate::utils::list_expr_to_vec_pl_expr($a)
+        crate::utils::list_expr_to_vec_pl_expr($a, true)
+    };
+
+    (VecPLExprCol, $a:ident) => {
+        crate::utils::list_expr_to_vec_pl_expr($a, false)
     };
 
     (RPolarsDataType, $a:ident) => {
@@ -742,6 +766,10 @@ macro_rules! robj_to_inner {
 
     (RField, $a:ident) => {
         crate::utils::robj_to_field($a)
+    };
+
+    (LazyFrame, $a:ident) => {
+        crate::utils::robj_to_lazyframe($a)
     };
 
     (RArrow_schema, $a:ident) => {

@@ -487,18 +487,30 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
   unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
 }
 
-#' @title Lazy_groupby
-#' @description apply groupby on LazyFrame, return LazyGroupBy
+#' Lazy_groupby
+#' @description Create a LazyGroupBy from a LazyFrame.
 #' @keywords LazyFrame
-#' groupby on LazyFrame.
-#'
-#' @param ... any single Expr or string naming a column
-#' @param maintain_order bool should an aggregate of groupby retain order of groups or FALSE = random, slightly faster?
-#'
+#' @param ... any Expr(s) or string(s) naming a column
+#' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
+#' @param maintain_order bool, should an aggregate of a GroupBy retain order of groups?
+#' FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
+#' `pl$options$default_maintain_order(TRUE)` .
 #' @return A new `LazyGroupBy` object with applied groups.
-LazyFrame_groupby = function(..., maintain_order = FALSE) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$groupby(self,pra,maintain_order)
+#' @examples
+#' pl$DataFrame(
+#'     foo = c("one", "two", "two", "one", "two"),
+#'     bar = c(5, 3, 2, 4, 1)
+#' )$
+#' lazy()$
+#' groupby("foo")$
+#' agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
+#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#' )$
+#' collect()
+LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
+    unwrap("in $groupby():")
 }
 
 #' @title LazyFrame join
@@ -621,6 +633,133 @@ LazyFrame_sort = function(
 
   #add same context to any Error
   unwrap("in sort():")
+
+}
+
+
+#' Perform joins on nearest keys
+#' @param other LazyFrame
+#' @param ...  not used, blocks use of further positional arguments
+#' @param left_on column name or Expr,  join column of left table
+#' @param right_on column name or Expr, join column of right (other) table
+#' @param on column name or Expr, sets both left_on and right_on
+#' @param by_left Default NULL (no grouping) or character vector of columns to group by in left
+#' table.
+#' @param by_right Default NULL (no grouping) or character vector of columns to group by in right
+#' table.
+#' @param by Default NULL, optional set/override by_left and by_right simultaneously
+#' @param strategy Default "backward". Strategy for where to find match. "Backward" searches in a
+#' descending direction and "Forward" searches in Ascending direction.
+#' @param suffix Suffix to append to the right (other) columns, if there are duplicated names
+#' @param tolerance
+#' Numeric tolerance. By setting this the join will only be done if the near
+#' keys are within this distance. If an asof join is done on columns of dtype
+#' "Date", "Datetime", "Duration" or "Time" you can use the following values:
+#'
+#'     - 1ns   (1 nanosecond)
+#'     - 1us   (1 microsecond)
+#'     - 1ms   (1 millisecond)
+#'     - 1s    (1 second)
+#'     - 1m    (1 minute)
+#'     - 1h    (1 hour)
+#'     - 1d    (1 day)
+#'     - 1w    (1 week)
+#'     - 1mo   (1 calendar month) // currently not available, as interval is not fixed
+#'     - 1y    (1 calendar year)  // currently not available, as interval is not fixed
+#'     - 1i    (1 index count)
+#'
+#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+#'
+#' There may be a circumstance where R types are not sufficient to express a numeric tolerance.
+#' For that case expression syntax is also enabled like e.g.
+#' `tolerance = pl$lit(42)$cast(pl$Uint64)`
+#'
+#' @param allow_parallel Default TRUE. Allow the physical plan to optionally evaluate the
+#' computation of both DataFrames up to the join in parallel.
+#' @param force_parallel Default FALSE. Force the physical plan to evaluate the computation of both
+#' DataFrames up to the join in parallel.
+#'
+#' @description Perform an asof join.
+#' @details
+#' This is similar to a left-join except that we match on nearest key rather than equal keys.
+#'
+#' Both DataFrames must be sorted by the asof_join key.
+#'
+#' For each row in the left DataFrame:
+#'
+#'   - A "backward" search selects the last row in the right DataFrame whose
+#'     'on' key is less than or equal to the left's key.
+#'
+#'   - A "forward" search selects the first row in the right DataFrame whose
+#'     'on' key is greater than or equal to the left's key.
+#'
+#' The default is "backward".
+#' @keywords LazyFrame
+#' @return new joined LazyFrame
+#' @examples #
+#' #create two LazyFrame to join asof
+#' gdp = pl$DataFrame(
+#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   gdp = c(4321, 4164, 4411, 4566, 4696),
+#'   group = c("b" ,"a", "a", "b", "b")
+#' )$lazy()
+#'
+#' pop = pl$DataFrame(
+#'   date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+#'   population = c(82.19, 82.66, 83.12, 83.52),
+#'   group = c("b", "b", "a", "a")
+#' )$lazy()
+#'
+#' #optional make sure tables are already sorted with "on" join-key
+#' gdp = gdp$sort("date")
+#' pop = pop$sort("date")
+#'
+#'
+#' # Left-join_asof LazyFrame pop with gdp on "date"
+#' # Look backward in gdp to find closest matching date
+#' pop$join_asof(gdp, on = "date", strategy = "backward")$collect()
+#'
+#' # .... and forward
+#' pop$join_asof(gdp, on = "date", strategy = "forward")$collect()
+#'
+#' # join by a group: "only look within groups"
+#' pop$join_asof(gdp, on = "date", by = "group", strategy = "backward")$collect()
+#'
+#' # only look 2 weeks and 2 days back
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "2w2d")$collect()
+#'
+#' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)$collect()
+LazyFrame_join_asof = function(
+  other,
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  on= NULL,
+  by_left = NULL,
+  by_right = NULL,
+  by = NULL,
+  strategy = "backward",
+  suffix = "_right",
+  tolerance = NULL,
+  allow_parallel = TRUE,
+  force_parallel = FALSE
+){
+
+  if(!is.null(by)) by_left = by_right = by
+  if(!is.null(on)) left_on = right_on = on
+  tolerance_str = if(  is.character(tolerance)) tolerance else NULL
+  tolerance_num = if( !is.character(tolerance)) tolerance else NULL
+
+  .pr$LazyFrame$join_asof(
+    self, other,
+    left_on, right_on,
+    by_left, by_right,
+    allow_parallel, force_parallel,
+    suffix, strategy,
+    tolerance_num, tolerance_str
+  ) |>
+    unwrap("in join_asof( ):")
 
 }
 

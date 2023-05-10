@@ -1,10 +1,9 @@
 # polars (development version)
-
 ## What's changed
  - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
 
+# polars 0.6.0
 ## BREAKING CHANGES
-
 - Bump rust-polars from 2023-02-17 unreleased version to 2023-04-20 unreleased version. (#183)
   - `top_k`'s `reverse` option is removed. Use the new `bottom_k` method instead.
   - The name of the `fmt` argument of some methods (e.g. `parse_date`) has been changed to `format`.
@@ -16,6 +15,7 @@
 - `Series` gains new methods: `$mean`, `$median`, `$std`, `$var` (#170 @vincentarelbundock)
 - A new option `use_earliest` of `replace_time_zone`. (#183)
 - A new option `strict` of `parse_int`. (#183)
+- Perform joins on nearest keys with method `join_asof`. (#172)
 
 # polars v0.5.0
 
