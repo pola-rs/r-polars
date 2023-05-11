@@ -86,9 +86,11 @@ fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
 }
 
 #[extendr]
-fn concat_lst(exprs: &ProtoExprArray) -> Expr {
+fn concat_lst(exprs: &ProtoExprArray) -> Result<Expr, String> {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::concat_lst(exprs).into()
+    Ok(Expr(
+        polars::lazy::dsl::concat_lst(exprs).map_err(|err| err.to_string())?,
+    ))
 }
 
 #[extendr]
@@ -151,10 +153,10 @@ fn r_date_range_lazy(
 //for now just use inner directly
 #[extendr]
 fn as_struct(exprs: Robj) -> Result<Expr, String> {
-    Ok(
-        polars::lazy::dsl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs)?.as_slice())
-            .into(),
+    Ok(polars::lazy::dsl::as_struct(
+        crate::utils::list_expr_to_vec_pl_expr(exprs, true)?.as_slice(),
     )
+    .into())
 }
 
 #[extendr]

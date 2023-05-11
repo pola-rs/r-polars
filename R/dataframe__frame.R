@@ -864,21 +864,25 @@ DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }
 
-#' groupby DataFrame
-#' @aliases groupby
-#' @description DataFrame$groupby(..., maintain_order = FALSE)
-#'
-#' @param ... any expression
-#' @param  maintain_order bool
+#' groupby a DataFrame
+#' @description create GroupBy from DataFrame
+#' @inherit LazyFrame_groupby
 #' @keywords DataFrame
-#' @return GroupBy (subclass of DataFrame)
+#' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
+#' @examples
+#' gb = pl$DataFrame(
+#'     foo = c("one", "two", "two", "one", "two"),
+#'     bar = c(5, 3, 2, 4, 1)
+#' )$groupby("foo", maintain_order = TRUE)
+#' print(gb)
 #'
-DataFrame_groupby = function(..., maintain_order = FALSE) {
-  self_copy = self$clone()
-  attr(self_copy,"private")$groupby_input =  construct_ProtoExprArray(...)
-  attr(self_copy,"private")$maintain_order = maintain_order
-  class(self_copy) = "GroupBy"
-  self_copy
+#' gb$agg(
+#'  pl$col("bar")$sum()$suffix("_sum"),
+#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#' )
+DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+  #clone the DataFrame, bundle args as attributes. Non fallible.
+  construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
 
@@ -900,7 +904,7 @@ DataFrame_to_data_frame = function(...) {
   l = lapply(self$to_list(unnest_structs=FALSE), I)
 
   #similar to as.data.frame, but avoid checks, whcih would edit structs
-  df = data.frame(seq_along(l[[1L]]))
+  df = data.frame(seq_along(l[[1L]]), ...)
   for(i in seq_along(l)) df[[i]] = l[[i]]
   names(df) = .pr$DataFrame$columns(self)
 
@@ -1191,3 +1195,79 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 
 
 
+#' Perform joins on nearest keys
+#' @inherit LazyFrame_join_asof
+#' @param other DataFrame or LazyFrame
+#' @keywords DataFrame
+#' @return new joined DataFrame
+#' @examples
+#' #create two DataFrame to join asof
+#' gdp = pl$DataFrame(
+#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   gdp = c(4321, 4164, 4411, 4566, 4696),
+#'   group = c("b" ,"a", "a", "b", "b")
+#' )
+#'
+#' pop = pl$DataFrame(
+#'   date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+#'   population = c(82.19, 82.66, 83.12, 83.52),
+#'   group = c("b", "b", "a", "a")
+#' )
+#'
+#' #optional make sure tables are already sorted with "on" join-key
+#' gdp = gdp$sort("date")
+#' pop = pop$sort("date")
+#'
+#' # Left-join_asof DataFrame pop with gdp on "date"
+#' # Look backward in gdp to find closest matching date
+#' pop$join_asof(gdp, on = "date", strategy = "backward")
+#'
+#' # .... and forward
+#' pop$join_asof(gdp, on = "date", strategy = "forward")
+#'
+#' # join by a group: "only look within within group"
+#' pop$join_asof(gdp, on = "date", by = "group", strategy = "backward")
+#'
+#' # only look 2 weeks and 2 days back
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "2w2d")
+#'
+#' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
+#' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
+DataFrame_join_asof = function(
+  other,
+  ...,
+  left_on = NULL,
+  right_on = NULL,
+  on= NULL,
+  by_left = NULL,
+  by_right = NULL,
+  by = NULL,
+  strategy = "backward",
+  suffix = "_right",
+  tolerance = NULL,
+  allow_parallel = TRUE,
+  force_parallel = FALSE
+){
+  #convert other to LazyFrame, capture any Error as a result, and pass it on
+
+  other_df_result = pcase(
+    inherits(other,"DataFrame"), Ok(other$lazy()),
+    inherits(other,"LazyFrame"), Ok(other),
+    or_else = Err(" not a LazyFrame or DataFrame")
+  )
+
+  self$lazy()$join_asof(
+    other = other_df_result,
+    on = on,
+    left_on = left_on,
+    right_on = right_on,
+    by = by,
+    by_left = by_left,
+    by_right = by_right,
+    allow_parallel = allow_parallel,
+    force_parallel = force_parallel,
+    suffix = suffix,
+    strategy = strategy,
+    tolerance = tolerance
+  )$collect()
+}

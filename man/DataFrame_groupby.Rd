@@ -2,20 +2,34 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_groupby}
 \alias{DataFrame_groupby}
-\alias{groupby}
-\title{groupby DataFrame}
+\title{groupby a DataFrame}
 \usage{
-DataFrame_groupby(..., maintain_order = FALSE)
+DataFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
 }
 \arguments{
-\item{...}{any expression}
+\item{...}{any Expr(s) or string(s) naming a column
+... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
 
-\item{maintain_order}{bool}
+\item{maintain_order}{bool, should an aggregate of a GroupBy retain order of groups?
+FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
+\code{pl$options$default_maintain_order(TRUE)} .}
 }
 \value{
-GroupBy (subclass of DataFrame)
+GroupBy (a DataFrame with special groupby methods like \verb{$agg()})
 }
 \description{
-DataFrame$groupby(..., maintain_order = FALSE)
+create GroupBy from DataFrame
+}
+\examples{
+gb = pl$DataFrame(
+    foo = c("one", "two", "two", "one", "two"),
+    bar = c(5, 3, 2, 4, 1)
+)$groupby("foo", maintain_order = TRUE)
+print(gb)
+
+gb$agg(
+ pl$col("bar")$sum()$suffix("_sum"),
+ pl$col("bar")$mean()$alias("bar_tail_sum")
+)
 }
 \keyword{DataFrame}

@@ -436,50 +436,32 @@ impl Series {
         r_result_list(s)
     }
 
-    // pub fn mean(&self) -> Option<f64> {
-    //     match self.series.dtype() {
-    //         DataType::Boolean => {
-    //             let s = self.series.cast(&DataType::UInt8).unwrap();
-    //             s.mean()
-    //         }
-    //         _ => self.series.mean(),
-    //     }
-    // }
-
-    // pub fn max(&self, py: Python) -> PyObject {
-    //     Wrap(self.series.max_as_series().get(0)).into_py(py)
-    // }
-
-    // pub fn min(&self, py: Python) -> PyObject {
-    //     Wrap(self.series.min_as_series().get(0)).into_py(py)
-    // }
-
-    pub fn mean(&self) -> Series {
-        self.0.mean_as_series().into()
+    pub fn mean(&self) -> Result<Robj, String> {
+        Series(self.0.mean_as_series()).to_r()
     }
 
-    pub fn median(&self) -> Series {
-        self.0.median_as_series().into()
+    pub fn median(&self) -> Result<Robj, String> {
+        Series(self.0.median_as_series()).to_r()
     }
 
-    pub fn min(&self) -> Series {
-        self.0.min_as_series().into()
+    pub fn min(&self) -> Result<Robj, String> {
+        Series(self.0.min_as_series()).to_r()
     }
 
-    pub fn max(&self) -> Series {
-        self.0.max_as_series().into()
+    pub fn max(&self) -> Result<Robj, String> {
+        Series(self.0.max_as_series()).to_r()
     }
 
-    pub fn sum(&self) -> Series {
-        self.0.sum_as_series().into()
+    pub fn sum(&self) -> Result<Robj, String> {
+        Series(self.0.sum_as_series()).to_r()
     }
 
-    pub fn std(&self, ddof: Robj) -> Result<Series, String> {
-        Ok(self.0.std_as_series(robj_to!(u8, ddof)?).into())
+    pub fn std(&self, ddof: Robj) -> Result<Robj, String> {
+        Series(self.0.std_as_series(robj_to!(u8, ddof)?)).to_r()
     }
 
-    pub fn var(&self, ddof: Robj) -> Result<Series, String> {
-        Ok(self.0.var_as_series(robj_to!(u8, ddof)?).into())
+    pub fn var(&self, ddof: Robj) -> Result<Robj, String> {
+        Series(self.0.var_as_series(robj_to!(u8, ddof)?)).to_r()
     }
 
     pub fn ceil(&self) -> List {
@@ -507,7 +489,7 @@ impl Series {
     pub fn cumsum(&self, reverse: bool) -> Series {
         Series(self.0.cumsum(reverse))
     }
-
+    //
     pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
         df.set_column_from_series(&self)?;
@@ -571,41 +553,11 @@ impl Series {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {
                     //convert any error from R to a polars error
-                    pl::PolarsError::ComputeError(polars::error::ErrString::Owned(err.to_string()))
+                    pl::PolarsError::ComputeError(err.into())
                 })?
                 .0
         };
         Ok(s)
-    }
-
-    pub fn extend_expr(&self, value: &Expr, n: &Expr) -> pl::PolarsResult<Self> {
-        //let expr = value.0.clone().repeat_by(n.clone().0);
-        let s: pl::PolarsResult<Self> = value.into(); //(&Expr(expr)).into();
-        let n_series_result: pl::PolarsResult<Series> = n.into();
-        let s = s?.0.cast(self.0.dtype())?;
-
-        let n_series = n_series_result.map_err(|err| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: when casting n as UInt64 [{}], n should be a non-negative integer",
-                err
-            )))
-        })?;
-
-        let opt_n_u64 = n_series.0.u64()?.into_iter().next().ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: expr n had no length"
-            )))
-        })?;
-
-        let n_usize = opt_n_u64.ok_or_else(|| {
-            pl::PolarsError::InvalidOperation(polars::error::ErrString::Owned(format!(
-                "extend_expr: expr n cannot be a Null"
-            )))
-        })? as usize;
-        let to_append = s.new_from_index(0, n_usize);
-        let mut out = self.0.clone();
-        out.append(&to_append)?;
-        Ok(Series(out))
     }
 
     pub fn rep_impl(&self, n: usize, rechunk: bool) -> pl::PolarsResult<Self> {

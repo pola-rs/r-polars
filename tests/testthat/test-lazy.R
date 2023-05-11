@@ -290,7 +290,7 @@ test_that("sort", {
   #test raise error for missing by
   expect_grepl_error(
      pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl","mpg","cyl"), descending = c(T,F))$collect(),
-     c("The amount of ordering booleans", "2 does not match that no. of Series", "3")
+     c("The amount of ordering booleans", "2 does not match .*of Series", "3")
   )
 
   #TODO refine this error msg in robj_to! it does not have to be a "single" here
@@ -305,12 +305,12 @@ test_that("sort", {
   )
 
   df = pl$DataFrame(mtcars)$lazy()
-  
+
   w = df$sort("mpg")$collect()$to_data_frame()
   x = df$sort(pl$col("mpg"))$collect()$to_data_frame()
   y = mtcars[order(mtcars$mpg),]
   expect_equal(x, y, ignore_attr = TRUE)
-  
+
   w = df$sort(pl$col("cyl"), pl$col("mpg"))$collect()$to_data_frame()
   x = df$sort("cyl", "mpg")$collect()$to_data_frame()
   y = df$sort(c("cyl", "mpg"))$collect()$to_data_frame()
@@ -323,7 +323,7 @@ test_that("sort", {
   x = df$sort(-pl$col("cyl"), pl$col("hp"))$collect()$to_data_frame()
   y = mtcars[order(-mtcars$cyl, mtcars$hp), ]
   expect_equal(x, y, ignore_attr = TRUE)
-  
+
   # descending arg
   w = df$sort("cyl", "mpg", descending = TRUE)$collect()$to_data_frame()
   x = df$sort(c("cyl", "mpg"), descending = TRUE)$collect()$to_data_frame()
@@ -350,6 +350,113 @@ test_that("sort", {
 })
 
 
-#TODO complete tests for lazy
+test_that("join_asof_simple", {
+  l_gdp = list(
+    date = as.Date(c("2016-1-1", "2017-1-1", "2018-1-1", "2019-1-1")),
+    gdp = c(4164, 4411, 4566, 4696),
+    group_right = c("a", "a", "b", "b")
+  )
+  l_pop = list(
+    date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
+    population = c(82.19, 82.66, 83.12, 83.52),
+    group = c("b", "b", "a", "a")
+  )
+
+  gdp = pl$DataFrame(l_gdp)$lazy()
+  pop = pl$DataFrame(l_pop)$lazy()
+
+  # strategy param
+  expect_identical(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "backward")$collect()$to_list(),
+    c(l_pop, l_gdp[c("gdp", "group_right")])
+  )
+  expect_identical(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "forward")$collect()$to_list(),
+    c(l_pop, gdp$shift(-1)$collect()$to_list()[c("gdp", "group_right")])
+  )
+  expect_grepl_error(
+    pop$join_asof(gdp, left_on = "date", right_on = "date", strategy = "fruitcake"),
+    c("join_asof", "strategy choice", "fruitcake")
+  )
+
+  # shared left_right on
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list(),
+    c(l_pop, l_gdp[c("gdp", "group_right")])
+  )
+
+  # test by
+  expect_identical(
+    pop$join_asof(
+      gdp,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "backward"
+    )$collect()$to_list(),
+    c(l_pop, list(gdp = l_gdp$gdp[c(NA, NA, 2, 2)]))
+  )
+  expect_identical(
+    pop$join_asof(
+      gdp,
+      on = "date", by_left = "group",
+      by_right = "group_right", strategy = "forward"
+    )$collect()$to_list(),
+    c(l_pop, list(gdp = l_gdp$gdp[c(3, 3, NA, NA)]))
+  )
+
+
+  #str_tolerance within 19w
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "19w")$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list()
+  )
+
+  #exceeding 18w
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "18w")$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+       pl$lit(NA_character_)$alias("group_right")
+    )$collect()$to_list()
+  )
+
+  #num_tolerance within 19w = 19*7 days
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 19*7)$collect()$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$collect()$to_list()
+  )
+
+  expect_identical(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18*7)$collect()$to_list(),
+     pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+      pl$lit(NA_real_)$alias("gdp"),
+       pl$lit(NA_character_)$alias("group_right")
+    )$collect()$to_list()
+  )
+
+
+  #test allow_parallel and force_parallel
+
+  #export LogicalPlan as json string
+  logical_json_plan_TT =
+    pop$join_asof(gdp, on = "date", allow_parallel = TRUE, force_parallel = TRUE) |>
+    .pr$LazyFrame$debug_plan() |> unwrap()
+  logical_json_plan_FF =
+    pop$join_asof(gdp, on = "date", allow_parallel = FALSE, force_parallel = FALSE) |>
+    .pr$LazyFrame$debug_plan() |> unwrap()
+
+  #prepare regex query
+  get_reg = \(str,pat) regmatches(str,regexpr(pat,str)) #shorthand for get first regex match
+  allow_p_pat = r"{*"allow_parallel":\s*([^,]*)}" #find allow_parallel value in json string
+  force_p_pat = r"{*"force_parallel":\s*([^,]*)}"
+
+  #test if setting was as expected in LogicalPlan
+  expect_identical(get_reg(logical_json_plan_TT,allow_p_pat),"\"allow_parallel\": Bool(true)")
+  # contribute polars: enable back test when merged https://github.com/pola-rs/polars/pull/8617
+  #expect_identical(get_reg(logical_json_plan_TT,force_p_pat),"\"force_parallel\": Bool(true)")
+  expect_identical(get_reg(logical_json_plan_FF,allow_p_pat), "\"allow_parallel\": Bool(false)")
+  expect_identical(get_reg(logical_json_plan_FF,force_p_pat), "\"force_parallel\": Bool(false)")
+
+
+})
 
 

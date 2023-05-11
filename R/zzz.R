@@ -145,8 +145,8 @@ pl$mem_address = mem_address
   #see doc below, R CMD check did not like this function def
   pl$select = .pr$DataFrame$new()$select
 
-  lockEnvironment(pl,bindings = TRUE)
 
+  lockEnvironment(pl,bindings = TRUE)
 }
 
 #' Select from an empty DataFrame

@@ -3,7 +3,6 @@ use polars::prelude::{self as pl};
 
 use crate::rdataframe::DataFrame;
 use pl::PolarsError as pl_error;
-use polars::error::ErrString as pl_err_string;
 
 // #[extendr]
 // fn hello_bit64() -> Robj {
@@ -160,10 +159,9 @@ pub fn pl_series_to_list(
                 .map(|robj| robj.set_attrib("tu", "ns"))
                 .expect("internal error: attr tu failed")
                 .map_err(|err| {
-                    pl_error::ComputeError(pl_err_string::Owned(format!(
-                        "when converting polars Time to R PTime: {:?}",
-                        err
-                    )))
+                    pl_error::ComputeError(
+                        format!("when converting polars Time to R PTime: {:?}", err).into(),
+                    )
                 }),
 
             Datetime(tu, opt_tz) => {
@@ -190,17 +188,18 @@ pub fn pl_series_to_list(
                     .map(|robj| robj.set_attrib("tzone", tz))
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
-                        pl_error::ComputeError(pl_err_string::Owned(format!(
-                            "when converting polars Datetime to R POSIXct: {:?}",
-                            err
-                        )))
+                        pl_error::ComputeError(
+                            format!("when converting polars Datetime to R POSIXct: {:?}", err)
+                                .into(),
+                        )
                     })
             }
             _ => Err(pl::PolarsError::InvalidOperation(
-                polars::error::ErrString::Owned(format!(
+                format!(
                     "sorry polars has not yet implemented R conversion for Series.dtype: {}",
                     s.dtype()
-                )),
+                )
+                .into(),
             )),
         }
     }

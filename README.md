@@ -71,7 +71,7 @@ install.packages(
 Similarly for Windows
 ([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
 and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin17.0.tgz)).
+[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
@@ -80,7 +80,7 @@ new M1/M2 “Silicon” chips. To install **polars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**polars**. The corresponding `Makevars` script will download a ~200MB
+**polars**. The corresponding `Makevars` script will download a \~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -106,7 +106,7 @@ binaries and resolve system dependencies reliably and quickly with r2u
 ([see link for configuration](https://eddelbuettel.github.io/r2u/)).
 
 ``` r
-rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.2", "https://cloud.r-project.org")
+rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.3", "https://cloud.r-project.org")
 install.packages(c("polars", "arrow"), repos = rp)
 ```
 
@@ -128,21 +128,21 @@ library(polars)
 dat = pl$DataFrame(mtcars)
 dat
 #> shape: (32, 11)
-#> ┌──────┬─────┬───────┬───────┬─────┬─────┬─────┬──────┬──────┐
-#> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ ... ┆ vs  ┆ am  ┆ gear ┆ carb │
-#> │ ---  ┆ --- ┆ ---   ┆ ---   ┆     ┆ --- ┆ --- ┆ ---  ┆ ---  │
-#> │ f64  ┆ f64 ┆ f64   ┆ f64   ┆     ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
-#> ╞══════╪═════╪═══════╪═══════╪═════╪═════╪═════╪══════╪══════╡
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
-#> │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
-#> │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ ... ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
-#> │ ...  ┆ ... ┆ ...   ┆ ...   ┆ ... ┆ ... ┆ ... ┆ ...  ┆ ...  │
-#> │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
-#> │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
-#> │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ ... ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
-#> │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ ... ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
-#> └──────┴─────┴───────┴───────┴─────┴─────┴─────┴──────┴──────┘
+#> ┌──────┬─────┬───────┬───────┬───┬─────┬─────┬──────┬──────┐
+#> │ mpg  ┆ cyl ┆ disp  ┆ hp    ┆ … ┆ vs  ┆ am  ┆ gear ┆ carb │
+#> │ ---  ┆ --- ┆ ---   ┆ ---   ┆   ┆ --- ┆ --- ┆ ---  ┆ ---  │
+#> │ f64  ┆ f64 ┆ f64   ┆ f64   ┆   ┆ f64 ┆ f64 ┆ f64  ┆ f64  │
+#> ╞══════╪═════╪═══════╪═══════╪═══╪═════╪═════╪══════╪══════╡
+#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
+#> │ 21.0 ┆ 6.0 ┆ 160.0 ┆ 110.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 4.0  ┆ 4.0  │
+#> │ 22.8 ┆ 4.0 ┆ 108.0 ┆ 93.0  ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 1.0  │
+#> │ 21.4 ┆ 6.0 ┆ 258.0 ┆ 110.0 ┆ … ┆ 1.0 ┆ 0.0 ┆ 3.0  ┆ 1.0  │
+#> │ …    ┆ …   ┆ …     ┆ …     ┆ … ┆ …   ┆ …   ┆ …    ┆ …    │
+#> │ 15.8 ┆ 8.0 ┆ 351.0 ┆ 264.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 4.0  │
+#> │ 19.7 ┆ 6.0 ┆ 145.0 ┆ 175.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 6.0  │
+#> │ 15.0 ┆ 8.0 ┆ 301.0 ┆ 335.0 ┆ … ┆ 0.0 ┆ 1.0 ┆ 5.0  ┆ 8.0  │
+#> │ 21.4 ┆ 4.0 ┆ 121.0 ┆ 109.0 ┆ … ┆ 1.0 ┆ 1.0 ┆ 4.0  ┆ 2.0  │
+#> └──────┴─────┴───────┴───────┴───┴─────┴─────┴──────┴──────┘
 ```
 
 This `DataFrame` object can be manipulated using many of the usual R
@@ -169,18 +169,21 @@ chain the `$groupby()` and the `$mean()` methods to compute group-wise
 means for each column of the dataset:
 
 ``` r
-dat$groupby("cyl")$mean()
+dat$groupby("cyl", maintain_order = TRUE)$mean()
 #> shape: (3, 11)
-#> ┌─────┬───────────┬────────────┬────────────┬─────┬──────────┬──────────┬──────────┬──────────┐
-#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ ... ┆ vs       ┆ am       ┆ gear     ┆ carb     │
-#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆     ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
-#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆     ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
-#> ╞═════╪═══════════╪════════════╪════════════╪═════╪══════════╪══════════╪══════════╪══════════╡
-#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ ... ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
-#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ ... ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
-#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ ... ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
-#> └─────┴───────────┴────────────┴────────────┴─────┴──────────┴──────────┴──────────┴──────────┘
+#> ┌─────┬───────────┬────────────┬────────────┬───┬──────────┬──────────┬──────────┬──────────┐
+#> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ … ┆ vs       ┆ am       ┆ gear     ┆ carb     │
+#> │ --- ┆ ---       ┆ ---        ┆ ---        ┆   ┆ ---      ┆ ---      ┆ ---      ┆ ---      │
+#> │ f64 ┆ f64       ┆ f64        ┆ f64        ┆   ┆ f64      ┆ f64      ┆ f64      ┆ f64      │
+#> ╞═════╪═══════════╪════════════╪════════════╪═══╪══════════╪══════════╪══════════╪══════════╡
+#> │ 6.0 ┆ 19.742857 ┆ 183.314286 ┆ 122.285714 ┆ … ┆ 0.571429 ┆ 0.428571 ┆ 3.857143 ┆ 3.428571 │
+#> │ 4.0 ┆ 26.663636 ┆ 105.136364 ┆ 82.636364  ┆ … ┆ 0.909091 ┆ 0.727273 ┆ 4.090909 ┆ 1.545455 │
+#> │ 8.0 ┆ 15.1      ┆ 353.1      ┆ 209.214286 ┆ … ┆ 0.0      ┆ 0.142857 ┆ 3.285714 ┆ 3.5      │
+#> └─────┴───────────┴────────────┴────────────┴───┴──────────┴──────────┴──────────┴──────────┘
 ```
+
+Note that we use `maintain_order = TRUE` so that `polars` always keeps
+the groups in the same order as they are in the original data.
 
 [The **polars** vignette](https://rpolars.github.io/articles/polars/)
 contains many more examples of how to use the package to:

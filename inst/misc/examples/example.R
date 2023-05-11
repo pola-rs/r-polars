@@ -48,7 +48,7 @@ pf$select(
   pl$col("Sepal.Width")$sum()$over("Species")$alias("sw_sum_over_species"),
   pl$col("Sepal.Length")$sum()$over("Species")$alias("sl_sum_over_species"),
   "Petal.Width"
-)$to_data_frame() %>% head
+)$to_data_frame() |> head()
 
 
 #datatypes

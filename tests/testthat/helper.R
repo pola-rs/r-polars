@@ -37,7 +37,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call =TRU
   if(do_not_repeat_call) do.call(pl$set_polars_options, old_options)
 
   #check if error message contains pattern
-  founds = sapply(expected_err,\(x) isTRUE(grepl(x,err)[1]))
+  founds = sapply(expected_err, \(x) isTRUE(grepl(x, err, ignore.case = TRUE)[1]))
 
   if(!all(founds)) {
     #... if not use testthat to point out the difference

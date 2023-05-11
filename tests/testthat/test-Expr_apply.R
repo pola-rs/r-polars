@@ -12,7 +12,6 @@ test_that("Expr_apply works", {
     pl$col("a")$apply(function(s) {v = (s*2)$to_r();which.max(v)})$alias("a_which_max"),
     pl$col("a")$apply(function(s) s$len())$alias("a_count")
   )
-  rdf
 
   expect_equal(
     rdf$to_data_frame(),
