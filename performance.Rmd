@@ -5,36 +5,8 @@ output: github_document
 
 
 As highlighted by the [DuckDB benchmarks](https://duckdblabs.github.io/db-benchmark/),
-`polars` is very efficient to deal with large datasets. Let's take a very basic
-example dataset of 10M rows and compute the mean of every column per group:
-
-```{r}
-suppressPackageStartupMessages({
-  library(dplyr)
-  library(polars)
-  library(data.table)
-})
-
-N = 1e7
-df = data.frame(matrix(runif(25 * N), nrow = N))
-df$letters = sample(letters, N, replace = TRUE)
-
-df_dt = setDT(df)
-setkey(df_dt, letters)
-df_pl = pl$DataFrame(df)
-
-# comparison
-bench::mark(
-    "base" = by(df, df$letters, \(x) colMeans(x[, -26])),
-    "dplyr" = df %>% group_by(letters) %>% summarise_all(mean),
-    "data.table" = df_dt[, lapply(.SD, mean), keyby = "letters"],
-    "polars" = df_pl$groupby("letters")$mean(),
-    check = FALSE,
-    relative = TRUE
-)
-```
-
-Still, one can make `polars` even faster by following some good practices.
+`polars` is very efficient to deal with large datasets. Still, one can make `polars` 
+even faster by following some good practices.
 
 
 # Lazy vs eager execution
@@ -118,6 +90,8 @@ write.csv(test, "data/test.csv")
 
 
 ```{r}
+library(polars)
+
 df_test = csv_reader("data/test.csv")
 lf_test = lazy_csv_reader("data/test.csv")
 ```
@@ -221,7 +195,16 @@ Using custom R functions can be useful, but when possible, you should use the
 functions provided by `polars`. See the Reference tab for a complete list of
 functions.
 
+```{comment}
+# TODO: include this when streaming is implemented
 
 # Streaming data
 
-How?
+Finally, quoting [Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/concepts/streaming/):
+
+> One additional benefit of the lazy API is that it allows queries to be executed in a streaming manner. Instead of processing the data all-at-once Polars can execute the query in batches allowing you to process datasets that are larger-than-memory.
+
+
+To use streaming mode, we can just add `streaming = TRUE` in `collect()`:
+```
+
