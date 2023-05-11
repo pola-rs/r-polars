@@ -228,6 +228,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
 #' @usage Expr_is_not(other)
+#' @docType NULL
 #' @examples
 #' #two syntaxes same result
 #' pl$lit(TRUE)$is_not()
@@ -375,6 +376,7 @@ Expr_gt_eq = function(other) {
 #' Should be used in aggregation context only.
 #' @return Exprs
 #' @export
+#' @docType NULL
 #' @examples
 #' df = pl$DataFrame(list(
 #'   group = c("one","one","one","two","two","two"),
@@ -390,6 +392,7 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' Rename the output of an expression.
 #' @param name string new name of output
 #' @return Expr
+#' @docType NULL
 #' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
@@ -402,6 +405,7 @@ Expr_alias = "use_extendr_wrapper"
 #' `pl$all` which is a function to select all columns.
 #' @aliases Expr_all
 #' @return Boolean literal
+#' @docType NULL
 #' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
 #' to "all-columns" and is an expression constructor
 #' @examples
@@ -419,6 +423,7 @@ Expr_all = "use_extendr_wrapper"
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @return Boolean literal
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(
 #'   all=c(TRUE,TRUE),
@@ -438,6 +443,7 @@ Expr_any = "use_extendr_wrapper"
 #' Count the number of values in this expression.
 #' Similar to R length()
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(
 #'   all=c(TRUE,TRUE),
@@ -452,6 +458,7 @@ Expr_count = "use_extendr_wrapper"
 #' @keywords Expr
 #' @rdname Expr_count
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(
 #'   all=c(TRUE,TRUE),
@@ -471,6 +478,7 @@ Expr_len = "use_extendr_wrapper"
 #' Drop null values.
 #' Similar to R syntax `x[!(is.na(x) & !is.nan(x))]`
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -491,6 +499,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @return Expr
+#' @docType NULL
 #' @examples
 #'  pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = "use_extendr_wrapper"
@@ -506,6 +515,7 @@ Expr_drop_nans = "use_extendr_wrapper"
 #' Similar to R syntax is.na(x)
 #' null polars about the same as R NA
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -519,6 +529,7 @@ Expr_is_null = "use_extendr_wrapper"
 #' Similar to R syntax !is.na(x)
 #' null polars about the same as R NA
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -821,6 +832,7 @@ Expr_reverse = function() {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @docType NULL
 #' @usage Expr_and(other)
 #' @examples
 #' pl$lit(TRUE) & TRUE
@@ -836,6 +848,7 @@ Expr_and = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @docType NULL
 #' @param other Expr or into Expr
 #' @usage Expr_or(other)
 #' @examples
@@ -852,6 +865,7 @@ Expr_or = "use_extendr_wrapper"
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @docType NULL
 #' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
@@ -863,6 +877,7 @@ Expr_xor = "use_extendr_wrapper"
 #' @description expression request underlying physical base representation
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases to_physical
 #' @name Expr_to_physical
 #' @examples
@@ -962,6 +977,7 @@ Expr_sqrt = function() {
 #' Compute the exponential, element-wise.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases exp
 #' @name Expr_exp
 #' @format a method
@@ -1031,6 +1047,7 @@ Expr_exclude  = function(columns) {
 #' @return Expr
 #' @aliases keep_name
 #' @name Expr_keep_name
+#' @docType NULL
 #' @format a method
 #' @examples
 #' pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
@@ -1075,6 +1092,7 @@ Expr_map_alias = function(fun) {
 #'
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases is_finite
 #' @name Expr_is_finite
 #' @format a method
@@ -1091,6 +1109,7 @@ Expr_is_finite = "use_extendr_wrapper"
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases is_infinite
 #' @name Expr_is_infinite
 #' @format a method
@@ -1109,6 +1128,7 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases is_nan
 #' @name Expr_is_nan
 #'
@@ -1124,6 +1144,7 @@ Expr_is_nan = "use_extendr_wrapper"
 #'  NA_real_(R).
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases is_not_nan
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1195,6 +1216,7 @@ Expr_append = function(other, upcast=TRUE) {
 #' @description Create a single chunk of memory for this Series.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases rechunk
 #' @name Expr_rechunk
 #' @format a method
@@ -1325,6 +1347,7 @@ Expr_cumcount = function(reverse = FALSE) {
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases Expr_floor
 #' @name Expr_floor
 #' @format a method
@@ -1341,6 +1364,7 @@ Expr_floor = "use_extendr_wrapper"
 #' Only works on floating point Series.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases Expr_ceil
 #' @name Expr_ceil
 #' @format a method
@@ -1396,6 +1420,7 @@ Expr_dot = function(other) {
 #' @description Compute the most occurring value(s). Can return multiple Values.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases mode
 #' @name Expr_mode
 #' @format a method
@@ -1496,6 +1521,7 @@ Expr_arg_sort = function(reverse = FALSE, nulls_last = FALSE) { #param reverse n
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_min
@@ -1510,6 +1536,7 @@ Expr_arg_min = "use_extendr_wrapper"
 #' @description  Get the index of the minimal value.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases Expr_arg_max
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1834,6 +1861,7 @@ Expr_var = function(ddof = 1) {
 #' Get maximum value.
 #'
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -1846,6 +1874,7 @@ Expr_max = "use_extendr_wrapper"
 #' Get minimum value.
 #'
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -1863,6 +1892,7 @@ Expr_min = "use_extendr_wrapper"
 #' @description Get maximum value, but propagate/poison encountered `NaN` values.
 #' Get maximum value.
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -1874,6 +1904,7 @@ Expr_nan_max = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description Get minimum value, but propagate/poison encountered `NaN` values.
 #' @return Expr
+#' @docType NULL
 #' @details
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
@@ -1892,6 +1923,7 @@ Expr_nan_min = "use_extendr_wrapper"
 #' Int64 before summing to prevent overflow issues.
 #'
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(x=c(1L,NA,2L)))$select(pl$col("x")$sum())#is i32 3 (Int32 not casted)
 Expr_sum = "use_extendr_wrapper"
@@ -1904,6 +1936,7 @@ Expr_sum = "use_extendr_wrapper"
 #' Get mean value.
 #'
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$mean()==2) #is true
 Expr_mean = "use_extendr_wrapper"
@@ -1914,6 +1947,7 @@ Expr_mean = "use_extendr_wrapper"
 #' Get median value.
 #'
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(x=c(1,NA,2)))$select(pl$col("x")$median()==1.5) #is true
 Expr_median = "use_extendr_wrapper"
@@ -1925,6 +1959,7 @@ Expr_median = "use_extendr_wrapper"
 #' @description Compute the product of an expression.
 #' @aliases  Product
 #' @return Expr
+#' @docType NULL
 #' @details does not support integer32 currently, .cast() to f64 or i64 first.
 #' @examples
 #' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$product()==6) #is true
@@ -1938,6 +1973,7 @@ Expr_product = "use_extendr_wrapper"
 #' Similar to R length(unique(x))
 #' @aliases n_unique
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
 Expr_n_unique = "use_extendr_wrapper"
@@ -1948,6 +1984,7 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @keywords Expr
 #' @aliases null_count
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$select(pl$lit(c(NA,"a",NA,"b"))$null_count())
 Expr_null_count = "use_extendr_wrapper"
@@ -1956,6 +1993,7 @@ Expr_null_count = "use_extendr_wrapper"
 #' @keywords Expr
 #' @aliases arg_unique
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$select(pl$lit(c(1:2,1:3))$arg_unique())
 Expr_arg_unique = "use_extendr_wrapper"
@@ -1985,6 +2023,7 @@ Expr_unique = function(maintain_order = FALSE) {
 #' Get the first value.
 #' Similar to R head(x,1)
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
 Expr_first= "use_extendr_wrapper"
@@ -1995,6 +2034,7 @@ Expr_first= "use_extendr_wrapper"
 #' Get the lastvalue.
 #' Similar to R syntax tail(x,1)
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
 Expr_last = "use_extendr_wrapper"
@@ -2033,6 +2073,7 @@ Expr_over = function(...) {
 #' Get mask of unique values
 #'
 #' @return Expr (boolean)
+#' @docType NULL
 #' @keywords Expr
 #' @name Expr_is_unique
 #' @format a method
@@ -2058,6 +2099,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #' Get a mask of the first unique value.
 #'
 #' @return Expr (boolean)
+#' @docType NULL
 #' @keywords Expr
 #' @name Expr_is_first
 #' @format a method
@@ -2084,6 +2126,7 @@ Expr_is_first = "use_extendr_wrapper"
 #' Get mask of duplicated values.
 #'
 #' @return Expr (boolean)
+#' @docType NULL
 #' @keywords Expr
 #' @aliases is_duplicated
 #' @name Expr_is_duplicated
@@ -2176,6 +2219,7 @@ Expr_where = Expr_filter
 #' This means that every item is expanded to a new row.
 #'
 #' @return Expr
+#' @docType NULL
 #' @keywords Expr
 #' @aliases explode
 #' @format a method
@@ -2198,6 +2242,7 @@ Expr_explode = "use_extendr_wrapper"
 #' ( flatten is an alias for explode )
 #' @keywords Expr
 #' @aliases flatten
+#' @docType NULL
 #' @format a method
 #' @name Expr_flatten
 #' @rdname Expr_explode
@@ -2300,6 +2345,7 @@ Expr_pow = function(exponent) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
+#' @docType NULL
 #' @usage Expr_is_in(other)
 #' @examples
 #'
@@ -3086,6 +3132,7 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 #' @description Compute absolute values
 #' @keywords Expr
 #' @return Exprs abs
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
 Expr_abs = "use_extendr_wrapper"
@@ -3300,6 +3347,7 @@ Expr_clip_max= function(max) {
 #' @details
 #' Notice lower bound i32 exported to R is NA_integer_ for now
 #' @return  Expr
+#' @docType NULL
 #' @aliases upper_bound
 #' @format Method
 #' @keywords Expr
@@ -3313,6 +3361,7 @@ Expr_upper_bound= "use_extendr_wrapper"
 #' @aliases lower_bound
 #' @format Method
 #' @keywords Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(i32=1L,f64=1)$select(pl$all()$lower_bound())
 Expr_lower_bound= "use_extendr_wrapper"
@@ -3323,6 +3372,7 @@ Expr_lower_bound= "use_extendr_wrapper"
 #' @description
 #' Compute the element-wise indication of the sign.
 #' @return  Expr
+#' @docType NULL
 #' @aliases sign
 #' @format Method
 #' @keywords Expr
@@ -3336,6 +3386,7 @@ Expr_sign= "use_extendr_wrapper"
 #' Compute the element-wise value for the sine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases sin
 #' @format Method
 #' @keywords Expr
@@ -3349,6 +3400,7 @@ Expr_sin= "use_extendr_wrapper"
 #' Compute the element-wise value for the cosine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases cos
 #' @format Method
 #' @keywords Expr
@@ -3362,6 +3414,7 @@ Expr_cos= "use_extendr_wrapper"
 #' Compute the element-wise value for the tangent.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases Tan
 #' @format Method
 #' @keywords Expr
@@ -3374,6 +3427,7 @@ Expr_tan= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse sine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arcsin
 #' @format Method
 #' @keywords Expr
@@ -3386,6 +3440,7 @@ Expr_arcsin= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse cosine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arccos
 #' @format Method
 #' @keywords Expr
@@ -3399,6 +3454,7 @@ Expr_arccos= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse tangent.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arctan
 #' @format Method
 #' @keywords Expr
@@ -3413,6 +3469,7 @@ Expr_arctan= "use_extendr_wrapper"
 #' Compute the element-wise value for the hyperbolic sine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases sinh
 #' @format Method
 #' @keywords Expr
@@ -3425,6 +3482,7 @@ Expr_sinh= "use_extendr_wrapper"
 #' Compute the element-wise value for the hyperbolic cosine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases cosh
 #' @format Method
 #' @keywords Expr
@@ -3437,6 +3495,7 @@ Expr_cosh= "use_extendr_wrapper"
 #' Compute the element-wise value for the hyperbolic tangent.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases tanh
 #' @format Method
 #' @keywords Expr
@@ -3449,6 +3508,7 @@ Expr_tanh= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse hyperbolic sine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arcsinh
 #' @format Method
 #' @keywords Expr
@@ -3461,6 +3521,7 @@ Expr_arcsinh= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse hyperbolic cosine.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arccosh
 #' @format Method
 #' @keywords Expr
@@ -3473,6 +3534,7 @@ Expr_arccosh= "use_extendr_wrapper"
 #' Compute the element-wise value for the inverse hyperbolic tangent.
 #' @details Evaluated Series has dtype Float64
 #' @return  Expr
+#' @docType NULL
 #' @aliases arctanh
 #' @format Method
 #' @keywords Expr
@@ -3851,6 +3913,7 @@ Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
 #' This method differs from `value_counts` in that it does not return the
 #' values, only the counts and might be faster
 #' @return  Expr
+#' @docType NULL
 #' @aliases unique_counts
 #' @format Method
 #' @keywords Expr
@@ -3865,6 +3928,7 @@ Expr_unique_counts = "use_extendr_wrapper"
 #' @description  Compute the base x logarithm of the input array, element-wise.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases log
 #' @name Expr_log
 #' @examples
@@ -3877,6 +3941,7 @@ Expr_log  = function(base = base::exp(1)) {
 #' @description Compute the base 10 logarithm of the input array, element-wise.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases log10
 #' @name Expr_log10
 #' @format a method
@@ -3955,6 +4020,7 @@ Expr_set_sorted = function(reverse = FALSE) {
 #' @description  Aggregate to list.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases list
 #' @name Expr_list
 #' @details use to_struct to wrap a DataFrame
@@ -3965,13 +4031,13 @@ Expr_list = "use_extendr_wrapper"
 
 
 
-#' Wrap column in list
-#' @description
 #' Shrink numeric columns to the minimal required datatype.
+#' @description
 #' Shrink to the dtype needed to fit the extrema of this `[Series]`.
 #' This can be used to reduce memory pressure.
 #' @keywords Expr
 #' @return Expr
+#' @docType NULL
 #' @aliases shrink_dtype
 #' @examples
 #'  pl$DataFrame(

@@ -132,6 +132,7 @@ print.LazyFrame = function(x, ...) {
 #' @keywords LazyFrame
 #'
 #' @return self
+#' @docType NULL
 #' @export
 #'
 #' @usage LazyFrame_print(x)
@@ -150,6 +151,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
+#' @docType NULL
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
@@ -203,6 +205,7 @@ LazyFrame_with_columns = function(...) {
 #' @param expr one Expr or string naming a column
 #' @usage LazyFrame_with_column(expr)
 #' @return A new `LazyFrame` object with add/modified column.
+#' @docType NULL
 LazyFrame_with_column = "use_extendr_wrapper"
 
 #' @title Apply filter to LazyFrame
@@ -210,6 +213,7 @@ LazyFrame_with_column = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @param expr one Expr or string naming a column
 #' @return A new `LazyFrame` object with add/modified column.
+#' @docType NULL
 #' @usage LazyFrame_filter(expr)
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"

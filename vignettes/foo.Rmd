@@ -1,0 +1,11 @@
+---
+output: github_document
+---
+
+```{r}
+library(polars)
+
+dat = pl$DataFrame(mtcars)
+dat$groupby("cyl")$mean()
+```
+
