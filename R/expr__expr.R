@@ -1948,6 +1948,7 @@ Expr_n_unique = "use_extendr_wrapper"
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @aliases approx_unique
 #' @return Expr
+#' @docType NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$approx_unique())
 Expr_approx_unique = "use_extendr_wrapper"

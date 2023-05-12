@@ -1047,8 +1047,8 @@ Series_to_lit = function() {
   pl$lit(self)
 }
 
-#' Series n_unique
-#' @description return count of unique values in Series
+#' Count unique values in Series
+#' @description Return count of unique values in Series
 #' @keywords Series
 #' @return Expr
 #' @examples

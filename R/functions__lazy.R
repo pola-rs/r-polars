@@ -257,7 +257,7 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 #' @name pl_head
 #' @param column if dtype is:
 #' - Series: Take head value in `Series`
-#' - str or in: syntactic sugar for `pl.col(..).head()`
+#' - str or int: syntactic sugar for `pl.col(..).head()`
 #' @param n number of rows to take, NULL
 #' @keywords Expr_new
 #' @return Expr or head value of input Series
@@ -289,8 +289,8 @@ pl$head = function(column, n = 10) {#-> Expr | Any:
 #' Get the last `n` rows.
 #' @name pl_tail
 #' @param column if dtype is:
-#' - Series: Take head value in `Series`
-#' - str or in: syntactic sugar for `pl.col(..).head()`
+#' - Series: Take tail value in `Series`
+#' - str or in: syntactic sugar for `pl.col(..).tail()`
 #' @param n number of rows to take, NULL
 #' @return Expr or tail value of input Series
 #' @examples
@@ -406,7 +406,7 @@ pl$median = function(...) { #-> Expr | Any:
   unwrap("in pl$median():")
 }
 
-#' count n unique values
+#' Count `n` unique values
 #' @name pl_n_unique
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
@@ -438,7 +438,7 @@ pl$n_unique = function(column) { #-> int or Expr
     unwrap("in pl$n_unique():")
 }
 
-#' Approx count unique values.
+#' Approximate count of unique values.
 #' @name pl_approx_unique
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @param column if dtype is:

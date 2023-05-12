@@ -1,7 +1,8 @@
 # polars (development version)
 
 ## What's changed
- - lazy functions translated: `pl$implode`, `pl$explode`, `pl$unique`, `pl$approx_unique`, `pl$head`, `pl$tail`. Deprecated `pl$list` (use `pl$implode`) (#196)
+ - lazy functions translated: `pl$implode`, `pl$explode`, `pl$unique`, `pl$approx_unique`, `pl$head`, `pl$tail` (#196)
+ - `pl$list` is deprecated, use `pl$implode` instead (#196) 
 
 # polars 0.6.0
 
