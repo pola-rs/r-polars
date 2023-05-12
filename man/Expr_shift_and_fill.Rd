@@ -4,9 +4,6 @@
 \alias{Expr_shift_and_fill}
 \alias{shift_and_fill}
 \title{Shift and fill values}
-\format{
-a method
-}
 \usage{
 Expr_shift_and_fill(periods, fill_value)
 }

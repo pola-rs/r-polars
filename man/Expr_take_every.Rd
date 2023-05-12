@@ -4,9 +4,6 @@
 \alias{Expr_take_every}
 \alias{take_every}
 \title{Take every n'th element}
-\format{
-a method
-}
 \usage{
 Expr_take_every(n)
 }

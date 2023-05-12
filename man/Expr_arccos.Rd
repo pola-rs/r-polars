@@ -4,9 +4,6 @@
 \alias{Expr_arccos}
 \alias{arccos}
 \title{Arccos}
-\format{
-Method
-}
 \usage{
 Expr_arccos
 }

@@ -512,6 +512,7 @@ DataFrame_dtypes = method_as_property(function() {
 #' @description Get column types as strings.
 #'
 #' @docType NULL
+#' @format NULL
 #' @return string vector
 #' @keywords DataFrame
 #' @examples
@@ -572,6 +573,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #' @description Start a new lazy query from a DataFrame.
 #'
 #' @docType NULL
+#' @format NULL
 #' @return A LazyFrame
 #' @aliases lazy
 #' @keywords  DataFrame LazyFrame_new
@@ -606,6 +608,7 @@ DataFrame_clone = function() {
 #' @return list of series
 #' @keywords  DataFrame
 #' @docType NULL
+#' @format NULL
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()
@@ -1176,6 +1179,7 @@ DataFrame_slice = function(offset, length = NULL) {
 #' @keywords DataFrame
 #' @return DataFrame
 #' @docType NULL
+#' @format NULL
 #' @format function
 #' @examples
 #' x = mtcars
@@ -1189,6 +1193,7 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @keywords DataFrame
 #' @return Bytes
 #' @docType NULL
+#' @format NULL
 #' @format function
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()

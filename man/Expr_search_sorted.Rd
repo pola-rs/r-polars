@@ -4,9 +4,6 @@
 \alias{Expr_search_sorted}
 \alias{search_sorted}
 \title{Where to inject element(s) to maintain sorting}
-\format{
-a method
-}
 \usage{
 Expr_search_sorted(element)
 }

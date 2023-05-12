@@ -4,9 +4,6 @@
 \alias{Expr_is_infinite}
 \alias{is_infinite}
 \title{Are elements infinite}
-\format{
-a method
-}
 \usage{
 Expr_is_infinite
 }

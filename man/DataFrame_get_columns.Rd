@@ -3,9 +3,6 @@
 \name{DataFrame_get_columns}
 \alias{DataFrame_get_columns}
 \title{Get columns (as Series)}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 DataFrame_get_columns
 }

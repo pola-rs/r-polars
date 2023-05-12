@@ -4,9 +4,6 @@
 \alias{Expr_sinh}
 \alias{sinh}
 \title{Sinh}
-\format{
-Method
-}
 \usage{
 Expr_sinh
 }

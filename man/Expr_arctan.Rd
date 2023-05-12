@@ -4,9 +4,6 @@
 \alias{Expr_arctan}
 \alias{arctan}
 \title{Arctan}
-\format{
-Method
-}
 \usage{
 Expr_arctan
 }

@@ -3,9 +3,6 @@
 \name{LazyFrame_mean}
 \alias{LazyFrame_mean}
 \title{Mean}
-\format{
-function
-}
 \usage{
 LazyFrame_mean
 }

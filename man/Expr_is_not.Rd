@@ -4,9 +4,6 @@
 \alias{Expr_is_not}
 \alias{!.Expr}
 \title{Not !}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_is_not(other)
 

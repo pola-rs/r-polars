@@ -4,9 +4,6 @@
 \alias{Expr_cosh}
 \alias{cosh}
 \title{Cosh}
-\format{
-Method
-}
 \usage{
 Expr_cosh
 }

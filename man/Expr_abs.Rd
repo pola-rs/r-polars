@@ -3,9 +3,6 @@
 \name{Expr_abs}
 \alias{Expr_abs}
 \title{Abs}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_abs
 }

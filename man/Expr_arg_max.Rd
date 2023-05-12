@@ -3,9 +3,6 @@
 \name{Expr_arg_max}
 \alias{Expr_arg_max}
 \title{Index of min value}
-\format{
-a method
-}
 \usage{
 Expr_arg_max
 }

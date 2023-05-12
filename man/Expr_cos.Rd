@@ -4,9 +4,6 @@
 \alias{Expr_cos}
 \alias{cos}
 \title{Cos}
-\format{
-Method
-}
 \usage{
 Expr_cos
 }

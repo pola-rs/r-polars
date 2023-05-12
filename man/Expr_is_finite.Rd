@@ -4,9 +4,6 @@
 \alias{Expr_is_finite}
 \alias{is_finite}
 \title{Are elements finite}
-\format{
-a method
-}
 \usage{
 Expr_is_finite
 }

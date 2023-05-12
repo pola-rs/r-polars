@@ -4,9 +4,6 @@
 \alias{Expr_sign}
 \alias{sign}
 \title{Sign}
-\format{
-Method
-}
 \usage{
 Expr_sign
 }

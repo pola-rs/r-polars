@@ -5,9 +5,6 @@
 \alias{Expr_implode}
 \alias{list}
 \title{Wrap column in list}
-\format{
-a method
-}
 \usage{
 Expr_implode
 }

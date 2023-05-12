@@ -3,9 +3,6 @@
 \name{Expr_drop_nulls}
 \alias{Expr_drop_nulls}
 \title{Drop null(s)}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_drop_nulls
 }

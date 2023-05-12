@@ -4,9 +4,6 @@
 \alias{Expr_is_not_nan}
 \alias{is_not_nan}
 \title{Are elements not NaN's}
-\format{
-a method
-}
 \usage{
 Expr_is_not_nan
 }

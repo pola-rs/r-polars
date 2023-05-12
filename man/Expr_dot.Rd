@@ -4,9 +4,6 @@
 \alias{Expr_dot}
 \alias{dot}
 \title{Dot product}
-\format{
-a method
-}
 \usage{
 Expr_dot(other)
 }

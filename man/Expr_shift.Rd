@@ -4,9 +4,6 @@
 \alias{Expr_shift}
 \alias{shift}
 \title{Shift values}
-\format{
-a method
-}
 \usage{
 Expr_shift(periods)
 }

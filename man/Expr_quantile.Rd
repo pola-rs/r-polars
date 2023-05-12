@@ -4,9 +4,6 @@
 \alias{Expr_quantile}
 \alias{quantile}
 \title{Get quantile value.}
-\format{
-a method
-}
 \usage{
 Expr_quantile(quantile, interpolation = "nearest")
 }

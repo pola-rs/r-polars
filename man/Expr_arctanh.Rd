@@ -4,9 +4,6 @@
 \alias{Expr_arctanh}
 \alias{arctanh}
 \title{Arctanh}
-\format{
-Method
-}
 \usage{
 Expr_arctanh
 }

@@ -4,9 +4,6 @@
 \alias{Expr_approx_unique}
 \alias{approx_unique}
 \title{Approx count unique values}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_approx_unique
 }

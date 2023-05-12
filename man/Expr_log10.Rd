@@ -4,9 +4,6 @@
 \alias{Expr_log10}
 \alias{log10}
 \title{10-base log}
-\format{
-a method
-}
 \usage{
 Expr_log10
 }

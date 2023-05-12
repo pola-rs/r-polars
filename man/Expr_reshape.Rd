@@ -4,9 +4,6 @@
 \alias{Expr_reshape}
 \alias{reshape}
 \title{Reshape}
-\format{
-Method
-}
 \usage{
 Expr_reshape(dims)
 }

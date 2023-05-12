@@ -444,6 +444,7 @@ Series_apply   = function(
 #'
 #' @return numeric
 #' @docType NULL
+#' @format NULL
 #' @keywords Series
 #' @aliases Series_len
 #' @name Series_len
@@ -545,6 +546,7 @@ Series_append = function(other, immutable = TRUE) {
 #' @param name a String as the new name
 #' @return Series
 #' @docType NULL
+#' @format NULL
 #' @keywords Series
 #' @aliases alias
 #' @name Series_alias
@@ -593,6 +595,7 @@ Series_all = function() {
 #'
 #' @return bool
 #' @docType NULL
+#' @format NULL
 #' @keywords Series
 #' @aliases Series_arg_max
 #' @name Series_arg_max
@@ -604,6 +607,7 @@ Series_arg_max = "use_extendr_wrapper"
 #'
 #' @return bool
 #' @docType NULL
+#' @format NULL
 #' @keywords Series
 #' @name Series_arg_min
 #' @examples
@@ -618,6 +622,7 @@ Series_arg_min = "use_extendr_wrapper"
 #'
 #' @return Series
 #' @docType NULL
+#' @format NULL
 #' @aliases Series_clone
 #' @keywords  Series
 #' @examples

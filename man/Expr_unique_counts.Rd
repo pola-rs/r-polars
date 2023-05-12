@@ -4,9 +4,6 @@
 \alias{Expr_unique_counts}
 \alias{unique_counts}
 \title{Value counts}
-\format{
-Method
-}
 \usage{
 Expr_unique_counts
 }

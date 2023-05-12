@@ -3,9 +3,6 @@
 \name{Expr_ceil}
 \alias{Expr_ceil}
 \title{Ceiling}
-\format{
-a method
-}
 \usage{
 Expr_ceil
 }

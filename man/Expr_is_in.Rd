@@ -3,9 +3,6 @@
 \name{Expr_is_in}
 \alias{Expr_is_in}
 \title{is_in}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_is_in(other)
 }

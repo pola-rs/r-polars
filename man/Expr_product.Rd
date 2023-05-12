@@ -4,9 +4,6 @@
 \alias{Expr_product}
 \alias{Product}
 \title{Product}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_product
 }

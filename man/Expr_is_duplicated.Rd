@@ -4,9 +4,6 @@
 \alias{Expr_is_duplicated}
 \alias{is_duplicated}
 \title{Get mask of duplicated values.}
-\format{
-a method
-}
 \usage{
 Expr_is_duplicated
 }

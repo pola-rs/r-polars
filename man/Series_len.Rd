@@ -3,9 +3,6 @@
 \name{Series_len}
 \alias{Series_len}
 \title{Series_len}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Series_len
 }

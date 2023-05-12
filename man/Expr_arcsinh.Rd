@@ -4,9 +4,6 @@
 \alias{Expr_arcsinh}
 \alias{arcsinh}
 \title{Arcsinh}
-\format{
-Method
-}
 \usage{
 Expr_arcsinh
 }

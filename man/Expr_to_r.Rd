@@ -4,9 +4,6 @@
 \alias{Expr_to_r}
 \alias{pl_expr_to_r}
 \title{to_r: for debuging an expression}
-\format{
-Method
-}
 \usage{
 Expr_to_r(df = NULL, i = 0)
 }

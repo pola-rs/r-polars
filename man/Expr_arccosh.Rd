@@ -4,9 +4,6 @@
 \alias{Expr_arccosh}
 \alias{arccosh}
 \title{Arccosh}
-\format{
-Method
-}
 \usage{
 Expr_arccosh
 }

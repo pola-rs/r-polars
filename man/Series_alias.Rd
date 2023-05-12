@@ -4,9 +4,6 @@
 \alias{Series_alias}
 \alias{alias}
 \title{Alias}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Series_alias(name)
 }

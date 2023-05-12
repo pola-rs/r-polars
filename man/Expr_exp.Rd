@@ -4,9 +4,6 @@
 \alias{Expr_exp}
 \alias{exp}
 \title{Compute the exponential, element-wise.}
-\format{
-a method
-}
 \usage{
 Expr_exp
 }

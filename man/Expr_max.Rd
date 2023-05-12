@@ -3,9 +3,6 @@
 \name{Expr_max}
 \alias{Expr_max}
 \title{max}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_max
 }

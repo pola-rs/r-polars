@@ -3,9 +3,6 @@
 \name{Expr_first}
 \alias{Expr_first}
 \title{First}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_first
 }

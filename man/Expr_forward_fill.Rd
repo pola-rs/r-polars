@@ -4,9 +4,6 @@
 \alias{Expr_forward_fill}
 \alias{forward_fill}
 \title{Fill Nulls Forward}
-\format{
-a method
-}
 \usage{
 Expr_forward_fill(limit = NULL)
 }

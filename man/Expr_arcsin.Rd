@@ -4,9 +4,6 @@
 \alias{Expr_arcsin}
 \alias{arcsin}
 \title{Arcsin}
-\format{
-Method
-}
 \usage{
 Expr_arcsin
 }

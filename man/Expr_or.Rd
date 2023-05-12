@@ -3,9 +3,6 @@
 \name{Expr_or}
 \alias{Expr_or}
 \title{Or}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_or(other)
 }

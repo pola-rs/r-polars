@@ -3,9 +3,6 @@
 \name{Expr_std}
 \alias{Expr_std}
 \title{Get Standard Deviation}
-\format{
-a method
-}
 \usage{
 Expr_std(ddof = 1)
 }

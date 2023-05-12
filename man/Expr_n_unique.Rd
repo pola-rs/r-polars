@@ -4,9 +4,6 @@
 \alias{Expr_n_unique}
 \alias{n_unique}
 \title{Count number of unique values}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_n_unique
 }

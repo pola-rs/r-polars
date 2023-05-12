@@ -4,9 +4,6 @@
 \alias{Expr_arg_unique}
 \alias{arg_unique}
 \title{Index of First Unique Value.}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_arg_unique
 }

@@ -4,9 +4,6 @@
 \alias{Expr_tanh}
 \alias{tanh}
 \title{Tanh}
-\format{
-Method
-}
 \usage{
 Expr_tanh
 }

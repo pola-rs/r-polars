@@ -4,9 +4,6 @@
 \alias{Expr_extend_constant}
 \alias{extend_constant}
 \title{Extend_constant}
-\format{
-Method
-}
 \usage{
 Expr_extend_constant(value, n)
 }

@@ -4,9 +4,6 @@
 \alias{Expr_sort}
 \alias{sort}
 \title{Expr_sort}
-\format{
-a method
-}
 \usage{
 Expr_sort(reverse = FALSE, nulls_last = FALSE)
 }

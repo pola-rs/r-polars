@@ -3,9 +3,6 @@
 \name{Expr_agg_groups}
 \alias{Expr_agg_groups}
 \title{aggregate groups}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_agg_groups
 }
