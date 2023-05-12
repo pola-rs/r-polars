@@ -443,6 +443,7 @@ Series_apply   = function(
 #' @description Length of this Series.
 #'
 #' @return numeric
+#' @docType NULL
 #' @keywords Series
 #' @aliases Series_len
 #' @name Series_len
@@ -543,6 +544,7 @@ Series_append = function(other, immutable = TRUE) {
 #' @description Change name of Series
 #' @param name a String as the new name
 #' @return Series
+#' @docType NULL
 #' @keywords Series
 #' @aliases alias
 #' @name Series_alias
@@ -590,6 +592,7 @@ Series_all = function() {
 #' idx to max value
 #'
 #' @return bool
+#' @docType NULL
 #' @keywords Series
 #' @aliases Series_arg_max
 #' @name Series_arg_max
@@ -600,6 +603,7 @@ Series_arg_max = "use_extendr_wrapper"
 #' idx to min value
 #'
 #' @return bool
+#' @docType NULL
 #' @keywords Series
 #' @name Series_arg_min
 #' @examples
@@ -613,6 +617,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' Any modification of a Series should lead to a clone anyways.
 #'
 #' @return Series
+#' @docType NULL
 #' @aliases Series_clone
 #' @keywords  Series
 #' @examples
