@@ -93,6 +93,11 @@ impl Series {
         RPolarsDataType(self.0.dtype().clone())
     }
 
+    fn n_unique(&self) -> Result<usize, String> {
+        let n = self.0.n_unique().map_err(|err| err.to_string())?;
+        Ok(n)
+    }
+
     //wait inner_dtype until list supported
 
     pub fn name(&self) -> &str {

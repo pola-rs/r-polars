@@ -605,6 +605,7 @@ DataFrame_clone = function() {
 #'
 #' @return list of series
 #' @keywords  DataFrame
+#' @docType NULL
 #' @examples
 #' df = pl$DataFrame(iris[1,])
 #' df$get_columns()

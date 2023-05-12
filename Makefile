@@ -20,7 +20,7 @@ requirements: requirements-r requirements-py requirements-rs ## Install all proj
 .PHONY: requirements-r
 requirements-r:
 	Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$$pkgType, R.Version()$$os, R.Version()$$arch))'
-	Rscript -e 'pak::repo_add(extendr = "https://extendr.r-universe.dev"); pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"))'
+	Rscript -e 'pak::repo_add(extendr = "https://extendr.r-universe.dev"); pak::local_install_deps(dependencies = c("all", "Config/Needs/dev", "Config/Needs/website"), upgrade = FALSE)'
 
 .venv:
 	python3 -m venv $(VENV)
@@ -37,7 +37,8 @@ requirements-rs:
 
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
-	Rscript -e 'rextendr::document()'
+	Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
+
 
 .PHONY: all
 all: build test README.md ## build -> test -> Update README.md

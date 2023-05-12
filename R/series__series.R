@@ -333,12 +333,12 @@ Series_shape = method_as_property(function() {
 #' #make nested Series_list of Series_list of Series_Int32
 #' #using Expr syntax because currently more complete translated
 #' series_list = pl$DataFrame(list(a=c(1:5,NA_integer_)))$select(
-#'   pl$col("a")$list()$list()$append(
+#'   pl$col("a")$implode()$implode()$append(
 #'     (
-#'       pl$col("a")$head(2)$list()$append(
-#'         pl$col("a")$tail(1)$list()
+#'       pl$col("a")$head(2)$implode()$append(
+#'         pl$col("a")$tail(1)$implode()
 #'       )
-#'     )$list()
+#'     )$implode()
 #'   )
 #' )$get_column("a") # get series from DataFrame
 #'
@@ -443,6 +443,7 @@ Series_apply   = function(
 #' @description Length of this Series.
 #'
 #' @return numeric
+#' @docType NULL
 #' @keywords Series
 #' @aliases Series_len
 #' @name Series_len
@@ -543,6 +544,7 @@ Series_append = function(other, immutable = TRUE) {
 #' @description Change name of Series
 #' @param name a String as the new name
 #' @return Series
+#' @docType NULL
 #' @keywords Series
 #' @aliases alias
 #' @name Series_alias
@@ -590,6 +592,7 @@ Series_all = function() {
 #' idx to max value
 #'
 #' @return bool
+#' @docType NULL
 #' @keywords Series
 #' @aliases Series_arg_max
 #' @name Series_arg_max
@@ -600,6 +603,7 @@ Series_arg_max = "use_extendr_wrapper"
 #' idx to min value
 #'
 #' @return bool
+#' @docType NULL
 #' @keywords Series
 #' @name Series_arg_min
 #' @examples
@@ -613,6 +617,7 @@ Series_arg_min = "use_extendr_wrapper"
 #' Any modification of a Series should lead to a clone anyways.
 #'
 #' @return Series
+#' @docType NULL
 #' @aliases Series_clone
 #' @keywords  Series
 #' @examples
@@ -1045,4 +1050,14 @@ Series_expr = method_as_property(function() {
 #' )
 Series_to_lit = function() {
   pl$lit(self)
+}
+
+#' Count unique values in Series
+#' @description Return count of unique values in Series
+#' @keywords Series
+#' @return Expr
+#' @examples
+#' pl$Series(1:4)$n_unique()
+Series_n_unique = function() {
+  unwrap(.pr$Series$n_unique(self), "in $n_unique():")
 }
