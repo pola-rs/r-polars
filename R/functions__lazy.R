@@ -258,7 +258,7 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 #' @param column if dtype is:
 #' - Series: Take head value in `Series`
 #' - str or int: syntactic sugar for `pl.col(..).head()`
-#' @param n number of rows to take, NULL
+#' @param n Number of rows to take
 #' @keywords Expr_new
 #' @return Expr or head value of input Series
 #' @examples
@@ -267,10 +267,12 @@ pl$last = function(column = NULL) {#-> Expr | Any:
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
-#' df$select(pl$head("a"))
+#'
+#' expr_head = pl$head("a")
+#' print(expr_head)
+#' df$select(expr_head)
 #'
 #' df$select(pl$head("a",2))
-#'
 #' pl$head(df$get_column("a"),2)
 pl$head = function(column, n = 10) {#-> Expr | Any:
   pcase(
@@ -291,7 +293,7 @@ pl$head = function(column, n = 10) {#-> Expr | Any:
 #' @param column if dtype is:
 #' - Series: Take tail value in `Series`
 #' - str or in: syntactic sugar for `pl.col(..).tail()`
-#' @param n number of rows to take, NULL
+#' @param n Number of rows to take
 #' @return Expr or tail value of input Series
 #' @examples
 #' df = pl$DataFrame(
@@ -299,7 +301,10 @@ pl$head = function(column, n = 10) {#-> Expr | Any:
 #'   b = c(4, 5, 2),
 #'   c = c("foo", "bar", "foo")
 #' )
-#' df$select(pl$tail("a"))
+#'
+#' expr_tail = pl$head("a")
+#' print(expr_tail)
+#' df$select(expr_tail)
 #'
 #' df$select(pl$tail("a",2))
 #'

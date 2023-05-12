@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_n_unique}
 \alias{pl_n_unique}
-\title{count n unique values}
+\title{Count \code{n} unique values}
 \arguments{
 \item{column}{if dtype is:
 \itemize{

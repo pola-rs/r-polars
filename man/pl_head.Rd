@@ -7,10 +7,10 @@
 \item{column}{if dtype is:
 \itemize{
 \item Series: Take head value in \code{Series}
-\item str or in: syntactic sugar for \verb{pl.col(..).head()}
+\item str or int: syntactic sugar for \verb{pl.col(..).head()}
 }}
 
-\item{n}{number of rows to take, NULL}
+\item{n}{Number of rows to take}
 }
 \value{
 Expr or head value of input Series
@@ -24,10 +24,12 @@ df = pl$DataFrame(
   b = c(4, 5, 2),
   c = c("foo", "bar", "foo")
 )
-df$select(pl$head("a"))
+
+expr_head = pl$head("a")
+print(expr_head)
+df$select(expr_head)
 
 df$select(pl$head("a",2))
-
 pl$head(df$get_column("a"),2)
 }
 \keyword{Expr_new}

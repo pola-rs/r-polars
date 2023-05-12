@@ -6,11 +6,11 @@
 \arguments{
 \item{column}{if dtype is:
 \itemize{
-\item Series: Take head value in \code{Series}
-\item str or in: syntactic sugar for \verb{pl.col(..).head()}
+\item Series: Take tail value in \code{Series}
+\item str or in: syntactic sugar for \verb{pl.col(..).tail()}
 }}
 
-\item{n}{number of rows to take, NULL}
+\item{n}{Number of rows to take}
 }
 \value{
 Expr or tail value of input Series
@@ -24,7 +24,10 @@ df = pl$DataFrame(
   b = c(4, 5, 2),
   c = c("foo", "bar", "foo")
 )
-df$select(pl$tail("a"))
+
+expr_tail = pl$head("a")
+print(expr_tail)
+df$select(expr_tail)
 
 df$select(pl$tail("a",2))
 

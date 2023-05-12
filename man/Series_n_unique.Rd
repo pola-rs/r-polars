@@ -2,7 +2,7 @@
 % Please edit documentation in R/series__series.R
 \name{Series_n_unique}
 \alias{Series_n_unique}
-\title{Series n_unique}
+\title{Count unique values in Series}
 \usage{
 Series_n_unique()
 }
@@ -10,7 +10,7 @@ Series_n_unique()
 Expr
 }
 \description{
-return count of unique values in Series
+Return count of unique values in Series
 }
 \examples{
 pl$Series(1:4)$n_unique()

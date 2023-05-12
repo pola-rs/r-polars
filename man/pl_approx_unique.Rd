@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_approx_unique}
 \alias{pl_approx_unique}
-\title{Approx count unique values.}
+\title{Approximate count of unique values.}
 \arguments{
 \item{column}{if dtype is:
 \itemize{
