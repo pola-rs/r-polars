@@ -215,7 +215,10 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
-  expect_error(pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect()$height, pattern = "ColumnNotFound")
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect()$height,
+    "ColumnNotFound"
+  )
 })
 
 test_that("fill_nulls", {

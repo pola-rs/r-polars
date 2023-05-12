@@ -71,7 +71,7 @@ pl$col = function(name="", ...) {
 
   #preconvert Series into char name(s)
   if(inherits(name,"Series")) name = name$to_vector()
-  
+
   name_add = list(...)
   if (length(name_add) > 0) {
     if (is_string(name) && all(sapply(name_add, is_string))) {
@@ -146,6 +146,27 @@ pl$count = function(column = NULL)  { # -> Expr | int:
   unwrap(result(pl$col(column)$count()), "in pl$count():")
 }
 
+#' Aggregate all column values into a list.
+#' @name pl_implode
+#' @param name Name of the column(s) that should be imploded, passed to pl$col()
+#' @keywords Expr
+#' @return Expr
+#' @examples
+#' pl$DataFrame(iris)$select(pl$implode("Species"))
+pl$implode = function(name) { # -> Expr
+  result(pl$col(name)) |>
+    map(.pr$Expr$implode) |>
+    unwrap("in pl$implode():")
+}
+
+##TODO REMOVE AT A BREAKING CHANGE
+pl$list = function(name) {
+  if ( is.null(runtime_state$warned_deprecate_list)) {
+    runtime_state$warned_deprecate_list = TRUE
+    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
+  }
+  pl$implode(name)
+}
 
 #' pl$first
 #' @name pl_first
@@ -231,6 +252,75 @@ pl$last = function(column = NULL) {#-> Expr | Any:
     unwrap("in pl$last():")
 }
 
+
+#' Get the first `n` rows.
+#' @name pl_head
+#' @param column if dtype is:
+#' - Series: Take head value in `Series`
+#' - str or int: syntactic sugar for `pl.col(..).head()`
+#' @param n Number of rows to take
+#' @keywords Expr_new
+#' @return Expr or head value of input Series
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#'
+#' expr_head = pl$head("a")
+#' print(expr_head)
+#' df$select(expr_head)
+#'
+#' df$select(pl$head("a",2))
+#' pl$head(df$get_column("a"),2)
+pl$head = function(column, n = 10) {#-> Expr | Any:
+  pcase(
+    inherits(column,"Series"), result(column$expr$head(n)),
+    is.character(column), result(pl$col(column)$head(n)),
+    inherits(column,"Expr"), result(column$head(n)),
+    or_else = Err(paste0(
+      "param [column] type is neither Series, charvec nor Expr, but ",
+      str_string(column)
+    ))
+  ) |>
+    unwrap("in pl$head():")
+}
+
+
+#' Get the last `n` rows.
+#' @name pl_tail
+#' @param column if dtype is:
+#' - Series: Take tail value in `Series`
+#' - str or in: syntactic sugar for `pl.col(..).tail()`
+#' @param n Number of rows to take
+#' @return Expr or tail value of input Series
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 8, 3),
+#'   b = c(4, 5, 2),
+#'   c = c("foo", "bar", "foo")
+#' )
+#'
+#' expr_tail = pl$head("a")
+#' print(expr_tail)
+#' df$select(expr_tail)
+#'
+#' df$select(pl$tail("a",2))
+#'
+#' pl$tail(df$get_column("a"),2)
+pl$tail = function(column, n = 10) {#-> Expr | Any:
+  pcase(
+    inherits(column,"Series"), result(column$expr$tail(n)),
+    is.character(column), result(pl$col(column)$tail(n)),
+    inherits(column,"Expr"), result(column$tail(n)),
+    or_else = Err(paste0(
+      "param [column] type is neither Series, charvec nor Expr, but ",
+      str_string(column)
+    ))
+  ) |>
+    unwrap("in pl$tail():")
+}
 
 #' pl$mean
 #' @name pl_mean
@@ -321,10 +411,78 @@ pl$median = function(...) { #-> Expr | Any:
   unwrap("in pl$median():")
 }
 
+#' Count `n` unique values
+#' @name pl_n_unique
+#' @description Depending on the input type this function does different things:
+#' @param column if dtype is:
+#' - Series: call method n_unique() to return value of unique values.
+#' - String: syntactic sugar for `pl$col(column)$n_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$n_unique()`, returns Expr
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr or value
+#'
+#' @examples
+#' #column as Series
+#' pl$n_unique(pl$Series(1:4)) == 4
+#'
+#' #column as String
+#' expr = pl$n_unique("bob")
+#' print(expr)
+#' pl$DataFrame(bob = 1:4)$select(expr)
+#'
+#' #colum as Expr
+#' pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
+pl$n_unique = function(column) { #-> int or Expr
+  pcase(
+    inherits(column, c("Series","Expr")), result(column$n_unique()),
+    is_string(column), result(pl$col(column)$n_unique()),
+    or_else = Err(paste("arg [column] is neither Series, Expr or String, but", str_string(column)))
+  ) |>
+    unwrap("in pl$n_unique():")
+}
 
+#' Approximate count of unique values.
+#' @name pl_approx_unique
+#' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
+#' @param column if dtype is:
+#' - String: syntactic sugar for `pl$col(column)$approx_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$approx_unique()`, returns Expr
+#'
+#' @keywords Expr_new
+#'
+#' @return Expr
+#'
+#' @details The approx_unique is likely only warranted for large columns. See example.
+#' It appears approx_unique scales better than n_unique, such that the relative performance
+#' difference increases with column size.
+#'
+#' @examples
+#' #column as Series
+#' pl$approx_unique(pl$lit(1:4)) == 4
+#'
+#' #column as String
+#' expr = pl$approx_unique("bob")
+#' print(expr)
+#' pl$DataFrame(bob = 1:80)$select(expr)
+#'
+#' #colum as Expr
+#' pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
+#'
+#' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
+#' lit_series = pl$lit(c(1:1E6,1E6:1,1:1E6))
+#' system.time(pl$approx_unique(lit_series)$lit_to_s()$print())
+#' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
+pl$approx_unique = function(column) { #-> int or Expr
+  pcase(
+    inherits(column, "Expr"), result(column$approx_unique()),
+    is_string(column), result(pl$col(column)$approx_unique()),
+    or_else = Err(paste("arg [column] is neither Expr or String, but", str_string(column)))
+  ) |>
+    unwrap("in pl$approx_unique():")
+}
 
-#TODO contribute polars, python pl.sum(list) states uses lambda, however it is folds expressions in rust
-#docs should reflect that
 
 #' sum across expressions / literals / Series
 #' @description  syntactic sugar for starting a expression with sum

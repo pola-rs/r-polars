@@ -427,7 +427,7 @@ Expr$entropy <- function(base, normalize) .Call(wrap__Expr__entropy, self, base,
 
 Expr$cumulative_eval <- function(expr, min_periods, parallel) .Call(wrap__Expr__cumulative_eval, self, expr, min_periods, parallel)
 
-Expr$list <- function() .Call(wrap__Expr__list, self)
+Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
@@ -640,6 +640,8 @@ Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
 
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
+
+Expr$approx_unique <- function() .Call(wrap__Expr__approx_unique, self)
 
 Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
@@ -924,6 +926,8 @@ Series$to_r <- function() .Call(wrap__Series__to_r, self)
 Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
 
 Series$dtype <- function() .Call(wrap__Series__dtype, self)
+
+Series$n_unique <- function() .Call(wrap__Series__n_unique, self)
 
 Series$name <- function() .Call(wrap__Series__name, self)
 
