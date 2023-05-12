@@ -6,6 +6,7 @@
 \alias{no_messages}
 \alias{do_not_repeat_call}
 \alias{default_maintain_order}
+\alias{debug_polars}
 \alias{get_polars_options}
 \alias{polars_options}
 \alias{pl_options}
@@ -35,10 +36,14 @@ turn of messages}
 
 \item{default_maintain_orderr}{bool, default = FALSE}
 
+\item{debug_polars}{bool, default = FALSE,
+turn of messages}
+
 \item{...}{any options to modify}
 
 \item{return_replaced_options}{return previous state of modified options
-Convenient for temporarily swapping of options during testing.}
+Convenient for temporarily swapping of options during testing. The immediate
+return value is invisible.}
 }
 \value{
 current settings as list
@@ -57,6 +62,8 @@ do not print the call causing the error in error messages
 
 sets maintain_order = TRUE as default
 implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby.
+
+prints any call to public or private polars method
 
 modifing list takes no effect, pass it to pl$set_polars_options
 get/set/resest interact with internal env \code{polars:::polars_optenv}

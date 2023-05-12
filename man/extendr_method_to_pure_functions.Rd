@@ -4,10 +4,13 @@
 \alias{extendr_method_to_pure_functions}
 \title{extendr methods into pure functions}
 \usage{
-extendr_method_to_pure_functions(env)
+extendr_method_to_pure_functions(env, class_name = NULL)
 }
 \arguments{
 \item{env}{environment object output from extendr-wrappers.R classes}
+
+\item{class_name}{optional class string, only used for debug printing
+Default NULL, will infer class_name automatically}
 }
 \value{
 env of pure function calls to rust

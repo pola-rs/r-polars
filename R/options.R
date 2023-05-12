@@ -87,6 +87,18 @@ polars_optreq$default_maintain_order = list( # set requirement functions of defa
   }
 )
 
+#' @rdname polars_options
+#' @name debug_polars
+#' @details prints any call to public or private polars method
+#' @param debug_polars bool, default = FALSE,
+#' turn of messages
+polars_optenv$debug_polars = FALSE #set default value
+polars_optreq$debug_polars = list( #set requirement functions of default value
+  is_bool = function (x) {
+    is.logical(x) && length(x)==1 && !is.na(x)
+  }
+)
+
 
 ## END OF DEFINED OPTIONS
 
@@ -170,7 +182,8 @@ class(pl$options) = c("polars_option_list", "list")
 #' @param ... any options to modify
 #'
 #' @param return_replaced_options return previous state of modified options
-#' Convenient for temporarily swapping of options during testing.
+#' Convenient for temporarily swapping of options during testing. The immediate
+#' return value is invisible.
 #'
 #' @rdname polars_options
 #' @name set_polars_options
@@ -225,8 +238,8 @@ pl$set_polars_options = function(
     polars_optenv[[i]] = opts[[i]]
   }
 
-  if (return_replaced_options) {
-    return(replaced_opts_list)
+  if(return_replaced_options) {
+    return(invisible(replaced_opts_list))
   }
 
   # return current option set invisible
@@ -269,3 +282,14 @@ pl$get_polars_opt_requirements = function() {
 #' @description This environment is used internally for the package to remember
 #' what has been going on. Currently only used to throw one-time warnings()
 runtime_state = new.env(parent = emptyenv())
+
+
+subtimer_ms = function(cap_name = NULL,cap=9999) {
+  last = runtime_state$last_subtime %||% 0
+  this = as.numeric(Sys.time())
+  runtime_state$last_subtime = this
+  time = min((this - last)*1000, cap)
+  if(!is.null(cap_name) && time==cap) cap_name else time
+}
+
+

@@ -338,3 +338,47 @@ unlink("check",recursive = TRUE, force =TRUE)
   with your own absolute path to your local clone!
 - `filter_rcmdcheck.R` removes known warnings from final check report.
 - `unlink("check")` cleans up.
+
+### Misc
+
+If you experience unexpected sluggish performance, when using polars in
+a given IDE, we’d like to hear about it. You can try to activate
+`pl$set_polars_options(debug_polars = TRUE)` to profile what methods are
+being touched (not necessarily run) and how fast. Below is an example of
+good behavior.
+
+``` r
+#run e.g. an eager query after setting debug_polars = TRUE
+pl$DataFrame(iris)$select("Species")
+
+[TIME? ms]
+pl$DataFrame() -> [0.73ms]
+   .pr$DataFrame$new_with_capacity() -> [0.56ms]
+   .pr$DataFrame$set_column_from_robj() -> [11.04ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.3309ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.283ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.2761ms]
+   .pr$DataFrame$set_column_from_robj() -> [12.54ms]
+DataFrame$select() -> [0.3681ms]
+ProtoExprArray$push_back_rexpr() -> [0.21ms]
+pl$col() -> [0.1669ms]
+   .pr$Expr$col() -> [0.212ms]
+   .pr$DataFrame$select() -> [1.229ms]
+DataFrame$print() -> [0.1781ms]
+   .pr$DataFrame$print() -> shape: (150, 1)
+┌───────────┐
+│ Species   │
+│ ---       │
+│ cat       │
+╞═══════════╡
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ …         │
+│ virginica │
+│ virginica │
+│ virginica │
+│ virginica │
+└───────────┘
+```

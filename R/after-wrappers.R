@@ -5,6 +5,8 @@ build_debug_print = FALSE
 #' extendr methods into pure functions
 #'
 #' @param env environment object output from extendr-wrappers.R classes
+#' @param class_name optional class string, only used for debug printing
+#' Default NULL, will infer class_name automatically
 #' @keywords internal
 #' @description self is a global of extendr wrapper methods
 #' this function copies the function into a new environment and
@@ -12,14 +14,33 @@ build_debug_print = FALSE
 #'
 #' @return env of pure function calls to rust
 #'
-extendr_method_to_pure_functions = function(env) {
-  as.environment(lapply(env,function(f) {
+extendr_method_to_pure_functions = function(env,class_name=NULL) {
+  if(is.null(class_name)) class_name = as.character(sys.call()[2])
+  e = as.environment(lapply(env,function(f) {
     if(!is.function(f)) return(f)
     if("self" %in% codetools::findGlobals(f)) {
       formals(f) <- c(alist(self=),formals(f))
     }
     f
   }))
+  class(e) = c("private_polars_env", paste0("pr_",class_name) ,"environment")
+  e
+}
+
+
+#' get private method from Class
+#' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
+#' @export
+#' @keywords internal
+"$.private_polars_env" = function(self, name) {
+  #print called private class in debug mode
+  if(polars_optenv$debug_polars) {
+    cat(
+      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\n   .pr$",
+      substr(class(self)[2],4,99), "$",name,"() -> ", sep= ""
+    )
+  }
+  self[[name]]
 }
 
 
@@ -157,6 +178,26 @@ method_as_property = function(f, setter=FALSE) {
 #'   "polars public class methods, access via object$method()"
 #' )
 pl = new.env(parent=emptyenv())
+
+class(pl) = c("pl_polars_env", "environment")
+
+
+
+#' get public function from pl namespace/env
+#' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
+#' @export
+#' @keywords internal
+"$.pl_polars_env" = function(self, name) {
+  #print called private class in debug mode
+  if(polars_optenv$debug_polars) {
+    cat(
+      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\npl$",name,"() -> ", sep= ""
+    )
+  }
+  self[[name]]
+}
+
+
 
 #remap
 DataType = clone_env_one_level_deep(RPolarsDataType)
