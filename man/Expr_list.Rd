@@ -3,24 +3,30 @@
 \docType{data}
 \name{Expr_list}
 \alias{Expr_list}
+\alias{Expr_implode}
 \alias{list}
 \title{Wrap column in list}
 \format{
 a method
 }
 \usage{
-Expr_list
+Expr_implode
 }
 \value{
 Expr
 }
 \description{
-Aggregate to list.
+Aggregate values into a list.
 }
 \details{
-use to_struct to wrap a DataFrame
+use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
+as list() .
 }
 \examples{
-pl$select(pl$lit(1:4)$list(), pl$lit(c("a")))
+df = pl$DataFrame(
+  a = 1:3,
+  b = 4:6
+)
+df$select(pl$all()$implode())
 }
 \keyword{Expr}

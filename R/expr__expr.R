@@ -1942,7 +1942,16 @@ Expr_product = "use_extendr_wrapper"
 #' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
 Expr_n_unique = "use_extendr_wrapper"
 
-
+#'  Approx count unique values
+#' @keywords Expr
+#' @description
+#' This is done using the HyperLogLog++ algorithm for cardinality estimation.
+#' @aliases approx_unique
+#' @return Expr
+#' @docType NULL
+#' @examples
+#' pl$DataFrame(iris)$select(pl$col("Species")$approx_unique())
+Expr_approx_unique = "use_extendr_wrapper"
 
 #' Count `Nulls`
 #' @keywords Expr
@@ -2232,9 +2241,8 @@ Expr_take_every = function(n) {
 #' @examples
 #' #get 3 first elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
-Expr_head = function(n=10) {
-  if(!is.numeric(n)) stopf("n must be numeric")
-  unwrap(.pr$Expr$head(self,n=n))
+Expr_head = function(n = 10) {
+  unwrap(.pr$Expr$head(self, n = n), "in $head():")
 }
 
 #' Tail
@@ -2248,9 +2256,8 @@ Expr_head = function(n=10) {
 #' @examples
 #' #get 3 last elements
 #' pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
-Expr_tail = function(n=10) {
-  if(!is.numeric(n)) stopf("n must be numeric")
-  unwrap(.pr$Expr$tail(self,n=n))
+Expr_tail = function(n = 10) {
+  unwrap(.pr$Expr$tail(self, n = n), "in $tail():")
 }
 
 
@@ -3952,16 +3959,30 @@ Expr_set_sorted = function(reverse = FALSE) {
 
 
 #' Wrap column in list
-#' @description  Aggregate to list.
+#' @description  Aggregate values into a list.
 #' @keywords Expr
 #' @return Expr
 #' @aliases list
 #' @name Expr_list
-#' @details use to_struct to wrap a DataFrame
+#' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
+#' as list() .
 #' @format a method
 #' @examples
-#' pl$select(pl$lit(1:4)$list(), pl$lit(c("a")))
-Expr_list = "use_extendr_wrapper"
+#' df = pl$DataFrame(
+#'   a = 1:3,
+#'   b = 4:6
+#' )
+#' df$select(pl$all()$implode())
+Expr_implode = "use_extendr_wrapper"
+
+##TODO REMOVE AT A BREAKING CHANGE
+Expr_list = function() {
+  if ( is.null(runtime_state$warned_deprecate_list)) {
+    runtime_state$warned_deprecate_list = TRUE
+    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
+  }
+  self$implode()
+}
 
 
 
