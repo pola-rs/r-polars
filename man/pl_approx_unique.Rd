@@ -16,6 +16,11 @@ Expr
 \description{
 This is done using the HyperLogLog++ algorithm for cardinality estimation.
 }
+\details{
+The approx_unique is likely only warranted for large columns. See example.
+It appears approx_unique scales better than n_unique, such that the relative performance
+difference increases with column size.
+}
 \examples{
 #column as Series
 pl$approx_unique(pl$lit(1:4)) == 4
@@ -27,5 +32,10 @@ pl$DataFrame(bob = 1:80)$select(expr)
 
 #colum as Expr
 pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
+
+# comparison with n_unique for 2 million integers. (try change example to 20 million ints)
+lit_series = pl$lit(c(1:1E6,1E6:1,1:1E6))
+system.time(pl$approx_unique(lit_series)$lit_to_s()$print())
+system.time(pl$n_unique(lit_series)$lit_to_s()$print())
 }
 \keyword{Expr_new}
