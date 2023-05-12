@@ -3,9 +3,6 @@
 \name{Expr_any}
 \alias{Expr_any}
 \title{Any (is true)}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_any
 }

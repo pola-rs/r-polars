@@ -4,9 +4,6 @@
 \alias{Expr_shrink_dtype}
 \alias{shrink_dtype}
 \title{Shrink numeric columns to the minimal required datatype.}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_shrink_dtype
 }

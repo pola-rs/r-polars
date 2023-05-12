@@ -3,9 +3,6 @@
 \name{LazyFrame_max}
 \alias{LazyFrame_max}
 \title{Max}
-\format{
-function
-}
 \usage{
 LazyFrame_max
 }

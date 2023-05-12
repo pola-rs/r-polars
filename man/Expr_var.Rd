@@ -3,9 +3,6 @@
 \name{Expr_var}
 \alias{Expr_var}
 \title{Get Variance}
-\format{
-a method
-}
 \usage{
 Expr_var(ddof = 1)
 }

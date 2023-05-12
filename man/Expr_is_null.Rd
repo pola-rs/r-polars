@@ -3,9 +3,6 @@
 \name{Expr_is_null}
 \alias{Expr_is_null}
 \title{is_null}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_is_null
 }

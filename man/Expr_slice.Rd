@@ -4,9 +4,6 @@
 \alias{Expr_slice}
 \alias{slice}
 \title{Get a slice of this expression.}
-\format{
-a method
-}
 \usage{
 Expr_slice(offset, length = NULL)
 }

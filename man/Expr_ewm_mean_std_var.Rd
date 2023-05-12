@@ -9,9 +9,6 @@
 \alias{Expr_ewm_var}
 \alias{ewm_var}
 \title{Exponentially-weighted moving average/std/var.}
-\format{
-Method
-}
 \usage{
 Expr_ewm_mean(
   com = NULL,

@@ -3,9 +3,6 @@
 \name{Series_clone}
 \alias{Series_clone}
 \title{Clone a Series}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Series_clone
 }

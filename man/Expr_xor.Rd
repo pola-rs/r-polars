@@ -3,9 +3,6 @@
 \name{Expr_xor}
 \alias{Expr_xor}
 \title{Xor}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_xor(other)
 }

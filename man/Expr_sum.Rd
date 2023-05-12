@@ -3,9 +3,6 @@
 \name{Expr_sum}
 \alias{Expr_sum}
 \title{sum}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_sum
 }

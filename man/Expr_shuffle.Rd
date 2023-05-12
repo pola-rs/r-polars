@@ -4,9 +4,6 @@
 \alias{Expr_shuffle}
 \alias{shuffle}
 \title{Shuffle}
-\format{
-Method
-}
 \usage{
 Expr_shuffle(seed = NULL)
 }

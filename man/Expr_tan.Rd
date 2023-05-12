@@ -4,9 +4,6 @@
 \alias{Expr_tan}
 \alias{Tan}
 \title{Tan}
-\format{
-Method
-}
 \usage{
 Expr_tan
 }

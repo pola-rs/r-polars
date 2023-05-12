@@ -4,9 +4,6 @@
 \alias{Expr_null_count}
 \alias{null_count}
 \title{Count \code{Nulls}}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_null_count
 }

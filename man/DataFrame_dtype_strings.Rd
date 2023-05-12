@@ -3,9 +3,6 @@
 \name{DataFrame_dtype_strings}
 \alias{DataFrame_dtype_strings}
 \title{DataFrame dtype strings}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 DataFrame_dtype_strings
 }

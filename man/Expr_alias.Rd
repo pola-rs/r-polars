@@ -3,9 +3,6 @@
 \name{Expr_alias}
 \alias{Expr_alias}
 \title{Rename Expr output}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_alias(name)
 }

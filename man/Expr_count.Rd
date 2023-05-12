@@ -4,11 +4,6 @@
 \alias{Expr_count}
 \alias{Expr_len}
 \title{Count values (len is a alias)}
-\format{
-An object of class \code{character} of length 1.
-
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_count
 

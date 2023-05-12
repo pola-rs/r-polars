@@ -3,9 +3,6 @@
 \name{Expr_is_first}
 \alias{Expr_is_first}
 \title{Get a mask of the first unique value.}
-\format{
-a method
-}
 \usage{
 Expr_is_first
 }

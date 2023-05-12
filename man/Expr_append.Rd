@@ -3,9 +3,6 @@
 \name{Expr_append}
 \alias{Expr_append}
 \title{Append expressions}
-\format{
-a method
-}
 \usage{
 Expr_append(other, upcast = TRUE)
 }

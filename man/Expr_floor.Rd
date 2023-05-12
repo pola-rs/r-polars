@@ -3,9 +3,6 @@
 \name{Expr_floor}
 \alias{Expr_floor}
 \title{Floor}
-\format{
-a method
-}
 \usage{
 Expr_floor
 }

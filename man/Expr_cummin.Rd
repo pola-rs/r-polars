@@ -5,11 +5,6 @@
 \alias{cummin}
 \alias{Expr_cummax}
 \title{Cumulative minimum}
-\format{
-a method
-
-a method
-}
 \usage{
 Expr_cummin(reverse = FALSE)
 

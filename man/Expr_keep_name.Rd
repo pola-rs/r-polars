@@ -4,9 +4,6 @@
 \alias{Expr_keep_name}
 \alias{keep_name}
 \title{Keep the original root name of the expression.}
-\format{
-a method
-}
 \usage{
 Expr_keep_name
 }

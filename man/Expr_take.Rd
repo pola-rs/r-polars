@@ -4,9 +4,6 @@
 \alias{Expr_take}
 \alias{take}
 \title{Take values by index.}
-\format{
-a method
-}
 \usage{
 Expr_take(indices)
 }

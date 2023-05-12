@@ -3,9 +3,6 @@
 \name{Expr_mean}
 \alias{Expr_mean}
 \title{mean}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_mean
 }

@@ -5,9 +5,6 @@
 \alias{Expr_where}
 \alias{where}
 \title{Filter a single column.}
-\format{
-a method
-}
 \usage{
 Expr_filter(predicate)
 

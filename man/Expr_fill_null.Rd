@@ -4,9 +4,6 @@
 \alias{Expr_fill_null}
 \alias{fill_null}
 \title{Fill Nulls with a value or strategy.}
-\format{
-a method
-}
 \usage{
 Expr_fill_null(value = NULL, strategy = NULL, limit = NULL)
 }

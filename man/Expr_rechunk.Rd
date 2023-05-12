@@ -4,9 +4,6 @@
 \alias{Expr_rechunk}
 \alias{rechunk}
 \title{Rechunk memory layout}
-\format{
-a method
-}
 \usage{
 Expr_rechunk
 }

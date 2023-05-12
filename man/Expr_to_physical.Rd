@@ -4,9 +4,6 @@
 \alias{Expr_to_physical}
 \alias{to_physical}
 \title{To physical representation}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_to_physical
 }

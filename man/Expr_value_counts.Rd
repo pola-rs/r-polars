@@ -3,9 +3,6 @@
 \name{Expr_value_counts}
 \alias{Expr_value_counts}
 \title{Value counts}
-\format{
-Method
-}
 \usage{
 Expr_value_counts(multithreaded = FALSE, sort = FALSE)
 }

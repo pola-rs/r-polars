@@ -4,9 +4,6 @@
 \alias{Expr_cumcount}
 \alias{cumcount}
 \title{Cumulative count}
-\format{
-a method
-}
 \usage{
 Expr_cumcount(reverse = FALSE)
 }

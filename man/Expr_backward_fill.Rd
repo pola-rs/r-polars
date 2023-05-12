@@ -4,9 +4,6 @@
 \alias{Expr_backward_fill}
 \alias{backward_fill}
 \title{Fill Nulls Backward}
-\format{
-a method
-}
 \usage{
 Expr_backward_fill(limit = NULL)
 }

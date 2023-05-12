@@ -3,9 +3,6 @@
 \name{Expr_and}
 \alias{Expr_and}
 \title{And}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_and(other)
 }

@@ -3,9 +3,6 @@
 \name{Expr_median}
 \alias{Expr_median}
 \title{median}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_median
 }

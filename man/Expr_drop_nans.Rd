@@ -3,9 +3,6 @@
 \name{Expr_drop_nans}
 \alias{Expr_drop_nans}
 \title{Drop NaN(s)}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_drop_nans
 }

@@ -6,11 +6,6 @@
 \alias{Expr_flatten}
 \alias{flatten}
 \title{Explode a list or utf8 Series.}
-\format{
-a method
-
-a method
-}
 \usage{
 Expr_explode
 

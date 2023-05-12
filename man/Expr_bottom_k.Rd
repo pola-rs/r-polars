@@ -4,9 +4,6 @@
 \alias{Expr_bottom_k}
 \alias{bottom_k}
 \title{Bottom k values}
-\format{
-a method
-}
 \usage{
 Expr_bottom_k(k)
 }

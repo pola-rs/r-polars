@@ -4,9 +4,6 @@
 \alias{Expr_sample}
 \alias{sample}
 \title{Sample}
-\format{
-Method
-}
 \usage{
 Expr_sample(
   frac = NULL,

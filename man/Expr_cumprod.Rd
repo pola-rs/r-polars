@@ -4,9 +4,6 @@
 \alias{Expr_cumprod}
 \alias{cumprod}
 \title{Cumulative product}
-\format{
-a method
-}
 \usage{
 Expr_cumprod(reverse = FALSE)
 }

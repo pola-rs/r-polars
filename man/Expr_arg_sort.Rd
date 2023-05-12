@@ -6,9 +6,6 @@
 \alias{Expr_argsort}
 \alias{argsort}
 \title{Index of a sort}
-\format{
-a method
-}
 \usage{
 Expr_arg_sort(reverse = FALSE, nulls_last = FALSE)
 

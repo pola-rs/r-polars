@@ -151,7 +151,6 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
-#' @docType NULL
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
@@ -267,7 +266,7 @@ LazyFrame_head = function(n) {
 #' @keywords DataFrame
 #' @return A new `DataFrame` object with applied filter.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
 LazyFrame_first = "use_extendr_wrapper"
 
@@ -276,7 +275,7 @@ LazyFrame_first = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
 LazyFrame_last = "use_extendr_wrapper"
 
@@ -285,7 +284,7 @@ LazyFrame_last = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$max()$collect()
 LazyFrame_max = "use_extendr_wrapper"
 
@@ -294,7 +293,7 @@ LazyFrame_max = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$mean()$collect()
 LazyFrame_mean = "use_extendr_wrapper"
 
@@ -303,7 +302,7 @@ LazyFrame_mean = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$median()$collect()
 LazyFrame_median = "use_extendr_wrapper"
 
@@ -312,7 +311,7 @@ LazyFrame_median = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return A new `LazyFrame` object with applied aggregation.
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$min()$collect()
 LazyFrame_min = "use_extendr_wrapper"
 
@@ -321,7 +320,7 @@ LazyFrame_min = "use_extendr_wrapper"
 #' @keywords LazyFrame
 #' @return LazyFrame
 #' @docType NULL
-#' @format function
+#' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$sum()$collect()
 LazyFrame_sum = "use_extendr_wrapper"
 

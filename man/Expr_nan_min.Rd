@@ -3,9 +3,6 @@
 \name{Expr_nan_min}
 \alias{Expr_nan_min}
 \title{min propagate NaN}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_nan_min
 }

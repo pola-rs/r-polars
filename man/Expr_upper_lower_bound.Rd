@@ -7,11 +7,6 @@
 \alias{Expr_lower_bound}
 \alias{lower_bound}
 \title{Upper bound}
-\format{
-Method
-
-Method
-}
 \usage{
 Expr_upper_bound
 

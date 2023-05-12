@@ -3,9 +3,6 @@
 \name{Expr_cumsum}
 \alias{Expr_cumsum}
 \title{Cumulative sum}
-\format{
-a method
-}
 \usage{
 Expr_cumsum(reverse = FALSE)
 }

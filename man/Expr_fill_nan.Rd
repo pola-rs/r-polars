@@ -4,9 +4,6 @@
 \alias{Expr_fill_nan}
 \alias{fill_nan}
 \title{Fill Nulls Forward}
-\format{
-a method
-}
 \usage{
 Expr_fill_nan(expr = NULL)
 }

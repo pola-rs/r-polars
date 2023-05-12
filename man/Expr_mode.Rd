@@ -4,9 +4,6 @@
 \alias{Expr_mode}
 \alias{mode}
 \title{Mode}
-\format{
-a method
-}
 \usage{
 Expr_mode
 }

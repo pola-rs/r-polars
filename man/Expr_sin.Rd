@@ -4,9 +4,6 @@
 \alias{Expr_sin}
 \alias{sin}
 \title{Sin}
-\format{
-Method
-}
 \usage{
 Expr_sin
 }

@@ -3,9 +3,6 @@
 \name{Expr_rep_extend}
 \alias{Expr_rep_extend}
 \title{extend series with repeated series}
-\format{
-Method
-}
 \usage{
 Expr_rep_extend(expr, n, rechunk = TRUE, upcast = TRUE)
 }

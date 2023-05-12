@@ -3,9 +3,6 @@
 \name{Series_arg_min}
 \alias{Series_arg_min}
 \title{idx to min value}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Series_arg_min
 }

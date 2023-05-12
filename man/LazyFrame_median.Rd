@@ -3,9 +3,6 @@
 \name{LazyFrame_median}
 \alias{LazyFrame_median}
 \title{Median}
-\format{
-function
-}
 \usage{
 LazyFrame_median
 }

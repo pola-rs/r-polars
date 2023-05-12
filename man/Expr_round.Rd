@@ -4,9 +4,6 @@
 \alias{Expr_round}
 \alias{round}
 \title{round}
-\format{
-a method
-}
 \usage{
 Expr_round(decimals)
 }

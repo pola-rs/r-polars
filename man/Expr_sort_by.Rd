@@ -4,9 +4,6 @@
 \alias{Expr_sort_by}
 \alias{sort_by}
 \title{sort column by order of others}
-\format{
-a method
-}
 \usage{
 Expr_sort_by(by, reverse = FALSE)
 }

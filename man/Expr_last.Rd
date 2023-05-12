@@ -3,9 +3,6 @@
 \name{Expr_last}
 \alias{Expr_last}
 \title{Last}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 Expr_last
 }

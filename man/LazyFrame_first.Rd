@@ -3,9 +3,6 @@
 \name{LazyFrame_first}
 \alias{LazyFrame_first}
 \title{First}
-\format{
-function
-}
 \usage{
 LazyFrame_first
 }
