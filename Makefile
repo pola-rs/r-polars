@@ -63,3 +63,9 @@ test: build ## Run fast unittests
 .PHONY: install
 install: ## Install this R package locally
 	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
+
+MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff --name-only | grep -e .*R$$ -e .*Rmd$$", intern = TRUE), "R/extendr-wrappers.R") |> cat()')
+
+.PHONY: fmt-r
+fmt-r: $(MODIFIED_R_FILES) ## Format R files
+	$(foreach file, $^, $(shell R -q -e 'styler::style_file("$(file)"); styler.equals::style_file("$(file)")' >/dev/null))
