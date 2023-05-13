@@ -24,17 +24,17 @@ settable polars object properties may appear to be R objects, but they are not.
 See \verb{[[method_name]]} example
 }
 \examples{
-#For internal use
-#is only activated for following methods of DataFrame
+# For internal use
+# is only activated for following methods of DataFrame
 ls(polars:::DataFrame.property_setters)
 
-#specific use case for one object property 'columns' (names)
+# specific use case for one object property 'columns' (names)
 df = pl$DataFrame(iris)
 
-#get values
+# get values
 df$columns
 
-#set + get values
+# set + get values
 df$columns = letters[1:5] #<- is fine too
 df$columns
 
@@ -45,17 +45,16 @@ df$columns
 # not support package isolated customization.
 
 
-#Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
-#however Rstudio backticks it into df$`columns<-`
-#to make life simple, this is valid polars syntax also, and can be used in fast scripting
+# Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
+# however Rstudio backticks it into df$`columns<-`
+# to make life simple, this is valid polars syntax also, and can be used in fast scripting
 df$`columns<-` = letters[5:1]
 
-#for stable code prefer e.g.  df$columns = letters[5:1]
+# for stable code prefer e.g.  df$columns = letters[5:1]
 
-#to see inside code of a property use the [[]] syntax instead
+# to see inside code of a property use the [[]] syntax instead
 df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-polars:::DataFrame.property_setters$columns #and even more obscure to see setter code
-
+polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
 
 }
 \keyword{DataFrame}

@@ -18,7 +18,7 @@ Expr
 Reshape this Expr to a flat Series or a Series of Lists.
 }
 \examples{
-pl$select(pl$lit(1:12)$reshape(c(3,4)))
-pl$select(pl$lit(1:12)$reshape(c(3,-1)))
+pl$select(pl$lit(1:12)$reshape(c(3, 4)))
+pl$select(pl$lit(1:12)$reshape(c(3, -1)))
 }
 \keyword{Expr}

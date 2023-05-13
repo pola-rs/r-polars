@@ -17,6 +17,6 @@ Series
 Change name of Series
 }
 \examples{
-pl$Series(1:3,name = "alice")$alias("bob")
+pl$Series(1:3, name = "alice")$alias("bob")
 }
 \keyword{Series}

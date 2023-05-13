@@ -17,6 +17,6 @@ Series
 Series to DataFrame
 }
 \examples{
-pl$Series(1:4,"bob")$to_frame()
+pl$Series(1:4, "bob")$to_frame()
 }
 \keyword{Series}

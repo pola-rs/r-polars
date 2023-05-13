@@ -18,7 +18,7 @@ Join all string items in a sublist and place a separator between them.
 This errors if inner type of list \verb{!= Utf8}.
 }
 \examples{
-df = pl$DataFrame(list(s = list(c("a","b","c"), c("x","y"))))
+df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))
 df$select(pl$col("s")$arr$join(" "))
 }
 \keyword{ExprArr}

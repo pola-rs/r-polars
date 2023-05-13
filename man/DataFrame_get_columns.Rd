@@ -13,7 +13,7 @@ list of series
 get columns as list of series
 }
 \examples{
-df = pl$DataFrame(iris[1,])
+df = pl$DataFrame(iris[1, ])
 df$get_columns()
 }
 \keyword{DataFrame}

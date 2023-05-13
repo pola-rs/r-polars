@@ -18,7 +18,7 @@ is_duplicated is the opposite of \code{is_unique()}
 Looking for R like \code{duplicated()}?, use  \code{some_expr$is_first()$is_not()}
 }
 \examples{
-v = c(1,1,2,2,3,NA,NaN,Inf)
+v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
 all.equal(
   pl$select(
     pl$lit(v)$is_unique()$alias("is_unique"),
@@ -28,7 +28,7 @@ all.equal(
   )$to_list(),
   list(
     is_unique = !v \%in\% v[duplicated(v)],
-    is_first  = !duplicated(v),
+    is_first = !duplicated(v),
     is_duplicated = v \%in\% v[duplicated(v)],
     R_duplicated = duplicated(v)
   )

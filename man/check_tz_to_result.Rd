@@ -18,14 +18,14 @@ a result object, with either a valid string or an Err
 Verify correct time zone
 }
 \examples{
- check_tz_to_result = polars:::check_tz_to_result # expose internal
- #return Ok
- check_tz_to_result("GMT")
- check_tz_to_result(NULL)
+check_tz_to_result = polars:::check_tz_to_result # expose internal
+# return Ok
+check_tz_to_result("GMT")
+check_tz_to_result(NULL)
 
- #return Err
- check_tz_to_result("Alice")
- check_tz_to_result(42)
- check_tz_to_result(NULL, allow_null = FALSE)
+# return Err
+check_tz_to_result("Alice")
+check_tz_to_result(42)
+check_tz_to_result(NULL, allow_null = FALSE)
 }
 \keyword{internal}

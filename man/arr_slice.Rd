@@ -21,7 +21,7 @@ Expr
 Slice every sublist.
 }
 \examples{
-df = pl$DataFrame(list(s = list(1:4,c(10L,2L,1L))))
+df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("s")$arr$slice(2))
 }
 \keyword{ExprArr}

@@ -19,7 +19,7 @@ Throw errors if encounter invalid json strings.
 }
 \examples{
 df = pl$DataFrame(
-  json_val =  c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
+  json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
 )
 dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
 df$select(pl$col("json_val")$str$json_extract(dtype))

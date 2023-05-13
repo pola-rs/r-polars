@@ -30,6 +30,6 @@ is close enough to zero, statistically speaking.
 see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
 }
 \examples{
-pl$DataFrame(list(a=iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4 )$head(10))
+pl$DataFrame(list(a = iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4)$head(10))
 }
 \keyword{Expr}

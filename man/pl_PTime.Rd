@@ -45,15 +45,15 @@ test-expr_datetime.R/"pl$date_range Date lazy/eager".
 }
 \examples{
 
-#make PTime in all time units
-pl$PTime(runif(5)*3600*24*1E0, tu = "s")
-pl$PTime(runif(5)*3600*24*1E3, tu = "ms")
-pl$PTime(runif(5)*3600*24*1E6, tu = "us")
-pl$PTime(runif(5)*3600*24*1E9, tu = "ns")
+# make PTime in all time units
+pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s")
+pl$PTime(runif(5) * 3600 * 24 * 1E3, tu = "ms")
+pl$PTime(runif(5) * 3600 * 24 * 1E6, tu = "us")
+pl$PTime(runif(5) * 3600 * 24 * 1E9, tu = "ns")
 pl$PTime("23:59:59")
 
 
-pl$Series(pl$PTime(runif(5)*3600*24*1E0, tu = "s"))
+pl$Series(pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s"))
 pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 
 pl$lit(pl$PTime("23:59:59"))$to_r()

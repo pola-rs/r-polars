@@ -14,6 +14,6 @@ Expr
 Count \code{Nulls}
 }
 \examples{
-pl$select(pl$lit(c(NA,"a",NA,"b"))$null_count())
+pl$select(pl$lit(c(NA, "a", NA, "b"))$null_count())
 }
 \keyword{Expr}

@@ -17,12 +17,12 @@ to_struct() returns a Series
 to_struct
 }
 \examples{
-#round-trip conversion from DataFrame with two columns
-df = pl$DataFrame(a=1:5,b=c("one","two","three","four","five"))
+# round-trip conversion from DataFrame with two columns
+df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
 s = df$to_struct()
 s
 s$to_r() # to r list
-df_s = s$to_frame() #place series in a new DataFrame
+df_s = s$to_frame() # place series in a new DataFrame
 df_s$unnest() # back to starting df
 }
 \keyword{DataFrame}

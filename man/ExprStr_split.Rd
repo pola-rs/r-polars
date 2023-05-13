@@ -17,6 +17,6 @@ Split the string by a substring.
 }
 \examples{
 df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
-df$select( pl$col("s")$str$split(by=" "))
+df$select(pl$col("s")$str$split(by = " "))
 }
 \keyword{ExprStr}

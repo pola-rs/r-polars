@@ -14,9 +14,9 @@ Check if any boolean value in a Boolean column is \code{TRUE}.
 }
 \examples{
 pl$DataFrame(
-  all=c(TRUE,TRUE),
-  any=c(TRUE,FALSE),
-  none=c(FALSE,FALSE)
+  all = c(TRUE, TRUE),
+  any = c(TRUE, FALSE),
+  none = c(FALSE, FALSE)
 )$select(
   pl$all()$any()
 )

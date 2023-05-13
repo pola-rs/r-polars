@@ -27,7 +27,7 @@ df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
 df$select(
   pl$col("a"),
   pl$col("a")$str$contains("cat|bit")$alias("regex"),
-  pl$col("a")$str$contains("rab$", literal=TRUE)$alias("literal")
+  pl$col("a")$str$contains("rab$", literal = TRUE)$alias("literal")
 )
 }
 \keyword{ExprStr}

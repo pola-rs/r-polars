@@ -11,6 +11,6 @@ Expr
 Alias for an element in evaluated in an \code{eval} expression.
 }
 \examples{
-pl$lit(1:5)$cumulative_eval(pl$element()$first()-pl$element()$last() ** 2)$to_r()
+pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
 }
 \keyword{Expr}

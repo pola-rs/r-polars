@@ -24,13 +24,13 @@ If someone do not particularly like the letter combination \code{pl}, they are f
 bind the environment to another variable name as \code{simon_says = pl} or even do \code{attach(pl)}
 }
 \examples{
-#how to use polars via `pl`
-pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
+# how to use polars via `pl`
+pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 
-#pl inventory
-polars:::print_env(pl,"polars public functions")
+# pl inventory
+polars:::print_env(pl, "polars public functions")
 
-#all accessible classes and their public methods
+# all accessible classes and their public methods
 polars:::print_env(
   polars:::pl_pub_class_env,
   "polars public class methods, access via object$method()"

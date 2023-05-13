@@ -13,7 +13,7 @@ bool
 Ceil of this Series
 }
 \examples{
-pl$Series(c(.5,1.999))$ceil()
+pl$Series(c(.5, 1.999))$ceil()
 
 }
 \keyword{Series}

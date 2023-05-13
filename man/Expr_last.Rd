@@ -14,6 +14,6 @@ Get the lastvalue.
 Similar to R syntax tail(x,1)
 }
 \examples{
-pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$last())
+pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$last())
 }
 \keyword{Expr}

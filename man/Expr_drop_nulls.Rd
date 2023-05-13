@@ -17,6 +17,6 @@ Similar to R syntax \code{x[!(is.na(x) & !is.nan(x))]}
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
- pl$DataFrame(list(x=c(1,2,NaN,NA)))$select(pl$col("x")$drop_nulls())
+pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 }
 \keyword{Expr}

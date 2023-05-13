@@ -13,6 +13,6 @@ bool
 idx to max value
 }
 \examples{
-pl$Series(c(5,1))$arg_max()
+pl$Series(c(5, 1))$arg_max()
 }
 \keyword{Series}

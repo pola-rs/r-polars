@@ -20,10 +20,10 @@ Or similar to \verb{window functions in Postgres <https://www.postgresql.org/doc
 \examples{
 pl$DataFrame(
   val = 1:5,
-  a = c("+","+","-","-","+"),
-  b = c("+","-","+","-","+")
+  a = c("+", "+", "-", "-", "+"),
+  b = c("+", "-", "+", "-", "+")
 )$select(
-  pl$col("val")$count()$over("a","b")
+  pl$col("val")$count()$over("a", "b")
 )
 }
 \keyword{Expr}

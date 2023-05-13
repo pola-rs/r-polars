@@ -19,6 +19,6 @@ Get a slice of this DataFrame.
 }
 \examples{
 pl$DataFrame(mtcars)$slice(2, 4)
-mtcars[2:6,]
+mtcars[2:6, ]
 }
 \keyword{LazyFrame}

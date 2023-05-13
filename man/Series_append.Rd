@@ -26,18 +26,18 @@ any sense.
 }
 \examples{
 
-#default immutable behaviour, s_imut and s_imut_copy stay the same
+# default immutable behaviour, s_imut and s_imut_copy stay the same
 s_imut = pl$Series(1:3)
 s_imut_copy = s_imut
 s_new = s_imut$append(pl$Series(1:3))
-identical(s_imut$to_vector(),s_imut_copy$to_vector())
+identical(s_imut$to_vector(), s_imut_copy$to_vector())
 
-#pypolars-like mutable behaviour,s_mut_copy become the same as s_new
+# pypolars-like mutable behaviour,s_mut_copy become the same as s_new
 s_mut = pl$Series(1:3)
 s_mut_copy = s_mut
- #must deactivate this to allow to use immutable=FALSE
+# must deactivate this to allow to use immutable=FALSE
 pl$set_polars_options(strictly_immutable = FALSE)
-s_new = s_mut$append(pl$Series(1:3),immutable= FALSE)
-identical(s_new$to_vector(),s_mut_copy$to_vector())
+s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
+identical(s_new$to_vector(), s_mut_copy$to_vector())
 }
 \keyword{Series}

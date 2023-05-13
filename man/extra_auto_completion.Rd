@@ -18,12 +18,12 @@ Currently does not play that nice with Rstudio, as Rstudio backtick quotes any c
 suggestions.
 }
 \examples{
-#auto completion via .DollarNames method
+# auto completion via .DollarNames method
 e = pl$lit(42) # to autocomplete pl$lit(42) save to variable
 # then write `e$`  and press tab to see available methods
 
 # polars has experimental auto completetion for chain of methods if all on the same line
-pl$extra_auto_completion() #first activate feature (this will 'annoy' the Rstudio auto-completer)
+pl$extra_auto_completion() # first activate feature (this will 'annoy' the Rstudio auto-completer)
 pl$lit(42)$lit_to_s() # add a $ and press tab 1-3 times
-pl$extra_auto_completion(activate = FALSE) #deactivate
+pl$extra_auto_completion(activate = FALSE) # deactivate
 }

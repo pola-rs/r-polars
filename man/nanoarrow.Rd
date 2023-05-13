@@ -16,13 +16,13 @@
 \alias{as_record_batch_reader.DataFrame}
 \title{polars to nanoarrow and arrow}
 \usage{
-\method{as_nanoarrow_array_stream}{DataFrame}(x, ..., schema = NULL)
+as_nanoarrow_array_stream.DataFrame(x, ..., schema = NULL)
 
-\method{infer_nanoarrow_schema}{DataFrame}(x, ...)
+infer_nanoarrow_schema.DataFrame(x, ...)
 
-\method{as_arrow_table}{DataFrame}(x, ...)
+as_arrow_table.DataFrame(x, ...)
 
-\method{as_record_batch_reader}{DataFrame}(x, ..., schema = NULL)
+as_record_batch_reader.DataFrame(x, ..., schema = NULL)
 }
 \arguments{
 \item{x}{a polars DataFrame}
@@ -67,7 +67,7 @@ print(nanoarrow_array_schema)
 library(arrow)
 arrow_table = as_arrow_table(df)
 print(arrow_table)
-arrow_record_batch_reader = as_record_batch_reader(df) #requires arrow
+arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
 print(arrow_record_batch_reader)
 }
 \keyword{nanoarrow_interface}

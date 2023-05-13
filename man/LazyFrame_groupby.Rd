@@ -22,15 +22,15 @@ Create a LazyGroupBy from a LazyFrame.
 }
 \examples{
 pl$DataFrame(
-    foo = c("one", "two", "two", "one", "two"),
-    bar = c(5, 3, 2, 4, 1)
+  foo = c("one", "two", "two", "one", "two"),
+  bar = c(5, 3, 2, 4, 1)
 )$
-lazy()$
-groupby("foo")$
-agg(
- pl$col("bar")$sum()$suffix("_sum"),
- pl$col("bar")$mean()$alias("bar_tail_sum")
+  lazy()$
+  groupby("foo")$
+  agg(
+  pl$col("bar")$sum()$suffix("_sum"),
+  pl$col("bar")$mean()$alias("bar_tail_sum")
 )$
-collect()
+  collect()
 }
 \keyword{LazyFrame}

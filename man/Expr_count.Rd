@@ -20,16 +20,16 @@ Similar to R length()
 }
 \examples{
 pl$DataFrame(
-  all=c(TRUE,TRUE),
-  any=c(TRUE,FALSE),
-  none=c(FALSE,FALSE)
+  all = c(TRUE, TRUE),
+  any = c(TRUE, FALSE),
+  none = c(FALSE, FALSE)
 )$select(
   pl$all()$count()
 )
 pl$DataFrame(
-  all=c(TRUE,TRUE),
-  any=c(TRUE,FALSE),
-  none=c(FALSE,FALSE)
+  all = c(TRUE, TRUE),
+  any = c(TRUE, FALSE),
+  none = c(FALSE, FALSE)
 )$select(
   pl$all()$len(),
   pl$col("all")$first()$len()$alias("all_first")

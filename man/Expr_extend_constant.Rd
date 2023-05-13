@@ -21,13 +21,13 @@ Extend the Series with given number of values.
 }
 \examples{
 pl$select(
-  pl$lit(c("5","Bob_is_not_a_number"))
+  pl$lit(c("5", "Bob_is_not_a_number"))
   $cast(pl$dtypes$UInt64, strict = FALSE)
   $extend_constant(10.1, 2)
 )
 
 pl$select(
-  pl$lit(c("5","Bob_is_not_a_number"))
+  pl$lit(c("5", "Bob_is_not_a_number"))
   $cast(pl$dtypes$Utf8, strict = FALSE)
   $extend_constant("chuchu", 2)
 )

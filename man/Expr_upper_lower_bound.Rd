@@ -24,7 +24,7 @@ expression.
 Notice lower bound i32 exported to R is NA_integer_ for now
 }
 \examples{
-pl$DataFrame(i32=1L,f64=1)$select(pl$all()$upper_bound())
-pl$DataFrame(i32=1L,f64=1)$select(pl$all()$lower_bound())
+pl$DataFrame(i32 = 1L, f64 = 1)$select(pl$all()$upper_bound())
+pl$DataFrame(i32 = 1L, f64 = 1)$select(pl$all()$lower_bound())
 }
 \keyword{Expr}

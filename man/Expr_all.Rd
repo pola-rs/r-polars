@@ -20,9 +20,9 @@ to "all-columns" and is an expression constructor
 }
 \examples{
 pl$DataFrame(
-  all=c(TRUE,TRUE),
-  any=c(TRUE,FALSE),
-  none=c(FALSE,FALSE)
+  all = c(TRUE, TRUE),
+  any = c(TRUE, FALSE),
+  none = c(FALSE, FALSE)
 )$select(
   pl$all()$all()
 )

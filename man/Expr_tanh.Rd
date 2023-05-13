@@ -17,6 +17,6 @@ Compute the element-wise value for the hyperbolic tangent.
 Evaluated Series has dtype Float64
 }
 \examples{
-pl$DataFrame(a=c(-1,atanh(0.5),0,1,NA_real_))$select(pl$col("a")$tanh())
+pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$tanh())
 }
 \keyword{Expr}

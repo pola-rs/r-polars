@@ -24,6 +24,6 @@ Expr
 Extend a series with a repeated series or value.
 }
 \examples{
-pl$select(pl$lit(c(1,2,3))$rep_extend(1:3, n = 5))
+pl$select(pl$lit(c(1, 2, 3))$rep_extend(1:3, n = 5))
 }
 \keyword{Expr}

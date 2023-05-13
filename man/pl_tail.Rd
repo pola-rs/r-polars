@@ -29,7 +29,7 @@ expr_tail = pl$head("a")
 print(expr_tail)
 df$select(expr_tail)
 
-df$select(pl$tail("a",2))
+df$select(pl$tail("a", 2))
 
-pl$tail(df$get_column("a"),2)
+pl$tail(df$get_column("a"), 2)
 }

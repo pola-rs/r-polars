@@ -24,31 +24,31 @@ Return an expression representing a column in a DataFrame.
 }
 \examples{
 
-df = pl$DataFrame(list(foo=1, bar=2L,foobar="3"))
+df = pl$DataFrame(list(foo = 1, bar = 2L, foobar = "3"))
 
-#a single column by a string
+# a single column by a string
 df$select(pl$col("foo"))
 
 # two columns as strings separated by commas
 df$select(pl$col("foo", "bar"))
 
-#all columns by wildcard
+# all columns by wildcard
 df$select(pl$col("*"))
 df$select(pl$all())
 
-#multiple columns as vector of strings
-df$select(pl$col(c("foo","bar")))
+# multiple columns as vector of strings
+df$select(pl$col(c("foo", "bar")))
 
-#column by regular expression if the regex starts with `^` and ends with `$`
+# column by regular expression if the regex starts with `^` and ends with `$`
 df$select(pl$col("^foo.*$"))
 
-#a single DataType
+# a single DataType
 df$select(pl$col(pl$dtypes$Float64))
 
 # ... or an R list of DataTypes, select any column of any such DataType
 df$select(pl$col(list(pl$dtypes$Float64, pl$dtypes$Utf8)))
 
 # from Series of names
-df$select(pl$col(pl$Series(c("bar","foobar"))))
+df$select(pl$col(pl$Series(c("bar", "foobar"))))
 }
 \keyword{Expr_new}

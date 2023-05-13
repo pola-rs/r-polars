@@ -23,21 +23,21 @@ into pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 are removed and replaced by any function prefixed \code{Series_}.
 }
 \examples{
-#see all exported methods
+# see all exported methods
 ls(polars:::Series)
 
-#see all private methods (not intended for regular use)
+# see all private methods (not intended for regular use)
 ls(polars:::.pr$Series)
 
 
-#make an object
+# make an object
 s = pl$Series(1:3)
 
-#use a public method/property
+# use a public method/property
 s$shape
 
 
-#use a private method (mutable append not allowed in public api)
+# use a private method (mutable append not allowed in public api)
 s_copy = s
 .pr$Series$append_mut(s, pl$Series(5:1))
 identical(s_copy$to_r(), s$to_r()) # s_copy was modified when s was modified

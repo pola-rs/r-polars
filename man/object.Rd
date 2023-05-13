@@ -22,8 +22,8 @@ See function macro_add_syntax_check_to_class().
 }
 }
 \examples{
-#all a polars object is made of:
+# all a polars object is made of:
 some_polars_object = pl$DataFrame(iris)
-str(some_polars_object) #External Pointer tagged with a class attribute.
+str(some_polars_object) # External Pointer tagged with a class attribute.
 }
 \keyword{api_object}

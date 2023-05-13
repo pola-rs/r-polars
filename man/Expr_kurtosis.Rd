@@ -29,7 +29,7 @@ See scipy.stats for more information
 #' See scipy.stats for more information.
 }
 \examples{
-df = pl$DataFrame(list( a=c(1:3,2:1)))
+df = pl$DataFrame(list(a = c(1:3, 2:1)))
 df$select(pl$col("a")$kurtosis())
 }
 \references{

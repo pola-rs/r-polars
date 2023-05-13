@@ -24,11 +24,11 @@ Folds the expressions from left to right, keeping the first non-null value.
 \examples{
 df = pl$DataFrame(
   a = NA_real_,
-  b = c(2:1,NA_real_,NA_real_),
-  c = c(1:3,NA_real_),
-  d = c(1:2,NA_real_,-Inf)
+  b = c(2:1, NA_real_, NA_real_),
+  c = c(1:3, NA_real_),
+  d = c(1:2, NA_real_, -Inf)
 )
-#use min to get first non Null value for each row, otherwise insert 99.9
+# use min to get first non Null value for each row, otherwise insert 99.9
 df$with_column(
   pl$min("a", "b", "c", 99.9)$alias("d")
 )

@@ -20,6 +20,6 @@ Get a slice of this DataFrame.
 \examples{
 pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
 pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
-mtcars[2:6,]
+mtcars[2:6, ]
 }
 \keyword{DataFrame}

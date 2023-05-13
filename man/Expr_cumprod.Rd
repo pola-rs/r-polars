@@ -21,9 +21,9 @@ Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 }
 \examples{
-pl$DataFrame(list(a=1:4))$select(
+pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumprod()$alias("cumprod"),
-  pl$col("a")$cumprod(reverse=TRUE)$alias("cumprod_reversed")
+  pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod_reversed")
 )
 }
 \keyword{Expr}

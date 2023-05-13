@@ -13,7 +13,7 @@ Expr (boolean)
 Get mask of unique values
 }
 \examples{
-v = c(1,1,2,2,3,NA,NaN,Inf)
+v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
 all.equal(
   pl$select(
     pl$lit(v)$is_unique()$alias("is_unique"),
@@ -23,7 +23,7 @@ all.equal(
   )$to_list(),
   list(
     is_unique = !v \%in\% v[duplicated(v)],
-    is_first  = !duplicated(v),
+    is_first = !duplicated(v),
     is_duplicated = v \%in\% v[duplicated(v)],
     R_duplicated = duplicated(v)
   )

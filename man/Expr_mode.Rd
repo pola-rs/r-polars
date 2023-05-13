@@ -14,7 +14,7 @@ Expr
 Compute the most occurring value(s). Can return multiple Values.
 }
 \examples{
-df =pl$DataFrame(list(a=1:6,b = c(1L,1L,3L,3L,5L,6L), c = c(1L,1L,2L,2L,3L,3L)))
+df = pl$DataFrame(list(a = 1:6, b = c(1L, 1L, 3L, 3L, 5L, 6L), c = c(1L, 1L, 2L, 2L, 3L, 3L)))
 df$select(pl$col("a")$mode())
 df$select(pl$col("b")$mode())
 df$select(pl$col("c")$mode())

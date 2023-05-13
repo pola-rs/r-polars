@@ -14,6 +14,6 @@ Get the first value.
 Similar to R head(x,1)
 }
 \examples{
-pl$DataFrame(list(x=c(1,2,3)))$select(pl$col("x")$first())
+pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$first())
 }
 \keyword{Expr}

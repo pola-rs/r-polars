@@ -18,15 +18,15 @@ Expr or value
 Depending on the input type this function does different things:
 }
 \examples{
-#column as Series
+# column as Series
 pl$n_unique(pl$Series(1:4)) == 4
 
-#column as String
+# column as String
 expr = pl$n_unique("bob")
 print(expr)
 pl$DataFrame(bob = 1:4)$select(expr)
 
-#colum as Expr
+# colum as Expr
 pl$DataFrame(bob = 1:4)$select(pl$n_unique(pl$col("bob")))
 }
 \keyword{Expr_new}

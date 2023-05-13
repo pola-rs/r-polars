@@ -17,6 +17,6 @@ Compute the element-wise value for the tangent.
 Evaluated Series has dtype Float64
 }
 \examples{
-pl$DataFrame(a=c(0,pi/2,pi,NA_real_))$select(pl$col("a")$tan())
+pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$tan())
 }
 \keyword{Expr}

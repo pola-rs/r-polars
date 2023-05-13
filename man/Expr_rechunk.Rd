@@ -17,8 +17,8 @@ Create a single chunk of memory for this Series.
 See rechunk() explained here \code{\link[polars]{docs_translations}}
 }
 \examples{
-#get chunked lengths with/without rechunk
-series_list = pl$DataFrame(list(a=1:3,b=4:6))$select(
+# get chunked lengths with/without rechunk
+series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
   pl$col("a")$append(pl$col("b"))$alias("a_chunked"),
   pl$col("a")$append(pl$col("b"))$rechunk()$alias("a_rechunked")
 )$get_columns()

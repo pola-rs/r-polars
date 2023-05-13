@@ -23,11 +23,11 @@ Exprs
 Addition
 }
 \examples{
-#three syntaxes same result
+# three syntaxes same result
 pl$lit(5) + 10
 pl$lit(5) + pl$lit(10)
 pl$lit(5)$add(pl$lit(10))
-+pl$lit(5) #unary use resolves to same as pl$lit(5)
++pl$lit(5) # unary use resolves to same as pl$lit(5)
 }
 \keyword{Expr}
 \keyword{Expr_operators}

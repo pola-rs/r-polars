@@ -29,7 +29,7 @@ expr_head = pl$head("a")
 print(expr_head)
 df$select(expr_head)
 
-df$select(pl$head("a",2))
-pl$head(df$get_column("a"),2)
+df$select(pl$head("a", 2))
+pl$head(df$get_column("a"), 2)
 }
 \keyword{Expr_new}
