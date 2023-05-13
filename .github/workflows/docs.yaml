@@ -48,11 +48,6 @@ jobs:
 
         ##### Rust stuff #####
 
-      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.rust-toolchain }}
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
@@ -92,8 +87,8 @@ jobs:
           use-public-rspm: true
           Ncpus: 2
 
-      - name: Get Python and R requirements
-        run: make requirements-py requirements-r
+      - name: Get requirements
+        run: make requirements
 
       - name: Build docs
         run: make docs
