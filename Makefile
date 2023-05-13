@@ -32,8 +32,8 @@ requirements-py: .venv
 
 .PHONY: requirements-rs # TODO: Windows support?
 requirements-rs:
-	rustup toolchain install nightly
-	rustup default nightly
+	rustup toolchain install nightly-2023-04-11
+	rustup default nightly-2023-04-11
 
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
