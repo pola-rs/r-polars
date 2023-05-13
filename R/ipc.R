@@ -14,14 +14,14 @@
 #' @return LazyFrame
 #'
 scan_arrow_ipc = function(
-    path, #: str | Path,
-    n_rows = NULL, #: int | None = None,
-    cache = TRUE, #: bool = True,
-    rechunk = TRUE, #: bool = True,
-    row_count_name = NULL, #: str | None = None,
-    row_count_offset = 0L, #: int = 0,
-    memmap = TRUE #: bool = False,
-) {#-> LazyFrame
+    path, # : str | Path,
+    n_rows = NULL, # : int | None = None,
+    cache = TRUE, # : bool = True,
+    rechunk = TRUE, # : bool = True,
+    row_count_name = NULL, # : str | None = None,
+    row_count_offset = 0L, # : int = 0,
+    memmap = TRUE # : bool = False,
+    ) { #-> LazyFrame
 
 
   result_lf = import_arrow_ipc(
@@ -35,5 +35,4 @@ scan_arrow_ipc = function(
   )
 
   unwrap(result_lf, "in pl$scan_ipc:")
-
 }

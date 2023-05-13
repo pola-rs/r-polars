@@ -54,7 +54,7 @@ as_arrow_table.DataFrame = function(x, ...) {
 #' @rdname nanoarrow
 #' @return - an arrow record batch reader
 #' @examples
-#' arrow_record_batch_reader = as_record_batch_reader(df) #requires arrow
+#' arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
 #' print(arrow_record_batch_reader)
 as_record_batch_reader.DataFrame = function(x, ..., schema = NULL) {
   arrow::as_record_batch_reader(as_nanoarrow_array_stream.DataFrame(x, schema = schema))

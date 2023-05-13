@@ -1,4 +1,3 @@
-
 #' Create Field
 #' @include after-wrappers.R
 #' @name pl_Field
@@ -11,8 +10,8 @@
 #'
 #' @return a list DataType with an inner DataType
 #' @examples
-#' #make a struct
-#' pl$Field("city_names",pl$Utf8)
+#' # make a struct
+#' pl$Field("city_names", pl$Utf8)
 #'
 #' # find any DataType bundled pl$dtypes
 #' print(pl$dtypes)
@@ -31,7 +30,7 @@ pl$Field = function(name, datatype) {
 #' @keywords internal
 #'
 #' @examples
-#' print(pl$Field("foo",pl$List(pl$UInt64)))
+#' print(pl$Field("foo", pl$List(pl$UInt64)))
 print.RField = function(x, ...) {
   cat("")
   x$print()
@@ -50,16 +49,16 @@ print.RField = function(x, ...) {
 #' @return self
 #'
 #' @examples
-#' print(pl$Field("foo",pl$List(pl$UInt64)))
+#' print(pl$Field("foo", pl$List(pl$UInt64)))
 RField_print = function() {
   .pr$RField$print(self)
   invisible(self)
 }
 
 
-#"properties"
+# "properties"
 
-##internal bookkeeping of methods which should behave as properties
+## internal bookkeeping of methods which should behave as properties
 RField.property_setters = new.env(parent = emptyenv())
 
 
@@ -70,13 +69,13 @@ RField.property_setters = new.env(parent = emptyenv())
 #' @keywords DataType
 #'
 #' @examples
-#' field = pl$Field("Cities",pl$Utf8)
+#' field = pl$Field("Cities", pl$Utf8)
 #'
-#' #get name / datatype
+#' # get name / datatype
 #' field$name
 #' field$datatype
 #'
-#' #set + get values
+#' # set + get values
 #' field$name = "CityPoPulations" #<- is fine too
 #' field$datatype = pl$UInt32
 #'
@@ -99,10 +98,10 @@ RField.property_setters$name = function(self, value) {
 #' @examples
 #' df = pl$DataFrame(iris)
 #'
-#' #get values
+#' # get values
 #' df$columns
 #'
-#' #set + get values
+#' # set + get values
 #' df$columns = letters[1:5] #<- is fine too
 #' df$columns
 RField_datatype = method_as_property(function() {
@@ -114,16 +113,16 @@ RField.property_setters$datatype = function(self, value) {
 
 #' @export
 "$<-.RField" = function(self, name, value) {
-  name = sub("<-$","",name)
+  name = sub("<-$", "", name)
 
-  #stop if method is not a setter
-  if(!inherits(self[[name]],"setter")) {
-    pstop(err= paste("no setter method for",name))
+  # stop if method is not a setter
+  if (!inherits(self[[name]], "setter")) {
+    pstop(err = paste("no setter method for", name))
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (polars_optenv$strictly_immutable) self = .pr$RField$clone(self)
+  if (polars_optenv$strictly_immutable) self <- .pr$RField$clone(self)
   func = RField.property_setters[[name]]
-  func(self,value)
+  func(self, value)
   self
 }

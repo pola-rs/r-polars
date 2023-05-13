@@ -102,10 +102,10 @@ most of the `polars` functions are made available via `pl$`:
 ```{r}
 library(polars)
 
-ser = pl$Series((1:5) * 5)
+ser <- pl$Series((1:5) * 5)
 ser
 
-dat = pl$DataFrame(mtcars)
+dat <- pl$DataFrame(mtcars)
 dat
 ```
 
@@ -161,7 +161,7 @@ There are numerous methods designed to accomplish various tasks:
 ```{r}
 ser$max()
 
-dat$slice(offset = 2, length = 3)  
+dat$slice(offset = 2, length = 3)
 ```
 
 One advantage of using methods is that many more operations are possible on
@@ -307,12 +307,12 @@ datasets from the **nycflights13** package.
 
 ```{r}
 data("flights", "planes", package = "nycflights13")
-flights = pl$DataFrame(flights)
-planes = pl$DataFrame(planes)
+flights <- pl$DataFrame(flights)
+planes <- pl$DataFrame(planes)
 
 flights$join(
-  planes, 
-  on = "tailnum", 
+  planes,
+  on = "tailnum",
   how = "left"
 )
 ```
@@ -339,7 +339,7 @@ To create a so-called
 existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}
-ldat = dat$lazy()
+ldat <- dat$lazy()
 ldat
 ```
 
@@ -347,12 +347,12 @@ Now consider what happens when we run our subsetting query from earlier on this
 LazyFrame.
 
 ```{r}
-subset_query = ldat$filter(
-    pl$col("cyl")==6
+subset_query <- ldat$filter(
+  pl$col("cyl") == 6
 )$select(
-    pl$col(c("mpg", "hp", "cyl"))
+  pl$col(c("mpg", "hp", "cyl"))
 )
-  
+
 subset_query
 ```
 
@@ -407,7 +407,7 @@ library(arrow)
 write_parquet(airquality, "airquality.parquet")
 
 # aq = read_parquet("airquality.parquet) # eager version (okay)
-aq = scan_parquet("airquality.parquet")  # lazy version (better)
+aq <- scan_parquet("airquality.parquet") # lazy version (better)
 
 aq$filter(
   pl$col("Month") <= 6
@@ -429,7 +429,7 @@ dir.create("airquality-ds")
 write_dataset(airquality, "airquality-ds", partitioning = "Month")
 
 # Use pattern globbing to scan all parquet files in the folder
-aq2 = scan_parquet("airquality-ds/*/*.parquet")
+aq2 <- scan_parquet("airquality-ds/*/*.parquet")
 
 # Just print the first two rows. But note that the Month column
 # (which we used for partitioning) is missing.
@@ -454,10 +454,10 @@ and expressions wherever possible.
 ```{r}
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$map(\(s) { # map with a R function
-    x = s$to_vector() # convert from Polars Series to a native R vector
-    x[x>=5] = 10
+    x <- s$to_vector() # convert from Polars Series to a native R vector
+    x[x >= 5] <- 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
-    })
+  })
 )$to_data_frame()
 ```
 

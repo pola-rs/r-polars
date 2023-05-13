@@ -1,5 +1,3 @@
-
-
 #' Translation definitions across python, R and polars.
 #' @keywords docs
 #' @name docs_translations

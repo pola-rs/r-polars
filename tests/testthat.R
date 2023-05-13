@@ -9,6 +9,3 @@
 library(testthat)
 
 test_check("polars")
-
-
-

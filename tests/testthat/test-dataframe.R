@@ -1,6 +1,4 @@
-
-
-expected_iris_select_df <- structure(list(miah = c(
+expected_iris_select_df = structure(list(miah = c(
   171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
   171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
   171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4, 171.4,
@@ -58,7 +56,7 @@ expected_iris_select_df <- structure(list(miah = c(
 
 patrick::with_parameters_test_that("DataFrame, mixed input, create and print",
   {
-    input_vectors_and_series <- list(
+    input_vectors_and_series = list(
       newname = pl$Series(c(1, 2, 3, 4, 5), name = "b"), # overwrite name b with newname
       pl$Series((1:5) * 5, "a"),
       pl$Series(letters[1:5], "b"),
@@ -68,9 +66,9 @@ patrick::with_parameters_test_that("DataFrame, mixed input, create and print",
     )
 
     # clone into DataFrame and change one name
-    df <- pl$DataFrame(input_vectors_and_series)
-    .env_var <- .value
-    names(.env_var) <- .name
+    df = pl$DataFrame(input_vectors_and_series)
+    .env_var = .value
+    names(.env_var) = .name
     withr::with_envvar(.env_var, expect_snapshot(df))
   },
   .cases = make_print_cases()
@@ -78,28 +76,28 @@ patrick::with_parameters_test_that("DataFrame, mixed input, create and print",
 
 test_that("DataFrame, input free vectors, input empty", {
   # passing vector directly is equal to passing one
-  l <- as.list(iris)
-  df1 <- pl$DataFrame(l)
-  df2 <- do.call(pl$DataFrame, l)
+  l = as.list(iris)
+  df1 = pl$DataFrame(l)
+  df2 = do.call(pl$DataFrame, l)
   expect_identical(
     df1$to_list(), df2$to_list()
   )
-  df_e <- pl$DataFrame()
+  df_e = pl$DataFrame()
   expect_s3_class(df_e, "DataFrame")
   expect_identical(df_e$shape, c(0, 0))
   expect_identical(pl$DataFrame()$to_list(), .pr$DataFrame$new()$to_list())
 })
 
 test_that("get set properties", {
-  df <- pl$DataFrame(list(a = 1:5, b = rep(TRUE, 5)))
+  df = pl$DataFrame(list(a = 1:5, b = rep(TRUE, 5)))
 
   expect_equal(
     df$columns,
     c("a", "b")
   )
 
-  df2 <- df
-  df2$columns <- c("alice", "bob")
+  df2 = df
+  df2$columns = c("alice", "bob")
 
   expect_equal(
     df2$columns,
@@ -142,7 +140,7 @@ test_that("get set properties", {
 })
 
 test_that("DataFrame, select sum over", {
-  df <- pl$DataFrame(iris)$select(
+  df = pl$DataFrame(iris)$select(
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),
     pl$col("Sepal.Length")$sum()$over("Species")$alias("miah2"),
     "Petal.Length"
@@ -169,12 +167,12 @@ test_that("Select with p$col", {
 })
 
 test_that("map unity", {
-  x <- pl$
+  x = pl$
     DataFrame(iris)$
     select(
-      pl$col("Sepal.Length")$
-        map(\(s) s)
-    )$
+    pl$col("Sepal.Length")$
+      map(\(s) s)
+  )$
     to_data_frame()[, 1, drop = FALSE]
 
   # float is preserved
@@ -184,14 +182,14 @@ test_that("map unity", {
   )
 
   # int is preseved
-  int_iris <- iris
-  int_iris[, 1:4] <- lapply(iris[, 1:4], as.integer)
-  x <- pl$
+  int_iris = iris
+  int_iris[, 1:4] = lapply(iris[, 1:4], as.integer)
+  x = pl$
     DataFrame(int_iris)$
     select(
-      pl$col("Sepal.Length")$
-        map(\(s) s)
-    )$
+    pl$col("Sepal.Length")$
+      map(\(s) s)
+  )$
     to_data_frame()[, 1, drop = FALSE]
 
   expect_identical(
@@ -200,7 +198,7 @@ test_that("map unity", {
   )
 
   # drop the dataframe structure
-  x <- pl$
+  x = pl$
     DataFrame(iris)$
     select(
     pl$col("Species")$
@@ -211,7 +209,7 @@ test_that("map unity", {
   expect_different(x, iris[, 1, drop = FALSE])
 
 
-  x <- pl$
+  x = pl$
     DataFrame(iris)$
     select(
     pl$col("Species")$
@@ -223,11 +221,11 @@ test_that("map unity", {
 
 
 test_that("map type", {
-  int_iris <- iris
-  int_iris[] <- lapply(iris, as.integer)
+  int_iris = iris
+  int_iris[] = lapply(iris, as.integer)
 
   # auto new type allowed if return is R vector
-  x <- pl$DataFrame(iris)$
+  x = pl$DataFrame(iris)$
     select(
     pl$col("Sepal.Length")$
       map(\(s) {
@@ -243,16 +241,16 @@ test_that("map type", {
 })
 
 test_that("cloning", {
-  pf <- pl$DataFrame(iris)
+  pf = pl$DataFrame(iris)
 
   # shallow copy, same external pointer
-  pf2 <- pl$DataFrame(pf)
+  pf2 = pl$DataFrame(pf)
   expect_identical(pf, pf2)
   expect_identical(pl$mem_address(pf), pl$mem_address(pf2))
 
   # deep copy clone rust side object, hence not same mem address
   # For some reason, expect_identical(pf, pf3) fails
-  pf3 <- pf$clone()
+  pf3 = pf$clone()
   expect_identical(pf$to_data_frame(), pf3$to_data_frame())
   expect_different(pl$mem_address(pf), pl$mem_address(pf3))
 })
@@ -260,29 +258,29 @@ test_that("cloning", {
 
 # TODO figure out why this test fails. Expected and Actual do appear very much equal
 # test_that("get column(s)", {
-  # df = pl$DataFrame(iris)
-  # expected_list_of_series = {
-  #   expected = lapply(
-  #     1:5,
-  #     function(i) pl$Series(iris[[i]],names(iris)[i])
-  #   )
-  #   names(expected) = names(iris)
-  #   expected
-  # }
-  # actual_list_of_series = df$get_columns()
-  # for (i in 1:5) {
-  #   is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
-  #   if (!is_equal) {
-  #     fail("series are not equal according to polars internal check")
-  #   }
-  # }
+# df = pl$DataFrame(iris)
+# expected_list_of_series = {
+#   expected = lapply(
+#     1:5,
+#     function(i) pl$Series(iris[[i]],names(iris)[i])
+#   )
+#   names(expected) = names(iris)
+#   expected
+# }
+# actual_list_of_series = df$get_columns()
+# for (i in 1:5) {
+#   is_equal = expected_list_of_series[[i]]$series_equal(actual_list_of_series[[i]])
+#   if (!is_equal) {
+#     fail("series are not equal according to polars internal check")
+#   }
+# }
 
 
-  # list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
-  # expect_identical(
-  #   list_of_vectors,
-  #   as.list(iris)
-  # )
+# list_of_vectors = lapply(actual_list_of_series, function(x) x$to_vector())
+# expect_identical(
+#   list_of_vectors,
+#   as.list(iris)
+# )
 # })
 
 
@@ -304,29 +302,29 @@ test_that("get column", {
 
 
 test_that("with_columns lazy/eager", {
-  l <- list(
+  l = list(
     a = 1:4,
     b = c(.5, 4, 10, 13),
     c = c(TRUE, TRUE, FALSE, TRUE)
   )
-  df <- pl$DataFrame(l)
-  ldf <- df$lazy()
+  df = pl$DataFrame(l)
+  ldf = df$lazy()
 
-  df_actual <- df$with_columns(
+  df_actual = df$with_columns(
     (pl$col("a") * 2)$alias("a*2"),
     (pl$col("b") / 2)$alias("b/2"),
     (!pl$col("c"))$alias("not c")
   )
-  ldf_actual <- ldf$with_columns(
+  ldf_actual = ldf$with_columns(
     (pl$col("a") * 2)$alias("a*2"),
     (pl$col("b") / 2)$alias("b/2"),
     (!pl$col("c"))$alias("not c")
   )
 
-  rdf <- list2DF(l)
-  rdf$`a*2` <- rdf$a * 2
-  rdf$`b/2` <- rdf$b / 2
-  rdf$`not c` <- !rdf$c
+  rdf = list2DF(l)
+  rdf$`a*2` = rdf$a * 2
+  rdf$`b/2` = rdf$b / 2
+  rdf$`not c` = !rdf$c
 
   expect_identical(
     df_actual$to_data_frame(check.names = FALSE),
@@ -340,7 +338,7 @@ test_that("with_columns lazy/eager", {
 
   # check
   pl$set_polars_options(named_exprs = TRUE)
-  ldf_actual_kwarg_named <- ldf$with_columns(
+  ldf_actual_kwarg_named = ldf$with_columns(
     "a*2" = (pl$col("a") * 2),
     "b/2" = (pl$col("b") / 2),
     "not c" = (!pl$col("c"))
@@ -355,14 +353,14 @@ test_that("with_columns lazy/eager", {
 
 
 test_that("limit lazy/eager", {
-  l <- list(
+  l = list(
     a = 1:4,
     b = c(.5, 4, 10, 13),
     c = c(TRUE, TRUE, FALSE, TRUE)
   )
-  df <- pl$DataFrame(l)
-  ldf <- df$lazy()
-  rdf <- df$to_data_frame()
+  df = pl$DataFrame(l)
+  ldf = df$lazy()
+  rdf = df$to_data_frame()
 
   expect_identical(
     df$limit(2)$to_data_frame(),
@@ -391,7 +389,7 @@ test_that("limit lazy/eager", {
 
 test_that("to_Struct, unnest, to_frame, to_data_frame", {
   # round-trip conversion from DataFrame with two columns
-  df <- pl$DataFrame(
+  df = pl$DataFrame(
     a = 1:5,
     b = c("one", "two", "three", "four", "five"),
     c = TRUE,
@@ -399,22 +397,22 @@ test_that("to_Struct, unnest, to_frame, to_data_frame", {
     e = NaN,
     f = NA_real_
   )
-  s <- df$to_struct()
-  df_s <- s$to_frame() # place series in a new DataFrame
+  s = df$to_struct()
+  df_s = s$to_frame() # place series in a new DataFrame
 
   expect_identical(df$to_list(), df_s$unnest()$to_list())
   expect_identical(df$to_list(), df_s$to_list(unnest_structs = TRUE)[[1L]])
 
   # tedious way to unnest a data.frame of one column struct
-  df_e <- as.data.frame(do.call(rbind, df_s$to_data_frame()[[1L]])) |>
+  df_e = as.data.frame(do.call(rbind, df_s$to_data_frame()[[1L]])) |>
     lapply(unlist) |>
     as.data.frame()
   expect_identical(df$to_data_frame(), df_e)
 })
 
-make_cases <- function() {
+make_cases = function() {
   tibble::tribble(
-    ~ .test_name, ~ pola,   ~ base,
+    ~.test_name, ~pola,   ~base,
     "max",        "max",    max,
     "mean",       "mean",   mean,
     "median",     "median", median,
@@ -429,7 +427,8 @@ make_cases <- function() {
 }
 
 patrick::with_parameters_test_that(
-  "simple translations: eager", {
+  "simple translations: eager",
+  {
     a = pl$DataFrame(mtcars)[[pola]]()$to_data_frame()
     b = data.frame(lapply(mtcars, base))
     testthat::expect_equal(a, b, ignore_attr = TRUE)
@@ -447,11 +446,11 @@ test_that("simple translations", {
   expect_true(all(a != b))
 
   a = pl$DataFrame(mtcars)$reverse()$to_data_frame()
-  b = mtcars[32:1,]
+  b = mtcars[32:1, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
   a = pl$DataFrame(mtcars)$slice(2, 4)$to_data_frame()
-  b = mtcars[3:6,]
+  b = mtcars[3:6, ]
   expect_equal(a, b, ignore_attr = TRUE)
 
   a = pl$DataFrame(mtcars)$slice(30)$to_data_frame()
@@ -461,8 +460,8 @@ test_that("simple translations", {
   a = pl$DataFrame(mtcars)$estimated_size()
   expect_equal(a, 2816, tolerance = .1)
 
-  #trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof","exceeds u8 max value"))
+  # trigger u8 conversion errors
+  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceeds u8 max value"))
   expect_grepl_error(
     pl$DataFrame(mtcars)$var(-1),
     c("ddof", "the value -1 cannot be less than zero")
@@ -486,8 +485,8 @@ test_that("null_count 64bit", {
 })
 
 test_that("tail", {
-  a <- as.data.frame(pl$DataFrame(mtcars)$tail(6))
-  b <- tail(mtcars)
+  a = as.data.frame(pl$DataFrame(mtcars)$tail(6))
+  b = tail(mtcars)
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
@@ -581,7 +580,8 @@ test_that("unique", {
   df = pl$DataFrame(
     x = as.numeric(c(1, 1:5)),
     y = as.numeric(c(1, 1:5)),
-    z = as.numeric(c(1, 1, 1:4)))
+    z = as.numeric(c(1, 1, 1:4))
+  )
   v = df$unique()$height
   w = df$unique("z", "first")$height
   x = df$unique(c("x", "y", "z"), "first")$height
@@ -599,9 +599,9 @@ test_that("unique", {
 })
 
 test_that("as_data_frame (backward compatibility)", {
-  w <- as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
-  x <- as.data.frame(pl$DataFrame(mtcars)$as_data_frame())
-  y <- mtcars
+  w = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
+  x = as.data.frame(pl$DataFrame(mtcars)$as_data_frame())
+  y = mtcars
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
 })
@@ -612,13 +612,13 @@ test_that("sort", {
 
   w = df$sort("mpg")$to_data_frame()
   x = df$sort(pl$col("mpg"))$to_data_frame()
-  y = mtcars[order(mtcars$mpg),]
+  y = mtcars[order(mtcars$mpg), ]
   expect_equal(x, y, ignore_attr = TRUE)
 
   w = df$sort(pl$col("cyl"), pl$col("mpg"))$to_data_frame()
   x = df$sort("cyl", "mpg")$to_data_frame()
   y = df$sort(c("cyl", "mpg"))$to_data_frame()
-  z = mtcars[order(mtcars$cyl, mtcars$mpg),]
+  z = mtcars[order(mtcars$cyl, mtcars$mpg), ]
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
   expect_equal(w, z, ignore_attr = TRUE)
@@ -653,7 +653,7 @@ test_that("sort", {
 })
 
 test_that("dtype_strings", {
-  df_1 <- pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
+  df_1 = pl$DataFrame(data.frame(a = 1L, b = 1.0, c = "1", d = I(list(1))))
   expect_equal(df_1$dtype_strings(), c("i32", "f64", "str", "list[f64]"))
 })
 
@@ -712,14 +712,14 @@ test_that("join_asof_simple", {
   )
 
 
-  #str_tolerance within 19w
+  # str_tolerance within 19w
   expect_identical(
     pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "19w")$to_list(),
     pop$join_asof(gdp, on = "date", strategy = "backward")$to_list()
   )
 
 
-  #exceeding 18w
+  # exceeding 18w
   expect_identical(
     pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = "18w")$to_list(),
     pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
@@ -728,18 +728,17 @@ test_that("join_asof_simple", {
     )$to_list()
   )
 
-  #num_tolerance within 19w = 19*7 days
+  # num_tolerance within 19w = 19*7 days
   expect_identical(
-    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 19*7)$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 19 * 7)$to_list(),
     pop$join_asof(gdp, on = "date", strategy = "backward")$to_list()
   )
 
   expect_identical(
-    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18*7)$to_list(),
-     pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
+    pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 18 * 7)$to_list(),
+    pop$join_asof(gdp, on = "date", strategy = "backward")$with_columns(
       pl$lit(NA_real_)$alias("gdp"),
-       pl$lit(NA_character_)$alias("group_right")
+      pl$lit(NA_character_)$alias("group_right")
     )$to_list()
   )
-
 })

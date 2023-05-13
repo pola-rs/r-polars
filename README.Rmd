@@ -130,7 +130,7 @@ convert an R data frame to a Polars `DataFrame`, we call:
 ```{r}
 library(polars)
 
-dat = pl$DataFrame(mtcars)
+dat <- pl$DataFrame(mtcars)
 dat
 ```
 

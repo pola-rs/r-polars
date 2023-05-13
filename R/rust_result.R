@@ -1,4 +1,3 @@
-
 #' check if z is a result
 #' @param x R object which could be a rust-like result of a list with two elements, ok and err
 #' @details both ok and err being NULL encodes ok-value NULL. No way to encode an err-value NULL
@@ -6,12 +5,12 @@
 #' @keywords internal
 #' @return bool if is a result object
 is_result = function(x) {
-  identical(class(x),"extendr_result")
-  #is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
+  identical(class(x), "extendr_result")
+  # is.list(x) && identical(names(x), c("ok","err")) && (is.null(x[[1L]]) || is.null(x[[2L]]))
 }
 
-guard_result = function(x, msg="") {
-  if(!is_result(x)) stopf("internal error: expected a Result-type %s", msg)
+guard_result = function(x, msg = "") {
+  if (!is_result(x)) stopf("internal error: expected a Result-type %s", msg)
   invisible(x)
 }
 
@@ -46,7 +45,7 @@ Ok = function(x) {
 #' @keywords internal
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
-  if(is.null(x)) stopf("internal error in Err(x): x cannot be a NULL, not allowed")
+  if (is.null(x)) stopf("internal error in Err(x): x cannot be a NULL, not allowed")
   structure(list(ok = NULL, err = x), class = "extendr_result")
 }
 
@@ -57,7 +56,7 @@ Err = function(x) {
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
 map_err = function(x, f) {
-  if(is_err(x)) x$err = f(x$err)
+  if (is_err(x)) x$err <- f(x$err)
   x
 }
 
@@ -66,7 +65,7 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  if(is_ok(x)) x$ok = f(x$ok)
+  if (is_ok(x)) x$ok <- f(x$ok)
   x
 }
 
@@ -76,8 +75,10 @@ map = function(x, f) {
 #' @return same R object wrapped in a Err-result
 #' @keywords internal
 and_then = function(x, f) {
-  if(is_err(x)) return(x)
-  guard_result(f(x$ok), msg ="in and_then(x, f): f must return a result")
+  if (is_err(x)) {
+    return(x)
+  }
+  guard_result(f(x$ok), msg = "in and_then(x, f): f must return a result")
 }
 
 #' map an Err part of Result
@@ -87,8 +88,10 @@ and_then = function(x, f) {
 #' @return same R object wrapped in a Err-result
 or_else = function(x, f) {
   guard_result(x)
-  if(is_ok(x)) return(x)
-  guard_result(f(x$err), msg ="in or_else(x, f): f must return a result")
+  if (is_ok(x)) {
+    return(x)
+  }
+  guard_result(f(x$err), msg = "in or_else(x, f): f must return a result")
 }
 
 
@@ -115,31 +118,30 @@ or_else = function(x, f) {
 #'   ),
 #'   error = function(err) as.character(err)
 #' )
-unwrap = function(result, context = NULL, call=sys.call(1L)) {
-  #if not a result
-  if(!is_result(result)) {
+unwrap = function(result, context = NULL, call = sys.call(1L)) {
+  # if not a result
+  if (!is_result(result)) {
     stopf("Internal error: cannot unwrap non result")
   }
 
-  #if result is ok (ok can be be valid null, hence OK if both ok and err is null)
-  if(is.null(result$err)) {
+  # if result is ok (ok can be be valid null, hence OK if both ok and err is null)
+  if (is.null(result$err)) {
     return(result$ok)
   }
 
-  #if result is error, make a pretty with context
-  if(is.null(result$ok) && !is.null(result$err)) {
-    if(!is.null(context)) {
+  # if result is error, make a pretty with context
+  if (is.null(result$ok) && !is.null(result$err)) {
+    if (!is.null(context)) {
       result$err = paste(context, result$err)
     }
 
     stop(
       paste(
         result$err,
-
-        if(!polars_optenv$do_not_repeat_call) {
+        if (!polars_optenv$do_not_repeat_call) {
           paste(
             "\n when calling :\n",
-            paste(capture.output(print(call)),collapse="\n")
+            paste(capture.output(print(call)), collapse = "\n")
           )
         }
       ),
@@ -148,7 +150,7 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
     )
   }
 
-  #if not ok XOR error, then roll over
+  # if not ok XOR error, then roll over
   stopf("Internal error: result object corrupted")
 }
 
@@ -164,17 +166,17 @@ unwrap = function(result, context = NULL, call=sys.call(1L)) {
 #' @examples
 #' f = function() polars:::pstop("this aint right!!")
 #' tryCatch(f(), error = \(e) as.character(e))
-pstop = function(err, call=sys.call(1L)) {
-  unwrap(list(ok=NULL,err=err),call=call)
+pstop = function(err, call = sys.call(1L)) {
+  unwrap(list(ok = NULL, err = err), call = call)
 }
 
-#capture error in any R side arguments, and pass to rust side to preserve context and write
+# capture error in any R side arguments, and pass to rust side to preserve context and write
 # really sweet error messages
-result = function(x, msg= "an error because:\n") {
- tryCatch(
+result = function(x, msg = "an error because:\n") {
+  tryCatch(
     Ok(x),
     error = function(err) {
-      Err(paste0(msg,err$message))
+      Err(paste0(msg, err$message))
     }
   )
 }

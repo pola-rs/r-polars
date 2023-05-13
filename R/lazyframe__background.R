@@ -5,7 +5,7 @@
 #' @export
 #' @keywords internal
 .DollarNames.PolarsBackgroundHandle = function(x, pattern = "") {
-  paste0(ls(PolarsBackgroundHandle, pattern = pattern ),"()")
+  paste0(ls(PolarsBackgroundHandle, pattern = pattern), "()")
 }
 
 #' print LazyFrame s3 method
@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @examples
-#' lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())
+#' lazy_df = pl$DataFrame(iris[, 1:3])$lazy()$select(pl$all()$first())
 #' handle = lazy_df$collect_background()
 #' handle$is_exhausted()
 #' df = handle$join()
@@ -27,7 +27,7 @@
 print.PolarsBackgroundHandle = function(x, ...) {
   cat(
     "PolarsBackgroundHandle\n",
-    if(x$is_exhausted()) "this handle is exhausted \n" else  "use $join() to retrieve result\n"
+    if (x$is_exhausted()) "this handle is exhausted \n" else "use $join() to retrieve result\n"
   )
 }
 
@@ -37,7 +37,7 @@ print.PolarsBackgroundHandle = function(x, ...) {
 #' @keywords internal
 #'
 #' @examples
-#' lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())
+#' lazy_df = pl$DataFrame(iris[, 1:3])$lazy()$select(pl$all()$first())
 #' handle = lazy_df$collect_background()
 #' df = handle$join()
 #'
@@ -52,7 +52,7 @@ PolarsBackgroundHandle_join = function() {
 #'
 #' @keywords internal
 #' @examples
-#' lazy_df = pl$DataFrame(iris[,1:3])$lazy()$select(pl$all()$first())
+#' lazy_df = pl$DataFrame(iris[, 1:3])$lazy()$select(pl$all()$first())
 #' handle = lazy_df$collect_background()
 #' handle$is_exhausted()
 #' df = handle$join()

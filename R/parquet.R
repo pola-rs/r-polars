@@ -14,26 +14,26 @@
 #' @export
 #'
 #' @examples
-#' #TODO write parquet example
+#' # TODO write parquet example
 scan_parquet = function(
-  file,#: str | Path,
-  n_rows = NULL,#: int | None = None,
-  cache = TRUE,#: bool = True,
-  parallel = c(
-    "Auto", #default
-    "None",
-    "Columns", #Parallelize over the row groups
-    "RowGroups"#Parallelize over the columns
-  ), # Automatically determine over which unit to parallelize, This will choose the most occurring unit.
-  rechunk = TRUE,#: bool = True,
-  row_count_name = NULL,#: str | None = None,
-  row_count_offset = 0L,#: int = 0,
-  #storage_options,#: dict[str, object] | None = None, #seems fsspec specific
-  low_memory = FALSE#: bool = False,
-) {#-> LazyFrame
+    file, # : str | Path,
+    n_rows = NULL, # : int | None = None,
+    cache = TRUE, # : bool = True,
+    parallel = c(
+      "Auto", # default
+      "None",
+      "Columns", # Parallelize over the row groups
+      "RowGroups" # Parallelize over the columns
+    ), # Automatically determine over which unit to parallelize, This will choose the most occurring unit.
+    rechunk = TRUE, # : bool = True,
+    row_count_name = NULL, # : str | None = None,
+    row_count_offset = 0L, # : int = 0,
+    # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
+    low_memory = FALSE # : bool = False,
+    ) { #-> LazyFrame
 
   parallel = parallel[1L]
-  if(!parallel %in% c("None","Columns","RowGroups","Auto")) {
+  if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {
     stopf("unknown parallel strategy")
   }
 
@@ -49,7 +49,6 @@ scan_parquet = function(
   )
 
   unwrap(result_lf)
-
 }
 
 #

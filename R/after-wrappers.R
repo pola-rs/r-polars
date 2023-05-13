@@ -1,4 +1,3 @@
-
 # Build time options
 build_debug_print = FALSE
 
@@ -14,16 +13,18 @@ build_debug_print = FALSE
 #'
 #' @return env of pure function calls to rust
 #'
-extendr_method_to_pure_functions = function(env,class_name=NULL) {
-  if(is.null(class_name)) class_name = as.character(sys.call()[2])
-  e = as.environment(lapply(env,function(f) {
-    if(!is.function(f)) return(f)
-    if("self" %in% codetools::findGlobals(f)) {
-      formals(f) <- c(alist(self=),formals(f))
+extendr_method_to_pure_functions = function(env, class_name = NULL) {
+  if (is.null(class_name)) class_name <- as.character(sys.call()[2])
+  e = as.environment(lapply(env, function(f) {
+    if (!is.function(f)) {
+      return(f)
+    }
+    if ("self" %in% codetools::findGlobals(f)) {
+      formals(f) = c(alist(self = ), formals(f))
     }
     f
   }))
-  class(e) = c("private_polars_env", paste0("pr_",class_name) ,"environment")
+  class(e) = c("private_polars_env", paste0("pr_", class_name), "environment")
   e
 }
 
@@ -33,11 +34,12 @@ extendr_method_to_pure_functions = function(env,class_name=NULL) {
 #' @export
 #' @keywords internal
 "$.private_polars_env" = function(self, name) {
-  #print called private class in debug mode
-  if(polars_optenv$debug_polars) {
+  # print called private class in debug mode
+  if (polars_optenv$debug_polars) {
     cat(
-      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\n   .pr$",
-      substr(class(self)[2],4,99), "$",name,"() -> ", sep= ""
+      "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\n   .pr$",
+      substr(class(self)[2], 4, 99), "$", name, "() -> ",
+      sep = ""
     )
   }
   self[[name]]
@@ -52,35 +54,35 @@ extendr_method_to_pure_functions = function(env,class_name=NULL) {
 #' @keywords internal api_private
 #' @export
 #' @examples
-#' #.pr$DataFrame$print() is an external function where self is passed as arg
+#' # .pr$DataFrame$print() is an external function where self is passed as arg
 #' polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
 #' @keywords internal
 #' @examples
-#' polars:::print_env(.pr,".pr the collection of private method calls to rust-polars")
-.pr            = new.env(parent=emptyenv())
-.pr$Series     = extendr_method_to_pure_functions(Series)
-.pr$DataFrame  = extendr_method_to_pure_functions(DataFrame)
-.pr$GroupBy    = NULL # derived from DataFrame in R, has no rust calls
-.pr$LazyFrame  = extendr_method_to_pure_functions(LazyFrame)
-.pr$LazyGroupBy= extendr_method_to_pure_functions(LazyGroupBy)
+#' polars:::print_env(.pr, ".pr the collection of private method calls to rust-polars")
+.pr = new.env(parent = emptyenv())
+.pr$Series = extendr_method_to_pure_functions(Series)
+.pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
+.pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
+.pr$LazyFrame = extendr_method_to_pure_functions(LazyFrame)
+.pr$LazyGroupBy = extendr_method_to_pure_functions(LazyGroupBy)
 .pr$PolarsBackgroundHandle = extendr_method_to_pure_functions(PolarsBackgroundHandle)
-.pr$DataType   = extendr_method_to_pure_functions(RPolarsDataType)
+.pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
 .pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
-.pr$RField      = extendr_method_to_pure_functions(RField)
-.pr$Expr       = extendr_method_to_pure_functions(Expr)
+.pr$RField = extendr_method_to_pure_functions(RField)
+.pr$Expr = extendr_method_to_pure_functions(Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
-.pr$When           = extendr_method_to_pure_functions(When)
-.pr$WhenThen       = extendr_method_to_pure_functions(WhenThen)
-.pr$WhenThenThen   = extendr_method_to_pure_functions(WhenThenThen)
+.pr$When = extendr_method_to_pure_functions(When)
+.pr$WhenThen = extendr_method_to_pure_functions(WhenThen)
+.pr$WhenThenThen = extendr_method_to_pure_functions(WhenThenThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 
 
-#TODO remove export
+# TODO remove export
 
 
 
-##this macro must be defined now
+## this macro must be defined now
 
 #' @title add syntax verification to class
 #' @include utils.R
@@ -103,9 +105,9 @@ extendr_method_to_pure_functions = function(env,class_name=NULL) {
 #' @seealso verify_method_call
 macro_add_syntax_check_to_class = function(Class_name) {
   tokens = paste0(
-    "`$.",Class_name,"` <- function (self, name) {\n",
-    "  verify_method_call(",Class_name,",name)\n",
-    "  func <- ",Class_name,"[[name]]\n",
+    "`$.", Class_name, "` <- function (self, name) {\n",
+    "  verify_method_call(", Class_name, ",name)\n",
+    "  func <- ", Class_name, "[[name]]\n",
     "  environment(func) <- environment()\n",
     "  if(inherits(func,'property')) {\n",
     "    func()\n",
@@ -119,15 +121,15 @@ macro_add_syntax_check_to_class = function(Class_name) {
 }
 
 
-##modify classes to perform syntax cheking
-##this relies on no envrionment other than env_classes has been defined when macro called
-##this mod should be run immediately after extendr-wrappers.R are sourced
-is_env_class = sapply(mget(ls()),\(x) typeof(x)=="environment")
+## modify classes to perform syntax cheking
+## this relies on no envrionment other than env_classes has been defined when macro called
+## this mod should be run immediately after extendr-wrappers.R are sourced
+is_env_class = sapply(mget(ls()), \(x) typeof(x) == "environment")
 env_class_names = names(is_env_class)[is_env_class]
 if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
-  if (build_debug_print) cat(i_class,", ",sep="")
-  if(!exists(paste0("$.",i_class))) {
+  if (build_debug_print) cat(i_class, ", ", sep = "")
+  if (!exists(paste0("$.", i_class))) {
     stopf("internal assertion failed, env class without a dollarsign method")
   }
   macro_add_syntax_check_to_class(i_class)
@@ -141,11 +143,11 @@ if (build_debug_print) cat("\n")
 #' @param setter bool, if true a property method can be modified by user
 #' @keywords internal
 #' @return function subclassed into c("property","function") or c("setter","property","function")
-method_as_property = function(f, setter=FALSE) {
-  class(f) = if(setter) {
-    c("setter","property","function")
+method_as_property = function(f, setter = FALSE) {
+  class(f) = if (setter) {
+    c("setter", "property", "function")
   } else {
-    c("property","function")
+    c("property", "function")
   }
   f
 }
@@ -166,18 +168,18 @@ method_as_property = function(f, setter=FALSE) {
 #'
 #' @export
 #' @examples
-#' #how to use polars via `pl`
-#' pl$col("colname")$sum() / pl$lit(42L)  #expression ~ chain-method / literal-expression
+#' # how to use polars via `pl`
+#' pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 #'
-#' #pl inventory
-#' polars:::print_env(pl,"polars public functions")
+#' # pl inventory
+#' polars:::print_env(pl, "polars public functions")
 #'
-#' #all accessible classes and their public methods
+#' # all accessible classes and their public methods
 #' polars:::print_env(
 #'   polars:::pl_pub_class_env,
 #'   "polars public class methods, access via object$method()"
 #' )
-pl = new.env(parent=emptyenv())
+pl = new.env(parent = emptyenv())
 
 class(pl) = c("pl_polars_env", "environment")
 
@@ -188,10 +190,11 @@ class(pl) = c("pl_polars_env", "environment")
 #' @export
 #' @keywords internal
 "$.pl_polars_env" = function(self, name) {
-  #print called private class in debug mode
-  if(polars_optenv$debug_polars) {
+  # print called private class in debug mode
+  if (polars_optenv$debug_polars) {
     cat(
-      "[",format(subtimer_ms("TIME? "),digits = 4),"ms]\npl$",name,"() -> ", sep= ""
+      "[", format(subtimer_ms("TIME? "), digits = 4), "ms]\npl$", name, "() -> ",
+      sep = ""
     )
   }
   self[[name]]
@@ -199,18 +202,19 @@ class(pl) = c("pl_polars_env", "environment")
 
 
 
-#remap
+# remap
 DataType = clone_env_one_level_deep(RPolarsDataType)
 
-#used for printing public environment
+# used for printing public environment
 pl_class_names = sort(
-  c("LazyFrame","Series","LazyGroupBy","DataType","Expr","DataFrame", "PolarsBackgroundHandle",
+  c(
+    "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
     "When", "WhenThen", "WhenThenThen"
   )
-) #TODO discover all public class automaticly
+) # TODO discover all public class automaticly
 
 pl_pub_env = as.environment(asNamespace("polars"))
-pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
+pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 
 
 #' @title Any polars class object is made of this
@@ -225,9 +229,7 @@ pl_pub_class_env = as.environment(mget(pl_class_names,envir=pl_pub_env))
 #'
 #' @importFrom utils .DollarNames
 #' @examples
-#' #all a polars object is made of:
+#' # all a polars object is made of:
 #' some_polars_object = pl$DataFrame(iris)
-#' str(some_polars_object) #External Pointer tagged with a class attribute.
+#' str(some_polars_object) # External Pointer tagged with a class attribute.
 object = "place_holder"
-
-
