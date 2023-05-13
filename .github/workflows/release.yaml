@@ -50,8 +50,8 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
-      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
-      - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
+      - run: echo "rust-toolchain=nightly-2023-04-11" >>"$GITHUB_ENV"
+      - run: echo "rust-toolchain=nightly-2023-04-11-gnu" >>$env:GITHUB_ENV
         if: runner.os == 'Windows'
 
       - name: Set up Rust
