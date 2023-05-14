@@ -38,21 +38,16 @@ jobs:
         shell: bash
         run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
 
-      - name: cache polars rust targets
-        id: cache-rust-targets
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-rust-targets
-        with:
-          path: ./src/rust/target/
-          key: ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
-            ${{ runner.os }}-cargo-target
-
       - name: Set up Rust
         run: |
           make requirements-rs
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: build
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 

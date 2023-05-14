@@ -86,6 +86,7 @@ jobs:
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
+          shared-key: build
           workspaces: ./src/rust/
           cache-on-failure: "true"
 
