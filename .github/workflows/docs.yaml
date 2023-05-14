@@ -33,44 +33,9 @@ jobs:
       contents: write
 
     steps:
-
-       ##### Github actions and Python stuff #####
-
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
-      - uses: actions/cache@v2
-        with:
-          key: ${{ github.ref }}
-          path: .cache
 
-
-        ##### Rust stuff #####
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ./src/rust/
-          cache-on-failure: "true"
-
-      - name: Install ubuntu SYSTEM REQUIREMENTS
-        run: |
-          sudo apt-get update \
-          && sudo apt-get install -y \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libharfbuzz-dev \
-            libcurl4-openssl-dev \
-            libgit2-dev \
-            libicu-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libxml2-dev \
-            libssl-dev \
-            libxslt1-dev
+      - uses: ./.github/actions/setup
 
       - name: find polars rust source/cache, used by Makevars in check step
         run: |
@@ -79,7 +44,9 @@ jobs:
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
         shell: bash
 
-        ##### R stuff #####
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
 
       - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-r@v2

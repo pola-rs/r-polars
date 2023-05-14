@@ -40,24 +40,11 @@ jobs:
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
 
+      - uses: ./.github/actions/setup
+
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
-
-      - run: echo "rust-toolchain=nightly-2023-04-11" >>"$GITHUB_ENV"
-      - run: echo "rust-toolchain=nightly-2023-04-11-gnu" >>$env:GITHUB_ENV
-        if: runner.os == 'Windows'
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.rust-toolchain }}
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ./src/rust/
-          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -68,24 +55,6 @@ jobs:
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools-version }}
           Ncpus: 2
-
-      - name: Install ubuntu SYSTEM REQUIREMENTS
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update \
-          && sudo apt-get install -y \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libharfbuzz-dev \
-            libcurl4-openssl-dev \
-            libgit2-dev \
-            libicu-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libxml2-dev \
-            libssl-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

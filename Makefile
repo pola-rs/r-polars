@@ -1,12 +1,16 @@
 .DEFAULT_GOAL := help
 
 SHELL := /bin/bash
-VENV = .venv
+VENV := .venv
+
+RUST_TOOLCHAIN_VERSION := nightly-2023-04-11
 
 ifeq ($(OS),Windows_NT)
-	VENV_BIN=$(VENV)/Scripts
+	VENV_BIN := $(VENV)/Scripts
+	RUST_TOOLCHAIN := $(RUST_TOOLCHAIN_VERSION)-gnu
 else
-	VENV_BIN=$(VENV)/bin
+	VENV_BIN := $(VENV)/bin
+	RUST_TOOLCHAIN := $(RUST_TOOLCHAIN_VERSION)
 endif
 
 .PHONY: help
@@ -30,10 +34,10 @@ requirements-py: .venv
 	$(VENV_BIN)/python -m pip install --upgrade pip
 	$(VENV_BIN)/pip install --upgrade mkdocs-material
 
-.PHONY: requirements-rs # TODO: Windows support?
+.PHONY: requirements-rs
 requirements-rs:
-	rustup toolchain install nightly-2023-04-11
-	rustup default nightly-2023-04-11
+	rustup toolchain install $(RUST_TOOLCHAIN)
+	rustup default $(RUST_TOOLCHAIN)
 
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
