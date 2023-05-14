@@ -45,15 +45,6 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
 
-
-        ##### Rust stuff #####
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ./src/rust/
-          cache-on-failure: "true"
-
       - name: Install ubuntu SYSTEM REQUIREMENTS
         run: |
           sudo apt-get update \
@@ -89,6 +80,14 @@ jobs:
 
       - name: Get requirements
         run: make requirements
+
+        ##### Rust stuff #####
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./src/rust/
+          cache-on-failure: "true"
 
       - name: Build docs
         run: make docs
