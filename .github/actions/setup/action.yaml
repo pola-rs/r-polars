@@ -33,4 +33,3 @@ runs:
         with:
           shared-key: build
           workspaces: ./src/rust/
-          cache-on-failure: "true"
