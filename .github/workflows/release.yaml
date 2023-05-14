@@ -50,14 +50,9 @@ jobs:
             ${{ runner.os }}-cargo-target-${{ hashFiles('./src/rust/Cargo.toml') }}
             ${{ runner.os }}-cargo-target
 
-      - run: echo "rust-toolchain=nightly-2023-04-11" >>"$GITHUB_ENV"
-      - run: echo "rust-toolchain=nightly-2023-04-11-gnu" >>$env:GITHUB_ENV
-        if: runner.os == 'Windows'
-
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.rust-toolchain }}
+        run: |
+          make requirements-rs
 
       - uses: r-lib/actions/setup-pandoc@v2
 
