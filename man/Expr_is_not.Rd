@@ -21,7 +21,7 @@ Exprs
 not method and operator
 }
 \examples{
-#two syntaxes same result
+# two syntaxes same result
 pl$lit(TRUE)$is_not()
 !pl$lit(TRUE)
 }

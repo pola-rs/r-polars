@@ -28,11 +28,11 @@ Series
 About as slow as regular non-vectorized R. Similar to using R sapply on a vector.
 }
 \examples{
-s = pl$Series(letters[1:5],"ltrs")
-f = \(x) paste(x,":",as.integer(charToRaw(x)))
-s$apply(f,pl$Utf8)
+s = pl$Series(letters[1:5], "ltrs")
+f = \(x) paste(x, ":", as.integer(charToRaw(x)))
+s$apply(f, pl$Utf8)
 
-#same as
-pl$Series(sapply(s$to_r(),f),s$name)
+# same as
+pl$Series(sapply(s$to_r(), f), s$name)
 }
 \keyword{Series}

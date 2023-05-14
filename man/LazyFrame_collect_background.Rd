@@ -13,7 +13,7 @@ collected \code{DataFrame}
 collect DataFrame by lazy query
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 }
 \keyword{DataFrame_new}
 \keyword{LazyFrame}

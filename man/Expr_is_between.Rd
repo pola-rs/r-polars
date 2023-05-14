@@ -31,10 +31,10 @@ This function is equivalent to a combination of < <= >= and the &-and operator.
 }
 \examples{
 df = pl$DataFrame(list(num = 1:5))
-df$select(pl$col("num")$is_between(2,4))
-df$select(pl$col("num")$is_between(2,4,TRUE))
-df$select(pl$col("num")$is_between(2,4,c(FALSE, TRUE)))
-#start end can be a vector/expr with same length as column
-df$select(pl$col("num")$is_between(c(0,2,3,3,3),6))
+df$select(pl$col("num")$is_between(2, 4))
+df$select(pl$col("num")$is_between(2, 4, TRUE))
+df$select(pl$col("num")$is_between(2, 4, c(FALSE, TRUE)))
+# start end can be a vector/expr with same length as column
+df$select(pl$col("num")$is_between(c(0, 2, 3, 3, 3), 6))
 }
 \keyword{Expr}

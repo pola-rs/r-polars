@@ -26,23 +26,23 @@ zzz to be last file sourced) the extendr-methods are removed and replaced by any
 prefixed \code{DataFrame_}.
 }
 \examples{
-#see all exported methods
+# see all exported methods
 ls(polars:::DataFrame)
 
-#see all private methods (not intended for regular use)
+# see all private methods (not intended for regular use)
 ls(polars:::.pr$DataFrame)
 
 
-#make an object
+# make an object
 df = pl$DataFrame(iris)
 
-#use a public method/property
+# use a public method/property
 df$shape
 df2 = df
-#use a private method, which has mutability
-result = polars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
+# use a private method, which has mutability
+result = polars:::.pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 
-#column exists in both dataframes-objects now, as they are just pointers to the same object
+# column exists in both dataframes-objects now, as they are just pointers to the same object
 # there are no public methods with mutability
 df$columns
 df2$columns
@@ -57,8 +57,8 @@ df2$columns
 # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
 # method does not return any ok-value.
 
-#try unwrapping an error from polars due to unmatching column lengths
-err_result = polars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
-tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
+# try unwrapping an error from polars due to unmatching column lengths
+err_result = polars:::.pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
+tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 }
 \keyword{DataFrame}

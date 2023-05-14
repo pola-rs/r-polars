@@ -13,6 +13,6 @@ bool
 Reduce Boolean Series with ALL
 }
 \examples{
-pl$Series(c(TRUE,TRUE,NA))$all()
+pl$Series(c(TRUE, TRUE, NA))$all()
 }
 \keyword{Series}

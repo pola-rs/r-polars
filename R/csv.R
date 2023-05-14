@@ -1,8 +1,3 @@
-
-
-
-
-
 #' new LazyFrame from csv
 #' @description will scan the csv when collect(), not now
 #' @keywords LazyFrame_new
@@ -58,81 +53,77 @@
 #'
 #' @examples
 #' my_file = tempfile()
-#' write.csv(iris,my_file)
-#' lazy_frame = lazy_csv_reader(path=my_file)
+#' write.csv(iris, my_file)
+#' lazy_frame = lazy_csv_reader(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
 lazy_csv_reader = function(
-  path,
-  sep = ",",
-  has_header = TRUE,
-  ignore_errors = FALSE,
-  skip_rows = 0,
-  n_rows = NULL,
-  cache = FALSE,
-  overwrite_dtype = NULL,  #polars:::DataTypeVector$new()$print()
-  low_memory = FALSE,
-  comment_char = NULL,
-  quote_char = '"',
-  null_values = NULL,
-  infer_schema_length = 100,
-  skip_rows_after_header = 0,
-  encoding = "utf8",
-  row_count_name = NULL,
-  row_count_offset = 0,
-  parse_dates = FALSE
-) {
-
-  #capture all args and modify some to match lower level function
+    path,
+    sep = ",",
+    has_header = TRUE,
+    ignore_errors = FALSE,
+    skip_rows = 0,
+    n_rows = NULL,
+    cache = FALSE,
+    overwrite_dtype = NULL, # polars:::DataTypeVector$new()$print()
+    low_memory = FALSE,
+    comment_char = NULL,
+    quote_char = '"',
+    null_values = NULL,
+    infer_schema_length = 100,
+    skip_rows_after_header = 0,
+    encoding = "utf8",
+    row_count_name = NULL,
+    row_count_offset = 0,
+    parse_dates = FALSE) {
+  # capture all args and modify some to match lower level function
   args = as.list(environment())
 
   args[["path"]] = path.expand(path)
 
-  #overwrite_dtype: convert named list of DataType's to DataTypeVector obj
-  if(!is.null(args$overwrite_dtype)) {
+  # overwrite_dtype: convert named list of DataType's to DataTypeVector obj
+  if (!is.null(args$overwrite_dtype)) {
     owdtype = args$overwrite_dtype
 
-    if( !is.list(owdtype) || !is_named(owdtype)) {
+    if (!is.list(owdtype) || !is_named(owdtype)) {
       stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
-    datatype_vector = DataTypeVector$new() #mutable
+    datatype_vector = DataTypeVector$new() # mutable
     mapply(
       name = names(owdtype),
       type = unname(owdtype),
       FUN = function(name, type) {
-
-        #convert possible string to datatype
-        if(is_string(type)) {
+        # convert possible string to datatype
+        if (is_string(type)) {
           type = DataType$new(type)
         }
-        if(!inherits(type,"RPolarsDataType")) {
+        if (!inherits(type, "RPolarsDataType")) {
           stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
         }
-        datatype_vector$push(name,type)
+        datatype_vector$push(name, type)
       }
     )
     args$overwrite_dtype = datatype_vector
   }
 
 
-  #null_values: convert string or un/named  char vec into RNullValues obj
-  if(!is.null(args$null_values)) {
+  # null_values: convert string or un/named  char vec into RNullValues obj
+  if (!is.null(args$null_values)) {
     nullvals = args$null_values
-    ##TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
+    ## TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
     RNullValues = (function() {
-
-      #one string is used as one NULL marker for all columns
-      if(is_string(nullvals)) {
+      # one string is used as one NULL marker for all columns
+      if (is_string(nullvals)) {
         return(RNullValues$new_all_columns(nullvals))
       }
 
-      #many unnamed strings(char vec) is used one mark for each column
-      if(is.character(nullvals) && !is_named(nullvals)) {
+      # many unnamed strings(char vec) is used one mark for each column
+      if (is.character(nullvals) && !is_named(nullvals)) {
         return(RNullValues = RNullValues$new_columns(nullvals))
       }
 
-      #named char vec is used as column(name) marker(value) pairs
-      if(is.character(nullvals) && is_named(nullvals)) {
+      # named char vec is used as column(name) marker(value) pairs
+      if (is.character(nullvals) && is_named(nullvals)) {
         return(RNullValues$new_named(null_values))
       }
 
@@ -142,9 +133,9 @@ lazy_csv_reader = function(
     args$null_values = RNullValues
   }
 
-  ##call low level function with args
-  check_no_missing_args(rlazy_csv_reader,args)
-  unwrap(do.call(rlazy_csv_reader,args))
+  ## call low level function with args
+  check_no_missing_args(rlazy_csv_reader, args)
+  unwrap(do.call(rlazy_csv_reader, args))
 }
 
 #' Read csv to DataFrame
@@ -168,49 +159,45 @@ csv_reader = function(...) {
 #' @export
 #'
 #' @examples df = pl$read_csv("https://j.mp/iriscsv")
-read_csv_ = function(path, lazy= FALSE, reuse_downloaded = TRUE,  ...) {
-
+read_csv_ = function(path, lazy = FALSE, reuse_downloaded = TRUE, ...) {
   # check if path is a existing file, or else try if url to download
-  if(!file.exists(path)) {
+  if (!file.exists(path)) {
     con = NULL
 
-    #check if possible to open url connection
-    assumed_schemas = c("","https://","http://","ftp://")
-    for(i_schema in assumed_schemas) {
-      if(!is.null(con)) break
-      actual_url = paste0(i_schema,path)
+    # check if possible to open url connection
+    assumed_schemas = c("", "https://", "http://", "ftp://")
+    for (i_schema in assumed_schemas) {
+      if (!is.null(con)) break
+      actual_url = paste0(i_schema, path)
       suppressWarnings(
         tryCatch(
-          {con = url(actual_url,open = "rt")},
+          {
+            con = url(actual_url, open = "rt")
+          },
           error = function(e) {}
         )
       )
     }
 
-    #try download file if valid url
-    if(!is.null(con)) {
+    # try download file if valid url
+    if (!is.null(con)) {
       close(con)
-      tmp_file = paste0(tempdir(),"/",make.names(actual_url))
-      if( isFALSE(reuse_downloaded) || isFALSE(file.exists(tmp_file))) {
+      tmp_file = paste0(tempdir(), "/", make.names(actual_url))
+      if (isFALSE(reuse_downloaded) || isFALSE(file.exists(tmp_file))) {
         download.file(url = actual_url, destfile = tmp_file)
-        message(paste("tmp file placed in \n",tmp_file))
+        message(paste("tmp file placed in \n", tmp_file))
       }
 
-      path = tmp_file #redirect path to tmp downloaded file
+      path = tmp_file # redirect path to tmp downloaded file
     } else {
-
-      #do nothing let path fail on rust side
+      # do nothing let path fail on rust side
     }
-
   }
 
-  #read csv
-  if(lazy) {
-    lazy_csv_reader(path,...)
+  # read csv
+  if (lazy) {
+    lazy_csv_reader(path, ...)
   } else {
-    csv_reader(path,...)
+    csv_reader(path, ...)
   }
-
 }
-
-

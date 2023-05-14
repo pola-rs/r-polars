@@ -22,6 +22,6 @@ It is assumed the self column is already sorted ascending, otherwise wrongs answ
 This function is a bit under documented in py-polars.
 }
 \examples{
-pl$DataFrame(list(a=0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
+pl$DataFrame(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
 }
 \keyword{Expr}

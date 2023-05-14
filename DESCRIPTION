@@ -36,6 +36,8 @@ Config/Needs/website:
     yaml
 Config/Needs/dev:
     devtools,
+    styler,
+    robinlovelace/styler.equals,
     rextendr
 Config/testthat/edition: 3
 Collate: 

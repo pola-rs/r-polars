@@ -25,9 +25,9 @@ Lifecycle: perhaps replace with something written in rust to speed up a bit
 \examples{
 n = 7
 polars:::pcase(
- n<5,"nope",
- n>6,"yeah",
- or_else = stopf("failed to have a case for n=\%s",n)
+  n < 5, "nope",
+  n > 6, "yeah",
+  or_else = stopf("failed to have a case for n=\%s", n)
 )
 }
 \keyword{internal}

@@ -19,9 +19,9 @@ Expr
 Calculate the n-th discrete difference.
 }
 \examples{
-pl$DataFrame(list( a=c(20L,10L,30L,40L)))$select(
+pl$DataFrame(list(a = c(20L, 10L, 30L, 40L)))$select(
   pl$col("a")$diff()$alias("diff_default"),
-  pl$col("a")$diff(2,"ignore")$alias("diff_2_ignore")
+  pl$col("a")$diff(2, "ignore")$alias("diff_2_ignore")
 )
 }
 \keyword{Expr}

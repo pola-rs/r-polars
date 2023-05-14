@@ -21,6 +21,6 @@ Datetime DataType constructor
 all allowed TimeZone designations can be found in \code{base::OlsonNames()}
 }
 \examples{
-pl$Datetime("ns","Pacific/Samoa")
+pl$Datetime("ns", "Pacific/Samoa")
 }
 \keyword{pl}

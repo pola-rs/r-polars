@@ -21,6 +21,6 @@ DataFrame
 Value Counts as DataFrame
 }
 \examples{
-pl$Series(iris$Species,"flower species")$value_counts()
+pl$Series(iris$Species, "flower species")$value_counts()
 }
 \keyword{Series}

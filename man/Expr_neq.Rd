@@ -28,7 +28,7 @@ See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations
 \examples{
 #' #three syntaxes same result
 pl$lit(1) != 2
-pl$lit(1) !=  pl$lit(2)
+pl$lit(1) != pl$lit(2)
 pl$lit(1)$neq(pl$lit(2))
 }
 \keyword{Expr}

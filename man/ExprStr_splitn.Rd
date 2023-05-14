@@ -20,8 +20,8 @@ the last (nth) substring will contain the remainder of the string.
 }
 \examples{
 df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
-df$select( pl$col("s")$str$splitn(by="_",0))
-df$select( pl$col("s")$str$splitn(by="_",1))
-df$select( pl$col("s")$str$splitn(by="_",2))
+df$select(pl$col("s")$str$splitn(by = "_", 0))
+df$select(pl$col("s")$str$splitn(by = "_", 1))
+df$select(pl$col("s")$str$splitn(by = "_", 2))
 }
 \keyword{ExprStr}

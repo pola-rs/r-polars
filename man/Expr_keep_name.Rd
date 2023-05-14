@@ -14,6 +14,6 @@ Expr
 Keep the original root name of the expression.
 }
 \examples{
-pl$DataFrame(list(alice=1:3))$select(pl$col("alice")$alias("bob")$keep_name())
+pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$keep_name())
 }
 \keyword{Expr}

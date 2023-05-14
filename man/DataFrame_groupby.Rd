@@ -22,14 +22,14 @@ create GroupBy from DataFrame
 }
 \examples{
 gb = pl$DataFrame(
-    foo = c("one", "two", "two", "one", "two"),
-    bar = c(5, 3, 2, 4, 1)
+  foo = c("one", "two", "two", "one", "two"),
+  bar = c(5, 3, 2, 4, 1)
 )$groupby("foo", maintain_order = TRUE)
 print(gb)
 
 gb$agg(
- pl$col("bar")$sum()$suffix("_sum"),
- pl$col("bar")$mean()$alias("bar_tail_sum")
+  pl$col("bar")$sum()$suffix("_sum"),
+  pl$col("bar")$mean()$alias("bar_tail_sum")
 )
 }
 \keyword{DataFrame}

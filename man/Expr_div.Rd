@@ -23,7 +23,7 @@ Exprs
 Divide
 }
 \examples{
-#three syntaxes same result
+# three syntaxes same result
 pl$lit(5) / 10
 pl$lit(5) / pl$lit(10)
 pl$lit(5)$div(pl$lit(10))

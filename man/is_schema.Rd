@@ -21,6 +21,6 @@ check if schema
 \examples{
 polars:::is_schema(pl$DataFrame(iris)$schema)
 pl$is_schema(pl$DataFrame(iris)$schema)
-polars:::is_schema(list("alice","bob"))
+polars:::is_schema(list("alice", "bob"))
 
 }

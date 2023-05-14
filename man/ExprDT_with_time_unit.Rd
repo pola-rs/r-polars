@@ -25,7 +25,7 @@ df = pl$DataFrame(
 df$select(
   pl$col("date"),
   pl$col("date")$dt$with_time_unit()$alias("with_time_unit_ns"),
-  pl$col("date")$dt$with_time_unit(tu="ms")$alias("with_time_unit_ms")
+  pl$col("date")$dt$with_time_unit(tu = "ms")$alias("with_time_unit_ms")
 )
 }
 \keyword{ExprDT}

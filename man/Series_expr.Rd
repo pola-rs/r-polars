@@ -21,7 +21,7 @@ This subnamespace is experimental. Submit an issue if anything
 unexpected happend.
 }
 \examples{
-s = pl$Series(list(1:3,1:2,NULL))
+s = pl$Series(list(1:3, 1:2, NULL))
 s$expr$first()
 s$expr$alias("alice")
 }

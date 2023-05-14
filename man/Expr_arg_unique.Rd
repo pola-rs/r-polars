@@ -14,6 +14,6 @@ Expr
 Index of First Unique Value.
 }
 \examples{
-pl$select(pl$lit(c(1:2,1:3))$arg_unique())
+pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
 }
 \keyword{Expr}

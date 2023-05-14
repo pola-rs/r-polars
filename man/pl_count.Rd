@@ -27,6 +27,6 @@ df = pl$DataFrame(
 df$select(pl$count())
 
 
-df$groupby("c", maintain_order=TRUE)$agg(pl$count())
+df$groupby("c", maintain_order = TRUE)$agg(pl$count())
 }
 \keyword{Expr_new}

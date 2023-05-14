@@ -18,7 +18,7 @@ self
 print When
 }
 \examples{
-print(pl$when(pl$col("a")>2)$then(pl$lit("more than two")))
+print(pl$when(pl$col("a") > 2)$then(pl$lit("more than two")))
 }
 \keyword{WhenThen}
 \keyword{internal}

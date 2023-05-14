@@ -37,21 +37,22 @@ string, if given, eg: “\%F \%T\%.3f” => Datetime(“ms”). If no fractional
 then the default is “us”.
 }
 \examples{
-s = pl$Series(c(
-        "2021-04-22",
-        "2022-01-04 00:00:00",
-        "01/31/22",
-        "Sun Jul  8 00:34:60 2001"
+s = pl$Series(
+  c(
+    "2021-04-22",
+    "2022-01-04 00:00:00",
+    "01/31/22",
+    "Sun Jul  8 00:34:60 2001"
   ),
   "date"
 )
 #' #join multiple passes with different fmt
 s$to_frame()$with_columns(
-    pl$col("date")
-    $str$strptime(pl$Date, "\%F", strict=FALSE)
-    $fill_null(pl$col("date")$str$strptime(pl$Date, "\%F \%T", strict=FALSE))
-    $fill_null(pl$col("date")$str$strptime(pl$Date, "\%D", strict=FALSE))
-    $fill_null(pl$col("date")$str$strptime(pl$Date, "\%c", strict=FALSE))
+  pl$col("date")
+  $str$strptime(pl$Date, "\%F", strict = FALSE)
+  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%F \%T", strict = FALSE))
+  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%D", strict = FALSE))
+  $fill_null(pl$col("date")$str$strptime(pl$Date, "\%c", strict = FALSE))
 )
 
 txt_datetimes = c(
@@ -61,8 +62,9 @@ txt_datetimes = c(
 )
 
 pl$lit(txt_datetimes)$str$strptime(
-  pl$Datetime("ns"),fmt = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
-  tz_aware = TRUE, utc =TRUE
+  pl$Datetime("ns"),
+  fmt = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
+  tz_aware = TRUE, utc = TRUE
 )$lit_to_s()
 }
 \keyword{ExprStr}

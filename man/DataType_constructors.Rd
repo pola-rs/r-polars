@@ -27,7 +27,7 @@ inside. Composite DataTypes use DataType constructors.
 Any DataType can be found in pl$dtypes
 }
 \examples{
-#constructors are finally available via pl$... or pl$dtypes$...
+# constructors are finally available via pl$... or pl$dtypes$...
 pl$List(pl$List(pl$Int64))
 }
 \keyword{internal}

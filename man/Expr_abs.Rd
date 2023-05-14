@@ -13,6 +13,6 @@ Exprs abs
 Compute absolute values
 }
 \examples{
-pl$DataFrame(list(a=-1:1))$select(pl$col("a"),pl$col("a")$abs()$alias("abs"))
+pl$DataFrame(list(a = -1:1))$select(pl$col("a"), pl$col("a")$abs()$alias("abs"))
 }
 \keyword{Expr}

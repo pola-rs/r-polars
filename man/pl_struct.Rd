@@ -32,10 +32,10 @@ In a dynamic language schema and a Struct (the DataType) are quite the same, exc
 schemas describe DataFrame and Struct's describe some Series.
 }
 \examples{
-#isolated expression to wrap all columns in a struct aliased 'my_struct'
+# isolated expression to wrap all columns in a struct aliased 'my_struct'
 pl$struct(pl$all())$alias("my_struct")
 
-#wrap all column into on column/Series
+# wrap all column into on column/Series
 df = pl$DataFrame(
   int = 1:2,
   str = c("a", "b"),
@@ -46,18 +46,18 @@ df = pl$DataFrame(
 )
 
 print(df)
-print(df$schema) #returns a schema, a named list containing one element a Struct named my_struct
+print(df$schema) # returns a schema, a named list containing one element a Struct named my_struct
 
 # wrap two columns in a struct and provide a schema to set all or some DataTypes by name
 e1 = pl$struct(
-  pl$col(c("int","str")),
-  schema = list(int=pl$Int64, str=pl$Utf8)
+  pl$col(c("int", "str")),
+  schema = list(int = pl$Int64, str = pl$Utf8)
 )$alias("my_struct")
 # same result as e.g. wrapping the columns in a struct and casting afterwards
 e2 = pl$struct(
-  list(pl$col("int"),pl$col("str"))
+  list(pl$col("int"), pl$col("str"))
 )$cast(
-  pl$Struct(int=pl$Int64,str=pl$Utf8)
+  pl$Struct(int = pl$Int64, str = pl$Utf8)
 )$alias("my_struct")
 
 df = pl$DataFrame(
@@ -67,8 +67,8 @@ df = pl$DataFrame(
   list = list(1:2, 3L)
 )
 
-#verify equality in R
-identical(df$select(e1)$to_list(),df$select(e2)$to_list())
+# verify equality in R
+identical(df$select(e1)$to_list(), df$select(e2)$to_list())
 
 df$select(e2)
 df$select(e2)$to_data_frame()

@@ -24,6 +24,6 @@ bool
 Rename a series
 }
 \examples{
-pl$Series(1:4,"bob")$rename("alice")
+pl$Series(1:4, "bob")$rename("alice")
 }
 \keyword{Series}

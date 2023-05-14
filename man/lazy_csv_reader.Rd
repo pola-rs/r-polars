@@ -101,8 +101,8 @@ Read a file from path into a polars lazy frame. Not yet supporting eol_char and 
 }
 \examples{
 my_file = tempfile()
-write.csv(iris,my_file)
-lazy_frame = lazy_csv_reader(path=my_file)
+write.csv(iris, my_file)
+lazy_frame = lazy_csv_reader(path = my_file)
 lazy_frame$collect()
 unlink(my_file)
 }

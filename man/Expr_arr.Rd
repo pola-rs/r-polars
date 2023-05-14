@@ -16,10 +16,11 @@ See the individual method pages for full details
 }
 \examples{
 df_with_list = pl$DataFrame(
-  group = c(1,1,2,2,3),
+  group = c(1, 1, 2, 2, 3),
   value = c(1:5)
 )$groupby(
-  "group",maintain_order = TRUE
+  "group",
+  maintain_order = TRUE
 )$agg(
   pl$col("value") * 3L
 )

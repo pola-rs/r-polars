@@ -21,17 +21,17 @@ Get a slice of this expression.
 }
 \examples{
 
-#as head
-pl$DataFrame(list(a=0:100))$select(
-  pl$all()$slice(0,6)
+# as head
+pl$DataFrame(list(a = 0:100))$select(
+  pl$all()$slice(0, 6)
 )
 
-#as tail
-pl$DataFrame(list(a=0:100))$select(
-  pl$all()$slice(-6,6)
+# as tail
+pl$DataFrame(list(a = 0:100))$select(
+  pl$all()$slice(-6, 6)
 )
 
-pl$DataFrame(list(a=0:100))$select(
+pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(80)
 )
 }

@@ -19,12 +19,12 @@ Aggregatete a DataFrame over a groupby
 }
 \examples{
 pl$DataFrame(
-    foo = c("one", "two", "two", "one", "two"),
-    bar = c(5, 3, 2, 4, 1)
+  foo = c("one", "two", "two", "one", "two"),
+  bar = c(5, 3, 2, 4, 1)
 )$
-groupby("foo")$
-agg(
- pl$col("bar")$sum()$suffix("_sum"),
- pl$col("bar")$mean()$alias("bar_tail_sum")
+  groupby("foo")$
+  agg(
+  pl$col("bar")$sum()$suffix("_sum"),
+  pl$col("bar")$mean()$alias("bar_tail_sum")
 )
 }

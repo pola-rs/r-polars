@@ -19,6 +19,6 @@ NA_real_(R).
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-pl$DataFrame(list(alice=c(0,NaN,NA,Inf,-Inf)))$select(pl$col("alice")$is_nan())
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_nan())
 }
 \keyword{Expr}

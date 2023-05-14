@@ -96,11 +96,11 @@ The default is "backward".
 }
 \examples{
 #
-#create two LazyFrame to join asof
+# create two LazyFrame to join asof
 gdp = pl$DataFrame(
-  date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+  date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
   gdp = c(4321, 4164, 4411, 4566, 4696),
-  group = c("b" ,"a", "a", "b", "b")
+  group = c("b", "a", "a", "b", "b")
 )$lazy()
 
 pop = pl$DataFrame(
@@ -109,7 +109,7 @@ pop = pl$DataFrame(
   group = c("b", "b", "a", "a")
 )$lazy()
 
-#optional make sure tables are already sorted with "on" join-key
+# optional make sure tables are already sorted with "on" join-key
 gdp = gdp$sort("date")
 pop = pop$sort("date")
 

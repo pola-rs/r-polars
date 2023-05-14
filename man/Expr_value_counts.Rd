@@ -20,6 +20,6 @@ Count all unique values and create a struct mapping value to count.
 \examples{
 df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 df
-df$unnest()$to_data_frame() #recommended to unnest structs before converting to R
+df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
 }
 \keyword{Expr}

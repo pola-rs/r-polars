@@ -32,10 +32,10 @@ do not use \verb{**}, R secretly parses that just as if it was a \code{^}
 \examples{
 pl$DataFrame(list(a = -1:3))$select(
   pl$lit(2)$rpow(pl$col("a"))
-)$get_column("a")$to_r() ==  (-1:3)^2
+)$get_column("a")$to_r() == (-1:3)^2
 
 pl$DataFrame(list(a = -1:3))$select(
   pl$lit(2) \%**\% (pl$col("a"))
-)$get_column("a")$to_r() ==  (-1:3)^2
+)$get_column("a")$to_r() == (-1:3)^2
 }
 \keyword{Expr}

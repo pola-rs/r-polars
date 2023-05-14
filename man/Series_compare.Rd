@@ -41,6 +41,6 @@ Series
 compare two Series
 }
 \examples{
-pl$Series(1:5) == pl$Series(c(1:3,NA_integer_,10L))
+pl$Series(1:5) == pl$Series(c(1:3, NA_integer_, 10L))
 }
 \keyword{Series}

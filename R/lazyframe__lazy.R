@@ -36,40 +36,40 @@
 #'
 #' @keywords LazyFrame
 #' @examples
-#' #see all exported methods
+#' # see all exported methods
 #' ls(polars:::LazyFrame)
 #'
-#' #see all private methods (not intended for regular use)
+#' # see all private methods (not intended for regular use)
 #' ls(polars:::.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##
 #' # First writing R iris dataset to disk, to illustrte a difference
 #' temp_filepath = tempfile()
-#' write.csv(iris, temp_filepath,row.names = FALSE)
+#' write.csv(iris, temp_filepath, row.names = FALSE)
 #'
 #' # Following example illustrates 2 ways to obtain a LazyFrame
 #'
 #' # The-Okay-way: convert an in-memory DataFrame to LazyFrame
 #'
-#' #eager in-mem R data.frame
+#' # eager in-mem R data.frame
 #' Rdf = read.csv(temp_filepath)
 #'
-#' #eager in-mem polars DataFrame
+#' # eager in-mem polars DataFrame
 #' Pdf = pl$DataFrame(Rdf)
 #'
-#' #lazy frame starting from in-mem DataFrame
+#' # lazy frame starting from in-mem DataFrame
 #' Ldf_okay = Pdf$lazy()
 #'
-#' #The-Best-Way:  LazyFrame created directly from a data source is best...
+#' # The-Best-Way:  LazyFrame created directly from a data source is best...
 #' Ldf_best = pl$lazy_csv_reader(temp_filepath)
 #'
 #' # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 #' # pushed down in the executation stack to the csv_reader, and thereby only bringing into
 #' # memory the rows matching to filter.
 #' # apply filter:
-#' filter_expr = pl$col("Species") == "setosa" #get only rows where Species is setosa
-#' Ldf_okay = Ldf_okay$filter(filter_expr) #overwrite LazyFrame with new
+#' filter_expr = pl$col("Species") == "setosa" # get only rows where Species is setosa
+#' Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite LazyFrame with new
 #' Ldf_best = Ldf_best$filter(filter_expr)
 #'
 #' # the non optimized plans are similar, on entire in-mem csv, apply filter
@@ -78,23 +78,23 @@
 #'
 #' # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 #'
-#' #The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
+#' # The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
 #' Ldf_okay$describe_optimized_plan()
 #' Ldf_best$describe_optimized_plan()
 #'
 #'
-#' #To acquire result in-mem use $colelct()
+#' # To acquire result in-mem use $colelct()
 #' Pdf_okay = Ldf_okay$collect()
 #' Pdf_best = Ldf_best$collect()
 #'
 #'
-#' #verify tables would be the same
+#' # verify tables would be the same
 #' all.equal(
 #'   Pdf_okay$to_data_frame(),
 #'   Pdf_best$to_data_frame()
 #' )
 #'
-#' #a user might write it as a one-liner like so:
+#' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
 LazyFrame
 
@@ -106,7 +106,7 @@ LazyFrame
 #' @export
 #' @keywords internal
 .DollarNames.LazyFrame = function(x, pattern = "") {
-  paste0(ls(LazyFrame, pattern = pattern ),"()")
+  paste0(ls(LazyFrame, pattern = pattern), "()")
 }
 
 #' print LazyFrame s3 method
@@ -136,10 +136,10 @@ print.LazyFrame = function(x, ...) {
 #' @export
 #'
 #' @usage LazyFrame_print(x)
-#' @examples  pl$DataFrame(iris)$lazy()$print()
+#' @examples pl$DataFrame(iris)$lazy()$print()
 LazyFrame_print = "use_extendr_wrapper"
 
-#TODO write missing examples in this file
+# TODO write missing examples in this file
 
 #' @title Print the optimized or non-optimized plans of `LazyFrame`
 #'
@@ -167,14 +167,13 @@ LazyFrame_print = "use_extendr_wrapper"
 #' # This is the query after `polars` optimizes it: instead of sorting first and
 #' # then filtering, it is faster to filter first and then sort the rest.
 #' lazy_query$describe_optimized_plan()
-
-LazyFrame_describe_optimized_plan  = function() {
+LazyFrame_describe_optimized_plan = function() {
   unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
 }
 
 #' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan  = "use_extendr_wrapper"
+LazyFrame_describe_plan = "use_extendr_wrapper"
 
 #' @title Lazy_select
 #' @description select on a LazyFrame
@@ -184,7 +183,7 @@ LazyFrame_describe_plan  = "use_extendr_wrapper"
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$select(self,pra)
+  .pr$LazyFrame$select(self, pra)
 }
 
 #' @title Lazy with columns
@@ -195,7 +194,7 @@ LazyFrame_select = function(...) {
 #' @return A new `LazyFrame` object with added/modified columns.
 LazyFrame_with_columns = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$with_columns(self,pra)
+  .pr$LazyFrame$with_columns(self, pra)
 }
 
 #' @title Lazy with column
@@ -214,14 +213,14 @@ LazyFrame_with_column = "use_extendr_wrapper"
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
 #' @usage LazyFrame_filter(expr)
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
 #' @keywords LazyFrame DataFrame_new
 #' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_collect = function() {
   unwrap(.pr$LazyFrame$collect(self), "in $collect():")
 }
@@ -230,7 +229,7 @@ LazyFrame_collect = function() {
 #' @description collect DataFrame by lazy query
 #' @keywords LazyFrame DataFrame_new
 #' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species")=="setosa")$collect()
+#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_collect_background = function() {
   .pr$LazyFrame$collect_background(self)
 }
@@ -245,7 +244,7 @@ LazyFrame_collect_background = function() {
 #' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_limit = function(n) {
-  unwrap(.pr$LazyFrame$limit(self,n), "in $limit():")
+  unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
 }
 
 #' @title Head
@@ -362,8 +361,8 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @return LazyFrame
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1.5, 2, NaN, 4),
-#'         b = c(1.5, NaN, NaN, 4)
+#'   a = c(1.5, 2, NaN, 4),
+#'   b = c(1.5, NaN, NaN, 4)
 #' )$lazy()
 #' df$fill_nan(99)$collect()
 LazyFrame_fill_nan = function(fill_value) {
@@ -377,8 +376,8 @@ LazyFrame_fill_nan = function(fill_value) {
 #' @return LazyFrame
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1.5, 2, NA, 4),
-#'         b = c(1.5, NA, NA, 4)
+#'   a = c(1.5, 2, NA, 4),
+#'   b = c(1.5, NA, NA, 4)
 #' )$lazy()
 #' df$fill_null(99)$collect()
 LazyFrame_fill_null = function(fill_value) {
@@ -432,7 +431,7 @@ LazyFrame_reverse = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
 #' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
-#' mtcars[2:6,]
+#' mtcars[2:6, ]
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
 }
@@ -447,7 +446,7 @@ LazyFrame_slice = function(offset, length = NULL) {
 #' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_tail = function(n) {
-  unwrap(.pr$LazyFrame$tail(self,n), "in $tail():")
+  unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 
 #' @title Lazy_drop_nulls
@@ -482,12 +481,13 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' df = pl$DataFrame(
 #'   x = as.numeric(c(1, 1:5)),
 #'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4)))
+#'   z = as.numeric(c(1, 1, 1:4))
+#' )
 #' df$lazy()$unique()$collect()$height
 #' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
 LazyFrame_unique = function(subset = NULL, keep = "first") {
-  if (is.null(subset)) subset = vector("character")
-  unwrap(.pr$LazyFrame$unique(self, subset, keep),  "in unique():")
+  if (is.null(subset)) subset <- vector("character")
+  unwrap(.pr$LazyFrame$unique(self, subset, keep), "in unique():")
 }
 
 #' Lazy_groupby
@@ -501,16 +501,16 @@ LazyFrame_unique = function(subset = NULL, keep = "first") {
 #' @return A new `LazyGroupBy` object with applied groups.
 #' @examples
 #' pl$DataFrame(
-#'     foo = c("one", "two", "two", "one", "two"),
-#'     bar = c(5, 3, 2, 4, 1)
+#'   foo = c("one", "two", "two", "one", "two"),
+#'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#' lazy()$
-#' groupby("foo")$
-#' agg(
-#'  pl$col("bar")$sum()$suffix("_sum"),
-#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#'   lazy()$
+#'   groupby("foo")$
+#'   agg(
+#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
-#' collect()
+#'   collect()
 LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
@@ -530,37 +530,35 @@ LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 #'
 #' @return A new `LazyFrame` object with applied join.
 LazyFrame_join = function(
-  other,#: LazyFrame or DataFrame,
-  left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  how = c("inner", 'left', 'outer', 'semi', 'anti', 'cross'),
-  suffix = "_right",
-  allow_parallel = TRUE,
-  force_parallel  = FALSE
-  ) {
-
+    other, # : LazyFrame or DataFrame,
+    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    suffix = "_right",
+    allow_parallel = TRUE,
+    force_parallel = FALSE) {
   if (inherits(other, "LazyFrame")) {
-    #nothing
-  } else if (inherits(other, "DataFrame")){
+    # nothing
+  } else if (inherits(other, "DataFrame")) {
     other = other$lazy()
   } else {
     stopf(paste("Expected a `LazyFrame` as join table, got ", class(other)))
   }
 
-  how_opts = c('inner', 'left', 'outer', 'semi', 'anti', 'cross')
-  how = match.arg(how[1L],how_opts)
+  how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
+  how = match.arg(how[1L], how_opts)
 
-  if(how == "cross") {
+  if (how == "cross") {
     stopf("not implemented how == cross")
   }
 
-  if(!is.null(on)) {
-    rexprs = do.call(construct_ProtoExprArray,as.list(on))
-    rexprs_left  = rexprs
+  if (!is.null(on)) {
+    rexprs = do.call(construct_ProtoExprArray, as.list(on))
+    rexprs_left = rexprs
     rexprs_right = rexprs
   } else if ((!is.null(left_on) && !is.null(right_on))) {
-    rexprs_left  = do.call(construct_ProtoExprArray, as.list(left_on))
+    rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
   } else {
     stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
@@ -570,7 +568,6 @@ LazyFrame_join = function(
     self, other, rexprs_left, rexprs_right,
     how, suffix, allow_parallel, force_parallel
   )
-
 }
 
 
@@ -605,38 +602,31 @@ LazyFrame_join = function(
 #' df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 #' df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 LazyFrame_sort = function(
-  by, # : IntoExpr | List[IntoExpr],
-  ..., # unnamed Into expr
-  descending = FALSE, #  bool | vector[bool] = False,
-  nulls_last =FALSE
-) {
-
+    by, # : IntoExpr | List[IntoExpr],
+    ..., # unnamed Into expr
+    descending = FALSE, #  bool | vector[bool] = False,
+    nulls_last = FALSE) {
   largs = list2(...)
   nargs = names(largs)
 
-  #match on args to check for ...
+  # match on args to check for ...
   pcase(
     # all the bad stuff
     !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
     missing(by), Err("arg [by] is missing"),
 
-    #iterate over by + ... to wrap into Expr. Capture ok/err in results
+    # iterate over by + ... to wrap into Expr. Capture ok/err in results
     or_else = Ok(c(
-        lapply(by, wrap_e_result, str_to_lit = FALSE),
-        lapply(largs, wrap_e_result, str_to_lit = FALSE)
-      ))
+      lapply(by, wrap_e_result, str_to_lit = FALSE),
+      lapply(largs, wrap_e_result, str_to_lit = FALSE)
+    ))
   ) |>
-
-
-  #and_then skips step, if input is an Error otherwise call rust wrapper
-  and_then(\(by_combined) { #by_combined has Rtyp" List<Result<Expr,String>>
-    .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
-  }) |>
-
-
-  #add same context to any Error
-  unwrap("in sort():")
-
+    # and_then skips step, if input is an Error otherwise call rust wrapper
+    and_then(\(by_combined) { # by_combined has Rtyp" List<Result<Expr,String>>
+      .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
+    }) |>
+    # add same context to any Error
+    unwrap("in sort():")
 }
 
 
@@ -700,11 +690,11 @@ LazyFrame_sort = function(
 #' @keywords LazyFrame
 #' @return new joined LazyFrame
 #' @examples #
-#' #create two LazyFrame to join asof
+#' # create two LazyFrame to join asof
 #' gdp = pl$DataFrame(
-#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
 #'   gdp = c(4321, 4164, 4411, 4566, 4696),
-#'   group = c("b" ,"a", "a", "b", "b")
+#'   group = c("b", "a", "a", "b", "b")
 #' )$lazy()
 #'
 #' pop = pl$DataFrame(
@@ -713,7 +703,7 @@ LazyFrame_sort = function(
 #'   group = c("b", "b", "a", "a")
 #' )$lazy()
 #'
-#' #optional make sure tables are already sorted with "on" join-key
+#' # optional make sure tables are already sorted with "on" join-key
 #' gdp = gdp$sort("date")
 #' pop = pop$sort("date")
 #'
@@ -734,25 +724,23 @@ LazyFrame_sort = function(
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)$collect()
 LazyFrame_join_asof = function(
-  other,
-  ...,
-  left_on = NULL,
-  right_on = NULL,
-  on= NULL,
-  by_left = NULL,
-  by_right = NULL,
-  by = NULL,
-  strategy = "backward",
-  suffix = "_right",
-  tolerance = NULL,
-  allow_parallel = TRUE,
-  force_parallel = FALSE
-){
-
-  if(!is.null(by)) by_left = by_right = by
-  if(!is.null(on)) left_on = right_on = on
-  tolerance_str = if(  is.character(tolerance)) tolerance else NULL
-  tolerance_num = if( !is.character(tolerance)) tolerance else NULL
+    other,
+    ...,
+    left_on = NULL,
+    right_on = NULL,
+    on = NULL,
+    by_left = NULL,
+    by_right = NULL,
+    by = NULL,
+    strategy = "backward",
+    suffix = "_right",
+    tolerance = NULL,
+    allow_parallel = TRUE,
+    force_parallel = FALSE) {
+  if (!is.null(by)) by_left <- by_right <- by
+  if (!is.null(on)) left_on <- right_on <- on
+  tolerance_str = if (is.character(tolerance)) tolerance else NULL
+  tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 
   .pr$LazyFrame$join_asof(
     self, other,
@@ -763,8 +751,4 @@ LazyFrame_join_asof = function(
     tolerance_num, tolerance_str
   ) |>
     unwrap("in join_asof( ):")
-
 }
-
-
-

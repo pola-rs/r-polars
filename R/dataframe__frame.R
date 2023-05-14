@@ -23,23 +23,23 @@
 #'
 #' @keywords DataFrame
 #' @examples
-#' #see all exported methods
+#' # see all exported methods
 #' ls(polars:::DataFrame)
 #'
-#' #see all private methods (not intended for regular use)
+#' # see all private methods (not intended for regular use)
 #' ls(polars:::.pr$DataFrame)
 #'
 #'
-#' #make an object
+#' # make an object
 #' df = pl$DataFrame(iris)
 #'
-#' #use a public method/property
+#' # use a public method/property
 #' df$shape
 #' df2 = df
-#' #use a private method, which has mutability
-#' result = polars:::.pr$DataFrame$set_column_from_robj(df,150:1,"some_ints")
+#' # use a private method, which has mutability
+#' result = polars:::.pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 #'
-#' #column exists in both dataframes-objects now, as they are just pointers to the same object
+#' # column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
 #' df$columns
 #' df2$columns
@@ -54,9 +54,9 @@
 #' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
 #' # method does not return any ok-value.
 #'
-#' #try unwrapping an error from polars due to unmatching column lengths
-#' err_result = polars:::.pr$DataFrame$set_column_from_robj(df,1:10000,"wrong_length")
-#' tryCatch(unwrap(err_result,call=NULL),error=\(e) cat(as.character(e)))
+#' # try unwrapping an error from polars due to unmatching column lengths
+#' err_result = polars:::.pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
+#' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 DataFrame
 
 
@@ -70,7 +70,7 @@ DataFrame
 #' @export
 #' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
-  get_method_usages(DataFrame,pattern = pattern)
+  get_method_usages(DataFrame, pattern = pattern)
 }
 
 
@@ -81,7 +81,7 @@ DataFrame
 #' @export
 #' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
-  get_method_usages(VecDataFrame,pattern = pattern)
+  get_method_usages(VecDataFrame, pattern = pattern)
 }
 
 
@@ -108,65 +108,69 @@ DataFrame
 #'
 #' @examples
 #' pl$DataFrame(
-#'   a = list(c(1,2,3,4,5)), #NB if first column should be a list, wrap it in a Series
+#'   a = list(c(1, 2, 3, 4, 5)), # NB if first column should be a list, wrap it in a Series
 #'   b = 1:5,
 #'   c = letters[1:5],
-#'   d = list(1:1,1:2,1:3,1:4,1:5)
-#' ) #directly from vectors
+#'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
+#' ) # directly from vectors
 #'
-#' #from a list of vectors or data.frame
+#' # from a list of vectors or data.frame
 #' pl$DataFrame(list(
-#'   a= c(1,2,3,4,5),
-#'   b=1:5,
+#'   a = c(1, 2, 3, 4, 5),
+#'   b = 1:5,
 #'   c = letters[1:5],
-#'   d = list(1L,1:2,1:3,1:4,1:5)
+#'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
-pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
-
+pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
   largs = list2(...)
 
-  #no args crete empty DataFrame
-  if(length(largs)==0L) return(.pr$DataFrame$new())
+  # no args crete empty DataFrame
+  if (length(largs) == 0L) {
+    return(.pr$DataFrame$new())
+  }
 
-  #pass through if already a DataFrame
-  if(inherits(largs[[1L]],"DataFrame")) return(largs[[1L]])
+  # pass through if already a DataFrame
+  if (inherits(largs[[1L]], "DataFrame")) {
+    return(largs[[1L]])
+  }
 
-  #if input is one list of expression unpack this one
-  Data = if(length(largs)==1L && is.list(largs[[1]])) {
+  # if input is one list of expression unpack this one
+  Data = if (length(largs) == 1L && is.list(largs[[1]])) {
     largs = largs[[1L]]
-    if(length(largs)==0) return(.pr$DataFrame$new())
+    if (length(largs) == 0) {
+      return(.pr$DataFrame$new())
+    }
     largs
   }
 
 
 
-  #input guard
-  if(!is_DataFrame_data_input(largs)) {
+  # input guard
+  if (!is_DataFrame_data_input(largs)) {
     stopf("input must inherit data.frame or be a list of vectors and/or  Series")
   }
 
-  if (inherits(largs,"data.frame")) {
+  if (inherits(largs, "data.frame")) {
     largs = as.data.frame(largs)
   }
 
 
-  ##step 00 get max length to allow cycle 1-length inputs
-  largs_lengths = sapply(largs,length)
-  largs_lengths_max = if(is.integer(largs_lengths)) max(largs_lengths) else NULL
+  ## step 00 get max length to allow cycle 1-length inputs
+  largs_lengths = sapply(largs, length)
+  largs_lengths_max = if (is.integer(largs_lengths)) max(largs_lengths) else NULL
 
-  ##step1 handle column names
-  #keys are tentative new column names
-  #fetch keys from names, if missing set as NA
+  ## step1 handle column names
+  # keys are tentative new column names
+  # fetch keys from names, if missing set as NA
   keys = names(largs)
-  if(length(keys)==0) keys = rep(NA_character_, length(largs))
+  if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
 
-  ##step2
-  #if missing key use pl$Series name or generate new
-  keys = mapply(largs,keys, FUN = function(column,key) {
-
-    if(is.na(key) || nchar(key)==0) {
-      if(inherits(column, "Series")) {
+  ## step2
+  # if missing key use pl$Series name or generate new
+  keys = mapply(largs, keys, FUN = function(column, key) {
+    if (is.na(key) || nchar(key) == 0) {
+      if (inherits(column, "Series")) {
         key = column$name
       } else {
         key = "new_column"
@@ -175,75 +179,73 @@ pl$DataFrame = function(..., make_names_unique= TRUE, parallel = FALSE) {
     return(key)
   })
 
-  ##step 3
-  #check for conflicting names, to avoid silent overwrite
-  if(any(duplicated(keys))) {
-    if(make_names_unique) {
+  ## step 3
+  # check for conflicting names, to avoid silent overwrite
+  if (any(duplicated(keys))) {
+    if (make_names_unique) {
       keys = make.unique(keys, sep = "_")
     } else {
       stopf(
         paste(
           "conflicting column names not allowed:",
-          paste(unique(keys[duplicated(keys)]),collapse=", ")
+          paste(unique(keys[duplicated(keys)]), collapse = ", ")
         )
       )
     }
   }
 
-  ##step 4
+  ## step 4
 
-  if(parallel) {
-    #interpret R vectors into series in DataFrame in parallel
-    aux_df = NULL #save Series temp to here
-    l =  mapply(largs,keys, SIMPLIFY = FALSE, FUN = function(column, key) {
-      if(inherits(column, "Series")) {
-        if(is.null(aux_df)) {
+  if (parallel) {
+    # interpret R vectors into series in DataFrame in parallel
+    aux_df = NULL # save Series temp to here
+    l = mapply(largs, keys, SIMPLIFY = FALSE, FUN = function(column, key) {
+      if (inherits(column, "Series")) {
+        if (is.null(aux_df)) {
           aux_df <<- .pr$DataFrame$new_with_capacity(length(largs))
         }
         .pr$Series$rename_mut(column, key)
-        unwrap(.pr$DataFrame$set_column_from_series(aux_df,column))
+        unwrap(.pr$DataFrame$set_column_from_series(aux_df, column))
         column = NULL
       } else {
-        if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) {
-          column = rep(column,largs_lengths_max)
+        if (length(column) == 1L && isTRUE(largs_lengths_max > 1L)) {
+          column = rep(column, largs_lengths_max)
         }
-        column = convert_to_fewer_types(column) #type conversions on R side
+        column = convert_to_fewer_types(column) # type conversions on R side
       }
       column
     })
     names(l) = keys
-    #drop series from converted columns
-    l = l |> (\(x) if(length(x)) x[!sapply(x,is.null)] else x)()
+    # drop series from converted columns
+    l = l |> (\(x) if (length(x)) x[!sapply(x, is.null)] else x)()
 
 
 
-    if(length(l)) {
+    if (length(l)) {
       self = unwrap(.pr$DataFrame$new_par_from_list(l))
     } else {
       self = aux_df
     }
 
-    #combine DataFrame if both defined and reorder columns
-    if(!is.null(aux_df) && length(l)) {
-      self = pl$concat(list(self,aux_df),rechunk=FALSE, how = "horizontal")
-      self = do.call(self$select,unname(lapply(keys,pl$col))) #reorder columns by keys
+    # combine DataFrame if both defined and reorder columns
+    if (!is.null(aux_df) && length(l)) {
+      self = pl$concat(list(self, aux_df), rechunk = FALSE, how = "horizontal")
+      self = do.call(self$select, unname(lapply(keys, pl$col))) # reorder columns by keys
     }
-
-
   } else {
-    #buildDataFrame one column at the time
+    # buildDataFrame one column at the time
     self = .pr$DataFrame$new_with_capacity(length(largs))
-    mapply(largs,keys, FUN = function(column, key) {
-      if(inherits(column, "Series")) {
+    mapply(largs, keys, FUN = function(column, key) {
+      if (inherits(column, "Series")) {
         .pr$Series$rename_mut(column, key)
 
-        unwrap(.pr$DataFrame$set_column_from_series(self,column))
+        unwrap(.pr$DataFrame$set_column_from_series(self, column))
       } else {
-        if(length(column)==1L && isTRUE(largs_lengths_max > 1L)) {
-          column = rep(column,largs_lengths_max)
+        if (length(column) == 1L && isTRUE(largs_lengths_max > 1L)) {
+          column = rep(column, largs_lengths_max)
         }
-        column = convert_to_fewer_types(column) #type conversions on R side
-        unwrap(.pr$DataFrame$set_column_from_robj(self,column,key))
+        column = convert_to_fewer_types(column) # type conversions on R side
+        unwrap(.pr$DataFrame$set_column_from_robj(self, column, key))
       }
       return(NULL)
     })
@@ -281,7 +283,7 @@ DataFrame_print = function() {
   invisible(self)
 }
 
-##"Class methods"
+## "Class methods"
 
 #' Validate data input for create Dataframe with pl$DataFrame
 #'
@@ -292,17 +294,17 @@ DataFrame_print = function() {
 #' @return bool
 #'
 #' @examples polars:::is_DataFrame_data_input(iris)
-#' polars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
+#' polars:::is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 is_DataFrame_data_input = function(x) {
-  inherits(x,"data.frame") ||
+  inherits(x, "data.frame") ||
     is.list(x) ||
-    all(sapply(x,function(x) is.vector(x) || inherits(x,"Series")))
+    all(sapply(x, function(x) is.vector(x) || inherits(x, "Series")))
 }
 
 
-#"properties"
+# "properties"
 
-##internal bookkeeping of methods which should behave as properties
+## internal bookkeeping of methods which should behave as properties
 DataFrame.property_setters = new.env(parent = emptyenv())
 
 #' generic setter method
@@ -320,17 +322,17 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' @export
 #' @examples
-#' #For internal use
-#' #is only activated for following methods of DataFrame
+#' # For internal use
+#' # is only activated for following methods of DataFrame
 #' ls(polars:::DataFrame.property_setters)
 #'
-#' #specific use case for one object property 'columns' (names)
+#' # specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
 #'
-#' #get values
+#' # get values
 #' df$columns
 #'
-#' #set + get values
+#' # set + get values
 #' df$columns = letters[1:5] #<- is fine too
 #' df$columns
 #'
@@ -341,31 +343,29 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' # not support package isolated customization.
 #'
 #'
-#' #Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
-#' #however Rstudio backticks it into df$`columns<-`
-#' #to make life simple, this is valid polars syntax also, and can be used in fast scripting
+#' # Concrete example if tabbing on 'df$' the raw R suggestion is df$columns<-
+#' # however Rstudio backticks it into df$`columns<-`
+#' # to make life simple, this is valid polars syntax also, and can be used in fast scripting
 #' df$`columns<-` = letters[5:1]
 #'
-#' #for stable code prefer e.g.  df$columns = letters[5:1]
+#' # for stable code prefer e.g.  df$columns = letters[5:1]
 #'
-#' #to see inside code of a property use the [[]] syntax instead
+#' # to see inside code of a property use the [[]] syntax instead
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-#' polars:::DataFrame.property_setters$columns #and even more obscure to see setter code
-#'
+#' polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
 #'
 "$<-.DataFrame" = function(self, name, value) {
+  name = sub("<-$", "", name)
 
-  name = sub("<-$","",name)
-
-  #stop if method is not a setter
-  if(!inherits(self[[name]],"setter")) {
-    pstop(err= paste("no setter method for",name))
+  # stop if method is not a setter
+  if (!inherits(self[[name]], "setter")) {
+    pstop(err = paste("no setter method for", name))
   }
 
   # if(is.null(func)) pstop(err= paste("no setter method for",name)))
-  if (polars_optenv$strictly_immutable) self = self$clone()
+  if (polars_optenv$strictly_immutable) self <- self$clone()
   func = DataFrame.property_setters[[name]]
-  func(self,value)
+  func(self, value)
   self
 }
 
@@ -389,10 +389,10 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' df$columns
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
-},setter = TRUE)
-#define setter function
+}, setter = TRUE)
+# define setter function
 DataFrame.property_setters$columns =
-  function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self,names))
+  function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self, names))
 
 
 #' @title Drop columns of a DataFrame
@@ -438,7 +438,8 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' df = pl$DataFrame(
 #'   x = as.numeric(c(1, 1:5)),
 #'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4)))
+#'   z = as.numeric(c(1, 1, 1:4))
+#' )
 #' df$unique()$height
 #' df$unique(subset = c("x", "z"), keep = "last")$height
 DataFrame_unique = function(subset = NULL, keep = "first") {
@@ -487,7 +488,7 @@ DataFrame_height = method_as_property(function() {
 #' pl$DataFrame(iris)$width
 #'
 DataFrame_width = method_as_property(function() {
-    .pr$DataFrame$shape(self)[2L]
+  .pr$DataFrame$shape(self)[2L]
 })
 
 
@@ -537,15 +538,14 @@ DataFrame_schema = method_as_property(function() {
 
 #
 DataFrameCompareToOtherDF = function(self, other, op) {
-
   stopf("not done yet")
-#    """Compare a DataFrame with another DataFrame."""
-  if (!identical(self$columns,other$columns)) stopf("DataFrame columns do not match")
+  #    """Compare a DataFrame with another DataFrame."""
+  if (!identical(self$columns, other$columns)) stopf("DataFrame columns do not match")
   if (!identical(self$shape, other$shape)) stopf("DataFrame dimensions do not match")
 
   suffix = "__POLARS_CMP_OTHER"
   other_renamed = other$select(pl$all()$suffix(suffix))
-  #combined = concat([self, other_renamed], how="horizontal")
+  # combined = concat([self, other_renamed], how="horizontal")
 
   # if op == "eq":
   #   expr = [pli.col(n) == pli.col(f"{n}{suffix}") for n in self.columns]
@@ -563,7 +563,6 @@ DataFrameCompareToOtherDF = function(self, other, op) {
   #   raise ValueError(f"got unexpected comparison operator: {op}")
   #
   # return combined.select(expr)
-
 }
 
 
@@ -591,8 +590,8 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' @aliases DataFrame_clone
 #' @keywords  DataFrame
 #' @examples
-#' df1 = pl$DataFrame(iris);
-#' df2 =  df1$clone();
+#' df1 = pl$DataFrame(iris)
+#' df2 = df1$clone()
 #' df3 = df1
 #' pl$mem_address(df1) != pl$mem_address(df2)
 #' pl$mem_address(df1) == pl$mem_address(df3)
@@ -610,7 +609,7 @@ DataFrame_clone = function() {
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' df = pl$DataFrame(iris[1,])
+#' df = pl$DataFrame(iris[1, ])
 #' df$get_columns()
 DataFrame_get_columns = "use_extendr_wrapper"
 
@@ -624,7 +623,7 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' @aliases DataFrame_get_column
 #' @keywords  DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1,])
+#' df = pl$DataFrame(iris[1, ])
 #' df$get_column("Species")
 DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
@@ -642,9 +641,9 @@ DataFrame_get_column = function(name) {
 #' @return Series or NULL
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(a=1:4)$to_series()
-DataFrame_to_series = function(idx=0) {
-  if(!is.numeric(idx) || isTRUE(idx<0)) {
+#' pl$DataFrame(a = 1:4)$to_series()
+DataFrame_to_series = function(idx = 0) {
+  if (!is.numeric(idx) || isTRUE(idx < 0)) {
     pstop(err = "idx must be non-negative numeric")
   }
   .pr$DataFrame$select_at_idx(self, idx)$ok
@@ -678,12 +677,11 @@ DataFrame_to_series = function(idx=0) {
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
 #' df$sort(pl$col("cyl"), pl$col("mpg"))
 DataFrame_sort = function(
-  by, # : IntoExpr | List[IntoExpr],
-  ..., # unnamed Into expr
-  descending = FALSE, #  bool | vector[bool] = False,
-  nulls_last = FALSE
-) {
-  #args after ... must be named
+    by, # : IntoExpr | List[IntoExpr],
+    ..., # unnamed Into expr
+    descending = FALSE, #  bool | vector[bool] = False,
+    nulls_last = FALSE) {
+  # args after ... must be named
   self$lazy()$sort(by, ..., descending = descending, nulls_last = nulls_last)$collect()
 }
 
@@ -702,14 +700,14 @@ DataFrame_sort = function(
 #' )
 DataFrame_select = function(...) {
   args = list2(...)
-  exprs = do.call(construct_ProtoExprArray,args)
-  df = unwrap(.pr$DataFrame$select(self,exprs))
+  exprs = do.call(construct_ProtoExprArray, args)
+  df = unwrap(.pr$DataFrame$select(self, exprs))
 
   expr_names = names(args)
-  if(!is.null(expr_names)) {
+  if (!is.null(expr_names)) {
     old_names = df$columns
     new_names = old_names
-    has_expr_name = nchar(expr_names)>=1L
+    has_expr_name = nchar(expr_names) >= 1L
     new_names[has_expr_name] = expr_names[has_expr_name]
     df$columns = new_names
   }
@@ -729,7 +727,7 @@ DataFrame_select = function(...) {
 #' x
 #' dat$columns
 DataFrame_drop_in_place = function(name) {
-    .pr$DataFrame$drop_in_place(self, name)
+  .pr$DataFrame$drop_in_place(self, name)
 }
 
 #' Drop in place
@@ -746,7 +744,7 @@ DataFrame_drop_in_place = function(name) {
 #' dat1$frame_equal(dat2)
 #' dat1$frame_equal(dat3)
 DataFrame_frame_equal = function(other) {
-    .pr$DataFrame$frame_equal(self, other)
+  .pr$DataFrame$frame_equal(self, other)
 }
 
 #' @title Shift
@@ -756,7 +754,7 @@ DataFrame_frame_equal = function(other) {
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$shift(2)
 DataFrame_shift = function(periods = 1) {
-    self$lazy()$shift(periods)$collect()
+  self$lazy()$shift(periods)$collect()
 }
 
 #' @title Shift and fill
@@ -768,7 +766,7 @@ DataFrame_shift = function(periods = 1) {
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
 DataFrame_shift_and_fill = function(fill_value, periods = 1) {
-    self$lazy()$shift_and_fill(fill_value, periods)$collect()
+  self$lazy()$shift_and_fill(fill_value, periods)$collect()
 }
 
 #' @title Modify/append column(s)
@@ -782,24 +780,24 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' @examples
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-#'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 #'
-#' #rename columns by naming expression is concidered experimental
-#' pl$set_polars_options(named_exprs = TRUE) #unlock
+#' # rename columns by naming expression is concidered experimental
+#' pl$set_polars_options(named_exprs = TRUE) # unlock
 #' pl$DataFrame(iris)$with_columns(
-#'   pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
-#'   SW_add_2 = (pl$col("Sepal.Width")+2)
+#'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
+#'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
   largs = list2(...)
 
-  #unpack a single list
-  if(length(largs)==1 && is.list(largs[[1]])) {
+  # unpack a single list
+  if (length(largs) == 1 && is.list(largs[[1]])) {
     largs = largs[[1]]
   }
 
-  do.call(self$lazy()$with_columns,largs)$collect()
+  do.call(self$lazy()$with_columns, largs)$collect()
 }
 
 #' modify/append one column
@@ -875,17 +873,17 @@ DataFrame_filter = function(bool_expr) {
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
 #' gb = pl$DataFrame(
-#'     foo = c("one", "two", "two", "one", "two"),
-#'     bar = c(5, 3, 2, 4, 1)
+#'   foo = c("one", "two", "two", "one", "two"),
+#'   bar = c(5, 3, 2, 4, 1)
 #' )$groupby("foo", maintain_order = TRUE)
 #' print(gb)
 #'
 #' gb$agg(
-#'  pl$col("bar")$sum()$suffix("_sum"),
-#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
-  #clone the DataFrame, bundle args as attributes. Non fallible.
+  # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
@@ -900,20 +898,19 @@ DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 #' @return data.frame
 #' @keywords DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1:3,])
+#' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
 DataFrame_to_data_frame = function(...) {
+  # do not unnest structs and mark with I to also preserve categoricals as is
+  l = lapply(self$to_list(unnest_structs = FALSE), I)
 
-  #do not unnest structs and mark with I to also preserve categoricals as is
-  l = lapply(self$to_list(unnest_structs=FALSE), I)
-
-  #similar to as.data.frame, but avoid checks, whcih would edit structs
+  # similar to as.data.frame, but avoid checks, whcih would edit structs
   df = data.frame(seq_along(l[[1L]]), ...)
-  for(i in seq_along(l)) df[[i]] = l[[i]]
+  for (i in seq_along(l)) df[[i]] = l[[i]]
   names(df) = .pr$DataFrame$columns(self)
 
-  #remove AsIs (I) subclass from columns
-  df[] = lapply(df,unAsIs)
+  # remove AsIs (I) subclass from columns
+  df[] = lapply(df, unAsIs)
   df
 }
 
@@ -953,7 +950,7 @@ as.data.frame.DataFrame = function(x, ...) {
 #' @examples
 #' pl$DataFrame(iris)$to_list()
 DataFrame_to_list = function(unnest_structs = TRUE) {
-  if(unnest_structs) {
+  if (unnest_structs) {
     unwrap(.pr$DataFrame$to_list(self))
   } else {
     restruct_list(unwrap(.pr$DataFrame$to_list_tag_structs(self)))
@@ -976,26 +973,23 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
-#' print(df1 <- pl$DataFrame(list(key=1:3,payload=c('f','i',NA))))
-#' print(df2 <- pl$DataFrame(list(key=c(3L,4L,5L,NA_integer_))))
-#' df1$join(other = df2,on = 'key')
+#' print(df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA))))
+#' print(df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_))))
+#' df1$join(other = df2, on = "key")
 DataFrame_join = function(
-  other,#: LazyFrame or DataFrame,
-  left_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  right_on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  on = NULL,#: str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-  how = c("inner", 'left', 'outer', 'semi', 'anti', 'cross'),
-  suffix = "_right",
-  allow_parallel = TRUE,
-  force_parallel  = FALSE
-) {
-
+    other, # : LazyFrame or DataFrame,
+    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    how = c("inner", "left", "outer", "semi", "anti", "cross"),
+    suffix = "_right",
+    allow_parallel = TRUE,
+    force_parallel = FALSE) {
   .pr$DataFrame$lazy(self)$join(
     other = other$lazy(), left_on = left_on, right_on = right_on,
-    on=on,how=how, suffix=suffix, allow_parallel = allow_parallel,
+    on = on, how = how, suffix = suffix, allow_parallel = allow_parallel,
     force_parallel = force_parallel
   )$collect()
-
 }
 
 #' to_struct
@@ -1004,19 +998,19 @@ DataFrame_join = function(
 #' @aliases to_struct
 #' @keywords DataFrame
 #' @examples
-#' #round-trip conversion from DataFrame with two columns
-#' df = pl$DataFrame(a=1:5,b=c("one","two","three","four","five"))
+#' # round-trip conversion from DataFrame with two columns
+#' df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
 #' s = df$to_struct()
 #' s
 #' s$to_r() # to r list
-#' df_s = s$to_frame() #place series in a new DataFrame
+#' df_s = s$to_frame() # place series in a new DataFrame
 #' df_s$unnest() # back to starting df
 DataFrame_to_struct = function(name = "") {
   .pr$DataFrame$to_struct(self, name)
 }
 
 
-##TODO contribute polars add r-polars defaults for to_struct and unnest
+## TODO contribute polars add r-polars defaults for to_struct and unnest
 #' Unnest a DataFrame struct columns.
 #' @keywords DataFrame
 #' @param names names of struct columns to unnest, default NULL unnest any struct column
@@ -1168,7 +1162,7 @@ DataFrame_fill_null = function(fill_value) {
 #' @param length integer or NULL
 #' @examples
 #' pl$DataFrame(mtcars)$slice(2, 4)
-#' mtcars[2:6,]
+#' mtcars[2:6, ]
 DataFrame_slice = function(offset, length = NULL) {
   self$lazy()$slice(offset, length)$collect()
 }
@@ -1207,11 +1201,11 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #' @keywords DataFrame
 #' @return new joined DataFrame
 #' @examples
-#' #create two DataFrame to join asof
+#' # create two DataFrame to join asof
 #' gdp = pl$DataFrame(
-#'   date = as.Date(c("2015-1-1","2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
+#'   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
 #'   gdp = c(4321, 4164, 4411, 4566, 4696),
-#'   group = c("b" ,"a", "a", "b", "b")
+#'   group = c("b", "a", "a", "b", "b")
 #' )
 #'
 #' pop = pl$DataFrame(
@@ -1220,7 +1214,7 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #'   group = c("b", "b", "a", "a")
 #' )
 #'
-#' #optional make sure tables are already sorted with "on" join-key
+#' # optional make sure tables are already sorted with "on" join-key
 #' gdp = gdp$sort("date")
 #' pop = pop$sort("date")
 #'
@@ -1240,25 +1234,24 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
 DataFrame_join_asof = function(
-  other,
-  ...,
-  left_on = NULL,
-  right_on = NULL,
-  on= NULL,
-  by_left = NULL,
-  by_right = NULL,
-  by = NULL,
-  strategy = "backward",
-  suffix = "_right",
-  tolerance = NULL,
-  allow_parallel = TRUE,
-  force_parallel = FALSE
-){
-  #convert other to LazyFrame, capture any Error as a result, and pass it on
+    other,
+    ...,
+    left_on = NULL,
+    right_on = NULL,
+    on = NULL,
+    by_left = NULL,
+    by_right = NULL,
+    by = NULL,
+    strategy = "backward",
+    suffix = "_right",
+    tolerance = NULL,
+    allow_parallel = TRUE,
+    force_parallel = FALSE) {
+  # convert other to LazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
-    inherits(other,"DataFrame"), Ok(other$lazy()),
-    inherits(other,"LazyFrame"), Ok(other),
+    inherits(other, "DataFrame"), Ok(other$lazy()),
+    inherits(other, "LazyFrame"), Ok(other),
     or_else = Err(" not a LazyFrame or DataFrame")
   )
 

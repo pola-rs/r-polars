@@ -16,5 +16,5 @@ R data.frame
 convert to data.frame
 }
 \examples{
-pl$DataFrame(iris)$to_data_frame() #R-polars back and forth
+pl$DataFrame(iris)$to_data_frame() # R-polars back and forth
 }

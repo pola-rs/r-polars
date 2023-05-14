@@ -18,13 +18,13 @@ Concat the arrays in a Series dtype List in linear time.
 }
 \examples{
 df = pl$DataFrame(
-  a = list("a","x"),
-  b = list(c("b","c"),c("y","z"))
+  a = list("a", "x"),
+  b = list(c("b", "c"), c("y", "z"))
 )
 df$select(pl$col("a")$arr$concat(pl$col("b")))
 
 df$select(pl$col("a")$arr$concat("hello from R"))
 
-df$select(pl$col("a")$arr$concat(list("hello",c("hello","world"))))
+df$select(pl$col("a")$arr$concat(list("hello", c("hello", "world"))))
 }
 \keyword{ExprArr}

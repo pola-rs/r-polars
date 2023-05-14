@@ -16,6 +16,6 @@ Get maximum value.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$max() == 3) #is true
+pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$max() == 3) # is true
 }
 \keyword{Expr}

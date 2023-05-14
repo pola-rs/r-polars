@@ -22,22 +22,24 @@ Expr
 syntactic sugar for starting a expression with sum
 }
 \examples{
-#column as string
+# column as string
 pl$DataFrame(iris)$select(pl$sum("Petal.Width"))
 
-#column as Expr (prefer pl$col("Petal.Width")$sum())
+# column as Expr (prefer pl$col("Petal.Width")$sum())
 pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
 
-#column as numeric
+# column as numeric
 pl$DataFrame()$select(pl$sum(1:5))
 
-#column as list
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c")))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", 42L)))
 
-#three eqivalent lines
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("a","c", pl$sum(list("a","b","c")))))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list(pl$col("a")+pl$col("b"),"c")))
-pl$DataFrame(a=1:2,b=3:4,c=5:6)$with_column(pl$sum(list("*")))
+df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
+
+# column as list
+df$with_column(pl$sum(list("a", "c")))
+df$with_column(pl$sum(list("a", "c", 42L)))
+
+# two eqivalent lines
+df$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
+df$with_column(pl$sum(list("*")))
 }
 \keyword{Expr_new}

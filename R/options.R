@@ -92,10 +92,10 @@ polars_optreq$default_maintain_order = list( # set requirement functions of defa
 #' @details prints any call to public or private polars method
 #' @param debug_polars bool, default = FALSE,
 #' turn of messages
-polars_optenv$debug_polars = FALSE #set default value
-polars_optreq$debug_polars = list( #set requirement functions of default value
-  is_bool = function (x) {
-    is.logical(x) && length(x)==1 && !is.na(x)
+polars_optenv$debug_polars = FALSE # set default value
+polars_optreq$debug_polars = list( # set requirement functions of default value
+  is_bool = function(x) {
+    is.logical(x) && length(x) == 1 && !is.na(x)
   }
 )
 
@@ -238,7 +238,7 @@ pl$set_polars_options = function(
     polars_optenv[[i]] = opts[[i]]
   }
 
-  if(return_replaced_options) {
+  if (return_replaced_options) {
     return(invisible(replaced_opts_list))
   }
 
@@ -284,12 +284,10 @@ pl$get_polars_opt_requirements = function() {
 runtime_state = new.env(parent = emptyenv())
 
 
-subtimer_ms = function(cap_name = NULL,cap=9999) {
+subtimer_ms = function(cap_name = NULL, cap = 9999) {
   last = runtime_state$last_subtime %||% 0
   this = as.numeric(Sys.time())
   runtime_state$last_subtime = this
-  time = min((this - last)*1000, cap)
-  if(!is.null(cap_name) && time==cap) cap_name else time
+  time = min((this - last) * 1000, cap)
+  if (!is.null(cap_name) && time == cap) cap_name else time
 }
-
-

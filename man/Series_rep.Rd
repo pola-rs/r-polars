@@ -26,6 +26,6 @@ duplicate and concatenate a series
 This function in not implemented in pypolars
 }
 \examples{
-pl$Series(1:2,"bob")$rep(3)
+pl$Series(1:2, "bob")$rep(3)
 }
 \keyword{Series}

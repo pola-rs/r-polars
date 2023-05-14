@@ -1,5 +1,4 @@
 test_that("Test reading data from Apache Arrow IPC", {
-
   # This test requires library arrow
   skip_if_not_installed("arrow")
 
@@ -36,5 +35,4 @@ test_that("Test reading data from Apache Arrow IPC", {
   testthat::expect_error(pl$scan_arrow_ipc(tmpf, row_count_name = c("x", "y")))
   testthat::expect_error(pl$scan_arrow_ipc(tmpf, row_count_name = "name", row_count_offset = data.frame()))
   testthat::expect_error(pl$scan_arrow_ipc(tmpf, memmap = NULL))
-
 })

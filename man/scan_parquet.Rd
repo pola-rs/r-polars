@@ -39,6 +39,6 @@ LazyFrame
 new LazyFrame from parquet file
 }
 \examples{
-#TODO write parquet example
+# TODO write parquet example
 }
 \keyword{LazyFrame_new}

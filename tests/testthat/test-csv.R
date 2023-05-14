@@ -1,7 +1,6 @@
 test_that("csv read iris", {
-
   tmpf = tempfile()
-  write.csv(iris, tmpf,row.names = FALSE)
+  write.csv(iris, tmpf, row.names = FALSE)
   lf = pl$lazy_csv_reader(tmpf)
 
   df = lf$collect()
@@ -14,16 +13,9 @@ test_that("csv read iris", {
     iris_char
   )
 
-  #named dtype changed to categorical
+  # named dtype changed to categorical
   testthat::expect_equal(
-    pl$lazy_csv_reader(tmpf,overwrite_dtype = list(Species= pl$Categorical))$collect()$to_data_frame(),
+    pl$lazy_csv_reader(tmpf, overwrite_dtype = list(Species = pl$Categorical))$collect()$to_data_frame(),
     iris
   )
-
-
-
-
-
-
-
 })

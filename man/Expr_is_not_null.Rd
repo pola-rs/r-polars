@@ -18,6 +18,6 @@ null polars about the same as R NA
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-pl$DataFrame(list(x=c(1,NA,3)))$select(pl$col("x")$is_not_null())
+pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 }
 \keyword{Expr}

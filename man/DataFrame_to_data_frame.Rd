@@ -23,7 +23,7 @@ data.frame
 return polars DataFrame as R data.frame
 }
 \examples{
-df = pl$DataFrame(iris[1:3,])
+df = pl$DataFrame(iris[1:3, ])
 df$to_data_frame()
 }
 \keyword{DataFrame}

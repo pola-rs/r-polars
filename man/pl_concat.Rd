@@ -19,27 +19,27 @@ DataFrame, or Series, LazyFrame or Expr
 Concat polars objects
 }
 \examples{
-#vertical
+# vertical
 l_ver = lapply(1:10, function(i) {
   l_internal = list(
     a = 1:5,
     b = letters[1:5]
   )
-pl$DataFrame(l_internal)
+  pl$DataFrame(l_internal)
 })
-pl$concat(l_ver, how="vertical")
+pl$concat(l_ver, how = "vertical")
 
 
-#horizontal
+# horizontal
 l_hor = lapply(1:10, function(i) {
   l_internal = list(
     1:5,
     letters[1:5]
   )
-  names(l_internal) = paste0(c("a","b"),i)
+  names(l_internal) = paste0(c("a", "b"), i)
   pl$DataFrame(l_internal)
 })
 pl$concat(l_hor, how = "horizontal")
-#diagonal
+# diagonal
 pl$concat(l_hor, how = "diagonal")
 }

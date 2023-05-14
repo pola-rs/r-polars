@@ -18,7 +18,7 @@ Get the tail n elements.
 Similar to R tail(x)
 }
 \examples{
-#get 3 last elements
-pl$DataFrame(list(x=1:11))$select(pl$col("x")$tail(3))
+# get 3 last elements
+pl$DataFrame(list(x = 1:11))$select(pl$col("x")$tail(3))
 }
 \keyword{Expr}

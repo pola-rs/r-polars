@@ -41,7 +41,7 @@ build: ## Compile polars R package and generate Rd files
 
 
 .PHONY: all
-all: build test README.md ## build -> test -> Update README.md
+all: fmt build test README.md ## build -> test -> Update README.md
 
 .PHONY: docs
 docs: build README.md ## Generate docs
@@ -63,3 +63,13 @@ test: build ## Run fast unittests
 .PHONY: install
 install: ## Install this R package locally
 	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
+
+.PHONY: fmt
+fmt: fmt-r ## Format files
+
+GIT_DIF_TARGET ?=
+MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) --name-only | grep -e .*R$$ -e .*Rmd$$", intern = TRUE), "R/extendr-wrappers.R") |> cat()')
+
+.PHONY: fmt-r
+fmt-r: $(MODIFIED_R_FILES) ## Format R files
+	$(foreach file, $^, $(shell R -q -e 'styler::style_file("$(file)"); styler.equals::style_file("$(file)")' >/dev/null))

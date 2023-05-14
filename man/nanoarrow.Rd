@@ -67,7 +67,7 @@ print(nanoarrow_array_schema)
 library(arrow)
 arrow_table = as_arrow_table(df)
 print(arrow_table)
-arrow_record_batch_reader = as_record_batch_reader(df) #requires arrow
+arrow_record_batch_reader = as_record_batch_reader(df) # requires arrow
 print(arrow_record_batch_reader)
 }
 \keyword{nanoarrow_interface}

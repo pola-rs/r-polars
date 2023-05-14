@@ -20,7 +20,7 @@ Replace first matching regex/literal substring with a new string value.
 \examples{
 df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
 df$with_columns(
-   pl$col("text")$str$replace(r"{abc\b}", "ABC")
+  pl$col("text")$str$replace(r"{abc\b}", "ABC")
 )
 }
 \seealso{

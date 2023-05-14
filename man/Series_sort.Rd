@@ -20,6 +20,6 @@ Series
 Sort this Series
 }
 \examples{
-pl$Series(c(1,NA,NaN,Inf,-Inf))$sort()
+pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
 }
 \keyword{Series}

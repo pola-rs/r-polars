@@ -39,40 +39,40 @@ file sourced) the extendr-methods are removed and replaced by any function
 prefixed \code{LazyFrame_}.
 }
 \examples{
-#see all exported methods
+# see all exported methods
 ls(polars:::LazyFrame)
 
-#see all private methods (not intended for regular use)
+# see all private methods (not intended for regular use)
 ls(polars:::.pr$LazyFrame)
 
 
 ## Practical example ##
 # First writing R iris dataset to disk, to illustrte a difference
 temp_filepath = tempfile()
-write.csv(iris, temp_filepath,row.names = FALSE)
+write.csv(iris, temp_filepath, row.names = FALSE)
 
 # Following example illustrates 2 ways to obtain a LazyFrame
 
 # The-Okay-way: convert an in-memory DataFrame to LazyFrame
 
-#eager in-mem R data.frame
+# eager in-mem R data.frame
 Rdf = read.csv(temp_filepath)
 
-#eager in-mem polars DataFrame
+# eager in-mem polars DataFrame
 Pdf = pl$DataFrame(Rdf)
 
-#lazy frame starting from in-mem DataFrame
+# lazy frame starting from in-mem DataFrame
 Ldf_okay = Pdf$lazy()
 
-#The-Best-Way:  LazyFrame created directly from a data source is best...
+# The-Best-Way:  LazyFrame created directly from a data source is best...
 Ldf_best = pl$lazy_csv_reader(temp_filepath)
 
 # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 # pushed down in the executation stack to the csv_reader, and thereby only bringing into
 # memory the rows matching to filter.
 # apply filter:
-filter_expr = pl$col("Species") == "setosa" #get only rows where Species is setosa
-Ldf_okay = Ldf_okay$filter(filter_expr) #overwrite LazyFrame with new
+filter_expr = pl$col("Species") == "setosa" # get only rows where Species is setosa
+Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite LazyFrame with new
 Ldf_best = Ldf_best$filter(filter_expr)
 
 # the non optimized plans are similar, on entire in-mem csv, apply filter
@@ -81,23 +81,23 @@ Ldf_best$describe_plan()
 
 # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 
-#The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
+# The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
 Ldf_okay$describe_optimized_plan()
 Ldf_best$describe_optimized_plan()
 
 
-#To acquire result in-mem use $colelct()
+# To acquire result in-mem use $colelct()
 Pdf_okay = Ldf_okay$collect()
 Pdf_best = Ldf_best$collect()
 
 
-#verify tables would be the same
+# verify tables would be the same
 all.equal(
   Pdf_okay$to_data_frame(),
   Pdf_best$to_data_frame()
 )
 
-#a user might write it as a one-liner like so:
+# a user might write it as a one-liner like so:
 Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
 }
 \keyword{LazyFrame}

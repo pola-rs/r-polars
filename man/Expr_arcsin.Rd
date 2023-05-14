@@ -17,6 +17,6 @@ Compute the element-wise value for the inverse sine.
 Evaluated Series has dtype Float64
 }
 \examples{
-pl$DataFrame(a=c(-1,sin(0.5),0,1,NA_real_))$select(pl$col("a")$arcsin())
+pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsin())
 }
 \keyword{Expr}

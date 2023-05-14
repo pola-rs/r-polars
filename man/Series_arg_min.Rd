@@ -13,6 +13,6 @@ bool
 idx to min value
 }
 \examples{
-pl$Series(c(5,1))$arg_min()
+pl$Series(c(5, 1))$arg_min()
 }
 \keyword{Series}

@@ -23,7 +23,7 @@ df = pl$DataFrame(
 df$select(
   pl$col("date"),
   pl$col("date")$dt$timestamp()$alias("timestamp_ns"),
-  pl$col("date")$dt$timestamp(tu="ms")$alias("timestamp_ms")
+  pl$col("date")$dt$timestamp(tu = "ms")$alias("timestamp_ms")
 )
 }
 \keyword{ExprDT}

@@ -12,7 +12,7 @@
 #' @param lit The binary substring to look for
 #' @return Expr returning a Boolean
 ExprBin_contains = function(lit) {
-    unwrap(.pr$Expr$bin_contains(self, lit))
+  unwrap(.pr$Expr$bin_contains(self, lit))
 }
 
 
@@ -23,7 +23,7 @@ ExprBin_contains = function(lit) {
 #' @keywords ExprBin
 #' @param sub Prefix substring.
 ExprBin_starts_with = function(sub) {
-    unwrap(.pr$Expr$bin_starts_with(self, sub))
+  unwrap(.pr$Expr$bin_starts_with(self, sub))
 }
 
 
@@ -34,7 +34,7 @@ ExprBin_starts_with = function(sub) {
 #' @keywords ExprBin
 #' @return Expr returning a Boolean
 ExprBin_ends_with = function(sub) {
-    unwrap(.pr$Expr$bin_ends_with(self, sub))
+  unwrap(.pr$Expr$bin_ends_with(self, sub))
 }
 
 
@@ -47,12 +47,12 @@ ExprBin_ends_with = function(sub) {
 #' @param encoding binary choice either 'hex' or 'base64'
 #' @return binary array with values encoded using provided encoding
 ExprBin_encode = function(encoding) {
-    pcase(
-        !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
-        encoding == "hex", .pr$Expr$bin_encode_hex(self),
-        encoding == "base64", .pr$Expr$bin_encode_base64(self),
-        or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
-    )
+  pcase(
+    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    encoding == "hex", .pr$Expr$bin_encode_hex(self),
+    encoding == "base64", .pr$Expr$bin_encode_base64(self),
+    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+  )
 }
 
 #' decode
@@ -66,10 +66,10 @@ ExprBin_encode = function(encoding) {
 #'
 #' @return binary array with values decoded using provided encoding
 ExprBin_decode = function(encoding, strict = TRUE) {
-    pcase(
-        !is_string(encoding) ,stopf("encoding must be a string, it was: %s", str_string(encoding)),
-        encoding == "hex", .pr$Expr$bin_decode_hex(self, strict),
-        encoding == "base64", .pr$Expr$bin_decode_base64(self, strict),
-        or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
-    )
+  pcase(
+    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    encoding == "hex", .pr$Expr$bin_decode_hex(self, strict),
+    encoding == "base64", .pr$Expr$bin_decode_base64(self, strict),
+    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+  )
 }

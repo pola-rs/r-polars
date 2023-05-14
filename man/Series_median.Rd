@@ -17,8 +17,8 @@ Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before medianming to prevent overflow issues.
 }
 \examples{
-pl$Series(c(1:2,NA,3,5))$median() # a NA is dropped always
-pl$Series(c(1:2,NA,3,NaN,4,Inf))$median() # NaN carries / poisons
-pl$Series(c(1:2,3,Inf,4,-Inf,5))$median() # Inf-Inf is NaN
+pl$Series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
+pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$median() # NaN carries / poisons
+pl$Series(c(1:2, 3, Inf, 4, -Inf, 5))$median() # Inf-Inf is NaN
 }
 \keyword{Series}

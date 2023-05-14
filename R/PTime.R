@@ -7,7 +7,7 @@
 # and a attribute "tu" setting time unit.
 
 
-#conversion factor
+# conversion factor
 time_unit_conv_factor = c(
   "s" = 1,
   "ms" = 1E3,
@@ -57,53 +57,54 @@ time_unit_conv_factor = c(
 #'
 #' @examples
 #'
-#' #make PTime in all time units
-#' pl$PTime(runif(5)*3600*24*1E0, tu = "s")
-#' pl$PTime(runif(5)*3600*24*1E3, tu = "ms")
-#' pl$PTime(runif(5)*3600*24*1E6, tu = "us")
-#' pl$PTime(runif(5)*3600*24*1E9, tu = "ns")
+#' # make PTime in all time units
+#' pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s")
+#' pl$PTime(runif(5) * 3600 * 24 * 1E3, tu = "ms")
+#' pl$PTime(runif(5) * 3600 * 24 * 1E6, tu = "us")
+#' pl$PTime(runif(5) * 3600 * 24 * 1E9, tu = "ns")
 #' pl$PTime("23:59:59")
 #'
 #'
-#' pl$Series(pl$PTime(runif(5)*3600*24*1E0, tu = "s"))
+#' pl$Series(pl$PTime(runif(5) * 3600 * 24 * 1E0, tu = "s"))
 #' pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 #'
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
-pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
-
+pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), fmt = "%H:%M:%S") {
   tu = tu[1]
-  if(!is_string(tu) || !tu %in% c("s","ms","us","ns")) {
-    stopf("tu must be either 's','ms','us' ,or 'ns', not [%s]",str_string(tu))
+  if (!is_string(tu) || !tu %in% c("s", "ms", "us", "ns")) {
+    stopf("tu must be either 's','ms','us' ,or 'ns', not [%s]", str_string(tu))
   }
 
-  if( is.character(x)) {
+  if (is.character(x)) {
     x = as.double(as.POSIXct(x, format = fmt, tz = "GMT")) -
       as.double(as.POSIXct("00:00:00", format = fmt, tz = "GMT"))
     x = x * time_unit_conv_factor[tu]
   }
 
-  #type specific conciderations
+  # type specific conciderations
   type_ok = FALSE
-  if(typeof(x)=="double") {
+  if (typeof(x) == "double") {
     x = as.double(x)
     type_ok = TRUE
   }
 
-  if(typeof(x)=="integer") {
-    if(!tu %in% c("s","ms")) {stopf(
-      "only 's' and 'ms' tu is supported for integer, set input x as double to use tu: [%s]", tu
-    )}
+  if (typeof(x) == "integer") {
+    if (!tu %in% c("s", "ms")) {
+      stopf(
+        "only 's' and 'ms' tu is supported for integer, set input x as double to use tu: [%s]", tu
+      )
+    }
     x = as.integer(x)
     type_ok = TRUE
   }
 
-  #check type
-  if(!type_ok) {
+  # check type
+  if (!type_ok) {
     stopf("type of x is not double or integer, it was [%s]", typeof(x))
   }
 
-  #check boundaries
-  if(isTRUE(any(x<0))) {
+  # check boundaries
+  if (isTRUE(any(x < 0))) {
     stopf("no element of x can be negative")
   }
   x = floor(x)
@@ -113,11 +114,11 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
     "us" = 86400000000,
     "ns" = 86400000000000
   )
-  if(isTRUE(any(x>limits[tu]))) {
-    stopf("no elements can exceed 24 hours, the limit for tu '%s' is the value %s",tu,limits[tu])
+  if (isTRUE(any(x > limits[tu]))) {
+    stopf("no elements can exceed 24 hours, the limit for tu '%s' is the value %s", tu, limits[tu])
   }
 
-  attr(x,"tu") = tu
+  attr(x, "tu") = tu
   class(x) = "PTime"
   x
 }
@@ -129,7 +130,7 @@ pl$PTime = function(x, tu = c("s","ms","us","ns"), fmt = "%H:%M:%S") {
 #' @keywords internal
 #' @exportS3Method
 print.PTime = function(x, ...) {
-  tu = attr(x,"tu")
+  tu = attr(x, "tu")
   tu_exp = pcase(
     tu == "s", 0,
     tu == "ms", 3,
@@ -139,15 +140,15 @@ print.PTime = function(x, ...) {
   )
   val = unclass(x) / 10^tu_exp
   origin = structure(0, tzone = "GMT", class = c("POSIXct", "POSIXt"))
-  fmt = format(as.POSIXct(val,tz="GMT",origin=origin),format="%H:%M:%S")
+  fmt = format(as.POSIXct(val, tz = "GMT", origin = origin), format = "%H:%M:%S")
 
-  if(tu!="s") {
-    dgt = formatC((val-floor(val))*10^tu_exp, width = tu_exp, flag=0,big.mark ="_",digits = tu_exp)
-    fmt = paste0(fmt,":",dgt,tu)
+  if (tu != "s") {
+    dgt = formatC((val - floor(val)) * 10^tu_exp, width = tu_exp, flag = 0, big.mark = "_", digits = tu_exp)
+    fmt = paste0(fmt, ":", dgt, tu)
   }
-  cat("PTime [",typeof(x),"]: number of epochs [",tu,"] since midnight\n")
+  cat("PTime [", typeof(x), "]: number of epochs [", tu, "] since midnight\n")
   print(paste0(
-    fmt, " val: ",as.character(x)
+    fmt, " val: ", as.character(x)
   ))
   invisible(x)
 }

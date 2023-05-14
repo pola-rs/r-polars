@@ -17,5 +17,5 @@ The Dataframe constructors accepts data.frame inheritors or list of vectors and/
 }
 \examples{
 polars:::is_DataFrame_data_input(iris)
-polars:::is_DataFrame_data_input(list(1:5,pl$Series(1:5),letters[1:5]))
+polars:::is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 }

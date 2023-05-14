@@ -18,6 +18,6 @@ string
 Simple viewer of an R object based on str()
 }
 \examples{
-polars:::str_string(list(a=42,c(1,2,3,NA)))
+polars:::str_string(list(a = 42, c(1, 2, 3, NA)))
 }
 \keyword{internal}

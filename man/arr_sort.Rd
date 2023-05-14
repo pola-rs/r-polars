@@ -24,8 +24,8 @@ Expr
 Get the value by index in the sublists.
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) #NULL or integer() or list()
+df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 df$select(pl$col("a")$arr$get(0))
-df$select(pl$col("a")$arr$get(c(2,0,-1)))
+df$select(pl$col("a")$arr$get(c(2, 0, -1)))
 }
 \keyword{ExprArr}
