@@ -33,21 +33,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: ./.github/actions/setup
+
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
         shell: bash
         run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
-
-      - name: Set up Rust
-        run: |
-          make requirements-rs
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: build
-          workspaces: ./src/rust/
-          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -58,24 +49,6 @@ jobs:
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools-version }}
           Ncpus: 2
-
-      - name: Install ubuntu SYSTEM REQUIREMENTS
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update \
-          && sudo apt-get install -y \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libharfbuzz-dev \
-            libcurl4-openssl-dev \
-            libgit2-dev \
-            libicu-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libxml2-dev \
-            libssl-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
