@@ -75,8 +75,8 @@ fn max_exprs(exprs: &ProtoExprArray) -> Expr {
 
 #[extendr]
 fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
-    let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::coalesce(&exprs).into()
+    let exprs: Vec<pl::Expr> = exprs.to_vec("select");
+    polars::lazy::dsl::coalesce(exprs.as_slice()).into()
 }
 
 #[extendr]
@@ -263,6 +263,13 @@ fn test_robj_to_i64(robj: Robj) -> Result<String, String> {
 fn test_robj_to_u32(robj: Robj) -> Result<String, String> {
     let x = robj_to!(u32, robj).map(|x| x.to_string());
     x
+}
+
+//#[extendr]
+fn test_expr_to_arrow_expr_string(robj: Expr) -> Result<Robj, String> {
+    use crate::pa_expr::predicate_to_pa;
+
+    todo!();
 }
 
 extendr_module! {
