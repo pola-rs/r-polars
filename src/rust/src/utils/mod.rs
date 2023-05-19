@@ -515,7 +515,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> 
                 .as_real()
                 .ok_or_else(|| format!("integer64 conversion failed for, but {:?}", robj))
                 .and_then(|x| {
-                    let x = unsafe { std::mem::transmute::<f64, i64>(x) };
+                    let x = x.to_bits() as i64;
                     if x == crate::utils::BIT64_NA_ECODING {
                         Err("scalar arguments do not support integer64 NA value".to_string())
                     } else {
@@ -531,7 +531,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> 
         (_, _) => None,
     }
     .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
-    .and_then(|float| try_f64_into_i64(float))
+    .and_then(try_f64_into_i64)
 }
 
 pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> {
@@ -554,7 +554,7 @@ pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> 
             robj
         )
     })
-    .and_then(|float| try_f64_into_u64(float))
+    .and_then(try_f64_into_u64)
 }
 
 pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> {
@@ -576,12 +576,12 @@ pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> 
             robj
         )
     })
-    .and_then(|float| try_f64_into_u32(float))
+    .and_then(try_f64_into_u32)
 }
 
 pub fn robj_to_u8(robj: extendr_api::Robj) -> std::result::Result<u8, String> {
     let robj = unpack_r_result_list(robj)?;
-    robj_to_i64(robj.clone()).and_then(try_i64_into_u8)
+    robj_to_i64(robj).and_then(try_i64_into_u8)
 }
 
 pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
@@ -599,9 +599,7 @@ pub fn robj_to_binary_vec(robj: extendr_api::Robj) -> std::result::Result<Vec<u8
     let binary_vec: Vec<u8> = robj
         .as_raw_slice()
         .ok_or_else(|| format!("is not an R raw as required, but {:?}", robj))?
-        .iter()
-        .map(|byte| *byte)
-        .collect();
+        .to_vec();
     Ok(binary_vec)
 }
 
@@ -701,7 +699,7 @@ where
     T::IntoIter: ExactSizeIterator,
 {
     use extendr_api::prelude::*;
-    let iter = ite.into_iter().map(|pl_expr| Expr(pl_expr));
+    let iter = ite.into_iter().map(Expr);
     List::from_values(iter)
 }
 
