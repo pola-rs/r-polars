@@ -21,7 +21,7 @@ pub mod rlib;
 pub mod series;
 pub mod utils;
 
-use serde_json;
+pub use serde_json;
 
 use extendr_api::prelude::*;
 use utils::extendr_concurrent::ParRObj;
