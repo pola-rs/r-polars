@@ -40,7 +40,7 @@ impl From<polars::prelude::Series> for Series {
 
 impl From<&Expr> for pl::PolarsResult<Series> {
     fn from(expr: &Expr) -> Self {
-        DataFrame::new()
+        DataFrame::default()
             .lazy()
             .0
             .select(&[expr.0.clone()])

@@ -8,6 +8,7 @@ use extendr_api::{extendr, prelude::*};
 use polars::prelude::{self as pl};
 //this function is derived from  polars/py-polars/src/lazy/DataFrame.rs new_from_csv
 
+#[allow(clippy::too_many_arguments)]
 #[extendr]
 pub fn new_from_parquet(
     path: String,
@@ -45,7 +46,7 @@ pub fn new_from_parquet(
 
     let lf_result = pl::LazyFrame::scan_parquet(path, args)
         .map_err(|x| x.to_string())
-        .map(|lf| LazyFrame(lf));
+        .map(LazyFrame);
     r_result_list(lf_result)
 }
 

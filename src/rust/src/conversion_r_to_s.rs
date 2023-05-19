@@ -201,8 +201,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         Ok(SeriesTree::Series(s)) if x.inherits("PTime") => {
             let tu_str = x
                 .get_attrib("tu")
-                .map(|robj| robj.as_str())
-                .flatten()
+                .and_then(|robj| robj.as_str())
                 .ok_or_else(|| {
                     pl::PolarsError::SchemaMismatch(
                         "failure to convert class PTime as attribute tu is not a string or there"
@@ -252,7 +251,7 @@ fn concat_series_tree(
                 empty_list_series.cast(&pl::DataType::Null) 
             }
         },
-        SeriesTree::SeriesVec(sv) if sv.len() == 0 => unreachable!(
+        SeriesTree::SeriesVec(sv) if sv.is_empty() => unreachable!(
             "internal error: A series tree was built with a literal empty vector, instead of using the SeriesEmptyVec flag"
         ),
         SeriesTree::SeriesVec(sv) => {
@@ -299,7 +298,6 @@ fn robj_to_utf8_series(rstrings: Strings, name: &str) -> pl::Series {
                 .map(|x| if x.is_na() { None } else { Some(x.as_str()) }),
         );
 
-        let s = pl::Series::new(name, s);
-        s
+        pl::Series::new(name, s)
     }
 }

@@ -25,7 +25,7 @@ impl RField {
         rprintln!("{:#?}", self.0);
     }
 
-    //
+    #[allow(clippy::should_implement_trait)]
     pub fn clone(&self) -> Self {
         RField(self.0.clone())
     }
@@ -191,6 +191,7 @@ impl RPolarsDataType {
         rprintln!("{:#?}", self.0);
     }
 
+    #[allow(clippy::should_implement_trait)]
     pub fn eq(&self, other: &RPolarsDataType) -> bool {
         self.0.eq(&other.0)
     }
@@ -214,7 +215,7 @@ impl RPolarsDataType {
                 },
             ),
             pl::DataType::List(inner) => {
-                list!(RPolarsDataType(*inner.clone()).into_robj())
+                list!(RPolarsDataType(*inner).into_robj())
             }
             _ => list!(),
         }
@@ -235,15 +236,14 @@ impl From<RPolarsDataType> for pl::DataType {
 //if all named will become a schema and passed to polars_io.csv.csvread.with_dtypes
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
 impl DataTypeVector {
     pub fn new() -> Self {
-        DataTypeVector(Vec::new())
+        Self::default()
     }
-
     pub fn push(&mut self, colname: Nullable<String>, datatype: &RPolarsDataType) {
         self.0.push((Wrap(colname).into(), datatype.clone().into()));
     }
@@ -415,7 +415,7 @@ pub fn literal_to_any_value(
 
 pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
     use pl::*;
-    Ok(pl::DataFrame::default()
+    pl::DataFrame::default()
         .lazy()
         .select(&[e])
         .collect()
@@ -427,7 +427,7 @@ pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'stati
         .next()
         .ok_or_else(|| String::from("series had no first value"))?
         .into_static()
-        .map_err(|err| err.to_string())?)
+        .map_err(|err| err.to_string())
 }
 
 pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
