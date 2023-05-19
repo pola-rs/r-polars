@@ -494,7 +494,7 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, Stri
             robj
         )
     })
-    .and_then(|float| try_f64_into_usize(float))
+    .and_then(try_f64_into_usize)
 }
 
 pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> {

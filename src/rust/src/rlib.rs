@@ -17,10 +17,11 @@ fn concat_df(vdf: &VecDataFrame) -> List {
     use polars_core::error::PolarsResult;
     use polars_core::utils::rayon::prelude::*;
 
-    let first = (*vdf.0.iter().peekable().peek().unwrap()).clone();
-    let iter = vdf.0.clone().into_iter().map(|df| df);
-    let identity_df = first.clone().slice(0, 0);
-    let rdfs: Vec<pl::PolarsResult<pl::DataFrame>> = iter.map(|df| Ok(df)).collect();
+    let identity_df = (*vdf.0.iter().peekable().peek().unwrap())
+        .clone()
+        .slice(0, 0);
+    let rdfs: Vec<pl::PolarsResult<pl::DataFrame>> =
+        vdf.0.iter().map(|df| Ok(df.clone())).collect();
     let identity = || Ok(identity_df.clone());
 
     let result = polars_core::POOL
@@ -37,20 +38,20 @@ fn concat_df(vdf: &VecDataFrame) -> List {
                     Ok(acc)
                 })
         })
-        .map(|ok| DataFrame(ok));
+        .map(DataFrame);
 
     r_result_list(result.map_err(|err| format!("{:?}", err)))
 }
 
 #[extendr]
 fn diag_concat_df(dfs: &VecDataFrame) -> List {
-    let df = pl_functions::diag_concat_df(&dfs.0[..]).map(|ok| DataFrame(ok));
+    let df = pl_functions::diag_concat_df(&dfs.0[..]).map(DataFrame);
     r_result_list(df.map_err(|err| format!("{:?}", err)))
 }
 
 #[extendr]
 pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
-    let df = pl_functions::hor_concat_df(&dfs.0[..]).map(|ok| DataFrame(ok));
+    let df = pl_functions::hor_concat_df(&dfs.0[..]).map(DataFrame);
     r_result_list(df.map_err(|err| format!("{:?}", err)))
 }
 
@@ -250,19 +251,16 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
 
 #[extendr]
 fn test_robj_to_usize(robj: Robj) -> Result<String, String> {
-    let x = robj_to!(usize, robj).map(|x| x.to_string());
-    x
+    robj_to!(usize, robj).map(|x| x.to_string())
 }
 #[extendr]
 fn test_robj_to_i64(robj: Robj) -> Result<String, String> {
-    let x = robj_to!(i64, robj).map(|x| x.to_string());
-    x
+    robj_to!(i64, robj).map(|x| x.to_string())
 }
 
 #[extendr]
 fn test_robj_to_u32(robj: Robj) -> Result<String, String> {
-    let x = robj_to!(u32, robj).map(|x| x.to_string());
-    x
+    robj_to!(u32, robj).map(|x| x.to_string())
 }
 
 extendr_module! {

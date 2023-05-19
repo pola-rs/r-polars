@@ -47,7 +47,7 @@ impl From<&Expr> for pl::PolarsResult<Series> {
             .collect()
             .map(|df| {
                 df.select_at_idx(0)
-                    .map(|ref_s| ref_s.clone())
+                    .cloned()
                     .unwrap_or_else(|| pl::Series::new_empty("", &pl::DataType::Null))
                     .into()
             })
@@ -60,9 +60,11 @@ impl Series {
     pub fn new(x: Robj, name: &str) -> std::result::Result<Series, String> {
         robjname2series(&ParRObj(x), name)
             .map_err(|err| format!("in Series.new: {:?}", err))
-            .map(|s| Series(s))
+            .map(Series)
     }
 
+    // named like this to no collide with clone trait but still export with extendr
+    #[allow(clippy::should_implement_trait)]
     pub fn clone(&self) -> Series {
         Series(self.0.clone())
     }
@@ -70,7 +72,7 @@ impl Series {
     //function for debugging only
     pub fn sleep(&self, millis: i32) -> Series {
         std::thread::sleep(std::time::Duration::from_millis(millis as u64));
-        Series(self.0.clone())
+        self.clone()
     }
 
     pub fn panic(&self) -> Series {
@@ -115,7 +117,7 @@ impl Series {
     ) -> std::result::Result<DataFrame, String> {
         self.0
             .value_counts(multithreaded, sorted)
-            .map(|df| DataFrame(df))
+            .map(DataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }
 
@@ -252,7 +254,7 @@ impl Series {
             .0
             .clone()
             .abs()
-            .map(|x| Series(x))
+            .map(Series)
             .map_err(|err| format!("{:?}", err));
         r_result_list(x)
     }
@@ -288,12 +290,10 @@ impl Series {
 
             let iter = self.0.bool().unwrap().into_iter();
 
-            for i in iter {
-                if let Some(b) = i {
-                    if b {
-                        one_seen_true = true;
-                        break;
-                    }
+            for i in iter.flatten() {
+                if i {
+                    one_seen_true = true;
+                    break;
                 }
             }
 
@@ -375,13 +375,11 @@ impl Series {
                 let ca_list = self.0.list().unwrap();
 
                 let y = ca_list.into_iter().map(|opt_ser| {
-                    let opt_robj = if let Some(ser) = opt_ser {
-                        let out = rfun.call(pairlist!(Series(ser))).ok();
-                        out
+                    if let Some(ser) = opt_ser {
+                        rfun.call(pairlist!(Series(ser))).ok()
                     } else {
                         unreachable!("internal error: oh it was possible to get a None Series");
-                    };
-                    opt_robj
+                    }
                 });
 
                 Box::new(y)
@@ -422,7 +420,7 @@ impl Series {
                     let s: extendr_api::Result<Series> = lc_res
                         .map(|lc| lc.into_series())
                         .and_then(|s| if all_length_one { s.explode() } else { Ok(s) })
-                        .map(|s| Series(s))
+                        .map(Series)
                         .map_err(|e| extendr_api::error::Error::Other(e.to_string()));
 
                     s
@@ -473,7 +471,7 @@ impl Series {
         r_result_list(
             self.0
                 .ceil()
-                .map(|s| Series(s))
+                .map(Series)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -482,7 +480,7 @@ impl Series {
         r_result_list(
             self.0
                 .floor()
-                .map(|s| Series(s))
+                .map(Series)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -497,7 +495,7 @@ impl Series {
     //
     pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
-        df.set_column_from_series(&self)?;
+        df.set_column_from_series(self)?;
         Ok(df)
     }
 
@@ -553,7 +551,7 @@ impl Series {
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&ParRObj(robj), &"")?
+            robjname2series(&ParRObj(robj), "")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {

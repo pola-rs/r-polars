@@ -255,22 +255,18 @@ impl DataTypeVector {
     pub fn from_rlist(list: List) -> List {
         let mut dtv = DataTypeVector(Vec::with_capacity(list.len()));
 
-        let result: std::result::Result<(), String> = list
-            .iter()
-            .map(|(name, robj)| -> std::result::Result<(), String> {
-                if !robj.inherits("RPolarsDataType")
-                    || robj.rtype() != extendr_api::Rtype::ExternalPtr
-                {
-                    return Err("Internal error: Object is not a RPolarsDataType".into());
-                }
-                //safety checks class and type before conversion
-                let dt: RPolarsDataType =
-                    unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
-                let name = extendr_api::Nullable::NotNull(name.to_string());
-                dtv.push(name, &dt);
-                Ok(())
-            })
-            .collect();
+        let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
+            if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
+            {
+                return Err("Internal error: Object is not a RPolarsDataType".into());
+            }
+            //safety checks class and type before conversion
+            let dt: RPolarsDataType =
+                unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
+            let name = extendr_api::Nullable::NotNull(name.to_string());
+            dtv.push(name, &dt);
+            Ok(())
+        });
 
         r_result_list(result.map(|_| dtv))
     }
@@ -419,7 +415,7 @@ pub fn literal_to_any_value(
 
 pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
     use pl::*;
-    let x = Ok(pl::DataFrame::default()
+    Ok(pl::DataFrame::default()
         .lazy()
         .select(&[e])
         .collect()
@@ -431,8 +427,7 @@ pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'stati
         .next()
         .ok_or_else(|| String::from("series had no first value"))?
         .into_static()
-        .map_err(|err| err.to_string())?);
-    x
+        .map_err(|err| err.to_string())?)
 }
 
 pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
