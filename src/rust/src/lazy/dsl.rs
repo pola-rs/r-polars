@@ -2375,6 +2375,7 @@ impl WhenThen {
 
 #[extendr]
 impl When {
+    #[allow(clippy::self_named_constructors)]
     pub fn when(predicate: &Expr) -> When {
         When {
             predicate: predicate.clone(),

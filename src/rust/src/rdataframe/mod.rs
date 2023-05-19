@@ -89,6 +89,7 @@ impl DataFrame {
         self.clone()
     }
 
+    #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
         DataFrame::new_with_capacity(0)
     }

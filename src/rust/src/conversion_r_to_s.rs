@@ -46,10 +46,7 @@ fn find_first_leaf_datatype(st: &SeriesTree) -> Option<pl::DataType> {
         SeriesTree::SeriesEmptyVec => None, //no type to be found here in this empty list return None from here
         SeriesTree::SeriesVec(sv) => sv //looking deeper in nested structure
             .iter()
-            .map(|inner_st| find_first_leaf_datatype(inner_st))
-            .filter(|x| x.is_some())
-            .next() //get the first None answer
-            .flatten(), //alias outer option (empty list) with inner option (inner empty list)
+            .map(find_first_leaf_datatype).find(|x| x.is_some()).flatten() 
     }
 }
 
@@ -70,7 +67,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     .iter()
                     .map(|x| {
                         //if x.is_na() { None } else { Some(x.0) }
-                        let x = unsafe { std::mem::transmute::<f64, i64>(x.0) };
+                        let x = x.0.to_bits() as i64;
                         if x == crate::utils::BIT64_NA_ECODING {
                             None
                         } else {
@@ -152,7 +149,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 .map(|(name, robj)| recursive_robjname2series_tree(&robj, name))
             );
             result_series_vec.map(|vst| {
-                if vst.len() == 0 {
+                if vst.is_empty() {
                     SeriesTree::SeriesEmptyVec // flag empty list() with this enum, to resolve polars type later
                 } else {
                     SeriesTree::SeriesVec(vst)
@@ -174,16 +171,15 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         Ok(SeriesTree::Series(s)) if x.inherits("POSIXct") => {
             let tz = x
                 .get_attrib("tzone")
-                .map(|robj| {
+                .and_then(|robj| {
                     robj.as_str().map(|str| {
-                        if str == "" {
+                        if str.is_empty() {
                             None
                         } else {
                             Some(str.to_string())
                         }
                     })
-                })
-                .flatten()
+                })           
                 .flatten();
             //todo this could probably in fewer allocations
             let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds, tz);
