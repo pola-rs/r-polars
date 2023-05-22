@@ -1,11 +1,11 @@
+use crate::utils::collect_hinted_result;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
 use polars::prelude as pl;
+use polars::prelude::IntoSeries;
 use polars::prelude::NamedFrom;
 use rayon::prelude::IntoParallelIterator;
-use crate::utils::collect_hinted_result;
-use polars::prelude::IntoSeries;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -20,12 +20,11 @@ enum SeriesTree {
 use crate::utils::extendr_concurrent::ParRObj;
 
 pub fn par_read_robjs(x: Vec<(ParRObj, String)>) -> pl::PolarsResult<Vec<pl::Series>> {
-use rayon::iter::ParallelIterator;
-    x.into_par_iter().map(|(probj,name)| {
-        robjname2series(&probj, name.as_str())
-    }).collect()
+    use rayon::iter::ParallelIterator;
+    x.into_par_iter()
+        .map(|(probj, name)| robjname2series(&probj, name.as_str()))
+        .collect()
 }
-
 
 // Main module function: Convert any potentially nested R object handled in three steps
 pub fn robjname2series(x: &ParRObj, name: &str) -> pl::PolarsResult<pl::Series> {
@@ -46,7 +45,9 @@ fn find_first_leaf_datatype(st: &SeriesTree) -> Option<pl::DataType> {
         SeriesTree::SeriesEmptyVec => None, //no type to be found here in this empty list return None from here
         SeriesTree::SeriesVec(sv) => sv //looking deeper in nested structure
             .iter()
-            .map(find_first_leaf_datatype).find(|x| x.is_some()).flatten() 
+            .map(find_first_leaf_datatype)
+            .find(|x| x.is_some())
+            .flatten(),
     }
 }
 
@@ -142,11 +143,12 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
         Rtype::List => {
             // Recusively handle elements of list
-            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = collect_hinted_result(x.len(),x
-                .as_list()
-                .unwrap()
-                .iter()
-                .map(|(name, robj)| recursive_robjname2series_tree(&robj, name))
+            let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = collect_hinted_result(
+                x.len(),
+                x.as_list()
+                    .unwrap()
+                    .iter()
+                    .map(|(name, robj)| recursive_robjname2series_tree(&robj, name)),
             );
             result_series_vec.map(|vst| {
                 if vst.is_empty() {
@@ -158,10 +160,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
         }
 
         _ => Err(pl::PolarsError::InvalidOperation(
-            format!(
-                "new series from rtype {:?} is not supported (yet)",
-                rtype
-            ).into(),
+            format!("new series from rtype {:?} is not supported (yet)", rtype).into(),
         )),
     };
 
@@ -179,7 +178,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                             Some(str.to_string())
                         }
                     })
-                })           
+                })
                 .flatten();
             //todo this could probably in fewer allocations
             let dt = pl::DataType::Datetime(pl::TimeUnit::Milliseconds, tz);
@@ -210,10 +209,9 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 "ms" => 1_000_000,
                 "s" => 1_000_000_000,
                 _ => Err(pl::PolarsError::SchemaMismatch(
-                        "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'"
-                            .into(),
-                    ),
-                )?,
+                    "failure to convert class PTime as attribute tu 's' , 'ms', 'us', or 'ns'"
+                        .into(),
+                ))?,
             };
             Ok(SeriesTree::Series(
                 (s.cast(&pl::DataType::Int64)? * i_conv).cast(&pl::DataType::Time)?,
@@ -232,19 +230,18 @@ fn concat_series_tree(
     leaf_dtype: &Option<pl::DataType>,
     name: &str,
 ) -> pl::PolarsResult<pl::Series> {
-
     match st {
         SeriesTree::Series(s) => Ok(s), // SeriesTree is just a regular Series, return as is
         SeriesTree::SeriesEmptyVec => { // Create Series of empty array and cast to the found leaf_dtype.
             use polars::prelude::ListBuilderTrait;
             let empty_list_series = pl::ListBinaryChunkedBuilder::new(name, 0,0).finish().into_series();
-          
+
             //cast to any discovered leaftype to allow concatenation without Error
             if let Some(leaf_dt_ref) = leaf_dtype {
                 empty_list_series.cast(leaf_dt_ref)
             } else {
                 // no other leaftype, use Null as py-polars
-                empty_list_series.cast(&pl::DataType::Null) 
+                empty_list_series.cast(&pl::DataType::Null)
             }
         },
         SeriesTree::SeriesVec(sv) if sv.is_empty() => unreachable!(
@@ -252,12 +249,12 @@ fn concat_series_tree(
         ),
         SeriesTree::SeriesVec(sv) => {
             // concat any deeper nested parts of SeriesTree
-            
+
             let series_vec_result: pl::PolarsResult<Vec<pl::Series>> =  collect_hinted_result(sv.len(), sv
                 .into_iter()
                 .map(|inner_st| concat_series_tree(inner_st, leaf_dtype, ""))
             );
-             
+
 
             // boubble any errors
             let series_vec = series_vec_result?;
