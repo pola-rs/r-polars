@@ -531,7 +531,7 @@ checksum = "0198b9d0078e0f30dedc7acbb21c974e838fc8fae3ee170128658a98cb2c1c04"
 [[package]]
 name = "extendr-api"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling_and_pr555#e6b9664b5f809c100f072f4227a2b2378ec88886"
 dependencies = [
  "extendr-engine",
  "extendr-macros",
@@ -543,7 +543,7 @@ dependencies = [
 [[package]]
 name = "extendr-engine"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling_and_pr555#e6b9664b5f809c100f072f4227a2b2378ec88886"
 dependencies = [
  "libR-sys",
 ]
@@ -551,7 +551,7 @@ dependencies = [
 [[package]]
 name = "extendr-macros"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=errorhandling#d5eba3affda448ef06af8b1ff7e0bdbed6524bbb"
+source = "git+https://github.com/rpolars/extendr?branch=errorhandling_and_pr555#e6b9664b5f809c100f072f4227a2b2378ec88886"
 dependencies = [
  "proc-macro2",
  "quote",

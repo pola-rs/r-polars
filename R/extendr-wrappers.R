@@ -53,6 +53,12 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
+test_user_panic <- function() invisible(.Call(wrap__test_user_panic))
+
+test_extendr_conversion_1 <- function(x) .Call(wrap__test_extendr_conversion_1, x)
+
+test_extendr_conversion_2 <- function(x) .Call(wrap__test_extendr_conversion_2, x)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

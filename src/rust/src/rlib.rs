@@ -265,6 +265,21 @@ fn test_robj_to_u32(robj: Robj) -> Result<String, String> {
     x
 }
 
+#[extendr]
+fn test_user_panic() {
+    panic!("imma user panic");
+}
+
+#[extendr]
+fn test_extendr_conversion_1(x: i64) -> i32 {
+    x as i32
+}
+///
+#[extendr(use_try_from = true)]
+fn test_extendr_conversion_2(x: i64) -> i32 {
+    x as i32
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -289,4 +304,7 @@ extendr_module! {
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
+    fn test_user_panic;
+    fn test_extendr_conversion_1;
+    fn test_extendr_conversion_2;
 }
