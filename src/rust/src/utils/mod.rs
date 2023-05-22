@@ -247,12 +247,12 @@ const USIZE_MAX_INTO_F64: f64 = usize::MAX as f64;
 const U32_MAX_INTO_F64: f64 = u32::MAX as f64;
 pub const BIT64_NA_ECODING: i64 = -9223372036854775808i64;
 
-const MSG_INTEGERISH_MAX: &'static str =
+const MSG_INTEGERISH_MAX: &str =
     "exceeds double->integer unambigious conversion bound of 2^52 = 4503599627370496.0";
-const MSG_INTEGERISH_MIN: &'static str =
+const MSG_INTEGERISH_MIN: &str =
     "exceeds double->integer unambigious conversion bound of -(2^52)= -4503599627370496.0";
-const MSG_NAN: &'static str = "the value cannot be NaN";
-const MSG_NO_LESS_ONE: &'static str = "cannot be less than one";
+const MSG_NAN: &str = "the value cannot be NaN";
+const MSG_NO_LESS_ONE: &str = "cannot be less than one";
 
 pub fn try_f64_into_usize_no_zero(x: f64) -> std::result::Result<usize, String> {
     match x {
@@ -494,7 +494,7 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> std::result::Result<usize, Stri
             robj
         )
     })
-    .and_then(|float| try_f64_into_usize(float))
+    .and_then(try_f64_into_usize)
 }
 
 pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> {
@@ -515,7 +515,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> 
                 .as_real()
                 .ok_or_else(|| format!("integer64 conversion failed for, but {:?}", robj))
                 .and_then(|x| {
-                    let x = unsafe { std::mem::transmute::<f64, i64>(x) };
+                    let x = x.to_bits() as i64;
                     if x == crate::utils::BIT64_NA_ECODING {
                         Err("scalar arguments do not support integer64 NA value".to_string())
                     } else {
@@ -531,7 +531,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> std::result::Result<i64, String> 
         (_, _) => None,
     }
     .ok_or_else(|| format!("not a scalar integer or double as required, but {:?}", robj))
-    .and_then(|float| try_f64_into_i64(float))
+    .and_then(try_f64_into_i64)
 }
 
 pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> {
@@ -554,7 +554,7 @@ pub fn robj_to_u64(robj: extendr_api::Robj) -> std::result::Result<u64, String> 
             robj
         )
     })
-    .and_then(|float| try_f64_into_u64(float))
+    .and_then(try_f64_into_u64)
 }
 
 pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> {
@@ -576,12 +576,12 @@ pub fn robj_to_u32(robj: extendr_api::Robj) -> std::result::Result<u32, String> 
             robj
         )
     })
-    .and_then(|float| try_f64_into_u32(float))
+    .and_then(try_f64_into_u32)
 }
 
 pub fn robj_to_u8(robj: extendr_api::Robj) -> std::result::Result<u8, String> {
     let robj = unpack_r_result_list(robj)?;
-    robj_to_i64(robj.clone()).and_then(try_i64_into_u8)
+    robj_to_i64(robj).and_then(try_i64_into_u8)
 }
 
 pub fn robj_to_bool(robj: extendr_api::Robj) -> std::result::Result<bool, String> {
@@ -599,9 +599,7 @@ pub fn robj_to_binary_vec(robj: extendr_api::Robj) -> std::result::Result<Vec<u8
     let binary_vec: Vec<u8> = robj
         .as_raw_slice()
         .ok_or_else(|| format!("is not an R raw as required, but {:?}", robj))?
-        .iter()
-        .map(|byte| *byte)
-        .collect();
+        .to_vec();
     Ok(binary_vec)
 }
 
@@ -701,87 +699,87 @@ where
     T::IntoIter: ExactSizeIterator,
 {
     use extendr_api::prelude::*;
-    let iter = ite.into_iter().map(|pl_expr| Expr(pl_expr));
+    let iter = ite.into_iter().map(Expr);
     List::from_values(iter)
 }
 
 #[macro_export]
 macro_rules! robj_to_inner {
     (usize, $a:ident) => {
-        crate::utils::robj_to_usize($a)
+        $crate::utils::robj_to_usize($a)
     };
 
     (i64, $a:ident) => {
-        crate::utils::robj_to_i64($a)
+        $crate::utils::robj_to_i64($a)
     };
 
     (u64, $a:ident) => {
-        crate::utils::robj_to_u64($a)
+        $crate::utils::robj_to_u64($a)
     };
 
     (u32, $a:ident) => {
-        crate::utils::robj_to_u32($a)
+        $crate::utils::robj_to_u32($a)
     };
 
     (u8, $a:ident) => {
-        crate::utils::robj_to_u8($a)
+        $crate::utils::robj_to_u8($a)
     };
 
     (char, $a:ident) => {
-        crate::utils::robj_to_char($a)
+        $crate::utils::robj_to_char($a)
     };
     (String, $a:ident) => {
-        crate::utils::robj_to_string($a)
+        $crate::utils::robj_to_string($a)
     };
     (str, $a:ident) => {
-        crate::utils::robj_to_str($a)
+        $crate::utils::robj_to_str($a)
     };
     (bool, $a:ident) => {
-        crate::utils::robj_to_bool($a)
+        $crate::utils::robj_to_bool($a)
     };
 
     (Raw, $a:ident) => {
-        crate::utils::robj_to_binary_vec($a)
+        $crate::utils::robj_to_binary_vec($a)
     };
 
     (Expr, $a:ident) => {
-        crate::utils::robj_to_rexpr($a, true)
+        $crate::utils::robj_to_rexpr($a, true)
     };
 
     (ExprCol, $a:ident) => {
-        crate::utils::robj_to_rexpr($a, false)
+        $crate::utils::robj_to_rexpr($a, false)
     };
 
     (VecPLExpr, $a:ident) => {
-        crate::utils::list_expr_to_vec_pl_expr($a, true)
+        $crate::utils::list_expr_to_vec_pl_expr($a, true)
     };
 
     (VecPLExprCol, $a:ident) => {
-        crate::utils::list_expr_to_vec_pl_expr($a, false)
+        $crate::utils::list_expr_to_vec_pl_expr($a, false)
     };
 
     (RPolarsDataType, $a:ident) => {
-        crate::utils::robj_to_datatype($a)
+        $crate::utils::robj_to_datatype($a)
     };
 
     (RField, $a:ident) => {
-        crate::utils::robj_to_field($a)
+        $crate::utils::robj_to_field($a)
     };
 
     (LazyFrame, $a:ident) => {
-        crate::utils::robj_to_lazyframe($a)
+        $crate::utils::robj_to_lazyframe($a)
     };
 
     (RArrow_schema, $a:ident) => {
-        crate::utils::robj_to_rarrow_schema($a)
+        $crate::utils::robj_to_rarrow_schema($a)
     };
 
     (RArrow_field, $a:ident) => {
-        crate::utils::robj_to_rarrow_field($a)
+        $crate::utils::robj_to_rarrow_field($a)
     };
 
     (lit, $a:ident) => {
-        crate::utils::robj_to_lit($a)
+        $crate::utils::robj_to_lit($a)
     };
 }
 
@@ -789,12 +787,12 @@ macro_rules! robj_to_inner {
 #[macro_export]
 macro_rules! robj_to {
     (Option, $type:ident, $a:ident) => {{
-        crate::utils::unpack_r_result_list($a).and_then(|$a| {
+        $crate::utils::unpack_r_result_list($a).and_then(|$a| {
             if ($a.is_null()) {
                 Ok(None)
             } else {
                 Some(
-                    crate::robj_to_inner!($type, $a)
+                    $crate::robj_to_inner!($type, $a)
                         .map_err(|err| format!("the arg [{}] {}", stringify!($a), err)),
                 )
                 .transpose()
@@ -805,7 +803,7 @@ macro_rules! robj_to {
     //iterate list and call this macro again on inner objects
     (Vec, $type:ident, $a:ident) => {{
         //unpack raise any R result error
-        crate::utils::unpack_r_result_list($a)
+        $crate::utils::unpack_r_result_list($a)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
             .and_then(|x: Robj| {
                 //coerce R vectors into list
@@ -821,7 +819,7 @@ macro_rules! robj_to {
                     let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
                         robj_to!($type, $a, format!("element no. [{}] of ", i + 1))
                     });
-                    crate::utils::collect_hinted_result::<$type, String>(x.len(), iter)
+                    $crate::utils::collect_hinted_result::<$type, String>(x.len(), iter)
                 } else {
                     // single value without list, convert as is and wrap in a list
                     let $a = x;
@@ -831,18 +829,18 @@ macro_rules! robj_to {
     }};
 
     (Map, $type:ident, $a:ident, $f:expr) => {
-        crate::robj_to_inner!($type, $a)
+        $crate::robj_to_inner!($type, $a)
             .and_then($f)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
     };
 
     ($type:ident, $a:ident) => {
-        crate::robj_to_inner!($type, $a)
+        $crate::robj_to_inner!($type, $a)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
     };
 
     ($type:ident, $a:ident, $b:expr) => {
-        crate::robj_to_inner!($type, $a)
+        $crate::robj_to_inner!($type, $a)
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
             .map_err(|err| format!("{} {}", $b, err))
     };

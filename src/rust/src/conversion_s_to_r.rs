@@ -39,12 +39,12 @@ pub fn pl_series_to_list(
                 ca.into_iter()
                     .map(|opt| match opt {
                         Some(x) if x != crate::utils::BIT64_NA_ECODING => {
-                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+                            let x = f64::from_bits(x as u64);
                             Some(x)
                         }
                         _ => {
                             let x = crate::utils::BIT64_NA_ECODING;
-                            let x = unsafe { std::mem::transmute::<i64, f64>(x) };
+                            let x = f64::from_bits(x as u64);
                             Some(x)
                         }
                     })
@@ -123,7 +123,7 @@ pub fn pl_series_to_list(
                 Ok(l.into_robj())
             }
             Struct(_) => {
-                let df = s.clone().into_frame().unnest(&[s.name()]).unwrap();
+                let df = s.clone().into_frame().unnest([s.name()]).unwrap();
                 let l = DataFrame(df).to_list_result()?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
@@ -172,7 +172,7 @@ pub fn pl_series_to_list(
                 };
 
                 //resolve timezone
-                let tz = opt_tz.as_ref().map(|s| s.as_str()).unwrap_or_else(|| &"");
+                let tz = opt_tz.as_ref().map(|s| s.as_str()).unwrap_or("");
                 s.cast(&Int64)?
                     .i64()
                     .map(|ca| {

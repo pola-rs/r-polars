@@ -59,7 +59,7 @@ DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
 
 DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
 
-DataFrame$new <- function() .Call(wrap__DataFrame__new)
+DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
 DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
 
@@ -122,8 +122,6 @@ DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
 `[[.DataFrame` <- `$.DataFrame`
 
 VecDataFrame <- new.env(parent = emptyenv())
-
-VecDataFrame$new <- function() .Call(wrap__VecDataFrame__new)
 
 VecDataFrame$with_capacity <- function(n) .Call(wrap__VecDataFrame__with_capacity, n)
 

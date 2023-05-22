@@ -81,7 +81,7 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
     Ok(DataFrame(new_df))
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct PolarsBackgroundHandle(Option<JoinHandle<pl::PolarsResult<pl::DataFrame>>>);
 
 #[extendr]
@@ -97,7 +97,7 @@ impl PolarsBackgroundHandle {
         //take handle from Robj, replace with default None
         let handle = std::mem::take(self)
             .0
-            .ok_or_else(|| "join error: Handle was already exhausted")?;
+            .ok_or("join error: Handle was already exhausted")?;
 
         let x = join_background_handler(handle);
         x.map_err(|err| {
@@ -106,18 +106,12 @@ impl PolarsBackgroundHandle {
                 err
             )
         })?
-        .map(|df| DataFrame(df))
+        .map(DataFrame)
         .map_err(|err| format!("polars query error : {}", err))
     }
 
     pub fn is_exhausted(&self) -> bool {
         self.0.is_none()
-    }
-}
-
-impl Default for PolarsBackgroundHandle {
-    fn default() -> Self {
-        PolarsBackgroundHandle(None)
     }
 }
 

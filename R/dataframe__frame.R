@@ -127,7 +127,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
 
   # no args crete empty DataFrame
   if (length(largs) == 0L) {
-    return(.pr$DataFrame$new())
+    return(.pr$DataFrame$default())
   }
 
   # pass through if already a DataFrame
@@ -139,7 +139,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
   Data = if (length(largs) == 1L && is.list(largs[[1]])) {
     largs = largs[[1L]]
     if (length(largs) == 0) {
-      return(.pr$DataFrame$new())
+      return(.pr$DataFrame$default())
     }
     largs
   }
