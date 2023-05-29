@@ -85,7 +85,7 @@ test_that("DataFrame, input free vectors, input empty", {
   df_e = pl$DataFrame()
   expect_s3_class(df_e, "DataFrame")
   expect_identical(df_e$shape, c(0, 0))
-  expect_identical(pl$DataFrame()$to_list(), .pr$DataFrame$new()$to_list())
+  expect_identical(pl$DataFrame()$to_list(), .pr$DataFrame$default()$to_list())
 })
 
 test_that("get set properties", {

@@ -29,9 +29,7 @@ pub fn arrow_array_to_rust(
 
     let array = unsafe {
         let field = ffi::import_field_from_c(schema.as_ref()).map_err(|err| err.to_string())?;
-        let array =
-            ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?;
-        array
+        ffi::import_array_from_c(*array, field.data_type).map_err(|err| err.to_string())?
     };
     //dbg!(&array);
     Ok(array)
@@ -69,7 +67,7 @@ pub fn arrow_array_stream_to_rust(
     todo!("not  more for now");
 }
 
-pub fn rb_to_rust_df(r_rb_columns: List, names: &Vec<String>) -> Result<pl::DataFrame, String> {
+pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFrame, String> {
     let n_col = r_rb_columns.len();
     let f = R!("arrow:::ExportArray")?
         .as_function()
@@ -89,9 +87,7 @@ pub fn rb_to_rust_df(r_rb_columns: List, names: &Vec<String>) -> Result<pl::Data
 }
 
 pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
-    let rb = rb
-        .as_list()
-        .ok_or_else(|| "arrow record batches is not a List")?;
+    let rb = rb.as_list().ok_or("arrow record batches is not a List")?;
 
     //prepare function calls to R package arrow
     let export_array_f = R!("arrow:::ExportArray")?.as_function().ok_or_else(|| {
