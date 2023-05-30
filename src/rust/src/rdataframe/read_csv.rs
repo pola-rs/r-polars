@@ -2,7 +2,7 @@
 
 use crate::rdatatype::DataTypeVector;
 
-use crate::lazy;
+use crate::lazy::dataframe::LazyFrame;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
@@ -41,6 +41,7 @@ impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 #[extendr]
 pub fn rlazy_csv_reader(
     path: String,
@@ -74,7 +75,7 @@ pub fn rlazy_csv_reader(
     };
 
     //construct optional Schema parameter for overwrite_dtype
-    let dtv = null_to_opt(overwrite_dtype).map(|x| x.clone());
+    let dtv = null_to_opt(overwrite_dtype).cloned();
     let schema = dtv.map(|some_od| {
         let fields = some_od.0.iter().map(|(name, dtype)| {
             if let Some(sname) = name {
@@ -116,7 +117,7 @@ pub fn rlazy_csv_reader(
 
     let result = r
         .finish()
-        .map(|ldf| lazy::dataframe::LazyFrame(ldf))
+        .map(LazyFrame)
         .map_err(|err| format!("in rlazy_csv_reader: {:?}", err));
 
     r_result_list(result)

@@ -41,6 +41,27 @@ pub struct ThreadCom<S, R> {
     //counter: std::sync::Arc<std::sync::Mutex<i64>>, //debug threads
 }
 
+impl<S, R> Clone for ThreadCom<S, R> {
+    //clone only main unbounded, create new unique child unbounded (such that each thread has unique comminucation when main)
+    fn clone(&self) -> Self {
+        let (tx, rx) = flume::unbounded::<R>();
+
+        // //debug threads
+        // {
+        //     let mut lock = self.counter.lock().unwrap();
+        //     let val = *lock + 1;
+        //     dbg!(val);
+        //     *lock = val;
+        // }
+        ThreadCom {
+            mains_tx: self.mains_tx.clone(),
+            child_rx: rx,
+            child_tx: tx,
+            // counter: self.counter.clone(), //debug threads
+        }
+    }
+}
+
 impl<S, R> ThreadCom<S, R>
 where
     S: Send,
@@ -74,25 +95,6 @@ where
         self.child_rx
             .recv()
             .expect("thread failed recieve, likely a user interrupt")
-    }
-
-    //clone only main unbounded, create new unique child unbounded (such that each thread has unique comminucation when main)
-    pub fn clone(&self) -> Self {
-        let (tx, rx) = flume::unbounded::<R>();
-
-        // //debug threads
-        // {
-        //     let mut lock = self.counter.lock().unwrap();
-        //     let val = *lock + 1;
-        //     dbg!(val);
-        //     *lock = val;
-        // }
-        ThreadCom {
-            mains_tx: self.mains_tx.clone(),
-            child_rx: rx,
-            child_tx: tx,
-            // counter: self.counter.clone(), //debug threads
-        }
     }
 
     pub fn update_global(&self, conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>)
@@ -145,10 +147,10 @@ where
     {
         let thread_com = config
             .try_get()
-            .ok_or_else(|| {
+            .ok_or(
                 "Failed to communicate with R from polars. \
-                It is not possible collect_background a LazyFrame containing user R functions"
-            })?
+                It is not possible collect_background a LazyFrame containing user R functions",
+            )?
             .read()
             .expect("failded to restore thread_com")
             .as_ref()
@@ -219,7 +221,7 @@ where
             let answer = i(s); //handle requst with i closure
             let a = answer.map_err(|err| format!("user function raised an error: {:?} \n", err))?;
 
-            let _send_result = c_tx.send(a).unwrap();
+            c_tx.send(a).unwrap();
         } else if let Err(recv_err) = any_new_msg {
             //dbg!(&recv_err);
             match recv_err {
@@ -231,7 +233,7 @@ where
                 // waking up with no now requests since last
                 flume::RecvTimeoutError::Timeout => {
                     //check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
-                    let res_res = extendr_api::eval_string(&"Sys.sleep(0)");
+                    let res_res = extendr_api::eval_string("Sys.sleep(0)");
                     //dbg!(&res_res);
                     if res_res.is_err() {
                         rprintln!("R user interrupt");
@@ -274,7 +276,7 @@ where
     F: FnOnce() -> T + Send + 'static,
     T: Send + 'static,
 {
-    thread::spawn(move || f())
+    thread::spawn(f)
 }
 
 pub fn join_background_handler<T>(

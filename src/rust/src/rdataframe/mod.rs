@@ -36,7 +36,7 @@ impl OwnedDataFrameIterator {
     fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-        let vs = df.get_columns().into_iter().map(|s| s.clone()).collect();
+        let vs = df.get_columns().to_vec();
         Self {
             columns: vs,
             data_type,
@@ -89,10 +89,9 @@ impl DataFrame {
         self.clone()
     }
 
-    //internal use
-    pub fn new() -> Self {
-        let empty_series: Vec<pl::Series> = Vec::new();
-        DataFrame(pl::DataFrame::new(empty_series).unwrap())
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> Self {
+        DataFrame::new_with_capacity(0)
     }
 
     pub fn lazy(&self) -> LazyFrame {
@@ -124,13 +123,13 @@ impl DataFrame {
     pub fn new_par_from_list(robj_list: List) -> Result<DataFrame, String> {
         let v: Vec<(ParRObj, String)> = robj_list
             .iter()
-            .map(|(str, robj)| (ParRObj(robj.clone()), str.to_owned()))
+            .map(|(str, robj)| (ParRObj(robj), str.to_owned()))
             .collect();
 
         crate::conversion_r_to_s::par_read_robjs(v)
-            .and_then(|v_s| pl::DataFrame::new(v_s))
+            .and_then(pl::DataFrame::new)
             .map_err(|err| err.to_string())
-            .map(|df| DataFrame(df))
+            .map(DataFrame)
     }
 
     pub fn print(&self) -> Self {
@@ -304,10 +303,7 @@ impl DataFrame {
                 .dtypes()
                 .iter()
                 .zip(self.0.get_column_names().iter())
-                .filter(|(dtype, _)| match dtype {
-                    pl::DataType::Struct(_) => true,
-                    _ => false,
-                })
+                .filter(|(dtype, _)| matches!(dtype, pl::DataType::Struct(_)))
                 .map(|(_, y)| y.to_string())
                 .collect::<Vec<String>>()
         };
@@ -315,7 +311,7 @@ impl DataFrame {
         r_result_list(
             self.0
                 .unnest(names)
-                .map(|s| DataFrame(s))
+                .map(DataFrame)
                 .map_err(|err| format!("in unnest: {:?}", err)),
         )
     }
@@ -323,7 +319,7 @@ impl DataFrame {
     pub fn export_stream(&self, stream_ptr: &str) {
         let schema = self.0.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-        let field = ArrowField::new("", data_type.clone(), false);
+        let field = ArrowField::new("", data_type, false);
 
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
@@ -361,25 +357,19 @@ impl DataFrame {
             .collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
+        robj_vec_res.map(|vec_robj| {
             let l = extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
                 .unwrap();
             l.into_robj()
-        });
-
-        robj_list_res
+        })
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);
 
 #[extendr]
 impl VecDataFrame {
-    pub fn new() -> Self {
-        VecDataFrame(Vec::new())
-    }
-
     pub fn with_capacity(n: i32) -> Self {
         VecDataFrame(Vec::with_capacity(n as usize))
     }
