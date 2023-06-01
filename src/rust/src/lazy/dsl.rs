@@ -77,7 +77,7 @@ impl Expr {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
             (Rtype::Integers, 1) => {
                 let opt_val = robj.as_integer();
-                if let Some(val) = opt_val.clone() {
+                if let Some(val) = opt_val {
                     Ok(dsl::lit(val))
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
@@ -87,8 +87,8 @@ impl Expr {
             }
             (Rtype::Doubles, 1) if robj.inherits("integer64") => {
                 let opt_val = robj.as_real();
-                if let Some(val) = opt_val.clone() {
-                    let x = unsafe { std::mem::transmute::<f64, i64>(val) };
+                if let Some(val) = opt_val {
+                    let x = val.to_bits() as i64;
                     if x == crate::utils::BIT64_NA_ECODING {
                         Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int64))
                     } else {
@@ -100,7 +100,7 @@ impl Expr {
             }
             (Rtype::Doubles, 1) => {
                 let opt_val = robj.as_real();
-                if let Some(val) = opt_val.clone() {
+                if let Some(val) = opt_val {
                     Ok(dsl::lit(val))
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
@@ -117,7 +117,7 @@ impl Expr {
             }
             (Rtype::Logicals, 1) => {
                 let opt_val = robj.as_bool();
-                if let Some(val) = opt_val.clone() {
+                if let Some(val) = opt_val {
                     Ok(dsl::lit(val))
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
@@ -148,7 +148,7 @@ impl Expr {
                 n
             )),
         }
-        .map(|ok| Expr(ok));
+        .map(Expr);
 
         expr_result
     }
@@ -304,10 +304,8 @@ impl Expr {
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
         let res = || -> Result<Expr, String> {
-            let limit = null_to_opt(limit)
-                .map(|lim| try_f64_into_usize(lim))
-                .transpose()?;
-            let limit: pl::FillNullLimit = limit.map(|x| x as u32).into();
+            let limit = null_to_opt(limit).map(try_f64_into_usize).transpose()?;
+            let limit: pl::FillNullLimit = limit.map(|x| x as u32);
 
             let strat = parse_fill_null_strategy(strategy, limit)
                 .map_err(|err| format!("this happe4nd {:?}", err))?;
@@ -420,8 +418,7 @@ impl Expr {
                             move |s: Series| Ok(Some(s.take_every(n))),
                             GetOutput::same_type(),
                         )
-                        .with_fmt("take_every")
-                        .into(),
+                        .with_fmt("take_every"),
                 )
             });
 
@@ -618,7 +615,7 @@ impl Expr {
         .map(|opts| Expr(self.0.clone().rolling_median(opts)));
         r_result_list(expr)
     }
-
+    #[allow(clippy::too_many_arguments)]
     pub fn rolling_quantile(
         &self,
         quantile: f64,
@@ -1112,7 +1109,7 @@ impl Expr {
         let name_gen: std::option::Option<
             Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
         > = if let Some(robj) = null_to_opt(name_gen) {
-            let probj: ParRObj = robj.clone().into();
+            let probj: ParRObj = robj.into();
             let x: std::option::Option<
                 Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
             > = Some(pl::Arc::new(move |idx: usize| {
@@ -1162,6 +1159,7 @@ impl Expr {
             .into()
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn str_parse_datetime(
         &self,
         format: Nullable<String>,
@@ -1173,7 +1171,7 @@ impl Expr {
         tu: Nullable<Robj>,
     ) -> List {
         let res = || -> Result<Expr, String> {
-            let tu = null_to_opt(tu).map(|tu| robj_to_timeunit(tu)).transpose()?;
+            let tu = null_to_opt(tu).map(robj_to_timeunit).transpose()?;
             let format = null_to_opt(format);
             let result_tu = match (&format, tu) {
                 (_, Some(tu)) => tu,
@@ -1725,8 +1723,9 @@ impl Expr {
             newname_robj
                 .as_str()
                 .ok_or_else(|| {
-                    let es =
-                        format!("in map_alias: R function return value was not a string").into();
+                    let es = "in map_alias: R function return value was not a string"
+                        .to_string()
+                        .into();
                     pl_error::ComputeError(es)
                 })
                 .map(|str| str.to_string())
@@ -2237,7 +2236,7 @@ impl ProtoRexpr {
         match self {
             ProtoRexpr::Expr(r) => r.clone(),
             ProtoRexpr::String(s) => match context {
-                "select" => Expr::col(&s),
+                "select" => Expr::col(s),
                 _ => panic!("unknown context"),
             },
         }
@@ -2251,6 +2250,11 @@ impl ProtoRexpr {
 //and array of expression or proto expressions.
 #[derive(Clone, Debug)]
 pub struct ProtoExprArray(pub Vec<ProtoRexpr>);
+impl Default for ProtoExprArray {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 #[extendr]
 impl ProtoExprArray {
@@ -2375,6 +2379,7 @@ impl WhenThen {
 
 #[extendr]
 impl When {
+    #[allow(clippy::self_named_constructors)]
     pub fn when(predicate: &Expr) -> When {
         When {
             predicate: predicate.clone(),

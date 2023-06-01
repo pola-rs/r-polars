@@ -25,7 +25,7 @@ pub fn import_arrow_ipc(
     };
     LazyFrame::scan_ipc(robj_to!(String, path)?, args)
         .map_err(|x| Other(format!("Polaris internal error: {x}")))
-        .map(|lf| RLazyFrame(lf))
+        .map(RLazyFrame)
 }
 
 extendr_module! {

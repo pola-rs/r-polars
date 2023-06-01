@@ -5,6 +5,8 @@ VENV := .venv
 
 RUST_TOOLCHAIN_VERSION := nightly-2023-04-11
 
+MANIFEST_PATH := src/rust/Cargo.toml
+
 ifeq ($(OS),Windows_NT)
 	VENV_BIN := $(VENV)/Scripts
 	RUST_TOOLCHAIN := $(RUST_TOOLCHAIN_VERSION)-gnu
@@ -38,6 +40,8 @@ requirements-py: .venv
 requirements-rs:
 	rustup toolchain install $(RUST_TOOLCHAIN)
 	rustup default $(RUST_TOOLCHAIN)
+	rustup component add rustfmt
+	rustup component add clippy
 
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
@@ -69,7 +73,7 @@ install: ## Install this R package locally
 	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
 
 .PHONY: fmt
-fmt: fmt-r ## Format files
+fmt: fmt-rs fmt-r ## Format files
 
 GIT_DIF_TARGET ?=
 MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) --name-only | grep -e .*R$$ -e .*Rmd$$", intern = TRUE), "R/extendr-wrappers.R") |> cat()')
@@ -77,3 +81,7 @@ MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) 
 .PHONY: fmt-r
 fmt-r: $(MODIFIED_R_FILES) ## Format R files
 	$(foreach file, $^, $(shell R -q -e 'styler::style_file("$(file)"); styler.equals::style_file("$(file)")' >/dev/null))
+
+.PHONY: fmt-rs
+fmt-rs: ## Format Rust files
+	cargo fmt --manifest-path $(MANIFEST_PATH)

@@ -43,8 +43,8 @@ impl LazyFrame {
 
     //low level version of describe_plan, mainly for arg testing
     pub fn debug_plan(&self) -> Result<String, String> {
-        use crate::serde_json::value::Serializer;
         use polars_core::export::serde::Serialize;
+        use serde_json::value::Serializer;
         Serialize::serialize(&self.0.logical_plan.clone(), Serializer)
             .map_err(|err| err.to_string())
             .map(|val| format!("{:?}", val))
@@ -116,7 +116,7 @@ impl LazyFrame {
         Ok(self
             .clone()
             .0
-            .quantile(robj_to!(Expr, quantile)?.0.clone(), res)
+            .quantile(robj_to!(Expr, quantile)?.0, res)
             .into())
     }
 
@@ -193,7 +193,7 @@ impl LazyFrame {
     }
 
     fn drop_nulls(&self, subset: &ProtoExprArray) -> LazyFrame {
-        if subset.0.len() == 0 {
+        if subset.0.is_empty() {
             LazyFrame(self.0.clone().drop_nulls(None))
         } else {
             let vec = pra_to_vec(subset, "select");
@@ -232,6 +232,7 @@ impl LazyFrame {
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
+    #[allow(clippy::too_many_arguments)]
     pub fn join_asof(
         &self,
         other: Robj,
@@ -284,7 +285,7 @@ impl LazyFrame {
                 left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
                 right_by: right_by
                     .map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
-                tolerance: tolerance,
+                tolerance,
                 tolerance_str: tolerance_str.map(|s| s.into()),
             }))
             .suffix(robj_to!(str, suffix)?)
@@ -292,6 +293,7 @@ impl LazyFrame {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn join(
         &self,
         other: &LazyFrame,

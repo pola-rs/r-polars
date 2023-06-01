@@ -28,14 +28,8 @@
           src = self;
           cargoDeps = pkgs.rustPlatform.importCargoLock {
             lockFile = "${self}/${rpolars.cargoRoot}/Cargo.lock";
-            outputHashes = {
-              "arrow2-0.17.0" = "sha256-c3g7SjMWOpyurn/iZWjLdLWeywl+kmFzY25pCM5S3AA=";
-              "extendr-api-0.4.0" =
-                "sha256-tbA8+aaGz2p71BfPSgPBRxqwgD+XHGoSrMfGM/RKZHo=";
-              "jsonpath_lib-0.3.0" =
-                "sha256-NKszYpDGG8VxfZSMbsTlzcMGFHBOUeFojNw4P2wM3qk=";
-              "polars-0.28.0" = "sha256-QNg9cIfeACiKSV4Hr7KC0dG4CQVzCSxxNycsmcmOJEk=";
-            };
+            outputHashes = {};
+            allowBuiltinFetchGit = true;
           };
           cargoRoot = "src/rust";
           nativeBuildInputs = with pkgs;
