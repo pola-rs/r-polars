@@ -1,4 +1,5 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
+use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
@@ -9,6 +10,7 @@ use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
 use polars::chunked_array::object::AsOfOptions;
+use polars::frame::explode::MeltArgs;
 use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 
@@ -334,6 +336,24 @@ impl LazyFrame {
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
         Ok(ldf.sort_by_exprs(exprs, descending, nulls_last).into())
+    }
+
+    fn melt(
+        &self,
+        id_vars: Robj,
+        value_vars: Robj,
+        value_name: Robj,
+        variable_name: Robj,
+        streamable: Robj,
+    ) -> Result<Self, String> {
+        let args = MeltArgs {
+            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
+            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+            value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
+            variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
+            streamable: robj_to!(bool, streamable)?,
+        };
+        Ok(self.0.clone().melt(args).into())
     }
 }
 
