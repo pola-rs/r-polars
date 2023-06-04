@@ -746,6 +746,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, true)
     };
 
+    (PLExpr, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, true).map(|ok| ok.0)
+    };
+
     (ExprCol, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, false)
     };

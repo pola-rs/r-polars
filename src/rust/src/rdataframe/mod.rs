@@ -27,6 +27,7 @@ use crate::utils::{collect_hinted_result, r_result_list};
 
 use crate::conversion::strings_to_smartstrings;
 use polars::frame::explode::MeltArgs;
+use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
     columns: Vec<polars::series::Series>,
@@ -365,6 +366,35 @@ impl DataFrame {
         };
         let df = self.0.melt2(args).map_err(|s| s.to_string())?;
         Ok(DataFrame(df))
+    }
+
+    pub fn pivot_expr(
+        &self,
+        values: Robj,
+        index: Robj,
+        columns: Robj,
+        maintain_order: Robj,
+        sort_columns: Robj,
+        aggregate_expr: Robj,
+        separator: Robj,
+    ) -> Result<Self, String> {
+        let fun = if robj_to!(bool, maintain_order)? {
+            pivot_stable
+        } else {
+            pivot
+        };
+
+        fun(
+            &self.0,
+            robj_to!(Vec, String, values)?,
+            robj_to!(Vec, String, index)?,
+            robj_to!(Vec, String, columns)?,
+            robj_to!(bool, sort_columns)?,
+            robj_to!(Option, PLExpr, aggregate_expr)?,
+            robj_to!(Option, str, separator)?,
+        )
+        .map_err(|err| err.to_string())
+        .map(|ok| ok.into())
     }
 }
 use crate::utils::wrappers::null_to_opt;

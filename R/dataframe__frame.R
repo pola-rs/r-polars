@@ -1274,8 +1274,8 @@ DataFrame_join_asof = function(
 
 
 
-#' @inherit LazyFrame_melt components
-#' @keywords LazyFrame
+#' @inherit LazyFrame_melt
+#' @keywords DataFrame
 #'
 #' @return A new `DataFrame`
 #'
@@ -1297,4 +1297,149 @@ DataFrame_melt = function(
     value_name, variable_name
   ) |> unwrap("in $melt( ): ")
 }
+
+
+#
+#
+# def pivot(
+#         self,
+#         values: Sequence[str] | str,
+#         index: Sequence[str] | str,
+#         columns: Sequence[str] | str,
+#         aggregate_function: PivotAgg | Expr | None | NoDefault = no_default,
+#         *,
+#         maintain_order: bool = True,
+#         sort_columns: bool = False,
+#         separator: str = "_",
+#     ) -> Self:
+#         """
+#         Create a spreadsheet-style pivot table as a DataFrame.
+#
+#         Parameters
+#         ----------
+#         values
+#             Column values to aggregate. Can be multiple columns if the *columns*
+#             arguments contains multiple columns as well.
+#         index
+#             One or multiple keys to group by.
+#         columns
+#             Name of the column(s) whose values will be used as the header of the output
+#             DataFrame.
+#         aggregate_function : {'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'}
+#             A predefined aggregate function str or an expression.
+#         maintain_order
+#             Sort the grouped keys so that the output order is predictable.
+#         sort_columns
+#             Sort the transposed columns by name. Default is by order of discovery.
+#         separator
+#             Used as separator/delimiter in generated column names.
+#
+#         Returns
+#         -------
+#         DataFrame
+#
+#         Examples
+#         --------
+#         >>> df = pl.DataFrame(
+#         ...     {
+#         ...         "foo": ["one", "one", "one", "two", "two", "two"],
+#         ...         "bar": ["A", "B", "C", "A", "B", "C"],
+#         ...         "baz": [1, 2, 3, 4, 5, 6],
+#         ...     }
+#         ... )
+#         >>> df.pivot(
+#         ...     values="baz", index="foo", columns="bar", aggregate_function="first"
+#         ... )
+#         shape: (2, 4)
+#         ┌─────┬─────┬─────┬─────┐
+#         │ foo ┆ A   ┆ B   ┆ C   │
+#         │ --- ┆ --- ┆ --- ┆ --- │
+#         │ str ┆ i64 ┆ i64 ┆ i64 │
+#         ╞═════╪═════╪═════╪═════╡
+#         │ one ┆ 1   ┆ 2   ┆ 3   │
+#         │ two ┆ 4   ┆ 5   ┆ 6   │
+#         └─────┴─────┴─────┴─────┘
+#
+#         Run an expression as aggregation function
+#
+#         >>> df = pl.DataFrame(
+#         ...     {
+#         ...         "col1": ["a", "a", "a", "b", "b", "b"],
+#         ...         "col2": ["x", "x", "x", "x", "y", "y"],
+#         ...         "col3": [6, 7, 3, 2, 5, 7],
+#         ...     }
+#         ... )
+#         >>> df.pivot(
+#         ...     index="col1",
+#         ...     columns="col2",
+#         ...     values="col3",
+#         ...     aggregate_function=pl.element().tanh().mean(),
+#         ... )
+#         shape: (2, 3)
+#         ┌──────┬──────────┬──────────┐
+#         │ col1 ┆ x        ┆ y        │
+#         │ ---  ┆ ---      ┆ ---      │
+#         │ str  ┆ f64      ┆ f64      │
+#         ╞══════╪══════════╪══════════╡
+#         │ a    ┆ 0.998347 ┆ null     │
+#         │ b    ┆ 0.964028 ┆ 0.999954 │
+#         └──────┴──────────┴──────────┘
+#
+
+
+
+
+#' Create a spreadsheet-style pivot table as a DataFrame.
+#' @param values Column values to aggregate. Can be multiple columns if the *columns*
+#             arguments contains multiple columns as well.
+#' @param index  One or multiple keys to group by.
+#' @param columns  Name of the column(s) whose values will be used as the header of the output
+#             DataFrame.
+#' @param aggregate_function {'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'}
+#             A predefined aggregate function str or an expression.
+#' @param ... not used
+#' @param maintain_order  Sort the grouped keys so that the output order is predictable.
+#' @param sort_columns  Sort the transposed columns by name. Default is by order of discovery.
+#' @param separator Used as separator/delimiter in generated column names.
+#'
+#' @return DataFrame
+#' @keywords DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   foo = c("one", "one", "one", "two", "two", "two"),
+#'   bar = c("A", "B", "C", "A", "B", "C"),
+#'   baz = c(1, 2, 3, 4, 5, 6)
+#' )
+#' df$pivot(
+#'   values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
+#' )
+DataFrame_pivot = function(
+  values, #: Sequence[str] | str,
+  index, #: Sequence[str] | str,
+  columns,# : Sequence[str] | str,
+  aggregate_function = NULL, #: PivotAgg | Expr | None | NoDefault = no_default,
+  ..., #*,
+  maintain_order = TRUE, #,: bool = True,
+  sort_columns = FALSE , # : bool = False,
+  separator = "_" # : str = "_",
+) {
+  af = aggregate_function
+  pcase(
+    # use string to call Expr-method on pl$element()
+    is_string(af), result(verify_method_call(Expr, af)) |>
+      map(\(not_used) .pr$Expr[[af]](pl$element())),
+
+    #Expr or NULL pass as is
+    is.null(af) || inherits(af,"Expr"), Ok(af),
+
+    #anything else pass err
+    or_else =  Err(paste(
+      "param aggregate_function is neither a string, NULL or an Expr, but ", str_string(af)
+    ))
+  ) |> and_then( \(aggregate_expr) .pr$DataFrame$pivot_expr(
+      self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator
+  )) |> unwrap("in $pivot():")
+
+}
+
 
