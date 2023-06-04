@@ -25,6 +25,9 @@ use polars_core::utils::arrow;
 
 use crate::utils::{collect_hinted_result, r_result_list};
 
+use crate::conversion::strings_to_smartstrings;
+use polars::frame::explode::MeltArgs;
+
 pub struct OwnedDataFrameIterator {
     columns: Vec<polars::series::Series>,
     data_type: arrow::datatypes::DataType,
@@ -344,6 +347,24 @@ impl DataFrame {
 
     pub fn null_count(&self) -> Self {
         self.0.clone().null_count().into()
+    }
+
+    fn melt(
+        &self,
+        id_vars: Robj,
+        value_vars: Robj,
+        value_name: Robj,
+        variable_name: Robj,
+    ) -> Result<Self, String> {
+        let args = MeltArgs {
+            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
+            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+            value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
+            variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
+            streamable: false,
+        };
+        let df = self.0.melt2(args).map_err(|s| s.to_string())?;
+        Ok(DataFrame(df))
     }
 }
 use crate::utils::wrappers::null_to_opt;

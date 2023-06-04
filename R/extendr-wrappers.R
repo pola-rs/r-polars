@@ -115,6 +115,8 @@ DataFrame$estimated_size <- function() .Call(wrap__DataFrame__estimated_size, se
 
 DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
 
+DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__DataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 

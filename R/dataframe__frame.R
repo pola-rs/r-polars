@@ -1270,3 +1270,31 @@ DataFrame_join_asof = function(
     tolerance = tolerance
   )$collect()
 }
+
+
+
+
+#' @inherit LazyFrame_melt components
+#' @keywords LazyFrame
+#'
+#' @return A new `DataFrame`
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c("x", "y", "z"),
+#'   b = c(1, 3, 5),
+#'   c = c(2, 4, 6)
+#' )
+#' df$melt(id_vars = "a", value_vars = c("b", "c"))
+DataFrame_melt = function(
+    id_vars = NULL,
+    value_vars = NULL,
+    variable_name = NULL,
+    value_name = NULL
+) {
+  .pr$DataFrame$melt(
+    self, id_vars %||% character(), value_vars %||% character(),
+    value_name, variable_name
+  ) |> unwrap("in $melt( ): ")
+}
+
