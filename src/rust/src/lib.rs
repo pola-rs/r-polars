@@ -15,6 +15,7 @@ pub mod lazy;
 pub mod arrow_interop;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
+pub mod ranyhow;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
@@ -37,6 +38,7 @@ static CONFIG: ThreadComStorage = Storage::new();
 // Macro to generate exports
 extendr_module! {
     mod polars;
+    use ranyhow;
     use rdataframe;
     use lazy;
     use series;

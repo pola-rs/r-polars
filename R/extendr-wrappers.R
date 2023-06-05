@@ -53,6 +53,16 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
+Rerr <- new.env(parent = emptyenv())
+
+Rerr$print <- function() invisible(.Call(wrap__Rerr__print, self))
+
+#' @export
+`$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Rerr` <- `$.Rerr`
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

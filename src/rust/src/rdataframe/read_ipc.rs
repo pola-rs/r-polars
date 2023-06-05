@@ -1,5 +1,6 @@
 use crate::lazy::dataframe::LazyFrame as RLazyFrame;
-use crate::{robj_to, Error::Other, Result};
+use crate::ranyhow::{ranyhow, Context, Result};
+use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::io::RowCount;
 use polars::prelude::{LazyFrame, ScanArgsIpc};
@@ -15,17 +16,19 @@ pub fn import_arrow_ipc(
     memmap: Robj,
 ) -> Result<RLazyFrame> {
     let args = ScanArgsIpc {
-        n_rows: robj_to!(Option, usize, n_rows)?,
-        cache: robj_to!(bool, cache)?,
-        rechunk: robj_to!(bool, rechunk)?,
-        row_count: robj_to!(Option, String, row_name)?
+        n_rows: robj_to!(Option, usize, n_rows).map_err(|msg| ranyhow!(msg))?,
+        cache: robj_to!(bool, cache).map_err(|msg| ranyhow!(msg))?,
+        rechunk: robj_to!(bool, rechunk).map_err(|msg| ranyhow!(msg))?,
+        row_count: robj_to!(Option, String, row_name)
+            .map_err(|msg| ranyhow!(msg))?
             .map(|name| robj_to!(u32, row_count).map(|offset| RowCount { name, offset }))
-            .transpose()?,
-        memmap: robj_to!(bool, memmap)?,
+            .transpose()
+            .map_err(|msg| ranyhow!(msg))?,
+        memmap: robj_to!(bool, memmap).map_err(|msg| ranyhow!(msg))?,
     };
-    LazyFrame::scan_ipc(robj_to!(String, path)?, args)
-        .map_err(|x| Other(format!("Polaris internal error: {x}")))
-        .map(RLazyFrame)
+    let lf = LazyFrame::scan_ipc(robj_to!(String, path).map_err(|msg| ranyhow!(msg))?, args)
+        .context("Pola-rs internal import for Arrow")?;
+    Ok(RLazyFrame(lf))
 }
 
 extendr_module! {
