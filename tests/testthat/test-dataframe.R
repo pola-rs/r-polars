@@ -744,7 +744,7 @@ test_that("join_asof_simple", {
 })
 
 
-test_that("pivot melt", {
+test_that("melt example", {
 
   df = pl$DataFrame(
     a = c("x", "y", "z"),
@@ -771,7 +771,7 @@ test_that("melt vs data.table::melt", {
   )
 
   rdf  = pdf$to_data_frame()
-  dtt  = data.table(rdf)
+  dtt  = data.table::data.table(rdf)
 
   melt_mod = \(...) {
     data.table::melt(variable.factor = FALSE, value.factor = FALSE, ...)
@@ -811,5 +811,93 @@ test_that("melt vs data.table::melt", {
 
 
 
+
+test_that("pivot examples", {
+
+  df = pl$DataFrame(
+    foo = c("one", "one", "one", "two", "two", "two"),
+    bar = c("A", "B", "C", "A", "B", "C"),
+    baz = c(1, 2, 3, 4, 5, 6)
+  )
+
+  expect_identical(
+    df$pivot(
+      values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
+    )$to_list(),
+    list(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3,6))
+  )
+
+
+  # Run an expression as aggregation function
+  df = pl$DataFrame(
+    col1 = c("a", "a", "a", "b", "b", "b"),
+    col2 = c("x", "x", "x", "x", "y", "y"),
+    col3 = c(6, 7, 3, 2, 5, 7)
+  )
+
+  expect_equal(
+    df$pivot(
+      index  = "col1",
+      columns = "col2",
+      values = "col3",
+      aggregate_function = pl$element()$tanh()$mean()
+    )$to_list(),
+    list(
+      col1 = c("a", "b"),
+      x = c(0.998346934093824, 0.964027580075817),
+      y = c(NA, 0.99995377060327)
+    )
+  )
+
+})
+
+
+test_that("pivot args works", {
+
+  df = pl$DataFrame(
+    foo = c("one", "one", "one", "two", "two", "two"),
+    bar = c("A", "B", "C", "A", "B", "C"),
+    baz = c(1, 2, 3, 4, 5, 6),
+    jaz = 6:1
+  )
+  expect_identical(
+    df$pivot("foo", "bar", "baz")$to_list(),
+    list(bar = c("A", "B", "C"), `1.0` = c("one", NA, NA), `2.0` = c(NA,
+      "one", NA), `3.0` = c(NA, NA, "one"), `4.0` = c("two", NA, NA
+      ), `5.0` = c(NA, "two", NA), `6.0` = c(NA, NA, "two")
+  ))
+
+  df = pl$DataFrame(
+    ann = c("one", "one", "one", "two", "two", "two"),
+    bob = c("A", "B", "A", "B", "A", "B"),
+    cat = c(1, 2, 3, 4, 5, 6)
+  )
+
+  #aggr functions
+  expect_identical(
+    df$pivot("cat","ann","bob","mean")$to_list(),
+    list(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
+  )
+  expect_identical(
+    df$pivot("cat","ann","bob", pl$element()$mean())$to_list(),
+    df$pivot("cat","ann","bob","mean")$to_list()
+  )
+  expect_grepl_error(df$pivot("cat","ann","bob",42), c("pivot","param","aggregate_function", "42"))
+  expect_grepl_error(df$pivot("cat","ann","bob","dummy"), c("pivot","dummy is not a method"))
+
+  #maintain_order sort_columns
+  expect_grepl_error(df$pivot("cat","ann","bob","mean",42), c("pivot","maintain_order","bool"))
+  expect_grepl_error(df$pivot("cat","ann","bob","mean",TRUE, 42), c("pivot","sort_columns","bool"))
+
+  #separator
+  expect_identical(
+    names(df$pivot(c("ann","bob"),"ann","cat","mean",sep=".")),
+    c("ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
+      "ann.cat.5.0", "ann.cat.6.0", "bob.cat.1.0", "bob.cat.2.0", "bob.cat.3.0",
+      "bob.cat.4.0", "bob.cat.5.0", "bob.cat.6.0"
+    )
+  )
+
+})
 
 

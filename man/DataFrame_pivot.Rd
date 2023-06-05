@@ -9,22 +9,22 @@ DataFrame_pivot(
   index,
   columns,
   aggregate_function = NULL,
-  ...,
   maintain_order = TRUE,
   sort_columns = FALSE,
   separator = "_"
 )
 }
 \arguments{
-\item{values}{Column values to aggregate. Can be multiple columns if the \emph{columns}}
+\item{values}{Column values to aggregate. Can be multiple columns if the \code{columns}
+arguments contains multiple columns as well.}
 
 \item{index}{One or multiple keys to group by.}
 
-\item{columns}{Name of the column(s) whose values will be used as the header of the output}
+\item{columns}{Name of the column(s) whose values will be used as the header of the output
+DataFrame.}
 
-\item{aggregate_function}{{'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'}}
-
-\item{...}{not used}
+\item{aggregate_function}{String naming Expr to aggregate with, or an Expr e.g. \code{pl$element()$sum()},
+examples of strings:'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'}
 
 \item{maintain_order}{Sort the grouped keys so that the output order is predictable.}
 
@@ -46,6 +46,20 @@ df = pl$DataFrame(
 )
 df$pivot(
   values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
+)
+
+
+# Run an expression as aggregation function
+df = pl$DataFrame(
+  col1 = c("a", "a", "a", "b", "b", "b"),
+  col2 = c("x", "x", "x", "x", "y", "y"),
+  col3 = c(6, 7, 3, 2, 5, 7)
+)
+df$pivot(
+  index  = "col1",
+  columns = "col2",
+  values = "col3",
+  aggregate_function = pl$element()$tanh()$mean()
 )
 }
 \keyword{DataFrame}
