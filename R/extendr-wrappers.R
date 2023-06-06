@@ -55,7 +55,11 @@ test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 Rerr <- new.env(parent = emptyenv())
 
-Rerr$print <- function() invisible(.Call(wrap__Rerr__print, self))
+Rerr$info <- function() .Call(wrap__Rerr__info, self)
+
+Rerr$debug <- function() .Call(wrap__Rerr__debug, self)
+
+Rerr$chain <- function() .Call(wrap__Rerr__chain, self)
 
 #' @export
 `$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }

@@ -1,5 +1,9 @@
 #' @export
 #' @noRd
+as.character.Rerr = function(x) x$info()
+
+#' @export
+#' @noRd
 `[.DataFrame` = function(x, i, j, ..., drop = TRUE) {
   # selecting `j` is usually faster, so we start here.
   if (!missing(j)) {
