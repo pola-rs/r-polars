@@ -29,7 +29,7 @@ Suggests:
     tibble,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc,
+    altdoc,
     here,
     magrittr,
     pkgload,
@@ -82,5 +82,5 @@ Collate:
     'translation.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.2.0.9000
+Config/rextendr/version: 0.3.0
 VignetteBuilder: knitr
