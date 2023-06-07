@@ -1,10 +1,11 @@
-# polars (development version)
+# polars 0.6.1
 ## What's changed
  - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
-
-## What's changed
+ - add `<DataFrame>$melt(), <DataFrame>$pivot() + <LazyFrame>$melt()` methods (#232)
  - lazy functions translated: `pl$implode`, `pl$explode`, `pl$unique`, `pl$approx_unique`, `pl$head`, `pl$tail` (#196)
- - `pl$list` is deprecated, use `pl$implode` instead (#196) 
+ - `pl$list` is deprecated, use `pl$implode` instead. (#196) 
+ - Docs improvements. (#210, #213)
+ - Update nix flake. (#227)
 
 # polars 0.6.0
 ## BREAKING CHANGES
