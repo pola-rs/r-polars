@@ -1,10 +1,10 @@
-use anyhow::Error;
-pub use anyhow::{anyhow as ranyhow, Context};
+pub use anyhow::Context;
+use anyhow::{anyhow, Error};
 use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
 
 #[derive(Debug)]
 pub struct Rerr(Error);
-pub type Result<T, E = Rerr> = core::result::Result<T, E>;
+pub type RResult<T> = core::result::Result<T, Rerr>;
 
 #[extendr]
 impl Rerr {
@@ -24,6 +24,13 @@ impl Rerr {
 impl From<Error> for Rerr {
     fn from(err: Error) -> Self {
         Rerr(err)
+    }
+}
+
+// Implementation for transition
+impl From<String> for Rerr {
+    fn from(err_msg: String) -> Self {
+        Rerr(anyhow!(err_msg))
     }
 }
 
