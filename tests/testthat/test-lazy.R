@@ -101,17 +101,17 @@ test_that("lazy filter", {
 
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "max",        "max",    max,
-    "mean",       "mean",   mean,
-    "median",     "median", median,
-    "max",        "max",    max,
-    "min",        "min",    min,
-    "std",        "std",    sd,
-    "sum",        "sum",    sum,
-    "var",        "var",    var,
-    "first",      "first",  function(x) head(x, 1),
-    "last",       "last",   function(x) tail(x, 1)
+    ~.test_name, ~pola, ~base,
+    "max", "max", max,
+    "mean", "mean", mean,
+    "median", "median", median,
+    "max", "max", max,
+    "min", "min", min,
+    "std", "std", sd,
+    "sum", "sum", sum,
+    "var", "var", var,
+    "first", "first", function(x) head(x, 1),
+    "last", "last", function(x) tail(x, 1)
   )
 }
 
@@ -462,7 +462,6 @@ test_that("join_asof_simple", {
 })
 
 test_that("melt example", {
-
   lf = pl$DataFrame(
     a = c("x", "y", "z"),
     b = c(1, 3, 5),
@@ -487,8 +486,8 @@ test_that("melt vs data.table::melt", {
     c = c(2, 4, 6)
   )$lazy()
 
-  rdf  = plf$collect()$to_data_frame()
-  dtt  = data.table(rdf)
+  rdf = plf$collect()$to_data_frame()
+  dtt = data.table(rdf)
 
   melt_mod = \(...) {
     data.table::melt(variable.factor = FALSE, value.factor = FALSE, ...)
@@ -496,30 +495,30 @@ test_that("melt vs data.table::melt", {
 
   expect_identical(
     plf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()$to_list(),
-    as.list(melt_mod(dtt,id.vars = "a",value_vars = c("b", "c")))
+    as.list(melt_mod(dtt, id.vars = "a", value_vars = c("b", "c")))
   )
   expect_identical(
-    plf$melt(id_vars = c("c","b"), value_vars = c("a"))$collect()$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("c","b"),value_vars = c("a")))
+    plf$melt(id_vars = c("c", "b"), value_vars = c("a"))$collect()$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("c", "b"), value_vars = c("a")))
   )
   expect_identical(
-    plf$melt(id_vars = c("a","b"), value_vars = c("c"))$collect()$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("a","b"),value_vars = c("b", "c")))
+    plf$melt(id_vars = c("a", "b"), value_vars = c("c"))$collect()$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("b", "c")))
   )
 
   expect_identical(
     plf$melt(
-      id_vars = c("a","b"), value_vars = c("c"), value_name = "alice", variable_name = "bob"
+      id_vars = c("a", "b"), value_vars = c("c"), value_name = "alice", variable_name = "bob"
     )$collect()$to_list(),
     as.list(melt_mod(
-      dtt,id.vars = c("a","b"),value_vars = c("b", "c"), value.name = "alice", variable.name = "bob"
+      dtt,
+      id.vars = c("a", "b"), value_vars = c("b", "c"), value.name = "alice", variable.name = "bob"
     ))
   )
 
-  #check the check, this should not be equal
+  # check the check, this should not be equal
   expect_error(expect_equal(
-    plf$melt(id_vars = c("c","b"), value_vars = c("a"))$collect()$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("a","b"),value_vars = c("c")))
+    plf$melt(id_vars = c("c", "b"), value_vars = c("a"))$collect()$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("c")))
   ))
-
 })

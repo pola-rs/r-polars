@@ -798,7 +798,3 @@ LazyFrame_melt = function(
     value_name, variable_name, streamable
   ) |> unwrap("in $melt( ): ")
 }
-
-
-
-

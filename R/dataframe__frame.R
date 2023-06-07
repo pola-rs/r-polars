@@ -1290,8 +1290,7 @@ DataFrame_melt = function(
     id_vars = NULL,
     value_vars = NULL,
     variable_name = NULL,
-    value_name = NULL
-) {
+    value_name = NULL) {
   .pr$DataFrame$melt(
     self, id_vars %||% character(), value_vars %||% character(),
     value_name, variable_name
@@ -1333,7 +1332,7 @@ DataFrame_melt = function(
 #'   col3 = c(6, 7, 3, 2, 5, 7)
 #' )
 #' df$pivot(
-#'   index  = "col1",
+#'   index = "col1",
 #'   columns = "col2",
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean()
@@ -1367,5 +1366,3 @@ DataFrame_pivot = function(
     # unwrap and add method context name
     unwrap("in $pivot():")
 }
-
-

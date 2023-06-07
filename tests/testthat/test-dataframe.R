@@ -412,17 +412,17 @@ test_that("to_Struct, unnest, to_frame, to_data_frame", {
 
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "max",        "max",    max,
-    "mean",       "mean",   mean,
-    "median",     "median", median,
-    "max",        "max",    max,
-    "min",        "min",    min,
-    "std",        "std",    sd,
-    "sum",        "sum",    sum,
-    "var",        "var",    var,
-    "first",      "first",  function(x) head(x, 1),
-    "last",       "last",   function(x) tail(x, 1)
+    ~.test_name, ~pola, ~base,
+    "max", "max", max,
+    "mean", "mean", mean,
+    "median", "median", median,
+    "max", "max", max,
+    "min", "min", min,
+    "std", "std", sd,
+    "sum", "sum", sum,
+    "var", "var", var,
+    "first", "first", function(x) head(x, 1),
+    "last", "last", function(x) tail(x, 1)
   )
 }
 
@@ -745,7 +745,6 @@ test_that("join_asof_simple", {
 
 
 test_that("melt example", {
-
   df = pl$DataFrame(
     a = c("x", "y", "z"),
     b = c(1, 3, 5),
@@ -770,8 +769,8 @@ test_that("melt vs data.table::melt", {
     c = c(2, 4, 6)
   )
 
-  rdf  = pdf$to_data_frame()
-  dtt  = data.table::data.table(rdf)
+  rdf = pdf$to_data_frame()
+  dtt = data.table::data.table(rdf)
 
   melt_mod = \(...) {
     data.table::melt(variable.factor = FALSE, value.factor = FALSE, ...)
@@ -779,33 +778,33 @@ test_that("melt vs data.table::melt", {
 
   expect_identical(
     pdf$melt(id_vars = "a", value_vars = c("b", "c"))$to_list(),
-    as.list(melt_mod(dtt,id.vars = "a",value_vars = c("b", "c")))
+    as.list(melt_mod(dtt, id.vars = "a", value_vars = c("b", "c")))
   )
   expect_identical(
-    pdf$melt(id_vars = c("c","b"), value_vars = c("a"))$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("c","b"),value_vars = c("a")))
+    pdf$melt(id_vars = c("c", "b"), value_vars = c("a"))$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("c", "b"), value_vars = c("a")))
   )
   expect_identical(
-    pdf$melt(id_vars = c("a","b"), value_vars = c("c"))$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("a","b"),value_vars = c("b", "c")))
+    pdf$melt(id_vars = c("a", "b"), value_vars = c("c"))$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("b", "c")))
   )
 
 
   expect_identical(
     pdf$melt(
-      id_vars = c("a","b"), value_vars = c("c"), value_name = "alice", variable_name = "bob"
+      id_vars = c("a", "b"), value_vars = c("c"), value_name = "alice", variable_name = "bob"
     )$to_list(),
     as.list(melt_mod(
-      dtt,id.vars = c("a","b"),value_vars = c("b", "c"), value.name = "alice", variable.name = "bob"
+      dtt,
+      id.vars = c("a", "b"), value_vars = c("b", "c"), value.name = "alice", variable.name = "bob"
     ))
   )
 
-  #check the check, this should not be equal
+  # check the check, this should not be equal
   expect_error(expect_equal(
-    pdf$melt(id_vars = c("c","b"), value_vars = c("a"))$to_list(),
-    as.list(melt_mod(dtt,id.vars = c("a","b"),value_vars = c("c")))
+    pdf$melt(id_vars = c("c", "b"), value_vars = c("a"))$to_list(),
+    as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("c")))
   ))
-
 })
 
 
@@ -813,7 +812,6 @@ test_that("melt vs data.table::melt", {
 
 
 test_that("pivot examples", {
-
   df = pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
     bar = c("A", "B", "C", "A", "B", "C"),
@@ -824,7 +822,7 @@ test_that("pivot examples", {
     df$pivot(
       values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
     )$to_list(),
-    list(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3,6))
+    list(foo = c("one", "two"), A = c(1, 4), B = c(2, 5), C = c(3, 6))
   )
 
 
@@ -837,7 +835,7 @@ test_that("pivot examples", {
 
   expect_equal(
     df$pivot(
-      index  = "col1",
+      index = "col1",
       columns = "col2",
       values = "col3",
       aggregate_function = pl$element()$tanh()$mean()
@@ -848,12 +846,10 @@ test_that("pivot examples", {
       y = c(NA, 0.99995377060327)
     )
   )
-
 })
 
 
 test_that("pivot args works", {
-
   df = pl$DataFrame(
     foo = c("one", "one", "one", "two", "two", "two"),
     bar = c("A", "B", "C", "A", "B", "C"),
@@ -862,10 +858,11 @@ test_that("pivot args works", {
   )
   expect_identical(
     df$pivot("foo", "bar", "baz")$to_list(),
-    list(bar = c("A", "B", "C"), `1.0` = c("one", NA, NA), `2.0` = c(NA,
-      "one", NA), `3.0` = c(NA, NA, "one"), `4.0` = c("two", NA, NA
-      ), `5.0` = c(NA, "two", NA), `6.0` = c(NA, NA, "two")
-  ))
+    list(bar = c("A", "B", "C"), `1.0` = c("one", NA, NA), `2.0` = c(
+      NA,
+      "one", NA
+    ), `3.0` = c(NA, NA, "one"), `4.0` = c("two", NA, NA), `5.0` = c(NA, "two", NA), `6.0` = c(NA, NA, "two"))
+  )
 
   df = pl$DataFrame(
     ann = c("one", "one", "one", "two", "two", "two"),
@@ -873,31 +870,29 @@ test_that("pivot args works", {
     cat = c(1, 2, 3, 4, 5, 6)
   )
 
-  #aggr functions
+  # aggr functions
   expect_identical(
-    df$pivot("cat","ann","bob","mean")$to_list(),
+    df$pivot("cat", "ann", "bob", "mean")$to_list(),
     list(ann = c("one", "two"), A = c(2, 5), B = c(2, 5))
   )
   expect_identical(
-    df$pivot("cat","ann","bob", pl$element()$mean())$to_list(),
-    df$pivot("cat","ann","bob","mean")$to_list()
+    df$pivot("cat", "ann", "bob", pl$element()$mean())$to_list(),
+    df$pivot("cat", "ann", "bob", "mean")$to_list()
   )
-  expect_grepl_error(df$pivot("cat","ann","bob",42), c("pivot","param","aggregate_function", "42"))
-  expect_grepl_error(df$pivot("cat","ann","bob","dummy"), c("pivot","dummy is not a method"))
+  expect_grepl_error(df$pivot("cat", "ann", "bob", 42), c("pivot", "param", "aggregate_function", "42"))
+  expect_grepl_error(df$pivot("cat", "ann", "bob", "dummy"), c("pivot", "dummy is not a method"))
 
-  #maintain_order sort_columns
-  expect_grepl_error(df$pivot("cat","ann","bob","mean",42), c("pivot","maintain_order","bool"))
-  expect_grepl_error(df$pivot("cat","ann","bob","mean",TRUE, 42), c("pivot","sort_columns","bool"))
+  # maintain_order sort_columns
+  expect_grepl_error(df$pivot("cat", "ann", "bob", "mean", 42), c("pivot", "maintain_order", "bool"))
+  expect_grepl_error(df$pivot("cat", "ann", "bob", "mean", TRUE, 42), c("pivot", "sort_columns", "bool"))
 
-  #separator
+  # separator
   expect_identical(
-    names(df$pivot(c("ann","bob"),"ann","cat","mean",sep=".")),
-    c("ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
+    names(df$pivot(c("ann", "bob"), "ann", "cat", "mean", sep = ".")),
+    c(
+      "ann", "ann.cat.1.0", "ann.cat.2.0", "ann.cat.3.0", "ann.cat.4.0",
       "ann.cat.5.0", "ann.cat.6.0", "bob.cat.1.0", "bob.cat.2.0", "bob.cat.3.0",
       "bob.cat.4.0", "bob.cat.5.0", "bob.cat.6.0"
     )
   )
-
 })
-
-
