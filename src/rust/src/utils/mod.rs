@@ -746,6 +746,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, true)
     };
 
+    (PLExpr, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, true).map(|ok| ok.0)
+    };
+
     (ExprCol, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, false)
     };
@@ -807,7 +811,7 @@ macro_rules! robj_to {
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
             .and_then(|x: Robj| {
                 //coerce R vectors into list
-                let x = if !x.is_list() && x.len() > 1 {
+                let x = if !x.is_list() && x.len() != 1 {
                     extendr_api::call!("as.list", x)
                         .map_err(|err| format!("could not coerce to list: {}", err))?
                 } else {

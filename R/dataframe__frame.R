@@ -1275,3 +1275,99 @@ DataFrame_join_asof = function(
     tolerance = tolerance
   )$collect()
 }
+
+
+
+
+#' @inherit LazyFrame_melt
+#' @keywords DataFrame
+#'
+#' @return A new `DataFrame`
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c("x", "y", "z"),
+#'   b = c(1, 3, 5),
+#'   c = c(2, 4, 6)
+#' )
+#' df$melt(id_vars = "a", value_vars = c("b", "c"))
+DataFrame_melt = function(
+    id_vars = NULL,
+    value_vars = NULL,
+    variable_name = NULL,
+    value_name = NULL) {
+  .pr$DataFrame$melt(
+    self, id_vars %||% character(), value_vars %||% character(),
+    value_name, variable_name
+  ) |> unwrap("in $melt( ): ")
+}
+
+
+
+#' Create a spreadsheet-style pivot table as a DataFrame.
+#' @param values Column values to aggregate. Can be multiple columns if the `columns`
+#'             arguments contains multiple columns as well.
+#' @param index  One or multiple keys to group by.
+#' @param columns  Name of the column(s) whose values will be used as the header of the output
+#'            DataFrame.
+#' @param aggregate_function
+#'             String naming Expr to aggregate with, or an Expr e.g. `pl$element()$sum()`,
+#'             examples of strings:'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'
+#' @param maintain_order  Sort the grouped keys so that the output order is predictable.
+#' @param sort_columns  Sort the transposed columns by name. Default is by order of discovery.
+#' @param separator Used as separator/delimiter in generated column names.
+#'
+#' @return DataFrame
+#' @keywords DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   foo = c("one", "one", "one", "two", "two", "two"),
+#'   bar = c("A", "B", "C", "A", "B", "C"),
+#'   baz = c(1, 2, 3, 4, 5, 6)
+#' )
+#' df$pivot(
+#'   values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
+#' )
+#'
+#'
+#' # Run an expression as aggregation function
+#' df = pl$DataFrame(
+#'   col1 = c("a", "a", "a", "b", "b", "b"),
+#'   col2 = c("x", "x", "x", "x", "y", "y"),
+#'   col3 = c(6, 7, 3, 2, 5, 7)
+#' )
+#' df$pivot(
+#'   index = "col1",
+#'   columns = "col2",
+#'   values = "col3",
+#'   aggregate_function = pl$element()$tanh()$mean()
+#' )
+DataFrame_pivot = function(
+    values,
+    index,
+    columns,
+    aggregate_function = NULL,
+    maintain_order = TRUE,
+    sort_columns = FALSE,
+    separator = "_") {
+  pcase(
+    # if string, call it on Expr-method of pl$element() and capture any Error as Result
+    is_string(aggregate_function), result(`$.Expr`(pl$element(), aggregate_function)()),
+
+    # Expr or NULL pass as is
+    is.null(aggregate_function) || inherits(aggregate_function, "Expr"), Ok(aggregate_function),
+
+    # anything else pass err
+    or_else = Err(" is neither a string, NULL or an Expr")
+  ) |>
+    # add param context
+    map_err(\(err_msg) paste(
+      "param [aggregate_function] being ", str_string(aggregate_function), err_msg
+    )) |>
+    # run pivot when valid aggregate_expr
+    and_then(\(aggregate_expr) .pr$DataFrame$pivot_expr(
+      self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator
+    )) |>
+    # unwrap and add method context name
+    unwrap("in $pivot():")
+}
