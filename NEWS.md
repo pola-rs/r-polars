@@ -1,8 +1,6 @@
 # polars (development version)
 ## What's changed
  - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
-
-## What's changed
  - lazy functions translated: `pl$implode`, `pl$explode`, `pl$unique`, `pl$approx_unique`, `pl$head`, `pl$tail` (#196)
  - `pl$list` is deprecated, use `pl$implode` instead (#196) 
 
