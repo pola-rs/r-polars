@@ -790,6 +790,16 @@ macro_rules! robj_to_inner {
 //convert any Robj to appropriate rust type with informative error Strings
 #[macro_export]
 macro_rules! robj_to {
+    (Option, $type1:ident, $type2:ident, $a:ident) => {{
+        $crate::utils::unpack_r_result_list($a).and_then(|$a| {
+            if ($a.is_null()) {
+                Ok(None)
+            } else {
+                Some($crate::robj_to!($type1, $type2, $a)).transpose()
+            }
+        })
+    }};
+
     (Option, $type:ident, $a:ident) => {{
         $crate::utils::unpack_r_result_list($a).and_then(|$a| {
             if ($a.is_null()) {

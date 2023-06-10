@@ -1,3 +1,8 @@
+# polars (development version)
+## What's changed
+
+- `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
+
 # polars 0.6.1
 ## What's changed
  - use `pl$set_polars_options(debug_polars = TRUE)` to profile/debug method-calls of a polars query (#193)
