@@ -524,9 +524,23 @@ test_that("melt vs data.table::melt", {
 })
 
 test_that("rename", {
-  a = pl$DataFrame(mtcars)$lazy()$rename(miles_per_gallon = "mpg", horsepower = "hp")$collect()$columns
+  lf = pl$DataFrame(mtcars)$lazy()
+
+  #renaming succeeded
+  a = lf$rename(miles_per_gallon = "mpg", horsepower = "hp")$collect()$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_true("miles_per_gallon" %in% a)
   expect_true("horsepower" %in% a)
+
+  #no args are allowed, but does nothing
+  expect_identical(
+    lf$rename()$collect()$to_list(),
+    lf$collect()$to_list()
+  )
+
+  #wrapped args in list is equivalent
+  b = lf$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$collect()$columns
+  expect_identical(a, b)
+
 })

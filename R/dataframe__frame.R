@@ -1369,7 +1369,9 @@ DataFrame_pivot = function(
 
 #' @title Rename columns of a DataFrame
 #' @keywords DataFrame
-#' @param ... Use `new_name = "old_name"` to rename selected variables.
+#' @param ... One of the following:
+#'  - params like `new_name = "old_name"` to rename selected variables.
+#'  - as above but, but params wrapped in a list
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(mtcars)$
