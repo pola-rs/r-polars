@@ -522,3 +522,11 @@ test_that("melt vs data.table::melt", {
     as.list(melt_mod(dtt, id.vars = c("a", "b"), value_vars = c("c")))
   ))
 })
+
+test_that("rename", {
+  a = pl$DataFrame(mtcars)$lazy()$rename(c("mpg", "hp"), c("miles_per_gallon", "horsepower"))$collect()$columns
+  expect_false("hp" %in% a)
+  expect_false("mpg" %in% a)
+  expect_true("miles_per_gallon" %in% a)
+  expect_true("horsepower" %in% a)
+})

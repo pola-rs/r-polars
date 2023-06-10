@@ -798,3 +798,14 @@ LazyFrame_melt = function(
     value_name, variable_name, streamable
   ) |> unwrap("in $melt( ): ")
 }
+
+#' @title Rename columns of a LazyFrame
+#' @keywords LazyFrame
+#' @param existing A character vector of names to replace.
+#' @param new A character vector of names used as replacement.
+#' @return LazyFrame
+#' @examples
+#' pl$DataFrame(mtcars)$lazy()$rename(c("mpg", "hp"), c("miles_per_gallon", "horsepower"))
+LazyFrame_rename = function(existing, new) {
+  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
+}
