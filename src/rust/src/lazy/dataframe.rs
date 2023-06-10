@@ -204,31 +204,15 @@ impl LazyFrame {
     }
 
     fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> Result<LazyFrame, String> {
-        let ke = new_unique_keep_strategy(robj_to!(str, keep)?).unwrap();
-        let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
-
-        if maintain_order {
-            Ok(if subset.len() == 0 {
-                LazyFrame(self.0.clone().unique_stable(None, ke))
-            } else {
-                LazyFrame(
-                    self.0
-                        .clone()
-                        .unique_stable(Some(robj_to!(Vec, String, subset)?), ke),
-                )
-            })
+        let ke = new_unique_keep_strategy(robj_to!(str, keep)?)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let subset = robj_to!(Option, Vec, String, subset)?;
+        let lf = if maintain_order {
+            self.0.clone().unique_stable(subset, ke)
         } else {
-            Ok(if subset.len() == 0 {
-                LazyFrame(self.0.clone().unique(None, ke))
-            } else {
-                LazyFrame(
-                    self.0
-                        .clone()
-                        .unique(Some(robj_to!(Vec, String, subset)?), ke),
-                )
-            })
-        }
-
+            self.0.clone().unique(subset, ke)
+        };
+        Ok(lf.into())
     }
 
     fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
