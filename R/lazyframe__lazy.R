@@ -484,14 +484,13 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' @return LazyFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = as.numeric(c(1, 1:5)),
-#'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4))
+#'   x = c(1L, 1:3, 3L),
+#'   y = c(1L, 1:3, 3L),
+#'   z = c(1L, 1:3, 4L)
 #' )
 #' df$lazy()$unique()$collect()$height
-#' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
+#' df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
 LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  if (is.null(subset)) subset <- vector("character")
   unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 

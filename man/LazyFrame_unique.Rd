@@ -29,11 +29,11 @@ Drop duplicate rows from this dataframe.
 }
 \examples{
 df = pl$DataFrame(
-  x = as.numeric(c(1, 1:5)),
-  y = as.numeric(c(1, 1:5)),
-  z = as.numeric(c(1, 1, 1:4))
+  x = c(1L, 1:3, 3L),
+  y = c(1L, 1:3, 3L),
+  z = c(1L, 1:3, 4L)
 )
 df$lazy()$unique()$collect()$height
-df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
+df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
 }
 \keyword{LazyFrame}
