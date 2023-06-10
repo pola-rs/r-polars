@@ -1369,11 +1369,10 @@ DataFrame_pivot = function(
 
 #' @title Rename columns of a DataFrame
 #' @keywords DataFrame
-#' @param existing A character vector of names to replace.
-#' @param new A character vector of names used as replacement.
+#' @param mapping A named list like `list(old = "new")`.
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(mtcars)$rename(c("mpg", "hp"), c("miles_per_gallon", "horsepower"))
-DataFrame_rename = function(existing, new) {
-  self$lazy()$rename(existing, new)$collect()
+#' pl$DataFrame(mtcars)$lazy()$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))
+DataFrame_rename = function(mapping) {
+  self$lazy()$rename(mapping)$collect()
 }

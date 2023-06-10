@@ -4,12 +4,10 @@
 \alias{LazyFrame_rename}
 \title{Rename columns of a LazyFrame}
 \usage{
-LazyFrame_rename(existing, new)
+LazyFrame_rename(mapping)
 }
 \arguments{
-\item{existing}{A character vector of names to replace.}
-
-\item{new}{A character vector of names used as replacement.}
+\item{mapping}{A named list like \code{list(old = "new")}.}
 }
 \value{
 LazyFrame
@@ -18,6 +16,6 @@ LazyFrame
 Rename columns of a LazyFrame
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$rename(c("mpg", "hp"), c("miles_per_gallon", "horsepower"))
+pl$DataFrame(mtcars)$lazy()$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))
 }
 \keyword{LazyFrame}
