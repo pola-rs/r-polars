@@ -427,16 +427,11 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @title DataFrame_unique
 #' @description Drop duplicate rows from this dataframe.
 #' @keywords DataFrame
-#'
-#' @param subset string or vector of strings. Column name(s) to consider when
-#'  identifying duplicates. If set to NULL (default), use all columns.
+#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
 #' @param keep string. Which of the duplicate rows to keep:
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original `DataFrame.` This
-#'  is more expensive to compute. Settings this to `TRUE` blocks the possibility
-#'  to run on the streaming engine.
 #'
 #' @return DataFrame
 #' @examples
@@ -447,8 +442,8 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' )
 #' df$unique()$height
 #' df$unique(subset = c("x", "z"), keep = "last")$height
-DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  self$lazy()$unique(subset, keep, maintain_order)$collect()
+DataFrame_unique = function(subset = NULL, keep = "first") {
+  self$lazy()$unique(subset, keep)$collect()
 }
 
 

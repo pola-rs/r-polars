@@ -4,11 +4,10 @@
 \alias{LazyFrame_unique}
 \title{Lazy_unique}
 \usage{
-LazyFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
+LazyFrame_unique(subset = NULL, keep = "first")
 }
 \arguments{
-\item{subset}{string or vector of strings. Column name(s) to consider when
-identifying duplicates. If set to NULL (default), use all columns.}
+\item{subset}{string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.}
 
 \item{keep}{string. Which of the duplicate rows to keep:
 \itemize{
@@ -16,10 +15,6 @@ identifying duplicates. If set to NULL (default), use all columns.}
 \item "last": Keep last unique row.
 \item "none": Don’t keep duplicate rows.
 }}
-
-\item{maintain_order}{Keep the same order as the original \code{LazyFrame.} This
-is more expensive to compute. Settings this to \code{TRUE} blocks the possibility
-to run on the streaming engine.}
 }
 \value{
 LazyFrame
