@@ -247,6 +247,16 @@ test_that("unique", {
   expect_equal(z, 5)
 })
 
+test_that("unique, maintain_order", {
+  df = pl$DataFrame(
+    x = rep(1:100, each = 2)
+  )
+  expect_equal(
+    df$lazy()$unique(maintain_order = TRUE)$collect()$to_data_frame()$x,
+    1:100
+  )
+})
+
 
 # TODO only tested error msg of sort, missing tests for arguments are correctly connected to rust
 test_that("sort", {

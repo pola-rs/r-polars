@@ -470,24 +470,28 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' @title Lazy_unique
 #' @description Drop duplicate rows from this dataframe.
 #' @keywords LazyFrame
-#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#'
+#' @param subset string or vector of strings. Column name(s) to consider when
+#'  identifying duplicates. If set to NULL (default), use all columns.
 #' @param keep string. Which of the duplicate rows to keep:
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
+#' @param maintain_order Keep the same order as the original `LazyFrame.` This
+#'  is more expensive to compute. Settings this to `TRUE` blocks the possibility
+#'  to run on the streaming engine.
 #'
 #' @return LazyFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = as.numeric(c(1, 1:5)),
-#'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4))
+#'   x = c(1L, 1:3, 3L),
+#'   y = c(1L, 1:3, 3L),
+#'   z = c(1L, 1:3, 4L)
 #' )
 #' df$lazy()$unique()$collect()$height
-#' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
-LazyFrame_unique = function(subset = NULL, keep = "first") {
-  if (is.null(subset)) subset <- vector("character")
-  unwrap(.pr$LazyFrame$unique(self, subset, keep), "in unique():")
+#' df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
+LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
+  unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 
 #' Lazy_groupby

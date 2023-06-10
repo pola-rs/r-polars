@@ -598,6 +598,16 @@ test_that("unique", {
   expect_false(all(x == y))
 })
 
+test_that("unique, maintain_order", {
+  df = pl$DataFrame(
+    x = rep(1:100, each = 2)
+  )
+  expect_equal(
+    df$unique(maintain_order = TRUE)$to_data_frame()$x,
+    1:100
+  )
+})
+
 test_that("as_data_frame (backward compatibility)", {
   w = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
   x = as.data.frame(pl$DataFrame(mtcars)$as_data_frame())
