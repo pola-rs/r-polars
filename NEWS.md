@@ -1,7 +1,7 @@
 # polars (development version)
 ## What's changed
 
-- `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#237).
+- `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
 
 # polars 0.6.1
 ## What's changed
