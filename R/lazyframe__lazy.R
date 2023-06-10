@@ -801,13 +801,15 @@ LazyFrame_melt = function(
 
 #' @title Rename columns of a LazyFrame
 #' @keywords LazyFrame
-#' @param mapping A named list like `list(new = "old")`.
+#' @param ... Use `new_name = "old_name"` to rename selected variables.
 #' @return LazyFrame
 #' @examples
 #' pl$DataFrame(mtcars)$
 #'   lazy()$
-#'   rename(list(miles_per_gallon = "mpg", horsepower = "hp"))
-LazyFrame_rename = function(mapping) {
+#'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
+#'   collect()
+LazyFrame_rename = function(...) {
+  mapping <- list(...)
   existing <- unname(unlist(mapping))
   new <- names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")

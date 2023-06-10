@@ -4,10 +4,10 @@
 \alias{LazyFrame_rename}
 \title{Rename columns of a LazyFrame}
 \usage{
-LazyFrame_rename(mapping)
+LazyFrame_rename(...)
 }
 \arguments{
-\item{mapping}{A named list like \code{list(new = "old")}.}
+\item{...}{Use \code{new_name = "old_name"} to rename selected variables.}
 }
 \value{
 LazyFrame
@@ -18,6 +18,7 @@ Rename columns of a LazyFrame
 \examples{
 pl$DataFrame(mtcars)$
   lazy()$
-  rename(list(miles_per_gallon = "mpg", horsepower = "hp"))
+  rename(miles_per_gallon = "mpg", horsepower = "hp")$
+  collect()
 }
 \keyword{LazyFrame}

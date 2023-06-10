@@ -4,10 +4,10 @@
 \alias{DataFrame_rename}
 \title{Rename columns of a DataFrame}
 \usage{
-DataFrame_rename(mapping)
+DataFrame_rename(...)
 }
 \arguments{
-\item{mapping}{A named list like \code{list(new = "old")}.}
+\item{...}{Use \code{new_name = "old_name"} to rename selected variables.}
 }
 \value{
 DataFrame
@@ -17,7 +17,6 @@ Rename columns of a DataFrame
 }
 \examples{
 pl$DataFrame(mtcars)$
-  lazy()$
-  rename(list(miles_per_gallon = "mpg", horsepower = "hp"))
+  rename(miles_per_gallon = "mpg", horsepower = "hp")
 }
 \keyword{DataFrame}
