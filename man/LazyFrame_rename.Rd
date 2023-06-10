@@ -7,7 +7,7 @@
 LazyFrame_rename(mapping)
 }
 \arguments{
-\item{mapping}{A named list like \code{list(old = "new")}.}
+\item{mapping}{A named list like \code{list(new = "old")}.}
 }
 \value{
 LazyFrame
@@ -16,6 +16,8 @@ LazyFrame
 Rename columns of a LazyFrame
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))
+pl$DataFrame(mtcars)$
+  lazy()$
+  rename(list(miles_per_gallon = "mpg", horsepower = "hp"))
 }
 \keyword{LazyFrame}

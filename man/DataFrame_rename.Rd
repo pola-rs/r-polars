@@ -7,7 +7,7 @@
 DataFrame_rename(mapping)
 }
 \arguments{
-\item{mapping}{A named list like \code{list(old = "new")}.}
+\item{mapping}{A named list like \code{list(new = "old")}.}
 }
 \value{
 DataFrame
@@ -16,6 +16,8 @@ DataFrame
 Rename columns of a DataFrame
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))
+pl$DataFrame(mtcars)$
+  lazy()$
+  rename(list(miles_per_gallon = "mpg", horsepower = "hp"))
 }
 \keyword{DataFrame}

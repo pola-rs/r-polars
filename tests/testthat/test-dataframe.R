@@ -898,7 +898,7 @@ test_that("pivot args works", {
 })
 
 test_that("rename", {
-  a = pl$DataFrame(mtcars)$rename(list(mpg = "miles_per_gallon", hp = "horsepower"))$columns
+  a = pl$DataFrame(mtcars)$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$columns
   expect_false("hp" %in% a)
   expect_false("mpg" %in% a)
   expect_true("miles_per_gallon" %in% a)
