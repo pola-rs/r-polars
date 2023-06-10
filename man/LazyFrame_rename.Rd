@@ -10,7 +10,7 @@ LazyFrame_rename(...)
 \item{...}{One of the following:
 \itemize{
 \item params like \code{new_name = "old_name"} to rename selected variables.
-\item a list of params like above
+\item as above but, but params wrapped in a list
 }}
 }
 \value{
@@ -24,5 +24,6 @@ pl$DataFrame(mtcars)$
   lazy()$
   rename(miles_per_gallon = "mpg", horsepower = "hp")$
   collect()
+
 }
 \keyword{LazyFrame}

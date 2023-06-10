@@ -7,7 +7,11 @@
 DataFrame_rename(...)
 }
 \arguments{
-\item{...}{Use \code{new_name = "old_name"} to rename selected variables.}
+\item{...}{One of the following:
+\itemize{
+\item params like \code{new_name = "old_name"} to rename selected variables.
+\item as above but, but params wrapped in a list
+}}
 }
 \value{
 DataFrame
