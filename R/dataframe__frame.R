@@ -1371,3 +1371,16 @@ DataFrame_pivot = function(
     # unwrap and add method context name
     unwrap("in $pivot():")
 }
+
+#' @title Rename columns of a DataFrame
+#' @keywords DataFrame
+#' @param ... One of the following:
+#'  - params like `new_name = "old_name"` to rename selected variables.
+#'  - as above but, but params wrapped in a list
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(mtcars)$
+#'   rename(miles_per_gallon = "mpg", horsepower = "hp")
+DataFrame_rename = function(...) {
+  self$lazy()$rename(...)$collect()
+}

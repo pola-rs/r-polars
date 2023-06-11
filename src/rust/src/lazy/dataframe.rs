@@ -354,6 +354,17 @@ impl LazyFrame {
         };
         Ok(self.0.clone().melt(args).into())
     }
+
+    fn rename(&self, existing: Robj, new: Robj) -> Result<LazyFrame, String> {
+        Ok(self
+            .0
+            .clone()
+            .rename(
+                robj_to!(Vec, String, existing)?,
+                robj_to!(Vec, String, new)?,
+            )
+            .into())
+    }
 }
 
 #[derive(Clone)]

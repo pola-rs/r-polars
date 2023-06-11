@@ -893,6 +893,8 @@ LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__Lazy
 
 LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__LazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
 
+LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self, existing, new)
+
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 

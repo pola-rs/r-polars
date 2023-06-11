@@ -802,3 +802,28 @@ LazyFrame_melt = function(
     value_name, variable_name, streamable
   ) |> unwrap("in $melt( ): ")
 }
+
+#' @title Rename columns of a LazyFrame
+#' @keywords LazyFrame
+#' @param ... One of the following:
+#'  - params like `new_name = "old_name"` to rename selected variables.
+#'  - as above but, but params wrapped in a list
+#' @return LazyFrame
+#' @examples
+#' pl$DataFrame(mtcars)$
+#'   lazy()$
+#'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
+#'   collect()
+#'
+LazyFrame_rename = function(...) {
+  mapping = list2(...)
+  if (length(mapping) == 0) {
+    return(self)
+  }
+  if (is.list(mapping[[1L]])) {
+    mapping = mapping[[1L]]
+  }
+  existing = unname(unlist(mapping))
+  new = names(mapping)
+  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
+}

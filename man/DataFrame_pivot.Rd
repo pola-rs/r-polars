@@ -56,7 +56,7 @@ df = pl$DataFrame(
   col3 = c(6, 7, 3, 2, 5, 7)
 )
 df$pivot(
-  index  = "col1",
+  index = "col1",
   columns = "col2",
   values = "col3",
   aggregate_function = pl$element()$tanh()$mean()
