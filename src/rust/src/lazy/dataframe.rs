@@ -359,8 +359,10 @@ impl LazyFrame {
         Ok(self
             .0
             .clone()
-            .rename(robj_to!(Vec, String, existing)?,
-                    robj_to!(Vec, String, new)?)
+            .rename(
+                robj_to!(Vec, String, existing)?,
+                robj_to!(Vec, String, new)?,
+            )
             .into())
     }
 }

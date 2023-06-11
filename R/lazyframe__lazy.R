@@ -817,10 +817,10 @@ LazyFrame_melt = function(
 #'
 LazyFrame_rename = function(...) {
   mapping = list2(...)
-  if( length(mapping) == 0) {
+  if (length(mapping) == 0) {
     return(self)
   }
-  if( is.list(mapping[[1L]])) mapping = mapping[[1L]]
+  if (is.list(mapping[[1L]])) mapping <- mapping[[1L]]
   existing = unname(unlist(mapping))
   new = names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
