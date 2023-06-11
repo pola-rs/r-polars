@@ -11,6 +11,8 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
+test_rerr <- function() .Call(wrap__test_rerr)
+
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
@@ -55,11 +57,11 @@ test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 Rerr <- new.env(parent = emptyenv())
 
+Rerr$new <- function() .Call(wrap__Rerr__new)
+
 Rerr$info <- function() .Call(wrap__Rerr__info, self)
 
-Rerr$debug <- function() .Call(wrap__Rerr__debug, self)
-
-Rerr$chain <- function() .Call(wrap__Rerr__chain, self)
+Rerr$contexts <- function() .Call(wrap__Rerr__contexts, self)
 
 #' @export
 `$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }
@@ -842,6 +844,8 @@ LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_
 LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_background, self)
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 

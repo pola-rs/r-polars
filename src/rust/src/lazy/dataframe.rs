@@ -75,6 +75,11 @@ impl LazyFrame {
         })
     }
 
+    pub fn collect_handled(&self) -> crate::rerr::RResult<crate::rdataframe::DataFrame> {
+        use crate::rerr::WithRctx;
+        handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
+    }
+
     fn first(&self) -> Self {
         self.0.clone().first().into()
     }

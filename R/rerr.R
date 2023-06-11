@@ -12,3 +12,6 @@
 #' @noRd
 as.character.Rerr = function(x) x$info()
 
+#' @export
+#' @noRd
+print.Rerr = function(x) writeLines(x$info())

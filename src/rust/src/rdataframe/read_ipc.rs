@@ -1,5 +1,5 @@
 use crate::lazy::dataframe::LazyFrame as RLazyFrame;
-use crate::ranyhow::{Context, RResult};
+use crate::rerr::RResult;
 use crate::robj_to;
 use extendr_api::prelude::*;
 use polars::io::RowCount;
@@ -24,8 +24,7 @@ pub fn import_arrow_ipc(
             .transpose()?,
         memmap: robj_to!(bool, memmap)?,
     };
-    let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)
-        .context("Pola-rs internal import for Arrow")?;
+    let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)?;
     Ok(RLazyFrame(lf))
 }
 
