@@ -11,25 +11,49 @@ then by applying **expressions** in a particular **context**.
 As explained in some vignettes, one of `polars`' biggest strengths is the ability
 to choose between eager and lazy evaluation, that require respectively a 
 `DataFrame` and a `LazyFrame` (with their counterparts `GroupBy` and `LazyGroupby`
-for grouped data). Most (but not all!) functions that can be applied to `DataFrame`s
+for grouped data). 
+
+We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
+or `drop()`. Most (but not all!) functions that can be applied to `DataFrame`s
 can also be used on `LazyFrame`s.
 
 Another common data structure is the `Serie`, which can be considered as the 
-equivalent of R vectors in `polars`' world.
+equivalent of R vectors in `polars`' world. Therefore, a `DataFrame` is a list of
+`Series`.
 
-Once you know with which structure you want to work, you can modify it by using
-various expressions in different contexts.
+Operations on `DataFrame` or `LazyFrame` are useful, but many more operations
+can be applied on columns themselves by using various **expressions** in different
+**contexts**.
 
 
 
 ## Contexts
 
-A context simply is the type of data modification that is done. It can be filtering
-data, selecting columns or creating new ones, among other things. For example, to create new columns or modify existing ones, we need to use `with_columns()`.
+A context simply is the type of data modification that is done. There are 3 types
+of contexts:
 
-Inside each context, you can use various expressions.
+* select and modify columns with `select()` and `with_columns()`;
+* filter rows with `filter()`;
+* group and aggregate rows with `groupby()` and `agg()`
 
+Inside each context, you can use various **expressions**. Some expressions cannot
+be used in some contexts. For example, in `with_columns()`, you can only apply
+expressions that return either the same number of values or a single value that
+will be duplicated on all rows:
 
+```r
+test = pl$DataFrame(mtcars)
+
+# this works
+test$with_columns(
+  pl$col("mpg") + 1
+)
+
+# this doesn't work because it returns only 2 values:
+test$with_columns(
+  pl$col("mpg")$slice(0, 2)
+)
+```
 
 ## Expressions
 
@@ -101,7 +125,8 @@ shape: (3, 1)
 └────────────┘
 ```
 
-Each subsection in the "Expressions" section correspond to one type:
+Each subsection in the "Expressions" section lists all operations available for
+a specific data type:
 
 * Array: `arr`
 * DateTime: `dt`
