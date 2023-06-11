@@ -470,24 +470,28 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' @title Lazy_unique
 #' @description Drop duplicate rows from this dataframe.
 #' @keywords LazyFrame
-#' @param subset string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.
+#'
+#' @param subset string or vector of strings. Column name(s) to consider when
+#'  identifying duplicates. If set to NULL (default), use all columns.
 #' @param keep string. Which of the duplicate rows to keep:
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
+#' @param maintain_order Keep the same order as the original `LazyFrame.` This
+#'  is more expensive to compute. Settings this to `TRUE` blocks the possibility
+#'  to run on the streaming engine.
 #'
 #' @return LazyFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = as.numeric(c(1, 1:5)),
-#'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4))
+#'   x = c(1L, 1:3, 3L),
+#'   y = c(1L, 1:3, 3L),
+#'   z = c(1L, 1:3, 4L)
 #' )
 #' df$lazy()$unique()$collect()$height
-#' df$lazy()$unique(subset = c("x", "z"), keep = "last")$collect()$height
-LazyFrame_unique = function(subset = NULL, keep = "first") {
-  if (is.null(subset)) subset <- vector("character")
-  unwrap(.pr$LazyFrame$unique(self, subset, keep), "in unique():")
+#' df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
+LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
+  unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 
 #' Lazy_groupby
@@ -751,4 +755,75 @@ LazyFrame_join_asof = function(
     tolerance_num, tolerance_str
   ) |>
     unwrap("in join_asof( ):")
+}
+
+
+#' Unpivot a Frame from wide to long format
+#'
+#' @param id_vars char vec, columns to use as identifier variables.
+#' @param value_vars char vec, Values to use as identifier variables.
+#' If `value_vars` is empty all columns that are not in `id_vars` will be used.
+#' @param variable_name string,  Name to give to the `variable` column. Defaults to "variable"
+#' @param value_name string, Name to give to the `value` column. Defaults to "value"
+#' @param ... not used, forces to name streamable arg
+#' @param streamable Allow this node to run in the streaming engine.
+#' If this runs in streaming, the output of the melt operation
+#' will not have a stable ordering.
+#'
+#' @details
+#' Optionally leaves identifiers set.
+#'
+#' This function is useful to massage a DataFrame into a format where one or more
+#' columns are identifier variables (id_vars), while all other columns, considered
+#' measured variables (value_vars), are "unpivoted" to the row axis, leaving just
+#' two non-identifier columns, 'variable' and 'value'.
+#'
+#' @keywords LazyFrame
+#'
+#' @return A new `LazyFrame`
+#'
+#' @examples
+#' lf = pl$DataFrame(
+#'   a = c("x", "y", "z"),
+#'   b = c(1, 3, 5),
+#'   c = c(2, 4, 6)
+#' )$lazy()
+#' lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()
+#'
+LazyFrame_melt = function(
+    id_vars = NULL,
+    value_vars = NULL,
+    variable_name = NULL,
+    value_name = NULL,
+    ...,
+    streamable = TRUE) {
+  .pr$LazyFrame$melt(
+    self, id_vars %||% character(), value_vars %||% character(),
+    value_name, variable_name, streamable
+  ) |> unwrap("in $melt( ): ")
+}
+
+#' @title Rename columns of a LazyFrame
+#' @keywords LazyFrame
+#' @param ... One of the following:
+#'  - params like `new_name = "old_name"` to rename selected variables.
+#'  - as above but, but params wrapped in a list
+#' @return LazyFrame
+#' @examples
+#' pl$DataFrame(mtcars)$
+#'   lazy()$
+#'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
+#'   collect()
+#'
+LazyFrame_rename = function(...) {
+  mapping = list2(...)
+  if (length(mapping) == 0) {
+    return(self)
+  }
+  if (is.list(mapping[[1L]])) {
+    mapping = mapping[[1L]]
+  }
+  existing = unname(unlist(mapping))
+  new = names(mapping)
+  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
 }

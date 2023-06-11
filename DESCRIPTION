@@ -1,6 +1,6 @@
 Package: polars
 Title: Polars ported to R
-Version: 0.6.0.9000
+Version: 0.6.1.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
@@ -29,7 +29,7 @@ Suggests:
     tibble,
     withr
 Config/Needs/website:
-    etiennebacher/altdoc,
+    altdoc,
     here,
     magrittr,
     pkgload,
@@ -81,5 +81,5 @@ Collate:
     'translation.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.2.0.9000
+Config/rextendr/version: 0.3.0
 VignetteBuilder: knitr

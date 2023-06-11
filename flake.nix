@@ -1,35 +1,35 @@
 {
   inputs = {
-    fenix.url = "github:nix-community/fenix";
+    fenix.url = "github:nix-community/fenix/monthly";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    rustPlatformFix.url =
-      "github:winterqt/nixpkgs/import-cargo-lock-git-dep-workspace-inheritance";
   };
 
-  outputs = { self, fenix, flake-utils, nixpkgs, rustPlatformFix }:
+  outputs = { self, fenix, flake-utils, nixpkgs }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        pkgs = nixpkgs.legacyPackages.${system};
         rustNightly = fenix.packages.${system}.complete;
-        pkgs = nixpkgs.legacyPackages.${system}.extend (final: prev: {
-          inherit (rustPlatformFix.legacyPackages.${system}) rustPlatform;
-        });
+        rdeps = with pkgs; [
+          curl
+          fontconfig
+          fribidi
+          harfbuzz
+          libjpeg
+          libpng
+          libtiff
+          libxml2
+          openssl
+          pkg-config
+        ];
         # Build r-polars from source
         rpolars = pkgs.rPackages.buildRPackage {
           name = "polars";
           src = self;
           cargoDeps = pkgs.rustPlatform.importCargoLock {
             lockFile = "${self}/${rpolars.cargoRoot}/Cargo.lock";
-            outputHashes = {
-              "arrow2-0.16.0" =
-                "sha256-Ac/DhiLKd16ffBmmZXK2ph7gWrm/2YgioOclSpzTMx8=";
-              "extendr-api-0.4.0" =
-                "sha256-HOglEF9PLLV12uP3gWr/6pSZFfn38I+ATcJPBbGzpJI=";
-              "jsonpath_lib-0.3.0" =
-                "sha256-NKszYpDGG8VxfZSMbsTlzcMGFHBOUeFojNw4P2wM3qk=";
-              "polars-0.27.2" =
-                "sha256-8FBAcs5dh0EmeNmguUH4FDS+GVFRimX39nX/vyk6wMk=";
-            };
+            outputHashes = {};
+            allowBuiltinFetchGit = true;
           };
           cargoRoot = "src/rust";
           nativeBuildInputs = with pkgs;
@@ -37,21 +37,17 @@
             ++ pkgs.lib.singleton rustNightly.toolchain;
         };
         # Create R development environment with r-polars and other useful libraries
-        renv = pkgs.rWrapper.override {
-          packages = with pkgs.rPackages; [ devtools rextendr rpolars ];
+        rvenv = pkgs.rWrapper.override {
+          packages = with pkgs.rPackages; [ renv ];
         };
       in {
         packages.default = rpolars;
         devShells.default = pkgs.mkShell {
+          buildInputs = rdeps;
           inputsFrom = pkgs.lib.singleton rpolars;
-          packages = pkgs.lib.singleton renv;
+          packages = pkgs.lib.singleton rvenv;
+          LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath rdeps;
         };
       });
-
-  nixConfig = {
-    extra-substituters = [ "https://r-polars.cachix.org" ];
-    extra-trusted-public-keys =
-      [ "r-polars.cachix.org-1:LhIYJk3lSZay+OuJ30RU4WkvAc8VY0QvaSy7rIcQ31w=" ];
-  };
 
 }

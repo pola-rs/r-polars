@@ -746,6 +746,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, true)
     };
 
+    (PLExpr, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, true).map(|ok| ok.0)
+    };
+
     (ExprCol, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, false)
     };
@@ -786,6 +790,16 @@ macro_rules! robj_to_inner {
 //convert any Robj to appropriate rust type with informative error Strings
 #[macro_export]
 macro_rules! robj_to {
+    (Option, $type1:ident, $type2:ident, $a:ident) => {{
+        $crate::utils::unpack_r_result_list($a).and_then(|$a| {
+            if ($a.is_null()) {
+                Ok(None)
+            } else {
+                Some($crate::robj_to!($type1, $type2, $a)).transpose()
+            }
+        })
+    }};
+
     (Option, $type:ident, $a:ident) => {{
         $crate::utils::unpack_r_result_list($a).and_then(|$a| {
             if ($a.is_null()) {
@@ -807,7 +821,7 @@ macro_rules! robj_to {
             .map_err(|err| format!("the arg [{}] {}", stringify!($a), err))
             .and_then(|x: Robj| {
                 //coerce R vectors into list
-                let x = if !x.is_list() && x.len() > 1 {
+                let x = if !x.is_list() && x.len() != 1 {
                     extendr_api::call!("as.list", x)
                         .map_err(|err| format!("could not coerce to list: {}", err))?
                 } else {
