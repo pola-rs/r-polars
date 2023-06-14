@@ -1,13 +1,22 @@
 use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
+use thiserror::Error;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Error)]
 pub enum Rctx {
+    #[error("The argument [{0}] casuse an error because")]
+    BadArgument(String),
+    #[error("Encountered the following error in Extendr:\n{0}")]
     Extendr(String),
+    #[error("Possibly {0}")]
     Hint(String),
+    #[error("{0}")]
     Plain(String),
+    #[error("Encountered the following error in Polars:\n{0}")]
     Polars(String),
+    #[error("When {0}")]
     When(String),
-    TypeMismatch(String, String, String),
+    #[error("Expected a value of type [{0}], but got [{1}] instead")]
+    TypeMismatch(String, String),
 }
 
 #[derive(Clone, Debug)]
@@ -16,11 +25,13 @@ pub type RResult<T> = core::result::Result<T, Rerr>;
 
 pub trait WithRctx<T> {
     fn ctx(self, rctx: Rctx) -> RResult<T>;
-    fn hint<S: Into<String>>(self, msg: S) -> RResult<T>;
-    fn when<S: Into<String>>(self, msg: S) -> RResult<T>;
+    fn on_arg<S: Into<String>>(self, arg: S) -> RResult<T>;
+    fn type_mismatch<R: Into<String>, S: Into<String>>(self, ty: R, val: S) -> RResult<T>;
+    fn hint<S: Into<String>>(self, cause: S) -> RResult<T>;
+    fn when<S: Into<String>>(self, env: S) -> RResult<T>;
 }
 
-impl<T: Clone, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
+impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
     fn ctx(self, rctx: Rctx) -> RResult<T> {
         self.map_err(|e| {
             let mut rerr = e.into();
@@ -29,12 +40,20 @@ impl<T: Clone, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
         })
     }
 
-    fn hint<S: Into<String>>(self, msg: S) -> RResult<T> {
-        self.ctx(Rctx::Hint(msg.into()))
+    fn on_arg<S: Into<String>>(self, arg: S) -> RResult<T> {
+        self.ctx(Rctx::BadArgument(arg.into()))
     }
 
-    fn when<S: Into<String>>(self, msg: S) -> RResult<T> {
-        self.ctx(Rctx::When(msg.into()))
+    fn type_mismatch<R: Into<String>, S: Into<String>>(self, ty: R, val: S) -> RResult<T> {
+        self.ctx(Rctx::TypeMismatch(ty.into(), val.into()))
+    }
+
+    fn hint<S: Into<String>>(self, cause: S) -> RResult<T> {
+        self.ctx(Rctx::Hint(cause.into()))
+    }
+
+    fn when<S: Into<String>>(self, env: S) -> RResult<T> {
+        self.ctx(Rctx::When(env.into()))
     }
 }
 
@@ -48,36 +67,17 @@ impl Rerr {
         self.0
             .iter()
             .rev()
-            .map(|rctx| match rctx {
-                Rctx::Extendr(e) => format!("Encountered the following error in Extendr:\n{}", e),
-                Rctx::Hint(e) => format!("An error occured likely because {}", e),
-                Rctx::Plain(e) => e.clone(),
-                Rctx::Polars(e) => format!("Encountered the following error in Polars:\n{}", e),
-                Rctx::TypeMismatch(name, expected, received) => {
-                    format!(
-                        "The argument [{}] should be a [{}] value, but got [{}] instead",
-                        name, expected, received
-                    )
-                }
-                Rctx::When(e) => format!("When {}", e),
-            })
-            .fold(String::from("Error"), |msg, ctx| {
-                format!("{}: {}", msg, ctx)
+            .map(|rerr| format!("{}", rerr))
+            .fold(String::from("Error"), |msg, rerr| {
+                format!("{}: {}", msg, rerr)
             })
     }
 
-    pub fn contexts(&self) -> Vec<&str> {
+    pub fn contexts(&self) -> Vec<String> {
         self.0
             .iter()
             .rev()
-            .map(|rctx| match rctx {
-                Rctx::Extendr(_) => "Extendr",
-                Rctx::Hint(_) => "Hint",
-                Rctx::Plain(_) => "Plain",
-                Rctx::Polars(_) => "Polars",
-                Rctx::TypeMismatch(_, _, _) => "TypeMismatch",
-                Rctx::When(_) => "When",
-            })
+            .map(|rerr| format!("{:?}", rerr))
             .collect()
     }
 }
@@ -115,11 +115,8 @@ impl From<polars::error::PolarsError> for Rerr {
 #[extendr]
 pub fn test_rerr() -> RResult<String> {
     Err(Rerr::new())
-        .ctx(Rctx::TypeMismatch(
-            "path".to_string(),
-            "String".to_string(),
-            "2.0".to_string(),
-        ))
+        .type_mismatch("usize", "-1")
+        .on_arg("<an imaginary argument>")
         .when("calling test function")
 }
 
