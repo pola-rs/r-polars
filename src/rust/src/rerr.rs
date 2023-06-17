@@ -1,4 +1,6 @@
-use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
+use extendr_api::{
+    extendr, extendr_module, symbol::class_symbol, Attributes, Pairlist, Rinternals, Robj,
+};
 use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]
@@ -91,8 +93,18 @@ impl Rerr {
         format!("{}", self)
     }
 
-    pub fn contexts(&self) -> Vec<String> {
-        self.0.iter().rev().map(|rerr| rdbg(rerr)).collect()
+    pub fn contexts(&self) -> Pairlist {
+        Pairlist::from_pairs(self.0.iter().rev().map(|rctx| match rctx {
+            Rctx::BadArg(arg) => ("BadArgument", arg),
+            Rctx::BadVal(val) => ("BadValue", val),
+            Rctx::Extendr(err) => ("ExtendrError", err),
+            Rctx::Hint(msg) => ("Hint", msg),
+            Rctx::Mistyped(ty) => ("TypeMismatch", ty),
+            Rctx::Misvalued(scope) => ("ValueOutOfScope", scope),
+            Rctx::Plain(msg) => ("PlainErrorMessage", msg),
+            Rctx::Polars(err) => ("PolarsError", err),
+            Rctx::When(target) => ("When", target),
+        }))
     }
 }
 
