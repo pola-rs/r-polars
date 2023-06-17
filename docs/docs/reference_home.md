@@ -10,7 +10,7 @@ then by applying **expressions** in a particular **context**.
 
 As explained in some vignettes, one of `polars` biggest strengths is the ability
 to choose between eager and lazy evaluation, that require respectively a 
-`DataFrame` and a `LazyFrame` (with their counterparts `GroupBy` and `LazyGroupby`
+`DataFrame` and a `LazyFrame` (with their counterparts `GroupBy` and `LazyGroupBy`
 for grouped data). 
 
 We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
@@ -54,32 +54,52 @@ test$with_columns(
   pl$col("mpg")$slice(0, 2)
 )
 ```
+By contrast, in an `agg` context, any number of return values are possible, as
+they are returned in a list, and only the new columns or the grouping columns 
+are returned.
 
 ```r
-# in a agg context any number of return values are possible, as they are returned in a list.
 test$groupby(pl$col("cyl"))$agg(
-  pl$col("mpg"), #varying number of values
-  pl$col("mpg")$slice(0, 2)$suffix("_sliced"), #two values
+  pl$col("mpg"), # varying number of values
+  pl$col("mpg")$slice(0, 2)$suffix("_sliced"), # two values
   pl$col("mpg")$sum()$suffix("_summed") # aggregated to one value, implicitly unpacks list
 )
+
+shape: (3, 4)
+┌─────┬──────────────────────┬──────────────┬────────────┐
+│ cyl ┆ mpg                  ┆ mpg_sliced   ┆ mpg_summed │
+│ --- ┆ ---                  ┆ ---          ┆ ---        │
+│ f64 ┆ list[f64]            ┆ list[f64]    ┆ f64        │
+╞═════╪══════════════════════╪══════════════╪════════════╡
+│ 4.0 ┆ [22.8, 24.4, … 21.4] ┆ [22.8, 24.4] ┆ 293.3      │
+│ 8.0 ┆ [18.7, 14.3, … 15.0] ┆ [18.7, 14.3] ┆ 211.4      │
+│ 6.0 ┆ [21.0, 21.0, … 19.7] ┆ [21.0, 21.0] ┆ 138.2      │
+└─────┴──────────────────────┴──────────────┴────────────┘
 ```
 
 ## Expressions
+
 `polars` is quite verbose and requires you to be very explicit on the operations
-you want to perform. This can be seen in the way expressions work.
-All polars public functions (excluding methods) are accessed via the namespace handle `pl`.
+you want to perform. This can be seen in the way expressions work. All polars 
+public functions (excluding methods) are accessed via the namespace handle `pl`.
 
-Two important expressions starters are `pl$col()` (names a column in the context) and `pl$lit()` (wraps a literal value or vector/series in an Expr).
-Most other expression starters are syntactic sugar derived from thereof, e.g. `pl$sum(_)` is actually `pl$col(_)$sum()`.
+Two important expressions starters are `pl$col()` (names a column in the context) 
+and `pl$lit()` (wraps a literal value or vector/series in an Expr). Most other
+expression starters are syntactic sugar derived from thereof, e.g. `pl$sum(_)` is
+actually `pl$col(_)$sum()`.
 
-Expressions can be chained with about 170 expression methods such as `$sum()` which aggregates e.g. the column with summing.
+Expressions can be chained with about 170 expression methods such as `$sum()` 
+which aggregates e.g. the column with summing.
 
 ```r
 # two examples of starting, chaining and combining expressions
 pl$DataFrame(a = 1:4)$with_columns(
-  pl$col("a")$slice(0, 2)$sum()$cast(pl$Float32)$alias("a_slice_sum_cast"), #take col mpg, then slice it, then sum, then cast
-  pl$lit(1:3)$alias("lit_sum_add_two")$sum() * 2L, #take 1:3, name it, then sum, then multiply with two
-  pl$lit(1:3)$sum()$mul(pl$col("a"))$alias("lit_sum_add_mpg") #similar to above, but with `mul()`-method instead of `*`.
+  # take col mpg, slice it, sum it, then cast it
+  pl$col("a")$slice(0, 2)$sum()$cast(pl$Float32)$alias("a_slice_sum_cast"),
+  # take 1:3, name it, then sum, then multiply with two
+  pl$lit(1:3)$alias("lit_sum_add_two")$sum() * 2L,
+  # similar to above, but with `mul()`-method instead of `*`.
+  pl$lit(1:3)$sum()$mul(pl$col("a"))$alias("lit_sum_add_mpg") 
 )
 shape: (4, 4)
 ┌─────┬──────────────────┬─────────────────┬─────────────────┐
@@ -94,11 +114,15 @@ shape: (4, 4)
 └─────┴──────────────────┴─────────────────┴─────────────────┘
 ```
 
-Moreover there are subnamespaces with special methods only applicable for a specific type `dt`(datetime), `arr`(list), `str`(strings), `struct`(structs), `cat`(categoricals) and `bin`(binary).
-As a sidenote, there is also an exotic subnamespace called `meta` which is rarely used to manipulate the Expression themselves.
+Moreover there are subnamespaces with special methods only applicable for a 
+specific type `dt`(datetime), `arr`(list), `str`(strings), `struct`(structs),
+`cat`(categoricals) and `bin`(binary). As a sidenote, there is also an exotic
+subnamespace called `meta` which is rarely used to manipulate the expressions
+themselves. Each subsection in the "Expressions" section lists all operations 
+available for a specific data type.
 
-For a concrete example for `dt`, suppose we have a column with strings that represent dates and that
-we want to extract the year from these dates:
+For a concrete example for `dt`, suppose we have a column containing dates and 
+that we want to extract the year from these dates:
 
 ```r
 # Create the DataFrame
@@ -133,8 +157,8 @@ df$with_columns(
 )
 ```
 
-Similarly, to convert text to uppercase, we use the `str` prefix before using
-`to_uppercase()`:
+Similarly, if we have text data that we want to convert text to uppercase, we 
+use the `str` prefix before using `to_uppercase()`:
 
 
 ```r
@@ -154,12 +178,3 @@ shape: (3, 1)
 │ JOHN PETER │
 └────────────┘
 ```
-
-Each subsection in the "Expressions" section lists all operations available for
-a specific data type:
-
-* Array: `arr`
-* DateTime: `dt`
-* String: `str`
-[... TODO]
-
