@@ -4,6 +4,7 @@ use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
+use crate::rerr::{Rctx, WithRctx};
 use crate::robj_to;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
@@ -285,7 +286,8 @@ impl LazyFrame {
             .how(JoinType::AsOf(AsOfOptions {
                 strategy: robj_to!(str, strategy).and_then(|s| {
                     new_asof_strategy(s)
-                        .map_err(|err| format!("param [strategy] error because {}", err))
+                        .map_err(Rctx::Plain)
+                        .bad_arg("stragegy")
                 })?,
                 left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
                 right_by: right_by

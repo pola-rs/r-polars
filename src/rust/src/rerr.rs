@@ -3,20 +3,24 @@ use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]
 pub enum Rctx {
-    #[error("The argument [{0}] casuse an error because")]
-    BadArgument(String),
+    #[error("The argument [{0}] casuse an error")]
+    BadArg(String),
+    #[error("Got value [{0}]")]
+    BadVal(String),
     #[error("Encountered the following error in Extendr:\n{0}")]
     Extendr(String),
-    #[error("Possibly {0}")]
+    #[error("Possibly because {0}")]
     Hint(String),
+    #[error("Expected a value of type [{0}]")]
+    Mistyped(String),
+    #[error("Expected a value that {0}")]
+    Misvalued(String),
     #[error("{0}")]
     Plain(String),
     #[error("Encountered the following error in Polars:\n{0}")]
     Polars(String),
     #[error("When {0}")]
     When(String),
-    #[error("Expected a value of type [{0}], but got [{1}] instead")]
-    TypeMismatch(String, String),
 }
 
 #[derive(Clone, Debug)]
@@ -25,9 +29,13 @@ pub type RResult<T> = core::result::Result<T, Rerr>;
 
 pub trait WithRctx<T> {
     fn ctx(self, rctx: Rctx) -> RResult<T>;
-    fn on_arg<S: Into<String>>(self, arg: S) -> RResult<T>;
-    fn type_mismatch<R: Into<String>, S: Into<String>>(self, ty: R, val: S) -> RResult<T>;
+    fn bad_arg<S: Into<String>>(self, arg: S) -> RResult<T>;
+    fn bad_robj(self, robj: &Robj) -> RResult<T>;
+    fn bad_val<S: Into<String>>(self, val: S) -> RResult<T>;
     fn hint<S: Into<String>>(self, cause: S) -> RResult<T>;
+    fn mistyped<S: Into<String>>(self, ty: S) -> RResult<T>;
+    fn misvalued<S: Into<String>>(self, scope: S) -> RResult<T>;
+    fn plain<S: Into<String>>(self, msg: S) -> RResult<T>;
     fn when<S: Into<String>>(self, env: S) -> RResult<T>;
 }
 
@@ -40,16 +48,32 @@ impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
         })
     }
 
-    fn on_arg<S: Into<String>>(self, arg: S) -> RResult<T> {
-        self.ctx(Rctx::BadArgument(arg.into()))
+    fn bad_arg<S: Into<String>>(self, arg: S) -> RResult<T> {
+        self.ctx(Rctx::BadArg(arg.into()))
     }
 
-    fn type_mismatch<R: Into<String>, S: Into<String>>(self, ty: R, val: S) -> RResult<T> {
-        self.ctx(Rctx::TypeMismatch(ty.into(), val.into()))
+    fn bad_robj(self, robj: &Robj) -> RResult<T> {
+        self.bad_val(rdbg(robj))
+    }
+
+    fn bad_val<S: Into<String>>(self, val: S) -> RResult<T> {
+        self.ctx(Rctx::BadVal(val.into()))
     }
 
     fn hint<S: Into<String>>(self, cause: S) -> RResult<T> {
         self.ctx(Rctx::Hint(cause.into()))
+    }
+
+    fn mistyped<S: Into<String>>(self, ty: S) -> RResult<T> {
+        self.ctx(Rctx::Mistyped(ty.into()))
+    }
+
+    fn misvalued<S: Into<String>>(self, scope: S) -> RResult<T> {
+        self.ctx(Rctx::Misvalued(scope.into()))
+    }
+
+    fn plain<S: Into<String>>(self, msg: S) -> RResult<T> {
+        self.ctx(Rctx::Plain(msg.into()))
     }
 
     fn when<S: Into<String>>(self, env: S) -> RResult<T> {
@@ -64,41 +88,51 @@ impl Rerr {
     }
 
     pub fn info(&self) -> String {
-        self.0
-            .iter()
-            .rev()
-            .map(|rerr| format!("{}", rerr))
-            .fold(String::from("Error"), |msg, rerr| {
-                format!("{}: {}", msg, rerr)
-            })
+        format!("{}", self)
     }
 
     pub fn contexts(&self) -> Vec<String> {
-        self.0
-            .iter()
-            .rev()
-            .map(|rerr| format!("{:?}", rerr))
-            .collect()
+        self.0.iter().rev().map(|rerr| rdbg(rerr)).collect()
     }
 }
 
-// Implementation for transition
-impl From<String> for Rerr {
-    fn from(err_msg: String) -> Self {
-        Rerr(vec![Rctx::Plain(err_msg)])
+impl std::fmt::Display for Rerr {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.0
+                .iter()
+                .rev()
+                .map(|rerr| format!("{}", rerr))
+                .reduce(|msg, rerr| { format!("{}: {}", msg, rerr) })
+                .unwrap_or(String::new())
+        )
+    }
+}
+
+impl From<Rerr> for String {
+    fn from(rerr: Rerr) -> Self {
+        rerr.info()
+    }
+}
+
+impl<E: std::error::Error> From<E> for Rerr {
+    default fn from(err: E) -> Self {
+        Rerr(vec![Rctx::Plain(rdbg(err))])
     }
 }
 
 impl From<extendr_api::Error> for Rerr {
     fn from(extendr_err: extendr_api::Error) -> Self {
-        Rerr(vec![Rctx::Extendr(format!("{:?}", extendr_err))])
+        Rerr(vec![Rctx::Extendr(rdbg(extendr_err))])
     }
 }
 
 impl From<polars::error::PolarsError> for Rerr {
     fn from(polars_err: polars::error::PolarsError) -> Self {
         let mut rerr = Rerr::new();
-        rerr.0.push(Rctx::Polars(format!("{:?}", polars_err)));
+        rerr.0.push(Rctx::Polars(rdbg(&polars_err)));
         match polars_err {
             polars::prelude::PolarsError::InvalidOperation(x) => {
                 rerr.0.push(Rctx::Hint(format!(
@@ -112,11 +146,20 @@ impl From<polars::error::PolarsError> for Rerr {
     }
 }
 
+pub fn rerr<T>() -> RResult<T> {
+    Err(Rerr::new())
+}
+
+pub fn rdbg<T: std::fmt::Debug>(o: T) -> String {
+    format!("{:?}", o)
+}
+
 #[extendr]
 pub fn test_rerr() -> RResult<String> {
-    Err(Rerr::new())
-        .type_mismatch("usize", "-1")
-        .on_arg("<an imaginary argument>")
+    rerr()
+        .bad_val("-1")
+        .mistyped("usize")
+        .bad_arg("path")
         .when("calling test function")
 }
 

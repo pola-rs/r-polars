@@ -1,5 +1,6 @@
 use crate::lazy::dsl::Expr;
 use crate::rdataframe::DataFrame;
+use crate::rerr::{rdbg, RResult};
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::lazy::dsl::ProtoExprArray;
@@ -250,17 +251,17 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
 // }
 
 #[extendr]
-fn test_robj_to_usize(robj: Robj) -> Result<String, String> {
-    robj_to!(usize, robj).map(|x| x.to_string())
+fn test_robj_to_usize(robj: Robj) -> RResult<String> {
+    robj_to!(usize, robj).map(rdbg)
 }
 #[extendr]
-fn test_robj_to_i64(robj: Robj) -> Result<String, String> {
-    robj_to!(i64, robj).map(|x| x.to_string())
+fn test_robj_to_i64(robj: Robj) -> RResult<String> {
+    robj_to!(i64, robj).map(rdbg)
 }
 
 #[extendr]
-fn test_robj_to_u32(robj: Robj) -> Result<String, String> {
-    robj_to!(u32, robj).map(|x| x.to_string())
+fn test_robj_to_u32(robj: Robj) -> RResult<String> {
+    robj_to!(u32, robj).map(rdbg)
 }
 
 extendr_module! {
