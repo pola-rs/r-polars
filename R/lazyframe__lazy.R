@@ -138,7 +138,7 @@ LazyFrame
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
-pl$LazyFrame <- function(...) {
+pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
 

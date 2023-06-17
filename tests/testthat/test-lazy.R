@@ -22,8 +22,8 @@ test_that("lazy prints", {
 })
 
 test_that("create LazyFrame", {
-  old <- pl$DataFrame(mtcars)$lazy()
-  new <- pl$LazyFrame(mtcars)
+  old = pl$DataFrame(mtcars)$lazy()
+  new = pl$LazyFrame(mtcars)
   expect_equal(
     old$collect()$to_data_frame(),
     new$collect()$to_data_frame()
