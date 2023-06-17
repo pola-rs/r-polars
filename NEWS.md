@@ -3,6 +3,8 @@
 
 - New function `rename()` for `LazyFrame` and `DataFrame` (#239)
 - `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
+- New `pl$LazyFrame()` to quickly create a `LazyFrame`, mostly in examples or 
+for demonstration purposes (#240).
 
 # polars 0.6.1
 ## What's changed

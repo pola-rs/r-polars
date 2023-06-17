@@ -109,6 +109,39 @@ LazyFrame
   paste0(ls(LazyFrame, pattern = pattern), "()")
 }
 
+#' Create new LazyFrame
+#'
+#' This is simply a convenience function to create `LazyFrame`s in a quick way.
+#' It is a wrapper around `pl$DataFrame()$lazy()`. Note that this should only
+#' be used for making examples and quick demonstrations.
+#'
+#' @name pl_LazyFrame
+#'
+#' @param ... Anything that is accepted by `pl$DataFrame()`
+#'
+#' @return LazyFrame
+#' @keywords LazyFrame_new
+#'
+#' @examples
+#' pl$LazyFrame(
+#'   a = list(c(1, 2, 3, 4, 5)),
+#'   b = 1:5,
+#'   c = letters[1:5],
+#'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
+#' ) # directly from vectors
+#'
+#' # from a list of vectors or data.frame
+#' pl$LazyFrame(list(
+#'   a = c(1, 2, 3, 4, 5),
+#'   b = 1:5,
+#'   c = letters[1:5],
+#'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
+#' ))
+#'
+pl$LazyFrame = function(...) {
+  pl$DataFrame(...)$lazy()
+}
+
 #' print LazyFrame s3 method
 #' @keywords LazyFrame
 #' @param x DataFrame
