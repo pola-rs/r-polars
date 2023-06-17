@@ -119,7 +119,7 @@ specific type `dt`(datetime), `arr`(list), `str`(strings), `struct`(structs),
 `cat`(categoricals) and `bin`(binary). As a sidenote, there is also an exotic
 subnamespace called `meta` which is rarely used to manipulate the expressions
 themselves. Each subsection in the "Expressions" section lists all operations 
-available for a specific data type.
+available for a specific subnamespace.
 
 For a concrete example for `dt`, suppose we have a column containing dates and 
 that we want to extract the year from these dates:
