@@ -663,6 +663,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, true)
     };
 
+    (PLExpr, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, true).map(|ok| ok.0)
+    };
+
     (ExprCol, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, false)
     };
@@ -703,6 +707,16 @@ macro_rules! robj_to_inner {
 //convert any Robj to appropriate rust type with informative error Strings
 #[macro_export]
 macro_rules! robj_to {
+    (Option, $type1:ident, $type2:ident, $a:ident) => {{
+        $crate::utils::unpack_r_result_list($a).and_then(|$a| {
+            if ($a.is_null()) {
+                Ok(None)
+            } else {
+                Some($crate::robj_to!($type1, $type2, $a)).transpose()
+            }
+        })
+    }};
+
     (Option, $type:ident, $a:ident) => {{
         use $crate::rerr::WithRctx;
         $crate::utils::unpack_r_result_list($a).and_then(|$a| {
@@ -720,12 +734,13 @@ macro_rules! robj_to {
         //unpack raise any R result error
         $crate::utils::unpack_r_result_list($a).and_then(|x: Robj| {
             //coerce R vectors into list
-            let x = if !x.is_list() && x.len() > 1 {
-                extendr_api::call!("as.list", x).mistyped(std::any::type_name::<List>())?
+            let x = if !x.is_list() && x.len() != 1 {
+                extendr_api::call!("as.list", x)
+                    .mistyped(std::any::type_name::<List>())
+                    .bad_arg(stringify!($a))?
             } else {
                 x
             };
-
             if x.is_list() {
                 // convert each element in list to $type
                 let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {

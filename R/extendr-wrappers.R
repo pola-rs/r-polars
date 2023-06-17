@@ -131,6 +131,10 @@ DataFrame$estimated_size <- function() .Call(wrap__DataFrame__estimated_size, se
 
 DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
 
+DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__DataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
+
+DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__DataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -891,7 +895,7 @@ LazyFrame$filter <- function(expr) .Call(wrap__LazyFrame__filter, self, expr)
 
 LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self, subset)
 
-LazyFrame$unique <- function(subset, keep) .Call(wrap__LazyFrame__unique, self, subset, keep)
+LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
@@ -904,6 +908,10 @@ LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, all
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 
 LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__LazyFrame__sort_by_exprs, self, by, descending, nulls_last)
+
+LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__LazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
+
+LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self, existing, new)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
