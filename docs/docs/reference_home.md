@@ -149,7 +149,7 @@ shape: (4, 1)
 ```
 
 The function `year()` only makes sense for date-time data, so the type of input
-that can receive this function is `dt` (for **d**ate-**t**ime):
+that can receive this function is `dt` (for **d**ate-**t**ime): 
 
 ```r
 df$with_columns(
