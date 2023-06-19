@@ -74,3 +74,14 @@ make_print_cases = function() {
     "POLARS_FMT_MAX_ROWS", "2",
   )
 }
+
+# Expect a Rerr with given contexts
+expect_rerr = function(expr, ctxs) {
+  result = result_rerr(expr)
+  expect_true(is_err(result))
+  expect_identical(class(result$err), "Rerr")
+  expect_identical(
+    names(result$err$contexts()),
+    ctxs
+  )
+}

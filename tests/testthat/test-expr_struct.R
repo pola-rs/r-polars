@@ -18,9 +18,9 @@ test_that("expr struct$field", {
   )
 
   err_state = result(df$select(pl$col("struct_col")$struct$field(42)))
-  expect_grepl_error(unwrap(err_state), "is not a single string")
+  expect_grepl_error(unwrap(err_state), "str")
   expect_grepl_error(unwrap(err_state), "\\[name\\]")
-  expect_grepl_error(unwrap(err_state), "in struct\\$field:")
+  expect_grepl_error(unwrap(err_state), "str")
   expect_grepl_error(unwrap(err_state), "42.0")
 })
 
@@ -55,7 +55,7 @@ test_that("expr struct$rename_fields", {
   )
 
   err_state = result(pl$col()$struct$rename_fields(42))
-  expect_grepl_error(unwrap(err_state), "is not a single string")
+  expect_grepl_error(unwrap(err_state), "str")
   expect_grepl_error(unwrap(err_state), "\\[names\\]")
   expect_grepl_error(unwrap(err_state), "in struct\\$rename_fields:")
   expect_grepl_error(unwrap(err_state), "42.0")

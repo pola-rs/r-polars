@@ -180,3 +180,34 @@ result = function(x, msg = "an error because:\n") {
     }
   )
 }
+
+# Alternative unwrap that keeps the Rerr
+unwrap_rerr = function(result) {
+  if (!is_result(result)) {
+    stopf("Internal error: cannot unwrap non result")
+  }
+  if (polars:::is_ok(result)) return(result$ok)
+  err = result$err
+  cond = errorCondition(
+    capture.output(print(err))
+  )
+  if(inherits(err, "Rerr")) {
+    cond$Rerr = err
+    class(cond) = c("Rerr_error", "error", "condition")
+  }
+  
+  stop(cond)
+}
+
+# Alternative result that captures the Rerr from the alternative unwrap
+result_rerr = function(expr) {
+  tryCatch(
+    polars:::Ok(expr),
+    Rerr_error = function(err) {
+      polars:::Err(err$Rerr)
+    },
+    error = function(err) {
+      polars:::Err(err)
+    }
+  )
+}

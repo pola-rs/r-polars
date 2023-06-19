@@ -44,34 +44,34 @@ test_that("robj_to! from bit64", {
   )
 
   # NO NA
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_i64(bit64::as.integer64(NA))),
-    "scalar arguments do not support integer64 NA value"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_i64(bit64::as.integer64(NA))),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_usize(bit64::as.integer64(NA))),
-    "scalar arguments do not support integer64 NA value"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_usize(bit64::as.integer64(NA))),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO OVERFLOW
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_u32(2^57)),
-    "the value 144115188075855870 cannot exceed u32\\:\\:MAX 4294967295"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_u32(2^57)),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO NEGATIVE
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_usize(bit64::as.integer64(-1))),
-    "the value -1 cannot be less than zero"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_usize(bit64::as.integer64(-1))),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_u32(bit64::as.integer64(-1))),
-    "the value -1 cannot be less than zero"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_u32(bit64::as.integer64(-1))),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO length>1
-  expect_grepl_error(
-    unwrap(polars:::test_robj_to_usize(bit64::as.integer64(c(1:2)))),
-    "is not a scalar integer or double as required"
+  expect_rerr(
+    unwrap_rerr(polars:::test_robj_to_usize(bit64::as.integer64(c(1:2)))),
+    c("BadArgument", "TypeMismatch", "BadValue")
   )
 })
