@@ -63,7 +63,25 @@ Rerr$info <- function() .Call(wrap__Rerr__info, self)
 
 Rerr$contexts <- function() .Call(wrap__Rerr__contexts, self)
 
-Rerr$bad_arg <- function(arg) .Call(wrap__Rerr__bad_arg, self, arg)
+Rerr$bad_arg <- function(x) .Call(wrap__Rerr__bad_arg, self, x)
+
+Rerr$bad_robj <- function(x) .Call(wrap__Rerr__bad_robj, self, x)
+
+Rerr$bad_val <- function(x) .Call(wrap__Rerr__bad_val, self, x)
+
+Rerr$hint <- function(x) .Call(wrap__Rerr__hint, self, x)
+
+Rerr$mistyped <- function(x) .Call(wrap__Rerr__mistyped, self, x)
+
+Rerr$misvalued <- function(x) .Call(wrap__Rerr__misvalued, self, x)
+
+Rerr$plain <- function(x) .Call(wrap__Rerr__plain, self, x)
+
+Rerr$when <- function(x) .Call(wrap__Rerr__when, self, x)
+
+Rerr$when_last <- function(x) .Call(wrap__Rerr__when_last, self, x)
+
+Rerr$wherein <- function(x) .Call(wrap__Rerr__wherein, self, x)
 
 #' @export
 `$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }

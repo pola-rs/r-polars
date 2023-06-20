@@ -2,7 +2,7 @@
 % Please edit documentation in R/rust_result.R
 \name{pstop}
 \alias{pstop}
-\title{Internal preferred function to throw errors}
+\title{pstop}
 \usage{
 pstop(err, call = sys.call(1L))
 }

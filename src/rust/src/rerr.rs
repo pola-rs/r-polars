@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use extendr_api::{
     extendr, extendr_module, symbol::class_symbol, Attributes, Pairlist, Rinternals, Robj,
 };
@@ -23,10 +25,12 @@ pub enum Rctx {
     Polars(String),
     #[error("When {0}")]
     When(String),
+    #[error("In {0}")]
+    Wherein(String),
 }
 
 #[derive(Clone, Debug)]
-pub struct Rerr(Vec<Rctx>);
+pub struct Rerr(VecDeque<Rctx>);
 pub type RResult<T> = core::result::Result<T, Rerr>;
 
 pub trait WithRctx<T> {
@@ -39,13 +43,14 @@ pub trait WithRctx<T> {
     fn misvalued<S: Into<String>>(self, scope: S) -> RResult<T>;
     fn plain<S: Into<String>>(self, msg: S) -> RResult<T>;
     fn when<S: Into<String>>(self, env: S) -> RResult<T>;
+    fn wherein<S: Into<String>>(self, env: S) -> RResult<T>;
 }
 
 impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
     fn ctx(self, rctx: Rctx) -> RResult<T> {
         self.map_err(|e| {
             let mut rerr = e.into();
-            rerr.0.push(rctx);
+            rerr.0.push_back(rctx);
             rerr
         })
     }
@@ -81,12 +86,16 @@ impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
     fn when<S: Into<String>>(self, env: S) -> RResult<T> {
         self.ctx(Rctx::When(env.into()))
     }
+
+    fn wherein<S: Into<String>>(self, env: S) -> RResult<T> {
+        self.ctx(Rctx::Wherein(env.into()))
+    }
 }
 
 #[extendr]
 impl Rerr {
     pub fn new() -> Self {
-        Rerr(Vec::new())
+        Rerr(VecDeque::new())
     }
 
     pub fn info(&self) -> String {
@@ -104,12 +113,51 @@ impl Rerr {
             Rctx::Plain(msg) => ("PlainErrorMessage", msg),
             Rctx::Polars(err) => ("PolarsError", err),
             Rctx::When(target) => ("When", target),
+            Rctx::Wherein(target) => ("Wherein", target),
         }))
     }
 
-    pub fn bad_arg(&self, arg: String) -> Self {
+    pub fn bad_arg(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::BadArg(x))
+    }
+    pub fn bad_robj(&self, x: Robj) -> Self {
+        self.push_back_rctx(Rctx::BadArg(rdbg(x)))
+    }
+    pub fn bad_val(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::BadVal(x))
+    }
+    pub fn hint(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::Hint(x))
+    }
+    pub fn mistyped(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::Mistyped(x))
+    }
+    pub fn misvalued(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::Misvalued(x))
+    }
+    pub fn plain(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::Plain(x))
+    }
+    pub fn when(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::When(x))
+    }
+    pub fn when_last(&self, x: String) -> Self {
+        self.push_front_rctx(Rctx::When(x))
+    }
+    pub fn wherein(&self, x: String) -> Self {
+        self.push_back_rctx(Rctx::Wherein(x))
+    }
+}
+//methods not to export with extendr
+impl Rerr {
+    pub fn push_front_rctx(&self, rctx: Rctx) -> Self {
         let mut rerr = self.clone();
-        rerr.0.push(Rctx::BadArg(arg));
+        rerr.0.push_front(rctx);
+        rerr
+    }
+    pub fn push_back_rctx(&self, rctx: Rctx) -> Self {
+        let mut rerr = self.clone();
+        rerr.0.push_back(rctx);
         rerr
     }
 }
@@ -137,23 +185,23 @@ impl From<Rerr> for String {
 
 impl<E: std::error::Error> From<E> for Rerr {
     default fn from(err: E) -> Self {
-        Rerr(vec![Rctx::Plain(rdbg(err))])
+        Rerr(VecDeque::from([Rctx::Plain(rdbg(err))]))
     }
 }
 
 impl From<extendr_api::Error> for Rerr {
     fn from(extendr_err: extendr_api::Error) -> Self {
-        Rerr(vec![Rctx::Extendr(rdbg(extendr_err))])
+        Rerr(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
     }
 }
 
 impl From<polars::error::PolarsError> for Rerr {
     fn from(polars_err: polars::error::PolarsError) -> Self {
         let mut rerr = Rerr::new();
-        rerr.0.push(Rctx::Polars(rdbg(&polars_err)));
+        rerr.0.push_back(Rctx::Polars(rdbg(&polars_err)));
         match polars_err {
             polars::prelude::PolarsError::InvalidOperation(x) => {
-                rerr.0.push(Rctx::Hint(format!(
+                rerr.0.push_back(Rctx::Hint(format!(
                     "something (likely a column) with name {:?} is not found",
                     x
                 )));
@@ -174,11 +222,7 @@ pub fn rdbg<T: std::fmt::Debug>(o: T) -> String {
 
 #[extendr]
 pub fn test_rerr() -> RResult<String> {
-    rerr()
-        .bad_val("-1")
-        .mistyped("usize")
-        .bad_arg("path")
-        .when("calling test function")
+    rerr().bad_val("-1").mistyped("usize").bad_arg("path")
 }
 
 extendr_module! {

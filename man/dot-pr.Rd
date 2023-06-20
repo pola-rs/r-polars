@@ -5,7 +5,7 @@
 \alias{.pr}
 \title{polars-API: private calls to rust-polars}
 \format{
-An object of class \code{environment} of length 16.
+An object of class \code{environment} of length 17.
 }
 \usage{
 .pr
