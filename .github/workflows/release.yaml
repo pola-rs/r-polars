@@ -5,6 +5,8 @@ on:
     branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 name: Release
