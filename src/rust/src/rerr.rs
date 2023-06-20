@@ -106,6 +106,12 @@ impl Rerr {
             Rctx::When(target) => ("When", target),
         }))
     }
+
+    pub fn bad_arg(&self, arg: String) -> Self {
+        let mut rerr = self.clone();
+        rerr.0.push(Rctx::BadArg(arg));
+        rerr
+    }
 }
 
 impl std::fmt::Display for Rerr {
@@ -118,7 +124,7 @@ impl std::fmt::Display for Rerr {
                 .rev()
                 .map(|rerr| format!("{}", rerr))
                 .reduce(|msg, rerr| { format!("{}: {}", msg, rerr) })
-                .unwrap_or(String::new())
+                .unwrap_or(String::from("Missing contexts from the Rust side"))
         )
     }
 }

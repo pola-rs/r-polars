@@ -63,6 +63,8 @@ Rerr$info <- function() .Call(wrap__Rerr__info, self)
 
 Rerr$contexts <- function() .Call(wrap__Rerr__contexts, self)
 
+Rerr$bad_arg <- function(arg) .Call(wrap__Rerr__bad_arg, self, arg)
+
 #' @export
 `$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }
 
