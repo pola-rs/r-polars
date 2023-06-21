@@ -18,8 +18,14 @@ Result
 Capture any R error and return a rust-like Result
 }
 \examples{
- #capture regular R errors or Rerr
 
+ #user internal functions without using :::
+ result = environment(polars::pl$all)$result
+ unwrap_err = environment(polars::pl$all)$unwrap_err
+ unwrap = environment(polars::pl$all)$unwrap
+ Err = environment(polars::pl$all)$Err
+
+ #capture regular R errors or Rerr
  throw_simpleError  = \() stop("Imma simple error")
  result(throw_simpleError())
 
