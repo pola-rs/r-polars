@@ -120,11 +120,11 @@ impl Rerr {
     pub fn bad_arg(&self, x: String) -> Self {
         self.push_back_rctx(Rctx::BadArg(x))
     }
-    pub fn bad_robj(&self, x: Robj) -> Self {
-        self.push_back_rctx(Rctx::BadArg(rdbg(x)))
-    }
     pub fn bad_val(&self, x: String) -> Self {
         self.push_back_rctx(Rctx::BadVal(x))
+    }
+    pub fn bad_robj(&self, x: Robj) -> Self {
+        self.bad_val(robj_dbg(&x))
     }
     pub fn hint(&self, x: String) -> Self {
         self.push_back_rctx(Rctx::Hint(x))

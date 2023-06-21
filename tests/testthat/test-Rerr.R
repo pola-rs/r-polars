@@ -11,7 +11,7 @@ test_that("can add any context to err", {
     names(rerr$contexts()),
     c(
       "When", "PlainErrorMessage", "ValueOutOfScope", "TypeMismatch",
-      "Hint", "BadValue", "BadArgument", "BadArgument"
+      "Hint", "BadValue", "BadValue", "BadArgument"
     )
   )
 
