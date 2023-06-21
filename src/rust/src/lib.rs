@@ -19,8 +19,8 @@ pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
 pub mod rdataframe;
 pub mod rdatatype;
-pub mod rerr;
 pub mod rlib;
+pub mod rpolarserr;
 pub mod series;
 pub mod utils;
 
@@ -40,7 +40,7 @@ static CONFIG: ThreadComStorage = Storage::new();
 // Macro to generate exports
 extendr_module! {
     mod polars;
-    use rerr;
+    use rpolarserr;
     use rdataframe;
     use lazy;
     use series;

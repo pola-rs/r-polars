@@ -1,6 +1,6 @@
 use crate::lazy::dataframe::LazyFrame as RLazyFrame;
-use crate::rerr::RResult;
 use crate::robj_to;
+use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
 use polars::io::RowCount;
 use polars::prelude::{LazyFrame, ScanArgsIpc};

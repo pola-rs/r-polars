@@ -3,7 +3,7 @@ pub mod extendr_concurrent;
 pub mod wrappers;
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
-use crate::rerr::{rdbg, rerr, RResult, RPolarsErr, WithRctx};
+use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 
@@ -603,7 +603,10 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
 pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl::Expr>> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
-    let l = robj.as_list().ok_or(RPolarsErr::new()).mistyped(tn::<List>())?;
+    let l = robj
+        .as_list()
+        .ok_or(RPolarsErr::new())
+        .mistyped(tn::<List>())?;
     let iter = l
         .iter()
         .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));
@@ -718,7 +721,7 @@ macro_rules! robj_to {
     }};
 
     (Option, $type:ident, $a:ident) => {{
-        use $crate::rerr::WithRctx;
+        use $crate::rpolarserr::WithRctx;
         $crate::utils::unpack_r_result_list($a).and_then(|$a| {
             if ($a.is_null()) {
                 Ok(None)
@@ -730,7 +733,7 @@ macro_rules! robj_to {
 
     //iterate list and call this macro again on inner objects
     (Vec, $type:ident, $a:ident) => {{
-        use $crate::rerr::WithRctx;
+        use $crate::rpolarserr::WithRctx;
         //unpack raise any R result error
         $crate::utils::unpack_r_result_list($a).and_then(|x: Robj| {
             //coerce R vectors into list
@@ -756,19 +759,19 @@ macro_rules! robj_to {
     }};
 
     (Map, $type:ident, $a:ident, $f:expr) => {{
-        use $crate::rerr::WithRctx;
+        use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .and_then($f)
             .bad_arg(stringify!($a))
     }};
 
     ($type:ident, $a:ident) => {{
-        use $crate::rerr::WithRctx;
+        use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a).bad_arg(stringify!($a))
     }};
 
     ($type:ident, $a:ident, $b:expr) => {{
-        use $crate::rerr::WithRctx;
+        use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .hint($b)
             .bad_arg(stringify!($a))

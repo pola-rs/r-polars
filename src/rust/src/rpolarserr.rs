@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
 use extendr_api::{
-    extendr, extendr_module, symbol::class_symbol, Attributes, Pairlist, Rinternals, Robj,
-    Operators, eval_string, call, Types,
+    call, eval_string, extendr, extendr_module, symbol::class_symbol, Attributes, Operators,
+    Pairlist, Rinternals, Robj, Types,
 };
 use thiserror::Error;
 
@@ -67,8 +67,6 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
     fn bad_robj(self, robj: &Robj) -> RResult<T> {
         self.bad_val(robj_dbg(robj))
     }
-    
-    
 
     fn hint<S: Into<String>>(self, cause: S) -> RResult<T> {
         self.ctx(Rctx::Hint(cause.into()))
@@ -230,19 +228,19 @@ pub fn robj_dbg(robj: &Robj) -> String {
     format!(
         "Rvalue: {}{}, Rsexp: {:?}, Rclass: {:?}",
         &s[0..(s.len().min(128))],
-        if s.len()>128 {"...]  "} else {""},
+        if s.len() > 128 { "...]  " } else { "" },
         robj.rtype(),
         call!("base::class", robj).expect("internal error: could not use base::class(robj)")
     )
 }
 
 #[extendr]
-pub fn test_rerr() -> RResult<String> {
+pub fn test_rpolarserr() -> RResult<String> {
     rerr().bad_val("-1").mistyped("usize").bad_arg("path")
 }
 
 extendr_module! {
-    mod rerr;
+    mod rpolarserr;
     impl RPolarsErr;
-    fn test_rerr;
+    fn test_rpolarserr;
 }

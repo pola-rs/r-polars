@@ -44,33 +44,33 @@ test_that("robj_to! from bit64", {
   )
 
    # NO NA
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call= NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call= NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO OVERFLOW
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_u32(2^57), call= NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO NEGATIVE
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_usize(bit64::as.integer64(-1)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_u32(bit64::as.integer64(-1)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO length>1
-  expect_rerr(
+  expect_rpolarserr(
     unwrap(test_robj_to_usize(bit64::as.integer64(c(1:2))), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )

@@ -11,7 +11,7 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-test_rerr <- function() .Call(wrap__test_rerr)
+test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 

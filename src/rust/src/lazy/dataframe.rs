@@ -5,8 +5,8 @@ use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
-use crate::rerr::{Rctx, WithRctx};
 use crate::robj_to;
+use crate::rpolarserr::{Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
@@ -78,8 +78,8 @@ impl LazyFrame {
         })
     }
 
-    pub fn collect_handled(&self) -> crate::rerr::RResult<crate::rdataframe::DataFrame> {
-        use crate::rerr::WithRctx;
+    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
+        use crate::rpolarserr::WithRctx;
         handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
     }
 

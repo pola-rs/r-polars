@@ -1,6 +1,6 @@
 use crate::lazy::dsl::Expr;
 use crate::rdataframe::DataFrame;
-use crate::rerr::{rdbg, RResult};
+use crate::rpolarserr::{rdbg, RResult};
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::lazy::dsl::ProtoExprArray;

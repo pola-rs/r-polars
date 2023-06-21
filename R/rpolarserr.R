@@ -30,7 +30,7 @@ where_in.RPolarsErr = function(err, context) {
 to_condition.RPolarsErr = function(err) {
   errorCondition(
     err$info(),
-    class = c("Rerr_error"),
+    class = c("RPolarsErr_error"),
     value = err,
     call = NULL
   )

@@ -76,7 +76,7 @@ make_print_cases = function() {
 }
 
 # Expect a RPolarsErr with given contexts
-expect_rerr = function(expr, ctxs) {
+expect_rpolarserr = function(expr, ctxs) {
   res = result(expr)
   expect_identical(class(res$err), "RPolarsErr")
   expect_identical(names(res$err$contexts()), ctxs)

@@ -5,6 +5,7 @@ use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
+use crate::rpolarserr;
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -2195,8 +2196,7 @@ impl Expr {
     //the only cat ns function from dsl.rs
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
-            use crate::rerr::Rctx;
-            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
+            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(rpolarserr::Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }

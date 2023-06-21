@@ -71,12 +71,12 @@ unwrap_err = function(result) {
 #'  throw_simpleError  = \() stop("Imma simple error")
 #'  result(throw_simpleError())
 #'
-#'  throw_Rerr = \() unwrap(
+#'  throw_RPolarsErr = \() unwrap(
 #'   Err(.pr$RPolarsErr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
 #'  )
-#'  res_Rerr = result(throw_Rerr())
-#'  str(res_Rerr)
-#'  RPolarsErr = unwrap_err(res_Rerr)
+#'  res_RPolarsErr = result(throw_RPolarsErr())
+#'  str(res_RPolarsErr)
+#'  RPolarsErr = unwrap_err(res_RPolarsErr)
 #'  RPolarsErr$contexts()
 result = function(expr, msg = NULL) {
   tryCatch(

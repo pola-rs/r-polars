@@ -4,11 +4,11 @@ test_that("can add any context to err", {
     "bad_arg", "bad_robj", "bad_val", "hint",
     "mistyped", "misvalued", "plain", "when"
   )
-  rerr = .pr$RPolarsErr$new()
-  for (i in err_types) rerr = rerr[[i]](i)
+  rpolarserr = .pr$RPolarsErr$new()
+  for (i in err_types) rpolarserr = rpolarserr[[i]](i)
 
   expect_identical(
-    names(rerr$contexts()),
+    names(rpolarserr$contexts()),
     c(
       "When", "PlainErrorMessage", "ValueOutOfScope", "TypeMismatch",
       "Hint", "BadValue", "BadValue", "BadArgument"
