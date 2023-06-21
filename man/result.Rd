@@ -19,22 +19,22 @@ Capture any R error and return a rust-like Result
 }
 \examples{
 
- #user internal functions without using :::
- result = environment(polars::pl$all)$result
- unwrap_err = environment(polars::pl$all)$unwrap_err
- unwrap = environment(polars::pl$all)$unwrap
- Err = environment(polars::pl$all)$Err
+# user internal functions without using :::
+result = environment(polars::pl$all)$result
+unwrap_err = environment(polars::pl$all)$unwrap_err
+unwrap = environment(polars::pl$all)$unwrap
+Err = environment(polars::pl$all)$Err
 
- #capture regular R errors or RPolarsErr
- throw_simpleError  = \() stop("Imma simple error")
- result(throw_simpleError())
+# capture regular R errors or RPolarsErr
+throw_simpleError = \() stop("Imma simple error")
+result(throw_simpleError())
 
- throw_RPolarsErr = \() unwrap(
+throw_RPolarsErr = \() unwrap(
   Err(.pr$RPolarsErr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
- )
- res_RPolarsErr = result(throw_RPolarsErr())
- str(res_RPolarsErr)
- RPolarsErr = unwrap_err(res_RPolarsErr)
- RPolarsErr$contexts()
+)
+res_RPolarsErr = result(throw_RPolarsErr())
+str(res_RPolarsErr)
+RPolarsErr = unwrap_err(res_RPolarsErr)
+RPolarsErr$contexts()
 }
 \keyword{internal}

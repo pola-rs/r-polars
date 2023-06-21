@@ -1,4 +1,4 @@
-#THIS FILE IMPLEMENTS ERROR CONVERSION, FOR R TO Result-list & FOR Result-list TO R
+# THIS FILE IMPLEMENTS ERROR CONVERSION, FOR R TO Result-list & FOR Result-list TO R
 
 # TODO unwrap should be eventually renamed to unwrap_with_context (or similar)
 # a simpler unwrap without where_in and when_calling should be defined in rust_result.R
@@ -13,7 +13,7 @@
 #' @keywords internal
 #' @examples
 #'
-#' #get unwrap without using :::
+#' # get unwrap without using :::
 #' unwrap = environment(polars::pl$all)$unwrap
 #'
 #' structure(list(ok = "foo", err = NULL), class = "extendr_result")
@@ -28,7 +28,7 @@
 #'   error = function(err) as.character(err)
 #' )
 unwrap = function(result, context = NULL, call = sys.call(1L)) {
-  if(is_ok(result)) {
+  if (is_ok(result)) {
     result$ok
   } else {
     result$err |>
@@ -46,7 +46,7 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
 #' @param result a Result, see rust_result.R#'
 #' @return some error type
 unwrap_err = function(result) {
-  if(is_ok(result)) {
+  if (is_ok(result)) {
     stop("internal error: Cannot unwrap_err an Ok-value")
   } else {
     result$err
@@ -61,26 +61,28 @@ unwrap_err = function(result) {
 #' @return Result
 #' @examples
 #'
-#'  #user internal functions without using :::
-#'  result = environment(polars::pl$all)$result
-#'  unwrap_err = environment(polars::pl$all)$unwrap_err
-#'  unwrap = environment(polars::pl$all)$unwrap
-#'  Err = environment(polars::pl$all)$Err
+#' # user internal functions without using :::
+#' result = environment(polars::pl$all)$result
+#' unwrap_err = environment(polars::pl$all)$unwrap_err
+#' unwrap = environment(polars::pl$all)$unwrap
+#' Err = environment(polars::pl$all)$Err
 #'
-#'  #capture regular R errors or RPolarsErr
-#'  throw_simpleError  = \() stop("Imma simple error")
-#'  result(throw_simpleError())
+#' # capture regular R errors or RPolarsErr
+#' throw_simpleError = \() stop("Imma simple error")
+#' result(throw_simpleError())
 #'
-#'  throw_RPolarsErr = \() unwrap(
+#' throw_RPolarsErr = \() unwrap(
 #'   Err(.pr$RPolarsErr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
-#'  )
-#'  res_RPolarsErr = result(throw_RPolarsErr())
-#'  str(res_RPolarsErr)
-#'  RPolarsErr = unwrap_err(res_RPolarsErr)
-#'  RPolarsErr$contexts()
+#' )
+#' res_RPolarsErr = result(throw_RPolarsErr())
+#' str(res_RPolarsErr)
+#' RPolarsErr = unwrap_err(res_RPolarsErr)
+#' RPolarsErr$contexts()
 result = function(expr, msg = NULL) {
   tryCatch(
     Ok(expr),
-    error = \(cond) cond$value %||% cond$message |> plain(msg) |> Err()
+    error = \(cond) cond$value %||% cond$message |>
+      plain(msg) |>
+      Err()
   )
 }

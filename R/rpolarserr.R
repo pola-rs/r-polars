@@ -1,5 +1,3 @@
-
-
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
 #' @param x RPolarsErr

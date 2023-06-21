@@ -21,7 +21,7 @@ when_calling = function(err, call) {
 when_calling.default = function(err, call) {
   stop("internal error: an error-type was not fully implemented")
 }
-#support function to convert a call to a string
+# support function to convert a call to a string
 call_to_string = function(call) {
   paste(
     "\n",
@@ -38,16 +38,17 @@ call_to_string = function(call) {
 #' @examples
 #' #
 where_in = function(err, context) {
-
-  if(is.null(context)) {
+  if (is.null(context)) {
     return(err)
   }
-  if(!is_string(context)) stop(
-    paste(
-      "internal error: where_in context must be a string or NULL it was: ",
-      str_string(context)
+  if (!is_string(context)) {
+    stop(
+      paste(
+        "internal error: where_in context must be a string or NULL it was: ",
+        str_string(context)
+      )
     )
-  )
+  }
   UseMethod("where_in", err)
 }
 where_in.default = function(err, context) {
@@ -82,11 +83,11 @@ to_condition.default = function(err) {
 #' @keywords internal
 #' @return condition
 plain = function(err, msg) {
-  if(is.null(msg)) return(err)
+  if (is.null(msg)) {
+    return(err)
+  }
   UseMethod("plain", err)
 }
 plain.default = function(err, msg) {
-  paste0(msg,": ", err)
+  paste0(msg, ": ", err)
 }
-
-

@@ -21,7 +21,7 @@ rust-like unwrapping of result. Useful to keep error handling on the R side.
 }
 \examples{
 
-#get unwrap without using :::
+# get unwrap without using :::
 unwrap = environment(polars::pl$all)$unwrap
 
 structure(list(ok = "foo", err = NULL), class = "extendr_result")
