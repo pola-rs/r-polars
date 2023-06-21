@@ -2,12 +2,13 @@ use std::collections::VecDeque;
 
 use extendr_api::{
     extendr, extendr_module, symbol::class_symbol, Attributes, Pairlist, Rinternals, Robj,
+    Operators, eval_string, call, Types,
 };
 use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]
 pub enum Rctx {
-    #[error("The argument [{0}] casuse an error")]
+    #[error("The argument [{0}] cause an error")]
     BadArg(String),
     #[error("Got value [{0}]")]
     BadVal(String),
@@ -59,13 +60,15 @@ impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
         self.ctx(Rctx::BadArg(arg.into()))
     }
 
-    fn bad_robj(self, robj: &Robj) -> RResult<T> {
-        self.bad_val(rdbg(robj))
-    }
-
     fn bad_val<S: Into<String>>(self, val: S) -> RResult<T> {
         self.ctx(Rctx::BadVal(val.into()))
     }
+
+    fn bad_robj(self, robj: &Robj) -> RResult<T> {
+        self.bad_val(robj_dbg(robj))
+    }
+    
+    
 
     fn hint<S: Into<String>>(self, cause: S) -> RResult<T> {
         self.ctx(Rctx::Hint(cause.into()))
@@ -216,8 +219,21 @@ pub fn rerr<T>() -> RResult<T> {
     Err(Rerr::new())
 }
 
+//any rust impl Debug to string
 pub fn rdbg<T: std::fmt::Debug>(o: T) -> String {
     format!("{:?}", o)
+}
+
+//detailed debug of Robj to string
+pub fn robj_dbg(robj: &Robj) -> String {
+    let s = rdbg(robj);
+    format!(
+        "Rvalue: {}{}, Rsexp: {:?}, Rclass: {:?}",
+        &s[0..(s.len().min(128))],
+        if s.len()>128 {"...]  "} else {""},
+        robj.rtype(),
+        call!("base::class", robj).expect("internal error: could not use base::class(robj)")
+    )
 }
 
 #[extendr]
