@@ -55,39 +55,39 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
-Rerr <- new.env(parent = emptyenv())
+RPolarsErr <- new.env(parent = emptyenv())
 
-Rerr$new <- function() .Call(wrap__Rerr__new)
+RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
 
-Rerr$info <- function() .Call(wrap__Rerr__info, self)
+RPolarsErr$info <- function() .Call(wrap__RPolarsErr__info, self)
 
-Rerr$contexts <- function() .Call(wrap__Rerr__contexts, self)
+RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
 
-Rerr$bad_arg <- function(x) .Call(wrap__Rerr__bad_arg, self, x)
+RPolarsErr$bad_arg <- function(x) .Call(wrap__RPolarsErr__bad_arg, self, x)
 
-Rerr$bad_val <- function(x) .Call(wrap__Rerr__bad_val, self, x)
+RPolarsErr$bad_val <- function(x) .Call(wrap__RPolarsErr__bad_val, self, x)
 
-Rerr$bad_robj <- function(x) .Call(wrap__Rerr__bad_robj, self, x)
+RPolarsErr$bad_robj <- function(x) .Call(wrap__RPolarsErr__bad_robj, self, x)
 
-Rerr$hint <- function(x) .Call(wrap__Rerr__hint, self, x)
+RPolarsErr$hint <- function(x) .Call(wrap__RPolarsErr__hint, self, x)
 
-Rerr$mistyped <- function(x) .Call(wrap__Rerr__mistyped, self, x)
+RPolarsErr$mistyped <- function(x) .Call(wrap__RPolarsErr__mistyped, self, x)
 
-Rerr$misvalued <- function(x) .Call(wrap__Rerr__misvalued, self, x)
+RPolarsErr$misvalued <- function(x) .Call(wrap__RPolarsErr__misvalued, self, x)
 
-Rerr$plain <- function(x) .Call(wrap__Rerr__plain, self, x)
+RPolarsErr$plain <- function(x) .Call(wrap__RPolarsErr__plain, self, x)
 
-Rerr$when <- function(x) .Call(wrap__Rerr__when, self, x)
+RPolarsErr$when <- function(x) .Call(wrap__RPolarsErr__when, self, x)
 
-Rerr$when_last <- function(x) .Call(wrap__Rerr__when_last, self, x)
+RPolarsErr$when_last <- function(x) .Call(wrap__RPolarsErr__when_last, self, x)
 
-Rerr$wherein <- function(x) .Call(wrap__Rerr__wherein, self, x)
-
-#' @export
-`$.Rerr` <- function (self, name) { func <- Rerr[[name]]; environment(func) <- environment(); func }
+RPolarsErr$wherein <- function(x) .Call(wrap__RPolarsErr__wherein, self, x)
 
 #' @export
-`[[.Rerr` <- `$.Rerr`
+`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsErr` <- `$.RPolarsErr`
 
 DataFrame <- new.env(parent = emptyenv())
 

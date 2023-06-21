@@ -3,7 +3,7 @@ pub mod extendr_concurrent;
 pub mod wrappers;
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
-use crate::rerr::{rdbg, rerr, RResult, Rerr, WithRctx};
+use crate::rerr::{rdbg, rerr, RResult, RPolarsErr, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 
@@ -492,7 +492,7 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
         (Rtype::Integers, 1) => robj.as_integer().map(i64::from),
         (_, _) => None,
     }
-    .ok_or(Rerr::new())
+    .ok_or(RPolarsErr::new())
     .bad_robj(&robj)
     .mistyped(tn::<i64>());
 }
@@ -512,7 +512,7 @@ pub fn robj_to_u8(robj: extendr_api::Robj) -> RResult<u8> {
 pub fn robj_to_bool(robj: extendr_api::Robj) -> RResult<bool> {
     let robj = unpack_r_result_list(robj)?;
     robj.as_bool()
-        .ok_or(Rerr::new())
+        .ok_or(RPolarsErr::new())
         .bad_robj(&robj)
         .mistyped(tn::<bool>())
 }
@@ -521,7 +521,7 @@ pub fn robj_to_binary_vec(robj: extendr_api::Robj) -> RResult<Vec<u8>> {
     let robj = unpack_r_result_list(robj)?;
     let binary_vec: Vec<u8> = robj
         .as_raw_slice()
-        .ok_or(Rerr::new())
+        .ok_or(RPolarsErr::new())
         .bad_robj(&robj)
         .mistyped(tn::<Vec<u8>>())?
         .to_vec();
@@ -603,7 +603,7 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
 pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl::Expr>> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
-    let l = robj.as_list().ok_or(Rerr::new()).mistyped(tn::<List>())?;
+    let l = robj.as_list().ok_or(RPolarsErr::new()).mistyped(tn::<List>())?;
     let iter = l
         .iter()
         .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));

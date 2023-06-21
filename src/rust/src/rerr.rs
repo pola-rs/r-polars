@@ -31,8 +31,8 @@ pub enum Rctx {
 }
 
 #[derive(Clone, Debug)]
-pub struct Rerr(VecDeque<Rctx>);
-pub type RResult<T> = core::result::Result<T, Rerr>;
+pub struct RPolarsErr(VecDeque<Rctx>);
+pub type RResult<T> = core::result::Result<T, RPolarsErr>;
 
 pub trait WithRctx<T> {
     fn ctx(self, rctx: Rctx) -> RResult<T>;
@@ -47,7 +47,7 @@ pub trait WithRctx<T> {
     fn wherein<S: Into<String>>(self, env: S) -> RResult<T>;
 }
 
-impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
+impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
     fn ctx(self, rctx: Rctx) -> RResult<T> {
         self.map_err(|e| {
             let mut rerr = e.into();
@@ -96,9 +96,9 @@ impl<T, E: Into<Rerr>> WithRctx<T> for core::result::Result<T, E> {
 }
 
 #[extendr]
-impl Rerr {
+impl RPolarsErr {
     pub fn new() -> Self {
-        Rerr(VecDeque::new())
+        RPolarsErr(VecDeque::new())
     }
 
     pub fn info(&self) -> String {
@@ -152,7 +152,7 @@ impl Rerr {
     }
 }
 //methods not to export with extendr
-impl Rerr {
+impl RPolarsErr {
     pub fn push_front_rctx(&self, rctx: Rctx) -> Self {
         let mut rerr = self.clone();
         rerr.0.push_front(rctx);
@@ -165,7 +165,7 @@ impl Rerr {
     }
 }
 
-impl std::fmt::Display for Rerr {
+impl std::fmt::Display for RPolarsErr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -180,27 +180,27 @@ impl std::fmt::Display for Rerr {
     }
 }
 
-impl From<Rerr> for String {
-    fn from(rerr: Rerr) -> Self {
+impl From<RPolarsErr> for String {
+    fn from(rerr: RPolarsErr) -> Self {
         rerr.info()
     }
 }
 
-impl<E: std::error::Error> From<E> for Rerr {
+impl<E: std::error::Error> From<E> for RPolarsErr {
     default fn from(err: E) -> Self {
-        Rerr(VecDeque::from([Rctx::Plain(rdbg(err))]))
+        RPolarsErr(VecDeque::from([Rctx::Plain(rdbg(err))]))
     }
 }
 
-impl From<extendr_api::Error> for Rerr {
+impl From<extendr_api::Error> for RPolarsErr {
     fn from(extendr_err: extendr_api::Error) -> Self {
-        Rerr(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
+        RPolarsErr(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
     }
 }
 
-impl From<polars::error::PolarsError> for Rerr {
+impl From<polars::error::PolarsError> for RPolarsErr {
     fn from(polars_err: polars::error::PolarsError) -> Self {
-        let mut rerr = Rerr::new();
+        let mut rerr = RPolarsErr::new();
         rerr.0.push_back(Rctx::Polars(rdbg(&polars_err)));
         match polars_err {
             polars::prelude::PolarsError::InvalidOperation(x) => {
@@ -216,7 +216,7 @@ impl From<polars::error::PolarsError> for Rerr {
 }
 
 pub fn rerr<T>() -> RResult<T> {
-    Err(Rerr::new())
+    Err(RPolarsErr::new())
 }
 
 //any rust impl Debug to string
@@ -243,6 +243,6 @@ pub fn test_rerr() -> RResult<String> {
 
 extendr_module! {
     mod rerr;
-    impl Rerr;
+    impl RPolarsErr;
     fn test_rerr;
 }

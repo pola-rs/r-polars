@@ -67,17 +67,17 @@ unwrap_err = function(result) {
 #'  unwrap = environment(polars::pl$all)$unwrap
 #'  Err = environment(polars::pl$all)$Err
 #'
-#'  #capture regular R errors or Rerr
+#'  #capture regular R errors or RPolarsErr
 #'  throw_simpleError  = \() stop("Imma simple error")
 #'  result(throw_simpleError())
 #'
 #'  throw_Rerr = \() unwrap(
-#'   Err(.pr$Rerr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
+#'   Err(.pr$RPolarsErr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
 #'  )
 #'  res_Rerr = result(throw_Rerr())
 #'  str(res_Rerr)
-#'  Rerr = unwrap_err(res_Rerr)
-#'  Rerr$contexts()
+#'  RPolarsErr = unwrap_err(res_Rerr)
+#'  RPolarsErr$contexts()
 result = function(expr, msg = NULL) {
   tryCatch(
     Ok(expr),
