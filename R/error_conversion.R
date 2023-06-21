@@ -36,20 +36,42 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
   }
 }
 
+#' rust-like unwrap_err, internal use only
+#' @details
+#' throwed error info is sparse because only for internal errors
+#' @keywords internal
+#' @param result a Result, see rust_result.R#'
+#' @return some error type
+unwrap_err = function(result) {
+  if(is_ok(result)) {
+    stop("internal error: Cannot unwrap_err an Ok-value")
+  } else {
+    result$err
+  }
+}
 
-#'  catches any R error and return a rust-Result
+
+#' Capture any R error and return a rust-like Result
 #' @param expr code to capture any error from and wrap as Result
-#' @param msg easy way to add a context msg
+#' @param msg handy way to add a context msg
 #' @keywords internal
 #' @return Result
+#' @examples
+#'  #capture regular R errors or Rerr
+#'
+#'  throw_simpleError  = \() stop("Imma simple error")
+#'  result(throw_simpleError())
+#'
+#'  throw_Rerr = \() unwrap(
+#'   Err(.pr$Rerr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
+#'  )
+#'  res_Rerr = result(throw_Rerr())
+#'  str(res_Rerr)
+#'  Rerr = unwrap_err(res_Rerr)
+#'  Rerr$contexts()
 result = function(expr, msg = NULL) {
   tryCatch(
     Ok(expr),
-    error = function(cond) {
-      cond$value %||%
-        cond$message |>
-        plain(msg) |>
-        Err()
-    }
+    error = \(cond) cond$value %||% cond$message |> plain(msg) |> Err()
   )
 }

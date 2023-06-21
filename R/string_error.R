@@ -12,5 +12,5 @@ to_condition.character = function(err) {
   errorCondition(err)
 }
 plain.character = function(err, msg) {
-  paste0(msg, err)
+  NextMethod("plain",err)
 }

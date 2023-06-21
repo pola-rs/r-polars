@@ -65,9 +65,9 @@ Rerr$contexts <- function() .Call(wrap__Rerr__contexts, self)
 
 Rerr$bad_arg <- function(x) .Call(wrap__Rerr__bad_arg, self, x)
 
-Rerr$bad_robj <- function(x) .Call(wrap__Rerr__bad_robj, self, x)
-
 Rerr$bad_val <- function(x) .Call(wrap__Rerr__bad_val, self, x)
+
+Rerr$bad_robj <- function(x) .Call(wrap__Rerr__bad_robj, self, x)
 
 Rerr$hint <- function(x) .Call(wrap__Rerr__hint, self, x)
 

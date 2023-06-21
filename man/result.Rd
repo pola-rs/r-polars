@@ -2,19 +2,33 @@
 % Please edit documentation in R/error_conversion.R
 \name{result}
 \alias{result}
-\title{catches any R error and return a rust-Result}
+\title{Capture any R error and return a rust-like Result}
 \usage{
 result(expr, msg = NULL)
 }
 \arguments{
 \item{expr}{code to capture any error from and wrap as Result}
 
-\item{msg}{easy way to add a context msg}
+\item{msg}{handy way to add a context msg}
 }
 \value{
 Result
 }
 \description{
-catches any R error and return a rust-Result
+Capture any R error and return a rust-like Result
+}
+\examples{
+ #capture regular R errors or Rerr
+
+ throw_simpleError  = \() stop("Imma simple error")
+ result(throw_simpleError())
+
+ throw_Rerr = \() unwrap(
+  Err(.pr$Rerr$new()$bad_robj(42)$mistyped("String")$when("doing something"))
+ )
+ res_Rerr = result(throw_Rerr())
+ str(res_Rerr)
+ Rerr = unwrap_err(res_Rerr)
+ Rerr$contexts()
 }
 \keyword{internal}

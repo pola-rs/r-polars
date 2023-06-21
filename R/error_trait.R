@@ -86,7 +86,7 @@ plain = function(err, msg) {
   UseMethod("plain", err)
 }
 plain.default = function(err, msg) {
-  paste0(msg, err$message)
+  paste0(msg,": ", err)
 }
 
 
