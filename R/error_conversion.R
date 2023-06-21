@@ -11,8 +11,6 @@
 #'
 #' @return the ok-element of list , or a error will be thrown
 #' @keywords internal
-#' @export
-#'
 #' @examples
 #'
 #' structure(list(ok = "foo", err = NULL), class = "extendr_result")
