@@ -5,6 +5,7 @@
 - `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
 - New `pl$LazyFrame()` to quickly create a `LazyFrame`, mostly in examples or 
 for demonstration purposes (#240).
+- Polars is internally moving away from string errors to a new error-type called `RPolarsErr` both on rust- and R-side. Final error messages should look very similar (#233).
 
 # polars 0.6.1
 ## What's changed

@@ -237,7 +237,7 @@ test_that("pl$head", {
 
   expect_grepl_error(
     pl$head(df$get_column("a"), -2),
-    "the arg \\[n\\] the value -2 cannot be less than zero"
+    "cannot be less than zero"
   )
 })
 
@@ -270,6 +270,6 @@ test_that("pl$tail", {
 
   expect_grepl_error(
     pl$tail(df$get_column("a"), -2),
-    "the arg \\[n\\] the value -2 cannot be less than zero"
+    "cannot be less than zero"
   )
 })

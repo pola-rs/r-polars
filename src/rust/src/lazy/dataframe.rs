@@ -6,6 +6,7 @@ use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::robj_to;
+use crate::rpolarserr::{Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
@@ -75,6 +76,11 @@ impl LazyFrame {
 
             format!("when calling $collect() on LazyFrame:\n{}", err_string)
         })
+    }
+
+    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
+        use crate::rpolarserr::WithRctx;
+        handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
     }
 
     fn first(&self) -> Self {
@@ -281,7 +287,8 @@ impl LazyFrame {
             .how(JoinType::AsOf(AsOfOptions {
                 strategy: robj_to!(str, strategy).and_then(|s| {
                     new_asof_strategy(s)
-                        .map_err(|err| format!("param [strategy] error because {}", err))
+                        .map_err(Rctx::Plain)
+                        .bad_arg("stragegy")
                 })?,
                 left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
                 right_by: right_by

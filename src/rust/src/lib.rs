@@ -1,3 +1,4 @@
+#![feature(min_specialization)]
 #[cfg(all(target_os = "linux", not(use_mimalloc)))]
 use jemallocator::Jemalloc;
 #[cfg(any(not(target_os = "linux"), use_mimalloc))]
@@ -19,6 +20,7 @@ pub mod conversion_s_to_r;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
+pub mod rpolarserr;
 pub mod series;
 pub mod utils;
 
@@ -38,6 +40,7 @@ static CONFIG: ThreadComStorage = Storage::new();
 // Macro to generate exports
 extendr_module! {
     mod polars;
+    use rpolarserr;
     use rdataframe;
     use lazy;
     use series;

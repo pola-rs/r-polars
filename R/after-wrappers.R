@@ -76,7 +76,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$WhenThenThen = extendr_method_to_pure_functions(WhenThenThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
-
+.pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
 
 # TODO remove export
 
