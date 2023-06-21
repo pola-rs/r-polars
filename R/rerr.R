@@ -17,7 +17,7 @@ as.character.Rerr = function(x, ...) x$info()
 
 #' @export
 #' @noRd
-print.Rerr = function(x, ...) writeLines(x$info())
+print.Rerr = function(x, ...) cat(x$info())
 
 
 ## Rerr IPLEMENTS IPLEMENTS R-POLARS error_trait.R
