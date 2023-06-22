@@ -1,6 +1,6 @@
-#' new LazyFrame from csv
+#' new PolarsLazyFrame from csv
 #' @description will scan the csv when collect(), not now
-#' @keywords LazyFrame_new
+#' @keywords PolarsLazyFrame_new
 #'
 #' @param path string, Path to a file
 #' @param sep Single char to use as delimiter in the file.
@@ -44,7 +44,7 @@
 #' @param row_count_offset integer, Offset to start the row_count column (only used if the name is set).
 #' @param parse_dates bool Try to automatically parse dates. If this does not succeed, the column remains of data type pl.Utf8.
 #'
-#' @return lazyframe
+#' @return PolarsLazyFrame
 #'
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names

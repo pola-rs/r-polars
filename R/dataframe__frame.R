@@ -572,15 +572,15 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 
 
 
-#' Convert an existing DataFrame to a LazyFrame
+#' Convert an existing DataFrame to a PolarsLazyFrame
 #' @name DataFrame_lazy
 #' @description Start a new lazy query from a DataFrame.
 #'
 #' @docType NULL
 #' @format NULL
-#' @return A LazyFrame
+#' @return A PolarsLazyFrame
 #' @aliases lazy
-#' @keywords  DataFrame LazyFrame_new
+#' @keywords  DataFrame PolarsLazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
 #'
@@ -668,7 +668,7 @@ DataFrame_to_series = function(idx = 0) {
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @keywords  DataFrame
 #' @examples
 #' df = mtcars
@@ -873,7 +873,7 @@ DataFrame_filter = function(bool_expr) {
 
 #' groupby a DataFrame
 #' @description create GroupBy from DataFrame
-#' @inherit LazyFrame_groupby
+#' @inherit PolarsLazyFrame_groupby
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
@@ -969,8 +969,8 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #'
 #' @param other DataFrame
 #' @param on named columns as char vector of named columns, or list of expressions and/or strings.
-#' @param left_on names of columns in self LazyFrame, order should match. Type, see on param.
-#' @param right_on names of columns in other LazyFrame, order should match. Type, see on param.
+#' @param left_on names of columns in self PolarsLazyFrame, order should match. Type, see on param.
+#' @param right_on names of columns in other PolarsLazyFrame, order should match. Type, see on param.
 #' @param how a string selecting one of the following methods: inner, left, outer, semi, anti, cross
 #' @param suffix name to added right table
 #' @param allow_parallel bool
@@ -982,7 +982,7 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' print(df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_))))
 #' df1$join(other = df2, on = "key")
 DataFrame_join = function(
-    other, # : LazyFrame or DataFrame,
+    other, # : PolarsLazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
     right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
     on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -1123,8 +1123,8 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 
 #' @title Reverse
 #' @description Reverse the DataFrame.
-#' @keywords LazyFrame
-#' @return LazyFrame
+#' @keywords PolarsLazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
@@ -1161,8 +1161,8 @@ DataFrame_fill_null = function(fill_value) {
 
 #' @title Slice
 #' @description Get a slice of this DataFrame.
-#' @keywords LazyFrame
-#' @return LazyFrame
+#' @keywords PolarsLazyFrame
+#' @return PolarsLazyFrame
 #' @param offset integer
 #' @param length integer or NULL
 #' @examples
@@ -1201,8 +1201,8 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 
 
 #' Perform joins on nearest keys
-#' @inherit LazyFrame_join_asof
-#' @param other DataFrame or LazyFrame
+#' @inherit PolarsLazyFrame_join_asof
+#' @param other DataFrame or PolarsLazyFrame
 #' @keywords DataFrame
 #' @return new joined DataFrame
 #' @examples
@@ -1252,12 +1252,12 @@ DataFrame_join_asof = function(
     tolerance = NULL,
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  # convert other to LazyFrame, capture any Error as a result, and pass it on
+  # convert other to PolarsLazyFrame, capture any Error as a result, and pass it on
 
   other_df_result = pcase(
     inherits(other, "DataFrame"), Ok(other$lazy()),
-    inherits(other, "LazyFrame"), Ok(other),
-    or_else = Err(" not a LazyFrame or DataFrame")
+    inherits(other, "PolarsLazyFrame"), Ok(other),
+    or_else = Err(" not a PolarsLazyFrame or DataFrame")
   )
 
   self$lazy()$join_asof(
@@ -1279,7 +1279,7 @@ DataFrame_join_asof = function(
 
 
 
-#' @inherit LazyFrame_melt
+#' @inherit PolarsLazyFrame_melt
 #' @keywords DataFrame
 #'
 #' @return A new `DataFrame`

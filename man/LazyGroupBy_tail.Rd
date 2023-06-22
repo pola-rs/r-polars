@@ -10,7 +10,7 @@ LazyGroupBy_tail(n = 1L)
 \item{n}{integer number of rows to get}
 }
 \value{
-A new \code{LazyFrame} object.
+A new \code{PolarsLazyFrame} object.
 }
 \description{
 get n tail rows of group

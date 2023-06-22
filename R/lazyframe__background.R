@@ -1,6 +1,6 @@
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @param x LazyFrame
+#' @param x PolarsLazyFrame
 #' @param pattern code-stump as string to auto-complete
 #' @export
 #' @keywords internal
@@ -8,8 +8,8 @@
   paste0(ls(PolarsBackgroundHandle, pattern = pattern), "()")
 }
 
-#' print LazyFrame s3 method
-#' @keywords LazyFrame
+#' print PolarsLazyFrame s3 method
+#' @keywords PolarsLazyFrame
 #' @param x DataFrame
 #' @param ... not used
 #' @keywords internal

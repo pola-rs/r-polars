@@ -1,4 +1,4 @@
-test_that("lazyframe join examples", {
+test_that("PolarsLazyFrame join examples", {
   df = pl$DataFrame(list(
     foo = 1:3,
     bar = c(6, 7, 8),

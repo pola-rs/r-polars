@@ -10,7 +10,7 @@ LazyGroupBy_apply(f)
 \item{f}{R function to apply}
 }
 \value{
-A new \code{LazyFrame} object.
+A new \code{PolarsLazyFrame} object.
 }
 \description{
 one day this will apply

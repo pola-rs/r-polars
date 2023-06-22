@@ -61,7 +61,7 @@ who likes polars package messages? use this option to turn them off.
 do not print the call causing the error in error messages
 
 sets maintain_order = TRUE as default
-implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby.
+implicated methods/functions are currently: DataFrame_GroupBy + PolarsLazyFrameGroupby.
 
 prints any call to public or private polars method
 

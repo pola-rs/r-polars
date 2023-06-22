@@ -1,5 +1,5 @@
 //use crate::rdataframe::rseries::ptr_str_to_rseries;
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RLazyFrame;
 use crate::rdataframe::DataFrame;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::extendr_concurrent::{
@@ -86,7 +86,7 @@ pub struct PolarsBackgroundHandle(Option<JoinHandle<pl::PolarsResult<pl::DataFra
 
 #[extendr]
 impl PolarsBackgroundHandle {
-    pub fn new(lazy_df: &LazyFrame) -> Self {
+    pub fn new(lazy_df: &RLazyFrame) -> Self {
         let lazy_df = lazy_df.0.clone();
         let join_handle = start_background_handler(move || lazy_df.collect());
         PolarsBackgroundHandle(Some(join_handle))

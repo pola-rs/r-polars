@@ -1,5 +1,5 @@
-#' new LazyFrame from parquet file
-#' @keywords LazyFrame_new
+#' new PolarsLazyFrame from parquet file
+#' @keywords PolarsLazyFrame_new
 #'
 #' @param file string filepath
 #' @param n_rows limit rows to scan
@@ -10,7 +10,7 @@
 #' @param row_count_offset integer, the rowcount column can be offst by this value
 #' @param low_memory bool, try reduce memory footprint
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @export
 #'
 #' @examples
@@ -30,7 +30,7 @@ scan_parquet = function(
     row_count_offset = 0L, # : int = 0,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE # : bool = False,
-    ) { #-> LazyFrame
+    ) { #-> PolarsLazyFrame
 
   parallel = parallel[1L]
   if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {

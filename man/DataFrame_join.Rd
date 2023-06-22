@@ -18,9 +18,9 @@ DataFrame_join(
 \arguments{
 \item{other}{DataFrame}
 
-\item{left_on}{names of columns in self LazyFrame, order should match. Type, see on param.}
+\item{left_on}{names of columns in self PolarsLazyFrame, order should match. Type, see on param.}
 
-\item{right_on}{names of columns in other LazyFrame, order should match. Type, see on param.}
+\item{right_on}{names of columns in other PolarsLazyFrame, order should match. Type, see on param.}
 
 \item{on}{named columns as char vector of named columns, or list of expressions and/or strings.}
 

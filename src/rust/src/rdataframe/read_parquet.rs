@@ -1,6 +1,6 @@
 use crate::utils::r_result_list;
 
-use crate::lazy::dataframe::LazyFrame;
+use crate::lazy::dataframe::RLazyFrame;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::null_to_opt;
@@ -46,7 +46,7 @@ pub fn new_from_parquet(
 
     let lf_result = pl::LazyFrame::scan_parquet(path, args)
         .map_err(|x| x.to_string())
-        .map(LazyFrame);
+        .map(RLazyFrame);
     r_result_list(lf_result)
 }
 

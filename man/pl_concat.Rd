@@ -4,16 +4,16 @@
 \alias{pl_concat}
 \title{Concat polars objects}
 \arguments{
-\item{l}{list of DataFrame, or Series, LazyFrame or Expr}
+\item{l}{list of DataFrame, or Series, PolarsLazyFrame or Expr}
 
 \item{rechunk}{perform a rechunk at last}
 
 \item{how}{choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally}
 
-\item{parallel}{BOOL default TRUE, only used for LazyFrames}
+\item{parallel}{BOOL default TRUE, only used for PolarsLazyFrames}
 }
 \value{
-DataFrame, or Series, LazyFrame or Expr
+DataFrame, or Series, PolarsLazyFrame or Expr
 }
 \description{
 Concat polars objects

@@ -1,7 +1,7 @@
 #' Import data in Apache Arrow IPC format
 #'
-#' @details Create new LazyFrame from Apache Arrow IPC file or stream
-#' @keywords LazyFrame_new
+#' @details Create new PolarsLazyFrame from Apache Arrow IPC file or stream
+#' @keywords PolarsLazyFrame_new
 #'
 #' @param path string, path
 #' @param n_rows integer, limit rows to scan
@@ -11,7 +11,7 @@
 #' @param row_count_offset integer, the rowcount column can be offst by this value
 #' @param memmap bool, mapped memory
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #'
 scan_arrow_ipc = function(
     path, # : str | Path,
@@ -21,7 +21,7 @@ scan_arrow_ipc = function(
     row_count_name = NULL, # : str | None = None,
     row_count_offset = 0L, # : int = 0,
     memmap = TRUE # : bool = False,
-    ) { #-> LazyFrame
+    ) { #-> PolarsLazyFrame
 
 
   result_lf = import_arrow_ipc(

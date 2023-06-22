@@ -1,11 +1,11 @@
 #' Concat polars objects
 #' @name pl_concat
-#' @param l list of DataFrame, or Series, LazyFrame or Expr
+#' @param l list of DataFrame, or Series, PolarsLazyFrame or Expr
 #' @param rechunk perform a rechunk at last
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally
-#' @param parallel BOOL default TRUE, only used for LazyFrames
+#' @param parallel BOOL default TRUE, only used for PolarsLazyFrames
 #'
-#' @return DataFrame, or Series, LazyFrame or Expr
+#' @return DataFrame, or Series, PolarsLazyFrame or Expr
 #'
 #' @examples
 #' # vertical
@@ -32,7 +32,7 @@
 #' # diagonal
 #' pl$concat(l_hor, how = "diagonal")
 pl$concat = function(
-    l, # list of DataFrames or Series or lazyFrames or expr
+    l, # list of DataFrames or Series or PolarsLazyFrames or expr
     rechunk = TRUE,
     how = c("vertical", "horizontal", "diagnoal"),
     parallel = TRUE # not used yet

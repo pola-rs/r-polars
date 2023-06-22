@@ -68,10 +68,10 @@
   x
 }
 
-# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
+# TODO: un-comment when the `PolarsLazyFrame.columns` attribute is implemented
 # #' @export
 # #' @noRd
-# `[.LazyFrame` <- `[.DataFrame`
+# `[.PolarsLazyFrame` <- `[.DataFrame`
 
 #' @export
 #' @noRd
@@ -79,7 +79,7 @@ head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
 
 #' @export
 #' @noRd
-head.LazyFrame = head.DataFrame
+head.PolarsLazyFrame = head.DataFrame
 
 #' @export
 #' @noRd
@@ -87,7 +87,7 @@ tail.DataFrame = function(x, n = 6L, ...) x$tail(n = n)
 
 #' @export
 #' @noRd
-tail.LazyFrame = tail.DataFrame
+tail.PolarsLazyFrame = tail.DataFrame
 
 #' @export
 #' @noRd
@@ -127,7 +127,7 @@ dimnames.DataFrame = function(x) list(row.names(x), names(x))
 
 #' @export
 #' @noRd
-as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
+as.data.frame.PolarsLazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' @export
 #' @noRd
@@ -135,7 +135,7 @@ as.matrix.DataFrame = function(x, ...) as.matrix(x$to_data_frame(...))
 
 #' @export
 #' @noRd
-as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
+as.matrix.PolarsLazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
 
 #' @export
 #' @noRd
@@ -143,7 +143,7 @@ mean.DataFrame = function(x, ...) x$mean()
 
 #' @export
 #' @noRd
-mean.LazyFrame = function(x, ...) x$mean()
+mean.PolarsLazyFrame = function(x, ...) x$mean()
 
 #' @export
 #' @importFrom stats median
@@ -153,7 +153,7 @@ median.DataFrame = function(x, ...) x$median()
 #' @export
 #' @importFrom stats median
 #' @noRd
-median.LazyFrame = function(x, ...) x$median()
+median.PolarsLazyFrame = function(x, ...) x$median()
 
 #' @export
 #' @noRd
@@ -161,7 +161,7 @@ min.DataFrame = function(x, ...) x$min()
 
 #' @export
 #' @noRd
-min.LazyFrame = function(x, ...) x$min()
+min.PolarsLazyFrame = function(x, ...) x$min()
 
 #' @export
 #' @noRd
@@ -173,7 +173,7 @@ max.DataFrame = function(x, ...) x$max()
 
 #' @export
 #' @noRd
-max.LazyFrame = function(x, ...) x$max()
+max.PolarsLazyFrame = function(x, ...) x$max()
 
 #' @export
 #' @noRd
@@ -210,16 +210,16 @@ sum.DataFrame = function(x, ...) x$sum()
 
 #' @export
 #' @noRd
-sum.LazyFrame = function(x, ...) x$sum()
+sum.PolarsLazyFrame = function(x, ...) x$sum()
 
 #' @export
 #' @noRd
 sum.Series = function(x, ...) x$sum()
 
-# Drop nulls from a LazyFrame
+# Drop nulls from a PolarsLazyFrame
 #' @export
 #' @noRd
-#' @param object LazyFrame
+#' @param object PolarsLazyFrame
 #' @param subset Character vector of column names to drop nulls from
 #' @param ... Additional arguments are ignored.
 #' @importFrom stats na.omit
@@ -228,7 +228,7 @@ sum.Series = function(x, ...) x$sum()
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
-na.omit.LazyFrame = function(object, subset = NULL, ...) {
+na.omit.PolarsLazyFrame = function(object, subset = NULL, ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }
@@ -281,7 +281,7 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
 #' Drop duplicate rows from this dataframe.
 #' @export
 #' @noRd
-#' @param x LazyFrame
+#' @param x PolarsLazyFrame
 #' @param subset Character vector of column names to drop nulls from
 #' @param keep string: "first", "last", or "none".
 #' @param incomparables: Not used. Here for S3 method consistency.
@@ -293,7 +293,7 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
 #'   z = as.numeric(c(1, 1, 1:4))
 #' )$lazy()
 #' unique(df)$collect()
-unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
+unique.PolarsLazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
   }

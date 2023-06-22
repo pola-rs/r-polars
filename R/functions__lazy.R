@@ -335,7 +335,7 @@ pl$tail = function(column, n = 10) { #-> Expr | Any:
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take mean value in `Series`
-#' - DataFrame or LazyFrame: Take mean value of each column
+#' - DataFrame or PolarsLazyFrame: Take mean value of each column
 #' - str: syntactic sugar for `pl$col(..)$mean()`
 #' - NULL: expression to take mean column of a context.
 #'
@@ -367,7 +367,7 @@ pl$mean = function(...) { #-> Expr | Any:
     Ok(pl$col(unlist(column))$mean()),
     lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
     Err("The series is empty, so no mean value can be returned."),
-    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    lc == 1L && inherits(column[[1]], c("Series", "PolarsLazyFrame", "DataFrame")),
     Ok(column[[1]]$mean()),
     or_else = Ok(pl$col(column[[1]])$mean())
   ) |>
@@ -380,7 +380,7 @@ pl$mean = function(...) { #-> Expr | Any:
 #' @description Depending on the input type this function does different things:
 #' @param column if dtype is:
 #' - Series: Take median value in `Series`
-#' - DataFrame or LazyFrame: Take median value of each column
+#' - DataFrame or PolarsLazyFrame: Take median value of each column
 #' - str: syntactic sugar for `pl$col(..)$median()`
 #' - NULL: expression to take median column of a context.
 #'
@@ -412,7 +412,7 @@ pl$median = function(...) { #-> Expr | Any:
     Ok(pl$col(unlist(column))$median()),
     lc == 1L && inherits(column[[1]], "Series") && column[[1]]$len() == 0,
     Err("The series is empty, so no median value can be returned."),
-    lc == 1L && inherits(column[[1]], c("Series", "LazyFrame", "DataFrame")),
+    lc == 1L && inherits(column[[1]], c("Series", "PolarsLazyFrame", "DataFrame")),
     Ok(column[[1]]$median()),
     or_else = Ok(pl$col(column[[1]])$median())
   ) |>

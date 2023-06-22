@@ -63,7 +63,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$Series = extendr_method_to_pure_functions(Series)
 .pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
 .pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
-.pr$LazyFrame = extendr_method_to_pure_functions(LazyFrame)
+.pr$PolarsLazyFrame = extendr_method_to_pure_functions(PolarsLazyFrame)
 .pr$LazyGroupBy = extendr_method_to_pure_functions(LazyGroupBy)
 .pr$PolarsBackgroundHandle = extendr_method_to_pure_functions(PolarsBackgroundHandle)
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
@@ -208,7 +208,7 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 # used for printing public environment
 pl_class_names = sort(
   c(
-    "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
+    "PolarsLazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
     "When", "WhenThen", "WhenThenThen"
   )
 ) # TODO discover all public class automaticly

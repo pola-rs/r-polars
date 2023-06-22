@@ -21,7 +21,7 @@ DataFrame_join_asof(
 )
 }
 \arguments{
-\item{other}{DataFrame or LazyFrame}
+\item{other}{DataFrame or PolarsLazyFrame}
 
 \item{...}{not used, blocks use of further positional arguments}
 

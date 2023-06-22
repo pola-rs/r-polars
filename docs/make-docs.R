@@ -62,7 +62,7 @@ rd2md = function(src) {
   for (i in seq_along(chunks)) {
     if (any(grepl("<h3>Usage</h3>", chunks[[i]], fixed = TRUE))) {
       # order is important
-      for (cl in c("DataFrame_", "Series_", "Expr_", "LazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_")) {
+      for (cl in c("DataFrame_", "Series_", "Expr_", "PolarsLazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_")) {
         chunks[[i]] = gsub(cl, paste0("&lt", sub("_$", "", cl), "&gt$"), chunks[[i]])
       }
     }
@@ -124,7 +124,7 @@ make_doc_hierarchy = function() {
   other = sub("Rd$", "md", other)
   out = list()
   # order determines order in sidebar
-  classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
+  classes = c("pl", "Series", "DataFrame", "PolarsLazyFrame", "GroupBy",
               "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)

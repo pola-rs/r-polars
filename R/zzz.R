@@ -17,8 +17,8 @@ replace_private_with_pub_methods(DataFrame, "^DataFrame_")
 replace_private_with_pub_methods(GroupBy, "^GroupBy_")
 macro_add_syntax_check_to_class("GroupBy") # not activated automatically as GroupBy is not extendr
 
-# LazyFrame
-replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
+# PolarsLazyFrame
+replace_private_with_pub_methods(PolarsLazyFrame, "^PolarsLazyFrame_")
 
 # LazyGroupBy
 replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")

@@ -7,7 +7,7 @@
 \method{.DollarNames}{PolarsBackgroundHandle}(x, pattern = "")
 }
 \arguments{
-\item{x}{LazyFrame}
+\item{x}{PolarsLazyFrame}
 
 \item{pattern}{code-stump as string to auto-complete}
 }

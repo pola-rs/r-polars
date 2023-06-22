@@ -7,7 +7,7 @@
 \item{column}{if dtype is:
 \itemize{
 \item Series: Take mean value in \code{Series}
-\item DataFrame or LazyFrame: Take mean value of each column
+\item DataFrame or PolarsLazyFrame: Take mean value of each column
 \item str: syntactic sugar for \code{pl$col(..)$mean()}
 \item NULL: expression to take mean column of a context.
 }}

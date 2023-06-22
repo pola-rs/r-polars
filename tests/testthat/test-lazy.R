@@ -21,9 +21,9 @@ test_that("lazy prints", {
   )
 })
 
-test_that("create LazyFrame", {
+test_that("create PolarsLazyFrame", {
   old = pl$DataFrame(mtcars)$lazy()
-  new = pl$LazyFrame(mtcars)
+  new = pl$PolarsLazyFrame(mtcars)
   expect_equal(
     old$collect()$to_data_frame(),
     new$collect()$to_data_frame()
@@ -459,11 +459,11 @@ test_that("join_asof_simple", {
   # export LogicalPlan as json string
   logical_json_plan_TT =
     pop$join_asof(gdp, on = "date", allow_parallel = TRUE, force_parallel = TRUE) |>
-    .pr$LazyFrame$debug_plan() |>
+    .pr$PolarsLazyFrame$debug_plan() |>
     unwrap()
   logical_json_plan_FF =
     pop$join_asof(gdp, on = "date", allow_parallel = FALSE, force_parallel = FALSE) |>
-    .pr$LazyFrame$debug_plan() |>
+    .pr$PolarsLazyFrame$debug_plan() |>
     unwrap()
 
   # prepare regex query

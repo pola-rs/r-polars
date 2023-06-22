@@ -18,7 +18,7 @@ Expr
 }
 \description{
 Mostly useful in an aggregation context. If you want to filter on a DataFrame
-level, use \code{LazyFrame.filter}.
+level, use \code{PolarsLazyFrame.filter}.
 
 where() is an alias for pl$filter
 }

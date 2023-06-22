@@ -2,7 +2,7 @@
 % Please edit documentation in R/parquet.R
 \name{scan_parquet}
 \alias{scan_parquet}
-\title{new LazyFrame from parquet file}
+\title{new PolarsLazyFrame from parquet file}
 \usage{
 scan_parquet(
   file,
@@ -33,12 +33,12 @@ scan_parquet(
 \item{low_memory}{bool, try reduce memory footprint}
 }
 \value{
-LazyFrame
+PolarsLazyFrame
 }
 \description{
-new LazyFrame from parquet file
+new PolarsLazyFrame from parquet file
 }
 \examples{
 # TODO write parquet example
 }
-\keyword{LazyFrame_new}
+\keyword{PolarsLazyFrame_new}

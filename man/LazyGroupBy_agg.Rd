@@ -11,7 +11,7 @@ LazyGroupBy_agg(...)
 ... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
 }
 \value{
-A new \code{LazyFrame} object.
+A new \code{PolarsLazyFrame} object.
 }
 \description{
 aggregate a polar_lazy_groupby

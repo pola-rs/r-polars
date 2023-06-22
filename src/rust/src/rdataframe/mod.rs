@@ -81,7 +81,7 @@ impl From<pl::DataFrame> for DataFrame {
     }
 }
 
-#[extendr]
+#[extendr()]
 impl DataFrame {
     pub fn shape(&self) -> Robj {
         let shp = self.0.shape();
@@ -98,8 +98,8 @@ impl DataFrame {
         DataFrame::new_with_capacity(0)
     }
 
-    pub fn lazy(&self) -> LazyFrame {
-        LazyFrame(self.0.clone().lazy())
+    pub fn lazy(&self) -> RLazyFrame {
+        RLazyFrame(self.0.clone().lazy())
     }
 
     //internal use
@@ -270,7 +270,7 @@ impl DataFrame {
 
     pub fn select(&mut self, exprs: &ProtoExprArray) -> Result<DataFrame, String> {
         let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
-        LazyFrame(self.lazy().0.select(exprs)).collect()
+        RLazyFrame(self.lazy().0.select(exprs)).collect()
     }
 
     //used in GroupBy, not DataFrame
@@ -289,7 +289,7 @@ impl DataFrame {
         } else {
             lazy_df.groupby(group_exprs)
         };
-        LazyFrame(lgb.agg(agg_exprs)).collect()
+        RLazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
     pub fn to_struct(&self, name: &str) -> Series {

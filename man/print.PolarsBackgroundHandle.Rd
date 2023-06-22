@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__background.R
 \name{print.PolarsBackgroundHandle}
 \alias{print.PolarsBackgroundHandle}
-\title{print LazyFrame s3 method}
+\title{print PolarsLazyFrame s3 method}
 \usage{
 \method{print}{PolarsBackgroundHandle}(x, ...)
 }
@@ -15,7 +15,7 @@
 self
 }
 \description{
-print LazyFrame s3 method
+print PolarsLazyFrame s3 method
 }
 \examples{
 lazy_df = pl$DataFrame(iris[, 1:3])$lazy()$select(pl$all()$first())
@@ -24,5 +24,5 @@ handle$is_exhausted()
 df = handle$join()
 handle$is_exhausted()
 }
-\keyword{LazyFrame}
+\keyword{PolarsLazyFrame}
 \keyword{internal}

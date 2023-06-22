@@ -19,7 +19,7 @@ print.LazyGroupBy = function(x, ...) {
 #' aggregate a polar_lazy_groupby
 #' @param ... exprs to aggregate over.
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
-#' @return A new `LazyFrame` object.
+#' @return A new `PolarsLazyFrame` object.
 #' @examples
 #' lgb = pl$DataFrame(
 #'   foo = c("one", "two", "two", "one", "two"),
@@ -46,7 +46,7 @@ LazyGroupBy_agg = agg = function(...) {
 #' @description
 #' one day this will apply
 #' @param f  R function to apply
-#' @return A new `LazyFrame` object.
+#' @return A new `PolarsLazyFrame` object.
 LazyGroupBy_apply = function(f) {
   stopf("this function is not yet implemented")
 }
@@ -55,7 +55,7 @@ LazyGroupBy_apply = function(f) {
 #' @description
 #' get n rows of head of group
 #' @param n integer number of rows to get
-#' @return A new `LazyFrame` object.
+#' @return A new `PolarsLazyFrame` object.
 LazyGroupBy_head = function(n = 1L) {
   unwrap(.pr$LazyGroupBy$head(n))
 }
@@ -65,7 +65,7 @@ LazyGroupBy_head = function(n = 1L) {
 #' @description
 #' get n tail rows of group
 #' @param n integer number of rows to get
-#' @return A new `LazyFrame` object.
+#' @return A new `PolarsLazyFrame` object.
 LazyGroupBy_tail = function(n = 1L) {
   unwrap(.pr$LazyGroupBy$tail(n))
 }

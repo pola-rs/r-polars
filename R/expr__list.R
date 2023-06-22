@@ -372,7 +372,7 @@ ExprArr_tail = function(n = 5L) {
 #' and outputs a string value. The default NULL is equivalent to the R function
 #' `\(idx) paste0("field_",idx)`
 #' @param upper_bound upper_bound numeric
-#' A polars `LazyFrame` needs to know the schema at all time.
+#' A polars `PolarsLazyFrame` needs to know the schema at all time.
 #' The caller therefore must provide an `upper_bound` of
 #' struct fields that will be set.
 #' If this is incorrectly downstream operation may fail.

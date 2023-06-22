@@ -12,7 +12,7 @@ DataFrame_slice(offset, length = NULL)
 \item{length}{integer or NULL}
 }
 \value{
-LazyFrame
+PolarsLazyFrame
 }
 \description{
 Get a slice of this DataFrame.
@@ -21,4 +21,4 @@ Get a slice of this DataFrame.
 pl$DataFrame(mtcars)$slice(2, 4)
 mtcars[2:6, ]
 }
-\keyword{LazyFrame}
+\keyword{PolarsLazyFrame}

@@ -7,7 +7,7 @@
 DataFrame_reverse()
 }
 \value{
-LazyFrame
+PolarsLazyFrame
 }
 \description{
 Reverse the DataFrame.
@@ -15,4 +15,4 @@ Reverse the DataFrame.
 \examples{
 pl$DataFrame(mtcars)$reverse()
 }
-\keyword{LazyFrame}
+\keyword{PolarsLazyFrame}

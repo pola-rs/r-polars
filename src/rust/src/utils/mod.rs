@@ -590,14 +590,14 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
     Ok(Expr(ext_expr.0.clone()))
 }
 
-pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::LazyFrame> {
+pub fn robj_to_rlazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::RLazyFrame> {
     let robj = unpack_r_result_list(robj)?;
     let rv = rdbg(&robj);
-    use crate::rdataframe::LazyFrame;
-    let res: Result<ExternalPtr<LazyFrame>, _> = robj.try_into();
+    use crate::rdataframe::RLazyFrame;
+    let res: Result<ExternalPtr<RLazyFrame>, _> = robj.try_into();
 
-    let ext_ldf = res.bad_val(rv).mistyped(tn::<LazyFrame>())?;
-    Ok(LazyFrame(ext_ldf.0.clone()))
+    let ext_ldf = res.bad_val(rv).mistyped(tn::<RLazyFrame>())?;
+    Ok(RLazyFrame(ext_ldf.0.clone()))
 }
 
 pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl::Expr>> {
@@ -690,8 +690,8 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_field($a)
     };
 
-    (LazyFrame, $a:ident) => {
-        $crate::utils::robj_to_lazyframe($a)
+    (RLazyFrame, $a:ident) => {
+        $crate::utils::robj_to_rlazyframe($a)
     };
 
     (RArrow_schema, $a:ident) => {

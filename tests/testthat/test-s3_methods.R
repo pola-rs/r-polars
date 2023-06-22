@@ -200,7 +200,7 @@ test_that("brackets", {
   expect_equal(a, b, ignore_attr = TRUE)
 
 
-  # un-comment when the `LazyFrame.columns` attribute is implemented
+  # un-comment when the `PolarsLazyFrame.columns` attribute is implemented
 
   # # lazy
   # df = pl$DataFrame(mtcars)$lazy()

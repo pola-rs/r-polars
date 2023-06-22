@@ -30,12 +30,12 @@ scan_arrow_ipc(
 \item{memmap}{bool, mapped memory}
 }
 \value{
-LazyFrame
+PolarsLazyFrame
 }
 \description{
 Import data in Apache Arrow IPC format
 }
 \details{
-Create new LazyFrame from Apache Arrow IPC file or stream
+Create new PolarsLazyFrame from Apache Arrow IPC file or stream
 }
-\keyword{LazyFrame_new}
+\keyword{PolarsLazyFrame_new}

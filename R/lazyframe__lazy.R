@@ -1,25 +1,25 @@
-#' @title Inner workings of the LazyFrame-class
+#' @title Inner workings of the PolarsLazyFrame-class
 #'
-#' @name LazyFrame_class
-#' @description The `LazyFrame`-class is simply two environments of respectively
+#' @name PolarsLazyFrame_class
+#' @description The `PolarsLazyFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the polars rust side. The
-#' instanciated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
-#' LazyFrame  object. The pointer address is the only statefullness of the
-#' LazyFrame object on the R side. Any other state resides on the rust side. The
-#' S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which
+#' instanciated `PolarsLazyFrame`-object is an `externalptr` to a lowlevel rust polars
+#' PolarsLazyFrame  object. The pointer address is the only statefullness of the
+#' PolarsLazyFrame object on the R side. Any other state resides on the rust side. The
+#' S3 method `.DollarNames.PolarsLazyFrame` exposes all public `$foobar()`-methods which
 #' are callable onto the object.
 #'
-#' Most methods return another `LazyFrame`-class instance or similar which allows
+#' Most methods return another `PolarsLazyFrame`-class instance or similar which allows
 #' for method chaining. This class system in lack of a better name could be called
 #' "environment classes" and is the same class system extendr provides, except
 #' here there is both a public and private set of methods. For implementation
 #' reasons, the private methods are external and must be called from
-#' `polars:::.pr.$LazyFrame$methodname()`. Also, all private methods must take
+#' `polars:::.pr.$PolarsLazyFrame$methodname()`. Also, all private methods must take
 #' any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
-#' `DataFrame` and `LazyFrame` can both be said to be a `Frame`. To convert use
-#' `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`.
+#' `DataFrame` and `PolarsLazyFrame` can both be said to be a `Frame`. To convert use
+#' `DataFrame_object$lazy() -> PolarsLazyFrame_object` and `PolarsLazyFrame_object$collect() -> DataFrame_object`.
 #' This is quite similar to the lazy-collect syntax of the dplyrpackage to
 #' interact with database connections such as SQL variants. Most SQL databases
 #' would be able to perform the same otimizations as polars such Predicate Pushdown
@@ -27,20 +27,20 @@
 #' SQL DBs and other data sources such parquet files simultanously. (#TODO
 #' implement r-polars SQL ;).
 #'
-#' @details Check out the source code in R/LazyFrame__lazy.R how public methods
+#' @details Check out the source code in R/PolarsLazyFrame__lazy.R how public methods
 #' are derived from private methods. Check out  extendr-wrappers.R to see the
 #' extendr-auto-generated methods. These are moved to `.pr` and converted into
 #' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 #' file sourced) the extendr-methods are removed and replaced by any function
-#' prefixed `LazyFrame_`.
+#' prefixed `PolarsLazyFrame_`.
 #'
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @examples
 #' # see all exported methods
-#' ls(polars:::LazyFrame)
+#' ls(polars:::PolarsLazyFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$LazyFrame)
+#' ls(polars:::.pr$PolarsLazyFrame)
 #'
 #'
 #' ## Practical example ##
@@ -48,9 +48,9 @@
 #' temp_filepath = tempfile()
 #' write.csv(iris, temp_filepath, row.names = FALSE)
 #'
-#' # Following example illustrates 2 ways to obtain a LazyFrame
+#' # Following example illustrates 2 ways to obtain a PolarsLazyFrame
 #'
-#' # The-Okay-way: convert an in-memory DataFrame to LazyFrame
+#' # The-Okay-way: convert an in-memory DataFrame to PolarsLazyFrame
 #'
 #' # eager in-mem R data.frame
 #' Rdf = read.csv(temp_filepath)
@@ -61,15 +61,15 @@
 #' # lazy frame starting from in-mem DataFrame
 #' Ldf_okay = Pdf$lazy()
 #'
-#' # The-Best-Way:  LazyFrame created directly from a data source is best...
+#' # The-Best-Way:  PolarsLazyFrame created directly from a data source is best...
 #' Ldf_best = pl$lazy_csv_reader(temp_filepath)
 #'
-#' # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
+#' # ... as if to e.g. filter the PolarsLazyFrame, that filtering also caleld predicate will be
 #' # pushed down in the executation stack to the csv_reader, and thereby only bringing into
 #' # memory the rows matching to filter.
 #' # apply filter:
 #' filter_expr = pl$col("Species") == "setosa" # get only rows where Species is setosa
-#' Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite LazyFrame with new
+#' Ldf_okay = Ldf_okay$filter(filter_expr) # overwrite PolarsLazyFrame with new
 #' Ldf_best = Ldf_best$filter(filter_expr)
 #'
 #' # the non optimized plans are similar, on entire in-mem csv, apply filter
@@ -96,34 +96,34 @@
 #'
 #' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
-LazyFrame
+PolarsLazyFrame
 
 
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
-#' @param x LazyFrame
+#' @param x PolarsLazyFrame
 #' @param pattern code-stump as string to auto-complete
 #' @export
 #' @keywords internal
-.DollarNames.LazyFrame = function(x, pattern = "") {
-  paste0(ls(LazyFrame, pattern = pattern), "()")
+.DollarNames.PolarsLazyFrame = function(x, pattern = "") {
+  paste0(ls(PolarsLazyFrame, pattern = pattern), "()")
 }
 
-#' Create new LazyFrame
+#' Create new PolarsLazyFrame
 #'
-#' This is simply a convenience function to create `LazyFrame`s in a quick way.
+#' This is simply a convenience function to create `PolarsLazyFrame`s in a quick way.
 #' It is a wrapper around `pl$DataFrame()$lazy()`. Note that this should only
 #' be used for making examples and quick demonstrations.
 #'
-#' @name pl_LazyFrame
+#' @name pl_PolarsLazyFrame
 #'
 #' @param ... Anything that is accepted by `pl$DataFrame()`
 #'
-#' @return LazyFrame
-#' @keywords LazyFrame_new
+#' @return PolarsLazyFrame
+#' @keywords PolarsLazyFrame_new
 #'
 #' @examples
-#' pl$LazyFrame(
+#' pl$PolarsLazyFrame(
 #'   a = list(c(1, 2, 3, 4, 5)),
 #'   b = 1:5,
 #'   c = letters[1:5],
@@ -131,64 +131,64 @@ LazyFrame
 #' ) # directly from vectors
 #'
 #' # from a list of vectors or data.frame
-#' pl$LazyFrame(list(
+#' pl$PolarsLazyFrame(list(
 #'   a = c(1, 2, 3, 4, 5),
 #'   b = 1:5,
 #'   c = letters[1:5],
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
-pl$LazyFrame = function(...) {
+pl$PolarsLazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
 
-#' print LazyFrame s3 method
-#' @keywords LazyFrame
+#' print PolarsLazyFrame s3 method
+#' @keywords PolarsLazyFrame
 #' @param x DataFrame
 #' @param ... not used
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #'
 #' @keywords internal
 #' @return self
 #' @export
 #'
 #' @examples print(pl$DataFrame(iris)$lazy())
-print.LazyFrame = function(x, ...) {
-  print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
-  cloned_x = .pr$LazyFrame$print(x)
+print.PolarsLazyFrame = function(x, ...) {
+  print("polars PolarsLazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
+  cloned_x = .pr$PolarsLazyFrame$print(x)
   invisible(cloned_x)
 }
 
-#' print LazyFrame internal method
+#' print PolarsLazyFrame internal method
 #' @description can be used i the middle of a method chain
-#' @param x LazyFrame
-#' @keywords LazyFrame
+#' @param x PolarsLazyFrame
+#' @keywords PolarsLazyFrame
 #'
 #' @return self
 #' @docType NULL
 #' @export
 #'
-#' @usage LazyFrame_print(x)
+#' @usage PolarsLazyFrame_print(x)
 #' @examples pl$DataFrame(iris)$lazy()$print()
-LazyFrame_print = "use_extendr_wrapper"
+PolarsLazyFrame_print = "use_extendr_wrapper"
 
 # TODO write missing examples in this file
 
-#' @title Print the optimized or non-optimized plans of `LazyFrame`
+#' @title Print the optimized or non-optimized plans of `PolarsLazyFrame`
 #'
-#' @rdname LazyFrame_describe_plan
+#' @rdname PolarsLazyFrame_describe_plan
 #'
 #' @description `$describe_plan()` shows our query in the format that `polars`
 #' understands. `$describe_optimized_plan()` shows the optimized query plan that
 #' `polars` will execute when `$collect()` or `$compute()` is called. It is possible
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
 #'
-#' # Read the file and make a LazyFrame
+#' # Read the file and make a PolarsLazyFrame
 #' lazy_frame = lazy_csv_reader(path = my_file)
 #'
 #' # Prepare your query
@@ -200,97 +200,97 @@ LazyFrame_print = "use_extendr_wrapper"
 #' # This is the query after `polars` optimizes it: instead of sorting first and
 #' # then filtering, it is faster to filter first and then sort the rest.
 #' lazy_query$describe_optimized_plan()
-LazyFrame_describe_optimized_plan = function() {
-  unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
+PolarsLazyFrame_describe_optimized_plan = function() {
+  unwrap(.pr$PolarsLazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
 }
 
-#' @rdname LazyFrame_describe_plan
-LazyFrame_describe_plan = "use_extendr_wrapper"
+#' @rdname PolarsLazyFrame_describe_plan
+PolarsLazyFrame_describe_plan = "use_extendr_wrapper"
 
 #' @title Lazy_select
-#' @description select on a LazyFrame
-#' @keywords LazyFrame
+#' @description select on a PolarsLazyFrame
+#' @keywords PolarsLazyFrame
 #'
 #' @param ... any single Expr or string naming a column
-#' @return A new `LazyFrame` object with applied filter.
-LazyFrame_select = function(...) {
+#' @return A new `PolarsLazyFrame` object with applied filter.
+PolarsLazyFrame_select = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$select(self, pra)
+  .pr$PolarsLazyFrame$select(self, pra)
 }
 
 #' @title Lazy with columns
-#' @description add or replace columns of LazyFrame
-#' @keywords LazyFrame
+#' @description add or replace columns of PolarsLazyFrame
+#' @keywords PolarsLazyFrame
 #'
 #' @param ... any single Expr or string naming a column
-#' @return A new `LazyFrame` object with added/modified columns.
-LazyFrame_with_columns = function(...) {
+#' @return A new `PolarsLazyFrame` object with added/modified columns.
+PolarsLazyFrame_with_columns = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$with_columns(self, pra)
+  .pr$PolarsLazyFrame$with_columns(self, pra)
 }
 
 #' @title Lazy with column
-#' @description add or replace columns of LazyFrame
-#' @keywords LazyFrame
+#' @description add or replace columns of PolarsLazyFrame
+#' @keywords PolarsLazyFrame
 #' @param expr one Expr or string naming a column
-#' @usage LazyFrame_with_column(expr)
-#' @return A new `LazyFrame` object with add/modified column.
+#' @usage PolarsLazyFrame_with_column(expr)
+#' @return A new `PolarsLazyFrame` object with add/modified column.
 #' @docType NULL
-LazyFrame_with_column = "use_extendr_wrapper"
+PolarsLazyFrame_with_column = "use_extendr_wrapper"
 
-#' @title Apply filter to LazyFrame
+#' @title Apply filter to PolarsLazyFrame
 #' @description Filter rows with an Expression definining a boolean column
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param expr one Expr or string naming a column
-#' @return A new `LazyFrame` object with add/modified column.
+#' @return A new `PolarsLazyFrame` object with add/modified column.
 #' @docType NULL
-#' @usage LazyFrame_filter(expr)
+#' @usage PolarsLazyFrame_filter(expr)
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_filter = "use_extendr_wrapper"
+PolarsLazyFrame_filter = "use_extendr_wrapper"
 
-#' @title New DataFrame from LazyFrame_object$collect()
+#' @title New DataFrame from PolarsLazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
-#' @keywords LazyFrame DataFrame_new
+#' @keywords PolarsLazyFrame DataFrame_new
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect = function() {
-  unwrap(.pr$LazyFrame$collect(self), "in $collect():")
+PolarsLazyFrame_collect = function() {
+  unwrap(.pr$PolarsLazyFrame$collect(self), "in $collect():")
 }
 
-#' @title New DataFrame from LazyFrame_object$collect()
+#' @title New DataFrame from PolarsLazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
-#' @keywords LazyFrame DataFrame_new
+#' @keywords PolarsLazyFrame DataFrame_new
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect_background = function() {
-  .pr$LazyFrame$collect_background(self)
+PolarsLazyFrame_collect_background = function() {
+  .pr$PolarsLazyFrame$collect_background(self)
 }
 
 #' @title Limits
 #' @description take limit of n rows of query
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
 #' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
-#' @return A new `LazyFrame` object with applied filter.
-LazyFrame_limit = function(n) {
-  unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
+#' @return A new `PolarsLazyFrame` object with applied filter.
+PolarsLazyFrame_limit = function(n) {
+  unwrap(.pr$PolarsLazyFrame$limit(self, n), "in $limit():")
 }
 
 #' @title Head
 #' @description Get the first n rows.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
 #' @examples pl$DataFrame(mtcars)$lazy()$head(4)$collect()
-#' @return A new `LazyFrame` object with applied filter.
-LazyFrame_head = function(n) {
-  unwrap(.pr$LazyFrame$limit(self, n), "in $head():")
+#' @return A new `PolarsLazyFrame` object with applied filter.
+PolarsLazyFrame_head = function(n) {
+  unwrap(.pr$PolarsLazyFrame$limit(self, n), "in $head():")
 }
 
 #' @title First
@@ -300,160 +300,160 @@ LazyFrame_head = function(n) {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
-LazyFrame_first = "use_extendr_wrapper"
+PolarsLazyFrame_first = "use_extendr_wrapper"
 
 #' @title Last
 #' @description Aggregate the columns in the DataFrame to their maximum value.
-#' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @keywords PolarsLazyFrame
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
-LazyFrame_last = "use_extendr_wrapper"
+PolarsLazyFrame_last = "use_extendr_wrapper"
 
 #' @title Max
 #' @description Aggregate the columns in the DataFrame to their maximum value.
-#' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @keywords PolarsLazyFrame
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$max()$collect()
-LazyFrame_max = "use_extendr_wrapper"
+PolarsLazyFrame_max = "use_extendr_wrapper"
 
 #' @title Mean
 #' @description Aggregate the columns in the DataFrame to their mean value.
-#' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @keywords PolarsLazyFrame
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$mean()$collect()
-LazyFrame_mean = "use_extendr_wrapper"
+PolarsLazyFrame_mean = "use_extendr_wrapper"
 
 #' @title Median
 #' @description Aggregate the columns in the DataFrame to their median value.
-#' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @keywords PolarsLazyFrame
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$median()$collect()
-LazyFrame_median = "use_extendr_wrapper"
+PolarsLazyFrame_median = "use_extendr_wrapper"
 
 #' @title Min
 #' @description Aggregate the columns in the DataFrame to their minimum value.
-#' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @keywords PolarsLazyFrame
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$min()$collect()
-LazyFrame_min = "use_extendr_wrapper"
+PolarsLazyFrame_min = "use_extendr_wrapper"
 
 #' @title Sum
 #' @description Aggregate the columns of this DataFrame to their sum values.
-#' @keywords LazyFrame
-#' @return LazyFrame
+#' @keywords PolarsLazyFrame
+#' @return PolarsLazyFrame
 #' @docType NULL
 #' @format NULL
 #' @examples pl$DataFrame(mtcars)$lazy()$sum()$collect()
-LazyFrame_sum = "use_extendr_wrapper"
+PolarsLazyFrame_sum = "use_extendr_wrapper"
 
 #' @title Var
-#' @description Aggregate the columns of this LazyFrame to their variance values.
-#' @keywords LazyFrame
+#' @description Aggregate the columns of this PolarsLazyFrame to their variance values.
+#' @keywords PolarsLazyFrame
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
-LazyFrame_var = function(ddof = 1) {
-  unwrap(.pr$LazyFrame$var(self, ddof), "in $var():")
+PolarsLazyFrame_var = function(ddof = 1) {
+  unwrap(.pr$PolarsLazyFrame$var(self, ddof), "in $var():")
 }
 
 #' @title Std
-#' @description Aggregate the columns of this LazyFrame to their standard deviation values.
-#' @keywords LazyFrame
+#' @description Aggregate the columns of this PolarsLazyFrame to their standard deviation values.
+#' @keywords PolarsLazyFrame
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
-LazyFrame_std = function(ddof = 1) {
-  unwrap(.pr$LazyFrame$std(self, ddof), "in $std():")
+PolarsLazyFrame_std = function(ddof = 1) {
+  unwrap(.pr$PolarsLazyFrame$std(self, ddof), "in $std():")
 }
 
 #' @title Quantile
 #' @description Aggregate the columns in the DataFrame to their quantile value.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param quantile numeric Quantile between 0.0 and 1.0.
 #' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
-LazyFrame_quantile = function(quantile, interpolation = "nearest") {
-  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
+PolarsLazyFrame_quantile = function(quantile, interpolation = "nearest") {
+  unwrap(.pr$PolarsLazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
 
 #' @title Fill NaN
 #' @description Fill floating point NaN values by an Expression evaluation.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param fill_value Value to fill NaN with.
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c(1.5, 2, NaN, 4),
 #'   b = c(1.5, NaN, NaN, 4)
 #' )$lazy()
 #' df$fill_nan(99)$collect()
-LazyFrame_fill_nan = function(fill_value) {
-  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
+PolarsLazyFrame_fill_nan = function(fill_value) {
+  unwrap(.pr$PolarsLazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
 }
 
 #' @title Fill null
 #' @description Fill null values using the specified value or strategy.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param fill_value Value to fill `NA` with.
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples
 #' df = pl$DataFrame(
 #'   a = c(1.5, 2, NA, 4),
 #'   b = c(1.5, NA, NA, 4)
 #' )$lazy()
 #' df$fill_null(99)$collect()
-LazyFrame_fill_null = function(fill_value) {
-  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
+PolarsLazyFrame_fill_null = function(fill_value) {
+  unwrap(.pr$PolarsLazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
 }
 
 #' @title Shift
 #' @description Shift the values by a given period.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param periods integer Number of periods to shift (may be negative).
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
-LazyFrame_shift = function(periods = 1) {
-  unwrap(.pr$LazyFrame$shift(self, periods), "in $shift():")
+PolarsLazyFrame_shift = function(periods = 1) {
+  unwrap(.pr$PolarsLazyFrame$shift(self, periods), "in $shift():")
 }
 
 #' @title Shift and fill
 #' @description Shift the values by a given period and fill the resulting null values.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param fill_value fill None values with the result of this expression.
 #' @param periods integer Number of periods to shift (may be negative).
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$collect()$as_data_frame()
-LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
-  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
+PolarsLazyFrame_shift_and_fill = function(fill_value, periods = 1) {
+  unwrap(.pr$PolarsLazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
 
 #' @title Drop
 #' @description Remove columns from the dataframe.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param columns character vector Name of the column(s) that should be removed from the dataframe.
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
-LazyFrame_drop = function(columns) {
-  unwrap(.pr$LazyFrame$drop(self, columns), "in $drop():")
+PolarsLazyFrame_drop = function(columns) {
+  unwrap(.pr$PolarsLazyFrame$drop(self, columns), "in $drop():")
 }
 
 #' @title Reverse
 #' @description Reverse the DataFrame.
-#' @keywords LazyFrame
-#' @return LazyFrame
+#' @keywords PolarsLazyFrame
+#' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$reverse()$collect()
-LazyFrame_reverse = "use_extendr_wrapper"
+PolarsLazyFrame_reverse = "use_extendr_wrapper"
 
 #' @title Slice
 #' @description Get a slice of this DataFrame.
@@ -465,29 +465,29 @@ LazyFrame_reverse = "use_extendr_wrapper"
 #' pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
 #' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 #' mtcars[2:6, ]
-LazyFrame_slice = function(offset, length = NULL) {
-  unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
+PolarsLazyFrame_slice = function(offset, length = NULL) {
+  unwrap(.pr$PolarsLazyFrame$slice(self, offset, length), "in $slice():")
 }
 
 #' @title Tail
 #' @description take last n rows of query
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param n positive numeric or integer number not larger than 2^32
 #'
 #' @details any number will converted to u32. Negative raises error
 #'
 #' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
-#' @return A new `LazyFrame` object with applied filter.
-LazyFrame_tail = function(n) {
-  unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
+#' @return A new `PolarsLazyFrame` object with applied filter.
+PolarsLazyFrame_tail = function(n) {
+  unwrap(.pr$PolarsLazyFrame$tail(self, n), "in $tail():")
 }
 
 #' @title Lazy_drop_nulls
 #' @description Drop all rows that contain null values.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples
 #' tmp = mtcars
 #' tmp[1:3, "mpg"] = NA
@@ -495,14 +495,14 @@ LazyFrame_tail = function(n) {
 #' pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height
 #' pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height
 #' pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height
-LazyFrame_drop_nulls = function(subset = NULL) {
+PolarsLazyFrame_drop_nulls = function(subset = NULL) {
   pra = do.call(construct_ProtoExprArray, as.list(subset))
-  .pr$LazyFrame$drop_nulls(self, pra)
+  .pr$PolarsLazyFrame$drop_nulls(self, pra)
 }
 
 #' @title Lazy_unique
 #' @description Drop duplicate rows from this dataframe.
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #'
 #' @param subset string or vector of strings. Column name(s) to consider when
 #'  identifying duplicates. If set to NULL (default), use all columns.
@@ -510,11 +510,11 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
-#' @param maintain_order Keep the same order as the original `LazyFrame.` This
+#' @param maintain_order Keep the same order as the original `PolarsLazyFrame.` This
 #'  is more expensive to compute. Settings this to `TRUE` blocks the possibility
 #'  to run on the streaming engine.
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples
 #' df = pl$DataFrame(
 #'   x = c(1L, 1:3, 3L),
@@ -523,13 +523,13 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #' )
 #' df$lazy()$unique()$collect()$height
 #' df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
-LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
+PolarsLazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
+  unwrap(.pr$PolarsLazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 
 #' Lazy_groupby
-#' @description Create a LazyGroupBy from a LazyFrame.
-#' @keywords LazyFrame
+#' @description Create a LazyGroupBy from a PolarsLazyFrame.
+#' @keywords PolarsLazyFrame
 #' @param ... any Expr(s) or string(s) naming a column
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @param maintain_order bool, should an aggregate of a GroupBy retain order of groups?
@@ -548,26 +548,26 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
-  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
+PolarsLazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+  .pr$PolarsLazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
 }
 
-#' @title LazyFrame join
-#' @description join a LazyFrame
-#' @keywords LazyFrame
-#' @param other LazyFrame
+#' @title PolarsLazyFrame join
+#' @description join a PolarsLazyFrame
+#' @keywords PolarsLazyFrame
+#' @param other PolarsLazyFrame
 #' @param on named columns as char vector of named columns, or list of expressions and/or strings.
-#' @param left_on names of columns in self LazyFrame, order should match. Type, see on param.
-#' @param right_on names of columns in other LazyFrame, order should match. Type, see on param.
+#' @param left_on names of columns in self PolarsLazyFrame, order should match. Type, see on param.
+#' @param right_on names of columns in other PolarsLazyFrame, order should match. Type, see on param.
 #' @param how a string selecting one of the following methods: inner, left, outer, semi, anti, cross
 #' @param suffix name to added right table
 #' @param allow_parallel bool
 #' @param force_parallel bool
 #'
-#' @return A new `LazyFrame` object with applied join.
-LazyFrame_join = function(
-    other, # : LazyFrame or DataFrame,
+#' @return A new `PolarsLazyFrame` object with applied join.
+PolarsLazyFrame_join = function(
+    other, # : PolarsLazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
     right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
     on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -575,12 +575,12 @@ LazyFrame_join = function(
     suffix = "_right",
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  if (inherits(other, "LazyFrame")) {
+  if (inherits(other, "PolarsLazyFrame")) {
     # nothing
   } else if (inherits(other, "DataFrame")) {
     other = other$lazy()
   } else {
-    stopf(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+    stopf(paste("Expected a `PolarsLazyFrame` as join table, got ", class(other)))
   }
 
   how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
@@ -601,7 +601,7 @@ LazyFrame_join = function(
     stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
   }
 
-  .pr$LazyFrame$join(
+  .pr$PolarsLazyFrame$join(
     self, other, rexprs_left, rexprs_right,
     how, suffix, allow_parallel, force_parallel
   )
@@ -610,8 +610,8 @@ LazyFrame_join = function(
 
 
 
-#' LazyFrame Sort
-#' @description sort a LazyFrame by on or more Expr
+#' PolarsLazyFrame Sort
+#' @description sort a PolarsLazyFrame by on or more Expr
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
 #' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
@@ -625,7 +625,7 @@ LazyFrame_join = function(
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
 #'
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @keywords  DataFrame
 #' @examples
 #' df = mtcars
@@ -638,7 +638,7 @@ LazyFrame_join = function(
 #' df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
 #' df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 #' df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
-LazyFrame_sort = function(
+PolarsLazyFrame_sort = function(
     by, # : IntoExpr | List[IntoExpr],
     ..., # unnamed Into expr
     descending = FALSE, #  bool | vector[bool] = False,
@@ -660,7 +660,7 @@ LazyFrame_sort = function(
   ) |>
     # and_then skips step, if input is an Error otherwise call rust wrapper
     and_then(\(by_combined) { # by_combined has Rtyp" List<Result<Expr,String>>
-      .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
+      .pr$PolarsLazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
     }) |>
     # add same context to any Error
     unwrap("in sort():")
@@ -668,7 +668,7 @@ LazyFrame_sort = function(
 
 
 #' Perform joins on nearest keys
-#' @param other LazyFrame
+#' @param other PolarsLazyFrame
 #' @param ...  not used, blocks use of further positional arguments
 #' @param left_on column name or Expr,  join column of left table
 #' @param right_on column name or Expr, join column of right (other) table
@@ -724,10 +724,10 @@ LazyFrame_sort = function(
 #'     'on' key is greater than or equal to the left's key.
 #'
 #' The default is "backward".
-#' @keywords LazyFrame
-#' @return new joined LazyFrame
+#' @keywords PolarsLazyFrame
+#' @return new joined PolarsLazyFrame
 #' @examples #
-#' # create two LazyFrame to join asof
+#' # create two PolarsLazyFrame to join asof
 #' gdp = pl$DataFrame(
 #'   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
 #'   gdp = c(4321, 4164, 4411, 4566, 4696),
@@ -745,7 +745,7 @@ LazyFrame_sort = function(
 #' pop = pop$sort("date")
 #'
 #'
-#' # Left-join_asof LazyFrame pop with gdp on "date"
+#' # Left-join_asof PolarsLazyFrame pop with gdp on "date"
 #' # Look backward in gdp to find closest matching date
 #' pop$join_asof(gdp, on = "date", strategy = "backward")$collect()
 #'
@@ -760,7 +760,7 @@ LazyFrame_sort = function(
 #'
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)$collect()
-LazyFrame_join_asof = function(
+PolarsLazyFrame_join_asof = function(
     other,
     ...,
     left_on = NULL,
@@ -779,7 +779,7 @@ LazyFrame_join_asof = function(
   tolerance_str = if (is.character(tolerance)) tolerance else NULL
   tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 
-  .pr$LazyFrame$join_asof(
+  .pr$PolarsLazyFrame$join_asof(
     self, other,
     left_on, right_on,
     by_left, by_right,
@@ -811,9 +811,9 @@ LazyFrame_join_asof = function(
 #' measured variables (value_vars), are "unpivoted" to the row axis, leaving just
 #' two non-identifier columns, 'variable' and 'value'.
 #'
-#' @keywords LazyFrame
+#' @keywords PolarsLazyFrame
 #'
-#' @return A new `LazyFrame`
+#' @return A new `PolarsLazyFrame`
 #'
 #' @examples
 #' lf = pl$DataFrame(
@@ -823,32 +823,32 @@ LazyFrame_join_asof = function(
 #' )$lazy()
 #' lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()
 #'
-LazyFrame_melt = function(
+PolarsLazyFrame_melt = function(
     id_vars = NULL,
     value_vars = NULL,
     variable_name = NULL,
     value_name = NULL,
     ...,
     streamable = TRUE) {
-  .pr$LazyFrame$melt(
+  .pr$PolarsLazyFrame$melt(
     self, id_vars %||% character(), value_vars %||% character(),
     value_name, variable_name, streamable
   ) |> unwrap("in $melt( ): ")
 }
 
-#' @title Rename columns of a LazyFrame
-#' @keywords LazyFrame
+#' @title Rename columns of a PolarsLazyFrame
+#' @keywords PolarsLazyFrame
 #' @param ... One of the following:
 #'  - params like `new_name = "old_name"` to rename selected variables.
 #'  - as above but, but params wrapped in a list
-#' @return LazyFrame
+#' @return PolarsLazyFrame
 #' @examples
 #' pl$DataFrame(mtcars)$
 #'   lazy()$
 #'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
 #'   collect()
 #'
-LazyFrame_rename = function(...) {
+PolarsLazyFrame_rename = function(...) {
   mapping = list2(...)
   if (length(mapping) == 0) {
     return(self)
@@ -858,5 +858,5 @@ LazyFrame_rename = function(...) {
   }
   existing = unname(unlist(mapping))
   new = names(mapping)
-  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
+  unwrap(.pr$PolarsLazyFrame$rename(self, existing, new), "in $rename():")
 }

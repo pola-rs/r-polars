@@ -2238,7 +2238,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #' Filter a single column.
 #' @description
 #' Mostly useful in an aggregation context. If you want to filter on a DataFrame
-#' level, use `LazyFrame.filter`.
+#' level, use `PolarsLazyFrame.filter`.
 #'
 #' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
 #' @return Expr
@@ -3943,7 +3943,7 @@ Expr_to_r = function(df = NULL, i = 0) {
     pl$select(self)$to_series(i)$to_r()
   } else {
     if (!inherits(df, c("DataFrame"))) {
-      stopf("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
+      stopf("Expr_to_r: input is not NULL or a DataFrame/PolarsLazyFrame")
     }
     df$select(self)$to_series(i)$to_r()
   }

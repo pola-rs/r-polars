@@ -3,12 +3,12 @@
 \name{DataFrame_lazy}
 \alias{DataFrame_lazy}
 \alias{lazy}
-\title{Convert an existing DataFrame to a LazyFrame}
+\title{Convert an existing DataFrame to a PolarsLazyFrame}
 \usage{
 DataFrame_lazy
 }
 \value{
-A LazyFrame
+A PolarsLazyFrame
 }
 \description{
 Start a new lazy query from a DataFrame.
@@ -18,4 +18,4 @@ pl$DataFrame(iris)$lazy()
 
 }
 \keyword{DataFrame}
-\keyword{LazyFrame_new}
+\keyword{PolarsLazyFrame_new}
