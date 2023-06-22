@@ -561,3 +561,10 @@ test_that("rename", {
   b = lf$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$collect()$columns
   expect_identical(a, b)
 })
+
+test_that("schema", {
+  lf = pl$DataFrame(mtcars)$lazy()
+  # expect_identical(lf$schema, lf$collect()$schema)
+  # expect_identical(lf$dtypes, lf$collect()$dtypes)
+  expect_identical(lf$columns, lf$collect()$columns)
+})
