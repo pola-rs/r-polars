@@ -870,7 +870,7 @@ LazyFrame_rename = function(...) {
 #'
 LazyFrame_schema = method_as_property(function() {
   .pr$LazyFrame$schema(self) |>
-  unwrap("in $schema():")
+    unwrap("in $schema :")
 })
 
 #' @title Columns
@@ -881,7 +881,9 @@ LazyFrame_schema = method_as_property(function() {
 #' pl$LazyFrame(mtcars)$columns
 #'
 LazyFrame_columns = method_as_property(function() {
-  self$schema |> names()
+  .pr$LazyFrame$schema(self) |>
+    unwrap("in $columns :") |>
+    names()
 })
 
 #' @title Dtypes
@@ -892,7 +894,8 @@ LazyFrame_columns = method_as_property(function() {
 #' pl$LazyFrame(mtcars)$dtypes
 #'
 LazyFrame_dtypes = method_as_property(function() {
-  self$schema |>
-  unlist() |>
-  unname()
+  .pr$LazyFrame$schema(self) |>
+    unwrap("in $dtypes :")
+    unlist() |>
+    unname()
 })
