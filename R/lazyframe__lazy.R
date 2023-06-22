@@ -895,7 +895,7 @@ LazyFrame_columns = method_as_property(function() {
 #'
 LazyFrame_dtypes = method_as_property(function() {
   .pr$LazyFrame$schema(self) |>
-    unwrap("in $dtypes :")
+    unwrap("in $dtypes :") |>
     unlist() |>
     unname()
 })
