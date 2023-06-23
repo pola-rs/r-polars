@@ -79,7 +79,11 @@ RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
 
 RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
 
+RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
+
 RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
+
+RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
 
 RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
 

@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
 use extendr_api::{
-    call, eval_string, extendr, extendr_module, symbol::class_symbol, Attributes, Operators,
-    Pairlist, Rinternals, Robj, Types,
+    call, eval_string, extendr, extendr_module, symbol::class_symbol, Attributes, Nullable,
+    Operators, Pairlist, Rinternals, Robj, Types,
 };
 use thiserror::Error;
 
@@ -148,10 +148,18 @@ impl RPolarsErr {
         err
     }
 
+    fn get_rcall(&self) -> Nullable<String> {
+        self.rcall.clone().into()
+    }
+
     fn rinfo(&self, i: String) -> Self {
         let mut err = self.clone();
         err.rinfo = Some(i);
         err
+    }
+
+    fn get_rinfo(&self) -> Nullable<String> {
+        self.rinfo.clone().into()
     }
 
     fn when(&self, s: String) -> Self {
