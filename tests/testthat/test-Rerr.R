@@ -1,5 +1,4 @@
 test_that("can add any context to err", {
-
   err_types = c(
     "bad_arg", "bad_robj", "bad_val", "hint",
     "mistyped", "misvalued", "plain", "when"
@@ -14,7 +13,6 @@ test_that("can add any context to err", {
       "Hint", "BadValue", "BadValue", "BadArgument"
     )
   )
-
 })
 
 test_that("set/replace/read rcall & rinfo", {
@@ -31,5 +29,5 @@ test_that("set/replace/read rcall & rinfo", {
   expect_identical(err_a$get_rcall(), call_to_string(sys.call(1)))
 
   err_b = unwrap_err(result(unwrap(Err(err_a), "in $joe()")))
-  expect_identical(err_b$get_rcall(),  call_to_string(sys.call(1)))
+  expect_identical(err_b$get_rcall(), call_to_string(sys.call(1)))
 })
