@@ -12,7 +12,7 @@ pub enum Rctx {
     BadArg(String),
     #[error("Got value [{0}]")]
     BadVal(String),
-    #[error("Encountered the following error in Extendr:\n{0}")]
+    #[error("Encountered the following error in Extendr\n\t{0}")]
     Extendr(String),
     #[error("Possibly because {0}")]
     Hint(String),
@@ -22,45 +22,46 @@ pub enum Rctx {
     Misvalued(String),
     #[error("{0}")]
     Plain(String),
-    #[error("Encountered the following error in Polars:\n{0}")]
+    #[error("Encountered the following error in Polars:\n\t{0}")]
     Polars(String),
     #[error("When {0}")]
     When(String),
-    #[error("In {0}")]
-    Wherein(String),
 }
 
 #[derive(Clone, Debug)]
-pub struct RPolarsErr(VecDeque<Rctx>);
+pub struct RPolarsErr {
+    contexts: VecDeque<Rctx>,
+    rcall: Option<String>,
+    rinfo: Option<String>,
+}
 pub type RResult<T> = core::result::Result<T, RPolarsErr>;
 
 pub trait WithRctx<T> {
     fn ctx(self, rctx: Rctx) -> RResult<T>;
-    fn bad_arg<S: Into<String>>(self, arg: S) -> RResult<T>;
+    fn bad_arg(self, arg: impl Into<String>) -> RResult<T>;
     fn bad_robj(self, robj: &Robj) -> RResult<T>;
-    fn bad_val<S: Into<String>>(self, val: S) -> RResult<T>;
-    fn hint<S: Into<String>>(self, cause: S) -> RResult<T>;
-    fn mistyped<S: Into<String>>(self, ty: S) -> RResult<T>;
-    fn misvalued<S: Into<String>>(self, scope: S) -> RResult<T>;
-    fn plain<S: Into<String>>(self, msg: S) -> RResult<T>;
-    fn when<S: Into<String>>(self, env: S) -> RResult<T>;
-    fn wherein<S: Into<String>>(self, env: S) -> RResult<T>;
+    fn bad_val(self, val: impl Into<String>) -> RResult<T>;
+    fn hint(self, cause: impl Into<String>) -> RResult<T>;
+    fn mistyped(self, ty: impl Into<String>) -> RResult<T>;
+    fn misvalued(self, scope: impl Into<String>) -> RResult<T>;
+    fn plain(self, msg: impl Into<String>) -> RResult<T>;
+    fn when(self, env: impl Into<String>) -> RResult<T>;
 }
 
 impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
     fn ctx(self, rctx: Rctx) -> RResult<T> {
         self.map_err(|e| {
             let mut rerr = e.into();
-            rerr.0.push_back(rctx);
+            rerr.contexts.push_back(rctx);
             rerr
         })
     }
 
-    fn bad_arg<S: Into<String>>(self, arg: S) -> RResult<T> {
+    fn bad_arg(self, arg: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::BadArg(arg.into()))
     }
 
-    fn bad_val<S: Into<String>>(self, val: S) -> RResult<T> {
+    fn bad_val(self, val: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::BadVal(val.into()))
     }
 
@@ -68,43 +69,35 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
         self.bad_val(robj_dbg(robj))
     }
 
-    fn hint<S: Into<String>>(self, cause: S) -> RResult<T> {
+    fn hint(self, cause: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::Hint(cause.into()))
     }
 
-    fn mistyped<S: Into<String>>(self, ty: S) -> RResult<T> {
+    fn mistyped(self, ty: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::Mistyped(ty.into()))
     }
 
-    fn misvalued<S: Into<String>>(self, scope: S) -> RResult<T> {
+    fn misvalued(self, scope: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::Misvalued(scope.into()))
     }
 
-    fn plain<S: Into<String>>(self, msg: S) -> RResult<T> {
+    fn plain(self, msg: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::Plain(msg.into()))
     }
 
-    fn when<S: Into<String>>(self, env: S) -> RResult<T> {
+    fn when(self, env: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::When(env.into()))
-    }
-
-    fn wherein<S: Into<String>>(self, env: S) -> RResult<T> {
-        self.ctx(Rctx::Wherein(env.into()))
     }
 }
 
 #[extendr]
 impl RPolarsErr {
     pub fn new() -> Self {
-        RPolarsErr(VecDeque::new())
-    }
-
-    pub fn info(&self) -> String {
-        format!("{}", self)
+        RPolarsErr::new_from_ctxs(VecDeque::new())
     }
 
     pub fn contexts(&self) -> Pairlist {
-        Pairlist::from_pairs(self.0.iter().rev().map(|rctx| match rctx {
+        Pairlist::from_pairs(self.contexts.iter().rev().map(|rctx| match rctx {
             Rctx::BadArg(arg) => ("BadArgument", arg),
             Rctx::BadVal(val) => ("BadValue", val),
             Rctx::Extendr(err) => ("ExtendrError", err),
@@ -114,95 +107,119 @@ impl RPolarsErr {
             Rctx::Plain(msg) => ("PlainErrorMessage", msg),
             Rctx::Polars(err) => ("PolarsError", err),
             Rctx::When(target) => ("When", target),
-            Rctx::Wherein(target) => ("Wherein", target),
         }))
     }
 
-    pub fn bad_arg(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::BadArg(x))
+    pub fn pretty_msg(&self) -> String {
+        format!("{}", self)
     }
-    pub fn bad_val(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::BadVal(x))
+
+    fn bad_arg(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::BadArg(s))
     }
-    pub fn bad_robj(&self, x: Robj) -> Self {
-        self.bad_val(robj_dbg(&x))
+
+    fn bad_robj(&self, r: Robj) -> Self {
+        self.bad_val(robj_dbg(&r))
     }
-    pub fn hint(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::Hint(x))
+
+    fn bad_val(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::BadVal(s))
     }
-    pub fn mistyped(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::Mistyped(x))
+
+    fn hint(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::Hint(s))
     }
-    pub fn misvalued(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::Misvalued(x))
+
+    fn mistyped(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::Mistyped(s))
     }
-    pub fn plain(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::Plain(x))
+
+    fn misvalued(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::Misvalued(s))
     }
-    pub fn when(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::When(x))
+
+    fn plain(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::Plain(s))
     }
-    pub fn when_last(&self, x: String) -> Self {
-        self.push_front_rctx(Rctx::When(x))
+
+    fn rcall(&self, c: String) -> Self {
+        let mut err = self.clone();
+        err.rcall = Some(c);
+        err
     }
-    pub fn wherein(&self, x: String) -> Self {
-        self.push_back_rctx(Rctx::Wherein(x))
+
+    fn rinfo(&self, i: String) -> Self {
+        let mut err = self.clone();
+        err.rinfo = Some(i);
+        err
+    }
+
+    fn when(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::When(s))
     }
 }
-//methods not to export with extendr
+
 impl RPolarsErr {
-    pub fn push_front_rctx(&self, rctx: Rctx) -> Self {
-        let mut rerr = self.clone();
-        rerr.0.push_front(rctx);
-        rerr
+    fn new_from_ctxs(ctxs: VecDeque<Rctx>) -> Self {
+        RPolarsErr {
+            contexts: ctxs,
+            rcall: None,
+            rinfo: None,
+        }
     }
-    pub fn push_back_rctx(&self, rctx: Rctx) -> Self {
-        let mut rerr = self.clone();
-        rerr.0.push_back(rctx);
-        rerr
+
+    fn push_back_rctx(&self, rctx: Rctx) -> Self {
+        let mut err = self.clone();
+        err.contexts.push_back(rctx);
+        err
     }
 }
 
 impl std::fmt::Display for RPolarsErr {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            self.0
-                .iter()
-                .rev()
-                .map(|rerr| format!("{}", rerr))
-                .reduce(|msg, rerr| { format!("{}: {}", msg, rerr) })
-                .unwrap_or(String::from("Missing contexts from the Rust side"))
-        )
+        use core::fmt::Write;
+        use indenter::indented;
+        writeln!(f, "Execution halted with the following contexts")?;
+        if let Some(i) = &self.rinfo {
+            writeln!(indented(f).ind(0), "In R: {}", i)?
+        }
+        if let Some(c) = &self.rcall {
+            writeln!(indented(f).ind(0), "During function call [{}]", c)?
+        }
+        Ok(self
+            .contexts
+            .iter()
+            .rev()
+            .enumerate()
+            .try_for_each(|(idx, ctx)| writeln!(indented(f).ind(idx + 1), "{}", ctx))?)
     }
 }
 
 impl From<RPolarsErr> for String {
     fn from(rerr: RPolarsErr) -> Self {
-        rerr.info()
+        rerr.pretty_msg()
     }
 }
 
 impl<E: std::error::Error> From<E> for RPolarsErr {
     default fn from(err: E) -> Self {
-        RPolarsErr(VecDeque::from([Rctx::Plain(rdbg(err))]))
+        RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Plain(rdbg(err))]))
     }
 }
 
 impl From<extendr_api::Error> for RPolarsErr {
     fn from(extendr_err: extendr_api::Error) -> Self {
-        RPolarsErr(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
+        RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
     }
 }
 
 impl From<polars::error::PolarsError> for RPolarsErr {
     fn from(polars_err: polars::error::PolarsError) -> Self {
         let mut rerr = RPolarsErr::new();
-        rerr.0.push_back(Rctx::Polars(rdbg(&polars_err)));
+        rerr.contexts.push_back(Rctx::Polars(rdbg(&polars_err)));
         match polars_err {
             polars::prelude::PolarsError::InvalidOperation(x) => {
-                rerr.0.push_back(Rctx::Hint(format!(
+                rerr.contexts.push_back(Rctx::Hint(format!(
                     "something (likely a column) with name {:?} is not found",
                     x
                 )));

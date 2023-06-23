@@ -59,29 +59,29 @@ RPolarsErr <- new.env(parent = emptyenv())
 
 RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
 
-RPolarsErr$info <- function() .Call(wrap__RPolarsErr__info, self)
-
 RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
 
-RPolarsErr$bad_arg <- function(x) .Call(wrap__RPolarsErr__bad_arg, self, x)
+RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
 
-RPolarsErr$bad_val <- function(x) .Call(wrap__RPolarsErr__bad_val, self, x)
+RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
 
-RPolarsErr$bad_robj <- function(x) .Call(wrap__RPolarsErr__bad_robj, self, x)
+RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
 
-RPolarsErr$hint <- function(x) .Call(wrap__RPolarsErr__hint, self, x)
+RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
 
-RPolarsErr$mistyped <- function(x) .Call(wrap__RPolarsErr__mistyped, self, x)
+RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
 
-RPolarsErr$misvalued <- function(x) .Call(wrap__RPolarsErr__misvalued, self, x)
+RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
 
-RPolarsErr$plain <- function(x) .Call(wrap__RPolarsErr__plain, self, x)
+RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
 
-RPolarsErr$when <- function(x) .Call(wrap__RPolarsErr__when, self, x)
+RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
 
-RPolarsErr$when_last <- function(x) .Call(wrap__RPolarsErr__when_last, self, x)
+RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
 
-RPolarsErr$wherein <- function(x) .Call(wrap__RPolarsErr__wherein, self, x)
+RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
+
+RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
 
 #' @export
 `$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }

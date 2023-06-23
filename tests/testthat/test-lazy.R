@@ -564,7 +564,6 @@ test_that("rename", {
 
 test_that("schema", {
   lf = pl$DataFrame(mtcars)$lazy()
-  # expect_identical(lf$schema, lf$collect()$schema)
-  # expect_identical(lf$dtypes, lf$collect()$dtypes)
+  expect_true(lf$dtypes[[1]] == lf$collect()$dtypes[[1]])
   expect_identical(lf$columns, lf$collect()$columns)
 })
