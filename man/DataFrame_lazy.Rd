@@ -3,7 +3,7 @@
 \name{DataFrame_lazy}
 \alias{DataFrame_lazy}
 \alias{lazy}
-\title{Convert an existing DataFrame to a PolarsLazyFrame}
+\title{Convert an existing DataFrame to a LazyFrame}
 \usage{
 DataFrame_lazy
 }

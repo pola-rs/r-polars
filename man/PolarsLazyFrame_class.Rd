@@ -43,7 +43,7 @@ prefixed \code{PolarsLazyFrame_}.
 ls(polars:::PolarsLazyFrame)
 
 # see all private methods (not intended for regular use)
-ls(polars:::.pr$PolarsLazyFrame)
+ls(polars:::.pr$LazyFrame)
 
 
 ## Practical example ##

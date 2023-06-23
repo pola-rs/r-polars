@@ -3,7 +3,7 @@
 \name{lazy_csv_reader}
 \alias{lazy_csv_reader}
 \alias{csv_reader}
-\title{new PolarsLazyFrame from csv}
+\title{new LazyFrame from csv}
 \usage{
 lazy_csv_reader(
   path,
@@ -106,4 +106,4 @@ lazy_frame = lazy_csv_reader(path = my_file)
 lazy_frame$collect()
 unlink(my_file)
 }
-\keyword{PolarsLazyFrame_new}
+\keyword{LazyFrame_new}

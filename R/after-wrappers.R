@@ -63,7 +63,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$Series = extendr_method_to_pure_functions(Series)
 .pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
 .pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
-.pr$PolarsLazyFrame = extendr_method_to_pure_functions(PolarsLazyFrame)
+.pr$LazyFrame = extendr_method_to_pure_functions(PolarsLazyFrame)
 .pr$LazyGroupBy = extendr_method_to_pure_functions(LazyGroupBy)
 .pr$PolarsBackgroundHandle = extendr_method_to_pure_functions(PolarsBackgroundHandle)
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
@@ -180,8 +180,8 @@ method_as_property = function(f, setter = FALSE) {
 #'   "polars public class methods, access via object$method()"
 #' )
 pl = new.env(parent = emptyenv())
-
 class(pl) = c("pl_polars_env", "environment")
+
 
 
 
@@ -205,16 +205,17 @@ class(pl) = c("pl_polars_env", "environment")
 # remap
 DataType = clone_env_one_level_deep(RPolarsDataType)
 
-# used for printing public environment
+
+# used for printing public environment documentation above
 pl_class_names = sort(
   c(
     "PolarsLazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
-    "When", "WhenThen", "WhenThenThen"
+    "When", "WhenThen", "WhenThenThen", "RPolarsDataType", "RPolarsErr", "RField"
   )
 ) # TODO discover all public class automaticly
-
 pl_pub_env = as.environment(asNamespace("polars"))
 pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
+
 
 
 #' @title Any polars class object is made of this

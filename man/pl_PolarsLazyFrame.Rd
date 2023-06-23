@@ -15,7 +15,7 @@ It is a wrapper around \code{pl$DataFrame()$lazy()}. Note that this should only
 be used for making examples and quick demonstrations.
 }
 \examples{
-pl$PolarsLazyFrame(
+pl$LazyFrame(
   a = list(c(1, 2, 3, 4, 5)),
   b = 1:5,
   c = letters[1:5],
@@ -23,7 +23,7 @@ pl$PolarsLazyFrame(
 ) # directly from vectors
 
 # from a list of vectors or data.frame
-pl$PolarsLazyFrame(list(
+pl$LazyFrame(list(
   a = c(1, 2, 3, 4, 5),
   b = 1:5,
   c = letters[1:5],

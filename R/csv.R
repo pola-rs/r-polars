@@ -1,6 +1,6 @@
-#' new PolarsLazyFrame from csv
+#' new LazyFrame from csv
 #' @description will scan the csv when collect(), not now
-#' @keywords PolarsLazyFrame_new
+#' @keywords LazyFrame_new
 #'
 #' @param path string, Path to a file
 #' @param sep Single char to use as delimiter in the file.

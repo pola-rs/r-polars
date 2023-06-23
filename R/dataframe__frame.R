@@ -572,7 +572,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 
 
 
-#' Convert an existing DataFrame to a PolarsLazyFrame
+#' Convert an existing DataFrame to a LazyFrame
 #' @name DataFrame_lazy
 #' @description Start a new lazy query from a DataFrame.
 #'

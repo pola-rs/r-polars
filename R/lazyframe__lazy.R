@@ -40,7 +40,7 @@
 #' ls(polars:::PolarsLazyFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$PolarsLazyFrame)
+#' ls(polars:::.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##
@@ -123,7 +123,7 @@ PolarsLazyFrame
 #' @keywords PolarsLazyFrame_new
 #'
 #' @examples
-#' pl$PolarsLazyFrame(
+#' pl$LazyFrame(
 #'   a = list(c(1, 2, 3, 4, 5)),
 #'   b = 1:5,
 #'   c = letters[1:5],
@@ -131,14 +131,14 @@ PolarsLazyFrame
 #' ) # directly from vectors
 #'
 #' # from a list of vectors or data.frame
-#' pl$PolarsLazyFrame(list(
+#' pl$LazyFrame(list(
 #'   a = c(1, 2, 3, 4, 5),
 #'   b = 1:5,
 #'   c = letters[1:5],
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
-pl$PolarsLazyFrame = function(...) {
+pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
 
@@ -155,7 +155,7 @@ pl$PolarsLazyFrame = function(...) {
 #' @examples print(pl$DataFrame(iris)$lazy())
 print.PolarsLazyFrame = function(x, ...) {
   print("polars PolarsLazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
-  cloned_x = .pr$PolarsLazyFrame$print(x)
+  cloned_x = .pr$LazyFrame$print(x)
   invisible(cloned_x)
 }
 
@@ -201,7 +201,7 @@ PolarsLazyFrame_print = "use_extendr_wrapper"
 #' # then filtering, it is faster to filter first and then sort the rest.
 #' lazy_query$describe_optimized_plan()
 PolarsLazyFrame_describe_optimized_plan = function() {
-  unwrap(.pr$PolarsLazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
+  unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
 }
 
@@ -216,7 +216,7 @@ PolarsLazyFrame_describe_plan = "use_extendr_wrapper"
 #' @return A new `PolarsLazyFrame` object with applied filter.
 PolarsLazyFrame_select = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$PolarsLazyFrame$select(self, pra)
+  .pr$LazyFrame$select(self, pra)
 }
 
 #' @title Lazy with columns
@@ -227,7 +227,7 @@ PolarsLazyFrame_select = function(...) {
 #' @return A new `PolarsLazyFrame` object with added/modified columns.
 PolarsLazyFrame_with_columns = function(...) {
   pra = construct_ProtoExprArray(...)
-  .pr$PolarsLazyFrame$with_columns(self, pra)
+  .pr$LazyFrame$with_columns(self, pra)
 }
 
 #' @title Lazy with column
@@ -255,7 +255,7 @@ PolarsLazyFrame_filter = "use_extendr_wrapper"
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 PolarsLazyFrame_collect = function() {
-  unwrap(.pr$PolarsLazyFrame$collect(self), "in $collect():")
+  unwrap(.pr$LazyFrame$collect(self), "in $collect():")
 }
 
 #' @title New DataFrame from PolarsLazyFrame_object$collect()
@@ -264,7 +264,7 @@ PolarsLazyFrame_collect = function() {
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 PolarsLazyFrame_collect_background = function() {
-  .pr$PolarsLazyFrame$collect_background(self)
+  .pr$LazyFrame$collect_background(self)
 }
 
 #' @title Limits
@@ -277,7 +277,7 @@ PolarsLazyFrame_collect_background = function() {
 #' @examples pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
 #' @return A new `PolarsLazyFrame` object with applied filter.
 PolarsLazyFrame_limit = function(n) {
-  unwrap(.pr$PolarsLazyFrame$limit(self, n), "in $limit():")
+  unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
 }
 
 #' @title Head
@@ -290,7 +290,7 @@ PolarsLazyFrame_limit = function(n) {
 #' @examples pl$DataFrame(mtcars)$lazy()$head(4)$collect()
 #' @return A new `PolarsLazyFrame` object with applied filter.
 PolarsLazyFrame_head = function(n) {
-  unwrap(.pr$PolarsLazyFrame$limit(self, n), "in $head():")
+  unwrap(.pr$LazyFrame$limit(self, n), "in $head():")
 }
 
 #' @title First
@@ -363,7 +363,7 @@ PolarsLazyFrame_sum = "use_extendr_wrapper"
 #' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$var()$collect()
 PolarsLazyFrame_var = function(ddof = 1) {
-  unwrap(.pr$PolarsLazyFrame$var(self, ddof), "in $var():")
+  unwrap(.pr$LazyFrame$var(self, ddof), "in $var():")
 }
 
 #' @title Std
@@ -373,7 +373,7 @@ PolarsLazyFrame_var = function(ddof = 1) {
 #' @return A new `PolarsLazyFrame` object with applied aggregation.
 #' @examples pl$DataFrame(mtcars)$lazy()$std()$collect()
 PolarsLazyFrame_std = function(ddof = 1) {
-  unwrap(.pr$PolarsLazyFrame$std(self, ddof), "in $std():")
+  unwrap(.pr$LazyFrame$std(self, ddof), "in $std():")
 }
 
 #' @title Quantile
@@ -384,7 +384,7 @@ PolarsLazyFrame_std = function(ddof = 1) {
 #' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
 PolarsLazyFrame_quantile = function(quantile, interpolation = "nearest") {
-  unwrap(.pr$PolarsLazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
+  unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
 
 #' @title Fill NaN
@@ -399,7 +399,7 @@ PolarsLazyFrame_quantile = function(quantile, interpolation = "nearest") {
 #' )$lazy()
 #' df$fill_nan(99)$collect()
 PolarsLazyFrame_fill_nan = function(fill_value) {
-  unwrap(.pr$PolarsLazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
+  unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
 }
 
 #' @title Fill null
@@ -414,7 +414,7 @@ PolarsLazyFrame_fill_nan = function(fill_value) {
 #' )$lazy()
 #' df$fill_null(99)$collect()
 PolarsLazyFrame_fill_null = function(fill_value) {
-  unwrap(.pr$PolarsLazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
+  unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
 }
 
 #' @title Shift
@@ -424,7 +424,7 @@ PolarsLazyFrame_fill_null = function(fill_value) {
 #' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
 PolarsLazyFrame_shift = function(periods = 1) {
-  unwrap(.pr$PolarsLazyFrame$shift(self, periods), "in $shift():")
+  unwrap(.pr$LazyFrame$shift(self, periods), "in $shift():")
 }
 
 #' @title Shift and fill
@@ -435,7 +435,7 @@ PolarsLazyFrame_shift = function(periods = 1) {
 #' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$collect()$as_data_frame()
 PolarsLazyFrame_shift_and_fill = function(fill_value, periods = 1) {
-  unwrap(.pr$PolarsLazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
+  unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
 
 #' @title Drop
@@ -445,7 +445,7 @@ PolarsLazyFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' @return PolarsLazyFrame
 #' @examples pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
 PolarsLazyFrame_drop = function(columns) {
-  unwrap(.pr$PolarsLazyFrame$drop(self, columns), "in $drop():")
+  unwrap(.pr$LazyFrame$drop(self, columns), "in $drop():")
 }
 
 #' @title Reverse
@@ -466,7 +466,7 @@ PolarsLazyFrame_reverse = "use_extendr_wrapper"
 #' pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
 #' mtcars[2:6, ]
 PolarsLazyFrame_slice = function(offset, length = NULL) {
-  unwrap(.pr$PolarsLazyFrame$slice(self, offset, length), "in $slice():")
+  unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
 }
 
 #' @title Tail
@@ -479,7 +479,7 @@ PolarsLazyFrame_slice = function(offset, length = NULL) {
 #' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
 #' @return A new `PolarsLazyFrame` object with applied filter.
 PolarsLazyFrame_tail = function(n) {
-  unwrap(.pr$PolarsLazyFrame$tail(self, n), "in $tail():")
+  unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 
 #' @title Lazy_drop_nulls
@@ -497,7 +497,7 @@ PolarsLazyFrame_tail = function(n) {
 #' pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height
 PolarsLazyFrame_drop_nulls = function(subset = NULL) {
   pra = do.call(construct_ProtoExprArray, as.list(subset))
-  .pr$PolarsLazyFrame$drop_nulls(self, pra)
+  .pr$LazyFrame$drop_nulls(self, pra)
 }
 
 #' @title Lazy_unique
@@ -524,7 +524,7 @@ PolarsLazyFrame_drop_nulls = function(subset = NULL) {
 #' df$lazy()$unique()$collect()$height
 #' df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
 PolarsLazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
-  unwrap(.pr$PolarsLazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
+  unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
 
 #' Lazy_groupby
@@ -549,7 +549,7 @@ PolarsLazyFrame_unique = function(subset = NULL, keep = "first", maintain_order 
 #' )$
 #'   collect()
 PolarsLazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
-  .pr$PolarsLazyFrame$groupby(self, unpack_list(...), maintain_order) |>
+  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
 }
 
@@ -601,7 +601,7 @@ PolarsLazyFrame_join = function(
     stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
   }
 
-  .pr$PolarsLazyFrame$join(
+  .pr$LazyFrame$join(
     self, other, rexprs_left, rexprs_right,
     how, suffix, allow_parallel, force_parallel
   )
@@ -660,7 +660,7 @@ PolarsLazyFrame_sort = function(
   ) |>
     # and_then skips step, if input is an Error otherwise call rust wrapper
     and_then(\(by_combined) { # by_combined has Rtyp" List<Result<Expr,String>>
-      .pr$PolarsLazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
+      .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
     }) |>
     # add same context to any Error
     unwrap("in sort():")
@@ -779,7 +779,7 @@ PolarsLazyFrame_join_asof = function(
   tolerance_str = if (is.character(tolerance)) tolerance else NULL
   tolerance_num = if (!is.character(tolerance)) tolerance else NULL
 
-  .pr$PolarsLazyFrame$join_asof(
+  .pr$LazyFrame$join_asof(
     self, other,
     left_on, right_on,
     by_left, by_right,
@@ -830,7 +830,7 @@ PolarsLazyFrame_melt = function(
     value_name = NULL,
     ...,
     streamable = TRUE) {
-  .pr$PolarsLazyFrame$melt(
+  .pr$LazyFrame$melt(
     self, id_vars %||% character(), value_vars %||% character(),
     value_name, variable_name, streamable
   ) |> unwrap("in $melt( ): ")
@@ -858,5 +858,5 @@ PolarsLazyFrame_rename = function(...) {
   }
   existing = unname(unlist(mapping))
   new = names(mapping)
-  unwrap(.pr$PolarsLazyFrame$rename(self, existing, new), "in $rename():")
+  unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
 }
