@@ -1,11 +1,12 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
-use crate::rdatatype::new_asof_strategy;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
+use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
 use crate::robj_to;
+use crate::rpolarserr::RResult;
 use crate::rpolarserr::{Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
@@ -371,6 +372,14 @@ impl LazyFrame {
                 robj_to!(Vec, String, new)?,
             )
             .into())
+    }
+
+    fn schema(&self) -> RResult<Pairlist> {
+        let schema = self.0.schema()?;
+        let pairs = schema.iter().collect::<Vec<_>>().into_iter();
+        Ok(Pairlist::from_pairs(
+            pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
+        ))
     }
 }
 

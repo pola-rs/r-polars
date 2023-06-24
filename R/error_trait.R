@@ -22,13 +22,8 @@ when_calling.default = function(err, call) {
   stop("internal error: an error-type was not fully implemented")
 }
 # support function to convert a call to a string
-call_to_string = function(call) {
-  paste(
-    "\n",
-    paste(capture.output(print(call)), collapse = "\n")
-  )
-}
-
+call_to_string = function(call) paste(capture.output(print(call)), collapse = "\n")
+# NB collapse is needed to ensure no invalid multi-line error strings
 
 #' Internal generic method to point to which public method the user got wrong
 #' @param err any type which impl as.character
