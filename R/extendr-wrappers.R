@@ -11,8 +11,6 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
-
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
@@ -55,43 +53,9 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
-RPolarsErr <- new.env(parent = emptyenv())
+test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
-RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
-
-RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
-
-RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
-
-RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
-
-RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
-
-RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
-
-RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
-
-RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
-
-RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
-
-RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
-
-RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
-
-RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
-
-RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
-
-RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
-
-RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
-
-#' @export
-`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsErr` <- `$.RPolarsErr`
+test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -264,6 +228,54 @@ RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_
 
 #' @export
 `[[.RField` <- `$.RField`
+
+RPolarsErr <- new.env(parent = emptyenv())
+
+RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
+
+RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
+
+RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
+
+RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
+
+RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
+
+RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
+
+RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
+
+RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
+
+RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
+
+RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
+
+RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
+
+RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
+
+RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
+
+RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
+
+RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
+
+#' @export
+`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsErr` <- `$.RPolarsErr`
+
+RThreadHandle <- new.env(parent = emptyenv())
+
+RThreadHandle$join <- function() .Call(wrap__RThreadHandle__join, self)
+
+#' @export
+`$.RThreadHandle` <- function (self, name) { func <- RThreadHandle[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RThreadHandle` <- `$.RThreadHandle`
 
 Expr <- new.env(parent = emptyenv())
 

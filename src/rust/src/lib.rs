@@ -21,6 +21,7 @@ pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod rpolarserr;
+pub mod rthreadhandle;
 pub mod series;
 pub mod utils;
 
@@ -40,8 +41,9 @@ static CONFIG: ThreadComStorage = Storage::new();
 // Macro to generate exports
 extendr_module! {
     mod polars;
-    use rpolarserr;
     use rdataframe;
+    use rpolarserr;
+    use rthreadhandle;
     use lazy;
     use series;
     use concurrent;

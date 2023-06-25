@@ -10,10 +10,14 @@ use thiserror::Error;
 pub enum Rctx {
     #[error("The argument [{0}] cause an error")]
     BadArg(String),
+    #[error("Encountered the following error when joining the thread:\n\t{0}")]
+    BadJoin(String),
     #[error("Got value [{0}]")]
     BadVal(String),
     #[error("Encountered the following error in Extendr\n\t{0}")]
     Extendr(String),
+    #[error("Joined on a used thread handler")]
+    Handled,
     #[error("Possibly because {0}")]
     Hint(String),
     #[error("Expected a value of type [{0}]")]
@@ -97,17 +101,26 @@ impl RPolarsErr {
     }
 
     pub fn contexts(&self) -> Pairlist {
-        Pairlist::from_pairs(self.contexts.iter().rev().map(|rctx| match rctx {
-            Rctx::BadArg(arg) => ("BadArgument", arg),
-            Rctx::BadVal(val) => ("BadValue", val),
-            Rctx::Extendr(err) => ("ExtendrError", err),
-            Rctx::Hint(msg) => ("Hint", msg),
-            Rctx::Mistyped(ty) => ("TypeMismatch", ty),
-            Rctx::Misvalued(scope) => ("ValueOutOfScope", scope),
-            Rctx::Plain(msg) => ("PlainErrorMessage", msg),
-            Rctx::Polars(err) => ("PolarsError", err),
-            Rctx::When(target) => ("When", target),
-        }))
+        use Rctx::*;
+        Pairlist::from_pairs(
+            self.contexts
+                .clone()
+                .into_iter()
+                .rev()
+                .map(|rctx| match rctx {
+                    BadArg(arg) => ("BadArgument", arg),
+                    BadJoin(err) => ("BadJoin", err),
+                    BadVal(val) => ("BadValue", val),
+                    Extendr(err) => ("ExtendrError", err),
+                    Handled => ("Handled", String::from("Repeated join on the same thread")),
+                    Hint(msg) => ("Hint", msg),
+                    Mistyped(ty) => ("TypeMismatch", ty),
+                    Misvalued(scope) => ("ValueOutOfScope", scope),
+                    Plain(msg) => ("PlainErrorMessage", msg),
+                    Polars(err) => ("PolarsError", err),
+                    When(target) => ("When", target),
+                }),
+        )
     }
 
     pub fn pretty_msg(&self) -> String {
@@ -235,6 +248,12 @@ impl From<polars::error::PolarsError> for RPolarsErr {
             _ => {}
         };
         rerr
+    }
+}
+
+impl From<Rctx> for RPolarsErr {
+    fn from(rctx: Rctx) -> Self {
+        RPolarsErr::new_from_ctxs(VecDeque::from([rctx]))
     }
 }
 
