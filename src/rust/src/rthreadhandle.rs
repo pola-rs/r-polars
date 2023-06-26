@@ -14,32 +14,57 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
             handle: Some(thread::spawn(compute)),
         }
     }
-}
 
-#[extendr]
-impl RThreadHandle<RDF> {
-    pub fn join(&mut self) -> RResult<RDF> {
+    pub fn join_generic(&mut self) -> RResult<T> {
         use Rctx::*;
         self.handle
             .take()
             .ok_or(Handled.into())
             .and_then(|handle| handle.join().map_err(|err| BadJoin(rdbg(err)).into()))
     }
+
+    pub fn is_finished_generic(&self) -> RResult<bool> {
+        self.handle
+            .as_ref()
+            .ok_or(Rctx::Handled.into())
+            .map(thread::JoinHandle::is_finished)
+    }
+}
+
+#[extendr]
+impl RThreadHandle<RDF> {
+    fn join(&mut self) -> RResult<RDF> {
+        self.join_generic()
+    }
+
+    fn is_finished(&self) -> RResult<bool> {
+        self.is_finished_generic()
+    }
 }
 
 #[extendr]
 pub fn test_rthreadhandle() -> RThreadHandle<RDF> {
-    RThreadHandle::new(|| {
+    RThreadHandle::new(move || {
+        use crate::lazy::*;
         use extendr_api::{print_r_output, rprintln};
-        use polars_core::prelude::*;
-        rprintln!("Intense sleeping in Rust for 10 seconds!");
-        let duration = std::time::Duration::from_millis(10000);
+        rprintln!("Intense sleeping in Rust for 1 seconds!");
+        let duration = std::time::Duration::from_millis(1000);
         thread::sleep(duration);
         rprintln!("Wake up!");
-        df!("Fruit" => &["Apple", "Banana", "Pear"],
-            "Color" => &["Red", "Yellow", "Green"])
-        .unwrap()
-        .into()
+        let plf = {
+            use polars::prelude::*;
+            df!("Fruit" => &["Apple", "Banana", "Pear"],
+            "Color" => &["Red", "Yellow", "Green"],
+            "Cost" => &[2, 4, 6])
+            .unwrap()
+            .lazy()
+            .with_column(
+                col("Cost")
+                    .apply(|c| Ok(Some(c + 1)), GetOutput::default())
+                    .alias("Price"),
+            )
+        };
+        dataframe::LazyFrame::from(plf).collect().unwrap()
     })
 }
 

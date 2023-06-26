@@ -55,7 +55,7 @@ test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
-test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
+test_rthreadhandle <- function(rcls) .Call(wrap__test_rthreadhandle, rcls)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -270,6 +270,8 @@ RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
 RThreadHandle <- new.env(parent = emptyenv())
 
 RThreadHandle$join <- function() .Call(wrap__RThreadHandle__join, self)
+
+RThreadHandle$is_finished <- function() .Call(wrap__RThreadHandle__is_finished, self)
 
 #' @export
 `$.RThreadHandle` <- function (self, name) { func <- RThreadHandle[[name]]; environment(func) <- environment(); func }
