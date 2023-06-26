@@ -860,3 +860,44 @@ LazyFrame_rename = function(...) {
   new = names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
 }
+
+#' @title Schema
+#' @description Get the schema of the LazyFrame
+#' @keywords LazyFrame
+#' @return A list mapping from field name to field type
+#' @examples
+#' pl$LazyFrame(mtcars)$schema
+#'
+LazyFrame_schema = method_as_property(function() {
+  .pr$LazyFrame$schema(self) |>
+    unwrap("in $schema():")
+})
+
+#' @title Columns
+#' @description Get the column names of the LazyFrame
+#' @keywords LazyFrame
+#' @return A vector of column names
+#' @examples
+#' pl$LazyFrame(mtcars)$columns
+#'
+LazyFrame_columns = method_as_property(function() {
+  self$schema |>
+    names() |>
+    result() |>
+    unwrap("in $columns()")
+})
+
+#' @title Dtypes
+#' @description Get the data types of the LazyFrame
+#' @keywords LazyFrame
+#' @return A vector of column data types
+#' @examples
+#' pl$LazyFrame(mtcars)$dtypes
+#'
+LazyFrame_dtypes = method_as_property(function() {
+  self$schema |>
+    unlist() |>
+    unname() |>
+    result() |>
+    unwrap("in $dtypes()")
+})

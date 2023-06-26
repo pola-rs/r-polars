@@ -10,24 +10,24 @@
 
 #' @export
 #' @noRd
-as.character.RPolarsErr = function(x, ...) x$info()
+as.character.RPolarsErr = function(x, ...) x$pretty_msg()
 
 
 #' @export
 #' @noRd
-print.RPolarsErr = function(x, ...) cat(x$info())
+print.RPolarsErr = function(x, ...) cat(x$pretty_msg())
 
 
 ## RPolarsErr IPLEMENTS IPLEMENTS R-POLARS error_trait.R
 when_calling.RPolarsErr = function(err, call) {
-  err$when_last(paste("calling:", call_to_string(call)))
+  err$rcall(call_to_string(call))
 }
 where_in.RPolarsErr = function(err, context) {
-  err$wherein(context)
+  err$rinfo(context)
 }
 to_condition.RPolarsErr = function(err) {
   errorCondition(
-    err$info(),
+    err$pretty_msg(),
     class = c("RPolarsErr_error"),
     value = err,
     call = NULL
