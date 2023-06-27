@@ -461,10 +461,10 @@ test_that("simple translations", {
   expect_equal(a, 2816, tolerance = .1)
 
   # trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceeds u8 max value"))
+  expect_grepl_error(pl$DataFrame(mtcars)$std(256), c("ddof", "exceed the upper bound for u8 of 255"))
   expect_grepl_error(
     pl$DataFrame(mtcars)$var(-1),
-    c("ddof", "the value -1 cannot be less than zero")
+    c("ddof", "cannot be less than zero")
   )
 })
 

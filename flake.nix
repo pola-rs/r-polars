@@ -38,7 +38,7 @@
         };
         # Create R development environment with r-polars and other useful libraries
         rvenv = pkgs.rWrapper.override {
-          packages = with pkgs.rPackages; [ renv ];
+          packages = with pkgs.rPackages; [ languageserver renv ];
         };
       in {
         packages.default = rpolars;
