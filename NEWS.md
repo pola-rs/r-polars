@@ -10,6 +10,7 @@ for demonstration purposes (#240).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223).
 - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
   `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
+- Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 
 # polars 0.6.1
 ## What's changed
