@@ -135,13 +135,15 @@ make_doc_hierarchy = function() {
   }
   # expr: nested
   nam = c(
+    "Expr" = "All others",
     "arr" = "Array",
     "ExprBin" = "Binary",
     "ExprDT" = "DateTime",
     "ExprMeta" = "Meta",
     "ExprStr" = "String",
-    "ExprStruct" = "Struct",
-    "Expr" = "Other")
+    "ExprStruct" = "Struct"
+  )
+
   tmp = lapply(names(nam), \(n) setNames(list(out[[n]]), nam[n]))
   out = out[!names(out) %in% names(nam)]
   out[["Expressions"]] = tmp
