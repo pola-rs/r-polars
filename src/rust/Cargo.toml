@@ -3,9 +3,12 @@ name = 'r-polars' # r-polars
 version = '0.1.0' # this version no is not used
 edition = '2021'
 
-
 [lib]
 crate-type = ['staticlib']
+
+[features]
+default = []
+simd = ["polars/simd"]
 
 [workspace]
 # prevents package from thinking it's in the workspace
@@ -41,7 +44,6 @@ features = [
   "json",
   "dynamic_groupby",
   "zip_with",
-  "simd",
   "lazy",
   "strings",
   "temporal",
