@@ -49,7 +49,7 @@ test$with_columns(
   pl$col("mpg") + 1
 )
 
-# this doesn't work because it returns only 2 values:
+# this doesn't work because it returns only 2 values, while mtcars has 32 rows.
 test$with_columns(
   pl$col("mpg")$slice(0, 2)
 )
@@ -62,7 +62,8 @@ are returned.
 test$groupby(pl$col("cyl"))$agg(
   pl$col("mpg"), # varying number of values
   pl$col("mpg")$slice(0, 2)$suffix("_sliced"), # two values
-  pl$col("mpg")$sum()$suffix("_summed") # aggregated to one value, implicitly unpacks list
+  # aggregated to one value and implicitly unpacks list
+  pl$col("mpg")$sum()$suffix("_summed") 
 )
 
 shape: (3, 4)
