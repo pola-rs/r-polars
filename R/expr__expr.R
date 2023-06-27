@@ -120,8 +120,9 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   expr_result
 }
 
-#' wrap_elist_result
-#' @description make sure all elementsof a list is wrapped as Expr
+#' internal wrap_elist_result
+#' @description make sure all elements of a list is wrapped as Expr
+#' DEPRECATED:  prefer robj_to!(VecPlExpr) on rust side
 #' Capture any conversion error in the result
 #' @param elist a list Expr or any R object Into<Expr> (passable to pl$lit)
 #' @details
@@ -144,7 +145,7 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
     msg = if (element_i >= 1L) {
       paste0("element [[", element_i, "]] of sequence not convertable into an Expr, error in:\n")
     } else {
-      "not convertable into a list of Expr, error in:\n"
+      paste0(str_string(elist), " was not convertable into a list of Expr, error in:\n")
     }
   )
 }

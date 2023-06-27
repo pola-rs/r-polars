@@ -6,6 +6,7 @@ use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
+//use std::intrinsics::read_via_copy;
 
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
@@ -416,26 +417,50 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
     }
 }
 
-pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
+fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj> {
     use extendr_api::*;
     if robj.inherits("extendr_result") {
-        let l = robj.as_list().unwrap();
-        let ok = l.elt(0).unwrap();
-        let err = l.elt(1).unwrap();
-        match (ok.rtype(), err.rtype()) {
-            (_, Rtype::Null) => Ok(ok),
-            (Rtype::Null, _) => {
-                if let Some(err_msg) = err.as_str() {
-                    rerr().plain(err_msg)
-                } else {
-                    rerr().plain(rdbg(err))
-                }
-            }
-            (_, _) => unreachable!("Internal error: failed to unpack r_result_list"),
-        }
+        let l = robj.as_list().expect("extendr_result is a list");
+        let ok = l.elt(0).expect("extendr_result has a 1st element");
+        let err = l.elt(1).expect("extendr_result has a 2nd element");
+        let inner_res = match err.rtype() {
+            Rtype::Null => Ok(ok),
+            _ => Err(err),
+        };
+        inner_res
     } else {
         Ok(robj)
     }
+}
+
+// The aim of this function is to return Ok for Robj which is not an extendr_result Err variant.
+// Any err will be converted to a RPolarsErr
+// This function is used as guard for many input conversions.
+pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
+    use crate::rpolarserr::*;
+    use extendr_api::*;
+    // 1 - join any non-extendr_result with the Ok variant
+    let res = inner_unpack_r_result_list(robj);
+
+    // 2 - try upgrade any Robj-error to an Robj-RPolarsErr (upgrade_err is an optional dependency-injection)
+    let res = res.map_err(|err| {
+        R!("polars:::upgrade_err({{err}})")
+            .map_err(|err| format!("internal error while upgrade error: {}", err))
+            .unwrap()
+    });
+
+    // 3 - Convert any Robj-err to a Robj-RPolarsErr
+    let res = res.map_err(|err| {
+        if err.inherits("RPolarsErr") {
+            //robj was already an external ptr to RPolarsErr, use as is
+            unsafe { &mut *err.external_ptr_addr::<RPolarsErr>() }.clone()
+        } else {
+            //robj was still some other error, upcast err to a string err and wrap in RPolarsErr
+            RPolarsErr::new().plain(rdbg(err))
+        }
+    });
+
+    res
 }
 
 pub fn robj_to_char(robj: extendr_api::Robj) -> RResult<char> {

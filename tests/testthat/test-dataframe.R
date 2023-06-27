@@ -927,3 +927,23 @@ test_that("rename", {
   b = df$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$columns
   expect_identical(a, b)
 })
+
+
+
+test_that("describe", {
+  expect_snapshot(pl$DataFrame(mtcars)$describe()$to_list(),variant = "deparse")
+
+  df = pl$DataFrame(mtcars)$describe()
+  expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
+  err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
+  expect_identical(names(err_ctx),c("BadArgument", "TypeMismatch", "BadValue"))
+  expect_identical(unlist(err_ctx[1:2],use.names = FALSE),c("percentiles","numeric"))
+
+  #perc = NULL  is the same as numeric()
+  expect_identical(
+    pl$DataFrame(mtcars)$describe(perc = numeric())$to_list(),
+    pl$DataFrame(mtcars)$describe(perc = NULL)$to_list()
+  )
+
+})
+

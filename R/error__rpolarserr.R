@@ -34,5 +34,17 @@ to_condition.RPolarsErr = function(err) {
   )
 }
 plain.RPolarsErr = function(err, msg) {
-  err$value$plain(msg)
+  err$plain(msg)
 }
+
+
+
+
+
+#### ---- rpolarserr utils
+
+# short hand  for starting new error with a bad robj input
+bad_robj = function(r) {
+  .pr$RPolarsErr$new()$bad_robj(r)
+}
+

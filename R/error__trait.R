@@ -1,5 +1,5 @@
 # ANY NEW ERROR MUST IMPLEMENT THESE S3 METHODS, these are the "trait" of a polars error
-# ALSO MUST IMPLEMENT BASE THESE METHODS: print
+# ALSO MUST IMPLEMENT THESE BASE METHODS: print
 
 #' Internal generic method to add call to error
 #' @param err any type which impl as.character
@@ -85,4 +85,22 @@ plain = function(err, msg) {
 }
 plain.default = function(err, msg) {
   paste0(msg, ": ", err)
+}
+
+
+##TODO refactor upgrade_err into as.RPolarsErr
+#' Internal generic method to add plain text to error message
+#' @details
+#' polars converts any other error types to RPolarsErr.
+#' An error type can choose to implement this to improve the translation.
+#' As fall back the error will be deparsed into a string with rust Debug, see rdbg()
+#' @param err some error type object
+#' @param msg string to add
+#' @keywords internal
+#' @return condition
+upgrade_err = function(err) {
+  UseMethod("upgrade_err", err)
+}
+upgrade_err.default = function(err) {
+  err # no upgrade found pass as is
 }
