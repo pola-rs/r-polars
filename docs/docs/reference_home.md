@@ -15,7 +15,9 @@ for grouped data).
 
 We can apply functions directly on a `DataFrame` or `LazyFrame`, such as `rename()`
 or `drop()`. Most (but not all!) functions that can be applied to `DataFrame`s
-can also be used on `LazyFrame`s.
+can also be used on `LazyFrame`s. Calling `<DataFrame>$lazy()` yields
+a `LazyFrame`. While calling `<LazyFrame>$collect()` starts a computation and
+yields a `DataFrame` as result.
 
 Another common data structure is the `Series`, which can be considered as the 
 equivalent of R vectors in `polars`' world. Therefore, a `DataFrame` is a list of
