@@ -931,7 +931,7 @@ test_that("rename", {
 
 
 test_that("describe", {
-  expect_snapshot(pl$DataFrame(mtcars)$describe()$to_list(),variant = "deparse")
+  expect_snapshot(pl$DataFrame(mtcars)$describe())
 
   df = pl$DataFrame(mtcars)$describe()
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
