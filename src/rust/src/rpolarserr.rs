@@ -12,7 +12,7 @@ pub enum Rctx {
     BadArg(String),
     #[error("Got value [{0}]")]
     BadVal(String),
-    #[error("Encountered the following error in Extendr\n\t{0}")]
+    #[error("Encountered the following error in Rust-Extendr\n\t{0}")]
     Extendr(String),
     #[error("Possibly because {0}")]
     Hint(String),
@@ -22,7 +22,7 @@ pub enum Rctx {
     Misvalued(String),
     #[error("{0}")]
     Plain(String),
-    #[error("Encountered the following error in Polars:\n\t{0}")]
+    #[error("Encountered the following error in Rust-Polars:\n\t{0}")]
     Polars(String),
     #[error("When {0}")]
     When(String),
