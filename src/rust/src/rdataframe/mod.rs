@@ -4,21 +4,20 @@ use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
 pub mod read_parquet;
+use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
-use crate::lazy::dsl;
 use crate::rdatatype;
+use crate::rdatatype::RPolarsDataType;
 use crate::rlib;
 use crate::robj_to;
+use crate::rpolarserr::RResult;
 use crate::utils::extendr_concurrent::ParRObj;
 pub use lazy::dataframe::*;
 
-use crate::conversion_r_to_s::robjname2series;
-use crate::rdatatype::RPolarsDataType;
-
 use crate::conversion_s_to_r::pl_series_to_list;
 pub use crate::series::*;
-use dsl::*;
 
+use crate::utils::list_expr_to_vec_pl_expr;
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
 use polars_core::utils::arrow;
@@ -268,9 +267,11 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&mut self, exprs: &ProtoExprArray) -> Result<DataFrame, String> {
-        let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
-        LazyFrame(self.lazy().0.select(exprs)).collect()
+    //exprs is actually a list of R args
+    pub fn select(&mut self, exprs: Robj) -> RResult<DataFrame> {
+        let exprs: Vec<pl::Expr> = list_expr_to_vec_pl_expr(exprs, false)
+            .map_err(|err| err.when("reading in expressions".to_string()))?;
+        LazyFrame(self.lazy().0.select(exprs)).collect_handled()
     }
 
     //used in GroupBy, not DataFrame

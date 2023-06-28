@@ -704,19 +704,22 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  args = list2(...)
-  exprs = do.call(construct_ProtoExprArray, args)
-  df = unwrap(.pr$DataFrame$select(self, exprs))
 
-  expr_names = names(args)
-  if (!is.null(expr_names)) {
-    old_names = df$columns
-    new_names = old_names
-    has_expr_name = nchar(expr_names) >= 1L
-    new_names[has_expr_name] = expr_names[has_expr_name]
-    df$columns = new_names
-  }
-  df
+  args = list2(...)
+  .pr$DataFrame$select(self, args) |>
+    and_then(\(df) result(msg="internal error while renaming columns", {
+        expr_names = names(args)
+        if (!is.null(expr_names)) {
+          old_names = df$columns
+          new_names = old_names
+          has_expr_name = nchar(expr_names) >= 1L
+          new_names[has_expr_name] = expr_names[has_expr_name]
+          df$columns = new_names
+        }
+        df
+    })) |>
+    unwrap("in $select()")
+
 }
 
 #' Drop in place
