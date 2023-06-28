@@ -49,6 +49,8 @@ rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches
 
 arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
+dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
 test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
