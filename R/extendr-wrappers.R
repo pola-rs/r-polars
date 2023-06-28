@@ -1081,5 +1081,17 @@ PolarsBackgroundHandle$is_exhausted <- function() .Call(wrap__PolarsBackgroundHa
 #' @export
 `[[.PolarsBackgroundHandle` <- `$.PolarsBackgroundHandle`
 
+FeatureInfo <- new.env(parent = emptyenv())
+
+FeatureInfo$new <- function() .Call(wrap__FeatureInfo__new)
+
+FeatureInfo$to_r <- function() .Call(wrap__FeatureInfo__to_r, self)
+
+#' @export
+`$.FeatureInfo` <- function (self, name) { func <- FeatureInfo[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.FeatureInfo` <- `$.FeatureInfo`
+
 
 # nolint end
