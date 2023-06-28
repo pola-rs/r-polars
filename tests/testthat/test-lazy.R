@@ -567,3 +567,25 @@ test_that("schema", {
   expect_true(lf$dtypes[[1]] == lf$collect()$dtypes[[1]])
   expect_identical(lf$columns, lf$collect()$columns)
 })
+
+test_that("select with list of exprs", {
+  l_expr = list(pl$col("mpg"), pl$col("hp"))
+  l_expr2 = list(pl$col("mpg", "hp"))
+  l_expr3 = list(pl$col("mpg"))
+  l_expr4 = list(c("mpg", "hp"))
+  l_expr5 = list("mpg", "hp")
+
+  x1 = pl$LazyFrame(mtcars)$select(l_expr)
+  x2 = pl$LazyFrame(mtcars)$select(l_expr2)
+  x3 = pl$LazyFrame(mtcars)$select(l_expr3, pl$col("hp"))
+  x4 = pl$LazyFrame(mtcars)$select(pl$col("hp"), l_expr3)
+  x5 = pl$LazyFrame(mtcars)$select(l_expr4)
+  x6 = pl$LazyFrame(mtcars)$select(l_expr5)
+
+  expect_equal(x1$columns, c("mpg", "hp"))
+  expect_equal(x2$columns, c("mpg", "hp"))
+  expect_equal(x3$columns, c("mpg", "hp"))
+  expect_equal(x4$columns, c("mpg", "hp"))
+  expect_equal(x5$columns, c("mpg", "hp"))
+  expect_equal(x6$columns, c("mpg", "hp"))
+})

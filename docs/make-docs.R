@@ -135,16 +135,18 @@ make_doc_hierarchy = function() {
   }
   # expr: nested
   nam = c(
+    "Expr" = "All others",
     "arr" = "Array",
     "ExprBin" = "Binary",
     "ExprDT" = "DateTime",
     "ExprMeta" = "Meta",
     "ExprStr" = "String",
-    "ExprStruct" = "Struct",
-    "Expr" = "Other")
+    "ExprStruct" = "Struct"
+  )
+
   tmp = lapply(names(nam), \(n) setNames(list(out[[n]]), nam[n]))
   out = out[!names(out) %in% names(nam)]
-  out[["Expr"]] = tmp
+  out[["Expressions"]] = tmp
   # other
   tmp = sprintf("%s: reference/%s", sub("\\.md$", "", other), other)
   out = append(out, setNames(list(tmp), "Other"))
@@ -157,7 +159,7 @@ convert_hierarchy_to_yml <- function() {
   hierarchy <- make_doc_hierarchy()
 
   ### Uncomment to add a reference homepage
-  # hierarchy <- append(list(list("Reference" = "reference_home.md")), hierarchy)
+  hierarchy <- append(list("Reference" = "reference_home.md"), hierarchy)
 
   new_yaml <- orig_yaml <- yaml.load_file(
     "docs/mkdocs.yml"
