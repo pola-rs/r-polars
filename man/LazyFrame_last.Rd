@@ -2,17 +2,17 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_last}
 \alias{LazyFrame_last}
-\title{Last}
+\title{Get the first row}
 \usage{
 LazyFrame_last
 }
 \value{
-A new \code{LazyFrame} object with applied aggregation.
+\code{LazyFrame} with a single row
 }
 \description{
-Aggregate the columns in the DataFrame to their maximum value.
+Get the first row
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$last()$collect()
+pl$LazyFrame(mtcars)$last()$collect()
 }
 \keyword{LazyFrame}

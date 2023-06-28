@@ -2,17 +2,17 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_first}
 \alias{LazyFrame_first}
-\title{First}
+\title{Get the first row}
 \usage{
 LazyFrame_first
 }
 \value{
-A new \code{DataFrame} object with applied filter.
+\code{LazyFrame} with a single row
 }
 \description{
-Get the first row of the DataFrame.
+Get the first row
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$first()$collect()
+pl$LazyFrame(mtcars)$first()$collect()
 }
 \keyword{DataFrame}

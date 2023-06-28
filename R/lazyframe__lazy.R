@@ -238,14 +238,14 @@ LazyFrame_with_columns = function(...) {
 #' @docType NULL
 LazyFrame_with_column = "use_extendr_wrapper"
 
-#' @title Apply filter to LazyFrame
-#' @description Filter rows with an Expression definining a boolean column
+#' @title Filter rows based on conditions
 #' @keywords LazyFrame
 #' @param expr one Expr or string naming a column
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
 #' @usage LazyFrame_filter(expr)
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
+#' @examples
+#' pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
@@ -298,22 +298,23 @@ LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 
-#' @title First
-#' @description Get the first row of the DataFrame.
+#' @inherit DataFrame_first title
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied filter.
+#' @return `LazyFrame` with a single row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$DataFrame(mtcars)$lazy()$first()$collect()
+#' @examples
+#' pl$LazyFrame(mtcars)$first()$collect()
 LazyFrame_first = "use_extendr_wrapper"
 
-#' @title Last
-#' @description Aggregate the columns in the DataFrame to their maximum value.
+#' @inherit DataFrame_first title
+#'
 #' @keywords LazyFrame
-#' @return A new `LazyFrame` object with applied aggregation.
+#' @return `LazyFrame` with a single row
 #' @docType NULL
 #' @format NULL
-#' @examples pl$DataFrame(mtcars)$lazy()$last()$collect()
+#' @examples
+#' pl$LazyFrame(mtcars)$last()$collect()
 LazyFrame_last = "use_extendr_wrapper"
 
 #' @title Max

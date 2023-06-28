@@ -2,20 +2,20 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_filter}
 \alias{DataFrame_filter}
-\title{filter DataFrame}
+\title{Filter rows based on conditions}
 \usage{
-DataFrame_filter(bool_expr)
+DataFrame_filter(expr)
 }
 \arguments{
-\item{bool_expr}{Polars expression which will evaluate to a bool pl$Series}
+\item{expr}{one Expr or string naming a column}
 }
 \value{
-filtered DataFrame
+\code{DataFrame} with rows matching the conditions
 }
 \description{
-DataFrame$filter(bool_expr)
+Filter rows based on conditions
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+pl$DataFrame(iris)$filter(pl$col("Sepal.Length") > 5)
 }
 \keyword{DataFrame}

@@ -868,17 +868,14 @@ DataFrame_tail = function(n) {
 }
 
 
-#' filter DataFrame
-#' @aliases DataFrame_filter
-#' @description DataFrame$filter(bool_expr)
+#' @inherit LazyFrame_filter title params
 #'
-#' @param bool_expr Polars expression which will evaluate to a bool pl$Series
 #' @keywords DataFrame
-#' @return filtered DataFrame
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
-#' @name DataFrame_filter
-DataFrame_filter = function(bool_expr) {
-  .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
+#' @return `DataFrame` with rows matching the conditions
+#' @examples
+#' pl$DataFrame(iris)$filter(pl$col("Sepal.Length") > 5)
+DataFrame_filter = function(expr) {
+  .pr$DataFrame$lazy(self)$filter(expr)$collect()
 }
 
 #' groupby a DataFrame
@@ -1035,22 +1032,20 @@ DataFrame_unnest = function(names = NULL) {
 }
 
 
-
-
-#' @title First
-#' @description Get the first row of the DataFrame.
+#' @title Get the first row
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied filter.
-#' @examples pl$DataFrame(mtcars)$first()
+#' @return `DataFrame` with a single row
+#' @examples
+#' pl$DataFrame(mtcars)$first()
 DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
 
-#' @title Last
-#' @description Get the last row of the DataFrame.
+#' @title Get the last row
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied filter.
-#' @examples pl$DataFrame(mtcars)$last()
+#' @return `DataFrame` with a single row
+#' @examples
+#' pl$DataFrame(mtcars)$last()
 DataFrame_last = function() {
   self$lazy()$last()$collect()
 }

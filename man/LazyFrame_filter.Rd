@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_filter}
 \alias{LazyFrame_filter}
-\title{Apply filter to LazyFrame}
+\title{Filter rows based on conditions}
 \format{
 An object of class \code{character} of length 1.
 }
@@ -16,9 +16,9 @@ LazyFrame_filter(expr)
 A new \code{LazyFrame} object with add/modified column.
 }
 \description{
-Filter rows with an Expression definining a boolean column
+Filter rows based on conditions
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
+pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
 \keyword{LazyFrame}
