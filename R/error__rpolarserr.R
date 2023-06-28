@@ -37,6 +37,9 @@ plain.RPolarsErr = function(err, msg) {
   err$plain(msg)
 }
 
+upgrade_err.RPolarsErr = function(err) { #already RPolarsErr pass through
+  err
+}
 
 
 
