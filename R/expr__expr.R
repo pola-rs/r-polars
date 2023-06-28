@@ -577,8 +577,7 @@ construct_ProtoExprArray = function(...) {
   args = list2(...)
 
   # deal with list of expressions
-  is_list = unlist(lapply(args, is.list))
-  if (length(is_list) > 0) is_list = which(is_list)
+  is_list = which(vapply(args, is.list, FUN.VALUE = logical(1L)))
   for (i in seq_along(is_list)) {
     tmp = unlist(args[[is_list[i]]], recursive = FALSE)
     args[[is_list[i]]] = NULL
