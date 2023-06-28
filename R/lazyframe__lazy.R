@@ -208,11 +208,10 @@ LazyFrame_describe_optimized_plan = function() {
 #' @rdname LazyFrame_describe_plan
 LazyFrame_describe_plan = "use_extendr_wrapper"
 
-#' @title Lazy_select
-#' @description select on a LazyFrame
+#' @title Select and modify columns of a LazyFrame
+#' @name LazyFrame_select
 #' @keywords LazyFrame
-#'
-#' @param ... any single Expr or string naming a column
+#' @inherit DataFrame_select description params
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
   pra = construct_ProtoExprArray(...)
@@ -610,23 +609,12 @@ LazyFrame_join = function(
 
 
 
-#' LazyFrame Sort
-#' @description sort a LazyFrame by on or more Expr
+#' Sort a LazyFrame
+#' @description Sort a LazyFrame by one or more expressions.
 #'
-#' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
-#' column name strings).
-#' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
-#' as number of Expr's from above by + ....
-#' @param nulls_last Bool default FALSE, place all nulls_last?
-#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
-#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
-#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
-#'
+#' @inherit DataFrame_sort params details
 #'
 #' @return LazyFrame
-#' @keywords  DataFrame
 #' @examples
 #' df = mtcars
 #' df$mpg[1] = NA

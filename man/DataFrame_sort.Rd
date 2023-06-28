@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_sort}
 \alias{DataFrame_sort}
-\title{DataFrame Sort}
+\title{Sort a DataFrame}
 \usage{
 DataFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
 }
@@ -13,8 +13,8 @@ column name strings).}
 
 \item{...}{more columns to sort by as above but provided one Expr per argument.}
 
-\item{descending}{Sort descending? Default = FALSE logical vector of length 1 or same length
-as number of Expr's from above by + ....}
+\item{descending}{Sort descending? Default = FALSE logical vector of length
+1 or same length as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
 }
@@ -22,12 +22,12 @@ as number of Expr's from above by + ....}
 LazyFrame
 }
 \description{
-sort a DataFrame by on or more Expr.
+Sort a DataFrame by one or more expressions.
 }
 \details{
-by and ... args allow to either provide e.g. a list of Expr or something which can
-be converted into an Expr e.g. \verb{$sort(list(e1,e2,e3))},
-or provide each Expr as an individual argument \verb{$sort(e1,e2,e3)}´ ... or both.
+\code{by} and \code{...} args allow to either provide e.g. a list of Expr or something
+which can be converted into an Expr e.g. \verb{$sort(list(e1,e2,e3))}, or provide
+each Expr as an individual argument \verb{$sort(e1,e2,e3)}´ ... or both.
 }
 \examples{
 df = mtcars

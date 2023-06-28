@@ -654,19 +654,21 @@ DataFrame_to_series = function(idx = 0) {
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
 
-#' DataFrame Sort
-#' @description sort a DataFrame by on or more Expr.
+#' Sort a DataFrame
+#' @description Sort a DataFrame by one or more expressions.
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
 #' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
 #' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
-#' as number of Expr's from above by + ....
+#' @param descending Sort descending? Default = FALSE logical vector of length
+#' 1 or same length as number of Expr's from above by + ....
 #' @param nulls_last Bool default FALSE, place all nulls_last?
-#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
-#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
-#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
+#'
+#' @details
+#' `by` and `...` args allow to either provide e.g. a list of Expr or something
+#' which can be converted into an Expr e.g. `$sort(list(e1,e2,e3))`, or provide
+#' each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
 #' @return LazyFrame
 #' @keywords  DataFrame
@@ -693,7 +695,7 @@ DataFrame_sort = function(
 
 #' Select and modify columns of a DataFrame
 #' @name DataFrame_select
-#' @description Related to dplyr `mutate()`. However, it discards unmentioned
+#' @description Related to `dplyr::mutate()`. However, it discards unmentioned
 #' columns (like `.()` in `data.table`).
 #'
 #' @param ... Columns to keep. Those can be expressions (e.g `pl$col("a")`),
