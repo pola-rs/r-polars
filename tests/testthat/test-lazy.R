@@ -587,4 +587,5 @@ test_that("select with list of exprs", {
   expect_equal(x3$columns, c("mpg", "hp"))
   expect_equal(x4$columns, c("mpg", "hp"))
   expect_equal(x5$columns, c("mpg", "hp"))
+  expect_equal(x6$columns, c("mpg", "hp"))
 })
