@@ -279,17 +279,23 @@ LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
 }
 
-#' @title Head
-#' @description Get the first n rows.
+#' @inherit DataFrame_head title description params
+#'
 #' @keywords LazyFrame
-#' @param n positive numeric or integer number not larger than 2^32
-#'
-#' @details any number will converted to u32. Negative raises error
-#'
-#' @examples pl$DataFrame(mtcars)$lazy()$head(4)$collect()
 #' @return A new `LazyFrame` object with applied filter.
+#' @examples
+#' pl$LazyFrame(mtcars)$head(5)$collect()
 LazyFrame_head = function(n) {
   unwrap(.pr$LazyFrame$limit(self, n), "in $head():")
+}
+
+#' @inherit DataFrame_tail title description params
+#'
+#' @return A new `LazyFrame` object with applied filter.
+#' @examples
+#' pl$LazyFrame(mtcars)$tail(2)$collect()
+LazyFrame_tail = function(n) {
+  unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 
 #' @title First
@@ -466,19 +472,6 @@ LazyFrame_reverse = "use_extendr_wrapper"
 #' mtcars[2:6, ]
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
-}
-
-#' @title Tail
-#' @description take last n rows of query
-#' @keywords LazyFrame
-#' @param n positive numeric or integer number not larger than 2^32
-#'
-#' @details any number will converted to u32. Negative raises error
-#'
-#' @examples pl$DataFrame(mtcars)$lazy()$tail(2)$collect()
-#' @return A new `LazyFrame` object with applied filter.
-LazyFrame_tail = function(n) {
-  unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
 
 #' @title Lazy_drop_nulls

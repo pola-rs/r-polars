@@ -839,26 +839,30 @@ DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
 }
 
-#' Head of a DataFrame
+#' Get the first *n* rows
 #' @name DataFrame_head
-#' @description Get the first n rows of the query.
-#' @param n positive numeric or integer number not larger than 2^32
+#' @description Get the first *n* rows of the query.
+#' @param n Positive numeric or integer number not larger than 2^32. Any number
+#' will be converted to `u32`. Negative raises error.
 #'
-#' @details any number will converted to u32. Negative raises error
 #' @keywords  DataFrame
 #' @return DataFrame
+#' @examples
+#' pl$DataFrame(mtcars)$head(5)
+
 DataFrame_head = function(n) {
   self$lazy()$head(n)$collect()
 }
 
-#' Tail a DataFrame
+#' Get the last *n* rows
 #' @name DataFrame_tail
-#' @description Get the last n rows.
-#' @param n positive numeric of integer number not larger than 2^32
-#'
-#' @details any number will converted to u32. Negative raises error
+#' @description Get the last *n* rows.
+#' @param n Positive numeric or integer number not larger than 2^32. Any number
+#' will be converted to `u32`. Negative raises error.
 #' @keywords  DataFrame
 #' @return DataFrame
+#' @examples
+#' pl$DataFrame(mtcars)$tail(5)
 DataFrame_tail = function(n) {
   self$lazy()$tail(n)$collect()
 }

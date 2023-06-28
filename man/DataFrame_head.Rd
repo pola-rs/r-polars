@@ -2,20 +2,21 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_head}
 \alias{DataFrame_head}
-\title{Head of a DataFrame}
+\title{Get the first \emph{n} rows}
 \usage{
 DataFrame_head(n)
 }
 \arguments{
-\item{n}{positive numeric or integer number not larger than 2^32}
+\item{n}{Positive numeric or integer number not larger than 2^32. Any number
+will be converted to \code{u32}. Negative raises error.}
 }
 \value{
 DataFrame
 }
 \description{
-Get the first n rows of the query.
+Get the first \emph{n} rows of the query.
 }
-\details{
-any number will converted to u32. Negative raises error
+\examples{
+pl$DataFrame(mtcars)$head(5)
 }
 \keyword{DataFrame}

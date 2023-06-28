@@ -2,20 +2,21 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_tail}
 \alias{DataFrame_tail}
-\title{Tail a DataFrame}
+\title{Get the last \emph{n} rows}
 \usage{
 DataFrame_tail(n)
 }
 \arguments{
-\item{n}{positive numeric of integer number not larger than 2^32}
+\item{n}{Positive numeric or integer number not larger than 2^32. Any number
+will be converted to \code{u32}. Negative raises error.}
 }
 \value{
 DataFrame
 }
 \description{
-Get the last n rows.
+Get the last \emph{n} rows.
 }
-\details{
-any number will converted to u32. Negative raises error
+\examples{
+pl$DataFrame(mtcars)$tail(5)
 }
 \keyword{DataFrame}
