@@ -691,15 +691,19 @@ DataFrame_sort = function(
 }
 
 
-#' perform select on DataFrame
+#' Select and modify columns of a DataFrame
 #' @name DataFrame_select
-#' @description  related to dplyr `mutate()` However discards unmentioned columns as data.table `.()`.
+#' @description Related to dplyr `mutate()`. However, it discards unmentioned
+#' columns (like `.()` in `data.table`).
 #'
-#' @param ... expresssions or strings defining columns to select(keep) in context the DataFrame
+#' @param ... Columns to keep. Those can be expressions (e.g `pl$col("a")`),
+#' column names  (e.g `"a"`), or list containing expressions or column names
+#' (e.g `list(pl$col("a"))`).
 #'
 #' @aliases select
 #' @keywords  DataFrame
-#' #' pl$DataFrame(iris)$select(
+#' @examples
+#' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
 #' )

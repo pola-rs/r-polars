@@ -575,6 +575,16 @@ Expr_is_not_null = "use_extendr_wrapper"
 construct_ProtoExprArray = function(...) {
   pra = ProtoExprArray$new()
   args = list2(...)
+
+  # deal with list of expressions
+  is_list = which(vapply(args, is.list, FUN.VALUE = logical(1L)))
+  for (i in seq_along(is_list)) {
+    tmp = unlist(args[[is_list[i]]], recursive = FALSE)
+    args[[is_list[i]]] = NULL
+    args = append(tmp, args)
+  }
+  args = Filter(Negate(is.null), args)
+
   arg_names = names(args)
 
 
