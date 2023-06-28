@@ -7,6 +7,9 @@
 for demonstration purposes (#240).
 - Polars is internally moving away from string errors to a new error-type called `RPolarsErr` both on rust- and R-side. Final error messages should look very similar (#233).
 - LazyFrame_columns, _schema, _dtypes implemented. Improvements to internal `RPolarsErr`. Also `RPolarsErr` will now print each context of the error on a separate line (#250).
+- Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
+- `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
+  works with `l_expr = list(pl$col("a"))` (#265).
 
 # polars 0.6.1
 ## What's changed
