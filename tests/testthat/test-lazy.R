@@ -290,12 +290,11 @@ test_that("sort", {
     c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
   )
 
-  # Disable test rewrite sort with RPolarsErr
   # test arg ... raises error for unsported type
-  # expect_grepl_error(
-  #   pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
-  #   c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
-  # )
+  expect_grepl_error(
+    pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
+    c("the arg", "by", "...", "not convertable into Expr because", "not supported implement input")
+  )
 
   # test raise error for ... named arg
   expect_grepl_error(

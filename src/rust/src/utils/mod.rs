@@ -444,7 +444,7 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
 
     // 2 - try upgrade any Robj-error to an Robj-RPolarsErr (upgrade_err is an optional dependency-injection)
     let res = res.map_err(|err| {
-        R!("polars:::upgrade_err({{err}})")
+        R!("polars:::upgrade_err_internal_ns({{err}})")
             .map_err(|err| format!("internal error while upgrade error: {}", err))
             .unwrap()
     });
