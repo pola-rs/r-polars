@@ -76,6 +76,12 @@ jobs:
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
 
+      - name: Set env vars for build option
+        if: matrix.config.all-features
+        shell: bash
+        run: |
+          echo "RPOLARS_ALL_FEATURES=true" >>$GITHUB_ENV
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: false
