@@ -2,19 +2,19 @@
 % Please edit documentation in R/rust_result.R
 \name{unwrap_or}
 \alias{unwrap_or}
-\title{map an Err part of Result}
+\title{unwrap return or if err}
 \usage{
 unwrap_or(x, or)
 }
 \arguments{
 \item{x}{any R object}
 
-\item{f}{a closure that takes the ok part as input, must return a result itself}
+\item{or}{any R value}
 }
 \value{
-same R object wrapped in a Err-result
+pl
 }
 \description{
-map an Err part of Result
+unwrap return or if err
 }
 \keyword{internal}
