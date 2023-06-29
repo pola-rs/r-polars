@@ -43,12 +43,6 @@ requirements-rs:
 	rustup component add rustfmt
 	rustup component add clippy
 
-.PHONY: requirements-rs-universe
-requirements-rs-universe:
-	rustup toolchain install 1.65.0 stable
-	rustup default 1.65.0
-
-
 .PHONY: build
 build: ## Compile polars R package and generate Rd files
 	Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
