@@ -26,8 +26,9 @@ smartstring = "1.0.1"
 serde_json = "*"
 polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features= false}
 
-[profile.release.package.argminmax]
-opt-level = 1
+
+#try to trigger new hashFiles hash value
+
 
 #features copied from node-polars
 [dependencies.polars]
