@@ -4,9 +4,9 @@
 #' @examples
 #' polars_info()
 #' @export
-polars_info <- function() {
+polars_info = function() {
   # Similar to arrow::arrow_info()
-  out <- list(
+  out = list(
     version = utils::packageVersion("polars"),
     features = FeatureInfo$new()$to_r()
   )
@@ -15,12 +15,12 @@ polars_info <- function() {
 }
 
 #' @export
-print.polars_info <- function(x, ...) {
+print.polars_info = function(x, ...) {
   # Copied from the arrow package
   # https://github.com/apache/arrow/blob/6f3bd2524c2abe3a4a278fc1c62fc5c49b56cab3/r/R/arrow-info.R#L149-L157
-  print_key_values <- function(title, vals, ...) {
-    df <- data.frame(vals, ...)
-    names(df) <- ""
+  print_key_values = function(title, vals, ...) {
+    df = data.frame(vals, ...)
+    names(df) = ""
 
     cat(title, ":", sep = "")
     print(df)
