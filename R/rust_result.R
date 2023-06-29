@@ -95,6 +95,21 @@ or_else = function(x, f) {
 }
 
 
+#' map an Err part of Result
+#' @param x any R object
+#' @keywords internal
+#' @param f a closure that takes the ok part as input, must return a result itself
+#' @return same R object wrapped in a Err-result
+unwrap_or = function(x, or) {
+  guard_result(x)
+  if (is_ok(x)) {
+    x$ok
+  } else {
+    or
+  }
+}
+
+
 #' pstop
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string

@@ -705,7 +705,7 @@ DataFrame_sort = function(
 #' @examples
 #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-#'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
   args = list2(...)
@@ -1387,4 +1387,68 @@ DataFrame_pivot = function(
 #'   rename(miles_per_gallon = "mpg", horsepower = "hp")
 DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
+}
+
+
+
+#' @title Glimpse values in a DataFrame
+#' @keywords DataFrame
+#' @param ... not used
+#' @param return_as_string bool (default FALSE) if TRUE do not print but return as string.
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$glimpse()
+DataFrame_glimpse = function(..., return_as_string = FALSE) {
+  # guard input
+  if (!is_bool(return_as_string)) {
+    RPolarsErr$new()$
+      bad_robj(return_as_string)$
+      mistyped("bool")$
+      bad_arg("return_as_string") |>
+      Err() |>
+      unwrap("in $glimpse() :")
+  }
+
+  # closure to extract col info from a column in <self>
+  max_num_value = min(10, self$height)
+  max_col_name_trunc = 50
+  parse_column_ = \(col_name, dtype) {
+    dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
+    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0("<", dtype_str, ">")
+    val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
+    val_str = paste(val, collapse = ", ")
+    if (nchar(col_name) > max_col_name_trunc) {
+      col_name = paste0(substr(col_name, 1, max_col_name_trunc - 3), "...")
+    }
+    list(
+      col_name = col_name,
+      dtype_str = dtype_str,
+      val_str = val_str
+    )
+  }
+
+  # construct print, flag any error as internal
+  output = result({
+    schema = self$schema
+    data = lapply(seq_along(schema), \(i) parse_column_(names(schema)[i], schema[[i]]))
+    max_col_name = max(sapply(data, \(x) nchar(x$col_name)))
+    max_col_dtyp = max(sapply(data, \(x) nchar(x$dtype)))
+    max_col_vals = 100 - max_col_name - max_col_dtyp
+
+    sapply(data, \(x) {
+      name_filler = paste(rep(" ", max_col_name - nchar(x$col_name)), collapse = "")
+      dtyp_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+      vals_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+      paste0(
+        "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler,
+        substr(x$val_str, 1, max_col_vals), "\n"
+      )
+    }) |>
+      paste0(collapse = "")
+
+  }, msg = "internal error") |>
+    unwrap("in $glimpse() :")
+
+  # chose return type
+  if (return_as_string) output else invisible(cat(output))
 }
