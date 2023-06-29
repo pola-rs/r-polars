@@ -5,6 +5,7 @@ use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
+use crate::rpolarserr;
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -813,8 +814,10 @@ impl Expr {
     }
 
     pub fn reshape(&self, dims: Vec<f64>) -> List {
-        let dims_result: Result<Vec<i64>, String> =
-            dims.iter().map(|x| try_f64_into_i64(*x)).collect();
+        let dims_result: Result<Vec<i64>, String> = dims
+            .iter()
+            .map(|x| try_f64_into_i64(*x).map_err(String::from))
+            .collect();
         let expr_result = dims_result
             .map(|dims| Expr(self.0.clone().reshape(&dims[..])))
             .map_err(|err| format!("reshape: {}", err));
@@ -1793,7 +1796,7 @@ impl Expr {
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
-        let res = robj_to!(usize, alignment, "in str$zfill(): {:?}")
+        let res = robj_to!(usize, alignment, "in str$zfill()")
             .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
         r_result_list(res)
     }
@@ -2193,7 +2196,7 @@ impl Expr {
     //the only cat ns function from dsl.rs
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
-            crate::rdatatype::new_categorical_ordering(s)
+            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(rpolarserr::Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }

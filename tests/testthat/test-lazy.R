@@ -21,6 +21,14 @@ test_that("lazy prints", {
   )
 })
 
+test_that("create LazyFrame", {
+  old = pl$DataFrame(mtcars)$lazy()
+  new = pl$LazyFrame(mtcars)
+  expect_equal(
+    old$collect()$to_data_frame(),
+    new$collect()$to_data_frame()
+  )
+})
 
 test_that("lazy filter", {
   ## preparation
@@ -147,10 +155,10 @@ test_that("simple translations", {
   expect_true(all(a != b))
 
   # trigger u8 conversion errors
-  expect_grepl_error(pl$DataFrame(mtcars)$lazy()$std(256), c("ddof", "exceeds u8 max value"))
+  expect_grepl_error(pl$DataFrame(mtcars)$lazy()$std(256), c("ddof", "cannot exceed the upper bound for u8 of 255"))
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$var(-1),
-    c("ddof", "the value -1 cannot be less than zero")
+    c("ddof", "cannot be less than zero")
   )
 })
 
@@ -309,12 +317,12 @@ test_that("sort", {
   # TODO refine this error msg in robj_to! it does not have to be a "single" here
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl", "mpg", "cyl"), descending = 42)$collect(),
-    c("the arg", "descending", "is not a single bool as required, but 42")
+    c("the arg", "descending", "bool")
   )
 
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$collect(),
-    c("the arg", "nulls_last", "is not a single bool as required, but 42")
+    c("the arg", "nulls_last", "bool")
   )
 
   df = pl$DataFrame(mtcars)$lazy()
@@ -552,4 +560,32 @@ test_that("rename", {
   # wrapped args in list is equivalent
   b = lf$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$collect()$columns
   expect_identical(a, b)
+})
+
+test_that("schema", {
+  lf = pl$DataFrame(mtcars)$lazy()
+  expect_true(lf$dtypes[[1]] == lf$collect()$dtypes[[1]])
+  expect_identical(lf$columns, lf$collect()$columns)
+})
+
+test_that("select with list of exprs", {
+  l_expr = list(pl$col("mpg"), pl$col("hp"))
+  l_expr2 = list(pl$col("mpg", "hp"))
+  l_expr3 = list(pl$col("mpg"))
+  l_expr4 = list(c("mpg", "hp"))
+  l_expr5 = list("mpg", "hp")
+
+  x1 = pl$LazyFrame(mtcars)$select(l_expr)
+  x2 = pl$LazyFrame(mtcars)$select(l_expr2)
+  x3 = pl$LazyFrame(mtcars)$select(l_expr3, pl$col("hp"))
+  x4 = pl$LazyFrame(mtcars)$select(pl$col("hp"), l_expr3)
+  x5 = pl$LazyFrame(mtcars)$select(l_expr4)
+  x6 = pl$LazyFrame(mtcars)$select(l_expr5)
+
+  expect_equal(x1$columns, c("mpg", "hp"))
+  expect_equal(x2$columns, c("mpg", "hp"))
+  expect_equal(x3$columns, c("mpg", "hp"))
+  expect_equal(x4$columns, c("mpg", "hp"))
+  expect_equal(x5$columns, c("mpg", "hp"))
+  expect_equal(x6$columns, c("mpg", "hp"))
 })

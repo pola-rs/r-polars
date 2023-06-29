@@ -109,6 +109,39 @@ LazyFrame
   paste0(ls(LazyFrame, pattern = pattern), "()")
 }
 
+#' Create new LazyFrame
+#'
+#' This is simply a convenience function to create `LazyFrame`s in a quick way.
+#' It is a wrapper around `pl$DataFrame()$lazy()`. Note that this should only
+#' be used for making examples and quick demonstrations.
+#'
+#' @name pl_LazyFrame
+#'
+#' @param ... Anything that is accepted by `pl$DataFrame()`
+#'
+#' @return LazyFrame
+#' @keywords LazyFrame_new
+#'
+#' @examples
+#' pl$LazyFrame(
+#'   a = list(c(1, 2, 3, 4, 5)),
+#'   b = 1:5,
+#'   c = letters[1:5],
+#'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
+#' ) # directly from vectors
+#'
+#' # from a list of vectors or data.frame
+#' pl$LazyFrame(list(
+#'   a = c(1, 2, 3, 4, 5),
+#'   b = 1:5,
+#'   c = letters[1:5],
+#'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
+#' ))
+#'
+pl$LazyFrame = function(...) {
+  pl$DataFrame(...)$lazy()
+}
+
 #' print LazyFrame s3 method
 #' @keywords LazyFrame
 #' @param x DataFrame
@@ -827,3 +860,44 @@ LazyFrame_rename = function(...) {
   new = names(mapping)
   unwrap(.pr$LazyFrame$rename(self, existing, new), "in $rename():")
 }
+
+#' @title Schema
+#' @description Get the schema of the LazyFrame
+#' @keywords LazyFrame
+#' @return A list mapping from field name to field type
+#' @examples
+#' pl$LazyFrame(mtcars)$schema
+#'
+LazyFrame_schema = method_as_property(function() {
+  .pr$LazyFrame$schema(self) |>
+    unwrap("in $schema():")
+})
+
+#' @title Columns
+#' @description Get the column names of the LazyFrame
+#' @keywords LazyFrame
+#' @return A vector of column names
+#' @examples
+#' pl$LazyFrame(mtcars)$columns
+#'
+LazyFrame_columns = method_as_property(function() {
+  self$schema |>
+    names() |>
+    result() |>
+    unwrap("in $columns()")
+})
+
+#' @title Dtypes
+#' @description Get the data types of the LazyFrame
+#' @keywords LazyFrame
+#' @return A vector of column data types
+#' @examples
+#' pl$LazyFrame(mtcars)$dtypes
+#'
+LazyFrame_dtypes = method_as_property(function() {
+  self$schema |>
+    unlist() |>
+    unname() |>
+    result() |>
+    unwrap("in $dtypes()")
+})
