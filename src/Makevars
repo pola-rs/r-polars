@@ -1,3 +1,5 @@
+BUILD_COMMAND = cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+
 LIBDIR = ./rust/target/release
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars
@@ -10,7 +12,11 @@ all: C_clean
 $(SHLIB): $(STATLIB)
 
 $(STATLIB):
-	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+	if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
+		$(BUILD_COMMAND) --all-features; \
+	else \
+		$(BUILD_COMMAND); \
+	fi;
 	if [ -f "$(STATLIB)" ]; then \
 		echo "file is there: "; \
 	else \

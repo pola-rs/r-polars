@@ -13,6 +13,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RPOLARS_ALL_FEATURES: "true"
+
 jobs:
   build:
     runs-on: ${{ matrix.config.os }}

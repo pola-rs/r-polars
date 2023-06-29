@@ -1,11 +1,14 @@
 [package]
-name = 'r-polars'   # r-polars
+name = 'r-polars' # r-polars
 version = '0.1.0' # this version no is not used
 edition = '2021'
 
-
 [lib]
-crate-type = [ 'staticlib' ]
+crate-type = ['staticlib']
+
+[features]
+default = []
+simd = ["polars/simd"]
 
 [workspace]
 # prevents package from thinking it's in the workspace
@@ -16,7 +19,9 @@ mimalloc = { version = "0.1.34", default-features = false }
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 [dependencies]
-extendr-api = {git = "https://github.com/rpolars/extendr", branch = "pr473_553_555_566", default-features = false, features= ["result_list"]}
+extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pr473_553_555_566", default-features = false, features = [
+  "result_list",
+] }
 #extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
 
 flume = "0.10.14"
@@ -26,7 +31,7 @@ smartstring = "1.0.1"
 serde_json = "*"
 thiserror = "1.0.40"
 indenter = "0.3.3"
-polars-core = {git = "https://github.com/pola-rs/polars.git",  rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features= false}
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features = false }
 
 
 #try to trigger new hashFiles hash value
@@ -39,7 +44,6 @@ features = [
   "json",
   "dynamic_groupby",
   "zip_with",
-  "simd",
   "lazy",
   "strings",
   "temporal",
@@ -121,7 +125,7 @@ features = [
   "string_from_radix",
   "meta",
   "approx_unique",
-  ]
+]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
 rev = "e973f6386a28f16136fb8ba5a737103f95911861"
