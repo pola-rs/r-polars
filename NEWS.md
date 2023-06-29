@@ -10,6 +10,7 @@ for demonstration purposes (#240).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
   `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
+  A new function `polars_info()` will tell which features enabled (#271).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
 
