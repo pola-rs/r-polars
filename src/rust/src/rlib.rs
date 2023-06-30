@@ -300,4 +300,5 @@ extendr_module! {
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
+    fn test_print_string;
 }
