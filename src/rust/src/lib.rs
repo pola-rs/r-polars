@@ -16,13 +16,13 @@ pub mod arrow_interop;
 pub mod conversion;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
+pub mod info;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod rpolarserr;
 pub mod series;
 pub mod utils;
-
 pub use serde_json;
 
 use extendr_api::prelude::*;
@@ -44,4 +44,5 @@ extendr_module! {
     use lazy;
     use series;
     use concurrent;
+    use info;
 }
