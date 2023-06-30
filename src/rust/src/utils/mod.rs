@@ -582,7 +582,8 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
 
     //call wrap_e on R side
     use extendr_api::*;
-    let new_col_expr = extendr_api::call!("polars:::wrap_e", robj, str_to_lit)?;
+    let new_col_expr = extendr_api::call!("polars:::wrap_e", robj, str_to_lit)
+        .map_err(crate::rpolarserr::extendr_to_rpolars_err)?;
 
     //convert output into Expr
     let res: ExtendrResult<ExternalPtr<Expr>> = new_col_expr.try_into();

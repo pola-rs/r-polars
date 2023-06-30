@@ -1,4 +1,3 @@
-#![feature(min_specialization)]
 #[cfg(all(target_os = "linux", not(use_mimalloc)))]
 use jemallocator::Jemalloc;
 #[cfg(any(not(target_os = "linux"), use_mimalloc))]

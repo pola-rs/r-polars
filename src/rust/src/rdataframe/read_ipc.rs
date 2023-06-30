@@ -24,7 +24,8 @@ pub fn import_arrow_ipc(
             .transpose()?,
         memmap: robj_to!(bool, memmap)?,
     };
-    let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)?;
+    let lf = LazyFrame::scan_ipc(robj_to!(String, path)?, args)
+        .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
     Ok(RLazyFrame(lf))
 }
 

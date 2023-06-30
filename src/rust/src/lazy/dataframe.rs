@@ -375,7 +375,10 @@ impl LazyFrame {
     }
 
     fn schema(&self) -> RResult<Pairlist> {
-        let schema = self.0.schema()?;
+        let schema = self
+            .0
+            .schema()
+            .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
         let pairs = schema.iter().collect::<Vec<_>>().into_iter();
         Ok(Pairlist::from_pairs(
             pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
