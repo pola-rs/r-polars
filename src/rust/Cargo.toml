@@ -2,6 +2,7 @@
 name = 'r-polars' # r-polars
 version = '0.1.0' # this version no is not used
 edition = '2021'
+rust-version = "1.66"
 
 [lib]
 crate-type = ['staticlib']
