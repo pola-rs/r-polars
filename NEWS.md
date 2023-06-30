@@ -10,7 +10,7 @@ for demonstration purposes (#240).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
-- `<DataFrame>$glimpse()` fast `str()`-like view of a `DataFrame` (#277).
+- `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 
 # polars 0.6.1
 ## What's changed

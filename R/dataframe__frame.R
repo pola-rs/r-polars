@@ -1394,7 +1394,7 @@ DataFrame_rename = function(...) {
 #' @title Glimpse values in a DataFrame
 #' @keywords DataFrame
 #' @param ... not used
-#' @param return_as_string bool (default FALSE) if TRUE do not print but return as string.
+#' @param return_as_string Boolean (default `FALSE`). If `TRUE`, return the output as a string.
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$glimpse()
