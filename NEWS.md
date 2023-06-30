@@ -14,6 +14,7 @@ for demonstration purposes (#240).
 - A new function `polars_info()` will tell which features enabled (#271).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
+- `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 
 # polars 0.6.1
 ## What's changed
