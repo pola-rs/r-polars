@@ -1,4 +1,4 @@
-patrick::with_parameters_test_that("polars_info()features are logical",
+patrick::with_parameters_test_that("polars_info() features are logical",
   {
     expect_type(feature, "logical")
     expect_length(feature, 1)
