@@ -57,6 +57,8 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
+test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
+
 RPolarsErr <- new.env(parent = emptyenv())
 
 RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
