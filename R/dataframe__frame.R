@@ -1433,14 +1433,14 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
     data = lapply(seq_along(schema), \(i) parse_column_(names(schema)[i], schema[[i]]))
     max_col_name = max(sapply(data, \(x) nchar(x$col_name)))
     max_col_dtyp = max(sapply(data, \(x) nchar(x$dtype)))
-    max_col_vals = 100 - max_col_name - max_col_dtyp
+    max_col_vals = 100 - max_col_name - max_col_dtyp - 3
 
     sapply(data, \(x) {
       name_filler = paste(rep(" ", max_col_name - nchar(x$col_name)), collapse = "")
       dtyp_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
       vals_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
       paste0(
-        "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler,
+        "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler, " ",
         substr(x$val_str, 1, max_col_vals), "\n"
       )
     }) |>
