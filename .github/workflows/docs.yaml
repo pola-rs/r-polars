@@ -22,6 +22,7 @@ concurrency:
 
 env:
   RPOLARS_ALL_FEATURES: "true"
+  RPOLARS_PROFILE: release-optimized
 
 jobs:
   documentation:
