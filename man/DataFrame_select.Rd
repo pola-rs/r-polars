@@ -19,7 +19,7 @@ columns (like \code{.()} in \code{data.table}).
 \examples{
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-  (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+  (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
 }
 \keyword{DataFrame}

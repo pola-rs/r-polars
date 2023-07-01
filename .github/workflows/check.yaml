@@ -12,26 +12,24 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  RPOLARS_ALL_FEATURES: "true"
-
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.all-features && 'all-features' || '' }}
     strategy:
       fail-fast: false
       matrix:
         config:
-          #- { os: macos-latest, r: "devel" }
           - { os: macos-latest, r: "release" }
-          #- { os: macos-latest, r: "oldrel-1" }
           - { os: windows-latest, r: "devel", rtools-version: "43" }
           - { os: windows-latest, r: "release", rtools-version: "" }
-          - { os: windows-latest, r: "oldrel-1", rtools-version: "42" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           - { os: ubuntu-latest, r: "oldrel-1" }
+        include:
+          - config: { os: macos-latest, r: "release", all-features: true }
+          - config: { os: windows-latest, r: "release", all-features: true }
+          - config: { os: ubuntu-latest, r: "release", all-features: true }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -39,11 +37,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
 
       - uses: ./.github/actions/setup
+        with:
+          rust-nightly: "${{ matrix.config.all-features }}"
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
@@ -74,6 +74,12 @@ jobs:
           echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
+
+      - name: Set env vars for build option
+        if: matrix.config.all-features
+        shell: bash
+        run: |
+          echo "RPOLARS_ALL_FEATURES=true" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:

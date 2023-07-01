@@ -1,5 +1,9 @@
 name: setup
 description: Setup build environment (except R)
+inputs:
+  rust-nightly:
+    description: Set up Rust nightly toolchain?
+    required: false
 
 runs:
   using: composite
@@ -23,7 +27,8 @@ runs:
             libxml2-dev \
             libssl-dev
 
-      - name: Set up Rust
+      - name: Set up Rust nightly toolchain
+        if: inputs.rust-nightly == 'true' || env.RPOLARS_ALL_FEATURES == 'true'
         shell: bash
         run: |
           make requirements-rs
