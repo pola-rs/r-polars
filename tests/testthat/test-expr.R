@@ -186,8 +186,34 @@ test_that("over", {
     pl$col("val")$count()$over("a", pl$col("b"))
   )
 
+  # with vector of column names
+  df2 = pl$DataFrame(list(
+    val = 1:5,
+    a = c("+", "+", "-", "-", "+"),
+    b = c("+", "-", "+", "-", "+")
+  ))$select(
+    pl$col("val")$count()$over(c("a", "b"))
+  )
+
+  over_vars = c("a", "b")
+  df3 = pl$DataFrame(list(
+    val = 1:5,
+    a = c("+", "+", "-", "-", "+"),
+    b = c("+", "-", "+", "-", "+")
+  ))$select(
+    pl$col("val")$count()$over(over_vars)
+  )
+
   expect_equal(
     as.numeric(df$get_column("val")$to_r()),
+    c(2, 1, 1, 1, 2)
+  )
+  expect_equal(
+    as.numeric(df2$get_column("val")$to_r()),
+    c(2, 1, 1, 1, 2)
+  )
+  expect_equal(
+    as.numeric(df3$get_column("val")$to_r()),
     c(2, 1, 1, 1, 2)
   )
 })

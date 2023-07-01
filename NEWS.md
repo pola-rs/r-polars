@@ -15,6 +15,7 @@ for demonstration purposes (#240).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
+- `$over()` now accepts a vector of column names (#286).
 
 # polars 0.6.1
 ## What's changed

@@ -590,6 +590,9 @@ construct_ProtoExprArray = function(...) {
 
   # if args not named load in Expr and string
   if (is.null(arg_names)) {
+    if (length(args) == 1 && is.list(args)) {
+      args = unlist(args)
+    }
     for (i in args) {
       # if (is_string(i)) {
       #   pra$push_back_str(i)
