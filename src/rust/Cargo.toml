@@ -1,8 +1,8 @@
 [package]
-name = 'r-polars' # r-polars
-version = '0.1.0' # this version no is not used
+name = 'r-polars'     # r-polars
+version = '0.1.0'     # this version no is not used
 edition = '2021'
-rust-version = "1.65"
+rust-version = "1.64"
 
 [lib]
 crate-type = ['staticlib']
@@ -20,7 +20,7 @@ mimalloc = { version = "0.1.34", default-features = false }
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 
-#use opt-level = 1 for argminmax package unless profile is profile.release-optimized
+# use opt-level = 1 for argminmax package unless profile is profile.release-optimized for to support Rust <= 1.66
 [profile.release-optimized]
 inherits = "release"
 [profile.release.package.argminmax]
@@ -32,9 +32,7 @@ opt-level = 3
 extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pr473_553_555_566", default-features = false, features = [
   "result_list",
 ] }
-#extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
 
-#argminmax = { version = "*", features = ["opt-level=1"]}
 flume = "0.10.14"
 state = "0.5.3"
 rayon = "1.6.1"
@@ -43,8 +41,6 @@ serde_json = "*"
 thiserror = "1.0.40"
 indenter = "0.3.3"
 polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features = false }
-
-
 
 
 #features copied from node-polars
