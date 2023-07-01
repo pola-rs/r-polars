@@ -218,6 +218,12 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
     Ok(DataFrame(df_acc))
 }
 
+#[extendr]
+pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
+    let dtype = robj_to!(RPolarsDataType, dtype)?.0;
+    Ok(dtype.to_string())
+}
+
 // pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
 //     use polars::prelude::IntoSeries;
 //     let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
@@ -264,6 +270,11 @@ fn test_robj_to_u32(robj: Robj) -> RResult<String> {
     robj_to!(u32, robj).map(rdbg)
 }
 
+#[extendr]
+fn test_print_string(s: String) {
+    rprintln!("{}", s);
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -284,8 +295,10 @@ extendr_module! {
     //fn rb_to_df;
     fn rb_list_to_df;
     fn arrow_stream_to_rust;
+    fn dtype_str_repr;
 
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
+    fn test_print_string;
 }

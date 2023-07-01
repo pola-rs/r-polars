@@ -949,3 +949,13 @@ test_that("rename", {
   b = df$rename(list(miles_per_gallon = "mpg", horsepower = "hp"))$columns
   expect_identical(a, b)
 })
+
+
+test_that("glimpse", {
+  expect_snapshot(pl$DataFrame(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))$glimpse())
+  expect_rpolarserr(
+    pl$DataFrame(iris)$glimpse(return_as_string = 42),
+    c("BadArgument", "TypeMismatch", "BadValue")
+  )
+  expect_true(is_string(pl$DataFrame(iris)$glimpse(return_as_string = TRUE)))
+})

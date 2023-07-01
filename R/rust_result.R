@@ -95,6 +95,21 @@ or_else = function(x, f) {
 }
 
 
+#' unwrap return or if err
+#' @param x any R object
+#' @keywords internal
+#' @param or any R value
+#' @return pl
+unwrap_or = function(x, or) {
+  guard_result(x)
+  if (is_ok(x)) {
+    x$ok
+  } else {
+    or
+  }
+}
+
+
 #' pstop
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
