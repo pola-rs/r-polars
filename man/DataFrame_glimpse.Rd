@@ -9,7 +9,7 @@ DataFrame_glimpse(..., return_as_string = FALSE)
 \arguments{
 \item{...}{not used}
 
-\item{return_as_string}{bool (default FALSE) if TRUE do not print but return as string.}
+\item{return_as_string}{Boolean (default \code{FALSE}). If \code{TRUE}, return the output as a string.}
 }
 \value{
 DataFrame

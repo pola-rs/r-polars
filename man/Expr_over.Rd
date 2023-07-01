@@ -25,5 +25,14 @@ pl$DataFrame(
 )$select(
   pl$col("val")$count()$over("a", "b")
 )
+
+over_vars = c("a", "b")
+pl$DataFrame(
+  val = 1:5,
+  a = c("+", "+", "-", "-", "+"),
+  b = c("+", "-", "+", "-", "+")
+)$select(
+  pl$col("val")$count()$over(over_vars)
+)
 }
 \keyword{Expr}

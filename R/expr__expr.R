@@ -590,6 +590,9 @@ construct_ProtoExprArray = function(...) {
 
   # if args not named load in Expr and string
   if (is.null(arg_names)) {
+    if (length(args) == 1 && is.list(args)) {
+      args = unlist(args)
+    }
     for (i in args) {
       # if (is_string(i)) {
       #   pra$push_back_str(i)
@@ -2126,6 +2129,15 @@ Expr_last = "use_extendr_wrapper"
 #'   b = c("+", "-", "+", "-", "+")
 #' )$select(
 #'   pl$col("val")$count()$over("a", "b")
+#' )
+#'
+#' over_vars = c("a", "b")
+#' pl$DataFrame(
+#'   val = 1:5,
+#'   a = c("+", "+", "-", "-", "+"),
+#'   b = c("+", "-", "+", "-", "+")
+#' )$select(
+#'   pl$col("val")$count()$over(over_vars)
 #' )
 Expr_over = function(...) {
   # combine arguments in proto expression array
