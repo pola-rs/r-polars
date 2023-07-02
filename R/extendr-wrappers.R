@@ -35,7 +35,7 @@ sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
-concat_lst <- function(exprs) .Call(wrap__concat_lst, exprs)
+concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 

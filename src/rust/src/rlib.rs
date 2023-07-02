@@ -88,10 +88,10 @@ fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
 }
 
 #[extendr]
-fn concat_lst(exprs: &ProtoExprArray) -> Result<Expr, String> {
+fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
     let exprs = exprs.to_vec("select");
     Ok(Expr(
-        polars::lazy::dsl::concat_lst(exprs).map_err(|err| err.to_string())?,
+        polars::lazy::dsl::concat_list(exprs).map_err(|err| err.to_string())?,
     ))
 }
 
@@ -285,7 +285,7 @@ extendr_module! {
     fn coalesce_exprs;
     fn sum_exprs;
     fn mem_address;
-    fn concat_lst;
+    fn concat_list;
     fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
