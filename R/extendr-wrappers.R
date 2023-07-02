@@ -39,7 +39,7 @@ concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
-r_date_range_lazy <- function(start, end, every, closed, name, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, name, tz)
+r_date_range_lazy <- function(start, end, every, closed, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, tz)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
@@ -517,7 +517,7 @@ Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__E
 
 Expr$str_parse_date <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, format, strict, exact, cache)
 
-Expr$str_parse_datetime <- function(format, strict, exact, cache, tz_aware, utc, tu) .Call(wrap__Expr__str_parse_datetime, self, format, strict, exact, cache, tz_aware, utc, tu)
+Expr$str_parse_datetime <- function(format, strict, exact, cache, tu) .Call(wrap__Expr__str_parse_datetime, self, format, strict, exact, cache, tu)
 
 Expr$str_parse_time <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, format, strict, exact, cache)
 
