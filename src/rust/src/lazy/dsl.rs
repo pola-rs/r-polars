@@ -1082,7 +1082,9 @@ impl Expr {
 
     fn lst_shift(&self, periods: f64) -> List {
         let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().list().shift(try_f64_into_i64(periods)?)))
+            Ok(Expr(
+                self.0.clone().list().shift(try_f64_into_i64(periods)?),
+            ))
         }()
         .map_err(|err| format!("arr.shift: {}", err));
         r_result_list(expr_res)
