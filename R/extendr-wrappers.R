@@ -57,7 +57,9 @@ test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
 handle_background_request <- function(server_name) .Call(wrap__handle_background_request, server_name)
 
-test_rthreadhandle <- function() invisible(.Call(wrap__test_rthreadhandle))
+test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
+
+test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
 DataFrame <- new.env(parent = emptyenv())
 

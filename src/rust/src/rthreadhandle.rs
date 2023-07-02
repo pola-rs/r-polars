@@ -1,5 +1,5 @@
 use crate::rdataframe::DataFrame as RDF;
-use crate::rpolarserr::{rdbg, RResult, Rctx};
+use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
 use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
 use std::thread;
 
@@ -46,11 +46,50 @@ impl RThreadHandle<RResult<RDF>> {
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum RIPCPacket {
     Reval {
-        lambda: String,
-        arg: String,
-        collector: ipc_channel::ipc::IpcSender<RResult<String>>,
+        raw_func: Vec<u8>,
+        raw_arg: Vec<u8>,
+        collector: ipc_channel::ipc::IpcSender<RResult<Vec<u8>>>,
     },
     Done,
+}
+
+impl RIPCPacket {
+    pub fn has_job(self) -> Option<Self> {
+        match self {
+            Self::Done => None,
+            _ => Some(self),
+        }
+    }
+
+    pub fn handle(self) -> RResult<()> {
+        use extendr_api::*;
+        match self {
+            Self::Reval {
+                raw_func,
+                raw_arg,
+                collector,
+            } => {
+                let lambda = call!("unserialize", raw_func)?;
+                let arg = call!("unserialize", raw_arg)?;
+                let ret = lambda
+                    .as_function()
+                    .ok_or(RPolarsErr::new())
+                    .bad_val(rdbg(lambda))
+                    .mistyped("pure R function")?
+                    .call(
+                        arg.as_pairlist()
+                            .ok_or(RPolarsErr::new())
+                            .bad_val(rdbg(arg))
+                            .mistyped("pairlist (as R function arguments)")?,
+                    )?;
+                Ok(collector.send(Ok(call!("serialize", ret, NULL)?
+                    .as_raw_slice()
+                    .unwrap()
+                    .to_vec()))?)
+            }
+            Self::Done => Ok(()),
+        }
+    }
 }
 
 pub struct RBackgroundHandler {
@@ -65,12 +104,16 @@ impl RBackgroundHandler {
 
         let (server, server_name) = ipc::IpcOneShotServer::new()?;
         let child = Command::new("R")
+            .arg("--vanilla")
             .arg("-q")
             .arg("-e")
             // Remove rextendr::document() if possible
             .arg(format!(
-                "rextendr::document(); polars::pl$handle_background_request(\"{server_name}\")"
+                "polars::pl$handle_background_request(\"{server_name}\") |> invisible()"
             ))
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
             .spawn()?;
         let (_, tx): (_, ipc::IpcSender<RIPCPacket>) = server.accept()?;
         Ok(RBackgroundHandler {
@@ -82,81 +125,83 @@ impl RBackgroundHandler {
     pub fn close(mut self) -> RResult<()> {
         Ok(self.proc.kill()?)
     }
-
-    fn test(&self) -> RResult<()> {
-        use extendr_api::prelude::*;
-        use ipc_channel::ipc;
-        let (tx, rx) = ipc::channel::<RResult<String>>()?;
-        self.chan.send(RIPCPacket::Reval {
-            lambda: "<A function>".to_string(),
-            arg: "<An argument>".to_string(),
-            collector: tx,
-        })?;
-        rprintln!("Got: {:?}", rx.recv()?);
-        self.chan.send(RIPCPacket::Done)?;
-        Ok(())
-    }
 }
 
 #[extendr]
 pub fn handle_background_request(server_name: String) -> RResult<()> {
     use ipc_channel::ipc;
     let rtx = ipc::IpcSender::connect(server_name)?;
+
     let (tx, rx) = ipc::channel::<RIPCPacket>()?;
     rtx.send(tx)?;
 
-    // Handle jobs
-    loop {
-        use RIPCPacket::*;
-        match rx.recv()? {
-            Reval {
-                lambda,
-                arg,
-                collector,
-            } => collector.send(Ok(format!("{lambda}({arg})=><The result>")))?,
-            Done => break,
-        };
+    while let Some(job) = rx.recv()?.has_job() {
+        job.handle()?;
     }
 
-    // Finished handling
     Ok(())
 }
 
 #[extendr]
-pub fn test_rthreadhandle() {
-    // use extendr_api::*;
-    RBackgroundHandler::new()
-        .and_then(|handle| handle.test())
-        .unwrap();
+pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
+    let handler = RBackgroundHandler::new().unwrap();
+    use extendr_api::prelude::*;
+    use ipc_channel::ipc;
+    let (tx, rx) = ipc::channel::<RResult<Vec<u8>>>()?;
+    let raw_func = call!("serialize", lambda, NULL)?
+        .as_raw_slice()
+        .unwrap()
+        .to_vec();
+    let raw_arg = call!("serialize", arg, NULL)?
+        .as_raw_slice()
+        .unwrap()
+        .to_vec();
 
-    // RThreadHandle::new(move || {
-    //     rprintln!("Intense sleeping in Rust for 10 seconds!");
-    //     let duration = std::time::Duration::from_millis(10000);
-    //     thread::sleep(duration);
-    //     rprintln!("Wake up!");
-    //     let plf = {
-    //         use polars::prelude::*;
-    //         df!("Fruit" => &["Apple", "Banana", "Pear"],
-    //         "Color" => &["Red", "Yellow", "Green"],
-    //         "Cost" => &[2, 4, 6])
-    //         .unwrap()
-    //         .lazy()
-    //         .with_column(
-    //             col("Cost")
-    //                 .apply(|c| Ok(Some(c + 1)), GetOutput::default())
-    //                 .alias("Price"),
-    //         )
-    //     };
-    //     let rlf = crate::lazy::dataframe::LazyFrame::from(plf)
-    //         .collect()
-    //         .unwrap();
-    //     Ok(rlf)
-    // })
+    handler.chan.send(RIPCPacket::Reval {
+        raw_func,
+        raw_arg,
+        collector: tx,
+    })?;
+
+    let raw_res = rx.recv()??;
+    handler.chan.send(RIPCPacket::Done)?;
+    Ok(call!("unserialize", raw_res)?)
+}
+
+#[extendr]
+pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
+    use extendr_api::*;
+
+    RThreadHandle::new(move || {
+        rprintln!("Intense sleeping in Rust for 10 seconds!");
+        let duration = std::time::Duration::from_millis(10000);
+        thread::sleep(duration);
+        rprintln!("Wake up!");
+        let plf = {
+            use polars::prelude::*;
+            df!("Fruit" => &["Apple", "Banana", "Pear"],
+            "Color" => &["Red", "Yellow", "Green"],
+            "Cost" => &[2, 4, 6])
+            .unwrap()
+            .lazy()
+            .with_column(
+                col("Cost")
+                    .apply(|c| Ok(Some(c + 1)), GetOutput::default())
+                    .alias("Price"),
+            )
+        };
+
+        let rlf = crate::lazy::dataframe::LazyFrame::from(plf)
+            .collect()
+            .unwrap();
+        Ok(rlf)
+    })
 }
 
 extendr_module! {
     mod rthreadhandle;
     impl RThreadHandle;
     fn handle_background_request;
+    fn test_rbackgroundhandler;
     fn test_rthreadhandle;
 }

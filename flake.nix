@@ -47,6 +47,8 @@
           inputsFrom = pkgs.lib.singleton rpolars;
           packages = pkgs.lib.singleton rvenv;
           LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath rdeps;
+          # Remember to create a symlink to the build cache
+          R_LIBS_USER = ".direnv/target";
         };
       });
 
