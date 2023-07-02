@@ -32,7 +32,7 @@ smartstring = "1.0.1"
 serde_json = "*"
 thiserror = "1.0.40"
 indenter = "0.3.3"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b", default_features = false }
 
 
 #try to trigger new hashFiles hash value
@@ -129,4 +129,4 @@ features = [
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "e973f6386a28f16136fb8ba5a737103f95911861"
+rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
