@@ -17,10 +17,6 @@
 #' @param exact bool , If True, require an exact format match. If False, allow the format to match
 #' anywhere in the target string.
 #' @param cache Use a cache of unique, converted dates to apply the datetime conversion.
-#' @param tz_aware bool, Parse timezone aware datetimes. This may be automatically toggled by the
-#' ‘fmt’ given.
-#' @param utc bool Parse timezone aware datetimes as UTC. This may be useful if you have data with
-#' mixed offsets.
 #' @details Notes When parsing a Datetime the column precision will be inferred from the format
 #' string, if given, eg: “%F %T%.3f” => Datetime(“ms”). If no fractional second component is found
 #' then the default is “us”.
@@ -54,16 +50,14 @@
 #' pl$lit(txt_datetimes)$str$strptime(
 #'   pl$Datetime("ns"),
 #'   fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
-#'   tz_aware = TRUE, utc = TRUE
 #' )$lit_to_s()
 ExprStr_strptime = function(
     datatype, # : PolarsTemporalType,
     fmt, # : str | None = None,
     strict = TRUE, # : bool = True,
     exact = TRUE, # : bool = True,
-    cache = TRUE, # : bool = True,
-    tz_aware = FALSE, # : bool = False,
-    utc = FALSE) { #-> Expr:
+    cache = TRUE # : bool = True,
+  ) { #-> Expr:
 
   # match on datatype, return Result<Expr, String>
   expr_result = pcase(
@@ -77,7 +71,7 @@ ExprStr_strptime = function(
       tu = .pr$DataType$get_insides(datatype)$tu
 
       .pr$Expr$str_parse_datetime(
-        self, fmt, strict, exact, cache, tz_aware, utc, tu
+        self, fmt, strict, exact, cache, tu
       ) |> and_then(
         \(expr) .pr$Expr$dt_cast_time_unit(expr, tu) # cast if not an err
       )

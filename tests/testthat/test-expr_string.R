@@ -10,19 +10,10 @@ test_that("str$strptime datetime", {
     "strict conversion to date"
   )
 
-  expect_grepl_error(
-    pl$lit(txt_datetimes)$str$strptime(
-      pl$Datetime(),
-      fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE, tz_aware = TRUE, utc = FALSE
-    )$lit_to_s(),
-    "Different timezones found during 'strptime' operation"
-  )
-
-
   expect_identical(
     pl$lit(txt_datetimes)$str$strptime(
       pl$Datetime(),
-      fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE, tz_aware = TRUE, utc = TRUE
+      fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
     )$to_r(),
     as.POSIXct(txt_datetimes, format = "%Y-%m-%d %H:%M:%S %z", tz = "UTC")
   )
@@ -78,7 +69,7 @@ test_that("str$strptime time", {
 
   expect_grepl_error(
     pl$lit(txt_times)$str$strptime(pl$Time, fmt = "%H:%M:%S %z")$lit_to_s(),
-    "strict conversion to date"
+    "strict conversion to times failed"
   )
 
   expect_equal(
