@@ -4,7 +4,7 @@
 \alias{Series_arr}
 \title{arr: list related methods on Series of dtype List}
 \usage{
-Series_arr()
+Series_list()
 }
 \value{
 Expr

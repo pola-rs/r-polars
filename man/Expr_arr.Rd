@@ -5,7 +5,7 @@
 \alias{arr_ns}
 \title{arr: list related methods}
 \usage{
-Expr_arr()
+Expr_list()
 }
 \value{
 Expr
