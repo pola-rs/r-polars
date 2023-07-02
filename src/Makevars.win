@@ -1,13 +1,14 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
-BUILD_COMMAND = cargo build --target=$(TARGET) --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+BUILD_COMMAND = cargo build --target=$(TARGET) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+RPOLARS_PROFILE ?= release
 
 TARGET_DIR = ./rust/target
-LIBDIR = $(TARGET_DIR)/$(TARGET)/release
+LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
 RPOLARS_RUST_SOURCE ?= ./rust
 RPOLARS_CARGO_CLEAN_DEPS ?= nope
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/release/libr_polars.a"
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
 
