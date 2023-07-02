@@ -134,7 +134,7 @@ pl$date_range = function(
     low, # : date | datetime |# for lazy  pli.Expr | str,
     high, # : date | datetime | pli.Expr | str,
     interval, # : str | timedelta,
-    lazy = FALSE, # : Literal[True],
+    lazy = TRUE, # : Literal[True],
     closed = "both", # : ClosedInterval = "both",
     name = NULL, # : str | None = None,
     time_unit = "us",
