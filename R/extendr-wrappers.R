@@ -55,7 +55,9 @@ test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
-test_rthreadhandle <- function(rcls) .Call(wrap__test_rthreadhandle, rcls)
+handle_background_request <- function(server_name) .Call(wrap__handle_background_request, server_name)
+
+test_rthreadhandle <- function() invisible(.Call(wrap__test_rthreadhandle))
 
 DataFrame <- new.env(parent = emptyenv())
 

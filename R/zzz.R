@@ -101,6 +101,7 @@ pl$lazy_csv_reader = lazy_csv_reader
 pl$csv_reader = csv_reader
 pl$read_csv = read_csv_
 pl$scan_arrow_ipc = scan_arrow_ipc
+pl$handle_background_request = handle_background_request
 
 
 #' Get Memory Address

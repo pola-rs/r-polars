@@ -6,8 +6,10 @@ use extendr_api::{
 };
 use thiserror::Error;
 
-#[derive(Clone, Debug, Error)]
+#[derive(Clone, Debug, Error, serde::Deserialize, serde::Serialize)]
 pub enum Rctx {
+    #[error("Failed to handle background task")]
+    Background,
     #[error("The argument [{0}] cause an error")]
     BadArg(String),
     #[error("Encountered the following error when joining the thread:\n\t{0}")]
@@ -32,7 +34,7 @@ pub enum Rctx {
     When(String),
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct RPolarsErr {
     contexts: VecDeque<Rctx>,
     rcall: Option<String>,
@@ -42,6 +44,7 @@ pub type RResult<T> = core::result::Result<T, RPolarsErr>;
 
 pub trait WithRctx<T> {
     fn ctx(self, rctx: Rctx) -> RResult<T>;
+    fn background(self) -> RResult<T>;
     fn bad_arg(self, arg: impl Into<String>) -> RResult<T>;
     fn bad_robj(self, robj: &Robj) -> RResult<T>;
     fn bad_val(self, val: impl Into<String>) -> RResult<T>;
@@ -59,6 +62,10 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
             rerr.contexts.push_back(rctx);
             rerr
         })
+    }
+
+    fn background(self) -> RResult<T> {
+        self.ctx(Rctx::Background)
     }
 
     fn bad_arg(self, arg: impl Into<String>) -> RResult<T> {
@@ -108,11 +115,12 @@ impl RPolarsErr {
                 .into_iter()
                 .rev()
                 .map(|rctx| match rctx {
+                    Background => ("Background", format!("{}", rctx)),
                     BadArg(arg) => ("BadArgument", arg),
                     BadJoin(err) => ("BadJoin", err),
                     BadVal(val) => ("BadValue", val),
                     Extendr(err) => ("ExtendrError", err),
-                    Handled => ("Handled", String::from("Repeated join on the same thread")),
+                    Handled => ("Handled", format!("{}", rctx)),
                     Hint(msg) => ("Hint", msg),
                     Mistyped(ty) => ("TypeMismatch", ty),
                     Misvalued(scope) => ("ValueOutOfScope", scope),
