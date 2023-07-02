@@ -1150,15 +1150,15 @@ impl Expr {
         self.0
             .clone()
             .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Date,
-                format: null_to_opt(format),
-                strict,
-                exact,
-                cache,
-                tz_aware: false,
-                utc: false,
-            })
+            .strptime(
+                pl::DataType::Date,
+                pl::StrptimeOptions {
+                    format: null_to_opt(format),
+                    strict,
+                    exact,
+                    cache,
+                },
+            )
             .into()
     }
 
@@ -1169,8 +1169,6 @@ impl Expr {
         strict: bool,
         exact: bool,
         cache: bool,
-        tz_aware: bool,
-        utc: bool,
         tu: Nullable<Robj>,
     ) -> List {
         let res = || -> Result<Expr, String> {
@@ -1197,15 +1195,15 @@ impl Expr {
                 .0
                 .clone()
                 .str()
-                .strptime(pl::StrpTimeOptions {
-                    date_dtype: pl::DataType::Datetime(result_tu, None),
-                    format,
-                    strict,
-                    exact,
-                    cache,
-                    tz_aware,
-                    utc,
-                })
+                .strptime(
+                    pl::DataType::Datetime(result_tu, None),
+                    pl::StrptimeOptions {
+                        format,
+                        strict,
+                        exact,
+                        cache,
+                    },
+                )
                 .into())
         }();
         r_result_list(res)
@@ -1221,15 +1219,15 @@ impl Expr {
         self.0
             .clone()
             .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Time,
-                format: null_to_opt(format),
-                strict,
-                exact,
-                cache,
-                tz_aware: false,
-                utc: false,
-            })
+            .strptime(
+                pl::DataType::Time,
+                pl::StrptimeOptions {
+                    format: null_to_opt(format),
+                    strict,
+                    exact,
+                    cache,
+                },
+            )
             .into()
     }
 
