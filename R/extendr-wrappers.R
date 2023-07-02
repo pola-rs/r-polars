@@ -755,6 +755,8 @@ Expr$str_replace_all <- function(pattern, value, literal) .Call(wrap__Expr__str_
 
 Expr$str_slice <- function(offset, length) .Call(wrap__Expr__str_slice, self, offset, length)
 
+Expr$str_explode <- function() .Call(wrap__Expr__str_explode, self)
+
 Expr$str_parse_int <- function(radix, strict) .Call(wrap__Expr__str_parse_int, self, radix, strict)
 
 Expr$bin_contains <- function(lit) .Call(wrap__Expr__bin_contains, self, lit)

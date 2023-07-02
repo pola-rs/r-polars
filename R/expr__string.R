@@ -700,19 +700,19 @@ ExprStr_slice = function(offset, length = NULL) {
     unwrap("in str$slice:")
 }
 
-#' explode
-#' @name ExprStr_explode
+#' str_explode
+#' @name ExprStr_str_explode
 #' @aliases expr_str_explode
 #' @description Returns a column with a separate row for every string character.
 #' @keywords ExprStr
 #' @return Expr: Series of dtype Utf8.
 #' @examples
 #' df = pl$DataFrame(a = c("foo", "bar"))
-#' df$select(pl$col("a")$str$explode())
-ExprStr_explode = function() {
-  .pr$Expr$explode(self)
+#' df$select(pl$col("a")$str$str_explode())
+ExprStr_str_explode = function() {
+  .pr$Expr$str_explode(self) |>
+    unwrap("in str$str_explode:")
 }
-
 
 #' parse_int
 #' @name ExprStr_parse_int

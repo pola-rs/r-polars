@@ -2041,6 +2041,10 @@ impl Expr {
             .into())
     }
 
+    pub fn str_explode(&self) -> Result<Expr, String> {
+        Ok(self.0.clone().str().explode().into())
+    }
+
     pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> Result<Expr, String> {
         Ok(self
             .0
