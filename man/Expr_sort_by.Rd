@@ -5,12 +5,13 @@
 \alias{sort_by}
 \title{sort column by order of others}
 \usage{
-Expr_sort_by(by, reverse = FALSE)
+Expr_sort_by(by, descending = FALSE)
 }
 \arguments{
 \item{by}{one expression or list expressions and/or strings(interpreted as column names)}
 
-\item{reverse}{single bool to boolean vector, any is_TRUE will give reverse sorting of that column}
+\item{descending}{Sort in descending order. When sorting by multiple columns,
+can be specified per column by passing a sequence of booleans.}
 }
 \value{
 Expr

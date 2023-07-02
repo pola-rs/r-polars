@@ -5,7 +5,7 @@
 \alias{rank}
 \title{Rank}
 \usage{
-Expr_rank(method = "average", reverse = FALSE)
+Expr_rank(method = "average", descending = FALSE)
 }
 \arguments{
 \item{method}{string option 'average', 'min', 'max', 'dense', 'ordinal', 'random'
@@ -29,7 +29,7 @@ the order that the values occur in the Series.
 on the order that the values occur in the Series.
 }}
 
-\item{reverse}{bool, reverse the operation}
+\item{descending}{Rank in descending order.}
 }
 \value{
 Expr
