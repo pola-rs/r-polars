@@ -39,13 +39,13 @@ df$select(
 
 # by two columns/expressions
 df$select(
-  pl$col("group")$sort_by(list("value2", pl$col("value1")), reverse = c(TRUE, FALSE))
+  pl$col("group")$sort_by(list("value2", pl$col("value1")), descending = c(TRUE, FALSE))
 )
 
 
 # by some expression
 df$select(
-  pl$col("group")$sort_by(pl$col("value1")$sort(reverse = TRUE))
+  pl$col("group")$sort_by(pl$col("value1")$sort(descending = TRUE))
 )
 
 # quite similar usecase as R function `order()`
@@ -66,8 +66,8 @@ all.equal(
     pl$col("ab")$sort_by("v3")$alias("ab3"),
     pl$col("ab")$sort_by("v2")$alias("ab2"),
     pl$col("ab")$sort_by("v1")$alias("ab1"),
-    pl$col("ab")$sort_by(list("v3", pl$col("v1")), reverse = c(FALSE, TRUE))$alias("ab13FT"),
-    pl$col("ab")$sort_by(list("v3", pl$col("v1")), reverse = TRUE)$alias("ab13T")
+    pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(FALSE, TRUE))$alias("ab13FT"),
+    pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = TRUE)$alias("ab13T")
   )$to_list(),
   list(
     ab4 = l$ab[order(l$v4)],
