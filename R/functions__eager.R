@@ -155,7 +155,7 @@ pl$date_range = function(
     low = convert_time_unit_for_lazy(low, time_unit, time_zone)
     high = convert_time_unit_for_lazy(high, time_unit, time_zone)
     result = r_date_range_lazy(low, high, interval, closed, time_zone)
-    return(unwrap(result))
+    return(unwrap(result, "in pl$date_range():"))
   }
 
   # convert to list(v, u, tz) pair
@@ -171,7 +171,7 @@ pl$date_range = function(
     name = name,
     tu = "ms",
     tz = time_zone
-  ))
+  ), "in pl$date_range():")
 
   if (time_unit != "ms") {
     dt_series = dt_series$to_lit()$cast(pl$Datetime(tu = time_unit, tz = time_zone))$lit_to_s()
