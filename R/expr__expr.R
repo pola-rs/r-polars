@@ -3,7 +3,7 @@
 #' @name Expr_class
 #' @description `Expr`essions are all the functions and methods that are applicable
 #' to a Polars DataFrame. They can be split into the following categories (following
-#' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions)):
+#' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
 #'  * Aggregate
 #'  * Binary
 #'  * Categorical
