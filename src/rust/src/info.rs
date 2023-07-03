@@ -8,7 +8,7 @@ struct FeatureInfo {
 impl FeatureInfo {
     fn new() -> FeatureInfo {
         FeatureInfo {
-            simd: cfg!(target_feature = "simd"),
+            simd: cfg!(feature = "simd"),
         }
     }
     fn to_r(&self) -> List {

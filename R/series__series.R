@@ -780,21 +780,21 @@ Series_flags = method_as_property(function() {
 ### contribute polars, exposee nulls_last option
 #' is_sorted
 #' @keywords Series
-#' @param reverse order sorted
+#' @param descending Check if the Series is sorted in descending order.
 #' @param nulls_last bool where to keep nulls, default same as reverse
 #' @return DataType
 #' @aliases is_sorted
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
 #' pl$Series(1:4)$sort()$is_sorted()
-Series_is_sorted = function(reverse = FALSE, nulls_last = NULL) {
-  .pr$Series$is_sorted(self, reverse, nulls_last)
+Series_is_sorted = function(descending = FALSE, nulls_last = NULL) {
+  .pr$Series$is_sorted(self, descending, nulls_last)
 }
 
 
 #' Set sorted
 #' @keywords Series
-#' @param reverse bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.
+#' @param descending Sort the columns in descending order.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
 #' pl$set_polars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
@@ -803,7 +803,7 @@ Series_is_sorted = function(reverse = FALSE, nulls_last = NULL) {
 #' @examples
 #' s = pl$Series(1:4)$set_sorted()
 #' s$flags
-Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
+Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
@@ -815,7 +815,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
     self = self$clone()
   }
 
-  .pr$Series$set_sorted_mut(self, reverse)
+  .pr$Series$set_sorted_mut(self, descending)
   if (in_place) invisible(NULL) else invisible(self)
 }
 
@@ -824,7 +824,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #' Sort this Series
 #' @keywords Series
 #' @aliases Series_sort
-#' @param reverse bool reverse(descending) sort
+#' @param descending Sort in descending order..
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
 #' `pl$set_polars_options(strictly_immutable = FALSE)`
@@ -833,7 +833,7 @@ Series_set_sorted = function(reverse = FALSE, in_place = FALSE) {
 #'
 #' @examples
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
-Series_sort = function(reverse = FALSE, in_place = FALSE) {
+Series_sort = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
@@ -844,7 +844,7 @@ Series_sort = function(reverse = FALSE, in_place = FALSE) {
     self = self$clone()
   }
 
-  .pr$Series$sort_mut(self, reverse)
+  .pr$Series$sort_mut(self, descending)
 }
 
 

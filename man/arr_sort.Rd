@@ -2,30 +2,14 @@
 % Please edit documentation in R/expr__list.R
 \name{arr_sort}
 \alias{arr_sort}
-\alias{Expr_arr_sort}
-\alias{Expr_arr.sort}
-\title{Get list}
-\format{
-function
-}
+\title{Expr_sort}
 \arguments{
-\item{index}{numeric vector or Expr of length 1 or same length of Series.
-if length 1 pick same value from each sublist, if length as Series/column,
-pick by individual index across sublists.
-
-So index \code{0} would return the first item of every sublist
-and index \code{-1} would return the last item of every sublist
-if an index is out of bounds, it will return a \code{None}.}
+\item{descending}{Sort values in descending order}
 }
 \value{
 Expr
 }
 \description{
-Get the value by index in the sublists.
+Sort this column. In projection/ selection context the whole column is sorted.
+If used in a groupby context, the groups are sorted.
 }
-\examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$arr$get(0))
-df$select(pl$col("a")$arr$get(c(2, 0, -1)))
-}
-\keyword{ExprArr}

@@ -44,9 +44,10 @@ requirements-rs:
 	rustup component add clippy
 
 .PHONY: build
-build: ## Compile polars R package and generate Rd files
-	Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
-
+build: ## Compile polars R package with all features and generate Rd files
+	export RPOLARS_ALL_FEATURES=true \
+	&& export RPOLARS_PROFILE=release-optimized \
+	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: all
 all: fmt build test README.md ## build -> test -> Update README.md

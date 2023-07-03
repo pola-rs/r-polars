@@ -112,7 +112,7 @@ test_that("arr$unique arr$sort", {
 
 
   df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$unique()$arr$sort(reverse = TRUE))$to_list()
+  p_res = df$select(pl$all()$arr$unique()$arr$sort(descending = TRUE))$to_list()
   r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE))
   expect_equal(p_res, r_res)
 })
