@@ -138,13 +138,16 @@ fn r_date_range_lazy(
 ) -> List {
     use crate::rdatatype::new_closed_window;
     let res = || -> std::result::Result<Expr, String> {
-        Ok(Expr(polars::lazy::dsl::functions::date_range(
-            start.0.clone(),
-            end.0.clone(),
-            pl::Duration::parse(every),
-            new_closed_window(closed)?,
-            tz.into_option(),
-        )))
+        Ok(Expr(
+            polars::lazy::dsl::functions::date_range(
+                start.0.clone(),
+                end.0.clone(),
+                pl::Duration::parse(every),
+                new_closed_window(closed)?,
+                tz.into_option(),
+            )
+            .explode(),
+        ))
     }();
     r_result_list(res)
 }
