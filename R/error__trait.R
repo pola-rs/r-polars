@@ -88,7 +88,7 @@ plain.default = function(err, msg) {
 }
 
 
-##TODO refactor upgrade_err into as.RPolarsErr
+## TODO refactor upgrade_err into as.RPolarsErr
 #' Internal generic method to add plain text to error message
 #' @details
 #' polars converts any other error types to RPolarsErr.
@@ -111,4 +111,3 @@ upgrade_err.default = function(err) {
 # calling R from rust via R! but it is  a "user" call in .GlobalEnv
 # by calling a package function the parent env is the internal pacakge env.
 upgrade_err_internal_ns = \(x) upgrade_err(x)
-

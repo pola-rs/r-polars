@@ -37,7 +37,7 @@ plain.RPolarsErr = function(err, msg) {
   err$plain(msg)
 }
 
-upgrade_err.RPolarsErr = function(err) { #already RPolarsErr pass through
+upgrade_err.RPolarsErr = function(err) { # already RPolarsErr pass through
   err
 }
 
@@ -50,4 +50,3 @@ upgrade_err.RPolarsErr = function(err) { #already RPolarsErr pass through
 bad_robj = function(r) {
   .pr$RPolarsErr$new()$bad_robj(r)
 }
-

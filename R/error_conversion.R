@@ -31,7 +31,6 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
   if (is_ok(result)) {
     result$ok
   } else {
-    #browser()
     result$err |>
       where_in(context) |>
       when_calling(call) |>
@@ -84,9 +83,9 @@ result = function(expr, msg = NULL) {
     Ok(expr),
     error = \(cond) {
       cond$value %||% cond$message |>
-      upgrade_err() |>
-      plain(msg) |>
-      Err()
+        upgrade_err() |>
+        plain(msg) |>
+        Err()
     }
   )
 }
@@ -97,7 +96,7 @@ raw_result = function(expr) {
     Ok(expr),
     error = \(cond) {
       cond$value %||% cond$message |>
-      Err()
+        Err()
     }
   )
 }
