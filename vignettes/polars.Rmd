@@ -333,7 +333,7 @@ aggregations as part of the reshaping operation. This is useful when you have
 multiple observations per ID variable that need to be collapsed into unique
 values. The aggregating functions can be arbritrarily complex, but let's
 consider a relatively simple example using our `dat` ("mtcars") DataFrame from
-earlier: What is the median MPG value (`mpg`) across cylinders (`cyl`), cut by
+earlier: what is the median MPG value (`mpg`) across cylinders (`cyl`), cut by
 different combinations of transmission type (`am`) and engine shape (`vs`)?
 
 ```{r}
