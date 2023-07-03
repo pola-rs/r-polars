@@ -7,7 +7,7 @@ LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
 RPOLARS_RUST_SOURCE ?= ./rust
-RPOLARS_CARGO_CLEAN_DEPS ?= nope
+
 rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
@@ -41,7 +41,7 @@ $(STATLIB):
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
-	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
 		echo "clean up target, to not let R CMD check fail on rust files"; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \

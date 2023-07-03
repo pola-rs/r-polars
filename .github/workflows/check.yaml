@@ -12,6 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RPOLARS_CARGO_CLEAN_DEPS: "true"
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
@@ -71,9 +74,7 @@ jobs:
         id: get_the_rust_sauce
         shell: bash
         run: |
-          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
 
       - name: Set env vars for build option
         if: matrix.config.all-features

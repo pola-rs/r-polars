@@ -5,7 +5,7 @@ LIBDIR = ./rust/target/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 RPOLARS_RUST_SOURCE ?= ./rust
-RPOLARS_CARGO_CLEAN_DEPS ?= nope
+
 rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
@@ -27,7 +27,7 @@ $(STATLIB):
 		ln -s $(rpolars_ext_binary) ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
 	fi
 
-	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
 		echo "cleanup!!" ; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \
