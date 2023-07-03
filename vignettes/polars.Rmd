@@ -21,16 +21,17 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 Polars is [a lightning fast](https://duckdblabs.github.io/db-benchmark/) Data Frame
 library. Its embarrassingly parallel execution, cache efficient algorithms and
 expressive API makes it perfect for efficient data wrangling, data pipelines,
-snappy APIs and so much more. Polars also supports "streaming mode" for
+snappy APIs, and much more besides. Polars also supports "streaming mode" for
 out-of-memory operations. This allows users to analyze datasets many times
 larger than RAM.
 
 The underlying computation engine is written in Rust and is built on the Apache
 Arrow columnar memory format. It can be used in Rust or via Python bindings.
-The **polars** R-package provides equivalent bindings from R. Within R, python
-and rust each polars package is just called polars. The implemention polars in
-the different languages can be called rust-polars, py-polars, r-polars,
-nodejs-polars...
+The **polars** R-package provides equivalent bindings from R. To help distinguish
+the different language implementations, we typically use a convention of
+referring to them with prefixes: rust-polars, py-polars, r-polars,
+nodejs-polars, etc. But within each language, the relevant library is always
+just called _polars_.
 
 **polars** users can expect orders of magnitude(s) improvement compared to
 **dplyr** for simple transformations on datasets >500Mb. The automatic Polars
@@ -181,12 +182,14 @@ where `object` is our data object, and `m1()` and `m2()` are appropriate
 methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
-examples to help make things concrete. We use the `mtcars` dataset that we
-coerced to a `DataFrame` in introduction.^[Similar to how (most) **data.table**
+examples to help make things concrete. We continue with the `mtcars` dataset that we
+coerced to a `DataFrame` in the introduction.^[Similar to how (most) **data.table**
 operations are limited to objects of class `data.table`, we can only perform
 polars operations on objects that have been converted to an appropriate
 **polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
-We use the `$max` method to compute the maximum value in each column:
+
+To start, say we compute the maximum value in each column. We can use the
+`max()` method:
 
 ```{r}
 dat$max()
@@ -213,7 +216,7 @@ you a small taste, we now take group-wise means:
 dat$groupby("cyl")$mean()
 ```
 
-## `select` columns and `filter` rows
+## Subset
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
@@ -239,7 +242,7 @@ dat$filter(
 )
 ```
 
-## Aggregations and modifications
+## Aggregate and modify
 
 The `select()` method that we introduced above also supports data modification,
 so you can simultaneously transform it while you are subsetting. However, the
@@ -346,7 +349,7 @@ Here, `"median"` is a convenience string that is equivalent to the more verbose
 `pl$element()$median()`. Other convenience strings include "first", "last",
 "min", "max", "mean", "sum", and "count".
 
-## Join
+## Joins
 
 As a final example of how **polars** can be used for standard data wrangling
 tasks, let's implement a (left) join. For this example, we'll borrow some
