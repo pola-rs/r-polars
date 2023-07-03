@@ -17,10 +17,10 @@ The **polars** package for R gives users access to [a lightning
 fast](https://duckdblabs.github.io/db-benchmark/) Data Frame library
 written in Rust. [Polars](https://www.pola.rs/)’ embarrassingly parallel
 execution, cache efficient algorithms and expressive API makes it
-perfect for efficient data wrangling, data pipelines, snappy APIs and so
-much more. Polars also supports “streaming mode” for out-of-memory
-operations. This allows users to analyze datasets many times larger than
-RAM.
+perfect for efficient data wrangling, data pipelines, snappy APIs, and
+much more besides. Polars also supports “streaming mode” for
+out-of-memory operations. This allows users to analyze datasets many
+times larger than RAM.
 
 Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
@@ -80,7 +80,7 @@ new M1/M2 “Silicon” chips. To install **polars** on one of these
 machines, we need to build the package from source and this requires
 [Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
 Once Xcode is installed, you can run the below code chunk to build
-**polars**. The corresponding `Makevars` script will download a \~200MB
+**polars**. The corresponding `Makevars` script will download a ~200MB
 cross-compiled object file, while your machine links and builds the
 final R package.
 
@@ -191,14 +191,15 @@ contains many more examples of how to use the package to:
 - Read CSV, JSON, Parquet, and other file formats.
 - Filter rows and select columns.
 - Modify and create new columns.
+- Group by and aggregate.
+- Reshape data.
+- Join and concatenate different datasets.
 - Sort data.
-- Join, group, and aggregate data.
-- Join and concatenate datasets.
-- Group and aggregate.
-- Handle missing values.
 - Work with dates and times.
+- Handle missing values.
 - Use the lazy execution engine for maximum performance and
   memory-efficient operations.
+- Etc.
 
 ## Development and Contributions
 
