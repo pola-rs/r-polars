@@ -39,7 +39,10 @@ Config/Needs/dev:
     devtools,
     styler,
     robinlovelace/styler.equals,
-    rextendr
+    rextendr,
+    RcppTOML,
+    brio,
+    stringr
 Config/testthat/edition: 3
 Collate: 
     'utils.R'
