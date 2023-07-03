@@ -16,6 +16,7 @@ for demonstration purposes (#240).
   works with `l_expr = list(pl$col("a"))` (#265).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
+- Bump rust-polars -> v0.30.0. Behavior changes `pl$date_range` has default `lazy = TRUE` (#289).
 
 # polars 0.6.1
 ## What's changed
