@@ -299,6 +299,46 @@ dat$groupby(
 Note that we used the `cast` method to convert the data type of the `am`
 column. See the section below for more details on data types.
 
+## Reshape
+
+Polars supports data reshaping, going from either long to wide (`pivot`) or wide
+to long (`melt`). Let's switch to the `Indometh` dataset to demonstrate via some
+simple examples. Note that the data are currently in "long" format.
+
+```{r}
+(indo = pl$DataFrame(Indometh))
+```
+
+To go from long to wide, we use the
+[`pivot`](https://rpolars.github.io/reference/DataFrame_pivot/) method.
+Here we pivot the data so that every subject takes its own column.
+
+```{r}
+(indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject"))
+```
+
+To go from wide to long, we use the
+[melt](https://rpolars.github.io/reference/DataFrame_melt/) method.
+
+```{r}
+# indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
+indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc") 
+```
+
+It should be noted that `pivot` can peform aggregations as part of the reshaping
+operation. This is useful when you have multiple observations per ID variable
+that need to be collapsed into unique values. The aggregating functions can be
+arbritrarily complex, but let's consider a relatively simple example using our
+`dat` ("mtcars") DataFrame from earlier: What is the median MPG value (`mpg`)
+across cylinders (`cyl`), cut by different combinations of transmission type
+(`am`) and engine shape (`vs`)?
+
+```{r}
+# dat$pivot(values = "mpg", index = c("am", "vs"), columns = "cyl") # errors due to non-unique obs
+dat$pivot(values = "mpg", index = c("am", "vs"), columns = "cyl", aggregate_fun = "median")
+```
+
+
 ## Join
 
 As a final example of how **polars** can be used for standard data wrangling
