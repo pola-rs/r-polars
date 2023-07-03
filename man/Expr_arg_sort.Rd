@@ -7,12 +7,13 @@
 \alias{argsort}
 \title{Index of a sort}
 \usage{
-Expr_arg_sort(reverse = FALSE, nulls_last = FALSE)
+Expr_arg_sort(descending = FALSE, nulls_last = FALSE)
 
-Expr_argsort(reverse = FALSE, nulls_last = FALSE)
+Expr_argsort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{reverse}{bool default FALSE, reverses sort}
+\item{descending}{Sort in descending order. When sorting by multiple columns,
+can be specified per column by passing a sequence of booleans.}
 
 \item{nulls_last}{bool, default FALSE, place Nulls last}
 }
