@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-universe status badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
+[![CRAN status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Dev R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs release](https://img.shields.io/badge/docs-release-blue.svg)](https://rpolars.github.io)
 <!-- badges: end -->
