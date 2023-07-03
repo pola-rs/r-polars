@@ -1,12 +1,14 @@
 Package: polars
-Title: Polars ported to R
+Title: 'Polars' Ported to R
 Version: 0.6.1.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre")))
-Description: This package ports the polars data query library to R.
+Description: 'Polars' is a lightning fast Data Frame library written in Rust.
+  This package allows converting R data to 'Polars' data and vice versa,
+  and enabling fast data processing with 'Polars'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
