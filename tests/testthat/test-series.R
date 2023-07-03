@@ -509,10 +509,10 @@ test_that("internal method get_fmt and to_fmt_char", {
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~base,
-    "mean",       mean,
-    "median",     median,
-    "std",        sd,
-    "var",        var,
+    "mean", mean,
+    "median", median,
+    "std", sd,
+    "var", var,
   )
 }
 patrick::with_parameters_test_that("mean, median, std, var",

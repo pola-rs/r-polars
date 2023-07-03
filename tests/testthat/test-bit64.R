@@ -43,19 +43,19 @@ test_that("robj_to! from bit64", {
     as.character(2^61)
   )
 
-   # NO NA
+  # NO NA
   expect_rpolarserr(
-    unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call= NULL),
+    unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
   expect_rpolarserr(
-    unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call= NULL),
+    unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO OVERFLOW
   expect_rpolarserr(
-    unwrap(test_robj_to_u32(2^57), call= NULL),
+    unwrap(test_robj_to_u32(2^57), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
