@@ -349,7 +349,7 @@ Here, `"median"` is a convenience string that is equivalent to the more verbose
 `pl$element()$median()`. Other convenience strings include "first", "last",
 "min", "max", "mean", "sum", and "count".
 
-## Joins
+## Join
 
 As a final example of how **polars** can be used for standard data wrangling
 tasks, let's implement a (left) join. For this example, we'll borrow some
