@@ -13,8 +13,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
-Suggests: 
-    arrow, 
+Suggests:
+    arrow,
     bench,
     bit64,
     data.table,
@@ -40,7 +40,7 @@ Config/Needs/dev:
     robinlovelace/styler.equals,
     rextendr
 Config/testthat/edition: 3
-Collate: 
+Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
