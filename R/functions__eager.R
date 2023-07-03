@@ -148,9 +148,11 @@ pl$date_range = function(
   name = name %||% ""
   interval = as_pl_duration(interval)
 
+  ## TODO if possible let all go through r_date_range_lazy. Seems asking for trouble
+  ## input arg low and high can change if lazy or not
   if (
     inherits(low, c("Expr", "character")) ||
-      inherits(low, c("Expr", "character")) || isTRUE(lazy)
+      inherits(high, c("Expr", "character")) || isTRUE(lazy)
   ) {
     low = convert_time_unit_for_lazy(low, time_unit, time_zone)
     high = convert_time_unit_for_lazy(high, time_unit, time_zone)
