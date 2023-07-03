@@ -4,10 +4,10 @@
 \alias{Series_set_sorted}
 \title{Set sorted}
 \usage{
-Series_set_sorted(reverse = FALSE, in_place = FALSE)
+Series_set_sorted(descending = FALSE, in_place = FALSE)
 }
 \arguments{
-\item{reverse}{bool if TRUE, signals series is Descendingly sorted, otherwise Ascendingly.}
+\item{descending}{Sort the columns in descending order.}
 
 \item{in_place}{if TRUE, will set flag mutably and return NULL. Remember to use
 pl$set_polars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE

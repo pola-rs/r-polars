@@ -7,19 +7,23 @@ LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
 RPOLARS_RUST_SOURCE ?= ./rust
-RPOLARS_CARGO_CLEAN_DEPS ?= nope
+
 rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
 
 $(SHLIB): $(STATLIB)
 
+CARGOTMP = $(CURDIR)/.cargo
+
 $(STATLIB):
+	echo "RPOLARS_RUST_SOURCE is set to $(RPOLARS_RUST_SOURCE)"
 	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
-	#--target-dir $(TARGET_DIR)
-	echo "RPOLARS_RUST_SOURCE is set to $(RPOLARS_RUST_SOURCE)"
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		export CARGO_HOME=$(CARGOTMP); \
+	fi && \
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
 		if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
@@ -27,6 +31,10 @@ $(STATLIB):
 		else \
 			$(BUILD_COMMAND); \
 		fi;
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf $(CARGOTMP) && \
+		rm -Rf $(LIBDIR)/build; \
+	fi
 
 	# when RPOLARS_RUST_SOURCE is defined rust binary is compiled there
 	# if binary is not here, it can be symlinked instead.
@@ -41,7 +49,7 @@ $(STATLIB):
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
-	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
 		echo "clean up target, to not let R CMD check fail on rust files"; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \

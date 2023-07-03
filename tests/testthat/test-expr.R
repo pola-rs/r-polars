@@ -567,7 +567,7 @@ test_that("map_alias", {
     pl$DataFrame(list(alice = 1:3))$select(
       pl$col("alice")$map_alias(\(x) 42) # wrong return
     ),
-    "^when calling"
+    "was not a string"
   )
 
 
@@ -791,16 +791,16 @@ test_that("Expr_sort", {
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$sort()$alias("sort"),
     pl$col("a")$sort(nulls_last = TRUE)$alias("sort_nulls_last"),
-    pl$col("a")$sort(reverse = TRUE)$alias("sort_reverse"),
-    pl$col("a")$sort(reverse = TRUE, nulls_last = TRUE)$alias("sort_reverse_nulls_last"),
+    pl$col("a")$sort(descending = TRUE)$alias("sort_reverse"),
+    pl$col("a")$sort(descending = TRUE, nulls_last = TRUE)$alias("sort_reverse_nulls_last"),
     pl$col("a")
-    $set_sorted(reverse = FALSE)
-    $sort(reverse = FALSE, nulls_last = TRUE)
+    $set_sorted(descending = FALSE)
+    $sort(descending = FALSE, nulls_last = TRUE)
     $alias("fake_sort_nulls_last"),
     (
       pl$col("a")
-      $set_sorted(reverse = TRUE)
-      $sort(reverse = TRUE, nulls_last = TRUE)
+      $set_sorted(descending = TRUE)
+      $sort(descending = TRUE, nulls_last = TRUE)
       $alias("fake_sort_reverse_nulls_last")
     )
   )$to_list()
@@ -826,16 +826,16 @@ test_that("Expr_sort", {
   l_actual2 = pl$DataFrame(l2)$select(
     pl$col("a")$sort()$alias("sort"),
     pl$col("a")$sort(nulls_last = TRUE)$alias("sort_nulls_last"),
-    pl$col("a")$sort(reverse = TRUE)$alias("sort_reverse"),
-    pl$col("a")$sort(reverse = TRUE, nulls_last = TRUE)$alias("sort_reverse_nulls_last"),
+    pl$col("a")$sort(descending = TRUE)$alias("sort_reverse"),
+    pl$col("a")$sort(descending = TRUE, nulls_last = TRUE)$alias("sort_reverse_nulls_last"),
     pl$col("a")
-    $set_sorted(reverse = FALSE)
-    $sort(reverse = FALSE, nulls_last = TRUE)
+    $set_sorted(descending = FALSE)
+    $sort(descending = FALSE, nulls_last = TRUE)
     $alias("fake_sort_nulls_last"),
     (
       pl$col("a")
-      $set_sorted(reverse = TRUE)
-      $sort(reverse = TRUE, nulls_last = TRUE)
+      $set_sorted(descending = TRUE)
+      $sort(descending = TRUE, nulls_last = TRUE)
       $alias("fake_sort_reverse_nulls_last")
     )
   )$to_list()
@@ -900,8 +900,8 @@ test_that("arg_min arg_max arg_sort", {
 
   l_actual = pl$DataFrame(l)$select(
     pl$col("a")$arg_sort()$alias("arg_sort default"),
-    pl$col("a")$arg_sort(reverse = TRUE)$alias("arg_sort rev"),
-    pl$col("a")$arg_sort(reverse = TRUE, nulls_last = TRUE)$alias("arg_sort rev nulls_last")
+    pl$col("a")$arg_sort(descending = TRUE)$alias("arg_sort rev"),
+    pl$col("a")$arg_sort(descending = TRUE, nulls_last = TRUE)$alias("arg_sort rev nulls_last")
   )$select(pl$all()$cast(pl$Float64))$to_list()
 
   # it seems Null/NA is not sorted and just placed first or last given null_lasts
@@ -947,9 +947,9 @@ test_that("sort_by", {
       pl$col("ab")$sort_by("v3")$alias("ab3"),
       pl$col("ab")$sort_by("v2")$alias("ab2"),
       pl$col("ab")$sort_by("v1")$alias("ab1"),
-      pl$col("ab")$sort_by(list("v3", pl$col("v1")), reverse = c(F, T))$alias("ab13FT"),
-      pl$col("ab")$sort_by(list("v3", pl$col("v1")), reverse = T)$alias("ab13T"),
-      pl$col("ab")$sort_by(c("v3", "v1"), reverse = T)$alias("ab13T2")
+      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(F, T))$alias("ab13FT"),
+      pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = T)$alias("ab13T"),
+      pl$col("ab")$sort_by(c("v3", "v1"), descending = T)$alias("ab13T2")
     )$to_list(),
     list(
       ab4 = l$ab[order(l$v4)],
@@ -1572,7 +1572,7 @@ test_that("Expr_rank", {
   expect_identical(
     pl$DataFrame(l)$select(
       pl$col("a")$rank()$alias("avg"),
-      pl$col("a")$rank(reverse = TRUE)$alias("avg_rev"),
+      pl$col("a")$rank(descending = TRUE)$alias("avg_rev"),
       pl$col("a")$rank(method = "ordinal")$alias("ord_rev")
     )$to_list() |> lapply(as.numeric),
     list(

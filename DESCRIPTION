@@ -1,20 +1,23 @@
 Package: polars
-Title: Polars ported to R
+Title: 'Polars' Ported to R
 Version: 0.6.1.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre")))
-Description: This package ports the polars data query library to R.
+Description: 'Polars' is a lightning fast Data Frame library written in Rust.
+  This package allows converting R data to 'Polars' data and vice versa,
+  and enabling fast data processing with 'Polars'.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+SystemRequirements: Cargo (rustc package manager), cmake
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
-Suggests: 
-    arrow, 
+Suggests:
+    arrow,
     bench,
     bit64,
     data.table,
@@ -38,9 +41,12 @@ Config/Needs/dev:
     devtools,
     styler,
     robinlovelace/styler.equals,
-    rextendr
+    rextendr,
+    RcppTOML,
+    brio,
+    stringr
 Config/testthat/edition: 3
-Collate: 
+Collate:
     'utils.R'
     'extendr-wrappers.R'
     'after-wrappers.R'
@@ -53,8 +59,10 @@ Collate:
     'dataframe__frame.R'
     'datatype.R'
     'docs.R'
+    'error__rpolarserr.R'
+    'error__string.R'
+    'error__trait.R'
     'error_conversion.R'
-    'error_trait.R'
     'expr__binary.R'
     'expr__categorical.R'
     'expr__datetime.R'
@@ -78,11 +86,9 @@ Collate:
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
     'rlang.R'
-    'rpolarserr.R'
     'rust_result.R'
     's3_methods.R'
     'series__series.R'
-    'string_error.R'
     'translation.R'
     'vctrs.R'
     'zzz.R'

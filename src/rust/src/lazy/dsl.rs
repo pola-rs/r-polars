@@ -269,11 +269,11 @@ impl Expr {
         self.clone().0.take(idx.0.clone()).into()
     }
 
-    pub fn sort_by(&self, by: Robj, reverse: Robj) -> Result<Expr, String> {
+    pub fn sort_by(&self, by: Robj, descending: Robj) -> Result<Expr, String> {
         let expr = Expr(
             self.clone()
                 .0
-                .sort_by(robj_to!(VecPLExpr, by)?, robj_to!(Vec, bool, reverse)?),
+                .sort_by(robj_to!(VecPLExpr, by)?, robj_to!(Vec, bool, descending)?),
         );
         Ok(expr)
     }
@@ -664,12 +664,12 @@ impl Expr {
     }
 
     // TODO: support seed option
-    fn rank(&self, method: &str, reverse: bool) -> List {
+    fn rank(&self, method: &str, descending: bool) -> List {
         let expr_res = new_rank_method(method)
             .map(|rank_method| {
                 let options = pl::RankOptions {
                     method: rank_method,
-                    descending: reverse,
+                    descending: descending,
                 };
                 Expr(self.0.clone().rank(options, Some(0u64)))
             })
@@ -1020,12 +1020,12 @@ impl Expr {
         self.0.clone().arr().mean().with_fmt("arr.mean").into()
     }
 
-    fn lst_sort(&self, reverse: bool) -> Self {
+    fn lst_sort(&self, descending: bool) -> Self {
         self.0
             .clone()
             .arr()
             .sort(SortOptions {
-                descending: reverse,
+                descending: descending,
                 ..Default::default()
             })
             .with_fmt("arr.sort")

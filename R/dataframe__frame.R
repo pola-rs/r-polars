@@ -708,19 +708,20 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  args = list2(...)
-  exprs = do.call(construct_ProtoExprArray, args)
-  df = unwrap(.pr$DataFrame$select(self, exprs))
-
-  expr_names = names(args)
-  if (!is.null(expr_names)) {
-    old_names = df$columns
-    new_names = old_names
-    has_expr_name = nchar(expr_names) >= 1L
-    new_names[has_expr_name] = expr_names[has_expr_name]
-    df$columns = new_names
-  }
-  df
+  args = unpack_list(...)
+  .pr$DataFrame$select(self, args) |>
+    and_then(\(df) result(msg = "internal error while renaming columns", {
+      expr_names = names(args)
+      if (!is.null(expr_names)) {
+        old_names = df$columns
+        new_names = old_names
+        has_expr_name = nchar(expr_names) >= 1L
+        new_names[has_expr_name] = expr_names[has_expr_name]
+        df$columns = new_names
+      }
+      df
+    })) |>
+    unwrap("in $select()")
 }
 
 #' Drop in place
@@ -1389,7 +1390,72 @@ DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
 }
 
+#' @title Summary statistics for a DataFrame
+#' @param percentiles One or more percentiles to include in the summary statistics.
+#' All values must be in the range `[0; 1]`.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$describe()
+DataFrame_describe = function(percentiles = c(.25, .75)) {
+  perc = percentiles
 
+  # guard input
+  # styler: off
+  pcase(
+    is.null(perc), Ok(numeric()),
+    !is.numeric(perc), Err(bad_robj(perc)$mistyped("numeric")),
+    isFALSE(all(perc > 0) && all(perc < 1)), {
+      Err(bad_robj(perc)$misvalued("has all vector elements within 0 and 1"))
+    },
+    or_else = Ok(perc)
+    # styler: on
+  ) |>
+    map_err(
+      \(err)  err$bad_arg("percentiles")
+    ) |>
+    and_then(
+      \(perc) {
+        # this polars query should always succeed else flag as ...
+        result(msg = "internal error", {
+          # make percentile expressions
+          perc_exprs = lapply(
+            perc, \(x) pl$all()$quantile(x)$prefix(paste0(as.character(x * 100), "pct:"))
+          )
+
+          # bundle all expressions
+          largs = c(
+            list(
+              pl$all()$count()$prefix("count:"),
+              pl$all()$null_count()$prefix("null_count:"),
+              pl$all()$mean()$prefix("mean:"),
+              pl$all()$std()$prefix("std:"),
+              pl$all()$min()$prefix("min:"),
+              pl$all()$max()$prefix("max:"),
+              pl$all()$median()$prefix("median:")
+            ),
+            perc_exprs
+          )
+
+          # compute aggregates
+          df_aggs = do.call(self$select, largs)
+          e_col_row_names = pl$lit(df_aggs$columns)$str$split(":")
+
+          # pivotize
+          df_pivot = pl$select(
+            e_col_row_names$arr$first()$alias("rowname"),
+            e_col_row_names$arr$last()$alias("colname"),
+            pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
+          )$pivot(
+            values = "value", index = "rowname", columns = "colname"
+          )
+          df_pivot$columns[1] = "describe"
+          df_pivot
+        })
+      }
+    ) |>
+    unwrap("in $describe():")
+}
 
 #' @title Glimpse values in a DataFrame
 #' @keywords DataFrame
@@ -1428,25 +1494,27 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   }
 
   # construct print, flag any error as internal
-  output = result({
-    schema = self$schema
-    data = lapply(seq_along(schema), \(i) parse_column_(names(schema)[i], schema[[i]]))
-    max_col_name = max(sapply(data, \(x) nchar(x$col_name)))
-    max_col_dtyp = max(sapply(data, \(x) nchar(x$dtype)))
-    max_col_vals = 100 - max_col_name - max_col_dtyp - 3
+  output = result(
+    {
+      schema = self$schema
+      data = lapply(seq_along(schema), \(i) parse_column_(names(schema)[i], schema[[i]]))
+      max_col_name = max(sapply(data, \(x) nchar(x$col_name)))
+      max_col_dtyp = max(sapply(data, \(x) nchar(x$dtype)))
+      max_col_vals = 100 - max_col_name - max_col_dtyp - 3
 
-    sapply(data, \(x) {
-      name_filler = paste(rep(" ", max_col_name - nchar(x$col_name)), collapse = "")
-      dtyp_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
-      vals_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
-      paste0(
-        "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler, " ",
-        substr(x$val_str, 1, max_col_vals), "\n"
-      )
-    }) |>
-      paste0(collapse = "")
-
-  }, msg = "internal error") |>
+      sapply(data, \(x) {
+        name_filler = paste(rep(" ", max_col_name - nchar(x$col_name)), collapse = "")
+        dtyp_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+        vals_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+        paste0(
+          "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler, " ",
+          substr(x$val_str, 1, max_col_vals), "\n"
+        )
+      }) |>
+        paste0(collapse = "")
+    },
+    msg = "internal error"
+  ) |>
     unwrap("in $glimpse() :")
 
   # chose return type
