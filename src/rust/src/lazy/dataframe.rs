@@ -176,16 +176,9 @@ impl LazyFrame {
         )))
     }
 
-    fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
-        let exprs: Vec<pl::Expr> = exprs
-            .0
-            .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").0)
-            .collect();
-
-        let new_df = self.clone().0.select(exprs);
-
-        LazyFrame(new_df)
+    pub fn select(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExprCol, exprs).when("preparing expressions before select")?;
+        Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
     fn limit(&self, n: Robj) -> Result<Self, String> {

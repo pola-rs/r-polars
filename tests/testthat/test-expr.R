@@ -567,7 +567,7 @@ test_that("map_alias", {
     pl$DataFrame(list(alice = 1:3))$select(
       pl$col("alice")$map_alias(\(x) 42) # wrong return
     ),
-    "^when calling"
+    "was not a string"
   )
 
 

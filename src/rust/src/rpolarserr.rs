@@ -1,8 +1,8 @@
 use std::collections::VecDeque;
 
 use extendr_api::{
-    call, eval_string, extendr, extendr_module, symbol::class_symbol, Attributes, Nullable,
-    Operators, Pairlist, Rinternals, Robj, Types,
+    call, eval_string, eval_string_with_params, extendr, extendr_module, symbol::class_symbol,
+    Attributes, Nullable, Operators, Pairlist, Rinternals, Robj, Types, R,
 };
 use thiserror::Error;
 
@@ -12,7 +12,7 @@ pub enum Rctx {
     BadArg(String),
     #[error("Got value [{0}]")]
     BadVal(String),
-    #[error("Encountered the following error in Extendr\n\t{0}")]
+    #[error("Encountered the following error in Rust-Extendr\n\t{0}")]
     Extendr(String),
     #[error("Possibly because {0}")]
     Hint(String),
@@ -22,7 +22,7 @@ pub enum Rctx {
     Misvalued(String),
     #[error("{0}")]
     Plain(String),
-    #[error("Encountered the following error in Polars:\n\t{0}")]
+    #[error("Encountered the following error in Rust-Polars:\n\t{0}")]
     Polars(String),
     #[error("When {0}")]
     When(String),
@@ -96,8 +96,8 @@ impl RPolarsErr {
         RPolarsErr::new_from_ctxs(VecDeque::new())
     }
 
-    pub fn contexts(&self) -> Pairlist {
-        Pairlist::from_pairs(self.contexts.iter().rev().map(|rctx| match rctx {
+    pub fn contexts(&self) -> Robj {
+        let plist = Pairlist::from_pairs(self.contexts.iter().rev().map(|rctx| match rctx {
             Rctx::BadArg(arg) => ("BadArgument", arg),
             Rctx::BadVal(val) => ("BadValue", val),
             Rctx::Extendr(err) => ("ExtendrError", err),
@@ -107,62 +107,63 @@ impl RPolarsErr {
             Rctx::Plain(msg) => ("PlainErrorMessage", msg),
             Rctx::Polars(err) => ("PolarsError", err),
             Rctx::When(target) => ("When", target),
-        }))
+        }));
+        R!("as.list({{plist}})").expect("internal error: failed to return contexts")
     }
 
     pub fn pretty_msg(&self) -> String {
         format!("{}", self)
     }
 
-    fn bad_arg(&self, s: String) -> Self {
+    pub fn bad_arg(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::BadArg(s))
     }
 
-    fn bad_robj(&self, r: Robj) -> Self {
+    pub fn bad_robj(&self, r: Robj) -> Self {
         self.bad_val(robj_dbg(&r))
     }
 
-    fn bad_val(&self, s: String) -> Self {
+    pub fn bad_val(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::BadVal(s))
     }
 
-    fn hint(&self, s: String) -> Self {
+    pub fn hint(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::Hint(s))
     }
 
-    fn mistyped(&self, s: String) -> Self {
+    pub fn mistyped(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::Mistyped(s))
     }
 
-    fn misvalued(&self, s: String) -> Self {
+    pub fn misvalued(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::Misvalued(s))
     }
 
-    fn plain(&self, s: String) -> Self {
+    pub fn plain(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::Plain(s))
     }
 
-    fn rcall(&self, c: String) -> Self {
+    pub fn rcall(&self, c: String) -> Self {
         let mut err = self.clone();
         err.rcall = Some(c);
         err
     }
 
-    fn get_rcall(&self) -> Nullable<String> {
+    pub fn get_rcall(&self) -> Nullable<String> {
         self.rcall.clone().into()
     }
 
-    fn rinfo(&self, i: String) -> Self {
+    pub fn rinfo(&self, i: String) -> Self {
         let mut err = self.clone();
         err.rinfo = Some(i);
         err
     }
 
-    fn get_rinfo(&self) -> Nullable<String> {
+    pub fn get_rinfo(&self) -> Nullable<String> {
         self.rinfo.clone().into()
     }
 
-    fn when(&self, s: String) -> Self {
+    pub fn when(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::When(s))
     }
 }

@@ -12,6 +12,7 @@ expect_different = function(x, y) {
 #' useful for grepping the same error message, without grep-patterns becomes
 #' included in the error message. Latter leads to false positive outcomes.
 #' @param ... args passed to expect_identical which will run if grepl fails
+#'
 #' @details expr must raise an error and expected_err pattern must match
 #' against the error text with grepl()
 #' @keywords internal
@@ -41,7 +42,7 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call = TR
 
   if (!all(founds)) {
     # ... if not use testthat to point out the difference
-    expect_identical(err, expected_err[which(!founds)[1]], ...)
+    expect_identical(expected_err[which(!founds)[1]], err, ...)
   }
 
   invisible(err)

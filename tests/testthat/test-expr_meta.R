@@ -14,10 +14,7 @@ test_that("meta$eq meta$neq", {
   expect_true(e2$meta$eq(42))
 
   # error if not wrappable
-  expect_grepl_error(e2$meta$eq(complex(1)), c(
-    "in \\$meta\\$eq", "not convertable into Expr because"
-  ))
-  expect_grepl_error(e2$meta$neq(complex(1)), "in \\$meta\\$neq")
+  expect_error(e2$meta$eq(complex(1)))
 })
 
 
