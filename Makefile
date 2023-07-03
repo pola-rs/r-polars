@@ -85,6 +85,10 @@ MODIFIED_R_FILES ?= $(shell R -s -e 'setdiff(system("git diff $(GIT_DIF_TARGET) 
 fmt-r: $(MODIFIED_R_FILES) ## Format R files
 	$(foreach file, $^, $(shell R -q -e 'styler::style_file("$(file)"); styler.equals::style_file("$(file)")' >/dev/null))
 
+.PHONY: fmt-r-all
+fmt-r-all: $(MODIFIED_R_FILES) ## Format R files
+	Rscript -e 'setdiff(list.files("R"),"extendr-wrappers.R") |> (\(file) paste0("./R/",file))() |> lapply(\(file) {styler::style_file(file); styler.equals::style_file(file)})'
+
 .PHONY: fmt-rs
 fmt-rs: ## Format Rust files
 	cargo fmt --manifest-path $(MANIFEST_PATH)
