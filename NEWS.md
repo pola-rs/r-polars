@@ -17,7 +17,7 @@ for demonstration purposes (#240).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - Replace the argument `reverse` by `descending` in all sorting functions. This
-is for consistency with the upstream Polars (#290).
+  is for consistency with the upstream Polars (#291, #293).
 
 # polars 0.6.1
 ## What's changed
