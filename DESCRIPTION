@@ -69,6 +69,7 @@ Collate:
     'functions__lazy.R'
     'functions__whenthen.R'
     'groupby.R'
+    'info.R'
     'ipc.R'
     'lazyframe__background.R'
     'lazyframe__groupby.R'

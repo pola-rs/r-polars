@@ -215,8 +215,9 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$select(self, pra)
+  args = unpack_list(...)
+  .pr$LazyFrame$select(self, args) |>
+    unwrap("in $select()")
 }
 
 #' @title Lazy with columns

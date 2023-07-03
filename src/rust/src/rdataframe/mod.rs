@@ -17,7 +17,6 @@ pub use lazy::dataframe::*;
 use crate::conversion_s_to_r::pl_series_to_list;
 pub use crate::series::*;
 
-use crate::utils::list_expr_to_vec_pl_expr;
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
 use polars_core::utils::arrow;
@@ -267,11 +266,8 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    //exprs is actually a list of R args
     pub fn select(&mut self, exprs: Robj) -> RResult<DataFrame> {
-        let exprs: Vec<pl::Expr> = list_expr_to_vec_pl_expr(exprs, false)
-            .map_err(|err| err.when("reading in expressions".to_string()))?;
-        LazyFrame(self.lazy().0.select(exprs)).collect_handled()
+        self.lazy().select(exprs)?.collect_handled()
     }
 
     //used in GroupBy, not DataFrame

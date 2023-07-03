@@ -103,7 +103,7 @@ pl$col = function(name = "", ...) {
     }
   }
   # TODO implement series, DataType
-  stopf("not supported implement input")
+  stopf(paste("cannot make a column expression from:",str_string(name)))
 }
 
 #' an element in 'eval'-expr

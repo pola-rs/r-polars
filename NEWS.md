@@ -7,9 +7,14 @@
 for demonstration purposes (#240).
 - Polars is internally moving away from string errors to a new error-type called `RPolarsErr` both on rust- and R-side. Final error messages should look very similar (#233).
 - LazyFrame_columns, _schema, _dtypes implemented. Improvements to internal `RPolarsErr`. Also `RPolarsErr` will now print each context of the error on a separate line (#250).
+- Fix memory leak on error bug. Fix printing of `%` bug. Prepare for renaming of polars classes (#252).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
+- rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
+  `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
+- A new function `polars_info()` will tell which features enabled (#271).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
+- `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 
 # polars 0.6.1
 ## What's changed

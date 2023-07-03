@@ -175,15 +175,15 @@ test_that("select with list of exprs", {
 
   x1 = pl$DataFrame(mtcars)$select(l_expr)
   x2 = pl$DataFrame(mtcars)$select(l_expr2)
-  x3 = pl$DataFrame(mtcars)$select(l_expr3, pl$col("hp"))
-  x4 = pl$DataFrame(mtcars)$select(pl$col("hp"), l_expr3)
+  # x3 = pl$DataFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
+  #x4 = pl$DataFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
   x5 = pl$DataFrame(mtcars)$select(l_expr4)
   x6 = pl$DataFrame(mtcars)$select(l_expr5)
 
   expect_equal(x1$columns, c("mpg", "hp"))
   expect_equal(x2$columns, c("mpg", "hp"))
-  expect_equal(x3$columns, c("mpg", "hp"))
-  expect_equal(x4$columns, c("mpg", "hp"))
+  # expect_equal(x3$columns, c("mpg", "hp"))
+  #expect_equal(x4$columns, c("mpg", "hp"))
   expect_equal(x5$columns, c("mpg", "hp"))
   expect_equal(x6$columns, c("mpg", "hp"))
 })
@@ -951,7 +951,6 @@ test_that("rename", {
 })
 
 
-
 test_that("describe", {
   expect_snapshot(pl$DataFrame(mtcars)$describe())
 
@@ -969,3 +968,11 @@ test_that("describe", {
 
 })
 
+test_that("glimpse", {
+  expect_snapshot(pl$DataFrame(mtcars)$with_columns(pl$lit(42)$cast(pl$Int8))$glimpse())
+  expect_rpolarserr(
+    pl$DataFrame(iris)$glimpse(return_as_string = 42),
+    c("BadArgument", "TypeMismatch", "BadValue")
+  )
+  expect_true(is_string(pl$DataFrame(iris)$glimpse(return_as_string = TRUE)))
+})

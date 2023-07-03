@@ -604,19 +604,27 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
+//this function is used to convert and Rside Expr into rust side Expr
+// wrap_e allows to also convert any allowed non Exp
 pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
     let robj = unpack_r_result_list(robj)?;
-    let rv = robj.clone();
 
-    //call wrap_e on R side
+    //use R side wrap_e to convert any R value into Expr or
     use extendr_api::*;
-    let x =
-        R!("polars:::result(polars:::wrap_e({{robj}},{{str_to_lit}}))").plain("internal error")?;
-    let new_col_expr = unpack_r_result_list(x)?;
+    let robj_result_expr = R!("polars:::result(polars:::wrap_e({{robj}},{{str_to_lit}}))")
+        .map_err(crate::rpolarserr::extendr_to_rpolars_err)
+        .plain("internal error: polars:::result failed to catch this error")?;
 
-    //convert output into Expr
-    let res: ExtendrResult<ExternalPtr<Expr>> = new_col_expr.try_into();
-    let ext_expr = res.bad_robj(&rv).mistyped(tn::<Expr>())?;
+    // handle any error from wrap_e
+    let robj_expr = unpack_r_result_list(robj_result_expr).when("converting R value to expr")?;
+
+    //PolarsExpr -> RExpr
+    let res: ExtendrResult<ExternalPtr<Expr>> = robj_expr.clone().try_into();
+    let ext_expr = res
+        .bad_robj(&robj_expr)
+        .mistyped(tn::<Expr>())
+        .when("converting R extptr PolarsExpr to rust RExpr")
+        .plain("internal error: wrap_e should fail or return an Expr")?;
     Ok(Expr(ext_expr.0.clone()))
 }
 

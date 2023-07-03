@@ -142,11 +142,11 @@ test_that("pl$first pl$last", {
   # caught errors via pl$col
   expect_grepl_error(
     pl$first(1),
-    c("first()", "not supported implement input")
+    c("first()","cannot make a column expression")
   )
   expect_grepl_error(
     pl$last(1),
-    c("last()", "not supported implement input")
+    c("last()","cannot make a column expression")
   )
 })
 
@@ -165,7 +165,7 @@ test_that("pl$count", {
   expect_identical(pl$count(s), s$len())
 
   # pass invalid column name type to pl$col
-  expect_grepl_error(pl$count(1), c("count()", "not supported implement input"))
+  expect_grepl_error(pl$count(1), c("count()","cannot make a column expression"))
 })
 
 
@@ -174,7 +174,8 @@ test_that("pl$implode", {
   act = pl$implode("bob")
   exp = pl$col("bob")$implode()
   expect_true(act$meta$eq(exp))
-  expect_grepl_error(pl$implode(42), c("in pl\\$implode()", "not supported"))
+
+  expect_grepl_error(pl$implode(42), c("in pl\\$implode()", "cannot make a column expression from"))
 })
 
 

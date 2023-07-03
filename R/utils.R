@@ -111,6 +111,19 @@ unpack_list = function(...) {
 }
 
 
+unpack_list2 = function(...) {
+  args = list(...)
+  is_list = which(vapply(args, is.list, FUN.VALUE = logical(1L)))
+    for (i in seq_along(is_list)) {
+      tmp = unlist(args[[is_list[i]]], recursive = FALSE)
+      args[[is_list[i]]] = NULL
+      args = append(tmp, args)
+    }
+    args = Filter(Negate(is.null), args)
+
+    arg_names = names(args)
+}
+
 
 #' Simple SQL CASE WHEN implementation for R
 #'

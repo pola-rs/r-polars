@@ -211,33 +211,52 @@ impl From<RPolarsErr> for String {
 }
 
 impl<E: std::error::Error> From<E> for RPolarsErr {
-    default fn from(err: E) -> Self {
+    fn from(err: E) -> Self {
         RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Plain(rdbg(err))]))
     }
 }
 
-impl From<extendr_api::Error> for RPolarsErr {
-    fn from(extendr_err: extendr_api::Error) -> Self {
-        RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
-    }
+pub fn extendr_to_rpolars_err(extendr_err: extendr_api::Error) -> RPolarsErr {
+    RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
 }
 
-impl From<polars::error::PolarsError> for RPolarsErr {
-    fn from(polars_err: polars::error::PolarsError) -> Self {
-        let mut rerr = RPolarsErr::new();
-        rerr.contexts.push_back(Rctx::Polars(rdbg(&polars_err)));
-        match polars_err {
-            polars::prelude::PolarsError::InvalidOperation(x) => {
-                rerr.contexts.push_back(Rctx::Hint(format!(
-                    "something (likely a column) with name {:?} is not found",
-                    x
-                )));
-            }
-            _ => {}
-        };
-        rerr
-    }
+// impl From<extendr_api::Error> for RPolarsErr {
+//     fn from(extendr_err: extendr_api::Error) -> Self {
+//         RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
+//     }
+// }
+
+pub fn polars_to_rpolars_err(polars_err: polars::error::PolarsError) -> RPolarsErr {
+    let mut rerr = RPolarsErr::new();
+    rerr.contexts.push_back(Rctx::Polars(rdbg(&polars_err)));
+    match polars_err {
+        polars::prelude::PolarsError::InvalidOperation(x) => {
+            rerr.contexts.push_back(Rctx::Hint(format!(
+                "something (likely a column) with name {:?} is not found",
+                x
+            )));
+        }
+        _ => {}
+    };
+    rerr
 }
+
+// impl From<polars::error::PolarsError> for RPolarsErr {
+//     fn from(polars_err: polars::error::PolarsError) -> Self {
+//         let mut rerr = RPolarsErr::new();
+//         rerr.contexts.push_back(Rctx::Polars(rdbg(&polars_err)));
+//         match polars_err {
+//             polars::prelude::PolarsError::InvalidOperation(x) => {
+//                 rerr.contexts.push_back(Rctx::Hint(format!(
+//                     "something (likely a column) with name {:?} is not found",
+//                     x
+//                 )));
+//             }
+//             _ => {}
+//         };
+//         rerr
+//     }
+// }
 
 pub fn rerr<T>() -> RResult<T> {
     Err(RPolarsErr::new())
