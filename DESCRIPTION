@@ -13,6 +13,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+SystemRequirements: Cargo (rustc package manager), cmake
 URL: https://github.com/pola-rs/r-polars
     https://rpolars.r-universe.dev/polars
 Suggests:
@@ -40,7 +41,10 @@ Config/Needs/dev:
     devtools,
     styler,
     robinlovelace/styler.equals,
-    rextendr
+    rextendr,
+    RcppTOML,
+    brio,
+    stringr
 Config/testthat/edition: 3
 Collate:
     'utils.R'
