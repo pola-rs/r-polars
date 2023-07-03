@@ -72,25 +72,10 @@ ExprArr_min = function() .pr$Expr$lst_min(self)
 #' df$select(pl$col("values")$arr$mean())
 ExprArr_mean = function() .pr$Expr$lst_mean(self)
 
-#' Get list
+#' @inherit Expr_sort title description return
+#' @param descending Sort values in descending order
 #' @name arr_sort
-#' @description Get the value by index in the sublists.
-#' @param index numeric vector or Expr of length 1 or same length of Series.
-#' if length 1 pick same value from each sublist, if length as Series/column,
-#' pick by individual index across sublists.
-#'
-#' So index `0` would return the first item of every sublist
-#' and index `-1` would return the last item of every sublist
-#' if an index is out of bounds, it will return a `None`.
-#' @keywords ExprArr
-#' @format function
-#' @return Expr
-#' @aliases Expr_arr_sort Expr_arr.sort
-#' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr$get(0))
-#' df$select(pl$col("a")$arr$get(c(2, 0, -1)))
-ExprArr_sort = function(reverse = FALSE) .pr$Expr$lst_sort(self, reverse)
+ExprArr_sort = function(descending = FALSE) .pr$Expr$lst_sort(self, descending)
 
 #' Reverse list
 #' @name arr_reverse

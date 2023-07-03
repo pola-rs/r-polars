@@ -5,10 +5,10 @@
 \alias{set_sorted}
 \title{Set_sorted}
 \usage{
-Expr_set_sorted(reverse = FALSE)
+Expr_set_sorted(descending = FALSE)
 }
 \arguments{
-\item{reverse}{bool if TRUE Descending else Ascending}
+\item{descending}{Sort the columns in descending order.}
 }
 \value{
 Expr

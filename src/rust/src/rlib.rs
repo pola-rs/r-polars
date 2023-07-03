@@ -270,6 +270,11 @@ fn test_robj_to_u32(robj: Robj) -> RResult<String> {
     robj_to!(u32, robj).map(rdbg)
 }
 
+#[extendr]
+fn test_print_string(s: String) {
+    rprintln!("{}", s);
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -295,4 +300,5 @@ extendr_module! {
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
+    fn test_print_string;
 }

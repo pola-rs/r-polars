@@ -5,10 +5,10 @@
 \alias{is_sorted}
 \title{is_sorted}
 \usage{
-Series_is_sorted(reverse = FALSE, nulls_last = NULL)
+Series_is_sorted(descending = FALSE, nulls_last = NULL)
 }
 \arguments{
-\item{reverse}{order sorted}
+\item{descending}{Check if the Series is sorted in descending order.}
 
 \item{nulls_last}{bool where to keep nulls, default same as reverse}
 }
