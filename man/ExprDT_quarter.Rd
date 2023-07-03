@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_quarter()
+}
 \value{
 Expr of quater as UInt32
 }

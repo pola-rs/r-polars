@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_minute()
+}
 \value{
 Expr of minute as UInt32
 }

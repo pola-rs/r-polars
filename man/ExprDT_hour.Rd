@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_hour()
+}
 \value{
 Expr of hour as UInt32
 }
