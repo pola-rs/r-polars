@@ -81,8 +81,22 @@ unwrap_err = function(result) {
 result = function(expr, msg = NULL) {
   tryCatch(
     Ok(expr),
-    error = \(cond) cond$value %||% cond$message |>
-      plain(msg) |>
-      Err()
+    error = \(cond) {
+      cond$value %||% cond$message |>
+        upgrade_err() |>
+        plain(msg) |>
+        Err()
+    }
+  )
+}
+
+
+raw_result = function(expr) {
+  tryCatch(
+    Ok(expr),
+    error = \(cond) {
+      cond$value %||% cond$message |>
+        Err()
+    }
   )
 }

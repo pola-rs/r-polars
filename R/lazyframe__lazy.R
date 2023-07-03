@@ -215,8 +215,9 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$select(self, pra)
+  args = unpack_list(...)
+  .pr$LazyFrame$select(self, args) |>
+    unwrap("in $select()")
 }
 
 #' @title Lazy with columns
@@ -255,7 +256,7 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_collect = function() {
-  unwrap(.pr$LazyFrame$collect(self), "in $collect():")
+  unwrap(.pr$LazyFrame$collect_handled(self), "in $collect():")
 }
 
 #' @title New DataFrame from LazyFrame_object$collect()

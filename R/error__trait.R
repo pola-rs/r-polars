@@ -1,5 +1,5 @@
 # ANY NEW ERROR MUST IMPLEMENT THESE S3 METHODS, these are the "trait" of a polars error
-# ALSO MUST IMPLEMENT BASE THESE METHODS: print
+# ALSO MUST IMPLEMENT THESE BASE METHODS: print
 
 #' Internal generic method to add call to error
 #' @param err any type which impl as.character
@@ -86,3 +86,28 @@ plain = function(err, msg) {
 plain.default = function(err, msg) {
   paste0(msg, ": ", err)
 }
+
+
+## TODO refactor upgrade_err into as.RPolarsErr
+#' Internal generic method to add plain text to error message
+#' @details
+#' polars converts any other error types to RPolarsErr.
+#' An error type can choose to implement this to improve the translation.
+#' As fall back the error will be deparsed into a string with rust Debug, see rdbg()
+#' @param err some error type object
+#' @param msg string to add
+#' @keywords internal
+#' @return condition
+upgrade_err = function(err) {
+  UseMethod("upgrade_err", err)
+}
+upgrade_err.default = function(err) {
+  err # no upgrade found pass as is
+}
+
+# call upgrade error from internalsnamespace
+# error_trait methods are internal and do not work correctly
+# when called directly by user e.g. polars:::upgrade_err(polars:::RPolarsErr$new())
+# calling R from rust via R! but it is  a "user" call in .GlobalEnv
+# by calling a package function the parent env is the internal pacakge env.
+upgrade_err_internal_ns = \(x) upgrade_err(x)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{wrap_elist_result}
 \alias{wrap_elist_result}
-\title{wrap_elist_result}
+\title{internal wrap_elist_result}
 \usage{
 wrap_elist_result(elist, str_to_lit = TRUE)
 }
@@ -13,7 +13,8 @@ wrap_elist_result(elist, str_to_lit = TRUE)
 Expr
 }
 \description{
-make sure all elementsof a list is wrapped as Expr
+make sure all elements of a list is wrapped as Expr
+DEPRECATED:  prefer robj_to!(VecPlExpr) on rust side
 Capture any conversion error in the result
 }
 \details{

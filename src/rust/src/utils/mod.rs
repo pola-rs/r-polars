@@ -6,6 +6,7 @@ use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
+//use std::intrinsics::read_via_copy;
 
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
@@ -416,26 +417,53 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
     }
 }
 
-pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
+fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj> {
     use extendr_api::*;
     if robj.inherits("extendr_result") {
-        let l = robj.as_list().unwrap();
-        let ok = l.elt(0).unwrap();
-        let err = l.elt(1).unwrap();
-        match (ok.rtype(), err.rtype()) {
-            (_, Rtype::Null) => Ok(ok),
-            (Rtype::Null, _) => {
-                if let Some(err_msg) = err.as_str() {
-                    rerr().plain(err_msg)
-                } else {
-                    rerr().plain(rdbg(err))
-                }
-            }
-            (_, _) => unreachable!("Internal error: failed to unpack r_result_list"),
-        }
+        let l = robj.as_list().expect("extendr_result is a list");
+        let ok = l.elt(0).expect("extendr_result has a 1st element");
+        let err = l.elt(1).expect("extendr_result has a 2nd element");
+        let inner_res = match err.rtype() {
+            Rtype::Null => Ok(ok),
+            _ => Err(err),
+        };
+        inner_res
     } else {
         Ok(robj)
     }
+}
+
+//TODO refactor, put step 2 and 3 in a separeate sub function and rename unpack_r_result_list
+// then move subfunction to rpolarserr and refactor into a trait conversion
+
+// The aim of this function is to return Ok for Robj which is not an extendr_result Err variant.
+// Any err will be converted to a RPolarsErr
+// This function is used as guard for many input conversions.
+pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
+    use crate::rpolarserr::*;
+    use extendr_api::*;
+    // 1 - join any non-extendr_result with the Ok variant
+    let res = inner_unpack_r_result_list(robj);
+
+    // 2 - try upgrade any Robj-error to an Robj-RPolarsErr (upgrade_err is an optional dependency-injection)
+    let res = res.map_err(|err| {
+        R!("polars:::upgrade_err_internal_ns({{err}})")
+            .map_err(|err| format!("internal error while upgrade error: {}", err))
+            .unwrap()
+    });
+
+    // 3 - Convert any Robj-err to a Robj-RPolarsErr
+    let res = res.map_err(|err| {
+        if err.inherits("RPolarsErr") {
+            //robj was already an external ptr to RPolarsErr, use as is
+            unsafe { &mut *err.external_ptr_addr::<RPolarsErr>() }.clone()
+        } else {
+            //robj was still some other error, upcast err to a string err and wrap in RPolarsErr
+            RPolarsErr::new().plain(rdbg(err))
+        }
+    });
+
+    res
 }
 
 pub fn robj_to_char(robj: extendr_api::Robj) -> RResult<char> {
@@ -576,18 +604,27 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
     Ok(RPolarsDataType(ext_dt.0.clone()))
 }
 
+//this function is used to convert and Rside Expr into rust side Expr
+// wrap_e allows to also convert any allowed non Exp
 pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
     let robj = unpack_r_result_list(robj)?;
-    let rv = rdbg(&robj);
 
-    //call wrap_e on R side
+    //use R side wrap_e to convert any R value into Expr or
     use extendr_api::*;
-    let new_col_expr = extendr_api::call!("polars:::wrap_e", robj, str_to_lit)
-        .map_err(crate::rpolarserr::extendr_to_rpolars_err)?;
+    let robj_result_expr = R!("polars:::result(polars:::wrap_e({{robj}},{{str_to_lit}}))")
+        .map_err(crate::rpolarserr::extendr_to_rpolars_err)
+        .plain("internal error: polars:::result failed to catch this error")?;
 
-    //convert output into Expr
-    let res: ExtendrResult<ExternalPtr<Expr>> = new_col_expr.try_into();
-    let ext_expr = res.bad_val(rv).mistyped(tn::<Expr>())?;
+    // handle any error from wrap_e
+    let robj_expr = unpack_r_result_list(robj_result_expr).when("converting R value to expr")?;
+
+    //PolarsExpr -> RExpr
+    let res: ExtendrResult<ExternalPtr<Expr>> = robj_expr.clone().try_into();
+    let ext_expr = res
+        .bad_robj(&robj_expr)
+        .mistyped(tn::<Expr>())
+        .when("converting R extptr PolarsExpr to rust RExpr")
+        .plain("internal error: wrap_e should fail or return an Expr")?;
     Ok(Expr(ext_expr.0.clone()))
 }
 
@@ -596,7 +633,6 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
     let rv = rdbg(&robj);
     use crate::rdataframe::LazyFrame;
     let res: Result<ExternalPtr<LazyFrame>, _> = robj.try_into();
-
     let ext_ldf = res.bad_val(rv).mistyped(tn::<LazyFrame>())?;
     Ok(LazyFrame(ext_ldf.0.clone()))
 }
