@@ -12,12 +12,22 @@ all: C_clean
 
 $(SHLIB): $(STATLIB)
 
+CARGOTMP = $(CURDIR)/.cargo
+
 $(STATLIB):
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		export CARGO_HOME=$(CARGOTMP); \
+	fi && \
+	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
 		$(BUILD_COMMAND) --all-features; \
 	else \
 		$(BUILD_COMMAND); \
-	fi;
+	fi
+	if [ "$(NOT_CRAN)" != "true" ]; then \
+		rm -Rf $(CARGOTMP) && \
+		rm -Rf $(LIBDIR)/build; \
+	fi
 	if [ -f "$(STATLIB)" ]; then \
 		echo "file is there: "; \
 	else \
