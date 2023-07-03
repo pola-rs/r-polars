@@ -287,13 +287,13 @@ test_that("sort", {
   # test arg by raises error for unsported type
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))),
-    c("the arg", "by", "...", "not convertable into Expr because","cannot make a column expression")
+    c("the arg", "by", "...", "not convertable into Expr because", "cannot make a column expression")
   )
 
   # test arg ... raises error for unsported type
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
-    c("the arg", "by", "...", "not convertable into Expr because","cannot make a column expression")
+    c("the arg", "by", "...", "not convertable into Expr because", "cannot make a column expression")
   )
 
   # test raise error for ... named arg
@@ -578,16 +578,15 @@ test_that("select with list of exprs", {
 
   x1 = pl$LazyFrame(mtcars)$select(l_expr)
   x2 = pl$LazyFrame(mtcars)$select(l_expr2)
-  #x3 = pl$LazyFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
-  #x4 = pl$LazyFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
+  # x3 = pl$LazyFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
+  # x4 = pl$LazyFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
   x5 = pl$LazyFrame(mtcars)$select(l_expr4)
   x6 = pl$LazyFrame(mtcars)$select(l_expr5)
 
   expect_equal(x1$columns, c("mpg", "hp"))
   expect_equal(x2$columns, c("mpg", "hp"))
-  #expect_equal(x3$columns, c("mpg", "hp")) #not allowed
-  #expect_equal(x4$columns, c("mpg", "hp")) # not allowed
+  # expect_equal(x3$columns, c("mpg", "hp")) #not allowed
+  # expect_equal(x4$columns, c("mpg", "hp")) # not allowed
   expect_equal(x5$columns, c("mpg", "hp"))
   expect_equal(x6$columns, c("mpg", "hp"))
 })
-

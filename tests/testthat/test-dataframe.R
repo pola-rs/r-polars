@@ -176,14 +176,14 @@ test_that("select with list of exprs", {
   x1 = pl$DataFrame(mtcars)$select(l_expr)
   x2 = pl$DataFrame(mtcars)$select(l_expr2)
   # x3 = pl$DataFrame(mtcars)$select(l_expr3, pl$col("hp")) #not allowed
-  #x4 = pl$DataFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
+  # x4 = pl$DataFrame(mtcars)$select(pl$col("hp"), l_expr3) #not allowed
   x5 = pl$DataFrame(mtcars)$select(l_expr4)
   x6 = pl$DataFrame(mtcars)$select(l_expr5)
 
   expect_equal(x1$columns, c("mpg", "hp"))
   expect_equal(x2$columns, c("mpg", "hp"))
   # expect_equal(x3$columns, c("mpg", "hp"))
-  #expect_equal(x4$columns, c("mpg", "hp"))
+  # expect_equal(x4$columns, c("mpg", "hp"))
   expect_equal(x5$columns, c("mpg", "hp"))
   expect_equal(x6$columns, c("mpg", "hp"))
 })
@@ -957,15 +957,14 @@ test_that("describe", {
   df = pl$DataFrame(mtcars)$describe()
   expect_error(pl$DataFrame(mtcars)$describe("not a percentile"))
   err_ctx = unwrap_err(result(pl$DataFrame(mtcars)$describe("not a percentile")))$contexts()
-  expect_identical(names(err_ctx),c("BadArgument", "TypeMismatch", "BadValue"))
-  expect_identical(unlist(err_ctx[1:2],use.names = FALSE),c("percentiles","numeric"))
+  expect_identical(names(err_ctx), c("BadArgument", "TypeMismatch", "BadValue"))
+  expect_identical(unlist(err_ctx[1:2], use.names = FALSE), c("percentiles", "numeric"))
 
-  #perc = NULL  is the same as numeric()
+  # perc = NULL  is the same as numeric()
   expect_identical(
     pl$DataFrame(mtcars)$describe(perc = numeric())$to_list(),
     pl$DataFrame(mtcars)$describe(perc = NULL)$to_list()
   )
-
 })
 
 test_that("glimpse", {
