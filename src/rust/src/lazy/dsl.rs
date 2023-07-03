@@ -669,7 +669,7 @@ impl Expr {
             .map(|rank_method| {
                 let options = pl::RankOptions {
                     method: rank_method,
-                    descending: descending
+                    descending: descending,
                 };
                 Expr(self.0.clone().rank(options, Some(0u64)))
             })
