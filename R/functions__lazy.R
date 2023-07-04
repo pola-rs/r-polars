@@ -740,7 +740,7 @@ pl$var = function(column, ddof = 1) {
 pl$concat_list = function(exprs) {
   l_expr = lapply(as.list(exprs), wrap_e)
   pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(concat_lst(pra))
+  unwrap(concat_list(pra))
 }
 
 

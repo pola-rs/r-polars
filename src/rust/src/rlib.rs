@@ -88,10 +88,10 @@ fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
 }
 
 #[extendr]
-fn concat_lst(exprs: &ProtoExprArray) -> Result<Expr, String> {
+fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
     let exprs = exprs.to_vec("select");
     Ok(Expr(
-        polars::lazy::dsl::concat_lst(exprs).map_err(|err| err.to_string())?,
+        polars::lazy::dsl::concat_list(exprs).map_err(|err| err.to_string())?,
     ))
 }
 
@@ -134,19 +134,20 @@ fn r_date_range_lazy(
     end: &Expr,
     every: &str,
     closed: &str,
-    name: String,
     tz: Nullable<String>,
 ) -> List {
     use crate::rdatatype::new_closed_window;
     let res = || -> std::result::Result<Expr, String> {
-        Ok(Expr(polars::lazy::dsl::functions::date_range(
-            name,
-            start.0.clone(),
-            end.0.clone(),
-            pl::Duration::parse(every),
-            new_closed_window(closed)?,
-            tz.into_option(),
-        )))
+        Ok(Expr(
+            polars::lazy::dsl::functions::date_range(
+                start.0.clone(),
+                end.0.clone(),
+                pl::Duration::parse(every),
+                new_closed_window(closed)?,
+                tz.into_option(),
+            )
+            .explode(),
+        ))
     }();
     r_result_list(res)
 }
@@ -285,7 +286,7 @@ extendr_module! {
     fn coalesce_exprs;
     fn sum_exprs;
     fn mem_address;
-    fn concat_lst;
+    fn concat_list;
     fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;

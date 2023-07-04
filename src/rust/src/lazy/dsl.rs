@@ -997,33 +997,33 @@ impl Expr {
     //arr/list methods
 
     fn arr_lengths(&self) -> Self {
-        self.0.clone().arr().lengths().into()
+        self.0.clone().list().lengths().into()
     }
 
     pub fn arr_contains(&self, other: &Expr) -> Expr {
-        self.0.clone().arr().contains(other.0.clone()).into()
+        self.0.clone().list().contains(other.0.clone()).into()
     }
 
     fn lst_max(&self) -> Self {
-        self.0.clone().arr().max().into()
+        self.0.clone().list().max().into()
     }
 
     fn lst_min(&self) -> Self {
-        self.0.clone().arr().min().into()
+        self.0.clone().list().min().into()
     }
 
     fn lst_sum(&self) -> Self {
-        self.0.clone().arr().sum().with_fmt("arr.sum").into()
+        self.0.clone().list().sum().with_fmt("arr.sum").into()
     }
 
     fn lst_mean(&self) -> Self {
-        self.0.clone().arr().mean().with_fmt("arr.mean").into()
+        self.0.clone().list().mean().with_fmt("arr.mean").into()
     }
 
     fn lst_sort(&self, descending: bool) -> Self {
         self.0
             .clone()
-            .arr()
+            .list()
             .sort(SortOptions {
                 descending: descending,
                 ..Default::default()
@@ -1035,43 +1035,43 @@ impl Expr {
     fn lst_reverse(&self) -> Self {
         self.0
             .clone()
-            .arr()
+            .list()
             .reverse()
             .with_fmt("arr.reverse")
             .into()
     }
 
     fn lst_unique(&self) -> Self {
-        self.0.clone().arr().unique().with_fmt("arr.unique").into()
+        self.0.clone().list().unique().with_fmt("arr.unique").into()
     }
 
     fn lst_take(&self, index: &Expr, null_on_oob: bool) -> Self {
         self.0
             .clone()
-            .arr()
+            .list()
             .take(index.0.clone(), null_on_oob)
             .into()
     }
 
     fn lst_get(&self, index: &Expr) -> Self {
-        self.0.clone().arr().get(index.clone().0).into()
+        self.0.clone().list().get(index.clone().0).into()
     }
 
     fn lst_join(&self, separator: &str) -> Self {
-        self.0.clone().arr().join(separator).into()
+        self.0.clone().list().join(separator).into()
     }
 
     fn lst_arg_min(&self) -> Self {
-        self.0.clone().arr().arg_min().into()
+        self.0.clone().list().arg_min().into()
     }
 
     fn lst_arg_max(&self) -> Self {
-        self.0.clone().arr().arg_max().into()
+        self.0.clone().list().arg_max().into()
     }
 
     fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().arr().diff(
+            Ok(Expr(self.0.clone().list().diff(
                 try_f64_into_i64(n)?,
                 new_null_behavior(null_behavior)?,
             )))
@@ -1082,7 +1082,9 @@ impl Expr {
 
     fn lst_shift(&self, periods: f64) -> List {
         let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().arr().shift(try_f64_into_i64(periods)?)))
+            Ok(Expr(
+                self.0.clone().list().shift(try_f64_into_i64(periods)?),
+            ))
         }()
         .map_err(|err| format!("arr.shift: {}", err));
         r_result_list(expr_res)
@@ -1093,12 +1095,12 @@ impl Expr {
             Some(i) => i.0.clone(),
             None => dsl::lit(i64::MAX),
         };
-        self.0.clone().arr().slice(offset.0.clone(), length).into()
+        self.0.clone().list().slice(offset.0.clone(), length).into()
     }
 
     fn lst_eval(&self, expr: &Expr, parallel: bool) -> Self {
         use pl::*;
-        self.0.clone().arr().eval(expr.0.clone(), parallel).into()
+        self.0.clone().list().eval(expr.0.clone(), parallel).into()
     }
 
     fn lst_to_struct(&self, width_strat: &str, name_gen: Nullable<Robj>, upper_bound: f64) -> List {
@@ -1132,7 +1134,7 @@ impl Expr {
         let res = || -> Result<Expr, String> {
             let ub = try_f64_into_usize(upper_bound)?;
             let strat = new_width_strategy(width_strat)?;
-            Ok(Expr(self.0.clone().arr().to_struct(strat, name_gen, ub)))
+            Ok(Expr(self.0.clone().list().to_struct(strat, name_gen, ub)))
         }();
 
         let res = res.map_err(|err| format!("in to_struct: {}", err));
@@ -1150,15 +1152,15 @@ impl Expr {
         self.0
             .clone()
             .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Date,
-                format: null_to_opt(format),
-                strict,
-                exact,
-                cache,
-                tz_aware: false,
-                utc: false,
-            })
+            .strptime(
+                pl::DataType::Date,
+                pl::StrptimeOptions {
+                    format: null_to_opt(format),
+                    strict,
+                    exact,
+                    cache,
+                },
+            )
             .into()
     }
 
@@ -1169,8 +1171,6 @@ impl Expr {
         strict: bool,
         exact: bool,
         cache: bool,
-        tz_aware: bool,
-        utc: bool,
         tu: Nullable<Robj>,
     ) -> List {
         let res = || -> Result<Expr, String> {
@@ -1197,15 +1197,15 @@ impl Expr {
                 .0
                 .clone()
                 .str()
-                .strptime(pl::StrpTimeOptions {
-                    date_dtype: pl::DataType::Datetime(result_tu, None),
-                    format,
-                    strict,
-                    exact,
-                    cache,
-                    tz_aware,
-                    utc,
-                })
+                .strptime(
+                    pl::DataType::Datetime(result_tu, None),
+                    pl::StrptimeOptions {
+                        format,
+                        strict,
+                        exact,
+                        cache,
+                    },
+                )
                 .into())
         }();
         r_result_list(res)
@@ -1221,15 +1221,15 @@ impl Expr {
         self.0
             .clone()
             .str()
-            .strptime(pl::StrpTimeOptions {
-                date_dtype: pl::DataType::Time,
-                format: null_to_opt(format),
-                strict,
-                exact,
-                cache,
-                tz_aware: false,
-                utc: false,
-            })
+            .strptime(
+                pl::DataType::Time,
+                pl::StrptimeOptions {
+                    format: null_to_opt(format),
+                    strict,
+                    exact,
+                    cache,
+                },
+            )
             .into()
     }
 
@@ -2039,6 +2039,10 @@ impl Expr {
             .map(function, GetOutput::from_type(DataType::Utf8))
             .with_fmt("str.slice")
             .into())
+    }
+
+    pub fn str_explode(&self) -> Result<Expr, String> {
+        Ok(self.0.clone().str().explode().into())
     }
 
     pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> Result<Expr, String> {

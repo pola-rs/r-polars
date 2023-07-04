@@ -26,7 +26,7 @@
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
-#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", lazy = FALSE)
 #'
 #' # use a dt namespace function
 #' df = pl$DataFrame(datetime = s)$with_columns(
@@ -78,7 +78,7 @@ ExprDT_truncate = function(
 #' @examples
 #' t1 = as.POSIXct("3040-01-01", tz = "GMT")
 #' t2 = t1 + as.difftime(25, units = "secs")
-#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+#' s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", lazy = FALSE)
 #'
 #' # use a dt namespace function
 #' df = pl$DataFrame(datetime = s)$with_columns(
@@ -173,7 +173,8 @@ ExprDT_strftime = function(fmt) {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -203,7 +204,8 @@ ExprDT_year = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -231,7 +233,8 @@ ExprDT_iso_year = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -258,7 +261,8 @@ ExprDT_quarter = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -286,7 +290,8 @@ ExprDT_month = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -312,7 +317,8 @@ ExprDT_week = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -340,7 +346,8 @@ ExprDT_weekday = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -367,7 +374,8 @@ ExprDT_day = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -394,7 +402,8 @@ ExprDT_ordinal_day = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -420,7 +429,8 @@ ExprDT_hour = function() {
 #'     as.Date("2020-12-25"),
 #'     as.Date("2021-1-05"),
 #'     interval = "1d",
-#'     time_zone = "GMT"
+#'     time_zone = "GMT",
+#'     lazy = FALSE
 #'   )
 #' )
 #' df$with_columns(
@@ -447,7 +457,8 @@ ExprDT_minute = function() {
 #'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
 #'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
 #'   interval = "2s654321us",
-#'   time_unit = "us" # instruct polars input is us, and store as us
+#'   time_unit = "us", # instruct polars input is us, and store as us
+#'   lazy = FALSE
 #' ))$with_columns(
 #'   pl$col("date")$dt$second()$alias("second"),
 #'   pl$col("date")$dt$second(fractional = TRUE)$alias("second_frac")
@@ -475,7 +486,8 @@ ExprDT_second = function(fractional = FALSE) {
 #'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
 #'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
 #'   interval = "2s654321us",
-#'   time_unit = "us" # instruct polars input is us, and store as us
+#'   time_unit = "us", # instruct polars input is us, and store as us
+#'   lazy = FALSE
 #' ))$with_columns(
 #'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
 #'   pl$col("date")$dt$millisecond()$alias("millisecond")
@@ -494,12 +506,15 @@ ExprDT_millisecond = function() {
 #' @format function
 #' @aliases (Expr)$dt$microsecond
 #' @examples
-#' pl$DataFrame(date = pl$date_range(
-#'   as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
-#'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
-#'   interval = "2s654321us",
-#'   time_unit = "us" # instruct polars input is us, and store as us
-#' ))$with_columns(
+#' pl$DataFrame(
+#'   date = pl$date_range(
+#'     as.numeric(as.POSIXct("2001-1-1")) * 1E6 + 456789, # manually convert to us
+#'     as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
+#'     interval = "2s654321us",
+#'     time_unit = "us", # instruct polars input is us, and store as us
+#'     lazy = FALSE
+#'   )
+#' )$with_columns(
 #'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
 #'   pl$col("date")$dt$microsecond()$alias("microsecond")
 #' )
@@ -526,7 +541,8 @@ ExprDT_microsecond = function() {
 #'   as.numeric(as.POSIXct("2001-1-1")) * 1E9 + 123456789, # manually convert to us
 #'   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E9,
 #'   interval = "1s987654321ns",
-#'   time_unit = "ns" # instruct polars input is us, and store as us
+#'   time_unit = "ns", # instruct polars input is us, and store as us
+#'   lazy = FALSE
 #' ))$with_columns(
 #'   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
 #'   pl$col("date")$dt$nanosecond()$alias("nanosecond")
@@ -583,7 +599,12 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 #' @aliases (Expr)$dt$timestamp
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+#'   date = pl$date_range(
+#'     low = as.Date("2001-1-1"),
+#'     high = as.Date("2001-1-3"),
+#'     interval = "1d",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -609,7 +630,12 @@ ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
 #' @aliases (Expr)$dt$with_time_unit
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+#'   date = pl$date_range(
+#'     low = as.Date("2001-1-1"),
+#'     high = as.Date("2001-1-3"),
+#'     interval = "1d",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -636,7 +662,12 @@ ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @aliases (Expr)$dt$cast_time_unit
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+#'   date = pl$date_range(
+#'     low = as.Date("2001-1-1"),
+#'     high = as.Date("2001-1-3"),
+#'     interval = "1d",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -661,7 +692,12 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @aliases (Expr)$dt$convert_time_zone
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-5-1"), interval = "1mo")
+#'   date = pl$date_range(
+#'     low = as.Date("2001-3-1"),
+#'     high = as.Date("2001-5-1"),
+#'     interval = "1mo",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -740,7 +776,12 @@ ExprDT_replace_time_zone = function(tz, use_earliest = NULL) {
 #' @aliases (Expr)$dt$tz_localize
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")
+#'   date = pl$date_range(
+#'     low = as.Date("2001-3-1"),
+#'     high = as.Date("2001-7-1"),
+#'     interval = "1mo",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df = df$with_columns(
 #'   pl$col("date")
@@ -781,7 +822,12 @@ ExprDT_tz_localize = function(tz) {
 #' @aliases (Expr)$dt$days
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2020-3-1"), high = as.Date("2020-5-1"), interval = "1mo")
+#'   date = pl$date_range(
+#'     low = as.Date("2020-3-1"),
+#'     high = as.Date("2020-5-1"),
+#'     interval = "1mo",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -800,7 +846,12 @@ ExprDT_days = function() {
 #' @aliases (Expr)$dt$hours
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d")
+#'   date = pl$date_range(
+#'     low = as.Date("2020-1-1"),
+#'     high = as.Date("2020-1-4"),
+#'     interval = "1d",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -819,7 +870,12 @@ ExprDT_hours = function() {
 #' @aliases (Expr)$dt$minutes
 #' @examples
 #' df = pl$DataFrame(
-#'   date = pl$date_range(low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d")
+#'   date = pl$date_range(
+#'     low = as.Date("2020-1-1"),
+#'     high = as.Date("2020-1-4"),
+#'     interval = "1d",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("date"),
@@ -841,7 +897,8 @@ ExprDT_minutes = function() {
 #' df = pl$DataFrame(date = pl$date_range(
 #'   low = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-#'   interval = "1m"
+#'   interval = "1m",
+#'   lazy = FALSE
 #' ))
 #' df$select(
 #'   pl$col("date"),
@@ -862,7 +919,8 @@ ExprDT_seconds = function() {
 #' df = pl$DataFrame(date = pl$date_range(
 #'   low = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
-#'   interval = "1ms"
+#'   interval = "1ms",
+#'   lazy = FALSE
 #' ))
 #' df$select(
 #'   pl$col("date"),
@@ -883,7 +941,8 @@ ExprDT_milliseconds = function() {
 #' df = pl$DataFrame(date = pl$date_range(
 #'   low = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
-#'   interval = "1ms"
+#'   interval = "1ms",
+#'   lazy = FALSE
 #' ))
 #' df$select(
 #'   pl$col("date"),
@@ -904,7 +963,8 @@ ExprDT_microseconds = function() {
 #' df = pl$DataFrame(date = pl$date_range(
 #'   low = as.POSIXct("2020-1-1", tz = "GMT"),
 #'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
-#'   interval = "1ms"
+#'   interval = "1ms",
+#'   lazy = FALSE
 #' ))
 #' df$select(
 #'   pl$col("date"),
@@ -948,7 +1008,12 @@ ExprDT_nanoseconds = function() {
 #' @aliases (Expr)$dt$offset_by
 #' @examples
 #' df = pl$DataFrame(
-#'   dates = pl$date_range(as.Date("2000-1-1"), as.Date("2005-1-1"), "1y")
+#'   dates = pl$date_range(
+#'     as.Date("2000-1-1"),
+#'     as.Date("2005-1-1"),
+#'     "1y",
+#'     lazy = FALSE
+#'   )
 #' )
 #' df$select(
 #'   pl$col("dates")$dt$offset_by("1y")$alias("date_plus_1y"),
