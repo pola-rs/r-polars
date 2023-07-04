@@ -36,13 +36,26 @@ Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
 
 ## Install
 
-The package is not yet available on CRAN. But we provide convenient
-installation options for a variety of operating systems:
+The package can be installed from CRAN, R-universe, or GitHub.
+
+Some platforms can install pre-compiled binaries, and others will need
+to build from source.
+
+### CRAN
+
+CRAN provides pre-compiled binaries for Windows (x86_64) and macOS.
+
+Binary packages on CRAN are compiled by stable Rust, with nightly
+features disabled.
+
+``` r
+install.packages("polars")
+```
 
 ### R-universe
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
-pre-compiled **polars** binaries for Windows (x86_64), MacOS (x86_64)
+pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64)
 and Ubuntu 22.04 (x86_64) with source builds for other platforms.
 
 Binary packages on R-universe are compiled by stable Rust, with nightly
@@ -62,13 +75,12 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-We also provide pre-compiled binaries for various operating systems, as
-well as source installs, on our [GitHub
-releases](https://github.com/pola-rs/r-polars/releases) page. You can
-download and install these files manually, or install directly from R.
-Simply match the URL for your operating system and the desired release.
-For example, to install the latest release of **polars** on Linux
-(x86_64) one would use:
+We also provide pre-compiled binaries for various operating systems on
+our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
+page. You can download and install these files manually, or install
+directly from R. Simply match the URL for your operating system and the
+desired release. For example, to install the latest release of
+**polars** on Linux (x86_64) one would use:
 
 ``` r
 install.packages(
@@ -79,7 +91,7 @@ install.packages(
 
 Similarly for Windows
 ([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
-and MacOS (x86_64,
+and macOS (x86_64,
 [URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
@@ -226,7 +238,7 @@ you will to install the Rust toolchain:
   [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
   and on your PATH.
 
-- MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
+- macOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
 - Install [CMake](https://cmake.org/) and add it to your PATH.
