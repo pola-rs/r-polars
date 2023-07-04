@@ -65,7 +65,7 @@ print.GroupBy = function(x, ...) {
 
 
 #' Aggregate over a GroupBy
-#' @description Aggregatete a DataFrame over a groupby
+#' @description Aggregate a DataFrame over a groupby
 #' @param ... exprs to aggregate over.
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @return aggregated DataFrame

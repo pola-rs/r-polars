@@ -13,7 +13,7 @@ Expr_and(other)
 Expr
 }
 \description{
-combine to boolean exprresions with AND
+combine to boolean expressions with AND
 }
 \examples{
 pl$lit(TRUE) & TRUE

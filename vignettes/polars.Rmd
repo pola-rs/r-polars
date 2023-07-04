@@ -328,7 +328,7 @@ To go from wide to long, we use the
 indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc") 
 ```
 
-Basic functionality aside, it should be noted that `pivot` can peform
+Basic functionality aside, it should be noted that `pivot` can perform
 aggregations as part of the reshaping operation. This is useful when you have
 multiple observations per ID variable that need to be collapsed into unique
 values. The aggregating functions can be arbitrarily complex, but let's

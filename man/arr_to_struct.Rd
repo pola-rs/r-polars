@@ -22,7 +22,7 @@ struct fields that will be set.
 If this is incorrectly downstream operation may fail.
 For instance an \verb{all().sum()} expression will look in
 the current schema to determine which columns to select.
-It is adviced to set this value in a lazy query.}
+It is advised to set this value in a lazy query.}
 }
 \value{
 Expr

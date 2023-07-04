@@ -10,7 +10,7 @@ Expr_shuffle(seed = NULL)
 \arguments{
 \item{seed}{numeric value of 0 to 2^52
 Seed for the random number generator. If set to Null (default), a random
-seed value intergish value between 0 and 10000 is picked}
+seed value integerish value between 0 and 10000 is picked}
 }
 \value{
 Expr

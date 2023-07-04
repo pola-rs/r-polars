@@ -8,7 +8,7 @@
 #' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
 #' @name ExprStr_strptime
 #' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
-#' @param fmt fmt string for parsenig see
+#' @param fmt fmt string for parsing see
 #' see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
 #' Notice time_zone %Z is not supported and will just ignore timezones. Numeric tz  like
 #' %z, %:z  .... are supported.
@@ -192,7 +192,7 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -213,7 +213,7 @@ ExprStr_strip = function(matches = NULL) {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -234,7 +234,7 @@ ExprStr_lstrip = function(matches = NULL) {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `rstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -634,7 +634,7 @@ ExprStr_splitn = function(by, n) {
 #' Replace first matching regex/literal substring with a new string value.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -660,7 +660,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' Replace all matching regex/literal substrings with a new string value.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -685,7 +685,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' Create subslices of the string values of a Utf8 Series.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr: Series of dtype Utf8.

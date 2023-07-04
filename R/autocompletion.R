@@ -3,7 +3,7 @@
 #' @name extra_auto_completion
 #' @return NULL
 #'
-#' @details polars always supports auto completetion via .DollarNames.
+#' @details polars always supports auto completion via .DollarNames.
 #' However chained methods like x$a()$b()$? are not supported vi .DollarNames.
 #'
 #' This feature experimental and not perfect. Any feedback is appreciated.
@@ -15,7 +15,7 @@
 #' e = pl$lit(42) # to autocomplete pl$lit(42) save to variable
 #' # then write `e$`  and press tab to see available methods
 #'
-#' # polars has experimental auto completetion for chain of methods if all on the same line
+#' # polars has experimental auto completion for chain of methods if all on the same line
 #' pl$extra_auto_completion() # first activate feature (this will 'annoy' the Rstudio auto-completer)
 #' pl$lit(42)$lit_to_s() # add a $ and press tab 1-3 times
 #' pl$extra_auto_completion(activate = FALSE) # deactivate
@@ -27,7 +27,7 @@ pl$extra_auto_completion = function(activate = TRUE) {
     rc.options("custom.completer" = function(x) {
       ## activating custom deactivates anything else
       # however you can run utils auto completer also like this
-      # rstudio auto completetion is not entirely the same as utils
+      # rstudio auto completion is not entirely the same as utils
       f = rc.getOption("custom.completer")
       rc.options("custom.completer" = NULL)
       # function running  base auto complete.

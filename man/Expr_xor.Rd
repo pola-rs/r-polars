@@ -13,7 +13,7 @@ Expr_xor(other)
 Expr
 }
 \description{
-combine to boolean expresions with XOR
+combine to boolean expressions with XOR
 }
 \examples{
 pl$lit(TRUE)$xor(pl$lit(FALSE))

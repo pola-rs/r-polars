@@ -10,7 +10,7 @@ If one arg:
 \item Series or Expr, same as \code{column$sum()}
 \item string, same as \code{pl$col(column)$sum()}
 \item numeric, same as \code{pl$lit(column)$sum()}
-\item list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+\item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 }
 
 If several args, then wrapped in a list and handled as above.}

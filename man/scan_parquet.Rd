@@ -10,13 +10,13 @@
 
 \item{cache}{bool use cache}
 
-\item{parallel}{String either Auto, None, Columns or RowGroups. The way to parralize the scan.}
+\item{parallel}{String either Auto, None, Columns or RowGroups. The way to parallelized the scan.}
 
 \item{rechunk}{bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
 
 \item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
 
-\item{row_count_offset}{integer, the rowcount column can be offst by this value}
+\item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
 \item{low_memory}{bool, try reduce memory footprint}
 }

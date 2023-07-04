@@ -8,7 +8,7 @@
 
 \item{rechunk}{perform a rechunk at last}
 
-\item{how}{choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagnoal" diagonally}
+\item{how}{choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally}
 
 \item{parallel}{BOOL default TRUE, only used for LazyFrames}
 }

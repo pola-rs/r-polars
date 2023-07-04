@@ -23,7 +23,7 @@ However, if to mimic pypolars as much as possible, set this to FALSE.}
 
 \item{named_exprs}{bool, default = FALSE,
 allow named exprs in e.g. select, with_columns, groupby, join.
-a named expresion will be extended with $alias(name)
+a named expression will be extended with $alias(name)
 wildcards or expression producing multiple are problematic due to name collision
 the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
 and only allow named exprs in with_columns (or potentially any method derived there of)}
@@ -65,8 +65,8 @@ implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby
 
 prints any call to public or private polars method
 
-modifing list takes no effect, pass it to pl$set_polars_options
-get/set/resest interact with internal env \code{polars:::polars_optenv}
+modifying list takes no effect, pass it to pl$set_polars_options
+get/set/reset interact with internal env \code{polars:::polars_optenv}
 
 Every option can be accessed via \verb{pl$options$<name>()} or changed
 with \verb{pl$options$<name>(<value>)}

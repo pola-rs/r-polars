@@ -926,7 +926,7 @@ test_that("search_sorted", {
     ),
     42
   )
-  # this test is minimal, if polars give better documentation on behaviour, expand the test.
+  # this test is minimal, if polars give better documentation on behavior, expand the test.
 })
 
 
@@ -965,10 +965,10 @@ test_that("sort_by", {
   expect_grepl_error(pl$lit(1:4)$sort_by(1)$to_r(), "different length")
   expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
   expect_grepl_error(pl$lit(1:4)$sort_by("blop")$to_r(), "column 'blop' not available in schema")
-  expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertable into.* Expr")
-  expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertable into.* Expr")
+  expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
+  expect_grepl_error(pl$lit(1:4)$sort_by(df)$to_r(), "not convertible into.* Expr")
 
-  # this test is minimal, if polars give better documentation on behaviour, expand the test.
+  # this test is minimal, if polars give better documentation on behavior, expand the test.
 })
 
 test_that("take that", {
@@ -1449,7 +1449,7 @@ test_that("hash + reinterpret", {
   expect_true(!any(sapply(hash_values3, \(x) any(duplicated(x)))))
 
   # In current r-polars + py+polars setting seeds does not change the hash
-  # CONTRIBUTE POLARS, py-polars now also has this behaviour. Could be a bug.
+  # CONTRIBUTE POLARS, py-polars now also has this behavior. Could be a bug.
   # expect_true(!all(hash_values1==hash_values2)) # this should be true
 
   # TODO replace this expectation with the opposite when hash seeds are fixed

@@ -2,7 +2,7 @@
 #'
 #' @name Series_class
 #' @description The `Series`-class is simply two environments of respectively
-#' the public and private methods/function calls to the polars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instantiated
 #' `Series`-object is an `externalptr` to a lowlevel rust polars Series  object. The pointer address
 #' is the only statefullness of the Series object on the R side. Any other state resides on the
 #' rust side. The S3 method `.DollarNames.Series` exposes all public `$foobar()`-methods which are callable onto the object.
@@ -514,13 +514,13 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' @name Series_append
 #' @examples
 #'
-#' # default immutable behaviour, s_imut and s_imut_copy stay the same
+#' # default immutable behavior, s_imut and s_imut_copy stay the same
 #' s_imut = pl$Series(1:3)
 #' s_imut_copy = s_imut
 #' s_new = s_imut$append(pl$Series(1:3))
 #' identical(s_imut$to_vector(), s_imut_copy$to_vector())
 #'
-#' # pypolars-like mutable behaviour,s_mut_copy become the same as s_new
+#' # pypolars-like mutable behavior,s_mut_copy become the same as s_new
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
 #' # must deactivate this to allow to use immutable=FALSE
@@ -718,7 +718,7 @@ Series_max = function() {
 #' @keywords Series
 #' @details
 #' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
-#' Int64 before minming to prevent overflow issues.
+#' Int64 before taking the min to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$min() # NaN carries / poisons
@@ -991,7 +991,7 @@ Series_arr = method_as_property(function() {
 #' `pl$DataFrame(s)$select(pl$col("sname")$expr)$to_series(0)`
 #'
 #' This subnamespace is experimental. Submit an issue if anything
-#' unexpected happend.
+#' unexpected happened.
 #'
 #' @keywords Series
 #' @return Expr

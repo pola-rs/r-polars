@@ -7,7 +7,7 @@
 pcase(..., or_else = NULL)
 }
 \arguments{
-\item{...}{odd arugments are bool statements, a next even argument is returned
+\item{...}{odd arguments are bool statements, a next even argument is returned
 if prior bool statement is the first true}
 
 \item{or_else}{return this if no bool statements were true}
