@@ -29,7 +29,6 @@ Suggests:
     patrick,
     pillar,
     rmarkdown,
-    spelling,
     testthat (>= 3.0.0),
     tibble,
     withr
@@ -40,13 +39,14 @@ Config/Needs/website:
     pkgload,
     yaml
 Config/Needs/dev:
-    devtools,
-    styler,
-    robinlovelace/styler.equals,
-    rextendr,
-    RcppTOML,
     brio,
-    stringr
+    devtools,
+    RcppTOML,
+    rextendr,
+    robinlovelace/styler.equals,
+    spelling,
+    stringr,
+    styler
 Config/testthat/edition: 3
 Collate:
     'utils.R'
