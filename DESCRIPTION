@@ -32,7 +32,7 @@ Suggests:
     tibble,
     withr
 Config/Needs/website:
-    altdoc,
+    etiennebacher/altdoc,
     here,
     magrittr,
     pkgload,
