@@ -67,13 +67,21 @@ pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
         .when("deserializing an R object")
 }
 
+/// Defines all kinds of tasks that can be sent to background R processes
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum RIPCJob {
+    /// Evaluate a R function with R arguments
     Reval {
         raw_func: Vec<u8>,
         raw_arg: Vec<u8>,
         collector: ipc::IpcSender<RResult<Vec<u8>>>,
     },
+    // Map a Polars series with a R function
+    // SeriesMap {
+    //     raw_func: Vec<u8>,
+    //     arrow: Vec<u8>,
+    //     collector: ipc::IpcSender<RResult<Vec<u8>>>,
+    // },
 }
 
 impl RIPCJob {
@@ -105,7 +113,27 @@ impl RIPCJob {
                     )?;
                 collector.send(serialize_robj(ret))?;
                 Ok(())
-            }
+            } // Self::SeriesMap {
+              //     raw_func,
+              //     arrow,
+              //     collector,
+              // } => {
+              //     use polars::prelude::Series;
+              //     let input_series: RResult<Series> = {
+              //         use polars::chunked_array::ChunkedArray;
+              //         use polars::export::arrow::io::ipc::read::*;
+              //         use polars::io::ArrowReader;
+              //         let lambda = deserialize_robj(raw_func)?;
+              //         let mut arrow_slice = arrow.as_slice();
+              //         let metadata = read_stream_metadata(&mut arrow_slice)?;
+              //         let array = StreamReader::new(arrow_slice, metadata, None)
+              //             .next_record_batch()?
+              //             .ok_or(RPolarsErr::new())?
+              //         // ChunkedArray::from_chunks("RBGSeries", vec![array]);
+              //         todo!();
+              //     };
+              //     todo!();
+              // }
         }
     }
 }
@@ -119,7 +147,8 @@ impl RBackgroundHandler {
     pub fn new() -> RResult<Self> {
         use std::process::*;
 
-        let (server, server_name) = ipc::IpcOneShotServer::new()?;
+        let (server, server_name) = ipc::IpcOneShotServer::new()
+            .when("trying to create a one-shot channel to setup inter-process communication")?;
         let child = Command::new("R")
             .arg("--vanilla")
             .arg("-q")
@@ -131,12 +160,21 @@ impl RBackgroundHandler {
             .stdin(Stdio::null())
             .stdout(Stdio::null())
             .stderr(Stdio::null())
-            .spawn()?;
-        let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server.accept()?;
+            .spawn()
+            .when("trying to spawn a background R process")?;
+        let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server
+            .accept()
+            .when("waiting for the background R process to establish a job channel")?;
         Ok(RBackgroundHandler {
             proc: child,
             chan: tx,
         })
+    }
+
+    pub fn submit(&self, job: RIPCJob) -> RResult<()> {
+        self.chan
+            .send(job)
+            .when("trying to submit a job to the background R process")
     }
 }
 
@@ -173,42 +211,51 @@ impl RBackgroundPool {
         } else {
             RBackgroundHandler::new()
         }
+        .when("trying to rent a R process from the global R process pool")
     }
 
     pub fn shelf(&self, mut handle: RBackgroundHandler) -> RResult<()> {
-        let mut lpool = self.pool.lock()?;
-        if handle.proc.try_wait()?.is_none() && self.cap.lock()?.gt(&lpool.len()) {
-            lpool.push_back(handle);
-        }
-        Ok(())
+        let res: RResult<_> = {
+            let mut lpool = self.pool.lock()?;
+            if handle.proc.try_wait()?.is_none() && self.cap.lock()?.gt(&lpool.len()) {
+                lpool.push_back(handle);
+            }
+            Ok(())
+        };
+        res.when("trying to handle a completed R process")
     }
 
     pub fn resize(&self, new_cap: usize) -> RResult<()> {
-        let mut lpool = self.pool.lock()?;
-        let mut old_cap = self.cap.lock()?;
-        if new_cap.lt(&lpool.len()) {
-            lpool.truncate(new_cap);
-        }
-        *old_cap = new_cap;
-        Ok(())
+        let res: RResult<_> = {
+            let mut lpool = self.pool.lock()?;
+            let mut old_cap = self.cap.lock()?;
+            if new_cap.lt(&lpool.len()) {
+                lpool.truncate(new_cap);
+            }
+            *old_cap = new_cap;
+            Ok(())
+        };
+        res.when("trying to resize the global R process pool")
     }
 
     pub fn reval<'t>(
         &'t self,
-        lambda: Robj,
-        arg: Robj,
-    ) -> RResult<impl FnOnce() -> RResult<Robj> + 't> {
+        raw_func: Vec<u8>,
+        raw_arg: Vec<u8>,
+    ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + 't> {
         let handler = self.lease()?;
         let (tx, rx) = ipc::channel::<RResult<Vec<u8>>>()?;
-        handler.chan.send(RIPCJob::Reval {
-            raw_func: serialize_robj(lambda)?,
-            raw_arg: serialize_robj(arg)?,
+        handler.submit(RIPCJob::Reval {
+            raw_func,
+            raw_arg,
             collector: tx,
         })?;
         Ok(move || {
-            let raw = rx.recv()??;
+            let raw_ret = rx
+                .recv()
+                .when("trying to receive the result from the background R process")?;
             self.shelf(handler)?;
-            deserialize_robj(raw)
+            raw_ret
         })
     }
 }
@@ -233,7 +280,9 @@ pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
         "Existing processes in background pool: {}",
         crate::RBGPOOL.pool.lock()?.len()
     );
-    crate::RBGPOOL.reval(lambda, arg)?()
+    deserialize_robj(crate::RBGPOOL
+        .reval(serialize_robj(lambda)?, serialize_robj(arg)?)?(
+    )?)
 }
 
 #[extendr]
