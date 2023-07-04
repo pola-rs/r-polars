@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_truncate(every, offset = NULL)
-}
 \arguments{
 \item{every}{string encoding duration see details.}
 

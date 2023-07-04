@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_replace_time_zone(tz, use_earliest = NULL)
-}
 \arguments{
 \item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 

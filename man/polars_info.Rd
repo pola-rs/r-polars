@@ -10,5 +10,5 @@ A list with information of the package
 Report information of the package
 }
 \examples{
-polars_info()
+pl$polars_info()
 }

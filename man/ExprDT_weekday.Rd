@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_weekday()
-}
 \value{
 Expr of weekday as UInt32
 }
