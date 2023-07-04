@@ -8,7 +8,7 @@
 #' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
 #' @name ExprStr_strptime
 #' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
-#' @param fmt fmt string for parsenig see
+#' @param fmt fmt string for parsing see
 #' see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
 #' Notice time_zone %Z is not supported and will just ignore timezones. Numeric tz  like
 #' %z, %:z  .... are supported.
@@ -634,7 +634,7 @@ ExprStr_splitn = function(by, n) {
 #' Replace first matching regex/literal substring with a new string value.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -660,7 +660,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' Replace all matching regex/literal substrings with a new string value.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -685,7 +685,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' Create subslices of the string values of a Utf8 Series.
 #' @keywords ExprStr
 #' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replcacement
+#' @param value Into<Expr> replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr: Series of dtype Utf8.

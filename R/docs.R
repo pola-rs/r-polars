@@ -34,7 +34,7 @@
 #'  (in a py list)
 #'
 #' ## Sorting and comparisons
-#' From writing alot of tests for all implementations, it appears polars does not have a
+#' From writing a lot of tests for all implementations, it appears polars does not have a
 #' fully consistent nor well documented behavior, when it comes to comparisons and sorting of
 #' floats. Though some general thumb rules do apply:
 #' Polars have chosen to define in sorting that `Null` is a value lower than `-Inf` as in
@@ -53,7 +53,7 @@
 #'
 #' ## NULL IS NOT Null is not NULL
 #' The R NULL does not exist inside polars frames and series and so on. It resembles the
-#' Option::None in the hidden rust code. It resembles the python `None`. In all three langues the
+#' Option::None in the hidden rust code. It resembles the python `None`. In all three languages the
 #' `NULL`/`None`/`None` are used in this context as function argument to signal default behavior or
 #' perhaps a deactivated feature. R `NULL` does NOT translate into the polars bitmask `Null`, that
 #' is `NA`. R `NULL` ~ rust-polars `Option::None` ~ pypolars `None`  #typically used for function
@@ -72,7 +72,7 @@
 #' frame and can be of any length. The implementation is quite different. E.g. `for`-loop appending
 #' to an R vector is considered quite bad for performance. The vector will be fully rewritten in
 #' memory for every append. The polars Series has chunked memory allocation, which allows any
-#' appened data to be written only. However fragmented memory is not great for fast computations and
+#' append data to be written only. However fragmented memory is not great for fast computations and
 #' polars objects have a `rechunk`()-method, to reallocate chunks into one. Rechunk might be called
 #' implicitly by polars. In the context of constructing. Series and extracting data , the following
 #' translation holds: R `vector` ~ polars `Series`/`column` ~ python `list`
@@ -85,7 +85,7 @@
 #' command-syntax is a monoid meaning the order does not matter, that is not the case for polars
 #' Expr. Polars Expr's can be understood as a DSL (domain specific language) that expresses syntax
 #' trees of instructions. R expressions evaluate to syntax trees also, but it difficult to optimize
-#' the execution order automaticly, without rewriting the code. A great selling point of Polars is
+#' the execution order automatically, without rewriting the code. A great selling point of Polars is
 #' that any query will be optimized. Expr are very light-weight symbols chained together.
 #'
 NULL

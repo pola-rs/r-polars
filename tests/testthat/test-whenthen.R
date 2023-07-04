@@ -10,7 +10,7 @@ test_that("when", {
 
   # printing works
   expect_true(grepl("polars When", capture.output(print(pl$when("a")))))
-  expect_grepl_error(pl$when(complex(2)), c("in pl\\$when", "predicate", "not convertable into Expr"))
+  expect_grepl_error(pl$when(complex(2)), c("in pl\\$when", "predicate", "not convertible into Expr"))
 
   # TODO contribute polars, suggest all When function has str_to_lit FALSE
   # a literal string expr does not result in a boolean mask so it has little use to assume lit
@@ -25,7 +25,7 @@ test_that("whenthen", {
   expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "Expr"))
   expect_grepl_error(
     pl$when("a")$then(complex(2)),
-    c("in when\\$then", "expr", "not convertable into Expr")
+    c("in when\\$then", "expr", "not convertible into Expr")
   )
 })
 
