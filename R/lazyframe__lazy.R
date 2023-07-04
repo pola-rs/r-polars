@@ -586,10 +586,6 @@ LazyFrame_join = function(
   how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
   how = match.arg(how[1L], how_opts)
 
-  if (how == "cross") {
-    stopf("not implemented how == cross")
-  }
-
   if (!is.null(on)) {
     rexprs = do.call(construct_ProtoExprArray, as.list(on))
     rexprs_left = rexprs
@@ -597,8 +593,11 @@ LazyFrame_join = function(
   } else if ((!is.null(left_on) && !is.null(right_on))) {
     rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
-  } else {
+  } else if (how != "cross") {
     stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
+  } else {
+    rexprs_left = do.call(construct_ProtoExprArray, as.list(self$columns))
+    rexprs_right = do.call(construct_ProtoExprArray, as.list(other$columns))
   }
 
   .pr$LazyFrame$join(

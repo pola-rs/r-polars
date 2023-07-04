@@ -80,3 +80,41 @@ test_that("test_semi_anti_join", {
     data.frame(a = 3L, b = "c", payload = 30L)
   )
 })
+
+
+test_that("cross join, DataFrame", {
+  dat = pl$DataFrame(
+    x = letters[1:3]
+  )
+  dat2 = pl$DataFrame(
+    y = 1:4
+  )
+
+  expect_identical(
+    dat$join(dat2, how = "cross")$to_data_frame(),
+    data.frame(
+      x = rep(letters[1:3], each = 4),
+      y = rep(1:4, 3)
+    )
+  )
+
+  # one empty dataframe
+  dat_empty = pl$DataFrame(y = character())
+  expect_identical(
+    dat$join(dat_empty, how = "cross")$to_data_frame(),
+    data.frame(x = character(), y = character())
+  )
+  expect_identical(
+    dat_empty$join(dat, how = "cross")$to_data_frame(),
+    data.frame(y = character(), x = character())
+  )
+
+  # suffix works
+  expect_identical(
+    dat$join(dat, how = "cross")$to_data_frame(),
+    data.frame(
+      x = rep(letters[1:3], each = 3),
+      x_right = rep(letters[1:3], 3)
+    )
+  )
+})

@@ -37,6 +37,8 @@ for demonstration purposes (#240).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - New method `<DataFrame>$describe()` (#268).
+- Cross joining is now possible with `how = "cross"` in `$join()` (#310).
+- Add license info of all rust crates to `LICENSE.note` (#309).
 - With CRAN 0.7.0 release candidate (#308).
     - New author accredited, Tatsuya Shima "eitsupi".
     - DESCRIPTION revised.
