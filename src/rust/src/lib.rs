@@ -17,11 +17,11 @@ pub mod conversion;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
 pub mod info;
+pub mod rbackground;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod rpolarserr;
-pub mod rthreadhandle;
 pub mod series;
 pub mod utils;
 pub use serde_json;
@@ -37,7 +37,7 @@ use crate::utils::extendr_concurrent::{Storage, ThreadCom};
 type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
 static CONFIG: ThreadComStorage = Storage::new();
 
-use crate::rthreadhandle::RBackgroundPool;
+use crate::rbackground::RBackgroundPool;
 use once_cell::sync::Lazy;
 static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(1));
 
@@ -46,7 +46,7 @@ extendr_module! {
     mod polars;
     use rdataframe;
     use rpolarserr;
-    use rthreadhandle;
+    use rbackground;
     use lazy;
     use series;
     use concurrent;

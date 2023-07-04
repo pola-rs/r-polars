@@ -316,7 +316,7 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
 }
 
 extendr_module! {
-    mod rthreadhandle;
+    mod rbackground;
     impl RThreadHandle;
     fn handle_background_request;
     fn test_rbackgroundhandler;
