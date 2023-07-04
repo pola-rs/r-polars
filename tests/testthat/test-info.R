@@ -3,9 +3,17 @@ patrick::with_parameters_test_that("polars_info() features are logical",
     expect_type(feature, "logical")
     expect_length(feature, 1)
   },
-  feature = polars_info()$features
+  feature = pl$polars_info()$features
 )
 
+
+test_that("print pl$polars_info()", {
+  info <- pl$polars_info()
+  # Ensure all features are FALSE for snapshot test
+  for (feature in names(info$features)) {
+    info$features[[feature]] <- FALSE
+  }
+})
 
 ## TODO DISABLE TEST FOR NOW AS IT WILL FAIL FOR EVERY VERSION INCREMENT
 

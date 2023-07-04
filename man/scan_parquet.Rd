@@ -3,18 +3,6 @@
 \name{scan_parquet}
 \alias{scan_parquet}
 \title{new LazyFrame from parquet file}
-\usage{
-scan_parquet(
-  file,
-  n_rows = NULL,
-  cache = TRUE,
-  parallel = c("Auto", "None", "Columns", "RowGroups"),
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
-  low_memory = FALSE
-)
-}
 \arguments{
 \item{file}{string filepath}
 
