@@ -9,7 +9,7 @@
     <!-- TODO: - Rename `arr` to `list`. -->
     - Rename `$str$explode` to `$str$str_explode`.
     - Remove `tz_aware` and `utc` arguments from `str_parse`.
-    - `$date_range`'s the `lazy` argument is default to `TRUE`.
+    - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
 
 ## What's changed
 
