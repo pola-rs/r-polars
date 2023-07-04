@@ -65,7 +65,7 @@
 #' (array of pointers). R list do support string naming elements via a string vector.
 #' In polars both lists (of vectors or series) and data.frames can be used to construct a polars
 #' DataFrame, just a as dictionaries would be used in python. In terms of loading in/out data the
-#' follow tranlation holds: R `data.frame`/`list` ~ polars `DataFrame` ~ python `dictonary`
+#' follow translation holds: R `data.frame`/`list` ~ polars `DataFrame` ~ python `dictonary`
 #'
 #' ## Series and Vectors
 #' The R vector (Integer, Double, Character, ...) resembles the Series as both are external from any

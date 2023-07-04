@@ -74,7 +74,7 @@ similar to python dictionary (hashmap), but is implemented more similar to the p
 (array of pointers). R list do support string naming elements via a string vector.
 In polars both lists (of vectors or series) and data.frames can be used to construct a polars
 DataFrame, just a as dictionaries would be used in python. In terms of loading in/out data the
-follow tranlation holds: R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
+follow translation holds: R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
 }
 
 \subsection{Series and Vectors}{
