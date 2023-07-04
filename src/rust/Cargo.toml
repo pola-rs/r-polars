@@ -29,6 +29,8 @@ opt-level = 1
 # use opt-level = 1 for argminmax package unless profile is profile.release-optimized for to support Rust < 1.66
 [profile.release-optimized]
 inherits = "release"
+opt-level = 1 ### REMOVE ME NOW ALSO. (see above)
+
 [profile.release.package.argminmax]
 opt-level = 1
 [profile.release-optimized.package.argminmax]
