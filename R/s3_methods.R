@@ -68,10 +68,9 @@
   x
 }
 
-# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
-# #' @export
-# #' @noRd
-# `[.LazyFrame` <- `[.DataFrame`
+#' @export
+#' @noRd
+`[.LazyFrame` <- `[.DataFrame`
 
 #' @export
 #' @noRd

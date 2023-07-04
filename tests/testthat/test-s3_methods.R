@@ -200,35 +200,33 @@ test_that("brackets", {
   expect_equal(a, b, ignore_attr = TRUE)
 
 
-  # un-comment when the `LazyFrame.columns` attribute is implemented
-
-  # # lazy
-  # df = pl$DataFrame(mtcars)$lazy()
-  # a = df[, c("mpg", "hp")]$collect()$to_data_frame()
-  # b = mtcars[, c("mpg", "hp")]
-  # expect_equal(a, b, ignore_attr = TRUE)
-  #
-  # a = df[, c("hp", "mpg")]$collect()$to_data_frame()
-  # b = mtcars[, c("hp", "mpg")]
-  # expect_equal(a, b, ignore_attr = TRUE)
-  #
-  # idx = rep(FALSE, ncol(mtcars))
-  # idx[c(1, 3, 6, 9)] = TRUE
-  # a = df[, idx]$collect()$to_data_frame()
-  # b = mtcars[, idx]
-  # expect_equal(a, b, ignore_attr = TRUE)
-  #
-  # a = df[, c(1, 4, 2)]$collect()$to_data_frame()
-  # b = mtcars[, c(1, 4, 2)]
-  # expect_equal(a, b, ignore_attr = TRUE)
-  #
-  # idx = rep(FALSE, nrow(mtcars))
-  # idx[c(1, 3, 6, 9)] = TRUE
-  # a = df[idx, 1:3]$collect()$to_data_frame()
-  # b = mtcars[idx, 1:3]
-  # expect_equal(a, b, ignore_attr = TRUE)
-  #
-  # a = df[3:7, 1:3]$collect()$to_data_frame()
-  # b = mtcars[3:7, 1:3]
-  # expect_equal(a, b, ignore_attr = TRUE)
+  # lazy
+  df = pl$DataFrame(mtcars)$lazy()
+  a = df[, c("mpg", "hp")]$collect()$to_data_frame()
+  b = mtcars[, c("mpg", "hp")]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = df[, c("hp", "mpg")]$collect()$to_data_frame()
+  b = mtcars[, c("hp", "mpg")]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  idx = rep(FALSE, ncol(mtcars))
+  idx[c(1, 3, 6, 9)] = TRUE
+  a = df[, idx]$collect()$to_data_frame()
+  b = mtcars[, idx]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = df[, c(1, 4, 2)]$collect()$to_data_frame()
+  b = mtcars[, c(1, 4, 2)]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  idx = rep(FALSE, nrow(mtcars))
+  idx[c(1, 3, 6, 9)] = TRUE
+  a = df[idx, 1:3]$collect()$to_data_frame()
+  b = mtcars[idx, 1:3]
+  expect_equal(a, b, ignore_attr = TRUE)
+  
+  a = df[3:7, 1:3]$collect()$to_data_frame()
+  b = mtcars[3:7, 1:3]
+  expect_equal(a, b, ignore_attr = TRUE)
 })
