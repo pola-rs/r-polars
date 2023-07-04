@@ -14,3 +14,6 @@ to_condition.character = function(err) {
 plain.character = function(err, msg) {
   NextMethod("plain", err)
 }
+upgrade_err.character = function(err) {
+  .pr$RPolarsErr$new()$plain(err)
+}

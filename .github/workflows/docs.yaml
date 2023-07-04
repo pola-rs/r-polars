@@ -22,6 +22,8 @@ concurrency:
 
 env:
   RPOLARS_ALL_FEATURES: "true"
+  RPOLARS_CARGO_CLEAN_DEPS: "true"
+  RPOLARS_PROFILE: release-optimized
 
 jobs:
   documentation:
@@ -42,9 +44,7 @@ jobs:
 
       - name: find polars rust source/cache, used by Makevars in check step
         run: |
-          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
         shell: bash
 
       - uses: actions/setup-python@v4

@@ -106,8 +106,8 @@ impl Series {
         self.0.name()
     }
 
-    pub fn sort_mut(&mut self, reverse: bool) -> Self {
-        Series(self.0.sort(reverse))
+    pub fn sort_mut(&mut self, descending: bool) -> Self {
+        Series(self.0.sort(descending))
     }
 
     pub fn value_counts(
@@ -139,10 +139,10 @@ impl Series {
         )
     }
 
-    pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
-        let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+    pub fn is_sorted(&self, descending: bool, nulls_last: Nullable<bool>) -> bool {
+        let nulls_last = null_to_opt(nulls_last).unwrap_or(descending);
         let options = pl::SortOptions {
-            descending: reverse,
+            descending: descending,
             nulls_last,
             multithreaded: false,
         };
@@ -499,8 +499,8 @@ impl Series {
         Ok(df)
     }
 
-    pub fn set_sorted_mut(&mut self, reverse: bool) {
-        if reverse {
+    pub fn set_sorted_mut(&mut self, descending: bool) {
+        if descending {
             self.0.set_sorted_flag(polars::series::IsSorted::Descending)
         } else {
             self.0.set_sorted_flag(polars::series::IsSorted::Ascending)

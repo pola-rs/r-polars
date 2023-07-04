@@ -246,8 +246,8 @@ test_that("to_frame", {
 
 test_that("sorted flags, sort", {
   s = pl$Series(c(2, 1, 3))
-  expect_true(s$sort(reverse = FALSE)$flags$SORTED_ASC)
-  expect_true(s$sort(reverse = TRUE)$flags$SORTED_DESC)
+  expect_true(s$sort(descending = FALSE)$flags$SORTED_ASC)
+  expect_true(s$sort(descending = TRUE)$flags$SORTED_DESC)
   expect_false(any(unlist(pl$Series(1:4)$flags)))
 
 
@@ -256,28 +256,28 @@ test_that("sorted flags, sort", {
   s = pl$Series(l$a, "a")
   l_actual_expr_sort = pl$DataFrame(l)$select(
     pl$col("a")$sort()$alias("sort"),
-    pl$col("a")$sort(reverse = TRUE)$alias("sort_reverse")
+    pl$col("a")$sort(descending = TRUE)$alias("sort_reverse")
   )$to_list()
 
   expect_identical(
     l_actual_expr_sort,
     list(
       sort = s$sort()$to_r(),
-      sort_reverse = s$sort(reverse = TRUE)$to_r()
+      sort_reverse = s$sort(descending = TRUE)$to_r()
     )
   )
 })
 
 # test_that("is_sorted  sort", {
 #   s = pl$Series(c(NA,2,1,3,NA))
-#   s_sorted = s$sort(reverse = FALSE)
+#   s_sorted = s$sort(descending = FALSE)
 #   expect_true(s_sorted$is_sorted())
 #   expect_false(s$is_sorted())
 #
-#   s_sorted_rev = s$sort(reverse = TRUE)
-#   expect_false(s_sorted_rev$is_sorted(reverse = FALSE))
-#   expect_true(s_sorted_rev$is_sorted(reverse = TRUE, nulls_last = FALSE))
-#   expect_false(s_sorted_rev$is_sorted(reverse = TRUE, nulls_last = TRUE))
+#   s_sorted_rev = s$sort(descending = TRUE)
+#   expect_false(s_sorted_rev$is_sorted(descending = FALSE))
+#   expect_true(s_sorted_rev$is_sorted(descending = TRUE, nulls_last = FALSE))
+#   expect_false(s_sorted_rev$is_sorted(descending = TRUE, nulls_last = TRUE))
 #
 # })
 
@@ -293,31 +293,31 @@ test_that("set_sorted", {
 
   # test in_place, test set_sorted
   s = pl$Series(c(1, 3, 2, 4))
-  s$set_sorted(reverse = FALSE, in_place = TRUE)
+  s$set_sorted(descending = FALSE, in_place = TRUE)
   expect_identical(
-    s$sort(reverse = FALSE)$to_r(),
+    s$sort(descending = FALSE)$to_r(),
     c(1, 3, 2, 4)
   )
 
   # test NOT in_place no effect
   s = pl$Series(c(1, 3, 2, 4))
-  s$set_sorted(reverse = FALSE, in_place = FALSE)
+  s$set_sorted(descending = FALSE, in_place = FALSE)
   expect_identical(
-    s$sort(reverse = FALSE)$to_r(),
+    s$sort(descending = FALSE)$to_r(),
     c(1, 2, 3, 4)
   )
 
   # test NOT in_place with effect
   s = pl$Series(c(1, 3, 2, 4))$
-    set_sorted(reverse = FALSE, in_place = FALSE)$
+    set_sorted(descending = FALSE, in_place = FALSE)$
     sort()$
     to_r()
   expect_identical(s, c(1, 3, 2, 4))
 
   # test NOT in_place. reverse-reverse
   s = pl$Series(c(1, 3, 2, 4))$
-    set_sorted(reverse = TRUE, in_place = FALSE)$
-    sort(reverse = TRUE)$
+    set_sorted(descending = TRUE, in_place = FALSE)$
+    sort(descending = TRUE)$
     to_r()
   expect_identical(s, c(1, 3, 2, 4))
 
