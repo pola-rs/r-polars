@@ -97,7 +97,7 @@ move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 
 # pl$[readers]
-pl$lazy_csv_reader = lazy_csv_reader
+pl$scan_csv_pl = scan_csv_pl
 pl$csv_reader = csv_reader
 pl$read_csv = read_csv_
 pl$scan_arrow_ipc = scan_arrow_ipc

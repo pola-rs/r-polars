@@ -54,10 +54,10 @@
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
-#' lazy_frame = lazy_csv_reader(path = my_file)
+#' lazy_frame = scan_csv_pl(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
-lazy_csv_reader = function(
+scan_csv_pl = function(
     path,
     sep = ",",
     has_header = TRUE,
@@ -139,19 +139,19 @@ lazy_csv_reader = function(
 }
 
 #' Read csv to DataFrame
-#' @rdname lazy_csv_reader
-#' @param ... any argument passed to lazy_csv_reader
+#' @rdname scan_csv_pl
+#' @param ... any argument passed to scan_csv_pl
 #' @return DataFrame
 #' @export
-csv_reader = function(...) {
-  lazy_csv_reader(...)$collect()
+read_csv_pl = function(...) {
+  scan_csv_pl(...)$collect()
 }
 
 
 #' high level csv_reader, will download if path is url
 #'
 #' @param path file or url
-#' @param ... arguments forwarded to csv_reader or lazy_csv_reader
+#' @param ... arguments forwarded to csv_reader or scan_csv_pl
 #' @param lazy bool default FALSE, read csv lazy
 #' @param reuse_downloaded bool default TRUE, cache url downloaded files in session an reuse
 #'
@@ -196,7 +196,7 @@ read_csv_ = function(path, lazy = FALSE, reuse_downloaded = TRUE, ...) {
 
   # read csv
   if (lazy) {
-    lazy_csv_reader(path, ...)
+    scan_csv_pl(path, ...)
   } else {
     csv_reader(path, ...)
   }

@@ -13,7 +13,7 @@ read_csv_(path, lazy = FALSE, reuse_downloaded = TRUE, ...)
 
 \item{reuse_downloaded}{bool default TRUE, cache url downloaded files in session an reuse}
 
-\item{...}{arguments forwarded to csv_reader or lazy_csv_reader}
+\item{...}{arguments forwarded to csv_reader or scan_csv_pl}
 }
 \value{
 polars_DataFrame or polars_lazy_DataFrame
