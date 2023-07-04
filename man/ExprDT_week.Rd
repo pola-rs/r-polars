@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_week()
-}
 \value{
 Expr of week as UInt32
 }

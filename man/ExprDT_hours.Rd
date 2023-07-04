@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_hours()
-}
 \value{
 Expr of i64
 }

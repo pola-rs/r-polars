@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_microseconds()
-}
 \value{
 Expr of i64
 }
