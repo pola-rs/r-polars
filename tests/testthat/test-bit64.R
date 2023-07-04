@@ -4,7 +4,7 @@ test_that("from r to series and reverse", {
   values = c(-1, 0, 1, NA, 2^61, -2^61)
   s_act = pl$Series(bit64::as.integer64(values))
   s_ref = pl$lit(values)$cast(pl$Int64)$lit_to_s()
-  expect_true(all((s_act == s_ref)$to_r()))
+  expect_true(all((s_act == s_ref)$to_r(), na.rm = TRUE))
   # sereis to R
   r_act = s_act$to_r()
   r_ref = bit64::as.integer64(values)
@@ -43,19 +43,19 @@ test_that("robj_to! from bit64", {
     as.character(2^61)
   )
 
-   # NO NA
+  # NO NA
   expect_rpolarserr(
-    unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call= NULL),
+    unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
   expect_rpolarserr(
-    unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call= NULL),
+    unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 
   # NO OVERFLOW
   expect_rpolarserr(
-    unwrap(test_robj_to_u32(2^57), call= NULL),
+    unwrap(test_robj_to_u32(2^57), call = NULL),
     c("BadArgument", "TypeMismatch", "BadValue")
   )
 

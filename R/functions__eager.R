@@ -134,7 +134,7 @@ pl$date_range = function(
     low, # : date | datetime |# for lazy  pli.Expr | str,
     high, # : date | datetime | pli.Expr | str,
     interval, # : str | timedelta,
-    lazy = FALSE, # : Literal[True],
+    lazy = TRUE, # : Literal[True],
     closed = "both", # : ClosedInterval = "both",
     name = NULL, # : str | None = None,
     time_unit = "us",
@@ -148,14 +148,16 @@ pl$date_range = function(
   name = name %||% ""
   interval = as_pl_duration(interval)
 
+  ## TODO if possible let all go through r_date_range_lazy. Seems asking for trouble
+  ## input arg low and high can change if lazy or not
   if (
     inherits(low, c("Expr", "character")) ||
-      inherits(low, c("Expr", "character")) || isTRUE(lazy)
+      inherits(high, c("Expr", "character")) || isTRUE(lazy)
   ) {
     low = convert_time_unit_for_lazy(low, time_unit, time_zone)
     high = convert_time_unit_for_lazy(high, time_unit, time_zone)
-    result = polars:::r_date_range_lazy(low, high, interval, closed, name, time_zone)
-    return(unwrap(result))
+    result = r_date_range_lazy(low, high, interval, closed, time_zone)
+    return(unwrap(result, "in pl$date_range():"))
   }
 
   # convert to list(v, u, tz) pair
@@ -171,7 +173,7 @@ pl$date_range = function(
     name = name,
     tu = "ms",
     tz = time_zone
-  ))
+  ), "in pl$date_range():")
 
   if (time_unit != "ms") {
     dt_series = dt_series$to_lit()$cast(pl$Datetime(tu = time_unit, tz = time_zone))$lit_to_s()

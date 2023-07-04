@@ -18,12 +18,6 @@ polars \code{null}.}
 anywhere in the target string.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime conversion.}
-
-\item{tz_aware}{bool, Parse timezone aware datetimes. This may be automatically toggled by the
-‘fmt’ given.}
-
-\item{utc}{bool Parse timezone aware datetimes as UTC. This may be useful if you have data with
-mixed offsets.}
 }
 \value{
 Expr of a Data, Datetime or Time Series
@@ -64,7 +58,6 @@ txt_datetimes = c(
 pl$lit(txt_datetimes)$str$strptime(
   pl$Datetime("ns"),
   fmt = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
-  tz_aware = TRUE, utc = TRUE
 )$lit_to_s()
 }
 \keyword{ExprStr}

@@ -84,7 +84,7 @@ pub fn rlazy_csv_reader(
                 todo!("missing column name for  dtype not implemented");
             }
         });
-        pl::Schema::from(fields)
+        pl::Schema::from_iter(fields)
     });
 
     //construct optional RowCount parameter

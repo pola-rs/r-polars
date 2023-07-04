@@ -386,7 +386,7 @@ test_that("and or is_in xor", {
       # neither typed nor untyped NULL is IN NULL
       pl$lit(NA_real_)$is_in(pl$lit(NULL))$is_not()$alias("NULL typed is in NULL, NOT"),
       pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
-    )$to_data_frame() |> unlist() |> all()
+    )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
 

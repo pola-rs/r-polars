@@ -126,7 +126,8 @@ df = pl$DataFrame(
   date = pl$date_range(
       as.Date("2020-01-01"),
       as.Date("2023-01-02"),
-      interval = "1y"
+      interval = "1y",
+      lazy = FALSE
   )
 )
 df

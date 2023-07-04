@@ -382,8 +382,8 @@ test_that("join_asof_simple", {
     group = c("b", "b", "a", "a")
   )
 
-  gdp = pl$DataFrame(l_gdp)$lazy()
-  pop = pl$DataFrame(l_pop)$lazy()
+  gdp = pl$DataFrame(l_gdp)$lazy()$sort("date")
+  pop = pl$DataFrame(l_pop)$lazy()$sort("date")
 
   # strategy param
   expect_identical(
