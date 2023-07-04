@@ -487,7 +487,7 @@ restruct_list = function(l) {
 #'
 #' # here adding sub-namespace as a expr-class property/method during session-time,
 #' # which only is for this demo.
-#' # instead sourced method like Expr_list() at package build time instead
+#' # instead sourced method like Expr_arr() at package build time instead
 #' # env = polars:::Expr #get env of the Expr Class
 #' # env$my_sub_ns = method_as_property(function() { #add a property/method
 #' # my_class_sub_ns(self)
