@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_nanoseconds()
+}
 \value{
 Expr of i64
 }

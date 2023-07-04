@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_microsecond()
+}
 \value{
 Expr of microsecond as Int64
 }

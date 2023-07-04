@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_offset_by(by)
+}
 \arguments{
 \item{by}{optional string encoding duration see details.}
 }

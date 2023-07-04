@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_second(fractional = FALSE)
+}
 \value{
 Expr of second as UInt32
 }
