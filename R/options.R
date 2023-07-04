@@ -111,7 +111,7 @@ polars_optreq$debug_polars = list( # set requirement functions of default value
 #'
 #'
 #' @return current settings as list
-#' @details modifing list takes no effect, pass it to pl$set_polars_options
+#' @details modifying list takes no effect, pass it to pl$set_polars_options
 #' get/set/reset interact with internal env `polars:::polars_optenv`
 #'
 #'

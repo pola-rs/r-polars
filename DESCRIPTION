@@ -29,6 +29,7 @@ Suggests:
     patrick,
     pillar,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0),
     tibble,
     withr

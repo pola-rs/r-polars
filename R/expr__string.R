@@ -192,7 +192,7 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -213,7 +213,7 @@ ExprStr_strip = function(matches = NULL) {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -234,7 +234,7 @@ ExprStr_lstrip = function(matches = NULL) {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this set of
 #' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip anyt chars beyond the first char not matched. `strip()` starts from
+#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
 #' both left and right. Whereas `rstrip()`and `rstrip()` starts from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples

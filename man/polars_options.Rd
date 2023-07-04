@@ -65,7 +65,7 @@ implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby
 
 prints any call to public or private polars method
 
-modifing list takes no effect, pass it to pl$set_polars_options
+modifying list takes no effect, pass it to pl$set_polars_options
 get/set/reset interact with internal env \code{polars:::polars_optenv}
 
 Every option can be accessed via \verb{pl$options$<name>()} or changed
