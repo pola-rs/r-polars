@@ -207,7 +207,7 @@ implemented, but not all. There is still much to do, and your help would
 be much appreciated!
 
 If you spot missing functionality—implemented in Python but not R—please
-let us know on Github.
+let us know on GitHub.
 
 ### System dependencies
 

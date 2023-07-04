@@ -1,5 +1,5 @@
 # this file sources list-expression functions to be bundled in the 'expr$arr' sub namespace
-# the sub name space is instanciated from Expr_arr- function
+# the sub name space is instantiated from Expr_arr- function
 # bundling these functions into an environment, depends on a macro call in zzz.R
 # expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
 
@@ -108,7 +108,7 @@ ExprArr_unique = function() .pr$Expr$lst_unique(self)
 
 #' concat another list
 #' @description Concat the arrays in a Series dtype List in linear time.
-#' @param other Rlist, Expr or column of same tyoe as self.
+#' @param other Rlist, Expr or column of same type as self.
 #' @name arr_concat
 #' @keywords ExprArr
 #' @format function
@@ -363,7 +363,7 @@ ExprArr_tail = function(n = 5L) {
 #' If this is incorrectly downstream operation may fail.
 #' For instance an `all().sum()` expression will look in
 #' the current schema to determine which columns to select.
-#' It is adviced to set this value in a lazy query.
+#' It is advised to set this value in a lazy query.
 #'
 #' @name arr_to_struct
 #' @keywords ExprArr

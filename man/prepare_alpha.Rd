@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{prepare_alpha}
 \alias{prepare_alpha}
-\title{preapare alpha}
+\title{prepare alpha}
 \usage{
 prepare_alpha(com = NULL, span = NULL, half_life = NULL, alpha = NULL)
 }

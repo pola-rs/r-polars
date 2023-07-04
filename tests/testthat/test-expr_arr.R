@@ -13,7 +13,7 @@ test_that("arr$lengths", {
 
 
 test_that("arr$sum max min mean", {
-  # outcommented ones have different behaviour in R and polars
+  # outcommented ones have different behavior in R and polars
 
   ints = list(
     1:5,

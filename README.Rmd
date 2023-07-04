@@ -173,7 +173,7 @@ a little further behind, you should be able to do just about everything using
 is still much to do, and your help would be much appreciated!
 
 If you spot missing functionality---implemented in Python but not
-R---please let us know on Github.
+R---please let us know on GitHub.
 
 ### System dependencies
 

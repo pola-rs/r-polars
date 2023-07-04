@@ -1,6 +1,6 @@
 #' check if schema
 #' @name is_schema
-#' @param x objet to test if schema
+#' @param x object to test if schema
 #' @return bool
 #' @format function
 #' @examples
@@ -19,7 +19,7 @@ pl$is_schema = is_schema
 #' @name wrap_proto_schema
 #' @param x either schema, or incomplete schema where dataType can be NULL
 #' or schema is just char vec, implicitly the same as if all DataType are NULL,
-#' mean undefinesd.
+#' mean undefined.
 #' @return bool
 #' @format function
 #' @keywords internal
@@ -92,7 +92,7 @@ print.RPolarsDataType = function(x, ...) {
 "!=.RPolarsDataType" = function(e1, e2) e1$ne(e2)
 
 
-#' chek if x is a valid RPolarsDataType
+#' check if x is a valid RPolarsDataType
 #' @name is_polars_dtype
 #' @param x a candidate
 #' @keywords internal

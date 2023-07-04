@@ -13,7 +13,7 @@ Expr_exclude(columns)
 \item string: exclude name of column or exclude regex starting with ^and ending with$
 \item character vector: exclude all these column names, no regex allowed
 \item DataType: Exclude any of this DataType
-\item List(DataType): Excldue any of these DataType(s)
+\item List(DataType): Exclude any of these DataType(s)
 }}
 }
 \value{

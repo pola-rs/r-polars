@@ -2,12 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_unique}
 \alias{Expr_unique}
-\title{get unqie values}
+\title{get unique values}
 \usage{
 Expr_unique(maintain_order = FALSE)
 }
 \arguments{
-\item{maintain_order}{bool, if TRUE guranteed same order, if FALSE maybe}
+\item{maintain_order}{bool, if TRUE guaranteed same order, if FALSE maybe}
 }
 \value{
 Expr

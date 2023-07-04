@@ -73,7 +73,7 @@ LazyGroupBy_tail = function(n = 1L) {
 
 #' @title LazyGroupBy_print
 #' @description
-#' prints opague groupby, not much to show
+#' prints opaque groupby, not much to show
 #' @return NULL
 LazyGroupBy_print = function() {
   .pr$LazyGroupBy$print(self)

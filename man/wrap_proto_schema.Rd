@@ -12,7 +12,7 @@ wrap_proto_schema(x)
 \arguments{
 \item{x}{either schema, or incomplete schema where dataType can be NULL
 or schema is just char vec, implicitly the same as if all DataType are NULL,
-mean undefinesd.}
+mean undefined.}
 }
 \value{
 bool

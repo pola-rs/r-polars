@@ -33,7 +33,7 @@ Depending on the context it has the following behavior:
 \details{
 Apply a user function in a groupby or projection(select) context
 
-Depending on context the following behaviour:
+Depending on context the following behavior:
 \itemize{
 \item Projection/Selection:
 Expects an \code{f} to operate on R scalar values.
@@ -42,7 +42,7 @@ The output of the user function will be converted back into a polars type.
 Return type must match. See param return type.
 Apply in selection context should be avoided as a \code{lapply()} has half the overhead.
 \item Groupby
-Expects a user function \code{f} to take a \code{Series} and return a \code{Series} or Robj convertable to
+Expects a user function \code{f} to take a \code{Series} and return a \code{Series} or Robj convertible to
 \code{Series}, eg. R vector. GroupBy context much faster if number groups are quite fewer than
 number of rows, as the iteration is only across the groups.
 The r user function could e.g. do vectorized operations and stay quite performant.
@@ -55,8 +55,8 @@ slower and more memory intensive than implementing the same logic using
 the native expression API because:
 - The native expression engine runs in Rust; functions run in R.
 - Use of R functions forces the DataFrame to be materialized in memory.
-- Polars-native expressions can be parallelised (R functions cannot*).
-- Polars-native expressions can be logically optimised (R functions cannot).
+- Polars-native expressions can be parallelized (R functions cannot*).
+- Polars-native expressions can be logically optimized (R functions cannot).
 Wherever possible you should strongly prefer the native expression API
 to achieve the best performance.
 }
