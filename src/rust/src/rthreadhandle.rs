@@ -1,6 +1,9 @@
 use crate::rdataframe::DataFrame as RDF;
 use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
 use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
+use ipc_channel::ipc;
+use std::collections::VecDeque;
+use std::sync::{Arc, Mutex};
 use std::thread;
 
 #[derive(Debug)]
@@ -64,14 +67,12 @@ pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
         .when("deserializing an R object")
 }
 
-pub type RIPCPacket = core::option::Option<RIPCJob>;
-
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum RIPCJob {
     Reval {
         raw_func: Vec<u8>,
         raw_arg: Vec<u8>,
-        collector: ipc_channel::ipc::IpcSender<RResult<Vec<u8>>>,
+        collector: ipc::IpcSender<RResult<Vec<u8>>>,
     },
 }
 
@@ -102,7 +103,8 @@ impl RIPCJob {
                             .bad_val(rdbg(arg))
                             .mistyped("pairlist (as R function arguments)")?,
                     )?;
-                Ok(collector.send(serialize_robj(ret))?)
+                collector.send(serialize_robj(ret))?;
+                Ok(())
             }
         }
     }
@@ -110,12 +112,11 @@ impl RIPCJob {
 
 pub struct RBackgroundHandler {
     proc: std::process::Child,
-    chan: ipc_channel::ipc::IpcSender<RIPCPacket>,
+    chan: ipc::IpcSender<RIPCJob>,
 }
 
 impl RBackgroundHandler {
     pub fn new() -> RResult<Self> {
-        use ipc_channel::ipc;
         use std::process::*;
 
         let (server, server_name) = ipc::IpcOneShotServer::new()?;
@@ -131,48 +132,108 @@ impl RBackgroundHandler {
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .spawn()?;
-        let (_, tx): (_, ipc::IpcSender<RIPCPacket>) = server.accept()?;
+        let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server.accept()?;
         Ok(RBackgroundHandler {
             proc: child,
             chan: tx,
         })
     }
+}
 
-    pub fn close(mut self) -> RResult<()> {
-        Ok(self.proc.kill()?)
+impl Drop for RBackgroundHandler {
+    fn drop(&mut self) {
+        if self
+            .proc
+            .try_wait()
+            .ok()
+            .and_then(std::convert::identity)
+            .is_none()
+        {
+            self.proc.kill().unwrap();
+        }
+    }
+}
+
+pub struct RBackgroundPool {
+    pool: Arc<Mutex<VecDeque<RBackgroundHandler>>>,
+    cap: Arc<Mutex<usize>>,
+}
+
+impl RBackgroundPool {
+    pub fn new(cap: usize) -> Self {
+        RBackgroundPool {
+            pool: Arc::new(Mutex::new(VecDeque::new())),
+            cap: Arc::new(Mutex::new(cap)),
+        }
+    }
+
+    pub fn lease(&self) -> RResult<RBackgroundHandler> {
+        if let Some(handle) = self.pool.lock()?.pop_front() {
+            Ok(handle)
+        } else {
+            RBackgroundHandler::new()
+        }
+    }
+
+    pub fn shelf(&self, mut handle: RBackgroundHandler) -> RResult<()> {
+        let mut lpool = self.pool.lock()?;
+        if handle.proc.try_wait()?.is_none() && self.cap.lock()?.gt(&lpool.len()) {
+            lpool.push_back(handle);
+        }
+        Ok(())
+    }
+
+    pub fn resize(&self, new_cap: usize) -> RResult<()> {
+        let mut lpool = self.pool.lock()?;
+        let mut old_cap = self.cap.lock()?;
+        if new_cap.lt(&lpool.len()) {
+            lpool.truncate(new_cap);
+        }
+        *old_cap = new_cap;
+        Ok(())
+    }
+
+    pub fn reval<'t>(
+        &'t self,
+        lambda: Robj,
+        arg: Robj,
+    ) -> RResult<impl FnOnce() -> RResult<Robj> + 't> {
+        let handler = self.lease()?;
+        let (tx, rx) = ipc::channel::<RResult<Vec<u8>>>()?;
+        handler.chan.send(RIPCJob::Reval {
+            raw_func: serialize_robj(lambda)?,
+            raw_arg: serialize_robj(arg)?,
+            collector: tx,
+        })?;
+        Ok(move || {
+            let raw = rx.recv()??;
+            self.shelf(handler)?;
+            deserialize_robj(raw)
+        })
     }
 }
 
 #[extendr]
 pub fn handle_background_request(server_name: String) -> RResult<()> {
-    use ipc_channel::ipc;
     let rtx = ipc::IpcSender::connect(server_name)?;
 
-    let (tx, rx) = ipc::channel::<RIPCPacket>()?;
+    let (tx, rx) = ipc::channel::<RIPCJob>()?;
     rtx.send(tx)?;
 
-    while let Some(job) = rx.recv()? {
+    while let Ok(job) = rx.recv() {
         job.handle()?;
     }
-
     Ok(())
 }
 
 #[extendr]
 pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
-    let handler = RBackgroundHandler::new().unwrap();
-    use ipc_channel::ipc;
-    let (tx, rx) = ipc::channel::<RResult<Vec<u8>>>()?;
-
-    handler.chan.send(Some(RIPCJob::Reval {
-        raw_func: serialize_robj(lambda)?,
-        raw_arg: serialize_robj(arg)?,
-        collector: tx,
-    }))?;
-
-    let raw_res = rx.recv()??;
-    handler.chan.send(None)?;
-    deserialize_robj(raw_res)
+    use extendr_api::*;
+    rprintln!(
+        "Existing processes in background pool: {}",
+        crate::RBGPOOL.pool.lock()?.len()
+    );
+    crate::RBGPOOL.reval(lambda, arg)?()
 }
 
 #[extendr]

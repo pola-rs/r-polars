@@ -38,6 +38,10 @@ use crate::utils::extendr_concurrent::{Storage, ThreadCom};
 type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
 static CONFIG: ThreadComStorage = Storage::new();
 
+use crate::rthreadhandle::RBackgroundPool;
+use once_cell::sync::Lazy;
+static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(1));
+
 // Macro to generate exports
 extendr_module! {
     mod polars;
