@@ -443,7 +443,7 @@ pl$read_csv("airquality.csv")
 Again, however, the package works best if we take the lazy approach. 
 
 ```{r}
-pl$scan_csv_pl("airquality.csv")
+pl$scan_csv("airquality.csv")
 ```
 
 We could obviously append a set of query operators to the above LazyFrame and

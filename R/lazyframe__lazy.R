@@ -62,7 +62,7 @@
 #' Ldf_okay = Pdf$lazy()
 #'
 #' # The-Best-Way:  LazyFrame created directly from a data source is best...
-#' Ldf_best = pl$scan_csv_pl(temp_filepath)
+#' Ldf_best = pl$scan_csv(temp_filepath)
 #'
 #' # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 #' # pushed down in the executation stack to the csv_reader, and thereby only bringing into
@@ -95,7 +95,7 @@
 #' )
 #'
 #' # a user might write it as a one-liner like so:
-#' Pdf_best2 = pl$scan_csv_pl(temp_filepath)$filter(pl$col("Species") == "setosa")
+#' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
 LazyFrame
 
 
@@ -189,7 +189,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' write.csv(iris, my_file)
 #'
 #' # Read the file and make a LazyFrame
-#' lazy_frame = scan_csv_pl(path = my_file)
+#' lazy_frame = scan_csv(path = my_file)
 #'
 #' # Prepare your query
 #' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")

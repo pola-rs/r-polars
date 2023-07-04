@@ -10,6 +10,8 @@
     - Rename `$str$explode` to `$str$str_explode`.
     - Remove `tz_aware` and `utc` arguments from `str_parse`.
     - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
+- The functions to read CSV have been renamed `scan_csv` and `read_csv` for 
+  consistency with the upstream Polars (#305).
 
 ## What's changed
 

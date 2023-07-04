@@ -65,7 +65,7 @@ Pdf = pl$DataFrame(Rdf)
 Ldf_okay = Pdf$lazy()
 
 # The-Best-Way:  LazyFrame created directly from a data source is best...
-Ldf_best = pl$scan_csv_pl(temp_filepath)
+Ldf_best = pl$scan_csv(temp_filepath)
 
 # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 # pushed down in the executation stack to the csv_reader, and thereby only bringing into
@@ -98,6 +98,6 @@ all.equal(
 )
 
 # a user might write it as a one-liner like so:
-Pdf_best2 = pl$scan_csv_pl(temp_filepath)$filter(pl$col("Species") == "setosa")
+Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
 }
 \keyword{LazyFrame}
