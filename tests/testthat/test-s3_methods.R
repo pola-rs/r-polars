@@ -219,14 +219,6 @@ test_that("brackets", {
   a = df[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
-  
-  idx = rep(FALSE, nrow(mtcars))
-  idx[c(1, 3, 6, 9)] = TRUE
-  a = df[idx, 1:3]$collect()$to_data_frame()
-  b = mtcars[idx, 1:3]
-  expect_equal(a, b, ignore_attr = TRUE)
-  
-  a = df[3:7, 1:3]$collect()$to_data_frame()
-  b = mtcars[3:7, 1:3]
-  expect_equal(a, b, ignore_attr = TRUE)
+
+  expect_error(df[1:3,])
 })

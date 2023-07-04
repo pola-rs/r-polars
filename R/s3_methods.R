@@ -35,9 +35,13 @@
   }
 
   if (!missing(i)) {
+    if (inherits(x, "LazyFrame")) {
+      stop("Row selection using brackets is not supported for LazyFrames.", call. = FALSE)
+    }
     if (is.atomic(i) && is.vector(i)) {
       if (is.logical(i)) {
-        if (length(i) != nrow(x)) {
+        # nrow() not available for LazyFrame
+        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
           stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
         }
         idx = i
@@ -94,7 +98,15 @@ dim.DataFrame = function(x, ...) x$shape
 
 #' @export
 #' @noRd
+dim.LazyFrame = function(x, ...) c(NA, x$width)
+
+#' @export
+#' @noRd
 length.DataFrame = function(x, ...) x$width
+
+#' @export
+#' @noRd
+length.LazyFrame = function(x, ...) x$width
 
 #' @export
 #' @noRd
@@ -110,11 +122,27 @@ nrow.DataFrame = function(x) x$height
 #' @param x DataFrame
 #' @return Integer
 #' @export
-ncol.DataFrame = function(x) x$height
+ncol.DataFrame = function(x) x$width
+
+#' The Number of Columns of a DataFrame
+#' @param x LazyFrame
+#' @return Integer
+#' @export
+ncol.LazyFrame = function(x) x$width
+
+#' The Number of Rows of a LazyFrame
+#' @param x LazyFrame
+#' @return Integer
+#' @export
+nrow.LazyFrame = function(x) NA
 
 #' @export
 #' @noRd
 names.DataFrame = function(x) x$columns
+
+#' @export
+#' @noRd
+names.LazyFrame = function(x) x$columns
 
 #' @export
 #' @noRd
