@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_minutes()
+}
 \value{
 Expr of i64
 }

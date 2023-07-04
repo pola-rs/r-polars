@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_days()
+}
 \value{
 Expr of i64
 }

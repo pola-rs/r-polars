@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_tz_localize(tz)
+}
 \arguments{
 \item{tz}{string of time zone (no NULL allowed) see allowed timezone in base::OlsonNames()}
 }

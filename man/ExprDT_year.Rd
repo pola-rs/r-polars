@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_year()
+}
 \value{
 Expr of Year as Int32
 }

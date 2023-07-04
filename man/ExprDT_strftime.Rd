@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_strftime(fmt)
+}
 \arguments{
 \item{fmt}{string format very much like in R passed to chrono}
 }

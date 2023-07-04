@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_epoch(tu = c("us", "ns", "ms", "s", "d"))
+}
 \arguments{
 \item{tu}{string option either 'ns', 'us', 'ms', 's' or  'd'}
 }

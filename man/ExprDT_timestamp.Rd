@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_timestamp(tu = c("ns", "us", "ms"))
+}
 \arguments{
 \item{tu}{string option either 'ns', 'us', or 'ms'}
 }

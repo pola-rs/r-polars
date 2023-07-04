@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_nanosecond()
+}
 \value{
 Expr of second as Int64
 }

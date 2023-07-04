@@ -7,6 +7,9 @@
 \format{
 function
 }
+\usage{
+ExprDT_month()
+}
 \value{
 Expr of month as UInt32
 }
