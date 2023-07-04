@@ -15,7 +15,7 @@ Expr of Utf8 lowercase chars
 Remove leading characters.
 }
 \details{
-will not strip anyt chars beyond the first char not matched. \code{strip()} starts from
+will not strip any chars beyond the first char not matched. \code{strip()} starts from
 both left and right. Whereas \code{rstrip()}and \code{rstrip()} starts from left and right respectively.
 }
 \examples{

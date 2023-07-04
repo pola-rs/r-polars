@@ -8,7 +8,7 @@
 #' @param cache bool, use cache
 #' @param rechunk bool, rechunk reorganize memory layout, potentially make future operations faster, however perform reallocation now.
 #' @param row_count_name NULL or string, if a string add a rowcount column named by this string
-#' @param row_count_offset integer, the rowcount column can be offst by this value
+#' @param row_count_offset integer, the rowcount column can be offset by this value
 #' @param memmap bool, mapped memory
 #'
 #' @return LazyFrame

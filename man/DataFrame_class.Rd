@@ -5,7 +5,7 @@
 \title{Inner workings of the DataFrame-class}
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
-the public and private methods/function calls to the polars rust side. The instanciated
+the public and private methods/function calls to the polars rust side. The instantiated
 \code{DataFrame}-object is an \code{externalptr} to a lowlevel rust polars DataFrame  object.
 The pointer address is the only statefullness of the DataFrame object on the R side.
 Any other state resides on the rust side. The S3 method \code{.DollarNames.DataFrame}
@@ -52,7 +52,7 @@ df2$columns
 # The `result` is very close to the same as output from functions decorated with purrr::safely.
 # To use results on R side, these must be unwrapped first such that
 # potentially errors can be thrown. unwrap(result) is a way to
-# bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
+# bridge rust not throwing errors with R. Extendr default behavior is to use panic!(s) which
 # would case some unneccesary confusing and  some very verbose error messages on the inner
 # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
 # method does not return any ok-value.

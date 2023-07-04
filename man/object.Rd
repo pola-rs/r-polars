@@ -16,7 +16,7 @@ One SEXP of Rtype: "externalptr" + a class attribute
 \details{
 \itemize{
 \item \code{object$method()} calls are facilitated by a \verb{$.ClassName}- s3method see 'R/after-wrappers.R'
-\item Code completion is facilitted by \code{.DollarNames.ClassName}-s3method see e.g. 'R/dataframe__frame.R'
+\item Code completion is facilitated by \code{.DollarNames.ClassName}-s3method see e.g. 'R/dataframe__frame.R'
 \item Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to \verb{$.ClassName}
 See function macro_add_syntax_check_to_class().
 }

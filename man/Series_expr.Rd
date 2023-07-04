@@ -18,7 +18,7 @@ This is a shorthand of writing  something like
 \code{pl$DataFrame(s)$select(pl$col("sname")$expr)$to_series(0)}
 
 This subnamespace is experimental. Submit an issue if anything
-unexpected happend.
+unexpected happened.
 }
 \examples{
 s = pl$Series(list(1:3, 1:2, NULL))

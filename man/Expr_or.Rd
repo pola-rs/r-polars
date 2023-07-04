@@ -13,7 +13,7 @@ Expr_or(other)
 Expr
 }
 \description{
-combine to boolean expresions with OR
+combine to boolean expressions with OR
 }
 \examples{
 pl$lit(TRUE) | FALSE

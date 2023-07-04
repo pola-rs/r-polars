@@ -8,7 +8,7 @@
 function
 }
 \value{
-Expr of quater as UInt32
+Expr of quarter as UInt32
 }
 \description{
 Extract quarter from underlying Date representation.

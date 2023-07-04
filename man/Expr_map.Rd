@@ -21,7 +21,7 @@ Expr
 Expr_map
 }
 \details{
-user function return should be a series or any Robj convertable into a Series.
+user function return should be a series or any Robj convertible into a Series.
 In PyPolars likely return must be Series. User functions do fully support \code{browser()}, helpful to
 investigate.
 }

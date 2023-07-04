@@ -15,7 +15,7 @@ GroupBy_agg(...)
 aggregated DataFrame
 }
 \description{
-Aggregatete a DataFrame over a groupby
+Aggregate a DataFrame over a groupby
 }
 \examples{
 pl$DataFrame(

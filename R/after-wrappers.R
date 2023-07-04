@@ -121,7 +121,7 @@ macro_add_syntax_check_to_class = function(Class_name) {
 }
 
 
-## modify classes to perform syntax cheking
+## modify classes to perform syntax checking
 ## this relies on no envrionment other than env_classes has been defined when macro called
 ## this mod should be run immediately after extendr-wrappers.R are sourced
 is_env_class = sapply(mget(ls()), \(x) typeof(x) == "environment")
@@ -211,7 +211,7 @@ pl_class_names = sort(
     "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
     "When", "WhenThen", "WhenThenThen"
   )
-) # TODO discover all public class automaticly
+) # TODO discover all public class automatically
 
 pl_pub_env = as.environment(asNamespace("polars"))
 pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
@@ -223,7 +223,7 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 #'
 #' @details
 #'  - `object$method()` calls are facilitated by a `$.ClassName`- s3method see 'R/after-wrappers.R'
-#'  - Code completion is facilitted by `.DollarNames.ClassName`-s3method see e.g. 'R/dataframe__frame.R'
+#'  - Code completion is facilitated by `.DollarNames.ClassName`-s3method see e.g. 'R/dataframe__frame.R'
 #'  - Implementation of property-methods as DataFrame_columns() and syntax checking is an extension to `$.ClassName`
 #'  See function macro_add_syntax_check_to_class().
 #'

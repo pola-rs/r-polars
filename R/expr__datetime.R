@@ -223,7 +223,7 @@ ExprDT_iso_year = function() {
 #' Applies to Date and Datetime columns.
 #' Returns the quarter ranging from 1 to 4.
 #' @name ExprDT_quarter
-#' @return Expr of quater as UInt32
+#' @return Expr of quarter as UInt32
 #' @keywords ExprDT
 #' @format function
 #' @aliases (Expr)$dt$quarter
