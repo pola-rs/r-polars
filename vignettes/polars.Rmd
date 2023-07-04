@@ -443,7 +443,7 @@ pl$read_csv("airquality.csv")
 Again, however, the package works best if we take the lazy approach. 
 
 ```{r}
-pl$lazy_csv_reader("airquality.csv")
+pl$scan_csv("airquality.csv")
 ```
 
 We could obviously append a set of query operators to the above LazyFrame and
@@ -457,7 +457,7 @@ library(arrow)
 write_parquet(airquality, "airquality.parquet")
 
 # aq = read_parquet("airquality.parquet) # eager version (okay)
-aq = scan_parquet("airquality.parquet") # lazy version (better)
+aq = pl$scan_parquet("airquality.parquet") # lazy version (better)
 
 aq$filter(
   pl$col("Month") <= 6
@@ -479,7 +479,7 @@ dir.create("airquality-ds")
 write_dataset(airquality, "airquality-ds", partitioning = "Month")
 
 # Use pattern globbing to scan all parquet files in the folder
-aq2 = scan_parquet("airquality-ds/*/*.parquet")
+aq2 = pl$scan_parquet("airquality-ds/*/*.parquet")
 
 # Just print the first two rows. But note that the Month column
 # (which we used for partitioning) is missing.
