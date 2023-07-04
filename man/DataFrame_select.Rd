@@ -3,19 +3,23 @@
 \name{DataFrame_select}
 \alias{DataFrame_select}
 \alias{select}
-\title{perform select on DataFrame}
+\title{Select and modify columns of a DataFrame}
 \usage{
 DataFrame_select(...)
 }
 \arguments{
-\item{...}{expresssions or strings defining columns to select(keep) in context the DataFrame}
+\item{...}{Columns to keep. Those can be expressions (e.g \code{pl$col("a")}),
+column names  (e.g \code{"a"}), or list containing expressions or column names
+(e.g \code{list(pl$col("a"))}).}
 }
 \description{
-related to dplyr \code{mutate()} However discards unmentioned columns as data.table \code{.()}.
+Related to dplyr \code{mutate()}. However, it discards unmentioned
+columns (like \code{.()} in \code{data.table}).
 }
-\keyword{#'}
-\keyword{(pl$col("Sepal.Length")+2)$alias("add_2_SL")}
-\keyword{)}
+\examples{
+pl$DataFrame(iris)$select(
+  pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+  (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+)
+}
 \keyword{DataFrame}
-\keyword{pl$DataFrame(iris)$select(}
-\keyword{pl$col("Sepal.Length")$abs()$alias("abs_SL"),}

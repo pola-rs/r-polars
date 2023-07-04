@@ -1,11 +1,15 @@
 [package]
-name = 'r-polars'   # r-polars
-version = '0.1.0' # this version no is not used
+name = 'r-polars'     # r-polars
+version = '0.1.0'     # this version no is not used
 edition = '2021'
-
+rust-version = "1.65"
 
 [lib]
-crate-type = [ 'staticlib' ]
+crate-type = ['staticlib']
+
+[features]
+default = []
+simd = ["polars/simd"]
 
 [workspace]
 # prevents package from thinking it's in the workspace
@@ -15,9 +19,17 @@ mimalloc = { version = "0.1.34", default-features = false }
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5.0", features = [ "disable_initial_exec_tls" ] }
 
+
+# use opt-level = 1 for argminmax package unless profile is profile.release-optimized for to support Rust < 1.66
+[profile.release-optimized]
+inherits = "release"
+[profile.release.package.argminmax]
+opt-level = 1
+[profile.release-optimized.package.argminmax]
+opt-level = 3
+
 [dependencies]
-extendr-api = { git = "https://github.com/rpolars/extendr", branch = "errorhandling", default-features = false, features = [ "result_list", "serde" ] }
-#extendr-api = {path = "../../../extendr/extendr-api", default-features = false, features= ["result_list"]}
+extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pr473_553_555_566", default-features = false, features = [ "result_list", "serde" ] }
 flume = "0.10.14"
 indenter = "0.3.3"
 ipc-channel = "0.16.1"
@@ -30,9 +42,6 @@ smartstring = "1.0.1"
 state = "0.5.3"
 thiserror = "1.0.40"
 
-#try to trigger new hashFiles hash value
-
-
 #features copied from node-polars
 [dependencies.polars]
 features = [
@@ -40,7 +49,6 @@ features = [
   "json",
   "dynamic_groupby",
   "zip_with",
-  "simd",
   "lazy",
   "strings",
   "temporal",
@@ -122,7 +130,7 @@ features = [
   "string_from_radix",
   "meta",
   "approx_unique",
-  ]
+]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
 rev = "e973f6386a28f16136fb8ba5a737103f95911861"

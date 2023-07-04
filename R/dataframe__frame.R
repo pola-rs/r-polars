@@ -691,32 +691,37 @@ DataFrame_sort = function(
 }
 
 
-#' perform select on DataFrame
+#' Select and modify columns of a DataFrame
 #' @name DataFrame_select
-#' @description  related to dplyr `mutate()` However discards unmentioned columns as data.table `.()`.
+#' @description Related to dplyr `mutate()`. However, it discards unmentioned
+#' columns (like `.()` in `data.table`).
 #'
-#' @param ... expresssions or strings defining columns to select(keep) in context the DataFrame
+#' @param ... Columns to keep. Those can be expressions (e.g `pl$col("a")`),
+#' column names  (e.g `"a"`), or list containing expressions or column names
+#' (e.g `list(pl$col("a"))`).
 #'
 #' @aliases select
 #' @keywords  DataFrame
-#' #' pl$DataFrame(iris)$select(
+#' @examples
+#' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-#'   (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  args = list2(...)
-  exprs = do.call(construct_ProtoExprArray, args)
-  df = unwrap(.pr$DataFrame$select(self, exprs))
-
-  expr_names = names(args)
-  if (!is.null(expr_names)) {
-    old_names = df$columns
-    new_names = old_names
-    has_expr_name = nchar(expr_names) >= 1L
-    new_names[has_expr_name] = expr_names[has_expr_name]
-    df$columns = new_names
-  }
-  df
+  args = unpack_list(...)
+  .pr$DataFrame$select(self, args) |>
+    and_then(\(df) result(msg = "internal error while renaming columns", {
+      expr_names = names(args)
+      if (!is.null(expr_names)) {
+        old_names = df$columns
+        new_names = old_names
+        has_expr_name = nchar(expr_names) >= 1L
+        new_names[has_expr_name] = expr_names[has_expr_name]
+        df$columns = new_names
+      }
+      df
+    })) |>
+    unwrap("in $select()")
 }
 
 #' Drop in place
@@ -1383,4 +1388,135 @@ DataFrame_pivot = function(
 #'   rename(miles_per_gallon = "mpg", horsepower = "hp")
 DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
+}
+
+#' @title Summary statistics for a DataFrame
+#' @param percentiles One or more percentiles to include in the summary statistics.
+#' All values must be in the range `[0; 1]`.
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$describe()
+DataFrame_describe = function(percentiles = c(.25, .75)) {
+  perc = percentiles
+
+  # guard input
+  # styler: off
+  pcase(
+    is.null(perc), Ok(numeric()),
+    !is.numeric(perc), Err(bad_robj(perc)$mistyped("numeric")),
+    isFALSE(all(perc > 0) && all(perc < 1)), {
+      Err(bad_robj(perc)$misvalued("has all vector elements within 0 and 1"))
+    },
+    or_else = Ok(perc)
+    # styler: on
+  ) |>
+    map_err(
+      \(err)  err$bad_arg("percentiles")
+    ) |>
+    and_then(
+      \(perc) {
+        # this polars query should always succeed else flag as ...
+        result(msg = "internal error", {
+          # make percentile expressions
+          perc_exprs = lapply(
+            perc, \(x) pl$all()$quantile(x)$prefix(paste0(as.character(x * 100), "pct:"))
+          )
+
+          # bundle all expressions
+          largs = c(
+            list(
+              pl$all()$count()$prefix("count:"),
+              pl$all()$null_count()$prefix("null_count:"),
+              pl$all()$mean()$prefix("mean:"),
+              pl$all()$std()$prefix("std:"),
+              pl$all()$min()$prefix("min:"),
+              pl$all()$max()$prefix("max:"),
+              pl$all()$median()$prefix("median:")
+            ),
+            perc_exprs
+          )
+
+          # compute aggregates
+          df_aggs = do.call(self$select, largs)
+          e_col_row_names = pl$lit(df_aggs$columns)$str$split(":")
+
+          # pivotize
+          df_pivot = pl$select(
+            e_col_row_names$arr$first()$alias("rowname"),
+            e_col_row_names$arr$last()$alias("colname"),
+            pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
+          )$pivot(
+            values = "value", index = "rowname", columns = "colname"
+          )
+          df_pivot$columns[1] = "describe"
+          df_pivot
+        })
+      }
+    ) |>
+    unwrap("in $describe():")
+}
+
+#' @title Glimpse values in a DataFrame
+#' @keywords DataFrame
+#' @param ... not used
+#' @param return_as_string Boolean (default `FALSE`). If `TRUE`, return the output as a string.
+#' @return DataFrame
+#' @examples
+#' pl$DataFrame(iris)$glimpse()
+DataFrame_glimpse = function(..., return_as_string = FALSE) {
+  # guard input
+  if (!is_bool(return_as_string)) {
+    RPolarsErr$new()$
+      bad_robj(return_as_string)$
+      mistyped("bool")$
+      bad_arg("return_as_string") |>
+      Err() |>
+      unwrap("in $glimpse() :")
+  }
+
+  # closure to extract col info from a column in <self>
+  max_num_value = min(10, self$height)
+  max_col_name_trunc = 50
+  parse_column_ = \(col_name, dtype) {
+    dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
+    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0("<", dtype_str, ">")
+    val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
+    val_str = paste(val, collapse = ", ")
+    if (nchar(col_name) > max_col_name_trunc) {
+      col_name = paste0(substr(col_name, 1, max_col_name_trunc - 3), "...")
+    }
+    list(
+      col_name = col_name,
+      dtype_str = dtype_str,
+      val_str = val_str
+    )
+  }
+
+  # construct print, flag any error as internal
+  output = result(
+    {
+      schema = self$schema
+      data = lapply(seq_along(schema), \(i) parse_column_(names(schema)[i], schema[[i]]))
+      max_col_name = max(sapply(data, \(x) nchar(x$col_name)))
+      max_col_dtyp = max(sapply(data, \(x) nchar(x$dtype)))
+      max_col_vals = 100 - max_col_name - max_col_dtyp - 3
+
+      sapply(data, \(x) {
+        name_filler = paste(rep(" ", max_col_name - nchar(x$col_name)), collapse = "")
+        dtyp_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+        vals_filler = paste(rep(" ", max_col_dtyp - nchar(x$dtype_str)), collapse = "")
+        paste0(
+          "& ", x$col_name, name_filler, x$dtype_str, dtyp_filler, " ",
+          substr(x$val_str, 1, max_col_vals), "\n"
+        )
+      }) |>
+        paste0(collapse = "")
+    },
+    msg = "internal error"
+  ) |>
+    unwrap("in $glimpse() :")
+
+  # chose return type
+  if (return_as_string) output else invisible(cat(output))
 }

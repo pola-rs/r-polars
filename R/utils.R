@@ -110,8 +110,6 @@ unpack_list = function(...) {
   }
 }
 
-
-
 #' Simple SQL CASE WHEN implementation for R
 #'
 #' @description Inspired by data.table::fcase + dplyr::case_when.

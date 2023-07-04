@@ -47,11 +47,15 @@ rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches
 
 arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
+dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
 test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+
+test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -333,7 +337,7 @@ Expr$search_sorted <- function(element) .Call(wrap__Expr__search_sorted, self, e
 
 Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
 
-Expr$sort_by <- function(by, reverse) .Call(wrap__Expr__sort_by, self, by, reverse)
+Expr$sort_by <- function(by, descending) .Call(wrap__Expr__sort_by, self, by, descending)
 
 Expr$backward_fill <- function(limit) .Call(wrap__Expr__backward_fill, self, limit)
 
@@ -415,7 +419,7 @@ Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_ske
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
-Expr$rank <- function(method, reverse) .Call(wrap__Expr__rank, self, method, reverse)
+Expr$rank <- function(method, descending) .Call(wrap__Expr__rank, self, method, descending)
 
 Expr$diff <- function(n_float, null_behavior) .Call(wrap__Expr__diff, self, n_float, null_behavior)
 
@@ -503,7 +507,7 @@ Expr$lst_sum <- function() .Call(wrap__Expr__lst_sum, self)
 
 Expr$lst_mean <- function() .Call(wrap__Expr__lst_mean, self)
 
-Expr$lst_sort <- function(reverse) .Call(wrap__Expr__lst_sort, self, reverse)
+Expr$lst_sort <- function(descending) .Call(wrap__Expr__lst_sort, self, descending)
 
 Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
 
@@ -999,7 +1003,7 @@ Series$n_unique <- function() .Call(wrap__Series__n_unique, self)
 
 Series$name <- function() .Call(wrap__Series__name, self)
 
-Series$sort_mut <- function(reverse) .Call(wrap__Series__sort_mut, self, reverse)
+Series$sort_mut <- function(descending) .Call(wrap__Series__sort_mut, self, descending)
 
 Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
 
@@ -1011,7 +1015,7 @@ Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
 
 Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
 
-Series$is_sorted <- function(reverse, nulls_last) .Call(wrap__Series__is_sorted, self, reverse, nulls_last)
+Series$is_sorted <- function(descending, nulls_last) .Call(wrap__Series__is_sorted, self, descending, nulls_last)
 
 Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
 
@@ -1075,7 +1079,7 @@ Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
 
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
-Series$set_sorted_mut <- function(reverse) invisible(.Call(wrap__Series__set_sorted_mut, self, reverse))
+Series$set_sorted_mut <- function(descending) invisible(.Call(wrap__Series__set_sorted_mut, self, descending))
 
 Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name, array)
 
@@ -1098,6 +1102,18 @@ PolarsBackgroundHandle$is_exhausted <- function() .Call(wrap__PolarsBackgroundHa
 
 #' @export
 `[[.PolarsBackgroundHandle` <- `$.PolarsBackgroundHandle`
+
+FeatureInfo <- new.env(parent = emptyenv())
+
+FeatureInfo$new <- function() .Call(wrap__FeatureInfo__new)
+
+FeatureInfo$to_r <- function() .Call(wrap__FeatureInfo__to_r, self)
+
+#' @export
+`$.FeatureInfo` <- function (self, name) { func <- FeatureInfo[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.FeatureInfo` <- `$.FeatureInfo`
 
 
 # nolint end

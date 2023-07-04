@@ -44,15 +44,16 @@ requirements-rs:
 	rustup component add clippy
 
 .PHONY: build
-build: ## Compile polars R package and generate Rd files
-	Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
-
+build: ## Compile polars R package with all features and generate Rd files
+	export RPOLARS_ALL_FEATURES=true \
+	&& export RPOLARS_PROFILE=release-optimized \
+	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: all
 all: fmt build test README.md ## build -> test -> Update README.md
 
 .PHONY: docs
-docs: build README.md ## Generate docs
+docs: build README.md docs/docs/reference_home.md ## Generate docs
 	cp docs/mkdocs.orig.yml docs/mkdocs.yml
 	Rscript -e 'altdoc::update_docs(custom_reference = "docs/make-docs.R")'
 	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
@@ -63,6 +64,9 @@ docs-preview: ## Preview docs on local server. Needs `make docs`
 
 README.md: README.Rmd build ## Update README.md
 	Rscript -e 'devtools::load_all(); rmarkdown::render("README.Rmd")'
+
+docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the reference home page source
+	Rscript -e 'devtools::load_all(); rmarkdown::render("docs/docs/reference_home.Rmd")'
 
 .PHONY: test
 test: build ## Run fast unittests

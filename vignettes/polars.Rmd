@@ -21,16 +21,17 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 Polars is [a lightning fast](https://duckdblabs.github.io/db-benchmark/) Data Frame
 library. Its embarrassingly parallel execution, cache efficient algorithms and
 expressive API makes it perfect for efficient data wrangling, data pipelines,
-snappy APIs and so much more. Polars also supports "streaming mode" for
+snappy APIs, and much more besides. Polars also supports "streaming mode" for
 out-of-memory operations. This allows users to analyze datasets many times
 larger than RAM.
 
 The underlying computation engine is written in Rust and is built on the Apache
 Arrow columnar memory format. It can be used in Rust or via Python bindings.
-The **polars** R-package provides equivalent bindings from R. Within R, python
-and rust each polars package is just called polars. The implemention polars in
-the different languages can be called rust-polars, py-polars, r-polars,
-nodejs-polars...
+The **polars** R-package provides equivalent bindings from R. To help distinguish
+the different language implementations, we typically use a convention of
+referring to them with prefixes: rust-polars, py-polars, r-polars,
+nodejs-polars, etc. But within each language, the relevant library is always
+just called _polars_.
 
 **polars** users can expect orders of magnitude(s) improvement compared to
 **dplyr** for simple transformations on datasets >500Mb. The automatic Polars
@@ -102,10 +103,10 @@ most of the `polars` functions are made available via `pl$`:
 ```{r}
 library(polars)
 
-ser <- pl$Series((1:5) * 5)
+ser = pl$Series((1:5) * 5)
 ser
 
-dat <- pl$DataFrame(mtcars)
+dat = pl$DataFrame(mtcars)
 dat
 ```
 
@@ -181,12 +182,14 @@ where `object` is our data object, and `m1()` and `m2()` are appropriate
 methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
-examples to help make things concrete. We use the `mtcars` dataset that we
-coerced to a `DataFrame` in introduction.^[Similar to how (most) **data.table**
+examples to help make things concrete. We continue with the `mtcars` dataset that we
+coerced to a `DataFrame` in the introduction.^[Similar to how (most) **data.table**
 operations are limited to objects of class `data.table`, we can only perform
 polars operations on objects that have been converted to an appropriate
 **polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
-We use the `$max` method to compute the maximum value in each column:
+
+To start, say we compute the maximum value in each column. We can use the
+`max()` method:
 
 ```{r}
 dat$max()
@@ -213,7 +216,7 @@ you a small taste, we now take group-wise means:
 dat$groupby("cyl")$mean()
 ```
 
-## `select` columns and `filter` rows
+## Subset
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
@@ -239,7 +242,7 @@ dat$filter(
 )
 ```
 
-## Aggregations and modifications
+## Aggregate and modify
 
 The `select()` method that we introduced above also supports data modification,
 so you can simultaneously transform it while you are subsetting. However, the
@@ -299,6 +302,53 @@ dat$groupby(
 Note that we used the `cast` method to convert the data type of the `am`
 column. See the section below for more details on data types.
 
+## Reshape
+
+Polars supports data reshaping, going from both long to wide ("pivot") and wide
+to long ("melt"). Let's switch to the `Indometh` dataset to demonstrate some
+basic examples. Note that the data are currently in long format.
+
+```{r}
+(indo = pl$DataFrame(Indometh))
+```
+
+To go from long to wide, we use the
+[`pivot`](https://rpolars.github.io/reference/DataFrame_pivot/) method.
+Here we pivot the data so that every subject takes its own column.
+
+```{r}
+(indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject"))
+```
+
+To go from wide to long, we use the
+[melt](https://rpolars.github.io/reference/DataFrame_melt/) method.
+
+```{r}
+# indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
+indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc") 
+```
+
+Basic functionality aside, it should be noted that `pivot` can peform
+aggregations as part of the reshaping operation. This is useful when you have
+multiple observations per ID variable that need to be collapsed into unique
+values. The aggregating functions can be arbitrarily complex, but let's
+consider a relatively simple example using our `dat` ("mtcars") DataFrame from
+earlier: what is the median MPG value (`mpg`) across cylinders (`cyl`), cut by
+different combinations of transmission type (`am`) and engine shape (`vs`)?
+
+```{r}
+dat$pivot(
+  values = "mpg",
+  index = c("am", "vs"),
+  columns = "cyl",
+  aggregate_fun = "median" # aggregating function
+)
+```
+
+Here, `"median"` is a convenience string that is equivalent to the more verbose
+`pl$element()$median()`. Other convenience strings include "first", "last",
+"min", "max", "mean", "sum", and "count".
+
 ## Join
 
 As a final example of how **polars** can be used for standard data wrangling
@@ -307,8 +357,8 @@ datasets from the **nycflights13** package.
 
 ```{r}
 data("flights", "planes", package = "nycflights13")
-flights <- pl$DataFrame(flights)
-planes <- pl$DataFrame(planes)
+flights = pl$DataFrame(flights)
+planes = pl$DataFrame(planes)
 
 flights$join(
   planes,
@@ -339,7 +389,7 @@ To create a so-called
 existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}
-ldat <- dat$lazy()
+ldat = dat$lazy()
 ldat
 ```
 
@@ -347,7 +397,7 @@ Now consider what happens when we run our subsetting query from earlier on this
 LazyFrame.
 
 ```{r}
-subset_query <- ldat$filter(
+subset_query = ldat$filter(
   pl$col("cyl") == 6
 )$select(
   pl$col(c("mpg", "hp", "cyl"))
@@ -407,7 +457,7 @@ library(arrow)
 write_parquet(airquality, "airquality.parquet")
 
 # aq = read_parquet("airquality.parquet) # eager version (okay)
-aq <- scan_parquet("airquality.parquet") # lazy version (better)
+aq = scan_parquet("airquality.parquet") # lazy version (better)
 
 aq$filter(
   pl$col("Month") <= 6
@@ -429,7 +479,7 @@ dir.create("airquality-ds")
 write_dataset(airquality, "airquality-ds", partitioning = "Month")
 
 # Use pattern globbing to scan all parquet files in the folder
-aq2 <- scan_parquet("airquality-ds/*/*.parquet")
+aq2 = scan_parquet("airquality-ds/*/*.parquet")
 
 # Just print the first two rows. But note that the Month column
 # (which we used for partitioning) is missing.
@@ -454,8 +504,8 @@ and expressions wherever possible.
 ```{r}
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$map(\(s) { # map with a R function
-    x <- s$to_vector() # convert from Polars Series to a native R vector
-    x[x >= 5] <- 10
+    x = s$to_vector() # convert from Polars Series to a native R vector
+    x[x >= 5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
   })
 )$to_data_frame()
