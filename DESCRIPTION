@@ -1,14 +1,14 @@
 Package: polars
-Title: Polars: Lightning-fast DataFrame library
+Title: polars: Lightning-fast DataFrame library
 Version: 0.7.0
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre")))
-Description: 'Polars' is a lightning fast Data Frame library written in Rust.
-  This package allows converting R data to 'Polars' data and vice versa,
-  and enabling fast data processing with 'Polars'.
+Description: 'polars' is a lightning fast DataFrame library written in Rust.
+  This package allows converting R data to 'polars' data and vice versa,
+  and enabling fast data processing.
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
