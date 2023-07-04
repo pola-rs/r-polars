@@ -1,5 +1,5 @@
 Package: polars
-Title: 'Polars' Ported to R
+Title: Polars: Lightning-fast DataFrame library
 Version: 0.7.0
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
