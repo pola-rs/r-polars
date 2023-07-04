@@ -189,7 +189,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' write.csv(iris, my_file)
 #'
 #' # Read the file and make a LazyFrame
-#' lazy_frame = scan_csv(path = my_file)
+#' lazy_frame = pl$scan_csv(path = my_file)
 #'
 #' # Prepare your query
 #' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")

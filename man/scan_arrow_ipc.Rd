@@ -3,17 +3,6 @@
 \name{scan_arrow_ipc}
 \alias{scan_arrow_ipc}
 \title{Import data in Apache Arrow IPC format}
-\usage{
-scan_arrow_ipc(
-  path,
-  n_rows = NULL,
-  cache = TRUE,
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
-  memmap = TRUE
-)
-}
 \arguments{
 \item{path}{string, path}
 

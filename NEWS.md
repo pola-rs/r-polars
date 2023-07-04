@@ -11,7 +11,7 @@
     - Remove `tz_aware` and `utc` arguments from `str_parse`.
     - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
 - The functions to read CSV have been renamed `scan_csv` and `read_csv` for 
-  consistency with the upstream Polars (#305).
+  consistency with the upstream Polars. `scan_xxx` and `read_xxx` functions + `polars_info()` are now accessed via `pl`, e.g. `pl$scan_csv()` (#305). 
 
 ## What's changed
 

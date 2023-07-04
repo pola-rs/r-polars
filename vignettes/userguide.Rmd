@@ -85,15 +85,15 @@ df = pl$DataFrame(
 df
 
 # df$write_csv('output.csv')
-# df_csv_with_dates = pl.read_csv("output.csv", parse_dates=True)
+# df_csv_with_dates = pl$read_csv("output.csv", parse_dates=True)
 # print(df_csv_with_dates)
 
-# dataframe.write_json('output.json')
-# df_json = pl.read_json("output.json")
+# dataframe$write_json('output.json')
+# df_json = pl$read_json("output.json")
 # print(df_json)
 
-# dataframe.write_parquet('output.parquet')
-# df_parquet = pl.read_parquet("output.parquet")
+# dataframe$write_parquet('output.parquet')
+# df_parquet = pl$read_parquet("output.parquet")
 # print(df_parquet)
 
 df = pl$DataFrame(

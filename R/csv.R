@@ -50,15 +50,13 @@
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #'
-#' @export
-#'
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
-#' lazy_frame = scan_csv(path = my_file)
+#' lazy_frame = pl$scan_csv(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
-scan_csv = function(
+pl$scan_csv = function(
     path,
     sep = ",",
     has_header = TRUE,
@@ -146,11 +144,11 @@ scan_csv = function(
 #' @rdname scan_csv
 #' @param ... any argument passed to scan_csv
 #' @return DataFrame
-#' @export
+#' @name read_csv
 #' @examples
 #' df = pl$read_csv("https://j.mp/iriscsv")
-read_csv = function(...) {
-  scan_csv(...)$collect()
+pl$read_csv = function(...) {
+  pl$scan_csv(...)$collect()
 }
 
 
