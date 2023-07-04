@@ -10,7 +10,7 @@
 Extra polars auto completion
 }
 \details{
-polars always supports auto completetion via .DollarNames.
+polars always supports auto completion via .DollarNames.
 However chained methods like x$a()$b()$? are not supported vi .DollarNames.
 
 This feature experimental and not perfect. Any feedback is appreciated.
@@ -22,7 +22,7 @@ suggestions.
 e = pl$lit(42) # to autocomplete pl$lit(42) save to variable
 # then write `e$`  and press tab to see available methods
 
-# polars has experimental auto completetion for chain of methods if all on the same line
+# polars has experimental auto completion for chain of methods if all on the same line
 pl$extra_auto_completion() # first activate feature (this will 'annoy' the Rstudio auto-completer)
 pl$lit(42)$lit_to_s() # add a $ and press tab 1-3 times
 pl$extra_auto_completion(activate = FALSE) # deactivate

@@ -7,5 +7,5 @@
 LazyGroupBy_print()
 }
 \description{
-prints opague groupby, not much to show
+prints opaque groupby, not much to show
 }

@@ -17,7 +17,7 @@ e.g. pl$DataFrame(iris)$select(pl$col(c("^Sepal.*$")))
 \item{...}{Additional column names can be passed as strings, separated by commas.}
 }
 \value{
-Column Exprression
+Column Expression
 }
 \description{
 Return an expression representing a column in a DataFrame.

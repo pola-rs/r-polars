@@ -6,7 +6,7 @@
 \arguments{
 \item{datatype}{a temporal data type either pl$Date, pl$Time or pl$Datetime}
 
-\item{fmt}{fmt string for parsenig see
+\item{fmt}{fmt string for parsing see
 see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
 Notice time_zone \%Z is not supported and will just ignore timezones. Numeric tz  like
 \%z, \%:z  .... are supported.}

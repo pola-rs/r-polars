@@ -16,7 +16,7 @@ LazyFrame_filter(expr)
 A new \code{LazyFrame} object with add/modified column.
 }
 \description{
-Filter rows with an Expression definining a boolean column
+Filter rows with an Expression defining a boolean column
 }
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()

@@ -13,7 +13,7 @@ Expr_is_in(other)
 Expr
 }
 \description{
-combine to boolean expresions with similar to \code{\%in\%}
+combine to boolean expressions with similar to \code{\%in\%}
 }
 \examples{
 

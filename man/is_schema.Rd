@@ -10,7 +10,7 @@ function
 is_schema(x)
 }
 \arguments{
-\item{x}{objet to test if schema}
+\item{x}{object to test if schema}
 }
 \value{
 bool
