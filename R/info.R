@@ -2,7 +2,6 @@
 #'
 #' @return A list with information of the package
 #' @name polars_info
-#' @export
 #' @examples
 #' pl$polars_info()
 pl$polars_info = function() {
