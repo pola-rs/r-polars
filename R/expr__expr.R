@@ -385,7 +385,6 @@ Expr_gt_eq = function(other) {
 #' Get the group indexes of the group by operation.
 #' Should be used in aggregation context only.
 #' @return Exprs
-#' @export
 #' @docType NULL
 #' @format NULL
 #' @examples

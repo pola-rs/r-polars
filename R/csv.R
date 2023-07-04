@@ -49,7 +49,7 @@
 #'
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
-#'
+#' @name scan_csv
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)

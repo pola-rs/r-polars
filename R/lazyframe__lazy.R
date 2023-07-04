@@ -166,7 +166,6 @@ print.LazyFrame = function(x, ...) {
 #'
 #' @return self
 #' @docType NULL
-#' @export
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$DataFrame(iris)$lazy()$print()
