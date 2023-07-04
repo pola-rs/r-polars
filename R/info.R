@@ -2,8 +2,9 @@
 #'
 #' @return A list with information of the package
 #' @name polars_info
+#' @export
 #' @examples
-#' polars_info()
+#' pl$polars_info()
 pl$polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
