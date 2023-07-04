@@ -51,7 +51,7 @@ build: ## Compile polars R package with all features and generate Rd files
 	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: all
-all: fmt build test README.md ## build -> test -> Update README.md
+all: fmt build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
 docs: build README.md docs/docs/reference_home.md ## Generate docs
@@ -68,6 +68,9 @@ README.md: README.Rmd build ## Update README.md
 
 docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the reference home page source
 	Rscript -e 'devtools::load_all(); rmarkdown::render("docs/docs/reference_home.Rmd")'
+
+LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
+	Rscript -e 'rextendr::write_license_note(force = TRUE)'
 
 .PHONY: test
 test: build ## Run fast unittests
