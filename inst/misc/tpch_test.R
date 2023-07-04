@@ -3,13 +3,13 @@
 #
 #
 # get_line_item_ds = function(base_dir = DATASET_BASE_DIR) {
-#   polars:::scan_parquet(paste0(base_dir,"lineitem.parquet"))
+#   pl$scan_parquet(paste0(base_dir,"lineitem.parquet"))
 # }
 # get_customer_ds = function(base_dir = DATASET_BASE_DIR) {
-#   polars:::scan_parquet(paste0(base_dir,"customer.parquet"))
+#   pl$scan_parquet(paste0(base_dir,"customer.parquet"))
 # }
 # get_orders_ds = function(base_dir = DATASET_BASE_DIR) {
-#   polars:::scan_parquet(paste0(base_dir,"orders.parquet"))
+#   pl$scan_parquet(paste0(base_dir,"orders.parquet"))
 # }
 #
 #

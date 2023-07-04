@@ -96,13 +96,6 @@ replace_private_with_pub_methods(Series, "^Series_")
 move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 
-# pl$[readers]
-pl$lazy_csv_reader = lazy_csv_reader
-pl$csv_reader = csv_reader
-pl$read_csv = read_csv_
-pl$scan_arrow_ipc = scan_arrow_ipc
-
-
 #' Get Memory Address
 #' @name pl_mem_address
 #' @description mimics pl$mem_address

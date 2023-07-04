@@ -3,9 +3,6 @@
 \name{polars_info}
 \alias{polars_info}
 \title{Report information of the package}
-\usage{
-polars_info()
-}
 \value{
 A list with information of the package
 }
@@ -13,5 +10,5 @@ A list with information of the package
 Report information of the package
 }
 \examples{
-polars_info()
+pl$polars_info()
 }
