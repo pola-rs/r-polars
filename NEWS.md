@@ -34,6 +34,7 @@ for demonstration purposes (#240).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - New method `<DataFrame>$describe()` (#268).
+- Cross joining is now possible with `how = "cross"` in `$join()`
 
 # polars 0.6.1
 
