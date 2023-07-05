@@ -36,10 +36,7 @@ pub use smartstring;
 use crate::utils::extendr_concurrent::{Storage, ThreadCom};
 type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
 static CONFIG: ThreadComStorage = Storage::new();
-
-use crate::rbackground::RBackgroundPool;
-use once_cell::sync::Lazy;
-static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(1));
+pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports
 extendr_module! {

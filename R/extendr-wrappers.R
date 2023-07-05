@@ -59,6 +59,10 @@ test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
+set_global_rpool_cap <- function(c) .Call(wrap__set_global_rpool_cap, c)
+
+get_global_rpool_cap <- function() .Call(wrap__get_global_rpool_cap)
+
 handle_background_request <- function(server_name) .Call(wrap__handle_background_request, server_name)
 
 test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
@@ -280,6 +284,8 @@ RThreadHandle <- new.env(parent = emptyenv())
 RThreadHandle$join <- function() .Call(wrap__RThreadHandle__join, self)
 
 RThreadHandle$is_finished <- function() .Call(wrap__RThreadHandle__is_finished, self)
+
+RThreadHandle$thread_description <- function() .Call(wrap__RThreadHandle__thread_description, self)
 
 #' @export
 `$.RThreadHandle` <- function (self, name) { func <- RThreadHandle[[name]]; environment(func) <- environment(); func }

@@ -1,6 +1,9 @@
 use crate::rdataframe::DataFrame as RDF;
 use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
-use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
+use extendr_api::{
+    call, eval_string, extendr, extendr_module, pairlist, symbol::class_symbol, Attributes,
+    Conversions, Operators, Pairlist, Rinternals, Robj, NULL,
+};
 use ipc_channel::ipc;
 use polars::prelude::Series as PSeries;
 use std::collections::VecDeque;
@@ -17,6 +20,15 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
         RThreadHandle {
             handle: Some(thread::spawn(compute)),
         }
+    }
+
+    pub fn thread_description_generic(&self) -> RResult<String> {
+        let thread = self.handle.as_ref().ok_or(RPolarsErr::new())?.thread();
+        Ok(format!(
+            "Handle of thread [{:?}] with ID [{:?}]",
+            thread.name().unwrap_or("<anonymous>"),
+            thread.id()
+        ))
     }
 
     pub fn join_generic(&mut self) -> RResult<T> {
@@ -45,10 +57,13 @@ impl RThreadHandle<RResult<RDF>> {
     fn is_finished(&self) -> RResult<bool> {
         self.is_finished_generic()
     }
+
+    fn thread_description(&self) -> RResult<String> {
+        self.thread_description_generic()
+    }
 }
 
 pub fn serialize_robj(robj: Robj) -> RResult<Vec<u8>> {
-    use extendr_api::*;
     call!("serialize", &robj, NULL)
         .map_err(RPolarsErr::from)
         .bad_robj(&robj)
@@ -61,7 +76,6 @@ pub fn serialize_robj(robj: Robj) -> RResult<Vec<u8>> {
 }
 
 pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
-    use extendr_api::*;
     call!("unserialize", &bits)
         .map_err(RPolarsErr::from)
         .bad_val(rdbg(bits))
@@ -124,7 +138,6 @@ pub enum RIPCJob {
 
 impl RIPCJob {
     pub fn handle(self) -> RResult<()> {
-        use extendr_api::*;
         match self {
             Self::REval {
                 raw_func,
@@ -324,6 +337,22 @@ impl RBackgroundPool {
     }
 }
 
+pub static RBGPOOL: once_cell::sync::Lazy<RBackgroundPool> =
+    once_cell::sync::Lazy::new(|| RBackgroundPool::new(1));
+
+#[extendr]
+pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
+    RBGPOOL.resize(crate::utils::robj_to_usize(c)?)
+}
+
+#[extendr]
+pub fn get_global_rpool_cap() -> RResult<extendr_api::prelude::Pairlist> {
+    Ok(pairlist!(
+        available = RBGPOOL.pool.lock()?.len(),
+        capacity = RBGPOOL.cap.lock()?.clone()
+    ))
+}
+
 #[extendr]
 pub fn handle_background_request(server_name: String) -> RResult<()> {
     let rtx = ipc::IpcSender::connect(server_name)?;
@@ -339,7 +368,7 @@ pub fn handle_background_request(server_name: String) -> RResult<()> {
 
 #[extendr]
 pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
-    deserialize_robj(crate::RBGPOOL
+    deserialize_robj(RBGPOOL
         .reval(serialize_robj(lambda)?, serialize_robj(arg)?)?(
     )?)
 }
@@ -375,7 +404,9 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
 
 extendr_module! {
     mod rbackground;
-    impl RThreadHandle;
+    impl RThreadHandle<RResult<RDF>>;
+    fn set_global_rpool_cap;
+    fn get_global_rpool_cap;
     fn handle_background_request;
     fn test_rbackgroundhandler;
     fn test_rthreadhandle;

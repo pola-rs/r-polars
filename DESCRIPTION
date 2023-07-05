@@ -87,6 +87,7 @@ Collate:
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
+    'rbackground.R'
     'rlang.R'
     'rust_result.R'
     's3_methods.R'
