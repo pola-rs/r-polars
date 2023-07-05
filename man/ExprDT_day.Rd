@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_day()
-}
 \value{
 Expr of day as UInt32
 }

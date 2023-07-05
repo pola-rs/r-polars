@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_convert_time_zone(tz)
-}
 \arguments{
 \item{tz}{String time zone from base::OlsonNames()}
 }

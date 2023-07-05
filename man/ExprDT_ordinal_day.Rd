@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_ordinal_day()
-}
 \value{
 Expr of ordinal_day as UInt32
 }

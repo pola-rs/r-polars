@@ -7,9 +7,6 @@
 \format{
 function
 }
-\usage{
-ExprDT_iso_year()
-}
 \value{
 Expr of iso_year as Int32
 }
