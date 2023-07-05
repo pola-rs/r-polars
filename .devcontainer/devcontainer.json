@@ -1,0 +1,9 @@
+{
+	"image": "ghcr.io/rocker-org/devcontainer/r-ver:4",
+	"features": {
+		"ghcr.io/devcontainers/features/rust:1": {}
+	},
+	"postCreateCommand": {
+		"requirements": "make requirements"
+	}
+}

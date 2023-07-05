@@ -16,3 +16,4 @@
 ^\.venv$
 ^Makefile$
 ^src/\.cargo$
+^\.devcontainer$
