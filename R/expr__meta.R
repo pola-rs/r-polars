@@ -138,7 +138,7 @@ ExprMeta_has_multiple_outputs = function() {
 }
 
 
-#' Is regex projecion.
+#' Is regex projection.
 #' @name ExprMeta_is_regex_projection
 #' @aliases expr_is_regex_projection
 #' @description Whether this expression expands to columns that match a regex pattern.

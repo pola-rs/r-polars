@@ -65,11 +65,10 @@ print.GroupBy = function(x, ...) {
 
 
 #' Aggregate over a GroupBy
-#' @description Aggregatete a DataFrame over a groupby
+#' @description Aggregate a DataFrame over a groupby
 #' @param ... exprs to aggregate over.
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @return aggregated DataFrame
-#' @export
 #' @aliases agg
 #' @examples
 #' pl$DataFrame(
@@ -285,7 +284,6 @@ GroupBy_null_count = function() {
 #' @param ... not used
 #'
 #' @return R data.frame
-#' @export
 #'
 #' @examples pl$DataFrame(iris)$to_data_frame() # R-polars back and forth
 GroupBy_to_data_frame = function(...) {

@@ -2,7 +2,7 @@
 #'
 #' @name DataFrame_class
 #' @description The `DataFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the polars rust side. The instanciated
+#' the public and private methods/function calls to the polars rust side. The instantiated
 #' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object.
 #' The pointer address is the only statefullness of the DataFrame object on the R side.
 #' Any other state resides on the rust side. The S3 method `.DollarNames.DataFrame`
@@ -49,7 +49,7 @@
 #' # The `result` is very close to the same as output from functions decorated with purrr::safely.
 #' # To use results on R side, these must be unwrapped first such that
 #' # potentially errors can be thrown. unwrap(result) is a way to
-#' # bridge rust not throwing errors with R. Extendr default behaviour is to use panic!(s) which
+#' # bridge rust not throwing errors with R. Extendr default behavior is to use panic!(s) which
 #' # would case some unneccesary confusing and  some very verbose error messages on the inner
 #' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
 #' # method does not return any ok-value.
@@ -983,9 +983,16 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
-#' print(df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA))))
-#' print(df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_))))
+#' # inner join by default
+#' df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
+#'
+#' # cross join
+#' df1 <- pl$DataFrame(x = letters[1:3])
+#' df2 <- pl$DataFrame(y = 1:4)
+#' df1$join(other = df2, how = "cross")
+#'
 DataFrame_join = function(
     other, # : LazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,

@@ -125,13 +125,13 @@ test_that("Series_append", {
     pl$Series(c(letters, LETTERS))$to_vector()
   )
 
-  # default immutable behaviour, s_imut and s_imut_copy stay the same
+  # default immutable behavior, s_imut and s_imut_copy stay the same
   s_imut = pl$Series(1:3)
   s_imut_copy = s_imut
   s_new = s_imut$append(pl$Series(1:3))
   expect_identical(s_imut$to_vector(), s_imut_copy$to_vector())
 
-  # pypolars-like mutable behaviour,s_mut_copy become the same as s_new
+  # pypolars-like mutable behavior,s_mut_copy become the same as s_new
   s_mut = pl$Series(1:3)
   s_mut_copy = s_mut
   s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
@@ -509,10 +509,10 @@ test_that("internal method get_fmt and to_fmt_char", {
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~base,
-    "mean",       mean,
-    "median",     median,
-    "std",        sd,
-    "var",        var,
+    "mean", mean,
+    "median", median,
+    "std", sd,
+    "var", var,
   )
 }
 patrick::with_parameters_test_that("mean, median, std, var",

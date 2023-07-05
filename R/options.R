@@ -29,7 +29,7 @@ polars_optreq$strictly_immutable = list( # set requirement functions of default 
 #' @aliases named_exprs
 #' @param named_exprs bool, default = FALSE,
 #' allow named exprs in e.g. select, with_columns, groupby, join.
-#' a named expresion will be extended with $alias(name)
+#' a named expression will be extended with $alias(name)
 #' wildcards or expression producing multiple are problematic due to name collision
 #' the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
 #' and only allow named exprs in with_columns (or potentially any method derived there of)
@@ -111,8 +111,8 @@ polars_optreq$debug_polars = list( # set requirement functions of default value
 #'
 #'
 #' @return current settings as list
-#' @details modifing list takes no effect, pass it to pl$set_polars_options
-#' get/set/resest interact with internal env `polars:::polars_optenv`
+#' @details modifying list takes no effect, pass it to pl$set_polars_options
+#' get/set/reset interact with internal env `polars:::polars_optenv`
 #'
 #'
 #' @examples pl$get_polars_options()

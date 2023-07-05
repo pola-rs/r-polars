@@ -6,7 +6,7 @@
 \description{
 The \code{LazyFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The
-instanciated \code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars
+instantiated \code{LazyFrame}-object is an \code{externalptr} to a lowlevel rust polars
 LazyFrame  object. The pointer address is the only statefullness of the
 LazyFrame object on the R side. Any other state resides on the rust side. The
 S3 method \code{.DollarNames.LazyFrame} exposes all public \verb{$foobar()}-methods which
@@ -25,9 +25,9 @@ as pure functions solved/simplified self-referential complications.
 \code{DataFrame_object$lazy() -> LazyFrame_object} and \code{LazyFrame_object$collect() -> DataFrame_object}.
 This is quite similar to the lazy-collect syntax of the dplyrpackage to
 interact with database connections such as SQL variants. Most SQL databases
-would be able to perform the same otimizations as polars such Predicate Pushdown
-and Projection. However polars can intertact and optimize queries with both
-SQL DBs and other data sources such parquet files simultanously. (#TODO
+would be able to perform the same optimizations as polars such Predicate Pushdown
+and Projection. However polars can interact and optimize queries with both
+SQL DBs and other data sources such parquet files simultaneously. (#TODO
 implement r-polars SQL ;).
 }
 \details{
@@ -65,7 +65,7 @@ Pdf = pl$DataFrame(Rdf)
 Ldf_okay = Pdf$lazy()
 
 # The-Best-Way:  LazyFrame created directly from a data source is best...
-Ldf_best = pl$lazy_csv_reader(temp_filepath)
+Ldf_best = pl$scan_csv(temp_filepath)
 
 # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 # pushed down in the executation stack to the csv_reader, and thereby only bringing into
@@ -81,7 +81,7 @@ Ldf_best$describe_plan()
 
 # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 
-# The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
+# The optimized plan are quite different, Ldf_best will read csv and perform filter simultaneously
 Ldf_okay$describe_optimized_plan()
 Ldf_best$describe_optimized_plan()
 
@@ -98,6 +98,6 @@ all.equal(
 )
 
 # a user might write it as a one-liner like so:
-Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
+Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
 }
 \keyword{LazyFrame}

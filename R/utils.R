@@ -1,6 +1,6 @@
 #' check_no_missing_args
 #' @description lifecycle: DEPRECATE
-#' @param fun target function to check incomming arguments for
+#' @param fun target function to check incoming arguments for
 #' @param args list of args to check
 #' @param warn bool if TRUE throw warning when check fails
 #' @keywords internal
@@ -115,7 +115,7 @@ unpack_list = function(...) {
 #' @description Inspired by data.table::fcase + dplyr::case_when.
 #' Used instead of base::switch internally.
 #'
-#' @param ... odd arugments are bool statements, a next even argument is returned
+#' @param ... odd arguments are bool statements, a next even argument is returned
 #' if prior bool statement is the first true
 #' @param or_else return this if no bool statements were true
 #'
@@ -251,7 +251,7 @@ clone_env_one_level_deep = function(env) {
 #' can be used to delete them and replaces them with the public methods. Which are any function
 #' matching pattern typically '^CLASSNAME' e.g. '^DataFrame_' or '^Series_'. Likely only used in
 #' zzz.R
-#' @param env class envrionment to modify. Envs are mutable so no return needed
+#' @param env class environment to modify. Envs are mutable so no return needed
 #' @param class_pattern a regex string matching declared public functions of that class
 #' @param keep list of unmentioned methods to keep in public api
 #' @param remove_f bool if true, will move methods, not copy
@@ -416,7 +416,7 @@ unAsIs = function(X) {
 #' @details
 #' It was much easier impl export unnested struct from polars. This function
 #' restructs exported unnested structs.
-#' This function should be repalced with rust code writing this output
+#' This function should be replaced with rust code writing this output
 #' directly before nesting.
 #' This hack relies on rust uses the tag "is_struct" to mark what should be re-structed.
 #' @keywords internal

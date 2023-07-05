@@ -7,7 +7,7 @@
 \arguments{
 \item{pattern}{Into\if{html}{\out{<Expr>}}, regex pattern}
 
-\item{value}{Into\if{html}{\out{<Expr>}} replcacement}
+\item{value}{Into\if{html}{\out{<Expr>}} replacement}
 
 \item{literal}{bool, Treat pattern as a literal string.}
 }

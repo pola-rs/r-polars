@@ -37,7 +37,7 @@ pl$all = function(name = NULL) {
 #' - Series of utf8 strings abiding to above options
 #' @param ... Additional column names can be passed as strings, separated by commas.
 #'
-#' @return Column Exprression
+#' @return Column Expression
 #'
 #' @keywords Expr_new
 #' @examples
@@ -500,7 +500,7 @@ pl$approx_unique = function(column) { #-> int or Expr
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
@@ -553,7 +553,7 @@ pl$sum = function(...) {
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
@@ -601,7 +601,7 @@ pl$min = function(...) {
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
@@ -647,7 +647,7 @@ pl$max = function(...) {
 #'  - Series or Expr, same as `column$sum()`
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
-#'  - list of strings(column names) or exprressions to add up as expr1 + expr2 + expr3 + ...
+#'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
 #' @return Expr
@@ -740,7 +740,7 @@ pl$var = function(column, ddof = 1) {
 pl$concat_list = function(exprs) {
   l_expr = lapply(as.list(exprs), wrap_e)
   pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(concat_lst(pra))
+  unwrap(concat_list(pra))
 }
 
 

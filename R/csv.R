@@ -43,21 +43,20 @@
 #' @param row_count_name String(NULL is disable), name of a added row count column
 #' @param row_count_offset integer, Offset to start the row_count column (only used if the name is set).
 #' @param parse_dates bool Try to automatically parse dates. If this does not succeed, the column remains of data type pl.Utf8.
-#'
+#' @param reuse_downloaded Boolean. If `TRUE`(default) and a URL was provided,
+#' cache the downloaded files in session for an easy reuse.
 #' @return lazyframe
 #'
 #'
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
-#'
-#' @export
-#'
+#' @name scan_csv
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
-#' lazy_frame = lazy_csv_reader(path = my_file)
+#' lazy_frame = pl$scan_csv(path = my_file)
 #' lazy_frame$collect()
 #' unlink(my_file)
-lazy_csv_reader = function(
+pl$scan_csv = function(
     path,
     sep = ",",
     has_header = TRUE,
@@ -75,10 +74,13 @@ lazy_csv_reader = function(
     encoding = "utf8",
     row_count_name = NULL,
     row_count_offset = 0,
-    parse_dates = FALSE) {
+    parse_dates = FALSE,
+    reuse_downloaded = TRUE) {
   # capture all args and modify some to match lower level function
   args = as.list(environment())
+  args[["reuse_downloaded"]] = NULL
 
+  path <- check_is_link(path, reuse_downloaded = reuse_downloaded)
   args[["path"]] = path.expand(path)
 
   # overwrite_dtype: convert named list of DataType's to DataTypeVector obj
@@ -139,28 +141,18 @@ lazy_csv_reader = function(
 }
 
 #' Read csv to DataFrame
-#' @rdname lazy_csv_reader
-#' @param ... any argument passed to lazy_csv_reader
+#' @rdname scan_csv
+#' @param ... any argument passed to scan_csv
 #' @return DataFrame
-#' @export
-csv_reader = function(...) {
-  lazy_csv_reader(...)$collect()
+#' @name read_csv
+#' @examples
+#' df = pl$read_csv("https://j.mp/iriscsv")
+pl$read_csv = function(...) {
+  pl$scan_csv(...)$collect()
 }
 
 
-#' high level csv_reader, will download if path is url
-#'
-#' @param path file or url
-#' @param ... arguments forwarded to csv_reader or lazy_csv_reader
-#' @param lazy bool default FALSE, read csv lazy
-#' @param reuse_downloaded bool default TRUE, cache url downloaded files in session an reuse
-#'
-#' @return polars_DataFrame or polars_lazy_DataFrame
-#' @export
-#'
-#' @examples df = pl$read_csv("https://j.mp/iriscsv")
-read_csv_ = function(path, lazy = FALSE, reuse_downloaded = TRUE, ...) {
-  # check if path is a existing file, or else try if url to download
+check_is_link = function(path, reuse_downloaded) {
   if (!file.exists(path)) {
     con = NULL
 
@@ -191,13 +183,9 @@ read_csv_ = function(path, lazy = FALSE, reuse_downloaded = TRUE, ...) {
       path = tmp_file # redirect path to tmp downloaded file
     } else {
       # do nothing let path fail on rust side
+      path = NULL
     }
   }
 
-  # read csv
-  if (lazy) {
-    lazy_csv_reader(path, ...)
-  } else {
-    csv_reader(path, ...)
-  }
+  path
 }

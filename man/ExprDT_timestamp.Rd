@@ -18,7 +18,12 @@ Return a timestamp in the given time unit.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+  date = pl$date_range(
+    low = as.Date("2001-1-1"),
+    high = as.Date("2001-1-3"),
+    interval = "1d",
+    lazy = FALSE
+  )
 )
 df$select(
   pl$col("date"),

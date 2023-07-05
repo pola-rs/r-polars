@@ -2,7 +2,7 @@
 % Please edit documentation in R/datatype.R
 \name{is_polars_dtype}
 \alias{is_polars_dtype}
-\title{chek if x is a valid RPolarsDataType}
+\title{check if x is a valid RPolarsDataType}
 \usage{
 is_polars_dtype(x, include_unknown = FALSE)
 }
@@ -13,7 +13,7 @@ is_polars_dtype(x, include_unknown = FALSE)
 a list DataType with an inner DataType
 }
 \description{
-chek if x is a valid RPolarsDataType
+check if x is a valid RPolarsDataType
 }
 \examples{
 polars:::is_polars_dtype(pl$Int64)

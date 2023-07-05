@@ -24,7 +24,12 @@ See unittest "dt$convert_time_zone dt$tz_localize" for a more detailed compariso
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")
+  date = pl$date_range(
+    low = as.Date("2001-3-1"),
+    high = as.Date("2001-7-1"),
+    interval = "1mo",
+    lazy = FALSE
+  )
 )
 df = df$with_columns(
   pl$col("date")

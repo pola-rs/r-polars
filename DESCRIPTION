@@ -10,6 +10,7 @@ Description: 'Polars' is a lightning fast Data Frame library written in Rust.
   This package allows converting R data to 'Polars' data and vice versa,
   and enabling fast data processing with 'Polars'.
 License: MIT + file LICENSE
+Language: en-US
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -32,19 +33,20 @@ Suggests:
     tibble,
     withr
 Config/Needs/website:
-    altdoc,
+    etiennebacher/altdoc,
     here,
     magrittr,
     pkgload,
     yaml
 Config/Needs/dev:
-    devtools,
-    styler,
-    robinlovelace/styler.equals,
-    rextendr,
-    RcppTOML,
     brio,
-    stringr
+    devtools,
+    RcppTOML,
+    rextendr,
+    robinlovelace/styler.equals,
+    spelling,
+    stringr,
+    styler
 Config/testthat/edition: 3
 Collate:
     'utils.R'

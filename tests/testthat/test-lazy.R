@@ -287,13 +287,13 @@ test_that("sort", {
   # test arg by raises error for unsported type
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))),
-    c("the arg", "by", "...", "not convertable into Expr because", "cannot make a column expression")
+    c("the arg", "by", "...", "not convertible into Expr because", "cannot make a column expression")
   )
 
   # test arg ... raises error for unsported type
   expect_grepl_error(
     pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl"), complex(1)),
-    c("the arg", "by", "...", "not convertable into Expr because", "cannot make a column expression")
+    c("the arg", "by", "...", "not convertible into Expr because", "cannot make a column expression")
   )
 
   # test raise error for ... named arg
@@ -382,8 +382,8 @@ test_that("join_asof_simple", {
     group = c("b", "b", "a", "a")
   )
 
-  gdp = pl$DataFrame(l_gdp)$lazy()
-  pop = pl$DataFrame(l_pop)$lazy()
+  gdp = pl$DataFrame(l_gdp)$lazy()$sort("date")
+  pop = pl$DataFrame(l_pop)$lazy()$sort("date")
 
   # strategy param
   expect_identical(

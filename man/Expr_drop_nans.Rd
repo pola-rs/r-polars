@@ -14,7 +14,7 @@ Drop floating point NaN values.
 Similar to R syntax \code{x[!is.nan(x)]}
 }
 \details{
-Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
+Note that NaN values are not null values! (null corresponds to R NA, not R NULL)
 To drop null values, use method \code{drop_nulls}.
 
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}

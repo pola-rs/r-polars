@@ -1,7 +1,7 @@
 #' @title Polars Expressions
 #'
 #' @name Expr_class
-#' @description `Expr`essions are all the functions and methods that are applicable
+#' @description Expressions are all the functions and methods that are applicable
 #' to a Polars DataFrame. They can be split into the following categories (following
 #' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
 #'  * Aggregate
@@ -110,7 +110,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
       {
         if (!is.null(argname)) paste0("argument [", argname, "]") else NULL
       },
-      "not convertable into Expr because:\n"
+      "not convertible into Expr because:\n"
     )
   )
 
@@ -143,9 +143,9 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
       })
     },
     msg = if (element_i >= 1L) {
-      paste0("element [[", element_i, "]] of sequence not convertable into an Expr, error in:\n")
+      paste0("element [[", element_i, "]] of sequence not convertible into an Expr, error in:\n")
     } else {
-      paste0(str_string(elist), " was not convertable into a list of Expr, error in:\n")
+      paste0(str_string(elist), " was not convertible into a list of Expr, error in:\n")
     }
   )
 }
@@ -385,7 +385,6 @@ Expr_gt_eq = function(other) {
 #' Get the group indexes of the group by operation.
 #' Should be used in aggregation context only.
 #' @return Exprs
-#' @export
 #' @docType NULL
 #' @format NULL
 #' @examples
@@ -509,7 +508,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' Similar to R syntax `x[!is.nan(x)]`
 #' @details
 #'
-#'  Note that NaN values are not null values! (null corrosponds to R NA, not R NULL)
+#'  Note that NaN values are not null values! (null corresponds to R NA, not R NULL)
 #'  To drop null values, use method `drop_nulls`.
 #'
 #'
@@ -649,7 +648,7 @@ construct_ProtoExprArray = function(...) {
 #' @rdname Expr_map
 #' @return Expr
 #' @aliases Expr_map
-#' @details user function return should be a series or any Robj convertable into a Series.
+#' @details user function return should be a series or any Robj convertible into a Series.
 #' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
 #'  investigate.
 #' @name Expr_map
@@ -687,7 +686,7 @@ Expr_map_in_background = function(f, output_type = NULL, agg_list = FALSE) {
 #' Apply a user function in a groupby or projection(select) context
 #'
 #'
-#' Depending on context the following behaviour:
+#' Depending on context the following behavior:
 #'
 #' * Projection/Selection:
 #'  Expects an `f` to operate on R scalar values.
@@ -697,7 +696,7 @@ Expr_map_in_background = function(f, output_type = NULL, agg_list = FALSE) {
 #'  Apply in selection context should be avoided as a `lapply()` has half the overhead.
 #'
 #' * Groupby
-#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertable to
+#'   Expects a user function `f` to take a `Series` and return a `Series` or Robj convertible to
 #'   `Series`, eg. R vector. GroupBy context much faster if number groups are quite fewer than
 #'   number of rows, as the iteration is only across the groups.
 #'   The r user function could e.g. do vectorized operations and stay quite performant.
@@ -709,8 +708,8 @@ Expr_map_in_background = function(f, output_type = NULL, agg_list = FALSE) {
 #'   the native expression API because:
 #'     - The native expression engine runs in Rust; functions run in R.
 #'     - Use of R functions forces the DataFrame to be materialized in memory.
-#'     - Polars-native expressions can be parallelised (R functions cannot*).
-#'     - Polars-native expressions can be logically optimised (R functions cannot).
+#'     - Polars-native expressions can be parallelized (R functions cannot*).
+#'     - Polars-native expressions can be logically optimized (R functions cannot).
 #'   Wherever possible you should strongly prefer the native expression API
 #'   to achieve the best performance.
 #'
@@ -866,7 +865,7 @@ Expr_reverse = function() {
 
 #' And
 #' @name Expr_and
-#' @description combine to boolean exprresions with AND
+#' @description combine to boolean expressions with AND
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
@@ -883,7 +882,7 @@ Expr_and = "use_extendr_wrapper"
 
 #' Or
 #' @name Expr_or
-#' @description combine to boolean expresions with OR
+#' @description combine to boolean expressions with OR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
@@ -901,7 +900,7 @@ Expr_or = "use_extendr_wrapper"
 
 #' Xor
 #' @name Expr_xor
-#' @description combine to boolean expresions with XOR
+#' @description combine to boolean expressions with XOR
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
@@ -1041,7 +1040,7 @@ Expr_exp = "use_extendr_wrapper"
 #'  - string: exclude name of column or exclude regex starting with ^and ending with$
 #'  - character vector: exclude all these column names, no regex allowed
 #'  - DataType: Exclude any of this DataType
-#'  - List(DataType): Excldue any of these DataType(s)
+#'  - List(DataType): Exclude any of these DataType(s)
 #'
 #' @keywords Expr
 #' @return Expr
@@ -2076,12 +2075,12 @@ Expr_null_count = "use_extendr_wrapper"
 Expr_arg_unique = "use_extendr_wrapper"
 
 
-#' get unqie values
+#' get unique values
 #' @keywords Expr
 #' @description
 #'  Get unique values of this expression.
 #' Similar to R unique()
-#' @param maintain_order bool, if TRUE guranteed same order, if FALSE maybe
+#' @param maintain_order bool, if TRUE guaranteed same order, if FALSE maybe
 #' @return Expr
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
@@ -2430,7 +2429,7 @@ Expr_pow = function(exponent) {
 
 #' is_in
 #' @name Expr_is_in
-#' @description combine to boolean expresions with similar to `%in%`
+#' @description combine to boolean expressions with similar to `%in%`
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Expr
@@ -3672,7 +3671,7 @@ Expr_reshape = function(dims) {
 #' Shuffle the contents of this expr.
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
-#' seed value intergish value between 0 and 10000 is picked
+#' seed value integerish value between 0 and 10000 is picked
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
@@ -3731,7 +3730,7 @@ Expr_sample = function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, se
 
 
 
-#' preapare alpha
+#' prepare alpha
 #' @description  internal function for emw_x expressions
 #' @param com numeric or NULL
 #' @param span numeric or NULL

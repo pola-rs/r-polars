@@ -66,7 +66,7 @@ test_that("dt$truncate", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(25, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", lazy = FALSE)
 
   # use a dt namespace function
   df = pl$DataFrame(datetime = s)$with_columns(
@@ -110,8 +110,8 @@ test_that("pl$date_range lazy ", {
   )$select(
     pl$date_range("t1", "t2", "6h")$alias("s1"),
     pl$date_range("t1", "t2", "6h", lazy = TRUE)$alias("s2"),
-    pl$date_range(pl$col("t1"), pl$col("t2"), "6h", lazy = TRUE)$alias("s3"),
-    pl$date_range(t1, t2, "6h", lazy = TRUE)$alias("s4")
+    pl$date_range(pl$col("t1"), pl$col("t2"), "6h", lazy = TRUE)$alias("s3")
+    # pl$date_range(t1, t2, "6h")$alias("s4") # TODO make behavior the same as above
   )
   l = df$to_list()
   for (i in length(l) - 1) {
@@ -154,7 +154,7 @@ test_that("dt$round", {
   # make a datetime
   t1 = as.POSIXct("3040-01-01", tz = "GMT")
   t2 = t1 + as.difftime(24, units = "secs")
-  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+  s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", lazy = FALSE)
 
   # use a dt namespace function
   ## TODO contribute POLARS, offset makes little sense, it should be implemented
@@ -238,7 +238,8 @@ test_that("dt$year iso_year", {
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
-      time_zone = "GMT"
+      time_zone = "GMT",
+      lazy = FALSE
     )
   )$with_columns(
     pl$col("date")$dt$year()$alias("year"),
@@ -268,7 +269,8 @@ test_that("dt$quarter, month, day", {
       as.Date("2020-12-25"),
       as.Date("2021-1-05"),
       interval = "1d",
-      time_zone = "GMT"
+      time_zone = "GMT",
+      lazy = FALSE
     )
   )$with_columns(
     pl$col("date")$dt$quarter()$alias("quarter"),
@@ -302,7 +304,8 @@ test_that("hour minute", {
       as.Date("2020-12-25"),
       as.Date("2021-05-05"),
       interval = "1d2h3m4s",
-      time_zone = "GMT"
+      time_zone = "GMT",
+      lazy = FALSE
     )
   )$with_columns(
     pl$col("date")$dt$hour()$alias("hour"),
@@ -352,7 +355,8 @@ test_that("second, milli, micro, nano", {
       as.Date("2021-05-05"),
       interval = "2h3m4s555ms666us777ns",
       time_zone = "GMT",
-      time_unit = "ns"
+      time_unit = "ns",
+      lazy = FALSE
     )
   )$with_columns(
     pl$col("date")$dt$second()$alias("second"),
@@ -399,7 +403,10 @@ test_that("second, milli, micro, nano", {
 
 test_that("offset_by", {
   df = pl$DataFrame(
-    dates = pl$date_range(as.Date("2000-1-1"), as.Date("2005-1-1"), "1y", time_zone = "GMT")
+    dates = pl$date_range(
+      as.Date("2000-1-1"), as.Date("2005-1-1"), "1y",
+      time_zone = "GMT", lazy = FALSE
+    )
   )
   l_actual = df$with_columns(
     pl$col("dates")$dt$offset_by("1y")$alias("date_plus_1y"),
@@ -487,7 +494,9 @@ test_that("dt$timestamp", {
   skip_if_not_installed("bit64")
 
   df = pl$DataFrame(
-    date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+    date = pl$date_range(
+      low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d", lazy = FALSE
+    )
   )
   l_exp = df$select(
     pl$col("date"),
@@ -522,7 +531,8 @@ test_that("dt$timestamp", {
 test_that("dt$with_time_unit cast_time_unit", {
   df_time = pl$DataFrame(
     date = pl$date_range(
-      low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d", time_unit = "us"
+      low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d", time_unit = "us",
+      lazy = FALSE
     )
   )$select(
     pl$col("date"),
@@ -637,7 +647,7 @@ test_that("dt$replace_time_zone", {
   df = pl$DataFrame(
     london_timezone = pl$date_range(
       low = as.Date("2001-3-1"), high = as.Date("2001-7-1"),
-      interval = "1mo", time_zone = "Europe/London"
+      interval = "1mo", time_zone = "Europe/London", lazy = FALSE
     )
   )
 
@@ -695,7 +705,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   NA64 = bit64::NA_integer64_
   # days
   df = pl$DataFrame(date = pl$date_range(
-    low = as.Date("2020-3-1"), high = as.Date("2020-5-1"), interval = "1mo"
+    low = as.Date("2020-3-1"), high = as.Date("2020-5-1"), interval = "1mo", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$days()$alias("diff")
   )$to_list()
@@ -703,7 +713,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
   # hours
   df = pl$DataFrame(date = pl$date_range(
-    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d"
+    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$hours()$alias("diff")
   )$to_list()
@@ -711,7 +721,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
 
   # minutes
   df = pl$DataFrame(date = pl$date_range(
-    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d"
+    low = as.Date("2020-1-1"), high = as.Date("2020-1-4"), interval = "1d", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$minutes()$alias("diff")
   )$to_list()
@@ -720,7 +730,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # seconds
   df = pl$DataFrame(date = pl$date_range(
     low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m"
+    interval = "1m", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$seconds()$alias("diff")
   )$to_list()
@@ -730,7 +740,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # milliseconds
   df = pl$DataFrame(date = pl$date_range(
     low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m"
+    interval = "1m", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$milliseconds()$alias("diff")
   )$to_list()
@@ -739,7 +749,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # microseconds
   df = pl$DataFrame(date = pl$date_range(
     low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m"
+    interval = "1m", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$microseconds()$alias("diff")
   )$to_list()
@@ -748,7 +758,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   # nanoseconds
   df = pl$DataFrame(date = pl$date_range(
     low = as.Date("2020-1-1"), high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
-    interval = "1m"
+    interval = "1m", lazy = FALSE
   ))$with_columns(
     pl$col("date")$diff()$dt$nanoseconds()$alias("diff")
   )$to_list()

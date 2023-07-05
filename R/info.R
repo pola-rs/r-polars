@@ -1,10 +1,10 @@
 #' Report information of the package
 #'
 #' @return A list with information of the package
+#' @name polars_info
 #' @examples
-#' polars_info()
-#' @export
-polars_info = function() {
+#' pl$polars_info()
+pl$polars_info = function() {
   # Similar to arrow::arrow_info()
   out = list(
     version = utils::packageVersion("polars"),

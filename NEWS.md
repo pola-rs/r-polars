@@ -4,6 +4,15 @@
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
+- Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
+    - Rename `concat_lst` to `concat_list`.
+    <!-- TODO: - Rename `arr` to `list`. -->
+    - Rename `$str$explode` to `$str$str_explode`.
+    - Remove `tz_aware` and `utc` arguments from `str_parse`.
+    - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
+- The functions to read CSV have been renamed `scan_csv` and `read_csv` for 
+  consistency with the upstream Polars. `scan_xxx` and `read_xxx` functions are now accessed via `pl`,
+  e.g. `pl$scan_csv()` (#305).
 
 ## What's changed
 
@@ -22,12 +31,13 @@ for demonstration purposes (#240).
     - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
       The profile can be changed by setting the environment variable `RPOLARS_PROFILE` (when set to `release-optimized`,
       `opt-level` of `argminmax` is set to `3`).
-- A new function `polars_info()` will tell which features enabled (#271, #285).
+- A new function `pl$polars_info()` will tell which features enabled (#271, #285, #305).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - New method `<DataFrame>$describe()` (#268).
+- Cross joining is now possible with `how = "cross"` in `$join()`
 
 # polars 0.6.1
 

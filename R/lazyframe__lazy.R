@@ -3,7 +3,7 @@
 #' @name LazyFrame_class
 #' @description The `LazyFrame`-class is simply two environments of respectively
 #' the public and private methods/function calls to the polars rust side. The
-#' instanciated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
+#' instantiated `LazyFrame`-object is an `externalptr` to a lowlevel rust polars
 #' LazyFrame  object. The pointer address is the only statefullness of the
 #' LazyFrame object on the R side. Any other state resides on the rust side. The
 #' S3 method `.DollarNames.LazyFrame` exposes all public `$foobar()`-methods which
@@ -22,9 +22,9 @@
 #' `DataFrame_object$lazy() -> LazyFrame_object` and `LazyFrame_object$collect() -> DataFrame_object`.
 #' This is quite similar to the lazy-collect syntax of the dplyrpackage to
 #' interact with database connections such as SQL variants. Most SQL databases
-#' would be able to perform the same otimizations as polars such Predicate Pushdown
-#' and Projection. However polars can intertact and optimize queries with both
-#' SQL DBs and other data sources such parquet files simultanously. (#TODO
+#' would be able to perform the same optimizations as polars such Predicate Pushdown
+#' and Projection. However polars can interact and optimize queries with both
+#' SQL DBs and other data sources such parquet files simultaneously. (#TODO
 #' implement r-polars SQL ;).
 #'
 #' @details Check out the source code in R/LazyFrame__lazy.R how public methods
@@ -62,7 +62,7 @@
 #' Ldf_okay = Pdf$lazy()
 #'
 #' # The-Best-Way:  LazyFrame created directly from a data source is best...
-#' Ldf_best = pl$lazy_csv_reader(temp_filepath)
+#' Ldf_best = pl$scan_csv(temp_filepath)
 #'
 #' # ... as if to e.g. filter the LazyFrame, that filtering also caleld predicate will be
 #' # pushed down in the executation stack to the csv_reader, and thereby only bringing into
@@ -78,7 +78,7 @@
 #'
 #' # NOTE For Ldf_okay, the full time to load csv alrady paid when creating Rdf and Pdf
 #'
-#' # The optimized plan are quite different, Ldf_best will read csv and perform filter simultanously
+#' # The optimized plan are quite different, Ldf_best will read csv and perform filter simultaneously
 #' Ldf_okay$describe_optimized_plan()
 #' Ldf_best$describe_optimized_plan()
 #'
@@ -95,7 +95,7 @@
 #' )
 #'
 #' # a user might write it as a one-liner like so:
-#' Pdf_best2 = pl$lazy_csv_reader(temp_filepath)$filter(pl$col("Species") == "setosa")
+#' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
 LazyFrame
 
 
@@ -166,7 +166,6 @@ print.LazyFrame = function(x, ...) {
 #'
 #' @return self
 #' @docType NULL
-#' @export
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$DataFrame(iris)$lazy()$print()
@@ -189,7 +188,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' write.csv(iris, my_file)
 #'
 #' # Read the file and make a LazyFrame
-#' lazy_frame = lazy_csv_reader(path = my_file)
+#' lazy_frame = pl$scan_csv(path = my_file)
 #'
 #' # Prepare your query
 #' lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
@@ -241,7 +240,7 @@ LazyFrame_with_columns = function(...) {
 LazyFrame_with_column = "use_extendr_wrapper"
 
 #' @title Apply filter to LazyFrame
-#' @description Filter rows with an Expression definining a boolean column
+#' @description Filter rows with an Expression defining a boolean column
 #' @keywords LazyFrame
 #' @param expr one Expr or string naming a column
 #' @return A new `LazyFrame` object with add/modified column.
@@ -596,10 +595,6 @@ LazyFrame_join = function(
   how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
   how = match.arg(how[1L], how_opts)
 
-  if (how == "cross") {
-    stopf("not implemented how == cross")
-  }
-
   if (!is.null(on)) {
     rexprs = do.call(construct_ProtoExprArray, as.list(on))
     rexprs_left = rexprs
@@ -607,8 +602,11 @@ LazyFrame_join = function(
   } else if ((!is.null(left_on) && !is.null(right_on))) {
     rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
-  } else {
+  } else if (how != "cross") {
     stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
+  } else {
+    rexprs_left = do.call(construct_ProtoExprArray, as.list(self$columns))
+    rexprs_right = do.call(construct_ProtoExprArray, as.list(other$columns))
   }
 
   .pr$LazyFrame$join(

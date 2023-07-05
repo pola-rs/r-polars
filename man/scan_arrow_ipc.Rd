@@ -3,17 +3,6 @@
 \name{scan_arrow_ipc}
 \alias{scan_arrow_ipc}
 \title{Import data in Apache Arrow IPC format}
-\usage{
-scan_arrow_ipc(
-  path,
-  n_rows = NULL,
-  cache = TRUE,
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
-  memmap = TRUE
-)
-}
 \arguments{
 \item{path}{string, path}
 
@@ -25,7 +14,7 @@ scan_arrow_ipc(
 
 \item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
 
-\item{row_count_offset}{integer, the rowcount column can be offst by this value}
+\item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
 \item{memmap}{bool, mapped memory}
 }

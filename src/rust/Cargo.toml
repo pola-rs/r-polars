@@ -34,7 +34,7 @@ flume = "0.10.14"
 indenter = "0.3.3"
 ipc-channel = "0.16.1"
 once_cell = "1.18.0"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "e973f6386a28f16136fb8ba5a737103f95911861", default_features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b", default_features = false }
 rayon = "1.6.1"
 serde = { version = "1.0.164", features = [ "derive" ] }
 serde_json = "*"
@@ -133,4 +133,4 @@ features = [
 ]
 default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "e973f6386a28f16136fb8ba5a737103f95911861"
+rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"

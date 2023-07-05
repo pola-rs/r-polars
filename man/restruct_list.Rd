@@ -19,7 +19,7 @@ Restruct an object where structs where previously unnested
 \details{
 It was much easier impl export unnested struct from polars. This function
 restructs exported unnested structs.
-This function should be repalced with rust code writing this output
+This function should be replaced with rust code writing this output
 directly before nesting.
 This hack relies on rust uses the tag "is_struct" to mark what should be re-structed.
 }

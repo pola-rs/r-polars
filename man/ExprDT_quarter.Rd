@@ -8,7 +8,7 @@
 function
 }
 \value{
-Expr of quater as UInt32
+Expr of quarter as UInt32
 }
 \description{
 Extract quarter from underlying Date representation.
@@ -21,7 +21,8 @@ df = pl$DataFrame(
     as.Date("2020-12-25"),
     as.Date("2021-1-05"),
     interval = "1d",
-    time_zone = "GMT"
+    time_zone = "GMT",
+    lazy = FALSE
   )
 )
 df$with_columns(

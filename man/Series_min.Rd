@@ -14,7 +14,7 @@ Reduce Series with min
 }
 \details{
 Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
-Int64 before minming to prevent overflow issues.
+Int64 before taking the min to prevent overflow issues.
 }
 \examples{
 pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
