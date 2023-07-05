@@ -40,7 +40,7 @@ for demonstration purposes (#240).
 - Cross joining is now possible with `how = "cross"` in `$join()` (#310).
 - Add license info of all rust crates to `LICENSE.note` (#309).
 - With CRAN 0.7.0 release candidate (#308).
-    - New author accredited, Tatsuya Shima "eitsupi".
+    - New author accredited, SHIMA Tatsuya (@eitsupi).
     - DESCRIPTION revised.
 
 # polars 0.6.1
