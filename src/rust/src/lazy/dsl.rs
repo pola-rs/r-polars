@@ -1675,40 +1675,36 @@ impl Expr {
         .into()
     }
 
-    // pub fn map_in_background(
-    //     &self,
-    //     lambda: Robj,
-    //     output_type: Nullable<&RPolarsDataType>,
-    //     agg_list: bool,
-    // ) -> Self {
-    //     let rfunc = |s: pl::Series| {
-    //         use crate::series::Series as RSeries;
-    //         use polars::prelude::PolarsError::ComputeError as Err;
-    //         let name = s.name().to_string();
-    //         let rin = RSeries::from(s).to_r().map_err(|e| Err(e.into()))?;
-    //         let rout = crate::RBGPOOL
-    //             .reval(rin, rin)
-    //             .map_err(|e| Err(format!("{e}").into()))?()
-    //         .map_err(|e| Err(format!("{e}").into()))?;
-    //         RSeries::new(rout, name.as_str())
-    //             .map_err(|e| Err(format!("{e}").into()))
-    //             .map(|s| Some(s.0))
-    //     };
+    pub fn map_in_background(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+        agg_list: bool,
+    ) -> Self {
+        let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
-    //     let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+        let rbgfunc = move |s| {
+            Ok(crate::RBGPOOL
+                .rmap_series(raw_func.clone(), s)
+                .map_err(|e| polars::prelude::PolarsError::ComputeError(format!("{}", e).into()))?(
+            )
+            .ok())
+        };
 
-    //     let output_map = pl::GetOutput::map_field(move |fld| match ot {
-    //         Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
-    //         None => fld.clone(),
-    //     });
+        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
 
-    //     if agg_list {
-    //         self.clone().0.map_list(rfunc, output_map)
-    //     } else {
-    //         self.clone().0.map(rfunc, output_map)
-    //     }
-    //     .into()
-    // }
+        let output_map = pl::GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
+            None => fld.clone(),
+        });
+
+        if agg_list {
+            self.clone().0.map_list(rbgfunc, output_map)
+        } else {
+            self.clone().0.map(rbgfunc, output_map)
+        }
+        .into()
+    }
 
     pub fn is_unique(&self) -> Self {
         self.0.clone().is_unique().into()

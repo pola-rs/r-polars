@@ -2,6 +2,7 @@ use crate::rdataframe::DataFrame as RDF;
 use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
 use extendr_api::{extendr, extendr_module, symbol::class_symbol, Attributes, Rinternals, Robj};
 use ipc_channel::ipc;
+use polars::prelude::Series as PSeries;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -12,7 +13,7 @@ pub struct RThreadHandle<T> {
 }
 
 impl<T: Send + Sync + 'static> RThreadHandle<T> {
-    pub fn new(compute: fn() -> T) -> Self {
+    pub fn new(compute: impl FnOnce() -> T + Send + 'static) -> Self {
         RThreadHandle {
             handle: Some(thread::spawn(compute)),
         }
@@ -67,38 +68,75 @@ pub fn deserialize_robj(bits: Vec<u8>) -> RResult<Robj> {
         .when("deserializing an R object")
 }
 
+pub fn serialize_dataframe(dataframe: &mut polars::prelude::DataFrame) -> RResult<Vec<u8>> {
+    use polars::io::SerWriter;
+
+    let mut dump = Vec::new();
+    polars::io::ipc::IpcWriter::new(&mut dump)
+        .finish(dataframe)
+        .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
+    Ok(dump)
+}
+
+pub fn deserialize_dataframe(bits: Vec<u8>) -> RResult<polars::prelude::DataFrame> {
+    use polars::io::SerReader;
+
+    polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
+        .finish()
+        .map_err(crate::rpolarserr::polars_to_rpolars_err)
+}
+
+pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {
+    serialize_dataframe(&mut std::iter::once(series).into_iter().collect())
+}
+
+pub fn deserialize_series(bits: Vec<u8>) -> RResult<PSeries> {
+    let tn = std::any::type_name::<PSeries>();
+    deserialize_dataframe(bits)?
+        .get_columns()
+        .split_first()
+        .ok_or(RPolarsErr::new())
+        .mistyped(tn)
+        .and_then(|(s, r)| {
+            r.is_empty()
+                .then_some(s.clone())
+                .ok_or(RPolarsErr::new())
+                .mistyped(tn)
+        })
+}
+
 /// Defines all kinds of tasks that can be sent to background R processes
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum RIPCJob {
     /// Evaluate a R function with R arguments
-    Reval {
+    REval {
         raw_func: Vec<u8>,
         raw_arg: Vec<u8>,
         collector: ipc::IpcSender<RResult<Vec<u8>>>,
     },
-    // Map a Polars series with a R function
-    // SeriesMap {
-    //     raw_func: Vec<u8>,
-    //     arrow: Vec<u8>,
-    //     collector: ipc::IpcSender<RResult<Vec<u8>>>,
-    // },
+    /// Map a Polars series with a R function
+    RMapSeries {
+        raw_func: Vec<u8>,
+        raw_series: Vec<u8>,
+        collector: ipc::IpcSender<RResult<Vec<u8>>>,
+    },
 }
 
 impl RIPCJob {
     pub fn handle(self) -> RResult<()> {
         use extendr_api::*;
         match self {
-            Self::Reval {
+            Self::REval {
                 raw_func,
                 raw_arg,
                 collector,
             } => {
-                let lambda = deserialize_robj(raw_func)?;
+                let func = deserialize_robj(raw_func)?;
                 let arg = deserialize_robj(raw_arg)?;
-                let ret = lambda
+                let ret = func
                     .as_function()
                     .ok_or(RPolarsErr::new())
-                    .bad_val(rdbg(lambda))
+                    .bad_val(rdbg(func))
                     .mistyped("pure R function")?
                     .call(
                         arg.as_pairlist()
@@ -113,27 +151,25 @@ impl RIPCJob {
                     )?;
                 collector.send(serialize_robj(ret))?;
                 Ok(())
-            } // Self::SeriesMap {
-              //     raw_func,
-              //     arrow,
-              //     collector,
-              // } => {
-              //     use polars::prelude::Series;
-              //     let input_series: RResult<Series> = {
-              //         use polars::chunked_array::ChunkedArray;
-              //         use polars::export::arrow::io::ipc::read::*;
-              //         use polars::io::ArrowReader;
-              //         let lambda = deserialize_robj(raw_func)?;
-              //         let mut arrow_slice = arrow.as_slice();
-              //         let metadata = read_stream_metadata(&mut arrow_slice)?;
-              //         let array = StreamReader::new(arrow_slice, metadata, None)
-              //             .next_record_batch()?
-              //             .ok_or(RPolarsErr::new())?
-              //         // ChunkedArray::from_chunks("RBGSeries", vec![array]);
-              //         todo!();
-              //     };
-              //     todo!();
-              // }
+            }
+            Self::RMapSeries {
+                raw_func,
+                raw_series,
+                collector,
+            } => {
+                use crate::series::Series as RSeries;
+                let func = deserialize_robj(raw_func)?;
+                let series = deserialize_series(raw_series)?;
+                let ret_robj = func
+                    .as_function()
+                    .ok_or(RPolarsErr::new())
+                    .bad_val(rdbg(func))
+                    .mistyped("pure R function")?
+                    .call(pairlist!(RSeries(series)))?;
+                let ret_series = RSeries::any_robj_to_pl_series_result(ret_robj)?;
+                collector.send(serialize_series(ret_series))?;
+                Ok(())
+            }
         }
     }
 }
@@ -205,6 +241,13 @@ impl RBackgroundPool {
         }
     }
 
+    pub fn raw_channel() -> RResult<(
+        ipc::IpcSender<RResult<Vec<u8>>>,
+        ipc::IpcReceiver<RResult<Vec<u8>>>,
+    )> {
+        ipc::channel().when("trying to create a inter-process channel for raw bits transferation")
+    }
+
     pub fn lease(&self) -> RResult<RBackgroundHandler> {
         if let Some(handle) = self.pool.lock()?.pop_front() {
             Ok(handle)
@@ -244,8 +287,8 @@ impl RBackgroundPool {
         raw_arg: Vec<u8>,
     ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + 't> {
         let handler = self.lease()?;
-        let (tx, rx) = ipc::channel::<RResult<Vec<u8>>>()?;
-        handler.submit(RIPCJob::Reval {
+        let (tx, rx) = Self::raw_channel()?;
+        handler.submit(RIPCJob::REval {
             raw_func,
             raw_arg,
             collector: tx,
@@ -256,6 +299,27 @@ impl RBackgroundPool {
                 .when("trying to receive the result from the background R process")?;
             self.shelf(handler)?;
             raw_ret
+        })
+    }
+
+    pub fn rmap_series<'t>(
+        &'t self,
+        raw_func: Vec<u8>,
+        series: PSeries,
+    ) -> RResult<impl FnOnce() -> RResult<PSeries> + 't> {
+        let handler = self.lease()?;
+        let (tx, rx) = Self::raw_channel()?;
+        handler.submit(RIPCJob::RMapSeries {
+            raw_func,
+            raw_series: serialize_series(series)?,
+            collector: tx,
+        })?;
+        Ok(move || {
+            let raw_series = rx
+                .recv()
+                .when("trying to receive the result from the background R process")?;
+            self.shelf(handler)?;
+            deserialize_series(raw_series?)
         })
     }
 }
@@ -275,11 +339,6 @@ pub fn handle_background_request(server_name: String) -> RResult<()> {
 
 #[extendr]
 pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
-    use extendr_api::*;
-    rprintln!(
-        "Existing processes in background pool: {}",
-        crate::RBGPOOL.pool.lock()?.len()
-    );
     deserialize_robj(crate::RBGPOOL
         .reval(serialize_robj(lambda)?, serialize_robj(arg)?)?(
     )?)
@@ -307,7 +366,6 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
                     .alias("Price"),
             )
         };
-
         let rlf = crate::lazy::dataframe::LazyFrame::from(plf)
             .collect()
             .unwrap();

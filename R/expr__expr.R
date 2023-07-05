@@ -662,6 +662,10 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 }
 
 
+Expr_map_in_background = function(f, output_type = NULL, agg_list = FALSE) {
+  .pr$Expr$map_in_background(self, f, output_type, agg_list)
+}
+
 
 #' Expr_apply
 #' @keywords Expr

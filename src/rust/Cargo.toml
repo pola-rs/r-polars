@@ -104,7 +104,6 @@ features = [
   "parquet",
   "to_dummies",
   "ipc",
-  "ipc_streaming",
   "avro",
   "list_eval",
   "arg_where",

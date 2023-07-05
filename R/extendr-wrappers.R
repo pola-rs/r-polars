@@ -703,6 +703,8 @@ Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
 Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
 
+Expr$map_in_background <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map_in_background, self, lambda, output_type, agg_list)
+
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
 Expr$approx_unique <- function() .Call(wrap__Expr__approx_unique, self)
@@ -896,6 +898,8 @@ LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_backgr
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
 LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
+
+LazyFrame$collect_in_background <- function() .Call(wrap__LazyFrame__collect_in_background, self)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 

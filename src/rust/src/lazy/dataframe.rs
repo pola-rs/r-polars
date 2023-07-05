@@ -1,6 +1,7 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
+use crate::rdataframe::DataFrame as RDataFrame;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
@@ -79,9 +80,21 @@ impl LazyFrame {
         })
     }
 
-    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
+    pub fn collect_handled(&self) -> RResult<RDataFrame> {
         use crate::rpolarserr::WithRctx;
         handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
+    }
+
+    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDataFrame>> {
+        use crate::rbackground::*;
+        let dup = self.clone();
+        RThreadHandle::new(move || {
+            Ok(RDataFrame::from(
+                dup.0
+                    .collect()
+                    .map_err(crate::rpolarserr::polars_to_rpolars_err)?,
+            ))
+        })
     }
 
     fn first(&self) -> Self {
