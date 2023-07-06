@@ -1,5 +1,12 @@
 # polars (development version)
 
+## What's changed
+
+- `$with_column()` is now deprecated (following upstream `polars`). It will be
+  removed in 0.9.0. It should be replaced with `$with_columns()`.
+
+# polars (0.7.0)
+
 ## BREAKING CHANGES
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This

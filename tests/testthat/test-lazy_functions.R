@@ -23,15 +23,15 @@ test_that("pl$sum", {
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("a", "c", 42L)))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("a", "c", 42L)))$to_list(),
     c(l, list(sum = c(48L, 50L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("*")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("*")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
 })
@@ -64,13 +64,13 @@ test_that("pl$min pl$max", {
 
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
-  expect_identical(pl$DataFrame(l)$with_column(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
-  expect_identical(pl$DataFrame(l)$with_column(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
 
 
   ## TODO polars cannot handle wildcards hey wait with testing until after PR
-  # expect_identical(pl$DataFrame(l)$with_column(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
-  # expect_identical(pl$DataFrame(l)$with_column(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
 })
 
 
