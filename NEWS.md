@@ -141,7 +141,7 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
 - Customize **extendr** to better support cross Rust-R/R-Rust error handling
   - bump extendr_api by @sorhawell in #44
   - Str even more by @sorhawell in #47
-- **rpolars** is now available for install from [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install) @eitsupi
+- **rpolars** is now available for install from [rpolars.r-universe.dev](https://rpolars.r-universe.dev/polars#install) @eitsupi
   - advertise R-universe by @sorhawell in #39
   - Includes reasonably easy pre-compiled installation for arm64-MacBooks
 - All string Expressions available
