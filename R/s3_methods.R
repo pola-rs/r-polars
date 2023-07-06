@@ -112,30 +112,6 @@ length.LazyFrame = length.DataFrame
 #' @noRd
 length.Series = function(x) x$len()
 
-#' The Number of Rows of a DataFrame
-#' @param x DataFrame
-#' @return Integer
-#' @export
-nrow.DataFrame = function(x) x$height
-
-#' The Number of Columns of a DataFrame
-#' @param x DataFrame
-#' @return Integer
-#' @export
-ncol.DataFrame = function(x) x$width
-
-#' The Number of Columns of a DataFrame
-#' @param x LazyFrame
-#' @return Integer
-#' @export
-ncol.LazyFrame = function(x) x$width
-
-#' The Number of Rows of a LazyFrame
-#' @param x LazyFrame
-#' @return Integer
-#' @export
-nrow.LazyFrame = function(x) NA
-
 #' @export
 #' @noRd
 names.DataFrame = function(x) x$columns
