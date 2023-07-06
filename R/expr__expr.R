@@ -124,7 +124,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' @description make sure all elements of a list is wrapped as Expr
 #' DEPRECATED:  prefer robj_to!(VecPlExpr) on rust side
 #' Capture any conversion error in the result
-#' @param elist a list Expr or any R object Into<Expr> (passable to pl$lit)
+#' @param elist a list Expr or any R object `Into<Expr>` (passable to pl$lit)
 #' @details
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or

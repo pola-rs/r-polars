@@ -613,7 +613,7 @@ LazyFrame_join = function(
 #' @description sort a LazyFrame by on or more Expr
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
