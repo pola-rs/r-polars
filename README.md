@@ -31,7 +31,7 @@ The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
 by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
-Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
+Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
 ## Install

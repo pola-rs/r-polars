@@ -8,7 +8,7 @@ maintained by Søren Welling
 
 Development occurs on Github: https://github.com/pola-rs/r-polars
 
-Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
+Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
 The **polars** package for R is published under the MIT license.
