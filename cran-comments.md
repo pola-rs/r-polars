@@ -16,19 +16,14 @@
   - New submission
   - installed size is 140.8Mb
   
-  
-## CRAN first submission
 
-* checking HTML version of manual ... [73s] NOTE
-Found the following HTML validation problems:
-* checking installed package size ... NOTE
-  installed size is 73.9Mb
-  sub-directories of 1Mb or more:
-    libs  72.1Mb
-* checking CRAN incoming feasibility ... [13s] NOTE
-Maintainer: 'Soren Welling <sorhawell@gmail.com>'
+## Resubmission
+This is a resubmission. In this version I have:
 
-New submission
+* Converted the DESCRIPTION title to title case.
+* Quoted the word 'DataFrame' in Descript
+* backticked `<Expr>`
+* avoid github binary release urls in README (CRAN could oddly not reach them)
+* fix redirection links
+* fix dead links
 
-Possibly misspelled words in DESCRIPTION:
-  DataFrame (2:23, 11:29)
