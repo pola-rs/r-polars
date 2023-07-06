@@ -6,7 +6,6 @@
   is for consistency with the upstream Polars (#291, #293).
 - Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
     - Rename `concat_lst` to `concat_list`.
-    <!-- TODO: - Rename `arr` to `list`. -->
     - Rename `$str$explode` to `$str$str_explode`.
     - Remove `tz_aware` and `utc` arguments from `str_parse`.
     - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
