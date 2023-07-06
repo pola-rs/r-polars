@@ -130,6 +130,10 @@ dimnames.DataFrame = function(x) list(row.names(x), names(x))
 
 #' @export
 #' @noRd
+dimnames.LazyFrame = function(x) list(NULL, names(x))
+
+#' @export
+#' @noRd
 as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' @export
