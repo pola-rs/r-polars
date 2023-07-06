@@ -94,23 +94,23 @@ tail.LazyFrame = tail.DataFrame
 
 #' @export
 #' @noRd
-dim.DataFrame = function(x, ...) x$shape
+dim.DataFrame = function(x) x$shape
 
 #' @export
 #' @noRd
-dim.LazyFrame = function(x, ...) c(NA, x$width)
+dim.LazyFrame = function(x) c(NA, x$width)
 
 #' @export
 #' @noRd
-length.DataFrame = function(x, ...) x$width
+length.DataFrame = function(x) x$width
 
 #' @export
 #' @noRd
-length.LazyFrame = function(x, ...) x$width
+length.LazyFrame = length.DataFrame
 
 #' @export
 #' @noRd
-length.Series = function(x, ...) x$len()
+length.Series = function(x) x$len()
 
 #' The Number of Rows of a DataFrame
 #' @param x DataFrame
