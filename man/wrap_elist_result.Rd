@@ -7,7 +7,7 @@
 wrap_elist_result(elist, str_to_lit = TRUE)
 }
 \arguments{
-\item{elist}{a list Expr or any R object Into\if{html}{\out{<Expr>}} (passable to pl$lit)}
+\item{elist}{a list Expr or any R object \verb{Into<Expr>} (passable to pl$lit)}
 }
 \value{
 Expr
