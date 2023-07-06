@@ -280,27 +280,27 @@ impl RBackgroundPool {
     }
 
     pub fn shelf(&self, mut handle: RBackgroundHandler) -> RResult<()> {
-        let res: RResult<_> = {
+        let res = || {
             let mut lpool = self.pool.lock()?;
             if handle.proc.try_wait()?.is_none() && self.cap.lock()?.gt(&lpool.len()) {
                 lpool.push_back(handle);
             }
-            Ok(())
+            RResult::Ok(())
         };
-        res.when("trying to handle a completed R process")
+        res().when("trying to handle a completed R process")
     }
 
     pub fn resize(&self, new_cap: usize) -> RResult<()> {
-        let res: RResult<_> = {
+        let res = || {
             let mut lpool = self.pool.lock()?;
             let mut old_cap = self.cap.lock()?;
             if new_cap.lt(&lpool.len()) {
                 lpool.truncate(new_cap);
             }
             *old_cap = new_cap;
-            Ok(())
+            RResult::Ok(())
         };
-        res.when("trying to resize the global R process pool")
+        res().when("trying to resize the global R process pool")
     }
 
     pub fn reval<'t>(
