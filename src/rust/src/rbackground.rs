@@ -144,25 +144,29 @@ impl RIPCJob {
                 raw_arg,
                 collector,
             } => {
-                let func = deserialize_robj(raw_func)?;
-                let arg = deserialize_robj(raw_arg)?;
-                let ret = func
-                    .as_function()
-                    .ok_or(RPolarsErr::new())
-                    .bad_val(rdbg(func))
-                    .mistyped("pure R function")?
-                    .call(
-                        arg.as_pairlist()
-                            .or_else(|| {
-                                call!("as.pairlist", &arg)
-                                    .ok()
-                                    .and_then(|l| l.as_pairlist())
-                            })
-                            .ok_or(RPolarsErr::new())
-                            .bad_val(rdbg(arg))
-                            .mistyped("pairlist (as R function arguments)")?,
-                    )?;
-                collector.send(serialize_robj(ret))?;
+                let bits = || {
+                    let func_robj = deserialize_robj(raw_func)?;
+                    let arg_robj = deserialize_robj(raw_arg)?;
+                    let func = func_robj
+                        .as_function()
+                        .ok_or(RPolarsErr::new())
+                        .bad_val(rdbg(func_robj))
+                        .mistyped("pure R function")?;
+                    let arg = arg_robj
+                        .as_pairlist()
+                        .or_else(|| {
+                            call!("as.pairlist", &arg_robj)
+                                .ok()
+                                .and_then(|l| l.as_pairlist())
+                        })
+                        .ok_or(RPolarsErr::new())
+                        .bad_val(rdbg(arg_robj))
+                        .mistyped("pairlist (as R function arguments)")?;
+                    serialize_robj(func.call(arg)?)
+                };
+                collector.send(
+                    bits().when("trying to evaluate R function call in the background R process"),
+                )?;
                 Ok(())
             }
             Self::RMapSeries {
@@ -170,17 +174,22 @@ impl RIPCJob {
                 raw_series,
                 collector,
             } => {
-                use crate::series::Series as RSeries;
-                let func = deserialize_robj(raw_func)?;
-                let series = deserialize_series(raw_series)?;
-                let ret_robj = func
-                    .as_function()
-                    .ok_or(RPolarsErr::new())
-                    .bad_val(rdbg(func))
-                    .mistyped("pure R function")?
-                    .call(pairlist!(RSeries(series)))?;
-                let ret_series = RSeries::any_robj_to_pl_series_result(ret_robj)?;
-                collector.send(serialize_series(ret_series))?;
+                let bits = || {
+                    use crate::series::Series as RSeries;
+                    let func_robj = deserialize_robj(raw_func)?;
+                    let series = deserialize_series(raw_series)?;
+                    let func = func_robj
+                        .as_function()
+                        .ok_or(RPolarsErr::new())
+                        .bad_val(rdbg(func_robj))
+                        .mistyped("pure R function")?;
+                    serialize_series(RSeries::any_robj_to_pl_series_result(
+                        func.call(pairlist!(RSeries(series)))?,
+                    )?)
+                };
+                collector.send(bits().when(
+                    "trying to map a polars series with R function in the background R process",
+                ))?;
                 Ok(())
             }
         }

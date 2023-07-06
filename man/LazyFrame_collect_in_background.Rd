@@ -13,7 +13,8 @@ a thread handle for the task
 collect DataFrame by lazy query in a background thread
 }
 \examples{
-pl$LazyFrame(mtcars)$with_column(pl$col("mpg")$map_in_background(function(x) x * 0.43)$alias("kml"))$collect_in_background()
+prexpr <- pl$col("mpg")$map_in_background(\(x) x * 0.43)$alias("kml")
+pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
 }
 \keyword{DataFrame_new}
 \keyword{LazyFrame}

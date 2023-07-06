@@ -271,7 +271,9 @@ LazyFrame_collect_background = function() {
 #' @description collect DataFrame by lazy query in a background thread
 #' @keywords LazyFrame DataFrame_new
 #' @return a thread handle for the task
-#' @examples pl$LazyFrame(mtcars)$with_column(pl$col("mpg")$map_in_background(function(x) x * 0.43)$alias("kml"))$collect_in_background()
+#' @examples
+#' prexpr <- pl$col("mpg")$map_in_background(\(x) x * 0.43)$alias("kml")
+#' pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)
 }
