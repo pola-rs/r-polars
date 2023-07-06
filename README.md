@@ -247,7 +247,7 @@ you will to install the Rust toolchain:
 
 Here are the steps required for an example contribution, where we are
 implementing the [cosine
-expression](https://rpolars.github.io/reference/Expr_cos.html):
+expression](https://rpolars.github.io/reference/Expr_cos/):
 
 - Look up the [polars.Expr.cos method in py-polars
   documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
