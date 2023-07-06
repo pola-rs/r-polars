@@ -11,12 +11,12 @@
 
 #' @export
 #' @noRd
-as.character.RThreadHandle = function(x, ...) x$thread_description() |> unwrap()
+as.character.RThreadHandle = function(x, ...) .pr$RThreadHandle$thread_description(x) |> unwrap()
 
 
 #' @export
 #' @noRd
-print.RThreadHandle = function(x, ...) x$thread_description() |> unwrap() |> cat()
+print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 
 
 #' @title Wait for the thread to complete its job
