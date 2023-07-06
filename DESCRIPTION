@@ -1,5 +1,5 @@
 Package: polars
-Title: Lightning-Fast DataFrame Library
+Title: Lightning-Fast 'DataFrame' Library
 Version: 0.7.0
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
@@ -8,7 +8,7 @@ Authors@R:
     person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut","cre")),
     person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut")),
     person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = c("ctb")))
-Description: Lightning-fast DataFrame library written in Rust.
+Description: Lightning-fast 'DataFrame' library written in Rust.
   Convert R data to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and
   optimized data queries. 'Polars' is interoperable with package arrow, as both are based on
   Apache Arrow Columnar Format.
