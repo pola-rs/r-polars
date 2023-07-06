@@ -58,7 +58,9 @@ jobs:
           Ncpus: 2
 
       - name: Get requirements
-        run: make requirements
+        run: |
+          make requirements-r
+          make requirements-py
 
       - name: Build docs
         run: make docs
