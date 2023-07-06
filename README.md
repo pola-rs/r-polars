@@ -80,7 +80,9 @@ our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
 page. You can download and install these files manually, or install
 directly from R. Simply match the URL for your operating system and the
 desired release. For example, to install the latest release of
-**polars** on Linux (x86_64) one would use:
+**polars** on one can use:
+
+#### Linux (x86_64)
 
 ``` r
 install.packages(
@@ -89,10 +91,24 @@ install.packages(
 )
 ```
 
-Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
-and macOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
+#### Windows
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip",
+  repos = NULL
+)
+```
+
+#### macOS(x86_64)
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
