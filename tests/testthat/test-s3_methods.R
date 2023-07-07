@@ -1,11 +1,11 @@
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "mean",       "mean",   mean,
-    "median",     "median", stats::median,
-    "min",        "min",    min,
-    "max",        "max",    max,
-    "sum",        "sum",    sum,
+    ~.test_name, ~pola, ~base,
+    "mean", "mean", mean,
+    "median", "median", stats::median,
+    "min", "min", min,
+    "max", "max", max,
+    "sum", "sum", sum,
   )
 }
 patrick::with_parameters_test_that("aggregations",
@@ -26,13 +26,13 @@ patrick::with_parameters_test_that("aggregations",
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~FUN,
-    "head",       head,
-    "tail",       tail,
-    "nrow",       nrow,
-    "ncol",       ncol,
-    "length",     length,
-    "as.matrix",  as.matrix,
-    "names",      names,
+    "head", head,
+    "tail", tail,
+    "nrow", nrow,
+    "ncol", ncol,
+    "length", length,
+    "as.matrix", as.matrix,
+    "names", names,
   )
 }
 patrick::with_parameters_test_that("inspection",
@@ -66,11 +66,11 @@ patrick::with_parameters_test_that("dimnames",
 
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "length",     "len",    length,
-    "min",        "min",    min,
-    "max",        "max",    max,
-    "sum",        "sum",    sum,
+    ~.test_name, ~pola, ~base,
+    "length", "len", length,
+    "min", "min", min,
+    "max", "max", max,
+    "sum", "sum", sum,
   )
 }
 patrick::with_parameters_test_that("Series",
@@ -205,20 +205,20 @@ test_that("brackets", {
   a = df[, c("mpg", "hp")]$collect()$to_data_frame()
   b = mtcars[, c("mpg", "hp")]
   expect_equal(a, b, ignore_attr = TRUE)
-  
+
   a = df[, c("hp", "mpg")]$collect()$to_data_frame()
   b = mtcars[, c("hp", "mpg")]
   expect_equal(a, b, ignore_attr = TRUE)
-  
+
   idx = rep(FALSE, ncol(mtcars))
   idx[c(1, 3, 6, 9)] = TRUE
   a = df[, idx]$collect()$to_data_frame()
   b = mtcars[, idx]
   expect_equal(a, b, ignore_attr = TRUE)
-  
+
   a = df[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  expect_error(df[1:3,])
+  expect_error(df[1:3, ])
 })

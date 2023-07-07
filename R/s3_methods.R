@@ -81,7 +81,7 @@
 
 #' @export
 #' @noRd
-`[.LazyFrame` <- `[.DataFrame`
+`[.LazyFrame` = `[.DataFrame`
 
 #' @export
 #' @noRd
