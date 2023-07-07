@@ -6,7 +6,7 @@
 \alias{pl}
 \title{The complete polars public API.}
 \format{
-An object of class \code{pl_polars_env} (inherits from \code{environment}) of length 71.
+An object of class \code{pl_polars_env} (inherits from \code{environment}) of length 73.
 }
 \usage{
 pl
@@ -27,13 +27,8 @@ bind the environment to another variable name as \code{simon_says = pl} or even 
 # how to use polars via `pl`
 pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 
-# pl inventory
-print_env(pl, "polars public functions")
-
-# all accessible classes and their public methods
-print_env(
-  pl_pub_class_env,
-  "polars public class methods, access via object$method()"
-)
+# show all public functions, RPolarsDataTypes, classes and methods
+pl$show_all_public_functions()
+pl$show_all_public_methods()
 }
 \keyword{api}

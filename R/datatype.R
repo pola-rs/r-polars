@@ -3,11 +3,10 @@
 #' @param x object to test if schema
 #' @return bool
 #' @format function
+#' @keywords functions
 #' @examples
-#' polars:::is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(pl$DataFrame(iris)$schema)
-#' polars:::is_schema(list("alice", "bob"))
-#'
+#' pl$is_schema(list("alice", "bob"))
 is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
     do.call(all, lapply(x, inherits, "RPolarsDataType"))
@@ -16,6 +15,7 @@ pl$is_schema = is_schema
 
 
 #' wrap proto schema
+#' @noRd
 #' @name wrap_proto_schema
 #' @param x either schema, or incomplete schema where dataType can be NULL
 #' or schema is just char vec, implicitly the same as if all DataType are NULL,
@@ -24,8 +24,8 @@ pl$is_schema = is_schema
 #' @format function
 #' @keywords internal
 #' @examples
-#' polars:::wrap_proto_schema(c("alice", "bob"))
-#' polars:::wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
+#' .pr$env$wrap_proto_schema(c("alice", "bob"))
+#' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
 wrap_proto_schema = function(x) {
   pcase(
     is.list(x) && !is.null(names(x)),
@@ -43,7 +43,7 @@ wrap_proto_schema = function(x) {
 
 
 
-#' @title DataTypes polars types
+#' @title DataTypes (RPolarsDataType)
 #'
 #' @name pl_dtypes
 #' @description `DataType` any polars type (ported so far)
@@ -90,10 +90,11 @@ print.RPolarsDataType = function(x, ...) {
 
 #' check if x is a valid RPolarsDataType
 #' @name is_polars_dtype
+#' @noRd
 #' @param x a candidate
 #' @keywords internal
 #' @return a list DataType with an inner DataType
-#' @examples polars:::is_polars_dtype(pl$Int64)
+#' @examples .pr$env$is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
   inherits(x, "RPolarsDataType") && (x != pl$Unknown || include_unknown)
 }
@@ -117,6 +118,7 @@ pl$same_outer_dt = function(lhs, rhs) {
 
 
 #' DataType_new (simple DataType's)
+#' @noRd
 #' @description Create a new flag like DataType
 #' @param str name of DataType to create
 #' @keywords internal
@@ -132,7 +134,7 @@ pl$same_outer_dt = function(lhs, rhs) {
 #'
 #' @return DataType
 #' @examples
-#' polars:::DataType_new("Int64")
+#' .pr$env$DataType_new("Int64")
 DataType_new = function(str) {
   .pr$DataType$new(str)
 }

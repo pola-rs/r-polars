@@ -12,7 +12,7 @@ rust side. The S3 method \code{.DollarNames.Series} exposes all public \verb{$fo
 Most methods return another \code{Series}-class instance or similar which allows for method chaining.
 This class system in lack of a better name could be called "environment classes" and is the same class
 system extendr provides, except here there is both a public and private set of methods. For implementation
-reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also
+reasons, the private methods are external and must be called from \code{.pr$Series$methodname()}, also
 all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 }
@@ -24,10 +24,10 @@ are removed and replaced by any function prefixed \code{Series_}.
 }
 \examples{
 # see all exported methods
-ls(polars:::Series)
+ls(.pr$env$Series)
 
 # see all private methods (not intended for regular use)
-ls(polars:::.pr$Series)
+ls(.pr$Series)
 
 
 # make an object

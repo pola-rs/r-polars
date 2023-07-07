@@ -121,6 +121,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 }
 
 #' internal wrap_elist_result
+#' @noRd
 #' @description make sure all elements of a list is wrapped as Expr
 #' DEPRECATED:  prefer robj_to!(VecPlExpr) on rust side
 #' Capture any conversion error in the result
@@ -131,7 +132,7 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 #' err value.
 #' @keywords internal
 #' @return Expr
-#' @examples polars:::wrap_elist_result(list(pl$lit(42), 42, 1:3))
+#' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
@@ -563,7 +564,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 # TODO move this function in to rust with input list of args
 # TODO deprecate context feature
 #' construct proto Expr array from args
-#'
+#' @noRd
 #' @param ...  any Expr or string
 #'
 #'
@@ -571,7 +572,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @return ProtoExprArray object
 #'
-#' @examples polars:::construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
+#' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
 construct_ProtoExprArray = function(...) {
   pra = ProtoExprArray$new()
   args = list2(...)

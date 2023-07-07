@@ -2,7 +2,7 @@
 % Please edit documentation in R/datatype.R
 \name{pl_dtypes}
 \alias{pl_dtypes}
-\title{DataTypes polars types}
+\title{DataTypes (RPolarsDataType)}
 \description{
 \code{DataType} any polars type (ported so far)
 }

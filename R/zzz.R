@@ -106,7 +106,6 @@ move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 pl$mem_address = mem_address
 
 
-
 # tell testthat data.table is suggested
 .datatable.aware = TRUE
 

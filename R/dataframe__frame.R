@@ -11,7 +11,7 @@
 #' This class system in lack of a better name could be called "environment classes"
 #' and is the same class system extendr provides, except here there is
 #' both a public and private set of methods. For implementation reasons, the private methods are
-#' external and must be called from polars:::.pr.$DataFrame$methodname(), also all private methods
+#' external and must be called from `.pr$DataFrame$methodname()`, also all private methods
 #' must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -23,8 +23,8 @@
 #'
 #' @keywords DataFrame
 #' @examples
-#' # see all exported methods
-#' ls(DataFrame)
+#' # see all public exported method names (normally accessed via a class instance with $)
+#' ls(.pr$env$DataFrame)
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$DataFrame)
@@ -32,6 +32,7 @@
 #'
 #' # make an object
 #' df = pl$DataFrame(iris)
+#'
 #'
 #' # use a public method/property
 #' df$shape
@@ -261,8 +262,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
 #' @param x DataFrame
 #' @param ... not used
 #'
-#' @name print()
-#'
 #' @return self
 #' @export
 #'
@@ -273,8 +272,8 @@ print.DataFrame = function(x, ...) {
 }
 
 #' internal method print DataFrame
-#'
-#'
+#' @noRd
+#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
@@ -286,16 +285,16 @@ DataFrame_print = function() {
 ## "Class methods"
 
 #' Validate data input for create Dataframe with pl$DataFrame
-#'
+#' @noRd
 #' @param x any R object to test if suitable as input to DataFrame
-#'
+#' @keywords internal
 #' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
 #' @return bool
 #'
 #' @examples
-#' is_DataFrame_data_input(iris)
-#' is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
+#' .pr$env$is_DataFrame_data_input(iris)
+#' .pr$env$is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x, "data.frame") ||
     is.list(x) ||
@@ -308,8 +307,10 @@ is_DataFrame_data_input = function(x) {
 ## internal bookkeeping of methods which should behave as properties
 DataFrame.property_setters = new.env(parent = emptyenv())
 
+
+
 #' generic setter method
-#'
+#' @noRd
 #' @param self DataFrame
 #' @param name name method/property to set
 #' @param value value to insert
@@ -324,8 +325,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @export
 #' @examples
 #' # For internal use
-#' # is only activated for following methods of DataFrame
-#' ls(DataFrame.property_setters)
+#' # show what methods of DataFrame have active property setters
+#' with(.pr$env, ls(DataFrame.property_setters))
 #'
 #' # specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
@@ -351,10 +352,9 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' # for stable code prefer e.g.  df$columns = letters[5:1]
 #'
-#' # to see inside code of a property use the [[]] syntax instead
+#' # to verify inside code of a property, use the [[]] syntax instead.
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 #' DataFrame.property_setters$columns # and even more obscure to see setter code
-
 "$<-.DataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 

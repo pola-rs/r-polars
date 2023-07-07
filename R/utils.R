@@ -111,7 +111,7 @@ unpack_list = function(...) {
 }
 
 #' Simple SQL CASE WHEN implementation for R
-#'
+#' @noRd
 #' @description Inspired by data.table::fcase + dplyr::case_when.
 #' Used instead of base::switch internally.
 #'
@@ -125,7 +125,7 @@ unpack_list = function(...) {
 #' @keywords internal
 #' @examples
 #' n = 7
-#' polars:::pcase(
+#' .pr$env$pcase(
 #'   n < 5, "nope",
 #'   n > 6, "yeah",
 #'   or_else = stopf("failed to have a case for n=%s", n)
@@ -382,6 +382,7 @@ print_env = function(api, name, max_depth = 10) {
       }
 
       for (name in ls(value)) {
+        if (name == "env") next()
         show_api(get(name, envir = as.environment(value)), name)
       }
       cat("\n")

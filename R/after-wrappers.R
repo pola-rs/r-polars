@@ -72,7 +72,9 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @examples
 #' # .pr$DataFrame$print() is an external function where self is passed as arg
 #' .pr$DataFrame$print(self = pl$DataFrame(iris))
-#' print_env(.pr, ".pr the collection of private method calls to rust-polars")
+#'
+#' # show all content of .pr
+#' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
 .pr = new.env(parent = emptyenv())
 .pr$Series = extendr_method_to_pure_functions(Series)
 .pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
@@ -95,9 +97,9 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 
 
 # add package environment to .pr, this can be used as replacement for :::, where cran does not
-# allow that. Ok use, internal documentation to show case inner workings of code.
+# allow that. Ok use, documentation to show case inner workings of code.
 .pr$env = getNamespace("polars")
-
+.pr$print_env = print_env
 
 
 
@@ -191,18 +193,37 @@ method_as_property = function(f, setter = FALSE) {
 #' # how to use polars via `pl`
 #' pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 #'
-#' # pl inventory
-#' print_env(pl, "polars public functions")
-#'
-#' # all accessible classes and their public methods
-#' print_env(
-#'   pl_pub_class_env,
-#'   "polars public class methods, access via object$method()"
-#' )
+#' # show all public functions, RPolarsDataTypes, classes and methods
+#' pl$show_all_public_functions()
+#' pl$show_all_public_methods()
 pl = new.env(parent = emptyenv())
 class(pl) = c("pl_polars_env", "environment")
 
 
+#' show all public functions / objects
+#' @name show_all_public_functions
+#' @description print any object(function, RPolarsDataType) available via `pl$`.
+#' @return NULL
+#' @keywords functions
+#' @examples
+#' pl$show_all_public_functions()
+pl$show_all_public_functions = function() {
+  print_env(pl, "polars public functions via pl$...")
+}
+
+#' show all public methods
+#' @name show_all_public_methods
+#' @description methods are listed by their Class
+#' @return NULL
+#' @keywords functions
+#' @examples
+#' pl$show_all_public_methods()
+pl$show_all_public_methods = function() {
+  print_env(
+    pl_pub_class_env,
+    "polars public class methods, access via object$method()"
+  )
+}
 
 #' get public function from pl namespace/env
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called

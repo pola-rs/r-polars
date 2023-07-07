@@ -17,7 +17,7 @@ for method chaining. This class system in lack of a better name could be called
 "environment classes" and is the same class system extendr provides, except
 here there is both a public and private set of methods. For implementation
 reasons, the private methods are external and must be called from
-\code{polars:::.pr.$LazyFrame$methodname()}. Also, all private methods must take
+\code{.pr$LazyFrame$methodname()}. Also, all private methods must take
 any self as an argument, thus they are pure functions. Having the private methods
 as pure functions solved/simplified self-referential complications.
 
@@ -40,7 +40,7 @@ prefixed \code{LazyFrame_}.
 }
 \examples{
 # see all exported methods
-ls(LazyFrame)
+ls(.pr$env$LazyFrame)
 
 # see all private methods (not intended for regular use)
 ls(.pr$LazyFrame)
