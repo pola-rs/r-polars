@@ -40,10 +40,10 @@ prefixed \code{LazyFrame_}.
 }
 \examples{
 # see all exported methods
-ls(polars:::LazyFrame)
+ls(LazyFrame)
 
 # see all private methods (not intended for regular use)
-ls(polars:::.pr$LazyFrame)
+ls(.pr$LazyFrame)
 
 
 ## Practical example ##

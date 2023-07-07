@@ -24,10 +24,10 @@
 #' @keywords DataFrame
 #' @examples
 #' # see all exported methods
-#' ls(polars:::DataFrame)
+#' ls(DataFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$DataFrame)
+#' ls(.pr$DataFrame)
 #'
 #'
 #' # make an object
@@ -37,7 +37,7 @@
 #' df$shape
 #' df2 = df
 #' # use a private method, which has mutability
-#' result = polars:::.pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
+#' result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 #'
 #' # column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
@@ -55,7 +55,7 @@
 #' # method does not return any ok-value.
 #'
 #' # try unwrapping an error from polars due to unmatching column lengths
-#' err_result = polars:::.pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
+#' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 DataFrame
 
@@ -293,8 +293,9 @@ DataFrame_print = function() {
 #'
 #' @return bool
 #'
-#' @examples polars:::is_DataFrame_data_input(iris)
-#' polars:::is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
+#' @examples
+#' is_DataFrame_data_input(iris)
+#' is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x, "data.frame") ||
     is.list(x) ||
@@ -324,7 +325,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @examples
 #' # For internal use
 #' # is only activated for following methods of DataFrame
-#' ls(polars:::DataFrame.property_setters)
+#' ls(DataFrame.property_setters)
 #'
 #' # specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
@@ -352,8 +353,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' # to see inside code of a property use the [[]] syntax instead
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-#' polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
-#'
+#' DataFrame.property_setters$columns # and even more obscure to see setter code
+
 "$<-.DataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 

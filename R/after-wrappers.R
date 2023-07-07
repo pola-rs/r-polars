@@ -55,10 +55,9 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @export
 #' @examples
 #' # .pr$DataFrame$print() is an external function where self is passed as arg
-#' polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
-#' @keywords internal
-#' @examples
-#' polars:::print_env(.pr, ".pr the collection of private method calls to rust-polars")
+#' .pr$DataFrame$print(self = pl$DataFrame(iris))
+#' print_env(.pr, ".pr the collection of private method calls to rust-polars")
+
 .pr = new.env(parent = emptyenv())
 .pr$Series = extendr_method_to_pure_functions(Series)
 .pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
@@ -172,11 +171,11 @@ method_as_property = function(f, setter = FALSE) {
 #' pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 #'
 #' # pl inventory
-#' polars:::print_env(pl, "polars public functions")
+#' print_env(pl, "polars public functions")
 #'
 #' # all accessible classes and their public methods
-#' polars:::print_env(
-#'   polars:::pl_pub_class_env,
+#' print_env(
+#'   pl_pub_class_env,
 #'   "polars public class methods, access via object$method()"
 #' )
 pl = new.env(parent = emptyenv())

@@ -26,7 +26,7 @@ See \verb{[[method_name]]} example
 \examples{
 # For internal use
 # is only activated for following methods of DataFrame
-ls(polars:::DataFrame.property_setters)
+ls(DataFrame.property_setters)
 
 # specific use case for one object property 'columns' (names)
 df = pl$DataFrame(iris)
@@ -54,7 +54,6 @@ df$`columns<-` = letters[5:1]
 
 # to see inside code of a property use the [[]] syntax instead
 df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
-
+DataFrame.property_setters$columns # and even more obscure to see setter code
 }
 \keyword{DataFrame}
