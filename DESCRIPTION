@@ -11,7 +11,7 @@ Authors@R:
 Description: Lightning-fast DataFrame library written in 'Rust'. Convert R data
   to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and
   optimized data queries. 'Polars' is interoperable with the package 'arrow',
-  as both are based on 'Apache Arrow' Columnar Format.
+  as both are based on the 'Apache Arrow' Columnar Format.
 License: MIT + file LICENSE
 Language: en-US
 Encoding: UTF-8
