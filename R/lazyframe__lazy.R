@@ -886,6 +886,17 @@ LazyFrame_columns = method_as_property(function() {
     unwrap("in $columns()")
 })
 
+#' @title Width
+#' @description Get the width of the LazyFrame
+#' @keywords LazyFrame
+#' @return Integer
+#' @examples
+#' pl$LazyFrame(mtcars)$width
+#'
+LazyFrame_width = method_as_property(function() {
+  length(self$schema)
+})
+
 #' @title Dtypes
 #' @description Get the data types of the LazyFrame
 #' @keywords LazyFrame
