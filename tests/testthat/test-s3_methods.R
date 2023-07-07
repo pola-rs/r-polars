@@ -159,7 +159,12 @@ test_that("brackets", {
   expect_error(df[, mtcars], regexp = "atomic vector")
 
   # eager
-  df = pl$DataFrame(mtcars)
+
+  # Converted to Series automatically
+  a = df[, "mpg"]$to_r()
+  b = mtcars[, "mpg"]
+  expect_equal(a, b)
+
   a = df[, c("mpg", "hp")]$to_data_frame()
   b = mtcars[, c("mpg", "hp")]
   expect_equal(a, b, ignore_attr = TRUE)
@@ -201,24 +206,34 @@ test_that("brackets", {
 
 
   # lazy
-  df = pl$DataFrame(mtcars)$lazy()
-  a = df[, c("mpg", "hp")]$collect()$to_data_frame()
+  lf = pl$DataFrame(mtcars)$lazy()
+
+  a = lf[, c("mpg", "hp")]$collect()$to_data_frame()
   b = mtcars[, c("mpg", "hp")]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = df[, c("hp", "mpg")]$collect()$to_data_frame()
+  a = lf[, c("hp", "mpg")]$collect()$to_data_frame()
   b = mtcars[, c("hp", "mpg")]
   expect_equal(a, b, ignore_attr = TRUE)
 
   idx = rep(FALSE, ncol(mtcars))
   idx[c(1, 3, 6, 9)] = TRUE
-  a = df[, idx]$collect()$to_data_frame()
+  a = lf[, idx]$collect()$to_data_frame()
   b = mtcars[, idx]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = df[, c(1, 4, 2)]$collect()$to_data_frame()
+  a = lf[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
 
-  expect_error(df[1:3, ])
+  # Not supported for lazy
+  expect_error(lf[1:3, ], "not supported")
+  expect_error(lf[, "cyl"], "not supported")
+
+  # Test for drop = FALSE
+  expect_equal(
+    lf[, "cyl", drop = FALSE]$collect()$to_data_frame(),
+    mtcars[, "cyl", drop = FALSE],
+    ignore_attr = TRUE
+  )
 })
