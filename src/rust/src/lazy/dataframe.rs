@@ -377,6 +377,16 @@ impl LazyFrame {
             pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
         ))
     }
+
+    fn explode(&self, columns: Robj) -> Result<LazyFrame, String> {
+        let columns = robj_to!(VecPLExpr, columns).map_err(|err| format!("the arg [...] or {}", err))?;
+        Ok(self
+            .0
+            .clone()
+            .explode(columns)
+            .into()
+        )
+    }
 }
 
 #[derive(Clone)]

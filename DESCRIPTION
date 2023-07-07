@@ -1,6 +1,6 @@
 Package: polars
 Title: 'Polars' Ported to R
-Version: 0.6.1.9000
+Version: 0.7.0.9000
 Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:

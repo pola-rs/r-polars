@@ -900,3 +900,43 @@ LazyFrame_dtypes = method_as_property(function() {
     result() |>
     unwrap("in $dtypes()")
 })
+
+#' @title Explode the DataFrame to long format by exploding the given columns
+#' @keywords LazyFrame
+#'
+#' @param columns Name of the column(s) to explode. Columns must be of datatype
+#' List or Utf8. Accepts `col` expressions as input as well.
+#' @param ... More columns to explode as above but provided one Expr per argument.
+#'
+#' @return LazyFrame
+#' @examples
+#' df = pl$LazyFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")$collect()
+
+LazyFrame_explode = function(columns, ...) {
+  largs = list2(...)
+  nargs = names(largs)
+  # match on args to check for ...
+  pcase(
+    # all the bad stuff
+    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
+    missing(columns), Err("arg [by] is missing"),
+
+    # iterate over by + ... to wrap into Expr. Capture ok/err in results
+    or_else = Ok(c(
+      lapply(columns, wrap_e_result, str_to_lit = FALSE),
+      lapply(largs, wrap_e_result, str_to_lit = FALSE)
+    ))
+  ) |>
+    # and_then skips step, if input is an Error otherwise call rust wrapper
+    and_then(\(by) { # by has Rtyp" List<Result<Expr,String>>
+      .pr$LazyFrame$explode(self, by)
+    }) |>
+    # add same context to any Error
+    unwrap("in explode():")
+}

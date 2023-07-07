@@ -1,5 +1,11 @@
 # polars (development version)
 
+## What's changed
+
+- New method `$explode()` for `DataFrame` and `LazyFrame`.
+
+# polars (0.7.0)
+
 ## BREAKING CHANGES
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This
