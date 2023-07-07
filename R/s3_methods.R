@@ -66,6 +66,13 @@
   }
 
   if (drop && x$width == 1L) {
+    if (inherits(x, "LazyFrame")) {
+      stop(
+        "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
+        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets.",
+        call. = FALSE
+      )
+    }
     x = x$to_series()
   }
 
