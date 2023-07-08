@@ -42,6 +42,7 @@ structure of the output (class) and also what the output means.
 
 We have added \value where it was missing. 
 
+
 > Using foo:::f instead of foo::f allows access to unexported objects.
 This is generally not recommended, as the semantics of unexported
 objects may be changed by the package author in routine maintenance."
@@ -50,15 +51,27 @@ Please omit one colon.
 We either removed one colon or dropped the examples from the documentation (most
 of these were internal functions).
 
+
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
 
-All of these unexported functions are called through `$` and correspond to the
-functions provided by the upstream Polars query engine. They are not exported
-to avoid cluttering the package namespace and to reduce the risk of namespace
-conflicts with other packages. Still, these functions are key to the use of
-"polars", which is why we have examples for them. We didn't change anything 
-about this.
+Most of these +500 unexported functions (closures with a `self`) are actually the
+public methods called through `$` on their respective class-objects. They should
+not be called as exported functions. However, the vast number of methods makes it
+unfeasible to bundle all methods in a single doc page per class, like common practice
+for another class-system as R6. It would be very unreadable and unsearchable.
+You may appreciate the well organized reference page, where every method is searchable
+and documented separately with examples e.g.: 
+https://rpolars.github.io/reference/DataFrame_pivot/
+
+Besides methods, upstream Polars also has a large number of functions which collide
+with `base::` and many popular packages, like `sum`, `mean` & `DataType`. Since
+Polars strives to be a cross-language syntax (Rust, Python, R, NodeJS). It is not
+possible to rename functions to avoid namespace collisions locally in R. Package
+functions (and other objects types) are in all languages bundled in a namespace
+`pl` to not clutter user search()-namespace and to remove the risk of conflicts.
+
+For what it is worth, a tidy-polars package derived from polars is in the making.
 
 > Some code lines in examples are commented out.
 Please never do that. Ideally find toy examples that can be regularly
@@ -68,7 +81,7 @@ executed and checked. Lengthy examples (> 5 sec), can be wrapped in
 > Please unwrap the examples if they are executable in < 5 sec, or replace
 \dontrun{} with \donttest{}.
 
-We have replace \dontrun{} with \donttest{}. The comments in the examples are
+We have replaced \dontrun{} with \donttest{}. The comments in the examples are
 to explain the code used. After removing some Rd files (cf comment above), we
 don't find any code line that is mistakenly commented out. We also didn't find
 examples that ran in more than 5 seconds.

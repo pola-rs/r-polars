@@ -229,7 +229,7 @@ l_to_vdf = function(l) {
 #' env_1$fruit_env = fruit_env
 #'
 #' env_naive_copy = env_1
-#' env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
+#' env_shallow_clone = .pr$env$clone_env_one_level_deep(env_1)
 #'
 #' # modifying env_!
 #' env_1$minerals = new.env(parent = emptyenv())
@@ -338,7 +338,7 @@ construct_DataTypeVector = function(l) {
 #' @keywords internal
 #' @noRd
 #' @examples
-#' polars:::get_method_usages(polars:::DataFrame, pattern = "col")
+#' .pr$env$get_method_usages(.pr$env$DataFrame, pattern = "col")
 get_method_usages = function(env, pattern = "") {
   found_names = ls(env, pattern = pattern)
   objects = mget(found_names, envir = env)
@@ -484,7 +484,7 @@ restruct_list = function(l) {
 #' @examples
 #'
 #' # macro_new_subnamespace() is not exported, export for this toy example
-#' # macro_new_subnamespace = polars:::macro_new_subnamespace
+#' # macro_new_subnamespace = .pr$env$macro_new_subnamespace
 #'
 #' ## define some new methods prefixed 'MyClass_'
 #' # MyClass_add2 = function() self + 2
@@ -496,7 +496,7 @@ restruct_list = function(l) {
 #' # here adding sub-namespace as a expr-class property/method during session-time,
 #' # which only is for this demo.
 #' # instead sourced method like Expr_arr() at package build time instead
-#' # env = polars:::Expr #get env of the Expr Class
+#' # env = .pr$env$Expr #get env of the Expr Class
 #' # env$my_sub_ns = method_as_property(function() { #add a property/method
 #' # my_class_sub_ns(self)
 #' # })
@@ -584,7 +584,7 @@ convert_to_fewer_types = function(x) {
 #'
 #' @noRd
 #' @examples
-#' check_tz_to_result = polars:::check_tz_to_result # expose internal
+#' check_tz_to_result = .pr$env$check_tz_to_result # expose internal
 #' # return Ok
 #' check_tz_to_result("GMT")
 #' check_tz_to_result(NULL)

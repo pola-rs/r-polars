@@ -13,7 +13,7 @@
 #' @keywords internal
 #' @examples
 #'
-#' # fetch unwrap-function without using :::
+#' # fetch internal unwrap-function
 #' unwrap = .pr$env$unwrap
 #'
 #' structure(list(ok = "foo", err = NULL), class = "extendr_result")
@@ -63,7 +63,7 @@ unwrap_err = function(result) {
 #' @return Result
 #' @examples
 #'
-#' # get user internal functions without using :::
+#' # get user internal functions
 #' result = .pr$env$result
 #' unwrap_err = .pr$env$unwrap_err
 #' unwrap = .pr$env$unwrap

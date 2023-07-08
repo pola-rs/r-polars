@@ -5,7 +5,7 @@
 if (build_debug_print) {
   print(paste(
     "Modifying extendr bindings,",
-    "originals converted to pure functions and saved to polars:::.pr"
+    "originals converted to pure functions and saved to .pr"
   ))
 }
 

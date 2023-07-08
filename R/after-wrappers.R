@@ -97,7 +97,9 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 
 
 # add package environment to .pr, this can be used as replacement for :::, where cran does not
-# allow that. Ok use, documentation to show case inner workings of code.
+# allow that. Ok use :
+#  - internal documentation (noRd) to show case inner workings of code.
+#  - unit tests, which needs to verify an internal state.
 .pr$env = getNamespace("polars")
 .pr$print_env = print_env
 
