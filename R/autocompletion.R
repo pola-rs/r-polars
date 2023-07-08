@@ -32,12 +32,14 @@ pl$extra_auto_completion = function(activate = TRUE) {
       rc.options("custom.completer" = NULL)
       # function running  base auto complete.
       # It will dump suggestion into mutable .CompletionEnv$comps
-      utils:::.completeToken()
+      .completeToken = utils::getFromNamespace(".completeToken", "utils")
+      .completeToken()
 
       rc.options("custom.completer" = f)
 
       # get line buffer
-      CE = utils:::.CompletionEnv
+      .CompletionEnv = utils::getFromNamespace(".CompletionEnv", "utils")
+      CE = .CompletionEnv
       lb = CE$linebuffer
 
       # skip custom completion if token completion already yielded suggestions.
