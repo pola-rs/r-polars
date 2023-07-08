@@ -218,6 +218,7 @@ l_to_vdf = function(l) {
 #' @param env an R environment.
 #' @return shallow clone of R environment
 #' @keywords internal
+#' @noRd
 #' @examples
 #'
 #' fruit_env = new.env(parent = emptyenv())
@@ -335,7 +336,9 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #' @keywords internal
-#' @examples polars:::get_method_usages(polars:::DataFrame, pattern = "col")
+#' @noRd
+#' @examples
+#' polars:::get_method_usages(polars:::DataFrame, pattern = "col")
 get_method_usages = function(env, pattern = "") {
   found_names = ls(env, pattern = pattern)
   objects = mget(found_names, envir = env)
@@ -477,6 +480,7 @@ restruct_list = function(l) {
 #' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 #' , go ahead.
 #' @keywords internal
+#' @noRd
 #' @examples
 #'
 #' # macro_new_subnamespace() is not exported, export for this toy example
@@ -546,9 +550,9 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @param collapse word to glue possible multilines with
 #' @keywords internal
 #' @return string
-#'
+#' @noRd
 #' @examples
-#' polars:::str_string(list(a = 42, c(1, 2, 3, NA)))
+#' str_string(list(a = 42, c(1, 2, 3, NA)))
 str_string = function(x, collapse = " ") {
   paste(capture.output(str(x)), collapse = collapse)
 }
@@ -578,6 +582,7 @@ convert_to_fewer_types = function(x) {
 #' @return a result object, with either a valid string or an Err
 #' @keywords internal
 #'
+#' @noRd
 #' @examples
 #' check_tz_to_result = polars:::check_tz_to_result # expose internal
 #' # return Ok
