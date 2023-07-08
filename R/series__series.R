@@ -20,12 +20,10 @@
 #'
 #' @keywords Series
 #' @examples
-#' # see all exported methods
-#' ls(.pr$env$Series)
+#' pl$show_all_public_methods("Series")
 #'
 #' # see all private methods (not intended for regular use)
 #' ls(.pr$Series)
-#'
 #'
 #' # make an object
 #' s = pl$Series(1:3)

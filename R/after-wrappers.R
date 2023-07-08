@@ -214,14 +214,26 @@ pl$show_all_public_functions = function() {
 #' show all public methods
 #' @name show_all_public_methods
 #' @description methods are listed by their Class
+#' @param class_names character vector of polars class names to show, Default NULL is all.
 #' @return NULL
 #' @keywords functions
 #' @examples
 #' pl$show_all_public_methods()
-pl$show_all_public_methods = function() {
+pl$show_all_public_methods = function(class_names = NULL) {
+
+  #subset classes to show
+  show_this_env = if(!is.null(class_names)) {
+    as.environment(mget(class_names, envir = pl_pub_class_env))
+  } else {
+    pl_pub_class_env
+  }
+
   print_env(
-    pl_pub_class_env,
-    "polars public class methods, access via object$method()"
+    show_this_env,
+    paste(
+      paste(class_names, collapse = ", "),
+      "class methods, access via object$method()"
+    )
   )
 }
 
