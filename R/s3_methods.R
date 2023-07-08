@@ -196,10 +196,9 @@ as.vector.Series = function(x, mode) x$to_vector()
 
 #' as.character for polars Series
 #' @param x Series
-#' @param str_length an integer. If specified,
 #' @param ... Additional arguments are ignored.
+#' @param str_length an integer. If specified,
 #' utf8 or categorical type Series will be formatted to a string of this length.
-#' @param ... Additional characters are ignored.
 #' @examples
 #' s = pl$Series(c("foo", "barbaz"))
 #' as.character(s)
