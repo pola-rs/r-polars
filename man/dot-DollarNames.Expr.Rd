@@ -11,6 +11,9 @@
 
 \item{pattern}{code-stump as string to auto-complete}
 }
+\value{
+Doesn't return a value. This is used for autocompletion in RStudio.
+}
 \description{
 called by the interactive R session internally
 }

@@ -84,6 +84,7 @@ Series_print = function() {
 #' @param x Series
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.Series = function(x, pattern = "") {
   get_method_usages(Series, pattern = pattern)

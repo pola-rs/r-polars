@@ -32,12 +32,12 @@ pl$Field = function(name, datatype) {
 #' @examples
 #' print(pl$Field("foo", pl$List(pl$UInt64)))
 print.RField = function(x, ...) {
-  cat("")
   x$print()
   invisible(x)
 }
 
 #' @export
+#' @inherit .DollarNames.DataFrame return
 .DollarNames.RField = function(x, pattern = "") {
   get_method_usages(RField, pattern = pattern)
 }

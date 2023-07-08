@@ -51,6 +51,7 @@ Expr_print = function() {
 #' @description called by the interactive R session internally
 #' @param x Expr
 #' @param pattern code-stump as string to auto-complete
+#' @inherit .DollarNames.DataFrame return
 #' @export
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
@@ -61,6 +62,7 @@ Expr_print = function() {
 #' @description wraps an Expr in a list
 #' @param x Expr
 #' @param ... not used
+#' @return An R list
 #' @export
 #' @keywords Expr
 as.list.Expr = function(x, ...) {

@@ -159,6 +159,7 @@ pl$options = lapply(names(polars_optenv), \(name) {
 names(pl$options) = names(polars_optenv)
 class(pl$options) = c("polars_option_list", "list")
 #' @export
+#' @inherit .DollarNames.DataFrame return
 .DollarNames.polars_option_list = function(x, pattern = "") {
   with(x, ls(pattern = pattern))
 }

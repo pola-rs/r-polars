@@ -3,6 +3,7 @@
 #' @param x LazyFrame
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.PolarsBackgroundHandle = function(x, pattern = "") {
   paste0(ls(PolarsBackgroundHandle, pattern = pattern), "()")

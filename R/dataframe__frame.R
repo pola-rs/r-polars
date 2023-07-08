@@ -69,6 +69,7 @@ DataFrame
 #' @param x DataFrame
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
   get_method_usages(DataFrame, pattern = pattern)
@@ -80,6 +81,7 @@ DataFrame
 #' @param x VecDataFrame
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
   get_method_usages(VecDataFrame, pattern = pattern)

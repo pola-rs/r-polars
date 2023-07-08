@@ -11,6 +11,9 @@
 
 \item{...}{not used}
 }
+\value{
+An R list
+}
 \description{
 wraps an Expr in a list
 }

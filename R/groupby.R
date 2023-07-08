@@ -28,6 +28,7 @@ GroupBy = new.env(parent = emptyenv())
 #' @param x GroupBy
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.GroupBy = function(x, pattern = "") {
   paste0(ls(GroupBy, pattern = pattern), "()")

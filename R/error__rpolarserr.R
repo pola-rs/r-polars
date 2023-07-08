@@ -3,6 +3,7 @@
 #' @param x RPolarsErr
 #' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)
