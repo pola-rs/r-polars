@@ -77,6 +77,6 @@ examples that ran in more than 5 seconds.
 if(verbose)cat(..) (or maybe stop()) if you really have to write text to
 the console. (except for print, summary, interactive functions)
 
-All the cat() and print() we saw were either used in print() methods, in methods
-that are only used interactively (e.g knit_print()), or were behind a flag used
-only for debugging. Therefore, we remove any cat() or print() call.
+All the cat() and print() we see are either used in print() methods, in methods
+that are only used interactively (e.g knit_print()), or are behind a flag used
+only for debugging. Therefore, we didn't remove any cat() or print() call.
