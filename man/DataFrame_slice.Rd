@@ -12,7 +12,7 @@ DataFrame_slice(offset, length = NULL)
 \item{length}{integer or NULL}
 }
 \value{
-LazyFrame
+DataFrame
 }
 \description{
 Get a slice of this DataFrame.

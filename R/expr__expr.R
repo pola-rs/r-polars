@@ -39,7 +39,9 @@ print.Expr = function(x, ...) {
 #' internal method print Expr
 #' @name Expr_print
 #' @keywords Expr
-#' @examples pl$DataFrame(iris)
+#' @return Prints the Polars expression to the console
+#' @examples
+#' pl$col("some_column")$sum()$over("some_other_column")$print()
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
@@ -3827,7 +3829,7 @@ prepare_alpha = function(
 #'    average of `[` \eqn{x_0}, None,  \eqn{x_2}`]` are
 #'     \eqn{1-\alpha} and  \eqn{1} if `adjust=TRUE`,
 #'    and  \eqn{1-\alpha} and  \eqn{\alpha} if `adjust=FALSE`.
-#' @return  Expr
+#' @return Expr
 #' @aliases ewm_mean
 #' @format NULL
 #' @keywords Expr

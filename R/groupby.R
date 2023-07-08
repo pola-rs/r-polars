@@ -35,6 +35,8 @@ GroupBy = new.env(parent = emptyenv())
 
 
 #' The internal GroupBy constructor
+#' @keywords internal
+#' @return The input as grouped DataFrame
 #' @noRd
 construct_groupby = function(df, groupby_input, maintain_order) {
   if (!inherits(df, "DataFrame")) stopf("internal error: construct_group called not on DataFrame")
@@ -293,5 +295,6 @@ GroupBy_to_data_frame = function(...) {
 
 # TODO REMOVE_AT_BREAKING_CHANGE
 #' Alias to GroupBy_to_data_frame (backward compatibility)
+#' @return R data.frame
 #' @noRd
 GroupBy_as_data_frame = GroupBy_to_data_frame

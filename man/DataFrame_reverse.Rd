@@ -7,7 +7,7 @@
 DataFrame_reverse()
 }
 \value{
-LazyFrame
+DataFrame
 }
 \description{
 Reverse the DataFrame.

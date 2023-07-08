@@ -183,6 +183,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
+#' @return Prints the optimized query plan in the console
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)

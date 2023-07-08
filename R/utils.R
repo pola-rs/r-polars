@@ -83,6 +83,8 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' list2 - one day like rlang
 #' list2 placeholder for future rust-impl
 #' @noRd
+#' @keywords internal
+#' @return An R list
 #' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
 #' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
 #' trailing commas.
@@ -363,8 +365,9 @@ get_method_usages = function(env, pattern = "") {
   suggestions
 }
 
-#' print recursively an environment, used in some documentation
+#' Print recursively an environment, used in some documentation
 #' @keywords internal
+#' @return Print recursively an environment to the console
 #' @param api env
 #' @param name  name of env
 #' @param max_depth numeric/int max levels to recursive iterate through

@@ -19,7 +19,7 @@ as number of Expr's from above by + ....}
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
 }
 \value{
-LazyFrame
+DataFrame
 }
 \description{
 sort a DataFrame by on or more Expr.

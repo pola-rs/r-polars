@@ -365,6 +365,7 @@ Series_to_vector = \() {
 }
 
 #' Alias to Series_to_vector (backward compatibility)
+#' @return R vector
 #' @noRd
 Series_to_r_vector = Series_to_vector
 

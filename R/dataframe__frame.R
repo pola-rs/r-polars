@@ -669,7 +669,7 @@ DataFrame_to_series = function(idx = 0) {
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
-#' @return LazyFrame
+#' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
 #' df = mtcars
@@ -703,6 +703,7 @@ DataFrame_sort = function(
 #'
 #' @aliases select
 #' @keywords  DataFrame
+#' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
@@ -902,11 +903,11 @@ DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 
 
 
-#' return polars DataFrame as R data.frame
+#' Return Polars DataFrame as R data.frame
 #'
 #' @param ... any args pased to as.data.frame()
 #'
-#' @return data.frame
+#' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
@@ -926,6 +927,7 @@ DataFrame_to_data_frame = function(...) {
 }
 
 #' Alias for to_data_frame (backward compatibility)
+#' @return An R data.frame
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
@@ -1137,7 +1139,7 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
@@ -1175,7 +1177,7 @@ DataFrame_fill_null = function(fill_value) {
 #' @title Slice
 #' @description Get a slice of this DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @param offset integer
 #' @param length integer or NULL
 #' @examples
