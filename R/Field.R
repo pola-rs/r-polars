@@ -36,8 +36,14 @@ print.RField = function(x, ...) {
   invisible(x)
 }
 
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x string name of an RField
+#' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.DataFrame return
+#' @keywords internal
 .DollarNames.RField = function(x, pattern = "") {
   get_method_usages(RField, pattern = pattern)
 }

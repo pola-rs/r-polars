@@ -158,8 +158,14 @@ pl$options = lapply(names(polars_optenv), \(name) {
 })
 names(pl$options) = names(polars_optenv)
 class(pl$options) = c("polars_option_list", "list")
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x string name of an option
+#' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.DataFrame return
+#' @keywords internal
 .DollarNames.polars_option_list = function(x, pattern = "") {
   with(x, ls(pattern = pattern))
 }

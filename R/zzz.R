@@ -66,8 +66,13 @@ replace_private_with_pub_methods(WhenThenThen, "^WhenThenThen_")
 
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x string, name of method in method_environment (sub-namespace)
+#' @param pattern code-stump as string to auto-complete
 #' @export
 #' @inherit .DollarNames.DataFrame return
+#' @keywords internal
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
   # temp store full class and upcast to plain environment
