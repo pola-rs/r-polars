@@ -55,7 +55,7 @@ of these were internal functions).
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
 
-Most unexported functions (324 closures with a `self`) are actually the
+Most unexported functions (427 closures with a `self`) are actually the
 public methods called through `$` on their respective class-objects. They should
 not be called as exported functions. However, the vast number of methods makes it
 unfeasible to bundle all methods in a single doc page per class, like common practice
