@@ -58,20 +58,17 @@ examples or export these functions.
 Most unexported functions (427 closures with a `self`) are actually the
 public methods called through `$` on their respective class-objects. They should
 not be called as exported functions. However, the vast number of methods makes it
-unfeasible to bundle all methods in a single doc page per class, like common practice
-for another class-system as R6. It would be very unreadable and unsearchable. Number
-of methods are expected to increase further in future versions. You may appreciate the
-well organized reference page, where every method is searchable and documented
-separately with examples e.g.:  https://rpolars.github.io/reference/DataFrame_pivot/
+unfeasible to bundle all methods in a single doc page per class, like common 
+practice for another class-system as R6. It would be very unreadable and 
+unsearchable. The number of methods are expected to increase further in future 
+versions.
 
 Besides methods, upstream Polars also has a number of functions/objects that
-collide with `base::` `utils` `stats` and many popular packages.  Polars strives to
-be a cross-language syntax (Rust, Python, R, NodeJS). It is not possible to rename
-functions to avoid namespace collisions locally in R. Package functions (and other
-objects types) are in all languages bundled in a namespace `pl` to not clutter user
-search()-namespace and to remove the risk of conflicts.
-
-For what it is worth, a tidy-polars package derived from polars is in the making.
+collide with `base`, `utils`, `stats`, and many popular packages.  Polars strives
+to be a cross-language syntax (Rust, Python, R, NodeJS). It is not possible to 
+rename functions to avoid namespace collisions locally in R. Package functions
+(and other objects types) are in all languages bundled in a namespace `pl` to 
+not clutter user search()-namespace and to remove the risk of conflicts.
 
 > Some code lines in examples are commented out.
 Please never do that. Ideally find toy examples that can be regularly
