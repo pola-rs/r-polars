@@ -55,17 +55,17 @@ of these were internal functions).
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
 
-Most of these +500 unexported functions (closures with a `self`) are actually the
+Most unexported functions (324 closures with a `self`) are actually the
 public methods called through `$` on their respective class-objects. They should
 not be called as exported functions. However, the vast number of methods makes it
 unfeasible to bundle all methods in a single doc page per class, like common practice
-for another class-system as R6. It would be very unreadable and unsearchable.
-You may appreciate the well organized reference page, where every method is searchable
-and documented separately with examples e.g.: 
-https://rpolars.github.io/reference/DataFrame_pivot/
+for another class-system as R6. It would be very unreadable and unsearchable. Number
+of methods are expected to increase further in future versions. You may appreciate the
+well organized reference page, where every method is searchable and documented
+separately with examples e.g.:  https://rpolars.github.io/reference/DataFrame_pivot/
 
-Besides methods, upstream Polars also has a large number of functions which collide
-with `base::` and many popular packages, like `sum`, `mean` & `DataType`. Since
+Besides methods, upstream Polars also has a number of functions/objects which many
+collide with `base::` and many popular packages, like `sum`, `mean` & `DataType`. Since
 Polars strives to be a cross-language syntax (Rust, Python, R, NodeJS). It is not
 possible to rename functions to avoid namespace collisions locally in R. Package
 functions (and other objects types) are in all languages bundled in a namespace
