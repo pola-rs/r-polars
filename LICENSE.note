@@ -1209,7 +1209,7 @@ License:     MIT
 
 Name:        regex
 Repository:  https://github.com/rust-lang/regex
-Authors:     The Rust Project Developers
+Authors:     The Rust Project Developers, Andrew Gallant
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -1221,6 +1221,13 @@ License:     MIT OR Unlicense
 
 -------------------------------------------------------------
 
+Name:        regex-automata
+Repository:  https://github.com/rust-lang/regex/tree/master/regex-automata
+Authors:     The Rust Project Developers, Andrew Gallant
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        regex-syntax
 Repository:  https://github.com/rust-lang/regex
 Authors:     The Rust Project Developers
@@ -1229,8 +1236,8 @@ License:     Apache-2.0 OR MIT
 -------------------------------------------------------------
 
 Name:        regex-syntax
-Repository:  https://github.com/rust-lang/regex
-Authors:     The Rust Project Developers
+Repository:  https://github.com/rust-lang/regex/tree/master/regex-syntax
+Authors:     The Rust Project Developers, Andrew Gallant
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
