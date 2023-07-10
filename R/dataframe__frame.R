@@ -1527,3 +1527,13 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # chose return type
   if (return_as_string) output else invisible(cat(output))
 }
+
+
+#' @title Fetch limited number of rows of DataFrame
+#' @keywords DataFrame
+#' @inherit LazyFrame_fetch
+#' @examples
+#' pl$DataFrame(iris)$fetch(2)
+DataFrame_fetch = function(n_rows) {
+  self$lazy()$fetch(n_rows)
+}

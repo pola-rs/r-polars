@@ -911,3 +911,16 @@ LazyFrame_dtypes = method_as_property(function() {
     result() |>
     unwrap("in $dtypes()")
 })
+
+
+#' @title Dtypes
+#' @description Get rows
+#' @keywords LazyFrame
+#' @param n_rows number of rows to fetch at maximum.
+#' @return A DataFrame of maximum n_rows
+#' @examples
+#' pl$LazyFrame(irirs)$fetch(3)
+LazyFrame_fetch = function(n_rows = 500) {
+  .pr$LazyFrame$fetch(self, n_rows) |>
+    unwrap("in $fetch()")
+}

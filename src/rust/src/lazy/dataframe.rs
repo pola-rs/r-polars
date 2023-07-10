@@ -1,6 +1,7 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
+use crate::rdataframe::DataFrame;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
@@ -65,7 +66,7 @@ impl LazyFrame {
         PolarsBackgroundHandle::new(self)
     }
 
-    pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {
+    pub fn collect(&self) -> Result<DataFrame, String> {
         handle_thread_r_requests(self.clone().0).map_err(|err| {
             //improve err messages
             let err_string = match err {
@@ -79,7 +80,7 @@ impl LazyFrame {
         })
     }
 
-    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
+    pub fn collect_handled(&self) -> RResult<DataFrame> {
         use crate::rpolarserr::WithRctx;
         handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
     }
@@ -376,6 +377,15 @@ impl LazyFrame {
         Ok(Pairlist::from_pairs(
             pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
         ))
+    }
+
+    fn fetch(&self, n_rows: Robj) -> RResult<DataFrame> {
+        Ok(self
+            .0
+            .clone()
+            .fetch(robj_to!(usize, n_rows)?)
+            .map_err(crate::rpolarserr::polars_to_rpolars_err)?
+            .into())
     }
 }
 
