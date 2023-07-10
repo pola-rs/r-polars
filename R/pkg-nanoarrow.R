@@ -1,4 +1,9 @@
+# BEWARE
+# ROXYGEN2 IS TURNED OF SEE WITH @noRd. FILES IS STATICALLY CURATED IN "no_roxygen_nanoarrow.Rd".
+
+
 #' polars to nanoarrow and arrow
+#' @noRd #SEE TOP COMMENT
 #' @description Conversion via native apache arrow array stream (fast), THIS REQUIRES ´nanoarrow´
 #' @name nanoarrow
 #' @param x a polars DataFrame
