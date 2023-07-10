@@ -4,13 +4,13 @@
 \alias{LazyFrame_explode}
 \title{Explode the DataFrame to long format by exploding the given columns}
 \usage{
-LazyFrame_explode(columns, ...)
+LazyFrame_explode(columns = list(), ...)
 }
 \arguments{
-\item{columns}{Name of the column(s) to explode. Columns must be of datatype
-List or Utf8. Accepts \code{col} expressions as input as well.}
+\item{columns}{Column(s) to be exploded. \verb{Into<Expr>}, list of \verb{Into<Expr>} or a char vec.
+Only columns of DataType \code{List} or \code{Utf8} can be exploded.}
 
-\item{...}{More columns to explode as above but provided one Expr per argument.}
+\item{...}{More columns to explode as above but provided as separate arguments}
 }
 \value{
 LazyFrame

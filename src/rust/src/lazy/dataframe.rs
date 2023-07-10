@@ -6,6 +6,7 @@ use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
 use crate::robj_to;
+use crate::rpolarserr::rerr;
 use crate::rpolarserr::RResult;
 use crate::rpolarserr::{Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
@@ -378,14 +379,16 @@ impl LazyFrame {
         ))
     }
 
-    fn explode(&self, columns: Robj) -> Result<LazyFrame, String> {
-        let columns = robj_to!(VecPLExpr, columns).map_err(|err| format!("the arg [...] or {}", err))?;
-        Ok(self
-            .0
-            .clone()
-            .explode(columns)
-            .into()
-        )
+    fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+        let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;
+        let mut ddd_args: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, dotdotdot_args)?;
+        columns.append(&mut ddd_args);
+        if columns.is_empty() {
+            rerr()
+                .plain("neither have any elements, cannot use explode without Expr(s)")
+                .when("joining Exprs from input [columns] and input [...]")?;
+        }
+        Ok(self.0.clone().explode(columns).into())
     }
 }
 

@@ -945,7 +945,7 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
-LazyFrame$explode <- function(columns) .Call(wrap__LazyFrame__explode, self, columns)
+LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }

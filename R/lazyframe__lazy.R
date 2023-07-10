@@ -904,9 +904,9 @@ LazyFrame_dtypes = method_as_property(function() {
 #' @title Explode the DataFrame to long format by exploding the given columns
 #' @keywords LazyFrame
 #'
-#' @param columns Name of the column(s) to explode. Columns must be of datatype
-#' List or Utf8. Accepts `col` expressions as input as well.
-#' @param ... More columns to explode as above but provided one Expr per argument.
+#' @param columns Column(s) to be exploded. `Into<Expr>`, list of `Into<Expr>` or a char vec.
+#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' @param ... More columns to explode as above but provided as separate arguments
 #'
 #' @return LazyFrame
 #' @examples
@@ -917,26 +917,8 @@ LazyFrame_dtypes = method_as_property(function() {
 #' df
 #'
 #' df$explode("numbers")$collect()
-
-LazyFrame_explode = function(columns, ...) {
-  largs = list2(...)
-  nargs = names(largs)
-  # match on args to check for ...
-  pcase(
-    # all the bad stuff
-    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
-    missing(columns), Err("arg [by] is missing"),
-
-    # iterate over by + ... to wrap into Expr. Capture ok/err in results
-    or_else = Ok(c(
-      lapply(columns, wrap_e_result, str_to_lit = FALSE),
-      lapply(largs, wrap_e_result, str_to_lit = FALSE)
-    ))
-  ) |>
-    # and_then skips step, if input is an Error otherwise call rust wrapper
-    and_then(\(by) { # by has Rtyp" List<Result<Expr,String>>
-      .pr$LazyFrame$explode(self, by)
-    }) |>
-    # add same context to any Error
+LazyFrame_explode = function(columns = list(), ...) {
+  dotdotdot_args = list2(...)
+  .pr$LazyFrame$explode(self, columns, dotdotdot_args) |>
     unwrap("in explode():")
 }
