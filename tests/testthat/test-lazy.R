@@ -635,3 +635,9 @@ test_that("explode", {
     )
   )
 })
+
+test_that("width", {
+  dat = pl$LazyFrame(mtcars)
+  expect_equal(dat$width, 11)
+  expect_equal(ncol(dat), 11)
+})
