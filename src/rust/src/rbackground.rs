@@ -92,7 +92,7 @@ pub fn serialize_dataframe(dataframe: &mut polars::prelude::DataFrame) -> RResul
     Ok(dump)
 }
 
-pub fn deserialize_dataframe(bits: Vec<u8>) -> RResult<polars::prelude::DataFrame> {
+pub fn deserialize_dataframe(bits: &[u8]) -> RResult<polars::prelude::DataFrame> {
     use polars::io::SerReader;
 
     polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
@@ -104,7 +104,7 @@ pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {
     serialize_dataframe(&mut std::iter::once(series).into_iter().collect())
 }
 
-pub fn deserialize_series(bits: Vec<u8>) -> RResult<PSeries> {
+pub fn deserialize_series(bits: &[u8]) -> RResult<PSeries> {
     let tn = std::any::type_name::<PSeries>();
     deserialize_dataframe(bits)?
         .get_columns()
@@ -131,8 +131,8 @@ pub enum RIPCJob {
     /// Map a Polars series with a R function
     RMapSeries {
         raw_func: Vec<u8>,
-        raw_series: Vec<u8>,
-        collector: ipc::IpcSender<RResult<Vec<u8>>>,
+        raw_series: ipc::IpcSharedMemory,
+        collector: ipc::IpcSender<RResult<ipc::IpcSharedMemory>>,
     },
 }
 
@@ -177,15 +177,16 @@ impl RIPCJob {
                 let bits = || {
                     use crate::series::Series as RSeries;
                     let func_robj = deserialize_robj(raw_func)?;
-                    let series = deserialize_series(raw_series)?;
+                    let series = deserialize_series(&raw_series)?;
                     let func = func_robj
                         .as_function()
                         .ok_or(RPolarsErr::new())
                         .bad_val(rdbg(func_robj))
                         .mistyped("pure R function")?;
-                    serialize_series(RSeries::any_robj_to_pl_series_result(
+                    let shared_memory = serialize_series(RSeries::any_robj_to_pl_series_result(
                         func.call(pairlist!(RSeries(series)))?,
-                    )?)
+                    )?)?;
+                    RResult::Ok(ipc::IpcSharedMemory::from_bytes(shared_memory.as_slice()))
                 };
                 collector.send(bits().when(
                     "trying to map a polars series with R function in the background R process",
@@ -263,13 +264,6 @@ impl RBackgroundPool {
         }
     }
 
-    pub fn raw_channel() -> RResult<(
-        ipc::IpcSender<RResult<Vec<u8>>>,
-        ipc::IpcReceiver<RResult<Vec<u8>>>,
-    )> {
-        ipc::channel().when("trying to create a inter-process channel for raw bits transferation")
-    }
-
     pub fn lease(&self) -> RResult<RBackgroundHandler> {
         if let Some(handle) = self.pool.lock()?.pop_front() {
             Ok(handle)
@@ -309,7 +303,7 @@ impl RBackgroundPool {
         raw_arg: Vec<u8>,
     ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + 't> {
         let handler = self.lease()?;
-        let (tx, rx) = Self::raw_channel()?;
+        let (tx, rx) = ipc::channel()?;
         handler.submit(RIPCJob::REval {
             raw_func,
             raw_arg,
@@ -330,18 +324,19 @@ impl RBackgroundPool {
         series: PSeries,
     ) -> RResult<impl FnOnce() -> RResult<PSeries> + 't> {
         let handler = self.lease()?;
-        let (tx, rx) = Self::raw_channel()?;
+        let (tx, rx) = ipc::channel()?;
+        let shared_memory = serialize_series(series)?;
         handler.submit(RIPCJob::RMapSeries {
             raw_func,
-            raw_series: serialize_series(series)?,
+            raw_series: ipc::IpcSharedMemory::from_bytes(shared_memory.as_slice()),
             collector: tx,
         })?;
         Ok(move || {
             let raw_series = rx
                 .recv()
-                .when("trying to receive the result from the background R process")?;
+                .when("waiting for the background R process to finish mapping a polars series")?;
             self.shelf(handler)?;
-            deserialize_series(raw_series?)
+            deserialize_series(&raw_series?)
         })
     }
 }
