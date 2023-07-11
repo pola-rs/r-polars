@@ -1,3 +1,6 @@
+enexprs = rlang::expr#function(...) as.list(substitute(...())) # https://adv-r.hadley.nz/quasiquotation.html
+
+
 #' load polars with environment variables and packages
 #'
 #' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
@@ -25,10 +28,10 @@ load_polars = function(
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
     list(...),
-    .packages = .packages
+    .packages = list(.packages)
   )
 
-  do.call(with_polars, c(list(quote(rextendr::document())), args))
+  do.call(with_polars, c(list(rextendr::document), args))
 
 }
 
@@ -65,9 +68,10 @@ check_polars = function(
     ),
     list(...)
   )
-
+  not_cran = identical(NOT_CRAN,'true')
+  cat("check in not_cran mode:", not_cran)
   with_polars(
-    quote(devtools::check(env_vars = envvars, check_dir = check_dir)),
+    \() devtools::check(env_vars = envvars, check_dir = check_dir, vignettes = FALSE, cran = !not_cran),
     RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
     NOT_CRAN = NOT_CRAN,
     RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
@@ -81,7 +85,7 @@ check_polars = function(
 }
 
 with_polars = function(
-  quoted,
+  f,
   RPOLARS_ALL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
@@ -134,7 +138,8 @@ with_polars = function(
   })
 
   # build
-  out = eval(quoted)
+
+  out = f()
 
   invisible(out)
 }
