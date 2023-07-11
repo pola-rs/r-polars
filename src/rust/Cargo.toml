@@ -29,7 +29,9 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
-extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pr473_553_555_566", default-features = false, features = [ "result_list", "serde" ] }
+extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pl0.7.0rc", default-features = false, features = [
+  "result_list", "serde"
+] }
 flume = "0.10.14"
 indenter = "0.3.3"
 ipc-channel = "0.16.1"

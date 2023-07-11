@@ -35,9 +35,13 @@
   }
 
   if (!missing(i)) {
+    if (inherits(x, "LazyFrame")) {
+      stop("Row selection using brackets is not supported for LazyFrames.", call. = FALSE)
+    }
     if (is.atomic(i) && is.vector(i)) {
       if (is.logical(i)) {
-        if (length(i) != nrow(x)) {
+        # nrow() not available for LazyFrame
+        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
           stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
         }
         idx = i
@@ -62,16 +66,22 @@
   }
 
   if (drop && x$width == 1L) {
+    if (inherits(x, "LazyFrame")) {
+      stop(
+        "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
+        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets.",
+        call. = FALSE
+      )
+    }
     x = x$to_series()
   }
 
   x
 }
 
-# TODO: un-comment when the `LazyFrame.columns` attribute is implemented
-# #' @export
-# #' @noRd
-# `[.LazyFrame` <- `[.DataFrame`
+#' @export
+#' @noRd
+`[.LazyFrame` = `[.DataFrame`
 
 #' @export
 #' @noRd
@@ -91,31 +101,31 @@ tail.LazyFrame = tail.DataFrame
 
 #' @export
 #' @noRd
-dim.DataFrame = function(x, ...) x$shape
+dim.DataFrame = function(x) x$shape
 
 #' @export
 #' @noRd
-length.DataFrame = function(x, ...) x$width
+dim.LazyFrame = function(x) c(NA, x$width)
 
 #' @export
 #' @noRd
-length.Series = function(x, ...) x$len()
+length.DataFrame = function(x) x$width
 
-#' The Number of Rows of a DataFrame
-#' @param x DataFrame
-#' @return Integer
 #' @export
-nrow.DataFrame = function(x) x$height
+#' @noRd
+length.LazyFrame = length.DataFrame
 
-#' The Number of Columns of a DataFrame
-#' @param x DataFrame
-#' @return Integer
 #' @export
-ncol.DataFrame = function(x) x$height
+#' @noRd
+length.Series = function(x) x$len()
 
 #' @export
 #' @noRd
 names.DataFrame = function(x) x$columns
+
+#' @export
+#' @noRd
+names.LazyFrame = function(x) x$columns
 
 #' @export
 #' @noRd
@@ -124,6 +134,10 @@ row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
 #' @export
 #' @noRd
 dimnames.DataFrame = function(x) list(row.names(x), names(x))
+
+#' @export
+#' @noRd
+dimnames.LazyFrame = function(x) list(NULL, names(x))
 
 #' @export
 #' @noRd
