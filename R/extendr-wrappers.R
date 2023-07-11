@@ -59,6 +59,8 @@ test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
+test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
+
 set_global_rpool_cap <- function(c) .Call(wrap__set_global_rpool_cap, c)
 
 get_global_rpool_cap <- function() .Call(wrap__get_global_rpool_cap)
