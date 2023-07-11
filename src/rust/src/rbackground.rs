@@ -99,15 +99,6 @@ pub fn deserialize_dataframe(bits: &[u8]) -> RResult<polars::prelude::DataFrame>
         .finish()
         .map_err(crate::rpolarserr::polars_to_rpolars_err)
 }
-use crate::rdataframe::DataFrame;
-
-#[extendr]
-pub fn test_serde_df(df: &DataFrame) -> RResult<DataFrame> {
-    let x = serialize_dataframe(&mut df.0.clone())?;
-    //dbg!(&x);
-    let df2 = deserialize_dataframe(x.as_slice())?;
-    Ok(DataFrame(df2))
-}
 
 pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {
     serialize_dataframe(&mut std::iter::once(series).into_iter().collect())
@@ -413,6 +404,13 @@ pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
             .unwrap();
         Ok(rlf)
     })
+}
+
+#[extendr]
+pub fn test_serde_df(df: &RDF) -> RResult<RDF> {
+    let x = serialize_dataframe(&mut df.0.clone())?;
+    let df2 = deserialize_dataframe(x.as_slice())?;
+    Ok(RDF(df2))
 }
 
 extendr_module! {
