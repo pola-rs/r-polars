@@ -590,3 +590,9 @@ test_that("select with list of exprs", {
   expect_equal(x5$columns, c("mpg", "hp"))
   expect_equal(x6$columns, c("mpg", "hp"))
 })
+
+test_that("width", {
+  dat = pl$LazyFrame(mtcars)
+  expect_equal(dat$width, 11)
+  expect_equal(ncol(dat), 11)
+})
