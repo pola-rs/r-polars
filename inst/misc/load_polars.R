@@ -1,6 +1,3 @@
-enexprs = rlang::expr#function(...) as.list(substitute(...())) # https://adv-r.hadley.nz/quasiquotation.html
-
-
 #' load polars with environment variables and packages
 #'
 #' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
