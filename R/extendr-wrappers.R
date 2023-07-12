@@ -945,6 +945,24 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
+LazyFrame$without_optimization <- function() .Call(wrap__LazyFrame__without_optimization, self)
+
+LazyFrame$with_projection_pushdown <- function(toggle) .Call(wrap__LazyFrame__with_projection_pushdown, self, toggle)
+
+LazyFrame$with_predicate_pushdown <- function(toggle) .Call(wrap__LazyFrame__with_predicate_pushdown, self, toggle)
+
+LazyFrame$with_type_coercion <- function(toggle) .Call(wrap__LazyFrame__with_type_coercion, self, toggle)
+
+LazyFrame$with_simplify_expr <- function(toggle) .Call(wrap__LazyFrame__with_simplify_expr, self, toggle)
+
+LazyFrame$with_slice_pushdown <- function(toggle) .Call(wrap__LazyFrame__with_slice_pushdown, self, toggle)
+
+LazyFrame$with_common_subplan_elimination <- function(toggle) .Call(wrap__LazyFrame__with_common_subplan_elimination, self, toggle)
+
+LazyFrame$with_streaming <- function(toggle) .Call(wrap__LazyFrame__with_streaming, self, toggle)
+
+LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
+
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
 
