@@ -33,9 +33,44 @@ load_polars = function(
 }
 
 
+#' load polars with environment variables and packages
+#'
+#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
+#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
+#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
+#' @param ... other environment args to add
+#' @details in general Makevars check if bool-like envvars are not 'true'.
+#'
+#' @return no return
+#'
+#' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
+build_polars = function(
+  RPOLARS_ALL_FEATURES = 'true',
+  NOT_CRAN = 'true',
+  RPOLARS_CARGO_CLEAN_DEPS = 'false',
+  ...,
+  .packages = c("arrow","nanoarrow")
+) {
+
+  # bundle all envvars
+  args = c(
+    list(
+      RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+      NOT_CRAN = NOT_CRAN,
+      RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
+    ),
+    list(...),
+    .packages = list(.packages)
+  )
+
+  do.call(with_polars, c(list(\() system("cd ..; R CMD INSTALL --preclean --no-multiarch --with-keep.source r-polars")), args))
+
+}
+
 #' check polars with environment variables, filter errors, symlink  precompiled target
 #'
-#' @param RPOLARS_RUST_SOURCE where check can find precomiled target, set to '' if not use
+#' @param RPOLARS_RUST_SOURCE where check can find precomiled target, set to '' if not use,
+#' DEFAULT is `paste0(getwd(),"/src/rust")`.
 #' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
 #' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
 #' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
@@ -46,10 +81,11 @@ load_polars = function(
 #'
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 check_polars = function(
-  RPOLARS_RUST_SOURCE,
+  RPOLARS_RUST_SOURCE = paste0(getwd(),"/src/rust"),
   RPOLARS_ALL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
+  FILTER_CHECK_NO_FILTER = 'false',
   ...,
   check_dir = "./check/",
   .packages = character()
@@ -66,9 +102,15 @@ check_polars = function(
     list(...)
   )
   not_cran = identical(NOT_CRAN,'true')
-  cat("check in not_cran mode:", not_cran)
+  cat("check in not_cran mode:", not_cran ,"\n")
   with_polars(
-    \() devtools::check(env_vars = envvars, check_dir = check_dir, vignettes = FALSE, cran = !not_cran),
+    \() {
+      devtools::check(
+        env_vars = envvars, check_dir = check_dir,
+        vignettes = FALSE, cran = !not_cran
+      )
+      rextendr::document() # restore nanoarrow.Rd
+    },
     RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
     NOT_CRAN = NOT_CRAN,
     RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
@@ -78,28 +120,85 @@ check_polars = function(
 
   on.exit({unlink("check",recursive = TRUE)})
   source("./inst/misc/filter_rcmdcheck.R")
-
+  print("check polars is done")
 }
 
-with_polars = function(
-  f,
+#' submit polars with environment variables, filter errors, symlink  precompiled target
+#'
+#' @param RPOLARS_RUST_SOURCE where check can find precomiled target, set to '' if not use,
+#' DEFAULT is `paste0(getwd(),"/src/rust")`.
+#' @param ALL_FEATURES bool, to compile with e.g. simd, only for nightly toolchain
+#' @param NOT_CRAN bool, do not delete compiled target objects. Next compilation much faster.
+#' @param RPOLARS_CARGO_CLEAN_DEPS bool, do clean up cargo cache. Slows down next compilation
+#' @param ... other environment args to add
+#' @details in general Makevars check if bool-like envvars are not 'true'.
+#'
+#' @return no return
+#'
+#' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
+submit_polars = function(
+  RPOLARS_RUST_SOURCE = paste0(getwd(),"/src/rust"),
   RPOLARS_ALL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
+  temp_dir = tempdir(check = TRUE),
   .packages = character()
-
-
 ) {
+
   # bundle all envvars
-  envvar = c(
+  envvars = c(
     list(
+      RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
       RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
       NOT_CRAN = NOT_CRAN,
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
     list(...)
   )
+  not_cran = identical(NOT_CRAN,'true')
+  cat("in not_cran mode:", not_cran ,"\n")
+  with_polars(
+    \() {
+      temp_dir = paste0(temp_dir,"/polars_submission")
+      unlink(temp_dir, recursive = TRUE, force = TRUE)
+      dir.create(temp_dir)
+      #copy repo except target folders
+      all_files = list.files(path = ".", full.names = TRUE, recursive = TRUE)
+      non_target_files =   setdiff(all_files, grep("^\\./src/rust/target", all_files , value = TRUE))
+      non_target_dirs = gregexpr("/",non_target_files) |> 
+        lapply(tail,1) |> 
+        substr(x=non_target_files,start=1) |> 
+        unique() |> 
+        (\(x){ x[order(nchar(x))][-1]})()
+      for(i in paste0(temp_dir,"/", non_target_dirs)) dir.create(i)
+      res = file.copy(non_target_files, paste0(temp_dir,"/", non_target_files))
+      if(!all(res)) warning("copy incomplete")
+      
+      oldwd = getwd()
+      setwd(temp_dir)
+      on.exit({
+        setwd(oldwd)
+        unlink(temp_dir,recursive = TRUE)
+      })
+      devtools::submit_cran()
+    },
+    RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+    NOT_CRAN = NOT_CRAN,
+    RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
+    RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
+    ...
+  )
+
+}
+
+with_polars = function(
+  f,
+  ...,
+  .packages = character()
+) {
+  # bundle all envvars
+  envvar = list(...)
   stopifnot(all(sapply(names(envvar),nchar)))
 
 
@@ -142,31 +241,5 @@ with_polars = function(
 }
 
 
-##WITHR envar args were not seend by rextendr::document()
-# load_polars = function(
-#
-#   RPOLARS_ALL_FEATURES = 'true',
-#   NOT_CRAN = 'true',
-#   RPOLARS_CARGO_CLEAN_DEPS = 'false',
-#   ...
-#
-# ) {
-#   envvar = c(
-#     list(
-#       RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
-#       NOT_CRAN = NOT_CRAN,
-#       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
-#     ),
-#     list(...)
-#   )
-#   withr::package(package = "arrow") |>
-#     withr::package(package = "nanoarrow") |>
-#     withr::with_envvar(new = c("NOT_CRAN"="yeahnah"), {
-#       print(Sys.getenv())
-#       print(search())
-#       rextendr::document()
-#     })
-#
-#   invisible(NULL)
-# }
+
 
