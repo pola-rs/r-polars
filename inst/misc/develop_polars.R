@@ -157,7 +157,7 @@ submit_polars = function(
     list(...)
   )
   not_cran = identical(NOT_CRAN,'true')
-  cat("check in not_cran mode:", not_cran ,"\n")
+  cat("in not_cran mode:", not_cran ,"\n")
   with_polars(
     \() {
       temp_dir = paste0(temp_dir,"/polars_submission")
@@ -179,7 +179,7 @@ submit_polars = function(
       setwd(temp_dir)
       on.exit({
         setwd(oldwd)
-        unlink("temp_dir",recursive = TRUE)
+        unlink(temp_dir,recursive = TRUE)
       })
       devtools::submit_cran()
     },
