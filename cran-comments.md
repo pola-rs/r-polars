@@ -21,20 +21,6 @@
 
 This is a resubmission. Thank your for the comments, below are our answers:
 
-> Please always write package names, software names and API (application
-programming interface) names in single quotes in title and description.
-e.g: --> 'Rust'
-
-> Please note that package names are case sensitive. -> in your
-description you write 'Polars' but your package name starts with a lower
-case "p" ?
-
-We have put the software and package names between single quotes. Regarding 
-"Polars", there is a distinction between "polars" (all lowercase) which is the
-name of the R package, and "Polars" (first letter uppercase) which is the name
-of the query engine that is used by "polars". This is why we use 'Polars' in the
-description.
-
 
 > Please add \value to .Rd files regarding exported methods and explain
 the functions results in the documentation. Please write about the
