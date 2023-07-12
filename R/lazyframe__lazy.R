@@ -911,3 +911,129 @@ LazyFrame_dtypes = method_as_property(function() {
     result() |>
     unwrap("in $dtypes()")
 })
+
+#' @title Profile
+#' @keywords LazyFrame
+#' @return A pair of DataFrames, (collected result, profile stats)
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   select(pl$col("mpg") * 0.43)
+#'   profile()
+#'
+LazyFrame_profile = function() {
+  .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
+}
+
+#' @title Without_optimization
+#' @keywords LazyFrame
+#' @return A new LazyFrame with optimizations disabled
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   without_optimization()
+#'
+LazyFrame_without_optimization = "use_extendr_wrapper"
+
+#' @title With_projection_pushdown
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_projection_pushdown(FALSE)
+#'
+LazyFrame_with_projection_pushdown = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_projection_pushdown(self, toggle) |>
+  unwrap("in $with_projection_pushdown()")
+}
+
+#' @title With_predicate_pushdown
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_predicate_pushdown(FALSE)
+#'
+LazyFrame_with_predicate_pushdown = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_predicate_pushdown(self, toggle) |>
+    unwrap("in $with_predicate_pushdown()")
+}
+
+#' @title With_type_coercion
+#' @keywords LazyFrame
+  #' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_type_coercion(FALSE)
+#'
+LazyFrame_with_type_coercion = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_type_coercion(self, toggle) |>
+    unwrap("in $with_type_coercion()")
+}
+
+#' @title With_simplify_expr
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_simplify_expr(FALSE)
+#'
+LazyFrame_with_simplify_expr = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_simplify_expr(self, toggle) |>
+    unwrap("in $with_simplify_expr()")
+}
+
+#' @title With_slice_pushdown
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_slice_pushdown(FALSE)
+#'
+LazyFrame_with_slice_pushdown = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_slice_pushdown(self, toggle) |>
+    unwrap("in $with_slice_pushdown()")
+}
+
+#' @title With_common_subplan_elimination
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_common_subplan_elimination(FALSE)
+#'
+LazyFrame_with_common_subplan_elimination = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_common_subplan_elimination(self, toggle) |>
+    unwrap("in $with_common_subplan_elimination()")
+}
+
+#' @title With_streaming
+#' @keywords LazyFrame
+#' @param toggle whether the optimization is turned on
+#' @return A new LazyFrame with specified optimization scheme 
+#' @examples
+#' pl$LazyFrame(mtcars)$
+#'   with_streaming(FALSE)
+#'
+LazyFrame_with_streaming = function (
+  toggle = TRUE # : bool
+) {
+  .pr$LazyFrame$with_streaming(self, toggle) |>
+    unwrap("in $with_streaming()")
+}

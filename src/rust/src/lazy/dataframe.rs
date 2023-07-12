@@ -434,7 +434,7 @@ impl LazyFrame {
             .profile()
             .map(|(r, p)| pairlist!(result = RDF(r), profile = RDF(p)))
             .map_err(polars_to_rpolars_err)
-            .when("profiling the LazyFrame")
+            .hint("the data is already available and requires no computation")
     }
 }
 
