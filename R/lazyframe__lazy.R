@@ -917,7 +917,7 @@ LazyFrame_dtypes = method_as_property(function() {
 #' @return A pair of DataFrames, (collected result, profile stats)
 #' @examples
 #' pl$LazyFrame(mtcars)$
-#'   select(pl$col("mpg") * 0.43)
+#'   select(pl$col("mpg") * 0.43)$
 #'   profile()
 #'
 LazyFrame_profile = function() {

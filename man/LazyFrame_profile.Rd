@@ -14,7 +14,7 @@ Profile
 }
 \examples{
 pl$LazyFrame(mtcars)$
-  select(pl$col("mpg") * 0.43)
+  select(pl$col("mpg") * 0.43)$
   profile()
 
 }
