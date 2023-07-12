@@ -12,52 +12,24 @@ print(getwd())
 #define ignore rules for notes, warnings and errors
 ignore_rules = list(
   notes = list(
-
     #if note contains this phrase then skip it by returning TRUE.
     #yes polars is huge way above 10Mb nothing to do about that
     ignore_lib_size = function(msg) {
       isTRUE(grepl("checking installed package size ... NOTE",msg))
-    },
-
-    #check warnings/notes appear since main polars commit from and after
-    #" feat(rust, python): The 1 billion row sort (#6156) "
-    # 1a51f9e55196f69fb59e44d497de4f0e6685640d
-    # don't know how to fix it for now, just ignore unit tests passes just fine
-    ignore_macos_dll_error = function(msg) {
-      isTRUE(Sys.info()["sysname"]=="Darwin") &&
-        isTRUE(grepl("_IOBSDNameMatching",msg))
-    },
-
-    ignore_windows_linker_error = function(msg) {
-      #isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
-        isTRUE(grepl("drectve at end of def file",msg))
-    }
-
-  ),
-
-  warnings = list(
-    #see above both warnings and a note
-    ignore_windows_linker_error = function(msg) {
-      #isTRUE(grepl("windows",tolower(R.version$os))[1]) &&
-        isTRUE(grepl("drectve at end of def file",msg))
-    },
-
-    ignore_macos_dll_error = function(msg) {
-      isTRUE(grepl("darwin",R.version$os)[1]) &&
-        isTRUE(grepl("_IOBSDNameMatching",msg))
-    },
-
-    ignore_lengths_ns_collision = function(msg) {
-       isTRUE(
-          grepl("Functions or methods with usage in documentation object 'ExprStr_lengths'",
-          msg)
-       )
     }
   ),
-
-  errors = list(
-  )
+  warnings = list(),
+  errors = list()
 )
+
+
+#drop any filter if FILTER_CHECK_NO_FILTER = true
+if (Sys.getenv("FILTER_CHECK_NO_FILTER") == "true") {
+  ignore_rules$notes = list()
+  ignore_rules$warnings = list()
+  ignore_rules$errors = list()
+}
+
 
 #helper function
 #iterate a msg_set, as notes, warnings, errors and drop those where an ignore rule returns TRUE
