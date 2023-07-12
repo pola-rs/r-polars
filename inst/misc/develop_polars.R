@@ -182,8 +182,6 @@ submit_polars = function(
         unlink("temp_dir",recursive = TRUE)
       })
       devtools::submit_cran()
-      browser()
-      print("sa")
     },
     RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
     NOT_CRAN = NOT_CRAN,
