@@ -166,15 +166,15 @@ submit_polars = function(
       #copy repo except target folders
       all_files = list.files(path = ".", full.names = TRUE, recursive = TRUE)
       non_target_files =   setdiff(all_files, grep("^\\./src/rust/target", all_files , value = TRUE))
-      non_target_dirs = gregexpr("/",non_target_files) |> 
-        lapply(tail,1) |> 
-        substr(x=non_target_files,start=1) |> 
-        unique() |> 
+      non_target_dirs = gregexpr("/",non_target_files) |>
+        lapply(tail,1) |>
+        substr(x=non_target_files,start=1) |>
+        unique() |>
         (\(x){ x[order(nchar(x))][-1]})()
       for(i in paste0(temp_dir,"/", non_target_dirs)) dir.create(i)
       res = file.copy(non_target_files, paste0(temp_dir,"/", non_target_files))
       if(!all(res)) warning("copy incomplete")
-      
+
       oldwd = getwd()
       setwd(temp_dir)
       on.exit({
@@ -241,5 +241,37 @@ with_polars = function(
 }
 
 
+#' find compiled *.Rd files for missing return value
+#'
+#' @return char vec
+#'
+#' @examples
+#' find_missing_return()
+find_missing_return = function() {
 
+  has_value = function(x) {
+  found = character()
+
+  has_value_recursive = function(x,lvl=0) {
+    for(i in x)  {
+      if(is.list(i)) has_value_recursive(i, lvl = lvl+1)
+      if(identical("\\value",attr(i, "Rd_tag"))) {
+        found <<- c(found, substr(paste(unlist(i),collapse=" | "),1,25))
+      }
+    }
+    }
+    has_value_recursive(x)
+    found
+  }
+
+  all_doc_values = list.files("./man/", full.names = TRUE) |>
+    sapply(\(x) {
+      tools::parse_Rd(x) |>
+        unclass() |>
+        has_value()
+    })
+
+  names(all_doc_values[sapply(all_doc_values,length)<1])
+
+}
 
