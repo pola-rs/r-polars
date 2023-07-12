@@ -11,11 +11,14 @@ Development occurs on Github: https://github.com/pola-rs/r-polars
 Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
+**'Polars'** is a query engine/syntax for multiple languages. The R specific implementation
+can be referred to as **r-polars** and is derived from **rust-polars**.
+
 The **polars** package for R is published under the MIT license.
 
 ## MIT License
 
-Copyright (c) 2023 rpolars authors
+Copyright (c) 2023 polars authors (polars the R package)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
