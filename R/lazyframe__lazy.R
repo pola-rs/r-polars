@@ -33,7 +33,7 @@
 #' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 #' file sourced) the extendr-methods are removed and replaced by any function
 #' prefixed `LazyFrame_`.
-#'
+#' @return not applicable
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
@@ -103,6 +103,7 @@ LazyFrame
 #' @description called by the interactive R session internally
 #' @param x LazyFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
@@ -184,7 +185,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
-#' @return Prints the optimized query plan in the console
+#' @return invisible NULL
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)

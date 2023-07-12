@@ -14,6 +14,9 @@
 \item{str_length}{an integer. If specified,
 utf8 or categorical type Series will be formatted to a string of this length.}
 }
+\value{
+character vector
+}
 \description{
 as.character for polars Series
 }

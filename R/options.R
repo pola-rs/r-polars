@@ -159,10 +159,12 @@ pl$options = lapply(names(polars_optenv), \(name) {
 names(pl$options) = names(polars_optenv)
 class(pl$options) = c("polars_option_list", "list")
 
+
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
 #' @param x string name of an option
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
@@ -174,6 +176,7 @@ class(pl$options) = c("polars_option_list", "list")
   print("pl$options (polars_options, list-like with value validation):")
   print(pl$get_polars_options())
 }
+
 #' #' @export
 #' `as.list.polars_option_list` = function(x, ...) {
 #'   pl$get_polars_options()
@@ -286,6 +289,7 @@ pl$get_polars_opt_requirements = function() {
 #' internal keeping of state at runtime
 #' @name polars_runtime_flags
 #' @keywords internal
+#' @return not applicable
 #' @description This environment is used internally for the package to remember
 #' what has been going on. Currently only used to throw one-time warnings()
 runtime_state = new.env(parent = emptyenv())

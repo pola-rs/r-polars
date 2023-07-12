@@ -3,6 +3,9 @@
 \name{DataFrame_class}
 \alias{DataFrame_class}
 \title{Inner workings of the DataFrame-class}
+\value{
+not applicable
+}
 \description{
 The \code{DataFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The instantiated

@@ -130,6 +130,7 @@ print.WhenThenThen = function(x, ...) {
 #' @description called by the interactive R session internally
 #' @param x When
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
@@ -141,6 +142,7 @@ print.WhenThenThen = function(x, ...) {
 #' @description called by the interactive R session internally
 #' @param x WhenThen
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
@@ -152,6 +154,7 @@ print.WhenThenThen = function(x, ...) {
 #' @description called by the interactive R session internally
 #' @param x WhenThenThen
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal

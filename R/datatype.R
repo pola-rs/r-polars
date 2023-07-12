@@ -47,6 +47,7 @@ wrap_proto_schema = function(x) {
 #'
 #' @name pl_dtypes
 #' @description `DataType` any polars type (ported so far)
+#' @return not applicable
 #' @examples
 #' print(ls(pl$dtypes))
 #' pl$dtypes$Float64

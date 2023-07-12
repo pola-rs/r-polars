@@ -12,7 +12,7 @@
 \item{...}{not used}
 }
 \value{
-An R list
+One Expr wrapped in a list
 }
 \description{
 wraps an Expr in a list

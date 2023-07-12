@@ -3,6 +3,9 @@
 \name{pl_dtypes}
 \alias{pl_dtypes}
 \title{DataTypes (RPolarsDataType)}
+\value{
+not applicable
+}
 \description{
 \code{DataType} any polars type (ported so far)
 }

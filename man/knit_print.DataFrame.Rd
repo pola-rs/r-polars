@@ -12,7 +12,7 @@ knit_print.DataFrame(x, ...)
 \item{...}{additional arguments, not used}
 }
 \value{
-Printed DataFrame
+invisible x or NULL
 }
 \description{
 Mimics python-polars' NotebookFormatter

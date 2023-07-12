@@ -11,6 +11,9 @@ An object of class \code{pl_polars_env} (inherits from \code{environment}) of le
 \usage{
 pl
 }
+\value{
+not applicable
+}
 \description{
 \code{pl}-object is a environment of all public functions and class constructors.
 Public functions are not exported as a normal package as it would be huge namespace

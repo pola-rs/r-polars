@@ -68,6 +68,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' method should be called upon.
 #' @aliases  .pr
 #' @keywords internal api_private
+#' @return not applicable
 #' @export
 #' @examples
 #' # .pr$DataFrame$print() is an external function where self is passed as arg
@@ -189,7 +190,7 @@ method_as_property = function(f, setter = FALSE) {
 #' @keywords api
 #' @details If someone do not particularly like the letter combination `pl`, they are free to
 #' bind the environment to another variable name as `simon_says = pl` or even do `attach(pl)`
-#'
+#' @return not applicable
 #' @export
 #' @examples
 #' # how to use polars via `pl`
@@ -241,6 +242,7 @@ pl$show_all_public_methods = function(class_names = NULL) {
 
 #' get public function from pl namespace/env
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
+#' @return an element from the public namespace `pl` polars. Likely a function or an RPolarsDataType
 #' @export
 #' @noRd
 #' @keywords internal
@@ -273,7 +275,7 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 
 
 #' @title Any polars class object is made of this
-#' @name object
+#' @name polars_class_object
 #' @description One SEXP of Rtype: "externalptr" + a class attribute
 #' @keywords api_object
 #' @details
@@ -283,6 +285,7 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 #'  See function macro_add_syntax_check_to_class().
 #'
 #' @importFrom utils .DollarNames
+#' @return not applicable
 #' @examples
 #' # all a polars object is only made of:
 #' some_polars_object = pl$DataFrame(iris)

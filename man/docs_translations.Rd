@@ -6,6 +6,9 @@
 \format{
 info
 }
+\value{
+Not applicable
+}
 \description{
 #Comments for how the R and python world translates into polars:
 

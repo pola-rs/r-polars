@@ -10,6 +10,9 @@ An object of class \code{environment} of length 19.
 \usage{
 .pr
 }
+\value{
+not applicable
+}
 \description{
 \code{.pr}
 Original extendr bindings converted into pure functions

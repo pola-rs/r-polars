@@ -14,6 +14,8 @@ column names  (e.g \code{"a"}), or list containing expressions or column names
 }
 \value{
 DataFrame
+
+DataFrame
 }
 \description{
 Related to dplyr \code{mutate()}. However, it discards unmentioned

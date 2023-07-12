@@ -22,6 +22,7 @@
 #' prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
+#' @return not applicable
 #' @examples
 #' # see all public exported method names (normally accessed via a class instance with $)
 #' ls(.pr$env$DataFrame)
@@ -68,6 +69,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x DataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
@@ -80,6 +82,7 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x VecDataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal
@@ -704,6 +707,7 @@ DataFrame_sort = function(
 #' (e.g `list(pl$col("a"))`).
 #'
 #' @aliases select
+#' @return DataFrame
 #' @keywords  DataFrame
 #' @return DataFrame
 #' @examples

@@ -146,13 +146,13 @@ pcase = function(..., or_else = NULL) {
 
 
 #' Move environment elements from one env to another
-#'
+#' @noRd
 #' @param from_env env from
 #' @param element_names names of elements to move, if named names, then name of name is to_env name
 #' @param remove bool, actually remove element in from_env
 #' @param to_env env to
 #' @keywords internal
-#' @return NULL
+#' @return invisble NULL
 #'
 move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
   names_from = element_names

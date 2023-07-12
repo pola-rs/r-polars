@@ -3,6 +3,9 @@
 \name{LazyFrame_class}
 \alias{LazyFrame_class}
 \title{Inner workings of the LazyFrame-class}
+\value{
+not applicable
+}
 \description{
 The \code{LazyFrame}-class is simply two environments of respectively
 the public and private methods/function calls to the polars rust side. The

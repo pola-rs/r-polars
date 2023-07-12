@@ -1,6 +1,7 @@
 #' @title Polars Expressions
 #'
 #' @name Expr_class
+#' @return not applicable
 #' @description Expressions are all the functions and methods that are applicable
 #' to a Polars DataFrame. They can be split into the following categories (following
 #' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
@@ -39,9 +40,10 @@ print.Expr = function(x, ...) {
 #' internal method print Expr
 #' @name Expr_print
 #' @keywords Expr
-#' @return Prints the Polars expression to the console
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")$print()
+#' @return invisible self
+#' @examples pl$DataFrame(iris)
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
@@ -62,7 +64,7 @@ Expr_print = function() {
 #' @description wraps an Expr in a list
 #' @param x Expr
 #' @param ... not used
-#' @return An R list
+#' @return One Expr wrapped in a list
 #' @export
 #' @keywords Expr
 as.list.Expr = function(x, ...) {

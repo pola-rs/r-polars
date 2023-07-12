@@ -6,6 +6,9 @@
 \arguments{
 \item{activate}{bool default TRUE, enable chained auto-completion}
 }
+\value{
+invisible NULL
+}
 \description{
 Extra polars auto completion
 }

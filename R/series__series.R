@@ -81,6 +81,7 @@ Series_print = function() {
 #' @description called by the interactive R session internally
 #' @param x Series
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
 #' @inherit .DollarNames.DataFrame return
 #' @keywords internal

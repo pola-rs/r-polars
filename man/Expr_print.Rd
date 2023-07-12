@@ -7,12 +7,13 @@
 Expr_print()
 }
 \value{
-Prints the Polars expression to the console
+invisible self
 }
 \description{
 internal method print Expr
 }
 \examples{
 pl$col("some_column")$sum()$over("some_other_column")$print()
+pl$DataFrame(iris)
 }
 \keyword{Expr}
