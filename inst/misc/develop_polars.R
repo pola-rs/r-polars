@@ -138,7 +138,7 @@ check_polars = function(
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 submit_polars = function(
   RPOLARS_RUST_SOURCE = paste0(getwd(),"/src/rust"),
-  RPOLARS_ALL_FEATURES = 'true',
+  RPOLARS_ALL_FEATURES = 'false',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
