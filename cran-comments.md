@@ -29,25 +29,19 @@ structure of the output (class) and also what the output means.
 We have added \value where it was missing. 
 
 
-> Using foo:::f instead of foo::f allows access to unexported objects.
-This is generally not recommended, as the semantics of unexported
-objects may be changed by the package author in routine maintenance."
-Please omit one colon.
-
-We either removed one colon or dropped the examples from the documentation (most
-of these were internal functions).
-
-
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
 
 Most unexported functions (427 closures with a `self`) are actually the
 public methods called through `$` on their respective class-objects. They should
-not be called as exported functions. However, the vast number of methods makes it
-unfeasible to bundle all methods in a single doc page per class, like common 
-practice for another class-system as R6. It would be very unreadable and 
-unsearchable. The number of methods are expected to increase further in future 
-versions.
+NOT be exported functions. Public methods deserve to be documented. However, the
+vast number of methods makes it unfeasible to bundle all methods in a single doc
+page per class, like common practice for another class-system as R6. Imagine a
+params section with +500 parameters? Many param-names will collide. Then a
+details section with +100 out-of-context sections. Then +100 different return
+values. Then +400 use examples. It would be completely unreadable and
+unsearchable. The number of methods are only expected to increase further in
+future versions.
 
 Besides methods, upstream Polars also has a number of functions/objects that
 collide with `base`, `utils`, `stats`, and many popular packages.  Polars strives
@@ -56,23 +50,17 @@ rename functions to avoid namespace collisions locally in R. Package functions
 (and other objects types) are in all languages bundled in a namespace `pl` to 
 not clutter user search()-namespace and to remove the risk of conflicts.
 
-> Some code lines in examples are commented out.
-Please never do that. Ideally find toy examples that can be regularly
-executed and checked. Lengthy examples (> 5 sec), can be wrapped in
-\donttest{}.
 
-> Please unwrap the examples if they are executable in < 5 sec, or replace
-\dontrun{} with \donttest{}.
+> In your LICENSE file you state "rpolars authors" to be the
+copyrightholders. Do you mean yourself? In that case please write "polar
+authors" instead. Otherwise please add the copyrightholders to the
+Authors@R field in your description.
 
-We have replaced \dontrun{} with \donttest{}. The comments in the examples are
-to explain the code used. After removing some Rd files (cf comment above), we
-don't find any code line that is mistakenly commented out. We also didn't find
-examples that ran in more than 5 seconds.
+We have changed to 'polars authors' in LICENCE to:
 
-> Instead of print()/cat() rather use message()/warning() or
-if(verbose)cat(..) (or maybe stop()) if you really have to write text to
-the console. (except for print, summary, interactive functions)
+YEAR: 2023
+COPYRIGHT HOLDER: polars authors (polars the R package)
 
-All the cat() and print() we see are either used in print() methods, in methods
-that are only used interactively (e.g knit_print()), or are behind a flag used
-only for debugging. Therefore, we didn't remove any cat() or print() call.
+We add also (polars the R package) to not claim authorship or copyright to e.g.
+rust-polars or py-polars. Ritchie Vink is the first author to all r-polars,
+py-polars and rust-polars. No organization is 'cph'.
