@@ -251,15 +251,71 @@ LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
+#' @param type_coercion Boolean. Do type coercion optimization.
+#' @param predicate_pushdown  Boolean. Do predicate pushdown optimization.
+#' @param projection_pushdown  Boolean. Do projection pushdown optimization.
+#' @param simplify_expression  Boolean. Run simplify expressions optimization.
+#' @param no_optimization  Boolean. Turn off (certain) optimizations.
+#' @param slice_pushdown  Boolean. Slice pushdown optimization.
+#' @param common_subplan_elimination  Boolean. Will try to cache branching subplans that occur on
+#' self-joins or unions.
+#' @param streaming  Boolean. Run parts of the query in a streaming fashion
+#' (this is in an alpha state)
+#' @param collect_in_background Boolean. Detach this query from R session. Computation will start
+#' in background. Get a handle which later can be converted into the resulting DataFrame. Useful
+#' in interactive mode to not lock R session.
+#' @details
+#' Note: use `$fetch()` if you want to run your query on the first `n` rows only.
+#' This can be a huge time saver in debugging queries.
 #' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame`
+#' @return collected `DataFrame` or if colkect
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect = function() {
-  unwrap(.pr$LazyFrame$collect_handled(self), "in $collect():")
+LazyFrame_collect = function(
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  no_optimization = FALSE,
+  slice_pushdown = TRUE,
+  common_subplan_elimination = TRUE,
+  streaming = FALSE,
+  collect_in_background = FALSE
+) {
+
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    common_subplan_elimination = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    common_subplan_elimination = FALSE
+  }
+
+  collect_f = if( isTRUE(collect_in_background)) {
+    .pr$LazyFrame$collect_background
+  } else {
+    .pr$LazyFrame$collect_handled
+  }
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      common_subplan_elimination,
+      streaming
+    ) |>
+    and_then(collect_f) |>
+    unwrap("in $collect():")
 }
 
 #' @title New DataFrame from LazyFrame_object$collect()
-#' @description collect DataFrame by lazy query
+#' @description collect DataFrame by lazy query (SOFT DEPRECATED)
+#' @details This function is soft deprecated. Use $collect(collect_in_background = TRUE) instead
 #' @keywords LazyFrame DataFrame_new
 #' @return collected `DataFrame`
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
@@ -924,116 +980,3 @@ LazyFrame_profile = function() {
   .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
 }
 
-#' @title Without_optimization
-#' @keywords LazyFrame
-#' @return A new LazyFrame with optimizations disabled
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   without_optimization()
-#'
-LazyFrame_without_optimization = "use_extendr_wrapper"
-
-#' @title With_projection_pushdown
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_projection_pushdown(FALSE)
-#'
-LazyFrame_with_projection_pushdown = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_projection_pushdown(self, toggle) |>
-  unwrap("in $with_projection_pushdown()")
-}
-
-#' @title With_predicate_pushdown
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_predicate_pushdown(FALSE)
-#'
-LazyFrame_with_predicate_pushdown = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_predicate_pushdown(self, toggle) |>
-    unwrap("in $with_predicate_pushdown()")
-}
-
-#' @title With_type_coercion
-#' @keywords LazyFrame
-  #' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_type_coercion(FALSE)
-#'
-LazyFrame_with_type_coercion = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_type_coercion(self, toggle) |>
-    unwrap("in $with_type_coercion()")
-}
-
-#' @title With_simplify_expr
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_simplify_expr(FALSE)
-#'
-LazyFrame_with_simplify_expr = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_simplify_expr(self, toggle) |>
-    unwrap("in $with_simplify_expr()")
-}
-
-#' @title With_slice_pushdown
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_slice_pushdown(FALSE)
-#'
-LazyFrame_with_slice_pushdown = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_slice_pushdown(self, toggle) |>
-    unwrap("in $with_slice_pushdown()")
-}
-
-#' @title With_common_subplan_elimination
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_common_subplan_elimination(FALSE)
-#'
-LazyFrame_with_common_subplan_elimination = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_common_subplan_elimination(self, toggle) |>
-    unwrap("in $with_common_subplan_elimination()")
-}
-
-#' @title With_streaming
-#' @keywords LazyFrame
-#' @param toggle whether the optimization is turned on
-#' @return A new LazyFrame with specified optimization scheme 
-#' @examples
-#' pl$LazyFrame(mtcars)$
-#'   with_streaming(FALSE)
-#'
-LazyFrame_with_streaming = function (
-  toggle = TRUE # : bool
-) {
-  .pr$LazyFrame$with_streaming(self, toggle) |>
-    unwrap("in $with_streaming()")
-}

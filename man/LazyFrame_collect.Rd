@@ -4,13 +4,50 @@
 \alias{LazyFrame_collect}
 \title{New DataFrame from LazyFrame_object$collect()}
 \usage{
-LazyFrame_collect()
+LazyFrame_collect(
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  no_optimization = FALSE,
+  slice_pushdown = TRUE,
+  common_subplan_elimination = TRUE,
+  streaming = FALSE,
+  collect_in_background = FALSE
+)
+}
+\arguments{
+\item{type_coercion}{Boolean. Do type coercion optimization.}
+
+\item{predicate_pushdown}{Boolean. Do predicate pushdown optimization.}
+
+\item{projection_pushdown}{Boolean. Do projection pushdown optimization.}
+
+\item{simplify_expression}{Boolean. Run simplify expressions optimization.}
+
+\item{no_optimization}{Boolean. Turn off (certain) optimizations.}
+
+\item{slice_pushdown}{Boolean. Slice pushdown optimization.}
+
+\item{common_subplan_elimination}{Boolean. Will try to cache branching subplans that occur on
+self-joins or unions.}
+
+\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+(this is in an alpha state)}
+
+\item{collect_in_background}{Boolean. Detach this query from R session. Computation will start
+in background. Get a handle which later can be converted into the resulting DataFrame. Useful
+in interactive mode to not lock R session.}
 }
 \value{
-collected \code{DataFrame}
+collected \code{DataFrame} or if colkect
 }
 \description{
 collect DataFrame by lazy query
+}
+\details{
+Note: use \verb{$fetch()} if you want to run your query on the first \code{n} rows only.
+This can be a huge time saver in debugging queries.
 }
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()

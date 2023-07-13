@@ -378,61 +378,40 @@ impl LazyFrame {
         ))
     }
 
-    fn without_optimization(&self) -> Self {
-        self.0.clone().without_optimizations().into()
+    #[allow(clippy::too_many_arguments)]
+    fn optimization_toggle(
+        &self,
+        type_coercion: Robj,
+        predicate_pushdown: Robj,
+        projection_pushdown: Robj,
+        simplify_expr: Robj,
+        slice_pushdown: Robj,
+        cse: Robj,
+        streaming: Robj,
+    ) -> RResult<Self> {
+        let ldf = self
+            .0
+            .clone()
+            .with_type_coercion(robj_to!(bool, type_coercion)?)
+            .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
+            .with_streaming(robj_to!(bool, streaming)?)
+            .with_projection_pushdown(robj_to!(bool, projection_pushdown)?);
+
+        #[cfg(feature = "cse")]
+        {
+            ldf = ldf.with_common_subplan_elimination(robj_to!(bool, cse)?);
+        }
+
+        Ok(ldf.into())
     }
 
-    fn with_projection_pushdown(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0
-                .clone()
-                .with_projection_pushdown(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_predicate_pushdown(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0
-                .clone()
-                .with_predicate_pushdown(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_type_coercion(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0.clone().with_type_coercion(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_simplify_expr(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0.clone().with_simplify_expr(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_slice_pushdown(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0.clone().with_slice_pushdown(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_common_subplan_elimination(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(
-            self.0
-                .clone()
-                .with_common_subplan_elimination(robj_to!(bool, toggle)?),
-        ))
-    }
-
-    fn with_streaming(&self, toggle: Robj) -> RResult<Self> {
-        Ok(Self(self.0.clone().with_streaming(robj_to!(bool, toggle)?)))
-    }
-
-    fn profile(&self) -> RResult<Pairlist> {
+    fn profile(&self) -> RResult<List> {
         self.0
             .clone()
             .profile()
-            .map(|(r, p)| pairlist!(result = RDF(r), profile = RDF(p)))
+            .map(|(r, p)| list!(result = RDF(r), profile = RDF(p)))
             .map_err(polars_to_rpolars_err)
             .hint("the data is already available and requires no computation")
     }
