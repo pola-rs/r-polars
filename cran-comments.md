@@ -32,14 +32,15 @@ We have added \value where it was missing.
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
 
-Most unexported functions (427 closures with a `self`) are actually the
-public methods called through `$` on their respective class-objects. They should
-NOT be exported functions. Public methods deserve to be documented. However, the
-vast number of methods makes it unfeasible to bundle all methods in a single doc
-page per class, like common practice for another class-system as R6. Imagine a
-params section with +500 parameters? Many param-names will collide. Then a
+Most polars unexported functions (427 closures with a `self`) are actually the
+public methods called through `object$method()`. They should NOT be exported as
+plain functions. Public methods should be documented though.
+
+The vast number of methods makes it unfeasible to bundle all methods in a single
+doc page per class, like common practice for another class-system as R6. Imagine
+a .Rd params section with +500 parameters? Many param-names will collide. Then a
 details section with +100 out-of-context sections. Then +100 different return
-values. Then +400 use examples. It would be completely unreadable and
+values. Then +400 mixed use examples. It would be completely unreadable and
 unsearchable. The number of methods are only expected to increase further in
 future versions.
 
