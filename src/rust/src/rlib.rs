@@ -204,6 +204,13 @@ fn arrow_stream_to_rust(rbr: Robj) {
 }
 
 #[extendr]
+fn import_arrow_array_stream(str_ptr: &str) -> RResult<()> {
+    let res = crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(str_ptr)
+        .map_err(|err| crate::rpolarserr::RPolarsErr::new().plain(err));
+    res
+}
+
+#[extendr]
 fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
     let mut iter = r_batches.into_iter().map(|(_, robj)| {
         let robj = call!(r"\(x) x$columns", robj)?;
@@ -297,6 +304,8 @@ extendr_module! {
     fn rb_list_to_df;
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
+    fn import_arrow_array_stream;
+
 
     fn test_robj_to_usize;
     fn test_robj_to_i64;

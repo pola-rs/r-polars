@@ -160,3 +160,23 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;
     Ok(accumulate_dataframes_vertical_unchecked(dfs))
 }
+
+pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), String> {
+    let x: usize = str_ptr.parse().expect("input is a pointer value");
+    dbg!(x);
+    let y = x as *mut ffi::ArrowArrayStream;
+    let stream = unsafe { Box::from_raw(y) };
+    dbg!("before reader");
+
+    let mut iter =
+        unsafe { ffi::ArrowArrayStreamReader::try_new(stream) }.map_err(|err| err.to_string())?;
+    dbg!("after reader");
+
+    while let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res.map_err(|err| err.to_string())?;
+        dbg!(&array);
+    }
+
+    dbg!("done!!");
+    Ok(())
+}
