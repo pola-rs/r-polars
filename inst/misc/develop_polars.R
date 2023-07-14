@@ -143,7 +143,8 @@ submit_polars = function(
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
   temp_dir = tempdir(check = TRUE),
-  .packages = character()
+  .packages = character(),
+  unlink_temp = TRUE
 ) {
 
   # bundle all envvars
@@ -179,7 +180,7 @@ submit_polars = function(
       setwd(temp_dir)
       on.exit({
         setwd(oldwd)
-        unlink(temp_dir,recursive = TRUE)
+        if(unlink_temp) unlink(temp_dir,recursive = TRUE)
       })
       devtools::submit_cran()
     },
