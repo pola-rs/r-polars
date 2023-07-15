@@ -656,15 +656,14 @@ construct_ProtoExprArray = function(...) {
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
-Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
-  .pr$Expr$map(self, f, output_type, agg_list)
+Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
+  map_fn = ifelse(in_background, .pr$Expr$map, .pr$Expr$map_in_background)
+  map_fn(self, f, output_type, agg_list)
 }
 
-
-Expr_map_in_background = function(f, output_type = NULL, agg_list = FALSE) {
-  .pr$Expr$map_in_background(self, f, output_type, agg_list)
+Expr_apply_in_background = function(f, output_type = NULL) {
+  .pr$Expr$apply_in_background(self, f, output_type)
 }
-
 
 #' Expr_apply
 #' @keywords Expr

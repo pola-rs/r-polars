@@ -1706,6 +1706,31 @@ impl Expr {
         .into()
     }
 
+    pub fn apply_in_background(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+    ) -> Self {
+        let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
+
+        let rbgfunc = move |s| {
+            Ok(crate::RBGPOOL
+                .rmap_series(raw_func.clone(), s)
+                .map_err(|e| polars::prelude::PolarsError::ComputeError(format!("{}", e).into()))?(
+            )
+            .ok())
+        };
+
+        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+
+        let output_map = pl::GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
+            None => fld.clone(),
+        });
+
+        self.0.clone().apply(rbgfunc, output_map).into()
+    }
+
     pub fn is_unique(&self) -> Self {
         self.0.clone().is_unique().into()
     }

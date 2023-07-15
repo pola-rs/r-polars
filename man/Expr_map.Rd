@@ -4,7 +4,7 @@
 \alias{Expr_map}
 \title{Expr_map}
 \usage{
-Expr_map(f, output_type = NULL, agg_list = FALSE)
+Expr_map(f, output_type = NULL, agg_list = FALSE, in_background = FALSE)
 }
 \arguments{
 \item{f}{a function mapping a series}

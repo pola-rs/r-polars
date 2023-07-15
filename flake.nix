@@ -38,7 +38,7 @@
         };
         # Create R development environment with r-polars and other useful libraries
         rvenv = pkgs.rWrapper.override {
-          packages = with pkgs.rPackages; [ languageserver renv ];
+          packages = with pkgs.rPackages; [ devtools languageserver renv rextendr ];
         };
       in {
         packages.default = rpolars;
@@ -47,8 +47,6 @@
           inputsFrom = pkgs.lib.singleton rpolars;
           packages = pkgs.lib.singleton rvenv;
           LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath rdeps;
-          # Remember to create a symlink to the build cache
-          R_LIBS_USER = ".direnv/target";
         };
       });
 
