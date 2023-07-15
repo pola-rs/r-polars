@@ -1,8 +1,8 @@
 use crate::rdataframe::DataFrame as RDF;
 use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
 use extendr_api::{
-    call, eval_string, extendr, extendr_module, pairlist, symbol::class_symbol, Attributes,
-    Conversions, Operators, Pairlist, Rinternals, Robj, NULL,
+    call, eval_string, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes,
+    Conversions, List, Operators, Pairlist, Rinternals, Robj, NULL,
 };
 use ipc_channel::ipc;
 use polars::prelude::Series as PSeries;
@@ -350,8 +350,8 @@ pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
 }
 
 #[extendr]
-pub fn get_global_rpool_cap() -> RResult<extendr_api::prelude::Pairlist> {
-    Ok(pairlist!(
+pub fn get_global_rpool_cap() -> RResult<List> {
+    Ok(list!(
         available = RBGPOOL.pool.lock()?.len(),
         capacity = RBGPOOL.cap.lock()?.clone()
     ))

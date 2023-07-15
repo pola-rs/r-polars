@@ -643,6 +643,7 @@ construct_ProtoExprArray = function(...) {
 #' @param f a function mapping a series
 #' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
+#' @param in_background whether to execute the map in background.
 #' Likely not so useful.
 #'
 #' @rdname Expr_map
@@ -657,10 +658,21 @@ construct_ProtoExprArray = function(...) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  map_fn = ifelse(in_background, .pr$Expr$map, .pr$Expr$map_in_background)
+  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
   map_fn(self, f, output_type, agg_list)
 }
 
+#' Expr_apply_in_background
+#'
+#' @param f a function mapping series in each group
+#' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
+#' @rdname Expr_apply_in_background
+#' @return Expr
+#' @aliases Expr_apply_in_background
+#' @details user function return should be a series or any Robj convertible into a Series.
+#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
+#'  investigate.
+#' @name Expr_apply
 Expr_apply_in_background = function(f, output_type = NULL) {
   .pr$Expr$apply_in_background(self, f, output_type)
 }

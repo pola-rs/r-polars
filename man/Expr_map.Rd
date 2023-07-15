@@ -11,7 +11,9 @@ Expr_map(f, output_type = NULL, agg_list = FALSE, in_background = FALSE)
 
 \item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.}
 
-\item{agg_list}{Aggregate list. Map from vector to group in groupby context.
+\item{agg_list}{Aggregate list. Map from vector to group in groupby context.}
+
+\item{in_background}{whether to execute the map in background.
 Likely not so useful.}
 }
 \value{
