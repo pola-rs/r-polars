@@ -315,16 +315,17 @@ repo.
 - As aside, notice that `./renv.lock` sets all R packages during the
   server build.
 
-*Tip:* To speed up the local R CMD check, run the following:
+*Tip:* To speed up the local rextendr::document() or R CMD check, run
+the following:
 
 ``` r
-devtools::check(
-  env_vars = list(RPOLARS_RUST_SOURCE="/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust"),
-  check_dir = "./check/"
-  )
-source("./inst/misc/filter_rcmdcheck.R")
-Sys.sleep(5)
-unlink("check",recursive = TRUE, force =TRUE)
+source("inst/misc/load_polars.R")
+
+#to rextendr:document() + not_cran + load packages + all_features
+load_polars()
+
+#to check package + reuses previous compilation in check, protects against deletion
+check_polars("/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust")
 ```
 
 - The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to
