@@ -166,7 +166,10 @@ pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), Str
     let x: usize = str_ptr.parse().expect("input is a pointer value");
     dbg!(x);
     let y = x as *mut ffi::ArrowArrayStream;
-    let stream = unsafe { Box::from_raw(y) };
+
+    let mut stream = unsafe { ffi::ArrowArrayStreamReader::try_new(*y)? };
+    // let y = x as *mut ffi::ArrowArrayStream;
+    // let stream = unsafe { Box::from_raw(y) };
     dbg!("before reader");
 
     let mut iter =
