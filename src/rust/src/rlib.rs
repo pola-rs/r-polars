@@ -204,10 +204,10 @@ fn arrow_stream_to_rust(rbr: Robj) {
 }
 
 #[extendr]
-fn import_arrow_array_stream(str_ptr: &str) -> RResult<()> {
-    let res = crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(str_ptr)
-        .map_err(|err| crate::rpolarserr::RPolarsErr::new().plain(err));
-    res
+fn import_arrow_array_stream(str_ptr: &str) -> Robj {
+    crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(str_ptr).unwrap();
+    //.map_err(|err| crate::rpolarserr::RPolarsErr::new().plain(err));
+    42.into_robj()
 }
 
 #[extendr]
@@ -304,6 +304,7 @@ extendr_module! {
     fn rb_list_to_df;
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
+
     fn import_arrow_array_stream;
 
 

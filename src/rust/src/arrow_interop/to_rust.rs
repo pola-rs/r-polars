@@ -162,6 +162,7 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
 }
 
 pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), String> {
+    dbg!(str_ptr);
     let x: usize = str_ptr.parse().expect("input is a pointer value");
     dbg!(x);
     let y = x as *mut ffi::ArrowArrayStream;
@@ -176,6 +177,8 @@ pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), Str
         let array = array_res.map_err(|err| err.to_string())?;
         dbg!(&array);
     }
+
+    //dbg!(unsafe { iter.next() }.unwrap());
 
     dbg!("done!!");
     Ok(())
