@@ -15,19 +15,16 @@
 - There was 2 NOTEs.
   - New submission
   - installed size is 140.8Mb
-  
 
 ## Resubmission
 
 This is a resubmission. Thank your for the comments, below are our answers:
 
-
 > Please add \value to .Rd files regarding exported methods and explain
 the functions results in the documentation. Please write about the
 structure of the output (class) and also what the output means.
 
-We have added \value where it was missing. 
-
+We have added \value where it was missing.
 
 > You have examples for unexported functions. Please either omit these
 examples or export these functions.
@@ -46,11 +43,10 @@ future versions.
 
 Besides methods, upstream Polars also has a number of functions/objects that
 collide with `base`, `utils`, `stats`, and many popular packages.  Polars strives
-to be a cross-language syntax (Rust, Python, R, NodeJS). It is not possible to 
+to be a cross-language syntax (Rust, Python, R, NodeJS). It is not possible to
 rename functions to avoid namespace collisions locally in R. Package functions
-(and other objects types) are in all languages bundled in a namespace `pl` to 
+(and other objects types) are in all languages bundled in a namespace `pl` to
 not clutter user search()-namespace and to remove the risk of conflicts.
-
 
 > In your LICENSE file you state "rpolars authors" to be the
 copyrightholders. Do you mean yourself? In that case please write "polar
