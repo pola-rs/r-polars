@@ -2,7 +2,7 @@ lf = pl$LazyFrame(data.frame(x = 1:10, y = 11:20))
 
 test_that("Test collecting LazyFrame in background", {
   compute = lf$select(pl$col("x") * pl$col("y"))
-  res_bg = compute$collect_in_background()$join() |> unwrap()
+  res_bg = compute$collect_in_background()$join()
   expect_equal(res_bg$to_data_frame(), compute$collect()$to_data_frame())
 })
 
@@ -19,7 +19,7 @@ test_that("Test using $map() in background", {
   expect_equal(pl$get_global_rpool_cap(), list(available = 1, capacity = 1))
   expect_equal(res_ref, res_fg_map_bg)
   pl$set_global_rpool_cap(0)
-  res_bg_map_bg = compute_bg$collect_in_background()$join() |> unwrap()
+  res_bg_map_bg = compute_bg$collect_in_background()$join()
   expect_equal(pl$get_global_rpool_cap(), list(available = 0, capacity = 0))
   expect_equal(res_ref, res_bg_map_bg$to_data_frame())
   pl$set_global_rpool_cap(1)

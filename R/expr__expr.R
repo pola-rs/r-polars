@@ -672,7 +672,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' @details user function return should be a series or any Robj convertible into a Series.
 #' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
 #'  investigate.
-#' @name Expr_apply
+#' @name Expr_apply_in_background
 Expr_apply_in_background = function(f, output_type = NULL) {
   .pr$Expr$apply_in_background(self, f, output_type)
 }

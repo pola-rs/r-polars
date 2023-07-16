@@ -272,7 +272,7 @@ LazyFrame_collect_background = function() {
 #' @keywords LazyFrame DataFrame_new
 #' @return a thread handle for the task
 #' @examples
-#' prexpr <- pl$col("mpg")$map_in_background(\(x) x * 0.43)$alias("kml")
+#' prexpr <- pl$col("mpg")$map(\(x) x * 0.43, in_background = TRUE)$alias("kml")
 #' pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)

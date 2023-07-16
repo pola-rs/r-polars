@@ -22,10 +22,10 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' @title Wait for the thread to complete its job
 #' @keywords RThreadHandle
 #' @param ... a RThreadHandle
-#' @return the result of the job
+#' @return a DataFrame, which is the result of the job
 #' @export
 RThreadHandle_join = function(...) {
-  .pr$RThreadHandle$join(self)
+  .pr$RThreadHandle$join(self) |> unwrap()
 }
 
 

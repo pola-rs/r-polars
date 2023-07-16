@@ -10,7 +10,7 @@ RThreadHandle_join(...)
 \item{...}{a RThreadHandle}
 }
 \value{
-the result of the job
+a DataFrame, which is the result of the job
 }
 \description{
 Wait for the thread to complete its job
