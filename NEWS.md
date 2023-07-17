@@ -41,6 +41,7 @@ for demonstration purposes (#240).
 - A new function `pl$polars_info()` will tell which features enabled (#271, #285, #305).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
+- LazyFrame gets some new S3 methods: `[`, `dim()`, `dimnames()`, `length()`, `names()` (#301)
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - New method `<DataFrame>$describe()` (#268).
