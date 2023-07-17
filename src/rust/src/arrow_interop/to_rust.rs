@@ -161,16 +161,62 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     Ok(accumulate_dataframes_vertical_unchecked(dfs))
 }
 
-pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), String> {
+pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<pl::Series, String> {
     dbg!(str_ptr);
     let x: usize = str_ptr.parse().expect("input is a pointer value");
     dbg!(x);
+    //let stream = x as *mut ffi::ArrowArrayStream;
+    //let boxed_stream = Box::new(unsafe { *stream });
     let y = x as *mut ffi::ArrowArrayStream;
 
-    let mut stream = unsafe { ffi::ArrowArrayStreamReader::try_new(*y)? };
-    // let y = x as *mut ffi::ArrowArrayStream;
-    // let stream = unsafe { Box::from_raw(y) };
+    let boxed_stream = unsafe { Box::from_raw(y) };
     dbg!("before reader");
+
+    let mut iter = unsafe { ffi::ArrowArrayStreamReader::try_new(boxed_stream) }
+        .map_err(|err| err.to_string())?;
+    dbg!("after reader");
+
+    let mut s = if let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res.map_err(|err| err.to_string())?;
+        dbg!(&array);
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+        dbg!(&series_res);
+        let series = series_res.map_err(|err| err.to_string())?;
+        series
+    } else {
+        Err("no array to import!".to_string())?;
+        unreachable!();
+    };
+    while let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res.map_err(|err| err.to_string())?;
+        dbg!(&array);
+
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+
+        dbg!(&series_res);
+
+        let series = series_res.map_err(|err| err.to_string())?;
+
+        s.append(&series).map_err(|err| err.to_string())?;
+    }
+    //release(iter)
+    std::mem::forget(iter);
+    Ok(s)
+}
+
+pub fn arrow3_array_stream_to_rust(export_f: Robj) -> std::result::Result<(), String> {
+    let mut stream = Box::new(ffi::ArrowArrayStream::empty());
+    //let mut schema = Box::new(ffi::ArrowSchema::empty());
+    let ext_stream = unsafe { wrap_make_external_ptr(&mut *stream) };
+
+    //export
+    export_f
+        .as_function()
+        .unwrap()
+        .call(pairlist!(ext_stream))
+        .unwrap();
 
     let mut iter =
         unsafe { ffi::ArrowArrayStreamReader::try_new(stream) }.map_err(|err| err.to_string())?;
@@ -181,8 +227,5 @@ pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<(), Str
         dbg!(&array);
     }
 
-    //dbg!(unsafe { iter.next() }.unwrap());
-
-    dbg!("done!!");
-    Ok(())
+    todo!("not  more for now");
 }
