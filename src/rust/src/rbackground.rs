@@ -224,6 +224,7 @@ impl RBackgroundHandler {
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .spawn()
+            .plain(cmd_string)
             .when("trying to spawn a background R process")?;
         let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server
             .accept()
