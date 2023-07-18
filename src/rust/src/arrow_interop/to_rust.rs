@@ -1,3 +1,4 @@
+use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::export::rayon::prelude::*;
@@ -206,26 +207,51 @@ pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<pl::Ser
     Ok(s)
 }
 
-pub fn arrow3_array_stream_to_rust(export_f: Robj) -> std::result::Result<(), String> {
-    let mut stream = Box::new(ffi::ArrowArrayStream::empty());
-    //let mut schema = Box::new(ffi::ArrowSchema::empty());
-    let ext_stream = unsafe { wrap_make_external_ptr(&mut *stream) };
+// r-polars as consumer 1: create a new stream and wrap pointer in Robj as str.
+pub fn new_arrow_stream_internal() -> Robj {
+    let aas = Box::new(ffi::ArrowArrayStream::empty());
+    let x = Box::leak(aas); // leak box to make lifetime static
+    let x = x as *mut ffi::ArrowArrayStream;
+    crate::utils::usize_to_robj_str(x as usize)
+}
 
-    //export
-    export_f
-        .as_function()
-        .unwrap()
-        .call(pairlist!(ext_stream))
-        .unwrap();
+// r-polars as consumer 2: recieve to pointer to own stream, which producer has exported to. Consume it. Return Series.
+pub fn arrow_stream_to_s_internal(robj_str: Robj) -> RResult<pl::Series> {
+    // reclaim ownership of leaked box, and then drop/release it when consumed.
+    let us = crate::utils::robj_str_ptr_to_usize(robj_str)?;
+    let boxed_stream = unsafe { Box::from_raw(us as *mut ffi::ArrowArrayStream) };
 
-    let mut iter =
-        unsafe { ffi::ArrowArrayStreamReader::try_new(stream) }.map_err(|err| err.to_string())?;
-    dbg!("after reader");
+    //consume stream and produce a r-polars Series return as Robj
+    let s = arrow_stream_to_s(boxed_stream)?;
+    Ok(s)
+}
 
+// implementation of consuming stream to Series. Stream is drop/released hereafter.
+fn arrow_stream_to_s(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResult<pl::Series> {
+    let mut iter = unsafe { ffi::ArrowArrayStreamReader::try_new(boxed_stream) }?;
+
+    //import first array into pl::Series
+    let mut s = if let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res?;
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+        let series = series_res.map_err(polars_to_rpolars_err)?;
+        series
+    } else {
+        rerr()
+            .plain("Arrow array stream was empty")
+            .hint("producer did not export to stream")
+            .when("consuming arrow array stream")?;
+        unreachable!();
+    };
+
+    // append any other arrays to Series
     while let Some(array_res) = unsafe { iter.next() } {
-        let array = array_res.map_err(|err| err.to_string())?;
-        dbg!(&array);
+        let array = array_res?;
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+        let series = series_res.map_err(polars_to_rpolars_err)?;
+        s.append(&series).map_err(polars_to_rpolars_err)?;
     }
-
-    todo!("not  more for now");
+    Ok(s)
 }

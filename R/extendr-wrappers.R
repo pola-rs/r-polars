@@ -51,7 +51,13 @@ arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
-import_arrow_array_stream <- function(str_ptr) .Call(wrap__import_arrow_array_stream, str_ptr)
+import_arrow_array_stream <- function(s_ptr) .Call(wrap__import_arrow_array_stream, s_ptr)
+
+new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
+
+arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
+
+arrow_stream_to_s <- function(robj_str) .Call(wrap__arrow_stream_to_s, robj_str)
 
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 

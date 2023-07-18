@@ -209,6 +209,29 @@ fn import_arrow_array_stream(s_ptr: &str) -> Result<Robj, String> {
 }
 
 #[extendr]
+fn new_arrow_stream() -> Robj {
+    crate::arrow_interop::to_rust::new_arrow_stream_internal()
+}
+use crate::rpolarserr::*;
+#[extendr]
+fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_s_internal(robj_str)?;
+    let ca = s
+        .struct_()
+        .map_err(polars_to_rpolars_err)
+        .when("unpack struct from producer")
+        .hint("producer exported a plain Series not a Struct series")?;
+    let df: pl::DataFrame = ca.clone().into();
+    Ok(DataFrame(df).into_robj())
+}
+
+#[extendr]
+fn arrow_stream_to_s(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_s_internal(robj_str)?;
+    Ok(Series(s).into_robj())
+}
+
+#[extendr]
 fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
     let mut iter = r_batches.into_iter().map(|(_, robj)| {
         let robj = call!(r"\(x) x$columns", robj)?;
@@ -304,7 +327,9 @@ extendr_module! {
     fn dtype_str_repr;
 
     fn import_arrow_array_stream;
-
+    fn new_arrow_stream;
+    fn arrow_stream_to_df;
+    fn arrow_stream_to_s;
 
     fn test_robj_to_usize;
     fn test_robj_to_i64;
