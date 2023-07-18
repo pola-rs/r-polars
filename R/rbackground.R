@@ -11,7 +11,10 @@
 
 #' @export
 #' @noRd
-as.character.RThreadHandle = function(x, ...) .pr$RThreadHandle$thread_description(x) |> unwrap()
+as.character.RThreadHandle = function(x, ...) {
+  .pr$RThreadHandle$thread_description(x) |>
+  unwrap_or("An exhausted thread handle")
+}
 
 
 #' @export
@@ -32,8 +35,9 @@ RThreadHandle_join = function(...) {
 #' @title Check if the thread completes its job
 #' @keywords RThreadHandle
 #' @param ... a RThreadHandle
-#' @return a boolean indicating the whether the job has been finished
+#' @return a boolean indicating the whether the job has finished
+#'  or NULL if the handle has been joined
 #' @export
 RThreadHandle_is_finished = function(...) {
-  .pr$RThreadHandle$is_finished(self) |> unwrap()
+  .pr$RThreadHandle$is_finished(self) |> unwrap_or(NULL)
 }

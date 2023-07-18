@@ -43,7 +43,7 @@ test_that("Test using $map() in background", {
   print(handle)
 
   #can ask if joined after exhausted
-  handle$is_finished()
+  expect_equal(handle$is_finished(), NULL)
 
   #gives correct err message
   expect_error(handle$join())
