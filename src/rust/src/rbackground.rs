@@ -214,7 +214,7 @@ impl RBackgroundHandler {
             .arg("-e")
             // Remove rextendr::document() if possible
             .arg(format!(
-                "'polars:::handle_background_request(\"{server_name}\") |> invisible()'"
+                "'invisible(polars:::handle_background_request(\"{server_name}\"))'"
             ))
             .stdin(Stdio::null())
             .stdout(Stdio::null())
