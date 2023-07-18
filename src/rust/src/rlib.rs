@@ -204,8 +204,8 @@ fn arrow_stream_to_rust(rbr: Robj) {
 }
 
 #[extendr]
-fn import_arrow_array_stream(s_ptr: &str) -> Result<Series, String> {
-    crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(s_ptr).map(|s| Series(s))
+fn import_arrow_array_stream(s_ptr: &str) -> Result<Robj, String> {
+    crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(s_ptr).map(|s| Series(s).into_robj())
 }
 
 #[extendr]

@@ -201,7 +201,7 @@ pub fn arrow2_array_stream_to_rust(str_ptr: &str) -> std::result::Result<pl::Ser
 
         s.append(&series).map_err(|err| err.to_string())?;
     }
-    //release(iter)
+
     std::mem::forget(iter);
     Ok(s)
 }
