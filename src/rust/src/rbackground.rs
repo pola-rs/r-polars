@@ -208,14 +208,18 @@ impl RBackgroundHandler {
 
         let (server, server_name) = ipc::IpcOneShotServer::new()
             .when("trying to create a one-shot channel to setup inter-process communication")?;
-        let child = Command::new("R")
-            .arg("--vanilla")
-            .arg("-q")
-            .arg("-e")
-            // Remove rextendr::document() if possible
-            .arg(format!(
-                "'invisible(polars:::handle_background_request(\"{server_name}\"))'"
-            ))
+
+        let cmd_string = format!(
+            "R --vanilla -q -e 'invisible(polars:::handle_background_request(\"{server_name}\"))'"
+        );
+        let child = Command::new(cmd_string)
+            // .arg("--vanilla")
+            // .arg("-q")
+            // .arg("-e")
+            // // Remove rextendr::document() if possible
+            // .arg(format!(
+            //     "'invisible(polars:::handle_background_request(\"{server_name}\"))'"
+            // ))
             .stdin(Stdio::null())
             .stdout(Stdio::null())
             .stderr(Stdio::null())
