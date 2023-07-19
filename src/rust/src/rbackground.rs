@@ -215,11 +215,11 @@ impl RBackgroundHandler {
             .arg("-e")
             // Remove rextendr::document() if possible
             .arg(format!(
-                "invisible(polars:::handle_background_request(\"{server_name}\"))\n"
+                "invisible(polars:::handle_background_request(\"{server_name}\"))"
             ))
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
+            // .stdin(Stdio::null())
+            // .stdout(Stdio::null())
+            // .stderr(Stdio::null())
             .spawn()
             .when("trying to spawn a background R process")?;
         let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server
