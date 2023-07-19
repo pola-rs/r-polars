@@ -10,8 +10,7 @@ RThreadHandle_is_finished(...)
 \item{...}{a RThreadHandle}
 }
 \value{
-a boolean indicating the whether the job has finished
-or NULL if the handle has been joined
+a boolean indicating the whether the job has been finished
 }
 \description{
 Check if the thread completes its job
