@@ -214,7 +214,7 @@ impl RBackgroundHandler {
         //     server_name.clone()
         // );
         let e_arg = "42".to_string();
-        let child = Command::new("R")
+        let child = Command::new("ls")
             // .arg("--vanilla")
             // .arg("-q")
             // .arg("-e")
