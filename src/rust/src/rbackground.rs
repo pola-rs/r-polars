@@ -215,14 +215,14 @@ impl RBackgroundHandler {
         // );
         let e_arg = "42".to_string();
         let child = Command::new("R")
-            .arg("--vanilla")
-            .arg("-q")
-            .arg("-e")
-            // Remove rextendr::document() if possible
-            .arg(&e_arg)
-            .stdin(Stdio::null())
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
+            // .arg("--vanilla")
+            // .arg("-q")
+            // .arg("-e")
+            // // Remove rextendr::document() if possible
+            // .arg(&e_arg)
+            // .stdin(Stdio::null())
+            // .stdout(Stdio::null())
+            // .stderr(Stdio::null())
             .spawn()
             .plain(e_arg)
             .when("trying to spawn a background R process")?;
