@@ -146,7 +146,7 @@ pub fn new_arrow_stream_internal() -> Robj {
 // r-polars as consumer 2: recieve to pointer to own stream, which producer has exported to. Consume it. Return Series.
 pub fn arrow_stream_to_s_internal(robj_str: Robj) -> RResult<pl::Series> {
     // reclaim ownership of leaked box, and then drop/release it when consumed.
-    let us = crate::utils::robj_str_ptr_to_usize(robj_str)?;
+    let us = crate::utils::robj_str_ptr_to_usize(&robj_str)?;
     let boxed_stream = unsafe { Box::from_raw(us as *mut ffi::ArrowArrayStream) };
 
     //consume stream and produce a r-polars Series return as Robj
@@ -182,4 +182,15 @@ fn consume_arrow_stream_to_s(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResul
         s.append(&series).map_err(polars_to_rpolars_err)?;
     }
     Ok(s)
+}
+
+unsafe fn export_df_as_stream(df: pl::DataFrame, robj_str_ref: &Robj) -> RResult<()> {
+    let stream_ptr =
+        crate::utils::robj_str_ptr_to_usize(robj_str_ref)? as *mut ffi::ArrowArrayStream;
+    let schema = df.schema().to_arrow();
+    let data_type = pl::ArrowDataType::Struct(schema.fields);
+    let field = pl::ArrowField::new("", data_type, false);
+    let iter_boxed = Box::new(crate::rdataframe::OwnedDataFrameIterator::new(df));
+    unsafe { *stream_ptr = ffi::export_iterator(iter_boxed, field) };
+    Ok(())
 }

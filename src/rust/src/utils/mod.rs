@@ -838,7 +838,7 @@ pub fn collect_hinted_result_rerr<T>(
 }
 
 //keep error simple to interface with other libs
-pub fn robj_str_ptr_to_usize(robj: Robj) -> RResult<usize> {
+pub fn robj_str_ptr_to_usize(robj: &Robj) -> RResult<usize> {
     || -> RResult<usize> {
         let str: &str = robj
             .as_str()
