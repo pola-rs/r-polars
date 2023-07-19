@@ -189,25 +189,6 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
-// #[extendr]
-// fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
-//     let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
-
-//     rprintln!("hurray we read an arrow field {:?}", x);
-//     Ok(extendr_api::NULL.into())
-// }
-
-#[extendr]
-fn arrow_stream_to_rust(rbr: Robj) {
-    let x = crate::arrow_interop::to_rust::arrow_array_stream_to_rust(rbr, None).unwrap();
-    dbg!(x);
-}
-
-#[extendr]
-fn import_arrow_array_stream(s_ptr: &str) -> Result<Robj, String> {
-    crate::arrow_interop::to_rust::arrow2_array_stream_to_rust(s_ptr).map(|s| Series(s).into_robj())
-}
-
 #[extendr]
 fn new_arrow_stream() -> Robj {
     crate::arrow_interop::to_rust::new_arrow_stream_internal()
