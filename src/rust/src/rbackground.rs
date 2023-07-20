@@ -206,9 +206,11 @@ impl RBackgroundHandler {
     pub fn new() -> RResult<Self> {
         use std::process::*;
 
+        let rbin = std::env::current_exe().when("trying to locate current R binary")?;
+
         let (server, server_name) = ipc::IpcOneShotServer::new()
             .when("trying to create a one-shot channel to setup inter-process communication")?;
-        let child = Command::new("R")
+        let child = Command::new(rbin)
             .arg("--vanilla")
             .arg("-q")
             .arg("-e")
