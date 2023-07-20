@@ -304,10 +304,9 @@ extendr_module! {
     //fn series_from_arrow;
     //fn rb_to_df;
     fn rb_list_to_df;
-    fn arrow_stream_to_rust;
+
     fn dtype_str_repr;
 
-    fn import_arrow_array_stream;
     fn new_arrow_stream;
     fn arrow_stream_to_df;
     fn arrow_stream_to_s;
