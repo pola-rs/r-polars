@@ -25,6 +25,7 @@ pub mod rpolarserr;
 pub mod series;
 pub mod utils;
 pub use serde_json;
+pub use which;
 
 use extendr_api::prelude::*;
 use utils::extendr_concurrent::ParRObj;

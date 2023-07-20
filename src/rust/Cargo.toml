@@ -43,6 +43,7 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.5.3"
 thiserror = "1.0.40"
+which = "4.4.0"
 
 #features copied from node-polars
 [dependencies.polars]

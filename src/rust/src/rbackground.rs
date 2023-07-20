@@ -213,8 +213,9 @@ impl RBackgroundHandler {
         //     "polars:::handle_background_request('{}') |> invisible()",
         //     server_name.clone()
         // );
-        let e_arg = "42".to_string();
-        let child = Command::new("ls")
+
+        let r_path = format!("r_path is here: {:?}", which::which("R"));
+        let child = Command::new("R")
             // .arg("--vanilla")
             // .arg("-q")
             // .arg("-e")
@@ -224,7 +225,8 @@ impl RBackgroundHandler {
             // .stdout(Stdio::null())
             // .stderr(Stdio::null())
             .spawn()
-            .plain(e_arg)
+            .plain(r_path)
+            .plain(server_name)
             .when("trying to spawn a background R process")?;
         let (_, tx): (_, ipc::IpcSender<RIPCJob>) = server
             .accept()
