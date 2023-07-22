@@ -101,7 +101,7 @@ the Rust toolchain (Rust `r RcppTOML::parseTOML("src/rust/Cargo.toml")$package$"
 Please check the <https://github.com/r-rust/hellorust> repository for about Rust code in R packages.
 
 ```{r, include = FALSE}
-rust_toolchain_version <- brio::read_file("Makefile") |>
+rust_toolchain_version = brio::read_file("Makefile") |>
   stringr::str_extract(r"((?<=RUST_TOOLCHAIN_VERSION).*nightly.*(?=\n))") |>
   stringr::str_extract(r"(nightly.*)")
 ```
@@ -124,7 +124,7 @@ convert an R data frame to a Polars `DataFrame`, we call:
 ```{r}
 library(polars)
 
-dat <- pl$DataFrame(mtcars)
+dat = pl$DataFrame(mtcars)
 dat
 ```
 
