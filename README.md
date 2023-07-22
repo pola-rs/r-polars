@@ -306,7 +306,7 @@ devtools::test()     # run all unit tests
 **Step 4 (optional):** Build the package locally.
 
 ``` r
-R CMD INSTALL --no-multiarch --with-keep.source polars
+R CMD INSTALL --no-multiarch --with-keep.source .
 ```
 
 **Step 5:** Commit your changes and submit a PR to the main **polars**
