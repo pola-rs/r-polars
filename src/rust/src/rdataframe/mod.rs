@@ -10,7 +10,7 @@ use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
 use crate::rlib;
 use crate::robj_to;
-use crate::rpolarserr::RResult;
+use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 use crate::utils::extendr_concurrent::ParRObj;
 pub use lazy::dataframe::*;
 
@@ -132,6 +132,18 @@ impl DataFrame {
             .and_then(pl::DataFrame::new)
             .map_err(|err| err.to_string())
             .map(DataFrame)
+    }
+
+    pub fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .with_row_count(
+                robj_to!(String, name)?.as_str(),
+                robj_to!(Option, u32, offset)?,
+            )
+            .map_err(polars_to_rpolars_err)?
+            .into())
     }
 
     pub fn print(&self) -> Self {
