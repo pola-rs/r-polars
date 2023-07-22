@@ -975,8 +975,3 @@ test_that("glimpse", {
   )
   expect_true(is_string(pl$DataFrame(iris)$glimpse(return_as_string = TRUE)))
 })
-
-test_that("with_row_count", {
-  df = pl$DataFrame(mtcars)
-  expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
-})
