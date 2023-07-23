@@ -1,15 +1,17 @@
 #' @title Operations on Polars grouped DataFrame
+#' @return not applicable
+#' @details The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in
+#' rust polars. Groupby does not use the rust api for groupby+agg because the groupby-struct is a
+#' reference to a DataFrame and that reference will share lifetime with its parent DataFrame. There
+#' is no way to expose lifetime limited objects via extendr currently (might be quirky anyhow with R
+#'  GC). Instead the inputs for the groupby are just stored on R side, until also agg is called.
+#' Which will end up in a self-owned DataFrame object and all is fine. groupby aggs are performed
+#' via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
 #'
 #' @name GroupBy_class
 NULL
 
-# The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in rust polars.
-# Groupby does not use the rust api for groupby+agg because the groupby-struct is a reference to a DataFrame
-# and that reference will share lifetime with its parent DataFrame. There is no way to expose lifetime
-# limited objects via extendr currently (might be quirky anyhow with R GC). Instead the inputs for the groupby
-# are just stored on R side, until also agg is called. Which will end up in a self-owned DataFrame object and
-# all is fine.
-# groupby aggs are performed via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
+
 
 GroupBy = new.env(parent = emptyenv())
 
@@ -27,7 +29,9 @@ GroupBy = new.env(parent = emptyenv())
 #' @description called by the interactive R session internally
 #' @param x GroupBy
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.GroupBy = function(x, pattern = "") {
   paste0(ls(GroupBy, pattern = pattern), "()")
@@ -35,6 +39,8 @@ GroupBy = new.env(parent = emptyenv())
 
 
 #' The internal GroupBy constructor
+#' @keywords internal
+#' @return The input as grouped DataFrame
 #' @noRd
 construct_groupby = function(df, groupby_input, maintain_order) {
   if (!inherits(df, "DataFrame")) stopf("internal error: construct_group called not on DataFrame")
@@ -293,5 +299,6 @@ GroupBy_to_data_frame = function(...) {
 
 # TODO REMOVE_AT_BREAKING_CHANGE
 #' Alias to GroupBy_to_data_frame (backward compatibility)
+#' @return R data.frame
 #' @noRd
 GroupBy_as_data_frame = GroupBy_to_data_frame

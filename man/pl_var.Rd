@@ -6,6 +6,9 @@
 \arguments{
 \item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
+\value{
+Expr or Series matching type of input column
+}
 \description{
 syntactic sugar for starting a expression with var
 }

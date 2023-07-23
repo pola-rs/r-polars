@@ -111,6 +111,7 @@ unwrap_or = function(x, or) {
 
 
 #' pstop
+#' @noRd
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
 #' @param call calling context
@@ -119,7 +120,7 @@ unwrap_or = function(x, or) {
 #' @return throws an error
 #'
 #' @examples
-#' f = function() polars:::pstop("this aint right!!")
+#' f = function() .pr$env$pstop("this aint right!!")
 #' tryCatch(f(), error = \(e) as.character(e))
 pstop = function(err, call = sys.call(1L)) {
   unwrap(list(ok = NULL, err = err), call = call)

@@ -1,6 +1,6 @@
 test_that("get options", {
   opts = pl$get_polars_options()
-  expect_equal(opts, as.list(polars:::polars_optenv))
+  expect_equal(opts, as.list(.pr$env$polars_optenv))
 })
 
 

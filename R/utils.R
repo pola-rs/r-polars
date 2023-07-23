@@ -83,6 +83,8 @@ verify_method_call = function(Class_env, Method_name, call = sys.call(1L), class
 #' list2 - one day like rlang
 #' list2 placeholder for future rust-impl
 #' @noRd
+#' @keywords internal
+#' @return An R list
 #' @details rlang has this wonderful list2 implemented in c/c++, that is agnostic about trailing
 #' commas in ... params. One day r-polars will have a list2-impl written in rust, which also allows
 #' trailing commas.
@@ -111,7 +113,7 @@ unpack_list = function(...) {
 }
 
 #' Simple SQL CASE WHEN implementation for R
-#'
+#' @noRd
 #' @description Inspired by data.table::fcase + dplyr::case_when.
 #' Used instead of base::switch internally.
 #'
@@ -125,7 +127,7 @@ unpack_list = function(...) {
 #' @keywords internal
 #' @examples
 #' n = 7
-#' polars:::pcase(
+#' .pr$env$pcase(
 #'   n < 5, "nope",
 #'   n > 6, "yeah",
 #'   or_else = stopf("failed to have a case for n=%s", n)
@@ -144,13 +146,13 @@ pcase = function(..., or_else = NULL) {
 
 
 #' Move environment elements from one env to another
-#'
+#' @noRd
 #' @param from_env env from
 #' @param element_names names of elements to move, if named names, then name of name is to_env name
 #' @param remove bool, actually remove element in from_env
 #' @param to_env env to
 #' @keywords internal
-#' @return NULL
+#' @return invisble NULL
 #'
 move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
   names_from = element_names
@@ -216,6 +218,7 @@ l_to_vdf = function(l) {
 #' @param env an R environment.
 #' @return shallow clone of R environment
 #' @keywords internal
+#' @noRd
 #' @examples
 #'
 #' fruit_env = new.env(parent = emptyenv())
@@ -226,7 +229,7 @@ l_to_vdf = function(l) {
 #' env_1$fruit_env = fruit_env
 #'
 #' env_naive_copy = env_1
-#' env_shallow_clone = polars:::clone_env_one_level_deep(env_1)
+#' env_shallow_clone = .pr$env$clone_env_one_level_deep(env_1)
 #'
 #' # modifying env_!
 #' env_1$minerals = new.env(parent = emptyenv())
@@ -333,7 +336,9 @@ construct_DataTypeVector = function(l) {
 #' @details used internally for auto completion in .DollarNames methods
 #' @return method usages
 #' @keywords internal
-#' @examples polars:::get_method_usages(polars:::DataFrame, pattern = "col")
+#' @noRd
+#' @examples
+#' .pr$env$get_method_usages(.pr$env$DataFrame, pattern = "col")
 get_method_usages = function(env, pattern = "") {
   found_names = ls(env, pattern = pattern)
   objects = mget(found_names, envir = env)
@@ -363,8 +368,9 @@ get_method_usages = function(env, pattern = "") {
   suggestions
 }
 
-#' print recursively an environment, used in some documentation
+#' Print recursively an environment, used in some documentation
 #' @keywords internal
+#' @return Print recursively an environment to the console
 #' @param api env
 #' @param name  name of env
 #' @param max_depth numeric/int max levels to recursive iterate through
@@ -382,6 +388,7 @@ print_env = function(api, name, max_depth = 10) {
       }
 
       for (name in ls(value)) {
+        if (name == "env") next()
         show_api(get(name, envir = as.environment(value)), name)
       }
       cat("\n")
@@ -473,10 +480,11 @@ restruct_list = function(l) {
 #' to solve some tricky self-referential problem. If possible to deprecate a macro in a clean way
 #' , go ahead.
 #' @keywords internal
+#' @noRd
 #' @examples
 #'
 #' # macro_new_subnamespace() is not exported, export for this toy example
-#' # macro_new_subnamespace = polars:::macro_new_subnamespace
+#' # macro_new_subnamespace = .pr$env$macro_new_subnamespace
 #'
 #' ## define some new methods prefixed 'MyClass_'
 #' # MyClass_add2 = function() self + 2
@@ -488,7 +496,7 @@ restruct_list = function(l) {
 #' # here adding sub-namespace as a expr-class property/method during session-time,
 #' # which only is for this demo.
 #' # instead sourced method like Expr_arr() at package build time instead
-#' # env = polars:::Expr #get env of the Expr Class
+#' # env = .pr$env$Expr #get env of the Expr Class
 #' # env$my_sub_ns = method_as_property(function() { #add a property/method
 #' # my_class_sub_ns(self)
 #' # })
@@ -542,9 +550,9 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
 #' @param collapse word to glue possible multilines with
 #' @keywords internal
 #' @return string
-#'
+#' @noRd
 #' @examples
-#' polars:::str_string(list(a = 42, c(1, 2, 3, NA)))
+#' str_string(list(a = 42, c(1, 2, 3, NA)))
 str_string = function(x, collapse = " ") {
   paste(capture.output(str(x)), collapse = collapse)
 }
@@ -574,8 +582,9 @@ convert_to_fewer_types = function(x) {
 #' @return a result object, with either a valid string or an Err
 #' @keywords internal
 #'
+#' @noRd
 #' @examples
-#' check_tz_to_result = polars:::check_tz_to_result # expose internal
+#' check_tz_to_result = .pr$env$check_tz_to_result # expose internal
 #' # return Ok
 #' check_tz_to_result("GMT")
 #' check_tz_to_result(NULL)
