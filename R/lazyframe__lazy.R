@@ -242,6 +242,17 @@ LazyFrame_with_columns = function(...) {
 #' @docType NULL
 LazyFrame_with_column = "use_extendr_wrapper"
 
+#' @title Lazy with_row_count
+#' @description Add a new column at index 0 that counts the rows
+#' @keywords LazyFrame
+#' @param name string name of the created column
+#' @param offset positive integer offset for the start of the counter
+#' @return A new `LazyFrame` object with a counter column in front
+#' @docType NULL
+LazyFrame_with_row_count = function(name, offset = NULL) {
+  .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
+}
+
 #' @title Apply filter to LazyFrame
 #' @description Filter rows with an Expression defining a boolean column
 #' @keywords LazyFrame
