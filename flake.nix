@@ -1,6 +1,6 @@
 {
   inputs = {
-    fenix.url = "github:nix-community/fenix/monthly";
+    fenix.url = "github:nix-community/fenix";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   };
@@ -9,7 +9,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        rustNightly = fenix.packages.${system}.complete;
+        rustToolchains = fenix.packages.${system}.default;
         rdeps = with pkgs; [
           curl
           fontconfig
@@ -34,7 +34,7 @@
           cargoRoot = "src/rust";
           nativeBuildInputs = with pkgs;
             [ cmake rPackages.codetools rustPlatform.cargoSetupHook ]
-            ++ pkgs.lib.singleton rustNightly.toolchain;
+            ++ pkgs.lib.singleton rustToolchains.toolchain;
         };
         # Create R development environment with r-polars and other useful libraries
         rvenv = pkgs.rWrapper.override {
