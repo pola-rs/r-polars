@@ -5,8 +5,8 @@ Depends: R (>= 4.1.0)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
-    person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut")),
-    person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut", "cre")),
+    person("Soren", "Welling", , "sorhawell@gmail.com", role = c("aut", "cre")),
+    person("Tatsuya", "Shima", , "ts1s1andn@gmail.com", role = c("aut")),
     person("Etienne", "Bacher", , "etienne.bacher@protonmail.com", role = c("ctb")))
 Description: Lightning-fast 'DataFrame' library written in 'Rust'. Convert R data
   to 'Polars' data and vice versa. Perform fast, lazy, larger-than-memory and
