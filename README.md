@@ -36,21 +36,10 @@ Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 
 ## Install
 
-The package can be installed from CRAN, R-universe, or GitHub.
+The package can be installed from R-universe, or GitHub.
 
 Some platforms can install pre-compiled binaries, and others will need
 to build from source.
-
-### CRAN
-
-CRAN provides pre-compiled binaries for Windows (x86_64) and macOS.
-
-Binary packages on CRAN are compiled by stable Rust, with nightly
-features disabled.
-
-``` r
-install.packages("polars")
-```
 
 ### R-universe
 
