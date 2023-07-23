@@ -67,20 +67,23 @@ f_sum_all_cols(lf, in_background = TRUE)$collect() |> system.time()
 
 
 ### 3a -----------  Use R processes in parallel, low io, high cpu
-lf <- pl$LazyFrame(lapply(1:100,\(i) rep(i,5)))
+lf <- pl$LazyFrame(lapply(1:12,\(i) rep(i,5)))
 f_all_cols <-  \(lf,...) lf$select(pl$all()$map(\(x) {
-  for(i in 1:1000) y = sum(rnorm(1000))
+  for(i in 1:10000) y = sum(rnorm(1000))
   sum(x)
 },...))
 
 f_all_cols(lf)$collect() |> system.time()
 
+
+##Appears to be a factor overhead when comparing single process
 pl$set_global_rpool_cap(1)
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time()
+f_all_cols(lf, in_background = FALSE)$collect() |> system.time()
 
-pl$set_global_rpool_cap(4)
+pl$set_global_rpool_cap(8)
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time()
-
+f_all_cols(lf, in_background = FALSE)$collect() |> system.time()
 pl$get_global_rpool_cap() #only 2 processes appears to be spawned
