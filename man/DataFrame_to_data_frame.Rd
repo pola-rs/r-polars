@@ -3,7 +3,7 @@
 \name{DataFrame_to_data_frame}
 \alias{DataFrame_to_data_frame}
 \alias{as.data.frame.DataFrame}
-\title{return polars DataFrame as R data.frame}
+\title{Return Polars DataFrame as R data.frame}
 \usage{
 DataFrame_to_data_frame(...)
 
@@ -15,12 +15,12 @@ DataFrame_to_data_frame(...)
 \item{x}{DataFrame}
 }
 \value{
-data.frame
+An R data.frame
 
 data.frame
 }
 \description{
-return polars DataFrame as R data.frame
+Return Polars DataFrame as R data.frame
 }
 \examples{
 df = pl$DataFrame(iris[1:3, ])

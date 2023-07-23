@@ -14,7 +14,7 @@
 #' "environment classes" and is the same class system extendr provides, except
 #' here there is both a public and private set of methods. For implementation
 #' reasons, the private methods are external and must be called from
-#' `polars:::.pr.$LazyFrame$methodname()`. Also, all private methods must take
+#' `.pr$LazyFrame$methodname()`. Also, all private methods must take
 #' any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -33,14 +33,14 @@
 #' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 #' file sourced) the extendr-methods are removed and replaced by any function
 #' prefixed `LazyFrame_`.
-#'
+#' @return not applicable
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
-#' ls(polars:::LazyFrame)
+#' ls(.pr$env$LazyFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$LazyFrame)
+#' ls(.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##
@@ -103,7 +103,9 @@ LazyFrame
 #' @description called by the interactive R session internally
 #' @param x LazyFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.LazyFrame = function(x, pattern = "") {
   paste0(ls(LazyFrame, pattern = pattern), "()")
@@ -183,6 +185,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
+#' @return invisible NULL
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
@@ -624,7 +627,7 @@ LazyFrame_join = function(
 #' @description sort a LazyFrame by on or more Expr
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length

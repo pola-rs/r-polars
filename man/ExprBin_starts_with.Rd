@@ -7,6 +7,9 @@
 \arguments{
 \item{sub}{Prefix substring.}
 }
+\value{
+Expr returing a Boolean
+}
 \description{
 Check if values starts with a binary substring.
 }

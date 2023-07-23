@@ -13,6 +13,9 @@ LazyFrame_describe_optimized_plan()
 
 LazyFrame_describe_plan
 }
+\value{
+invisible NULL
+}
 \description{
 \verb{$describe_plan()} shows our query in the format that \code{polars}
 understands. \verb{$describe_optimized_plan()} shows the optimized query plan that

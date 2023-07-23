@@ -11,6 +11,9 @@
 
 \item{...}{not used}
 }
+\value{
+One Expr wrapped in a list
+}
 \description{
 wraps an Expr in a list
 }

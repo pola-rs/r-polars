@@ -31,18 +31,31 @@ The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
 by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
-Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
+Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
 ## Install
 
-The package is not yet available on CRAN. But we provide convenient
-installation options for a variety of operating systems:
+The package can be installed from CRAN, R-universe, or GitHub.
+
+Some platforms can install pre-compiled binaries, and others will need
+to build from source.
+
+### CRAN
+
+CRAN provides pre-compiled binaries for Windows (x86_64) and macOS.
+
+Binary packages on CRAN are compiled by stable Rust, with nightly
+features disabled.
+
+``` r
+install.packages("polars")
+```
 
 ### R-universe
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
-pre-compiled **polars** binaries for Windows (x86_64), MacOS (x86_64)
+pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64)
 and Ubuntu 22.04 (x86_64) with source builds for other platforms.
 
 Binary packages on R-universe are compiled by stable Rust, with nightly
@@ -62,13 +75,14 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-We also provide pre-compiled binaries for various operating systems, as
-well as source installs, on our [GitHub
-releases](https://github.com/pola-rs/r-polars/releases) page. You can
-download and install these files manually, or install directly from R.
-Simply match the URL for your operating system and the desired release.
-For example, to install the latest release of **polars** on Linux
-(x86_64) one would use:
+We also provide pre-compiled binaries for various operating systems on
+our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
+page. You can download and install these files manually, or install
+directly from R. Simply match the URL for your operating system and the
+desired release. For example, to install the latest release of
+**polars** on one can use:
+
+#### Linux (x86_64)
 
 ``` r
 install.packages(
@@ -77,10 +91,24 @@ install.packages(
 )
 ```
 
-Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
-and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
+#### Windows
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip",
+  repos = NULL
+)
+```
+
+#### macOS(x86_64)
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
@@ -226,7 +254,7 @@ you will to install the Rust toolchain:
   [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
   and on your PATH.
 
-- MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
+- macOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
 - Install [CMake](https://cmake.org/) and add it to your PATH.
@@ -235,7 +263,7 @@ you will to install the Rust toolchain:
 
 Here are the steps required for an example contribution, where we are
 implementing the [cosine
-expression](https://rpolars.github.io/reference/Expr_cos.html):
+expression](https://rpolars.github.io/reference/Expr_cos/):
 
 - Look up the [polars.Expr.cos method in py-polars
   documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).

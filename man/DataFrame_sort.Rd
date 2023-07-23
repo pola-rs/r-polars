@@ -8,7 +8,7 @@ DataFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{by}{Column(s) to sort by. Column name strings, character vector of
-column names, or Iterable Into\if{html}{\out{<Expr>}} (e.g. one Expr, or list mixed Expr and
+column names, or Iterable \verb{Into<Expr>} (e.g. one Expr, or list mixed Expr and
 column name strings).}
 
 \item{...}{more columns to sort by as above but provided one Expr per argument.}
@@ -19,7 +19,7 @@ as number of Expr's from above by + ....}
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
 }
 \value{
-LazyFrame
+DataFrame
 }
 \description{
 sort a DataFrame by on or more Expr.

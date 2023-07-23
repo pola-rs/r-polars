@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{print_env}
 \alias{print_env}
-\title{print recursively an environment, used in some documentation}
+\title{Print recursively an environment, used in some documentation}
 \usage{
 print_env(api, name, max_depth = 10)
 }
@@ -13,7 +13,10 @@ print_env(api, name, max_depth = 10)
 
 \item{max_depth}{numeric/int max levels to recursive iterate through}
 }
+\value{
+Print recursively an environment to the console
+}
 \description{
-print recursively an environment, used in some documentation
+Print recursively an environment, used in some documentation
 }
 \keyword{internal}
