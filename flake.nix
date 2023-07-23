@@ -9,7 +9,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        rustToolchains = fenix.packages.${system}.default;
+        rustToolchains = fenix.packages.${system}.complete;
         rdeps = with pkgs; [
           curl
           fontconfig
