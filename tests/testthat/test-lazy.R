@@ -596,3 +596,8 @@ test_that("width", {
   expect_equal(dat$width, 11)
   expect_equal(ncol(dat), 11)
 })
+
+test_that("with_row_count", {
+  lf = pl$LazyFrame(mtcars)
+  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
+})
