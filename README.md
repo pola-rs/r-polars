@@ -305,7 +305,7 @@ devtools::test()     # run all unit tests
 
 **Step 4 (optional):** Build the package locally.
 
-``` r
+``` sh
 R CMD INSTALL --no-multiarch --with-keep.source .
 ```
 
