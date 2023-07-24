@@ -35,7 +35,7 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
         use Rctx::*;
         self.handle
             .take()
-            .ok_or(Handled.into())
+            .ok_or(Rctx::Handled.into())
             .and_then(|handle| handle.join().map_err(|err| BadJoin(rdbg(err)).into()))
     }
 
