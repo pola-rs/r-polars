@@ -2,30 +2,41 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_map}
 \alias{Expr_map}
-\title{Expr_map}
+\title{Map an expression with an R function.}
 \usage{
 Expr_map(f, output_type = NULL, agg_list = FALSE, in_background = FALSE)
 }
 \arguments{
-\item{f}{a function mapping a series}
+\item{f}{a function to map with}
 
-\item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.}
+\item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
+This is used to inform schema of the actual return type of the R function. Setting this wrong
+could theoretically have some downstream implications to the query.}
 
 \item{agg_list}{Aggregate list. Map from vector to group in groupby context.}
 
-\item{in_background}{whether to execute the map in background.
-Likely not so useful.}
+\item{in_background}{Boolean. Whether to execute the map in a background R process. Combined wit
+setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed up some slow R functions as they can run
+in parallel R sessions. The communication speed between processes is quite slower than between
+threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+be paralleled, only in case of multiple \verb{$map}(s) in the query these can be run in parallel.}
 }
 \value{
 Expr
 }
 \description{
-Expr_map
+Map an expression with an R function.
 }
 \details{
-user function return should be a series or any Robj convertible into a Series.
-In PyPolars likely return must be Series. User functions do fully support \code{browser()}, helpful to
-investigate.
+Sometime some specific R function is just necessary to perform a column transformation.
+Using R maps is slower than native polars. User function must take one polars \code{Series} as input
+and the return should be a \code{Series} or any Robj convertible into a \code{Series} (e.g. vectors).
+Map fully supports \code{browser()}. If \code{in_background = FALSE} the function can access any global
+variable of the R session. But all R maps in the query sequentially share the same main R
+session. Any native polars computations can still be executed meanwhile. In
+\code{in_background = TRUE} the map will run in one or more other R sessions and will not have access
+to global variables. Use \code{pl$set_global_rpool_cap(4)} and \code{pl$get_global_rpool_cap()} to see and
+view number of parallel R sessions.
 }
 \examples{
 pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
