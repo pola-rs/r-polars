@@ -271,12 +271,22 @@ LazyFrame_collect_background = function() {
 }
 
 #' @title Collect_in_background
-#' @description collect DataFrame by lazy query in a background thread
+#' @description collect DataFrame by lazy query in a background thread.
+#' @details
+#' Useful to not block the R session while query executes. Any use of `$map()` or `$apply()` is
+#' diverted to other R sessions. If R functions rely on global variables this can change the
+#' result.
+#'
 #' @keywords LazyFrame DataFrame_new
 #' @return a thread handle for the task
 #' @examples
-#' prexpr <- pl$col("mpg")$map(\(x) x * 0.43, in_background = TRUE)$alias("kml")
-#' pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
+#' prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+#' handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
+#' if(!handle$is_finished()) print("not done yet")
+#' df = handle$join() #get result
+#' df
+#' handle$is_finished()
+#' handle$join()
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)
 }
