@@ -301,13 +301,13 @@ dependencies.
 
 - Option A: Using **devtools**.
 
-  ``` r
+  ``` sh
   Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 - Option B: Using **renv**.
 
-  ``` r
+  ``` sh
   # Rscript -e 'install.packages("renv")'
   Rscript -e 'renv::activate(); renv::restore()'
   ```
@@ -322,8 +322,8 @@ devtools::test()     # run all unit tests
 
 **Step 4 (optional):** Build the package locally.
 
-``` r
-R CMD INSTALL --no-multiarch --with-keep.source polars
+``` sh
+R CMD INSTALL --no-multiarch --with-keep.source .
 ```
 
 **Step 5:** Commit your changes and submit a PR to the main **polars**
