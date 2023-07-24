@@ -156,7 +156,7 @@ pl$date_range = function(
   ) {
     low = convert_time_unit_for_lazy(low, time_unit, time_zone)
     high = convert_time_unit_for_lazy(high, time_unit, time_zone)
-    result = r_date_range_lazy(low, high, interval, closed, time_zone)
+    result = r_date_range_lazy(low, high, interval, closed, time_unit, time_zone)
     return(unwrap(result, "in pl$date_range():"))
   }
 

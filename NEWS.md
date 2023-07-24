@@ -1,5 +1,10 @@
 # polars (development version)
 
+# polars 0.7.0.9000
+
+## BREAKING CHANGES
+- Series_is_sorted: Nulls_last argument is dropped (#PRXYZ).
+
 # polars 0.7.0
 
 ## BREAKING CHANGES

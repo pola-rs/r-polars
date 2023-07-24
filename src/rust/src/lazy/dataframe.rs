@@ -341,12 +341,16 @@ impl LazyFrame {
         by: Robj,
         descending: Robj,
         nulls_last: Robj,
+        maintain_order: Robj,
     ) -> Result<Self, String> {
         let ldf = self.0.clone();
         let exprs = robj_to!(VecPLExpr, by).map_err(|err| format!("the arg [...] or {}", err))?;
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
-        Ok(ldf.sort_by_exprs(exprs, descending, nulls_last).into())
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        Ok(ldf
+            .sort_by_exprs(exprs, descending, nulls_last, maintain_order)
+            .into())
     }
 
     fn melt(

@@ -6,6 +6,7 @@ use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr;
+use crate::rpolarserr::RResult;
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -1243,11 +1244,11 @@ impl Expr {
         self.0.clone().dt().round(every, offset).into()
     }
 
-    pub fn dt_combine(&self, time: &Expr, tu: Robj) -> List {
-        let res =
-            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().combine(time.0.clone(), tu)));
-
-        r_result_list(res)
+    pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<Expr> {
+        self.0
+            .clone()
+            .dt()
+            .combine(robj_to!(PLExpr, time), robj_to!(timeunit, tu)?)
     }
 
     pub fn dt_strftime(&self, fmt: &str) -> Self {
@@ -1320,17 +1321,16 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_with_time_unit(&self, tu: Robj) -> List {
-        let expr_result =
-            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().with_time_unit(tu)));
-        r_result_list(expr_result)
+    pub fn dt_with_time_unit(&self, tu: Robj) -> RResult<Expr> {
+        Ok(Expr(
+            self.0.clone().dt().with_time_unit(robj_to!(timeunit, tu)?),
+        ))
     }
 
-    pub fn dt_cast_time_unit(&self, tu: Robj) -> List {
-        let expr_result =
-            robj_to_timeunit(tu).map(|tu| Expr(self.0.clone().dt().cast_time_unit(tu)));
-
-        r_result_list(expr_result)
+    pub fn dt_cast_time_unit(&self, tu: Robj) -> RResult<Expr> {
+        Ok(Expr(
+            self.0.clone().dt().cast_time_unit(robj_to!(timeunit, tu)?),
+        ))
     }
 
     pub fn dt_convert_time_zone(&self, tz: String) -> Self {

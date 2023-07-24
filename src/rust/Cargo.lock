@@ -60,6 +60,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "allocator-api2"
+version = "0.2.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0942ffc6dcaadf03badf6e6a2d0228460359d5e34b57ccdc720b7382dfbd5ec5"
+
+[[package]]
 name = "android-tzdata"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -101,9 +107,9 @@ dependencies = [
 
 [[package]]
 name = "arrow2"
-version = "0.17.2"
+version = "0.17.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15ae0428d69ab31d7b2adad22a752d6f11fef2e901d2262d0cad4f5cb08b7093"
+checksum = "e44f27e89e3edd8738a07c5e2c881efaa25e69be97a816d2df051685d460670c"
 dependencies = [
  "ahash",
  "arrow-format",
@@ -153,18 +159,18 @@ checksum = "16e62a023e7c117e27523144c5d2459f4397fcc3cab0085af8e2224f643a0193"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
 name = "async-trait"
-version = "0.1.71"
+version = "0.1.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a564d521dd56509c4c47480d00b80ee55f7e385ae48db5744c67ad50c92d2ebf"
+checksum = "cc6dde6e4ed435a4c1ee4e73592f5ba9da2151af10076cc04858746af9352d09"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -267,7 +273,7 @@ checksum = "fdde5c9cd29ebd706ce1b35600920a33550e402fc998a2e53ad3b42c3c47a192"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -340,13 +346,13 @@ dependencies = [
 
 [[package]]
 name = "comfy-table"
-version = "6.2.0"
+version = "7.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e959d788268e3bf9d35ace83e81b124190378e4c91c9067524675e33394b8ba"
+checksum = "9ab77dbd8adecaf3f0db40581631b995f312a8a5ae3aa9993188bb8f23d83a5b"
 dependencies = [
  "crossterm",
  "strum",
- "strum_macros",
+ "strum_macros 0.24.3",
  "unicode-width",
 ]
 
@@ -460,15 +466,15 @@ dependencies = [
 
 [[package]]
 name = "dyn-clone"
-version = "1.0.11"
+version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68b0cf012f1230e43cd00ebb729c6bb58707ecfa8ad08b52ef3a4ccd2697fc30"
+checksum = "304e6508efa593091e97a9abbc10f90aa7ca635b6d2784feff3c89d41dd12272"
 
 [[package]]
 name = "either"
-version = "1.8.1"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
+checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
 
 [[package]]
 name = "enum_dispatch"
@@ -479,14 +485,14 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
 name = "equivalent"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88bffebc5d80432c9b140ee17875ff173a8ab62faad5b257da912bd2f6c1c0a1"
+checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 
 [[package]]
 name = "ethnum"
@@ -631,7 +637,7 @@ checksum = "89ca545a94061b6365f2c7355b4b32bd20df3ff95f02da9329b34ccc3bd6ee72"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -720,18 +726,11 @@ checksum = "74721d007512d0cb3338cd20f0654ac913920061a4c4d0d8708edb3f2a698c0c"
 
 [[package]]
 name = "hashbrown"
-version = "0.12.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
-
-[[package]]
-name = "hashbrown"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43a3c133739dddd0d2990f9a4bdf8eb4b21ef50e4851ca85ab661199821d510e"
 dependencies = [
  "ahash",
- "rayon",
 ]
 
 [[package]]
@@ -739,6 +738,11 @@ name = "hashbrown"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2c6201b9ff9fd90a5a3bac2e56a830d0caa509576f0e503818ee82c181b3437a"
+dependencies = [
+ "ahash",
+ "allocator-api2",
+ "rayon",
+]
 
 [[package]]
 name = "heck"
@@ -798,23 +802,13 @@ checksum = "ce23b50ad8242c51a442f3ff322d56b02f08852c77e4c0b4d3fd684abc89c683"
 
 [[package]]
 name = "indexmap"
-version = "1.9.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
-dependencies = [
- "autocfg",
- "hashbrown 0.12.3",
- "serde",
-]
-
-[[package]]
-name = "indexmap"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d5477fe2230a79769d8dc68e0eabf5437907c0457a5614a9e8dddb67f65eb65d"
 dependencies = [
  "equivalent",
  "hashbrown 0.14.0",
+ "serde",
 ]
 
 [[package]]
@@ -828,9 +822,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.8"
+version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62b02a5381cc465bd3041d84623d0fa3b66738b52b8e2fc3bab8ad63ab032f4a"
+checksum = "af150ab688ff2122fcef229be89cb50dd66af9e01a4ff320cc137eecc9bacc38"
 
 [[package]]
 name = "itoap"
@@ -1015,9 +1009,9 @@ dependencies = [
 
 [[package]]
 name = "libz-ng-sys"
-version = "1.1.9"
+version = "1.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2468756f34903b582fe7154dc1ffdebd89d0562c4a43b53c621bb0f1b1043ccb"
+checksum = "425fb6808068335c8c7c69d1cff0a7d1ed8f681e9ac040272f160a89e6f43b8b"
 dependencies = [
  "cmake",
  "libc",
@@ -1240,9 +1234,9 @@ dependencies = [
 
 [[package]]
 name = "num-traits"
-version = "0.2.15"
+version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "578ede34cf02f8924ab9447f50c28075b4d3e5b269972345e7e0372b38c6cdcd"
+checksum = "f30b0abd723be7e2ffca1272140fac1a2f084c77ec3e123c192b66af1ee9e6c2"
 dependencies = [
  "autocfg",
  "libm",
@@ -1366,9 +1360,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4b27ab7be369122c218afc2079489cdcb4b517c0a3fc386ff11e1fedfcc2b35"
+checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
 
 [[package]]
 name = "phf"
@@ -1425,7 +1419,7 @@ checksum = "ec2e072ecce94ec471b13398d5402c188e76ac03cf74dd1a975161b23a3f6d9c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -1457,8 +1451,8 @@ dependencies = [
 
 [[package]]
 name = "polars"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "getrandom",
  "polars-core",
@@ -1472,13 +1466,15 @@ dependencies = [
 
 [[package]]
 name = "polars-arrow"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "arrow2",
+ "atoi",
  "chrono",
  "chrono-tz",
- "hashbrown 0.13.2",
+ "ethnum",
+ "hashbrown 0.14.0",
  "multiversion",
  "num-traits",
  "polars-error",
@@ -1488,8 +1484,8 @@ dependencies = [
 
 [[package]]
 name = "polars-core"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
  "arrow2",
@@ -1498,8 +1494,8 @@ dependencies = [
  "chrono-tz",
  "comfy-table",
  "either",
- "hashbrown 0.13.2",
- "indexmap 1.9.3",
+ "hashbrown 0.14.0",
+ "indexmap",
  "itoap",
  "ndarray",
  "num-traits",
@@ -1522,8 +1518,8 @@ dependencies = [
 
 [[package]]
 name = "polars-error"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "arrow2",
  "regex",
@@ -1532,8 +1528,8 @@ dependencies = [
 
 [[package]]
 name = "polars-io"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
  "arrow2",
@@ -1568,14 +1564,14 @@ dependencies = [
 
 [[package]]
 name = "polars-json"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
  "arrow2",
  "fallible-streaming-iterator",
- "hashbrown 0.13.2",
- "indexmap 1.9.3",
+ "hashbrown 0.14.0",
+ "indexmap",
  "num-traits",
  "polars-arrow",
  "polars-error",
@@ -1585,8 +1581,8 @@ dependencies = [
 
 [[package]]
 name = "polars-lazy"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
  "bitflags",
@@ -1607,14 +1603,15 @@ dependencies = [
 
 [[package]]
 name = "polars-ops"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "argminmax",
  "arrow2",
  "base64",
  "either",
  "hex",
+ "indexmap",
  "jsonpath_lib",
  "memchr",
  "polars-arrow",
@@ -1628,13 +1625,13 @@ dependencies = [
 
 [[package]]
 name = "polars-pipe"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "crossbeam-channel",
  "crossbeam-queue",
  "enum_dispatch",
- "hashbrown 0.13.2",
+ "hashbrown 0.14.0",
  "num-traits",
  "polars-arrow",
  "polars-core",
@@ -1649,8 +1646,8 @@ dependencies = [
 
 [[package]]
 name = "polars-plan"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
  "arrow2",
@@ -1667,12 +1664,13 @@ dependencies = [
  "regex",
  "serde",
  "smartstring",
+ "strum_macros 0.25.1",
 ]
 
 [[package]]
 name = "polars-row"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "arrow2",
  "polars-error",
@@ -1681,8 +1679,8 @@ dependencies = [
 
 [[package]]
 name = "polars-sql"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "polars-arrow",
  "polars-core",
@@ -1695,8 +1693,8 @@ dependencies = [
 
 [[package]]
 name = "polars-time"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "arrow2",
  "atoi",
@@ -1715,11 +1713,12 @@ dependencies = [
 
 [[package]]
 name = "polars-utils"
-version = "0.30.0"
-source = "git+https://github.com/pola-rs/polars.git?rev=ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b#ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+version = "0.31.1"
+source = "git+https://github.com/pola-rs/polars.git?rev=672922491bac1f144747d39b864106d90010fd1e#672922491bac1f144747d39b864106d90010fd1e"
 dependencies = [
  "ahash",
- "hashbrown 0.13.2",
+ "hashbrown 0.14.0",
+ "num-traits",
  "once_cell",
  "rayon",
  "smartstring",
@@ -1734,18 +1733,18 @@ checksum = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.64"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "78803b62cbf1f46fde80d7c0e803111524b9877184cfe7c3033659490ac7a7da"
+checksum = "18fb31db3f9bddb2ea821cde30a9f70117e3f119938b5ee630b7403aa6e2ead9"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.29"
+version = "1.0.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "573015e8ab27661678357f27dc26460738fd2b6c86e46f386fde94cb5d913105"
+checksum = "50f3b39ccfb720540debaa0164757101c08ecb8d326b15358ce76a62c7e85965"
 dependencies = [
  "proc-macro2",
 ]
@@ -1761,6 +1760,7 @@ dependencies = [
  "mimalloc",
  "polars",
  "polars-core",
+ "polars-lazy",
  "rayon",
  "serde_json",
  "smartstring",
@@ -1862,8 +1862,8 @@ checksum = "b2eae68fc220f7cf2532e4494aded17545fce192d59cd996e0fe7887f4ceb575"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-automata 0.3.2",
- "regex-syntax 0.7.3",
+ "regex-automata 0.3.3",
+ "regex-syntax 0.7.4",
 ]
 
 [[package]]
@@ -1877,13 +1877,13 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83d3daa6976cffb758ec878f108ba0e062a45b2d6ca3a2cca965338855476caf"
+checksum = "39354c10dd07468c2e73926b23bb9c2caca74c5501e38a35da70406f1d923310"
 dependencies = [
  "aho-corasick",
  "memchr",
- "regex-syntax 0.7.3",
+ "regex-syntax 0.7.4",
 ]
 
 [[package]]
@@ -1894,9 +1894,9 @@ checksum = "f162c6dd7b008981e4d40210aca20b4bd0f9b60ca9271061b07f78537722f2e1"
 
 [[package]]
 name = "regex-syntax"
-version = "0.7.3"
+version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ab07dc67230e4a4718e70fd5c20055a4334b121f1f9db8fe63ef39ce9b8c846"
+checksum = "e5ea92a5b6195c6ef2a0295ea818b312502c6fc94dde986c5553242e18fd4ce2"
 
 [[package]]
 name = "rle-decode-fast"
@@ -1921,15 +1921,15 @@ dependencies = [
 
 [[package]]
 name = "rustversion"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc31bd9b61a32c31f9650d18add92aa83a49ba979c143eefd27fe7177b05bd5f"
+checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 
 [[package]]
 name = "ryu"
-version = "1.0.14"
+version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe232bdf6be8c8de797b22184ee71118d63780ea42ac85b61d1baa6d3b782ae9"
+checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
 
 [[package]]
 name = "scoped-tls"
@@ -1939,49 +1939,49 @@ checksum = "e1cf6437eb19a8f4a6cc0f7dca544973b0b78843adbfeb3683d1a94a0024a294"
 
 [[package]]
 name = "scopeguard"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
+checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "semver"
-version = "1.0.17"
+version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed"
+checksum = "b0293b4b29daaf487284529cc2f5675b8e57c61f70167ba415a463651fd6a918"
 
 [[package]]
 name = "seq-macro"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63134939175b3131fe4d2c131b103fd42f25ccca89423d43b5e4f267920ccf03"
+checksum = "a3f0bf26fd526d2a95683cd0f87bf103b8539e2ca1ef48ce002d67aad59aa0b4"
 
 [[package]]
 name = "serde"
-version = "1.0.171"
+version = "1.0.175"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30e27d1e4fd7659406c492fd6cfaf2066ba8773de45ca75e855590f856dc34a9"
+checksum = "5d25439cd7397d044e2748a6fe2432b5e85db703d6d097bd014b3c0ad1ebff0b"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.171"
+version = "1.0.175"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "389894603bd18c46fa56231694f8d827779c0951a667087194cf9de94ed24682"
+checksum = "b23f7ade6f110613c0d63858ddb8b94c1041f550eab58a16b371bdf2c9c80ab4"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
 name = "serde_json"
-version = "1.0.100"
+version = "1.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0f1e14e89be7aa4c4b78bdbdc9eb5bf8517829a600ae8eaa39a6e1d960b5185c"
+checksum = "d03b412469450d4404fe8499a268edd7f8b79fecb074b0d812ad64ca21f4031b"
 dependencies = [
- "indexmap 2.0.0",
+ "indexmap",
  "itoa",
  "ryu",
  "serde",
@@ -1998,9 +1998,9 @@ dependencies = [
 
 [[package]]
 name = "signal-hook"
-version = "0.3.15"
+version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "732768f1176d21d09e076c23a93123d40bba92d50c4058da34d45c8de8e682b9"
+checksum = "8621587d4798caf8eb44879d42e56b9a93ea5dcd315a6487c357130095b62801"
 dependencies = [
  "libc",
  "signal-hook-registry",
@@ -2171,6 +2171,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "strum_macros"
+version = "0.25.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6069ca09d878a33f883cc06aaa9718ede171841d3832450354410b718b097232"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "rustversion",
+ "syn 2.0.27",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2183,9 +2196,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.25"
+version = "2.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15e3fc8c0c74267e2df136e5e5fb656a464158aa57624053375eb9c8c6e25ae2"
+checksum = "b60f673f44a8255b9c8c657daf66a596d435f2da81a555b06dc644d080ba45e0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2194,9 +2207,9 @@ dependencies = [
 
 [[package]]
 name = "sysinfo"
-version = "0.29.4"
+version = "0.29.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "751e810399bba86e9326f5762b7f32ac5a085542df78da6a78d94e07d14d7c11"
+checksum = "c7cb97a5a85a136d84e75d5c3cf89655090602efb1be0d8d5337b7e386af2908"
 dependencies = [
  "cfg-if",
  "core-foundation-sys",
@@ -2214,22 +2227,22 @@ checksum = "06f6b473c37f9add4cf1df5b4d66a8ef58ab6c895f1a3b3f949cf3e21230140e"
 
 [[package]]
 name = "thiserror"
-version = "1.0.43"
+version = "1.0.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a35fc5b8971143ca348fa6df4f024d4d55264f3468c71ad1c2f365b0a4d58c42"
+checksum = "611040a08a0439f8248d1990b111c95baa9c704c805fa1f62104b39655fd7f90"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.43"
+version = "1.0.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "463fe12d7993d3b327787537ce8dd4dfa058de32fc2b195ef3cde03dc4771e8f"
+checksum = "090198534930841fab3a5d1bb637cde49e339654e606195f8d9c76eeb081dc96"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -2288,7 +2301,7 @@ checksum = "5f4f31f56159e98206da9efd823404b79b6ef3143b4a7ab76e67b1751b25a4ab"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -2332,9 +2345,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.10"
+version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22049a19f4a68748a168c0fc439f9516686aa045927ff767eca0a85101fb6e73"
+checksum = "301abaae475aa91687eb82514b328ab47a211a533026cb25fc3e519b86adfc3c"
 
 [[package]]
 name = "unicode-width"
@@ -2399,7 +2412,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
  "wasm-bindgen-shared",
 ]
 
@@ -2433,7 +2446,7 @@ checksum = "54681b18a46765f095758388f2d0cf16eb8d4169b639ab575a8f5693af210c7b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.25",
+ "syn 2.0.27",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -2574,18 +2587,18 @@ checksum = "735a71d46c4d68d71d4b24d03fdc2b98e38cea81730595801db779c04fe80d70"
 
 [[package]]
 name = "zstd"
-version = "0.12.3+zstd.1.5.2"
+version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76eea132fb024e0e13fd9c2f5d5d595d8a967aa72382ac2f9d39fcc95afd0806"
+checksum = "1a27595e173641171fc74a1232b7b1c7a7cb6e18222c11e9dfb9888fa424c53c"
 dependencies = [
  "zstd-safe",
 ]
 
 [[package]]
 name = "zstd-safe"
-version = "6.0.5+zstd.1.5.4"
+version = "6.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d56d9e60b4b1758206c238a10165fbcae3ca37b01744e394c463463f6529d23b"
+checksum = "ee98ffd0b48ee95e6c5168188e44a54550b1564d9d530ee21d5f0eaed1069581"
 dependencies = [
  "libc",
  "zstd-sys",

@@ -1,9 +1,12 @@
+use crate::robj_to;
+use crate::rpolarserr::WithRctx;
 use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
+use crate::rpolarserr::{self, RResult};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -117,10 +120,9 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> List {
-        let result = robj_to_timeunit(tu)
-            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
-        r_result_list(result)
+    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
+        robj_to!(timeunit, tu)
+            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
     pub fn new_duration() -> RPolarsDataType {
@@ -329,17 +331,17 @@ pub fn new_quantile_interpolation_option(
     }
 }
 
-pub fn new_closed_window(s: &str) -> std::result::Result<pl::ClosedWindow, String> {
+pub fn new_closed_window(s: Robj) -> RResult<pl::ClosedWindow> {
+    let s = robj_to!(str, s)?;
     use pl::ClosedWindow as CW;
     match s {
         "both" => Ok(CW::Both),
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
-        _ => Err(format!(
-            "ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'",
-            s
-        )),
+        _ => rpolarserr::rerr()
+            .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
+            .bad_robj(s),
     }
 }
 
@@ -456,23 +458,17 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
-    let s = robj.as_str().ok_or_else(|| {
-        format!(
-            "Robj must be a string to be matched as TimeUnit, got a [{:?}]",
-            robj
-        )
-    })?;
+pub fn robj_to_timeunit(robj: Robj) -> RResult<pl::TimeUnit> {
+    let s = robj_to!(str, robj)?;
 
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
         "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
-        _ => Err(format!(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ",
-            s
-        )),
+        _ => rpolarserr::rerr().bad_val(
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ".to_string(),
+        ),
     }
 }
 

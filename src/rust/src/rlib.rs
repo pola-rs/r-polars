@@ -4,7 +4,6 @@ use crate::rpolarserr::{rdbg, RResult};
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 
 use crate::lazy::dsl::ProtoExprArray;
-use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
 use crate::series::Series;
 use extendr_api::prelude::*;
@@ -66,13 +65,13 @@ pub fn mem_address(robj: Robj) -> String {
 #[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::min_exprs(exprs).into()
+    polars::lazy::dsl::min_horizontal(exprs).into()
 }
 
 #[extendr]
 fn max_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::max_exprs(exprs).into()
+    polars::lazy::dsl::max_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -84,7 +83,7 @@ fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
 #[extendr]
 fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::sum_exprs(exprs).into()
+    polars::lazy::dsl::sum_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -104,52 +103,44 @@ fn r_date_range(
     name: &str,
     tu: Robj,
     tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    use crate::utils::try_f64_into_i64;
-
+) -> RResult<Series> {
     use pl::IntoSeries;
 
-    let res = || -> std::result::Result<Series, String> {
-        Ok(Series(
-            polars::time::date_range_impl(
-                name,
-                try_f64_into_i64(start)?,
-                try_f64_into_i64(stop)?,
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                robj_to_timeunit(tu)?,
-                tz.into_option().as_ref(),
-            )
-            .map_err(|err| format!("in r_date_range: {}", err))?
-            .into_series(),
-        ))
-    }();
-    r_result_list(res)
+    Ok(Series(
+        polars::time::date_range_impl(
+            name,
+            robj_to!(i64, start)?,
+            robj_to!(i64, stop)?,
+            pl::Duration::parse(every),
+            robj_to!(new_closed_window, closed)?,
+            robj_to!(timeunit, tu)?,
+            tz.into_option().as_ref(),
+        )
+        .map_err(|err| format!("in r_date_range: {}", err))?
+        .into_series(),
+    ))
 }
 
 #[extendr]
 fn r_date_range_lazy(
-    start: &Expr,
-    end: &Expr,
-    every: &str,
-    closed: &str,
-    tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    let res = || -> std::result::Result<Expr, String> {
-        Ok(Expr(
-            polars::lazy::dsl::functions::date_range(
-                start.0.clone(),
-                end.0.clone(),
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                tz.into_option(),
-            )
-            .explode(),
-        ))
-    }();
-    r_result_list(res)
+    start: Robj,
+    end: Robj,
+    every: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    tz: Robj,
+) -> RResult<Expr> {
+    Ok(Expr(
+        polars::lazy::dsl::functions::date_range(
+            robj_to!(PLExpr, start)?,
+            robj_to!(PLExpr, end)?,
+            pl::Duration::parse(robj_to!(str, every)?),
+            robj_to!(new_closed_window, closed)?,
+            robj_to!(Option, timeunit, time_unit)?,
+            robj_to!(Option, String, tz)?,
+        )
+        .explode(),
+    ))
 }
 
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too

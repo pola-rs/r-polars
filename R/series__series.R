@@ -782,14 +782,13 @@ Series_flags = method_as_property(function() {
 #' is_sorted
 #' @keywords Series
 #' @param descending Check if the Series is sorted in descending order.
-#' @param nulls_last bool where to keep nulls, default same as reverse
 #' @return DataType
 #' @aliases is_sorted
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
 #' pl$Series(1:4)$sort()$is_sorted()
-Series_is_sorted = function(descending = FALSE, nulls_last = NULL) {
-  .pr$Series$is_sorted(self, descending, nulls_last)
+Series_is_sorted = function(descending = FALSE) {
+  .pr$Series$is_sorted(self, descending) |> unwrap("in $is_sorted()")
 }
 
 

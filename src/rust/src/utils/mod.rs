@@ -7,7 +7,6 @@ use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
-
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
@@ -690,6 +689,12 @@ macro_rules! robj_to_inner {
     };
     (str, $a:ident) => {
         $crate::utils::robj_to_str($a)
+    };
+    (timeunit, $a:ident) => {
+        $crate::rdatatype::robj_to_timeunit($a)
+    };
+    (new_closed_window, $a:ident) => {
+        $crate::rdatatype::new_closed_window($a)
     };
     (bool, $a:ident) => {
         $crate::utils::robj_to_bool($a)

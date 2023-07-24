@@ -7,10 +7,6 @@ rust-version = "1.65"
 [lib]
 crate-type = ['staticlib']
 
-[features]
-default = []
-simd = ["polars/simd"]
-
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
@@ -41,12 +37,15 @@ smartstring = "1.0.1"
 serde_json = "*"
 thiserror = "1.0.40"
 indenter = "0.3.3"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b", default_features = false }
-
-
+polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
+# polars-io = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
+polars-lazy = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
+# polars-ops = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
 #features copied from node-polars
+
 [dependencies.polars]
 features = [
+  #"binary_encoding",  #new feature to impl
   "rolling_window",
   "json",
   "dynamic_groupby",
@@ -56,13 +55,12 @@ features = [
   "temporal",
   "random",
   "object",
-  "csv",
   "fmt",
   "performant",
   "dtype-full",
   "rows",
-  "private",
   "round_series",
+  #"is_unique", ,  #new feature to impl
   "is_in",
   "is_first",
   "asof_join",
@@ -79,15 +77,16 @@ features = [
   "rolling_window",
   "repeat_by",
   "interpolate",
-  #"list",
   "ewma",
   "rank",
+  #"propagate_nans", ,  #new feature to impl
   "diff",
   "pct_change",
   "moment",
-  "arange",
+ 
   "true_div",
   "dtype-categorical",
+  # "string_justify",  #new feature to impl
   "diagonal_concat",
   "horizontal_concat",
   "abs",
@@ -133,6 +132,9 @@ features = [
   "meta",
   "approx_unique",
 ]
-default-features = false
 git = "https://github.com/pola-rs/polars.git"
-rev = "ee2366b68f35c4b69dfe34cbf1eae107d4ebe97b"
+rev = "672922491bac1f144747d39b864106d90010fd1e"
+
+[features]
+simd = ["polars/simd"]
+range = ["polars-lazy/range"]
