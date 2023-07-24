@@ -73,11 +73,20 @@ f_all_cols <-  \(lf,...) lf$select(pl$all()$map(\(x) {
   sum(x)
 },...))
 
-f_all_cols(lf)$collect() |> system.time()
 
+
+pl$set_global_rpool_cap(1)
+f_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
+f_all_cols(lf, in_background = TRUE)$collect() |> system.time()
+f_all_cols(lf, in_background = FALSE)$collect() |> system.time()
 
 ##Appears to be a factor overhead when comparing single process
-pl$set_global_rpool_cap(1)
+pl$set_global_rpool_cap(0)
+f_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
+f_all_cols(lf, in_background = TRUE)$collect() |> system.time()
+f_all_cols(lf, in_background = FALSE)$collect() |> system.time()
+
+pl$set_global_rpool_cap(2)
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
 f_all_cols(lf, in_background = TRUE)$collect() |> system.time()
 f_all_cols(lf, in_background = FALSE)$collect() |> system.time()
