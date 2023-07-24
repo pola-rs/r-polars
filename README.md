@@ -284,13 +284,13 @@ dependencies.
 
 - Option A: Using **devtools**.
 
-  ``` r
+  ``` sh
   Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 - Option B: Using **renv**.
 
-  ``` r
+  ``` sh
   # Rscript -e 'install.packages("renv")'
   Rscript -e 'renv::activate(); renv::restore()'
   ```
