@@ -3702,6 +3702,8 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' @param  seed
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
+#' @param fixed_seed
+#' Boolean. If TRUE will not evolve seed for each use. Maybe useful for some reproducible analysis.
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr
@@ -3715,29 +3717,22 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
 #'
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
-Expr_sample = function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n = NULL) {
-  # check seed
-  # check not both n and frac
+Expr_sample = function(
+    frac = NULL, with_replacement = TRUE, shuffle = FALSE,
+    seed = NULL, fixed_seed = FALSE, n = NULL
+) {
 
-  stop("make as pcase")
-  if (!is.null(n) && !is.null(frac))  {
-    Err(.pr$RPolarsErr$new()$plain("cannot specify both `n` and `frac`"))
-  } else {
-    Ok()
-  } |>
-    and_then(\(not_used) {
+  pcase(
+     !is.null(n) && !is.null(frac), {
+       Err(.pr$RPolarsErr$new()$plain("cannot specify both `n` and `frac`"))
+     },
+     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+     or_else = {
+       .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+     }
+  ) |>
+    unwrap("in $sample()")
 
-
-  })
-
-  # use n
-  if (!is.null(n)) {
-    return(unwrap(.pr$Expr$sample_n(self, n, with_replacement, shuffle, seed)))
-  }
-
-  # use frac
-  if (is.null(frac)) frac <- 1
-  unwrap(.pr$Expr$sample_frac(self, frac, with_replacement, shuffle, seed))
 }
 
 
