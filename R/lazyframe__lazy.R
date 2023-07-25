@@ -285,8 +285,6 @@ LazyFrame_collect_background = function() {
 #' if(!handle$is_finished()) print("not done yet")
 #' df = handle$join() #get result
 #' df
-#' handle$is_finished()
-#' handle$join()
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)
 }

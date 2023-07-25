@@ -347,13 +347,13 @@ repo.
 the following:
 
 ``` r
-source("inst/misc/load_polars.R")
+source("inst/misc/develop_polars.R")
 
 #to rextendr:document() + not_cran + load packages + all_features
 load_polars()
 
 #to check package + reuses previous compilation in check, protects against deletion
-check_polars("/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust")
+check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 ```
 
 - The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to

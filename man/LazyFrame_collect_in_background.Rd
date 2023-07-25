@@ -23,8 +23,6 @@ handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
 if(!handle$is_finished()) print("not done yet")
 df = handle$join() #get result
 df
-handle$is_finished()
-handle$join()
 }
 \keyword{DataFrame_new}
 \keyword{LazyFrame}

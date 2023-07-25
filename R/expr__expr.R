@@ -674,13 +674,7 @@ construct_ProtoExprArray = function(...) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  map_fn = .pr$Expr$map
-  if (in_background) {
-    if (Sys.getenv("RPOLARS_R_BINARY_PATH") == "") {
-      Sys.setenv(RPOLARS_R_BINARY_PATH = file.path(R.home("bin"), "R"))
-    }
-    map_fn = .pr$Expr$map_in_background
-  }
+  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
   map_fn(self, f, output_type, agg_list)
 }
 
@@ -696,9 +690,6 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'  investigate.
 #' @name Expr_apply_in_background
 Expr_apply_in_background = function(f, output_type = NULL) {
-  if (Sys.getenv("RPOLARS_R_BINARY_PATH") == "") {
-    Sys.setenv(RPOLARS_R_BINARY_PATH = file.path(R.home("bin"), "R"))
-  }
   .pr$Expr$apply_in_background(self, f, output_type)
 }
 

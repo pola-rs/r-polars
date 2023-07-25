@@ -1,10 +1,12 @@
 use crate::rdataframe::DataFrame as RDF;
-use crate::rpolarserr::{rdbg, RPolarsErr, RResult, Rctx, WithRctx};
+use crate::robj_to;
+use crate::rpolarserr::{extendr_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx};
 use extendr_api::{
     call, eval_string, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes,
-    Conversions, List, Operators, Pairlist, Rinternals, Robj, NULL,
+    Conversions, Length, List, Operators, Pairlist, Rinternals, Robj, NULL, R,
 };
 use ipc_channel::ipc;
+use once_cell::sync::Lazy;
 use polars::prelude::Series as PSeries;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
@@ -208,13 +210,19 @@ impl RBackgroundHandler {
 
         let (server, server_name) = ipc::IpcOneShotServer::new()
             .when("trying to create a one-shot channel to setup inter-process communication")?;
-        let child = Command::new(std::env::var("RPOLARS_R_BINARY_PATH").unwrap_or("R".into()))
+        let libs = RENV
+            .1
+            .iter()
+            .map(|lib| format!("\"{lib}\", "))
+            .collect::<Vec<_>>()
+            .join("");
+        let child = Command::new(RENV.0.as_str())
             .arg("--vanilla")
             .arg("-q")
             .arg("-e")
             // Remove rextendr::document() if possible
             .arg(format!(
-                "polars:::handle_background_request(\"{server_name}\") |> invisible()"
+                ".libPaths(c({libs}.libPaths())); polars:::handle_background_request(\"{server_name}\") |> invisible()"
             ))
             .stdin(Stdio::null())
             .stdout(Stdio::null())
@@ -341,8 +349,24 @@ impl RBackgroundPool {
     }
 }
 
-pub static RBGPOOL: once_cell::sync::Lazy<RBackgroundPool> =
-    once_cell::sync::Lazy::new(|| RBackgroundPool::new(1));
+pub static RENV: Lazy<(String, Vec<String>)> = Lazy::new(|| {
+    let bin_path = R!("file.path(R.home(\"bin\"), \"R\")")
+        .map_err(extendr_to_rpolars_err)
+        .and_then(|r| robj_to!(String, r))
+        .unwrap_or("R".into());
+    let lib_paths = R!(".libPaths()")
+        .map_err(extendr_to_rpolars_err)
+        .and_then(|rv| robj_to!(Vec, String, rv))
+        .unwrap_or_default();
+    (bin_path, lib_paths)
+});
+
+#[extendr]
+pub fn setup_renv() -> List {
+    list!(binary = &RENV.0, libraries = &RENV.1)
+}
+
+pub static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(1));
 
 #[extendr]
 pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
@@ -416,10 +440,11 @@ pub fn test_serde_df(df: &RDF) -> RResult<RDF> {
 extendr_module! {
     mod rbackground;
     impl RThreadHandle<RResult<RDF>>;
-    fn test_serde_df;
+    fn setup_renv;
     fn set_global_rpool_cap;
     fn get_global_rpool_cap;
     fn handle_background_request;
     fn test_rbackgroundhandler;
     fn test_rthreadhandle;
+    fn test_serde_df;
 }

@@ -147,7 +147,7 @@ pl$mem_address = mem_address
   # see doc below, R CMD check did not like this function def
   pl$select = .pr$DataFrame$default()$select
 
-
+  setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }
 
