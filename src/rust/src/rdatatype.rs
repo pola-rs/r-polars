@@ -317,9 +317,8 @@ pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrate
     }
 }
 
-pub fn new_quantile_interpolation_option(
-    s: &str,
-) -> std::result::Result<QuantileInterpolOptions, String> {
+pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
+    let s = robj_to!(str, robj)?;
     use pl::QuantileInterpolOptions::*;
     match s {
         "nearest" => Ok(Nearest),
@@ -327,7 +326,9 @@ pub fn new_quantile_interpolation_option(
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => Err(format!("interpolation choice: [{}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'",s))
+        _ => rpolarserr::rerr()
+            .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
+            .bad_robj(&robj),
     }
 }
 

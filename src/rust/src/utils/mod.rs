@@ -524,6 +524,31 @@ pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
     .mistyped(tn::<i64>());
 }
 
+pub fn robj_to_f64(robj: extendr_api::Robj) -> RResult<f64> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+    return match (robj.rtype(), robj.len()) {
+        (Rtype::Strings, 1) => robj
+            .as_str()
+            .unwrap_or("<Empty String>")
+            .parse::<f64>()
+            .ok(),
+        //specialized integer64 conversion
+        (Rtype::Doubles, 1) if robj.inherits("integer64") => robj
+            .as_real()
+            .and_then(|v| i64::try_from(v.to_bits()).ok())
+            .filter(|val| *val != crate::utils::BIT64_NA_ECODING)
+            .map(|val| val as f64),
+        //from R doubles or integers
+        (Rtype::Doubles, 1) => robj.as_real(),
+        (Rtype::Integers, 1) => robj.as_integer().map(f64::from),
+        (_, _) => None,
+    }
+    .ok_or(RPolarsErr::new())
+    .bad_robj(&robj)
+    .mistyped(tn::<f64>());
+}
+
 pub fn robj_to_u64(robj: extendr_api::Robj) -> RResult<u64> {
     robj_to_i64(robj).and_then(try_i64_into_u64)
 }
@@ -665,6 +690,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_usize($a)
     };
 
+    (f64, $a:ident) => {
+        $crate::utils::robj_to_f64($a)
+    };
+
     (i64, $a:ident) => {
         $crate::utils::robj_to_i64($a)
     };
@@ -696,6 +725,10 @@ macro_rules! robj_to_inner {
     (new_closed_window, $a:ident) => {
         $crate::rdatatype::new_closed_window($a)
     };
+    (new_quantile_interpolation_option, $a:ident) => {
+        $crate::rdatatype::new_quantile_interpolation_option($a)
+    };
+
     (bool, $a:ident) => {
         $crate::utils::robj_to_bool($a)
     };

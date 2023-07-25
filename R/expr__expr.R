@@ -3675,16 +3675,18 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
+#' @param fixed_seed Boolean, If TRUE, The seed will not be incremented between draws.
+#' This can make output predictable because draw ordering can change due to threads being
+#' scheduled in a different order.
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-Expr_shuffle = function(seed = NULL) {
-  seed = seed %||% sample(0:10000, 1L)
-  if (!is.numeric(seed) || any(is.na(seed)) || length(seed) != 1L) pstop(err = "seed must be non NA/NaN numeric scalar")
-  unwrap(.pr$Expr$shuffle(self, seed))
+#' stop("new param + reworked to robj_to - > update tests of shufle")
+Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
+  .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
 }
 
 
@@ -3715,11 +3717,18 @@ Expr_shuffle = function(seed = NULL) {
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n = NULL) {
   # check seed
-  seed = seed %||% sample(0:10000, 1L)
-  if (!is.numeric(seed) || any(is.na(seed)) || length(seed) != 1L) pstop(err = "seed must be non NA/NaN numeric scalar")
-
   # check not both n and frac
-  if (!is.null(n) && !is.null(frac)) pstop(err = "cannot specify both `n` and `frac`")
+
+  stop("make as pcase")
+  if (!is.null(n) && !is.null(frac))  {
+    Err(.pr$RPolarsErr$new()$plain("cannot specify both `n` and `frac`"))
+  } else {
+    Ok()
+  } |>
+    and_then(\(not_used) {
+
+
+  })
 
   # use n
   if (!is.null(n)) {

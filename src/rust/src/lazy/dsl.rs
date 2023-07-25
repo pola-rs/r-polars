@@ -1,6 +1,5 @@
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
-use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
@@ -219,14 +218,14 @@ impl Expr {
         .into()
     }
 
-    //TODO expoes multithreded arg
     pub fn sort(&self, descending: bool, nulls_last: bool) -> Self {
         self.clone()
             .0
             .sort_with(SortOptions {
                 descending,
                 nulls_last,
-                multithreaded: false,
+                multithreaded: true,
+                maintain_order: false,
             })
             .into()
     }
@@ -237,7 +236,8 @@ impl Expr {
             .arg_sort(SortOptions {
                 descending,
                 nulls_last,
-                multithreaded: false,
+                multithreaded: true,
+                maintain_order: false,
             })
             .into()
     }
@@ -389,10 +389,15 @@ impl Expr {
         self.clone().0.is_duplicated().into()
     }
 
-    pub fn quantile(&self, quantile: &Expr, interpolation: &str) -> List {
-        let res = new_quantile_interpolation_option(interpolation)
-            .map(|intpl| Expr(self.clone().0.quantile(quantile.0.clone(), intpl)));
-        r_result_list(res)
+    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .quantile(
+                robj_to!(PLExpr, quantile)?,
+                robj_to!(new_quantile_interpolation_option, interpolation)?,
+            )
+            .into())
     }
 
     pub fn filter(&self, predicate: &Expr) -> Expr {
@@ -617,36 +622,33 @@ impl Expr {
         .map(|opts| Expr(self.0.clone().rolling_median(opts)));
         r_result_list(expr)
     }
+
     #[allow(clippy::too_many_arguments)]
     pub fn rolling_quantile(
         &self,
-        quantile: f64,
-        interpolation: &str,
-        window_size: &str,
-        weights_robj: Nullable<Vec<f64>>,
-        min_periods_float: f64,
-        center: bool,
-        by_null: Nullable<String>,
-        closed_null: Nullable<String>,
-    ) -> List {
-        let expr = make_rolling_options(
-            window_size,
-            weights_robj,
-            min_periods_float,
-            center,
-            by_null,
-            closed_null,
-        )
-        .and_then(|opts| {
-            let interpolation = new_quantile_interpolation_option(interpolation)?;
-            Ok(Expr(self.0.clone().rolling_quantile(
-                quantile,
-                interpolation,
-                opts,
-            )))
-        })
-        .map_err(|err| format!("rolling_quantile: {}", err));
-        r_result_list(expr)
+        quantile: Robj,
+        interpolation: Robj,
+        window_size: Robj,
+        weights: Robj,
+        min_periods: Robj,
+        center: Robj,
+        by: Robj,
+        closed: Robj,
+    ) -> RResult<Self> {
+        let options = pl::RollingOptions {
+            window_size: pl::Duration::parse(robj_to!(str, window_size)?),
+            weights: robj_to!(Option, Vec, f64, weights)?,
+            min_periods: robj_to!(usize, min_periods)?,
+            center: robj_to!(bool, center)?,
+            by: robj_to!(Option, String, by)?,
+            closed_window: robj_to!(Option, new_closed_window, closed)?,
+            fn_params: Some(pl::Arc::new(pl::RollingQuantileParams {
+                prob: robj_to!(f64, quantile)?,
+                interpol: robj_to!(new_quantile_interpolation_option, interpolation)?,
+            }) as pl::Arc<dyn std::any::Any + Send + Sync>),
+        };
+
+        Ok(self.0.clone().rolling_quantile(options).into())
     }
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
@@ -825,35 +827,54 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn shuffle(&self, seed: f64) -> List {
-        let seed_res =
-            try_f64_into_usize(seed).map(|s| Expr(self.0.clone().shuffle(Some(s as u64))));
-        r_result_list(seed_res)
+    pub fn shuffle(&self, seed: Robj, fixed_seed: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .shuffle(robj_to!(Option, u64, seed)?, robj_to!(bool, fixed_seed)?)
+            .into())
     }
 
-    pub fn sample_n(&self, n: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let seed = try_f64_into_usize(seed)?;
-            let n = try_f64_into_usize(n)?;
-            Ok(self
-                .0
-                .clone()
-                .sample_n(n, with_replacement, shuffle, Some(seed as u64))
-                .into())
-        }();
-        r_result_list(expr_result)
+    pub fn sample_n(
+        &self,
+        n: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+        fixed_seed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .sample_n(
+                robj_to!(usize, n)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+                robj_to!(bool, fixed_seed)?,
+            )
+            .into())
     }
 
-    pub fn sample_frac(&self, frac: f64, with_replacement: bool, shuffle: bool, seed: f64) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let seed = try_f64_into_usize(seed)?;
-            Ok(self
-                .0
-                .clone()
-                .sample_frac(frac, with_replacement, shuffle, Some(seed as u64))
-                .into())
-        }();
-        r_result_list(expr_result)
+    pub fn sample_frac(
+        &self,
+        n: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+        fixed_seed: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .sample_frac(
+                robj_to!(usize, n)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+                robj_to!(bool, fixed_seed)?,
+            )
+            .into())
     }
 
     pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {

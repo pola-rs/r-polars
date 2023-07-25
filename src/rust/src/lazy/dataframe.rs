@@ -2,7 +2,6 @@ use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
 use crate::rdatatype::new_join_type;
-use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
 use crate::robj_to;
@@ -120,12 +119,14 @@ impl LazyFrame {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> Result<Self, String> {
-        let res = new_quantile_interpolation_option(robj_to!(str, interpolation)?).unwrap();
+    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
         Ok(self
             .clone()
             .0
-            .quantile(robj_to!(Expr, quantile)?.0, res)
+            .quantile(
+                robj_to!(PLExpr, quantile)?,
+                robj_to!(new_quantile_interpolation_option, interpolation)?,
+            )
             .into())
     }
 
