@@ -1,7 +1,7 @@
 use crate::robj_to;
 use crate::rpolarserr::WithRctx;
-use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
+use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude::{self as pl};
 use polars_core::prelude::QuantileInterpolOptions;
@@ -318,9 +318,9 @@ pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrate
 }
 
 pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
-    let s = robj_to!(str, robj)?;
+    let s = robj_to_string(robj.clone())?;
     use pl::QuantileInterpolOptions::*;
-    match s {
+    match s.as_ref() {
         "nearest" => Ok(Nearest),
         "higher" => Ok(Higher),
         "lower" => Ok(Lower),
@@ -332,17 +332,17 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
     }
 }
 
-pub fn new_closed_window(s: Robj) -> RResult<pl::ClosedWindow> {
-    let s = robj_to!(str, s)?;
+pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
+    let s = robj_to_string(robj.clone())?;
     use pl::ClosedWindow as CW;
-    match s {
+    match s.as_str() {
         "both" => Ok(CW::Both),
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
         _ => rpolarserr::rerr()
             .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
-            .bad_robj(s),
+            .bad_robj(&robj),
     }
 }
 

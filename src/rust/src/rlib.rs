@@ -1,11 +1,11 @@
 use crate::lazy::dsl::Expr;
-use crate::rdataframe::DataFrame;
-use crate::rpolarserr::{rdbg, RResult};
-use crate::{rdataframe::VecDataFrame, utils::r_result_list};
-
 use crate::lazy::dsl::ProtoExprArray;
+use crate::rdataframe::DataFrame;
 use crate::robj_to;
+use crate::rpolarserr::polars_to_rpolars_err;
+use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
+use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
@@ -96,27 +96,26 @@ fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
 
 #[extendr]
 fn r_date_range(
-    start: f64,
-    stop: f64,
-    every: &str,
-    closed: &str, //Wap<ClosedWindow>
-    name: &str,
+    start: Robj,
+    stop: Robj,
+    every: Robj,
+    closed: Robj, //Wap<ClosedWindow>
+    name: Robj,
     tu: Robj,
-    tz: Nullable<String>,
+    tz: Robj,
 ) -> RResult<Series> {
     use pl::IntoSeries;
-
     Ok(Series(
         polars::time::date_range_impl(
-            name,
+            robj_to!(str, name)?,
             robj_to!(i64, start)?,
             robj_to!(i64, stop)?,
-            pl::Duration::parse(every),
+            pl::Duration::parse(robj_to!(str, every)?),
             robj_to!(new_closed_window, closed)?,
             robj_to!(timeunit, tu)?,
-            tz.into_option().as_ref(),
+            robj_to!(Option, String, tz)?.as_ref(),
         )
-        .map_err(|err| format!("in r_date_range: {}", err))?
+        .map_err(polars_to_rpolars_err)?
         .into_series(),
     ))
 }

@@ -3713,9 +3713,7 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' @examples
 #' df = pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
-#'
 #' df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
-#'
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
     frac = NULL, with_replacement = TRUE, shuffle = FALSE,
@@ -3724,7 +3722,7 @@ Expr_sample = function(
 
   pcase(
      !is.null(n) && !is.null(frac), {
-       Err(.pr$RPolarsErr$new()$plain("cannot specify both `n` and `frac`"))
+       Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
      },
      !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
      or_else = {

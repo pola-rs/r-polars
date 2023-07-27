@@ -1973,6 +1973,7 @@ test_that("shuffle", {
 
 
 test_that("sample", {
+  stop("revisit sample test")
   df = pl$DataFrame(a = 1:10)
   res = df$select(
     pl$col("a")$sample(seed = 1)$alias("default")$implode(),
