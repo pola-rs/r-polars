@@ -1,12 +1,13 @@
 # polars (development version)
 
+# polars 0.7.0
+
 ## BREAKING CHANGES
 
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
 - Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
     - Rename `concat_lst` to `concat_list`.
-    <!-- TODO: - Rename `arr` to `list`. -->
     - Rename `$str$explode` to `$str$str_explode`.
     - Remove `tz_aware` and `utc` arguments from `str_parse`.
     - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
@@ -38,7 +39,11 @@ for demonstration purposes (#240).
 - `<DataFrame>$glimpse()` is a fast `str()`-like view of a `DataFrame` (#277).
 - `$over()` now accepts a vector of column names (#287).
 - New method `<DataFrame>$describe()` (#268).
-- Cross joining is now possible with `how = "cross"` in `$join()`
+- Cross joining is now possible with `how = "cross"` in `$join()` (#310).
+- Add license info of all rust crates to `LICENSE.note` (#309).
+- With CRAN 0.7.0 release candidate (#308).
+    - New author accredited, SHIMA Tatsuya (@eitsupi).
+    - DESCRIPTION revised.
 
 # polars 0.6.1
 
@@ -139,7 +144,7 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
 - Customize **extendr** to better support cross Rust-R/R-Rust error handling
   - bump extendr_api by @sorhawell in #44
   - Str even more by @sorhawell in #47
-- **rpolars** is now available for install from [rpolars.r-universe.dev](https://rpolars.r-universe.dev/rpolars#install) @eitsupi
+- **rpolars** is now available for install from [rpolars.r-universe.dev](https://rpolars.r-universe.dev/polars#install) @eitsupi
   - advertise R-universe by @sorhawell in #39
   - Includes reasonably easy pre-compiled installation for arm64-MacBooks
 - All string Expressions available

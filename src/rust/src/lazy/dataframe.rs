@@ -234,6 +234,17 @@ impl LazyFrame {
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
+    fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .with_row_count(
+                robj_to!(String, name)?.as_str(),
+                robj_to!(Option, u32, offset)?,
+            )
+            .into())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn join_asof(
         &self,

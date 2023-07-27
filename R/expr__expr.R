@@ -1,6 +1,7 @@
 #' @title Polars Expressions
 #'
 #' @name Expr_class
+#' @return not applicable
 #' @description Expressions are all the functions and methods that are applicable
 #' to a Polars DataFrame. They can be split into the following categories (following
 #' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
@@ -39,6 +40,9 @@ print.Expr = function(x, ...) {
 #' internal method print Expr
 #' @name Expr_print
 #' @keywords Expr
+#' @examples
+#' pl$col("some_column")$sum()$over("some_other_column")$print()
+#' @return invisible self
 #' @examples pl$DataFrame(iris)
 Expr_print = function() {
   .pr$Expr$print(self)
@@ -49,6 +53,7 @@ Expr_print = function() {
 #' @description called by the interactive R session internally
 #' @param x Expr
 #' @param pattern code-stump as string to auto-complete
+#' @inherit .DollarNames.DataFrame return
 #' @export
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
@@ -59,6 +64,7 @@ Expr_print = function() {
 #' @description wraps an Expr in a list
 #' @param x Expr
 #' @param ... not used
+#' @return One Expr wrapped in a list
 #' @export
 #' @keywords Expr
 as.list.Expr = function(x, ...) {
@@ -121,17 +127,18 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
 }
 
 #' internal wrap_elist_result
+#' @noRd
 #' @description make sure all elements of a list is wrapped as Expr
 #' DEPRECATED:  prefer robj_to!(VecPlExpr) on rust side
 #' Capture any conversion error in the result
-#' @param elist a list Expr or any R object Into<Expr> (passable to pl$lit)
+#' @param elist a list Expr or any R object `Into<Expr>` (passable to pl$lit)
 #' @details
 #' Used internally to ensure an object is a list of expression
 #' The output is wrapped in a result, which can contain an ok or
 #' err value.
 #' @keywords internal
 #' @return Expr
-#' @examples polars:::wrap_elist_result(list(pl$lit(42), 42, 1:3))
+#' @examples .pr$env$wrap_elist_result(list(pl$lit(42), 42, 1:3))
 wrap_elist_result = function(elist, str_to_lit = TRUE) {
   element_i = 0L
   result(
@@ -563,7 +570,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 # TODO move this function in to rust with input list of args
 # TODO deprecate context feature
 #' construct proto Expr array from args
-#'
+#' @noRd
 #' @param ...  any Expr or string
 #'
 #'
@@ -571,7 +578,7 @@ Expr_is_not_null = "use_extendr_wrapper"
 #'
 #' @return ProtoExprArray object
 #'
-#' @examples polars:::construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
+#' @examples .pr$env$construct_ProtoExprArray(pl$col("Species"), "Sepal.Width")
 construct_ProtoExprArray = function(...) {
   pra = ProtoExprArray$new()
   args = list2(...)
@@ -3826,7 +3833,7 @@ prepare_alpha = function(
 #'    average of `[` \eqn{x_0}, None,  \eqn{x_2}`]` are
 #'     \eqn{1-\alpha} and  \eqn{1} if `adjust=TRUE`,
 #'    and  \eqn{1-\alpha} and  \eqn{\alpha} if `adjust=FALSE`.
-#' @return  Expr
+#' @return Expr
 #' @aliases ewm_mean
 #' @format NULL
 #' @keywords Expr

@@ -1,7 +1,7 @@
 #' Extra polars auto completion
 #' @param activate bool default TRUE, enable chained auto-completion
 #' @name extra_auto_completion
-#' @return NULL
+#' @return invisible NULL
 #'
 #' @details polars always supports auto completion via .DollarNames.
 #' However chained methods like x$a()$b()$? are not supported vi .DollarNames.
@@ -32,12 +32,14 @@ pl$extra_auto_completion = function(activate = TRUE) {
       rc.options("custom.completer" = NULL)
       # function running  base auto complete.
       # It will dump suggestion into mutable .CompletionEnv$comps
-      utils:::.completeToken()
+      .completeToken = utils::getFromNamespace(".completeToken", "utils")
+      .completeToken()
 
       rc.options("custom.completer" = f)
 
       # get line buffer
-      CE = utils:::.CompletionEnv
+      .CompletionEnv = utils::getFromNamespace(".CompletionEnv", "utils")
+      CE = .CompletionEnv
       lb = CE$linebuffer
 
       # skip custom completion if token completion already yielded suggestions.
@@ -51,7 +53,7 @@ pl$extra_auto_completion = function(activate = TRUE) {
       last_char = substr(lb, nchar(lb), nchar(lb))
       if (last_char == "$" && nchar(lb) > 1L) {
         x = eval(parse(text = substr(lb, 1, nchar(lb) - 1)))
-        if (inherits(x, c(polars:::pl_class_names, "method_environment"))) {
+        if (inherits(x, c(pl_class_names, "method_environment"))) {
           your_comps = .DollarNames(x)
           # append your suggestions to the vanilla suggestions/completions
           CE$comps = c(your_comps, CE$comps)

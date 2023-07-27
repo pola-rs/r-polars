@@ -220,7 +220,7 @@ dat$groupby("cyl")$mean()
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
-([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren/))
+([`filter()`](https://rpolars.github.io/reference/DataFrame_filter/))
 and also columns
 ([`select()`](https://rpolars.github.io/reference/DataFrame_select/)):
 
@@ -368,7 +368,7 @@ flights$join(
 ```
 
 More information on the **polars** joining method can be found in the
-[reference manual](https://rpolars.github.io/reference/DataFrame_join).
+[reference manual](https://rpolars.github.io/reference/DataFrame_join/).
 
 The package supports many other data manipulation operations, which we won't 
 cover here. Hopefully, you will already have a sense of the key syntax features.
@@ -379,13 +379,12 @@ We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 While the "eager" execution engine of **polars** works perfectly well---as
 evidenced by all of the previous examples---to get the most out of the package
 you need to go _lazy_.
-[Lazy execution](https://pola-rs.github.io/polars-book/user-guide/lazy-api/)
-enables several benefits, but the most important is that it improves
+Lazy execution enables several benefits, but the most important is that it improves
 performance. Delaying execution until the last possible moment allows Polars to
 apply automatic optimization to every query. Let's take a quick look.
 
 To create a so-called
-"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class)" from an
+"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class/)" from an
 existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}

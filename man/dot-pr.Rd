@@ -5,19 +5,30 @@
 \alias{.pr}
 \title{polars-API: private calls to rust-polars}
 \format{
-An object of class \code{environment} of length 17.
+An object of class \code{environment} of length 19.
 }
 \usage{
 .pr
+}
+\value{
+not applicable
 }
 \description{
 \code{.pr}
 Original extendr bindings converted into pure functions
 }
+\details{
+.pr gives access to all private methods of package polars. Use at own discretion.
+The polars package may introduce breaking changes to any private method in a patch with no
+deprecation warning. Most private methods takes \code{self} as a first argument, the object the
+method should be called upon.
+}
 \examples{
 # .pr$DataFrame$print() is an external function where self is passed as arg
-polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
-polars:::print_env(.pr, ".pr the collection of private method calls to rust-polars")
+.pr$DataFrame$print(self = pl$DataFrame(iris))
+
+# show all content of .pr
+.pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
 }
 \keyword{api_private}
 \keyword{internal}
