@@ -37,14 +37,18 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
         use Rctx::*;
         self.handle
             .take()
-            .ok_or(Rctx::Handled.into())
-            .and_then(|handle| handle.join().map_err(|err| BadJoin(rdbg(err)).into()))
+            .ok_or_else(|| RPolarsErr::new_from_ctx(Rctx::Handled))
+            .and_then(|handle| {
+                handle
+                    .join()
+                    .map_err(|err| RPolarsErr::new_from_ctx(BadJoin(rdbg(err))))
+            })
     }
 
     pub fn is_finished_generic(&self) -> RResult<bool> {
         self.handle
             .as_ref()
-            .ok_or(Rctx::Handled.into())
+            .ok_or_else(|| RPolarsErr::new_from_ctx(Rctx::Handled))
             .map(thread::JoinHandle::is_finished)
     }
 }

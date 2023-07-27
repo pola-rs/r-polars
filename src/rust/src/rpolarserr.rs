@@ -17,7 +17,7 @@ pub enum Rctx {
     BadVal(String),
     #[error("Encountered the following error in Rust-Extendr\n\t{0}")]
     Extendr(String),
-    #[error("Joined on a used thread handler")]
+    #[error("Cannot access exhausted thread handler")]
     Handled,
     #[error("Possibly because {0}")]
     Hint(String),
@@ -191,7 +191,15 @@ impl RPolarsErr {
 }
 
 impl RPolarsErr {
-    fn new_from_ctxs(ctxs: VecDeque<Rctx>) -> Self {
+    pub fn new_from_ctx(ctx: Rctx) -> Self {
+        RPolarsErr {
+            contexts: VecDeque::from([ctx]),
+            rcall: None,
+            rinfo: None,
+        }
+    }
+
+    pub fn new_from_ctxs(ctxs: VecDeque<Rctx>) -> Self {
         RPolarsErr {
             contexts: ctxs,
             rcall: None,
@@ -232,6 +240,10 @@ impl From<RPolarsErr> for String {
     }
 }
 
+// avoid using Rtcx.into() to cast Rctx -> RPolarsErr
+// it will downcast Rctx to dyn std::error::Error
+// and then drop enum variant and replace with plain with text previous enum variant
+// prefer RpolarsErr::new_from_ctx or ::ew_from_ctxs
 impl<E: std::error::Error> From<E> for RPolarsErr {
     fn from(err: E) -> Self {
         RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Plain(rdbg(err))]))

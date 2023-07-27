@@ -46,6 +46,6 @@ test_that("Test using $map() in background", {
   expect_equal(handle$is_finished(), NULL)
 
   #gives correct err message
-  expect_error(handle$join())
+  expect_rpolarserr(handle$join(), "Handled")
 
 })
