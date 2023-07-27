@@ -608,6 +608,7 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
 // wrap_e allows to also convert any allowed non Exp
 pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
     let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
 
     //use R side wrap_e to convert any R value into Expr or
     use extendr_api::*;
@@ -616,7 +617,9 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
         .plain("internal error: polars:::result failed to catch this error")?;
 
     // handle any error from wrap_e
-    let robj_expr = unpack_r_result_list(robj_result_expr).when("converting R value to expr")?;
+    let robj_expr = unpack_r_result_list(robj_result_expr)
+        .bad_robj(&robj_clone)
+        .plain("cannot be converted into an Expr")?;
 
     //PolarsExpr -> RExpr
     let res: ExtendrResult<ExternalPtr<Expr>> = robj_expr.clone().try_into();
@@ -644,9 +647,11 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         .as_list()
         .ok_or(RPolarsErr::new())
         .mistyped(tn::<List>())?;
-    let iter = l
-        .iter()
-        .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));
+    let iter = l.iter().enumerate().map(|(i, (_, robj))| {
+        robj_to_rexpr(robj.clone(), str_to_lit)
+            .when(format!("converting element {} into an Expr", i + 1))
+            .map(|e| e.0)
+    });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
 
@@ -709,6 +714,10 @@ macro_rules! robj_to_inner {
 
     (ExprCol, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, false)
+    };
+
+    (PLExprCol, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, false).map(|ok| ok.0)
     };
 
     (VecPLExpr, $a:ident) => {
@@ -783,10 +792,16 @@ macro_rules! robj_to {
             };
             if x.is_list() {
                 // convert each element in list to $type
-                let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
-                    robj_to!($type, $a, format!("element no. [{}] of ", i + 1))
-                });
-                $crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
+                let iter =
+                    x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
+                        robj_to!($type, $a, format!("element no. [{}] ", i + 1))
+                    });
+
+                //TODO reintroduce collect_hinted_result_rerr as trait not a generic
+                //generic forces $type to be a literal type in scrop not e.g. PLExprCol
+                //$crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
+                let x: Result<_, _> = iter.collect();
+                x
             } else {
                 // single value without list, convert as is and wrap in a list
                 let $a = x;

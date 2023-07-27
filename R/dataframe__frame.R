@@ -1546,3 +1546,21 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # chose return type
   if (return_as_string) output else invisible(cat(output))
 }
+
+
+#' @inherit LazyFrame_explode title params
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")
+
+DataFrame_explode = function(columns, ...) {
+  self$lazy()$explode(columns, ...)$collect()
+}

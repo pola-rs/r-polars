@@ -4,6 +4,7 @@
 
 - `$with_column()` is now deprecated (following upstream `polars`). It will be
   removed in 0.9.0. It should be replaced with `$with_columns()`.
+- New method `$explode()` for `DataFrame` and `LazyFrame`.
 
 # polars 0.7.0
 
