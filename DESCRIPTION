@@ -97,5 +97,5 @@ Collate:
     'translation.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.3.1
+Config/rextendr/version: 0.3.1.9000
 VignetteBuilder: knitr
