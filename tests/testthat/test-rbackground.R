@@ -40,7 +40,7 @@ test_that("Test using $map() in background", {
   pl$set_global_rpool_cap(1)
 
   #can print handle after exhausted
-  print(handle)
+  handle |> as.character() |> invisible()
 
   #can ask if joined after exhausted
   expect_equal(handle$is_finished(), NULL)

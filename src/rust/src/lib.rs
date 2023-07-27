@@ -46,6 +46,5 @@ extendr_module! {
     use rbackground;
     use lazy;
     use series;
-    use concurrent;
     use info;
 }

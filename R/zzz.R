@@ -23,9 +23,6 @@ replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 # LazyGroupBy
 replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
 
-# PolarsBackgroundHandle
-replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")
-
 # Expr
 replace_private_with_pub_methods(Expr, "^Expr_")
 

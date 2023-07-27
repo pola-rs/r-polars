@@ -907,8 +907,6 @@ LazyFrame$debug_plan <- function() .Call(wrap__LazyFrame__debug_plan, self)
 
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
 
-LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_background, self)
-
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
 LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
@@ -1106,20 +1104,6 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
-
-PolarsBackgroundHandle <- new.env(parent = emptyenv())
-
-PolarsBackgroundHandle$new <- function(lazy_df) .Call(wrap__PolarsBackgroundHandle__new, lazy_df)
-
-PolarsBackgroundHandle$join <- function() .Call(wrap__PolarsBackgroundHandle__join, self)
-
-PolarsBackgroundHandle$is_exhausted <- function() .Call(wrap__PolarsBackgroundHandle__is_exhausted, self)
-
-#' @export
-`$.PolarsBackgroundHandle` <- function (self, name) { func <- PolarsBackgroundHandle[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.PolarsBackgroundHandle` <- `$.PolarsBackgroundHandle`
 
 FeatureInfo <- new.env(parent = emptyenv())
 

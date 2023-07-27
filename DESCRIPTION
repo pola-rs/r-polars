@@ -82,7 +82,6 @@ Collate:
     'groupby.R'
     'info.R'
     'ipc.R'
-    'lazyframe__background.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
     'namespace.R'

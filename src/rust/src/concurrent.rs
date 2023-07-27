@@ -1,10 +1,7 @@
 //use crate::rdataframe::rseries::ptr_str_to_rseries;
-use crate::lazy::dataframe::LazyFrame;
 use crate::rdataframe::DataFrame;
 use crate::utils::extendr_concurrent::ParRObj;
-use crate::utils::extendr_concurrent::{
-    concurrent_handler, join_background_handler, start_background_handler, ThreadCom,
-};
+use crate::utils::extendr_concurrent::{concurrent_handler, ThreadCom};
 use crate::CONFIG;
 use polars::prelude as pl;
 
@@ -12,7 +9,6 @@ use crate::rdataframe::Series;
 use extendr_api::prelude::*;
 use extendr_api::Conversions;
 use std::result::Result;
-use std::thread::JoinHandle;
 
 // This functions allows to call .collect() on polars lazy frame. A lazy frame may contain user defined functions
 // which could call R from any spawned thread by polars. This function is a bridge between multithraedded polars
@@ -79,43 +75,4 @@ pub fn handle_thread_r_requests(lazy_df: pl::LazyFrame) -> pl::PolarsResult<Data
 
     //wrap ok
     Ok(DataFrame(new_df))
-}
-
-#[derive(Debug, Default)]
-pub struct PolarsBackgroundHandle(Option<JoinHandle<pl::PolarsResult<pl::DataFrame>>>);
-
-#[extendr]
-impl PolarsBackgroundHandle {
-    pub fn new(lazy_df: &LazyFrame) -> Self {
-        let lazy_df = lazy_df.0.clone();
-        let join_handle = start_background_handler(move || lazy_df.collect());
-        PolarsBackgroundHandle(Some(join_handle))
-        //concurrent handling complete
-    }
-
-    pub fn join(&mut self) -> Result<DataFrame, String> {
-        //take handle from Robj, replace with default None
-        let handle = std::mem::take(self)
-            .0
-            .ok_or("join error: Handle was already exhausted")?;
-
-        let x = join_background_handler(handle);
-        x.map_err(|err| {
-            format!(
-                "thread error when joining polars background process: {}",
-                err
-            )
-        })?
-        .map(DataFrame)
-        .map_err(|err| format!("polars query error : {}", err))
-    }
-
-    pub fn is_exhausted(&self) -> bool {
-        self.0.is_none()
-    }
-}
-
-extendr_module! {
-    mod concurrent;
-    impl PolarsBackgroundHandle;
 }

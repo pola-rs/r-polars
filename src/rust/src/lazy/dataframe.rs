@@ -1,4 +1,4 @@
-use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
+use crate::concurrent::handle_thread_r_requests;
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
 use crate::rdataframe::DataFrame as RDataFrame;
@@ -60,10 +60,6 @@ impl LazyFrame {
             rprintln!("{}", opt_plan);
         });
         r_result_list(result.map_err(|err| format!("{:?}", err)))
-    }
-
-    pub fn collect_background(&self) -> PolarsBackgroundHandle {
-        PolarsBackgroundHandle::new(self)
     }
 
     pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {

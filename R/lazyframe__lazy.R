@@ -261,15 +261,6 @@ LazyFrame_collect = function() {
   unwrap(.pr$LazyFrame$collect_handled(self), "in $collect():")
 }
 
-#' @title New DataFrame from LazyFrame_object$collect()
-#' @description collect DataFrame by lazy query
-#' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect_background = function() {
-  .pr$LazyFrame$collect_background(self)
-}
-
 #' @title Collect_in_background
 #' @description collect DataFrame by lazy query in a background thread.
 #' @details
