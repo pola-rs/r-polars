@@ -633,8 +633,8 @@ ExprStr_splitn = function(by, n) {
 #' @description
 #' Replace first matching regex/literal substring with a new string value.
 #' @keywords ExprStr
-#' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replacement
+#' @param pattern `Into<Expr>`, regex pattern
+#' @param value `Into<Expr>` replacement
 #' @param literal bool, Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -659,8 +659,8 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' @description
 #' Replace all matching regex/literal substrings with a new string value.
 #' @keywords ExprStr
-#' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replacement
+#' @param pattern `Into<Expr>`, regex pattern
+#' @param value `Into<Expr>` replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
@@ -684,8 +684,8 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' @description
 #' Create subslices of the string values of a Utf8 Series.
 #' @keywords ExprStr
-#' @param pattern Into<Expr>, regex pattern
-#' @param value Into<Expr> replacement
+#' @param pattern `Into<Expr>`, regex pattern
+#' @param value `Into<Expr>` replacement
 #' @param literal bool, treat pattern as a literal string.
 #'
 #' @return Expr: Series of dtype Utf8.

@@ -4,7 +4,7 @@
 # a simpler unwrap without where_in and when_calling should be defined in rust_result.R
 
 #' rust-like unwrapping of result. Useful to keep error handling on the R side.
-#'
+#' @noRd
 #' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
 #' @param call context of error or string
 #' @param context a msg to prefix a raised error with
@@ -13,8 +13,8 @@
 #' @keywords internal
 #' @examples
 #'
-#' # get unwrap without using :::
-#' unwrap = environment(polars::pl$all)$unwrap
+#' # fetch internal unwrap-function
+#' unwrap = .pr$env$unwrap
 #'
 #' structure(list(ok = "foo", err = NULL), class = "extendr_result")
 #'
@@ -40,6 +40,7 @@ unwrap = function(result, context = NULL, call = sys.call(1L)) {
 }
 
 #' rust-like unwrap_err, internal use only
+#' @noRd
 #' @details
 #' throwed error info is sparse because only for internal errors
 #' @keywords internal
@@ -55,17 +56,18 @@ unwrap_err = function(result) {
 
 
 #' Capture any R error and return a rust-like Result
+#' @noRd
 #' @param expr code to capture any error from and wrap as Result
 #' @param msg handy way to add a context msg
 #' @keywords internal
 #' @return Result
 #' @examples
 #'
-#' # user internal functions without using :::
-#' result = environment(polars::pl$all)$result
-#' unwrap_err = environment(polars::pl$all)$unwrap_err
-#' unwrap = environment(polars::pl$all)$unwrap
-#' Err = environment(polars::pl$all)$Err
+#' # get user internal functions
+#' result = .pr$env$result
+#' unwrap_err = .pr$env$unwrap_err
+#' unwrap = .pr$env$unwrap
+#' Err = .pr$env$Err
 #'
 #' # capture regular R errors or RPolarsErr
 #' throw_simpleError = \() stop("Imma simple error")

@@ -11,6 +11,9 @@ An object of class \code{environment} of length 0.
 \usage{
 runtime_state
 }
+\value{
+not applicable
+}
 \description{
 This environment is used internally for the package to remember
 what has been going on. Currently only used to throw one-time warnings()

@@ -12,6 +12,11 @@ DataFrame_select(...)
 column names  (e.g \code{"a"}), or list containing expressions or column names
 (e.g \code{list(pl$col("a"))}).}
 }
+\value{
+DataFrame
+
+DataFrame
+}
 \description{
 Related to dplyr \code{mutate()}. However, it discards unmentioned
 columns (like \code{.()} in \code{data.table}).

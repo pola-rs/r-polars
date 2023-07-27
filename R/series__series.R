@@ -9,7 +9,7 @@
 #' Most methods return another `Series`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also
+#' reasons, the private methods are external and must be called from `.pr$Series$methodname()`, also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -20,12 +20,10 @@
 #'
 #' @keywords Series
 #' @examples
-#' # see all exported methods
-#' ls(polars:::Series)
+#' pl$show_all_public_methods("Series")
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$Series)
-#'
+#' ls(.pr$Series)
 #'
 #' # make an object
 #' s = pl$Series(1:3)
@@ -83,7 +81,9 @@ Series_print = function() {
 #' @description called by the interactive R session internally
 #' @param x Series
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.Series = function(x, pattern = "") {
   get_method_usages(Series, pattern = pattern)
@@ -365,6 +365,7 @@ Series_to_vector = \() {
 }
 
 #' Alias to Series_to_vector (backward compatibility)
+#' @return R vector
 #' @noRd
 Series_to_r_vector = Series_to_vector
 

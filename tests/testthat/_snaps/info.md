@@ -3,7 +3,7 @@
     Code
       info
     Output
-      R Polars package version: 0.7.0.9000
+      R Polars package version: 999.999.999
       
       Features:          
       simd FALSE

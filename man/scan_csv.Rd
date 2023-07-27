@@ -5,7 +5,7 @@
 \alias{read_csv}
 \title{new LazyFrame from csv}
 \arguments{
-\item{path}{string, Path to a file}
+\item{path}{string, Path to a file or URL}
 
 \item{sep}{Single char to use as delimiter in the file.}
 
@@ -64,16 +64,15 @@ table scan will be done (slow).}
 
 \item{reuse_downloaded}{Boolean. If \code{TRUE}(default) and a URL was provided,
 cache the downloaded files in session for an easy reuse.}
-
-\item{...}{any argument passed to scan_csv}
 }
 \value{
-lazyframe
+scan_csv returns a LazyFrame. read_csv returns a DataFrame.
 
 DataFrame
 }
 \description{
-will scan the csv when collect(), not now
+will scan the csv when collect(), not now.
+read_csv is a shortcut for scan_csv$collect().
 }
 \details{
 Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
@@ -84,6 +83,5 @@ write.csv(iris, my_file)
 lazy_frame = pl$scan_csv(path = my_file)
 lazy_frame$collect()
 unlink(my_file)
-df = pl$read_csv("https://j.mp/iriscsv")
 }
 \keyword{LazyFrame_new}
