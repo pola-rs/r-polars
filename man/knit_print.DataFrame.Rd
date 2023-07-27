@@ -11,6 +11,9 @@ knit_print.DataFrame(x, ...)
 
 \item{...}{additional arguments, not used}
 }
+\value{
+invisible x or NULL
+}
 \description{
 Mimics python-polars' NotebookFormatter
 for HTML outputs.

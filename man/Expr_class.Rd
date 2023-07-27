@@ -3,6 +3,9 @@
 \name{Expr_class}
 \alias{Expr_class}
 \title{Polars Expressions}
+\value{
+not applicable
+}
 \description{
 Expressions are all the functions and methods that are applicable
 to a Polars DataFrame. They can be split into the following categories (following

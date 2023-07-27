@@ -115,6 +115,8 @@ DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_colum
 
 DataFrame$new_par_from_list <- function(robj_list) .Call(wrap__DataFrame__new_par_from_list, robj_list)
 
+DataFrame$with_row_count <- function(name, offset) .Call(wrap__DataFrame__with_row_count, self, name, offset)
+
 DataFrame$print <- function() .Call(wrap__DataFrame__print, self)
 
 DataFrame$columns <- function() .Call(wrap__DataFrame__columns, self)
@@ -935,6 +937,8 @@ LazyFrame$with_column <- function(expr) {
   warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   .Call(wrap__LazyFrame__with_column, self, expr)
 }
+
+LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
 LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__LazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)
 

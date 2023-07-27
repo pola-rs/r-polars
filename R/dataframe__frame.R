@@ -11,7 +11,7 @@
 #' This class system in lack of a better name could be called "environment classes"
 #' and is the same class system extendr provides, except here there is
 #' both a public and private set of methods. For implementation reasons, the private methods are
-#' external and must be called from polars:::.pr.$DataFrame$methodname(), also all private methods
+#' external and must be called from `.pr$DataFrame$methodname()`, also all private methods
 #' must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -22,22 +22,24 @@
 #' prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
+#' @return not applicable
 #' @examples
-#' # see all exported methods
-#' ls(polars:::DataFrame)
+#' # see all public exported method names (normally accessed via a class instance with $)
+#' ls(.pr$env$DataFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$DataFrame)
+#' ls(.pr$DataFrame)
 #'
 #'
 #' # make an object
 #' df = pl$DataFrame(iris)
 #'
+#'
 #' # use a public method/property
 #' df$shape
 #' df2 = df
 #' # use a private method, which has mutability
-#' result = polars:::.pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
+#' result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 #'
 #' # column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
@@ -55,7 +57,7 @@
 #' # method does not return any ok-value.
 #'
 #' # try unwrapping an error from polars due to unmatching column lengths
-#' err_result = polars:::.pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
+#' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 DataFrame
 
@@ -67,7 +69,9 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x DataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
   get_method_usages(DataFrame, pattern = pattern)
@@ -78,7 +82,9 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x VecDataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
   get_method_usages(VecDataFrame, pattern = pattern)
@@ -261,8 +267,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
 #' @param x DataFrame
 #' @param ... not used
 #'
-#' @name print()
-#'
 #' @return self
 #' @export
 #'
@@ -273,8 +277,8 @@ print.DataFrame = function(x, ...) {
 }
 
 #' internal method print DataFrame
-#'
-#'
+#' @noRd
+#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
@@ -286,15 +290,16 @@ DataFrame_print = function() {
 ## "Class methods"
 
 #' Validate data input for create Dataframe with pl$DataFrame
-#'
+#' @noRd
 #' @param x any R object to test if suitable as input to DataFrame
-#'
+#' @keywords internal
 #' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
 #' @return bool
 #'
-#' @examples polars:::is_DataFrame_data_input(iris)
-#' polars:::is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
+#' @examples
+#' .pr$env$is_DataFrame_data_input(iris)
+#' .pr$env$is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x, "data.frame") ||
     is.list(x) ||
@@ -307,8 +312,10 @@ is_DataFrame_data_input = function(x) {
 ## internal bookkeeping of methods which should behave as properties
 DataFrame.property_setters = new.env(parent = emptyenv())
 
+
+
 #' generic setter method
-#'
+#' @noRd
 #' @param self DataFrame
 #' @param name name method/property to set
 #' @param value value to insert
@@ -323,8 +330,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @export
 #' @examples
 #' # For internal use
-#' # is only activated for following methods of DataFrame
-#' ls(polars:::DataFrame.property_setters)
+#' # show what methods of DataFrame have active property setters
+#' with(.pr$env, ls(DataFrame.property_setters))
 #'
 #' # specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
@@ -350,10 +357,9 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' # for stable code prefer e.g.  df$columns = letters[5:1]
 #'
-#' # to see inside code of a property use the [[]] syntax instead
+#' # to verify inside code of a property, use the [[]] syntax instead.
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-#' polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
-#'
+#' DataFrame.property_setters$columns # and even more obscure to see setter code
 "$<-.DataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 
@@ -369,7 +375,16 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   self
 }
 
-
+#' @title Eager with_row_count
+#' @description Add a new column at index 0 that counts the rows
+#' @keywords DataFrame
+#' @param name string name of the created column
+#' @param offset positive integer offset for the start of the counter
+#' @return A new `DataFrame` object with a counter column in front
+#' @docType NULL
+DataFrame_with_row_count = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+}
 
 #' Get and set column names of a DataFrame
 #' @name DataFrame_columns
@@ -658,7 +673,7 @@ DataFrame_to_series = function(idx = 0) {
 #' @description sort a DataFrame by on or more Expr.
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
@@ -668,7 +683,7 @@ DataFrame_to_series = function(idx = 0) {
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
 #'
-#' @return LazyFrame
+#' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
 #' df = mtcars
@@ -701,7 +716,9 @@ DataFrame_sort = function(
 #' (e.g `list(pl$col("a"))`).
 #'
 #' @aliases select
+#' @return DataFrame
 #' @keywords  DataFrame
+#' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
@@ -902,11 +919,11 @@ DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 
 
 
-#' return polars DataFrame as R data.frame
+#' Return Polars DataFrame as R data.frame
 #'
 #' @param ... any args pased to as.data.frame()
 #'
-#' @return data.frame
+#' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
@@ -926,6 +943,7 @@ DataFrame_to_data_frame = function(...) {
 }
 
 #' Alias for to_data_frame (backward compatibility)
+#' @return An R data.frame
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
@@ -1137,7 +1155,7 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
@@ -1175,7 +1193,7 @@ DataFrame_fill_null = function(fill_value) {
 #' @title Slice
 #' @description Get a slice of this DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @param offset integer
 #' @param length integer or NULL
 #' @examples

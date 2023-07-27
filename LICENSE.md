@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2023 rpolars authors
+Copyright (c) 2023 polars authors (polars the R package)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
