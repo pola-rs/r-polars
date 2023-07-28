@@ -14,7 +14,7 @@
 #' "environment classes" and is the same class system extendr provides, except
 #' here there is both a public and private set of methods. For implementation
 #' reasons, the private methods are external and must be called from
-#' `polars:::.pr.$LazyFrame$methodname()`. Also, all private methods must take
+#' `.pr$LazyFrame$methodname()`. Also, all private methods must take
 #' any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -33,14 +33,14 @@
 #' pure external functions in after-wrappers.R. In zzz.R (named zzz to be last
 #' file sourced) the extendr-methods are removed and replaced by any function
 #' prefixed `LazyFrame_`.
-#'
+#' @return not applicable
 #' @keywords LazyFrame
 #' @examples
 #' # see all exported methods
-#' ls(polars:::LazyFrame)
+#' ls(.pr$env$LazyFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$LazyFrame)
+#' ls(.pr$LazyFrame)
 #'
 #'
 #' ## Practical example ##
@@ -103,7 +103,9 @@ LazyFrame
 #' @description called by the interactive R session internally
 #' @param x LazyFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.LazyFrame = function(x, pattern = "") {
   paste0(ls(LazyFrame, pattern = pattern), "()")
@@ -183,6 +185,7 @@ LazyFrame_print = "use_extendr_wrapper"
 #' that both plans are identical if `polars` doesn't find any way to optimize the
 #' query.
 #' @keywords LazyFrame
+#' @return invisible NULL
 #' @examples
 #' my_file = tempfile()
 #' write.csv(iris, my_file)
@@ -238,6 +241,17 @@ LazyFrame_with_columns = function(...) {
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
 LazyFrame_with_column = "use_extendr_wrapper"
+
+#' @title Lazy with_row_count
+#' @description Add a new column at index 0 that counts the rows
+#' @keywords LazyFrame
+#' @param name string name of the created column
+#' @param offset positive integer offset for the start of the counter
+#' @return A new `LazyFrame` object with a counter column in front
+#' @docType NULL
+LazyFrame_with_row_count = function(name, offset = NULL) {
+  .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
+}
 
 #' @title Apply filter to LazyFrame
 #' @description Filter rows with an Expression defining a boolean column
@@ -669,7 +683,7 @@ LazyFrame_join = function(
 #' @description sort a LazyFrame by on or more Expr
 #'
 #' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
+#' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
 #' @param ... more columns to sort by as above but provided one Expr per argument.
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
@@ -980,3 +994,24 @@ LazyFrame_profile = function() {
   .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
 }
 
+#' @title Explode the DataFrame to long format by exploding the given columns
+#' @keywords LazyFrame
+#'
+#' @param columns Column(s) to be exploded. `Into<Expr>`, list of `Into<Expr>` or a char vec.
+#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' @param ... More columns to explode as above but provided as separate arguments
+#'
+#' @return LazyFrame
+#' @examples
+#' df = pl$LazyFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")$collect()
+LazyFrame_explode = function(columns = list(), ...) {
+  dotdotdot_args = list2(...)
+  .pr$LazyFrame$explode(self, columns, dotdotdot_args) |>
+    unwrap("in explode():")
+}

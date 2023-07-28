@@ -675,6 +675,7 @@ pl$coalesce = function(...) {
 #' Standard deviation
 #' @description  syntactic sugar for starting a expression with std
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr or Series matching type of input column
 #' @name pl_std
 pl$std = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -693,6 +694,7 @@ pl$std = function(column, ddof = 1) {
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr or Series matching type of input column
 #' @name pl_var
 pl$var = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) {

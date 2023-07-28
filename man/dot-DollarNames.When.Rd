@@ -11,6 +11,9 @@
 
 \item{pattern}{code-stump as string to auto-complete}
 }
+\value{
+char vec
+}
 \description{
 called by the interactive R session internally
 }

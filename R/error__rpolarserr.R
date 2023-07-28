@@ -2,7 +2,9 @@
 #' @description called by the interactive R session internally
 #' @param x RPolarsErr
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)
