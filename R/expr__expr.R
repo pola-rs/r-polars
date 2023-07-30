@@ -678,21 +678,6 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
   map_fn(self, f, output_type, agg_list)
 }
 
-#' Expr_apply_in_background
-#'
-#' @param f a function mapping series in each group
-#' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
-#' @rdname Expr_apply_in_background
-#' @return Expr
-#' @aliases Expr_apply_in_background
-#' @details user function return should be a series or any Robj convertible into a Series.
-#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
-#'  investigate.
-#' @name Expr_apply_in_background
-Expr_apply_in_background = function(f, output_type = NULL) {
-  .pr$Expr$apply_in_background(self, f, output_type)
-}
-
 #' Expr_apply
 #' @keywords Expr
 #'
@@ -707,6 +692,11 @@ Expr_apply_in_background = function(f, output_type = NULL) {
 #' if FALSE will convert to a Polars Null and carry on.
 #' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
 #' but convert result to a polars Null and carry on.
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' in parallel R sessions. The communication speed between processes is quite slower than between
+#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+#'be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
 #' @details
 #'
@@ -797,7 +787,11 @@ Expr_apply_in_background = function(f, output_type = NULL) {
 #' system.time({
 #'   r_vec * 2L
 #' })
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
+Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
+  if (in_background) {
+    return(.pr$Expr$apply_in_background(self, f, return_type))
+  }
+
   # use series apply
   wrap_f = function(s) {
     s$apply(f, return_type, strict_return_type, allow_fail_eval)

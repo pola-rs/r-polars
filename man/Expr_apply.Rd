@@ -8,7 +8,8 @@ Expr_apply(
   f,
   return_type = NULL,
   strict_return_type = TRUE,
-  allow_fail_eval = FALSE
+  allow_fail_eval = FALSE,
+  in_background = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,12 @@ if FALSE will convert to a Polars Null and carry on.}
 
 \item{allow_fail_eval}{bool (default FALSE), if TRUE will not raise user function error
 but convert result to a polars Null and carry on.}
+
+\item{in_background}{Boolean. Whether to execute the map in a background R process. Combined wit
+setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed up some slow R functions as they can run
+in parallel R sessions. The communication speed between processes is quite slower than between
+threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+be paralleled, only in case of multiple \verb{$map}(s) in the query these can be run in parallel.}
 }
 \value{
 Expr
