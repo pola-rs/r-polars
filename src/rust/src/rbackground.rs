@@ -1,6 +1,8 @@
 use crate::rdataframe::DataFrame as RDF;
 use crate::robj_to;
-use crate::rpolarserr::{extendr_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{
+    extendr_to_rpolars_err, polars_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx,
+};
 use extendr_api::{
     call, eval_string, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes,
     Conversions, Length, List, Operators, Pairlist, Rinternals, Robj, NULL, R,
@@ -37,7 +39,8 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
         use Rctx::*;
         self.handle
             .take()
-            .ok_or_else(|| RPolarsErr::new_from_ctx(Rctx::Handled))
+            .ok_or(RPolarsErr::new())
+            .handled()
             .and_then(|handle| {
                 handle
                     .join()
@@ -48,7 +51,8 @@ impl<T: Send + Sync + 'static> RThreadHandle<T> {
     pub fn is_finished_generic(&self) -> RResult<bool> {
         self.handle
             .as_ref()
-            .ok_or_else(|| RPolarsErr::new_from_ctx(Rctx::Handled))
+            .ok_or(RPolarsErr::new())
+            .handled()
             .map(thread::JoinHandle::is_finished)
     }
 }
@@ -94,7 +98,7 @@ pub fn serialize_dataframe(dataframe: &mut polars::prelude::DataFrame) -> RResul
     let mut dump = Vec::new();
     polars::io::ipc::IpcWriter::new(&mut dump)
         .finish(dataframe)
-        .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
+        .map_err(polars_to_rpolars_err)?;
     Ok(dump)
 }
 
@@ -103,7 +107,7 @@ pub fn deserialize_dataframe(bits: &[u8]) -> RResult<polars::prelude::DataFrame>
 
     polars::io::ipc::IpcReader::new(std::io::Cursor::new(bits))
         .finish()
-        .map_err(crate::rpolarserr::polars_to_rpolars_err)
+        .map_err(polars_to_rpolars_err)
 }
 
 pub fn serialize_series(series: PSeries) -> RResult<Vec<u8>> {

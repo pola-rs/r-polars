@@ -5,7 +5,7 @@ use crate::rdatatype::new_rank_method;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr;
+use crate::rpolarserr::{rpolars_to_polars_err, Rctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -1684,11 +1684,11 @@ impl Expr {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
         let rbgfunc = move |s| {
-            Ok(crate::RBGPOOL
+            crate::RBGPOOL
                 .rmap_series(raw_func.clone(), s)
-                .map_err(|e| polars::prelude::PolarsError::ComputeError(format!("{}", e).into()))?(
-            )
-            .ok())
+                .map_err(rpolars_to_polars_err)?()
+            .map_err(rpolars_to_polars_err)
+            .map(Some)
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
@@ -1714,11 +1714,11 @@ impl Expr {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
         let rbgfunc = move |s| {
-            Ok(crate::RBGPOOL
+            crate::RBGPOOL
                 .rmap_series(raw_func.clone(), s)
-                .map_err(|e| polars::prelude::PolarsError::ComputeError(format!("{}", e).into()))?(
-            )
-            .ok())
+                .map_err(rpolars_to_polars_err)?()
+            .map_err(rpolars_to_polars_err)
+            .map(Some)
         };
 
         let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
@@ -2256,7 +2256,7 @@ impl Expr {
     //the only cat ns function from dsl.rs
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
-            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(rpolarserr::Rctx::Plain)?)
+            Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }

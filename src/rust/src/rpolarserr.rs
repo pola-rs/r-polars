@@ -47,6 +47,7 @@ pub trait WithRctx<T> {
     fn bad_arg(self, arg: impl Into<String>) -> RResult<T>;
     fn bad_robj(self, robj: &Robj) -> RResult<T>;
     fn bad_val(self, val: impl Into<String>) -> RResult<T>;
+    fn handled(self) -> RResult<T>;
     fn hint(self, cause: impl Into<String>) -> RResult<T>;
     fn mistyped(self, ty: impl Into<String>) -> RResult<T>;
     fn misvalued(self, scope: impl Into<String>) -> RResult<T>;
@@ -77,6 +78,10 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
 
     fn bad_robj(self, robj: &Robj) -> RResult<T> {
         self.bad_val(robj_dbg(robj))
+    }
+
+    fn handled(self) -> RResult<T> {
+        self.ctx(Rctx::Handled)
     }
 
     fn hint(self, cause: impl Into<String>) -> RResult<T> {
@@ -192,11 +197,7 @@ impl RPolarsErr {
 
 impl RPolarsErr {
     pub fn new_from_ctx(ctx: Rctx) -> Self {
-        RPolarsErr {
-            contexts: VecDeque::from([ctx]),
-            rcall: None,
-            rinfo: None,
-        }
+        RPolarsErr::new_from_ctxs(VecDeque::from([ctx]))
     }
 
     pub fn new_from_ctxs(ctxs: VecDeque<Rctx>) -> Self {
@@ -246,7 +247,7 @@ impl From<RPolarsErr> for String {
 // prefer RpolarsErr::new_from_ctx or ::ew_from_ctxs
 impl<E: std::error::Error> From<E> for RPolarsErr {
     fn from(err: E) -> Self {
-        RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Plain(rdbg(err))]))
+        RPolarsErr::new_from_ctx(Rctx::Plain(rdbg(err)))
     }
 }
 
@@ -274,22 +275,28 @@ impl<E: std::error::Error> From<E> for RPolarsErr {
 // }
 
 pub fn extendr_to_rpolars_err(extendr_err: extendr_api::Error) -> RPolarsErr {
-    RPolarsErr::new_from_ctxs(VecDeque::from([Rctx::Extendr(rdbg(extendr_err))]))
+    RPolarsErr::new_from_ctx(Rctx::Extendr(rdbg(extendr_err)))
+}
+
+pub fn rpolars_to_polars_err(rpolars_err: RPolarsErr) -> polars::error::PolarsError {
+    polars::prelude::PolarsError::ComputeError(
+        serde_json::to_string(&rpolars_err)
+            .unwrap_or(format!("{}", rpolars_err))
+            .into(),
+    )
 }
 
 pub fn polars_to_rpolars_err(polars_err: polars::error::PolarsError) -> RPolarsErr {
-    let mut rerr = RPolarsErr::new();
-    rerr.contexts.push_back(Rctx::Polars(rdbg(&polars_err)));
+    use polars::prelude::PolarsError::*;
+    let rplerr = RPolarsErr::new_from_ctx(Rctx::Polars(format!("{}", polars_err)));
     match polars_err {
-        polars::prelude::PolarsError::InvalidOperation(x) => {
-            rerr.contexts.push_back(Rctx::Hint(format!(
-                "something (likely a column) with name {:?} is not found",
-                x
-            )));
-        }
-        _ => {}
-    };
-    rerr
+        ComputeError(s) => serde_json::from_str(s.to_string().as_str()).unwrap_or(rplerr),
+        InvalidOperation(s) => rplerr.hint(format!(
+            "something (likely a column) with name {:?} is not found",
+            s
+        )),
+        _ => rplerr,
+    }
 }
 
 pub fn rerr<T>() -> RResult<T> {
