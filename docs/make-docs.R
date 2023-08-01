@@ -125,7 +125,8 @@ make_doc_hierarchy = function() {
   out = list()
   # order determines order in sidebar
   classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-              "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct", "Expr")
+              "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
+              "Expr", "RThreadHandle")
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)

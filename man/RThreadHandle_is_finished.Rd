@@ -2,18 +2,16 @@
 % Please edit documentation in R/rbackground.R
 \name{RThreadHandle_is_finished}
 \alias{RThreadHandle_is_finished}
-\title{Check if the thread completes its job}
+\title{Ask if RThreadHandle is finished?}
 \usage{
-RThreadHandle_is_finished(...)
-}
-\arguments{
-\item{...}{a RThreadHandle}
-}
-\value{
-a boolean indicating the whether the job has finished
-or NULL if the handle has been joined
+RThreadHandle_is_finished()
 }
 \description{
-Check if the thread completes its job
+Ask if RThreadHandle is finished?
+}
+\details{
+method \verb{<RThreadHandle>$is_finished()}: Calling \verb{<RThreadHandle>$is_finished()} returns
+trinary value: \code{TRUE} if finished, \code{FALSE} if not, and \code{NULL} if the handle was exhausted
+(already joined).
 }
 \keyword{RThreadHandle}

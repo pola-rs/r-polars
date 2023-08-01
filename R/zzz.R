@@ -96,9 +96,7 @@ replace_private_with_pub_methods(Series, "^Series_")
 # RThreadHandle
 replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
 
-# Global R process pool configuration
-pl$get_global_rpool_cap = function() get_global_rpool_cap() |> unwrap()
-pl$set_global_rpool_cap = function(c) set_global_rpool_cap(c) |> unwrap() |> invisible()
+
 
 
 # expression constructors

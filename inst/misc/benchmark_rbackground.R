@@ -52,7 +52,7 @@ large_compute_bg$collect_in_background()$join() |> system.time()
 
 ### 3a -----------  Use R processes in parallel, low io, low cpu
 lf <- pl$LazyFrame(lapply(1:100,\(i) rep(i,5)))
-f_sum_all_cols <-  \(lf,...) lf$select(pl$all()$map(\(x) {x$to_r() |> sum()},...))
+f_sum_all_cols <-  \(lf,...) lf$select(pl$all()$map(\(x) {print("hey");x$to_r() |> sum()},...))
 
 f_sum_all_cols(lf)$collect() |> system.time()
 
@@ -60,7 +60,8 @@ pl$set_global_rpool_cap(1)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> system.time()
 
-pl$set_global_rpool_cap(4)
+
+pl$set_global_rpool_cap(8)
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> system.time() #burn-in start processes
 f_sum_all_cols(lf, in_background = TRUE)$collect() |> system.time()
 

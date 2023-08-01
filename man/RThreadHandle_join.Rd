@@ -2,17 +2,17 @@
 % Please edit documentation in R/rbackground.R
 \name{RThreadHandle_join}
 \alias{RThreadHandle_join}
-\title{Wait for the thread to complete its job}
+\title{Join a RThreadHandle}
 \usage{
-RThreadHandle_join(...)
-}
-\arguments{
-\item{...}{a RThreadHandle}
-}
-\value{
-a DataFrame, which is the result of the job
+RThreadHandle_join()
 }
 \description{
-Wait for the thread to complete its job
+Join a RThreadHandle
+}
+\details{
+method \verb{<RThreadHandle>$join()}: will block until job is done and then return some value
+or raise an error from the thread.
+Calling \verb{<RThreadHandle>$join()} a second time will raise an error because handle is already
+exhausted.
 }
 \keyword{RThreadHandle}

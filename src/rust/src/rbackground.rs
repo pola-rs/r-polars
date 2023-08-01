@@ -1,5 +1,6 @@
 use crate::rdataframe::DataFrame as RDF;
 use crate::robj_to;
+use crate::rpolarserr::rerr;
 use crate::rpolarserr::{
     extendr_to_rpolars_err, polars_to_rpolars_err, rdbg, RPolarsErr, RResult, Rctx, WithRctx,
 };
@@ -13,7 +14,6 @@ use polars::prelude::Series as PSeries;
 use std::collections::VecDeque;
 use std::sync::{Arc, Mutex};
 use std::thread;
-
 #[derive(Debug)]
 pub struct RThreadHandle<T> {
     handle: Option<thread::JoinHandle<T>>,
@@ -281,10 +281,28 @@ impl RBackgroundPool {
     }
 
     pub fn lease(&self) -> RResult<RBackgroundHandler> {
-        if let Some(handle) = self.pool.lock()?.pop_front() {
-            Ok(handle)
-        } else {
-            RBackgroundHandler::new()
+        let mut sleep_time_us: u64 = 200;
+        loop {
+            let mut pool = self.pool.lock()?;
+            let cap = self.cap.lock()?;
+            if let Some(handle) = pool.pop_front() {
+                break Ok(handle);
+            } else {
+                if *cap < 1 {
+                    rerr()
+                        .plain("cannot run backround R process with zero capacity")
+                        .hint("try pl$set_global_rpool_cap(4)")?;
+                }
+                if pool.len() < *cap {
+                    break RBackgroundHandler::new();
+                } else {
+                    // poormans adaptive sleep timer, starts sleep 200 us than 400us until 16.4ms
+                    // TODO possibly replace with some thread park or other way make a que
+                    // for threads to sleep until an R session is available.
+                    std::thread::sleep(std::time::Duration::from_micros(sleep_time_us));
+                    sleep_time_us = (sleep_time_us * 2).max(16384);
+                }
+            }
         }
         .when("trying to rent a R process from the global R process pool")
     }
