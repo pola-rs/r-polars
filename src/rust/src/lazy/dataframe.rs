@@ -7,6 +7,7 @@ use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
 use crate::robj_to;
+use crate::rpolarserr::rerr;
 use crate::rpolarserr::RResult;
 use crate::rpolarserr::{Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
@@ -242,6 +243,17 @@ impl LazyFrame {
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
+    fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .with_row_count(
+                robj_to!(String, name)?.as_str(),
+                robj_to!(Option, u32, offset)?,
+            )
+            .into())
+    }
+
     #[allow(clippy::too_many_arguments)]
     pub fn join_asof(
         &self,
@@ -385,6 +397,18 @@ impl LazyFrame {
         Ok(Pairlist::from_pairs(
             pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
         ))
+    }
+
+    fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+        let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;
+        let mut ddd_args: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, dotdotdot_args)?;
+        columns.append(&mut ddd_args);
+        if columns.is_empty() {
+            rerr()
+                .plain("neither have any elements, cannot use explode without Expr(s)")
+                .when("joining Exprs from input [columns] and input [...]")?;
+        }
+        Ok(self.0.clone().explode(columns).into())
     }
 }
 

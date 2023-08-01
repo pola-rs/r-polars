@@ -1,3 +1,9 @@
+# polars (development version)
+
+## What's changed
+
+- New method `$explode()` for `DataFrame` and `LazyFrame`.
+
 # polars 0.7.0
 
 ## BREAKING CHANGES

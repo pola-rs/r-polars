@@ -45,9 +45,11 @@ additional help and discussion.
 
 ## Install
 
-The package can be installed from CRAN, R-universe, or GitHub.
+The package can be installed from R-universe, or GitHub.
 
 Some platforms can install pre-compiled binaries, and others will need to build from source.
+
+````{comment}
 
 ### CRAN
 
@@ -58,6 +60,8 @@ Binary packages on CRAN are compiled by stable Rust, with nightly features disab
 ```r
 install.packages("polars")
 ```
+
+````
 
 ### R-universe
 
@@ -251,13 +255,13 @@ cd r-polars
 
 * Option A: Using **devtools**.
 
-  ```r
+  ```sh
   Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 * Option B: Using **renv**.
 
-  ```r
+  ```sh
   # Rscript -e 'install.packages("renv")'
   Rscript -e 'renv::activate(); renv::restore()'
   ```
@@ -271,8 +275,8 @@ cd r-polars
 
 **Step 4 (optional):** Build the package locally.
 
-  ```r
-  R CMD INSTALL --no-multiarch --with-keep.source polars
+  ```sh
+  R CMD INSTALL --no-multiarch --with-keep.source .
   ```
 
 **Step 5:** Commit your changes and submit a PR to the main **polars** repo.

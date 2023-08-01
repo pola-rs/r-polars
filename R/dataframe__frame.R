@@ -375,7 +375,16 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   self
 }
 
-
+#' @title Eager with_row_count
+#' @description Add a new column at index 0 that counts the rows
+#' @keywords DataFrame
+#' @param name string name of the created column
+#' @param offset positive integer offset for the start of the counter
+#' @return A new `DataFrame` object with a counter column in front
+#' @docType NULL
+DataFrame_with_row_count = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+}
 
 #' Get and set column names of a DataFrame
 #' @name DataFrame_columns
@@ -1535,4 +1544,22 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 
   # chose return type
   if (return_as_string) output else invisible(cat(output))
+}
+
+
+#' @inherit LazyFrame_explode title params
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")
+
+DataFrame_explode = function(columns, ...) {
+  self$lazy()$explode(columns, ...)$collect()
 }
