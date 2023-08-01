@@ -21,7 +21,7 @@ $(STATLIB):
 	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
@@ -31,7 +31,7 @@ $(STATLIB):
 		else \
 			$(BUILD_COMMAND); \
 		fi;
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		rm -Rf $(CARGOTMP) && \
 		rm -Rf $(LIBDIR)/build; \
 	fi
