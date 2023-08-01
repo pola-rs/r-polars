@@ -965,6 +965,15 @@ test_that("describe", {
     pl$DataFrame(mtcars)$describe(perc = numeric())$to_list(),
     pl$DataFrame(mtcars)$describe(perc = NULL)$to_list()
   )
+
+  #names using internal separator ":" in column names, should also just work.
+  df = pl$DataFrame("foo:bar:jazz" = 1, pl$Series(2,name = ""), "foobar" = 3)
+  expect_identical(
+    df$describe()$columns,
+    c("describe", df$columns)
+  )
+
+
 })
 
 test_that("glimpse", {
