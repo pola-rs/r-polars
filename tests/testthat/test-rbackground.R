@@ -30,14 +30,16 @@ test_that("Test using $map() in background", {
   # same result
   expect_identical(res_ref, res_fg_map_bg)
 
-  #can collect in background this process is spawned independently
+  #cannot collect in background without a cap
   pl$set_global_rpool_cap(0)
   handle = compute_bg$collect_in_background()
-  res_bg_map_bg = handle$join()
+  res = result(handle$join())
+  expect_rpolarserr(unwrap(res),c("When", "Hint", "PlainErrorMessage"))
+  expect_identical(
+    res$err$contexts() |> tail(1) |> unlist(use.names = FALSE),
+    "cannot run background R process with zero capacity"
+  )
 
-  expect_equal(pl$get_global_rpool_cap(), list(available = 0, capacity = 0))
-  expect_identical(res_ref, res_bg_map_bg$to_data_frame())
-  pl$set_global_rpool_cap(1)
 
   #can print handle after exhausted
   handle |> as.character() |> invisible()
