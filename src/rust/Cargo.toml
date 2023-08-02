@@ -10,6 +10,7 @@ crate-type = ['staticlib']
 [features]
 default = []
 simd = ["polars/simd"]
+rpolars_debug_print = []
 
 [workspace]
 # prevents package from thinking it's in the workspace

@@ -8,6 +8,7 @@ use extendr_api::{
     call, eval_string, extendr, extendr_module, list, pairlist, symbol::class_symbol, Attributes,
     Conversions, Length, List, Operators, Pairlist, Rinternals, Robj, NULL, R,
 };
+use flume::{bounded, Sender};
 use ipc_channel::ipc;
 use once_cell::sync::Lazy;
 use polars::prelude::Series as PSeries;
@@ -207,9 +208,11 @@ impl RIPCJob {
     }
 }
 
-pub struct RBackgroundHandler {
+#[derive(Debug)]
+struct RBackgroundHandler {
     proc: std::process::Child,
     chan: ipc::IpcSender<RIPCJob>,
+    in_pool: bool,
 }
 
 impl RBackgroundHandler {
@@ -243,6 +246,7 @@ impl RBackgroundHandler {
         Ok(RBackgroundHandler {
             proc: child,
             chan: tx,
+            in_pool: false,
         })
     }
 
@@ -255,6 +259,11 @@ impl RBackgroundHandler {
 
 impl Drop for RBackgroundHandler {
     fn drop(&mut self) {
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("dropping handler");
+        if self.in_pool {
+            panic!("Internal error: in-pool handler dropped unaccounted for. Please use InnerRBackgroundPool::destroy_handler()")
+        }
         if self
             .proc
             .try_wait()
@@ -267,68 +276,167 @@ impl Drop for RBackgroundHandler {
     }
 }
 
-pub struct RBackgroundPool {
-    pool: Arc<Mutex<VecDeque<RBackgroundHandler>>>,
-    cap: Arc<Mutex<usize>>,
+// The InnerRBackgroundPool exists to hide implementation behind a single Arc<Mutex> not one for
+// each field. Having multiple Mutex could perhaps lead to some race condition or deadlock.
+// Each method call must leave the pool in a valid state. Most important, the active count stays correct.
+#[derive(Debug)]
+pub struct InnerRBackgroundPool {
+    pool: VecDeque<RBackgroundHandler>,
+    queue: VecDeque<Sender<RBackgroundHandler>>,
+    active: usize,
+    cap: usize,
 }
-
-impl RBackgroundPool {
-    pub fn new(cap: usize) -> Self {
-        RBackgroundPool {
-            pool: Arc::new(Mutex::new(VecDeque::new())),
-            cap: Arc::new(Mutex::new(cap)),
+impl InnerRBackgroundPool {
+    fn new(cap: usize) -> Self {
+        InnerRBackgroundPool {
+            pool: VecDeque::new(),
+            queue: VecDeque::new(),
+            active: 0,
+            cap,
         }
     }
 
-    pub fn lease(&self) -> RResult<RBackgroundHandler> {
-        let mut sleep_time_us: u64 = 200;
-        loop {
-            let mut pool = self.pool.lock()?;
-            let cap = self.cap.lock()?;
-            if let Some(handle) = pool.pop_front() {
-                break Ok(handle);
-            } else {
-                if *cap < 1 {
-                    rerr()
-                        .plain("cannot run backround R process with zero capacity")
-                        .hint("try pl$set_global_rpool_cap(4)")?;
-                }
-                if pool.len() < *cap {
-                    break RBackgroundHandler::new();
-                } else {
-                    // poormans adaptive sleep timer, starts sleep 200 us than 400us until 16.4ms
-                    // TODO possibly replace with some thread park or other way make a que
-                    // for threads to sleep until an R session is available.
-                    std::thread::sleep(std::time::Duration::from_micros(sleep_time_us));
-                    sleep_time_us = (sleep_time_us * 2).max(16384);
-                }
+    fn create_handler(&mut self) -> RResult<RBackgroundHandler> {
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("create handler");
+        self.active += 1;
+        let mut handle = RBackgroundHandler::new()?;
+        handle.in_pool = true;
+        Ok(handle)
+    }
+
+    fn destroy_handler(&mut self, mut handle: RBackgroundHandler) {
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("destroy handler");
+        if !handle.in_pool {
+            panic!(
+                "internal error: destroying an out-of-pool handler should not be done with this method"
+            );
+        } else {
+            self.active -= 1;
+            handle.in_pool = false; // tag handle as freed from pool, will be dropped now
+        }
+    }
+
+    fn release_handler(&mut self, mut handle: RBackgroundHandler) -> RResult<()> {
+        match (handle.proc.try_wait()?, self.queue.pop_front()) {
+            // 1a: too many active handlers. Kill it !
+            (_, _) if self.active > self.cap => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("1a - too many kill it!");
+                self.destroy_handler(handle)
+            }
+
+            // 1b: handler terminated, and not needed. Kill it !
+            (Some(_exit_status), None) => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("1b - terminated, kill it!");
+                self.destroy_handler(handle)
+            }
+
+            // 2a: handler is fine and needed in queue. Pass it on !
+            (None, Some(tx)) => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("2a - fine, pass it on!");
+                tx.send(handle)?
+            }
+
+            // 2b: handler terminated and needed in queue. Reset and pass it on !
+            (Some(_exit_status), Some(tx)) => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("2b - create new  and pass it on!");
+                self.destroy_handler(handle);
+                let new_bg_handler = self.create_handler()?;
+                tx.send(new_bg_handler)?
+            }
+
+            // 3a: handler is fine but queue is empty. Place it in idle pool !
+            (None, None) => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("3a - park handler in pool");
+                self.pool.push_back(handle)
+            }
+        }
+        Ok(())
+    }
+
+    pub fn resize(&mut self, new_cap: usize) {
+        self.cap = new_cap;
+        while (self.active > self.cap) & (self.pool.len() > 0) {
+            let handle = self
+                .pool
+                .pop_front()
+                .expect("pool has at least one element");
+            self.destroy_handler(handle)
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct RBackgroundPool(Arc<Mutex<InnerRBackgroundPool>>);
+
+impl RBackgroundPool {
+    pub fn new(cap: usize) -> Self {
+        RBackgroundPool(Arc::new(Mutex::new(InnerRBackgroundPool::new(cap))))
+    }
+
+    fn lease(&self) -> RResult<RBackgroundHandler> {
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!("METHOD lease", &self);
+        let mut pool_guard = self.0.lock()?;
+
+        match pool_guard.pool.pop_front() {
+            Some(handle) => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("lease handler from pool");
+                Ok(handle)
+            }
+            None if pool_guard.cap < 1 => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("lease fail cap <0 ");
+                rerr()
+                    .plain("cannot run background R process with zero capacity")
+                    .hint("try increase cap e.g. pl$set_global_rpool_cap(4)")
+            }
+            None if pool_guard.active < pool_guard.cap => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("lease a newly created handler");
+                pool_guard.create_handler()
+            }
+            None => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("active == cap, no more handlers allowed, go into queue");
+                let (tx, rx) = bounded(1);
+                pool_guard.queue.push_back(tx);
+                drop(pool_guard); // avoid deadlock
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("wait for freed handler");
+                let ok = Ok(rx.recv()?);
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("thread was awoken queue and passed a handler");
+                ok
             }
         }
         .when("trying to rent a R process from the global R process pool")
     }
 
-    pub fn shelf(&self, mut handle: RBackgroundHandler) -> RResult<()> {
-        let res = || {
-            let mut lpool = self.pool.lock()?;
-            if handle.proc.try_wait()?.is_none() && self.cap.lock()?.gt(&lpool.len()) {
-                lpool.push_back(handle);
-            }
-            RResult::Ok(())
-        };
-        res().when("trying to handle a completed R process")
+    fn shelf(&self, handle: RBackgroundHandler) -> RResult<()> {
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!("shelf", &self);
+        self.0
+            .lock()?
+            .release_handler(handle)
+            .when("trying to shelf a handler in pool")
     }
 
     pub fn resize(&self, new_cap: usize) -> RResult<()> {
-        let res = || {
-            let mut lpool = self.pool.lock()?;
-            let mut old_cap = self.cap.lock()?;
-            if new_cap.lt(&lpool.len()) {
-                lpool.truncate(new_cap);
-            }
-            *old_cap = new_cap;
-            RResult::Ok(())
-        };
-        res().when("trying to resize the global R process pool")
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!("resize", &self);
+        self.0
+            .lock()
+            .when("trying to resize the global R process pool")?
+            .resize(new_cap);
+        Ok(())
     }
 
     pub fn reval<'t>(
@@ -336,6 +444,8 @@ impl RBackgroundPool {
         raw_func: Vec<u8>,
         raw_arg: Vec<u8>,
     ) -> RResult<impl FnOnce() -> RResult<Vec<u8>> + 't> {
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!("reval");
         let handler = self.lease()?;
         let (tx, rx) = ipc::channel()?;
         handler.submit(RIPCJob::REval {
@@ -357,6 +467,8 @@ impl RBackgroundPool {
         raw_func: Vec<u8>,
         series: PSeries,
     ) -> RResult<impl FnOnce() -> RResult<PSeries> + 't> {
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!("rmap_series");
         let handler = self.lease()?;
         let (tx, rx) = ipc::channel()?;
         let shared_memory = serialize_series(series)?;
@@ -401,9 +513,10 @@ pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
 
 #[extendr]
 pub fn get_global_rpool_cap() -> RResult<List> {
+    let pool_guard = RBGPOOL.0.lock()?;
     Ok(list!(
-        available = RBGPOOL.pool.lock()?.len(),
-        capacity = RBGPOOL.cap.lock()?.clone()
+        available = pool_guard.active,
+        capacity = pool_guard.cap
     ))
 }
 
@@ -429,13 +542,11 @@ pub fn test_rbackgroundhandler(lambda: Robj, arg: Robj) -> RResult<Robj> {
 
 #[extendr]
 pub fn test_rthreadhandle() -> RThreadHandle<RResult<RDF>> {
-    use extendr_api::*;
-
     RThreadHandle::new(move || {
-        rprintln!("Intense sleeping in Rust for 10 seconds!");
+        println!("Intense sleeping in Rust for 10 seconds!");
         let duration = std::time::Duration::from_millis(10000);
         thread::sleep(duration);
-        rprintln!("Wake up!");
+        println!("Wake up!");
         let plf = {
             use polars::prelude::*;
             df!("Fruit" => &["Apple", "Banana", "Pear"],

@@ -20,7 +20,7 @@ $(STATLIB):
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
 	if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
-		$(BUILD_COMMAND) --all-features; \
+		$(BUILD_COMMAND) --features "simd"; \
 	else \
 		$(BUILD_COMMAND); \
 	fi
