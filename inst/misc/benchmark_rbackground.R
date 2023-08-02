@@ -5,6 +5,8 @@ time_print = \(expr, name) {
     cat(" || ",name,"\n")
 }
 
+
+
 ### 1 ------- Compare long chain of sequantial maps(no parallel proc use)
 # many io's - low bitrate - low cpu
 print("test 1a - sequential")
@@ -168,3 +170,32 @@ f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate 
 
 pl$set_global_rpool_cap(1)
 f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3c %io +bitrate +cpu pool=1 background")
+
+
+### 3d -----------  Use R processes in parallel,
+# low io, high bitrate, low cpu (R conversion)
+print("test 3d - parallel + r-polars conversion")
+library(polars)
+lf <- pl$LazyFrame(lapply(1:32,\(i) rep(i,1e6)*1.1))
+f_all_cols <-  \(lf,...) lf$select(pl$all()$map(\(x) {
+ x$to_r()
+},...))
+
+f_all_cols(lf, in_background = FALSE)$collect()  |> time_print("- 3d %io +bitrate +cpu foreground ")
+
+pl$set_global_rpool_cap(8)
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=8 background burn-in ")
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=8 background")
+
+
+pl$set_global_rpool_cap(6)
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=6 background")
+
+pl$set_global_rpool_cap(4)
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=4 background")
+
+pl$set_global_rpool_cap(2)
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=2 background")
+
+pl$set_global_rpool_cap(1)
+f_all_cols(lf, in_background = TRUE)$collect() |> time_print("- 3d %io +bitrate +cpu pool=1 background")
