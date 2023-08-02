@@ -401,7 +401,13 @@ impl RBackgroundPool {
             None if pool_guard.active < pool_guard.cap => {
                 #[cfg(feature = "rpolars_debug_print")]
                 println!("lease a newly created handler");
-                pool_guard.create_handler()
+
+                //faster to create handle after dropping guard, because processes can then be spawned in parallel
+                pool_guard.active += 1;
+                drop(pool_guard);
+                let mut handle = RBackgroundHandler::new()?;
+                handle.in_pool = true;
+                Ok(handle)
             }
             None => {
                 #[cfg(feature = "rpolars_debug_print")]
