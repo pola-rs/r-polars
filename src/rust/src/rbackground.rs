@@ -510,7 +510,7 @@ pub fn setup_renv() -> List {
     list!(binary = &RENV.0, libraries = &RENV.1)
 }
 
-pub static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(1));
+pub static RBGPOOL: Lazy<RBackgroundPool> = Lazy::new(|| RBackgroundPool::new(4));
 
 #[extendr]
 pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
