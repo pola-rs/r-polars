@@ -881,8 +881,6 @@ LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_backgr
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
-LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
-
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
 LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)

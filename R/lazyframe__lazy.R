@@ -310,7 +310,7 @@ LazyFrame_collect = function(
   collect_f = if( isTRUE(collect_in_background)) {
     .pr$LazyFrame$collect_background
   } else {
-    .pr$LazyFrame$collect_handled
+    .pr$LazyFrame$collect
   }
 
   self |>
@@ -982,14 +982,33 @@ LazyFrame_dtypes = method_as_property(function() {
     unwrap("in $dtypes()")
 })
 
-#' @title Profile
+#' @title Collect and profile a lazy query.
+#' @description This will run the query and return a tuple containing the materialized DataFrame and
+#'  a DataFrame that contains profiling information of each node that is executed.
+#' @details The units of the timings are microseconds.
+#'
 #' @keywords LazyFrame
-#' @return A pair of DataFrames, (collected result, profile stats)
+#' @return List of two DataFrames, (collected result, profile stats)
 #' @examples
-#' pl$LazyFrame(mtcars)$
-#'   select(pl$col("mpg") * 0.43)$
+#'
+#' #Use $profile() to compare two queries
+#'
+#' # print one '.', take a series convert to r vector, take first value, add 5
+#' r_func = \(s) {cat(".");s$to_r()[1] + 5}
+#'
+#' # map each Species-group of each numeric column with an R function, takes ~7000us slow !
+#' pl$LazyFrame(iris)$
+#'   sort("Sepal.Length")$  #for no specific reason
+#'   groupby("Species", maintain_order = TRUE)$
+#'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
 #'
+#' # map each Species-group with native polars, takes ~120us better
+#' pl$LazyFrame(iris)$
+#'   sort("Sepal.Length")$
+#'   groupby("Species", maintain_order = TRUE)$
+#'   agg(pl$col(pl$Float64)$first() + 5 )$
+#'   profile()
 LazyFrame_profile = function() {
   .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
 }
