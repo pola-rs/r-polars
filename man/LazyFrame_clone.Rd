@@ -2,8 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_clone}
 \alias{LazyFrame_clone}
-\title{Clone a LazyFrame
-This makes a very cheap deep copy/clone of an existing \code{LazyFrame}.}
+\title{Clone a LazyFrame}
 \usage{
 LazyFrame_clone()
 }
@@ -11,7 +10,6 @@ LazyFrame_clone()
 A LazyFrame
 }
 \description{
-Clone a LazyFrame
 This makes a very cheap deep copy/clone of an existing \code{LazyFrame}.
 }
 \examples{

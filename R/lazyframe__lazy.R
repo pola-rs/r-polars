@@ -948,7 +948,8 @@ LazyFrame_explode = function(columns = list(), ...) {
     unwrap("in explode():")
 }
 
-#' @title Clone a LazyFrame
+#' Clone a LazyFrame
+#'
 #' This makes a very cheap deep copy/clone of an existing `LazyFrame`.
 #' @return A LazyFrame
 #' @examples
