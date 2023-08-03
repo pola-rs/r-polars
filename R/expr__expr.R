@@ -177,6 +177,9 @@ Expr_add = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 "+.Expr" = function(e1, e2) {
+  if (missing(e2)) {
+    return(e1)
+  }
   e1_is_expr = inherits(e1, "Expr")
   e2_is_expr = inherits(e2, "Expr")
   if (e1_is_expr) {
