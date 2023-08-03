@@ -176,7 +176,15 @@ Expr_add = function(other) {
 #' @rdname Expr_add
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"+.Expr" = function(e1, e2) if (missing(e2)) e1 else e1$add(e2)
+"+.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$add(e2)
+  } else {
+    e2$add(e1)
+  }
+}
 
 #' Div
 #' @description Divide
@@ -195,7 +203,15 @@ Expr_div = function(other) {
 #' @rdname Expr_div
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"/.Expr" = function(e1, e2) e1$div(e2)
+"/.Expr" = function(e1, e2)  {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$div(e2)
+  } else {
+    pl$lit(1) / e2$div(e1)
+  }
+}
 
 #' Sub
 #' @description Substract
@@ -215,7 +231,18 @@ Expr_sub = function(other) {
 #' @rdname Expr_sub
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"-.Expr" = function(e1, e2) if (missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
+"-.Expr" = function(e1, e2)  {
+  if (missing(e2)) {
+    return(wrap_e(0L)$sub(e1))
+  }
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$sub(e2)
+  } else {
+    e2$sub(e1)$mul(-1)
+  }
+}
 
 #' Mul *
 #' @description Multiplication
@@ -235,8 +262,15 @@ Expr_mul = Expr_mul = function(other) {
 #' @rdname Expr_mul
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"*.Expr" = function(e1, e2) e1$mul(e2)
-
+"*.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$mul(e2)
+  } else {
+    e2$mul(e1)
+  }
+}
 
 #' Not !
 #' @description not method and operator
@@ -275,7 +309,15 @@ Expr_lt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) e1$lt(e2)
+"<.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$lt(e2)
+  } else {
+    e2$gt(e1) # need to invert order here
+  }
+}
 
 #' GreaterThan <
 #' @description gt method and operator
@@ -296,7 +338,15 @@ Expr_gt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) e1$gt(e2)
+">.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$gt(e2)
+  } else {
+    e2$lt(e1) # need to invert order here
+  }
+}
 
 #' Equal ==
 #' @description eq method and operator
@@ -317,7 +367,15 @@ Expr_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) e1$eq(e2)
+"==.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$eq(e2)
+  } else {
+    e2$eq(e1)
+  }
+}
 
 
 #' Not Equal !=
@@ -339,7 +397,16 @@ Expr_neq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) e1$neq(e2)
+"!=.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$neq(e2)
+  } else {
+    e2$neq(e1)
+  }
+}
+
 
 #' Less Than Or Equal <=
 #' @description lt_eq method and operator
@@ -360,7 +427,15 @@ Expr_lt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) e1$lt_eq(e2)
+"<=.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$lt_eq(e2)
+  } else {
+    e2$gt_eq(e1) # need to invert order here
+  }
+}
 
 
 #' Greater Than Or Equal <=
@@ -382,7 +457,15 @@ Expr_gt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) e1$gt_eq(e2)
+">=.Expr" = function(e1, e2)  {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$gt_eq(e2)
+  } else {
+    e2$lt_eq(e1) # need to invert order here
+  }
+}
 
 
 
@@ -880,7 +963,15 @@ Expr_reverse = function() {
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
 Expr_and = "use_extendr_wrapper"
 #' @export
-"&.Expr" = function(e1, e2) e1$and(wrap_e(e2))
+"&.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$and(wrap_e(e2))
+  } else {
+    e2$and(wrap_e(e1))
+  }
+}
 
 
 #' Or
@@ -898,7 +989,15 @@ Expr_and = "use_extendr_wrapper"
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
 Expr_or = "use_extendr_wrapper"
 #' @export
-"|.Expr" = function(e1, e2) e1$or(wrap_e(e2))
+"|.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$or(wrap_e(e2))
+  } else {
+    e2$or(wrap_e(e1))
+  }
+}
 
 
 #' Xor
@@ -1001,7 +1100,15 @@ Expr_rpow = function(base) {
 
 #' @rdname Expr_rpow
 #' @export
-"%**%.Expr" = function(e1, e2) e1$rpow(e2)
+"%**%.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$rpow(e2)
+  } else {
+    e2$rpow(e1)
+  }
+}
 
 
 #' Square root
@@ -2427,7 +2534,15 @@ Expr_pow = function(exponent) {
   .pr$Expr$pow(self, wrap_e(exponent))
 }
 #' @export
-"^.Expr" = function(e1, e2) e1$pow(e2)
+"^.Expr" = function(e1, e2) {
+  e1_is_expr = inherits(e1, "Expr")
+  e2_is_expr = inherits(e2, "Expr")
+  if (e1_is_expr) {
+    e1$pow(e2)
+  } else {
+    e2$rpow(e1)
+  }
+}
 
 
 #' is_in
