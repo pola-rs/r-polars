@@ -1,16 +1,13 @@
 use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
-use crate::rdatatype::new_join_type;
-use crate::rdatatype::new_quantile_interpolation_option;
-use crate::rdatatype::new_unique_keep_strategy;
-use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
+use crate::rdatatype::{
+    new_asof_strategy, new_join_type, new_quantile_interpolation_option, new_unique_keep_strategy,
+    RPolarsDataType,
+};
 use crate::robj_to;
-use crate::rpolarserr::rerr;
-use crate::rpolarserr::RResult;
-use crate::rpolarserr::{Rctx, WithRctx};
-use crate::utils::wrappers::null_to_opt;
-use crate::utils::{r_result_list, try_f64_into_usize};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
+use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
 use polars::chunked_array::object::AsOfOptions;
 use polars::frame::explode::MeltArgs;
@@ -80,9 +77,75 @@ impl LazyFrame {
         })
     }
 
-    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
+    pub fn collect_handled(&self) -> RResult<crate::rdataframe::DataFrame> {
         use crate::rpolarserr::WithRctx;
         handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
+    }
+
+    pub fn sink_parquet(
+        &self,
+        path: Robj,
+        compression_method: Robj,
+        compression_level: Robj,
+        statistics: Robj,
+        row_group_size: Robj,
+        data_pagesize_limit: Robj,
+        maintain_order: Robj,
+    ) -> RResult<()> {
+        use polars::prelude::ParquetCompression::*;
+        let pqcomp = match robj_to!(String, compression_method)?.as_str() {
+            "uncompressed" => Ok(Uncompressed),
+            "snappy" => Ok(Snappy),
+            "gzip" => robj_to!(Option, u8, compression_level)?
+                .map(polars::prelude::GzipLevel::try_new)
+                .transpose()
+                .map(Gzip),
+            "lzo" => Ok(Lzo),
+            "brotli" => robj_to!(Option, u32, compression_level)?
+                .map(polars::prelude::BrotliLevel::try_new)
+                .transpose()
+                .map(Brotli),
+            "zstd" => robj_to!(Option, i64, compression_level)?
+                .map(|cl| polars::prelude::ZstdLevel::try_new(cl as i32))
+                .transpose()
+                .map(Zstd),
+            m => Err(polars::prelude::PolarsError::ComputeError(
+                format!("Failed to set parquet compression method as [{m}]").into(),
+            )),
+        }
+        .map_err(polars_to_rpolars_err)
+        .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")?;
+        let pqwo = polars::prelude::ParquetWriteOptions {
+            compression: pqcomp,
+            statistics: robj_to!(bool, statistics)?,
+            row_group_size: robj_to!(Option, usize, row_group_size)?,
+            data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_parquet(robj_to!(String, path)?.into(), pqwo)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_ipc(&self, path: Robj, compression_method: Robj, maintain_order: Robj) -> RResult<()> {
+        use polars::prelude::IpcCompression::*;
+        let ipcwo = polars::prelude::IpcWriterOptions {
+            compression: robj_to!(Option, String, compression_method)?
+                .map(|cm| match cm.as_str() {
+                    "lz4" => Ok(LZ4),
+                    "zstd" => Ok(ZSTD),
+                    m => rerr()
+                        .bad_val(m)
+                        .misvalued("should be one of ['lz4', 'zstd']"),
+                })
+                .transpose()?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .map_err(polars_to_rpolars_err)
     }
 
     fn first(&self) -> Self {

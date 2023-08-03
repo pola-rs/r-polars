@@ -883,6 +883,10 @@ LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
 LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
 
+LazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__LazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
+
+LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
+
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
 LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)
