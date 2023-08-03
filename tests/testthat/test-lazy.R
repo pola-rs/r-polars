@@ -646,3 +646,12 @@ test_that("with_row_count", {
   lf = pl$LazyFrame(mtcars)
   expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
 })
+
+test_that("cloning", {
+  pf = pl$LazyFrame(iris)
+
+  # deep copy clone rust side object, hence not same mem address
+  pf2 = pf$clone()
+  expect_identical(pf$collect()$to_data_frame(), pf2$collect()$to_data_frame())
+  expect_different(pl$mem_address(pf), pl$mem_address(pf2))
+})

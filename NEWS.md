@@ -2,7 +2,8 @@
 
 ## What's changed
 
-- New method `$explode()` for `DataFrame` and `LazyFrame`.
+- New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
+- New method `$clone()` for `LazyFrame` (#347).
 
 # polars 0.7.0
 
