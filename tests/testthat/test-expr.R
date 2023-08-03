@@ -52,6 +52,94 @@ test_that("expression Arithmetics", {
   expect_equal(names(fails), character())
 })
 
+make_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~fn,
+    "mul",       "*",
+    "add",       "+",
+    "sub",       "-",
+    "div",       "/",
+    "gt",        ">",
+    "gte",       ">=",
+    "lt",        "<",
+    "lte",       "<=",
+    "eq",        "==",
+    "neq",       "!=",
+    # TODO: what is the R equivalent of %**%?
+    # "rpow",      "%**%",
+    "pow",       "^"
+  )
+}
+
+patrick::with_parameters_test_that(
+  "ops symbol work with expressions",
+  {
+    # every time, 4 tests:
+    # - 2 exprs
+    # - 1 expr then 1 non-expr
+    # - 1 non-expr then 1 expr
+    # - 2 non-exprs
+
+    dat = pl$DataFrame(mtcars)
+    dat_exp = data.frame(
+      mpg = do.call(fn, list(mtcars$mpg, 2)),
+      cyl = do.call(fn, list(2, mtcars$cyl)),
+      hp = do.call(fn, list(mtcars$hp, max(mtcars$drat))),
+      literal = do.call(fn, list(2, 2))
+    )
+
+    expect_equal(
+      dat$select(
+        do.call(fn, list(pl$col("mpg"), 2)),
+        # TODO: this $alias() shouldn't be needed but if I don't put it the
+        # name is "literal" because $div() calls $lit() under the hood
+        do.call(fn, list(2, pl$col("cyl")))$alias("cyl"),
+        do.call(fn, list(pl$col("hp"), pl$max("drat"))),
+        do.call(fn, list(2, 2))
+      )$to_data_frame(),
+      dat_exp
+    )
+  },
+  .cases = make_cases()
+)
+
+# & and | require another test dataset, it can't be the one above
+test_that("logical ops symbol work with expressions", {
+  dat = pl$DataFrame(
+    x = c(TRUE, FALSE, TRUE, FALSE),
+    y = c(TRUE, TRUE, FALSE, FALSE)
+  )
+  dat_df = dat$to_data_frame()
+  expect_equal(
+    dat$select(
+      (pl$col("x") & TRUE)$alias("oneexp_onecol"),
+      (FALSE & pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") & pl$col("y"),
+      FALSE & TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onecol = dat_df$x & TRUE,
+      onelit_oneexp = FALSE & dat_df$y,
+      x = dat_df$x & dat_df$y,
+      literal = FALSE & TRUE
+    )
+  )
+  expect_equal(
+    dat$select(
+      (pl$col("x") | TRUE)$alias("oneexp_onecol"),
+      (FALSE | pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") | pl$col("y"),
+      FALSE | TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onecol = dat_df$x | TRUE,
+      onelit_oneexp = FALSE | dat_df$y,
+      x = dat_df$x | dat_df$y,
+      literal = FALSE | TRUE
+    )
+  )
+})
+
 
 test_that("count + unique + n_unique", {
   expect_equal(
