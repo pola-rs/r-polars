@@ -179,7 +179,10 @@ Expr_add = function(other) {
 #' @rdname Expr_add
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"+.Expr" = function(e1, e2) result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
+"+.Expr" = function(e1, e2) {
+  if (missing(e2)) return(e1)
+  result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
+}
 
 #' Div
 #' @description Divide
