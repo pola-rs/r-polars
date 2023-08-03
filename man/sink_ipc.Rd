@@ -10,7 +10,7 @@ LazyFrame_sink_ipc(path, method = "zstd", order = TRUE)
 \arguments{
 \item{path}{string, the path of the arrow ipc file}
 
-\item{method}{NULL or string, the compression method. One of \link{'lz4', 'zstd'} if not NULL.}
+\item{method}{NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.}
 
 \item{order}{bool, whether maintain the order the data was processed.}
 }

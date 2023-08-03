@@ -18,9 +18,9 @@ LazyFrame_sink_parquet(
 \arguments{
 \item{path}{string, the path of the parquet file}
 
-\item{method}{string, the compression method. One of \link{'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
+\item{method}{string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
 
-\item{level}{null or int, the level of compression. Only used if method is one of \link{'gzip', 'brotli', 'zstd'}}
+\item{level}{null or int, the level of compression. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
 
 \item{stats}{bool, whether compute and write column statistics.}
 
