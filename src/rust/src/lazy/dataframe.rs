@@ -68,7 +68,7 @@ impl LazyFrame {
     }
 
     pub fn collect(&self) -> RResult<RDF> {
-        collect_with_r_func_support(self.clone().0).when("calling $collect() on LazyFrame")
+        collect_with_r_func_support(self.clone().0)
     }
 
     fn first(&self) -> Self {
@@ -402,8 +402,7 @@ impl LazyFrame {
     }
 
     fn profile(&self) -> RResult<List> {
-        profile_with_r_func_support(self.0.clone())
-            .map(|(r, p)| list!(result = RDF(r), profile = RDF(p)))
+        profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
     fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
