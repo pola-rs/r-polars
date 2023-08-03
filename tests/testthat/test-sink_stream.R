@@ -11,13 +11,13 @@ test_that("Test sinking data to parquet file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf$sink_ipc(tmpf)
-  expect_equal(pl$scan_arrow_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
+  expect_equal(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
 
 
   #update with new data
   lf$slice(5,5)$sink_ipc(tmpf)
   expect_equal(
-    pl$scan_arrow_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(),
+    pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(),
     lf$slice(5,5)$collect()$to_data_frame()
   )
   lf$sink_ipc(tmpf)
@@ -25,14 +25,14 @@ test_that("Test sinking data to parquet file", {
   #from another process
   rdf_callr = callr::r(\(tmpf) {
     library(polars)
-    pl$scan_arrow_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame()
-  }, args = list(tmpf))
+    pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame()
+  }, args = list(tmpf=tmpf))
   expect_equal(rdf_callr, rdf)
 
 
   #TODO after polars in_background  is merged something like this should be possible
   # f_ipc_to_s = \(s) {
-  #   pl$scan_arrow_ipc(s$to_r(), memmap = FALSE)$
+  #   pl$scan_ipc(s$to_r(), memmap = FALSE)$
   #     select(pl$struct(pl$all()))$
   #     collect()$
   #     to_series()

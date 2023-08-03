@@ -1,8 +1,12 @@
 # polars (development version)
 
-## What's changed
+## BREAKING CHANGES
+ - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
 
-- New method `$explode()` for `DataFrame` and `LazyFrame`.
+## What's changed
+- New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
+- Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
+
 
 # polars 0.7.0
 
