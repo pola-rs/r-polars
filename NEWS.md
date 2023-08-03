@@ -3,6 +3,8 @@
 ## What's changed
 
 - New method `$explode()` for `DataFrame` and `LazyFrame`.
+- All basic operators (`+`, `/`, `*`, etc.) now work when we mix `Expr` and 
+  literals (#345).
 
 # polars 0.7.0
 
