@@ -53,9 +53,13 @@ dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
+test_robj_to_f64 <- function(robj) .Call(wrap__test_robj_to_f64, robj)
+
 test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+
+test_robj_to_i32 <- function(robj) .Call(wrap__test_robj_to_i32, robj)
 
 test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
