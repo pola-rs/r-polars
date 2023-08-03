@@ -285,31 +285,33 @@ LazyFrame_collect_background = function() {
 #' @name sink_parquet
 #' @description Stream the content of LazyFrame into a parquet file.
 #' @param path string, the path of the parquet file
-#' @param method string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
-#' @param level null or int, the level of compression. Only used if method is one of {'gzip', 'brotli', 'zstd'}
-#' @param stats bool, whether compute and write column statistics.
+#' @param compression string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
+#' @param copmression_level null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}
+#' @param statistics bool, whether compute and write column statistics.
 #' @param row_group_size NULL or positive integer. If set NULL a single row group will be created.
 #' @param data_pagesize_limit NULL or positive integer. If set NULL the limit will be 2^20 bytes.
-#' @param order bool, whether maintain the order the data was processed.
+#' @param maintain_order bool, whether maintain the order the data was processed.
 LazyFrame_sink_parquet = function(
   path,
-  method = "zstd",
-  level = 3,
-  stats = FALSE,
+  compression = "zstd",
+  compression_level = 3,
+  statistics = FALSE,
   row_group_size = NULL,
   data_pagesize_limit = NULL,
-  order = TRUE
+  maintain_order = TRUE
 ) {
   .pr$LazyFrame$sink_parquet(
     self,
     path,
-    method,
-    level,
-    stats,
+    compression,
+    compression_level,
+    statistics,
     row_group_size,
     data_pagesize_limit,
-    order
-  ) |> unwrap("in LazyFrame$sink_parquet(...)")
+    maintain_order
+  ) |> 
+    unwrap("in LazyFrame$sink_parquet(...)") |>
+    invisible()
 }
 
 
@@ -317,19 +319,21 @@ LazyFrame_sink_parquet = function(
 #' @name sink_ipc
 #' @description Stream the content of LazyFrame into an arrow ipc file.
 #' @param path string, the path of the arrow ipc file
-#' @param method NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.
-#' @param order bool, whether maintain the order the data was processed.
+#' @param compression NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.
+#' @param maintain_order bool, whether maintain the order the data was processed.
 LazyFrame_sink_ipc = function(
   path,
-  method = "zstd",
-  order = TRUE
+  compression = "zstd",
+  maintain_order = TRUE
 ) {
   .pr$LazyFrame$sink_ipc(
     self,
     path,
-    method,
-    order
-  ) |> unwrap("in LazyFrame$sink_ipc(...)")
+    compression,
+    maintain_order
+  ) |>
+    unwrap("in LazyFrame$sink_ipc(...)") |>
+    invisible()
 }
 
 

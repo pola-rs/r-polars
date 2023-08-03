@@ -5,14 +5,14 @@
 \alias{LazyFrame_sink_ipc}
 \title{LazyFrame stream output to arrow ipc file}
 \usage{
-LazyFrame_sink_ipc(path, method = "zstd", order = TRUE)
+LazyFrame_sink_ipc(path, compression = "zstd", maintain_order = TRUE)
 }
 \arguments{
 \item{path}{string, the path of the arrow ipc file}
 
-\item{method}{NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.}
+\item{compression}{NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.}
 
-\item{order}{bool, whether maintain the order the data was processed.}
+\item{maintain_order}{bool, whether maintain the order the data was processed.}
 }
 \description{
 Stream the content of LazyFrame into an arrow ipc file.

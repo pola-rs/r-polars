@@ -7,28 +7,28 @@
 \usage{
 LazyFrame_sink_parquet(
   path,
-  method = "zstd",
-  level = 3,
-  stats = FALSE,
+  compression = "zstd",
+  compression_level = 3,
+  statistics = FALSE,
   row_group_size = NULL,
   data_pagesize_limit = NULL,
-  order = TRUE
+  maintain_order = TRUE
 )
 }
 \arguments{
 \item{path}{string, the path of the parquet file}
 
-\item{method}{string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
+\item{compression}{string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
 
-\item{level}{null or int, the level of compression. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
-
-\item{stats}{bool, whether compute and write column statistics.}
+\item{statistics}{bool, whether compute and write column statistics.}
 
 \item{row_group_size}{NULL or positive integer. If set NULL a single row group will be created.}
 
 \item{data_pagesize_limit}{NULL or positive integer. If set NULL the limit will be 2^20 bytes.}
 
-\item{order}{bool, whether maintain the order the data was processed.}
+\item{maintain_order}{bool, whether maintain the order the data was processed.}
+
+\item{copmression_level}{null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
 }
 \description{
 Stream the content of LazyFrame into a parquet file.

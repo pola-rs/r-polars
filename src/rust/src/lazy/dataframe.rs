@@ -2,8 +2,8 @@ use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
 use crate::rdatatype::{
-    new_asof_strategy, new_join_type, new_quantile_interpolation_option, new_unique_keep_strategy,
-    RPolarsDataType,
+    new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
+    new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
 };
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
@@ -92,31 +92,8 @@ impl LazyFrame {
         data_pagesize_limit: Robj,
         maintain_order: Robj,
     ) -> RResult<()> {
-        use polars::prelude::ParquetCompression::*;
-        let pqcomp = match robj_to!(String, compression_method)?.as_str() {
-            "uncompressed" => Ok(Uncompressed),
-            "snappy" => Ok(Snappy),
-            "gzip" => robj_to!(Option, u8, compression_level)?
-                .map(polars::prelude::GzipLevel::try_new)
-                .transpose()
-                .map(Gzip),
-            "lzo" => Ok(Lzo),
-            "brotli" => robj_to!(Option, u32, compression_level)?
-                .map(polars::prelude::BrotliLevel::try_new)
-                .transpose()
-                .map(Brotli),
-            "zstd" => robj_to!(Option, i64, compression_level)?
-                .map(|cl| polars::prelude::ZstdLevel::try_new(cl as i32))
-                .transpose()
-                .map(Zstd),
-            m => Err(polars::prelude::PolarsError::ComputeError(
-                format!("Failed to set parquet compression method as [{m}]").into(),
-            )),
-        }
-        .map_err(polars_to_rpolars_err)
-        .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")?;
         let pqwo = polars::prelude::ParquetWriteOptions {
-            compression: pqcomp,
+            compression: new_parquet_compression(compression_method, compression_level)?,
             statistics: robj_to!(bool, statistics)?,
             row_group_size: robj_to!(Option, usize, row_group_size)?,
             data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
@@ -129,17 +106,8 @@ impl LazyFrame {
     }
 
     fn sink_ipc(&self, path: Robj, compression_method: Robj, maintain_order: Robj) -> RResult<()> {
-        use polars::prelude::IpcCompression::*;
         let ipcwo = polars::prelude::IpcWriterOptions {
-            compression: robj_to!(Option, String, compression_method)?
-                .map(|cm| match cm.as_str() {
-                    "lz4" => Ok(LZ4),
-                    "zstd" => Ok(ZSTD),
-                    m => rerr()
-                        .bad_val(m)
-                        .misvalued("should be one of ['lz4', 'zstd']"),
-                })
-                .transpose()?,
+            compression: new_ipc_compression(compression_method)?,
             maintain_order: robj_to!(bool, maintain_order)?,
         };
         self.0
