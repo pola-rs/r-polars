@@ -20,6 +20,8 @@ LazyFrame_sink_parquet(
 
 \item{compression}{string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
 
+\item{compression_level}{null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
+
 \item{statistics}{bool, whether compute and write column statistics.}
 
 \item{row_group_size}{NULL or positive integer. If set NULL a single row group will be created.}
@@ -27,8 +29,6 @@ LazyFrame_sink_parquet(
 \item{data_pagesize_limit}{NULL or positive integer. If set NULL the limit will be 2^20 bytes.}
 
 \item{maintain_order}{bool, whether maintain the order the data was processed.}
-
-\item{copmression_level}{null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
 }
 \description{
 Stream the content of LazyFrame into a parquet file.

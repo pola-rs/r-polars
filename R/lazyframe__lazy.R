@@ -286,7 +286,7 @@ LazyFrame_collect_background = function() {
 #' @description Stream the content of LazyFrame into a parquet file.
 #' @param path string, the path of the parquet file
 #' @param compression string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
-#' @param copmression_level null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}
+#' @param compression_level null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}
 #' @param statistics bool, whether compute and write column statistics.
 #' @param row_group_size NULL or positive integer. If set NULL a single row group will be created.
 #' @param data_pagesize_limit NULL or positive integer. If set NULL the limit will be 2^20 bytes.
