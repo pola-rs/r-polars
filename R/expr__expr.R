@@ -96,6 +96,9 @@ wrap_e = function(e, str_to_lit = TRUE) {
   }
 }
 
+
+## TODO refactor to \(e, str_to_lit = TRUE, argname = NULL) wrap_e(e) |> result()
+
 #' wrap as Expression capture ok/err as result
 #' @param e an Expr(polars) or any R expression
 #' @param str_to_lit bool should string become a column name or not, then a literal string
@@ -170,13 +173,13 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 #' pl$lit(5)$add(pl$lit(10))
 #' +pl$lit(5) # unary use resolves to same as pl$lit(5)
 Expr_add = function(other) {
-  .pr$Expr$add(self, wrap_e(other))
+  .pr$Expr$add(self, wrap_e(other) |> result() |> unwrap("in $add()"))
 }
 #' @export
 #' @rdname Expr_add
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"+.Expr" = function(e1, e2) if (missing(e2)) e1 else e1$add(e2)
+"+.Expr" = function(e1, e2) result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
 
 #' Div
 #' @description Divide
@@ -189,13 +192,13 @@ Expr_add = function(other) {
 #' pl$lit(5) / pl$lit(10)
 #' pl$lit(5)$div(pl$lit(10))
 Expr_div = function(other) {
-  .pr$Expr$div(self, wrap_e(other))
+  .pr$Expr$div(self, wrap_e(other) |> result() |> unwrap("in $div()"))
 }
 #' @export
 #' @rdname Expr_div
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"/.Expr" = function(e1, e2) e1$div(e2)
+"/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
 #' Sub
 #' @description Substract
@@ -209,13 +212,17 @@ Expr_div = function(other) {
 #' pl$lit(5)$sub(pl$lit(10))
 #' -pl$lit(5)
 Expr_sub = function(other) {
-  .pr$Expr$sub(self, wrap_e(other))
+  .pr$Expr$sub(self, wrap_e(other) |> result() |> unwrap("in $sub"))
 }
 #' @export
 #' @rdname Expr_sub
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"-.Expr" = function(e1, e2) if (missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
+"-.Expr" = function(e1, e2) {
+  result(
+    if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
+  ) |> unwrap("using the '-'-operator")
+}
 
 #' Mul *
 #' @description Multiplication
@@ -228,14 +235,14 @@ Expr_sub = function(other) {
 #' pl$lit(5) * pl$lit(10)
 #' pl$lit(5)$mul(pl$lit(10))
 Expr_mul = Expr_mul = function(other) {
-  .pr$Expr$mul(self, wrap_e(other))
+  .pr$Expr$mul(self, wrap_e(other) |> result() |> unwrap("in $mul"))
 }
 
 #' @export
 #' @rdname Expr_mul
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"*.Expr" = function(e1, e2) e1$mul(e2)
+"*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
 #' Not !
@@ -267,7 +274,7 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5) < pl$lit(10)
 #' pl$lit(5)$lt(pl$lit(10))
 Expr_lt = function(other) {
-  .pr$Expr$lt(self, wrap_e(other))
+  .pr$Expr$lt(self, wrap_e(other) |> result() |> unwrap("in $lt()"))
 }
 #' @export
 #' @details
@@ -275,7 +282,7 @@ Expr_lt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) e1$lt(e2)
+"<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' GreaterThan <
 #' @description gt method and operator
@@ -288,7 +295,7 @@ Expr_lt = function(other) {
 #' pl$lit(2) > pl$lit(1)
 #' pl$lit(2)$gt(pl$lit(1))
 Expr_gt = function(other) {
-  .pr$Expr$gt(self, wrap_e(other))
+  .pr$Expr$gt(self, wrap_e(other) |> result() |> unwrap("in $gt()"))
 }
 #' @export
 #' @details
@@ -296,7 +303,7 @@ Expr_gt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) e1$gt(e2)
+">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' Equal ==
 #' @description eq method and operator
@@ -309,7 +316,7 @@ Expr_gt = function(other) {
 #' pl$lit(2) == pl$lit(2)
 #' pl$lit(2)$eq(pl$lit(2))
 Expr_eq = function(other) {
-  .pr$Expr$eq(self, wrap_e(other))
+  .pr$Expr$eq(self, wrap_e(other) |> result() |> unwrap("in $eq()"))
 }
 #' @export
 #' @details
@@ -317,7 +324,7 @@ Expr_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) e1$eq(e2)
+"==.Expr" =  function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '='-operator")
 
 
 #' Not Equal !=
@@ -331,7 +338,7 @@ Expr_eq = function(other) {
 #' pl$lit(1) != pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = function(other) {
-  .pr$Expr$neq(self, wrap_e(other))
+  .pr$Expr$neq(self, wrap_e(other) |> result() |> unwrap("in $neq()" ))
 }
 #' @export
 #' @details
@@ -339,7 +346,7 @@ Expr_neq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) e1$neq(e2)
+"!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' Less Than Or Equal <=
 #' @description lt_eq method and operator
@@ -352,7 +359,7 @@ Expr_neq = function(other) {
 #' pl$lit(2) <= pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = function(other) {
-  .pr$Expr$lt_eq(self, wrap_e(other))
+  .pr$Expr$lt_eq(self, wrap_e(other) |> result() |> unwrap("in $lt_eq()" ))
 }
 #' @export
 #' @details
@@ -360,7 +367,7 @@ Expr_lt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) e1$lt_eq(e2)
+"<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
 #' Greater Than Or Equal <=
@@ -374,7 +381,7 @@ Expr_lt_eq = function(other) {
 #' pl$lit(2) >= pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = function(other) {
-  .pr$Expr$gt_eq(self, wrap_e(other))
+  .pr$Expr$gt_eq(self,  wrap_e(other) |> result() |> unwrap("in $gt_eq()" ))
 }
 #' @export
 #' @details
@@ -382,7 +389,7 @@ Expr_gt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) e1$gt_eq(e2)
+">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 
 
@@ -813,18 +820,15 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  if (is.null(x)) {
-    return(unwrap(.pr$Expr$lit(NULL)))
-  }
-  if (inherits(x, "Expr")) {
-    return(x)
-  } # already Expr, pass through
-  if (
-    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date"))
-  ) {
-    x = wrap_s(x) # wrap first as Series if not a simple scalar
-  }
-  unwrap(.pr$Expr$lit(x)) # create literal Expr
+  pcase(
+    is.null(x), .pr$Expr$lit(NULL),
+    inherits(x, "Expr"), Ok(x),
+    inherits(x, "Series"), .pr$Expr$lit(x),
+    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")), {
+      result(pl$Series(x)) |> and_then(.pr$Expr$lit)
+    },
+    or_else = .pr$Expr$lit(x)
+  ) |> unwrap("in lit()")
 }
 
 #' polars suffix
@@ -880,7 +884,7 @@ Expr_reverse = function() {
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
 Expr_and = "use_extendr_wrapper"
 #' @export
-"&.Expr" = function(e1, e2) e1$and(wrap_e(e2))
+"&.Expr" = function(e1, e2) wrap_e(e1)$and(wrap_e(e2))
 
 
 #' Or
@@ -898,7 +902,7 @@ Expr_and = "use_extendr_wrapper"
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
 Expr_or = "use_extendr_wrapper"
 #' @export
-"|.Expr" = function(e1, e2) e1$or(wrap_e(e2))
+"|.Expr" = function(e1, e2) wrap_e(e1)$or(wrap_e(e2))
 
 
 #' Xor
@@ -1001,7 +1005,7 @@ Expr_rpow = function(base) {
 
 #' @rdname Expr_rpow
 #' @export
-"%**%.Expr" = function(e1, e2) e1$rpow(e2)
+"%**%.Expr" = function(e1, e2) wrap_e(e1)$rpow(e2)
 
 
 #' Square root
@@ -2427,7 +2431,7 @@ Expr_pow = function(exponent) {
   .pr$Expr$pow(self, wrap_e(exponent))
 }
 #' @export
-"^.Expr" = function(e1, e2) e1$pow(e2)
+"^.Expr" = function(e1, e2) wrap_e(e1)$pow(e2)
 
 
 #' is_in

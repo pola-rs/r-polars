@@ -6,6 +6,7 @@ use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 use crate::rpolarserr;
+use crate::rpolarserr::*;
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -28,7 +29,6 @@ use polars::prelude::Utf8NameSpaceImpl;
 use polars::prelude::{self as pl};
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
-
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
@@ -70,11 +70,11 @@ impl Expr {
     }
 
     //TODO expand usecases to series and datatime
-    pub fn lit(robj: Robj) -> Result<Expr, String> {
+    pub fn lit(robj: Robj) -> RResult<Expr> {
         let rtype = robj.rtype();
         let rlen = robj.len();
-        let err_msg = "internal error: Should not be reached";
-        let expr_result = match (rtype, rlen) {
+
+        match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
             (Rtype::Integers, 1) => {
                 let opt_val = robj.as_integer();
@@ -83,7 +83,7 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Doubles, 1) if robj.inherits("integer64") => {
@@ -96,7 +96,7 @@ impl Expr {
                         Ok(dsl::lit(x))
                     }
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Doubles, 1) => {
@@ -106,7 +106,7 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Strings, 1) => {
@@ -123,35 +123,26 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
-            (Rtype::ExternalPtr, 1) => {
-                let x = match () {
-                    _ if robj.inherits("Series") => {
-                        let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
-                        pl::lit(s.0)
-                    }
-                    _ => {
-                        dbg!(&robj);
-                        todo!("cannot yet handle this externalptr");
-                    }
-                };
-                Ok(x)
-            }
+            (Rtype::ExternalPtr, 1) => match () {
+                _ if robj.inherits("Series") => {
+                    let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+                    Ok(pl::lit(s.0))
+                }
+                _ => rerr()
+                    .bad_robj(&robj)
+                    .plain("pl$lit() currently only support ExternalPtr's to polars 'Series'"),
+            },
 
-            (x, 1) => Err(format!(
-                "$lit(val): polars not yet support this Rtype {:?}",
-                x
-            )),
-            (_, n) => Err(format!(
-                "$lit(val), literals mush have length one, not length: {:?}",
-                n
-            )),
+            (_, 1) => rerr().bad_robj(&robj).plain("unsupported R type "),
+            (_, n) => rerr()
+                .bad_robj(&robj)
+                .plain(format!("literals mush have length [1], not [{n}]")),
         }
-        .map(Expr);
-
-        expr_result
+        .map(Expr)
+        .when("constructing polars literal from Robj")
     }
 
     //expr binary comparisons
