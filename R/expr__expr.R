@@ -71,14 +71,16 @@ as.list.Expr = function(x, ...) {
   list(x)
 }
 
-#' wrap as literal
+#' DEPRECATED wrap as literal
+#' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
+#' This function is only kept for reference
 #' @param e an Expr(polars) or any R expression
 #' @details
 #' used internally to ensure an object is an expression
 #' @keywords internal
 #' @return Expr
 #' @examples pl$col("foo") < 5
-wrap_e = function(e, str_to_lit = TRUE) {
+wrap_e_legacy = function(e, str_to_lit = TRUE) {
   if (inherits(e, "Expr")) {
     return(e)
   }
@@ -94,6 +96,19 @@ wrap_e = function(e, str_to_lit = TRUE) {
   } else {
     pl$col(e)
   }
+}
+
+#' DEPRECATED wrap as literal
+#' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
+#' This function is only kept for reference
+#' @param e an Expr(polars) or any R expression
+#' @details
+#' used internally to ensure an object is an expression
+#' @keywords internal
+#' @return Expr
+#' @examples pl$col("foo") < 5
+wrap_e = function(e, str_to_lit = TRUE) {
+  internal_wrap_e(e, str_to_lit) |> unwrap()
 }
 
 

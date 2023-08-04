@@ -612,12 +612,7 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
 
     //use R side wrap_e to convert any R value into Expr or
     use extendr_api::*;
-    let robj_result_expr = R!("polars:::result(polars:::wrap_e({{robj}},{{str_to_lit}}))")
-        .map_err(crate::rpolarserr::extendr_to_rpolars_err)
-        .plain("internal error: polars:::result failed to catch this error")?;
-
-    // handle any error from wrap_e
-    let robj_expr = unpack_r_result_list(robj_result_expr)
+    let robj_expr = internal_rust_wrap_e(robj, str_to_lit)
         .bad_robj(&robj_clone)
         .plain("cannot be converted into an Expr")?;
 
@@ -629,6 +624,32 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
         .when("converting R extptr PolarsExpr to rust RExpr")
         .plain("internal error: wrap_e should fail or return an Expr")?;
     Ok(Expr(ext_expr.0.clone()))
+}
+
+fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
+    use extendr_api::Result as EResult;
+    use extendr_api::Rtype::*;
+    use extendr_api::*;
+    let unpack = |res: EResult<Robj>| -> RResult<Robj> {
+        unpack_r_result_list(res.map_err(|err| {
+            extendr_api::Error::Other(format!("internal_error calling R from rust: {:?}", err))
+        })?)
+    };
+    match robj.rtype() {
+        ExternalPtr if robj.inherits("Expr") => Ok(robj),
+        ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => {
+            unpack(R!("polars:::({{robj}}$otherwise(pl$lit(NULL)))"))
+        }
+        ExternalPtr if robj.inherits("When") => {
+            rerr().plain("Cannot use a When-statement as Expr without a $then()")
+        }
+        _h @ Logicals | _h @ List | _h @ Doubles | _h @ Integers => {
+            unpack(R!("polars:::result(pl$lit({{robj}}))"))
+        }
+        _ if str_to_lit => unpack(R!("polars:::result(pl$lit({{robj}}))")),
+
+        _ => unpack(R!("polars:::result(pl$col({{robj}}))")),
+    }
 }
 
 pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::LazyFrame> {
