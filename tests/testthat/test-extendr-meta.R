@@ -1,7 +1,5 @@
 test_that("clone_robj + mem_adress", {
 
-  df = pl$DataFrame()
-
   #clone mutatble
   env  = new.env(parent = emptyenv())
   env2 = polars:::clone_robj(env)
