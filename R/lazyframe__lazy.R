@@ -314,7 +314,7 @@ LazyFrame_collect = function(
     common_subplan_elimination = FALSE
   }
 
-  collect_f = if( isTRUE(collect_in_background)) {
+  collect_f = if(isTRUE(collect_in_background)) {
     .pr$LazyFrame$collect_background
   } else {
     .pr$LazyFrame$collect
