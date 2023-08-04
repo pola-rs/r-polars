@@ -112,13 +112,13 @@ test_that("logical ops symbol work with expressions", {
   dat_df = dat$to_data_frame()
   expect_equal(
     dat$select(
-      (pl$col("x") & TRUE)$alias("oneexp_onecol"),
+      (pl$col("x") & TRUE)$alias("oneexp_onelit"),
       (FALSE & pl$col("y"))$alias("onelit_oneexp"),
       pl$col("x") & pl$col("y"),
       FALSE & TRUE
     )$to_data_frame(),
     data.frame(
-      oneexp_onecol = dat_df$x & TRUE,
+      oneexp_onelit = dat_df$x & TRUE,
       onelit_oneexp = FALSE & dat_df$y,
       x = dat_df$x & dat_df$y,
       literal = FALSE & TRUE
@@ -126,13 +126,13 @@ test_that("logical ops symbol work with expressions", {
   )
   expect_equal(
     dat$select(
-      (pl$col("x") | TRUE)$alias("oneexp_onecol"),
+      (pl$col("x") | TRUE)$alias("oneexp_onelit"),
       (FALSE | pl$col("y"))$alias("onelit_oneexp"),
       pl$col("x") | pl$col("y"),
       FALSE | TRUE
     )$to_data_frame(),
     data.frame(
-      oneexp_onecol = dat_df$x | TRUE,
+      oneexp_onelit = dat_df$x | TRUE,
       onelit_oneexp = FALSE | dat_df$y,
       x = dat_df$x | dat_df$y,
       literal = FALSE | TRUE
