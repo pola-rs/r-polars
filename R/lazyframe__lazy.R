@@ -1016,7 +1016,7 @@ LazyFrame_dtypes = method_as_property(function() {
 #' r_func = \(s) {cat(".");s$to_r()[1] + 5}
 #'
 #' pl$LazyFrame(iris)$
-#'   sort("Sepal.Length")$  #for no specific reason
+#'   sort("Sepal.Length")$
 #'   groupby("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()

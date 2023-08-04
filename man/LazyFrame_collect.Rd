@@ -53,7 +53,7 @@ collected \code{DataFrame} or if colkect
 collect DataFrame by lazy query
 }
 \details{
-Note: use \verb{$fetch()} if you want to run your query on the first \code{n} rows only.
+Note: use \verb{$fetch(n)} if you want to run your query on the first \code{n} rows only.
 This can be a huge time saver in debugging queries.
 }
 \examples{
