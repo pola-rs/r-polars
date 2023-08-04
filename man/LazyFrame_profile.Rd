@@ -18,23 +18,28 @@ The units of the timings are microseconds.
 }
 \examples{
 
-#Use $profile() to compare two queries
+## Simplest use case
+pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
 
-# print one '.', take a series convert to r vector, take first value, add 5
+## Use $profile() to compare two queries
+
+# -1-  map each Species-group with native polars, takes ~120us only
+pl$LazyFrame(iris)$
+  sort("Sepal.Length")$
+  groupby("Species", maintain_order = TRUE)$
+  agg(pl$col(pl$Float64)$first() + 5 )$
+  profile()
+
+# -2-  map each Species-group of each numeric column with an R function, takes ~7000us (slow!)
+
+# some R function, prints `.` for each time called by polars
 r_func = \(s) {cat(".");s$to_r()[1] + 5}
 
-# map each Species-group of each numeric column with an R function, takes ~7000us slow !
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$  #for no specific reason
   groupby("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$apply(r_func))$
   profile()
 
-# map each Species-group with native polars, takes ~120us better
-pl$LazyFrame(iris)$
-  sort("Sepal.Length")$
-  groupby("Species", maintain_order = TRUE)$
-  agg(pl$col(pl$Float64)$first() + 5 )$
-  profile()
 }
 \keyword{LazyFrame}

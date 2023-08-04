@@ -17,20 +17,27 @@ LazyFrame_collect(
 )
 }
 \arguments{
-\item{type_coercion}{Boolean. Do type coercion optimization.}
+\item{type_coercion}{Boolean. Coerce types such that operations succeed and run on minimal
+required memory.}
 
-\item{predicate_pushdown}{Boolean. Do predicate pushdown optimization.}
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible/ at scan level.}
 
-\item{projection_pushdown}{Boolean. Do projection pushdown optimization.}
+\item{projection_pushdown}{Boolean. Applies filters as early as possible/ at scan level.}
 
-\item{simplify_expression}{Boolean. Run simplify expressions optimization.}
+\item{simplify_expression}{Boolean. Cache subtrees/file scans that are used by multiple subtrees
+in the query plan.}
 
-\item{no_optimization}{Boolean. Turn off (certain) optimizations.}
+\item{no_optimization}{Boolean. Turn of the following:
+predicate_pushdown = FALSE
+projection_pushdown = FALSE
+slice_pushdown = FALSE
+common_subplan_elimination = FALSE}
 
-\item{slice_pushdown}{Boolean. Slice pushdown optimization.}
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan level. Don't
+materialize sliced outputs (e.g. join.head(10)).}
 
-\item{common_subplan_elimination}{Boolean. Will try to cache branching subplans that occur on
-self-joins or unions.}
+\item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that are used by multiple
+subtrees in the query plan.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state)}
