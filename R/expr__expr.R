@@ -1003,40 +1003,6 @@ Expr_cast = function(dtype, strict = TRUE) {
 
 
 
-
-#' Reverse exponentiation `%**%`(in R `** == ^`)
-#' @description Raise a base to the power of the expression as exponent.
-#' @keywords Expr
-#'
-#' @param base real or Expr, the value of the base, self is the exponent
-#'
-#' @return Expr
-#' @name Expr_rpow
-#' @details  do not use `**`, R secretly parses that just as if it was a `^`
-#' @aliases rpow %**%
-#' @examples
-#' pl$DataFrame(list(a = -1:3))$select(
-#'   pl$lit(2)$rpow(pl$col("a"))
-#' )$get_column("a")$to_r() == (-1:3)^2
-#'
-#' pl$DataFrame(list(a = -1:3))$select(
-#'   pl$lit(2) %**% (pl$col("a"))
-#' )$get_column("a")$to_r() == (-1:3)^2
-Expr_rpow = function(base) {
-  result(wrap_e(base)$pow(self)) |> unwrap("in $rpow()")
-}
-
-#' @rdname Expr_rpow
-#' @export
-#' @param e1 value where ** operator is defined
-#' @param e2 value where ** operator is defined
-"%**%" = function(e1, e2) e2^e1 # some default method of what reverse exponentiation is (as python ** operator)
-
-#' @rdname Expr_rpow
-#' @export
-"%**%.Expr" = function(e1, e2) result(wrap_e(e1)$rpow(e2)) |> unwrap("using the '**'-operator")
-
-
 #' Square root
 #' @description  Compute the square root of the elements.
 #' @keywords Expr
@@ -2441,10 +2407,13 @@ Expr_limit = function(n = 10) {
 
 
 
-#' Exponentiation `^` or `**`
+#' Exponentiation `^` and `**`.
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
+#' @details in py-polars python `^` is the xor operator. The R interpreter will replace the
+#' `**` with `^`, such that `**` means `^`. Except e.g. in strings like "**". Use of `**` will
+#' not work in some cases, because it is not a real separate operator in R.
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow

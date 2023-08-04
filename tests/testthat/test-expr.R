@@ -65,9 +65,7 @@ make_cases = function() {
     "lte",       "<=",
     "eq",        "==",
     "neq",       "!=",
-    # TODO: what is the R equivalent of %**%?
-    # "rpow",      "%**%",
-    "pow",       "^"
+    "pow",       "^",
   )
 }
 
@@ -542,11 +540,6 @@ test_that("pow, rpow, sqrt, log10", {
   # pow
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
-
-  # rpow
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$rpow(pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2) %**% (pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-
 
   # sqrt
   expect_identical(

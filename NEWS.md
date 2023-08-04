@@ -1,5 +1,8 @@
 # polars (development version)
 
+## BREAKING CHANGES
+- `$rpow()` is removed. It should never have been translated. Use `^` and `$pov()` instead (#346).
+
 ## What's changed
 
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).

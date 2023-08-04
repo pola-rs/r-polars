@@ -3,7 +3,7 @@
 \name{Expr_pow}
 \alias{Expr_pow}
 \alias{pow}
-\title{Exponentiation \code{^} or \verb{**}}
+\title{Exponentiation \code{^} and \verb{**}.}
 \usage{
 Expr_pow(exponent)
 }
@@ -15,6 +15,11 @@ Expr
 }
 \description{
 Raise expression to the power of exponent.
+}
+\details{
+in py-polars python \code{^} is the xor operator. The R interpreter will replace the
+\verb{**} with \code{^}, such that \verb{**} means \code{^}. Except e.g. in strings like "**". Use of \verb{**} will
+not work in some cases, because it is not a real separate operator in R.
 }
 \examples{
 pl$DataFrame(a = -1:3)$select(
