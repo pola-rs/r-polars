@@ -286,7 +286,7 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' in background. Get a handle which later can be converted into the resulting DataFrame. Useful
 #' in interactive mode to not lock R session.
 #' @details
-#' Note: use `$fetch()` if you want to run your query on the first `n` rows only.
+#' Note: use `$fetch(n)` if you want to run your query on the first `n` rows only.
 #' This can be a huge time saver in debugging queries.
 #' @keywords LazyFrame DataFrame_new
 #' @return collected `DataFrame` or if colkect
