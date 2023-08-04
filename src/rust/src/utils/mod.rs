@@ -638,7 +638,7 @@ fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
     match robj.rtype() {
         ExternalPtr if robj.inherits("Expr") => Ok(robj),
         ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => {
-            unpack(R!("polars:::({{robj}}$otherwise(pl$lit(NULL)))"))
+            unpack(R!("polars:::result({{robj}}$otherwise(pl$lit(NULL)))"))
         }
         ExternalPtr if robj.inherits("When") => {
             rerr().plain("Cannot use a When-statement as Expr without a $then()")
