@@ -78,8 +78,8 @@ pl$col = function(name = "", ...) {
 }
 
 # This function throws error freely prefer pl$col
-pl_col_internal = function(name="", ...) {
-# preconvert Series into char name(s)
+pl_col_internal = function(name = "", ...) {
+  # preconvert Series into char name(s)
   if (inherits(name, "Series")) name <- name$to_vector()
 
   name_add = list(...)

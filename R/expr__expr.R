@@ -195,7 +195,9 @@ Expr_add = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 "+.Expr" = function(e1, e2) {
-  if (missing(e2)) return(e1)
+  if (missing(e2)) {
+    return(e1)
+  }
   result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
 }
 
@@ -342,7 +344,7 @@ Expr_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
-"==.Expr" =  function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '='-operator")
+"==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '='-operator")
 
 
 #' Not Equal !=
@@ -356,7 +358,7 @@ Expr_eq = function(other) {
 #' pl$lit(1) != pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = function(other) {
-  .pr$Expr$neq(self, other) |> unwrap("in $neq()" )
+  .pr$Expr$neq(self, other) |> unwrap("in $neq()")
 }
 #' @export
 #' @details
@@ -377,7 +379,7 @@ Expr_neq = function(other) {
 #' pl$lit(2) <= pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = function(other) {
-  .pr$Expr$lt_eq(self, other) |> unwrap("in $lt_eq()" )
+  .pr$Expr$lt_eq(self, other) |> unwrap("in $lt_eq()")
 }
 #' @export
 #' @details
@@ -399,7 +401,7 @@ Expr_lt_eq = function(other) {
 #' pl$lit(2) >= pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = function(other) {
-  .pr$Expr$gt_eq(self, other) |> unwrap("in $gt_eq()" )
+  .pr$Expr$gt_eq(self, other) |> unwrap("in $gt_eq()")
 }
 #' @export
 #' @details
@@ -839,10 +841,14 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
   pcase(
-    is.null(x), .pr$Expr$lit(NULL),
-    inherits(x, "Expr"), Ok(x),
-    inherits(x, "Series"), .pr$Expr$lit(x),
-    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")), {
+    is.null(x),
+    .pr$Expr$lit(NULL),
+    inherits(x, "Expr"),
+    Ok(x),
+    inherits(x, "Series"),
+    .pr$Expr$lit(x),
+    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")),
+    {
       result(pl$Series(x)) |> and_then(.pr$Expr$lit)
     },
     or_else = .pr$Expr$lit(x)
@@ -1028,7 +1034,7 @@ Expr_rpow = function(base) {
 
 #' @rdname Expr_rpow
 #' @export
-"%**%.Expr" = function(e1, e2) result(wrap_e(e1)$rpow(e2))|> unwrap("using the '**'-operator")
+"%**%.Expr" = function(e1, e2) result(wrap_e(e1)$rpow(e2)) |> unwrap("using the '**'-operator")
 
 
 #' Square root
