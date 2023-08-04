@@ -937,7 +937,10 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+LazyFrame$with_column <- function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
+  .Call(wrap__LazyFrame__with_column, self, expr)
+}
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
@@ -954,6 +957,8 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
 LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
+
+LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
