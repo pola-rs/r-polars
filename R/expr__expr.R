@@ -98,7 +98,7 @@ wrap_e_legacy = function(e, str_to_lit = TRUE) {
   }
 }
 
-#' DEPRECATED wrap as literal
+#' wrap as literal
 #' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
 #' This function is only kept for reference
 #' @param e an Expr(polars) or any R expression
@@ -188,7 +188,7 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 #' pl$lit(5)$add(pl$lit(10))
 #' +pl$lit(5) # unary use resolves to same as pl$lit(5)
 Expr_add = function(other) {
-  .pr$Expr$add(self, wrap_e(other) |> result() |> unwrap("in $add()"))
+  .pr$Expr$add(self, other) |> unwrap("in $add()")
 }
 #' @export
 #' @rdname Expr_add
@@ -210,7 +210,7 @@ Expr_add = function(other) {
 #' pl$lit(5) / pl$lit(10)
 #' pl$lit(5)$div(pl$lit(10))
 Expr_div = function(other) {
-  .pr$Expr$div(self, wrap_e(other) |> result() |> unwrap("in $div()"))
+  .pr$Expr$div(self, other) |> unwrap("in $div()")
 }
 #' @export
 #' @rdname Expr_div
@@ -230,7 +230,7 @@ Expr_div = function(other) {
 #' pl$lit(5)$sub(pl$lit(10))
 #' -pl$lit(5)
 Expr_sub = function(other) {
-  .pr$Expr$sub(self, wrap_e(other) |> result() |> unwrap("in $sub"))
+  .pr$Expr$sub(self, other) |> unwrap("in $sub()")
 }
 #' @export
 #' @rdname Expr_sub
@@ -253,7 +253,7 @@ Expr_sub = function(other) {
 #' pl$lit(5) * pl$lit(10)
 #' pl$lit(5)$mul(pl$lit(10))
 Expr_mul = Expr_mul = function(other) {
-  .pr$Expr$mul(self, wrap_e(other) |> result() |> unwrap("in $mul"))
+  .pr$Expr$mul(self, other) |> unwrap("in $mul()")
 }
 
 #' @export
@@ -292,7 +292,7 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5) < pl$lit(10)
 #' pl$lit(5)$lt(pl$lit(10))
 Expr_lt = function(other) {
-  .pr$Expr$lt(self, wrap_e(other) |> result() |> unwrap("in $lt()"))
+  .pr$Expr$lt(self, other) |> unwrap("in $lt()")
 }
 #' @export
 #' @details
@@ -313,7 +313,7 @@ Expr_lt = function(other) {
 #' pl$lit(2) > pl$lit(1)
 #' pl$lit(2)$gt(pl$lit(1))
 Expr_gt = function(other) {
-  .pr$Expr$gt(self, wrap_e(other) |> result() |> unwrap("in $gt()"))
+  .pr$Expr$gt(self, other) |> unwrap("in $gt()")
 }
 #' @export
 #' @details
@@ -334,7 +334,7 @@ Expr_gt = function(other) {
 #' pl$lit(2) == pl$lit(2)
 #' pl$lit(2)$eq(pl$lit(2))
 Expr_eq = function(other) {
-  .pr$Expr$eq(self, wrap_e(other) |> result() |> unwrap("in $eq()"))
+  .pr$Expr$eq(self, other) |> unwrap("in $eq()")
 }
 #' @export
 #' @details
@@ -356,7 +356,7 @@ Expr_eq = function(other) {
 #' pl$lit(1) != pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = function(other) {
-  .pr$Expr$neq(self, wrap_e(other) |> result() |> unwrap("in $neq()" ))
+  .pr$Expr$neq(self, other) |> unwrap("in $neq()" )
 }
 #' @export
 #' @details
@@ -377,7 +377,7 @@ Expr_neq = function(other) {
 #' pl$lit(2) <= pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = function(other) {
-  .pr$Expr$lt_eq(self, wrap_e(other) |> result() |> unwrap("in $lt_eq()" ))
+  .pr$Expr$lt_eq(self, other) |> unwrap("in $lt_eq()" )
 }
 #' @export
 #' @details
@@ -399,7 +399,7 @@ Expr_lt_eq = function(other) {
 #' pl$lit(2) >= pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = function(other) {
-  .pr$Expr$gt_eq(self,  wrap_e(other) |> result() |> unwrap("in $gt_eq()" ))
+  .pr$Expr$gt_eq(self, other) |> unwrap("in $gt_eq()" )
 }
 #' @export
 #' @details
@@ -900,9 +900,11 @@ Expr_reverse = function() {
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
-Expr_and = "use_extendr_wrapper"
+Expr_and = function(other) {
+  .pr$Expr$and(self, other) |> unwrap("in $and()")
+}
 #' @export
-"&.Expr" = function(e1, e2) wrap_e(e1)$and(wrap_e(e2))
+"&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
 #' Or
@@ -918,9 +920,11 @@ Expr_and = "use_extendr_wrapper"
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
-Expr_or = "use_extendr_wrapper"
+Expr_or = function(other) {
+  .pr$Expr$or(self, other) |> unwrap("in $or()")
+}
 #' @export
-"|.Expr" = function(e1, e2) wrap_e(e1)$or(wrap_e(e2))
+"|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
 #' Xor
@@ -934,7 +938,9 @@ Expr_or = "use_extendr_wrapper"
 #' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
-Expr_xor = "use_extendr_wrapper"
+Expr_xor = function(other) {
+  .pr$Expr$xor(self, other) |> unwrap("in $xor()")
+}
 
 
 
@@ -1011,8 +1017,7 @@ Expr_cast = function(dtype, strict = TRUE) {
 #'   pl$lit(2) %**% (pl$col("a"))
 #' )$get_column("a")$to_r() == (-1:3)^2
 Expr_rpow = function(base) {
-  if (!inherits(base, "Expr")) base <- pl$lit(base)
-  expr = .pr$Expr$pow(base, self)
+  result(wrap_e(base)$pow(self)) |> unwrap("in $rpow()")
 }
 
 #' @rdname Expr_rpow
@@ -1023,7 +1028,7 @@ Expr_rpow = function(base) {
 
 #' @rdname Expr_rpow
 #' @export
-"%**%.Expr" = function(e1, e2) wrap_e(e1)$rpow(e2)
+"%**%.Expr" = function(e1, e2) result(wrap_e(e1)$rpow(e2))|> unwrap("using the '**'-operator")
 
 
 #' Square root
@@ -2446,10 +2451,10 @@ Expr_limit = function(n = 10) {
 #'   pl$lit(2)^(pl$col("a"))
 #' )$get_column("literal")$to_r() == 2^(-1:3)
 Expr_pow = function(exponent) {
-  .pr$Expr$pow(self, wrap_e(exponent))
+  .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
 #' @export
-"^.Expr" = function(e1, e2) wrap_e(e1)$pow(e2)
+"^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
 #' is_in
@@ -2468,7 +2473,9 @@ Expr_pow = function(exponent) {
 #'   pl$col("a")$is_in(pl$lit(NA_real_))
 #' )$to_data_frame()[[1L]]
 #'
-Expr_is_in = "use_extendr_wrapper"
+Expr_is_in = function(other) {
+  .pr$Expr$is_in(self, other) |> unwrap("in $is_in()")
+}
 
 ## TODO contribute polars, do not panic on by pointing to non positive values
 #' Repeat by

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{wrap_e}
 \alias{wrap_e}
-\title{DEPRECATED wrap as literal}
+\title{wrap as literal}
 \usage{
 wrap_e(e, str_to_lit = TRUE)
 }

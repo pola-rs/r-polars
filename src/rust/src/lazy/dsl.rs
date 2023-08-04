@@ -146,45 +146,45 @@ impl Expr {
     }
 
     //expr binary comparisons
-    pub fn gt(&self, other: &Expr) -> Self {
-        self.0.clone().gt(other.0.clone()).into()
+    pub fn gt(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().gt(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn gt_eq(&self, other: &Expr) -> Self {
-        self.0.clone().gt_eq(other.0.clone()).into()
+    pub fn gt_eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().gt_eq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn lt(&self, other: &Expr) -> Self {
-        self.0.clone().lt(other.0.clone()).into()
+    pub fn lt(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().lt(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn lt_eq(&self, other: &Expr) -> Self {
-        self.0.clone().lt_eq(other.0.clone()).into()
+    pub fn lt_eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().lt_eq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn neq(&self, other: &Expr) -> Self {
-        self.0.clone().neq(other.0.clone()).into()
+    pub fn neq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().neq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn eq(&self, other: &Expr) -> Self {
-        self.0.clone().eq(other.0.clone()).into()
+    pub fn eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().eq(robj_to!(PLExpr, other)?).into())
     }
 
     //logical operators
-    fn and(&self, other: &Expr) -> Self {
-        self.0.clone().and(other.0.clone()).into()
+    fn and(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().and(robj_to!(PLExpr, other)?).into())
     }
 
-    fn or(&self, other: &Expr) -> Self {
-        self.0.clone().or(other.0.clone()).into()
+    fn or(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().or(robj_to!(PLExpr, other)?).into())
     }
 
-    fn xor(&self, other: &Expr) -> Self {
-        self.0.clone().xor(other.0.clone()).into()
+    fn xor(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().xor(robj_to!(PLExpr, other)?).into())
     }
 
-    fn is_in(&self, other: &Expr) -> Self {
-        self.0.clone().is_in(other.0.clone()).into()
+    fn is_in(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().is_in(robj_to!(PLExpr, other)?).into())
     }
 
     //any not translated expr from expr/expr.py
@@ -1410,8 +1410,8 @@ impl Expr {
         self.clone().0.dt().offset_by(by).into()
     }
 
-    pub fn pow(&self, exponent: &Expr) -> Self {
-        self.0.clone().pow(exponent.0.clone()).into()
+    pub fn pow(&self, exponent: Robj) -> RResult<Self> {
+        Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
     pub fn repeat_by(&self, by: &Expr) -> Self {
@@ -1590,21 +1590,21 @@ impl Expr {
     }
 
     //binary arithmetic expressions
-    pub fn add(&self, other: &Expr) -> Self {
-        self.0.clone().add(other.0.clone()).into()
+    pub fn add(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().add(robj_to!(PLExpr, other)?).into())
     }
 
     //binary arithmetic expressions
-    pub fn sub(&self, other: &Expr) -> Self {
-        self.0.clone().sub(other.0.clone()).into()
+    pub fn sub(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().sub(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn mul(&self, other: &Expr) -> Self {
-        self.0.clone().mul(other.0.clone()).into()
+    pub fn mul(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().mul(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn div(&self, other: &Expr) -> Self {
-        self.0.clone().div(other.0.clone()).into()
+    pub fn div(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().div(robj_to!(PLExpr, other)?).into())
     }
 
     //unary
