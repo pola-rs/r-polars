@@ -7,7 +7,7 @@ test_that("clone_robj + mem_adress", {
   expect_identical(env,env2)
   expect_identical(pl$mem_address(env), pl$mem_address(env2))
 
-  # clone immuatble, not the same
+  # clone immutable, not the same
   l = list()
   l2 = clone_robj(l)
   l$foo = 42
