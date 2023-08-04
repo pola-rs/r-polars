@@ -35,6 +35,8 @@ sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
+concat_str <- function(exprs, separator) .Call(wrap__concat_str, exprs, separator)
+
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
 r_date_range_lazy <- function(start, end, every, closed, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, tz)

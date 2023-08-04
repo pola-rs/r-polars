@@ -89,6 +89,14 @@ fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
 }
 
 #[extendr]
+fn concat_str(exprs: &ProtoExprArray, separator: &str) -> Result<Expr, String> {
+    let exprs = exprs.to_vec("select");
+    Ok(Expr(
+        polars::lazy::dsl::concat_str(exprs, separator).into(),
+    ))
+}
+
+#[extendr]
 fn r_date_range(
     start: f64,
     stop: f64,
@@ -262,6 +270,7 @@ extendr_module! {
     fn sum_exprs;
 
     fn concat_list;
+    fn concat_str;
     fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;

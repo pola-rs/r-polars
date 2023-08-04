@@ -2263,3 +2263,26 @@ test_that("implode", {
   expect_identical(pl$lit(1:4)$implode()$to_r(), pl$lit(list(1:4))$to_r())
   expect_grepl_error(pl$lit(42)$implode(42), c("unused argument"))
 })
+
+test_that("concat_str", {
+  df = pl$DataFrame(
+    a = c(1, 2, 3),
+    b = c("dogs", "cats", NA),
+    c = c("play", "swim", "walk")
+  )
+
+  out = df$with_columns(
+    pl$concat_str(
+      pl$col("a") * 2,
+      "b",
+      pl$col("c"),
+      separator = " "
+    )$alias("full_sentence")
+  )$to_data_frame()
+
+  expect_equal(dim(out), c(3, 4))
+  expect_equal(
+    out$full_sentence,
+    c("2.0 dogs play", "4.0 cats swim", NA)
+  )
+})

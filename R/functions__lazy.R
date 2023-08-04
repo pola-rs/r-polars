@@ -519,12 +519,12 @@ pl$approx_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # column as list
-#' df$with_column(pl$sum(list("a", "c")))
-#' df$with_column(pl$sum(list("a", "c", 42L)))
+#' df$with_columns(pl$sum(list("a", "c")))
+#' df$with_columns(pl$sum(list("a", "c", 42L)))
 #'
 #' # two eqivalent lines
-#' df$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
-#' df$with_column(pl$sum(list("*")))
+#' df$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
+#' df$with_columns(pl$sum(list("*")))
 pl$sum = function(...) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -566,7 +566,7 @@ pl$sum = function(...) {
 #'   d = c(1:2, NA_real_, -Inf)
 #' )
 #' # use min to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$min("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -613,7 +613,7 @@ pl$min = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -659,7 +659,7 @@ pl$max = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -833,4 +833,34 @@ pl$struct = function(
     unwrap( # raise any error with context
       "in pl$struct:"
     )
+}
+
+#' Horizontally concatenate columns into a single string column
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' @param separator String that will be used to separate the values of each
+#' column.
+#' @name pl_concat_str
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 2, 3),
+#'   b = c("dogs", "cats", NA),
+#'   c = c("play", "swim", "walk")
+#' )
+#'
+#' df$with_columns(
+#'   pl$concat_str(
+#'     pl$col("a") * 2,
+#'     "b",
+#'     pl$col("c"),
+#'     separator = " "
+#'   )$alias("full_sentence")
+#' )
+
+pl$concat_str = function(..., separator = "") {
+  pra = construct_ProtoExprArray(...)
+  unwrap(concat_str(pra, separator))
 }
