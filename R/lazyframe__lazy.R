@@ -265,14 +265,21 @@ LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
-#' @param type_coercion Boolean. Do type coercion optimization.
-#' @param predicate_pushdown  Boolean. Do predicate pushdown optimization.
-#' @param projection_pushdown  Boolean. Do projection pushdown optimization.
-#' @param simplify_expression  Boolean. Run simplify expressions optimization.
-#' @param no_optimization  Boolean. Turn off (certain) optimizations.
-#' @param slice_pushdown  Boolean. Slice pushdown optimization.
-#' @param common_subplan_elimination  Boolean. Will try to cache branching subplans that occur on
-#' self-joins or unions.
+#' @param type_coercion Boolean. Coerce types such that operations succeed and run on minimal
+#' required memory.
+#' @param predicate_pushdown  Boolean. Applies filters as early as possible/ at scan level.
+#' @param projection_pushdown  Boolean. Applies filters as early as possible/ at scan level.
+#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used by multiple subtrees
+#'  in the query plan.
+#' @param no_optimization  Boolean. Turn of the following:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
+#' @param slice_pushdown  Boolean. Only load the required slice from the scan level. Don't
+#' materialize sliced outputs (e.g. join.head(10)).
+#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that are used by multiple
+#' subtrees in the query plan.
 #' @param streaming  Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state)
 #' @param collect_in_background Boolean. Detach this query from R session. Computation will start
