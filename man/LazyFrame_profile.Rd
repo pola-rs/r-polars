@@ -27,13 +27,16 @@ pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$
   groupby("Species", maintain_order = TRUE)$
-  agg(pl$col(pl$Float64)$first() + 5 )$
+  agg(pl$col(pl$Float64)$first() + 5)$
   profile()
 
 # -2-  map each Species-group of each numeric column with an R function, takes ~7000us (slow!)
 
 # some R function, prints `.` for each time called by polars
-r_func = \(s) {cat(".");s$to_r()[1] + 5}
+r_func = \(s) {
+  cat(".")
+  s$to_r()[1] + 5
+}
 
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$

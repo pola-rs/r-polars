@@ -292,17 +292,15 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @return collected `DataFrame` or if colkect
 #' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_collect = function(
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  no_optimization = FALSE,
-  slice_pushdown = TRUE,
-  common_subplan_elimination = TRUE,
-  streaming = FALSE,
-  collect_in_background = FALSE
-) {
-
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    no_optimization = FALSE,
+    slice_pushdown = TRUE,
+    common_subplan_elimination = TRUE,
+    streaming = FALSE,
+    collect_in_background = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -314,7 +312,7 @@ LazyFrame_collect = function(
     common_subplan_elimination = FALSE
   }
 
-  collect_f = if(isTRUE(collect_in_background)) {
+  collect_f = if (isTRUE(collect_in_background)) {
     .pr$LazyFrame$collect_background
   } else {
     .pr$LazyFrame$collect
@@ -1007,13 +1005,16 @@ LazyFrame_dtypes = method_as_property(function() {
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
 #'   groupby("Species", maintain_order = TRUE)$
-#'   agg(pl$col(pl$Float64)$first() + 5 )$
+#'   agg(pl$col(pl$Float64)$first() + 5)$
 #'   profile()
 #'
 #' # -2-  map each Species-group of each numeric column with an R function, takes ~7000us (slow!)
 #'
 #' # some R function, prints `.` for each time called by polars
-#' r_func = \(s) {cat(".");s$to_r()[1] + 5}
+#' r_func = \(s) {
+#'   cat(".")
+#'   s$to_r()[1] + 5
+#' }
 #'
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$

@@ -82,7 +82,7 @@ test_that("robj_to! from bit64", {
     c("BadArgument", "When", "TypeMismatch", "BadValue", "ValueOutOfScope", "BadValue")
   )
 
-   expect_rpolarserr(
+  expect_rpolarserr(
     unwrap(test_robj_to_i32(2^37), call = NULL),
     c("BadArgument", "When", "TypeMismatch", "BadValue", "ValueOutOfScope", "BadValue")
   )
@@ -94,7 +94,7 @@ test_that("robj_to! from bit64", {
   )
   expect_rpolarserr(
     unwrap(test_robj_to_u32(bit64::as.integer64(-1)), call = NULL),
-     c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
 
   # NO length>1
