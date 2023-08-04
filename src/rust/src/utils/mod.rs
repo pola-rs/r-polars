@@ -533,7 +533,7 @@ fn err_no_nan<T>() -> RResult<T> {
 }
 
 fn err_no_scalar<T>() -> RResult<T> {
-    rerr().plain("only a scalar value is allowed here (length = 1)".to_string())
+    rerr().plain("only a scalar value is allowed here (length = 1)")
 }
 
 pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
