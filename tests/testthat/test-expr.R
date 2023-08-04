@@ -2285,4 +2285,11 @@ test_that("concat_str", {
     out$full_sentence,
     c("2.0 dogs play", "4.0 cats swim", NA)
   )
+
+  # check error for something which cannot be turned into an Expression
+  ctxs = pl$concat_str("a", complex(1)) |>
+    (\(x) result(x)$err$contexts())()
+  expect_identical(ctxs$BadArgument, "...")
+  expect_identical(ctxs$Hint, "element no. [2] ")
+  expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })

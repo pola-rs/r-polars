@@ -59,41 +59,40 @@ pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
 #[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::min_exprs(exprs).into()
+    pl::min_exprs(exprs).into()
 }
 
 #[extendr]
 fn max_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::max_exprs(exprs).into()
+    pl::max_exprs(exprs).into()
 }
 
 #[extendr]
 fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs: Vec<pl::Expr> = exprs.to_vec("select");
-    polars::lazy::dsl::coalesce(exprs.as_slice()).into()
+    pl::coalesce(exprs.as_slice()).into()
 }
 
 #[extendr]
 fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::sum_exprs(exprs).into()
+    pl::sum_exprs(exprs).into()
 }
 
 #[extendr]
 fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
     let exprs = exprs.to_vec("select");
-    Ok(Expr(
-        polars::lazy::dsl::concat_list(exprs).map_err(|err| err.to_string())?,
-    ))
+    Ok(Expr(pl::concat_list(exprs).map_err(|err| err.to_string())?))
 }
 
 #[extendr]
-fn concat_str(exprs: &ProtoExprArray, separator: &str) -> Result<Expr, String> {
-    let exprs = exprs.to_vec("select");
-    Ok(Expr(
-        polars::lazy::dsl::concat_str(exprs, separator).into(),
-    ))
+fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
+    Ok(pl::concat_str(
+        robj_to!(Vec, PLExprCol, dotdotdot)?,
+        robj_to!(str, separator)?,
+    )
+    .into())
 }
 
 #[extendr]
@@ -157,10 +156,7 @@ fn r_date_range_lazy(
 //for now just use inner directly
 #[extendr]
 fn as_struct(exprs: Robj) -> Result<Expr, String> {
-    Ok(polars::lazy::dsl::as_struct(
-        crate::utils::list_expr_to_vec_pl_expr(exprs, true)?.as_slice(),
-    )
-    .into())
+    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true)?.as_slice()).into())
 }
 
 #[extendr]

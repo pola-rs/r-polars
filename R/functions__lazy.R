@@ -855,12 +855,12 @@ pl$struct = function(
 #'   pl$concat_str(
 #'     pl$col("a") * 2,
 #'     "b",
-#'     pl$col("c"),
+#'     "c",
+#'     pl$lit("!"),
 #'     separator = " "
 #'   )$alias("full_sentence")
 #' )
-
+#'
 pl$concat_str = function(..., separator = "") {
-  pra = construct_ProtoExprArray(...)
-  unwrap(concat_str(pra, separator))
+  concat_str(list2(...), separator) |> unwrap("in $concat_str()")
 }
