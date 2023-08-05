@@ -416,6 +416,10 @@ impl LazyFrame {
         }
         Ok(self.0.clone().explode(columns).into())
     }
+
+    pub fn clone_see_me_macro(&self) -> LazyFrame {
+        self.clone()
+    }
 }
 
 #[derive(Clone)]

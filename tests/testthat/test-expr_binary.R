@@ -55,7 +55,7 @@ test_that("bin$encode and bin$decode", {
   $cast(pl$Binary)
   $alias("base64"))
 
-  test_hex_decode = encoded_hex$with_column(
+  test_hex_decode = encoded_hex$with_columns(
     pl$col("hex")$bin$decode("hex")$alias("hex_decoded")
   )$select(
     c("hex_decoded")
@@ -65,7 +65,7 @@ test_that("bin$encode and bin$decode", {
     )
   )$to_list()
 
-  test_base64_decode = encoded_base64$with_column(
+  test_base64_decode = encoded_base64$with_columns(
     pl$col("base64")$bin$decode("base64")$alias("base64_decoded")
   )$select(
     c("base64_decoded")

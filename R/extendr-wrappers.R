@@ -33,8 +33,6 @@ coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
 sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
-mem_address <- function(robj) .Call(wrap__mem_address, robj)
-
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
@@ -50,6 +48,10 @@ rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches
 arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+
+mem_address <- function(robj) .Call(wrap__mem_address, robj)
+
+clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
 
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
@@ -935,7 +937,10 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
+LazyFrame$with_column <- function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
+  .Call(wrap__LazyFrame__with_column, self, expr)
+}
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
@@ -956,6 +961,8 @@ LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, pro
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
 LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
+
+LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }

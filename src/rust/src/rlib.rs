@@ -57,13 +57,6 @@ pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
 }
 
 #[extendr]
-pub fn mem_address(robj: Robj) -> String {
-    let ptr_raw = unsafe { robj.external_ptr_addr::<usize>() };
-    let ptr_val = ptr_raw as usize;
-    format!("{:#012x}", ptr_val)
-}
-
-#[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
     polars::lazy::dsl::min_exprs(exprs).into()
@@ -225,38 +218,20 @@ pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     Ok(dtype.to_string())
 }
 
-// pub fn series_from_arrow(name: &str, array: Robj) -> Result<Series, String> {
-//     use polars::prelude::IntoSeries;
-//     let arr = crate::arrow_interop::to_rust::arrow_array_to_rust(array)?;
+// -- Meta Robj functions
+#[extendr]
+pub fn mem_address(robj: Robj) -> String {
+    let ptr_raw = unsafe { robj.external_ptr_addr::<usize>() };
+    let ptr_val = ptr_raw as usize;
+    format!("{:#012x}", ptr_val)
+}
 
-//     match arr.data_type() {
-//         pl::ArrowDataType::LargeList(_) => {
-//             let array = arr.as_any().downcast_ref::<pl::LargeListArray>().unwrap();
+#[extendr] //could be used to check copying/cloning behavior of R objects
+pub fn clone_robj(robj: Robj) -> Robj {
+    robj.clone()
+}
 
-//             let mut previous = 0;
-//             let mut fast_explode = true;
-//             for &o in array.offsets().as_slice()[1..].iter() {
-//                 if o == previous {
-//                     fast_explode = false;
-//                     break;
-//                 }
-//                 previous = o;
-//             }
-//             let mut out = unsafe { pl::ListChunked::from_chunks(name, vec![arr]) };
-//             if fast_explode {
-//                 out.set_fast_explode()
-//             }
-//             Ok(Series(out.into_series()))
-//         }
-//         _ => {
-//             let res_series: pl::PolarsResult<pl::Series> =
-//                 std::convert::TryFrom::try_from((name, arr));
-//             let series = res_series.map_err(|err| err.to_string())?;
-//             Ok(Series(series))
-//         }
-//     }
-// }
-
+// -- Special functions just for unit testing
 #[extendr]
 fn test_robj_to_usize(robj: Robj) -> RResult<String> {
     robj_to!(usize, robj).map(rdbg)
@@ -296,7 +271,7 @@ extendr_module! {
     fn max_exprs;
     fn coalesce_exprs;
     fn sum_exprs;
-    fn mem_address;
+
     fn concat_list;
     fn r_date_range;
     fn r_date_range_lazy;
@@ -308,6 +283,9 @@ extendr_module! {
     fn rb_list_to_df;
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
+
+    fn mem_address;
+    fn clone_robj;
 
     fn test_robj_to_usize;
     fn test_robj_to_f64;

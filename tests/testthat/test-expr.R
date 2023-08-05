@@ -2194,7 +2194,7 @@ test_that("shrink_dtype", {
     f = c("a", "b", "c"),
     g = c(0.1, 1.32, 0.12),
     h = c(T, NA, F)
-  )$with_column(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+  )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 
   expect_true(all(mapply(
     df$dtypes,
