@@ -1,7 +1,7 @@
 # polars (development version)
 
 ## BREAKING CHANGES
-- `$rpow()` is removed. It should never have been translated. Use `^` and `$pov()` instead (#346).
+- `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` instead (#346).
 
 ## What's changed
 
