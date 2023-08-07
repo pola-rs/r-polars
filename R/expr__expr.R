@@ -673,6 +673,28 @@ construct_ProtoExprArray = function(...) {
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
+#'
+#' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # map a,b,c,d sequentially
+#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2})
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead
+#' pl$set_global_rpool_cap(4) #set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
   map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
   map_fn(self, f, output_type, agg_list)
@@ -787,6 +809,28 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' system.time({
 #'   r_vec * 2L
 #' })
+#'
+#' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()})
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead here
+#' pl$set_global_rpool_cap(4) #set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
   if (in_background) {
     return(.pr$Expr$apply_in_background(self, f, return_type))
