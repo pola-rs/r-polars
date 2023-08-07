@@ -52,6 +52,92 @@ test_that("expression Arithmetics", {
   expect_equal(names(fails), character())
 })
 
+make_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~fn,
+    "mul",       "*",
+    "add",       "+",
+    "sub",       "-",
+    "div",       "/",
+    "gt",        ">",
+    "gte",       ">=",
+    "lt",        "<",
+    "lte",       "<=",
+    "eq",        "==",
+    "neq",       "!=",
+    "pow",       "^",
+  )
+}
+
+patrick::with_parameters_test_that(
+  "ops symbol work with expressions",
+  {
+    # every time, 4 tests:
+    # - 2 exprs
+    # - 1 expr then 1 non-expr
+    # - 1 non-expr then 1 expr
+    # - 2 non-exprs
+
+    dat = pl$DataFrame(mtcars)
+    dat_exp = data.frame(
+      mpg = do.call(fn, list(mtcars$mpg, 2)),
+      cyl = do.call(fn, list(2, mtcars$cyl)),
+      hp = do.call(fn, list(mtcars$hp, max(mtcars$drat))),
+      literal = do.call(fn, list(2, 2))
+    )
+
+    expect_equal(
+      dat$select(
+        do.call(fn, list(pl$col("mpg"), 2)),
+        # TODO: this $alias() shouldn't be needed but if I don't put it the
+        # name is "literal" because $div() calls $lit() under the hood
+        do.call(fn, list(2, pl$col("cyl")))$alias("cyl"),
+        do.call(fn, list(pl$col("hp"), pl$max("drat"))),
+        do.call(fn, list(2, 2))
+      )$to_data_frame(),
+      dat_exp
+    )
+  },
+  .cases = make_cases()
+)
+
+# & and | require another test dataset, it can't be the one above
+test_that("logical ops symbol work with expressions", {
+  dat = pl$DataFrame(
+    x = c(TRUE, FALSE, TRUE, FALSE),
+    y = c(TRUE, TRUE, FALSE, FALSE)
+  )
+  dat_df = dat$to_data_frame()
+  expect_equal(
+    dat$select(
+      (pl$col("x") & TRUE)$alias("oneexp_onelit"),
+      (FALSE & pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") & pl$col("y"),
+      FALSE & TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x & TRUE,
+      onelit_oneexp = FALSE & dat_df$y,
+      x = dat_df$x & dat_df$y,
+      literal = FALSE & TRUE
+    )
+  )
+  expect_equal(
+    dat$select(
+      (pl$col("x") | TRUE)$alias("oneexp_onelit"),
+      (FALSE | pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") | pl$col("y"),
+      FALSE | TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x | TRUE,
+      onelit_oneexp = FALSE | dat_df$y,
+      x = dat_df$x | dat_df$y,
+      literal = FALSE | TRUE
+    )
+  )
+})
+
 
 test_that("count + unique + n_unique", {
   expect_equal(
@@ -454,11 +540,6 @@ test_that("pow, rpow, sqrt, log10", {
   # pow
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
-
-  # rpow
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$rpow(pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2) %**% (pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-
 
   # sqrt
   expect_identical(
@@ -2194,7 +2275,7 @@ test_that("shrink_dtype", {
     f = c("a", "b", "c"),
     g = c(0.1, 1.32, 0.12),
     h = c(T, NA, F)
-  )$with_column(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+  )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 
   expect_true(all(mapply(
     df$dtypes,

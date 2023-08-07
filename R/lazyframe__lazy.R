@@ -957,3 +957,14 @@ LazyFrame_explode = function(columns = list(), ...) {
   .pr$LazyFrame$explode(self, columns, dotdotdot_args) |>
     unwrap("in explode():")
 }
+
+#' Clone a LazyFrame
+#'
+#' This makes a very cheap deep copy/clone of an existing `LazyFrame`.
+#' @return A LazyFrame
+#' @examples
+#' pl$LazyFrame(mtcars)$clone()
+
+LazyFrame_clone = function() {
+  .pr$LazyFrame$clone_see_me_macro(self)
+}

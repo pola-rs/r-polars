@@ -99,7 +99,7 @@ replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
 
 
 
-# expression constructors
+# expression constructors, why not just pl$lit = Expr_lit?
 move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 

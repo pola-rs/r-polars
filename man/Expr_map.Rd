@@ -42,5 +42,27 @@ view number of parallel R sessions.
 pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
   paste("cheese", as.character(x$to_vector()))
 }, pl$dtypes$Utf8))
+
+#R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+
+# map a,b,c,d sequentially
+pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+  pl$all()$map(\(s) {Sys.sleep(.5);s*2})
+)$collect() |> system.time()
+
+# map in parallel 1: Overhead to start up extra R processes / sessions
+pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead
+pl$set_global_rpool_cap(4) #set back to 4, the default
+pl$get_global_rpool_cap()
+pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+  pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+)$collect() |> system.time()
+
+# map in parallel 2: Reuse R processes in "polars global_rpool".
+pl$get_global_rpool_cap()
+pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
+  pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+)$collect() |> system.time()
+
 }
 \keyword{Expr}

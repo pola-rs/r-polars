@@ -1,8 +1,14 @@
 # polars (development version)
 
+## BREAKING CHANGES
+- `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` instead (#346).
+
 ## What's changed
 
-- New method `$explode()` for `DataFrame` and `LazyFrame`.
+- New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
+- New method `$clone()` for `LazyFrame` (#347).
+- `$with_column()` is now deprecated (following upstream `polars`). It will be
+  removed in 0.9.0. It should be replaced with `$with_columns()` (#313).
 
 # polars 0.7.0
 

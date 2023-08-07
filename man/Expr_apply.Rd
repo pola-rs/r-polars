@@ -122,5 +122,27 @@ r_vec = df$get_column("a")$to_r()
 system.time({
   r_vec * 2L
 })
+
+#' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+
+# use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
+pl$LazyFrame(iris)$groupby("Species")$agg(
+  pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()})
+)$collect() |> system.time()
+
+# map in parallel 1: Overhead to start up extra R processes / sessions
+pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead here
+pl$set_global_rpool_cap(4) #set back to 4, the default
+pl$get_global_rpool_cap()
+pl$LazyFrame(iris)$groupby("Species")$agg(
+  pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+)$collect() |> system.time()
+
+# map in parallel 2: Reuse R processes in "polars global_rpool".
+pl$get_global_rpool_cap()
+pl$LazyFrame(iris)$groupby("Species")$agg(
+  pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+)$collect() |> system.time()
+
 }
 \keyword{Expr}

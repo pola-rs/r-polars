@@ -31,8 +31,6 @@ coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
 sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
-mem_address <- function(robj) .Call(wrap__mem_address, robj)
-
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
@@ -49,6 +47,12 @@ arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
+internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
+
+mem_address <- function(robj) .Call(wrap__mem_address, robj)
+
+clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
+
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
 test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
@@ -56,6 +60,8 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
+
+test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -982,6 +988,8 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
 LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
+
+LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
