@@ -837,21 +837,17 @@ pl$struct = function(
 
 #' Covariance
 #' @name pl_cov
-#' @description Calculates the covariance between two columns
-#' @param a str or Expr One column
-#' @param b str of Expr The other column
+#' @description Calculates the covariance between two columns / expressions.
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @return Expr for the computed covariance
 #' @examples
 #' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$cov("a", "b"))$collect()
+#' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
 pl$cov = function(a, b) {
-  if (is_string(a)) {
-    a = pl$col(a)
-  }
-  if (is_string(b)) {
-    b = pl$col(b)
-  }
-  .pr$Expr$cov(a, b)
+  .pr$Expr$cov(a, b) |>
+    unwrap("in pl$cov()")
 }
 
 #' Rolling covariance

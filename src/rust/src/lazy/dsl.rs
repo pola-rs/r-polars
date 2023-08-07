@@ -2216,8 +2216,8 @@ impl Expr {
         dsl::last().into()
     }
 
-    pub fn cov(a: &Expr, b: &Expr) -> Self {
-        pl::cov(a.0.clone(), b.0.clone()).into()
+    pub fn cov(a: Robj, b: Robj) -> RResult<Expr> {
+        Ok(pl::cov(robj_to!(PLExprCol, a)?, robj_to!(PLExprCol, b)?).into())
     }
 
     pub fn rolling_cov(

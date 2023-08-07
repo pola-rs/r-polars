@@ -4,17 +4,18 @@
 \alias{pl_cov}
 \title{Covariance}
 \arguments{
-\item{a}{str or Expr One column}
+\item{a}{One column name or Expr or something convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
-\item{b}{str of Expr The other column}
+\item{b}{Another column name or Expr or something convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 }
 \value{
 Expr for the computed covariance
 }
 \description{
-Calculates the covariance between two columns
+Calculates the covariance between two columns / expressions.
 }
 \examples{
 lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 lf$select(pl$cov("a", "b"))$collect()
+pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
 }
