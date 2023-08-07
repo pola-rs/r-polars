@@ -803,6 +803,14 @@ Expr$new_first <- function() .Call(wrap__Expr__new_first)
 
 Expr$new_last <- function() .Call(wrap__Expr__new_last)
 
+Expr$cov <- function(a, b) .Call(wrap__Expr__cov, a, b)
+
+Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_cov, a, b, window_size, min_periods, ddof)
+
+Expr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__Expr__corr, a, b, method, ddof, propagate_nans)
+
+Expr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_corr, a, b, window_size, min_periods, ddof)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
@@ -935,10 +943,7 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
-LazyFrame$with_column <- function(expr) {
-  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
-  .Call(wrap__LazyFrame__with_column, self, expr)
-}
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
