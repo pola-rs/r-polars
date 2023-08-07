@@ -49,6 +49,8 @@ arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
+internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
+
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
@@ -60,6 +62,8 @@ test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 
 test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
+
+test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 RPolarsErr <- new.env(parent = emptyenv())
 
@@ -935,10 +939,7 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
-LazyFrame$with_column <- function(expr) {
-  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
-  .Call(wrap__LazyFrame__with_column, self, expr)
-}
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 

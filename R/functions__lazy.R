@@ -23,6 +23,9 @@ pl$all = function(name = NULL) {
 }
 
 
+
+
+
 #' Start Expression with a column
 #' @name pl_col
 #' @description
@@ -69,6 +72,13 @@ pl$all = function(name = NULL) {
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
 pl$col = function(name = "", ...) {
+  pl_col_internal(name, ...) |>
+    result() |>
+    unwrap("in pl$col()")
+}
+
+# This function throws error freely prefer pl$col
+pl_col_internal = function(name = "", ...) {
   # preconvert Series into char name(s)
   if (inherits(name, "Series")) name <- name$to_vector()
 
