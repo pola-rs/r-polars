@@ -1,16 +1,16 @@
 use crate::lazy::dsl::Expr;
-use crate::rdataframe::DataFrame;
-use crate::rpolarserr::{rdbg, RResult};
-use crate::{rdataframe::VecDataFrame, utils::r_result_list};
-
 use crate::lazy::dsl::ProtoExprArray;
+use crate::rdataframe::DataFrame;
 use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
+use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
+use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
 use std::result::Result;
+
 #[extendr]
 fn concat_df(vdf: &VecDataFrame) -> List {
     //-> PyResult<PyDataFrame> {
@@ -222,6 +222,16 @@ pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     Ok(dtype.to_string())
 }
 
+// replaces wrap_e_legacy, derived from robj_to!
+#[extendr]
+fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
+    if robj_to!(bool, str_to_lit)? {
+        robj_to!(Expr, robj)
+    } else {
+        robj_to!(ExprCol, robj)
+    }
+}
+
 // -- Meta Robj functions
 #[extendr]
 pub fn mem_address(robj: Robj) -> String {
@@ -255,6 +265,11 @@ fn test_print_string(s: String) {
     rprintln!("{}", s);
 }
 
+#[extendr]
+fn test_robj_to_expr(robj: Robj) -> RResult<Expr> {
+    robj_to!(Expr, robj)
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -278,11 +293,13 @@ extendr_module! {
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
 
+    fn internal_wrap_e;
     fn mem_address;
     fn clone_robj;
-
+  
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
     fn test_print_string;
+    fn test_robj_to_expr;
 }
