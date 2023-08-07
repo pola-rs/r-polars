@@ -6,7 +6,7 @@ use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr::{rerr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{self, rerr, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -24,7 +24,6 @@ use polars::lazy::dsl;
 use polars::prelude as pl;
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
-
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
 pub struct Expr(pub pl::Expr);
@@ -66,11 +65,11 @@ impl Expr {
     }
 
     //TODO expand usecases to series and datatime
-    pub fn lit(robj: Robj) -> Result<Expr, String> {
+    pub fn lit(robj: Robj) -> RResult<Expr> {
         let rtype = robj.rtype();
         let rlen = robj.len();
-        let err_msg = "internal error: Should not be reached";
-        let expr_result = match (rtype, rlen) {
+
+        match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
             (Rtype::Integers, 1) => {
                 let opt_val = robj.as_integer();
@@ -79,7 +78,7 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Int32))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Doubles, 1) if robj.inherits("integer64") => {
@@ -92,7 +91,7 @@ impl Expr {
                         Ok(dsl::lit(x))
                     }
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Doubles, 1) => {
@@ -102,7 +101,7 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Float64))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
             (Rtype::Strings, 1) => {
@@ -119,77 +118,68 @@ impl Expr {
                 } else if robj.is_na() {
                     Ok(dsl::lit(pl::NULL).cast(pl::DataType::Boolean))
                 } else {
-                    Err(err_msg.into())
+                    unreachable!("internal error: could unexpectedly not handle this R value");
                 }
             }
-            (Rtype::ExternalPtr, 1) => {
-                let x = match () {
-                    _ if robj.inherits("Series") => {
-                        let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
-                        pl::lit(s.0)
-                    }
-                    _ => {
-                        dbg!(&robj);
-                        todo!("cannot yet handle this externalptr");
-                    }
-                };
-                Ok(x)
-            }
+            (Rtype::ExternalPtr, 1) => match () {
+                _ if robj.inherits("Series") => {
+                    let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+                    Ok(pl::lit(s.0))
+                }
+                _ => rerr()
+                    .bad_robj(&robj)
+                    .plain("pl$lit() currently only support ExternalPtr's to polars 'Series'"),
+            },
 
-            (x, 1) => Err(format!(
-                "$lit(val): polars not yet support this Rtype {:?}",
-                x
-            )),
-            (_, n) => Err(format!(
-                "$lit(val), literals mush have length one, not length: {:?}",
-                n
-            )),
+            (_, 1) => rerr().bad_robj(&robj).plain("unsupported R type "),
+            (_, n) => rerr()
+                .bad_robj(&robj)
+                .plain(format!("literals mush have length [1], not [{n}]")),
         }
-        .map(Expr);
-
-        expr_result
+        .map(Expr)
+        .when("constructing polars literal from Robj")
     }
 
     //expr binary comparisons
-    pub fn gt(&self, other: &Expr) -> Self {
-        self.0.clone().gt(other.0.clone()).into()
+    pub fn gt(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().gt(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn gt_eq(&self, other: &Expr) -> Self {
-        self.0.clone().gt_eq(other.0.clone()).into()
+    pub fn gt_eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().gt_eq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn lt(&self, other: &Expr) -> Self {
-        self.0.clone().lt(other.0.clone()).into()
+    pub fn lt(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().lt(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn lt_eq(&self, other: &Expr) -> Self {
-        self.0.clone().lt_eq(other.0.clone()).into()
+    pub fn lt_eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().lt_eq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn neq(&self, other: &Expr) -> Self {
-        self.0.clone().neq(other.0.clone()).into()
+    pub fn neq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().neq(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn eq(&self, other: &Expr) -> Self {
-        self.0.clone().eq(other.0.clone()).into()
+    pub fn eq(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().eq(robj_to!(PLExpr, other)?).into())
     }
 
     //logical operators
-    fn and(&self, other: &Expr) -> Self {
-        self.0.clone().and(other.0.clone()).into()
+    fn and(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().and(robj_to!(PLExpr, other)?).into())
     }
 
-    fn or(&self, other: &Expr) -> Self {
-        self.0.clone().or(other.0.clone()).into()
+    fn or(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().or(robj_to!(PLExpr, other)?).into())
     }
 
-    fn xor(&self, other: &Expr) -> Self {
-        self.0.clone().xor(other.0.clone()).into()
+    fn xor(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().xor(robj_to!(PLExpr, other)?).into())
     }
 
-    fn is_in(&self, other: &Expr) -> Self {
-        self.0.clone().is_in(other.0.clone()).into()
+    fn is_in(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().is_in(robj_to!(PLExpr, other)?).into())
     }
 
     //any not translated expr from expr/expr.py
@@ -1415,8 +1405,8 @@ impl Expr {
         self.clone().0.dt().offset_by(by).into()
     }
 
-    pub fn pow(&self, exponent: &Expr) -> Self {
-        self.0.clone().pow(exponent.0.clone()).into()
+    pub fn pow(&self, exponent: Robj) -> RResult<Self> {
+        Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
     pub fn repeat_by(&self, by: &Expr) -> Self {
@@ -1595,21 +1585,21 @@ impl Expr {
     }
 
     //binary arithmetic expressions
-    pub fn add(&self, other: &Expr) -> Self {
-        self.0.clone().add(other.0.clone()).into()
+    pub fn add(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().add(robj_to!(PLExpr, other)?).into())
     }
 
     //binary arithmetic expressions
-    pub fn sub(&self, other: &Expr) -> Self {
-        self.0.clone().sub(other.0.clone()).into()
+    pub fn sub(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().sub(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn mul(&self, other: &Expr) -> Self {
-        self.0.clone().mul(other.0.clone()).into()
+    pub fn mul(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().mul(robj_to!(PLExpr, other)?).into())
     }
 
-    pub fn div(&self, other: &Expr) -> Self {
-        self.0.clone().div(other.0.clone()).into()
+    pub fn div(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().div(robj_to!(PLExpr, other)?).into())
     }
 
     //unary
