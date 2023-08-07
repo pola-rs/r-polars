@@ -2411,20 +2411,30 @@ Expr_limit = function(n = 10) {
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
-#' @details in py-polars python `^` is the xor operator. The R interpreter will replace the
-#' `**` with `^`, such that `**` means `^`. Except e.g. in strings like "**". Use of `**` will
-#' not work in some cases, because it is not a real separate operator in R.
+#' @details Use of `**` is not recommended in r-polars. The R interpreter will replace the `**` with
+#' `^`, such that `**` means `^`. Except e.g. in strings like "**". Use of `**` will not work for
+#' some internal function-lookups, because it is not a real separate operator in R. See example
+#' below or read further at `?"**"`. In py-polars python `^` is the XOR operator and `**` is the
+#' exponentiation operator.
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
-#' pl$DataFrame(a = -1:3)$select(
-#'   pl$lit(2)$pow(pl$col("a"))
-#' )$get_column("literal")$to_r() == 2^(-1:3)
 #'
+#' # use via `pow`-method and the `^`-operator
 #' pl$DataFrame(a = -1:3)$select(
-#'   pl$lit(2)^(pl$col("a"))
-#' )$get_column("literal")$to_r() == 2^(-1:3)
+#'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
+#'   2^pl$lit(-2:2), # brief use
+#'   pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name")
+#' )
+#'
+#'
+#' # Example on the R behavior of the `**`-'quasi operator'
+#' 2^1  # normal use
+#' 2**1 # this works because ** is converted to the `^`-operator  by the R interpreter
+#' get("^")(2,1) #this works because there exists a function called "^"
+#' # the R interpreter will not convert "**" to "^"  and there is no function named "**"
+#' tryCatch(get("**")(2,1), error = as.character)
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }

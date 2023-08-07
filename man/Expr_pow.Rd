@@ -17,17 +17,27 @@ Expr
 Raise expression to the power of exponent.
 }
 \details{
-in py-polars python \code{^} is the xor operator. The R interpreter will replace the
-\verb{**} with \code{^}, such that \verb{**} means \code{^}. Except e.g. in strings like "**". Use of \verb{**} will
-not work in some cases, because it is not a real separate operator in R.
+Use of \verb{**} is not recommended in r-polars. The R interpreter will replace the \verb{**} with
+\code{^}, such that \verb{**} means \code{^}. Except e.g. in strings like "**". Use of \verb{**} will not work for
+some internal function-lookups, because it is not a real separate operator in R. See example
+below or read further at \code{?"**"}. In py-polars python \code{^} is the XOR operator and \verb{**} is the
+exponentiation operator.
 }
 \examples{
-pl$DataFrame(a = -1:3)$select(
-  pl$lit(2)$pow(pl$col("a"))
-)$get_column("literal")$to_r() == 2^(-1:3)
 
+# use via `pow`-method and the `^`-operator
 pl$DataFrame(a = -1:3)$select(
-  pl$lit(2)^(pl$col("a"))
-)$get_column("literal")$to_r() == 2^(-1:3)
+  pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
+  2^pl$lit(-2:2), # brief use
+  pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name")
+)
+
+
+# Example on the R behavior of the `**`-'quasi operator'
+2^1  # normal use
+2**1 # this works because ** is converted to the `^`-operator  by the R interpreter
+get("^")(2,1) #this works because there exists a function called "^"
+# the R interpreter will not convert "**" to "^"  and there is no function named "**"
+tryCatch(get("**")(2,1), error = as.character)
 }
 \keyword{Expr}
