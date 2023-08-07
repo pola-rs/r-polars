@@ -291,7 +291,7 @@ extendr_module! {
     fn internal_wrap_e;
     fn mem_address;
     fn clone_robj;
-  
+
     fn test_robj_to_usize;
     fn test_robj_to_i64;
     fn test_robj_to_u32;

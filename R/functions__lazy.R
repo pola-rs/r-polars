@@ -844,3 +844,76 @@ pl$struct = function(
       "in pl$struct:"
     )
 }
+
+#' Covariance
+#' @name pl_cov
+#' @description Calculates the covariance between two columns / expressions.
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @return Expr for the computed covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$cov("a", "b"))$collect()
+#' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
+pl$cov = function(a, b) {
+  .pr$Expr$cov(a, b) |>
+    unwrap("in pl$cov()")
+}
+
+#' Rolling covariance
+#' @name pl_rolling_cov
+#' @description Calculates the rolling covariance between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
+pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_cov(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_cov()")
+}
+
+#' Correlation
+#' @name pl_corr
+#' @description Calculates the correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param method str One of 'pearson' or 'spearman'
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @param propagate_nans bool Used only when calculating the spearman rank correlation.
+#' If `True` any `NaN` encountered will lead to `NaN` in the output.
+#' Defaults to `False` where `NaN` are regarded as larger than any finite number and thus lead to the highest rank.
+#' @return Expr for the computed correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
+pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
+  .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
+}
+
+#' Rolling correlation
+#' @name pl_rolling_corr
+#' @description Calculates the rolling correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
+pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
+}

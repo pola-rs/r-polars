@@ -1,9 +1,11 @@
 use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::prelude::{self as pl};
+use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
+use crate::robj_to;
+use crate::rpolarserr::RResult;
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -495,6 +497,18 @@ pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, Stri
             s
         )),
     }
+}
+
+pub fn new_rolling_cov_options(
+    window_size: Robj,
+    min_periods: Robj,
+    ddof: Robj,
+) -> RResult<pl::RollingCovOptions> {
+    Ok(pl::RollingCovOptions {
+        window_size: robj_to!(u32, window_size)?,
+        min_periods: robj_to!(u32, min_periods)?,
+        ddof: robj_to!(u8, ddof)?,
+    })
 }
 
 extendr_module! {
