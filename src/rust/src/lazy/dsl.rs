@@ -6,7 +6,7 @@ use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr::{self, rerr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{rerr, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -2211,29 +2211,23 @@ impl Expr {
     }
 
     pub fn rolling_cov(
-        a: &Expr,
-        b: &Expr,
+        a: Robj,
+        b: Robj,
         window_size: Robj,
         min_periods: Robj,
         ddof: Robj,
     ) -> RResult<Self> {
         Ok(pl::rolling_cov(
-            a.0.clone(),
-            b.0.clone(),
+            robj_to!(PLExprCol, a)?,
+            robj_to!(PLExprCol, b)?,
             new_rolling_cov_options(window_size, min_periods, ddof)?,
         )
         .into())
     }
 
-    pub fn corr(
-        a: &Expr,
-        b: &Expr,
-        method: Robj,
-        ddof: Robj,
-        propagate_nans: Robj,
-    ) -> RResult<Self> {
-        let x = a.0.clone();
-        let y = b.0.clone();
+    pub fn corr(a: Robj, b: Robj, method: Robj, ddof: Robj, propagate_nans: Robj) -> RResult<Self> {
+        let x = robj_to!(PLExprCol, a)?;
+        let y = robj_to!(PLExprCol, b)?;
         let df = robj_to!(u8, ddof)?;
         match robj_to!(String, method)?.as_str() {
             "pearson" => Ok(pl::pearson_corr(x, y, df).into()),
@@ -2247,15 +2241,15 @@ impl Expr {
     }
 
     pub fn rolling_corr(
-        a: &Expr,
-        b: &Expr,
+        a: Robj,
+        b: Robj,
         window_size: Robj,
         min_periods: Robj,
         ddof: Robj,
     ) -> RResult<Self> {
         Ok(pl::rolling_corr(
-            a.0.clone(),
-            b.0.clone(),
+            robj_to!(PLExprCol, a)?,
+            robj_to!(PLExprCol, b)?,
             new_rolling_cov_options(window_size, min_periods, ddof)?,
         )
         .into())

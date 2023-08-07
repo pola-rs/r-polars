@@ -4,9 +4,9 @@
 \alias{pl_corr}
 \title{Correlation}
 \arguments{
-\item{a}{str or Expr One column}
+\item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
-\item{b}{str of Expr The other column}
+\item{b}{Another column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
 \item{method}{str One of 'pearson' or 'spearman'}
 

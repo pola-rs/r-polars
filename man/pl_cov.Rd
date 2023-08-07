@@ -4,9 +4,9 @@
 \alias{pl_cov}
 \title{Covariance}
 \arguments{
-\item{a}{One column name or Expr or something convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
+\item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
-\item{b}{Another column name or Expr or something convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
+\item{b}{Another column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 }
 \value{
 Expr for the computed covariance

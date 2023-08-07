@@ -4,9 +4,9 @@
 \alias{pl_rolling_cov}
 \title{Rolling covariance}
 \arguments{
-\item{a}{str or Expr One column}
+\item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
-\item{b}{str of Expr The other column}
+\item{b}{Another column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
 \item{window_size}{int The length of the window}
 

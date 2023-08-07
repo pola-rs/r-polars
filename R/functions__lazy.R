@@ -863,8 +863,8 @@ pl$cov = function(a, b) {
 #' Rolling covariance
 #' @name pl_rolling_cov
 #' @description Calculates the rolling covariance between two columns
-#' @param a str or Expr One column
-#' @param b str of Expr The other column
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param window_size int The length of the window
 #' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
 #' If NULL, it will be set equal to window size.
@@ -874,12 +874,6 @@ pl$cov = function(a, b) {
 #' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
 pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
-  if (is_string(a)) {
-    a = pl$col(a)
-  }
-  if (is_string(b)) {
-    b = pl$col(b)
-  }
   if (is.null(min_periods)) {
     min_periods = window_size
   }
@@ -889,8 +883,8 @@ pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' Correlation
 #' @name pl_corr
 #' @description Calculates the correlation between two columns
-#' @param a str or Expr One column
-#' @param b str of Expr The other column
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param method str One of 'pearson' or 'spearman'
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @param propagate_nans bool Used only when calculating the spearman rank correlation.
@@ -901,20 +895,14 @@ pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
 pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
-  if (is_string(a)) {
-    a = pl$col(a)
-  }
-  if (is_string(b)) {
-    b = pl$col(b)
-  }
   .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
 }
 
 #' Rolling correlation
 #' @name pl_rolling_corr
 #' @description Calculates the rolling correlation between two columns
-#' @param a str or Expr One column
-#' @param b str of Expr The other column
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @param window_size int The length of the window
 #' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
 #' If NULL, it will be set equal to window size.
@@ -924,12 +912,6 @@ pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
 #' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
 pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
-  if (is_string(a)) {
-    a = pl$col(a)
-  }
-  if (is_string(b)) {
-    b = pl$col(b)
-  }
   if (is.null(min_periods)) {
     min_periods = window_size
   }
