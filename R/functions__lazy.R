@@ -852,7 +852,7 @@ pl$struct = function(
 #' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
 #' @return Expr for the computed covariance
 #' @examples
-#' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$cov("a", "b"))$collect()
 #' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
 pl$cov = function(a, b) {
@@ -871,7 +871,7 @@ pl$cov = function(a, b) {
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr for the computed rolling covariance
 #' @examples
-#' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
 pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
@@ -892,7 +892,7 @@ pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #' Defaults to `False` where `NaN` are regarded as larger than any finite number and thus lead to the highest rank.
 #' @return Expr for the computed correlation
 #' @examples
-#' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
 pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
   .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
@@ -909,7 +909,7 @@ pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return Expr for the computed rolling correlation
 #' @examples
-#' lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 #' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
 pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   if (is.null(min_periods)) {
@@ -917,4 +917,3 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   }
   .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
 }
-

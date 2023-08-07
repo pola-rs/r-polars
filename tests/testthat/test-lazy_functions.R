@@ -277,16 +277,16 @@ test_that("pl$tail", {
 
 test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
   lf = pl$LazyFrame(mtcars)
-  
-  expect_identical(lf$select(pl$cov("mpg", "hp"))$collect()$to_data_frame()[1,] |> round(digits = 3), cov(mtcars$mpg, mtcars$hp) |> round(digits = 3))
-  
-  expect_identical(lf$select(pl$corr("mpg", "hp"))$collect()$to_data_frame()[1,] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp) |> round(digits = 3))
-  expect_identical(lf$select(pl$corr("mpg", "hp", method = "spearman"))$collect()$to_data_frame()[1,] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp, method = "spearman") |> round(digits = 3))
+
+  expect_identical(lf$select(pl$cov("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cov(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$corr("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+  expect_identical(lf$select(pl$corr("mpg", "hp", method = "spearman"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp, method = "spearman") |> round(digits = 3))
 
   expect_rpolarserr(pl$corr("x", "y", method = "guess"), c("ValueOutOfScope", "BadValue"))
 
-  
-  expect_identical(lf$select(pl$rolling_cov("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars),] |> round(digits = 3), cov(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
-  
-  expect_identical(lf$select(pl$rolling_corr("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars),] |> round(digits = 3), cor(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$rolling_cov("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cov(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$rolling_corr("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cor(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
 })
