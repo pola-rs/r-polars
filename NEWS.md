@@ -11,6 +11,7 @@
   removed in 0.9.0. It should be replaced with `$with_columns()` (#313).
 - New lazy function translated: `concat_str()` to concatenate several columns
   into one (#349).
+- New stat functions `pl$cov()`, `pl$rolling_cov()` `pl$corr()`, `pl$rolling_corr()` (#351).
 
 # polars 0.7.0
 
