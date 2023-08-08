@@ -835,6 +835,7 @@ DataFrame_with_columns = function(...) {
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   self$with_columns(expr)
 }
 

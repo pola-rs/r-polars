@@ -15,7 +15,7 @@ $(SHLIB): $(STATLIB)
 CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
@@ -24,7 +24,7 @@ $(STATLIB):
 	else \
 		$(BUILD_COMMAND); \
 	fi
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		rm -Rf $(CARGOTMP) && \
 		rm -Rf $(LIBDIR)/build; \
 	fi

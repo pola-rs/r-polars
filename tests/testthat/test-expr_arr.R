@@ -1,6 +1,6 @@
 test_that("arr$lengths", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
-  l = df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))$to_list()
+  l = df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
     l |> lapply(\(x) if (inherits(x, "integer64")) as.numeric(x) else x),
@@ -424,7 +424,7 @@ test_that("to_struct", {
 
 test_that("eval", {
   df = pl$DataFrame(a = list(a = c(1, 8, 3), b = c(4, 5, 2)))
-  l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_column(
+  l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_columns(
     pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
   )$to_list()
   expect_identical(

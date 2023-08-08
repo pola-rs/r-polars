@@ -5,17 +5,17 @@
 /// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
-use crate::handle_type;
-use crate::make_r_na_fun;
-use crate::rdatatype::RPolarsDataType;
-use crate::robj_to;
-use crate::utils::{r_error_list, r_result_list};
-
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
+use crate::handle_type;
+use crate::make_r_na_fun;
 use crate::rdataframe::DataFrame;
+use crate::rdatatype::RPolarsDataType;
+use crate::robj_to;
+use crate::rpolarserr::*;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::wrappers::null_to_opt;
+use crate::utils::{r_error_list, r_result_list};
 
 use crate::lazy::dsl::Expr;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
@@ -57,9 +57,9 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 #[extendr]
 impl Series {
     //utility methods
-    pub fn new(x: Robj, name: &str) -> std::result::Result<Series, String> {
-        robjname2series(&ParRObj(x), name)
-            .map_err(|err| format!("in Series.new: {:?}", err))
+    pub fn new(x: Robj, name: Robj) -> RResult<Series> {
+        robjname2series(&ParRObj(x), robj_to!(Option, str, name)?.unwrap_or(""))
+            .map_err(polars_to_rpolars_err)
             .map(Series)
     }
 
