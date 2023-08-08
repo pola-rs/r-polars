@@ -47,7 +47,7 @@ in background. Get a handle which later can be converted into the resulting Data
 in interactive mode to not lock R session.}
 }
 \value{
-collected \code{DataFrame} or if colkect
+A \code{DataFrame}
 }
 \description{
 collect DataFrame by lazy query
@@ -57,7 +57,7 @@ Note: use \verb{$fetch(n)} if you want to run your query on the first \code{n} r
 This can be a huge time saver in debugging queries.
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
+pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
 \keyword{DataFrame_new}
 \keyword{LazyFrame}

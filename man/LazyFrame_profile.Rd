@@ -7,10 +7,10 @@
 LazyFrame_profile()
 }
 \value{
-List of two DataFrames, (collected result, profile stats)
+List of two \code{DataFrame}s: one with the collected result, the other with the timings of each step.
 }
 \description{
-This will run the query and return a tuple containing the materialized DataFrame and
+This will run the query and return a list containing the materialized DataFrame and
 a DataFrame that contains profiling information of each node that is executed.
 }
 \details{

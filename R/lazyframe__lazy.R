@@ -1054,7 +1054,6 @@ LazyFrame_explode = function(columns = list(), ...) {
 #' @return A LazyFrame
 #' @examples
 #' pl$LazyFrame(mtcars)$clone()
-
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
 }
