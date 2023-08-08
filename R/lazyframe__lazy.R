@@ -926,7 +926,6 @@ LazyFrame_dtypes = method_as_property(function() {
     unwrap("in $dtypes()")
 })
 
-<<<<<<< HEAD
 
 #' @title Dtypes
 #' @description Get rows
@@ -938,7 +937,8 @@ LazyFrame_dtypes = method_as_property(function() {
 LazyFrame_fetch = function(n_rows = 500) {
   .pr$LazyFrame$fetch(self, n_rows) |>
     unwrap("in $fetch()")
-=======
+}
+
 #' @title Explode the DataFrame to long format by exploding the given columns
 #' @keywords LazyFrame
 #'
@@ -970,5 +970,4 @@ LazyFrame_explode = function(columns = list(), ...) {
 
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
->>>>>>> main
 }

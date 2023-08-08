@@ -965,13 +965,11 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
-<<<<<<< HEAD
 LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
-=======
+
 LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
 
 LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
->>>>>>> main
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }

@@ -393,7 +393,6 @@ impl LazyFrame {
         ))
     }
 
-
     fn fetch(&self, n_rows: Robj) -> RResult<DataFrame> {
         Ok(self
             .0
@@ -401,6 +400,7 @@ impl LazyFrame {
             .fetch(robj_to!(usize, n_rows)?)
             .map_err(crate::rpolarserr::polars_to_rpolars_err)?
             .into())
+    }
 
     fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
         let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;

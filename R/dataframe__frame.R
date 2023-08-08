@@ -1548,15 +1548,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 }
 
 
-<<<<<<< HEAD
-#' @title Fetch limited number of rows of DataFrame
-#' @keywords DataFrame
-#' @inherit LazyFrame_fetch
-#' @examples
-#' pl$DataFrame(iris)$fetch(2)
-DataFrame_fetch = function(n_rows) {
-  self$lazy()$fetch(n_rows)
-=======
 #' @inherit LazyFrame_explode title params
 #'
 #' @keywords DataFrame
@@ -1571,5 +1562,4 @@ DataFrame_fetch = function(n_rows) {
 #' df$explode("numbers")
 DataFrame_explode = function(columns, ...) {
   self$lazy()$explode(columns, ...)$collect()
->>>>>>> main
 }
