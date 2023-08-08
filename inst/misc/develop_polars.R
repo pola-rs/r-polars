@@ -10,7 +10,7 @@
 #'
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 load_polars = function(
-  RPOLARS_ALL_FEATURES = 'true',
+  RPOLARS_FULL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
@@ -20,7 +20,7 @@ load_polars = function(
   # bundle all envvars
   args = c(
     list(
-      RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+      RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
       NOT_CRAN = NOT_CRAN,
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
@@ -45,7 +45,7 @@ load_polars = function(
 #'
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 build_polars = function(
-  RPOLARS_ALL_FEATURES = 'true',
+  RPOLARS_FULL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
@@ -55,7 +55,7 @@ build_polars = function(
   # bundle all envvars
   args = c(
     list(
-      RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+      RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
       NOT_CRAN = NOT_CRAN,
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
@@ -82,7 +82,7 @@ build_polars = function(
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 check_polars = function(
   RPOLARS_RUST_SOURCE = paste0(getwd(),"/src/rust"),
-  RPOLARS_ALL_FEATURES = 'true',
+  RPOLARS_FULL_FEATURES = 'true',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   FILTER_CHECK_NO_FILTER = 'false',
@@ -95,7 +95,7 @@ check_polars = function(
   envvars = c(
     list(
       RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
-      RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+      RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
       NOT_CRAN = NOT_CRAN,
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
@@ -111,7 +111,7 @@ check_polars = function(
       )
       rextendr::document() # restore nanoarrow.Rd
     },
-    RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+    RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
     NOT_CRAN = NOT_CRAN,
     RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
     RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
@@ -138,7 +138,7 @@ check_polars = function(
 #' @examples load_polars(ALL_FEATURES = '', SOME_OTHER_ENVVAR = 'true')
 submit_polars = function(
   RPOLARS_RUST_SOURCE = paste0(getwd(),"/src/rust"),
-  RPOLARS_ALL_FEATURES = 'false',
+  RPOLARS_FULL_FEATURES = 'false',
   NOT_CRAN = 'true',
   RPOLARS_CARGO_CLEAN_DEPS = 'false',
   ...,
@@ -151,7 +151,7 @@ submit_polars = function(
   envvars = c(
     list(
       RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,
-      RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+      RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
       NOT_CRAN = NOT_CRAN,
       RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS
     ),
@@ -184,7 +184,7 @@ submit_polars = function(
       })
       devtools::submit_cran()
     },
-    RPOLARS_ALL_FEATURES = RPOLARS_ALL_FEATURES,
+    RPOLARS_FULL_FEATURES = RPOLARS_FULL_FEATURES,
     NOT_CRAN = NOT_CRAN,
     RPOLARS_CARGO_CLEAN_DEPS = RPOLARS_CARGO_CLEAN_DEPS,
     RPOLARS_RUST_SOURCE = RPOLARS_RUST_SOURCE,

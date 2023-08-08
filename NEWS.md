@@ -19,6 +19,9 @@
   pool. See `RThreadHandle-class` in reference docs for more info. (#311)
 - Internal IPC/shared-mem channel to serialize and send R objects / polars DataFrame across 
   R processes. (#311)
+- Compile environment flag RPOLARS_ALL_FEATURES changes name to RPOLARS_FULL_FEATURES. If 'true'
+  will trigger something like `Cargo build --features "full_features"` which is not exactly the same
+  as `Cargo build --all-features`. Some dev features are not included in "full_features" (#311).
 
 
 # polars 0.7.0

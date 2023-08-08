@@ -19,8 +19,8 @@ $(STATLIB):
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
-		$(BUILD_COMMAND) --features "simd"; \
+	if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+		$(BUILD_COMMAND) --features "full_features"; \
 	else \
 		$(BUILD_COMMAND); \
 	fi

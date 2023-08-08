@@ -115,7 +115,7 @@ about Rust code in R packages.
 During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
-- `RPOLARS_ALL_FEATURES="true"` (Build with nightly feature enabled,
+- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
   requires Rust toolchain nightly-2023-05-07)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization,
   requires Rust 1.66 or later)
