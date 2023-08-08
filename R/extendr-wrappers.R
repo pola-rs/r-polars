@@ -35,6 +35,8 @@ sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
+concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
+
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
 r_date_range_lazy <- function(start, end, every, closed, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, tz)
@@ -806,6 +808,14 @@ Expr$new_count <- function() .Call(wrap__Expr__new_count)
 Expr$new_first <- function() .Call(wrap__Expr__new_first)
 
 Expr$new_last <- function() .Call(wrap__Expr__new_last)
+
+Expr$cov <- function(a, b) .Call(wrap__Expr__cov, a, b)
+
+Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_cov, a, b, window_size, min_periods, ddof)
+
+Expr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__Expr__corr, a, b, method, ddof, propagate_nans)
+
+Expr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_corr, a, b, window_size, min_periods, ddof)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

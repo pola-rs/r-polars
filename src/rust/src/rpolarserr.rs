@@ -8,7 +8,7 @@ use thiserror::Error;
 
 #[derive(Clone, Debug, Error)]
 pub enum Rctx {
-    #[error("The argument [{0}] cause an error")]
+    #[error("The argument [{0}] caused an error")]
     BadArg(String),
     #[error("Got value [{0}]")]
     BadVal(String),
