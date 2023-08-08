@@ -529,12 +529,12 @@ pl$approx_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # column as list
-#' df$with_column(pl$sum(list("a", "c")))
-#' df$with_column(pl$sum(list("a", "c", 42L)))
+#' df$with_columns(pl$sum(list("a", "c")))
+#' df$with_columns(pl$sum(list("a", "c", 42L)))
 #'
 #' # two eqivalent lines
-#' df$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
-#' df$with_column(pl$sum(list("*")))
+#' df$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
+#' df$with_columns(pl$sum(list("*")))
 pl$sum = function(...) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -576,7 +576,7 @@ pl$sum = function(...) {
 #'   d = c(1:2, NA_real_, -Inf)
 #' )
 #' # use min to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$min("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -623,7 +623,7 @@ pl$min = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -669,7 +669,7 @@ pl$max = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -843,4 +843,107 @@ pl$struct = function(
     unwrap( # raise any error with context
       "in pl$struct:"
     )
+}
+
+#' Horizontally concatenate columns into a single string column
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' @param separator String that will be used to separate the values of each
+#' column.
+#' @name pl_concat_str
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 2, 3),
+#'   b = c("dogs", "cats", NA),
+#'   c = c("play", "swim", "walk")
+#' )
+#'
+#' df$with_columns(
+#'   pl$concat_str(
+#'     pl$col("a") * 2,
+#'     "b",
+#'     "c",
+#'     pl$lit("!"),
+#'     separator = " "
+#'   )$alias("full_sentence")
+#' )
+#'
+pl$concat_str = function(..., separator = "") {
+  concat_str(list2(...), separator) |> unwrap("in $concat_str()")
+}
+
+#' Covariance
+#' @name pl_cov
+#' @description Calculates the covariance between two columns / expressions.
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @return Expr for the computed covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$cov("a", "b"))$collect()
+#' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
+pl$cov = function(a, b) {
+  .pr$Expr$cov(a, b) |>
+    unwrap("in pl$cov()")
+}
+
+#' Rolling covariance
+#' @name pl_rolling_cov
+#' @description Calculates the rolling covariance between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
+pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_cov(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_cov()")
+}
+
+#' Correlation
+#' @name pl_corr
+#' @description Calculates the correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param method str One of 'pearson' or 'spearman'
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @param propagate_nans bool Used only when calculating the spearman rank correlation.
+#' If `True` any `NaN` encountered will lead to `NaN` in the output.
+#' Defaults to `False` where `NaN` are regarded as larger than any finite number and thus lead to the highest rank.
+#' @return Expr for the computed correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
+pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
+  .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
+}
+
+#' Rolling correlation
+#' @name pl_rolling_corr
+#' @description Calculates the rolling correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
+pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
 }

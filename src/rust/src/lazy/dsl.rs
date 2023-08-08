@@ -2,12 +2,11 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_rank_method;
+use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-
-use crate::rpolarserr;
-use crate::rpolarserr::*;
+use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -19,15 +18,10 @@ use crate::utils::{
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
+use pl::{BinaryNameSpaceImpl, DurationMethods, IntoSeries, TemporalMethods, Utf8NameSpaceImpl};
 use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
-use polars::prelude::BinaryNameSpaceImpl;
-use polars::prelude::DurationMethods;
-use polars::prelude::GetOutput;
-use polars::prelude::IntoSeries;
-use polars::prelude::TemporalMethods;
-use polars::prelude::Utf8NameSpaceImpl;
-use polars::prelude::{self as pl};
+use polars::prelude as pl;
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
@@ -194,7 +188,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.to_physical_repr().into_owned())),
-                GetOutput::map_dtype(|dt| dt.to_physical()),
+                pl::GetOutput::map_dtype(|dt| dt.to_physical()),
             )
             .with_fmt("to_physical")
             .into()
@@ -307,7 +301,7 @@ impl Expr {
                 .clone()
                 .apply(
                     move |s| s.fill_null(strat).map(Some),
-                    GetOutput::same_type(),
+                    pl::GetOutput::same_type(),
                 )
                 .with_fmt("fill_null_with_strategy");
 
@@ -409,7 +403,7 @@ impl Expr {
                         .0
                         .map(
                             move |s: Series| Ok(Some(s.take_every(n))),
-                            GetOutput::same_type(),
+                            pl::GetOutput::same_type(),
                         )
                         .with_fmt("take_every"),
                 )
@@ -443,7 +437,7 @@ impl Expr {
         };
         self.clone()
             .0
-            .map(function, GetOutput::from_type(dt))
+            .map(function, pl::GetOutput::from_type(dt))
             .into()
     }
 
@@ -926,7 +920,7 @@ impl Expr {
                             };
                             s.extend_constant(av, n).map(Some)
                         },
-                        GetOutput::same_type(),
+                        pl::GetOutput::same_type(),
                     )
                     .with_fmt("extend"),
             ))
@@ -948,7 +942,7 @@ impl Expr {
                                 Series(s).rep_impl(n, rechunk).map(|s| Some(s.0))
                             }
                         },
-                        GetOutput::same_type(),
+                        pl::GetOutput::same_type(),
                     )
                     .with_fmt("rep"),
             )),
@@ -1347,7 +1341,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.days().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1356,7 +1350,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.hours().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1365,7 +1359,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.minutes().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1374,7 +1368,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.seconds().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1383,7 +1377,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1392,7 +1386,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.microseconds().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1401,7 +1395,7 @@ impl Expr {
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.milliseconds().into_series())),
-                GetOutput::from_type(pl::DataType::Int64),
+                pl::GetOutput::from_type(pl::DataType::Int64),
             )
             .into()
     }
@@ -1586,7 +1580,7 @@ impl Expr {
     pub fn rechunk(&self) -> Self {
         self.0
             .clone()
-            .map(|s| Ok(Some(s.rechunk())), GetOutput::same_type())
+            .map(|s| Ok(Some(s.rechunk())), pl::GetOutput::same_type())
             .into()
     }
 
@@ -1802,7 +1796,7 @@ impl Expr {
         };
         self.clone()
             .0
-            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
             .with_fmt("str.lengths")
             .into()
     }
@@ -1814,7 +1808,7 @@ impl Expr {
         };
         self.clone()
             .0
-            .map(function, GetOutput::from_type(pl::DataType::UInt32))
+            .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
             .with_fmt("str.n_chars")
             .into()
     }
@@ -1904,7 +1898,7 @@ impl Expr {
             Ok(Expr(
                 self.0
                     .clone()
-                    .map(function, GetOutput::from_type(pl::DataType::Utf8))
+                    .map(function, pl::GetOutput::from_type(pl::DataType::Utf8))
                     .with_fmt("str.json_path_match"),
             ))
         }();
@@ -1915,8 +1909,8 @@ impl Expr {
         let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
         use pl::*;
         let output_type = match dtype.clone() {
-            Some(dtype) => GetOutput::from_type(dtype),
-            None => GetOutput::from_type(DataType::Unknown),
+            Some(dtype) => pl::GetOutput::from_type(dtype),
+            None => pl::GetOutput::from_type(DataType::Unknown),
         };
 
         let function = move |s: Series| {
@@ -1940,7 +1934,7 @@ impl Expr {
             .0
             .map(
                 move |s| s.utf8().map(|s| Some(s.hex_encode().into_series())),
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("str.hex_encode")
             .into()
@@ -1952,7 +1946,7 @@ impl Expr {
             .0
             .map(
                 move |s| s.utf8()?.hex_decode(strict).map(|s| Some(s.into_series())),
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("str.hex_decode")
             .into()
@@ -1963,7 +1957,7 @@ impl Expr {
             .0
             .map(
                 move |s| s.utf8().map(|s| Some(s.base64_encode().into_series())),
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("str.base64_encode")
             .into()
@@ -1979,7 +1973,7 @@ impl Expr {
                         .base64_decode(strict)
                         .map(|s| Some(s.into_series()))
                 },
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("str.base64_decode")
             .into()
@@ -2084,7 +2078,7 @@ impl Expr {
         Ok(self
             .clone()
             .0
-            .map(function, GetOutput::from_type(DataType::Utf8))
+            .map(function, pl::GetOutput::from_type(DataType::Utf8))
             .with_fmt("str.slice")
             .into())
     }
@@ -2135,7 +2129,7 @@ impl Expr {
             .clone()
             .map(
                 move |s| s.binary().map(|s| Some(s.hex_encode().into_series())),
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("binary.hex_encode")
             .into()
@@ -2146,7 +2140,7 @@ impl Expr {
             .clone()
             .map(
                 move |s| s.binary().map(|s| Some(s.base64_encode().into_series())),
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("binary.base64_encode")
             .into()
@@ -2161,7 +2155,7 @@ impl Expr {
                         .hex_decode(strict)
                         .map(|s| Some(s.into_series()))
                 },
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("binary.hex_decode")
             .into()
@@ -2176,7 +2170,7 @@ impl Expr {
                         .base64_decode(strict)
                         .map(|s| Some(s.into_series()))
                 },
-                GetOutput::same_type(),
+                pl::GetOutput::same_type(),
             )
             .with_fmt("binary.base64_decode")
             .into()
@@ -2266,6 +2260,55 @@ impl Expr {
 
     pub fn new_last() -> Expr {
         dsl::last().into()
+    }
+
+    pub fn cov(a: Robj, b: Robj) -> RResult<Expr> {
+        Ok(pl::cov(robj_to!(PLExprCol, a)?, robj_to!(PLExprCol, b)?).into())
+    }
+
+    pub fn rolling_cov(
+        a: Robj,
+        b: Robj,
+        window_size: Robj,
+        min_periods: Robj,
+        ddof: Robj,
+    ) -> RResult<Self> {
+        Ok(pl::rolling_cov(
+            robj_to!(PLExprCol, a)?,
+            robj_to!(PLExprCol, b)?,
+            new_rolling_cov_options(window_size, min_periods, ddof)?,
+        )
+        .into())
+    }
+
+    pub fn corr(a: Robj, b: Robj, method: Robj, ddof: Robj, propagate_nans: Robj) -> RResult<Self> {
+        let x = robj_to!(PLExprCol, a)?;
+        let y = robj_to!(PLExprCol, b)?;
+        let df = robj_to!(u8, ddof)?;
+        match robj_to!(String, method)?.as_str() {
+            "pearson" => Ok(pl::pearson_corr(x, y, df).into()),
+            "spearman" => {
+                Ok(pl::spearman_rank_corr(x, y, df, robj_to!(bool, propagate_nans)?).into())
+            }
+            m => rerr()
+                .bad_val(m)
+                .misvalued("should be 'pearson' or 'spearman'"),
+        }
+    }
+
+    pub fn rolling_corr(
+        a: Robj,
+        b: Robj,
+        window_size: Robj,
+        min_periods: Robj,
+        ddof: Robj,
+    ) -> RResult<Self> {
+        Ok(pl::rolling_corr(
+            robj_to!(PLExprCol, a)?,
+            robj_to!(PLExprCol, b)?,
+            new_rolling_cov_options(window_size, min_periods, ddof)?,
+        )
+        .into())
     }
 }
 

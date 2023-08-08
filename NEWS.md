@@ -1,7 +1,8 @@
-# polars (development version)
+0# polars (development version)
 
 ## BREAKING CHANGES
 - `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` instead (#346).
+- <LazyFrame>$collect_background() renamed <LazyFrame>$collect_in_background() and reworked. Used for detaching polars query to a thread with a future handle (#311).
 
 ## What's changed
 
@@ -9,6 +10,16 @@
 - New method `$clone()` for `LazyFrame` (#347).
 - `$with_column()` is now deprecated (following upstream `polars`). It will be
   removed in 0.9.0. It should be replaced with `$with_columns()` (#313).
+- New lazy function translated: `concat_str()` to concatenate several columns
+  into one (#349).
+- New stat functions `pl$cov()`, `pl$rolling_cov()` `pl$corr()`, `pl$rolling_corr()` (#351).
+- Add functions `pl$set_global_rpool_cap()`, `pl$get_global_rpool_cap()`, class `RThreadHandle` and
+  `in_background = FALSE` param to `<Expr>$map()` and `$apply()`. It is now possible to run R code
+  with `<LazyFrame>collect_in_background()` and/or let polars parallize R code in a R processes
+  pool. See `RThreadHandle-class` in reference docs for more info and examples.
+- Implement internal IPC/shared-mem channel to serialize and send R / polars objects across 
+  R processes.
+
 
 # polars 0.7.0
 

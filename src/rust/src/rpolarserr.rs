@@ -9,7 +9,7 @@ use extendr_api::{
 pub enum Rctx {
     #[error("Failed to handle background task")]
     Background,
-    #[error("The argument [{0}] cause an error")]
+    #[error("The argument [{0}] caused an error")]
     BadArg(String),
     #[error("Encountered the following error when joining the thread:\n\t{0}")]
     BadJoin(String),
