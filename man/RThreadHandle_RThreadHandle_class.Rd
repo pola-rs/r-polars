@@ -23,4 +23,15 @@ Starting polars \verb{<LazyFrame>$collect_in_background()} with e.g. some
 \verb{$map(...,background = FALSE)} will raise an Error as the main R session is not available to
 process the query.
 }
+\examples{
+prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
+if(!handle$is_finished()) print("not done yet")
+df = handle$join() #get result
+df
+
+}
+\seealso{
+\link{LazyFrame_collect_in_background} \link{Expr_map} \link{Expr_apply}
+}
 \keyword{RThreadHandle}

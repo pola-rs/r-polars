@@ -55,6 +55,14 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' process the query.
 #' @return see methods
 #' @keywords RThreadHandle
+#' @seealso \link{LazyFrame_collect_in_background} \link{Expr_map} \link{Expr_apply}
+#' @examples
+#' prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+#' handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
+#' if(!handle$is_finished()) print("not done yet")
+#' df = handle$join() #get result
+#' df
+#'
 RThreadHandle
 
 #' Join a RThreadHandle
