@@ -22,6 +22,6 @@ Expr for the computed rolling correlation
 Calculates the rolling correlation between two columns
 }
 \examples{
-lf <- pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
 lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
 }
