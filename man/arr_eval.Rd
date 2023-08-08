@@ -25,7 +25,7 @@ Run any polars expression against the lists' elements.
 }
 \examples{
 df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
-df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
   pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
 )
 }

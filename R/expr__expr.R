@@ -3322,7 +3322,7 @@ Expr_diff = function(n = 1, null_behavior = "ignore") {
 #' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
-#' df$with_column(pl$col("a")$pct_change()$alias("pct_change"))
+#' df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
 Expr_pct_change = function(n = 1) {
   unwrap(.pr$Expr$pct_change(self, n))
 }
@@ -3417,7 +3417,7 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 #'
 #' @examples
 #' df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))
-#' df$with_column(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
 Expr_clip = function(min, max) {
   unwrap(.pr$Expr$clip(self, wrap_e(min), wrap_e(max)))
 }
@@ -3427,7 +3427,7 @@ Expr_clip = function(min, max) {
 #' @aliases clip_min
 #' @keywords Expr
 #' @examples
-#' df$with_column(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
 Expr_clip_min = function(min) {
   unwrap(.pr$Expr$clip_min(self, wrap_e(min)))
 }
@@ -3437,7 +3437,7 @@ Expr_clip_min = function(min) {
 #' @aliases clip_max
 #' @keywords Expr
 #' @examples
-#' df$with_column(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
 Expr_clip_max = function(max) {
   unwrap(.pr$Expr$clip_max(self, wrap_e(max)))
 }
@@ -4182,7 +4182,7 @@ Expr_list = function() {
 #'   f = c("a", "b", "c"),
 #'   g = c(0.1, 1.32, 0.12),
 #'   h = c(TRUE, NA, FALSE)
-#' )$with_column(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+#' )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"
 
 
@@ -4204,7 +4204,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' )$agg(
 #'   pl$col("value") * 3L
 #' )
-#' df_with_list$with_column(
+#' df_with_list$with_columns(
 #'   pl$col("value")$arr$lengths()$alias("group_size")
 #' )
 Expr_arr = method_as_property(function() {

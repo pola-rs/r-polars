@@ -793,7 +793,11 @@ macro_rules! robj_to {
             if ($a.is_null()) {
                 Ok(None)
             } else {
-                Some($crate::robj_to_inner!($type, $a).bad_arg(stringify!($a))).transpose()
+                Some(
+                    $crate::robj_to_inner!($type, $a)
+                        .bad_arg(stringify!($a).replace("dotdotdot", " `...` ")),
+                )
+                .transpose()
             }
         })
     }};
@@ -807,7 +811,7 @@ macro_rules! robj_to {
             let x = if !x.is_list() && x.len() != 1 {
                 extendr_api::call!("as.list", x)
                     .mistyped(std::any::type_name::<List>())
-                    .bad_arg(stringify!($a))?
+                    .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))?
             } else {
                 x
             };
@@ -835,19 +839,19 @@ macro_rules! robj_to {
         use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .and_then($f)
-            .bad_arg(stringify!($a))
+            .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 
     ($type:ident, $a:ident) => {{
         use $crate::rpolarserr::WithRctx;
-        $crate::robj_to_inner!($type, $a).bad_arg(stringify!($a))
+        $crate::robj_to_inner!($type, $a).bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 
     ($type:ident, $a:ident, $b:expr) => {{
         use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .hint($b)
-            .bad_arg(stringify!($a))
+            .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 }
 
