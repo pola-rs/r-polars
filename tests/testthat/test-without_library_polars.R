@@ -1,7 +1,7 @@
 test_that("without library(polars)", {
   # calling sort("mpg") triggers rust to call pl$lit() which will be available even though
   # polars is not added to serach with search() library(polars)
-
+  skip_if_not_installed("callr")
   # positive test:
   # Will work because robj_to! now calls polars::pl$lit and polars::pl$col
   expect_identical(
