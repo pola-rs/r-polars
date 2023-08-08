@@ -12,6 +12,7 @@
 - New lazy function translated: `concat_str()` to concatenate several columns
   into one (#349).
 - New stat functions `pl$cov()`, `pl$rolling_cov()` `pl$corr()`, `pl$rolling_corr()` (#351).
+- Fix bug to allow using polars without library(polars) (#355).
 
 # polars 0.7.0
 
