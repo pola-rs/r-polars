@@ -926,6 +926,7 @@ LazyFrame_dtypes = method_as_property(function() {
     unwrap("in $dtypes()")
 })
 
+<<<<<<< HEAD
 
 #' @title Dtypes
 #' @description Get rows
@@ -937,4 +938,37 @@ LazyFrame_dtypes = method_as_property(function() {
 LazyFrame_fetch = function(n_rows = 500) {
   .pr$LazyFrame$fetch(self, n_rows) |>
     unwrap("in $fetch()")
+=======
+#' @title Explode the DataFrame to long format by exploding the given columns
+#' @keywords LazyFrame
+#'
+#' @param columns Column(s) to be exploded. `Into<Expr>`, list of `Into<Expr>` or a char vec.
+#' Only columns of DataType `List` or `Utf8` can be exploded.
+#' @param ... More columns to explode as above but provided as separate arguments
+#'
+#' @return LazyFrame
+#' @examples
+#' df = pl$LazyFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")$collect()
+LazyFrame_explode = function(columns = list(), ...) {
+  dotdotdot_args = list2(...)
+  .pr$LazyFrame$explode(self, columns, dotdotdot_args) |>
+    unwrap("in explode():")
+}
+
+#' Clone a LazyFrame
+#'
+#' This makes a very cheap deep copy/clone of an existing `LazyFrame`.
+#' @return A LazyFrame
+#' @examples
+#' pl$LazyFrame(mtcars)$clone()
+
+LazyFrame_clone = function() {
+  .pr$LazyFrame$clone_see_me_macro(self)
+>>>>>>> main
 }

@@ -24,7 +24,7 @@ df_with_list = pl$DataFrame(
 )$agg(
   pl$col("value") * 3L
 )
-df_with_list$with_column(
+df_with_list$with_columns(
   pl$col("value")$arr$lengths()$alias("group_size")
 )
 }

@@ -591,6 +591,51 @@ test_that("select with list of exprs", {
   expect_equal(x6$columns, c("mpg", "hp"))
 })
 
+
+test_that("explode", {
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers")$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 3), "b", "b", rep("c", 3)),
+      numbers = 1:8
+    )
+  )
+
+  # empty values -> NA
+
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers")$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8)
+    )
+  )
+
+  # several cols to explode
+
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8)),
+    numbers2 = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers", pl$col("numbers2"))$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8),
+      numbers2 = c(1, NA, 4:8)
+    )
+  )
+})
+
 test_that("width", {
   dat = pl$LazyFrame(mtcars)
   expect_equal(dat$width, 11)
@@ -599,5 +644,14 @@ test_that("width", {
 
 test_that("with_row_count", {
   lf = pl$LazyFrame(mtcars)
-  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
+  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+})
+
+test_that("cloning", {
+  pf = pl$LazyFrame(iris)
+
+  # deep copy clone rust side object, hence not same mem address
+  pf2 = pf$clone()
+  expect_identical(pf$collect()$to_data_frame(), pf2$collect()$to_data_frame())
+  expect_different(pl$mem_address(pf), pl$mem_address(pf2))
 })

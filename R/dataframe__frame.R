@@ -835,6 +835,7 @@ DataFrame_with_columns = function(...) {
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   self$with_columns(expr)
 }
 
@@ -1002,13 +1003,13 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' @keywords DataFrame
 #' @examples
 #' # inner join by default
-#' df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join
-#' df1 <- pl$DataFrame(x = letters[1:3])
-#' df2 <- pl$DataFrame(y = 1:4)
+#' df1 = pl$DataFrame(x = letters[1:3])
+#' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
 #'
 DataFrame_join = function(
@@ -1547,6 +1548,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 }
 
 
+<<<<<<< HEAD
 #' @title Fetch limited number of rows of DataFrame
 #' @keywords DataFrame
 #' @inherit LazyFrame_fetch
@@ -1554,4 +1556,20 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' pl$DataFrame(iris)$fetch(2)
 DataFrame_fetch = function(n_rows) {
   self$lazy()$fetch(n_rows)
+=======
+#' @inherit LazyFrame_explode title params
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")
+DataFrame_explode = function(columns, ...) {
+  self$lazy()$explode(columns, ...)$collect()
+>>>>>>> main
 }

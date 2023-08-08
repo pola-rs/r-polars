@@ -28,7 +28,7 @@ df = pl$DataFrame(
   c = c(1:3, NA_real_)
 )
 # use coalesce to get first non Null value for each row, otherwise insert 99.9
-df$with_column(
+df$with_columns(
   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 )
 

@@ -608,15 +608,13 @@ pub fn robj_to_datatype(robj: extendr_api::Robj) -> RResult<RPolarsDataType> {
 // wrap_e allows to also convert any allowed non Exp
 pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
     let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
 
     //use R side wrap_e to convert any R value into Expr or
     use extendr_api::*;
-    let robj_result_expr = R!("polars:::result(polars:::wrap_e({{robj}},{{str_to_lit}}))")
-        .map_err(crate::rpolarserr::extendr_to_rpolars_err)
-        .plain("internal error: polars:::result failed to catch this error")?;
-
-    // handle any error from wrap_e
-    let robj_expr = unpack_r_result_list(robj_result_expr).when("converting R value to expr")?;
+    let robj_expr = internal_rust_wrap_e(robj, str_to_lit)
+        .bad_robj(&robj_clone)
+        .plain("cannot be converted into an Expr")?;
 
     //PolarsExpr -> RExpr
     let res: ExtendrResult<ExternalPtr<Expr>> = robj_expr.clone().try_into();
@@ -626,6 +624,32 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
         .when("converting R extptr PolarsExpr to rust RExpr")
         .plain("internal error: wrap_e should fail or return an Expr")?;
     Ok(Expr(ext_expr.0.clone()))
+}
+
+fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
+    use extendr_api::Result as EResult;
+    use extendr_api::Rtype::*;
+    use extendr_api::*;
+    let unpack = |res: EResult<Robj>| -> RResult<Robj> {
+        unpack_r_result_list(res.map_err(|err| {
+            extendr_api::Error::Other(format!("internal_error calling R from rust: {:?}", err))
+        })?)
+    };
+    match robj.rtype() {
+        ExternalPtr if robj.inherits("Expr") => Ok(robj),
+        ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => {
+            unpack(R!("polars:::result({{robj}}$otherwise(pl$lit(NULL)))"))
+        }
+        ExternalPtr if robj.inherits("When") => {
+            rerr().plain("Cannot use a When-statement as Expr without a $then()")
+        }
+        _h @ Logicals | _h @ List | _h @ Doubles | _h @ Integers => {
+            unpack(R!("polars:::result(pl$lit({{robj}}))"))
+        }
+        _ if str_to_lit => unpack(R!("polars:::result(pl$lit({{robj}}))")),
+
+        _ => unpack(R!("polars:::result(pl$col({{robj}}))")),
+    }
 }
 
 pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::LazyFrame> {
@@ -644,9 +668,11 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         .as_list()
         .ok_or(RPolarsErr::new())
         .mistyped(tn::<List>())?;
-    let iter = l
-        .iter()
-        .map(|(_, robj)| robj_to_rexpr(robj, str_to_lit).map(|e| e.0));
+    let iter = l.iter().enumerate().map(|(i, (_, robj))| {
+        robj_to_rexpr(robj.clone(), str_to_lit)
+            .when(format!("converting element {} into an Expr", i + 1))
+            .map(|e| e.0)
+    });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
 
@@ -711,6 +737,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_rexpr($a, false)
     };
 
+    (PLExprCol, $a:ident) => {
+        $crate::utils::robj_to_rexpr($a, false).map(|ok| ok.0)
+    };
+
     (VecPLExpr, $a:ident) => {
         $crate::utils::list_expr_to_vec_pl_expr($a, true)
     };
@@ -763,7 +793,11 @@ macro_rules! robj_to {
             if ($a.is_null()) {
                 Ok(None)
             } else {
-                Some($crate::robj_to_inner!($type, $a).bad_arg(stringify!($a))).transpose()
+                Some(
+                    $crate::robj_to_inner!($type, $a)
+                        .bad_arg(stringify!($a).replace("dotdotdot", " `...` ")),
+                )
+                .transpose()
             }
         })
     }};
@@ -777,16 +811,22 @@ macro_rules! robj_to {
             let x = if !x.is_list() && x.len() != 1 {
                 extendr_api::call!("as.list", x)
                     .mistyped(std::any::type_name::<List>())
-                    .bad_arg(stringify!($a))?
+                    .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))?
             } else {
                 x
             };
             if x.is_list() {
                 // convert each element in list to $type
-                let iter = x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
-                    robj_to!($type, $a, format!("element no. [{}] of ", i + 1))
-                });
-                $crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
+                let iter =
+                    x.as_list().unwrap().iter().enumerate().map(|(i, (_, $a))| {
+                        robj_to!($type, $a, format!("element no. [{}] ", i + 1))
+                    });
+
+                //TODO reintroduce collect_hinted_result_rerr as trait not a generic
+                //generic forces $type to be a literal type in scrop not e.g. PLExprCol
+                //$crate::utils::collect_hinted_result_rerr::<$type>(x.len(), iter)
+                let x: Result<_, _> = iter.collect();
+                x
             } else {
                 // single value without list, convert as is and wrap in a list
                 let $a = x;
@@ -799,19 +839,19 @@ macro_rules! robj_to {
         use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .and_then($f)
-            .bad_arg(stringify!($a))
+            .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 
     ($type:ident, $a:ident) => {{
         use $crate::rpolarserr::WithRctx;
-        $crate::robj_to_inner!($type, $a).bad_arg(stringify!($a))
+        $crate::robj_to_inner!($type, $a).bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 
     ($type:ident, $a:ident, $b:expr) => {{
         use $crate::rpolarserr::WithRctx;
         $crate::robj_to_inner!($type, $a)
             .hint($b)
-            .bad_arg(stringify!($a))
+            .bad_arg(stringify!($a).replace("dotdotdot", " `...` "))
     }};
 }
 
