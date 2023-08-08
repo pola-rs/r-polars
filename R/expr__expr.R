@@ -2411,8 +2411,8 @@ Expr_limit = function(n = 10) {
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
-#' @details The R interpreter will replace the `**` with `^`, such that `**` means `^`. Except e.g.
-#' in strings like "**". Read further at `?"**"`. In py-polars python `^` is the XOR operator and
+#' @details The R interpreter will replace the `**` with `^`, such that `**` means `^` (except in
+#' strings e.g. "**"). Read further at `?"**"`. In py-polars python `^` is the XOR operator and
 #' `**` is the exponentiation operator.
 #' @return Expr
 #' @name Expr_pow
