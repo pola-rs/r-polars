@@ -13,7 +13,9 @@
   into one (#349).
 - New stat functions `pl$cov()`, `pl$rolling_cov()` `pl$corr()`, `pl$rolling_corr()` (#351).
 - Fix bug to allow using polars without library(polars) (#355).
-
+- New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable rust-polars feature
+  CSE: "Activate common subplan elimination optimization" (#323)
+  
 # polars 0.7.0
 
 ## BREAKING CHANGES

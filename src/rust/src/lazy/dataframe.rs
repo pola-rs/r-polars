@@ -1,14 +1,15 @@
-use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
+use crate::concurrent::{
+    collect_with_r_func_support, profile_with_r_func_support, PolarsBackgroundHandle,
+};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
+use crate::rdataframe::DataFrame as RDF;
 use crate::rdatatype::new_join_type;
 use crate::rdatatype::new_quantile_interpolation_option;
 use crate::rdatatype::new_unique_keep_strategy;
 use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr::rerr;
-use crate::rpolarserr::RResult;
-use crate::rpolarserr::{Rctx, WithRctx};
+use crate::rpolarserr::{rerr, RResult, Rctx, WithRctx};
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_result_list, try_f64_into_usize};
 use extendr_api::prelude::*;
@@ -66,23 +67,8 @@ impl LazyFrame {
         PolarsBackgroundHandle::new(self)
     }
 
-    pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {
-        handle_thread_r_requests(self.clone().0).map_err(|err| {
-            //improve err messages
-            let err_string = match err {
-                pl::PolarsError::InvalidOperation(x) => {
-                    format!("Something (Likely a Column) named {:?} was not found", x)
-                }
-                x => format!("{:?}", x),
-            };
-
-            format!("when calling $collect() on LazyFrame:\n{}", err_string)
-        })
-    }
-
-    pub fn collect_handled(&self) -> crate::rpolarserr::RResult<crate::rdataframe::DataFrame> {
-        use crate::rpolarserr::WithRctx;
-        handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
+    pub fn collect(&self) -> RResult<RDF> {
+        collect_with_r_func_support(self.clone().0)
     }
 
     fn first(&self) -> Self {
@@ -390,6 +376,35 @@ impl LazyFrame {
         Ok(Pairlist::from_pairs(
             pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
         ))
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn optimization_toggle(
+        &self,
+        type_coercion: Robj,
+        predicate_pushdown: Robj,
+        projection_pushdown: Robj,
+        simplify_expr: Robj,
+        slice_pushdown: Robj,
+        cse: Robj,
+        streaming: Robj,
+    ) -> RResult<Self> {
+        let ldf = self
+            .0
+            .clone()
+            .with_type_coercion(robj_to!(bool, type_coercion)?)
+            .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
+            .with_streaming(robj_to!(bool, streaming)?)
+            .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
+            .with_common_subplan_elimination(robj_to!(bool, cse)?);
+
+        Ok(ldf.into())
+    }
+
+    fn profile(&self) -> RResult<List> {
+        profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
     fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {

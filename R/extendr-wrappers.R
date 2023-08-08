@@ -59,9 +59,13 @@ clone_robj <- function(robj) .Call(wrap__clone_robj, robj)
 
 test_robj_to_usize <- function(robj) .Call(wrap__test_robj_to_usize, robj)
 
+test_robj_to_f64 <- function(robj) .Call(wrap__test_robj_to_f64, robj)
+
 test_robj_to_i64 <- function(robj) .Call(wrap__test_robj_to_i64, robj)
 
 test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
+
+test_robj_to_i32 <- function(robj) .Call(wrap__test_robj_to_i32, robj)
 
 test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
@@ -899,8 +903,6 @@ LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_backgr
 
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
 
-LazyFrame$collect_handled <- function() .Call(wrap__LazyFrame__collect_handled, self)
-
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
 LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)
@@ -966,6 +968,10 @@ LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, strea
 LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self, existing, new)
 
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
+
+LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, cse, streaming) .Call(wrap__LazyFrame__optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, cse, streaming)
+
+LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
 LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
 

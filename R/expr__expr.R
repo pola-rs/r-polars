@@ -1120,8 +1120,7 @@ Expr_map_alias = function(fun) {
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
-    # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
-    # then handle_thread_r_requests should be rewritten to handle any type.
+    # if ever crashing, any lazy method like select, filter, with_columns must use something like filter_with_r_func_support()
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") # TODO resolve
   }
   if (!is.function(fun)) pstop(err = "alias_map fun must be a function")

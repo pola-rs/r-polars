@@ -29,15 +29,15 @@ exponentiation operator.
 pl$DataFrame(a = -1:3)$select(
   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
   2^pl$lit(-2:2), # brief use
-  pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name")
+  pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name")
 )
 
 
 # Example on the R behavior of the `**`-'quasi operator'
-2^1  # normal use
+2^1 # normal use
 2**1 # this works because ** is converted to the `^`-operator  by the R interpreter
-get("^")(2,1) #this works because there exists a function called "^"
+get("^")(2, 1) # this works because there exists a function called "^"
 # the R interpreter will not convert "**" to "^"  and there is no function named "**"
-tryCatch(get("**")(2,1), error = as.character)
+tryCatch(get("**")(2, 1), error = as.character)
 }
 \keyword{Expr}

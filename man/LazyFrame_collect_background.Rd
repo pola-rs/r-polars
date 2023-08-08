@@ -10,7 +10,10 @@ LazyFrame_collect_background()
 collected \code{DataFrame}
 }
 \description{
-collect DataFrame by lazy query
+collect DataFrame by lazy query (SOFT DEPRECATED)
+}
+\details{
+This function is soft deprecated. Use $collect(collect_in_background = TRUE) instead
 }
 \examples{
 pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()

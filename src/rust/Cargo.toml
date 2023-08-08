@@ -80,6 +80,7 @@ features = [
   "repeat_by",
   "interpolate",
   #"list",
+  "cse",
   "ewma",
   "rank",
   "diff",
