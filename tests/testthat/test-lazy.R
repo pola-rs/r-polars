@@ -655,3 +655,13 @@ test_that("cloning", {
   expect_identical(pf$collect()$to_data_frame(), pf2$collect()$to_data_frame())
   expect_different(pl$mem_address(pf), pl$mem_address(pf2))
 })
+
+
+
+test_that("fetch", {
+  lf = pl$LazyFrame(a = 1:10, b = letters[10:1])
+  expect_identical(
+    lf$fetch(5)$to_list(),
+    lf$slice(0,5)$collect()$to_list()
+  )
+})
