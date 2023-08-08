@@ -35,6 +35,8 @@ sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
+concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
+
 r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
 
 r_date_range_lazy <- function(start, end, every, closed, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, tz)
@@ -48,6 +50,8 @@ rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches
 arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+
+internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
@@ -64,6 +68,8 @@ test_robj_to_u32 <- function(robj) .Call(wrap__test_robj_to_u32, robj)
 test_robj_to_i32 <- function(robj) .Call(wrap__test_robj_to_i32, robj)
 
 test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
+
+test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 RPolarsErr <- new.env(parent = emptyenv())
 
@@ -807,6 +813,14 @@ Expr$new_first <- function() .Call(wrap__Expr__new_first)
 
 Expr$new_last <- function() .Call(wrap__Expr__new_last)
 
+Expr$cov <- function(a, b) .Call(wrap__Expr__cov, a, b)
+
+Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_cov, a, b, window_size, min_periods, ddof)
+
+Expr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__Expr__corr, a, b, method, ddof, propagate_nans)
+
+Expr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_corr, a, b, window_size, min_periods, ddof)
+
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }
 
@@ -937,10 +951,7 @@ LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__grou
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
-LazyFrame$with_column <- function(expr) {
-  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
-  .Call(wrap__LazyFrame__with_column, self, expr)
-}
+LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 

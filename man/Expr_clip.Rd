@@ -33,8 +33,8 @@ expression. See :func:\code{when} for more information.
 }
 \examples{
 df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))
-df$with_column(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
-df$with_column(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
-df$with_column(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
+df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
+df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
 }
 \keyword{Expr}

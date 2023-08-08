@@ -52,6 +52,92 @@ test_that("expression Arithmetics", {
   expect_equal(names(fails), character())
 })
 
+make_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~fn,
+    "mul",       "*",
+    "add",       "+",
+    "sub",       "-",
+    "div",       "/",
+    "gt",        ">",
+    "gte",       ">=",
+    "lt",        "<",
+    "lte",       "<=",
+    "eq",        "==",
+    "neq",       "!=",
+    "pow",       "^",
+  )
+}
+
+patrick::with_parameters_test_that(
+  "ops symbol work with expressions",
+  {
+    # every time, 4 tests:
+    # - 2 exprs
+    # - 1 expr then 1 non-expr
+    # - 1 non-expr then 1 expr
+    # - 2 non-exprs
+
+    dat = pl$DataFrame(mtcars)
+    dat_exp = data.frame(
+      mpg = do.call(fn, list(mtcars$mpg, 2)),
+      cyl = do.call(fn, list(2, mtcars$cyl)),
+      hp = do.call(fn, list(mtcars$hp, max(mtcars$drat))),
+      literal = do.call(fn, list(2, 2))
+    )
+
+    expect_equal(
+      dat$select(
+        do.call(fn, list(pl$col("mpg"), 2)),
+        # TODO: this $alias() shouldn't be needed but if I don't put it the
+        # name is "literal" because $div() calls $lit() under the hood
+        do.call(fn, list(2, pl$col("cyl")))$alias("cyl"),
+        do.call(fn, list(pl$col("hp"), pl$max("drat"))),
+        do.call(fn, list(2, 2))
+      )$to_data_frame(),
+      dat_exp
+    )
+  },
+  .cases = make_cases()
+)
+
+# & and | require another test dataset, it can't be the one above
+test_that("logical ops symbol work with expressions", {
+  dat = pl$DataFrame(
+    x = c(TRUE, FALSE, TRUE, FALSE),
+    y = c(TRUE, TRUE, FALSE, FALSE)
+  )
+  dat_df = dat$to_data_frame()
+  expect_equal(
+    dat$select(
+      (pl$col("x") & TRUE)$alias("oneexp_onelit"),
+      (FALSE & pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") & pl$col("y"),
+      FALSE & TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x & TRUE,
+      onelit_oneexp = FALSE & dat_df$y,
+      x = dat_df$x & dat_df$y,
+      literal = FALSE & TRUE
+    )
+  )
+  expect_equal(
+    dat$select(
+      (pl$col("x") | TRUE)$alias("oneexp_onelit"),
+      (FALSE | pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") | pl$col("y"),
+      FALSE | TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x | TRUE,
+      onelit_oneexp = FALSE | dat_df$y,
+      x = dat_df$x | dat_df$y,
+      literal = FALSE | TRUE
+    )
+  )
+})
+
 
 test_that("count + unique + n_unique", {
   expect_equal(
@@ -454,11 +540,6 @@ test_that("pow, rpow, sqrt, log10", {
   # pow
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
-
-  # rpow
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$rpow(pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2) %**% (pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-
 
   # sqrt
   expect_identical(
@@ -2262,4 +2343,34 @@ test_that("implode", {
   expect_identical(pl$lit(1:4)$implode()$to_r(), list(1:4))
   expect_identical(pl$lit(1:4)$implode()$to_r(), pl$lit(list(1:4))$to_r())
   expect_grepl_error(pl$lit(42)$implode(42), c("unused argument"))
+})
+
+test_that("concat_str", {
+  df = pl$DataFrame(
+    a = c(1, 2, 3),
+    b = c("dogs", "cats", NA),
+    c = c("play", "swim", "walk")
+  )
+
+  out = df$with_columns(
+    pl$concat_str(
+      pl$col("a") * 2,
+      "b",
+      pl$col("c"),
+      separator = " "
+    )$alias("full_sentence")
+  )$to_data_frame()
+
+  expect_equal(dim(out), c(3, 4))
+  expect_equal(
+    out$full_sentence,
+    c("2.0 dogs play", "4.0 cats swim", NA)
+  )
+
+  # check error for something which cannot be turned into an Expression
+  ctxs = pl$concat_str("a", complex(1)) |>
+    (\(x) result(x)$err$contexts())()
+  expect_identical(ctxs$BadArgument, " `...` ")
+  expect_identical(ctxs$Hint, "element no. [2] ")
+  expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })
