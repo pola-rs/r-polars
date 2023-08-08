@@ -289,8 +289,8 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' Note: use `$fetch(n)` if you want to run your query on the first `n` rows only.
 #' This can be a huge time saver in debugging queries.
 #' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame` or if colkect
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
+#' @return A `DataFrame`
+#' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_collect = function(
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -988,12 +988,12 @@ LazyFrame_dtypes = method_as_property(function() {
 })
 
 #' @title Collect and profile a lazy query.
-#' @description This will run the query and return a tuple containing the materialized DataFrame and
+#' @description This will run the query and return a list containing the materialized DataFrame and
 #'  a DataFrame that contains profiling information of each node that is executed.
 #' @details The units of the timings are microseconds.
 #'
 #' @keywords LazyFrame
-#' @return List of two DataFrames, (collected result, profile stats)
+#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of each step.
 #' @examples
 #'
 #' ## Simplest use case
