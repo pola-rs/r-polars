@@ -24,6 +24,7 @@ Suggests:
     arrow,
     bench,
     bit64,
+    callr,
     data.table,
     knitr,
     lubridate,
@@ -42,7 +43,6 @@ Config/Needs/website:
     pkgload,
     yaml
 Config/Needs/dev:
-    callr,
     brio,
     devtools,
     RcppTOML,
