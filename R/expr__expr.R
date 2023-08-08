@@ -2407,7 +2407,7 @@ Expr_limit = function(n = 10) {
 
 
 
-#' Exponentiation `^` and `**`.
+#' Exponentiation
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
