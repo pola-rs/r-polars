@@ -282,10 +282,13 @@ LazyFrame_collect = function() {
 #' @keywords LazyFrame DataFrame_new
 #' @return a thread handle for the task
 #' @examples
-#' prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+#' prexpr = pl$col("mpg")$map(\(x) {
+#'   Sys.sleep(1.5)
+#'   x * 0.43
+#' }, in_background = TRUE)$alias("kml")
 #' handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
-#' if(!handle$is_finished()) print("not done yet")
-#' df = handle$join() #get result
+#' if (!handle$is_finished()) print("not done yet")
+#' df = handle$join() # get result
 #' df
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)
@@ -964,7 +967,6 @@ LazyFrame_explode = function(columns = list(), ...) {
 #' @return A LazyFrame
 #' @examples
 #' pl$LazyFrame(mtcars)$clone()
-
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
 }

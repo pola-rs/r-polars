@@ -18,11 +18,13 @@ if (dir.exists(here("docs/docs/reference"))) {
 dir.create(here("docs/docs/reference"))
 
 
-get_title <- function(file_path) {
-  text <- readLines(file_path)
-  title_line <- grep("\\\\title\\{.*\\}", text)
-  if (length(title_line) == 0) return(NULL)
-  title_text <- sub("\\\\title\\{(.*?)\\}", "\\1", text[title_line])
+get_title = function(file_path) {
+  text = readLines(file_path)
+  title_line = grep("\\\\title\\{.*\\}", text)
+  if (length(title_line) == 0) {
+    return(NULL)
+  }
+  title_text = sub("\\\\title\\{(.*?)\\}", "\\1", text[title_line])
   return(title_text)
 }
 
@@ -83,8 +85,10 @@ rd2md = function(src) {
 
   # R file source
   source_file = get_r_source(rd)
-  to_add = paste0("<em>Source: <a href='", source_file$link, "'>",
-                  source_file$file, "</a></em>")
+  to_add = paste0(
+    "<em>Source: <a href='", source_file$link, "'>",
+    source_file$file, "</a></em>"
+  )
   tmp = sub("</h1>", paste0("</h1>\n\n", to_add), tmp)
 
   # write to file
@@ -93,22 +97,26 @@ rd2md = function(src) {
 }
 
 
-is_internal <- function(file) {
-  y <- capture.output(tools::Rd2latex(file))
-  z <- grepl("\\\\keyword\\{", y)
-  if (!any(z)) return(FALSE)
-  reg <- regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl = TRUE))
-  test <- vapply(seq_along(y), function(foo) {
+is_internal = function(file) {
+  y = capture.output(tools::Rd2latex(file))
+  z = grepl("\\\\keyword\\{", y)
+  if (!any(z)) {
+    return(FALSE)
+  }
+  reg = regmatches(y, gregexpr("\\{\\K[^{}]+(?=\\})", y, perl = TRUE))
+  test = vapply(seq_along(y), function(foo) {
     z[foo] && ("internal" %in% reg[[foo]] || "docs" %in% reg[[foo]])
   }, FUN.VALUE = logical(1L))
   any(test)
 }
 
-get_r_source <- function(src) {
-  parsed <- as.character(src)
-  contains_source <- grep("% Please edit documentation in", parsed)
-  r_source <- sub("% Please edit documentation in ", "",
-                 parsed[contains_source])
+get_r_source = function(src) {
+  parsed = as.character(src)
+  contains_source = grep("% Please edit documentation in", parsed)
+  r_source = sub(
+    "% Please edit documentation in ", "",
+    parsed[contains_source]
+  )
   return(
     list(
       file = r_source,
@@ -124,9 +132,11 @@ make_doc_hierarchy = function() {
   other = sub("Rd$", "md", other)
   out = list()
   # order determines order in sidebar
-  classes = c("pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-              "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
-              "Expr", "RThreadHandle")
+  classes = c(
+    "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
+    "LazyGroupBy", "arr", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
+    "Expr", "RThreadHandle"
+  )
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
@@ -156,27 +166,27 @@ make_doc_hierarchy = function() {
 
 
 # Insert the "Reference" structure in the yaml (requires to overwrite the full mkdocs.yml)
-convert_hierarchy_to_yml <- function() {
-  hierarchy <- make_doc_hierarchy()
+convert_hierarchy_to_yml = function() {
+  hierarchy = make_doc_hierarchy()
 
   ### Uncomment to add a reference homepage
-  hierarchy <- append(list("Reference" = "reference_home.md"), hierarchy)
+  hierarchy = append(list("Reference" = "reference_home.md"), hierarchy)
 
-  new_yaml <- orig_yaml <- yaml.load_file(
+  new_yaml = orig_yaml = yaml.load_file(
     "docs/mkdocs.yml"
   )
 
   for (i in c("extra_css", "plugins")) {
     if (!is.null(orig_yaml[[i]]) && !is.list(length(orig_yaml[[i]]))) {
-      new_yaml[[i]] <- as.list(new_yaml[[i]])
+      new_yaml[[i]] = as.list(new_yaml[[i]])
     }
   }
 
-  reference_idx <- which(
+  reference_idx = which(
     unlist(lapply(orig_yaml$nav, \(x) names(x) == "Reference"))
   )
 
-  new_yaml$nav[[reference_idx]]$Reference <- hierarchy
+  new_yaml$nav[[reference_idx]]$Reference = hierarchy
 
   out = as.yaml(new_yaml, indent.mapping.sequence = TRUE)
   out = gsub("- '", "- ", out)
@@ -188,7 +198,7 @@ convert_hierarchy_to_yml <- function() {
 
 # Run all
 message("Converting Rd files to markdown...\n")
-rd_files <- list.files(here("man"), pattern = "\\.Rd")
+rd_files = list.files(here("man"), pattern = "\\.Rd")
 for (i in seq_along(rd_files)) {
   message(paste0("Updating file ", rd_files[i], " [", i, "/", length(rd_files), "]"))
   if (is_internal(paste0("man/", rd_files[i]))) next

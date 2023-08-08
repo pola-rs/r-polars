@@ -7,8 +7,7 @@ test_that("Test collecting LazyFrame in background", {
 })
 
 test_that("Test using $map() in background", {
-
-  #change capacity
+  # change capacity
   pl$set_global_rpool_cap(0)
   expect_equal(pl$get_global_rpool_cap(), list(available = 0, capacity = 0))
   pl$set_global_rpool_cap(1)
@@ -30,24 +29,25 @@ test_that("Test using $map() in background", {
   # same result
   expect_identical(res_ref, res_fg_map_bg)
 
-  #cannot collect in background without a cap
+  # cannot collect in background without a cap
   pl$set_global_rpool_cap(0)
   handle = compute_bg$collect_in_background()
   res = result(handle$join())
-  expect_rpolarserr(unwrap(res),c("When", "Hint", "PlainErrorMessage"))
+  expect_rpolarserr(unwrap(res), c("When", "Hint", "PlainErrorMessage"))
   expect_identical(
     res$err$contexts() |> tail(1) |> unlist(use.names = FALSE),
     "cannot run background R process with zero capacity"
   )
 
 
-  #can print handle after exhausted
-  handle |> as.character() |> invisible()
+  # can print handle after exhausted
+  handle |>
+    as.character() |>
+    invisible()
 
-  #can ask if joined after exhausted
+  # can ask if joined after exhausted
   expect_equal(handle$is_finished(), NULL)
 
-  #gives correct err message
+  # gives correct err message
   expect_rpolarserr(handle$join(), "Handled")
-
 })

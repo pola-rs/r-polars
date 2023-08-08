@@ -17,7 +17,7 @@
 #' @keywords internal
 as.character.RThreadHandle = function(x, ...) {
   .pr$RThreadHandle$thread_description(x) |>
-  unwrap_or("An exhausted RThreadHandle")
+    unwrap_or("An exhausted RThreadHandle")
 }
 
 #' s3 method print RThreadHandle
@@ -57,10 +57,13 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' @keywords RThreadHandle
 #' @seealso \link{LazyFrame_collect_in_background} \link{Expr_map} \link{Expr_apply}
 #' @examples
-#' prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+#' prexpr = pl$col("mpg")$map(\(x) {
+#'   Sys.sleep(1.5)
+#'   x * 0.43
+#' }, in_background = TRUE)$alias("kml")
 #' handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
-#' if(!handle$is_finished()) print("not done yet")
-#' df = handle$join() #get result
+#' if (!handle$is_finished()) print("not done yet")
+#' df = handle$join() # get result
 #' df
 #'
 RThreadHandle
@@ -120,7 +123,7 @@ pl$get_global_rpool_cap = function() {
 #' @rdname global_rpool_cap
 #' @name set_global_rpool_cap
 pl$set_global_rpool_cap = function(n) {
-  set_global_rpool_cap(n) |> unwrap() |> invisible()
+  set_global_rpool_cap(n) |>
+    unwrap() |>
+    invisible()
 }
-
-

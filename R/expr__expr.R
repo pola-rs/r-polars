@@ -683,7 +683,7 @@ construct_ProtoExprArray = function(...) {
 #' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
-#'be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
 #' @return Expr
 #' @details Sometime some specific R function is just necessary to perform a column transformation.
@@ -701,25 +701,34 @@ construct_ProtoExprArray = function(...) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
 #'
-#' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 #'
 #' # map a,b,c,d sequentially
-#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
-#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2})
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   })
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead
-#' pl$set_global_rpool_cap(4) #set back to 4, the default
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
 #' pl$get_global_rpool_cap()
-#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
-#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
 #' pl$get_global_rpool_cap()
-#' pl$LazyFrame(a=1,b=2,c=3,d=4)$select(
-#'   pl$all()$map(\(s) {Sys.sleep(.5);s*2}, in_background = TRUE)
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
 #' )$collect() |> system.time()
 #'
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
@@ -745,7 +754,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
-#'be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
 #' @details
 #'
@@ -841,21 +850,30 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
-#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()})
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   })
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) #drop any previous processes, just to show start-up overhead here
-#' pl$set_global_rpool_cap(4) #set back to 4, the default
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
 #' pl$get_global_rpool_cap()
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
-#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
 #' pl$get_global_rpool_cap()
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
-#'   pl$all()$apply(\(s) {Sys.sleep(.1);s$sum()}, in_background = TRUE)
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
 #' )$collect() |> system.time()
 #'
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
@@ -2487,16 +2505,16 @@ Expr_limit = function(n = 10) {
 #' pl$DataFrame(a = -1:3)$select(
 #'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
 #'   2^pl$lit(-2:2), # brief use
-#'   pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name")
+#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name")
 #' )
 #'
 #'
 #' # Example on the R behavior of the `**`-'quasi operator'
-#' 2^1  # normal use
+#' 2^1 # normal use
 #' 2**1 # this works because ** is converted to the `^`-operator  by the R interpreter
-#' get("^")(2,1) #this works because there exists a function called "^"
+#' get("^")(2, 1) # this works because there exists a function called "^"
 #' # the R interpreter will not convert "**" to "^"  and there is no function named "**"
-#' tryCatch(get("**")(2,1), error = as.character)
+#' tryCatch(get("**")(2, 1), error = as.character)
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
