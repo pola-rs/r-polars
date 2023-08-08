@@ -265,26 +265,28 @@ LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
-#' @param type_coercion Boolean. Coerce types such that operations succeed and run on minimal
-#' required memory.
-#' @param predicate_pushdown  Boolean. Applies filters as early as possible/ at scan level.
-#' @param projection_pushdown  Boolean. Applies filters as early as possible/ at scan level.
-#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used by multiple subtrees
-#'  in the query plan.
-#' @param no_optimization  Boolean. Turn of the following:
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param projection_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used
+#' by multiple subtrees in the query plan.
+#' @param slice_pushdown  Boolean. Only load the required slice from the scan
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that
+#' are used by multiple subtrees in the query plan.
+#' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  common_subplan_elimination = FALSE
-#' @param slice_pushdown  Boolean. Only load the required slice from the scan level. Don't
-#' materialize sliced outputs (e.g. join.head(10)).
-#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that are used by multiple
-#' subtrees in the query plan.
 #' @param streaming  Boolean. Run parts of the query in a streaming fashion
-#' (this is in an alpha state)
-#' @param collect_in_background Boolean. Detach this query from R session. Computation will start
-#' in background. Get a handle which later can be converted into the resulting DataFrame. Useful
-#' in interactive mode to not lock R session.
+#' (this is in an alpha state).
+#' @param collect_in_background Boolean. Detach this query from R session.
+#' Computation will start in background. Get a handle which later can be converted
+#' into the resulting DataFrame. Useful in interactive mode to not lock R session.
 #' @details
 #' Note: use `$fetch(n)` if you want to run your query on the first `n` rows only.
 #' This can be a huge time saver in debugging queries.
@@ -296,11 +298,12 @@ LazyFrame_collect = function(
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
-    no_optimization = FALSE,
     slice_pushdown = TRUE,
     common_subplan_elimination = TRUE,
+    no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
+
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
