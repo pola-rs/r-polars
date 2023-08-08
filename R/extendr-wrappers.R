@@ -71,6 +71,8 @@ test_print_string <- function(s) invisible(.Call(wrap__test_print_string, s))
 
 test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
+test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
+
 RPolarsErr <- new.env(parent = emptyenv())
 
 RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)

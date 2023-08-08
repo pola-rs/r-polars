@@ -281,6 +281,11 @@ fn test_robj_to_expr(robj: Robj) -> RResult<Expr> {
     robj_to!(Expr, robj)
 }
 
+#[extendr]
+fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
+    Ok(R!("pl$lit({{robj}})")?) // this call should have been polars::pl$lit(...
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -315,4 +320,5 @@ extendr_module! {
     fn test_robj_to_i32;
     fn test_print_string;
     fn test_robj_to_expr;
+    fn test_wrong_call_pl_lit;
 }
