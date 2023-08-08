@@ -42,7 +42,7 @@ Config/Needs/website:
     pkgload,
     yaml
 Config/Needs/dev:
-    callr
+    callr,
     brio,
     devtools,
     RcppTOML,
