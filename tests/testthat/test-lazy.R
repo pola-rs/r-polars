@@ -595,34 +595,15 @@ test_that("select with list of exprs", {
 test_that("explode", {
   df = pl$LazyFrame(
     letters = c("a", "a", "b", "c"),
-    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
-    jumpers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
   )
-
-  expected_df = data.frame(
-    letters = c(rep("a", 3), "b", "b", rep("c", 3)),
-    numbers = 1:8,
-    jumpers = 1:8
-  )
-
-  #as vector
   expect_equal(
-    df$explode(c("numbers","jumpers"))$collect()$to_data_frame(),
-    expected_df
+    df$explode("numbers")$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 3), "b", "b", rep("c", 3)),
+      numbers = 1:8
+    )
   )
-
-  #as list
-  expect_equal(
-    df$explode(list("numbers",pl$col("jumpers")))$collect()$to_data_frame(),
-    expected_df
-  )
-
-  #as ...
-  expect_equal(
-    df$explode("numbers",pl$col("jumpers"))$collect()$to_data_frame(),
-    expected_df
-  )
-
 
   # empty values -> NA
 
@@ -638,7 +619,8 @@ test_that("explode", {
     )
   )
 
-  # several cols to explode test2
+  # several cols to explode
+
   df = pl$LazyFrame(
     letters = c("a", "a", "b", "c"),
     numbers = list(1, NULL, c(4, 5), c(6, 7, 8)),

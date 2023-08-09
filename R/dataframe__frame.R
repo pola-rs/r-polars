@@ -1559,6 +1559,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' df
 #'
 #' df$explode("numbers")
-DataFrame_explode = function(...) {
-  self$lazy()$explode(...)$collect()
+DataFrame_explode = function(columns, ...) {
+  self$lazy()$explode(columns, ...)$collect()
 }

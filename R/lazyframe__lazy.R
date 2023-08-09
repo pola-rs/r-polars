@@ -1060,36 +1060,22 @@ LazyFrame_profile = function() {
 #' @title Explode the DataFrame to long format by exploding the given columns
 #' @keywords LazyFrame
 #'
-#' @param ... Column(s) to be exploded as individual `Into<Expr>` or list/vector of `Into<Expr>`.
-#' A handful of places in rust-polars, only the plain variant `Expr::Column` is accepted. This is
-#' currenly on of such places. Therefore `pl$col("name")` and `pl$all()` is allowed, not
-#' `pl$col("name")$alias("newname")`. `"name"` is implcitly converted to `pl$col("name")`.
-#'
-#' @details
+#' @param columns Column(s) to be exploded. `Into<Expr>`, list of `Into<Expr>` or a char vec.
 #' Only columns of DataType `List` or `Utf8` can be exploded.
-#'
-#' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger `$alias("a")` here
-#' , due to only variant `Expr::Column` is supported in rust-polars.
+#' @param ... More columns to explode as above but provided as separate arguments
 #'
 #' @return LazyFrame
 #' @examples
 #' df = pl$LazyFrame(
-#'   letters = c("aa", "aa", "bb", "cc"),
-#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
-#'   numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
 #' )
 #' df
 #'
-#' #explode a single column, append others
 #' df$explode("numbers")$collect()
-#' df$explode("letters")$collect()
-#'
-#' # explode two columns of same nesting structure, by names or the common dtype "List(Float64)"
-#' df$explode(c("numbers","numbers_2"))$collect() # as char vector, could be as individual args
-#' df$explode(pl$col(pl$List(pl$Float64)))$collect()
-LazyFrame_explode = function(...) {
-  dotdotdot_args = unpack_list(...)
-  .pr$LazyFrame$explode(self, dotdotdot_args) |>
+LazyFrame_explode = function(columns = list(), ...) {
+  dotdotdot_args = list2(...)
+  .pr$LazyFrame$explode(self, columns, dotdotdot_args) |>
     unwrap("in explode():")
 }
 
