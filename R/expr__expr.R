@@ -2501,14 +2501,14 @@ Expr_limit = function(n = 10) {
 #' pl$DataFrame(a = -1:3)$select(
 #'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
 #'   2^pl$lit(-2:2), # brief use
-#'   pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name dropped")
+#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name dropped")
 #' )
 #'
 #' # exotic case where '**' will not work, but "^" will
 #' safe_chr = \(...) tryCatch(..., error = as.character)
-#' get("^")(2,pl$lit(2)) |> safe_chr()
-#' get("**")(2,pl$lit(2)) |> safe_chr()
-#' get("**")(2,2) |> safe_chr()
+#' get("^")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, 2) |> safe_chr()
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }

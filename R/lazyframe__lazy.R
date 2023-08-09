@@ -303,7 +303,6 @@ LazyFrame_collect = function(
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
-
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
