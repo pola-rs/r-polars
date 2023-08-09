@@ -6,7 +6,7 @@ use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-use crate::rpolarserr::{rerr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -1659,6 +1659,62 @@ impl Expr {
             self.clone().0.map(f, output_map)
         }
         .into()
+    }
+
+    pub fn map_in_background(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+        agg_list: bool,
+    ) -> Self {
+        let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
+
+        let rbgfunc = move |s| {
+            crate::RBGPOOL
+                .rmap_series(raw_func.clone(), s)
+                .map_err(rpolars_to_polars_err)?()
+            .map_err(rpolars_to_polars_err)
+            .map(Some)
+        };
+
+        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+
+        let output_map = pl::GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
+            None => fld.clone(),
+        });
+
+        if agg_list {
+            self.clone().0.map_list(rbgfunc, output_map)
+        } else {
+            self.clone().0.map(rbgfunc, output_map)
+        }
+        .into()
+    }
+
+    pub fn apply_in_background(
+        &self,
+        lambda: Robj,
+        output_type: Nullable<&RPolarsDataType>,
+    ) -> Self {
+        let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
+
+        let rbgfunc = move |s| {
+            crate::RBGPOOL
+                .rmap_series(raw_func.clone(), s)
+                .map_err(rpolars_to_polars_err)?()
+            .map_err(rpolars_to_polars_err)
+            .map(Some)
+        };
+
+        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+
+        let output_map = pl::GetOutput::map_field(move |fld| match ot {
+            Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
+            None => fld.clone(),
+        });
+
+        self.0.clone().apply(rbgfunc, output_map).into()
     }
 
     pub fn is_unique(&self) -> Self {

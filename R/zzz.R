@@ -23,9 +23,6 @@ replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 # LazyGroupBy
 replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
 
-# PolarsBackgroundHandle
-replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")
-
 # Expr
 replace_private_with_pub_methods(Expr, "^Expr_")
 
@@ -96,6 +93,10 @@ replace_private_with_pub_methods(RField, "^RField_")
 # Series
 replace_private_with_pub_methods(Series, "^Series_")
 
+# RThreadHandle
+replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
+
+
 
 
 # expression constructors, why not just pl$lit = Expr_lit?
@@ -141,7 +142,7 @@ pl$mem_address = mem_address
   # see doc below, R CMD check did not like this function def
   pl$select = .pr$DataFrame$default()$select
 
-
+  setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }
 

@@ -303,7 +303,6 @@ LazyFrame_collect = function(
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
-
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -335,14 +334,43 @@ LazyFrame_collect = function(
     unwrap("in $collect():")
 }
 
-#' @title New DataFrame from LazyFrame_object$collect()
-#' @description collect DataFrame by lazy query (SOFT DEPRECATED)
-#' @details This function is soft deprecated. Use $collect(collect_in_background = TRUE) instead
+
+#' @title Collect a Lazy Query in background
+#' @description Collect runs non-blocking in a detached thread
+#' @details
+#'
+#' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
+#' Use [`<RThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
+#' Use [`<RThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
+#'
+#' Useful to not block the R session while query executes. Any use of [`<Expr>$map()`][Expr_map] or
+#' [`<Expr>apply()`][Expr_apply], which runs R functions will fail when collect_in_background if
+#' not `in_background = TRUE` because the main R session is not available for polars execution. See
+#' also examples below.
+#'
 #' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect_background = function() {
-  .pr$LazyFrame$collect_background(self)
+#' @return RThreadHandle, a future-like thread handle for the task
+#' @examples
+#' # Some expression which does contain a map
+#' expr = pl$col("mpg")$map(
+#'   \(x) {
+#'     Sys.sleep(.5)
+#'     x * 0.43
+#'   },
+#'   in_background = TRUE # set TRUE if collecting in background queries with $map or $apply
+#' )$alias("kml")
+#'
+#' # return is immediately a handle to another thread.
+#' handle = pl$LazyFrame(mtcars)$with_columns(expr)$collect_in_background()
+#'
+#' # ask if query is done
+#' if (!handle$is_finished()) print("not done yet")
+#'
+#' # get result, blocking until polars query is done
+#' df = handle$join()
+#' df
+LazyFrame_collect_in_background = function() {
+  .pr$LazyFrame$collect_in_background(self)
 }
 
 #' @title Limits

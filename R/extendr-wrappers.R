@@ -11,8 +11,6 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
-
 rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
@@ -73,43 +71,21 @@ test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
-RPolarsErr <- new.env(parent = emptyenv())
+test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
-RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
+setup_renv <- function() .Call(wrap__setup_renv)
 
-RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
+set_global_rpool_cap <- function(c) .Call(wrap__set_global_rpool_cap, c)
 
-RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
+get_global_rpool_cap <- function() .Call(wrap__get_global_rpool_cap)
 
-RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
+handle_background_request <- function(server_name) .Call(wrap__handle_background_request, server_name)
 
-RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
+test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhandler, lambda, arg)
 
-RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
+test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
-RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
-
-RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
-
-RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
-
-RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
-
-RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
-
-RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
-
-RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
-
-RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
-
-RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
-
-#' @export
-`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.RPolarsErr` <- `$.RPolarsErr`
+test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -284,6 +260,58 @@ RField$set_datatype_mut <- function(datatype) invisible(.Call(wrap__RField__set_
 
 #' @export
 `[[.RField` <- `$.RField`
+
+RPolarsErr <- new.env(parent = emptyenv())
+
+RPolarsErr$new <- function() .Call(wrap__RPolarsErr__new)
+
+RPolarsErr$contexts <- function() .Call(wrap__RPolarsErr__contexts, self)
+
+RPolarsErr$pretty_msg <- function() .Call(wrap__RPolarsErr__pretty_msg, self)
+
+RPolarsErr$bad_arg <- function(s) .Call(wrap__RPolarsErr__bad_arg, self, s)
+
+RPolarsErr$bad_robj <- function(r) .Call(wrap__RPolarsErr__bad_robj, self, r)
+
+RPolarsErr$bad_val <- function(s) .Call(wrap__RPolarsErr__bad_val, self, s)
+
+RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
+
+RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
+
+RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
+
+RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
+
+RPolarsErr$rcall <- function(c) .Call(wrap__RPolarsErr__rcall, self, c)
+
+RPolarsErr$get_rcall <- function() .Call(wrap__RPolarsErr__get_rcall, self)
+
+RPolarsErr$rinfo <- function(i) .Call(wrap__RPolarsErr__rinfo, self, i)
+
+RPolarsErr$get_rinfo <- function() .Call(wrap__RPolarsErr__get_rinfo, self)
+
+RPolarsErr$when <- function(s) .Call(wrap__RPolarsErr__when, self, s)
+
+#' @export
+`$.RPolarsErr` <- function (self, name) { func <- RPolarsErr[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsErr` <- `$.RPolarsErr`
+
+RThreadHandle <- new.env(parent = emptyenv())
+
+RThreadHandle$join <- function() .Call(wrap__RThreadHandle__join, self)
+
+RThreadHandle$is_finished <- function() .Call(wrap__RThreadHandle__is_finished, self)
+
+RThreadHandle$thread_description <- function() .Call(wrap__RThreadHandle__thread_description, self)
+
+#' @export
+`$.RThreadHandle` <- function (self, name) { func <- RThreadHandle[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RThreadHandle` <- `$.RThreadHandle`
 
 Expr <- new.env(parent = emptyenv())
 
@@ -701,6 +729,10 @@ Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
 Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
 
+Expr$map_in_background <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map_in_background, self, lambda, output_type, agg_list)
+
+Expr$apply_in_background <- function(lambda, output_type) .Call(wrap__Expr__apply_in_background, self, lambda, output_type)
+
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
 Expr$approx_unique <- function() .Call(wrap__Expr__approx_unique, self)
@@ -899,9 +931,9 @@ LazyFrame$debug_plan <- function() .Call(wrap__LazyFrame__debug_plan, self)
 
 LazyFrame$describe_optimized_plan <- function() .Call(wrap__LazyFrame__describe_optimized_plan, self)
 
-LazyFrame$collect_background <- function() .Call(wrap__LazyFrame__collect_background, self)
-
 LazyFrame$collect <- function() .Call(wrap__LazyFrame__collect, self)
+
+LazyFrame$collect_in_background <- function() .Call(wrap__LazyFrame__collect_in_background, self)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
@@ -1104,20 +1136,6 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
-
-PolarsBackgroundHandle <- new.env(parent = emptyenv())
-
-PolarsBackgroundHandle$new <- function(lazy_df) .Call(wrap__PolarsBackgroundHandle__new, lazy_df)
-
-PolarsBackgroundHandle$join <- function() .Call(wrap__PolarsBackgroundHandle__join, self)
-
-PolarsBackgroundHandle$is_exhausted <- function() .Call(wrap__PolarsBackgroundHandle__is_exhausted, self)
-
-#' @export
-`$.PolarsBackgroundHandle` <- function (self, name) { func <- PolarsBackgroundHandle[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.PolarsBackgroundHandle` <- `$.PolarsBackgroundHandle`
 
 FeatureInfo <- new.env(parent = emptyenv())
 
