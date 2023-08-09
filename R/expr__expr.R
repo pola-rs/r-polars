@@ -637,12 +637,6 @@ construct_ProtoExprArray = function(...) {
 
     # if args named, convert string to col and alias any column by name if a name
   } else {
-    if (!polars_optenv$named_exprs) {
-      stopf(
-        "not allowed naming expressions, use `pl$set_polars_options(named_exprs = TRUE)` %s",
-        "to enable column naming by expression"
-      )
-    }
 
     for (i in seq_along(args)) {
       arg = args[[i]]
