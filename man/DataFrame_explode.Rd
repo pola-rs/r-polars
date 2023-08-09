@@ -4,13 +4,13 @@
 \alias{DataFrame_explode}
 \title{Explode the DataFrame to long format by exploding the given columns}
 \usage{
-DataFrame_explode(columns, ...)
+DataFrame_explode(...)
 }
 \arguments{
-\item{columns}{Column(s) to be exploded. \verb{Into<Expr>}, list of \verb{Into<Expr>} or a char vec.
-Only columns of DataType \code{List} or \code{Utf8} can be exploded.}
-
-\item{...}{More columns to explode as above but provided as separate arguments}
+\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector of \verb{Into<Expr>}.
+A handful of places in rust-polars, only the plain variant \code{Expr::Column} is accepted. This is
+currenly on of such places. Therefore \code{pl$col("name")} and \code{pl$all()} is allowed, not
+\code{pl$col("name")$alias("newname")}. \code{"name"} is implcitly converted to \code{pl$col("name")}.}
 }
 \value{
 DataFrame

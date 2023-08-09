@@ -416,16 +416,12 @@ impl LazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
-        let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;
-        let mut ddd_args: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, dotdotdot_args)?;
-        columns.append(&mut ddd_args);
-        if columns.is_empty() {
-            rerr()
-                .plain("neither have any elements, cannot use explode without Expr(s)")
-                .when("joining Exprs from input [columns] and input [...]")?;
-        }
-        Ok(self.0.clone().explode(columns).into())
+    fn explode(&self, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+        Ok(self
+            .0
+            .clone()
+            .explode(robj_to!(Vec, PLExprCol, dotdotdot_args)?)
+            .into())
     }
 
     pub fn clone_see_me_macro(&self) -> LazyFrame {
