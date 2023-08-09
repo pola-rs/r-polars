@@ -1005,7 +1005,7 @@ LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, pro
 
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
-LazyFrame$explode <- function(columns, dotdotdot_args) .Call(wrap__LazyFrame__explode, self, columns, dotdotdot_args)
+LazyFrame$explode <- function(dotdotdot_args) .Call(wrap__LazyFrame__explode, self, dotdotdot_args)
 
 LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 
