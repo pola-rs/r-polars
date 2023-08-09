@@ -12,23 +12,50 @@ LazyFrame_sink_parquet(
   statistics = FALSE,
   row_group_size = NULL,
   data_pagesize_limit = NULL,
-  maintain_order = TRUE
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE
 )
 }
 \arguments{
-\item{path}{string, the path of the parquet file}
+\item{path}{String. The path of the parquet file}
 
-\item{compression}{string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
+\item{compression}{String. The compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}}
 
-\item{compression_level}{null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
+\item{compression_level}{NULL or Integer. Only used if method is one of {'gzip', 'brotli', 'zstd'}}
 
-\item{statistics}{bool, whether compute and write column statistics.}
+\item{statistics}{Boolean. Whether compute and write column statistics.}
 
-\item{row_group_size}{NULL or positive integer. If set NULL a single row group will be created.}
+\item{row_group_size}{NULL or Integer. If set NULL a single row group will be created.}
 
-\item{data_pagesize_limit}{NULL or positive integer. If set NULL the limit will be 2^20 bytes.}
+\item{data_pagesize_limit}{NULL or Integer. If set NULL the limit will be 2^20 bytes.}
 
-\item{maintain_order}{bool, whether maintain the order the data was processed.}
+\item{maintain_order}{Boolean. Whether maintain the order the data was processed.}
+
+\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+run on minimal required memory.}
+
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
+scan level.}
+
+\item{projection_pushdown}{Boolean. Select only the columns that are needed at the scan level.}
+
+\item{simplify_expression}{Boolean. Various optimizations, such as constant folding
+and replacing expensive operations with faster alternatives.}
+
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+Don't materialize sliced outputs
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+
+\item{no_optimization}{Boolean. Turn off the following optimizations:
+predicate_pushdown = FALSE
+projection_pushdown = FALSE
+slice_pushdown = FALSE
+common_subplan_elimination = FALSE}
 }
 \description{
 Stream the content of LazyFrame into a parquet file.

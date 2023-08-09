@@ -267,22 +267,22 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @description collect DataFrame by lazy query
 #' @param type_coercion Boolean. Coerce types such that operations succeed and
 #' run on minimal required memory.
-#' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
+#' @param predicate_pushdown Boolean. Applies filters as early as possible at
 #' scan level.
-#' @param projection_pushdown  Boolean. Applies filters as early as possible / at
-#' scan level.
-#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used
-#' by multiple subtrees in the query plan.
-#' @param slice_pushdown  Boolean. Only load the required slice from the scan
+#' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
+#' @param simplify_expression Boolean. Various optimizations, such as constant folding
+#' and replacing expensive operations with faster alternatives.
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that
+#' @param common_subplan_elimination Boolean. Cache subtrees/file scans that
 #' are used by multiple subtrees in the query plan.
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  common_subplan_elimination = FALSE
-#' @param streaming  Boolean. Run parts of the query in a streaming fashion
+#' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
 #' @param collect_in_background Boolean. Detach this query from R session.
 #' Computation will start in background. Get a handle which later can be converted
@@ -376,13 +376,28 @@ LazyFrame_collect_in_background = function() {
 #' @title LazyFrame stream output to parquet file
 #' @name sink_parquet
 #' @description Stream the content of LazyFrame into a parquet file.
-#' @param path string, the path of the parquet file
-#' @param compression string, the compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
-#' @param compression_level null or int. Only used if method is one of {'gzip', 'brotli', 'zstd'}
-#' @param statistics bool, whether compute and write column statistics.
-#' @param row_group_size NULL or positive integer. If set NULL a single row group will be created.
-#' @param data_pagesize_limit NULL or positive integer. If set NULL the limit will be 2^20 bytes.
-#' @param maintain_order bool, whether maintain the order the data was processed.
+#' @param path String. The path of the parquet file
+#' @param compression String. The compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
+#' @param compression_level NULL or Integer. Only used if method is one of {'gzip', 'brotli', 'zstd'}
+#' @param statistics Boolean. Whether compute and write column statistics.
+#' @param row_group_size NULL or Integer. If set NULL a single row group will be created.
+#' @param data_pagesize_limit NULL or Integer. If set NULL the limit will be 2^20 bytes.
+#' @param maintain_order Boolean. Whether maintain the order the data was processed.
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown Boolean. Applies filters as early as possible at
+#' scan level.
+#' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
+#' @param simplify_expression Boolean. Various optimizations, such as constant folding
+#' and replacing expensive operations with faster alternatives.
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param no_optimization  Boolean. Turn off the following optimizations:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
 LazyFrame_sink_parquet = function(
   path,
   compression = "zstd",
@@ -390,19 +405,41 @@ LazyFrame_sink_parquet = function(
   statistics = FALSE,
   row_group_size = NULL,
   data_pagesize_limit = NULL,
-  maintain_order = TRUE
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE
 ) {
-  .pr$LazyFrame$sink_parquet(
-    self,
-    path,
-    compression,
-    compression_level,
-    statistics,
-    row_group_size,
-    data_pagesize_limit,
-    maintain_order
-  ) |> 
-    unwrap("in LazyFrame$sink_parquet(...)") |>
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      FALSE,
+      TRUE
+    ) |>
+    unwrap("in $sink_parquet(...)") |>
+    .pr$LazyFrame$sink_parquet(
+      path,
+      compression,
+      compression_level,
+      statistics,
+      row_group_size,
+      data_pagesize_limit,
+      maintain_order
+    ) |> 
+    unwrap("in $sink_parquet(...)") |>
     invisible()
 }
 
@@ -413,17 +450,54 @@ LazyFrame_sink_parquet = function(
 #' @param path string, the path of the arrow ipc file
 #' @param compression NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.
 #' @param maintain_order bool, whether maintain the order the data was processed.
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown Boolean. Applies filters as early as possible at
+#' scan level.
+#' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
+#' @param simplify_expression Boolean. Various optimizations, such as constant folding
+#' and replacing expensive operations with faster alternatives.
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param no_optimization  Boolean. Turn off the following optimizations:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
 LazyFrame_sink_ipc = function(
   path,
   compression = "zstd",
-  maintain_order = TRUE
+  maintain_order = TRUE,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  no_optimization = FALSE
 ) {
-  .pr$LazyFrame$sink_ipc(
-    self,
-    path,
-    compression,
-    maintain_order
-  ) |>
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      FALSE,
+      TRUE
+    ) |>
+    unwrap("in $sink_ipc(...)") |>
+    .pr$LazyFrame$sink_ipc(
+      path,
+      compression,
+      maintain_order
+    ) |>
     unwrap("in LazyFrame$sink_ipc(...)") |>
     invisible()
 }

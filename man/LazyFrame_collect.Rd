@@ -20,16 +20,16 @@ LazyFrame_collect(
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
 
-\item{predicate_pushdown}{Boolean. Applies filters as early as possible / at
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Applies filters as early as possible / at
-scan level.}
+\item{projection_pushdown}{Boolean. Select only the columns that are needed at the scan level.}
 
-\item{simplify_expression}{Boolean. Cache subtrees/file scans that are used
-by multiple subtrees in the query plan.}
+\item{simplify_expression}{Boolean. Various optimizations, such as constant folding
+and replacing expensive operations with faster alternatives.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
+Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
 \item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that
