@@ -746,10 +746,12 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         .as_list()
         .ok_or(RPolarsErr::new())
         .mistyped(tn::<List>())?;
+    let mut arg_names = robj.names().unwrap_or(StrIter::default());
     let iter = l.iter().enumerate().map(|(i, (_, robj))| {
+        let name = arg_names.next().unwrap_or("");
         robj_to_rexpr(robj.clone(), str_to_lit)
             .when(format!("converting element {} into an Expr", i + 1))
-            .map(|e| e.0)
+            .map(|e| if name != "" { e.0.alias(name) } else { e.0 })
     });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
