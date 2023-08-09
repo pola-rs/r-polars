@@ -4,34 +4,43 @@
 \alias{RThreadHandle_RThreadHandle_class}
 \title{The RThreadHandle class}
 \value{
-see methods
+see methods:
+\code{\link[=RThreadHandle_is_finished]{is_finished()}}
+\code{\link[=RThreadHandle_join]{join()}}
 }
 \description{
 A handle to some polars query running in a background thread.
 }
 \details{
-\verb{<LazyFrame>$collect_in_background()} will execute a polars query detached from the R session
-and return a \code{RThreadHandle} immediately. The RThreadHandle has the methods \code{is_finished()} and
-\verb{$join()}.
+\code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}} will execute a polars
+query detached from the R session and return an \code{RThreadHandle} immediately. This
+\code{RThreadHandle}-class has the methods \code{\link[=RThreadHandle_is_finished]{is_finished()}} and
+\code{\link[=RThreadHandle_join]{join()}}.
 
-The background thread may access the pool of extra R sessions to process R code
-embedded in polars query via \verb{$map(...,background = TRUE)} or \verb{$apply(background=TRUE)}. Use
-\code{pl$set_global_rpool_cap()} to limit number of parallel R sessions. Extra R sessions are spawned
-and used if \code{background} arg is set to TRUE.
-
-Starting polars \verb{<LazyFrame>$collect_in_background()} with e.g. some
-\verb{$map(...,background = FALSE)} will raise an Error as the main R session is not available to
-process the query.
+NOTICE:
+The background thread cannot use the main R session, but can access the pool of extra R sessions
+to process R code embedded in polars query via \verb{$map(...,background = TRUE)} or
+\verb{$apply(background=TRUE)}. Use \code{\link[=global_rpool_cap]{pl$set_global_rpool_cap()}} to limit number of
+parallel R sessions.
+Starting polars  \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}} with
+e.g. some \verb{$map(...,background = FALSE)} will raise an Error as the main R session is not
+available to process the R part of the polars query. Native polars query does not need any R
+session.
 }
 \examples{
-prexpr <- pl$col("mpg")$map(\(x) {Sys.sleep(1.5);x * 0.43}, in_background = TRUE)$alias("kml")
+prexpr = pl$col("mpg")$map(\(x) {
+  Sys.sleep(1.5)
+  x * 0.43
+}, in_background = TRUE)$alias("kml")
 handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
-if(!handle$is_finished()) print("not done yet")
-df = handle$join() #get result
+if (!handle$is_finished()) print("not done yet")
+df = handle$join() # get result
 df
 
 }
 \seealso{
-\link{LazyFrame_collect_in_background} \link{Expr_map} \link{Expr_apply}
+\code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}}
+\code{\link[=Expr_map]{<Expr>$map()}}
+\code{\link[=Expr_apply]{<Expr>$apply()}}
 }
 \keyword{RThreadHandle}

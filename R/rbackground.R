@@ -41,21 +41,28 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' @name RThreadHandle_RThreadHandle_class
 #' @description A handle to some polars query running in a background thread.
 #' @details
-#' `<LazyFrame>$collect_in_background()` will execute a polars query detached from the R session
-#' and return a `RThreadHandle` immediately. The RThreadHandle has the methods `is_finished()` and
-#' `$join()`.
+#' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] will execute a polars
+#' query detached from the R session and return an `RThreadHandle` immediately. This
+#' `RThreadHandle`-class has the methods [`is_finished()`][RThreadHandle_is_finished] and
+#' [`join()`][RThreadHandle_join].
 #'
-#' The background thread may access the pool of extra R sessions to process R code
-#' embedded in polars query via `$map(...,background = TRUE)` or `$apply(background=TRUE)`. Use
-#' `pl$set_global_rpool_cap()` to limit number of parallel R sessions. Extra R sessions are spawned
-#' and used if `background` arg is set to TRUE.
-#'
-#' Starting polars `<LazyFrame>$collect_in_background()` with e.g. some
-#' `$map(...,background = FALSE)` will raise an Error as the main R session is not available to
-#' process the query.
-#' @return see methods
+#' NOTICE:
+#' The background thread cannot use the main R session, but can access the pool of extra R sessions
+#' to process R code embedded in polars query via `$map(...,background = TRUE)` or
+#' `$apply(background=TRUE)`. Use [`pl$set_global_rpool_cap()`][global_rpool_cap] to limit number of
+#'  parallel R sessions.
+#' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
+#' e.g. some `$map(...,background = FALSE)` will raise an Error as the main R session is not
+#' available to process the R part of the polars query. Native polars query does not need any R
+#' session.
+#' @return see methods:
+#' [`is_finished()`][RThreadHandle_is_finished]
+#' [`join()`][RThreadHandle_join]
 #' @keywords RThreadHandle
-#' @seealso \link{LazyFrame_collect_in_background} \link{Expr_map} \link{Expr_apply}
+#' @seealso
+#' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background]
+#' [`<Expr>$map()`][Expr_map]
+#' [`<Expr>$apply()`][Expr_apply]
 #' @examples
 #' prexpr = pl$col("mpg")$map(\(x) {
 #'   Sys.sleep(1.5)
@@ -74,7 +81,8 @@ RThreadHandle
 #'  or raise an error from the thread.
 #' Calling `<RThreadHandle>$join()` a second time will raise an error because handle is already
 #' exhausted.
-#' @export
+#' @return return value from background thread
+#' @seealso [RThreadHandle_class][RThreadHandle_RThreadHandle_class]
 RThreadHandle_join = function() {
   .pr$RThreadHandle$join(self) |> unwrap()
 }
@@ -82,10 +90,8 @@ RThreadHandle_join = function() {
 
 #' Ask if RThreadHandle is finished?
 #' @keywords RThreadHandle
-#' @details method `<RThreadHandle>$is_finished()`: Calling `<RThreadHandle>$is_finished()` returns
-#' trinary value: `TRUE` if finished, `FALSE` if not, and `NULL` if the handle was exhausted
-#' (already joined).
-#' @export
+#' @return trinary value: `TRUE` if finished, `FALSE` if not, and `NULL` if the handle was exhausted
+#' with [`<RThreadHandle>$join()`][RThreadHandle_join].
 RThreadHandle_is_finished = function() {
   .pr$RThreadHandle$is_finished(self) |> unwrap_or(NULL)
 }

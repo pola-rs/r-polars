@@ -6,6 +6,9 @@
 \usage{
 RThreadHandle_join()
 }
+\value{
+return value from background thread
+}
 \description{
 Join a RThreadHandle
 }
@@ -14,5 +17,8 @@ method \verb{<RThreadHandle>$join()}: will block until job is done and then retu
 or raise an error from the thread.
 Calling \verb{<RThreadHandle>$join()} a second time will raise an error because handle is already
 exhausted.
+}
+\seealso{
+\link[=RThreadHandle_RThreadHandle_class]{RThreadHandle_class}
 }
 \keyword{RThreadHandle}

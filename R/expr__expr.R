@@ -1200,8 +1200,7 @@ Expr_map_alias = function(fun) {
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
-    # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
-    # then handle_thread_r_requests should be rewritten to handle any type.
+    # if ever crashing, any lazy method like select, filter, with_columns must use something like filter_with_r_func_support()
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") # TODO resolve
   }
   if (!is.function(fun)) pstop(err = "alias_map fun must be a function")
@@ -2487,34 +2486,29 @@ Expr_limit = function(n = 10) {
 
 
 
-#' Exponentiation `^` and `**`.
+#' Exponentiation
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
-#' @details Use of `**` is not recommended in r-polars. The R interpreter will replace the `**` with
-#' `^`, such that `**` means `^`. Except e.g. in strings like "**". Use of `**` will not work for
-#' some internal function-lookups, because it is not a real separate operator in R. See example
-#' below or read further at `?"**"`. In py-polars python `^` is the XOR operator and `**` is the
-#' exponentiation operator.
+#' @details The R interpreter will replace the `**` with `^`, such that `**` means `^` (except in
+#' strings e.g. "**"). Read further at `?"**"`. In py-polars python `^` is the XOR operator and
+#' `**` is the exponentiation operator.
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
-#'
 #' # use via `pow`-method and the `^`-operator
 #' pl$DataFrame(a = -1:3)$select(
 #'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
 #'   2^pl$lit(-2:2), # brief use
-#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name")
+#'   pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name dropped")
 #' )
 #'
-#'
-#' # Example on the R behavior of the `**`-'quasi operator'
-#' 2^1 # normal use
-#' 2**1 # this works because ** is converted to the `^`-operator  by the R interpreter
-#' get("^")(2, 1) # this works because there exists a function called "^"
-#' # the R interpreter will not convert "**" to "^"  and there is no function named "**"
-#' tryCatch(get("**")(2, 1), error = as.character)
+#' # exotic case where '**' will not work, but "^" will
+#' safe_chr = \(...) tryCatch(..., error = as.character)
+#' get("^")(2,pl$lit(2)) |> safe_chr()
+#' get("**")(2,pl$lit(2)) |> safe_chr()
+#' get("**")(2,2) |> safe_chr()
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }

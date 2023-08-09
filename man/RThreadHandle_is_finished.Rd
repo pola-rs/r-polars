@@ -6,12 +6,11 @@
 \usage{
 RThreadHandle_is_finished()
 }
+\value{
+trinary value: \code{TRUE} if finished, \code{FALSE} if not, and \code{NULL} if the handle was exhausted
+with \code{\link[=RThreadHandle_join]{<RThreadHandle>$join()}}.
+}
 \description{
 Ask if RThreadHandle is finished?
-}
-\details{
-method \verb{<RThreadHandle>$is_finished()}: Calling \verb{<RThreadHandle>$is_finished()} returns
-trinary value: \code{TRUE} if finished, \code{FALSE} if not, and \code{NULL} if the handle was exhausted
-(already joined).
 }
 \keyword{RThreadHandle}

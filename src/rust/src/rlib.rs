@@ -250,6 +250,12 @@ pub fn clone_robj(robj: Robj) -> Robj {
 fn test_robj_to_usize(robj: Robj) -> RResult<String> {
     robj_to!(usize, robj).map(rdbg)
 }
+
+#[extendr]
+fn test_robj_to_f64(robj: Robj) -> RResult<String> {
+    robj_to!(f64, robj).map(rdbg)
+}
+
 #[extendr]
 fn test_robj_to_i64(robj: Robj) -> RResult<String> {
     robj_to!(i64, robj).map(rdbg)
@@ -261,6 +267,11 @@ fn test_robj_to_u32(robj: Robj) -> RResult<String> {
 }
 
 #[extendr]
+fn test_robj_to_i32(robj: Robj) -> RResult<String> {
+    robj_to!(i32, robj).map(rdbg)
+}
+
+#[extendr]
 fn test_print_string(s: String) {
     rprintln!("{}", s);
 }
@@ -268,6 +279,11 @@ fn test_print_string(s: String) {
 #[extendr]
 fn test_robj_to_expr(robj: Robj) -> RResult<Expr> {
     robj_to!(Expr, robj)
+}
+
+#[extendr]
+fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
+    Ok(R!("pl$lit({{robj}})")?) // this call should have been polars::pl$lit(...
 }
 
 extendr_module! {
@@ -298,8 +314,11 @@ extendr_module! {
     fn clone_robj;
 
     fn test_robj_to_usize;
+    fn test_robj_to_f64;
     fn test_robj_to_i64;
     fn test_robj_to_u32;
+    fn test_robj_to_i32;
     fn test_print_string;
     fn test_robj_to_expr;
+    fn test_wrong_call_pl_lit;
 }

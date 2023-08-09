@@ -1465,12 +1465,12 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 
           # compute aggregates
           df_aggs = do.call(self$select, largs)
-          e_col_row_names = pl$lit(df_aggs$columns)$str$split(":")
+          e_col_row_names = pl$lit(df_aggs$columns)$str$splitn(":", 2)
 
           # pivotize
           df_pivot = pl$select(
-            e_col_row_names$arr$first()$alias("rowname"),
-            e_col_row_names$arr$last()$alias("colname"),
+            e_col_row_names$struct$field("field_0")$alias("rowname"),
+            e_col_row_names$struct$field("field_1")$alias("colname"),
             pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
           )$pivot(
             values = "value", index = "rowname", columns = "colname"

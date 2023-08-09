@@ -22,7 +22,9 @@
 - Compile environment flag RPOLARS_ALL_FEATURES changes name to RPOLARS_FULL_FEATURES. If 'true'
   will trigger something like `Cargo build --features "full_features"` which is not exactly the same
   as `Cargo build --all-features`. Some dev features are not included in "full_features" (#311).
-
+- Fix bug to allow using polars without library(polars) (#355).
+- New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable rust-polars feature
+  CSE: "Activate common subplan elimination optimization" (#323)
 
 # polars 0.7.0
 
