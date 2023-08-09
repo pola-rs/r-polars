@@ -2,7 +2,6 @@
 % Please edit documentation in R/options.R
 \name{strictly_immutable}
 \alias{strictly_immutable}
-\alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
 \alias{default_maintain_order}
@@ -20,13 +19,6 @@ All settable property elements of classes are mutable.
 Why?, I guess python just do not have strong stance on immutability.
 R strongly suggests immutable objects, so why not make polars strictly immutable where little performance costs?
 However, if to mimic pypolars as much as possible, set this to FALSE.}
-
-\item{named_exprs}{bool, default = FALSE,
-allow named exprs in e.g. select, with_columns, groupby, join.
-a named expression will be extended with $alias(name)
-wildcards or expression producing multiple are problematic due to name collision
-the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
-and only allow named exprs in with_columns (or potentially any method derived there of)}
 
 \item{no_messages}{bool, default = FALSE,
 turn of messages}
@@ -74,12 +66,6 @@ with \verb{pl$options$<name>(<value>)}
 setting an options may be rejected if not passing opt_requirements
 }
 \examples{
-# rename columns by naming expression, experimental requires option named_exprs = TRUE
-pl$set_polars_options(named_exprs = TRUE)
-pl$DataFrame(iris)$with_columns(
-  pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
-  SW_add_2 = (pl$col("Sepal.Width") + 2)
-)
 pl$get_polars_options()
 # polars options read via `pl$options$<name>()`
 pl$options$strictly_immutable()
