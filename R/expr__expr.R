@@ -665,30 +665,70 @@ construct_ProtoExprArray = function(...) {
 ## TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
 # over lambda. However lambda is still in examples.
 ## TODO Better explain aggregate list
-#' Expr_map
+#' Map an expression with an R function.
 #' @keywords Expr
 #'
-#' @param f a function mapping a series
+#' @param f a function to map with
 #' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
+#' This is used to inform schema of the actual return type of the R function. Setting this wrong
+#' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
-#' Likely not so useful.
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' in parallel R sessions. The communication speed between processes is quite slower than between
+#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
-#' @rdname Expr_map
 #' @return Expr
-#' @aliases Expr_map
-#' @details user function return should be a series or any Robj convertible into a Series.
-#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
-#'  investigate.
+#' @details Sometime some specific R function is just necessary to perform a column transformation.
+#' Using R maps is slower than native polars. User function must take one polars `Series` as input
+#' and the return should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
+#' Map fully supports `browser()`. If `in_background = FALSE` the function can access any global
+#' variable of the R session. But all R maps in the query sequentially share the same main R
+#' session. Any native polars computations can still be executed meanwhile. In
+#' `in_background = TRUE` the map will run in one or more other R sessions and will not have access
+#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()` to see and
+#' view number of parallel R sessions.
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
-Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
-  .pr$Expr$map(self, f, output_type, agg_list)
+#'
+#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # map a,b,c,d sequentially
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   })
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
+  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
+  map_fn(self, f, output_type, agg_list)
 }
-
-
 
 #' Expr_apply
 #' @keywords Expr
@@ -704,6 +744,11 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' if FALSE will convert to a Polars Null and carry on.
 #' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
 #' but convert result to a polars Null and carry on.
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' in parallel R sessions. The communication speed between processes is quite slower than between
+#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
 #' @details
 #'
@@ -794,7 +839,42 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' system.time({
 #'   r_vec * 2L
 #' })
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
+#'
+#' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   })
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
+  if (in_background) {
+    return(.pr$Expr$apply_in_background(self, f, return_type))
+  }
+
   # use series apply
   wrap_f = function(s) {
     s$apply(f, return_type, strict_return_type, allow_fail_eval)
@@ -2411,19 +2491,18 @@ Expr_limit = function(n = 10) {
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
-#'
 #' # use via `pow`-method and the `^`-operator
 #' pl$DataFrame(a = -1:3)$select(
 #'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
 #'   2^pl$lit(-2:2), # brief use
-#'   pl$lit(2)$alias("left hand side name") ^ pl$lit(-3:1)$alias("right hand side name dropped")
+#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name dropped")
 #' )
 #'
 #' # exotic case where '**' will not work, but "^" will
 #' safe_chr = \(...) tryCatch(..., error = as.character)
-#' get("^")(2,pl$lit(2)) |> safe_chr()
-#' get("**")(2,pl$lit(2)) |> safe_chr()
-#' get("**")(2,2) |> safe_chr()
+#' get("^")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, 2) |> safe_chr()
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }

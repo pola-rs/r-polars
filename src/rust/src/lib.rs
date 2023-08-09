@@ -17,6 +17,7 @@ pub mod conversion;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
 pub mod info;
+pub mod rbackground;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
@@ -35,14 +36,15 @@ pub use smartstring;
 use crate::utils::extendr_concurrent::{Storage, ThreadCom};
 type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
 static CONFIG: ThreadComStorage = Storage::new();
+pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports
 extendr_module! {
     mod polars;
-    use rpolarserr;
     use rdataframe;
+    use rpolarserr;
+    use rbackground;
     use lazy;
     use series;
-    use concurrent;
     use info;
 }
