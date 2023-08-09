@@ -24,6 +24,7 @@ Suggests:
     arrow,
     bench,
     bit64,
+    callr,
     data.table,
     knitr,
     lubridate,
@@ -83,7 +84,6 @@ Collate:
     'groupby.R'
     'info.R'
     'ipc.R'
-    'lazyframe__background.R'
     'lazyframe__groupby.R'
     'lazyframe__lazy.R'
     'namespace.R'
@@ -91,6 +91,7 @@ Collate:
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
+    'rbackground.R'
     'rlang.R'
     'rust_result.R'
     's3_methods.R'

@@ -1,6 +1,7 @@
-use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
+use crate::concurrent::{collect_with_r_func_support, profile_with_r_func_support};
 use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
+use crate::rdataframe::DataFrame as RDF;
 use crate::rdatatype::{
     new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
     new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
@@ -59,27 +60,20 @@ impl LazyFrame {
         r_result_list(result.map_err(|err| format!("{:?}", err)))
     }
 
-    pub fn collect_background(&self) -> PolarsBackgroundHandle {
-        PolarsBackgroundHandle::new(self)
+    pub fn collect(&self) -> RResult<RDF> {
+        collect_with_r_func_support(self.clone().0)
     }
 
-    pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {
-        handle_thread_r_requests(self.clone().0).map_err(|err| {
-            //improve err messages
-            let err_string = match err {
-                pl::PolarsError::InvalidOperation(x) => {
-                    format!("Something (Likely a Column) named {:?} was not found", x)
-                }
-                x => format!("{:?}", x),
-            };
-
-            format!("when calling $collect() on LazyFrame:\n{}", err_string)
+    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDF>> {
+        use crate::rbackground::*;
+        let dup = self.clone();
+        RThreadHandle::new(move || {
+            Ok(RDF::from(
+                dup.0
+                    .collect()
+                    .map_err(crate::rpolarserr::polars_to_rpolars_err)?,
+            ))
         })
-    }
-
-    pub fn collect_handled(&self) -> RResult<crate::rdataframe::DataFrame> {
-        use crate::rpolarserr::WithRctx;
-        handle_thread_r_requests(self.clone().0).when("calling $collect() on LazyFrame")
     }
 
     pub fn sink_parquet(
@@ -262,6 +256,8 @@ impl LazyFrame {
     }
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
+        R!("warning('`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.')")
+        .expect("warning will not fail");
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
@@ -421,6 +417,35 @@ impl LazyFrame {
         ))
     }
 
+    #[allow(clippy::too_many_arguments)]
+    fn optimization_toggle(
+        &self,
+        type_coercion: Robj,
+        predicate_pushdown: Robj,
+        projection_pushdown: Robj,
+        simplify_expr: Robj,
+        slice_pushdown: Robj,
+        cse: Robj,
+        streaming: Robj,
+    ) -> RResult<Self> {
+        let ldf = self
+            .0
+            .clone()
+            .with_type_coercion(robj_to!(bool, type_coercion)?)
+            .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
+            .with_streaming(robj_to!(bool, streaming)?)
+            .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
+            .with_common_subplan_elimination(robj_to!(bool, cse)?);
+
+        Ok(ldf.into())
+    }
+
+    fn profile(&self) -> RResult<List> {
+        profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
+    }
+
     fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
         let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;
         let mut ddd_args: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, dotdotdot_args)?;
@@ -431,6 +456,10 @@ impl LazyFrame {
                 .when("joining Exprs from input [columns] and input [...]")?;
         }
         Ok(self.0.clone().explode(columns).into())
+    }
+
+    pub fn clone_see_me_macro(&self) -> LazyFrame {
+        self.clone()
     }
 }
 

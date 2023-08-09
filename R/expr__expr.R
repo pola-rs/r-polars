@@ -71,14 +71,16 @@ as.list.Expr = function(x, ...) {
   list(x)
 }
 
-#' wrap as literal
+#' DEPRECATED wrap as literal
+#' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
+#' This function is only kept for reference
 #' @param e an Expr(polars) or any R expression
 #' @details
 #' used internally to ensure an object is an expression
 #' @keywords internal
 #' @return Expr
 #' @examples pl$col("foo") < 5
-wrap_e = function(e, str_to_lit = TRUE) {
+wrap_e_legacy = function(e, str_to_lit = TRUE) {
   if (inherits(e, "Expr")) {
     return(e)
   }
@@ -95,6 +97,22 @@ wrap_e = function(e, str_to_lit = TRUE) {
     pl$col(e)
   }
 }
+
+#' wrap as literal
+#' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
+#' This function is only kept for reference
+#' @param e an Expr(polars) or any R expression
+#' @details
+#' used internally to ensure an object is an expression
+#' @keywords internal
+#' @return Expr
+#' @examples pl$col("foo") < 5
+wrap_e = function(e, str_to_lit = TRUE) {
+  internal_wrap_e(e, str_to_lit) |> unwrap()
+}
+
+
+## TODO refactor to \(e, str_to_lit = TRUE, argname = NULL) wrap_e(e) |> result()
 
 #' wrap as Expression capture ok/err as result
 #' @param e an Expr(polars) or any R expression
@@ -170,13 +188,18 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 #' pl$lit(5)$add(pl$lit(10))
 #' +pl$lit(5) # unary use resolves to same as pl$lit(5)
 Expr_add = function(other) {
-  .pr$Expr$add(self, wrap_e(other))
+  .pr$Expr$add(self, other) |> unwrap("in $add()")
 }
 #' @export
 #' @rdname Expr_add
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"+.Expr" = function(e1, e2) if (missing(e2)) e1 else e1$add(e2)
+"+.Expr" = function(e1, e2) {
+  if (missing(e2)) {
+    return(e1)
+  }
+  result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
+}
 
 #' Div
 #' @description Divide
@@ -189,13 +212,13 @@ Expr_add = function(other) {
 #' pl$lit(5) / pl$lit(10)
 #' pl$lit(5)$div(pl$lit(10))
 Expr_div = function(other) {
-  .pr$Expr$div(self, wrap_e(other))
+  .pr$Expr$div(self, other) |> unwrap("in $div()")
 }
 #' @export
 #' @rdname Expr_div
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"/.Expr" = function(e1, e2) e1$div(e2)
+"/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
 #' Sub
 #' @description Substract
@@ -209,13 +232,17 @@ Expr_div = function(other) {
 #' pl$lit(5)$sub(pl$lit(10))
 #' -pl$lit(5)
 Expr_sub = function(other) {
-  .pr$Expr$sub(self, wrap_e(other))
+  .pr$Expr$sub(self, other) |> unwrap("in $sub()")
 }
 #' @export
 #' @rdname Expr_sub
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"-.Expr" = function(e1, e2) if (missing(e2)) wrap_e(0L)$sub(e1) else e1$sub(e2)
+"-.Expr" = function(e1, e2) {
+  result(
+    if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
+  ) |> unwrap("using the '-'-operator")
+}
 
 #' Mul *
 #' @description Multiplication
@@ -228,14 +255,14 @@ Expr_sub = function(other) {
 #' pl$lit(5) * pl$lit(10)
 #' pl$lit(5)$mul(pl$lit(10))
 Expr_mul = Expr_mul = function(other) {
-  .pr$Expr$mul(self, wrap_e(other))
+  .pr$Expr$mul(self, other) |> unwrap("in $mul()")
 }
 
 #' @export
 #' @rdname Expr_mul
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
-"*.Expr" = function(e1, e2) e1$mul(e2)
+"*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
 #' Not !
@@ -267,7 +294,7 @@ Expr_is_not = "use_extendr_wrapper"
 #' pl$lit(5) < pl$lit(10)
 #' pl$lit(5)$lt(pl$lit(10))
 Expr_lt = function(other) {
-  .pr$Expr$lt(self, wrap_e(other))
+  .pr$Expr$lt(self, other) |> unwrap("in $lt()")
 }
 #' @export
 #' @details
@@ -275,7 +302,7 @@ Expr_lt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) e1$lt(e2)
+"<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' GreaterThan <
 #' @description gt method and operator
@@ -288,7 +315,7 @@ Expr_lt = function(other) {
 #' pl$lit(2) > pl$lit(1)
 #' pl$lit(2)$gt(pl$lit(1))
 Expr_gt = function(other) {
-  .pr$Expr$gt(self, wrap_e(other))
+  .pr$Expr$gt(self, other) |> unwrap("in $gt()")
 }
 #' @export
 #' @details
@@ -296,7 +323,7 @@ Expr_gt = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) e1$gt(e2)
+">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' Equal ==
 #' @description eq method and operator
@@ -309,7 +336,7 @@ Expr_gt = function(other) {
 #' pl$lit(2) == pl$lit(2)
 #' pl$lit(2)$eq(pl$lit(2))
 Expr_eq = function(other) {
-  .pr$Expr$eq(self, wrap_e(other))
+  .pr$Expr$eq(self, other) |> unwrap("in $eq()")
 }
 #' @export
 #' @details
@@ -317,7 +344,7 @@ Expr_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) e1$eq(e2)
+"==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 
 #' Not Equal !=
@@ -331,7 +358,7 @@ Expr_eq = function(other) {
 #' pl$lit(1) != pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
 Expr_neq = function(other) {
-  .pr$Expr$neq(self, wrap_e(other))
+  .pr$Expr$neq(self, other) |> unwrap("in $neq()")
 }
 #' @export
 #' @details
@@ -339,7 +366,7 @@ Expr_neq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) e1$neq(e2)
+"!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' Less Than Or Equal <=
 #' @description lt_eq method and operator
@@ -352,7 +379,7 @@ Expr_neq = function(other) {
 #' pl$lit(2) <= pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
 Expr_lt_eq = function(other) {
-  .pr$Expr$lt_eq(self, wrap_e(other))
+  .pr$Expr$lt_eq(self, other) |> unwrap("in $lt_eq()")
 }
 #' @export
 #' @details
@@ -360,7 +387,7 @@ Expr_lt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) e1$lt_eq(e2)
+"<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
 #' Greater Than Or Equal <=
@@ -374,7 +401,7 @@ Expr_lt_eq = function(other) {
 #' pl$lit(2) >= pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
 Expr_gt_eq = function(other) {
-  .pr$Expr$gt_eq(self, wrap_e(other))
+  .pr$Expr$gt_eq(self, other) |> unwrap("in $gt_eq()")
 }
 #' @export
 #' @details
@@ -382,7 +409,7 @@ Expr_gt_eq = function(other) {
 #' @param e1 lhs Expr
 #' @param e2 rhs Expr or anything which can become a literal Expression
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) e1$gt_eq(e2)
+">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 
 
@@ -644,30 +671,70 @@ construct_ProtoExprArray = function(...) {
 ## TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
 # over lambda. However lambda is still in examples.
 ## TODO Better explain aggregate list
-#' Expr_map
+#' Map an expression with an R function.
 #' @keywords Expr
 #'
-#' @param f a function mapping a series
+#' @param f a function to map with
 #' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
+#' This is used to inform schema of the actual return type of the R function. Setting this wrong
+#' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
-#' Likely not so useful.
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' in parallel R sessions. The communication speed between processes is quite slower than between
+#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
-#' @rdname Expr_map
 #' @return Expr
-#' @aliases Expr_map
-#' @details user function return should be a series or any Robj convertible into a Series.
-#' In PyPolars likely return must be Series. User functions do fully support `browser()`, helpful to
-#'  investigate.
+#' @details Sometime some specific R function is just necessary to perform a column transformation.
+#' Using R maps is slower than native polars. User function must take one polars `Series` as input
+#' and the return should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
+#' Map fully supports `browser()`. If `in_background = FALSE` the function can access any global
+#' variable of the R session. But all R maps in the query sequentially share the same main R
+#' session. Any native polars computations can still be executed meanwhile. In
+#' `in_background = TRUE` the map will run in one or more other R sessions and will not have access
+#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()` to see and
+#' view number of parallel R sessions.
 #' @name Expr_map
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
 #'   paste("cheese", as.character(x$to_vector()))
 #' }, pl$dtypes$Utf8))
-Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
-  .pr$Expr$map(self, f, output_type, agg_list)
+#'
+#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # map a,b,c,d sequentially
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   })
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
+#'   pl$all()$map(\(s) {
+#'     Sys.sleep(.5)
+#'     s * 2
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
+  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
+  map_fn(self, f, output_type, agg_list)
 }
-
-
 
 #' Expr_apply
 #' @keywords Expr
@@ -683,6 +750,11 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' if FALSE will convert to a Polars Null and carry on.
 #' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
 #' but convert result to a polars Null and carry on.
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' in parallel R sessions. The communication speed between processes is quite slower than between
+#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
+#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
 #'
 #' @details
 #'
@@ -773,7 +845,42 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE) {
 #' system.time({
 #'   r_vec * 2L
 #' })
-Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE) {
+#'
+#' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#'
+#' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   })
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 1: Overhead to start up extra R processes / sessions
+#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
+#' pl$set_global_rpool_cap(4) # set back to 4, the default
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+#' # map in parallel 2: Reuse R processes in "polars global_rpool".
+#' pl$get_global_rpool_cap()
+#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#'   pl$all()$apply(\(s) {
+#'     Sys.sleep(.1)
+#'     s$sum()
+#'   }, in_background = TRUE)
+#' )$collect() |> system.time()
+#'
+Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fail_eval = FALSE, in_background = FALSE) {
+  if (in_background) {
+    return(.pr$Expr$apply_in_background(self, f, return_type))
+  }
+
   # use series apply
   wrap_f = function(s) {
     s$apply(f, return_type, strict_return_type, allow_fail_eval)
@@ -813,18 +920,19 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  if (is.null(x)) {
-    return(unwrap(.pr$Expr$lit(NULL)))
-  }
-  if (inherits(x, "Expr")) {
-    return(x)
-  } # already Expr, pass through
-  if (
-    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date"))
-  ) {
-    x = wrap_s(x) # wrap first as Series if not a simple scalar
-  }
-  unwrap(.pr$Expr$lit(x)) # create literal Expr
+  pcase(
+    is.null(x),
+    .pr$Expr$lit(NULL),
+    inherits(x, "Expr"),
+    Ok(x),
+    inherits(x, "Series"),
+    .pr$Expr$lit(x),
+    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")),
+    {
+      result(pl$Series(x)) |> and_then(.pr$Expr$lit)
+    },
+    or_else = .pr$Expr$lit(x)
+  ) |> unwrap("in lit()")
 }
 
 #' polars suffix
@@ -878,9 +986,11 @@ Expr_reverse = function() {
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
-Expr_and = "use_extendr_wrapper"
+Expr_and = function(other) {
+  .pr$Expr$and(self, other) |> unwrap("in $and()")
+}
 #' @export
-"&.Expr" = function(e1, e2) e1$and(wrap_e(e2))
+"&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
 #' Or
@@ -896,9 +1006,11 @@ Expr_and = "use_extendr_wrapper"
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
-Expr_or = "use_extendr_wrapper"
+Expr_or = function(other) {
+  .pr$Expr$or(self, other) |> unwrap("in $or()")
+}
 #' @export
-"|.Expr" = function(e1, e2) e1$or(wrap_e(e2))
+"|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
 #' Xor
@@ -912,7 +1024,9 @@ Expr_or = "use_extendr_wrapper"
 #' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
-Expr_xor = "use_extendr_wrapper"
+Expr_xor = function(other) {
+  .pr$Expr$xor(self, other) |> unwrap("in $xor()")
+}
 
 
 
@@ -967,41 +1081,6 @@ Expr_cast = function(dtype, strict = TRUE) {
   .pr$Expr$cast(self, dtype, strict)
 }
 
-
-
-
-#' Reverse exponentiation `%**%`(in R `** == ^`)
-#' @description Raise a base to the power of the expression as exponent.
-#' @keywords Expr
-#'
-#' @param base real or Expr, the value of the base, self is the exponent
-#'
-#' @return Expr
-#' @name Expr_rpow
-#' @details  do not use `**`, R secretly parses that just as if it was a `^`
-#' @aliases rpow %**%
-#' @examples
-#' pl$DataFrame(list(a = -1:3))$select(
-#'   pl$lit(2)$rpow(pl$col("a"))
-#' )$get_column("a")$to_r() == (-1:3)^2
-#'
-#' pl$DataFrame(list(a = -1:3))$select(
-#'   pl$lit(2) %**% (pl$col("a"))
-#' )$get_column("a")$to_r() == (-1:3)^2
-Expr_rpow = function(base) {
-  if (!inherits(base, "Expr")) base <- pl$lit(base)
-  expr = .pr$Expr$pow(base, self)
-}
-
-#' @rdname Expr_rpow
-#' @export
-#' @param e1 value where ** operator is defined
-#' @param e2 value where ** operator is defined
-"%**%" = function(e1, e2) e2^e1 # some default method of what reverse exponentiation is (as python ** operator)
-
-#' @rdname Expr_rpow
-#' @export
-"%**%.Expr" = function(e1, e2) e1$rpow(e2)
 
 
 #' Square root
@@ -1121,8 +1200,7 @@ Expr_map_alias = function(fun) {
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
-    # if ever crashing, any lazy method like select, filter, with_columns must use something like handle_thread_r_requests()
-    # then handle_thread_r_requests should be rewritten to handle any type.
+    # if ever crashing, any lazy method like select, filter, with_columns must use something like filter_with_r_func_support()
     message("map_alias function is experimentally without some thread-safeguards, please report any crashes") # TODO resolve
   }
   if (!is.function(fun)) pstop(err = "alias_map fun must be a function")
@@ -2408,26 +2486,34 @@ Expr_limit = function(n = 10) {
 
 
 
-#' Exponentiation `^` or `**`
+#' Exponentiation
 #' @description Raise expression to the power of exponent.
 #' @keywords Expr
 #' @param exponent exponent
+#' @details The R interpreter will replace the `**` with `^`, such that `**` means `^` (except in
+#' strings e.g. "**"). Read further at `?"**"`. In py-polars python `^` is the XOR operator and
+#' `**` is the exponentiation operator.
 #' @return Expr
 #' @name Expr_pow
 #' @aliases pow
 #' @examples
+#' # use via `pow`-method and the `^`-operator
 #' pl$DataFrame(a = -1:3)$select(
-#'   pl$lit(2)$pow(pl$col("a"))
-#' )$get_column("literal")$to_r() == 2^(-1:3)
+#'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
+#'   2^pl$lit(-2:2), # brief use
+#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name dropped")
+#' )
 #'
-#' pl$DataFrame(a = -1:3)$select(
-#'   pl$lit(2)^(pl$col("a"))
-#' )$get_column("literal")$to_r() == 2^(-1:3)
+#' # exotic case where '**' will not work, but "^" will
+#' safe_chr = \(...) tryCatch(..., error = as.character)
+#' get("^")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, pl$lit(2)) |> safe_chr()
+#' get("**")(2, 2) |> safe_chr()
 Expr_pow = function(exponent) {
-  .pr$Expr$pow(self, wrap_e(exponent))
+  .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
 #' @export
-"^.Expr" = function(e1, e2) e1$pow(e2)
+"^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
 #' is_in
@@ -2446,7 +2532,9 @@ Expr_pow = function(exponent) {
 #'   pl$col("a")$is_in(pl$lit(NA_real_))
 #' )$to_data_frame()[[1L]]
 #'
-Expr_is_in = "use_extendr_wrapper"
+Expr_is_in = function(other) {
+  .pr$Expr$is_in(self, other) |> unwrap("in $is_in()")
+}
 
 ## TODO contribute polars, do not panic on by pointing to non positive values
 #' Repeat by
@@ -3308,7 +3396,7 @@ Expr_diff = function(n = 1, null_behavior = "ignore") {
 #' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
-#' df$with_column(pl$col("a")$pct_change()$alias("pct_change"))
+#' df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
 Expr_pct_change = function(n = 1) {
   unwrap(.pr$Expr$pct_change(self, n))
 }
@@ -3403,7 +3491,7 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 #'
 #' @examples
 #' df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))
-#' df$with_column(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
 Expr_clip = function(min, max) {
   unwrap(.pr$Expr$clip(self, wrap_e(min), wrap_e(max)))
 }
@@ -3413,7 +3501,7 @@ Expr_clip = function(min, max) {
 #' @aliases clip_min
 #' @keywords Expr
 #' @examples
-#' df$with_column(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
 Expr_clip_min = function(min) {
   unwrap(.pr$Expr$clip_min(self, wrap_e(min)))
 }
@@ -3423,7 +3511,7 @@ Expr_clip_min = function(min) {
 #' @aliases clip_max
 #' @keywords Expr
 #' @examples
-#' df$with_column(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+#' df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
 Expr_clip_max = function(max) {
   unwrap(.pr$Expr$clip_max(self, wrap_e(max)))
 }
@@ -4168,7 +4256,7 @@ Expr_list = function() {
 #'   f = c("a", "b", "c"),
 #'   g = c(0.1, 1.32, 0.12),
 #'   h = c(TRUE, NA, FALSE)
-#' )$with_column(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+#' )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 Expr_shrink_dtype = "use_extendr_wrapper"
 
 
@@ -4190,7 +4278,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' )$agg(
 #'   pl$col("value") * 3L
 #' )
-#' df_with_list$with_column(
+#' df_with_list$with_columns(
 #'   pl$col("value")$arr$lengths()$alias("group_size")
 #' )
 Expr_arr = method_as_property(function() {

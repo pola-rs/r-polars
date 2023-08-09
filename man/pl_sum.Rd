@@ -35,11 +35,11 @@ pl$DataFrame()$select(pl$sum(1:5))
 df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 
 # column as list
-df$with_column(pl$sum(list("a", "c")))
-df$with_column(pl$sum(list("a", "c", 42L)))
+df$with_columns(pl$sum(list("a", "c")))
+df$with_columns(pl$sum(list("a", "c", 42L)))
 
 # two eqivalent lines
-df$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
-df$with_column(pl$sum(list("*")))
+df$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
+df$with_columns(pl$sum(list("*")))
 }
 \keyword{Expr_new}

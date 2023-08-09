@@ -516,8 +516,8 @@ pub fn new_parquet_compression(
             .map(polars::prelude::BrotliLevel::try_new)
             .transpose()
             .map(Brotli),
-        "zstd" => robj_to!(Option, i64, compression_level)?
-            .map(|cl| polars::prelude::ZstdLevel::try_new(cl as i32))
+        "zstd" => robj_to!(Option, i32, compression_level)?
+            .map(polars::prelude::ZstdLevel::try_new)
             .transpose()
             .map(Zstd),
         m => Err(polars::prelude::PolarsError::ComputeError(
@@ -539,6 +539,18 @@ pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCo
                 .misvalued("should be one of ['lz4', 'zstd']"),
         })
         .transpose()
+}
+
+pub fn new_rolling_cov_options(
+    window_size: Robj,
+    min_periods: Robj,
+    ddof: Robj,
+) -> RResult<pl::RollingCovOptions> {
+    Ok(pl::RollingCovOptions {
+        window_size: robj_to!(u32, window_size)?,
+        min_periods: robj_to!(u32, min_periods)?,
+        ddof: robj_to!(u8, ddof)?,
+    })
 }
 
 extendr_module! {
