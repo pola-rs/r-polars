@@ -16,7 +16,7 @@
 - New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable rust-polars feature
   CSE: "Activate common subplan elimination optimization" (#323)
 - Named expression e.g. `pl$select(newname = pl$lit(2))` as no longer experimental and allowed as
-  default.
+  default (#357).
   
 # polars 0.7.0
 
