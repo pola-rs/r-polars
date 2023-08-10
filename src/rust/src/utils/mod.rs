@@ -248,6 +248,8 @@ const R_MIN_INTEGERISH: f64 = -4503599627370496.0;
 //const I64_MAX_INTO_F64: f64 = i64::MAX as f64;
 const USIZE_MAX_INTO_F64: f64 = usize::MAX as f64;
 const U32_MAX_INTO_F64: f64 = u32::MAX as f64;
+const I32_MIN_INTO_F64: f64 = i32::MIN as f64;
+const I32_MAX_INTO_F64: f64 = i32::MAX as f64;
 pub const BIT64_NA_ECODING: i64 = -9223372036854775808i64;
 
 const WITHIN_INT_MAX: &str =
@@ -256,6 +258,8 @@ const WITHIN_INT_MIN: &str =
     "cannot exceeds double->integer unambigious conversion bound of -(2^52)= -4503599627370496.0";
 const WITHIN_USIZE_MAX: &str = "cannot exceed the upper bound for usize";
 const WITHIN_U32_MAX: &str = "cannot exceed the upper bound for u32 of 4294967295";
+const WITHIN_I32_MIN: &str = "cannot exceed the upper bound for i32 of 2147483647";
+const WITHIN_I32_MAX: &str = "cannot exceed the upper lower for i32 of -2147483648";
 const WITHIN_U8_MAX: &str = "cannot exceed the upper bound for u8 of 255";
 const NOT_NAN: &str = "cannot be NaN";
 const NO_LESS_THAN_ONE: &str = "cannot be less than one";
@@ -299,17 +303,6 @@ pub fn try_f64_into_i64(x: f64) -> RResult<i64> {
         _ if x.is_nan() => base_err.misvalued(NOT_NAN),
         _ if x < R_MIN_INTEGERISH => base_err.misvalued(WITHIN_INT_MIN),
         _ if x > R_MAX_INTEGERISH => base_err.misvalued(WITHIN_INT_MAX),
-        // should not matter
-        // _ if x > I64_MAX_INTO_F64 => Err(format!(
-        //     "the value {} cannot exceed i64::MAX {}",
-        //     x,
-        //     i64::MAX
-        // )),
-        // _ if x < I64_MIN_INTO_F64 => Err(format!(
-        //     "the value {} cannot exceed i64::MIN {}",
-        //     x,
-        //     i64::MIN
-        // ))
         _ => Ok(x as i64),
     }
 }
@@ -321,6 +314,16 @@ pub fn try_f64_into_u32(x: f64) -> RResult<u32> {
         _ if x < 0.0 => base_err.misvalued(NO_LESS_THAN_ZERO),
         _ if x > U32_MAX_INTO_F64 => base_err.misvalued(WITHIN_U32_MAX),
         _ => Ok(x as u32),
+    }
+}
+
+pub fn try_f64_into_i32(x: f64) -> RResult<i32> {
+    let f_base_err = || rerr().bad_val(rdbg(x));
+    match x {
+        _ if x.is_nan() => f_base_err().misvalued(NOT_NAN),
+        _ if x < I32_MIN_INTO_F64 => f_base_err().misvalued(WITHIN_I32_MIN),
+        _ if x > I32_MAX_INTO_F64 => f_base_err().misvalued(WITHIN_I32_MAX),
+        _ => Ok(x as i32),
     }
 }
 
@@ -346,6 +349,15 @@ pub fn try_i64_into_u32(x: i64) -> RResult<u32> {
         _ if x < 0 => base_err.misvalued(NO_LESS_THAN_ZERO),
         _ if x > u32::MAX as i64 => base_err.misvalued(WITHIN_U32_MAX),
         _ => Ok(x as u32),
+    }
+}
+
+pub fn try_i64_into_i32(x: i64) -> RResult<i32> {
+    let f_base_err = || rerr().bad_val(rdbg(x));
+    match x {
+        _ if x < i32::MIN as i64 => f_base_err().misvalued(WITHIN_I32_MIN),
+        _ if x > i32::MAX as i64 => f_base_err().misvalued(WITHIN_I32_MAX),
+        _ => Ok(x as i32),
     }
 }
 
@@ -466,6 +478,21 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
     res
 }
 
+//None if not real or Na.
+pub fn robj_bit64_to_opt_i64(robj: Robj) -> Option<i64> {
+    robj.as_real()
+        .and_then(|v| i64::try_from(v.to_bits()).ok())
+        .filter(|val| *val != crate::utils::BIT64_NA_ECODING)
+}
+
+pub fn robj_parse_str_to_t<T>(robj: Robj) -> RResult<T>
+where
+    T: std::str::FromStr,
+    <T as std::str::FromStr>::Err: std::error::Error,
+{
+    Ok(robj.as_str().unwrap_or("<Empty String>").parse::<T>()?)
+}
+
 pub fn robj_to_char(robj: extendr_api::Robj) -> RResult<char> {
     let robj = unpack_r_result_list(robj)?;
     let mut fchar_iter = if let Some(char_str) = robj.as_str() {
@@ -501,28 +528,79 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> RResult<usize> {
     robj_to_u64(robj).and_then(try_u64_into_usize)
 }
 
+fn err_no_nan<T>() -> RResult<T> {
+    rerr().plain("any NA value is not allowed here".to_string())
+}
+
+fn err_no_scalar<T>() -> RResult<T> {
+    rerr().plain("only a scalar value is allowed here (length = 1)")
+}
+
 pub fn robj_to_i64(robj: extendr_api::Robj) -> RResult<i64> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::*;
+
     return match (robj.rtype(), robj.len()) {
-        (Rtype::Strings, 1) => robj
-            .as_str()
-            .unwrap_or("<Empty String>")
-            .parse::<i64>()
-            .ok(),
-        //specialized integer64 conversion
-        (Rtype::Doubles, 1) if robj.inherits("integer64") => robj
-            .as_real()
-            .and_then(|v| i64::try_from(v.to_bits()).ok())
-            .filter(|val| *val != crate::utils::BIT64_NA_ECODING),
-        //from R doubles or integers
-        (Rtype::Doubles, 1) => robj.as_real().and_then(|v| try_f64_into_i64(v).ok()),
-        (Rtype::Integers, 1) => robj.as_integer().map(i64::from),
-        (_, _) => None,
+        (_, 0 | 2..) => Some(err_no_scalar()),
+        (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
+        (Rtype::Doubles, 1) if robj.inherits("integer64") => {
+            robj_bit64_to_opt_i64(robj.clone()).map(Ok)
+        }
+        (Rtype::Doubles, 1) => robj.as_real().map(try_f64_into_i64),
+        (Rtype::Integers, 1) => robj.as_integer().map(i64::from).map(Ok),
+
+        (_, _) => {
+            Some(rerr().plain("does not support this R type for this conversion".to_string()))
+        }
     }
-    .ok_or(RPolarsErr::new())
+    .unwrap_or_else(err_no_nan)
     .bad_robj(&robj)
-    .mistyped(tn::<i64>());
+    .mistyped(tn::<i64>())
+    .when("converting into type");
+}
+
+pub fn robj_to_i32(robj: extendr_api::Robj) -> RResult<i32> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+
+    return match (robj.rtype(), robj.len()) {
+        (_, 0 | 2..) => Some(err_no_scalar()),
+        (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
+        (Rtype::Doubles, 1) if robj.inherits("integer64") => {
+            robj_bit64_to_opt_i64(robj.clone()).map(try_i64_into_i32)
+        }
+        (Rtype::Doubles, 1) => robj.as_real().map(try_f64_into_i32),
+        (Rtype::Integers, 1) => robj.as_integer().map(i32::from).map(Ok),
+        (_, _) => {
+            Some(rerr().plain("does not support this R type for this conversion".to_string()))
+        }
+    }
+    .unwrap_or_else(err_no_nan)
+    .bad_robj(&robj)
+    .mistyped(tn::<i32>())
+    .when("converting into type");
+}
+
+pub fn robj_to_f64(robj: extendr_api::Robj) -> RResult<f64> {
+    let robj = unpack_r_result_list(robj)?;
+    use extendr_api::*;
+
+    return match (robj.rtype(), robj.len()) {
+        (_, 0 | 2..) => Some(err_no_scalar()),
+        (Rtype::Strings, 1) => Some(robj_parse_str_to_t(robj.clone())),
+        (Rtype::Doubles, 1) if robj.inherits("integer64") => {
+            robj_bit64_to_opt_i64(robj.clone()).map(|v| Ok(v as f64))
+        }
+        (Rtype::Doubles, 1) => robj.as_real().map(Ok),
+        (Rtype::Integers, 1) => robj.as_integer().map(|v| Ok(v as f64)),
+        (_, _) => {
+            Some(rerr().plain("does not support this R type for this conversion".to_string()))
+        }
+    }
+    .unwrap_or_else(err_no_nan)
+    .bad_robj(&robj)
+    .mistyped(tn::<f64>())
+    .when("converting into type");
 }
 
 pub fn robj_to_u64(robj: extendr_api::Robj) -> RResult<u64> {
@@ -637,18 +715,18 @@ fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
     };
     match robj.rtype() {
         ExternalPtr if robj.inherits("Expr") => Ok(robj),
-        ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => {
-            unpack(R!("polars:::result({{robj}}$otherwise(pl$lit(NULL)))"))
-        }
+        ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => unpack(R!(
+            "polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"
+        )),
         ExternalPtr if robj.inherits("When") => {
             rerr().plain("Cannot use a When-statement as Expr without a $then()")
         }
         _h @ Logicals | _h @ List | _h @ Doubles | _h @ Integers => {
-            unpack(R!("polars:::result(pl$lit({{robj}}))"))
+            unpack(R!("polars:::result(polars::pl$lit({{robj}}))"))
         }
-        _ if str_to_lit => unpack(R!("polars:::result(pl$lit({{robj}}))")),
+        _ if str_to_lit => unpack(R!("polars:::result(polars::pl$lit({{robj}}))")),
 
-        _ => unpack(R!("polars:::result(pl$col({{robj}}))")),
+        _ => unpack(R!("polars:::result(polars::pl$col({{robj}}))")),
     }
 }
 
@@ -668,10 +746,12 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         .as_list()
         .ok_or(RPolarsErr::new())
         .mistyped(tn::<List>())?;
+    let mut arg_names = robj.names().unwrap_or(StrIter::default());
     let iter = l.iter().enumerate().map(|(i, (_, robj))| {
+        let name = arg_names.next().unwrap_or("");
         robj_to_rexpr(robj.clone(), str_to_lit)
             .when(format!("converting element {} into an Expr", i + 1))
-            .map(|e| e.0)
+            .map(|e| if name != "" { e.0.alias(name) } else { e.0 })
     });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
@@ -692,8 +772,16 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_usize($a)
     };
 
+    (f64, $a:ident) => {
+        $crate::utils::robj_to_f64($a)
+    };
+
     (i64, $a:ident) => {
         $crate::utils::robj_to_i64($a)
+    };
+
+    (i32, $a:ident) => {
+        $crate::utils::robj_to_i32($a)
     };
 
     (u64, $a:ident) => {

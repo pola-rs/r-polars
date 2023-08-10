@@ -115,7 +115,7 @@ about Rust code in R packages.
 During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
-- `RPOLARS_ALL_FEATURES="true"` (Build with nightly feature enabled,
+- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
   requires Rust toolchain nightly-2023-05-07)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization,
   requires Rust 1.66 or later)
@@ -332,16 +332,17 @@ repo.
 - As aside, notice that `./renv.lock` sets all R packages during the
   server build.
 
-*Tip:* To speed up the local R CMD check, run the following:
+*Tip:* To speed up the local rextendr::document() or R CMD check, run
+the following:
 
 ``` r
-devtools::check(
-  env_vars = list(RPOLARS_RUST_SOURCE="/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust"),
-  check_dir = "./check/"
-  )
-source("./inst/misc/filter_rcmdcheck.R")
-Sys.sleep(5)
-unlink("check",recursive = TRUE, force =TRUE)
+source("inst/misc/develop_polars.R")
+
+#to rextendr:document() + not_cran + load packages + all_features
+load_polars()
+
+#to check package + reuses previous compilation in check, protects against deletion
+check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 ```
 
 - The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to

@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  RPOLARS_ALL_FEATURES: "true"
+  RPOLARS_FULL_FEATURES: "true"
   RPOLARS_CARGO_CLEAN_DEPS: "true"
   RPOLARS_PROFILE: release-optimized
 

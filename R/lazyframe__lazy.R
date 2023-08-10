@@ -265,20 +265,112 @@ LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title New DataFrame from LazyFrame_object$collect()
 #' @description collect DataFrame by lazy query
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param projection_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used
+#' by multiple subtrees in the query plan.
+#' @param slice_pushdown  Boolean. Only load the required slice from the scan
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that
+#' are used by multiple subtrees in the query plan.
+#' @param no_optimization  Boolean. Turn off the following optimizations:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
+#' @param streaming  Boolean. Run parts of the query in a streaming fashion
+#' (this is in an alpha state).
+#' @param collect_in_background Boolean. Detach this query from R session.
+#' Computation will start in background. Get a handle which later can be converted
+#' into the resulting DataFrame. Useful in interactive mode to not lock R session.
+#' @details
+#' Note: use `$fetch(n)` if you want to run your query on the first `n` rows only.
+#' This can be a huge time saver in debugging queries.
 #' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect = function() {
-  unwrap(.pr$LazyFrame$collect_handled(self), "in $collect():")
+#' @return A `DataFrame`
+#' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+LazyFrame_collect = function(
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    common_subplan_elimination = TRUE,
+    no_optimization = FALSE,
+    streaming = FALSE,
+    collect_in_background = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    common_subplan_elimination = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    common_subplan_elimination = FALSE
+  }
+
+  collect_f = if (isTRUE(collect_in_background)) {
+    .pr$LazyFrame$collect_background
+  } else {
+    .pr$LazyFrame$collect
+  }
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      common_subplan_elimination,
+      streaming
+    ) |>
+    and_then(collect_f) |>
+    unwrap("in $collect():")
 }
 
-#' @title New DataFrame from LazyFrame_object$collect()
-#' @description collect DataFrame by lazy query
+
+#' @title Collect a Lazy Query in background
+#' @description Collect runs non-blocking in a detached thread
+#' @details
+#'
+#' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
+#' Use [`<RThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.
+#' Use [`<RThreadHandle>$join()`][RThreadHandle_join] to wait and get the final result.
+#'
+#' Useful to not block the R session while query executes. Any use of [`<Expr>$map()`][Expr_map] or
+#' [`<Expr>apply()`][Expr_apply], which runs R functions will fail when collect_in_background if
+#' not `in_background = TRUE` because the main R session is not available for polars execution. See
+#' also examples below.
+#'
 #' @keywords LazyFrame DataFrame_new
-#' @return collected `DataFrame`
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Species") == "setosa")$collect()
-LazyFrame_collect_background = function() {
-  .pr$LazyFrame$collect_background(self)
+#' @return RThreadHandle, a future-like thread handle for the task
+#' @examples
+#' # Some expression which does contain a map
+#' expr = pl$col("mpg")$map(
+#'   \(x) {
+#'     Sys.sleep(.5)
+#'     x * 0.43
+#'   },
+#'   in_background = TRUE # set TRUE if collecting in background queries with $map or $apply
+#' )$alias("kml")
+#'
+#' # return is immediately a handle to another thread.
+#' handle = pl$LazyFrame(mtcars)$with_columns(expr)$collect_in_background()
+#'
+#' # ask if query is done
+#' if (!handle$is_finished()) print("not done yet")
+#'
+#' # get result, blocking until polars query is done
+#' df = handle$join()
+#' df
+LazyFrame_collect_in_background = function() {
+  .pr$LazyFrame$collect_in_background(self)
 }
 
 #' @title Limits
@@ -939,6 +1031,45 @@ LazyFrame_fetch = function(n_rows = 500) {
     unwrap("in $fetch()")
 }
 
+#' @title Collect and profile a lazy query.
+#' @description This will run the query and return a list containing the materialized DataFrame and
+#'  a DataFrame that contains profiling information of each node that is executed.
+#' @details The units of the timings are microseconds.
+#'
+#' @keywords LazyFrame
+#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of each step.
+#' @examples
+#'
+#' ## Simplest use case
+#' pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
+#'
+#' ## Use $profile() to compare two queries
+#'
+#' # -1-  map each Species-group with native polars, takes ~120us only
+#' pl$LazyFrame(iris)$
+#'   sort("Sepal.Length")$
+#'   groupby("Species", maintain_order = TRUE)$
+#'   agg(pl$col(pl$Float64)$first() + 5)$
+#'   profile()
+#'
+#' # -2-  map each Species-group of each numeric column with an R function, takes ~7000us (slow!)
+#'
+#' # some R function, prints `.` for each time called by polars
+#' r_func = \(s) {
+#'   cat(".")
+#'   s$to_r()[1] + 5
+#' }
+#'
+#' pl$LazyFrame(iris)$
+#'   sort("Sepal.Length")$
+#'   groupby("Species", maintain_order = TRUE)$
+#'   agg(pl$col(pl$Float64)$apply(r_func))$
+#'   profile()
+#'
+LazyFrame_profile = function() {
+  .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
+}
+
 #' @title Explode the DataFrame to long format by exploding the given columns
 #' @keywords LazyFrame
 #'
@@ -967,7 +1098,6 @@ LazyFrame_explode = function(columns = list(), ...) {
 #' @return A LazyFrame
 #' @examples
 #' pl$LazyFrame(mtcars)$clone()
-
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
 }

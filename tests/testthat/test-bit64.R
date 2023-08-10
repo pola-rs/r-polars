@@ -23,9 +23,20 @@ test_that("from r to series and reverse", {
 
 test_that("robj_to! from bit64", {
   testthat::skip_if_not_installed("bit64")
+
+  expect_identical(
+    unwrap(test_robj_to_f64(bit64::as.integer64(1))),
+    "1.0"
+  )
+
   expect_identical(
     unwrap(test_robj_to_i64(bit64::as.integer64(1))),
     as.character(bit64::as.integer64(1))
+  )
+
+  expect_identical(
+    unwrap(test_robj_to_i32(bit64::as.integer64(2^27))),
+    as.character(2^27)
   )
 
   expect_identical(
@@ -44,34 +55,57 @@ test_that("robj_to! from bit64", {
   )
 
   # NO NA
+
   expect_rpolarserr(
-    unwrap(test_robj_to_i64(bit64::as.integer64(NA)), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    unwrap(test_robj_to_f64(bit64::NA_integer64_), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
+
   expect_rpolarserr(
-    unwrap(test_robj_to_usize(bit64::as.integer64(NA)), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    unwrap(test_robj_to_i64(bit64::NA_integer64_), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+  )
+
+  expect_rpolarserr(
+    unwrap(test_robj_to_i32(bit64::NA_integer64_), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+  )
+
+  expect_rpolarserr(
+    unwrap(test_robj_to_usize(bit64::NA_integer64_), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
 
   # NO OVERFLOW
   expect_rpolarserr(
-    unwrap(test_robj_to_u32(2^57), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    unwrap(test_robj_to_u32(2^57)),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "ValueOutOfScope", "BadValue")
+  )
+
+  expect_rpolarserr(
+    unwrap(test_robj_to_i32(2^37), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "ValueOutOfScope", "BadValue")
   )
 
   # NO NEGATIVE
   expect_rpolarserr(
     unwrap(test_robj_to_usize(bit64::as.integer64(-1)), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
   expect_rpolarserr(
     unwrap(test_robj_to_u32(bit64::as.integer64(-1)), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
 
   # NO length>1
   expect_rpolarserr(
     unwrap(test_robj_to_usize(bit64::as.integer64(c(1:2))), call = NULL),
-    c("BadArgument", "TypeMismatch", "BadValue")
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
+  )
+
+  # NO length<1
+  expect_rpolarserr(
+    unwrap(test_robj_to_usize(bit64::as.integer64(numeric(0))), call = NULL),
+    c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
 })

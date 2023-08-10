@@ -28,7 +28,7 @@ runs:
             libssl-dev
 
       - name: Set up Rust nightly toolchain
-        if: inputs.rust-nightly == 'true' || env.RPOLARS_ALL_FEATURES == 'true'
+        if: inputs.rust-nightly == 'true' || env.RPOLARS_FULL_FEATURES == 'true'
         shell: bash
         run: |
           make requirements-rs

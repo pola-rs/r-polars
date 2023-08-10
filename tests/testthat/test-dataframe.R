@@ -359,13 +359,11 @@ test_that("with_columns lazy/eager", {
   )
 
   # check
-  pl$set_polars_options(named_exprs = TRUE)
   ldf_actual_kwarg_named = ldf$with_columns(
     "a*2" = (pl$col("a") * 2),
     "b/2" = (pl$col("b") / 2),
     "not c" = (!pl$col("c"))
   )
-  pl$reset_polars_options()
 
   expect_identical(
     ldf_actual_kwarg_named$collect()$to_data_frame(check.names = FALSE),
@@ -581,9 +579,10 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
-  expect_grepl_error(
-    pl$DataFrame(mtcars)$drop_nulls("bad")$height,
-    "ColumnNotFound"
+
+  expect_identical(
+    result(pl$DataFrame(mtcars)$drop_nulls("bad column name")$height)$err$contexts(),
+    list(PolarsError = "not found: bad column name")
   )
 })
 
