@@ -17,18 +17,18 @@ test_that("Test sinking data to parquet file", {
   expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
 
 
-  #update with new data
-  lf$slice(5,5)$sink_ipc(tmpf)
+  # update with new data
+  lf$slice(5, 5)$sink_ipc(tmpf)
   expect_equal(
     pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(),
-    lf$slice(5,5)$collect()$to_data_frame()
+    lf$slice(5, 5)$collect()$to_data_frame()
   )
   lf$sink_ipc(tmpf)
 
-  #from another process via rcall
+  # from another process via rcall
   rdf_callr = callr::r(\(tmpf) {
     polars::pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame()
-  }, args = list(tmpf=tmpf))
+  }, args = list(tmpf = tmpf))
   expect_identical(rdf_callr, rdf)
 
 
@@ -39,11 +39,27 @@ test_that("Test sinking data to parquet file", {
       collect()$
       to_series()
   }
-
+  pl$set_global_rpool_cap(4)
   rdf_in_bg = pl$LazyFrame()$
-    select(pl$lit(tmpf)$map(f_ipc_to_s,in_background=TRUE))$
+    select(pl$lit(tmpf)$map(f_ipc_to_s, in_background = TRUE))$
     collect()$
     unnest()
   expect_identical(rdf_in_bg$to_data_frame(), rdf)
+})
 
+
+test_that("chunks persists - NOT", {
+
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+  df = pl$DataFrame(a=1:1000)
+  df$lazy()$sink_parquet(tmpf,row_group_size = 4)
+
+  #always 8 chunks
+  df2 = pl$scan_parquet(tmpf)$collect()
+
+  expect_identical(
+    df2$to_series()$chunk_lengths(),
+    rep(125,8)
+  )
 })

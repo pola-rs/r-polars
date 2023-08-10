@@ -61,5 +61,11 @@ This can be a huge time saver in debugging queries.
 \examples{
 pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} stream query to a parquet file.
+\item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} stream query to a arrow file.
+}
+}
 \keyword{DataFrame_new}
 \keyword{LazyFrame}
