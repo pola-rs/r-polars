@@ -293,6 +293,12 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @keywords LazyFrame DataFrame_new
 #' @return A `DataFrame`
 #' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+#' @seealso
+#'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
+#'  - [`$profile()`][LazyFrame_profile] - returns as `$collect()` but also table with each operation
+#'  profiled.
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 LazyFrame_collect = function(
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -303,6 +309,7 @@ LazyFrame_collect = function(
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
+
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1019,13 +1026,31 @@ LazyFrame_dtypes = method_as_property(function() {
 })
 
 
-#' @title Dtypes
-#' @description Get rows
+#' @title Fetch
+#' @description limit number of rows at scan level for fast trying a query
 #' @keywords LazyFrame
-#' @param n_rows number of rows to fetch at maximum.
+#' @details
+#' Collect a small number of rows for debugging purposes.
+#' Fetch is like the [`$collect()`][LazyFrame_collect] operation, but it overwrites the number of
+#' rows read by every scan operation. This is a utility that helps debug a query on a smaller number
+#' of rows. Note that the fetch does not guarantee the final number of rows in the DataFrame. Filter
+#' , join operations and a lower number of rows available in the scanned file influence the final
+#' number of rows.
+#' @param n_rows  number (`Into<usize>`) of rows to fetch at maximum.
 #' @return A DataFrame of maximum n_rows
+#' @seealso
+#'  - [`$collect()`][LazyFrame_collect] - regular collect.
+#'  - [`$profile()`][LazyFrame_profile] - returns as `$collect()` but also table with each operation
+#'  profiled.
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 #' @examples
-#' pl$LazyFrame(irirs)$fetch(3)
+#'
+#' # fetch 3
+#' pl$LazyFrame(iris)$fetch(3)
+#'
+#' # this fetch-query returns 4 and not 3 entries, see details.
+#' pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
 LazyFrame_fetch = function(n_rows = 500) {
   .pr$LazyFrame$fetch(self, n_rows) |>
     unwrap("in $fetch()")
@@ -1037,7 +1062,13 @@ LazyFrame_fetch = function(n_rows = 500) {
 #' @details The units of the timings are microseconds.
 #'
 #' @keywords LazyFrame
-#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of each step.
+#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of
+#' each step.
+#' @seealso
+#'  - [`$collect()`][LazyFrame_collect] - regular collect.
+#'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 #' @examples
 #'
 #' ## Simplest use case

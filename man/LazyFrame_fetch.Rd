@@ -2,20 +2,42 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_fetch}
 \alias{LazyFrame_fetch}
-\title{Dtypes}
+\title{Fetch}
 \usage{
 LazyFrame_fetch(n_rows = 500)
 }
 \arguments{
-\item{n_rows}{number of rows to fetch at maximum.}
+\item{n_rows}{number (\verb{Into<usize>}) of rows to fetch at maximum.}
 }
 \value{
 A DataFrame of maximum n_rows
 }
 \description{
-Get rows
+limit number of rows at scan level for fast trying a query
+}
+\details{
+Collect a small number of rows for debugging purposes.
+Fetch is like the \code{\link[=LazyFrame_collect]{$collect()}} operation, but it overwrites the number of
+rows read by every scan operation. This is a utility that helps debug a query on a smaller number
+of rows. Note that the fetch does not guarantee the final number of rows in the DataFrame. Filter
+, join operations and a lower number of rows available in the scanned file influence the final
+number of rows.
 }
 \examples{
-pl$LazyFrame(irirs)$fetch(3)
+
+# fetch 3
+pl$LazyFrame(iris)$fetch(3)
+
+# this fetch-query returns 4 and not 3 entries, see details.
+pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
+}
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_collect]{$collect()}} - regular collect.
+\item \code{\link[=LazyFrame_profile]{$profile()}} - returns as \verb{$collect()} but also table with each operation
+profiled.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
+a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
+}
 }
 \keyword{LazyFrame}

@@ -61,5 +61,14 @@ This can be a huge time saver in debugging queries.
 \examples{
 pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_fetch]{$fetch()}} - fast limited query check
+\item \code{\link[=LazyFrame_profile]{$profile()}} - returns as \verb{$collect()} but also table with each operation
+profiled.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
+a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
+}
+}
 \keyword{DataFrame_new}
 \keyword{LazyFrame}

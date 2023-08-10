@@ -75,3 +75,19 @@ pub fn profile_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<(DataFrame
     .map_err(polars_to_rpolars_err)
     .map(|(result_df, profile_df)| (DataFrame(result_df), DataFrame(profile_df)))
 }
+
+pub fn fetch_with_r_func_support(lazy_df: pl::LazyFrame, n_rows: usize) -> RResult<DataFrame> {
+    concurrent_handler(
+        move |tc| {
+            let retval = lazy_df.fetch(n_rows);
+            ThreadCom::kill_global(&CONFIG);
+            drop(tc);
+            retval
+        },
+        serve_r,
+        &CONFIG,
+    )
+    .map_err(|err| RPolarsErr::new().plain(err.to_string()))?
+    .map_err(polars_to_rpolars_err)
+    .map(DataFrame)
+}

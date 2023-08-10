@@ -1,7 +1,9 @@
 use crate::conversion::strings_to_smartstrings;
 use crate::rdataframe::DataFrame as RDataFrame;
 
-use crate::concurrent::{collect_with_r_func_support, profile_with_r_func_support};
+use crate::concurrent::{
+    collect_with_r_func_support, fetch_with_r_func_support, profile_with_r_func_support,
+};
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::DataFrame as RDF;
@@ -389,12 +391,7 @@ impl LazyFrame {
     }
 
     fn fetch(&self, n_rows: Robj) -> RResult<RDF> {
-        Ok(self
-            .0
-            .clone()
-            .fetch(robj_to!(usize, n_rows)?)
-            .map_err(crate::rpolarserr::polars_to_rpolars_err)?
-            .into())
+        fetch_with_r_func_support(self.0.clone(), robj_to!(usize, n_rows)?)
     }
 
     #[allow(clippy::too_many_arguments)]

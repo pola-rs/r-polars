@@ -659,9 +659,37 @@ test_that("cloning", {
 
 
 test_that("fetch", {
+
+  #simple example
   lf = pl$LazyFrame(a = 1:10, b = letters[10:1])
   expect_identical(
     lf$fetch(5)$to_list(),
     lf$slice(0,5)$collect()$to_list()
   )
+
+  # supports use of R functions in fetch
+  expect_identical(
+    lf$select(pl$col("a")$map(\(s) s * 2L))$fetch(5)$to_list(),
+    lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
+  )
+
+  #usize input can be char
+  expect_identical(
+    lf$select(pl$col("a") * 2L)$fetch("5")$to_list(),
+    lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
+  )
+
+  # uszie input can be bit64
+  skip_if_not_installed("bit64")
+  expect_identical(
+    lf$select(pl$col("a") * 2L)$fetch(bit64::as.integer64(5))$to_list(),
+    lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
+  )
+
+  # usize cannot be negative
+  expect_identical(
+    result(lf$select(pl$col("a") * 2L)$fetch(-5)$to_list())$err$contexts(),
+    list(BadArgument = "n_rows", ValueOutOfScope = "cannot be less than zero", BadValue = "-5")
+  )
+
 })
