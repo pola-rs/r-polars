@@ -7,10 +7,11 @@
 LazyFrame_explode(...)
 }
 \arguments{
-\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector of \verb{Into<Expr>}.
-A handful of places in rust-polars, only the plain variant \code{Expr::Column} is accepted. This is
-currenly on of such places. Therefore \code{pl$col("name")} and \code{pl$all()} is allowed, not
-\code{pl$col("name")$alias("newname")}. \code{"name"} is implcitly converted to \code{pl$col("name")}.}
+\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector
+of \verb{Into<Expr>}. In a handful of places in rust-polars, only the plain variant
+\code{Expr::Column} is accepted. This is currenly one of such places. Therefore
+\code{pl$col("name")} and \code{pl$all()} is allowed, not \code{pl$col("name")$alias("newname")}.
+\code{"name"} is implicitly converted to \code{pl$col("name")}.}
 }
 \value{
 LazyFrame
@@ -21,8 +22,9 @@ Explode the DataFrame to long format by exploding the given columns
 \details{
 Only columns of DataType \code{List} or \code{Utf8} can be exploded.
 
-Named expressions like \verb{$explode(a = pl$col("b"))} will not implicitly trigger \verb{$alias("a")} here
-, due to only variant \code{Expr::Column} is supported in rust-polars.
+Named expressions like \verb{$explode(a = pl$col("b"))} will not implicitly trigger
+\verb{$alias("a")} here, due to only variant \code{Expr::Column} is supported in
+rust-polars.
 }
 \examples{
 df = pl$LazyFrame(
@@ -32,12 +34,13 @@ df = pl$LazyFrame(
 )
 df
 
-#explode a single column, append others
+# explode a single column, append others
 df$explode("numbers")$collect()
 df$explode("letters")$collect()
 
-# explode two columns of same nesting structure, by names or the common dtype "List(Float64)"
-df$explode(c("numbers","numbers_2"))$collect() # as char vector, could be as individual args
+# explode two columns of same nesting structure, by names or the common dtype
+# "List(Float64)"
+df$explode(c("numbers","numbers_2"))$collect()
 df$explode(pl$col(pl$List(pl$Float64)))$collect()
 }
 \keyword{LazyFrame}

@@ -7,10 +7,11 @@
 DataFrame_explode(...)
 }
 \arguments{
-\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector of \verb{Into<Expr>}.
-A handful of places in rust-polars, only the plain variant \code{Expr::Column} is accepted. This is
-currenly on of such places. Therefore \code{pl$col("name")} and \code{pl$all()} is allowed, not
-\code{pl$col("name")$alias("newname")}. \code{"name"} is implcitly converted to \code{pl$col("name")}.}
+\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector
+of \verb{Into<Expr>}. In a handful of places in rust-polars, only the plain variant
+\code{Expr::Column} is accepted. This is currenly one of such places. Therefore
+\code{pl$col("name")} and \code{pl$all()} is allowed, not \code{pl$col("name")$alias("newname")}.
+\code{"name"} is implicitly converted to \code{pl$col("name")}.}
 }
 \value{
 DataFrame
