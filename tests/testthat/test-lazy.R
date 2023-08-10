@@ -659,12 +659,11 @@ test_that("cloning", {
 
 
 test_that("fetch", {
-
-  #simple example
+  # simple example
   lf = pl$LazyFrame(a = 1:10, b = letters[10:1])
   expect_identical(
     lf$fetch(5)$to_list(),
-    lf$slice(0,5)$collect()$to_list()
+    lf$slice(0, 5)$collect()$to_list()
   )
 
   # supports use of R functions in fetch
@@ -673,7 +672,7 @@ test_that("fetch", {
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
   )
 
-  #usize input can be char
+  # usize input can be char
   expect_identical(
     lf$select(pl$col("a") * 2L)$fetch("5")$to_list(),
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
@@ -692,4 +691,14 @@ test_that("fetch", {
     list(BadArgument = "n_rows", ValueOutOfScope = "cannot be less than zero", BadValue = "-5")
   )
 
+
+  # bad opt profile arg streaming
+  expect_identical(
+    result(lf$select(pl$lit(2L) * 2L)$lazy()$fetch(-5, streaming = 42)$to_list())$err$contexts(),
+    list(
+      BadArgument = "streaming",
+      TypeMismatch = "bool",
+      BadValue = "Rvalue: 42.0, Rsexp: Doubles, Rclass: [\"numeric\"]"
+    )
+  )
 })

@@ -309,7 +309,6 @@ LazyFrame_collect = function(
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
-
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1037,6 +1036,25 @@ LazyFrame_dtypes = method_as_property(function() {
 #' , join operations and a lower number of rows available in the scanned file influence the final
 #' number of rows.
 #' @param n_rows  number (`Into<usize>`) of rows to fetch at maximum.
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param projection_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used
+#' by multiple subtrees in the query plan.
+#' @param slice_pushdown  Boolean. Only load the required slice from the scan
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that
+#' are used by multiple subtrees in the query plan.
+#' @param no_optimization  Boolean. Turn off the following optimizations:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
+#' @param streaming  Boolean. Run parts of the query in a streaming fashion
+#' (this is in an alpha state).
 #' @return A DataFrame of maximum n_rows
 #' @seealso
 #'  - [`$collect()`][LazyFrame_collect] - regular collect.
@@ -1051,8 +1069,39 @@ LazyFrame_dtypes = method_as_property(function() {
 #'
 #' # this fetch-query returns 4 and not 3 entries, see details.
 #' pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
-LazyFrame_fetch = function(n_rows = 500) {
-  .pr$LazyFrame$fetch(self, n_rows) |>
+LazyFrame_fetch = function(
+    n_rows = 500,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    common_subplan_elimination = TRUE,
+    no_optimization = FALSE,
+    streaming = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    common_subplan_elimination = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    common_subplan_elimination = FALSE
+  }
+
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      common_subplan_elimination,
+      streaming
+    ) |>
+    and_then(\(self) .pr$LazyFrame$fetch(self, n_rows)) |>
     unwrap("in $fetch()")
 }
 

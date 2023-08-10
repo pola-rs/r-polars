@@ -4,10 +4,47 @@
 \alias{LazyFrame_fetch}
 \title{Fetch}
 \usage{
-LazyFrame_fetch(n_rows = 500)
+LazyFrame_fetch(
+  n_rows = 500,
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  common_subplan_elimination = TRUE,
+  no_optimization = FALSE,
+  streaming = FALSE
+)
 }
 \arguments{
 \item{n_rows}{number (\verb{Into<usize>}) of rows to fetch at maximum.}
+
+\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+run on minimal required memory.}
+
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible / at
+scan level.}
+
+\item{projection_pushdown}{Boolean. Applies filters as early as possible / at
+scan level.}
+
+\item{simplify_expression}{Boolean. Cache subtrees/file scans that are used
+by multiple subtrees in the query plan.}
+
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+
+\item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that
+are used by multiple subtrees in the query plan.}
+
+\item{no_optimization}{Boolean. Turn off the following optimizations:
+predicate_pushdown = FALSE
+projection_pushdown = FALSE
+slice_pushdown = FALSE
+common_subplan_elimination = FALSE}
+
+\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+(this is in an alpha state).}
 }
 \value{
 A DataFrame of maximum n_rows
