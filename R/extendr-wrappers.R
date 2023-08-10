@@ -49,6 +49,8 @@ arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
+enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
+
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
