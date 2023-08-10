@@ -35,8 +35,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
-    withr,
-    callr
+    withr
 Config/Needs/website:
     etiennebacher/altdoc,
     here,
@@ -99,5 +98,5 @@ Collate:
     'translation.R'
     'vctrs.R'
     'zzz.R'
-Config/rextendr/version: 0.3.1.9000
+Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
