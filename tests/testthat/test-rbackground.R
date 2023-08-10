@@ -4,6 +4,10 @@ test_that("Test collecting LazyFrame in background", {
   compute = lf$select(pl$col("x") * pl$col("y"))
   res_bg = compute$collect_in_background()$join()
   expect_equal(res_bg$to_data_frame(), compute$collect()$to_data_frame())
+
+  # via collect(collect_in_background = TRUE)
+  res_bg = compute$collect(collect_in_background = TRUE)$join()
+  expect_equal(res_bg$to_data_frame(), compute$collect()$to_data_frame())
 })
 
 test_that("Test using $map() in background", {

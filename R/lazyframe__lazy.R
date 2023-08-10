@@ -315,7 +315,7 @@ LazyFrame_collect = function(
   }
 
   collect_f = if (isTRUE(collect_in_background)) {
-    .pr$LazyFrame$collect_background
+    \(...) Ok(.pr$LazyFrame$collect_in_background(...))
   } else {
     .pr$LazyFrame$collect
   }
@@ -338,6 +338,8 @@ LazyFrame_collect = function(
 #' @title Collect a Lazy Query in background
 #' @description Collect runs non-blocking in a detached thread
 #' @details
+#'
+#' Can also be used via `$colllect(collect_in_background = TRUE)`.
 #'
 #' This function immediately returns an [RThreadHandle][RThreadHandle_RThreadHandle_class].
 #' Use [`<RThreadHandle>$is_finished()`][RThreadHandle_is_finished] to see if done.

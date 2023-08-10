@@ -13,6 +13,8 @@ RThreadHandle, a future-like thread handle for the task
 Collect runs non-blocking in a detached thread
 }
 \details{
+Can also be used via \verb{$colllect(collect_in_background = TRUE)}.
+
 This function immediately returns an \link[=RThreadHandle_RThreadHandle_class]{RThreadHandle}.
 Use \code{\link[=RThreadHandle_is_finished]{<RThreadHandle>$is_finished()}} to see if done.
 Use \code{\link[=RThreadHandle_join]{<RThreadHandle>$join()}} to wait and get the final result.
