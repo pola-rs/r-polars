@@ -48,18 +48,20 @@ test_that("Test sinking data to parquet file", {
 })
 
 
-test_that("chunks persists - NOT", {
 
-  tmpf = tempfile()
-  on.exit(unlink(tmpf))
-  df = pl$DataFrame(a=1:1000)
-  df$lazy()$sink_parquet(tmpf,row_group_size = 4)
 
-  #always 8 chunks
-  df2 = pl$scan_parquet(tmpf)$collect()
-
-  expect_identical(
-    df2$to_series()$chunk_lengths(),
-    rep(125,8)
-  )
-})
+# test_that("chunks persists - NOT", {
+#
+#   tmpf = tempfile()
+#   on.exit(unlink(tmpf))
+#   df = pl$DataFrame(a=1:1000)
+#   df$lazy()$sink_parquet(tmpf,row_group_size = 4)
+#
+#   #always n cpu chunks it seems, not reproducible across machines
+#   df2 = pl$scan_parquet(tmpf)$collect()
+#
+#   expect_identical(
+#     df2$to_series()$chunk_lengths(),
+#     rep(125,8)
+#   )
+# })
