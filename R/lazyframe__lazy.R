@@ -293,6 +293,9 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @keywords LazyFrame DataFrame_new
 #' @return A `DataFrame`
 #' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+#' @seealso
+#'  - [`$sink_parquet()`][LazyFrame_sink_parquet()] stream query to a parquet file.
+#'  - [`$sink_ipc()`][LazyFrame_sink_ipc()] stream query to a arrow file.
 LazyFrame_collect = function(
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
@@ -374,15 +377,28 @@ LazyFrame_collect_in_background = function() {
 }
 
 #' @title LazyFrame stream output to parquet file
-#' @name sink_parquet
-#' @description Stream the content of LazyFrame into a parquet file.
+#' @description
+#' Persists a LazyFrame at the provided path.
+#' This allows streaming results that are larger than RAM to be written to disk.
 #' @param path String. The path of the parquet file
-#' @param compression String. The compression method. One of {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
-#' @param compression_level NULL or Integer. Only used if method is one of {'gzip', 'brotli', 'zstd'}
+#' @param compression String. The compression method. One of
+#' {'uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd'}
+#' Choose “zstd” for good compression performance. Choose “lz4” for fast compression/decompression.
+#' Choose “snappy” for more backwards compatibility guarantees when you deal with older parquet readers.
+#' @param compression_level NULL or Integer. Only used if method is one of
+#' {'gzip', 'brotli', 'zstd'} The level of compression to use. Higher compression means smaller
+#' files on disk.
+#'  - “gzip” : min-level: 0, max-level: 10.
+#'  - “brotli” : min-level: 0, max-level: 11.
+#'  - “zstd” : min-level: 1, max-level: 22.
 #' @param statistics Boolean. Whether compute and write column statistics.
-#' @param row_group_size NULL or Integer. If set NULL a single row group will be created.
-#' @param data_pagesize_limit NULL or Integer. If set NULL the limit will be 2^20 bytes.
+#' This requires extra compute.
+#' @param row_group_size NULL or Integer. Size of the row groups in number of rows. If None
+#' (default), the chunks of the DataFrame are used. Writing in smaller chunks may reduce memory
+#' pressure and improve writing speeds.
+#' @param data_pagesize_limit NULL or Integer. If set NULL the limit will be ~1MB.
 #' @param maintain_order Boolean. Whether maintain the order the data was processed.
+#' Setting this to False will be slightly faster.
 #' @param type_coercion Boolean. Coerce types such that operations succeed and
 #' run on minimal required memory.
 #' @param predicate_pushdown Boolean. Applies filters as early as possible at
@@ -398,6 +414,17 @@ LazyFrame_collect_in_background = function() {
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  common_subplan_elimination = FALSE
+#'  @examples
+#'  # sink table 'mtcars' from mem to parquet
+#'  tmpf = tempfile()
+#'  pl$LazyFrame(mtcars)$sink_parquet(tmpf)
+#'
+#'  # stream a query end-to-end
+#'  tmpf2 = tempfile()
+#'  pl$scan_parquet(tmpf)$select(pl$col("cyl") * 2)$sink_parquet(tmpf2)
+#'
+#'  # load parquet directly into a DataFrame / memory
+#'  pl$scan_parquet(tmpf2)$collect()
 LazyFrame_sink_parquet = function(
   path,
   compression = "zstd",
@@ -438,7 +465,7 @@ LazyFrame_sink_parquet = function(
       row_group_size,
       data_pagesize_limit,
       maintain_order
-    ) |> 
+    ) |>
     unwrap("in $sink_parquet(...)") |>
     invisible()
 }
@@ -446,10 +473,14 @@ LazyFrame_sink_parquet = function(
 
 #' @title LazyFrame stream output to arrow ipc file
 #' @name sink_ipc
-#' @description Stream the content of LazyFrame into an arrow ipc file.
+#' @description
+#' Persists a LazyFrame at the provided path.
+#' This allows streaming results that are larger than RAM to be written to disk
 #' @param path string, the path of the arrow ipc file
 #' @param compression NULL or string, the compression method. One of {'lz4', 'zstd'} if not NULL.
+#' Choose “zstd” for good compression performance. Choose “lz4” for fast compression/decompression.
 #' @param maintain_order bool, whether maintain the order the data was processed.
+#' Setting this to FALSE will be slightly faster.
 #' @param type_coercion Boolean. Coerce types such that operations succeed and
 #' run on minimal required memory.
 #' @param predicate_pushdown Boolean. Applies filters as early as possible at
@@ -465,6 +496,18 @@ LazyFrame_sink_parquet = function(
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  common_subplan_elimination = FALSE
+#'  @examples
+#'  #sink table 'mtcars' from mem to ipc
+#'  tmpf = tempfile()
+#'  pl$LazyFrame(mtcars)$sink_ipc(tmpf)
+#'
+#'  # stream a query end-to-end (not supported yet) https://github.com/pola-rs/polars/issues/10406
+#'  # tmpf2 = tempfile()
+#'  # pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$collect()$lazy()$sink_ipc(tmpf2)
+#'
+#'  # load ipc directly into a DataFrame / memory
+#'  # pl$scanipc(tmpf2)$collect()
+#'
 LazyFrame_sink_ipc = function(
   path,
   compression = "zstd",

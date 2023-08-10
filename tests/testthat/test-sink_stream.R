@@ -1,5 +1,6 @@
-  lf = pl$LazyFrame(mtcars)$with_columns((pl$col("mpg") * 0.425)$alias("kpl"))
-  rdf = lf$collect()$to_data_frame()
+lf = pl$LazyFrame(mtcars)$with_columns((pl$col("mpg") * 0.425)$alias("kpl"))
+rdf = lf$collect()$to_data_frame()
+
 test_that("Test sinking data to parquet file", {
   tmpf = tempfile()
   on.exit(unlink(tmpf))
@@ -13,7 +14,7 @@ test_that("Test sinking data to parquet file", {
   on.exit(unlink(tmpf))
   lf$sink_ipc(tmpf)
   expect_error(lf$sink_ipc(tmpf, compression = "rar"))
-  expect_equal(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
+  expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), rdf)
 
 
   #update with new data
@@ -24,25 +25,25 @@ test_that("Test sinking data to parquet file", {
   )
   lf$sink_ipc(tmpf)
 
-  #from another process
+  #from another process via rcall
   rdf_callr = callr::r(\(tmpf) {
-    library(polars)
-    pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame()
+    polars::pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame()
   }, args = list(tmpf=tmpf))
-  expect_equal(rdf_callr, rdf)
+  expect_identical(rdf_callr, rdf)
 
 
-  #TODO after polars in_background  is merged something like this should be possible
-  # f_ipc_to_s = \(s) {
-  #   pl$scan_ipc(s$to_r(), memmap = FALSE)$
-  #     select(pl$struct(pl$all()))$
-  #     collect()$
-  #     to_series()
-  # }
-  # rdf_in_bg = pl$LazyFrame()$
-  #   select(pl$lit(tmpf)$map(f_ipc_to_s,in_background=TRUE))$
-  #   collect()$
-  #   unnest()
-  # expect_equal(rdf_in_bg, rdf)
+  # from another process via rpool
+  f_ipc_to_s = \(s) {
+    polars::pl$scan_ipc(s$to_r(), memmap = FALSE)$
+      select(polars::pl$struct(polars::pl$all()))$
+      collect()$
+      to_series()
+  }
+
+  rdf_in_bg = pl$LazyFrame()$
+    select(pl$lit(tmpf)$map(f_ipc_to_s,in_background=TRUE))$
+    collect()$
+    unnest()
+  expect_identical(rdf_in_bg$to_data_frame(), rdf)
 
 })
