@@ -1,15 +1,15 @@
 # polars (development version)
 
 ## BREAKING CHANGES
-
 - `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` 
   instead (#346).
 - `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()` 
   and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
   `RThreadHandle` (#311).
+- `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
 
 ## What's changed
-
+- Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
 - New method `$clone()` for `LazyFrame` (#347).
 - New methods `$optimization_toggle()` and `$profile()` for `LazyFrame` (#323).
