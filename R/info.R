@@ -5,7 +5,9 @@ RUST_POLARS_VERSION = (\() {
   Cargo.lock = readLines("./src/rust/Cargo.lock")
   polars.idx = which(Cargo.lock == r"{name = "polars"}")[1]
   this_line = Cargo.lock[polars.idx + 1]
-  if(isTRUE(substr(this_line,1,7) == "version")) return(substr(this_line,12,nchar(this_line)-1))
+  if (isTRUE(substr(this_line, 1, 7) == "version")) {
+    return(substr(this_line, 12, nchar(this_line) - 1))
+  }
   warning("failed to find RUST_POLARS_VERSION version")
   "unknown"
 })()
