@@ -1062,16 +1062,18 @@ LazyFrame_profile = function() {
 #' @title Explode the DataFrame to long format by exploding the given columns
 #' @keywords LazyFrame
 #'
-#' @param ... Column(s) to be exploded as individual `Into<Expr>` or list/vector of `Into<Expr>`.
-#' A handful of places in rust-polars, only the plain variant `Expr::Column` is accepted. This is
-#' currenly on of such places. Therefore `pl$col("name")` and `pl$all()` is allowed, not
-#' `pl$col("name")$alias("newname")`. `"name"` is implcitly converted to `pl$col("name")`.
+#' @param ... Column(s) to be exploded as individual `Into<Expr>` or list/vector
+#' of `Into<Expr>`. In a handful of places in rust-polars, only the plain variant
+#' `Expr::Column` is accepted. This is currenly one of such places. Therefore
+#' `pl$col("name")` and `pl$all()` is allowed, not `pl$col("name")$alias("newname")`.
+#' `"name"` is implicitly converted to `pl$col("name")`.
 #'
 #' @details
 #' Only columns of DataType `List` or `Utf8` can be exploded.
 #'
-#' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger `$alias("a")` here
-#' , due to only variant `Expr::Column` is supported in rust-polars.
+#' Named expressions like `$explode(a = pl$col("b"))` will not implicitly trigger
+#' `$alias("a")` here, due to only variant `Expr::Column` is supported in
+#' rust-polars.
 #'
 #' @return LazyFrame
 #' @examples
@@ -1082,12 +1084,13 @@ LazyFrame_profile = function() {
 #' )
 #' df
 #'
-#' #explode a single column, append others
+#' # explode a single column, append others
 #' df$explode("numbers")$collect()
 #' df$explode("letters")$collect()
 #'
-#' # explode two columns of same nesting structure, by names or the common dtype "List(Float64)"
-#' df$explode(c("numbers","numbers_2"))$collect() # as char vector, could be as individual args
+#' # explode two columns of same nesting structure, by names or the common dtype
+#' # "List(Float64)"
+#' df$explode(c("numbers","numbers_2"))$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)
