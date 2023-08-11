@@ -49,8 +49,6 @@ arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
 
-enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
-
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
@@ -88,6 +86,14 @@ test_rbackgroundhandler <- function(lambda, arg) .Call(wrap__test_rbackgroundhan
 test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
 test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
+
+enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
+
+using_string_cache <- function() .Call(wrap__using_string_cache)
+
+increment_string_cache_counter <- function(toggle) .Call(wrap__increment_string_cache_counter, toggle)
+
+reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
 
 DataFrame <- new.env(parent = emptyenv())
 

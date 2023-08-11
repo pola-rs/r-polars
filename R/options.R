@@ -282,16 +282,55 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 ### Other options implemented on rust side (likely due to thread safety)
 
 #' enable disable global string cache
-#' @name enable_string_cache
+#' @name pl_enable_string_cache
 #' @description e.g. join to Categorical series is only allowed if using global string cache.
 #' Local categorical encodings may differ and is not meaningful to combine as is.
-#' @param toggle Boolean. TRUE enable
-#' @return no return
+#' @details
+#' This function will force enable/disable the string_cache and override any contexts made
+#' by pl$with_string_cache.
+#'
+#' @keywords options
+#' @param toggle Boolean. TRUE enable, FALSE disable.
+#' @return enable_string_cache: no return
 #' @examples
 #' pl$enable_string_cache(TRUE)
+#' pl$using_string_cache()
 pl$enable_string_cache = function(toggle) {
-  polars:::enable_string_cache(toggle) |> unwrap("in pl$enable_string_cache()")
+  enable_string_cache(toggle) |>
+    unwrap("in pl$enable_string_cache()") |>
+    invisible()
 }
+
+
+#' enable disable global string cache
+#' @name pl_using_string_cache
+#' @description get if currently global string cache is active.
+#' @keywords options
+#' @return using_string_cache: Boolean
+#' @examples
+#' pl$using_string_cache()
+pl$using_string_cache = function() {
+  using_string_cache()
+}
+
+
+#' Eval R expression with global string cache
+#' @name pl_hold_string_cache
+#' @keywords options
+#' @return return value of expression
+#' @examples
+#' #activate string cache temporarily when constructing two DataFrame's
+#' with_string_cache({
+#'   df1 = pl$DataFrame(head(iris,2))
+#'   df2 = pl$DataFrame(tail(iris,2))
+#' })
+#' pl$concat(list(df1,df2))
+pl$with_string_cache = function(expr) {
+  increment_string_cache_counter(TRUE)
+  on.exit(increment_string_cache_counter(FALSE))
+  eval(expr, envir = parent.frame())
+}
+
 
 
 
@@ -311,7 +350,7 @@ pl$enable_string_cache = function(toggle) {
 #' because all data must be serialized/de-serialized and sent via buffers. Using multiple R sessions
 #' will likely only give a speed-up in a `low io - high cpu` scenario. Native polars query syntax
 #' runs in threads and have no overhead.
-#'
+#' @keywords options
 #' @examples
 #' default = pl$get_global_rpool_cap()
 #' print(default)

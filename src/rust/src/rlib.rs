@@ -234,12 +234,6 @@ fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
 
 // setting functions
 
-#[extendr]
-pub fn enable_string_cache(toggle: Robj) -> RResult<()> {
-    polars_core::enable_string_cache(robj_to!(bool, toggle)?);
-    Ok(())
-}
-
 // -- Meta Robj functions
 #[extendr]
 pub fn mem_address(robj: Robj) -> String {
@@ -316,10 +310,6 @@ extendr_module! {
     fn rb_list_to_df;
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
-
-
-    //settings
-    fn enable_string_cache;
 
     //robj meta
     fn internal_wrap_e;

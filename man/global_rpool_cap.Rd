@@ -32,3 +32,4 @@ pl$set_global_rpool_cap(8)
 pl$get_global_rpool_cap()
 pl$set_global_rpool_cap(default$capacity)
 }
+\keyword{options}
