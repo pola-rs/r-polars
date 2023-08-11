@@ -1,4 +1,6 @@
 # get version of rust-polars version from Cargo.lock at package build time
+# from polars 0.31.1 this can be migrated to rust side see
+# https://github.com/pola-rs/polars/pull/9660
 RUST_POLARS_VERSION = (\() {
   Cargo.lock = readLines("./src/rust/Cargo.lock")
   polars.idx = which(Cargo.lock == r"{name = "polars"}")[1]
