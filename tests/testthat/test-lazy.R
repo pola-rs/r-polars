@@ -694,7 +694,7 @@ test_that("fetch", {
 
   # bad opt profile arg streaming
   expect_identical(
-    result(lf$select(pl$lit(2L) * 2L)$lazy()$fetch(-5, streaming = 42)$to_list())$err$contexts(),
+    result(pl$select(pl$lit(2L) * 2L)$lazy()$fetch(-5, streaming = 42)$to_list())$err$contexts(),
     list(
       BadArgument = "streaming",
       TypeMismatch = "bool",
