@@ -4,13 +4,14 @@
 \alias{LazyFrame_explode}
 \title{Explode the DataFrame to long format by exploding the given columns}
 \usage{
-LazyFrame_explode(columns = list(), ...)
+LazyFrame_explode(...)
 }
 \arguments{
-\item{columns}{Column(s) to be exploded. \verb{Into<Expr>}, list of \verb{Into<Expr>} or a char vec.
-Only columns of DataType \code{List} or \code{Utf8} can be exploded.}
-
-\item{...}{More columns to explode as above but provided as separate arguments}
+\item{...}{Column(s) to be exploded as individual \verb{Into<Expr>} or list/vector
+of \verb{Into<Expr>}. In a handful of places in rust-polars, only the plain variant
+\code{Expr::Column} is accepted. This is currenly one of such places. Therefore
+\code{pl$col("name")} and \code{pl$all()} is allowed, not \code{pl$col("name")$alias("newname")}.
+\code{"name"} is implicitly converted to \code{pl$col("name")}.}
 }
 \value{
 LazyFrame
@@ -18,13 +19,28 @@ LazyFrame
 \description{
 Explode the DataFrame to long format by exploding the given columns
 }
+\details{
+Only columns of DataType \code{List} or \code{Utf8} can be exploded.
+
+Named expressions like \verb{$explode(a = pl$col("b"))} will not implicitly trigger
+\verb{$alias("a")} here, due to only variant \code{Expr::Column} is supported in
+rust-polars.
+}
 \examples{
 df = pl$LazyFrame(
-  letters = c("a", "a", "b", "c"),
-  numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+  letters = c("aa", "aa", "bb", "cc"),
+  numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
+  numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
 )
 df
 
+# explode a single column, append others
 df$explode("numbers")$collect()
+df$explode("letters")$collect()
+
+# explode two columns of same nesting structure, by names or the common dtype
+# "List(Float64)"
+df$explode(c("numbers","numbers_2"))$collect()
+df$explode(pl$col(pl$List(pl$Float64)))$collect()
 }
 \keyword{LazyFrame}

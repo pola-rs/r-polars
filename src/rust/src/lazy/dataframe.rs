@@ -1,18 +1,14 @@
-use crate::conversion::strings_to_smartstrings;
-use crate::rdataframe::DataFrame as RDataFrame;
-
 use crate::concurrent::{collect_with_r_func_support, profile_with_r_func_support};
+use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
 use crate::rdataframe::DataFrame as RDF;
-
-use crate::rdatatype::new_join_type;
-use crate::rdatatype::new_quantile_interpolation_option;
-use crate::rdatatype::new_unique_keep_strategy;
-use crate::rdatatype::{new_asof_strategy, RPolarsDataType};
+use crate::rdatatype::{
+    new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
+    new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
+};
 use crate::robj_to;
-use crate::rpolarserr::{rerr, RResult, Rctx, WithRctx};
-use crate::utils::wrappers::null_to_opt;
-use crate::utils::{r_result_list, try_f64_into_usize};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
+use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
 use polars::chunked_array::object::AsOfOptions;
 use polars::frame::explode::MeltArgs;
@@ -68,16 +64,50 @@ impl LazyFrame {
         collect_with_r_func_support(self.clone().0)
     }
 
-    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDataFrame>> {
+    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDF>> {
         use crate::rbackground::*;
         let dup = self.clone();
         RThreadHandle::new(move || {
-            Ok(RDataFrame::from(
+            Ok(RDF::from(
                 dup.0
                     .collect()
                     .map_err(crate::rpolarserr::polars_to_rpolars_err)?,
             ))
         })
+    }
+
+    pub fn sink_parquet(
+        &self,
+        path: Robj,
+        compression_method: Robj,
+        compression_level: Robj,
+        statistics: Robj,
+        row_group_size: Robj,
+        data_pagesize_limit: Robj,
+        maintain_order: Robj,
+    ) -> RResult<()> {
+        let pqwo = polars::prelude::ParquetWriteOptions {
+            compression: new_parquet_compression(compression_method, compression_level)?,
+            statistics: robj_to!(bool, statistics)?,
+            row_group_size: robj_to!(Option, usize, row_group_size)?,
+            data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_parquet(robj_to!(String, path)?.into(), pqwo)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_ipc(&self, path: Robj, compression_method: Robj, maintain_order: Robj) -> RResult<()> {
+        let ipcwo = polars::prelude::IpcWriterOptions {
+            compression: new_ipc_compression(compression_method)?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .map_err(polars_to_rpolars_err)
     }
 
     fn first(&self) -> Self {
@@ -416,16 +446,12 @@ impl LazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, columns: Robj, dotdotdot_args: Robj) -> RResult<LazyFrame> {
-        let mut columns: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, columns)?;
-        let mut ddd_args: Vec<pl::Expr> = robj_to!(Vec, PLExprCol, dotdotdot_args)?;
-        columns.append(&mut ddd_args);
-        if columns.is_empty() {
-            rerr()
-                .plain("neither have any elements, cannot use explode without Expr(s)")
-                .when("joining Exprs from input [columns] and input [...]")?;
-        }
-        Ok(self.0.clone().explode(columns).into())
+    fn explode(&self, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+        Ok(self
+            .0
+            .clone()
+            .explode(robj_to!(Vec, PLExprCol, dotdotdot_args)?)
+            .into())
     }
 
     pub fn clone_see_me_macro(&self) -> LazyFrame {
