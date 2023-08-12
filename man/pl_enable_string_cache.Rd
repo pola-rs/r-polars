@@ -15,10 +15,14 @@ Local categorical encodings may differ and is not meaningful to combine as is.
 }
 \details{
 This function will force enable/disable the string_cache and override any contexts made
-by pl$with_string_cache.
+by \code{pl$with_string_cache}. Prefer to use \code{pl$with_string_cache}.
 }
 \examples{
 pl$enable_string_cache(TRUE)
 pl$using_string_cache()
+}
+\seealso{
+\code{\link[=pl_using_string_cache]{pl$using_string_cache}}
+\code{\link[=pl_with_string_cache]{pl$with_string_cache}}
 }
 \keyword{options}

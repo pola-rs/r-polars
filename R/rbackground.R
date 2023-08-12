@@ -95,7 +95,3 @@ RThreadHandle_join = function() {
 RThreadHandle_is_finished = function() {
   .pr$RThreadHandle$is_finished(self) |> unwrap_or(NULL)
 }
-
-
-
-

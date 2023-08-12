@@ -12,4 +12,8 @@ get if currently global string cache is active.
 \examples{
 pl$using_string_cache()
 }
+\seealso{
+\code{\link[=pl_with_string_cache]{pl$with_string_cache}}
+\code{\link[=pl_enable_string_cache]{pl$enable_enable_cache}}
+}
 \keyword{options}

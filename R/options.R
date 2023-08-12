@@ -287,11 +287,14 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' Local categorical encodings may differ and is not meaningful to combine as is.
 #' @details
 #' This function will force enable/disable the string_cache and override any contexts made
-#' by pl$with_string_cache.
+#' by `pl$with_string_cache`. Prefer to use `pl$with_string_cache`.
 #'
 #' @keywords options
 #' @param toggle Boolean. TRUE enable, FALSE disable.
 #' @return enable_string_cache: no return
+#' @seealso
+#' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$with_string_cache`][pl_with_string_cache]
 #' @examples
 #' pl$enable_string_cache(TRUE)
 #' pl$using_string_cache()
@@ -307,6 +310,9 @@ pl$enable_string_cache = function(toggle) {
 #' @description get if currently global string cache is active.
 #' @keywords options
 #' @return using_string_cache: Boolean
+#' @seealso
+#' [`pl$with_string_cache`][pl_with_string_cache]
+#' [`pl$enable_enable_cache`][pl_enable_string_cache]
 #' @examples
 #' pl$using_string_cache()
 pl$using_string_cache = function() {
@@ -315,16 +321,19 @@ pl$using_string_cache = function() {
 
 
 #' Eval R expression with global string cache
-#' @name pl_hold_string_cache
+#' @name pl_with_string_cache
 #' @keywords options
 #' @return return value of expression
+#' @seealso
+#' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$enable_enable_cache`][pl_enable_string_cache]
 #' @examples
-#' #activate string cache temporarily when constructing two DataFrame's
-#' with_string_cache({
-#'   df1 = pl$DataFrame(head(iris,2))
-#'   df2 = pl$DataFrame(tail(iris,2))
+#' # activate string cache temporarily when constructing two DataFrame's
+#' pl$with_string_cache({
+#'   df1 = pl$DataFrame(head(iris, 2))
+#'   df2 = pl$DataFrame(tail(iris, 2))
 #' })
-#' pl$concat(list(df1,df2))
+#' pl$concat(list(df1, df2))
 pl$with_string_cache = function(expr) {
   increment_string_cache_counter(TRUE)
   on.exit(increment_string_cache_counter(FALSE))
