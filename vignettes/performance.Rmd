@@ -74,26 +74,22 @@ will internally check whether it can be optimized, for example by reordering
 some operations.
 
 Let's re-use the example above but this time with `polars` syntax and 10M
-observations. It doesn't make sense to convert a dataset that we already have in
-memory to a `LazyFrame` so first we have to export it as CSV and then we can
-read it lazily with `lazy_csv_reader()`:
-
-```{r echo = FALSE, eval = !exists("data/test.csv")}
-set.seed(123)
-test = data.frame(
-  country = sample(countries, 1e7, TRUE),
-  x = sample(1:100, 1e7, TRUE),
-  y = sample(1:1000, 1e7, TRUE)
-)
-write.csv(test, "data/test.csv")
-```
+observations. For the purpose of this vignette, we can create a `LazyFrame` 
+directly in our session, but if the data was stored in a CSV file for instance,
+we would have to scan it first with `pl$scan_csv()`:
 
 
 ```{r}
 library(polars)
 
-df_test = csv_reader("data/test.csv")
-lf_test = lazy_csv_reader("data/test.csv")
+set.seed(123)
+df_test = pl$DataFrame(
+  country = sample(countries, 1e7, TRUE),
+  x = sample(1:100, 1e7, TRUE),
+  y = sample(1:1000, 1e7, TRUE)
+)
+
+lf_test = df_test$lazy()
 ```
 
 Now, we can convert the base R code above to a `polars` query:
@@ -125,14 +121,11 @@ both reads the data and process it, so we include the data loading part in the
 
 ```{r}
 bench::mark(
-  eager = {
-    df_test = csv_reader("data/test.csv")
-    df_test$
+  eager = df_test$
     sort(pl$col("country"))$
     filter(
       pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-    )
-  },
+    ),
   lazy = lazy_query$collect(),
   iterations = 10
 )
@@ -177,12 +170,12 @@ bench::mark(
   contains = df_test$with_columns(
     pl$col("country")$str$contains("na")
   ),
-  grepl = df_test$with_column(
+  grepl = df_test$with_columns(
     pl$col("country")$map(\(s) { # map with a R function
       grepl("na", s)
     })
   ),
-  grepl_nv = df_test$limit(1e6)$with_column( 
+  grepl_nv = df_test$limit(1e6)$with_columns( 
     pl$col("country")$apply(\(str) {
       grepl("na", str)
     }, return_type = pl$Boolean)
@@ -195,16 +188,24 @@ Using custom R functions can be useful, but when possible, you should use the
 functions provided by `polars`. See the Reference tab for a complete list of
 functions.
 
-```{comment}
-# TODO: include this when streaming is implemented
 
 # Streaming data
 
 Finally, quoting [Polars User Guide](https://pola-rs.github.io/polars-book/user-guide/concepts/streaming/):
 
-> One additional benefit of the lazy API is that it allows queries to be executed in a streaming manner. Instead of processing the data all-at-once Polars can execute the query in batches allowing you to process datasets that are larger-than-memory.
+> One additional benefit of the lazy API is that it allows queries to be executed
+> in a streaming manner. Instead of processing the data all-at-once Polars can 
+> execute the query in batches allowing you to process datasets that are
+> larger-than-memory.
 
 
-To use streaming mode, we can just add `streaming = TRUE` in `collect()`:
+To use streaming mode, we can just add `streaming = TRUE` in `collect()` (note
+that this is still an alpha feature):
+
+```{r}
+bench::mark(
+  lazy = lazy_query$collect(),
+  lazy_streaming = lazy_query$collect(streaming = TRUE),
+  iterations = 20
+)
 ```
-

@@ -3,49 +3,8 @@ Optimize `polars` performance
 
 As highlighted by the [DuckDB
 benchmarks](https://duckdblabs.github.io/db-benchmark/), `polars` is
-very efficient to deal with large datasets. Let’s take a very basic
-example dataset of 10M rows and compute the mean of every column per
-group:
-
-``` r
-suppressPackageStartupMessages({
-  library(dplyr)
-  library(polars)
-  library(data.table)
-})
-
-N = 1e7
-df = data.frame(matrix(runif(25 * N), nrow = N))
-df$letters = sample(letters, N, replace = TRUE)
-
-df_dt = setDT(df)
-setkey(df_dt, letters)
-df_pl = pl$DataFrame(df)
-
-# comparison
-bench::mark(
-    "base" = by(df, df$letters, \(x) colMeans(x[, -26])),
-    "dplyr" = df %>% group_by(letters) %>% summarise_all(mean),
-    "data.table" = df_dt[, lapply(.SD, mean), keyby = "letters"],
-    "polars" = df_pl$groupby("letters")$mean(),
-    check = FALSE,
-    relative = TRUE
-)
-```
-
-    ## Warning: Some expressions had a GC in every iteration; so filtering is
-    ## disabled.
-
-    ## # A tibble: 4 × 6
-    ##   expression   min median `itr/sec` mem_alloc `gc/sec`
-    ##   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-    ## 1 base       17.0   16.5       1        5805.      Inf
-    ## 2 dplyr       8.33   8.07      2.04     1810.      Inf
-    ## 3 data.table  3.36   3.26      5.06      277.      NaN
-    ## 4 polars      1      1        16.5         1       NaN
-
-Still, one can make `polars` even faster by following some good
-practices.
+very efficient to deal with large datasets. Still, one can make `polars`
+even faster by following some good practices.
 
 # Lazy vs eager execution
 
@@ -98,11 +57,14 @@ bench::mark(
 )
 ```
 
+    ## Warning: Some expressions had a GC in every iteration; so filtering is
+    ## disabled.
+
     ## # A tibble: 2 × 6
     ##   expression       min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr>  <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 sort_filter     9.8s     9.8s     0.102    87.2MB        0
-    ## 2 filter_sort    2.39s    2.39s     0.419    67.1MB        0
+    ## 1 sort_filter   10.71s   10.71s    0.0934    87.2MB    0.280
+    ## 2 filter_sort    2.73s    2.73s    0.367     67.1MB    1.10
 
 ## How does `polars` help?
 
@@ -119,13 +81,21 @@ Before executing our code, `polars` will internally check whether it can
 be optimized, for example by reordering some operations.
 
 Let’s re-use the example above but this time with `polars` syntax and
-10M observations. It doesn’t make sense to convert a dataset that we
-already have in memory to a `LazyFrame` so first we have to export it as
-CSV and then we can read it lazily with `lazy_csv_reader()`:
+10M observations. For the purpose of this vignette, we can create a
+`LazyFrame` directly in our session, but if the data was stored in a CSV
+file for instance, we would have to scan it first with `pl$scan_csv()`:
 
 ``` r
-df_test = csv_reader("data/test.csv")
-lf_test = lazy_csv_reader("data/test.csv")
+library(polars)
+
+set.seed(123)
+df_test = pl$DataFrame(
+  country = sample(countries, 1e7, TRUE),
+  x = sample(1:100, 1e7, TRUE),
+  y = sample(1:1000, 1e7, TRUE)
+)
+
+lf_test = df_test$lazy()
 ```
 
 Now, we can convert the base R code above to a `polars` query:
@@ -138,22 +108,22 @@ df_test$
   )
 ```
 
-    ## shape: (3000835, 4)
-    ## ┌─────────┬─────────┬─────┬─────┐
-    ## │         ┆ country ┆ x   ┆ y   │
-    ## │ ---     ┆ ---     ┆ --- ┆ --- │
-    ## │ i64     ┆ str     ┆ i64 ┆ i64 │
-    ## ╞═════════╪═════════╪═════╪═════╡
-    ## │ 7       ┆ Japan   ┆ 97  ┆ 7   │
-    ## │ 23      ┆ Japan   ┆ 96  ┆ 672 │
-    ## │ 49      ┆ Japan   ┆ 17  ┆ 710 │
-    ## │ 60      ┆ Japan   ┆ 68  ┆ 41  │
-    ## │ ...     ┆ ...     ┆ ... ┆ ... │
-    ## │ 9999959 ┆ Vietnam ┆ 62  ┆ 8   │
-    ## │ 9999962 ┆ Vietnam ┆ 52  ┆ 988 │
-    ## │ 9999983 ┆ Vietnam ┆ 85  ┆ 982 │
-    ## │ 9999998 ┆ Vietnam ┆ 74  ┆ 692 │
-    ## └─────────┴─────────┴─────┴─────┘
+    ## shape: (3_000_835, 3)
+    ## ┌─────────┬─────┬─────┐
+    ## │ country ┆ x   ┆ y   │
+    ## │ ---     ┆ --- ┆ --- │
+    ## │ str     ┆ i32 ┆ i32 │
+    ## ╞═════════╪═════╪═════╡
+    ## │ Japan   ┆ 97  ┆ 7   │
+    ## │ Japan   ┆ 96  ┆ 672 │
+    ## │ Japan   ┆ 17  ┆ 710 │
+    ## │ Japan   ┆ 68  ┆ 41  │
+    ## │ …       ┆ …   ┆ …   │
+    ## │ Vietnam ┆ 62  ┆ 8   │
+    ## │ Vietnam ┆ 52  ┆ 988 │
+    ## │ Vietnam ┆ 85  ┆ 982 │
+    ## │ Vietnam ┆ 74  ┆ 692 │
+    ## └─────────┴─────┴─────┘
 
 This works for the `DataFrame`, that uses eager execution. For the
 `LazyFrame`, we can write the same query:
@@ -169,10 +139,8 @@ lazy_query
 ```
 
     ## [1] "polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)"
-    ##   FILTER col("country").is_in([Series]) FROM
-    ##     SORT BY [col("country")]
-    ##       CSV SCAN data/test.csv
-    ##       PROJECT */4 COLUMNS
+    ## FILTER col("country").is_in([Series]) FROMSORT BY [col("country")]
+    ##   DF ["country", "x", "y"]; PROJECT */3 COLUMNS; SELECTION: "None"
 
 However, this doesn’t do anything to the data until we call `collect()`
 at the end. We can now compare the two approaches (in the `lazy` timing,
@@ -181,14 +149,11 @@ the data loading part in the `eager` timing as well):
 
 ``` r
 bench::mark(
-  eager = {
-    df_test = csv_reader("data/test.csv")
-    df_test$
+  eager = df_test$
     sort(pl$col("country"))$
     filter(
       pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-    )
-  },
+    ),
   lazy = lazy_query$collect(),
   iterations = 10
 )
@@ -197,8 +162,8 @@ bench::mark(
     ## # A tibble: 2 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 eager         1.68s    2.06s     0.479     9.8KB        0
-    ## 2 lazy          791ms  821.7ms     1.15       640B        0
+    ## 1 eager         1.22s    1.51s     0.659    9.14KB        0
+    ## 2 lazy       648.55ms  966.6ms     0.942      848B        0
 
 On this very simple query, using lazy execution instead of eager
 execution lead to a 1.7-2.2x decrease in time.
@@ -213,19 +178,15 @@ remaining data. This can be seen by comparing the original query
 lazy_query$describe_plan()
 ```
 
-    ##   FILTER col("country").is_in([Series]) FROM
-    ##     SORT BY [col("country")]
-    ##       CSV SCAN data/test.csv
-    ##       PROJECT */4 COLUMNS
+    ## FILTER col("country").is_in([Series]) FROMSORT BY [col("country")]
+    ##   DF ["country", "x", "y"]; PROJECT */3 COLUMNS; SELECTION: "None"
 
 ``` r
 lazy_query$describe_optimized_plan()
 ```
 
-    ##   SORT BY [col("country")]
-    ##     CSV SCAN data/test.csv
-    ##     PROJECT */4 COLUMNS
-    ##     SELECTION: col("country").is_in([Series])
+    ## SORT BY [col("country")]
+    ##   DF ["country", "x", "y"]; PROJECT */3 COLUMNS; SELECTION: "col(\"country\").is_in([Series])"
 
 Note that the queries must be read from bottom to top, i.e the optimized
 query is “select the dataset where the column ‘country’ matches these
@@ -250,12 +211,12 @@ bench::mark(
   contains = df_test$with_columns(
     pl$col("country")$str$contains("na")
   ),
-  grepl = df_test$with_column(
+  grepl = df_test$with_columns(
     pl$col("country")$map(\(s) { # map with a R function
       grepl("na", s)
     })
   ),
-  grepl_nv = df_test$limit(1e6)$with_column( 
+  grepl_nv = df_test$limit(1e6)$with_columns( 
     pl$col("country")$apply(\(str) {
       grepl("na", str)
     }, return_type = pl$Boolean)
@@ -270,9 +231,9 @@ bench::mark(
     ## # A tibble: 3 × 6
     ##   expression      min   median `itr/sec` mem_alloc `gc/sec`
     ##   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    ## 1 contains   310.29ms 363.13ms     2.79      388KB    0    
-    ## 2 grepl         1.96s    2.01s     0.497   114.8MB    0    
-    ## 3 grepl_nv      6.14s    6.56s     0.149    42.7MB    0.657
+    ## 1 contains   406.82ms  445.4ms     2.24   471.65KB    0.224
+    ## 2 grepl         2.01s    2.15s     0.465  114.79MB    0.465
+    ## 3 grepl_nv      6.52s    9.94s     0.103    7.66MB    7.27
 
 Using custom R functions can be useful, but when possible, you should
 use the functions provided by `polars`. See the Reference tab for a
@@ -280,4 +241,27 @@ complete list of functions.
 
 # Streaming data
 
-How?
+Finally, quoting [Polars User
+Guide](https://pola-rs.github.io/polars-book/user-guide/concepts/streaming/):
+
+> One additional benefit of the lazy API is that it allows queries to be
+> executed in a streaming manner. Instead of processing the data
+> all-at-once Polars can execute the query in batches allowing you to
+> process datasets that are larger-than-memory.
+
+To use streaming mode, we can just add `streaming = TRUE` in `collect()`
+(note that this is still an alpha feature):
+
+``` r
+bench::mark(
+  lazy = lazy_query$collect(),
+  lazy_streaming = lazy_query$collect(streaming = TRUE),
+  iterations = 20
+)
+```
+
+    ## # A tibble: 2 × 6
+    ##   expression          min   median `itr/sec` mem_alloc `gc/sec`
+    ##   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+    ## 1 lazy              552ms    645ms      1.53      848B        0
+    ## 2 lazy_streaming    386ms    479ms      2.10      848B        0
