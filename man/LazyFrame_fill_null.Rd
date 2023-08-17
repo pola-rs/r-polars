@@ -17,8 +17,8 @@ Fill null values using the specified value or strategy.
 }
 \examples{
 df = pl$DataFrame(
-        a = c(1.5, 2, NA, 4),
-        b = c(1.5, NA, NA, 4)
+  a = c(1.5, 2, NA, 4),
+  b = c(1.5, NA, NA, 4)
 )$lazy()
 df$fill_null(99)$collect()
 }

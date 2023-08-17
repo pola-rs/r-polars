@@ -20,8 +20,8 @@ Determine how this categorical series should be sorted.
 }
 \examples{
 df = pl$DataFrame(
-  cats =  c("z", "z", "k", "a", "b"),
-  vals =  c(3, 1, 2, 2, 3)
+  cats = c("z", "z", "k", "a", "b"),
+  vals = c(3, 1, 2, 2, 3)
 )$with_columns(
   pl$col("cats")$cast(pl$Categorical)$cat$set_ordering("physical")
 )

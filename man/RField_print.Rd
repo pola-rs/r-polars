@@ -13,6 +13,6 @@ self
 Print a polars Field
 }
 \examples{
-print(pl$Field("foo",pl$List(pl$UInt64)))
+print(pl$Field("foo", pl$List(pl$UInt64)))
 }
 \keyword{internal}

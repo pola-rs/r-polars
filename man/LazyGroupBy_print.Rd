@@ -6,6 +6,9 @@
 \usage{
 LazyGroupBy_print()
 }
+\value{
+invisible self
+}
 \description{
-prints opague groupby, not much to show
+prints opaque groupby, not much to show
 }

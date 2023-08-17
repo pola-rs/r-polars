@@ -21,7 +21,7 @@ Documentation on JSONPath standard can be found
 }
 \examples{
 df = pl$DataFrame(
-  json_val =  c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
+  json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
 )
 df$select(pl$col("json_val")$str$json_path_match("$.a"))
 }

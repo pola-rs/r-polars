@@ -5,11 +5,6 @@
 \alias{cummin}
 \alias{Expr_cummax}
 \title{Cumulative minimum}
-\format{
-a method
-
-a method
-}
 \usage{
 Expr_cummin(reverse = FALSE)
 
@@ -40,13 +35,13 @@ Int64 before summing to prevent overflow issues.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-pl$DataFrame(list(a=1:4))$select(
+pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cummin()$alias("cummin"),
-  pl$col("a")$cummin(reverse=TRUE)$alias("cummin_reversed")
+  pl$col("a")$cummin(reverse = TRUE)$alias("cummin_reversed")
 )
-pl$DataFrame(list(a=1:4))$select(
+pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cummax()$alias("cummux"),
-  pl$col("a")$cummax(reverse=TRUE)$alias("cummax_reversed")
+  pl$col("a")$cummax(reverse = TRUE)$alias("cummax_reversed")
 )
 }
 \keyword{Expr}

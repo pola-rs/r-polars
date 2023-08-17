@@ -5,9 +5,6 @@
 \alias{Expr_where}
 \alias{where}
 \title{Filter a single column.}
-\format{
-a method
-}
 \usage{
 Expr_filter(predicate)
 
@@ -27,7 +24,7 @@ where() is an alias for pl$filter
 }
 \examples{
 df = pl$DataFrame(list(
-  group_col =  c("g1", "g1", "g2"),
+  group_col = c("g1", "g1", "g2"),
   b = c(1, 2, 3)
 ))
 

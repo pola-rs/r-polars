@@ -4,9 +4,6 @@
 \alias{Expr_backward_fill}
 \alias{backward_fill}
 \title{Fill Nulls Backward}
-\format{
-a method
-}
 \usage{
 Expr_backward_fill(limit = NULL)
 }
@@ -23,7 +20,7 @@ Fill missing values with the next to be seen values.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-l = list(a=c(1L,rep(NA_integer_,3L),10))
+l = list(a = c(1L, rep(NA_integer_, 3L), 10))
 pl$DataFrame(l)$select(
   pl$col("a")$backward_fill()$alias("bf_null"),
   pl$col("a")$backward_fill(limit = 0)$alias("bf_l0"),

@@ -1,26 +1,43 @@
-LIBDIR = ./rust/target/release
+BUILD_COMMAND = cargo build --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+RPOLARS_PROFILE ?= release
+
+LIBDIR = ./rust/target/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 RPOLARS_RUST_SOURCE ?= ./rust
-RPOLARS_CARGO_CLEAN_DEPS ?= nope
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/release/libr_polars.a"
+
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
 
 $(SHLIB): $(STATLIB)
 
+CARGOTMP = $(CURDIR)/.cargo
+
 $(STATLIB):
-	cargo build --lib --release --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+	if [ "true" != "true" ]; then \
+		export CARGO_HOME=$(CARGOTMP); \
+	fi && \
+	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
+	if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+		$(BUILD_COMMAND) --features "full_features"; \
+	else \
+		$(BUILD_COMMAND); \
+	fi
+	if [ "true" != "true" ]; then \
+		rm -Rf $(CARGOTMP) && \
+		rm -Rf $(LIBDIR)/build; \
+	fi
 	if [ -f "$(STATLIB)" ]; then \
 		echo "file is there: "; \
 	else \
 		echo "no, file is NOT there: "; \
-		mkdir -p ./rust/target/release ; \
+		mkdir -p ./rust/target/$(RPOLARS_PROFILE) ; \
 		echo "trying to symlink in $(rpolars_ext_binary)"; \
-		ln -s $(rpolars_ext_binary) ./rust/target/release/libr_polars.a ; \
+		ln -s $(rpolars_ext_binary) ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
 	fi
 
-	if [ "${RPOLARS_CARGO_CLEAN_DEPS}" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
 		echo "cleanup!!" ; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \

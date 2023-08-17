@@ -20,7 +20,7 @@ Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 }
 \examples{
-pl$Series(c(1:2,NA,3,NaN,4,Inf))$cumsum()
-pl$Series(c(1:2,NA,3,Inf,4,-Inf,5))$cumsum()
+pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
+pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
 }
 \keyword{Series}

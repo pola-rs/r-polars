@@ -9,9 +9,6 @@
 \alias{Expr_ewm_var}
 \alias{ewm_var}
 \title{Exponentially-weighted moving average/std/var.}
-\format{
-Method
-}
 \usage{
 Expr_ewm_mean(
   com = NULL,
@@ -107,9 +104,9 @@ Ewm_std
 Ewm_var
 }
 \examples{
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com=1))
+pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com = 1))
 
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
-pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com=1))
+pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
+pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
 }
 \keyword{Expr}

@@ -5,9 +5,9 @@
 \alias{expr_str_slice}
 \title{slice}
 \arguments{
-\item{pattern}{Into\if{html}{\out{<Expr>}}, regex pattern}
+\item{pattern}{\verb{Into<Expr>}, regex pattern}
 
-\item{value}{Into\if{html}{\out{<Expr>}} replcacement}
+\item{value}{\verb{Into<Expr>} replacement}
 
 \item{literal}{bool, treat pattern as a literal string.}
 }
@@ -20,7 +20,7 @@ Create subslices of the string values of a Utf8 Series.
 \examples{
 df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))
 df$with_columns(
-   pl$col("s")$str$slice(-3)$alias("s_sliced")
+  pl$col("s")$str$slice(-3)$alias("s_sliced")
 )
 }
 \keyword{ExprStr}

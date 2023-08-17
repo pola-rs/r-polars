@@ -4,14 +4,12 @@
 \alias{Expr_sort}
 \alias{sort}
 \title{Expr_sort}
-\format{
-a method
-}
 \usage{
-Expr_sort(reverse = FALSE, nulls_last = FALSE)
+Expr_sort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
-\item{reverse}{bool default FALSE, reverses sort}
+\item{descending}{Sort in descending order. When sorting by multiple columns,
+can be specified per column by passing a sequence of booleans.}
 
 \item{nulls_last}{bool, default FALSE, place Nulls last}
 }

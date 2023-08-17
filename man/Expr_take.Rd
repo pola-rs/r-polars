@@ -4,9 +4,6 @@
 \alias{Expr_take}
 \alias{take}
 \title{Take values by index.}
-\format{
-a method
-}
 \usage{
 Expr_take(indices)
 }
@@ -24,6 +21,6 @@ similar to R indexing syntax e.g. \code{letters[c(1,3,5)]}, however as an expres
 exceeding
 }
 \examples{
-pl$select( pl$lit(0:10)$take(c(1,8,0,7)))
+pl$select(pl$lit(0:10)$take(c(1, 8, 0, 7)))
 }
 \keyword{Expr}

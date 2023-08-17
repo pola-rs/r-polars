@@ -5,17 +5,17 @@
 /// Therefore there annoyingly exists pl::Series and Series
 use crate::apply_input;
 use crate::apply_output;
-use crate::handle_type;
-use crate::make_r_na_fun;
-use crate::rdatatype::RPolarsDataType;
-use crate::robj_to;
-use crate::utils::{r_error_list, r_result_list};
-
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
+use crate::handle_type;
+use crate::make_r_na_fun;
 use crate::rdataframe::DataFrame;
+use crate::rdatatype::RPolarsDataType;
+use crate::robj_to;
+use crate::rpolarserr::*;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::wrappers::null_to_opt;
+use crate::utils::{r_error_list, r_result_list};
 
 use crate::lazy::dsl::Expr;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
@@ -40,14 +40,14 @@ impl From<polars::prelude::Series> for Series {
 
 impl From<&Expr> for pl::PolarsResult<Series> {
     fn from(expr: &Expr) -> Self {
-        DataFrame::new()
+        DataFrame::default()
             .lazy()
             .0
             .select(&[expr.0.clone()])
             .collect()
             .map(|df| {
                 df.select_at_idx(0)
-                    .map(|ref_s| ref_s.clone())
+                    .cloned()
                     .unwrap_or_else(|| pl::Series::new_empty("", &pl::DataType::Null))
                     .into()
             })
@@ -57,12 +57,14 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 #[extendr]
 impl Series {
     //utility methods
-    pub fn new(x: Robj, name: &str) -> std::result::Result<Series, String> {
-        robjname2series(&ParRObj(x), name)
-            .map_err(|err| format!("in Series.new: {:?}", err))
-            .map(|s| Series(s))
+    pub fn new(x: Robj, name: Robj) -> RResult<Series> {
+        robjname2series(&ParRObj(x), robj_to!(Option, str, name)?.unwrap_or(""))
+            .map_err(polars_to_rpolars_err)
+            .map(Series)
     }
 
+    // named like this to no collide with clone trait but still export with extendr
+    #[allow(clippy::should_implement_trait)]
     pub fn clone(&self) -> Series {
         Series(self.0.clone())
     }
@@ -70,7 +72,7 @@ impl Series {
     //function for debugging only
     pub fn sleep(&self, millis: i32) -> Series {
         std::thread::sleep(std::time::Duration::from_millis(millis as u64));
-        Series(self.0.clone())
+        self.clone()
     }
 
     pub fn panic(&self) -> Series {
@@ -93,14 +95,19 @@ impl Series {
         RPolarsDataType(self.0.dtype().clone())
     }
 
+    fn n_unique(&self) -> Result<usize, String> {
+        let n = self.0.n_unique().map_err(|err| err.to_string())?;
+        Ok(n)
+    }
+
     //wait inner_dtype until list supported
 
     pub fn name(&self) -> &str {
         self.0.name()
     }
 
-    pub fn sort_mut(&mut self, reverse: bool) -> Self {
-        Series(self.0.sort(reverse))
+    pub fn sort_mut(&mut self, descending: bool) -> Self {
+        Series(self.0.sort(descending))
     }
 
     pub fn value_counts(
@@ -110,7 +117,7 @@ impl Series {
     ) -> std::result::Result<DataFrame, String> {
         self.0
             .value_counts(multithreaded, sorted)
-            .map(|df| DataFrame(df))
+            .map(DataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }
 
@@ -132,10 +139,10 @@ impl Series {
         )
     }
 
-    pub fn is_sorted(&self, reverse: bool, nulls_last: Nullable<bool>) -> bool {
-        let nulls_last = null_to_opt(nulls_last).unwrap_or(reverse);
+    pub fn is_sorted(&self, descending: bool, nulls_last: Nullable<bool>) -> bool {
+        let nulls_last = null_to_opt(nulls_last).unwrap_or(descending);
         let options = pl::SortOptions {
-            descending: reverse,
+            descending: descending,
             nulls_last,
             multithreaded: false,
         };
@@ -247,7 +254,7 @@ impl Series {
             .0
             .clone()
             .abs()
-            .map(|x| Series(x))
+            .map(Series)
             .map_err(|err| format!("{:?}", err));
         r_result_list(x)
     }
@@ -283,12 +290,10 @@ impl Series {
 
             let iter = self.0.bool().unwrap().into_iter();
 
-            for i in iter {
-                if let Some(b) = i {
-                    if b {
-                        one_seen_true = true;
-                        break;
-                    }
+            for i in iter.flatten() {
+                if i {
+                    one_seen_true = true;
+                    break;
                 }
             }
 
@@ -370,13 +375,11 @@ impl Series {
                 let ca_list = self.0.list().unwrap();
 
                 let y = ca_list.into_iter().map(|opt_ser| {
-                    let opt_robj = if let Some(ser) = opt_ser {
-                        let out = rfun.call(pairlist!(Series(ser))).ok();
-                        out
+                    if let Some(ser) = opt_ser {
+                        rfun.call(pairlist!(Series(ser))).ok()
                     } else {
                         unreachable!("internal error: oh it was possible to get a None Series");
-                    };
-                    opt_robj
+                    }
                 });
 
                 Box::new(y)
@@ -417,7 +420,7 @@ impl Series {
                     let s: extendr_api::Result<Series> = lc_res
                         .map(|lc| lc.into_series())
                         .and_then(|s| if all_length_one { s.explode() } else { Ok(s) })
-                        .map(|s| Series(s))
+                        .map(Series)
                         .map_err(|e| extendr_api::error::Error::Other(e.to_string()));
 
                     s
@@ -468,7 +471,7 @@ impl Series {
         r_result_list(
             self.0
                 .ceil()
-                .map(|s| Series(s))
+                .map(Series)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -477,7 +480,7 @@ impl Series {
         r_result_list(
             self.0
                 .floor()
-                .map(|s| Series(s))
+                .map(Series)
                 .map_err(|err| format!("{:?}", err)),
         )
     }
@@ -492,12 +495,12 @@ impl Series {
     //
     pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
-        df.set_column_from_series(&self)?;
+        df.set_column_from_series(self)?;
         Ok(df)
     }
 
-    pub fn set_sorted_mut(&mut self, reverse: bool) {
-        if reverse {
+    pub fn set_sorted_mut(&mut self, descending: bool) {
+        if descending {
             self.0.set_sorted_flag(polars::series::IsSorted::Descending)
         } else {
             self.0.set_sorted_flag(polars::series::IsSorted::Ascending)
@@ -548,7 +551,7 @@ impl Series {
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&ParRObj(robj), &"")?
+            robjname2series(&ParRObj(robj), "")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {

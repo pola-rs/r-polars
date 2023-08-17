@@ -85,15 +85,15 @@ df = pl$DataFrame(
 df
 
 # df$write_csv('output.csv')
-# df_csv_with_dates = pl.read_csv("output.csv", parse_dates=True)
+# df_csv_with_dates = pl$read_csv("output.csv", parse_dates=True)
 # print(df_csv_with_dates)
 
-# dataframe.write_json('output.json')
-# df_json = pl.read_json("output.json")
+# dataframe$write_json('output.json')
+# df_json = pl$read_json("output.json")
 # print(df_json)
 
-# dataframe.write_parquet('output.parquet')
-# df_parquet = pl.read_parquet("output.parquet")
+# dataframe$write_parquet('output.parquet')
+# df_parquet = pl$read_parquet("output.parquet")
 # print(df_parquet)
 
 df = pl$DataFrame(
@@ -194,7 +194,7 @@ df$select(
 df$select(
   pl$col("*"),  # select all
   pl$col("random")$sum()$over("groups")$alias("sumc(random)/groups"),
-  pl$col("random")$list()$over("names")$alias("random/name")
+  pl$col("random")$implode()$over("names")$alias("random/name")
 )
 ```
 
@@ -423,23 +423,23 @@ pl$sum("foo")$over("groups")
 (pl$col("x")$sum() * pl$col("y"))$over("groups")
 
 # sum within a group and multiply with group elements 
-# and aggregate the group to a list
+# and aggregate/implode the group to a list
 # output type: -> List(Int32)
-(pl$col("x")$sum() * pl$col("y"))$list()$over("groups")
+(pl$col("x")$sum() * pl$col("y"))$implode()$over("groups")
 
-# note that it will require an explicit `list()` call
+# note that it will require an explicit `implode()` call
 # sum within a group and multiply with group elements 
-# and aggregate the group to a list
-# the flatten call explodes that list
+# and aggregate/implode the group to a list
+# the explode call unpack the list and combine inner elements to one column
 
 # This is the fastest method to do things over groups when the groups are sorted
-(pl$col("x")$sum() * pl$col("y"))$list()$over("groups")$flatten()
+(pl$col("x")$sum() * pl$col("y"))$implode()$over("groups")$explode()
 
 df$sort("Type 1")$select(
-  pl$col("Type 1")$head(3)$list()$over("Type 1")$flatten(),
-  pl$col("Name")$sort_by(pl$col("Speed"))$head(3)$list()$over("Type 1")$flatten()$alias("fastest/group"),
-  pl$col("Name")$sort_by(pl$col("Attack"))$head(3)$list()$over("Type 1")$flatten()$alias("strongest/group"),
-  pl$col("Name")$sort()$head(3)$list()$over("Type 1")$flatten()$alias("sorted_by_alphabet")
+  pl$col("Type 1")$head(3)$implode()$over("Type 1")$explode(),
+  pl$col("Name")$sort_by(pl$col("Speed"))$head(3)$implode()$over("Type 1")$explode()$alias("fastest/group"),
+  pl$col("Name")$sort_by(pl$col("Attack"))$head(3)$implode()$over("Type 1")$explode()$alias("strongest/group"),
+  pl$col("Name")$sort()$head(3)$implode()$over("Type 1")$explode()$alias("sorted_by_alphabet")
 )
 ```
 

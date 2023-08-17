@@ -1,12 +1,13 @@
-make_cases <- function() {
+make_cases = function() {
   tibble::tribble(
-    ~ .test_name, ~ pola,   ~ base,
+    ~.test_name, ~pola,   ~base,
     "mean",       "mean",   mean,
     "median",     "median", median,
   )
 }
 
-patrick::with_parameters_test_that("lazy functions in context", {
+patrick::with_parameters_test_that("lazy functions in context",
+  {
     df = pl$DataFrame(mtcars)
     x = df$select((pl[[pola]]("mpg") * 10)$alias("test"))$to_data_frame()
     y = df$lazy()$select((pl[[pola]]("mpg") * 10)$alias("test"))$collect()$to_data_frame()

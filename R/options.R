@@ -25,31 +25,6 @@ polars_optreq$strictly_immutable = list( # set requirement functions of default 
 )
 
 #' @rdname polars_options
-#' @name named_exprs
-#' @aliases named_exprs
-#' @param named_exprs bool, default = FALSE,
-#' allow named exprs in e.g. select, with_columns, groupby, join.
-#' a named expresion will be extended with $alias(name)
-#' wildcards or expression producing multiple are problematic due to name collision
-#' the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
-#' and only allow named exprs in with_columns (or potentially any method derived there of)
-#'
-#' @examples
-#' # rename columns by naming expression, experimental requires option named_exprs = TRUE
-#' pl$set_polars_options(named_exprs = TRUE)
-#' pl$DataFrame(iris)$with_columns(
-#'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
-#'   SW_add_2 = (pl$col("Sepal.Width") + 2)
-#' )
-polars_optenv$named_exprs = FALSE # set default value
-polars_optreq$named_exprs = list( # set requirement functions of default value
-  is_bool = function(x) {
-    is.logical(x) && length(x) == 1 && !is.na(x)
-  }
-)
-
-
-#' @rdname polars_options
 #' @name no_messages
 #' @aliases no_messages
 #' @details who likes polars package messages? use this option to turn them off.
@@ -87,6 +62,18 @@ polars_optreq$default_maintain_order = list( # set requirement functions of defa
   }
 )
 
+#' @rdname polars_options
+#' @name debug_polars
+#' @details prints any call to public or private polars method
+#' @param debug_polars bool, default = FALSE,
+#' turn of messages
+polars_optenv$debug_polars = FALSE # set default value
+polars_optreq$debug_polars = list( # set requirement functions of default value
+  is_bool = function(x) {
+    is.logical(x) && length(x) == 1 && !is.na(x)
+  }
+)
+
 
 ## END OF DEFINED OPTIONS
 
@@ -99,8 +86,8 @@ polars_optreq$default_maintain_order = list( # set requirement functions of defa
 #'
 #'
 #' @return current settings as list
-#' @details modifing list takes no effect, pass it to pl$set_polars_options
-#' get/set/resest interact with internal env `polars:::polars_optenv`
+#' @details modifying list takes no effect, pass it to pl$set_polars_options
+#' get/set/reset interact with internal env `polars:::polars_optenv`
 #'
 #'
 #' @examples pl$get_polars_options()
@@ -146,7 +133,16 @@ pl$options = lapply(names(polars_optenv), \(name) {
 })
 names(pl$options) = names(polars_optenv)
 class(pl$options) = c("polars_option_list", "list")
+
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x string name of an option
+#' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
+#' @keywords internal
 .DollarNames.polars_option_list = function(x, pattern = "") {
   with(x, ls(pattern = pattern))
 }
@@ -155,6 +151,7 @@ class(pl$options) = c("polars_option_list", "list")
   print("pl$options (polars_options, list-like with value validation):")
   print(pl$get_polars_options())
 }
+
 #' #' @export
 #' `as.list.polars_option_list` = function(x, ...) {
 #'   pl$get_polars_options()
@@ -170,7 +167,8 @@ class(pl$options) = c("polars_option_list", "list")
 #' @param ... any options to modify
 #'
 #' @param return_replaced_options return previous state of modified options
-#' Convenient for temporarily swapping of options during testing.
+#' Convenient for temporarily swapping of options during testing. The immediate
+#' return value is invisible.
 #'
 #' @rdname polars_options
 #' @name set_polars_options
@@ -226,7 +224,7 @@ pl$set_polars_options = function(
   }
 
   if (return_replaced_options) {
-    return(replaced_opts_list)
+    return(invisible(replaced_opts_list))
   }
 
   # return current option set invisible
@@ -266,6 +264,16 @@ pl$get_polars_opt_requirements = function() {
 #' internal keeping of state at runtime
 #' @name polars_runtime_flags
 #' @keywords internal
+#' @return not applicable
 #' @description This environment is used internally for the package to remember
 #' what has been going on. Currently only used to throw one-time warnings()
 runtime_state = new.env(parent = emptyenv())
+
+
+subtimer_ms = function(cap_name = NULL, cap = 9999) {
+  last = runtime_state$last_subtime %||% 0
+  this = as.numeric(Sys.time())
+  runtime_state$last_subtime = this
+  time = min((this - last) * 1000, cap)
+  if (!is.null(cap_name) && time == cap) cap_name else time
+}

@@ -5,7 +5,7 @@
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
 #' Array is already contiguous. Not implemented for Table. C
 #' @param schema named list of DataTypes or char vec of names. Same length as arrow table.
-#' If schema names or types do not match arrow table, the columns will be renamed/recasted.
+#' If schema names or types do not match arrow table, the columns will be renamed/recast.
 #' NULL default is to import columns as is. Takes no effect for Array or ChunkedArray
 #' @param schema_overrides named list of DataTypes. Name some columns to recast by the DataType.
 #' Takes not effect for Array or ChunkedArray

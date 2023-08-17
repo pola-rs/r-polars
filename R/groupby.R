@@ -1,41 +1,51 @@
 #' @title Operations on Polars grouped DataFrame
+#' @return not applicable
+#' @details The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in
+#' rust polars. Groupby does not use the rust api for groupby+agg because the groupby-struct is a
+#' reference to a DataFrame and that reference will share lifetime with its parent DataFrame. There
+#' is no way to expose lifetime limited objects via extendr currently (might be quirky anyhow with R
+#'  GC). Instead the inputs for the groupby are just stored on R side, until also agg is called.
+#' Which will end up in a self-owned DataFrame object and all is fine. groupby aggs are performed
+#' via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
 #'
 #' @name GroupBy_class
 NULL
 
-# The GroupBy class in R, is just another interface on top of the DataFrame(R wrapper class) in rust polars.
-# Groupby does not use the rust api for groupby+agg because the groupby-struct is a reference to a DataFrame
-# and that reference will share lifetime with its parent DataFrame. There is no way to expose lifetime
-# limited objects via extendr currently (might be quirky anyhow with R GC). Instead the inputs for the groupby
-# are just stored on R side, until also agg is called. Which will end up in a self-owned DataFrame object and
-# all is fine.
-# groupby aggs are performed via the rust polars LazyGroupBy methods, see DataFrame.groupby_agg method.
 
-GroupBy <- new.env(parent = emptyenv())
+
+GroupBy = new.env(parent = emptyenv())
 
 #' @export
-`$.GroupBy` <- function (self, name) { func <- GroupBy[[name]]; environment(func) <- environment(); func }
+`$.GroupBy` = function(self, name) {
+  func = GroupBy[[name]]
+  environment(func) = environment()
+  func
+}
 
 #' @export
-`[[.GroupBy` <- `$.GroupBy`
+`[[.GroupBy` = `$.GroupBy`
 
 #' @title auto complete $-access into a polars object
 #' @description called by the interactive R session internally
 #' @param x GroupBy
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.GroupBy = function(x, pattern = "") {
-  paste0(ls(GroupBy, pattern = pattern ),"()")
+  paste0(ls(GroupBy, pattern = pattern), "()")
 }
 
 
 #' The internal GroupBy constructor
+#' @keywords internal
+#' @return The input as grouped DataFrame
 #' @noRd
 construct_groupby = function(df, groupby_input, maintain_order) {
-  if(!inherits(df,"DataFrame")) stopf("internal error: construct_group called not on DataFrame")
+  if (!inherits(df, "DataFrame")) stopf("internal error: construct_group called not on DataFrame")
   df = df$clone()
-  attr(df,"private") = list(groupby_input  = groupby_input, maintain_order = maintain_order)
+  attr(df, "private") = list(groupby_input = groupby_input, maintain_order = maintain_order)
   class(df) = "GroupBy"
   df
 }
@@ -53,7 +63,7 @@ construct_groupby = function(df, groupby_input, maintain_order) {
 print.GroupBy = function(x, ...) {
   .pr$DataFrame$print(x)
   cat("groups: ")
-  prv = attr(x,"private")
+  prv = attr(x, "private")
   print(prv$groupby_input)
   cat("maintain order: ", prv$maintain_order)
   invisible(x)
@@ -61,28 +71,27 @@ print.GroupBy = function(x, ...) {
 
 
 #' Aggregate over a GroupBy
-#' @description Aggregatete a DataFrame over a groupby
+#' @description Aggregate a DataFrame over a groupby
 #' @param ... exprs to aggregate over.
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @return aggregated DataFrame
-#' @export
 #' @aliases agg
 #' @examples
 #' pl$DataFrame(
-#'     foo = c("one", "two", "two", "one", "two"),
-#'     bar = c(5, 3, 2, 4, 1)
+#'   foo = c("one", "two", "two", "one", "two"),
+#'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#' groupby("foo")$
-#' agg(
-#'  pl$col("bar")$sum()$suffix("_sum"),
-#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#'   groupby("foo")$
+#'   agg(
+#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 GroupBy_agg = function(...) {
   .pr$DataFrame$by_agg(
     self = self,
-    group_exprs = attr(self,"private")$groupby_input,
-    agg_exprs   = unpack_list(...),
-    maintain_order = attr(self,"private")$maintain_order
+    group_exprs = attr(self, "private")$groupby_input,
+    agg_exprs = unpack_list(...),
+    maintain_order = attr(self, "private")$maintain_order
   ) |>
     unwrap("in $agg():")
 }
@@ -94,12 +103,12 @@ GroupBy_agg = function(...) {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$first()
+#' df$groupby("d", maintain_order = TRUE)$first()
 GroupBy_first = function() {
   self$agg(pl$all()$first())
 }
@@ -110,12 +119,12 @@ GroupBy_first = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$last()
+#' df$groupby("d", maintain_order = TRUE)$last()
 GroupBy_last = function() {
   self$agg(pl$all()$last())
 }
@@ -126,12 +135,12 @@ GroupBy_last = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$max()
+#' df$groupby("d", maintain_order = TRUE)$max()
 GroupBy_max = function() {
   self$agg(pl$all()$max())
 }
@@ -142,12 +151,12 @@ GroupBy_max = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$mean()
+#' df$groupby("d", maintain_order = TRUE)$mean()
 GroupBy_mean = function() {
   self$agg(pl$all()$mean())
 }
@@ -158,12 +167,12 @@ GroupBy_mean = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$median()
+#' df$groupby("d", maintain_order = TRUE)$median()
 GroupBy_median = function() {
   self$agg(pl$all()$median())
 }
@@ -174,12 +183,12 @@ GroupBy_median = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$min()
+#' df$groupby("d", maintain_order = TRUE)$min()
 GroupBy_min = function() {
   self$agg(pl$all()$min())
 }
@@ -190,12 +199,12 @@ GroupBy_min = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$sum()
+#' df$groupby("d", maintain_order = TRUE)$sum()
 GroupBy_sum = function() {
   self$agg(pl$all()$sum())
 }
@@ -206,12 +215,12 @@ GroupBy_sum = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$var()
+#' df$groupby("d", maintain_order = TRUE)$var()
 GroupBy_var = function() {
   self$agg(pl$all()$var())
 }
@@ -222,12 +231,12 @@ GroupBy_var = function() {
 #' @keywords GroupBy
 #' @examples
 #' df = pl$DataFrame(
-#'         a = c(1, 2, 2, 3, 4, 5),
-#'         b = c(0.5, 0.5, 4, 10, 13, 14),
-#'         c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-#'         d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+#'   a = c(1, 2, 2, 3, 4, 5),
+#'   b = c(0.5, 0.5, 4, 10, 13, 14),
+#'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+#'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order=TRUE)$std()
+#' df$groupby("d", maintain_order = TRUE)$std()
 GroupBy_std = function() {
   self$agg(pl$all()$std())
 }
@@ -272,7 +281,7 @@ GroupBy_shift_and_fill = function(fill_value, periods = 1) {
 #' x = mtcars
 #' x[1:10, 3:5] = NA
 #' pl$DataFrame(x)$groupby("cyl")$null_count()
-GroupBy_null_count <- function() {
+GroupBy_null_count = function() {
   self$agg(pl$all()$null_count())
 }
 
@@ -281,15 +290,15 @@ GroupBy_null_count <- function() {
 #' @param ... not used
 #'
 #' @return R data.frame
-#' @export
 #'
-#' @examples pl$DataFrame(iris)$to_data_frame() #R-polars back and forth
+#' @examples pl$DataFrame(iris)$to_data_frame() # R-polars back and forth
 GroupBy_to_data_frame = function(...) {
   class(self) = "DataFrame"
   self$to_data_frame(...)
 }
 
-#TODO REMOVE_AT_BREAKING_CHANGE
+# TODO REMOVE_AT_BREAKING_CHANGE
 #' Alias to GroupBy_to_data_frame (backward compatibility)
+#' @return R data.frame
 #' @noRd
 GroupBy_as_data_frame = GroupBy_to_data_frame

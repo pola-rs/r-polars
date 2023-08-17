@@ -1,36 +1,37 @@
-
 #' check if schema
 #' @name is_schema
-#' @param x objet to test if schema
+#' @param x object to test if schema
 #' @return bool
 #' @format function
+#' @keywords functions
 #' @examples
-#' polars:::is_schema(pl$DataFrame(iris)$schema)
 #' pl$is_schema(pl$DataFrame(iris)$schema)
-#' polars:::is_schema(list("alice","bob"))
-#'
+#' pl$is_schema(list("alice", "bob"))
 is_schema = \(x) {
   is.list(x) && !is.null(names(x)) && !anyNA(names(x)) &&
-    do.call(all,lapply(x, inherits, "RPolarsDataType"))
+    do.call(all, lapply(x, inherits, "RPolarsDataType"))
 }
 pl$is_schema = is_schema
 
 
 #' wrap proto schema
+#' @noRd
 #' @name wrap_proto_schema
 #' @param x either schema, or incomplete schema where dataType can be NULL
 #' or schema is just char vec, implicitly the same as if all DataType are NULL,
-#' mean undefinesd.
+#' mean undefined.
 #' @return bool
 #' @format function
 #' @keywords internal
 #' @examples
-#' polars:::wrap_proto_schema(c("alice","bob"))
-#' polars:::wrap_proto_schema(list("alice"=pl$Int64,"bob"=NULL))
+#' .pr$env$wrap_proto_schema(c("alice", "bob"))
+#' .pr$env$wrap_proto_schema(list("alice" = pl$Int64, "bob" = NULL))
 wrap_proto_schema = function(x) {
   pcase(
-    is.list(x) && !is.null(names(x)), x,
-    is.character(x) && !anyNA(x), {
+    is.list(x) && !is.null(names(x)),
+    x,
+    is.character(x) && !anyNA(x),
+    {
       names(x) = x
       lapply(x, \(x) NULL)
     },
@@ -42,10 +43,11 @@ wrap_proto_schema = function(x) {
 
 
 
-#' @title DataTypes polars types
+#' @title DataTypes (RPolarsDataType)
 #'
 #' @name pl_dtypes
 #' @description `DataType` any polars type (ported so far)
+#' @return not applicable
 #' @examples
 #' print(ls(pl$dtypes))
 #' pl$dtypes$Float64
@@ -55,13 +57,9 @@ wrap_proto_schema = function(x) {
 #'
 #' pl$Struct(pl$Field("CityNames", pl$Utf8))
 #'
-#' # Some DataType use case, this user function fails because....
-#' \dontrun{
-#'   pl$Series(1:4)$apply(\(x) letters[x])
-#' }
-#' #The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
-#' #specifying the output DataType: Utf8 solves the problem
-#' pl$Series(1:4)$apply(\(x) letters[x],datatype = pl$dtypes$Utf8)
+#' # The function changes type from Integer(Int32)[Integers] to char(Utf8)[Strings]
+#' # specifying the output DataType: Utf8 solves the problem
+#' pl$Series(1:4)$apply(\(x) letters[x], datatype = pl$dtypes$Utf8)
 #'
 NULL
 
@@ -77,7 +75,7 @@ NULL
 #'
 #' @keywords internal
 #' @examples
-#' pl$dtypes$Boolean #implicit print
+#' pl$dtypes$Boolean # implicit print
 print.RPolarsDataType = function(x, ...) {
   cat("DataType: ")
   x$print()
@@ -86,19 +84,20 @@ print.RPolarsDataType = function(x, ...) {
 
 
 #' @export
-"==.RPolarsDataType" <- function(e1,e2) e1$eq(e2)
+"==.RPolarsDataType" = function(e1, e2) e1$eq(e2)
 #' @export
-"!=.RPolarsDataType" <- function(e1,e2) e1$ne(e2)
+"!=.RPolarsDataType" = function(e1, e2) e1$ne(e2)
 
 
-#' chek if x is a valid RPolarsDataType
+#' check if x is a valid RPolarsDataType
 #' @name is_polars_dtype
+#' @noRd
 #' @param x a candidate
 #' @keywords internal
 #' @return a list DataType with an inner DataType
-#' @examples polars:::is_polars_dtype(pl$Int64)
+#' @examples .pr$env$is_polars_dtype(pl$Int64)
 is_polars_dtype = function(x, include_unknown = FALSE) {
-  inherits(x,"RPolarsDataType") && (x != pl$Unknown || include_unknown)
+  inherits(x, "RPolarsDataType") && (x != pl$Unknown || include_unknown)
 }
 
 #' check if x is a valid RPolarsDataType
@@ -109,17 +108,18 @@ is_polars_dtype = function(x, include_unknown = FALSE) {
 #' @return bool TRUE if outer datatype is the same.
 #' @examples
 #' # TRUE
-#' pl$same_outer_dt(pl$Datetime("us"),pl$Datetime("ms"))
-#' pl$same_outer_dt(pl$List(pl$Int64),pl$List(pl$Float32))
+#' pl$same_outer_dt(pl$Datetime("us"), pl$Datetime("ms"))
+#' pl$same_outer_dt(pl$List(pl$Int64), pl$List(pl$Float32))
 #'
-#' #FALSE
-#' pl$same_outer_dt(pl$Int64,pl$Float64)
+#' # FALSE
+#' pl$same_outer_dt(pl$Int64, pl$Float64)
 pl$same_outer_dt = function(lhs, rhs) {
-  .pr$DataType$same_outer_datatype(lhs,rhs)
+  .pr$DataType$same_outer_datatype(lhs, rhs)
 }
 
 
 #' DataType_new (simple DataType's)
+#' @noRd
 #' @description Create a new flag like DataType
 #' @param str name of DataType to create
 #' @keywords internal
@@ -135,7 +135,7 @@ pl$same_outer_dt = function(lhs, rhs) {
 #'
 #' @return DataType
 #' @examples
-#' polars:::DataType_new("Int64")
+#' .pr$env$DataType_new("Int64")
 DataType_new = function(str) {
   .pr$DataType$new(str)
 }
@@ -155,24 +155,24 @@ DataType_new = function(str) {
 #'
 #' @return DataType
 #' @examples
-#' #constructors are finally available via pl$... or pl$dtypes$...
+#' # constructors are finally available via pl$... or pl$dtypes$...
 #' pl$List(pl$List(pl$Int64))
 DataType_constructors = list(
 
-  #docs bwlow pl_DataTime
-  Datetime = function(tu="us", tz = NULL) {
+  # docs bwlow pl_DataTime
+  Datetime = function(tu = "us", tz = NULL) {
     if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
-      stopf("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()",tz)
+      stopf("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
     }
-    unwrap(.pr$DataType$new_datetime(tu,tz))
+    unwrap(.pr$DataType$new_datetime(tu, tz))
   },
 
-  #doc below pl_List
+  # doc below pl_List
   List = function(datatype) {
-    if(is.character(datatype) && length(datatype)==1 ) {
+    if (is.character(datatype) && length(datatype) == 1) {
       datatype = .pr$DataType$new(datatype)
     }
-    if(!inherits(datatype,"RPolarsDataType")) {
+    if (!inherits(datatype, "RPolarsDataType")) {
       stopf(paste(
         "input for generating a list DataType must be another DataType",
         "or an interpretable name thereof."
@@ -181,7 +181,7 @@ DataType_constructors = list(
     .pr$DataType$new_list(datatype)
   },
 
-  #doc below pl_Struct
+  # doc below pl_Struct
   Struct = function(...) {
     result({
       largs = list2(...)
@@ -196,19 +196,22 @@ DataType_constructors = list(
         largs,
         seq_along(largs),
         FUN = \(name, arg, i) {
-          if(inherits(arg,"RPolarsDataType")) return(pl$Field(name, arg))
-          if(inherits(arg,"RField")) return(arg)
+          if (inherits(arg, "RPolarsDataType")) {
+            return(pl$Field(name, arg))
+          }
+          if (inherits(arg, "RField")) {
+            return(arg)
+          }
           stopf(
             "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
-            element_name, i, name, arg,"DataType see (pl$dtypes), see examples for pl$Struct()"
+            element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
           )
-        },SIMPLIFY = FALSE
+        }, SIMPLIFY = FALSE
       )
     }) |>
       and_then(DataType$new_struct) |>
       unwrap("in pl$Struct:")
   }
-
 )
 
 #' Create Datetime DataType
@@ -221,7 +224,7 @@ DataType_constructors = list(
 #' @format function
 #' @return Datetime DataType
 #' @examples
-#' pl$Datetime("ns","Pacific/Samoa")
+#' pl$Datetime("ns", "Pacific/Samoa")
 NULL
 
 #' Create Struct DataType
@@ -246,8 +249,3 @@ NULL
 #' @format function
 #' @examples pl$List(pl$List(pl$Boolean))
 NULL
-
-
-
-
-

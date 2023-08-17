@@ -13,13 +13,13 @@ name
 get/set Field name
 }
 \examples{
-field = pl$Field("Cities",pl$Utf8)
+field = pl$Field("Cities", pl$Utf8)
 
-#get name / datatype
+# get name / datatype
 field$name
 field$datatype
 
-#set + get values
+# set + get values
 field$name = "CityPoPulations" #<- is fine too
 field$datatype = pl$UInt32
 

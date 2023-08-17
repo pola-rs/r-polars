@@ -16,10 +16,10 @@ check if x is a valid RPolarsDataType
 }
 \examples{
 # TRUE
-pl$same_outer_dt(pl$Datetime("us"),pl$Datetime("ms"))
-pl$same_outer_dt(pl$List(pl$Int64),pl$List(pl$Float32))
+pl$same_outer_dt(pl$Datetime("us"), pl$Datetime("ms"))
+pl$same_outer_dt(pl$List(pl$Int64), pl$List(pl$Float32))
 
-#FALSE
-pl$same_outer_dt(pl$Int64,pl$Float64)
+# FALSE
+pl$same_outer_dt(pl$Int64, pl$Float64)
 }
 \keyword{internal}

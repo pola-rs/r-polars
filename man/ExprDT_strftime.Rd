@@ -18,6 +18,6 @@ Format Date/Datetime with a formatting rule.
 See \verb{chrono strftime/strptime <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>}_.
 }
 \examples{
-pl$lit(as.POSIXct("2021-01-02 12:13:14",tz="GMT"))$dt$strftime("this is the year: \%Y")$to_r()
+pl$lit(as.POSIXct("2021-01-02 12:13:14", tz = "GMT"))$dt$strftime("this is the year: \%Y")$to_r()
 }
 \keyword{ExprDT}

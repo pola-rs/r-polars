@@ -18,6 +18,6 @@ self
 print a polars datatype
 }
 \examples{
-pl$dtypes$Boolean #implicit print
+pl$dtypes$Boolean # implicit print
 }
 \keyword{internal}

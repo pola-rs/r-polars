@@ -12,7 +12,7 @@ replace_private_with_pub_methods(
 )
 }
 \arguments{
-\item{env}{class envrionment to modify. Envs are mutable so no return needed}
+\item{env}{class environment to modify. Envs are mutable so no return needed}
 
 \item{class_pattern}{a regex string matching declared public functions of that class}
 

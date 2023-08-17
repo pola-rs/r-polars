@@ -18,7 +18,7 @@ Get the head n elements.
 Similar to R head(x)
 }
 \examples{
-#get 3 first elements
-pl$DataFrame(list(x=1:11))$select(pl$col("x")$head(3))
+# get 3 first elements
+pl$DataFrame(list(x = 1:11))$select(pl$col("x")$head(3))
 }
 \keyword{Expr}

@@ -4,9 +4,6 @@
 \alias{Expr_fill_nan}
 \alias{fill_nan}
 \title{Fill Nulls Forward}
-\format{
-a method
-}
 \usage{
 Expr_fill_nan(expr = NULL)
 }
@@ -23,12 +20,12 @@ Fill missing values with last seen values.
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-l = list(a=c(1,NaN,NaN,3))
+l = list(a = c(1, NaN, NaN, 3))
 pl$DataFrame(l)$select(
   pl$col("a")$fill_nan()$alias("fill_default"),
-  pl$col("a")$fill_nan(pl$lit(NA))$alias("fill_NA"), #same as default
+  pl$col("a")$fill_nan(pl$lit(NA))$alias("fill_NA"), # same as default
   pl$col("a")$fill_nan(2)$alias("fill_float2"),
-  pl$col("a")$fill_nan("hej")$alias("fill_str") #implicit cast to Utf8
+  pl$col("a")$fill_nan("hej")$alias("fill_str") # implicit cast to Utf8
 )$to_list()
 }
 \keyword{Expr}

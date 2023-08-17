@@ -6,10 +6,14 @@
 \usage{
 Expr_print()
 }
+\value{
+invisible self
+}
 \description{
 internal method print Expr
 }
 \examples{
+pl$col("some_column")$sum()$over("some_other_column")$print()
 pl$DataFrame(iris)
 }
 \keyword{Expr}

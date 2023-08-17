@@ -1,14 +1,17 @@
-use crate::concurrent::{handle_thread_r_requests, PolarsBackgroundHandle};
+use crate::concurrent::{collect_with_r_func_support, profile_with_r_func_support};
+use crate::conversion::strings_to_smartstrings;
 use crate::lazy::dsl::*;
-use crate::rdatatype::new_asof_strategy;
-use crate::rdatatype::new_join_type;
-use crate::rdatatype::new_quantile_interpolation_option;
-use crate::rdatatype::new_unique_keep_strategy;
+use crate::rdataframe::DataFrame as RDF;
+use crate::rdatatype::{
+    new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
+    new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
+};
 use crate::robj_to;
-use crate::utils::wrappers::null_to_opt;
-use crate::utils::{r_result_list, try_f64_into_usize};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
+use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
 use polars::chunked_array::object::AsOfOptions;
+use polars::frame::explode::MeltArgs;
 use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 
@@ -43,8 +46,8 @@ impl LazyFrame {
 
     //low level version of describe_plan, mainly for arg testing
     pub fn debug_plan(&self) -> Result<String, String> {
-        use crate::serde_json::value::Serializer;
         use polars_core::export::serde::Serialize;
+        use serde_json::value::Serializer;
         Serialize::serialize(&self.0.logical_plan.clone(), Serializer)
             .map_err(|err| err.to_string())
             .map(|val| format!("{:?}", val))
@@ -57,22 +60,54 @@ impl LazyFrame {
         r_result_list(result.map_err(|err| format!("{:?}", err)))
     }
 
-    pub fn collect_background(&self) -> PolarsBackgroundHandle {
-        PolarsBackgroundHandle::new(self)
+    pub fn collect(&self) -> RResult<RDF> {
+        collect_with_r_func_support(self.clone().0)
     }
 
-    pub fn collect(&self) -> Result<crate::rdataframe::DataFrame, String> {
-        handle_thread_r_requests(self.clone().0).map_err(|err| {
-            //improve err messages
-            let err_string = match err {
-                pl::PolarsError::InvalidOperation(x) => {
-                    format!("Something (Likely a Column) named {:?} was not found", x)
-                }
-                x => format!("{:?}", x),
-            };
-
-            format!("when calling $collect() on LazyFrame:\n{}", err_string)
+    pub fn collect_in_background(&self) -> crate::rbackground::RThreadHandle<RResult<RDF>> {
+        use crate::rbackground::*;
+        let dup = self.clone();
+        RThreadHandle::new(move || {
+            Ok(RDF::from(
+                dup.0
+                    .collect()
+                    .map_err(crate::rpolarserr::polars_to_rpolars_err)?,
+            ))
         })
+    }
+
+    pub fn sink_parquet(
+        &self,
+        path: Robj,
+        compression_method: Robj,
+        compression_level: Robj,
+        statistics: Robj,
+        row_group_size: Robj,
+        data_pagesize_limit: Robj,
+        maintain_order: Robj,
+    ) -> RResult<()> {
+        let pqwo = polars::prelude::ParquetWriteOptions {
+            compression: new_parquet_compression(compression_method, compression_level)?,
+            statistics: robj_to!(bool, statistics)?,
+            row_group_size: robj_to!(Option, usize, row_group_size)?,
+            data_pagesize_limit: robj_to!(Option, usize, data_pagesize_limit)?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_parquet(robj_to!(String, path)?.into(), pqwo)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_ipc(&self, path: Robj, compression_method: Robj, maintain_order: Robj) -> RResult<()> {
+        let ipcwo = polars::prelude::IpcWriterOptions {
+            compression: new_ipc_compression(compression_method)?,
+            maintain_order: robj_to!(bool, maintain_order)?,
+        };
+        self.0
+            .clone()
+            .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .map_err(polars_to_rpolars_err)
     }
 
     fn first(&self) -> Self {
@@ -116,7 +151,7 @@ impl LazyFrame {
         Ok(self
             .clone()
             .0
-            .quantile(robj_to!(Expr, quantile)?.0.clone(), res)
+            .quantile(robj_to!(Expr, quantile)?.0, res)
             .into())
     }
 
@@ -167,16 +202,9 @@ impl LazyFrame {
         )))
     }
 
-    fn select(&self, exprs: &ProtoExprArray) -> LazyFrame {
-        let exprs: Vec<pl::Expr> = exprs
-            .0
-            .iter()
-            .map(|protoexpr| protoexpr.to_rexpr("select").0)
-            .collect();
-
-        let new_df = self.clone().0.select(exprs);
-
-        LazyFrame(new_df)
+    pub fn select(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExprCol, exprs).when("preparing expressions before select")?;
+        Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
     fn limit(&self, n: Robj) -> Result<Self, String> {
@@ -193,7 +221,7 @@ impl LazyFrame {
     }
 
     fn drop_nulls(&self, subset: &ProtoExprArray) -> LazyFrame {
-        if subset.0.len() == 0 {
+        if subset.0.is_empty() {
             LazyFrame(self.0.clone().drop_nulls(None))
         } else {
             let vec = pra_to_vec(subset, "select");
@@ -201,17 +229,16 @@ impl LazyFrame {
         }
     }
 
-    fn unique(&self, subset: Robj, keep: Robj) -> Result<LazyFrame, String> {
-        let ke = new_unique_keep_strategy(robj_to!(str, keep)?).unwrap();
-        Ok(if subset.len() == 0 {
-            LazyFrame(self.0.clone().unique(None, ke))
+    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> Result<LazyFrame, String> {
+        let ke = new_unique_keep_strategy(robj_to!(str, keep)?)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let subset = robj_to!(Option, Vec, String, subset)?;
+        let lf = if maintain_order {
+            self.0.clone().unique_stable(subset, ke)
         } else {
-            LazyFrame(
-                self.0
-                    .clone()
-                    .unique(Some(robj_to!(Vec, String, subset)?), ke),
-            )
-        })
+            self.0.clone().unique(subset, ke)
+        };
+        Ok(lf.into())
     }
 
     fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
@@ -229,9 +256,23 @@ impl LazyFrame {
     }
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
+        R!("warning('`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.')")
+        .expect("warning will not fail");
         LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
+    fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .with_row_count(
+                robj_to!(String, name)?.as_str(),
+                robj_to!(Option, u32, offset)?,
+            )
+            .into())
+    }
+
+    #[allow(clippy::too_many_arguments)]
     pub fn join_asof(
         &self,
         other: Robj,
@@ -279,12 +320,13 @@ impl LazyFrame {
             .how(JoinType::AsOf(AsOfOptions {
                 strategy: robj_to!(str, strategy).and_then(|s| {
                     new_asof_strategy(s)
-                        .map_err(|err| format!("param [strategy] error because {}", err))
+                        .map_err(Rctx::Plain)
+                        .bad_arg("stragegy")
                 })?,
                 left_by: left_by.map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
                 right_by: right_by
                     .map(|opt_vec_s| opt_vec_s.into_iter().map(|s| s.into()).collect()),
-                tolerance: tolerance,
+                tolerance,
                 tolerance_str: tolerance_str.map(|s| s.into()),
             }))
             .suffix(robj_to!(str, suffix)?)
@@ -292,6 +334,7 @@ impl LazyFrame {
             .into())
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn join(
         &self,
         other: &LazyFrame,
@@ -332,6 +375,87 @@ impl LazyFrame {
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
         Ok(ldf.sort_by_exprs(exprs, descending, nulls_last).into())
+    }
+
+    fn melt(
+        &self,
+        id_vars: Robj,
+        value_vars: Robj,
+        value_name: Robj,
+        variable_name: Robj,
+        streamable: Robj,
+    ) -> Result<Self, String> {
+        let args = MeltArgs {
+            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
+            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+            value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
+            variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
+            streamable: robj_to!(bool, streamable)?,
+        };
+        Ok(self.0.clone().melt(args).into())
+    }
+
+    fn rename(&self, existing: Robj, new: Robj) -> Result<LazyFrame, String> {
+        Ok(self
+            .0
+            .clone()
+            .rename(
+                robj_to!(Vec, String, existing)?,
+                robj_to!(Vec, String, new)?,
+            )
+            .into())
+    }
+
+    fn schema(&self) -> RResult<Pairlist> {
+        let schema = self
+            .0
+            .schema()
+            .map_err(crate::rpolarserr::polars_to_rpolars_err)?;
+        let pairs = schema.iter().collect::<Vec<_>>().into_iter();
+        Ok(Pairlist::from_pairs(
+            pairs.map(|(name, ty)| (name, RPolarsDataType(ty.clone()))),
+        ))
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn optimization_toggle(
+        &self,
+        type_coercion: Robj,
+        predicate_pushdown: Robj,
+        projection_pushdown: Robj,
+        simplify_expr: Robj,
+        slice_pushdown: Robj,
+        cse: Robj,
+        streaming: Robj,
+    ) -> RResult<Self> {
+        let ldf = self
+            .0
+            .clone()
+            .with_type_coercion(robj_to!(bool, type_coercion)?)
+            .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
+            .with_streaming(robj_to!(bool, streaming)?)
+            .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
+            .with_common_subplan_elimination(robj_to!(bool, cse)?);
+
+        Ok(ldf.into())
+    }
+
+    fn profile(&self) -> RResult<List> {
+        profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
+    }
+
+    fn explode(&self, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+        Ok(self
+            .0
+            .clone()
+            .explode(robj_to!(Vec, PLExprCol, dotdotdot_args)?)
+            .into())
+    }
+
+    pub fn clone_see_me_macro(&self) -> LazyFrame {
+        self.clone()
     }
 }
 

@@ -24,6 +24,6 @@ bool
 Check if series is equal with another Series.
 }
 \examples{
-pl$Series(1:4,"bob")$series_equal(pl$Series(1:4))
+pl$Series(1:4, "bob")$series_equal(pl$Series(1:4))
 }
 \keyword{Series}

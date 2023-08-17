@@ -6,6 +6,9 @@
 \format{
 info
 }
+\value{
+Not applicable
+}
 \description{
 #Comments for how the R and python world translates into polars:
 
@@ -40,7 +43,7 @@ symbol \code{None} can carry a similar meaning. R \code{NA} ~ polars \code{Null}
 
 \subsection{Sorting and comparisons}{
 
-From writing alot of tests for all implementations, it appears polars does not have a
+From writing a lot of tests for all implementations, it appears polars does not have a
 fully consistent nor well documented behavior, when it comes to comparisons and sorting of
 floats. Though some general thumb rules do apply:
 Polars have chosen to define in sorting that \code{Null} is a value lower than \code{-Inf} as in
@@ -60,7 +63,7 @@ R \code{Inf} ~ polars \code{inf}  ~ python \verb{[float("inf")]} #only floats ha
 \subsection{NULL IS NOT Null is not NULL}{
 
 The R NULL does not exist inside polars frames and series and so on. It resembles the
-Option::None in the hidden rust code. It resembles the python \code{None}. In all three langues the
+Option::None in the hidden rust code. It resembles the python \code{None}. In all three languages the
 \code{NULL}/\code{None}/\code{None} are used in this context as function argument to signal default behavior or
 perhaps a deactivated feature. R \code{NULL} does NOT translate into the polars bitmask \code{Null}, that
 is \code{NA}. R \code{NULL} ~ rust-polars \code{Option::None} ~ pypolars \code{None}  #typically used for function
@@ -74,7 +77,7 @@ similar to python dictionary (hashmap), but is implemented more similar to the p
 (array of pointers). R list do support string naming elements via a string vector.
 In polars both lists (of vectors or series) and data.frames can be used to construct a polars
 DataFrame, just a as dictionaries would be used in python. In terms of loading in/out data the
-follow tranlation holds: R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
+follow translation holds: R \code{data.frame}/\code{list} ~ polars \code{DataFrame} ~ python \code{dictonary}
 }
 
 \subsection{Series and Vectors}{
@@ -83,7 +86,7 @@ The R vector (Integer, Double, Character, ...) resembles the Series as both are 
 frame and can be of any length. The implementation is quite different. E.g. \code{for}-loop appending
 to an R vector is considered quite bad for performance. The vector will be fully rewritten in
 memory for every append. The polars Series has chunked memory allocation, which allows any
-appened data to be written only. However fragmented memory is not great for fast computations and
+append data to be written only. However fragmented memory is not great for fast computations and
 polars objects have a \code{rechunk}()-method, to reallocate chunks into one. Rechunk might be called
 implicitly by polars. In the context of constructing. Series and extracting data , the following
 translation holds: R \code{vector} ~ polars \code{Series}/\code{column} ~ python \code{list}
@@ -98,7 +101,7 @@ the rendering can be performed with optimization across all instructions. Btw \c
 command-syntax is a monoid meaning the order does not matter, that is not the case for polars
 Expr. Polars Expr's can be understood as a DSL (domain specific language) that expresses syntax
 trees of instructions. R expressions evaluate to syntax trees also, but it difficult to optimize
-the execution order automaticly, without rewriting the code. A great selling point of Polars is
+the execution order automatically, without rewriting the code. A great selling point of Polars is
 that any query will be optimized. Expr are very light-weight symbols chained together.
 }
 }

@@ -4,9 +4,6 @@
 \alias{Expr_take_every}
 \alias{take_every}
 \title{Take every n'th element}
-\format{
-a method
-}
 \usage{
 Expr_take_every(n)
 }
@@ -20,6 +17,6 @@ Expr
 Take every nth value in the Series and return as a new Series.
 }
 \examples{
-pl$DataFrame(list(a=0:24))$select(pl$col("a")$take_every(6))
+pl$DataFrame(list(a = 0:24))$select(pl$col("a")$take_every(6))
 }
 \keyword{Expr}

@@ -4,9 +4,6 @@
 \alias{Expr_fill_null}
 \alias{fill_null}
 \title{Fill Nulls with a value or strategy.}
-\format{
-a method
-}
 \usage{
 Expr_fill_null(value = NULL, strategy = NULL, limit = NULL)
 }
@@ -29,7 +26,7 @@ See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations
 \examples{
 pl$select(
   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
+  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
 )
 }
 \keyword{Expr}

@@ -20,10 +20,10 @@ get/set column names of DataFrame object
 \examples{
 df = pl$DataFrame(iris)
 
-#get values
+# get values
 df$columns
 
-#set + get values
+# set + get values
 df$columns = letters[1:5] #<- is fine too
 df$columns
 df = pl$DataFrame(iris)

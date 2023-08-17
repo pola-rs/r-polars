@@ -3,9 +3,6 @@
 \name{LazyFrame_last}
 \alias{LazyFrame_last}
 \title{Last}
-\format{
-function
-}
 \usage{
 LazyFrame_last
 }

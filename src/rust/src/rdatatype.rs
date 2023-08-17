@@ -1,9 +1,11 @@
 use crate::utils::r_result_list;
 use crate::utils::wrappers::Wrap;
 use extendr_api::prelude::*;
-use polars::prelude::{self as pl};
+use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
+use crate::robj_to;
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -25,7 +27,7 @@ impl RField {
         rprintln!("{:#?}", self.0);
     }
 
-    //
+    #[allow(clippy::should_implement_trait)]
     pub fn clone(&self) -> Self {
         RField(self.0.clone())
     }
@@ -191,6 +193,7 @@ impl RPolarsDataType {
         rprintln!("{:#?}", self.0);
     }
 
+    #[allow(clippy::should_implement_trait)]
     pub fn eq(&self, other: &RPolarsDataType) -> bool {
         self.0.eq(&other.0)
     }
@@ -214,7 +217,7 @@ impl RPolarsDataType {
                 },
             ),
             pl::DataType::List(inner) => {
-                list!(RPolarsDataType(*inner.clone()).into_robj())
+                list!(RPolarsDataType(*inner).into_robj())
             }
             _ => list!(),
         }
@@ -235,15 +238,14 @@ impl From<RPolarsDataType> for pl::DataType {
 //if all named will become a schema and passed to polars_io.csv.csvread.with_dtypes
 //if any names are missing will become slice of dtypes and passed to polars_io.csv.csvread.with_dtypes_slice
 //zero length vector will neither trigger with_dtypes() or with_dtypes_slice() method calls
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DataTypeVector(pub Vec<(Option<String>, pl::DataType)>);
 
 #[extendr]
 impl DataTypeVector {
     pub fn new() -> Self {
-        DataTypeVector(Vec::new())
+        Self::default()
     }
-
     pub fn push(&mut self, colname: Nullable<String>, datatype: &RPolarsDataType) {
         self.0.push((Wrap(colname).into(), datatype.clone().into()));
     }
@@ -255,22 +257,18 @@ impl DataTypeVector {
     pub fn from_rlist(list: List) -> List {
         let mut dtv = DataTypeVector(Vec::with_capacity(list.len()));
 
-        let result: std::result::Result<(), String> = list
-            .iter()
-            .map(|(name, robj)| -> std::result::Result<(), String> {
-                if !robj.inherits("RPolarsDataType")
-                    || robj.rtype() != extendr_api::Rtype::ExternalPtr
-                {
-                    return Err("Internal error: Object is not a RPolarsDataType".into());
-                }
-                //safety checks class and type before conversion
-                let dt: RPolarsDataType =
-                    unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
-                let name = extendr_api::Nullable::NotNull(name.to_string());
-                dtv.push(name, &dt);
-                Ok(())
-            })
-            .collect();
+        let result: std::result::Result<(), String> = list.iter().try_for_each(|(name, robj)| {
+            if !robj.inherits("RPolarsDataType") || robj.rtype() != extendr_api::Rtype::ExternalPtr
+            {
+                return Err("Internal error: Object is not a RPolarsDataType".into());
+            }
+            //safety checks class and type before conversion
+            let dt: RPolarsDataType =
+                unsafe { &mut *robj.external_ptr_addr::<RPolarsDataType>() }.clone();
+            let name = extendr_api::Nullable::NotNull(name.to_string());
+            dtv.push(name, &dt);
+            Ok(())
+        });
 
         r_result_list(result.map(|_| dtv))
     }
@@ -419,7 +417,7 @@ pub fn literal_to_any_value(
 
 pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'static>, String> {
     use pl::*;
-    let x = Ok(pl::DataFrame::default()
+    pl::DataFrame::default()
         .lazy()
         .select(&[e])
         .collect()
@@ -431,8 +429,7 @@ pub fn expr_to_any_value(e: pl::Expr) -> std::result::Result<pl::AnyValue<'stati
         .next()
         .ok_or_else(|| String::from("series had no first value"))?
         .into_static()
-        .map_err(|err| err.to_string())?);
-    x
+        .map_err(|err| err.to_string())
 }
 
 pub fn new_interpolation_method(s: &str) -> std::result::Result<pl::InterpolationMethod, String> {
@@ -500,6 +497,60 @@ pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, Stri
             s
         )),
     }
+}
+
+pub fn new_parquet_compression(
+    compression_method: Robj,
+    compression_level: Robj,
+) -> RResult<pl::ParquetCompression> {
+    use pl::ParquetCompression::*;
+    match robj_to!(String, compression_method)?.as_str() {
+        "uncompressed" => Ok(Uncompressed),
+        "snappy" => Ok(Snappy),
+        "gzip" => robj_to!(Option, u8, compression_level)?
+            .map(polars::prelude::GzipLevel::try_new)
+            .transpose()
+            .map(Gzip),
+        "lzo" => Ok(Lzo),
+        "brotli" => robj_to!(Option, u32, compression_level)?
+            .map(polars::prelude::BrotliLevel::try_new)
+            .transpose()
+            .map(Brotli),
+        "zstd" => robj_to!(Option, i32, compression_level)?
+            .map(polars::prelude::ZstdLevel::try_new)
+            .transpose()
+            .map(Zstd),
+        m => Err(polars::prelude::PolarsError::ComputeError(
+            format!("Failed to set parquet compression method as [{m}]").into(),
+        )),
+    }
+    .map_err(polars_to_rpolars_err)
+    .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")
+}
+
+pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCompression>> {
+    use pl::IpcCompression::*;
+    robj_to!(Option, String, compression_method)?
+        .map(|cm| match cm.as_str() {
+            "lz4" => Ok(LZ4),
+            "zstd" => Ok(ZSTD),
+            m => rerr()
+                .bad_val(m)
+                .misvalued("should be one of ['lz4', 'zstd']"),
+        })
+        .transpose()
+}
+
+pub fn new_rolling_cov_options(
+    window_size: Robj,
+    min_periods: Robj,
+    ddof: Robj,
+) -> RResult<pl::RollingCovOptions> {
+    Ok(pl::RollingCovOptions {
+        window_size: robj_to!(u32, window_size)?,
+        min_periods: robj_to!(u32, min_periods)?,
+        ddof: robj_to!(u8, ddof)?,
+    })
 }
 
 extendr_module! {

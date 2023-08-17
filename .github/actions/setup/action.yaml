@@ -1,0 +1,40 @@
+name: setup
+description: Setup build environment (except R)
+inputs:
+  rust-nightly:
+    description: Set up Rust nightly toolchain?
+    required: false
+
+runs:
+  using: composite
+  steps:
+      - name: Install ubuntu SYSTEM REQUIREMENTS
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update \
+          && sudo apt-get install -y \
+            libfontconfig1-dev \
+            libfreetype6-dev \
+            libfribidi-dev \
+            libharfbuzz-dev \
+            libcurl4-openssl-dev \
+            libgit2-dev \
+            libicu-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libtiff-dev \
+            libxml2-dev \
+            libssl-dev
+
+      - name: Set up Rust nightly toolchain
+        if: inputs.rust-nightly == 'true' || env.RPOLARS_FULL_FEATURES == 'true'
+        shell: bash
+        run: |
+          make requirements-rs
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: build
+          workspaces: ./src/rust/

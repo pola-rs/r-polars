@@ -22,7 +22,7 @@ struct fields that will be set.
 If this is incorrectly downstream operation may fail.
 For instance an \verb{all().sum()} expression will look in
 the current schema to determine which columns to select.
-It is adviced to set this value in a lazy query.}
+It is advised to set this value in a lazy query.}
 }
 \value{
 Expr
@@ -33,8 +33,8 @@ List to Struct
 \examples{
 df = pl$DataFrame(list(a = list(1:3, 1:2)))
 df2 = df$select(pl$col("a")$arr$to_struct(
-  name_generator =  \(idx) paste0("hello_you_",idx))
-  )
+  name_generator = \(idx) paste0("hello_you_", idx)
+))
 df2$unnest()
 
 df2$to_list()

@@ -24,29 +24,34 @@ See unittest "dt$convert_time_zone dt$tz_localize" for a more detailed compariso
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(low = as.Date("2001-3-1"), high = as.Date("2001-7-1"), interval = "1mo")
+  date = pl$date_range(
+    low = as.Date("2001-3-1"),
+    high = as.Date("2001-7-1"),
+    interval = "1mo",
+    lazy = FALSE
+  )
 )
 df = df$with_columns(
   pl$col("date")
-    $dt$replace_time_zone("Europe/Amsterdam")
-    $dt$convert_time_zone("Europe/London")
-    $alias("london_timezone"),
+  $dt$replace_time_zone("Europe/Amsterdam")
+  $dt$convert_time_zone("Europe/London")
+  $alias("london_timezone"),
   pl$col("date")
-    $dt$tz_localize("Europe/London")
-    $alias("tz_loc_london")
+  $dt$tz_localize("Europe/London")
+  $alias("tz_loc_london")
 )
 
 df2 = df$with_columns(
   pl$col("london_timezone")
-    $dt$replace_time_zone("Europe/Amsterdam")
-    $alias("cast London_to_Amsterdam"),
+  $dt$replace_time_zone("Europe/Amsterdam")
+  $alias("cast London_to_Amsterdam"),
   pl$col("london_timezone")
-    $dt$convert_time_zone("Europe/Amsterdam")
-    $alias("with London_to_Amsterdam"),
+  $dt$convert_time_zone("Europe/Amsterdam")
+  $alias("with London_to_Amsterdam"),
   pl$col("london_timezone")
-    $dt$convert_time_zone("Europe/Amsterdam")
-    $dt$replace_time_zone(NULL)
-    $alias("strip tz from with-'Europe/Amsterdam'")
+  $dt$convert_time_zone("Europe/Amsterdam")
+  $dt$replace_time_zone(NULL)
+  $alias("strip tz from with-'Europe/Amsterdam'")
 )
 df2
 }

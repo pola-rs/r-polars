@@ -4,9 +4,6 @@
 \alias{Expr_top_k}
 \alias{top_k}
 \title{Top k values}
-\format{
-a method
-}
 \usage{
 Expr_top_k(k)
 }

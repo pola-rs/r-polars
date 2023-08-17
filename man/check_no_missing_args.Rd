@@ -7,7 +7,7 @@
 check_no_missing_args(fun, args, warn = TRUE)
 }
 \arguments{
-\item{fun}{target function to check incomming arguments for}
+\item{fun}{target function to check incoming arguments for}
 
 \item{args}{list of args to check}
 

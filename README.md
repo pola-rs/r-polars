@@ -7,6 +7,8 @@
 
 [![R-universe status
 badge](https://rpolars.r-universe.dev/badges/polars)](https://rpolars.r-universe.dev)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/polars)](https://CRAN.R-project.org/package=polars)
 [![Dev
 R-CMD-check](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml/badge.svg)](https://github.com/pola-rs/r-polars/actions/workflows/check.yaml)
 [![Docs
@@ -17,10 +19,10 @@ The **polars** package for R gives users access to [a lightning
 fast](https://duckdblabs.github.io/db-benchmark/) Data Frame library
 written in Rust. [Polars](https://www.pola.rs/)’ embarrassingly parallel
 execution, cache efficient algorithms and expressive API makes it
-perfect for efficient data wrangling, data pipelines, snappy APIs and so
-much more. Polars also supports “streaming mode” for out-of-memory
-operations. This allows users to analyze datasets many times larger than
-RAM.
+perfect for efficient data wrangling, data pipelines, snappy APIs, and
+much more besides. Polars also supports “streaming mode” for
+out-of-memory operations. This allows users to analyze datasets many
+times larger than RAM.
 
 Documentation can be found on the **r-polars**
 [homepage](https://rpolars.github.io).
@@ -29,23 +31,32 @@ The primary developer of the upstream Polars project is Ritchie Vink
 ([@ritchie46](https://github.com/ritchie46)). This R port is maintained
 by Søren Welling ([@sorhawell](https://github.com/sorhawell)) and
 [contributors](https://github.com/pola-rs/r-polars/graphs/contributors).
-Consider joining our [Discord](https://discord.gg/4UfP5cfBE7)
+Consider joining our [Discord](https://discord.com/invite/4UfP5cfBE7)
 (subchannel) for additional help and discussion.
 
 ## Install
 
-The package is not yet available on CRAN. But we provide convenient
-installation options for a variety of operating systems:
+The package can be installed from R-universe, or GitHub.
+
+Some platforms can install pre-compiled binaries, and others will need
+to build from source.
 
 ### R-universe
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
-pre-compiled **polars** binaries for Windows and MacOS (x86_64), with
-source builds for other platforms. Please see further below for binary
-install options on Linux.
+pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64)
+and Ubuntu 22.04 (x86_64) with source builds for other platforms.
+
+Binary packages on R-universe are compiled by stable Rust, with nightly
+features disabled.
 
 ``` r
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
+```
+
+``` r
+# For Ubuntu binary installation
+install.packages("polars", repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.3")
 ```
 
 Special thanks to Jeroen Ooms ([@jeroen](https://github.com/jeroen)) for
@@ -53,62 +64,61 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-We also provide pre-compiled binaries for various operating systems, as
-well as source installs, on our [GitHub
-releases](https://github.com/pola-rs/r-polars/releases) page. You can
-download and install these files manually, or install directly from R.
-Simply match the URL for your operating system and the desired release.
-For example, to install the latest release of **polars** on Linux
-(x86_64) one would use:
+We also provide pre-compiled binaries for various operating systems on
+our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
+page. You can download and install these files manually, or install
+directly from R. Simply match the URL for your operating system and the
+desired release. For example, to install the latest release of
+**polars** on one can use:
+
+#### Linux (x86_64)
 
 ``` r
 install.packages(
   "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-pc-linux-gnu.gz",
-  repos = NULL 
+  repos = NULL
 )
 ```
 
-Similarly for Windows
-([URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip))
-and MacOS (x86_64,
-[URL](https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz)).
+#### Windows
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars.zip",
+  repos = NULL
+)
+```
+
+#### macOS(x86_64)
+
+``` r
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
 Just remember to invoke the `repos = NULL` argument if you are
 installing these binary builds directly from within R.
 
-One exception worth noting is MacOS (arm64), i.e. systems based on the
-new M1/M2 “Silicon” chips. To install **polars** on one of these
-machines, we need to build the package from source and this requires
-[Xcode](https://developer.apple.com/xcode/) (`xcode-select --install`).
-Once Xcode is installed, you can run the below code chunk to build
-**polars**. The corresponding `Makevars` script will download a \~200MB
-cross-compiled object file, while your machine links and builds the
-final R package.
+Binary packages on GitHub releases are compiled by nightly Rust, with
+nightly features enabled.
 
-``` r
-# install.packages("remotes")
+### Build from source
 
-remotes::install_github(
-  "https://github.com/pola-rs/r-polars",
-  ref = "long_arms64", force =TRUE
-)
-```
+For source installation, the Rust toolchain (Rust 1.65 or later) must be
+configured.
 
-Please [file an issue](https://github.com/pola-rs/r-polars/issues) if
-you require a different target or operating system build. Finally, see
-the bottom of this README for details on how to install rust to build
-from source (only relevant for developers, or users of unsupported
-operating systems).
+Please check the <https://github.com/r-rust/hellorust> repository for
+about Rust code in R packages.
 
-### r2u
+During source installation, some environment variables can be set to
+enable Rust features and profile changes.
 
-Speeding up your workflow? On Ubuntu, install polars + arrow from
-binaries and resolve system dependencies reliably and quickly with r2u
-([see link for configuration](https://eddelbuettel.github.io/r2u/)).
-
-``` r
-rp = c("https://rpolars.r-universe.dev/bin/linux/jammy/4.3", "https://cloud.r-project.org")
-install.packages(c("polars", "arrow"), repos = rp)
-```
+- `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
+  requires Rust toolchain nightly-2023-05-07)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization,
+  requires Rust 1.66 or later)
 
 ## Quickstart example
 
@@ -191,14 +201,15 @@ contains many more examples of how to use the package to:
 - Read CSV, JSON, Parquet, and other file formats.
 - Filter rows and select columns.
 - Modify and create new columns.
+- Group by and aggregate.
+- Reshape data.
+- Join and concatenate different datasets.
 - Sort data.
-- Join, group, and aggregate data.
-- Join and concatenate datasets.
-- Group and aggregate.
-- Handle missing values.
 - Work with dates and times.
+- Handle missing values.
 - Use the lazy execution engine for maximum performance and
   memory-efficient operations.
+- Etc.
 
 ## Development and Contributions
 
@@ -213,7 +224,7 @@ implemented, but not all. There is still much to do, and your help would
 be much appreciated!
 
 If you spot missing functionality—implemented in Python but not R—please
-let us know on Github.
+let us know on GitHub.
 
 ### System dependencies
 
@@ -224,15 +235,15 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly
-  rustup default nightly
+  rustup toolchain install nightly-2023-05-07
+  rustup default nightly-2023-05-07
   ```
 
 - Windows: Make sure the latest version of
   [Rtools](https://cran.r-project.org/bin/windows/Rtools/) is installed
   and on your PATH.
 
-- MacOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
+- macOS: Make sure [`Xcode`](https://developer.apple.com/support/xcode/)
   is installed.
 
 - Install [CMake](https://cmake.org/) and add it to your PATH.
@@ -241,7 +252,7 @@ you will to install the Rust toolchain:
 
 Here are the steps required for an example contribution, where we are
 implementing the [cosine
-expression](https://rpolars.github.io/reference/Expr_cos.html):
+expression](https://rpolars.github.io/reference/Expr_cos/):
 
 - Look up the [polars.Expr.cos method in py-polars
   documentation](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/api/polars.Expr.cos.html).
@@ -290,13 +301,13 @@ dependencies.
 
 - Option A: Using **devtools**.
 
-  ``` r
+  ``` sh
   Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)' 
   ```
 
 - Option B: Using **renv**.
 
-  ``` r
+  ``` sh
   # Rscript -e 'install.packages("renv")'
   Rscript -e 'renv::activate(); renv::restore()'
   ```
@@ -311,8 +322,8 @@ devtools::test()     # run all unit tests
 
 **Step 4 (optional):** Build the package locally.
 
-``` r
-R CMD INSTALL --no-multiarch --with-keep.source polars
+``` sh
+R CMD INSTALL --no-multiarch --with-keep.source .
 ```
 
 **Step 5:** Commit your changes and submit a PR to the main **polars**
@@ -321,16 +332,17 @@ repo.
 - As aside, notice that `./renv.lock` sets all R packages during the
   server build.
 
-*Tip:* To speed up the local R CMD check, run the following:
+*Tip:* To speed up the local rextendr::document() or R CMD check, run
+the following:
 
 ``` r
-devtools::check(
-  env_vars = list(RPOLARS_RUST_SOURCE="/YOUR/OWN/ABSOLUTE/PATH/r-polars/src/rust"),
-  check_dir = "./check/"
-  )
-source("./inst/misc/filter_rcmdcheck.R")
-Sys.sleep(5)
-unlink("check",recursive = TRUE, force =TRUE)
+source("inst/misc/develop_polars.R")
+
+#to rextendr:document() + not_cran + load packages + all_features
+load_polars()
+
+#to check package + reuses previous compilation in check, protects against deletion
+check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 ```
 
 - The `RPOLARS_RUST_SOURCE` environment variable allows **polars** to
@@ -338,3 +350,47 @@ unlink("check",recursive = TRUE, force =TRUE)
   with your own absolute path to your local clone!
 - `filter_rcmdcheck.R` removes known warnings from final check report.
 - `unlink("check")` cleans up.
+
+### Misc
+
+If you experience unexpected sluggish performance, when using polars in
+a given IDE, we’d like to hear about it. You can try to activate
+`pl$set_polars_options(debug_polars = TRUE)` to profile what methods are
+being touched (not necessarily run) and how fast. Below is an example of
+good behavior.
+
+``` r
+#run e.g. an eager query after setting debug_polars = TRUE
+pl$DataFrame(iris)$select("Species")
+
+[TIME? ms]
+pl$DataFrame() -> [0.73ms]
+   .pr$DataFrame$new_with_capacity() -> [0.56ms]
+   .pr$DataFrame$set_column_from_robj() -> [11.04ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.3309ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.283ms]
+   .pr$DataFrame$set_column_from_robj() -> [0.2761ms]
+   .pr$DataFrame$set_column_from_robj() -> [12.54ms]
+DataFrame$select() -> [0.3681ms]
+ProtoExprArray$push_back_rexpr() -> [0.21ms]
+pl$col() -> [0.1669ms]
+   .pr$Expr$col() -> [0.212ms]
+   .pr$DataFrame$select() -> [1.229ms]
+DataFrame$print() -> [0.1781ms]
+   .pr$DataFrame$print() -> shape: (150, 1)
+┌───────────┐
+│ Species   │
+│ ---       │
+│ cat       │
+╞═══════════╡
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ setosa    │
+│ …         │
+│ virginica │
+│ virginica │
+│ virginica │
+│ virginica │
+└───────────┘
+```

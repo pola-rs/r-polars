@@ -18,12 +18,17 @@ Return a timestamp in the given time unit.
 }
 \examples{
 df = pl$DataFrame(
-  date = pl$date_range(low = as.Date("2001-1-1"), high = as.Date("2001-1-3"), interval = "1d")
+  date = pl$date_range(
+    low = as.Date("2001-1-1"),
+    high = as.Date("2001-1-3"),
+    interval = "1d",
+    lazy = FALSE
+  )
 )
 df$select(
   pl$col("date"),
   pl$col("date")$dt$timestamp()$alias("timestamp_ns"),
-  pl$col("date")$dt$timestamp(tu="ms")$alias("timestamp_ms")
+  pl$col("date")$dt$timestamp(tu = "ms")$alias("timestamp_ms")
 )
 }
 \keyword{ExprDT}

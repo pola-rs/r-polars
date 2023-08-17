@@ -14,11 +14,11 @@ Reduce the groups to the median value.
 }
 \examples{
 df = pl$DataFrame(
-        a = c(1, 2, 2, 3, 4, 5),
-        b = c(0.5, 0.5, 4, 10, 13, 14),
-        c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
-        d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
+  a = c(1, 2, 2, 3, 4, 5),
+  b = c(0.5, 0.5, 4, 10, 13, 14),
+  c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
+  d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 )
-df$groupby("d", maintain_order=TRUE)$median()
+df$groupby("d", maintain_order = TRUE)$median()
 }
 \keyword{GroupBy}

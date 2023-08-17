@@ -16,7 +16,7 @@ Series
 get one column by name as series
 }
 \examples{
-df = pl$DataFrame(iris[1,])
+df = pl$DataFrame(iris[1, ])
 df$get_column("Species")
 }
 \keyword{DataFrame}

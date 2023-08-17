@@ -14,6 +14,6 @@ String the name
 Get name of Series
 }
 \examples{
-pl$Series(1:3,name = "alice")$name
+pl$Series(1:3, name = "alice")$name
 }
 \keyword{Series}

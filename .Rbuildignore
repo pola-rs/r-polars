@@ -15,3 +15,7 @@
 ^docs$
 ^\.venv$
 ^Makefile$
+^src/\.cargo$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^\.devcontainer$

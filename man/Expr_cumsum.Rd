@@ -3,9 +3,6 @@
 \name{Expr_cumsum}
 \alias{Expr_cumsum}
 \title{Cumulative sum}
-\format{
-a method
-}
 \usage{
 Expr_cumsum(reverse = FALSE)
 }
@@ -23,9 +20,9 @@ Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 }
 \examples{
-pl$DataFrame(list(a=1:4))$select(
+pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumsum()$alias("cumsum"),
-  pl$col("a")$cumsum(reverse=TRUE)$alias("cumsum_reversed")
+  pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum_reversed")
 )
 }
 \keyword{Expr}

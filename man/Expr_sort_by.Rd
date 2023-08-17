@@ -4,16 +4,14 @@
 \alias{Expr_sort_by}
 \alias{sort_by}
 \title{sort column by order of others}
-\format{
-a method
-}
 \usage{
-Expr_sort_by(by, reverse = FALSE)
+Expr_sort_by(by, descending = FALSE)
 }
 \arguments{
 \item{by}{one expression or list expressions and/or strings(interpreted as column names)}
 
-\item{reverse}{single bool to boolean vector, any is_TRUE will give reverse sorting of that column}
+\item{descending}{Sort in descending order. When sorting by multiple columns,
+can be specified per column by passing a sequence of booleans.}
 }
 \value{
 Expr
@@ -29,9 +27,9 @@ See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations
 }
 \examples{
 df = pl$DataFrame(list(
-  group = c("a","a","a","b","b","b"),
-  value1 = c(98,1,3,2,99,100),
-  value2 = c("d","f","b","e","c","a")
+  group = c("a", "a", "a", "b", "b", "b"),
+  value1 = c(98, 1, 3, 2, 99, 100),
+  value2 = c("d", "f", "b", "e", "c", "a")
 ))
 
 # by one column/expression
@@ -41,43 +39,43 @@ df$select(
 
 # by two columns/expressions
 df$select(
-  pl$col("group")$sort_by(list("value2",pl$col("value1")), reverse =c(TRUE,FALSE))
+  pl$col("group")$sort_by(list("value2", pl$col("value1")), descending = c(TRUE, FALSE))
 )
 
 
 # by some expression
 df$select(
-  pl$col("group")$sort_by(pl$col("value1")$sort(reverse=TRUE))
+  pl$col("group")$sort_by(pl$col("value1")$sort(descending = TRUE))
 )
 
-#quite similar usecase as R function `order()`
+# quite similar usecase as R function `order()`
 l = list(
-  ab = c(rep("a",6),rep("b",6)),
+  ab = c(rep("a", 6), rep("b", 6)),
   v4 = rep(1:4, 3),
   v3 = rep(1:3, 4),
-  v2 = rep(1:2,6),
+  v2 = rep(1:2, 6),
   v1 = 1:12
 )
 df = pl$DataFrame(l)
 
 
-#examples of order versus sort_by
+# examples of order versus sort_by
 all.equal(
   df$select(
     pl$col("ab")$sort_by("v4")$alias("ab4"),
     pl$col("ab")$sort_by("v3")$alias("ab3"),
     pl$col("ab")$sort_by("v2")$alias("ab2"),
     pl$col("ab")$sort_by("v1")$alias("ab1"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=c(FALSE,TRUE))$alias("ab13FT"),
-    pl$col("ab")$sort_by(list("v3",pl$col("v1")),reverse=TRUE)$alias("ab13T")
+    pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(FALSE, TRUE))$alias("ab13FT"),
+    pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = TRUE)$alias("ab13T")
   )$to_list(),
   list(
     ab4 = l$ab[order(l$v4)],
     ab3 = l$ab[order(l$v3)],
     ab2 = l$ab[order(l$v2)],
     ab1 = l$ab[order(l$v1)],
-    ab13FT= l$ab[order(l$v3,rev(l$v1))],
-    ab13T = l$ab[order(l$v3,l$v1,decreasing= TRUE)]
+    ab13FT = l$ab[order(l$v3, rev(l$v1))],
+    ab13T = l$ab[order(l$v3, l$v1, decreasing = TRUE)]
   )
 )
 }

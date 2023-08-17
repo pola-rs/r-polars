@@ -65,6 +65,6 @@ window, consider using \code{groupby_rolling} this method can cache the window s
 computation.
 }
 \examples{
-pl$DataFrame(list(a=1:6))$select(pl$col("a")$rolling_std(window_size = 2))
+pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_std(window_size = 2))
 }
 \keyword{Expr}

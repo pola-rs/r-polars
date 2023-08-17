@@ -32,14 +32,13 @@ with_column is derived from with_columns but takes only one expression argument
 \examples{
 pl$DataFrame(iris)$with_columns(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
-  (pl$col("Sepal.Length")+2)$alias("add_2_SL")
+  (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
 
-#rename columns by naming expression is concidered experimental
-pl$set_polars_options(named_exprs = TRUE) #unlock
+# rename columns by naming expression is concidered experimental
 pl$DataFrame(iris)$with_columns(
-  pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
-  SW_add_2 = (pl$col("Sepal.Width")+2)
+  pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
+  SW_add_2 = (pl$col("Sepal.Width") + 2)
 )
 }
 \keyword{DataFrame}

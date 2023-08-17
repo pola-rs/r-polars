@@ -3,9 +3,6 @@
 \name{Expr_rep}
 \alias{Expr_rep}
 \title{expression: repeat series}
-\format{
-Method
-}
 \usage{
 Expr_rep(n, rechunk = TRUE)
 }

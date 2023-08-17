@@ -19,7 +19,7 @@ Extract the target capture group from provided patterns.
 }
 \examples{
 df = pl$DataFrame(
-  a =  c(
+  a = c(
     "http://vote.com/ballon_dor?candidate=messi&ref=polars",
     "http://vote.com/ballon_dor?candidat=jorginho&ref=polars",
     "http://vote.com/ballon_dor?candidate=ronaldo&ref=polars"

@@ -19,19 +19,22 @@ Expr
 Cast between DataType(s)
 }
 \examples{
-df = pl$DataFrame(a = 1:3, b = c(1,2,3))
+df = pl$DataFrame(a = 1:3, b = c(1, 2, 3))
 df$print()$with_columns(
   pl$col("a")$cast(pl$dtypes$Float64),
   pl$col("b")$cast(pl$dtypes$Int32)
 )
 
-#strict FALSE, inserts null for any cast failure
-pl$lit(c(100,200,300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
+# strict FALSE, inserts null for any cast failure
+pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
 
 
-#strict TRUE, raise any failure as an error when query is executed.
-tryCatch({
-  pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
-}, error = as.character)
+# strict TRUE, raise any failure as an error when query is executed.
+tryCatch(
+  {
+    pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
+  },
+  error = as.character
+)
 }
 \keyword{Expr}

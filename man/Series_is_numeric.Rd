@@ -20,8 +20,8 @@ return bool whether series is numeric
 true of series dtype is member of pl$numeric_dtypes
 }
 \examples{
- pl$Series(1:4)$is_numeric()
- pl$Series(c("a","b","c"))$is_numeric()
- pl$numeric_dtypes
+pl$Series(1:4)$is_numeric()
+pl$Series(c("a", "b", "c"))$is_numeric()
+pl$numeric_dtypes
 }
 \keyword{Series}

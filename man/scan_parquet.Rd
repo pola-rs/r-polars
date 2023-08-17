@@ -3,18 +3,6 @@
 \name{scan_parquet}
 \alias{scan_parquet}
 \title{new LazyFrame from parquet file}
-\usage{
-scan_parquet(
-  file,
-  n_rows = NULL,
-  cache = TRUE,
-  parallel = c("Auto", "None", "Columns", "RowGroups"),
-  rechunk = TRUE,
-  row_count_name = NULL,
-  row_count_offset = 0L,
-  low_memory = FALSE
-)
-}
 \arguments{
 \item{file}{string filepath}
 
@@ -22,13 +10,13 @@ scan_parquet(
 
 \item{cache}{bool use cache}
 
-\item{parallel}{String either Auto, None, Columns or RowGroups. The way to parralize the scan.}
+\item{parallel}{String either Auto, None, Columns or RowGroups. The way to parallelized the scan.}
 
 \item{rechunk}{bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
 
 \item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
 
-\item{row_count_offset}{integer, the rowcount column can be offst by this value}
+\item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
 \item{low_memory}{bool, try reduce memory footprint}
 }
@@ -39,6 +27,6 @@ LazyFrame
 new LazyFrame from parquet file
 }
 \examples{
-#TODO write parquet example
+# TODO write parquet example
 }
 \keyword{LazyFrame_new}

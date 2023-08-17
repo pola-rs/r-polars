@@ -3,9 +3,6 @@
 \name{Expr_value_counts}
 \alias{Expr_value_counts}
 \title{Value counts}
-\format{
-Method
-}
 \usage{
 Expr_value_counts(multithreaded = FALSE, sort = FALSE)
 }
@@ -23,6 +20,6 @@ Count all unique values and create a struct mapping value to count.
 \examples{
 df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 df
-df$unnest()$to_data_frame() #recommended to unnest structs before converting to R
+df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
 }
 \keyword{Expr}

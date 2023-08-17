@@ -10,7 +10,7 @@ function
 is_schema(x)
 }
 \arguments{
-\item{x}{objet to test if schema}
+\item{x}{object to test if schema}
 }
 \value{
 bool
@@ -19,8 +19,7 @@ bool
 check if schema
 }
 \examples{
-polars:::is_schema(pl$DataFrame(iris)$schema)
 pl$is_schema(pl$DataFrame(iris)$schema)
-polars:::is_schema(list("alice","bob"))
-
+pl$is_schema(list("alice", "bob"))
 }
+\keyword{functions}

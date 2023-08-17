@@ -20,8 +20,8 @@ Fields are used in Structs-datatypes and Schemas to represent
 everything of the Series/Column except the raw values.
 }
 \examples{
-#make a struct
-pl$Field("city_names",pl$Utf8)
+# make a struct
+pl$Field("city_names", pl$Utf8)
 
 # find any DataType bundled pl$dtypes
 print(pl$dtypes)

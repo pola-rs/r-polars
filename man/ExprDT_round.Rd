@@ -46,14 +46,14 @@ This functionality is currently experimental and may
 change without it being considered a breaking change.
 }
 \examples{
-t1 = as.POSIXct("3040-01-01",tz = "GMT")
-t2 = t1 + as.difftime(25,units = "secs")
-s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms")
+t1 = as.POSIXct("3040-01-01", tz = "GMT")
+t2 = t1 + as.difftime(25, units = "secs")
+s = pl$date_range(t1, t2, interval = "2s", time_unit = "ms", lazy = FALSE)
 
-#use a dt namespace function
+# use a dt namespace function
 df = pl$DataFrame(datetime = s)$with_columns(
   pl$col("datetime")$dt$truncate("4s")$alias("truncated_4s"),
-  pl$col("datetime")$dt$truncate("4s",offset("3s"))$alias("truncated_4s_offset_2s")
+  pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
 )
 df
 }

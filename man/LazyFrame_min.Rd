@@ -3,9 +3,6 @@
 \name{LazyFrame_min}
 \alias{LazyFrame_min}
 \title{Min}
-\format{
-function
-}
 \usage{
 LazyFrame_min
 }

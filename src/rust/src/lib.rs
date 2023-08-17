@@ -13,16 +13,18 @@ pub mod concurrent;
 pub mod lazy;
 
 pub mod arrow_interop;
+pub mod conversion;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
+pub mod info;
+pub mod rbackground;
 pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
+pub mod rpolarserr;
 pub mod series;
 pub mod utils;
-
-use serde_json;
-
+pub use serde_json;
 
 use extendr_api::prelude::*;
 use utils::extendr_concurrent::ParRObj;
@@ -32,14 +34,17 @@ pub use polars_core;
 pub use smartstring;
 
 use crate::utils::extendr_concurrent::{Storage, ThreadCom};
-static CONFIG: Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>> =
-    Storage::new();
+type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
+static CONFIG: ThreadComStorage = Storage::new();
+pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports
 extendr_module! {
     mod polars;
     use rdataframe;
+    use rpolarserr;
+    use rbackground;
     use lazy;
     use series;
-    use concurrent;
+    use info;
 }

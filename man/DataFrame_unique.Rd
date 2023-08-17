@@ -4,10 +4,11 @@
 \alias{DataFrame_unique}
 \title{DataFrame_unique}
 \usage{
-DataFrame_unique(subset = NULL, keep = "first")
+DataFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
 }
 \arguments{
-\item{subset}{string or vector of strings. Column name(s) to consider when identifying duplicates. If set to NULL (default), use all columns.}
+\item{subset}{string or vector of strings. Column name(s) to consider when
+identifying duplicates. If set to NULL (default), use all columns.}
 
 \item{keep}{string. Which of the duplicate rows to keep:
 \itemize{
@@ -15,6 +16,10 @@ DataFrame_unique(subset = NULL, keep = "first")
 \item "last": Keep last unique row.
 \item "none": Don’t keep duplicate rows.
 }}
+
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine.}
 }
 \value{
 DataFrame
@@ -26,7 +31,8 @@ Drop duplicate rows from this dataframe.
 df = pl$DataFrame(
   x = as.numeric(c(1, 1:5)),
   y = as.numeric(c(1, 1:5)),
-  z = as.numeric(c(1, 1, 1:4)))
+  z = as.numeric(c(1, 1, 1:4))
+)
 df$unique()$height
 df$unique(subset = c("x", "z"), keep = "last")$height
 }

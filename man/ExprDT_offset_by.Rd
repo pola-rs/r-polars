@@ -42,7 +42,12 @@ These strings can be combined:
 }
 \examples{
 df = pl$DataFrame(
-  dates = pl$date_range(as.Date("2000-1-1"),as.Date("2005-1-1"), "1y")
+  dates = pl$date_range(
+    as.Date("2000-1-1"),
+    as.Date("2005-1-1"),
+    "1y",
+    lazy = FALSE
+  )
 )
 df$select(
   pl$col("dates")$dt$offset_by("1y")$alias("date_plus_1y"),

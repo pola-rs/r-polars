@@ -12,23 +12,27 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  RPOLARS_CARGO_CLEAN_DEPS: "true"
+
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.full-features && 'full-features' || '' }}
     strategy:
       fail-fast: false
       matrix:
         config:
-          #- { os: macos-latest, r: "devel" }
           - { os: macos-latest, r: "release" }
-          #- { os: macos-latest, r: "oldrel-1" }
           - { os: windows-latest, r: "devel", rtools-version: "43" }
           - { os: windows-latest, r: "release", rtools-version: "" }
-          - { os: windows-latest, r: "oldrel-1", rtools-version: "42" }
           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
           - { os: ubuntu-latest, r: "release" }
           - { os: ubuntu-latest, r: "oldrel-1" }
+        include:
+          - config: { os: macos-latest, r: "release", full-features: true }
+          - config: { os: windows-latest, r: "release", full-features: true }
+          - config: { os: ubuntu-latest, r: "release", full-features: true }
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -37,24 +41,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Tune GitHub-hosted runner network
+        uses: smorimoto/tune-github-hosted-runner-network@v1
+
+      - uses: ./.github/actions/setup
+        with:
+          rust-nightly: "${{ matrix.config.full-features }}"
+
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
-
-      - run: echo "rust-toolchain=nightly" >>"$GITHUB_ENV"
-      - run: echo "rust-toolchain=nightly-gnu" >>$env:GITHUB_ENV
-        if: runner.os == 'Windows'
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ env.rust-toolchain }}
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: ./src/rust/
-          cache-on-failure: "true"
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -65,24 +61,6 @@ jobs:
           use-public-rspm: true
           rtools-version: ${{ matrix.config.rtools-version }}
           Ncpus: 2
-
-      - name: Install ubuntu SYSTEM REQUIREMENTS
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update \
-          && sudo apt-get install -y \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libharfbuzz-dev \
-            libcurl4-openssl-dev \
-            libgit2-dev \
-            libicu-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libxml2-dev \
-            libssl-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -96,9 +74,14 @@ jobs:
         id: get_the_rust_sauce
         shell: bash
         run: |
-          echo "RPOLARS_CARGO_CLEAN_DEPS=true" >> $GITHUB_ENV
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust"
+
+      - name: Set env vars for build option
+        if: matrix.config.full-features
+        shell: bash
+        run: |
+          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
+          echo "RPOLARS_PROFILE=release-optimized" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:

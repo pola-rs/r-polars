@@ -2,10 +2,10 @@
 % Please edit documentation in R/options.R
 \name{strictly_immutable}
 \alias{strictly_immutable}
-\alias{named_exprs}
 \alias{no_messages}
 \alias{do_not_repeat_call}
 \alias{default_maintain_order}
+\alias{debug_polars}
 \alias{get_polars_options}
 \alias{polars_options}
 \alias{pl_options}
@@ -20,13 +20,6 @@ Why?, I guess python just do not have strong stance on immutability.
 R strongly suggests immutable objects, so why not make polars strictly immutable where little performance costs?
 However, if to mimic pypolars as much as possible, set this to FALSE.}
 
-\item{named_exprs}{bool, default = FALSE,
-allow named exprs in e.g. select, with_columns, groupby, join.
-a named expresion will be extended with $alias(name)
-wildcards or expression producing multiple are problematic due to name collision
-the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
-and only allow named exprs in with_columns (or potentially any method derived there of)}
-
 \item{no_messages}{bool, default = FALSE,
 turn of messages}
 
@@ -35,10 +28,14 @@ turn of messages}
 
 \item{default_maintain_orderr}{bool, default = FALSE}
 
+\item{debug_polars}{bool, default = FALSE,
+turn of messages}
+
 \item{...}{any options to modify}
 
 \item{return_replaced_options}{return previous state of modified options
-Convenient for temporarily swapping of options during testing.}
+Convenient for temporarily swapping of options during testing. The immediate
+return value is invisible.}
 }
 \value{
 current settings as list
@@ -58,8 +55,10 @@ do not print the call causing the error in error messages
 sets maintain_order = TRUE as default
 implicated methods/functions are currently: DataFrame_GroupBy + LazyFrameGroupby.
 
-modifing list takes no effect, pass it to pl$set_polars_options
-get/set/resest interact with internal env \code{polars:::polars_optenv}
+prints any call to public or private polars method
+
+modifying list takes no effect, pass it to pl$set_polars_options
+get/set/reset interact with internal env \code{polars:::polars_optenv}
 
 Every option can be accessed via \verb{pl$options$<name>()} or changed
 with \verb{pl$options$<name>(<value>)}
@@ -67,13 +66,7 @@ with \verb{pl$options$<name>(<value>)}
 setting an options may be rejected if not passing opt_requirements
 }
 \examples{
-#rename columns by naming expression, experimental requires option named_exprs = TRUE
-pl$set_polars_options(named_exprs = TRUE)
-pl$DataFrame(iris)$with_columns(
-  pl$col("Sepal.Length")$abs(), #not named expr will keep name "Sepal.Length"
-  SW_add_2 = (pl$col("Sepal.Width")+2)
-)
- pl$get_polars_options()
+pl$get_polars_options()
 # polars options read via `pl$options$<name>()`
 pl$options$strictly_immutable()
 pl$options$default_maintain_order()
@@ -81,21 +74,23 @@ pl$options$default_maintain_order()
 # write via `pl$options$<name>(<value>)`, invalided values/types are rejected
 pl$options$default_maintain_order(TRUE)
 tryCatch(
-  {pl$options$default_maintain_order(42)},
+  {
+    pl$options$default_maintain_order(42)
+  },
   error = function(err) cat(as.character(err))
 )
 pl$set_polars_options(strictly_immutable = FALSE)
 pl$get_polars_options()
 
 
-#setting strictly_immutable = 42 will be rejected as
+# setting strictly_immutable = 42 will be rejected as
 tryCatch(
   pl$set_polars_options(strictly_immutable = 42),
-  error= function(e) print(e)
+  error = function(e) print(e)
 )
 
-#reset options like this
+# reset options like this
 pl$reset_polars_options()
-#use get_polars_opt_requirements() to requirements
+# use get_polars_opt_requirements() to requirements
 pl$get_polars_opt_requirements()
 }

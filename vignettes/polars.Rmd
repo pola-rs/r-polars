@@ -21,16 +21,17 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 Polars is [a lightning fast](https://duckdblabs.github.io/db-benchmark/) Data Frame
 library. Its embarrassingly parallel execution, cache efficient algorithms and
 expressive API makes it perfect for efficient data wrangling, data pipelines,
-snappy APIs and so much more. Polars also supports "streaming mode" for
+snappy APIs, and much more besides. Polars also supports "streaming mode" for
 out-of-memory operations. This allows users to analyze datasets many times
 larger than RAM.
 
 The underlying computation engine is written in Rust and is built on the Apache
 Arrow columnar memory format. It can be used in Rust or via Python bindings.
-The **polars** R-package provides equivalent bindings from R. Within R, python
-and rust each polars package is just called polars. The implemention polars in
-the different languages can be called rust-polars, py-polars, r-polars,
-nodejs-polars...
+The **polars** R-package provides equivalent bindings from R. To help distinguish
+the different language implementations, we typically use a convention of
+referring to them with prefixes: rust-polars, py-polars, r-polars,
+nodejs-polars, etc. But within each language, the relevant library is always
+just called _polars_.
 
 **polars** users can expect orders of magnitude(s) improvement compared to
 **dplyr** for simple transformations on datasets >500Mb. The automatic Polars
@@ -161,7 +162,7 @@ There are numerous methods designed to accomplish various tasks:
 ```{r}
 ser$max()
 
-dat$slice(offset = 2, length = 3)  
+dat$slice(offset = 2, length = 3)
 ```
 
 One advantage of using methods is that many more operations are possible on
@@ -181,12 +182,14 @@ where `object` is our data object, and `m1()` and `m2()` are appropriate
 methods, like subsetting or aggregation expressions.
 
 This might all seem a little abstract, so let's walk through some quick
-examples to help make things concrete. We use the `mtcars` dataset that we
-coerced to a `DataFrame` in introduction.^[Similar to how (most) **data.table**
+examples to help make things concrete. We continue with the `mtcars` dataset that we
+coerced to a `DataFrame` in the introduction.^[Similar to how (most) **data.table**
 operations are limited to objects of class `data.table`, we can only perform
 polars operations on objects that have been converted to an appropriate
 **polars** class. Later on, we'll see how to read data from disk directly in Polars format.] 
-We use the `$max` method to compute the maximum value in each column:
+
+To start, say we compute the maximum value in each column. We can use the
+`max()` method:
 
 ```{r}
 dat$max()
@@ -213,11 +216,11 @@ you a small taste, we now take group-wise means:
 dat$groupby("cyl")$mean()
 ```
 
-## `select` columns and `filter` rows
+## Subset
 
 We can now start chaining together various methods (expressions) to manipulate
 it in different ways. For example, we can subset the data by rows
-([`filter()`](https://rpolars.github.io/reference/filter-open-paren-close-paren/))
+([`filter()`](https://rpolars.github.io/reference/DataFrame_filter/))
 and also columns
 ([`select()`](https://rpolars.github.io/reference/DataFrame_select/)):
 
@@ -239,7 +242,7 @@ dat$filter(
 )
 ```
 
-## Aggregations and modifications
+## Aggregate and modify
 
 The `select()` method that we introduced above also supports data modification,
 so you can simultaneously transform it while you are subsetting. However, the
@@ -299,6 +302,53 @@ dat$groupby(
 Note that we used the `cast` method to convert the data type of the `am`
 column. See the section below for more details on data types.
 
+## Reshape
+
+Polars supports data reshaping, going from both long to wide ("pivot") and wide
+to long ("melt"). Let's switch to the `Indometh` dataset to demonstrate some
+basic examples. Note that the data are currently in long format.
+
+```{r}
+(indo = pl$DataFrame(Indometh))
+```
+
+To go from long to wide, we use the
+[`pivot`](https://rpolars.github.io/reference/DataFrame_pivot/) method.
+Here we pivot the data so that every subject takes its own column.
+
+```{r}
+(indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject"))
+```
+
+To go from wide to long, we use the
+[melt](https://rpolars.github.io/reference/DataFrame_melt/) method.
+
+```{r}
+# indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
+indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc") 
+```
+
+Basic functionality aside, it should be noted that `pivot` can perform
+aggregations as part of the reshaping operation. This is useful when you have
+multiple observations per ID variable that need to be collapsed into unique
+values. The aggregating functions can be arbitrarily complex, but let's
+consider a relatively simple example using our `dat` ("mtcars") DataFrame from
+earlier: what is the median MPG value (`mpg`) across cylinders (`cyl`), cut by
+different combinations of transmission type (`am`) and engine shape (`vs`)?
+
+```{r}
+dat$pivot(
+  values = "mpg",
+  index = c("am", "vs"),
+  columns = "cyl",
+  aggregate_fun = "median" # aggregating function
+)
+```
+
+Here, `"median"` is a convenience string that is equivalent to the more verbose
+`pl$element()$median()`. Other convenience strings include "first", "last",
+"min", "max", "mean", "sum", and "count".
+
 ## Join
 
 As a final example of how **polars** can be used for standard data wrangling
@@ -311,14 +361,14 @@ flights = pl$DataFrame(flights)
 planes = pl$DataFrame(planes)
 
 flights$join(
-  planes, 
-  on = "tailnum", 
+  planes,
+  on = "tailnum",
   how = "left"
 )
 ```
 
 More information on the **polars** joining method can be found in the
-[reference manual](https://rpolars.github.io/reference/DataFrame_join).
+[reference manual](https://rpolars.github.io/reference/DataFrame_join/).
 
 The package supports many other data manipulation operations, which we won't 
 cover here. Hopefully, you will already have a sense of the key syntax features.
@@ -329,13 +379,12 @@ We now turn to another core idea of the Polars ecosystem: _lazy execution_.
 While the "eager" execution engine of **polars** works perfectly well---as
 evidenced by all of the previous examples---to get the most out of the package
 you need to go _lazy_.
-[Lazy execution](https://pola-rs.github.io/polars-book/user-guide/lazy-api/)
-enables several benefits, but the most important is that it improves
+Lazy execution enables several benefits, but the most important is that it improves
 performance. Delaying execution until the last possible moment allows Polars to
 apply automatic optimization to every query. Let's take a quick look.
 
 To create a so-called
-"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class)" from an
+"[LazyFrame](https://rpolars.github.io/reference/LazyFrame_class/)" from an
 existing object in memory, we can invoke the `lazy()` constructor.
 
 ```{r}
@@ -348,11 +397,11 @@ LazyFrame.
 
 ```{r}
 subset_query = ldat$filter(
-    pl$col("cyl")==6
+  pl$col("cyl") == 6
 )$select(
-    pl$col(c("mpg", "hp", "cyl"))
+  pl$col(c("mpg", "hp", "cyl"))
 )
-  
+
 subset_query
 ```
 
@@ -393,7 +442,7 @@ pl$read_csv("airquality.csv")
 Again, however, the package works best if we take the lazy approach. 
 
 ```{r}
-pl$lazy_csv_reader("airquality.csv")
+pl$scan_csv("airquality.csv")
 ```
 
 We could obviously append a set of query operators to the above LazyFrame and
@@ -407,7 +456,7 @@ library(arrow)
 write_parquet(airquality, "airquality.parquet")
 
 # aq = read_parquet("airquality.parquet) # eager version (okay)
-aq = scan_parquet("airquality.parquet")  # lazy version (better)
+aq = pl$scan_parquet("airquality.parquet") # lazy version (better)
 
 aq$filter(
   pl$col("Month") <= 6
@@ -429,7 +478,7 @@ dir.create("airquality-ds")
 write_dataset(airquality, "airquality-ds", partitioning = "Month")
 
 # Use pattern globbing to scan all parquet files in the folder
-aq2 = scan_parquet("airquality-ds/*/*.parquet")
+aq2 = pl$scan_parquet("airquality-ds/*/*.parquet")
 
 # Just print the first two rows. But note that the Month column
 # (which we used for partitioning) is missing.
@@ -455,9 +504,9 @@ and expressions wherever possible.
 pl$DataFrame(iris)$select(
   pl$col("Sepal.Length")$map(\(s) { # map with a R function
     x = s$to_vector() # convert from Polars Series to a native R vector
-    x[x>=5] = 10
+    x[x >= 5] = 10
     x[1:10] # if return is R vector, it will automatically be converted to Polars Series again
-    })
+  })
 )$to_data_frame()
 ```
 

@@ -22,23 +22,23 @@ print.LazyGroupBy = function(x, ...) {
 #' @return A new `LazyFrame` object.
 #' @examples
 #' lgb = pl$DataFrame(
-#'     foo = c("one", "two", "two", "one", "two"),
-#'     bar = c(5, 3, 2, 4, 1)
+#'   foo = c("one", "two", "two", "one", "two"),
+#'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#' lazy()$
-#' groupby("foo")
+#'   lazy()$
+#'   groupby("foo")
 #'
 #' #
 #' print(lgb)
 #'
 #' lgb$
 #'
-#' agg(
-#'  pl$col("bar")$sum()$suffix("_sum"),
-#'  pl$col("bar")$mean()$alias("bar_tail_sum")
+#'   agg(
+#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 LazyGroupBy_agg = agg = function(...) {
-  .pr$LazyGroupBy$agg(self,unpack_list(...)) |>
+  .pr$LazyGroupBy$agg(self, unpack_list(...)) |>
     unwrap("in $agg():")
 }
 
@@ -56,7 +56,7 @@ LazyGroupBy_apply = function(f) {
 #' get n rows of head of group
 #' @param n integer number of rows to get
 #' @return A new `LazyFrame` object.
-LazyGroupBy_head = function(n=1L) {
+LazyGroupBy_head = function(n = 1L) {
   unwrap(.pr$LazyGroupBy$head(n))
 }
 
@@ -73,8 +73,8 @@ LazyGroupBy_tail = function(n = 1L) {
 
 #' @title LazyGroupBy_print
 #' @description
-#' prints opague groupby, not much to show
-#' @return NULL
+#' prints opaque groupby, not much to show
+#' @return invisible self
 LazyGroupBy_print = function() {
   .pr$LazyGroupBy$print(self)
   invisible(self)

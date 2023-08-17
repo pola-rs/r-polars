@@ -3,7 +3,7 @@
 \name{ExprMeta_is_regex_projection}
 \alias{ExprMeta_is_regex_projection}
 \alias{expr_is_regex_projection}
-\title{Is regex projecion.}
+\title{Is regex projection.}
 \value{
 Bool
 }

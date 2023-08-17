@@ -4,9 +4,6 @@
 \alias{DataFrame_lazy}
 \alias{lazy}
 \title{Convert an existing DataFrame to a LazyFrame}
-\format{
-An object of class \code{character} of length 1.
-}
 \usage{
 DataFrame_lazy
 }

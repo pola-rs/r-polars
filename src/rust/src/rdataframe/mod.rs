@@ -4,26 +4,28 @@ use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
 pub mod read_parquet;
+use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
-use crate::lazy::dsl;
 use crate::rdatatype;
+use crate::rdatatype::RPolarsDataType;
 use crate::rlib;
 use crate::robj_to;
+use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 use crate::utils::extendr_concurrent::ParRObj;
 pub use lazy::dataframe::*;
 
-use crate::conversion_r_to_s::robjname2series;
-use crate::rdatatype::RPolarsDataType;
-
 use crate::conversion_s_to_r::pl_series_to_list;
 pub use crate::series::*;
-use dsl::*;
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
 use polars_core::utils::arrow;
 
 use crate::utils::{collect_hinted_result, r_result_list};
+
+use crate::conversion::strings_to_smartstrings;
+use polars::frame::explode::MeltArgs;
+use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
     columns: Vec<polars::series::Series>,
@@ -36,7 +38,7 @@ impl OwnedDataFrameIterator {
     fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-        let vs = df.get_columns().into_iter().map(|s| s.clone()).collect();
+        let vs = df.get_columns().to_vec();
         Self {
             columns: vs,
             data_type,
@@ -89,10 +91,9 @@ impl DataFrame {
         self.clone()
     }
 
-    //internal use
-    pub fn new() -> Self {
-        let empty_series: Vec<pl::Series> = Vec::new();
-        DataFrame(pl::DataFrame::new(empty_series).unwrap())
+    #[allow(clippy::should_implement_trait)]
+    pub fn default() -> Self {
+        DataFrame::new_with_capacity(0)
     }
 
     pub fn lazy(&self) -> LazyFrame {
@@ -124,13 +125,25 @@ impl DataFrame {
     pub fn new_par_from_list(robj_list: List) -> Result<DataFrame, String> {
         let v: Vec<(ParRObj, String)> = robj_list
             .iter()
-            .map(|(str, robj)| (ParRObj(robj.clone()), str.to_owned()))
+            .map(|(str, robj)| (ParRObj(robj), str.to_owned()))
             .collect();
 
         crate::conversion_r_to_s::par_read_robjs(v)
-            .and_then(|v_s| pl::DataFrame::new(v_s))
+            .and_then(pl::DataFrame::new)
             .map_err(|err| err.to_string())
-            .map(|df| DataFrame(df))
+            .map(DataFrame)
+    }
+
+    pub fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .with_row_count(
+                robj_to!(String, name)?.as_str(),
+                robj_to!(Option, u32, offset)?,
+            )
+            .map_err(polars_to_rpolars_err)?
+            .into())
     }
 
     pub fn print(&self) -> Self {
@@ -265,9 +278,8 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&mut self, exprs: &ProtoExprArray) -> Result<DataFrame, String> {
-        let exprs: Vec<pl::Expr> = pra_to_vec(exprs, "select");
-        LazyFrame(self.lazy().0.select(exprs)).collect()
+    pub fn select(&mut self, exprs: Robj) -> RResult<DataFrame> {
+        self.lazy().select(exprs)?.collect()
     }
 
     //used in GroupBy, not DataFrame
@@ -276,7 +288,7 @@ impl DataFrame {
         group_exprs: Robj,
         agg_exprs: Robj,
         maintain_order: Robj,
-    ) -> Result<DataFrame, String> {
+    ) -> RResult<DataFrame> {
         let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
         let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, agg_exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
@@ -304,10 +316,7 @@ impl DataFrame {
                 .dtypes()
                 .iter()
                 .zip(self.0.get_column_names().iter())
-                .filter(|(dtype, _)| match dtype {
-                    pl::DataType::Struct(_) => true,
-                    _ => false,
-                })
+                .filter(|(dtype, _)| matches!(dtype, pl::DataType::Struct(_)))
                 .map(|(_, y)| y.to_string())
                 .collect::<Vec<String>>()
         };
@@ -315,7 +324,7 @@ impl DataFrame {
         r_result_list(
             self.0
                 .unnest(names)
-                .map(|s| DataFrame(s))
+                .map(DataFrame)
                 .map_err(|err| format!("in unnest: {:?}", err)),
         )
     }
@@ -323,7 +332,7 @@ impl DataFrame {
     pub fn export_stream(&self, stream_ptr: &str) {
         let schema = self.0.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
-        let field = ArrowField::new("", data_type.clone(), false);
+        let field = ArrowField::new("", data_type, false);
 
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
         let mut stream = arrow::ffi::export_iterator(iter_boxed, field);
@@ -349,6 +358,53 @@ impl DataFrame {
     pub fn null_count(&self) -> Self {
         self.0.clone().null_count().into()
     }
+
+    fn melt(
+        &self,
+        id_vars: Robj,
+        value_vars: Robj,
+        value_name: Robj,
+        variable_name: Robj,
+    ) -> Result<Self, String> {
+        let args = MeltArgs {
+            id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
+            value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
+            value_name: robj_to!(Option, String, value_name)?.map(|s| s.into()),
+            variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
+            streamable: false,
+        };
+        let df = self.0.melt2(args).map_err(|s| s.to_string())?;
+        Ok(DataFrame(df))
+    }
+
+    pub fn pivot_expr(
+        &self,
+        values: Robj,
+        index: Robj,
+        columns: Robj,
+        maintain_order: Robj,
+        sort_columns: Robj,
+        aggregate_expr: Robj,
+        separator: Robj,
+    ) -> Result<Self, String> {
+        let fun = if robj_to!(bool, maintain_order)? {
+            pivot_stable
+        } else {
+            pivot
+        };
+
+        fun(
+            &self.0,
+            robj_to!(Vec, String, values)?,
+            robj_to!(Vec, String, index)?,
+            robj_to!(Vec, String, columns)?,
+            robj_to!(bool, sort_columns)?,
+            robj_to!(Option, PLExpr, aggregate_expr)?,
+            robj_to!(Option, str, separator)?,
+        )
+        .map_err(|err| err.to_string())
+        .map(|ok| ok.into())
+    }
 }
 use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
@@ -361,25 +417,19 @@ impl DataFrame {
             .collect();
 
         //rewrap Ok(Vec<Robj>) as R list
-        let robj_list_res = robj_vec_res.map(|vec_robj| {
+        robj_vec_res.map(|vec_robj| {
             let l = extendr_api::prelude::List::from_names_and_values(self.columns(), vec_robj)
                 .unwrap();
             l.into_robj()
-        });
-
-        robj_list_res
+        })
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct VecDataFrame(pub Vec<pl::DataFrame>);
 
 #[extendr]
 impl VecDataFrame {
-    pub fn new() -> Self {
-        VecDataFrame(Vec::new())
-    }
-
     pub fn with_capacity(n: i32) -> Self {
         VecDataFrame(Vec::with_capacity(n as usize))
     }

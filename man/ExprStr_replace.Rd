@@ -5,9 +5,9 @@
 \alias{expr_str_replace}
 \title{replace}
 \arguments{
-\item{pattern}{Into\if{html}{\out{<Expr>}}, regex pattern}
+\item{pattern}{\verb{Into<Expr>}, regex pattern}
 
-\item{value}{Into\if{html}{\out{<Expr>}} replcacement}
+\item{value}{\verb{Into<Expr>} replacement}
 
 \item{literal}{bool, Treat pattern as a literal string.}
 }
@@ -20,7 +20,7 @@ Replace first matching regex/literal substring with a new string value.
 \examples{
 df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
 df$with_columns(
-   pl$col("text")$str$replace(r"{abc\b}", "ABC")
+  pl$col("text")$str$replace(r"{abc\b}", "ABC")
 )
 }
 \seealso{

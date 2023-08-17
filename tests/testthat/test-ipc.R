@@ -1,5 +1,4 @@
 test_that("Test reading data from Apache Arrow IPC", {
-
   # This test requires library arrow
   skip_if_not_installed("arrow")
 
@@ -11,15 +10,15 @@ test_that("Test reading data from Apache Arrow IPC", {
   # Collect data from Apache Arrow IPC
   read_limit = 27
   testthat::expect_equal(
-    pl$scan_arrow_ipc(tmpf)$collect()$to_data_frame(),
+    pl$scan_ipc(tmpf)$collect()$to_data_frame(),
     iris
   )
   testthat::expect_equal(
-    pl$scan_arrow_ipc(tmpf, n_rows = read_limit)$collect()$to_data_frame(),
+    pl$scan_ipc(tmpf, n_rows = read_limit)$collect()$to_data_frame(),
     droplevels(head(iris, read_limit))
   )
   testthat::expect_equal(
-    as.integer(pl$scan_arrow_ipc(
+    as.integer(pl$scan_ipc(
       tmpf,
       n_rows = read_limit,
       row_count_name = "rc",
@@ -29,12 +28,11 @@ test_that("Test reading data from Apache Arrow IPC", {
   )
 
   # Test error handling
-  testthat::expect_error(pl$scan_arrow_ipc(0))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, n_rows = "?"))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, cache = 0L))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, rechunk = list()))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, row_count_name = c("x", "y")))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, row_count_name = "name", row_count_offset = data.frame()))
-  testthat::expect_error(pl$scan_arrow_ipc(tmpf, memmap = NULL))
-
+  testthat::expect_error(pl$scan_ipc(0))
+  testthat::expect_error(pl$scan_ipc(tmpf, n_rows = "?"))
+  testthat::expect_error(pl$scan_ipc(tmpf, cache = 0L))
+  testthat::expect_error(pl$scan_ipc(tmpf, rechunk = list()))
+  testthat::expect_error(pl$scan_ipc(tmpf, row_count_name = c("x", "y")))
+  testthat::expect_error(pl$scan_ipc(tmpf, row_count_name = "name", row_count_offset = data.frame()))
+  testthat::expect_error(pl$scan_ipc(tmpf, memmap = NULL))
 })

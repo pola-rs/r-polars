@@ -13,7 +13,7 @@ numeric
 Floor of this Series
 }
 \examples{
-pl$Series(c(.5,1.999))$floor()
+pl$Series(c(.5, 1.999))$floor()
 
 }
 \keyword{Series}

@@ -4,9 +4,6 @@
 \alias{Expr_cumcount}
 \alias{cumcount}
 \title{Cumulative count}
-\format{
-a method
-}
 \usage{
 Expr_cumcount(reverse = FALSE)
 }
@@ -27,9 +24,9 @@ Int64 before summing to prevent overflow issues.
 cumcount does not seem to count within lists.
 }
 \examples{
-pl$DataFrame(list(a=1:4))$select(
+pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumcount()$alias("cumcount"),
-  pl$col("a")$cumcount(reverse=TRUE)$alias("cumcount_reversed")
+  pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
 )
 }
 \keyword{Expr}

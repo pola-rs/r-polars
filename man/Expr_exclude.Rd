@@ -13,7 +13,7 @@ Expr_exclude(columns)
 \item string: exclude name of column or exclude regex starting with ^and ending with$
 \item character vector: exclude all these column names, no regex allowed
 \item DataType: Exclude any of this DataType
-\item List(DataType): Excldue any of these DataType(s)
+\item List(DataType): Exclude any of these DataType(s)
 }}
 }
 \value{
@@ -24,19 +24,18 @@ You may also use regexes in the exclude list. They must start with \code{^} and 
 }
 \examples{
 
- #make DataFrame
- df = pl$DataFrame(iris)
+# make DataFrame
+df = pl$DataFrame(iris)
 
- #by name(s)
- df$select(pl$all()$exclude("Species"))
+# by name(s)
+df$select(pl$all()$exclude("Species"))
 
- #by type
- df$select(pl$all()$exclude(pl$Categorical))
- df$select(pl$all()$exclude(list(pl$Categorical,pl$Float64)))
+# by type
+df$select(pl$all()$exclude(pl$Categorical))
+df$select(pl$all()$exclude(list(pl$Categorical, pl$Float64)))
 
- #by regex
- df$select(pl$all()$exclude("^Sepal.*$"))
-
+# by regex
+df$select(pl$all()$exclude("^Sepal.*$"))
 
 }
 \keyword{Expr}

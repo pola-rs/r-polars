@@ -4,9 +4,6 @@
 \alias{Expr_shift_and_fill}
 \alias{shift_and_fill}
 \title{Shift and fill values}
-\format{
-a method
-}
 \usage{
 Expr_shift_and_fill(periods, fill_value)
 }
@@ -28,7 +25,7 @@ See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations
 pl$select(
   pl$lit(0:3),
   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42)/2)$alias("shift+2")
+  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
 )
 }
 \keyword{Expr}
