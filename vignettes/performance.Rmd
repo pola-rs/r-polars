@@ -1,7 +1,19 @@
 ---
 title: "Optimize `polars` performance"
-output: github_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Optimize `polars` performance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
 
 
 As highlighted by the [DuckDB benchmarks](https://duckdblabs.github.io/db-benchmark/),
