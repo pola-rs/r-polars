@@ -7,13 +7,20 @@ rust-version = "1.65"
 [lib]
 crate-type = ['staticlib']
 
+
+[features]
+default = []
+full_features = ["simd"]
+simd = ["polars/simd"]
+rpolars_debug_print = []
+
 [workspace]
 # prevents package from thinking it's in the workspace
 [target.'cfg(any(not(target_os = "linux"), use_mimalloc))'.dependencies]
 mimalloc = { version = "0.1.34", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
-jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
+jemallocator = { version = "0.5.0", features = [ "disable_initial_exec_tls" ] }
 
 
 # use opt-level = 1 for argminmax package unless profile is profile.release-optimized to support Rust < 1.66
@@ -27,20 +34,20 @@ opt-level = 3
 
 [dependencies]
 extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pl0.7.0rc", default-features = false, features = [
-  "result_list",
+  "result_list", "serde"
 ] }
-
 flume = "0.10.14"
-state = "0.5.3"
-rayon = "1.6.1"
-smartstring = "1.0.1"
-serde_json = "*"
-thiserror = "1.0.40"
 indenter = "0.3.3"
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
-# polars-io = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
-polars-lazy = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
-# polars-ops = {git = "https://github.com/pola-rs/polars.git", rev = "672922491bac1f144747d39b864106d90010fd1e", default-features = false}
+ipc-channel = "0.16.1"
+once_cell = "1.18.0"
+rayon = "1.6.1"
+serde = { version = "1.0.164", features = [ "derive" ] }
+serde_json = "*"
+smartstring = "1.0.1"
+state = "0.5.3"
+thiserror = "1.0.40"
+polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false}
+polars-lazy = {git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false}
 #features copied from node-polars
 
 [dependencies.polars]
@@ -77,6 +84,8 @@ features = [
   "rolling_window",
   "repeat_by",
   "interpolate",
+  #"list",
+  "cse",
   "ewma",
   "rank",
   #"propagate_nans", ,  #new feature to impl
@@ -133,8 +142,5 @@ features = [
   "approx_unique",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "672922491bac1f144747d39b864106d90010fd1e"
+rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5"
 
-[features]
-simd = ["polars/simd"]
-range = ["polars-lazy/range"]

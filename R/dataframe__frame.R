@@ -811,7 +811,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' )
 #'
 #' # rename columns by naming expression is concidered experimental
-#' pl$set_polars_options(named_exprs = TRUE) # unlock
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
@@ -835,6 +834,7 @@ DataFrame_with_columns = function(...) {
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   self$with_columns(expr)
 }
 
@@ -1002,13 +1002,13 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' @keywords DataFrame
 #' @examples
 #' # inner join by default
-#' df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join
-#' df1 <- pl$DataFrame(x = letters[1:3])
-#' df2 <- pl$DataFrame(y = 1:4)
+#' df1 = pl$DataFrame(x = letters[1:3])
+#' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
 #'
 DataFrame_join = function(
@@ -1464,12 +1464,12 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 
           # compute aggregates
           df_aggs = do.call(self$select, largs)
-          e_col_row_names = pl$lit(df_aggs$columns)$str$split(":")
+          e_col_row_names = pl$lit(df_aggs$columns)$str$splitn(":", 2)
 
           # pivotize
           df_pivot = pl$select(
-            e_col_row_names$arr$first()$alias("rowname"),
-            e_col_row_names$arr$last()$alias("colname"),
+            e_col_row_names$struct$field("field_0")$alias("rowname"),
+            e_col_row_names$struct$field("field_1")$alias("colname"),
             pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
           )$pivot(
             values = "value", index = "rowname", columns = "colname"
@@ -1544,4 +1544,21 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 
   # chose return type
   if (return_as_string) output else invisible(cat(output))
+}
+
+
+#' @inherit LazyFrame_explode title params
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")
+DataFrame_explode = function(...) {
+  self$lazy()$explode(...)$collect()
 }

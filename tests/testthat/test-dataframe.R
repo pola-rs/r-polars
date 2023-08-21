@@ -359,13 +359,11 @@ test_that("with_columns lazy/eager", {
   )
 
   # check
-  pl$set_polars_options(named_exprs = TRUE)
   ldf_actual_kwarg_named = ldf$with_columns(
     "a*2" = (pl$col("a") * 2),
     "b/2" = (pl$col("b") / 2),
     "not c" = (!pl$col("c"))
   )
-  pl$reset_polars_options()
 
   expect_identical(
     ldf_actual_kwarg_named$collect()$to_data_frame(check.names = FALSE),
@@ -581,9 +579,10 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$drop_nulls("mpg")$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
-  expect_grepl_error(
-    pl$DataFrame(mtcars)$drop_nulls("bad")$height,
-    "ColumnNotFound"
+
+  expect_identical(
+    result(pl$DataFrame(mtcars)$drop_nulls("bad column name")$height)$err$contexts(),
+    list(PolarsError = "not found: bad column name")
   )
 })
 
@@ -965,6 +964,13 @@ test_that("describe", {
     pl$DataFrame(mtcars)$describe(perc = numeric())$to_list(),
     pl$DataFrame(mtcars)$describe(perc = NULL)$to_list()
   )
+
+  # names using internal separator ":" in column names, should also just work.
+  df = pl$DataFrame("foo:bar:jazz" = 1, pl$Series(2, name = ""), "foobar" = 3)
+  expect_identical(
+    df$describe()$columns,
+    c("describe", df$columns)
+  )
 })
 
 test_that("glimpse", {
@@ -976,7 +982,51 @@ test_that("glimpse", {
   expect_true(is_string(pl$DataFrame(iris)$glimpse(return_as_string = TRUE)))
 })
 
+test_that("explode", {
+  df = pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers")$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 3), "b", "b", rep("c", 3)),
+      numbers = 1:8
+    )
+  )
+
+  # empty values -> NA
+
+  df = pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers")$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8)
+    )
+  )
+
+  # several cols to explode
+
+  df = pl$DataFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8)),
+    numbers2 = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers", pl$col("numbers2"))$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8),
+      numbers2 = c(1, NA, 4:8)
+    )
+  )
+})
+
 test_that("with_row_count", {
   df = pl$DataFrame(mtcars)
-  expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
+  expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })

@@ -15,16 +15,16 @@ $(SHLIB): $(STATLIB)
 CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	if [ "$(RPOLARS_ALL_FEATURES)" == "true" ]; then \
-		$(BUILD_COMMAND) --all-features; \
+	if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+		$(BUILD_COMMAND) --features "full_features"; \
 	else \
 		$(BUILD_COMMAND); \
 	fi
-	if [ "$(NOT_CRAN)" != "true" ]; then \
+	if [ "true" != "true" ]; then \
 		rm -Rf $(CARGOTMP) && \
 		rm -Rf $(LIBDIR)/build; \
 	fi

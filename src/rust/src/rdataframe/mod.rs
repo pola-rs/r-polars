@@ -279,7 +279,7 @@ impl DataFrame {
     }
 
     pub fn select(&mut self, exprs: Robj) -> RResult<DataFrame> {
-        self.lazy().select(exprs)?.collect_handled()
+        self.lazy().select(exprs)?.collect()
     }
 
     //used in GroupBy, not DataFrame
@@ -288,7 +288,7 @@ impl DataFrame {
         group_exprs: Robj,
         agg_exprs: Robj,
         maintain_order: Robj,
-    ) -> Result<DataFrame, String> {
+    ) -> RResult<DataFrame> {
         let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
         let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, agg_exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);

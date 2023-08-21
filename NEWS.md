@@ -4,6 +4,37 @@
 
 ## BREAKING CHANGES
 - Series_is_sorted: Nulls_last argument is dropped (#PRXYZ).
+- `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` 
+  instead (#346).
+- `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()` 
+  and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
+  `RThreadHandle` (#311).
+- `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
+
+## What's changed
+- Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
+- New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
+- New method `$clone()` for `LazyFrame` (#347).
+- New methods `$optimization_toggle()` and `$profile()` for `LazyFrame` (#323).
+- `$with_column()` is now deprecated (following upstream `polars`). It will be
+  removed in 0.9.0. It should be replaced with `$with_columns()` (#313).
+- New lazy function translated: `concat_str()` to concatenate several columns
+  into one (#349).
+- New stat functions `pl$cov()`, `pl$rolling_cov()` `pl$corr()`, `pl$rolling_corr()` (#351).
+- Add functions `pl$set_global_rpool_cap()`, `pl$get_global_rpool_cap()`, class `RThreadHandle` and
+  `in_background = FALSE` param to `<Expr>$map()` and `$apply()`. It is now possible to run R code
+  with `<LazyFrame>collect_in_background()` and/or let polars parallize R code in an R processes
+  pool. See `RThreadHandle-class` in reference docs for more info. (#311)
+- Internal IPC/shared-mem channel to serialize and send R objects / polars DataFrame across 
+  R processes. (#311)
+- Compile environment flag RPOLARS_ALL_FEATURES changes name to RPOLARS_FULL_FEATURES. If 'true'
+  will trigger something like `Cargo build --features "full_features"` which is not exactly the same
+  as `Cargo build --all-features`. Some dev features are not included in "full_features" (#311).
+- Fix bug to allow using polars without library(polars) (#355).
+- New methods `<LazyFrame>$optimization_toggle()` + `$profile()` and enable rust-polars feature
+  CSE: "Activate common subplan elimination optimization" (#323)
+- Named expression e.g. `pl$select(newname = pl$lit(2))` are no longer experimental
+  and allowed as default (#357).
 
 # polars 0.7.0
 

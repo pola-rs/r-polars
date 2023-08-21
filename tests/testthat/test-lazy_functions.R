@@ -23,15 +23,15 @@ test_that("pl$sum", {
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("a", "c", 42L)))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("a", "c", 42L)))$to_list(),
     c(l, list(sum = c(48L, 50L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("*")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("*")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
 })
@@ -64,13 +64,13 @@ test_that("pl$min pl$max", {
 
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
-  expect_identical(pl$DataFrame(l)$with_column(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
-  expect_identical(pl$DataFrame(l)$with_column(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
 
 
   ## TODO polars cannot handle wildcards hey wait with testing until after PR
-  # expect_identical(pl$DataFrame(l)$with_column(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
-  # expect_identical(pl$DataFrame(l)$with_column(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
 })
 
 
@@ -273,4 +273,20 @@ test_that("pl$tail", {
     pl$tail(df$get_column("a"), -2),
     "cannot be less than zero"
   )
+})
+
+test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
+  lf = pl$LazyFrame(mtcars)
+
+  expect_identical(lf$select(pl$cov("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cov(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$corr("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+  expect_identical(lf$select(pl$corr("mpg", "hp", method = "spearman"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp, method = "spearman") |> round(digits = 3))
+
+  expect_rpolarserr(pl$corr("x", "y", method = "guess"), c("ValueOutOfScope", "BadValue"))
+
+
+  expect_identical(lf$select(pl$rolling_cov("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cov(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$rolling_corr("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cor(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
 })

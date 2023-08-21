@@ -17,7 +17,7 @@
 #' @aliases lengths arr.lengths arr_lengths
 #' @examples
 #' df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c")))
-#' df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
+#' df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
 ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 
 #' Sum lists
@@ -415,7 +415,7 @@ ExprArr_to_struct = function(
 #' @aliases arr_eval arr.eval
 #' @examples
 #' df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
-#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
 #'   pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
 #' )
 ExprArr_eval = function(expr, parallel = FALSE) {

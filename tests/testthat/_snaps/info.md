@@ -3,7 +3,8 @@
     Code
       info
     Output
-      R Polars package version: 999.999.999
+      r-polars package version : 999.999.999
+      rust-polars crate version: 999.999.999
       
       Features:          
       simd FALSE

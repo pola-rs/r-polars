@@ -29,7 +29,7 @@ df = pl$DataFrame(
   d = c(1:2, NA_real_, -Inf)
 )
 # use min to get first non Null value for each row, otherwise insert 99.9
-df$with_column(
+df$with_columns(
   pl$min("a", "b", "c", 99.9)$alias("d")
 )
 

@@ -1,12 +1,11 @@
 use crate::robj_to;
-use crate::rpolarserr::WithRctx;
 use crate::utils::wrappers::Wrap;
 use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
-use polars::prelude::{self as pl};
+use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-use crate::rpolarserr::{self, RResult};
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
@@ -492,6 +491,60 @@ pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, Stri
             s
         )),
     }
+}
+
+pub fn new_parquet_compression(
+    compression_method: Robj,
+    compression_level: Robj,
+) -> RResult<pl::ParquetCompression> {
+    use pl::ParquetCompression::*;
+    match robj_to!(String, compression_method)?.as_str() {
+        "uncompressed" => Ok(Uncompressed),
+        "snappy" => Ok(Snappy),
+        "gzip" => robj_to!(Option, u8, compression_level)?
+            .map(polars::prelude::GzipLevel::try_new)
+            .transpose()
+            .map(Gzip),
+        "lzo" => Ok(Lzo),
+        "brotli" => robj_to!(Option, u32, compression_level)?
+            .map(polars::prelude::BrotliLevel::try_new)
+            .transpose()
+            .map(Brotli),
+        "zstd" => robj_to!(Option, i32, compression_level)?
+            .map(polars::prelude::ZstdLevel::try_new)
+            .transpose()
+            .map(Zstd),
+        m => Err(polars::prelude::PolarsError::ComputeError(
+            format!("Failed to set parquet compression method as [{m}]").into(),
+        )),
+    }
+    .map_err(polars_to_rpolars_err)
+    .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")
+}
+
+pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCompression>> {
+    use pl::IpcCompression::*;
+    robj_to!(Option, String, compression_method)?
+        .map(|cm| match cm.as_str() {
+            "lz4" => Ok(LZ4),
+            "zstd" => Ok(ZSTD),
+            m => rerr()
+                .bad_val(m)
+                .misvalued("should be one of ['lz4', 'zstd']"),
+        })
+        .transpose()
+}
+
+pub fn new_rolling_cov_options(
+    window_size: Robj,
+    min_periods: Robj,
+    ddof: Robj,
+) -> RResult<pl::RollingCovOptions> {
+    Ok(pl::RollingCovOptions {
+        window_size: robj_to!(u32, window_size)?,
+        min_periods: robj_to!(u32, min_periods)?,
+        ddof: robj_to!(u8, ddof)?,
+    })
 }
 
 extendr_module! {

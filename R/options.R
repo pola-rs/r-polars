@@ -25,31 +25,6 @@ polars_optreq$strictly_immutable = list( # set requirement functions of default 
 )
 
 #' @rdname polars_options
-#' @name named_exprs
-#' @aliases named_exprs
-#' @param named_exprs bool, default = FALSE,
-#' allow named exprs in e.g. select, with_columns, groupby, join.
-#' a named expression will be extended with $alias(name)
-#' wildcards or expression producing multiple are problematic due to name collision
-#' the related option in py-polars is currently called 'pl.Config.with_columns_kwargs'
-#' and only allow named exprs in with_columns (or potentially any method derived there of)
-#'
-#' @examples
-#' # rename columns by naming expression, experimental requires option named_exprs = TRUE
-#' pl$set_polars_options(named_exprs = TRUE)
-#' pl$DataFrame(iris)$with_columns(
-#'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
-#'   SW_add_2 = (pl$col("Sepal.Width") + 2)
-#' )
-polars_optenv$named_exprs = FALSE # set default value
-polars_optreq$named_exprs = list( # set requirement functions of default value
-  is_bool = function(x) {
-    is.logical(x) && length(x) == 1 && !is.na(x)
-  }
-)
-
-
-#' @rdname polars_options
 #' @name no_messages
 #' @aliases no_messages
 #' @details who likes polars package messages? use this option to turn them off.

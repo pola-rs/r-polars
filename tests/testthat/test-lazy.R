@@ -223,9 +223,9 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height, 29, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls("hp")$collect()$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height, 29, ignore_attr = TRUE)
-  expect_grepl_error(
-    pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect()$height,
-    "ColumnNotFound"
+  expect_identical(
+    result(pl$DataFrame(mtcars)$lazy()$drop_nulls("bad")$collect())$err$contexts(),
+    list(PolarsError = "not found: bad")
   )
 })
 
@@ -591,6 +591,69 @@ test_that("select with list of exprs", {
   expect_equal(x6$columns, c("mpg", "hp"))
 })
 
+
+test_that("explode", {
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
+    jumpers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+  )
+
+  expected_df = data.frame(
+    letters = c(rep("a", 3), "b", "b", rep("c", 3)),
+    numbers = 1:8,
+    jumpers = 1:8
+  )
+
+  #as vector
+  expect_equal(
+    df$explode(c("numbers","jumpers"))$collect()$to_data_frame(),
+    expected_df
+  )
+
+  #as list
+  expect_equal(
+    df$explode(list("numbers",pl$col("jumpers")))$collect()$to_data_frame(),
+    expected_df
+  )
+
+  #as ...
+  expect_equal(
+    df$explode("numbers",pl$col("jumpers"))$collect()$to_data_frame(),
+    expected_df
+  )
+
+
+  # empty values -> NA
+
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers")$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8)
+    )
+  )
+
+  # several cols to explode test2
+  df = pl$LazyFrame(
+    letters = c("a", "a", "b", "c"),
+    numbers = list(1, NULL, c(4, 5), c(6, 7, 8)),
+    numbers2 = list(1, NULL, c(4, 5), c(6, 7, 8))
+  )
+  expect_equal(
+    df$explode("numbers", pl$col("numbers2"))$collect()$to_data_frame(),
+    data.frame(
+      letters = c(rep("a", 2), "b", "b", rep("c", 3)),
+      numbers = c(1, NA, 4:8),
+      numbers2 = c(1, NA, 4:8)
+    )
+  )
+})
+
 test_that("width", {
   dat = pl$LazyFrame(mtcars)
   expect_equal(dat$width, 11)
@@ -599,5 +662,14 @@ test_that("width", {
 
 test_that("with_row_count", {
   lf = pl$LazyFrame(mtcars)
-  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41+nrow(mtcars))))
+  expect_identical(lf$with_row_count("idx", 42)$select(pl$col("idx"))$collect()$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
+})
+
+test_that("cloning", {
+  pf = pl$LazyFrame(iris)
+
+  # deep copy clone rust side object, hence not same mem address
+  pf2 = pf$clone()
+  expect_identical(pf$collect()$to_data_frame(), pf2$collect()$to_data_frame())
+  expect_different(pl$mem_address(pf), pl$mem_address(pf2))
 })
