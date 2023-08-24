@@ -7,6 +7,9 @@
 \arguments{
 \item{dtype}{The dtype to cast the extracted value to. If None, the dtype will be
 inferred from the JSON value.}
+
+\item{infer_schema_length}{How many rows to parse to determine the schema.
+If None all rows are used.}
 }
 \value{
 Expr returning a boolean

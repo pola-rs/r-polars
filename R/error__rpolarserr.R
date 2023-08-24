@@ -52,3 +52,7 @@ upgrade_err.RPolarsErr = function(err) { # already RPolarsErr pass through
 bad_robj = function(r) {
   .pr$RPolarsErr$new()$bad_robj(r)
 }
+
+Err_plain = function(x) {
+  Err(.pr$RPolarsErr$new()$plain(x))
+}

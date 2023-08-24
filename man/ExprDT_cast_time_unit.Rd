@@ -20,8 +20,8 @@ The corresponding global timepoint will stay unchanged +/- precision.
 \examples{
 df = pl$DataFrame(
   date = pl$date_range(
-    low = as.Date("2001-1-1"),
-    high = as.Date("2001-1-3"),
+    start = as.Date("2001-1-1"),
+    end = as.Date("2001-1-3"),
     interval = "1d",
     lazy = FALSE
   )

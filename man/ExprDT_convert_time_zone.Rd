@@ -23,8 +23,8 @@ corresponds to in R manually modifying the tzone attribute of POSIXt objects
 \examples{
 df = pl$DataFrame(
   date = pl$date_range(
-    low = as.Date("2001-3-1"),
-    high = as.Date("2001-5-1"),
+    start = as.Date("2001-3-1"),
+    end = as.Date("2001-5-1"),
     interval = "1mo",
     lazy = FALSE
   )

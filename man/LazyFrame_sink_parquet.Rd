@@ -65,7 +65,8 @@ level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 predicate_pushdown = FALSE
 projection_pushdown = FALSE
 slice_pushdown = FALSE
-common_subplan_elimination = FALSE}
+comm_subplan_elim = FALSE
+comm_subexpr_elim = FALSE}
 }
 \description{
 Persists a LazyFrame at the provided path.

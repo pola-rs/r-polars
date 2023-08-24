@@ -449,6 +449,7 @@ Expr_alias = "use_extendr_wrapper"
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
 #' @aliases Expr_all
+#' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
 #' @docType NULL
 #' @format NULL
@@ -462,12 +463,16 @@ Expr_alias = "use_extendr_wrapper"
 #' )$select(
 #'   pl$all()$all()
 #' )
-Expr_all = "use_extendr_wrapper"
+Expr_all = function(drop_nulls = TRUE) {
+  .pr$Expr$all(self, drop_nulls) |>
+    unwrap("in $all()")
+}
 
 #' Any (is true)
 #' @keywords Expr
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
+#' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
 #' @docType NULL
 #' @format NULL
@@ -479,7 +484,10 @@ Expr_all = "use_extendr_wrapper"
 #' )$select(
 #'   pl$all()$any()
 #' )
-Expr_any = "use_extendr_wrapper"
+Expr_any = function(drop_nulls = TRUE) {
+  .pr$Expr$any(self, drop_nulls) |>
+    unwrap("in $all()")
+}
 
 
 

@@ -5,16 +5,16 @@ use crate::lazy::dsl::*;
 use crate::rdataframe::DataFrame as RDF;
 use crate::rdatatype::{
     new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
-    new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
+    new_unique_keep_strategy, RPolarsDataType,
 };
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
-use polars::chunked_array::object::AsOfOptions;
 use polars::frame::explode::MeltArgs;
 use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
+use polars::prelude::AsOfOptions;
 
 #[allow(unused_imports)]
 use std::result::Result;
@@ -370,16 +370,20 @@ impl LazyFrame {
     pub fn sort_by_exprs(
         &self,
         by: Robj,
+        dotdotdot: Robj,
         descending: Robj,
         nulls_last: Robj,
         maintain_order: Robj,
     ) -> Result<Self, String> {
-        let ldf = self.0.clone();
-        let exprs = robj_to!(VecPLExpr, by).map_err(|err| format!("the arg [...] or {}", err))?;
+        let mut exprs = robj_to!(Vec, PLExprCol, by)?;
+        let mut ddd = robj_to!(Vec, PLExprCol, dotdotdot)?;
+        exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
-        Ok(ldf
+        Ok(self
+            .0
+            .clone()
             .sort_by_exprs(exprs, descending, nulls_last, maintain_order)
             .into())
     }
@@ -432,7 +436,8 @@ impl LazyFrame {
         projection_pushdown: Robj,
         simplify_expr: Robj,
         slice_pushdown: Robj,
-        cse: Robj,
+        comm_subplan_elim: Robj,
+        comm_subexpr_elim: Robj,
         streaming: Robj,
     ) -> RResult<Self> {
         let ldf = self
@@ -444,7 +449,8 @@ impl LazyFrame {
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
-            .with_common_subplan_elimination(robj_to!(bool, cse)?);
+            .with_comm_subplan_elim(robj_to!(bool, comm_subplan_elim)?)
+            .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
 
         Ok(ldf.into())
     }

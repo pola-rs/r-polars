@@ -8,7 +8,7 @@
 #' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
 #' @name ExprStr_strptime
 #' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
-#' @param fmt fmt string for parsing see
+#' @param format format string for parsing see
 #' see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
 #' Notice time_zone %Z is not supported and will just ignore timezones. Numeric tz  like
 #' %z, %:z  .... are supported.
@@ -32,7 +32,7 @@
 #'   ),
 #'   "date"
 #' )
-#' #' #join multiple passes with different fmt
+#' #' #join multiple passes with different format
 #' s$to_frame()$with_columns(
 #'   pl$col("date")
 #'   $str$strptime(pl$Date, "%F", strict = FALSE)
@@ -49,50 +49,48 @@
 #'
 #' pl$lit(txt_datetimes)$str$strptime(
 #'   pl$Datetime("ns"),
-#'   fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
+#'   format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
 #' )$lit_to_s()
 ExprStr_strptime = function(
     datatype, # : PolarsTemporalType,
-    fmt, # : str | None = None,
+    format, # : str | None = None,
     strict = TRUE, # : bool = True,
     exact = TRUE, # : bool = True,
-    cache = TRUE # : bool = True,
+    cache = TRUE, # : bool = True,
+    use_earliest = NULL
     ) { #-> Expr:
 
-  # match on datatype, return Result<Expr, String>
-  expr_result = pcase(
+  # match on datatype, return RResult<Expr>
+  pcase(
 
+    # not a datatype
     !is_polars_dtype(datatype),
-    Err("arg datatype is not an RPolarsDataType"),
+    Err_plain("arg datatype is not an RPolarsDataType"),
 
     # Datetime
     pl$same_outer_dt(datatype, pl$Datetime()),
     {
-      tu = .pr$DataType$get_insides(datatype)$tu
-
-      .pr$Expr$str_parse_datetime(
-        self, fmt, strict, exact, cache, tu
+      datetime_type = .pr$DataType$get_insides(datatype)
+      .pr$Expr$str_to_datetime(
+        self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, use_earliest
       ) |> and_then(
-        \(expr) .pr$Expr$dt_cast_time_unit(expr, tu) # cast if not an err
+        \(expr) .pr$Expr$dt_cast_time_unit(expr, datetime_type$tu) # cast if not an err
       )
     },
 
     # Date
     datatype == pl$Date,
-    Ok(.pr$Expr$str_parse_date(self, fmt, strict, exact, cache)),
+    .pr$Expr$str_to_date(self, format, strict, exact, cache, use_earliest),
 
     # Time
     datatype == pl$Time,
-    Ok(.pr$Expr$str_parse_time(self, fmt, strict, exact, cache)),
+    .pr$Expr$str_to_time(self, format, strict, exact, cache, use_earliest),
 
     # Other
-    or_else = Err("datatype should be of type {Date, Datetime, Time}")
-  ) |> map_err(
-    \(err) paste("in str$strptime:", err)
-  )
+    or_else = Err_plain( "datatype should be of type {Date, Datetime, Time}")
+  ) |>
+    unwrap("in str$strptime:")
 
-  # raise any error or return unwrapped ok value
-  unwrap(expr_result)
 }
 
 
@@ -385,6 +383,8 @@ ExprStr_starts_with = function(sub) {
 #' @keywords ExprStr
 #' @param dtype The dtype to cast the extracted value to. If None, the dtype will be
 #' inferred from the JSON value.
+#' @param infer_schema_length How many rows to parse to determine the schema.
+#' If None all rows are used.
 #' @details
 #' Throw errors if encounter invalid json strings.
 #'
@@ -395,8 +395,9 @@ ExprStr_starts_with = function(sub) {
 #' )
 #' dtype = pl$Struct(pl$Field("a", pl$Int64), pl$Field("b", pl$Boolean))
 #' df$select(pl$col("json_val")$str$json_extract(dtype))
-ExprStr_json_extract = function(pat) {
-  .pr$Expr$str_json_extract(self, pat)
+ExprStr_json_extract = function(dtype, infer_schema_length = 100) {
+  .pr$Expr$str_json_extract(self, dtype, infer_schema_length) |>
+    unwrap("in str$json_extract():")
 }
 
 #' json_path_match

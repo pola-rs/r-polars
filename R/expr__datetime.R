@@ -3,7 +3,9 @@
 #' Each date/datetime is mapped to the start of its bucket.
 #' @name ExprDT_truncate
 #' @param every string encoding duration see details.
-#' @param ofset optional string encoding duration see details.
+#' @param offset optional string encoding duration see details.
+#' @param use_earliest Determine how to deal with ambiguous datetimes:
+#' NULL (default) raise, TRUE use the earliest datetime, FALSE use the latest datetime.
 #'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
@@ -37,9 +39,11 @@
 #' df
 ExprDT_truncate = function(
     every, # str
-    offset = NULL # : str | timedelta | None = None,
+    offset = NULL, # : str | timedelta | None = None,
+    use_earliest = NULL
     ) {
-  .pr$Expr$dt_truncate(self, every, as_pl_duration(offset %||% "0ns"))
+  .pr$Expr$dt_truncate(self, every, offset, use_earliest) |>
+    unwrap("in dt$truncate()")
 }
 
 #' Round datetime
@@ -52,8 +56,7 @@ ExprDT_truncate = function(
 #'
 #' @param every string encoding duration see details.
 #' @param ofset optional string encoding duration see details.
-#'
-#'
+
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
 #' - 1ns # 1 nanosecond
@@ -89,7 +92,8 @@ ExprDT_truncate = function(
 #' )
 #' df
 ExprDT_round = function(every, offset = NULL) {
-  .pr$Expr$dt_round(self, every, as_pl_duration(offset %||% "0ns"))
+  .pr$Expr$dt_round(self, every, offset) |>
+    unwrap("in dt$round()")
 }
 
 # ExprDT_combine = function(self, tm: time | pli.Expr, tu: TimeUnit = "us") -> pli.Expr:
@@ -146,7 +150,7 @@ ExprDT_combine = function(tm, tu = "us") {
 #' <https://docs.rs/chrono/latest/chrono/format/strftime/index.html>`_.
 #' @name ExprDT_strftime
 #'
-#' @param fmt string format very much like in R passed to chrono
+#' @param format string format very much like in R passed to chrono
 #'
 #' @return   Date/Datetime expr
 #' @keywords ExprDT
@@ -155,8 +159,8 @@ ExprDT_combine = function(tm, tu = "us") {
 #' @aliases (Expr)$dt$strftime
 #' @examples
 #' pl$lit(as.POSIXct("2021-01-02 12:13:14", tz = "GMT"))$dt$strftime("this is the year: %Y")$to_r()
-ExprDT_strftime = function(fmt) {
-  .pr$Expr$dt_strftime(self, fmt)
+ExprDT_strftime = function(format) {
+  .pr$Expr$dt_strftime(self, format)
 }
 
 
@@ -620,8 +624,8 @@ ExprDT_epoch = function(tu = c("us", "ns", "ms", "s", "d")) {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2001-1-1"),
-#'     high = as.Date("2001-1-3"),
+#'     start = as.Date("2001-1-1"),
+#'     end = as.Date("2001-1-3"),
 #'     interval = "1d",
 #'     lazy = FALSE
 #'   )
@@ -652,8 +656,8 @@ ExprDT_timestamp = function(tu = c("ns", "us", "ms")) {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2001-1-1"),
-#'     high = as.Date("2001-1-3"),
+#'     start = as.Date("2001-1-1"),
+#'     end = as.Date("2001-1-3"),
 #'     interval = "1d",
 #'     lazy = FALSE
 #'   )
@@ -685,8 +689,8 @@ ExprDT_with_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2001-1-1"),
-#'     high = as.Date("2001-1-3"),
+#'     start = as.Date("2001-1-1"),
+#'     end = as.Date("2001-1-3"),
 #'     interval = "1d",
 #'     lazy = FALSE
 #'   )
@@ -716,8 +720,8 @@ ExprDT_cast_time_unit = function(tu = c("ns", "us", "ms")) {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2001-3-1"),
-#'     high = as.Date("2001-5-1"),
+#'     start = as.Date("2001-3-1"),
+#'     end = as.Date("2001-5-1"),
 #'     interval = "1mo",
 #'     lazy = FALSE
 #'   )
@@ -784,59 +788,6 @@ ExprDT_replace_time_zone = function(tz, use_earliest = NULL) {
     unwrap()
 }
 
-#' Localize time zone
-#' @description
-#' Localize tz-naive Datetime Series to tz-aware Datetime Series.
-#' This method takes a naive Datetime Series and makes this time zone aware.
-#' It does not move the time to another time zone.
-#'
-#' @param tz string of time zone (no NULL allowed) see allowed timezone in base::OlsonNames()
-#' @name ExprDT_tz_localize
-#' @details In R as modifying tzone attribute manually but takes into account summertime.
-#' See unittest "dt$convert_time_zone dt$tz_localize" for a more detailed comparison to base R.
-#' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$tz_localize
-#' @examples
-#' df = pl$DataFrame(
-#'   date = pl$date_range(
-#'     low = as.Date("2001-3-1"),
-#'     high = as.Date("2001-7-1"),
-#'     interval = "1mo",
-#'     lazy = FALSE
-#'   )
-#' )
-#' df = df$with_columns(
-#'   pl$col("date")
-#'   $dt$replace_time_zone("Europe/Amsterdam")
-#'   $dt$convert_time_zone("Europe/London")
-#'   $alias("london_timezone"),
-#'   pl$col("date")
-#'   $dt$tz_localize("Europe/London")
-#'   $alias("tz_loc_london")
-#' )
-#'
-#' df2 = df$with_columns(
-#'   pl$col("london_timezone")
-#'   $dt$replace_time_zone("Europe/Amsterdam")
-#'   $alias("cast London_to_Amsterdam"),
-#'   pl$col("london_timezone")
-#'   $dt$convert_time_zone("Europe/Amsterdam")
-#'   $alias("with London_to_Amsterdam"),
-#'   pl$col("london_timezone")
-#'   $dt$convert_time_zone("Europe/Amsterdam")
-#'   $dt$replace_time_zone(NULL)
-#'   $alias("strip tz from with-'Europe/Amsterdam'")
-#' )
-#' df2
-ExprDT_tz_localize = function(tz) {
-  check_tz_to_result(tz, allow_null = FALSE) |>
-    map(\(valid_tz) .pr$Expr$dt_tz_localize(self, valid_tz)) |>
-    map_err(\(err) paste("in dt$tz_localize:", err)) |>
-    unwrap()
-}
 
 #' Days
 #' @description Extract the days from a Duration type.
@@ -849,8 +800,8 @@ ExprDT_tz_localize = function(tz) {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2020-3-1"),
-#'     high = as.Date("2020-5-1"),
+#'     start = as.Date("2020-3-1"),
+#'     end = as.Date("2020-5-1"),
 #'     interval = "1mo",
 #'     lazy = FALSE
 #'   )
@@ -874,8 +825,8 @@ ExprDT_days = function() {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2020-1-1"),
-#'     high = as.Date("2020-1-4"),
+#'     start = as.Date("2020-1-1"),
+#'     end = as.Date("2020-1-4"),
 #'     interval = "1d",
 #'     lazy = FALSE
 #'   )
@@ -899,8 +850,8 @@ ExprDT_hours = function() {
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
-#'     low = as.Date("2020-1-1"),
-#'     high = as.Date("2020-1-4"),
+#'     start = as.Date("2020-1-1"),
+#'     end = as.Date("2020-1-4"),
 #'     interval = "1d",
 #'     lazy = FALSE
 #'   )
@@ -924,8 +875,8 @@ ExprDT_minutes = function() {
 #' @aliases (Expr)$dt$seconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
-#'   low = as.POSIXct("2020-1-1", tz = "GMT"),
-#'   high = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
+#'   start = as.POSIXct("2020-1-1", tz = "GMT"),
+#'   end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
 #'   interval = "1m",
 #'   lazy = FALSE
 #' ))
@@ -947,8 +898,8 @@ ExprDT_seconds = function() {
 #' @aliases (Expr)$dt$milliseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
-#'   low = as.POSIXct("2020-1-1", tz = "GMT"),
-#'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
+#'   start = as.POSIXct("2020-1-1", tz = "GMT"),
+#'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms",
 #'   lazy = FALSE
 #' ))
@@ -970,8 +921,8 @@ ExprDT_milliseconds = function() {
 #' @aliases (Expr)$dt$microseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
-#'   low = as.POSIXct("2020-1-1", tz = "GMT"),
-#'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
+#'   start = as.POSIXct("2020-1-1", tz = "GMT"),
+#'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms",
 #'   lazy = FALSE
 #' ))
@@ -993,8 +944,8 @@ ExprDT_microseconds = function() {
 #' @aliases (Expr)$dt$nanoseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
-#'   low = as.POSIXct("2020-1-1", tz = "GMT"),
-#'   high = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
+#'   start = as.POSIXct("2020-1-1", tz = "GMT"),
+#'   end = as.POSIXct("2020-1-1 00:00:01", tz = "GMT"),
 #'   interval = "1ms",
 #'   lazy = FALSE
 #' ))

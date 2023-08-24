@@ -1,15 +1,25 @@
 # polars (development version)
 
+
+# probably in 0.8.0.9000
+
+## BREAKING CHANGES
+-  param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()` `$sink_ipc()` and
+`$sink_parquet()` is renamed and split into `comm_subplan_elim = TRUE` and
+`comm_subplan_elim = TRUE` (#PRXYZ).
+- Series_is_sorted: Nulls_last argument is dropped (#PRXYZ).
+
 # polars 0.7.0.9000
 
 ## BREAKING CHANGES
-- Series_is_sorted: Nulls_last argument is dropped (#PRXYZ).
 - `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` 
   instead (#346).
 - `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()` 
   and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
   `RThreadHandle` (#311).
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
+
+
 
 ## What's changed
 - Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)

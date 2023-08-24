@@ -12,6 +12,7 @@ use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RField(pub pl::Field);
 use pl::UniqueKeepStrategy;
+use polars::prelude::AsofStrategy;
 
 #[extendr]
 impl RField {
@@ -292,10 +293,10 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
     }
 }
 
-pub fn new_asof_strategy(s: &str) -> Result<polars::chunked_array::object::AsofStrategy, String> {
+pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
     match s {
-        "forward" => Ok(polars::chunked_array::object::AsofStrategy::Forward),
-        "backward" => Ok(polars::chunked_array::object::AsofStrategy::Backward),
+        "forward" => Ok(AsofStrategy::Forward),
+        "backward" => Ok(AsofStrategy::Backward),
         _ => Err(format!(
             "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
             s
@@ -325,7 +326,7 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => rpolarserr::rerr()
+        _ => rerr()
             .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
             .bad_robj(&robj),
     }
@@ -339,7 +340,7 @@ pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
-        _ => rpolarserr::rerr()
+        _ => rerr()
             .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
             .bad_robj(&robj),
     }
@@ -466,7 +467,7 @@ pub fn robj_to_timeunit(robj: Robj) -> RResult<pl::TimeUnit> {
         "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
-        _ => rpolarserr::rerr().bad_val(
+        _ => rerr().bad_val(
             "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ".to_string(),
         ),
     }

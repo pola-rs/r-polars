@@ -2,11 +2,8 @@ use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
-use crate::rpolarserr::polars_to_rpolars_err;
-use crate::rdatatype::robj_to_timeunit;
 
 use crate::rpolarserr::{rdbg, RResult};
-use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
@@ -97,31 +94,31 @@ fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
     .into())
 }
 
-#[extendr]
-fn r_date_range(
-    start: Robj,
-    stop: Robj,
-    every: Robj,
-    closed: Robj, //Wap<ClosedWindow>
-    name: Robj,
-    tu: Robj,
-    tz: Robj,
-) -> RResult<Series> {
-    use pl::IntoSeries;
-    Ok(Series(
-        polars::time::date_range_impl(
-            robj_to!(str, name)?,
-            robj_to!(i64, start)?,
-            robj_to!(i64, stop)?,
-            pl::Duration::parse(robj_to!(str, every)?),
-            robj_to!(new_closed_window, closed)?,
-            robj_to!(timeunit, tu)?,
-            robj_to!(Option, String, tz)?.as_ref(),
-        )
-        .map_err(polars_to_rpolars_err)?
-        .into_series(),
-    ))
-}
+// #[extendr]
+// fn r_date_range(
+//     start: Robj,
+//     end: Robj,
+//     every: Robj,
+//     closed: Robj, //Wap<ClosedWindow>
+//     name: Robj,
+//     time_unit: Robj,
+//     time_zone: Robj,
+// ) -> RResult<Series> {
+//     use pl::IntoSeries;
+//     Ok(Series(
+//         polars::time::date_range_impl(
+//             robj_to!(str, name)?,
+//             robj_to!(i64, start)?,
+//             robj_to!(i64, end)?,
+//             pl::Duration::parse(robj_to!(str, every)?),
+//             robj_to!(new_closed_window, closed)?,
+//             robj_to!(timeunit, time_unit)?,
+//             robj_to!(Option, String, time_zone)?.as_ref(),
+//         )
+//         .map_err(polars_to_rpolars_err)?
+//         .into_series(),
+//     ))
+// }
 
 #[extendr]
 fn r_date_range_lazy(
@@ -130,16 +127,16 @@ fn r_date_range_lazy(
     every: Robj,
     closed: Robj,
     time_unit: Robj,
-    tz: Robj,
+    time_zone: Robj,
 ) -> RResult<Expr> {
     Ok(Expr(
         polars::lazy::dsl::functions::date_range(
-            robj_to!(PLExpr, start)?,
-            robj_to!(PLExpr, end)?,
-            pl::Duration::parse(robj_to!(str, every)?),
+            robj_to!(PLExprCol, start)?,
+            robj_to!(PLExprCol, end)?,
+            robj_to!(pl_duration, every)?,
             robj_to!(new_closed_window, closed)?,
             robj_to!(Option, timeunit, time_unit)?,
-            robj_to!(Option, String, tz)?,
+            robj_to!(Option, String, time_zone)?,
         )
         .explode(),
     ))
@@ -291,7 +288,7 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
-    fn r_date_range;
+    //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;

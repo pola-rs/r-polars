@@ -4,25 +4,19 @@
 \alias{DataFrame_sort}
 \title{DataFrame Sort}
 \usage{
-DataFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
-}
-\arguments{
-\item{by}{Column(s) to sort by. Column name strings, character vector of
-column names, or Iterable \verb{Into<Expr>} (e.g. one Expr, or list mixed Expr and
-column name strings).}
-
-\item{...}{more columns to sort by as above but provided one Expr per argument.}
-
-\item{descending}{Sort descending? Default = FALSE logical vector of length 1 or same length
-as number of Expr's from above by + ....}
-
-\item{nulls_last}{Bool default FALSE, place all nulls_last?}
+DataFrame_sort(
+  by,
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  maintain_order = FALSE
+)
 }
 \value{
 DataFrame
 }
 \description{
-sort a DataFrame by on or more Expr.
+sort by one or more Expr.
 }
 \details{
 by and ... args allow to either provide e.g. a list of Expr or something which can

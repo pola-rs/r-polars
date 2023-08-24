@@ -6,7 +6,7 @@ use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 
-use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx, self};
+use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::parse_fill_null_strategy;
@@ -19,9 +19,9 @@ use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
 use pl::{BinaryNameSpaceImpl, DurationMethods, IntoSeries, TemporalMethods, Utf8NameSpaceImpl};
-use polars::chunked_array::object::SortOptions;
 use polars::lazy::dsl;
 use polars::prelude as pl;
+use polars::prelude::SortOptions;
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
@@ -1157,105 +1157,123 @@ impl Expr {
         r_result_list(res)
     }
 
-    pub fn str_parse_date(
+    pub fn str_to_date(
         &self,
-        format: Nullable<String>,
-        strict: bool,
-        exact: bool,
-        cache: bool,
-    ) -> Self {
-        self.0
+        format: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+        use_earliest: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
             .strptime(
                 pl::DataType::Date,
                 pl::StrptimeOptions {
-                    format: null_to_opt(format),
-                    strict,
-                    exact,
-                    cache,
+                    format: robj_to!(Option, String, format)?,
+                    strict: robj_to!(bool, strict)?,
+                    exact: robj_to!(bool, exact)?,
+                    cache: robj_to!(bool, cache)?,
+                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
             )
-            .into()
+            .into())
     }
+
+    // pub fn str_to_datetime(
+    //     &self,
+    //     format: Option<String>,
+    //     time_unit: Option<Wrap<TimeUnit>>,
+    //     time_zone: Option<TimeZone>,
+    //     strict: bool,
+    //     exact: bool,
+    //     cache: bool,
+    //     use_earliest: Option<bool>,
+    // ) -> Self {
+    // }
 
     #[allow(clippy::too_many_arguments)]
-    pub fn str_parse_datetime(
+    pub fn str_to_datetime(
         &self,
-        format: Nullable<String>,
-        strict: bool,
-        exact: bool,
-        cache: bool,
-        tu: Nullable<Robj>,
-    ) -> List {
-        let res = || -> Result<Expr, String> {
-            let tu = null_to_opt(tu).map(robj_to_timeunit).transpose()?;
-            let format = null_to_opt(format);
-            let result_tu = match (&format, tu) {
-                (_, Some(tu)) => tu,
-                (Some(format), None) => {
-                    if format.contains("%.9f")
-                        || format.contains("%9f")
-                        || format.contains("%f")
-                        || format.contains("%.f")
-                    {
-                        pl::TimeUnit::Nanoseconds
-                    } else if format.contains("%.3f") || format.contains("%3f") {
-                        pl::TimeUnit::Milliseconds
-                    } else {
-                        pl::TimeUnit::Microseconds
-                    }
-                }
-                (None, None) => pl::TimeUnit::Microseconds,
-            };
-            Ok(self
-                .0
-                .clone()
-                .str()
-                .strptime(
-                    pl::DataType::Datetime(result_tu, None),
-                    pl::StrptimeOptions {
-                        format,
-                        strict,
-                        exact,
-                        cache,
-                    },
-                )
-                .into())
-        }();
-        r_result_list(res)
+        format: Robj,
+        time_unit: Robj, //Option<Wrap<TimeUnit>>,
+        time_zone: Robj, //
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+        use_earliest: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .to_datetime(
+                robj_to!(Option, timeunit, time_unit)?,
+                robj_to!(Option, String, time_zone)?,
+                pl::StrptimeOptions {
+                    format: robj_to!(Option, String, format)?,
+                    strict: robj_to!(bool, strict)?,
+                    exact: robj_to!(bool, exact)?,
+                    cache: robj_to!(bool, cache)?,
+                    use_earliest: robj_to!(Option, bool, use_earliest)?,
+                },
+            )
+            .into())
     }
 
-    pub fn str_parse_time(
+    pub fn str_to_time(
         &self,
-        format: Nullable<String>,
-        strict: bool,
-        exact: bool,
-        cache: bool,
-    ) -> Self {
-        self.0
+        format: Robj,
+        strict: Robj,
+        exact: Robj,
+        cache: Robj,
+        use_earliest: Robj,
+    ) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
             .strptime(
                 pl::DataType::Time,
                 pl::StrptimeOptions {
-                    format: null_to_opt(format),
-                    strict,
-                    exact,
-                    cache,
+                    format: robj_to!(Option, String, format)?,
+                    strict: robj_to!(bool, strict)?,
+                    exact: robj_to!(bool, exact)?,
+                    cache: robj_to!(bool, cache)?,
+                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
             )
-            .into()
+            .into())
     }
 
     //end list/arr methods
 
-    pub fn dt_truncate(&self, every: &str, offset: &str) -> Self {
-        self.0.clone().dt().truncate(every, offset).into()
+    pub fn dt_truncate(&self, every: Robj, offset: Robj, use_earliest: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .dt()
+            .truncate(pl::TruncateOptions {
+                every: robj_to!(pl_duration_string, every)?,
+                offset: robj_to!(Option, pl_duration_string, offset)?
+                    .unwrap_or_else(|| "0ns".into()),
+                use_earliest: robj_to!(Option, bool, use_earliest)?,
+            })
+            .into())
     }
 
-    pub fn dt_round(&self, every: &str, offset: &str) -> Self {
-        self.0.clone().dt().round(every, offset).into()
+    pub fn dt_round(&self, every: Robj, offset: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .dt()
+            .round(
+                robj_to!(pl_duration_string, every)?,
+                robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
+            )
+            .into())
     }
 
     pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<Expr> {
@@ -1359,11 +1377,6 @@ impl Expr {
             .dt()
             .replace_time_zone(tz.into_option(), use_earliest.into_option())
             .into()
-    }
-
-    #[allow(deprecated)]
-    pub fn dt_tz_localize(&self, tz: String) -> Self {
-        self.0.clone().dt().tz_localize(tz).into()
     }
 
     pub fn duration_days(&self) -> Self {
@@ -1580,11 +1593,11 @@ impl Expr {
         self.0.clone().agg_groups().into()
     }
 
-    pub fn all(&self) -> Self {
-        self.0.clone().all().into()
+    pub fn all(&self, drop_nulls: Robj) -> RResult<Self> {
+        Ok(self.0.clone().all(robj_to!(bool, drop_nulls)?).into())
     }
-    pub fn any(&self) -> Self {
-        self.0.clone().any().into()
+    pub fn any(&self, drop_nulls: Robj) -> RResult<Self> {
+        Ok(self.0.clone().any(robj_to!(bool, drop_nulls)?).into())
     }
 
     pub fn count(&self) -> Self {
@@ -1751,8 +1764,8 @@ impl Expr {
         self.0.clone().is_unique().into()
     }
 
-    pub fn approx_unique(&self) -> Self {
-        self.clone().0.approx_unique().into()
+    pub fn approx_n_unique(&self) -> Self {
+        self.clone().0.approx_n_unique().into()
     }
 
     pub fn is_first(&self) -> Self {
@@ -1940,25 +1953,23 @@ impl Expr {
         let infer_schema_len = robj_to!(Option, usize, infer_schema_len)?;
         Ok(self
             .0
-// =======
-//     pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
-//         let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
-//         use pl::*;
-//         let output_type = match dtype.clone() {
-//             Some(dtype) => pl::GetOutput::from_type(dtype),
-//             None => pl::GetOutput::from_type(DataType::Unknown),
-//         };
-
-//         let function = move |s: Series| {
-//             let ca = s.utf8()?;
-//             match ca.json_extract(dtype.clone()) {
-//                 Ok(ca) => Ok(Some(ca.into_series())),
-//                 Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
-//             }
-//         };
-
-//         self.0
-// >>>>>>> origin/main
+            // =======
+            //     pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
+            //         let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
+            //         use pl::*;
+            //         let output_type = match dtype.clone() {
+            //             Some(dtype) => pl::GetOutput::from_type(dtype),
+            //             None => pl::GetOutput::from_type(DataType::Unknown),
+            //         };
+            //         let function = move |s: Series| {
+            //             let ca = s.utf8()?;
+            //             match ca.json_extract(dtype.clone()) {
+            //                 Ok(ca) => Ok(Some(ca.into_series())),
+            //                 Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
+            //             }
+            //         };
+            //         self.0
+            // >>>>>>> origin/main
             .clone()
             .str()
             .json_extract(dtype, infer_schema_len)
@@ -2442,88 +2453,89 @@ pub fn make_rolling_options(
     })
 }
 
-#[derive(Clone, Debug)]
-pub struct When {
-    predicate: Expr,
-}
+// #[derive(Clone, Debug)]
+// pub struct When {
+//     predicate: Expr,
+// }
 
-#[derive(Clone, Debug)]
-pub struct WhenThen {
-    predicate: Expr,
-    then: Expr,
-}
+// #[derive(Clone, Debug)]
+// pub struct Then {
+//     predicate: Expr,
+//     then: Expr,
+// }
 
-#[derive(Clone)]
-pub struct WhenThenThen(dsl::WhenThenThen);
+// #[derive(Clone)]
+// pub struct ChainWhen(dsl::ChainWhen);
 
-#[extendr]
-impl WhenThenThen {
-    pub fn when(&self, predicate: &Expr) -> WhenThenThen {
-        Self(self.0.clone().when(predicate.0.clone()))
-    }
-    pub fn then(&self, expr: &Expr) -> WhenThenThen {
-        Self(self.0.clone().then(expr.0.clone()))
-    }
-    pub fn otherwise(&self, expr: &Expr) -> Expr {
-        self.0.clone().otherwise(expr.0.clone()).into()
-    }
+// #[extendr]
+// impl WhenThenThen {
+//     pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+//         Self(self.0.clone().when(predicate.0.clone()))
+//     }
+//     pub fn then(&self, expr: &Expr) -> WhenThenThen {
+//         Self(self.0.clone().then(expr.0.clone()))
+//     }
+//     pub fn otherwise(&self, expr: &Expr) -> Expr {
+//         self.0.clone().otherwise(expr.0.clone()).into()
+//     }
 
-    pub fn print(&self) {
-        rprintln!("Polars WhenThenThen");
-    }
-}
+//     pub fn print(&self) {
+//         rprintln!("Polars WhenThenThen");
+//     }
+// }
 
-#[extendr]
-impl WhenThen {
-    pub fn when(&self, predicate: &Expr) -> WhenThenThen {
-        let e = dsl::when(self.predicate.0.clone())
-            .then(self.then.0.clone())
-            .when(predicate.0.clone());
-        WhenThenThen(e)
-    }
+// #[derive(Clone)]
+// pub struct ChainThen(dsl::ChainThen);
 
-    pub fn otherwise(&self, expr: &Expr) -> Expr {
-        dsl::ternary_expr(
-            self.predicate.0.clone(),
-            self.then.0.clone(),
-            expr.0.clone(),
-        )
-        .into()
-    }
+// #[extendr]
+// impl Then {
+//     pub fn when(&self, predicate: &Expr) -> WhenThenThen {
+//         let e = dsl::when(self.predicate.0.clone())
+//             .then(self.then.0.clone())
+//             .when(predicate.0.clone());
+//         WhenThenThen(e)
+//     }
 
-    pub fn print(&self) {
-        rprintln!("{:?}", self);
-    }
-}
+//     pub fn otherwise(&self, expr: &Expr) -> Expr {
+//         dsl::ternary_expr(
+//             self.predicate.0.clone(),
+//             self.then.0.clone(),
+//             expr.0.clone(),
+//         )
+//         .into()
+//     }
 
-#[extendr]
-impl When {
-    #[allow(clippy::self_named_constructors)]
-    pub fn when(predicate: &Expr) -> When {
-        When {
-            predicate: predicate.clone(),
-        }
-    }
+//     pub fn print(&self) {
+//         rprintln!("{:?}", self);
+//     }
+// }
 
-    pub fn then(&self, expr: &Expr) -> WhenThen {
-        WhenThen {
-            predicate: self.predicate.clone(),
-            then: expr.clone(),
-        }
-    }
+// #[extendr]
+// impl When {
+//     #[allow(clippy::self_named_constructors)]
+//     pub fn when(predicate: &Expr) -> When {
+//         When {
+//             predicate: predicate.clone(),
+//         }
+//     }
 
-    pub fn print(&self) {
-        rprintln!("{:?}", self);
-    }
-}
+//     pub fn then(&self, expr: &Expr) -> WhenThen {
+//         WhenThen {
+//             predicate: self.predicate.clone(),
+//             then: expr.clone(),
+//         }
+//     }
+
+//     pub fn print(&self) {
+//         rprintln!("{:?}", self);
+//     }
+// }
 
 #[extendr]
 extendr_module! {
     mod dsl;
     impl Expr;
     impl ProtoExprArray;
-    impl When;
-    impl WhenThen;
-    impl WhenThenThen;
+
 
 }

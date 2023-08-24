@@ -23,7 +23,7 @@ time_unit_conv_factor = c(
 #' @param x an integer or double vector of n epochs since midnight OR a char vector of char times
 #' passed to as.POSIXct converted to seconds.
 #' @param tu timeunit either "s","ms","us","ns"
-#' @param fmt a format string passed to as.POSIXct format via ...
+#' @param format a format string passed to as.POSIXct format via ...
 #'
 #' @details
 #'
@@ -69,15 +69,15 @@ time_unit_conv_factor = c(
 #' pl$lit(pl$PTime("23:59:59"))$lit_to_s()
 #'
 #' pl$lit(pl$PTime("23:59:59"))$to_r()
-pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), fmt = "%H:%M:%S") {
+pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
   tu = tu[1]
   if (!is_string(tu) || !tu %in% c("s", "ms", "us", "ns")) {
     stopf("tu must be either 's','ms','us' ,or 'ns', not [%s]", str_string(tu))
   }
 
   if (is.character(x)) {
-    x = as.double(as.POSIXct(x, format = fmt, tz = "GMT")) -
-      as.double(as.POSIXct("00:00:00", format = fmt, tz = "GMT"))
+    x = as.double(as.POSIXct(x, format = format, tz = "GMT")) -
+      as.double(as.POSIXct("00:00:00", format = format, tz = "GMT"))
     x = x * time_unit_conv_factor[tu]
   }
 
@@ -140,15 +140,15 @@ print.PTime = function(x, ...) {
   )
   val = unclass(x) / 10^tu_exp
   origin = structure(0, tzone = "GMT", class = c("POSIXct", "POSIXt"))
-  fmt = format(as.POSIXct(val, tz = "GMT", origin = origin), format = "%H:%M:%S")
+  format = format(as.POSIXct(val, tz = "GMT", origin = origin), format = "%H:%M:%S")
 
   if (tu != "s") {
     dgt = formatC((val - floor(val)) * 10^tu_exp, width = tu_exp, flag = 0, big.mark = "_", digits = tu_exp)
-    fmt = paste0(fmt, ":", dgt, tu)
+    format = paste0(format, ":", dgt, tu)
   }
   cat("PTime [", typeof(x), "]: number of epochs [", tu, "] since midnight\n")
   print(paste0(
-    fmt, " val: ", as.character(x)
+    format, " val: ", as.character(x)
   ))
   invisible(x)
 }

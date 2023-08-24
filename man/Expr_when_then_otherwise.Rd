@@ -5,11 +5,15 @@
 \alias{when}
 \alias{then}
 \alias{otherwise}
+\alias{When}
+\alias{Then}
+\alias{ChainedWhen}
+\alias{ChainedThen}
 \title{when-then-otherwise Expr}
 \arguments{
-\item{predicate}{Into Expr into a boolean mask to branch by}
+\item{condition}{Into Expr into a boolean mask to branch by}
 
-\item{expr}{Into Expr value to insert in when() or otherwise()}
+\item{statement}{Into Expr value to insert in when() or otherwise()}
 }
 \value{
 Expr
@@ -18,9 +22,32 @@ Expr
 Start a “when, then, otherwise” expression.
 }
 \details{
-For the impl nerds: pl$when returns a whenthen object and whenthen returns whenthenthen, except
-for otherwise(), which will terminate and return an Expr.
-Otherwise may fail to return an Expr if e.g. two consecutive \code{when(x)$when(y)}
+when-then-otherwise is similar to R \code{ifelse()}. \code{pl$when(condition)} takes a condition as input
+this will an polars \verb{<Expr>} which renderes to a Boolean column. Then it is chained with a
+\verb{$then(statement)} when arg statement is an \verb{<Expr>} which produces a column with values if
+idealy all Boolean are true. Then finally an \verb{$otherwise(statement)} with values if false.
+\verb{$otherwise()} returns an \code{Expr} which will mix the \verb{$then()} statement with the \verb{$otherwise()}
+as given by the when-condition.
+
+State-machine details below. The state machine consists of 4 classes \verb{<When>}, \verb{<Then>},
+\verb{<ChainedWhen>} & \verb{<ChainedThen>} and a starter function \code{pl$when()} and the final expression
+class  a polars \verb{<Expr>}.
+
+\code{pl$when}return a \verb{<When>} object.
+\verb{pl$when(condition) -> <When>}
+
+\verb{<When>} has a single public method \verb{$then(statement)}
+\verb{<When>$then(statement) -> <Then>}
+
+#the follow objects and methods are
+\verb{<Then>$when(condition) -> <ChainedWhen>}
+\verb{<Then>$otherwise(statement) -> <Expr>}
+\verb{<ChainedWhen>$then(statement) -> <ChainedThen>}
+\verb{<ChainedThen>$when(condition) -> <Expr>}
+\verb{<ChainedThen>$otherwise(statement) -> <Expr>}
+
+This statemachine ensures only syntacticly allowed methods are availble at any specific place in
+a nested when-then-otherwise expression.
 }
 \examples{
 df = pl$DataFrame(mtcars)

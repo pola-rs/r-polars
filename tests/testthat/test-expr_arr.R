@@ -219,12 +219,12 @@ test_that("arg_min arg_max", {
   l_exp_arg_min = list(
     l_i32 = c(0, 0, 0),
     l_f64 = c(4, 0, NA),
-    l_char = c(0, 0, NA)
+    l_char = c(0, 0, 0) #0 for character() bug https://github.com/pola-rs/polars/issues/10703
   )
   l_exp_arg_max = list(
     l_i32 = c(4, 2, 9),
     l_f64 = c(5, 0, NA),
-    l_char = c(25, 2, NA)
+    l_char = c(25, 2, 4294967295) #bug as above
   )
 
   expect_identical(l_act_arg_min |> lapply(as.numeric), l_exp_arg_min)

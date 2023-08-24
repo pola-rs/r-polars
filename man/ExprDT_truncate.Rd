@@ -10,7 +10,10 @@ function
 \arguments{
 \item{every}{string encoding duration see details.}
 
-\item{ofset}{optional string encoding duration see details.}
+\item{offset}{optional string encoding duration see details.}
+
+\item{use_earliest}{Determine how to deal with ambiguous datetimes:
+NULL (default) raise, TRUE use the earliest datetime, FALSE use the latest datetime.}
 }
 \value{
 Date/Datetime expr

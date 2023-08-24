@@ -74,11 +74,11 @@ pl$concat = function(
 
 #' new date_range
 #' @name pl_date_range
-#' @param low POSIXt or Date preferably with time_zone or double or integer
-#' @param high POSIXt or Date preferably with time_zone or double or integer. If high is and
+#' @param start POSIXt or Date preferably with time_zone or double or integer
+#' @param end POSIXt or Date preferably with time_zone or double or integer. If end is and
 #' interval are missing, then single datetime is constructed.
-#' @param interval string pl_duration or R difftime. Can be missing if high is missing also.
-#' @param lazy  bool, if TRUE return expression
+#' @param interval string pl_duration or R difftime. Can be missing if end is missing also.
+#' @param eager  bool, if FALSE (default) return `Expr` else evaluate `Expr` to `Series`
 #' @param closed option one of 'both'(default), 'left', 'none' or 'right'
 #' @param name name of series
 #' @param time_unit option string ("ns" "us" "ms") duration of one int64 value on polars side
@@ -88,10 +88,10 @@ pl$concat = function(
 #' If param time_zone is not defined the Series will have no time zone.
 #'
 #' NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
-#' intuitive in R. It is recommended to always set the timezone of low and high. If not output will
+#' intuitive in R. It is recommended to always set the timezone of start and end. If not output will
 #' vary between local machine timezone, R and polars.
 #'
-#' In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and high.
+#' In R/r-polars it is perfectly fine to mix timezones of params time_zone, start and end.
 #'
 #'
 #' @return a datetime
@@ -108,7 +108,7 @@ pl$concat = function(
 #' s_gmt
 #' s_gmt$to_r() # printed same way in R and polars becuase tagged with a time_zone/tzone
 #'
-#' # polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print
+#' # polars assumes any input in GMT if time_zone = NULL, set GMT on start end to see same print
 #' s_null = pl$date_range(
 #'   as.POSIXct("2022-01-01", tz = "GMT"),
 #'   as.POSIXct("2022-01-02", tz = "GMT"),
@@ -120,7 +120,7 @@ pl$concat = function(
 #' # Any mixing of timezones is fine, just set them all, and it works as expected.
 #' t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
 #' t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
-#' s_mix = pl$date_range(low = t1, high = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
+#' s_mix = pl$date_range(start = t1, end = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
 #' s_mix
 #' s_mix$to_r()
 #'
@@ -131,55 +131,36 @@ pl$concat = function(
 #' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")
 #'
 pl$date_range = function(
-    low, # : date | datetime |# for lazy  pli.Expr | str,
-    high, # : date | datetime | pli.Expr | str,
+    start, # : date | datetime |# for lazy  pli.Expr | str,
+    end, # : date | datetime | pli.Expr | str,
     interval, # : str | timedelta,
-    lazy = TRUE, # : Literal[True],
+    eager = FALSE, # : Literal[True],
     closed = "both", # : ClosedInterval = "both",
     name = NULL, # : str | None = None,
     time_unit = "us",
     time_zone = NULL # : str | None = None
-    ) {
-  if (missing(high)) {
-    high = low
+) {
+
+  if (missing(end)) {
+    end = start
     interval = "1h"
   }
 
+  if(!is.null(name)) warning("arg name is deprecated use $alias() instead")
   name = name %||% ""
-  interval = as_pl_duration(interval)
 
-  ## TODO if possible let all go through r_date_range_lazy. Seems asking for trouble
-  ## input arg low and high can change if lazy or not
-  if (
-    inherits(low, c("Expr", "character")) ||
-      inherits(high, c("Expr", "character")) || isTRUE(lazy)
-  ) {
-    low = convert_time_unit_for_lazy(low, time_unit, time_zone)
-    high = convert_time_unit_for_lazy(high, time_unit, time_zone)
-    result = r_date_range_lazy(low, high, interval, closed, time_unit, time_zone)
-    return(unwrap(result, "in pl$date_range():"))
+  f_eager_eval = \(lit) {
+    if(isTRUE(eager)) {
+      result(lit$lit_to_s())
+    } else {
+      Ok(lit)
+    }
   }
 
-  # convert to list(v, u, tz) pair
-  low = time_to_value_unit_tz(low, time_unit, time_zone)
-  high = time_to_value_unit_tz(high, time_unit, time_zone)
+  r_date_range_lazy(start, end, interval, closed, time_unit, time_zone) |>
+    and_then(f_eager_eval) |>
+    unwrap("in pl$date_range()")
 
-  # eager date_range, create in ms precision and cast to desired precision
-  dt_series = unwrap(r_date_range(
-    start = convert_time_unit(low, "ms"),
-    stop = convert_time_unit(high, "ms"),
-    every = interval,
-    closed = closed,
-    name = name,
-    tu = "ms",
-    tz = time_zone
-  ), "in pl$date_range():")
-
-  if (time_unit != "ms") {
-    dt_series = dt_series$to_lit()$cast(pl$Datetime(tu = time_unit, tz = time_zone))$lit_to_s()
-  }
-
-  dt_series
 }
 
 
@@ -207,12 +188,13 @@ convert_time_unit_for_lazy = function(x, time_unit, time_zone) {
 # convert any R time unit into a value (float), time_unit (ns, us, ns) and
 # time_zone string
 time_to_value_unit_tz = function(x, time_unit, time_zone = NULL) {
+  tz = time_zone %||% "GMT"
   pcase(
     length(x) != 1L, stopf("a timeunit was not of length 1: '%s'", str_string(x)),
     inherits(x, "POSIXt"), list(
-      v = as.numeric(as.POSIXct(format(x, tz = time_zone %||% "GMT"), tz = "GMT")),
+      v = as.numeric(as.POSIXct(format(x, tz = tz), tz = "GMT")),
       u = "s",
-      tz = attr(x, "tzone")
+      tz = time_zone
     ),
     inherits(x, "Date"), list(v = as.numeric(x), u = "d", tz = NULL),
     is.numeric(x), list(v = x, u = time_unit, tz = time_zone),

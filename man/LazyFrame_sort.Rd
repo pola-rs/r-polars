@@ -4,7 +4,13 @@
 \alias{LazyFrame_sort}
 \title{LazyFrame Sort}
 \usage{
-LazyFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
+LazyFrame_sort(
+  by,
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{by}{Column(s) to sort by. Column name strings, character vector of
@@ -22,7 +28,7 @@ as number of Expr's from above by + ....}
 LazyFrame
 }
 \description{
-sort a LazyFrame by on or more Expr
+sort by one or more Expr.
 }
 \details{
 by and ... args allow to either provide e.g. a list of Expr or something which can
@@ -41,4 +47,4 @@ df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
 df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 }
-\keyword{DataFrame}
+\keyword{LazyFrame}

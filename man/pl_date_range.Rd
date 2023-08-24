@@ -4,14 +4,14 @@
 \alias{pl_date_range}
 \title{new date_range}
 \arguments{
-\item{low}{POSIXt or Date preferably with time_zone or double or integer}
+\item{start}{POSIXt or Date preferably with time_zone or double or integer}
 
-\item{high}{POSIXt or Date preferably with time_zone or double or integer. If high is and
+\item{end}{POSIXt or Date preferably with time_zone or double or integer. If end is and
 interval are missing, then single datetime is constructed.}
 
-\item{interval}{string pl_duration or R difftime. Can be missing if high is missing also.}
+\item{interval}{string pl_duration or R difftime. Can be missing if end is missing also.}
 
-\item{lazy}{bool, if TRUE return expression}
+\item{eager}{bool, if FALSE (default) return \code{Expr} else evaluate \code{Expr} to \code{Series}}
 
 \item{closed}{option one of 'both'(default), 'left', 'none' or 'right'}
 
@@ -31,10 +31,10 @@ new date_range
 If param time_zone is not defined the Series will have no time zone.
 
 NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
-intuitive in R. It is recommended to always set the timezone of low and high. If not output will
+intuitive in R. It is recommended to always set the timezone of start and end. If not output will
 vary between local machine timezone, R and polars.
 
-In R/r-polars it is perfectly fine to mix timezones of params time_zone, low and high.
+In R/r-polars it is perfectly fine to mix timezones of params time_zone, start and end.
 }
 \examples{
 
@@ -47,7 +47,7 @@ s_gmt = pl$date_range(
 s_gmt
 s_gmt$to_r() # printed same way in R and polars becuase tagged with a time_zone/tzone
 
-# polars assumes any input in GMT if time_zone = NULL, set GMT on low high to see same print
+# polars assumes any input in GMT if time_zone = NULL, set GMT on start end to see same print
 s_null = pl$date_range(
   as.POSIXct("2022-01-01", tz = "GMT"),
   as.POSIXct("2022-01-02", tz = "GMT"),
@@ -59,7 +59,7 @@ s_null$to_r() # back to R POSIXct. R prints non tzone tagged POSIXct in local ti
 # Any mixing of timezones is fine, just set them all, and it works as expected.
 t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
 t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
-s_mix = pl$date_range(low = t1, high = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
+s_mix = pl$date_range(start = t1, end = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
 s_mix
 s_mix$to_r()
 
