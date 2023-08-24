@@ -275,13 +275,16 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @param slice_pushdown Boolean. Only load the required slice from the scan
 #' Don't materialize sliced outputs
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param common_subplan_elimination Boolean. Cache subtrees/file scans that
-#' are used by multiple subtrees in the query plan.
+#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that occur on self-joins
+#' or unions.
+#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and reused.
+#' or unions.
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
 #' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
 #' @param collect_in_background Boolean. Detach this query from R session.
@@ -302,7 +305,8 @@ LazyFrame_collect = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    common_subplan_elimination = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
@@ -310,11 +314,12 @@ LazyFrame_collect = function(
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
   }
 
   if (isTRUE(streaming)) {
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
   }
 
   collect_f = if (isTRUE(collect_in_background)) {
@@ -330,7 +335,8 @@ LazyFrame_collect = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      common_subplan_elimination,
+      comm_subplan_elim,
+      comm_subexpr_elim,
       streaming
     ) |>
     and_then(collect_f) |>
@@ -414,7 +420,8 @@ LazyFrame_collect_in_background = function() {
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
 #' tmpf = tempfile()
@@ -494,7 +501,8 @@ LazyFrame_sink_parquet = function(
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
@@ -887,8 +895,7 @@ LazyFrame_join = function(
 
 
 #' LazyFrame Sort
-#' @description sort a LazyFrame by on or more Expr
-#'
+#' @description sort by one or more Expr.
 #' @param by Column(s) to sort by. Column name strings, character vector of
 #' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
@@ -899,10 +906,8 @@ LazyFrame_join = function(
 #' @details by and ... args allow to either provide e.g. a list of Expr or something which can
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
-#'
-#'
 #' @return LazyFrame
-#' @keywords  DataFrame
+#' @keywords  LazyFrame
 #' @examples
 #' df = mtcars
 #' df$mpg[1] = NA
@@ -918,28 +923,11 @@ LazyFrame_sort = function(
     by, # : IntoExpr | List[IntoExpr],
     ..., # unnamed Into expr
     descending = FALSE, #  bool | vector[bool] = False,
-    nulls_last = FALSE) {
-  largs = list2(...)
-  nargs = names(largs)
-
-  # match on args to check for ...
-  pcase(
-    # all the bad stuff
-    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
-    missing(by), Err("arg [by] is missing"),
-
-    # iterate over by + ... to wrap into Expr. Capture ok/err in results
-    or_else = Ok(c(
-      lapply(by, wrap_e_result, str_to_lit = FALSE),
-      lapply(largs, wrap_e_result, str_to_lit = FALSE)
-    ))
-  ) |>
-    # and_then skips step, if input is an Error otherwise call rust wrapper
-    and_then(\(by_combined) { # by_combined has Rtyp" List<Result<Expr,String>>
-      .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
-    }) |>
-    # add same context to any Error
-    unwrap("in sort():")
+    nulls_last = FALSE,
+    maintain_order = FALSE
+) {
+  .pr$LazyFrame$sort_by_exprs(self, by, list2(...), descending, nulls_last, maintain_order) |>
+    unwrap("in $sort():")
 }
 
 
