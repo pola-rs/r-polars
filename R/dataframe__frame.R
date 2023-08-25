@@ -670,7 +670,7 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' DataFrame Sort
-#' @inherit LazyFrame_sort details description
+#' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
