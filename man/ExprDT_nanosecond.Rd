@@ -23,7 +23,7 @@ pl$DataFrame(date = pl$date_range(
   as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E9,
   interval = "1s987654321ns",
   time_unit = "ns", # instruct polars input is us, and store as us
-  lazy = FALSE
+  eager = TRUE
 ))$with_columns(
   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),
   pl$col("date")$dt$nanosecond()$alias("nanosecond")

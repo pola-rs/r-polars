@@ -413,15 +413,15 @@ LazyFrame_collect_in_background = function() {
 #' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
 #' @param simplify_expression Boolean. Various optimizations, such as constant folding
 #' and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Boolean. Only load the required slice from the scan
-#' Don't materialize sliced outputs
-#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  comm_subplan_elim = FALSE
 #'  comm_subexpr_elim = FALSE
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
 #' tmpf = tempfile()
@@ -445,14 +445,15 @@ LazyFrame_sink_parquet = function(
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    no_optimization = FALSE) {
+    no_optimization = FALSE,
+    slice_pushdown = TRUE
+) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
-
+  call_ctx = "in $sink_parquet(...)"
   self |>
     .pr$LazyFrame$optimization_toggle(
       type_coercion,
@@ -460,10 +461,11 @@ LazyFrame_sink_parquet = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      FALSE,
-      TRUE
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = TRUE
     ) |>
-    unwrap("in $sink_parquet(...)") |>
+    unwrap(call_ctx) |>
     .pr$LazyFrame$sink_parquet(
       path,
       compression,
@@ -473,7 +475,7 @@ LazyFrame_sink_parquet = function(
       data_pagesize_limit,
       maintain_order
     ) |>
-    unwrap("in $sink_parquet(...)") |>
+    unwrap(call_ctx) |>
     invisible()
 }
 
@@ -494,15 +496,15 @@ LazyFrame_sink_parquet = function(
 #' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
 #' @param simplify_expression Boolean. Various optimizations, such as constant folding
 #' and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Boolean. Only load the required slice from the scan
-#' Don't materialize sliced outputs
-#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
 #'  comm_subplan_elim = FALSE
 #'  comm_subexpr_elim = FALSE
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
@@ -523,8 +525,9 @@ LazyFrame_sink_ipc = function(
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    no_optimization = FALSE) {
+    no_optimization = FALSE,
+    slice_pushdown = TRUE
+    ) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -538,8 +541,9 @@ LazyFrame_sink_ipc = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      FALSE,
-      TRUE
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = TRUE
     ) |>
     unwrap("in $sink_ipc(...)") |>
     .pr$LazyFrame$sink_ipc(
@@ -903,6 +907,9 @@ LazyFrame_join = function(
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
 #' as number of Expr's from above by + ....
 #' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @param maintain_order Whether the order should be maintained if elements are equal. Note that if
+#' true streaming is not possible and performance might be worse since this requires a stable
+#' search.
 #' @details by and ... args allow to either provide e.g. a list of Expr or something which can
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
@@ -926,7 +933,9 @@ LazyFrame_sort = function(
     nulls_last = FALSE,
     maintain_order = FALSE
 ) {
-  .pr$LazyFrame$sort_by_exprs(self, by, list2(...), descending, nulls_last, maintain_order) |>
+  .pr$LazyFrame$sort_by_exprs(
+    self, by, err_on_named_args(...), descending, nulls_last, maintain_order
+  ) |>
     unwrap("in $sort():")
 }
 

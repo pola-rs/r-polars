@@ -23,6 +23,10 @@ column name strings).}
 as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
+
+\item{maintain_order}{Whether the order should be maintained if elements are equal. Note that if
+true streaming is not possible and performance might be worse since this requires a stable
+search.}
 }
 \value{
 LazyFrame

@@ -11,9 +11,10 @@
 \alias{ChainedThen}
 \title{when-then-otherwise Expr}
 \arguments{
-\item{condition}{Into Expr into a boolean mask to branch by}
+\item{condition}{Into Expr into a boolean mask to branch by. Strings interpreted as column.}
 
-\item{statement}{Into Expr value to insert in when() or otherwise()}
+\item{statement}{Into Expr value to insert in when() or otherwise().
+Strings interpreted as column.}
 }
 \value{
 Expr
@@ -52,9 +53,9 @@ a nested when-then-otherwise expression.
 \examples{
 df = pl$DataFrame(mtcars)
 wtt =
-  pl$when(pl$col("cyl") <= 4)$then("<=4cyl")$
-    when(pl$col("cyl") <= 6)$then("<=6cyl")$
-    otherwise(">6cyl")$alias("cyl_groups")
+  pl$when(pl$col("cyl") <= 4)$then(pl$lit("<=4cyl"))$
+    when(pl$col("cyl") <= 6)$then(pl$lit("<=6cyl"))$
+    otherwise(pl$lit(">6cyl"))$alias("cyl_groups")
 print(wtt)
 df$with_columns(wtt)
 }

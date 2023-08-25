@@ -1,6 +1,10 @@
 pub mod extendr_concurrent;
 
+pub mod extendr_helpers;
 pub mod wrappers;
+
+use extendr_helpers::robj_inherits;
+
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
@@ -718,7 +722,7 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
 }
 
 // used in conjunction with R!("...")
-fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
+pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     unpack_r_result_list(res.map_err(|err| {
         extendr_api::Error::Other(format!("internal_error calling R from rust: {:?}", err))
     })?)
@@ -730,10 +734,13 @@ fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
 
     match robj.rtype() {
         ExternalPtr if robj.inherits("Expr") => Ok(robj),
-        ExternalPtr if robj.inherits("WhenThen") | robj.inherits("WhenThenThen") => unpack_r_eval(
-            R!("polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"),
-        ),
-        ExternalPtr if robj.inherits("When") => {
+        ExternalPtr if robj.inherits("Series") => {
+            unpack_r_eval(R!("polars:::result(polars::pl$lit({{robj}}))"))
+        }
+        ExternalPtr if robj_inherits(&robj, ["Then", "ChainedThen"]) => unpack_r_eval(R!(
+            "polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"
+        )),
+        ExternalPtr if robj_inherits(&robj, ["When", "ChainedWhen"]) => {
             rerr().plain("Cannot use a When-statement as Expr without a $then()")
         }
         _h @ Logicals | _h @ List | _h @ Doubles | _h @ Integers => {

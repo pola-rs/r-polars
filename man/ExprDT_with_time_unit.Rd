@@ -23,8 +23,8 @@ df = pl$DataFrame(
   date = pl$date_range(
     start = as.Date("2001-1-1"),
     end = as.Date("2001-1-3"),
-    interval = "1d",
-    lazy = FALSE
+    interval = "1d1s",
+    eager = TRUE
   )
 )
 df$select(

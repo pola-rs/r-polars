@@ -26,6 +26,7 @@ use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 #[derive(Clone, Debug)]
+
 pub struct Expr(pub pl::Expr);
 
 impl Deref for Expr {
@@ -1060,12 +1061,13 @@ impl Expr {
         self.0.clone().list().unique().with_fmt("arr.unique").into()
     }
 
-    fn lst_take(&self, index: &Expr, null_on_oob: bool) -> Self {
-        self.0
+    fn lst_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .list()
-            .take(index.0.clone(), null_on_oob)
-            .into()
+            .take(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
+            .into())
     }
 
     fn lst_get(&self, index: &Expr) -> Self {

@@ -56,18 +56,10 @@ s_null = pl$date_range(
 s_null$to_r() # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
 
 
-# Any mixing of timezones is fine, just set them all, and it works as expected.
-t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
-t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
-s_mix = pl$date_range(start = t1, end = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
-s_mix
-s_mix$to_r()
-
-
 # use of ISOdate
 t1 = ISOdate(2022, 1, 1, 0) # preset GMT
 t2 = ISOdate(2022, 1, 2, 0) # preset GMT
-pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")
+pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
 
 }
 \keyword{ExprDT}

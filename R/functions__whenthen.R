@@ -2,8 +2,9 @@
 #' @name Expr_when_then_otherwise
 #' @description Start a “when, then, otherwise” expression.
 #' @keywords Expr
-#' @param condition Into Expr into a boolean mask to branch by
-#' @param statement Into Expr value to insert in when() or otherwise()
+#' @param condition Into Expr into a boolean mask to branch by. Strings interpreted as column.
+#' @param statement Into Expr value to insert in when() or otherwise().
+#' Strings interpreted as column.
 #' @return Expr
 #' @aliases when then otherwise When Then ChainedWhen ChainedThen
 #' @details
@@ -38,9 +39,9 @@
 #' @examples
 #' df = pl$DataFrame(mtcars)
 #' wtt =
-#'   pl$when(pl$col("cyl") <= 4)$then("<=4cyl")$
-#'     when(pl$col("cyl") <= 6)$then("<=6cyl")$
-#'     otherwise(">6cyl")$alias("cyl_groups")
+#'   pl$when(pl$col("cyl") <= 4)$then(pl$lit("<=4cyl"))$
+#'     when(pl$col("cyl") <= 6)$then(pl$lit("<=6cyl"))$
+#'     otherwise(pl$lit(">6cyl"))$alias("cyl_groups")
 #' print(wtt)
 #' df$with_columns(wtt)
 pl$when = function(condition) {

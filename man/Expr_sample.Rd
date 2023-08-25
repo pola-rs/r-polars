@@ -24,7 +24,9 @@ Expr_sample(
 \item{seed}{Seed for the random number generator. If set to None (default), a random
 seed is used.}
 
-\item{fixed_seed}{Boolean. If TRUE will not evolve seed for each use. Maybe useful for some reproducible analysis.}
+\item{fixed_seed}{Boolean. If True, The seed will not be incremented between draws. This can make output
+predictable because draw ordering can change due to threads being scheduled in a different order.
+Should be used together with seed}
 
 \item{n}{Number of items to return. Cannot be used with \code{frac}.}
 }

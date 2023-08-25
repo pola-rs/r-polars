@@ -374,7 +374,7 @@ impl LazyFrame {
         descending: Robj,
         nulls_last: Robj,
         maintain_order: Robj,
-    ) -> Result<Self, String> {
+    ) -> RResult<Self> {
         let mut exprs = robj_to!(Vec, PLExprCol, by)?;
         let mut ddd = robj_to!(Vec, PLExprCol, dotdotdot)?;
         exprs.append(&mut ddd);

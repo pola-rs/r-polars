@@ -85,10 +85,10 @@ wrap_e_legacy = function(e, str_to_lit = TRUE) {
     return(e)
   }
   # terminate WhenThen's to yield an Expr
-  if (inherits(e, c("WhenThen", "WhenThenThen"))) {
+  if (inherits(e, c("Then", "ChainedThen"))) {
     return(e$otherwise(pl$lit(NULL)))
   }
-  if (inherits(e, "When")) {
+  if (inherits(e, c("When", "ChainedWhen"))) {
     return(stopf("Cannot use a When-statement as Expr without a $then()"))
   }
   if (str_to_lit || is.numeric(e) || is.list(e) || is_bool(e)) {
@@ -2129,13 +2129,13 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
-#' @aliases approx_unique
+#' @aliases approx_n_unique
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$approx_unique())
-Expr_approx_unique = "use_extendr_wrapper"
+#' pl$DataFrame(iris)$select(pl$col("Species")$approx_n_unique())
+Expr_approx_n_unique = "use_extendr_wrapper"
 
 #' Count `Nulls`
 #' @keywords Expr
@@ -3765,16 +3765,16 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
-#' @param fixed_seed Boolean, If TRUE, The seed will not be incremented between draws.
-#' This can make output predictable because draw ordering can change due to threads being
-#' scheduled in a different order.
+#' @param fixed_seed
+#' Boolean. If True, The seed will not be incremented between draws. This can make output
+#' predictable because draw ordering can change due to threads being scheduled in a different order.
+#' Should be used together with seed
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-#' stop("new param + reworked to robj_to - > update tests of shufle")
 Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
   .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
 }
@@ -3793,7 +3793,9 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
 #' @param fixed_seed
-#' Boolean. If TRUE will not evolve seed for each use. Maybe useful for some reproducible analysis.
+#' Boolean. If True, The seed will not be incremented between draws. This can make output
+#' predictable because draw ordering can change due to threads being scheduled in a different order.
+#' Should be used together with seed
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr

@@ -18,7 +18,7 @@ df = pl$DataFrame(date = pl$date_range(
   start = as.POSIXct("2020-1-1", tz = "GMT"),
   end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
   interval = "1m",
-  lazy = FALSE
+  eager = TRUE
 ))
 df$select(
   pl$col("date"),

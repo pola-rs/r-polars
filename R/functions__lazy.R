@@ -462,43 +462,43 @@ pl$n_unique = function(column) { #-> int or Expr
 }
 
 #' Approximate count of unique values.
-#' @name pl_approx_unique
+#' @name pl_approx_n_unique
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @param column if dtype is:
-#' - String: syntactic sugar for `pl$col(column)$approx_unique()`, returns Expr
-#' - Expr: syntactic sugar for `column$approx_unique()`, returns Expr
+#' - String: syntactic sugar for `pl$col(column)$approx_n_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$approx_n_unique()`, returns Expr
 #'
 #' @keywords Expr_new
 #'
 #' @return Expr
 #'
-#' @details The approx_unique is likely only warranted for large columns. See example.
-#' It appears approx_unique scales better than n_unique, such that the relative performance
+#' @details The approx_n_unique is likely only warranted for large columns. See example.
+#' It appears approx_n_unique scales better than n_unique, such that the relative performance
 #' difference increases with column size.
 #'
 #' @examples
 #' # column as Series
-#' pl$approx_unique(pl$lit(1:4)) == 4
+#' pl$approx_n_unique(pl$lit(1:4)) == 4
 #'
 #' # column as String
-#' expr = pl$approx_unique("bob")
+#' expr = pl$approx_n_unique("bob")
 #' print(expr)
 #' pl$DataFrame(bob = 1:80)$select(expr)
 #'
 #' # colum as Expr
-#' pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
+#' pl$DataFrame(bob = 1:4)$select(pl$approx_n_unique(pl$col("bob")))
 #'
 #' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-#' system.time(pl$approx_unique(lit_series)$lit_to_s()$print())
+#' system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
 #' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
-pl$approx_unique = function(column) { #-> int or Expr
+pl$approx_n_unique = function(column) { #-> int or Expr
   pcase(
-    inherits(column, "Expr"), result(column$approx_unique()),
-    is_string(column), result(pl$col(column)$approx_unique()),
+    inherits(column, "Expr"), result(column$approx_n_unique()),
+    is_string(column), result(pl$col(column)$approx_n_unique()),
     or_else = Err(paste("arg [column] is neither Expr or String, but", str_string(column)))
   ) |>
-    unwrap("in pl$approx_unique():")
+    unwrap("in pl$approx_n_unique():")
 }
 
 

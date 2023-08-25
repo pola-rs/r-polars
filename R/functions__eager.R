@@ -70,8 +70,6 @@ pl$concat = function(
 }
 
 
-
-
 #' new date_range
 #' @name pl_date_range
 #' @param start POSIXt or Date preferably with time_zone or double or integer
@@ -117,18 +115,10 @@ pl$concat = function(
 #' s_null$to_r() # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
 #'
 #'
-#' # Any mixing of timezones is fine, just set them all, and it works as expected.
-#' t1 = as.POSIXct("2022-01-01", tz = "Etc/GMT+2")
-#' t2 = as.POSIXct("2022-01-01 08:00:00", tz = "Etc/GMT-2")
-#' s_mix = pl$date_range(start = t1, end = t2, interval = "1h", time_unit = "ms", time_zone = "CET")
-#' s_mix
-#' s_mix$to_r()
-#'
-#'
 #' # use of ISOdate
 #' t1 = ISOdate(2022, 1, 1, 0) # preset GMT
 #' t2 = ISOdate(2022, 1, 2, 0) # preset GMT
-#' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")
+#' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
 #'
 pl$date_range = function(
     start, # : date | datetime |# for lazy  pli.Expr | str,
@@ -157,6 +147,9 @@ pl$date_range = function(
     }
   }
 
+  start = cast_naive_value_to_datetime_expr(start)
+  end = cast_naive_value_to_datetime_expr(end)
+
   r_date_range_lazy(start, end, interval, closed, time_unit, time_zone) |>
     and_then(f_eager_eval) |>
     unwrap("in pl$date_range()")
@@ -165,69 +158,12 @@ pl$date_range = function(
 
 
 # date range support functions
-convert_time_unit_for_lazy = function(x, time_unit, time_zone) {
-  # already expr or str referring to column name
-  if (inherits(x, c("Expr", "character"))) {
-    return(wrap_e(x, str_to_lit = FALSE))
+cast_naive_value_to_datetime_expr = function(x, time_unit = "ms", time_zone = NULL) {
+  if(!inherits(x, c("numeric","integer","integer64")))  {
+    x
+  } else {
+    pl$lit(x)$cast(pl$Datetime(time_unit,time_zone))
   }
-
-  # interpret as a support R time type, split in to float value, tu and tz
-  v_tu_tz = time_to_value_unit_tz(x, time_unit, time_zone)
-  v = convert_time_unit(v_tu_tz, "ms")
-
-  # encode first as 'ms' as POSIXct is 's' and i32 can lack range for ns or perhaps us
-  expr = pl$lit(v)$cast(pl$Datetime(tu = "ms", tz = time_zone))
-
-  # encode to chosen time_units
-  if (time_unit != "ms") expr <- expr$cast(pl$Datetime(tu = time_unit, time_zone))
-
-  expr
-}
-
-
-# convert any R time unit into a value (float), time_unit (ns, us, ns) and
-# time_zone string
-time_to_value_unit_tz = function(x, time_unit, time_zone = NULL) {
-  tz = time_zone %||% "GMT"
-  pcase(
-    length(x) != 1L, stopf("a timeunit was not of length 1: '%s'", str_string(x)),
-    inherits(x, "POSIXt"), list(
-      v = as.numeric(as.POSIXct(format(x, tz = tz), tz = "GMT")),
-      u = "s",
-      tz = time_zone
-    ),
-    inherits(x, "Date"), list(v = as.numeric(x), u = "d", tz = NULL),
-    is.numeric(x), list(v = x, u = time_unit, tz = time_zone),
-
-    # TODO consider string as short hand for POSIXct in GMT tz, may conflict with lazy interface
-    # add more types here
-    or_else = stopf("cannot interpret following type as a timepoint: %s", str_string(x))
-  )
-}
-
-# convert a (time, value, optional-tz)-list to a new value by time_unit
-convert_time_unit = function(x, time_unit) {
-  if (isTRUE(x$u == time_unit)) {
-    return(x$v)
-  }
-  get_time_factor(time_unit) / get_time_factor(x$u) * x$v
-}
-
-# inverse factor lookup table
-get_time_factor = function(u) {
-  pcase(
-    u == "ms", 1000, # most used
-    u == "us", 1000000,
-    u == "ns", 1000000000,
-    u == "s", 1,
-    u == "m", 1 / 60,
-    u == "h", 1 / 3600,
-    u == "d", 1 / 3600 / 24, # 1 day
-    u == "w", 1 / 3600 / 24 / 7,
-    u == "mo", stopf("cannot accurately use mo"),
-    u == "y", stopf("cannot accurately use y"),
-    or_else = stopf("failed to recognize timeunit: %s", u)
-  )
 }
 
 # to pl_duration from other R types, add more if need

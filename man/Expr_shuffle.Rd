@@ -12,9 +12,9 @@ Expr_shuffle(seed = NULL, fixed_seed = FALSE)
 Seed for the random number generator. If set to Null (default), a random
 seed value integerish value between 0 and 10000 is picked}
 
-\item{fixed_seed}{Boolean, If TRUE, The seed will not be incremented between draws.
-This can make output predictable because draw ordering can change due to threads being
-scheduled in a different order.}
+\item{fixed_seed}{Boolean. If True, The seed will not be incremented between draws. This can make output
+predictable because draw ordering can change due to threads being scheduled in a different order.
+Should be used together with seed}
 }
 \value{
 Expr
@@ -24,6 +24,5 @@ Shuffle the contents of this expr.
 }
 \examples{
 pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-stop("new param + reworked to robj_to - > update tests of shufle")
 }
 \keyword{Expr}

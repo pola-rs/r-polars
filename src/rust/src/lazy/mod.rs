@@ -1,5 +1,6 @@
 //mod apply;
 //pub mod dataframe;
+pub mod construct_expr;
 pub mod dataframe;
 pub mod dsl;
 pub mod whenthen;
