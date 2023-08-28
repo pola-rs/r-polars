@@ -3,11 +3,25 @@
 
 # probably in 0.8.0.9000
 
+ 
+
+ - 
+
+
 ## BREAKING CHANGES
--  param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()` `$sink_ipc()` and
-`$sink_parquet()` is renamed and split into `comm_subplan_elim = TRUE` and
-`comm_subplan_elim = TRUE` (#PRXYZ).
-- Series_is_sorted: Nulls_last argument is dropped (#PRXYZ).
+- r-polars relies on rust-polars 0.32.0 and therefore rust toolchain: nightly bumped to
+  nightly-2023-07-27 and MSRV is now >=1.70 (#334).
+- param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()` `$sink_ipc()` and
+  `$sink_parquet()` is renamed and split into `comm_subplan_elim = TRUE` and
+  `comm_subexpr_elim = TRUE` (#334).
+- Series_is_sorted: Nulls_last argument is dropped (#334).
+- `when-then-otherwise` classes are renamed to `When`, `Then`, `ChainedWhen` and `ChainedThen`. The
+  syntactic illegal methods have been removed, e.g. chaining `$when()` twice. (#334).
+- Github release + R-universe is compiled with `profile=release-optimized`, which now includes
+  `strip=false`, `lto=fat` & `codegen-units=1`. This should make the binary a bit smaller and faster.
+  See also FULL_FEATURES=`true` env flag to enable simd with nightly rust. For development or faster
+  compilation, use instead `profile=release` (#334).
+- fmt arg is renamed format in `pl$Ptimes` (#334), 
 
 # polars 0.7.0.9000
 
