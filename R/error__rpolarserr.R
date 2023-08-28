@@ -64,18 +64,15 @@ get_err_ctx = \(x) unwrap_err(result(x))$contexts()
 # wrapper to return Result
 err_on_named_args = function(...) {
   l = list2(...)
-  if(is.null(names(l)) || all(names(l) == "")) {
+  if (is.null(names(l)) || all(names(l) == "")) {
     Ok(l)
   } else {
     bad_names = names(l)[names(l) != ""]
     .pr$RPolarsErr$
       new()$
-      bad_arg(paste(bad_names,collapse=", "))$
+      bad_arg(paste(bad_names, collapse = ", "))$
       plain("... args not allowed to be named here")$
-      hint("named ... arg was passed, or a non ... arg was misspelled")|>
+      hint("named ... arg was passed, or a non ... arg was misspelled") |>
       Err()
   }
 }
-
-
-

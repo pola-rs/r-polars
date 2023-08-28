@@ -57,8 +57,7 @@ ExprStr_strptime = function(
     strict = TRUE, # : bool = True,
     exact = TRUE, # : bool = True,
     cache = TRUE, # : bool = True,
-    use_earliest = NULL
-    ) { #-> Expr:
+    use_earliest = NULL) { #-> Expr:
 
   # match on datatype, return RResult<Expr>
   pcase(
@@ -87,10 +86,9 @@ ExprStr_strptime = function(
     .pr$Expr$str_to_time(self, format, strict, exact, cache, use_earliest),
 
     # Other
-    or_else = Err_plain( "datatype should be of type {Date, Datetime, Time}")
+    or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
   ) |>
     unwrap("in str$strptime:")
-
 }
 
 

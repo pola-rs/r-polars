@@ -288,7 +288,7 @@ test_that("sort", {
 
 
 
-  ctx =pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))) |> get_err_ctx()
+  ctx = pl$DataFrame(mtcars)$lazy()$sort(by = list("cyl", complex(1))) |> get_err_ctx()
   expect_true(all(c("BadArgument", "BadValue") %in% names(ctx)))
   expect_identical(ctx$BadArgument, "by")
 
@@ -316,21 +316,21 @@ test_that("sort", {
 
   # test bad arg
   ctx = pl$DataFrame(mtcars)$
-      lazy()$
-      sort(by = c("cyl", "mpg", "cyl"), descending = 42)$
-      collect() |>
-      get_err_ctx()
-  expect_identical(ctx$TypeMismatch,"bool")
+    lazy()$
+    sort(by = c("cyl", "mpg", "cyl"), descending = 42)$
+    collect() |>
+    get_err_ctx()
+  expect_identical(ctx$TypeMismatch, "bool")
   expect_identical(ctx$BadArgument, "descending")
 
 
 
   ctx = pl$DataFrame(mtcars)$
-      lazy()$
-      sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$
-      collect() |>
-      get_err_ctx()
-  expect_identical(ctx$TypeMismatch,"bool")
+    lazy()$
+    sort(by = c("cyl", "mpg", "cyl"), nulls_last = 42)$
+    collect() |>
+    get_err_ctx()
+  expect_identical(ctx$TypeMismatch, "bool")
   expect_identical(ctx$BadArgument, "nulls_last")
 
 
@@ -343,7 +343,7 @@ test_that("sort", {
 
   w = df$sort(pl$col("cyl"), pl$col("mpg"), maintain_order = TRUE)$collect()$to_data_frame()
   x = df$sort("cyl", "mpg", maintain_order = TRUE)$collect()$to_data_frame()
-  y = df$sort(c("cyl", "mpg"),maintain_order = TRUE)$collect()$to_data_frame()
+  y = df$sort(c("cyl", "mpg"), maintain_order = TRUE)$collect()$to_data_frame()
   z = mtcars[order(mtcars$cyl, mtcars$mpg), ]
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)
@@ -616,21 +616,21 @@ test_that("explode", {
     jumpers = 1:8
   )
 
-  #as vector
+  # as vector
   expect_equal(
-    df$explode(c("numbers","jumpers"))$collect()$to_data_frame(),
+    df$explode(c("numbers", "jumpers"))$collect()$to_data_frame(),
     expected_df
   )
 
-  #as list
+  # as list
   expect_equal(
-    df$explode(list("numbers",pl$col("jumpers")))$collect()$to_data_frame(),
+    df$explode(list("numbers", pl$col("jumpers")))$collect()$to_data_frame(),
     expected_df
   )
 
-  #as ...
+  # as ...
   expect_equal(
-    df$explode("numbers",pl$col("jumpers"))$collect()$to_data_frame(),
+    df$explode("numbers", pl$col("jumpers"))$collect()$to_data_frame(),
     expected_df
   )
 

@@ -689,10 +689,10 @@ DataFrame_sort = function(
     ...,
     descending = FALSE,
     nulls_last = FALSE,
-    maintain_order = FALSE
-  ) {
+    maintain_order = FALSE) {
   self$lazy()$sort(
-    by, ..., descending = descending, nulls_last = nulls_last, maintain_order = maintain_order
+    by, ...,
+    descending = descending, nulls_last = nulls_last, maintain_order = maintain_order
   )$collect()
 }
 

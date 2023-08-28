@@ -446,8 +446,7 @@ LazyFrame_sink_parquet = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     no_optimization = FALSE,
-    slice_pushdown = TRUE
-) {
+    slice_pushdown = TRUE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -526,8 +525,7 @@ LazyFrame_sink_ipc = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     no_optimization = FALSE,
-    slice_pushdown = TRUE
-    ) {
+    slice_pushdown = TRUE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -931,8 +929,7 @@ LazyFrame_sort = function(
     ..., # unnamed Into expr
     descending = FALSE, #  bool | vector[bool] = False,
     nulls_last = FALSE,
-    maintain_order = FALSE
-) {
+    maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
     self, by, err_on_named_args(...), descending, nulls_last, maintain_order
   ) |>
@@ -1256,7 +1253,7 @@ LazyFrame_profile = function() {
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers","numbers_2"))$collect()
+#' df$explode(c("numbers", "numbers_2"))$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)

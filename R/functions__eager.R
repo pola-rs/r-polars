@@ -129,18 +129,17 @@ pl$date_range = function(
     name = NULL, # : str | None = None,
     time_unit = "us",
     time_zone = NULL # : str | None = None
-) {
-
+    ) {
   if (missing(end)) {
     end = start
     interval = "1h"
   }
 
-  if(!is.null(name)) warning("arg name is deprecated use $alias() instead")
+  if (!is.null(name)) warning("arg name is deprecated use $alias() instead")
   name = name %||% ""
 
   f_eager_eval = \(lit) {
-    if(isTRUE(eager)) {
+    if (isTRUE(eager)) {
       result(lit$lit_to_s())
     } else {
       Ok(lit)
@@ -153,16 +152,15 @@ pl$date_range = function(
   r_date_range_lazy(start, end, interval, closed, time_unit, time_zone) |>
     and_then(f_eager_eval) |>
     unwrap("in pl$date_range()")
-
 }
 
 
 # date range support functions
 cast_naive_value_to_datetime_expr = function(x, time_unit = "ms", time_zone = NULL) {
-  if(!inherits(x, c("numeric","integer","integer64")))  {
+  if (!inherits(x, c("numeric", "integer", "integer64"))) {
     x
   } else {
-    pl$lit(x)$cast(pl$Datetime(time_unit,time_zone))
+    pl$lit(x)$cast(pl$Datetime(time_unit, time_zone))
   }
 }
 

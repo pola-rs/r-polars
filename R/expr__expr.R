@@ -645,7 +645,6 @@ construct_ProtoExprArray = function(...) {
 
     # if args named, convert string to col and alias any column by name if a name
   } else {
-
     for (i in seq_along(args)) {
       arg = args[[i]]
       name = arg_names[i]
@@ -3809,20 +3808,17 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
     frac = NULL, with_replacement = TRUE, shuffle = FALSE,
-    seed = NULL, fixed_seed = FALSE, n = NULL
-) {
-
+    seed = NULL, fixed_seed = FALSE, n = NULL) {
   pcase(
-     !is.null(n) && !is.null(frac), {
-       Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
-     },
-     !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
-     or_else = {
-       .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
-     }
+    !is.null(n) && !is.null(frac), {
+      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+    },
+    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+    or_else = {
+      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+    }
   ) |>
     unwrap("in $sample()")
-
 }
 
 

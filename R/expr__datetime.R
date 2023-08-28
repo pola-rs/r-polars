@@ -40,8 +40,7 @@
 ExprDT_truncate = function(
     every, # str
     offset = NULL, # : str | timedelta | None = None,
-    use_earliest = NULL
-    ) {
+    use_earliest = NULL) {
   .pr$Expr$dt_truncate(self, every, offset, use_earliest) |>
     unwrap("in dt$truncate()")
 }

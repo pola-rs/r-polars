@@ -466,13 +466,13 @@ test_that("and or is_in xor", {
       (pl$lit(NA_real_) == pl$lit(NA_real_))$is_null()$alias("NULL_eral is NULL_real is null"),
 
       # type nothing is IN nothing # not allowed
-      #pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
+      # pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
 
       # neither typed nor untyped NULL is IN NULL, changed behavior from  0.30-0.32, previous false
       pl$lit(NA_real_)$is_in(pl$lit(NULL))$alias("NULL typed is in NULL")
 
       # anymore from rust-polars 0.30-0.32
-      #pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
+      # pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
@@ -1450,7 +1450,7 @@ test_that("Expr_filter", {
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
   )$to_data_frame()
-  #row.names(df) = NULL
+  # row.names(df) = NULL
 
   expect_identical(
     df,
@@ -2055,8 +2055,6 @@ test_that("shuffle", {
 
 
 test_that("sample", {
-
-
   df = pl$DataFrame(a = 1:10)
   res = df$select(
     pl$col("a")$sample(seed = 1)$alias("default")$implode(),

@@ -1,31 +1,27 @@
 test_that("pl$lit posix", {
-
   expect_identical(
     pl$lit(as.POSIXct("2022-01-01"))$to_r(),
     as.POSIXct("2022-01-01")
   )
 
   expect_identical(
-    pl$lit(as.POSIXct("2022-01-01",tz = "GMT"))$to_r(),
+    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
     as.POSIXct("2022-01-01", tz = "GMT")
   )
 
   expect_identical(
-    pl$lit(as.POSIXct("2022-01-01",tz = "HST"))$to_r(),
+    pl$lit(as.POSIXct("2022-01-01", tz = "HST"))$to_r(),
     as.POSIXct("2022-01-01", tz = "HST")
   )
 
   expect_identical(
-    pl$lit(as.POSIXct("2022-01-01",tz = "GMT"))$to_r(),
+    pl$lit(as.POSIXct("2022-01-01", tz = "GMT"))$to_r(),
     as.POSIXct("2022-01-01", tz = "GMT")
   )
-
 })
 
 
 test_that("pl$date_range", {
-
-
   t1 = as.POSIXct("2022-01-01")
   t2 = as.POSIXct("2022-01-02")
 
@@ -227,7 +223,6 @@ test_that("dt$round", {
     c("BadArgument", "When", "TypeMismatch", "BadValue", "PlainErrorMessage")
   )
   expect_identical(ctx$BadArgument, "offset")
-
 })
 
 test_that("dt$combine", {
@@ -635,7 +630,7 @@ test_that("dt$with_time_unit cast_time_unit", {
   # with wrong inputs
   expect_grepl_error(
     pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$with_time_unit("bob"),
-     r"{The argument \[tu\] caused an error}"
+    r"{The argument \[tu\] caused an error}"
   )
 
   expect_grepl_error(
@@ -816,4 +811,3 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
 })
-

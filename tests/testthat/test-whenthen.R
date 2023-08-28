@@ -20,9 +20,6 @@ test_that("When-class", {
     ctx$BadArgument,
     "condition"
   )
-
-
-
 })
 
 
@@ -32,7 +29,7 @@ test_that("Then-class", {
   expect_true(inherits(pl$when(TRUE)$then(FALSE)$when(NA), "ChainedWhen"))
   expect_true(inherits(pl$when(TRUE)$then(FALSE)$otherwise(NA), "Expr"))
 
-  ctx = result( pl$when("a")$then(complex(2)))$err$contexts()
+  ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
   expect_identical(
     names(ctx),
     c("BadArgument", "PlainErrorMessage", "BadValue", "PlainErrorMessage")
@@ -41,7 +38,6 @@ test_that("Then-class", {
     ctx$BadArgument,
     "statement"
   )
-
 })
 
 
@@ -87,4 +83,3 @@ test_that("when-then-otherwise", {
     )
   )
 })
-

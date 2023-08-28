@@ -174,15 +174,15 @@ ExprArr_get = function(index) .pr$Expr$lst_get(self, wrap_e(index, str_to_lit = 
 #' @return Expr
 #' @aliases arr_take arr.take
 #' @examples
-#' df = pl$DataFrame(list(a=list(c(3,2,1), 1, c(1,2)))) #
+#' df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
 #' idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-#' df$select(pl$col("a")$arr$take(pl$lit(idx),null_on_oob = TRUE))
+#' df$select(pl$col("a")$arr$take(pl$lit(idx), null_on_oob = TRUE))
 #'
-#' #with implicit conversion to Expr
-#' df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L,999L)),null_on_oob = TRUE))
+#' # with implicit conversion to Expr
+#' df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
 #'
 #' # by some column name, must cast to an Int/Uint type to work
-#' df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob=TRUE))
+#' df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 ExprArr_take = function(index, null_on_oob = FALSE) {
   expr = wrap_e(index, str_to_lit = FALSE)
   .pr$Expr$lst_take(self, expr, null_on_oob) |>

@@ -281,7 +281,7 @@ find_missing_return = function() {
 #' @export
 #'
 #' @examples
-run_all_examples_collect_errors = \(skip_these=character()) {
+run_all_examples_collect_errors = \(skip_these = character()) {
   paths = list.files(full.names = TRUE, path = "./man/.")
   fnames = list.files(full.names = FALSE, path = "./man/.")
   names(paths) = fnames
@@ -291,12 +291,11 @@ run_all_examples_collect_errors = \(skip_these=character()) {
 
   out = lapply(paths, \(path) {
     print(path)
-    txt = capture.output(
-      {err = polars:::result(pkgload::run_example(path=path))$err}
-    )
-    if(!is.null(err)) list(err=err,txt=txt)
+    txt = capture.output({
+      err = polars:::result(pkgload::run_example(path = path))$err
+    })
+    if (!is.null(err)) list(err = err, txt = txt)
   })
 
   list(errors = out[!sapply(out, is.null)], oks = names(out)[sapply(out, is.null)])
 }
-
