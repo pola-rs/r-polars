@@ -9,7 +9,8 @@
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
 
 ## What's changed
-- Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
+- New method `$fetch()` for `LazyFrame` (#319).
+- Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343).
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
 - New method `$clone()` for `LazyFrame` (#347).
 - New methods `$optimization_toggle()` and `$profile()` for `LazyFrame` (#323).
