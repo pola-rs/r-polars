@@ -281,13 +281,14 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 
 ### Other options implemented on rust side (likely due to thread safety)
 
-#' enable disable global string cache
+#' Toggle the global string cache
+#'
+#' Some functions (e.g joins) can be applied on Categorical series only allowed
+#' if using the global string cache is enabled. This function enables or disables
+#' the string_cache and override any contexts made by `pl$with_string_cache()`.
+#' In general, you should use `pl$with_string_cache()` instead.
+#'
 #' @name pl_enable_string_cache
-#' @description e.g. join to Categorical series is only allowed if using global string cache.
-#' Local categorical encodings may differ and is not meaningful to combine as is.
-#' @details
-#' This function will force enable/disable the string_cache and override any contexts made
-#' by `pl$with_string_cache`. Prefer to use `pl$with_string_cache`.
 #'
 #' @keywords options
 #' @param toggle Boolean. TRUE enable, FALSE disable.
@@ -298,6 +299,7 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' @examples
 #' pl$enable_string_cache(TRUE)
 #' pl$using_string_cache()
+
 pl$enable_string_cache = function(toggle) {
   enable_string_cache(toggle) |>
     unwrap("in pl$enable_string_cache()") |>
@@ -305,23 +307,34 @@ pl$enable_string_cache = function(toggle) {
 }
 
 
-#' enable disable global string cache
+#' Check if the global string cache is enabled
+#'
+#' This function simply checks if the global string cache is active.
+#'
 #' @name pl_using_string_cache
-#' @description get if currently global string cache is active.
+#'
 #' @keywords options
-#' @return using_string_cache: Boolean
+#' @return A boolean
 #' @seealso
 #' [`pl$with_string_cache`][pl_with_string_cache]
 #' [`pl$enable_enable_cache`][pl_enable_string_cache]
 #' @examples
+#' pl$enable_string_cache(TRUE)
 #' pl$using_string_cache()
+#' pl$enable_string_cache(FALSE)
+#' pl$using_string_cache()
+
 pl$using_string_cache = function() {
   using_string_cache()
 }
 
 
-#' Eval R expression with global string cache
+#' Evaluate one or several expressions with global string cache
+#'
+#' This function only temporarily enables the global string cache.
+#'
 #' @name pl_with_string_cache
+#'
 #' @keywords options
 #' @return return value of expression
 #' @seealso
@@ -334,6 +347,7 @@ pl$using_string_cache = function() {
 #'   df2 = pl$DataFrame(tail(iris, 2))
 #' })
 #' pl$concat(list(df1, df2))
+
 pl$with_string_cache = function(expr) {
   increment_string_cache_counter(TRUE)
   on.exit(increment_string_cache_counter(FALSE))
@@ -343,22 +357,30 @@ pl$with_string_cache = function(expr) {
 
 
 
-#' get/set global R session pool cap
-#' @name global_rpool_cap
-#' @param n integer, the capacity limit R sessions to process R code.
-#' @return for `pl$get_global_rpool_cap()` a list(available = ? , capacity = ?)
-#' where available is how many R session already spawned in pool. Capacity is the limit of
-#' how many new R sessions to spawn. Anytime a polars thread worker needs a background R session
-#' specifically to run R code embedded in a query via `$map(..., in_background = TRUE)` or
-#' `$apply(..., in_background = TRUE)` it will obtain any R session idling in rpool, otherwise spawn
-#' a new R session (process) and add it to pool if not `capacity` has been reached. If capacity has
-#' been reached already the thread worker will sleep until an R session is idling.
+#' Get/set global R session pool capacity
 #'
-#' Background R sessions communicate via polars arrow IPC (series/vectors) or R serialize +
-#' shared memory buffers via the rust crate `ipc-channel`. Multi-process communication has overhead
-#' because all data must be serialized/de-serialized and sent via buffers. Using multiple R sessions
-#' will likely only give a speed-up in a `low io - high cpu` scenario. Native polars query syntax
-#' runs in threads and have no overhead.
+#' @name global_rpool_cap
+#' @param n Integer, the capacity limit R sessions to process R code.
+#'
+#' @details
+#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
+#' serialize + shared memory buffers via the rust crate `ipc-channel`.
+#' Multi-process communication has overhead because all data must be
+#' serialized/de-serialized and sent via buffers. Using multiple R sessions
+#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
+#' polars query syntax runs in threads and have no overhead.
+#'
+#' @return
+#' `pl$get_global_rpool_cap()` returns a list with two elements `available`
+#' and `capacity`. `available` is the number of R sessions are already spawned
+#' in pool. `capacity` is the limit of new R sessions to spawn. Anytime a polars
+#' thread worker needs a background R session specifically to run R code embedded
+#' in a query via `$map(..., in_background = TRUE)` or
+#' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
+#' rpool, or spawn a new R session (process) and add it to pool if `capacity`
+#' is not already reached. If `capacity` is already reached, the thread worker
+#' will sleep until an R session is idling.
+#'
 #' @keywords options
 #' @examples
 #' default = pl$get_global_rpool_cap()

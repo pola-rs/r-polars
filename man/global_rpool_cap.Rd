@@ -3,27 +3,31 @@
 \name{global_rpool_cap}
 \alias{global_rpool_cap}
 \alias{set_global_rpool_cap}
-\title{get/set global R session pool cap}
+\title{Get/set global R session pool capacity}
 \arguments{
-\item{n}{integer, the capacity limit R sessions to process R code.}
+\item{n}{Integer, the capacity limit R sessions to process R code.}
 }
 \value{
-for \code{pl$get_global_rpool_cap()} a list(available = ? , capacity = ?)
-where available is how many R session already spawned in pool. Capacity is the limit of
-how many new R sessions to spawn. Anytime a polars thread worker needs a background R session
-specifically to run R code embedded in a query via \verb{$map(..., in_background = TRUE)} or
-\verb{$apply(..., in_background = TRUE)} it will obtain any R session idling in rpool, otherwise spawn
-a new R session (process) and add it to pool if not \code{capacity} has been reached. If capacity has
-been reached already the thread worker will sleep until an R session is idling.
-
-Background R sessions communicate via polars arrow IPC (series/vectors) or R serialize +
-shared memory buffers via the rust crate \code{ipc-channel}. Multi-process communication has overhead
-because all data must be serialized/de-serialized and sent via buffers. Using multiple R sessions
-will likely only give a speed-up in a \verb{low io - high cpu} scenario. Native polars query syntax
-runs in threads and have no overhead.
+\code{pl$get_global_rpool_cap()} returns a list with two elements \code{available}
+and \code{capacity}. \code{available} is the number of R sessions are already spawned
+in pool. \code{capacity} is the limit of new R sessions to spawn. Anytime a polars
+thread worker needs a background R session specifically to run R code embedded
+in a query via \verb{$map(..., in_background = TRUE)} or
+\verb{$apply(..., in_background = TRUE)}, it will obtain any R session idling in
+rpool, or spawn a new R session (process) and add it to pool if \code{capacity}
+is not already reached. If \code{capacity} is already reached, the thread worker
+will sleep until an R session is idling.
 }
 \description{
-get/set global R session pool cap
+Get/set global R session pool capacity
+}
+\details{
+Background R sessions communicate via polars arrow IPC (series/vectors) or R
+serialize + shared memory buffers via the rust crate \code{ipc-channel}.
+Multi-process communication has overhead because all data must be
+serialized/de-serialized and sent via buffers. Using multiple R sessions
+will likely only give a speed-up in a \verb{low io - high cpu} scenario. Native
+polars query syntax runs in threads and have no overhead.
 }
 \examples{
 default = pl$get_global_rpool_cap()

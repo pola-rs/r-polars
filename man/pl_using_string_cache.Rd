@@ -2,14 +2,17 @@
 % Please edit documentation in R/options.R
 \name{pl_using_string_cache}
 \alias{pl_using_string_cache}
-\title{enable disable global string cache}
+\title{Check if the global string cache is enabled}
 \value{
-using_string_cache: Boolean
+A boolean
 }
 \description{
-get if currently global string cache is active.
+This function simply checks if the global string cache is active.
 }
 \examples{
+pl$enable_string_cache(TRUE)
+pl$using_string_cache()
+pl$enable_string_cache(FALSE)
 pl$using_string_cache()
 }
 \seealso{

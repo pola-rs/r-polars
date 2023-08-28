@@ -2,12 +2,12 @@
 % Please edit documentation in R/options.R
 \name{pl_with_string_cache}
 \alias{pl_with_string_cache}
-\title{Eval R expression with global string cache}
+\title{Evaluate one or several expressions with global string cache}
 \value{
 return value of expression
 }
 \description{
-Eval R expression with global string cache
+This function only temporarily enables the global string cache.
 }
 \examples{
 # activate string cache temporarily when constructing two DataFrame's
