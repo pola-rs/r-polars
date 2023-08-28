@@ -2,14 +2,14 @@
 % Please edit documentation in R/error__trait.R
 \name{where_in}
 \alias{where_in}
-\title{Internal generic method to point to which public method the user got wrong}
+\title{where in (lexically) error happened}
 \usage{
 where_in(err, context)
 }
 \arguments{
 \item{err}{any type which impl as.character}
 
-\item{call}{calling context}
+\item{context}{calling context}
 }
 \value{
 err as string
