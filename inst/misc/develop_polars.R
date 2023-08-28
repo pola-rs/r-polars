@@ -13,6 +13,7 @@ load_polars = function(
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
+    RPOLARS_PROFILE = "release",
     ...,
     .packages = c("arrow", "nanoarrow")) {
   # bundle all envvars
@@ -45,6 +46,7 @@ build_polars = function(
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
+    RPOLARS_PROFILE = "release",
     ...,
     .packages = c("arrow", "nanoarrow")) {
   # bundle all envvars
@@ -78,6 +80,7 @@ check_polars = function(
     RPOLARS_RUST_SOURCE = paste0(getwd(), "/src/rust"),
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
+    RPOLARS_PROFILE = "release",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
     FILTER_CHECK_NO_FILTER = "false",
     ...,

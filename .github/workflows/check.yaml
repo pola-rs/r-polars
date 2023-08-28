@@ -81,7 +81,7 @@ jobs:
         shell: bash
         run: |
           echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
-          echo "RPOLARS_PROFILE=release-optimized" >>$GITHUB_ENV
+          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
