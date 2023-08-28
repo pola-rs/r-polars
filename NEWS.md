@@ -25,7 +25,11 @@
   and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
   `RThreadHandle` (#311).
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
-
+- `Expr_is_in` operation no longer supported for dtype `null`.
+- Various subtle changes from upstream rust-polars : 
+  `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null` not `true`
+  `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false` and before `true`
+  `pl$lit(numeric(0))$sum()$lit_to_s()`now yields `0f64` and not `null`.
 
 ## What's changed
 - `<Expr>$all() and <Expr>$any()` now has `drop_nulls = TRUE` arg (#334).
