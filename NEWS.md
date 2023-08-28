@@ -2,39 +2,58 @@
 
 # polars 0.7.0.9000
 
-## BREAKING CHANGES
-- r-polars relies on rust-polars 0.32.0 and therefore rust toolchain: nightly bumped to
-  nightly-2023-07-27 and MSRV is now >=1.70 (#334).
-- param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()` `$sink_ipc()` and
-  `$sink_parquet()` is renamed and split into `comm_subplan_elim = TRUE` and
-  `comm_subexpr_elim = TRUE` (#334).
-- Series_is_sorted: Nulls_last argument is dropped (#334).
-- `when-then-otherwise` classes are renamed to `When`, `Then`, `ChainedWhen` and `ChainedThen`. The
-  syntactic illegal methods have been removed, e.g. chaining `$when()` twice. (#334).
-- Github release + R-universe is compiled with `profile=release-optimized`, which now includes
-  `strip=false`, `lto=fat` & `codegen-units=1`. This should make the binary a bit smaller and faster.
-  See also FULL_FEATURES=`true` env flag to enable simd with nightly rust. For development or faster
-  compilation, use instead `profile=release` (#334).
-- fmt arg is renamed format in `pl$Ptimes`, `<Expr>$str$strptime` (#334). 
-- `<Expr>$approx_unique()` changed name to `$approx_n_unique()` (#334).
-- `<Expr>$str$json_extract` arg `pat` changed to `dtype` and `infer_schema_length = 100`arg added (#334).
-- `pl$date_range()` renaming args `low`->`start`, `high`->`end`, `lazy=TRUE`->`eager=FALSE`. Can no longer arg `time_zone` / `time_unit` to implicitly cast time types. These two args can only be used to annotate a naive time unit. Mixing `time_zone` and `time_unit` for `start` and `end` is not allowed anymore (#334).
+## CHANGES DUE TO RUST-POLARS 0.32.0
+
+rust-polars was updated to 0.32.0, which comes with many breaking changes and new
+features. Unrelated breaking changes and new features are put in separate sections
+(#334):
+  
+- update of rust toolchain: nightly bumped to nightly-2023-07-27 and MSRV is 
+  now >=1.70.
+- param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()`,
+  `$sink_ipc()` and `$sink_parquet()` is renamed and split into 
+  `comm_subplan_elim = TRUE` and `comm_subexpr_elim = TRUE`.
+- Series_is_sorted: nulls_last argument is dropped.
+- `when-then-otherwise` classes are renamed to `When`, `Then`, `ChainedWhen` 
+  and `ChainedThen`. The syntactically illegal methods have been removed, e.g.
+  chaining `$when()` twice.
+- Github release + R-universe is compiled with `profile=release-optimized`,
+  which now includes `strip=false`, `lto=fat` & `codegen-units=1`. This should 
+  make the binary a bit smaller and faster. See also FULL_FEATURES=`true` env 
+  flag to enable simd with nightly rust. For development or faster compilation,
+  use instead `profile=release`.
+- `fmt` arg is renamed `format` in `pl$Ptimes` and `<Expr>$str$strptime`. 
+- `<Expr>$approx_unique()` changed name to `<Expr>$approx_n_unique()`.
+- `<Expr>$str$json_extract` arg `pat` changed to `dtype` and has a new argument
+  `infer_schema_length = 100`.
+- Some arguments in `pl$date_range()` have changed: `low` -> `start`,   
+  `high` -> `end`, `lazy = TRUE` -> `eager = FALSE`. Args `time_zone` and `time_unit` 
+  can no longer be used to implicitly cast time types. These two args can only
+  be used to annotate a naive time unit. Mixing `time_zone` and `time_unit` for
+  `start` and `end` is not allowed anymore.
+- `<Expr>$is_in()` operation no longer supported for dtype `null`.
+- Various subtle changes: 
+    - `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null` 
+      not `true`.
+    - `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false` 
+      and before `true`
+    - `pl$lit(numeric(0))$sum()$lit_to_s()` now yields `0f64` and not `null`.
+- `<Expr>$all()` and `<Expr>$any()` have a new arg `drop_nulls = TRUE`.
+- `<Expr>$sample()` and `<Expr>$shuffle()` have a new arg `fix_seed`.
+- `<DataFrame>$sort()` and `<LazyFrame>$sort()` have a new arg 
+  `maintain_order = FALSE`.
+
+## OTHER BREAKING CHANGES
+
 - `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` 
   instead (#346).
 - `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()` 
   and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
   `RThreadHandle` (#311).
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
-- `Expr_is_in` operation no longer supported for dtype `null`.
-- Various subtle changes from upstream rust-polars : 
-  `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null` not `true`
-  `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false` and before `true`
-  `pl$lit(numeric(0))$sum()$lit_to_s()`now yields `0f64` and not `null`.
 
-## What's changed
-- `<Expr>$all() and <Expr>$any()` now has `drop_nulls = TRUE` arg (#334).
-- `<Expr>$sample() and <Expr>$shuffle()` now has an arg called fix_seed (#334).
-- `<DataFrame>` and `<LazyFrame>$sort()` now has an extra arg `maintain_order = FALSE` (#334).
+## Other changes
+
 - Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
 - New method `$clone()` for `LazyFrame` (#347).
