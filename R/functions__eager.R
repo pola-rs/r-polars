@@ -5,6 +5,11 @@
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally
 #' @param parallel BOOL default TRUE, only used for LazyFrames
 #'
+#' @details
+#' Categorical columns/Series must have been constructed while global string cache enabled
+#' [`pl$enable_string_cache()`][pl_enable_string_cache]
+#'
+#'
 #' @return DataFrame, or Series, LazyFrame or Expr
 #'
 #' @examples

@@ -58,6 +58,8 @@
   CSE: "Activate common subplan elimination optimization" (#323)
 - Named expression e.g. `pl$select(newname = pl$lit(2))` are no longer experimental
   and allowed as default (#357).
+- Added methods `pl$enable_string_cache()`, `pl$with_string_cache()` and `pl$using_string_cache()`
+  for joining/comparing Categorical series/columns (#361).
 
 # polars 0.7.0
 

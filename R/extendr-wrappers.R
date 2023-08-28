@@ -85,6 +85,14 @@ test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
 test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 
+enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
+
+using_string_cache <- function() .Call(wrap__using_string_cache)
+
+increment_string_cache_counter <- function(toggle) .Call(wrap__increment_string_cache_counter, toggle)
+
+reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
+
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)

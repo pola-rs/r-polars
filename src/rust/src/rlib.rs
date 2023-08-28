@@ -222,6 +222,8 @@ fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
     }
 }
 
+// setting functions
+
 // -- Meta Robj functions
 #[extendr]
 pub fn mem_address(robj: Robj) -> String {
@@ -299,10 +301,12 @@ extendr_module! {
     fn arrow_stream_to_rust;
     fn dtype_str_repr;
 
+    //robj meta
     fn internal_wrap_e;
     fn mem_address;
     fn clone_robj;
 
+    //for testing
     fn test_robj_to_usize;
     fn test_robj_to_f64;
     fn test_robj_to_i64;

@@ -22,6 +22,7 @@ pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod rpolarserr;
+pub mod rstringcache;
 pub mod series;
 pub mod utils;
 pub use serde_json;
@@ -47,4 +48,5 @@ extendr_module! {
     use lazy;
     use series;
     use info;
+    use rstringcache;
 }
