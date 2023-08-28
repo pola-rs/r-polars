@@ -18,6 +18,10 @@ DataFrame, or Series, LazyFrame or Expr
 \description{
 Concat polars objects
 }
+\details{
+Categorical columns/Series must have been constructed while global string cache enabled
+\code{\link[=pl_enable_string_cache]{pl$enable_string_cache()}}
+}
 \examples{
 # vertical
 l_ver = lapply(1:10, function(i) {

@@ -277,3 +277,125 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
   time = min((this - last) * 1000, cap)
   if (!is.null(cap_name) && time == cap) cap_name else time
 }
+
+
+### Other options implemented on rust side (likely due to thread safety)
+
+#' Toggle the global string cache
+#'
+#' Some functions (e.g joins) can be applied on Categorical series only allowed
+#' if using the global string cache is enabled. This function enables or disables
+#' the string_cache and override any contexts made by `pl$with_string_cache()`.
+#' In general, you should use `pl$with_string_cache()` instead.
+#'
+#' @name pl_enable_string_cache
+#'
+#' @keywords options
+#' @param toggle Boolean. TRUE enable, FALSE disable.
+#' @return enable_string_cache: no return
+#' @seealso
+#' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$with_string_cache`][pl_with_string_cache]
+#' @examples
+#' pl$enable_string_cache(TRUE)
+#' pl$using_string_cache()
+
+pl$enable_string_cache = function(toggle) {
+  enable_string_cache(toggle) |>
+    unwrap("in pl$enable_string_cache()") |>
+    invisible()
+}
+
+
+#' Check if the global string cache is enabled
+#'
+#' This function simply checks if the global string cache is active.
+#'
+#' @name pl_using_string_cache
+#'
+#' @keywords options
+#' @return A boolean
+#' @seealso
+#' [`pl$with_string_cache`][pl_with_string_cache]
+#' [`pl$enable_enable_cache`][pl_enable_string_cache]
+#' @examples
+#' pl$enable_string_cache(TRUE)
+#' pl$using_string_cache()
+#' pl$enable_string_cache(FALSE)
+#' pl$using_string_cache()
+
+pl$using_string_cache = function() {
+  using_string_cache()
+}
+
+
+#' Evaluate one or several expressions with global string cache
+#'
+#' This function only temporarily enables the global string cache.
+#'
+#' @name pl_with_string_cache
+#'
+#' @keywords options
+#' @return return value of expression
+#' @seealso
+#' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$enable_enable_cache`][pl_enable_string_cache]
+#' @examples
+#' # activate string cache temporarily when constructing two DataFrame's
+#' pl$with_string_cache({
+#'   df1 = pl$DataFrame(head(iris, 2))
+#'   df2 = pl$DataFrame(tail(iris, 2))
+#' })
+#' pl$concat(list(df1, df2))
+
+pl$with_string_cache = function(expr) {
+  increment_string_cache_counter(TRUE)
+  on.exit(increment_string_cache_counter(FALSE))
+  eval(expr, envir = parent.frame())
+}
+
+
+
+
+#' Get/set global R session pool capacity
+#'
+#' @name global_rpool_cap
+#' @param n Integer, the capacity limit R sessions to process R code.
+#'
+#' @details
+#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
+#' serialize + shared memory buffers via the rust crate `ipc-channel`.
+#' Multi-process communication has overhead because all data must be
+#' serialized/de-serialized and sent via buffers. Using multiple R sessions
+#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
+#' polars query syntax runs in threads and have no overhead.
+#'
+#' @return
+#' `pl$get_global_rpool_cap()` returns a list with two elements `available`
+#' and `capacity`. `available` is the number of R sessions are already spawned
+#' in pool. `capacity` is the limit of new R sessions to spawn. Anytime a polars
+#' thread worker needs a background R session specifically to run R code embedded
+#' in a query via `$map(..., in_background = TRUE)` or
+#' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
+#' rpool, or spawn a new R session (process) and add it to pool if `capacity`
+#' is not already reached. If `capacity` is already reached, the thread worker
+#' will sleep until an R session is idling.
+#'
+#' @keywords options
+#' @examples
+#' default = pl$get_global_rpool_cap()
+#' print(default)
+#' pl$set_global_rpool_cap(8)
+#' pl$get_global_rpool_cap()
+#' pl$set_global_rpool_cap(default$capacity)
+pl$get_global_rpool_cap = function() {
+  get_global_rpool_cap() |> unwrap()
+}
+
+#' @rdname global_rpool_cap
+#' @name set_global_rpool_cap
+pl$set_global_rpool_cap = function(n) {
+  set_global_rpool_cap(n) |>
+    unwrap() |>
+    invisible()
+}
