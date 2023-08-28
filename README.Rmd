@@ -126,6 +126,8 @@ Binary packages on GitHub releases are compiled by nightly Rust, with nightly fe
 For source installation,
 the Rust toolchain (Rust `r RcppTOML::parseTOML("src/rust/Cargo.toml")$package$"rust-version"` or later) must be configured.
 
+Currently you should install rust >=1.70 or nightly-2023-07-27 (for full features (simd)).
+
 Please check the <https://github.com/r-rust/hellorust> repository for about Rust code in R packages.
 
 ```{r, include = FALSE}
@@ -137,7 +139,7 @@ rust_toolchain_version = brio::read_file("Makefile") |>
 During source installation, some environment variables can be set to enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled, requires Rust toolchain `r rust_toolchain_version`)
-- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization, requires Rust 1.66 or later)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization, requires Rust or later)
 
 ## Quickstart example
 

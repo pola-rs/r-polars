@@ -127,7 +127,7 @@ df = pl$DataFrame(
       as.Date("2020-01-01"),
       as.Date("2023-01-02"),
       interval = "1y",
-      lazy = FALSE
+      eager = TRUE
   )
 )
 df
