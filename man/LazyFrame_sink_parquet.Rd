@@ -16,8 +16,8 @@ LazyFrame_sink_parquet(
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE
+  no_optimization = FALSE,
+  slice_pushdown = TRUE
 )
 }
 \arguments{
@@ -57,15 +57,16 @@ scan level.}
 \item{simplify_expression}{Boolean. Various optimizations, such as constant folding
 and replacing expensive operations with faster alternatives.}
 
-\item{slice_pushdown}{Boolean. Only load the required slice from the scan
-Don't materialize sliced outputs
-level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
-
 \item{no_optimization}{Boolean. Turn off the following optimizations:
 predicate_pushdown = FALSE
 projection_pushdown = FALSE
 slice_pushdown = FALSE
-common_subplan_elimination = FALSE}
+comm_subplan_elim = FALSE
+comm_subexpr_elim = FALSE}
+
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+Don't materialize sliced outputs
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 }
 \description{
 Persists a LazyFrame at the provided path.

@@ -1,10 +1,9 @@
 use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
-use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
+
 use crate::rpolarserr::{rdbg, RResult};
-use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
@@ -59,13 +58,13 @@ pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
 #[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::min_exprs(exprs).into()
+    polars::lazy::dsl::min_horizontal(exprs).into()
 }
 
 #[extendr]
 fn max_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::max_exprs(exprs).into()
+    polars::lazy::dsl::max_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -77,7 +76,7 @@ fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
 #[extendr]
 fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::sum_exprs(exprs).into()
+    polars::lazy::dsl::sum_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -95,61 +94,52 @@ fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
     .into())
 }
 
-#[extendr]
-fn r_date_range(
-    start: f64,
-    stop: f64,
-    every: &str,
-    closed: &str, //Wap<ClosedWindow>
-    name: &str,
-    tu: Robj,
-    tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    use crate::utils::try_f64_into_i64;
-
-    use pl::IntoSeries;
-
-    let res = || -> std::result::Result<Series, String> {
-        Ok(Series(
-            polars::time::date_range_impl(
-                name,
-                try_f64_into_i64(start)?,
-                try_f64_into_i64(stop)?,
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                robj_to_timeunit(tu)?,
-                tz.into_option().as_ref(),
-            )
-            .map_err(|err| format!("in r_date_range: {}", err))?
-            .into_series(),
-        ))
-    }();
-    r_result_list(res)
-}
+// #[extendr]
+// fn r_date_range(
+//     start: Robj,
+//     end: Robj,
+//     every: Robj,
+//     closed: Robj, //Wap<ClosedWindow>
+//     name: Robj,
+//     time_unit: Robj,
+//     time_zone: Robj,
+// ) -> RResult<Series> {
+//     use pl::IntoSeries;
+//     Ok(Series(
+//         polars::time::date_range_impl(
+//             robj_to!(str, name)?,
+//             robj_to!(i64, start)?,
+//             robj_to!(i64, end)?,
+//             pl::Duration::parse(robj_to!(str, every)?),
+//             robj_to!(new_closed_window, closed)?,
+//             robj_to!(timeunit, time_unit)?,
+//             robj_to!(Option, String, time_zone)?.as_ref(),
+//         )
+//         .map_err(polars_to_rpolars_err)?
+//         .into_series(),
+//     ))
+// }
 
 #[extendr]
 fn r_date_range_lazy(
-    start: &Expr,
-    end: &Expr,
-    every: &str,
-    closed: &str,
-    tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    let res = || -> std::result::Result<Expr, String> {
-        Ok(Expr(
-            polars::lazy::dsl::functions::date_range(
-                start.0.clone(),
-                end.0.clone(),
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                tz.into_option(),
-            )
-            .explode(),
-        ))
-    }();
-    r_result_list(res)
+    start: Robj,
+    end: Robj,
+    every: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+) -> RResult<Expr> {
+    Ok(Expr(
+        polars::lazy::dsl::functions::date_range(
+            robj_to!(PLExprCol, start)?,
+            robj_to!(PLExprCol, end)?,
+            robj_to!(pl_duration, every)?,
+            robj_to!(new_closed_window, closed)?,
+            robj_to!(Option, timeunit, time_unit)?,
+            robj_to!(Option, String, time_zone)?,
+        )
+        .explode(),
+    ))
 }
 
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
@@ -300,7 +290,7 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
-    fn r_date_range;
+    //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;

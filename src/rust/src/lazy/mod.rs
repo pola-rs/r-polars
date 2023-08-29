@@ -1,7 +1,9 @@
 //mod apply;
 //pub mod dataframe;
+pub mod construct_expr;
 pub mod dataframe;
 pub mod dsl;
+pub mod whenthen;
 //#[cfg(feature = "meta")]
 //mod meta;
 //pub mod utils;
@@ -38,6 +40,7 @@ pub mod dsl;
 use extendr_api::*;
 extendr_module! {
     mod lazy;
+    use whenthen;
     use dsl;
     use dataframe;
 }

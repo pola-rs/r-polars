@@ -10,7 +10,7 @@ passed to as.POSIXct converted to seconds.}
 
 \item{tu}{timeunit either "s","ms","us","ns"}
 
-\item{fmt}{a format string passed to as.POSIXct format via ...}
+\item{format}{a format string passed to as.POSIXct format via ...}
 }
 \value{
 a PTime vector either double or integer, with class "PTime" and attribute "tu" being

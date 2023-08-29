@@ -5,15 +5,15 @@ test_that("str$strptime datetime", {
     "invalid time"
   )
 
-  expect_grepl_error(
-    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), fmt = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
-    "strict conversion to date"
+  expect_error(
+    pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
+    "strict datetime"
   )
 
   expect_identical(
     pl$lit(txt_datetimes)$str$strptime(
       pl$Datetime(),
-      fmt = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
+      format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
     )$to_r(),
     as.POSIXct(txt_datetimes, format = "%Y-%m-%d %H:%M:%S %z", tz = "UTC")
   )
@@ -24,24 +24,24 @@ test_that("str$strptime date", {
   txt_dates = c(
     "2023-01-01 11:22:33 -0100",
     "2023-01-01 11:22:33 +0300",
-    "2022-1-1",
+    "2022-01-01",
     "invalid time"
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Int32, fmt = "%Y-%m-%d ")$lit_to_s(),
+    pl$lit(txt_dates)$str$strptime(pl$Int32, format = "%Y-%m-%d")$lit_to_s(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_dates)$str$strptime(pl$Date, fmt = "%Y-%m-%d ")$lit_to_s(),
-    "strict conversion to date"
+    pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$lit_to_s(),
+    "strict date parsing failed"
   )
 
   expect_identical(
     pl$lit(txt_dates)$str$strptime(
       pl$Date,
-      fmt = "%Y-%m-%d ", exact = TRUE, strict = FALSE,
+      format = "%Y-%m-%d ", exact = TRUE, strict = FALSE,
     )$to_r(),
     as.Date(c(NA, NA, "2022-1-1", NA))
   )
@@ -49,7 +49,7 @@ test_that("str$strptime date", {
   expect_identical(
     pl$lit(txt_dates)$str$strptime(
       pl$Date,
-      fmt = "%Y-%m-%d ", exact = FALSE, strict = FALSE,
+      format = "%Y-%m-%d", exact = FALSE, strict = FALSE,
     )$to_r(),
     as.Date(txt_dates)
   )
@@ -63,19 +63,19 @@ test_that("str$strptime time", {
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Int32, fmt = "%H:%M:%S %z")$lit_to_s(),
+    pl$lit(txt_times)$str$strptime(pl$Int32, format = "%H:%M:%S %z")$lit_to_s(),
     "datatype should be of type \\{Date, Datetime, Time\\}"
   )
 
   expect_grepl_error(
-    pl$lit(txt_times)$str$strptime(pl$Time, fmt = "%H:%M:%S %z")$lit_to_s(),
-    "strict conversion to times failed"
+    pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$lit_to_s(),
+    "strict time parsing failed"
   )
 
   expect_equal(
     pl$lit(txt_times)$str$strptime(
       pl$Time,
-      fmt = "%H:%M:%S %z", strict = FALSE,
+      format = "%H:%M:%S %z", strict = FALSE,
     )$to_r(),
     pl$PTime(txt_times, tu = "ns")
   )

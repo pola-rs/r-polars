@@ -21,7 +21,7 @@ pl$DataFrame(
     as.numeric(as.POSIXct("2001-1-1 00:00:6")) * 1E6,
     interval = "2s654321us",
     time_unit = "us", # instruct polars input is us, and store as us
-    lazy = FALSE
+    eager = TRUE
   )
 )$with_columns(
   pl$col("date")$cast(pl$Int64)$alias("datetime int64"),

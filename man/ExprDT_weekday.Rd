@@ -22,7 +22,7 @@ df = pl$DataFrame(
     as.Date("2021-1-05"),
     interval = "1d",
     time_zone = "GMT",
-    lazy = FALSE
+    eager = TRUE
   )
 )
 df$with_columns(

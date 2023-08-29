@@ -80,7 +80,7 @@ test$groupby(pl$col("cyl"))$agg(
   pl$col("mpg"), # varying number of values
   pl$col("mpg")$slice(0, 2)$suffix("_sliced"), # two values
   # aggregated to one value and implicitly unpacks list
-  pl$col("mpg")$sum()$suffix("_summed") 
+  pl$col("mpg")$sum()$suffix("_summed")
 )
 ```
 
@@ -106,7 +106,7 @@ pl$DataFrame(a = 1:4)$with_columns(
   # take 1:3, name it, then sum, then multiply with two
   pl$lit(1:3)$alias("lit_sum_add_two")$sum() * 2L,
   # similar to above, but with `mul()`-method instead of `*`.
-  pl$lit(1:3)$sum()$mul(pl$col("a"))$alias("lit_sum_add_mpg") 
+  pl$lit(1:3)$sum()$mul(pl$col("a"))$alias("lit_sum_add_mpg")
 )
 ```
 
@@ -124,10 +124,10 @@ that we want to extract the year from these dates:
 # Create the DataFrame
 df = pl$DataFrame(
   date = pl$date_range(
-      as.Date("2020-01-01"),
-      as.Date("2023-01-02"),
-      interval = "1y",
-      lazy = FALSE
+    as.Date("2020-01-01"),
+    as.Date("2023-01-02"),
+    interval = "1y",
+    eager = TRUE
   )
 )
 df

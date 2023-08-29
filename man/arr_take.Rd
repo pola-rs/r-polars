@@ -7,6 +7,11 @@
 \format{
 function
 }
+\arguments{
+\item{index}{R list of integers for each sub-element or Expr or Series of type \code{List[usize]}}
+
+\item{null_on_oob}{boolean}
+}
 \value{
 Expr
 }
@@ -14,8 +19,14 @@ Expr
 Get the take value of the sublists.
 }
 \examples{
-df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-idx = pl$Series(list(0:1, 1L, 1L))
-df$select(pl$col("a")$arr$take(99))
+df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
+idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
+df$select(pl$col("a")$arr$take(pl$lit(idx), null_on_oob = TRUE))
+
+# with implicit conversion to Expr
+df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+
+# by some column name, must cast to an Int/Uint type to work
+df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 }
 \keyword{ExprArr}

@@ -7,7 +7,7 @@ use std::thread;
 use flume;
 use flume::{Receiver, Sender};
 
-pub use state::Storage;
+pub use state::InitCell;
 
 //shamelessly make Robj send + sync
 //no crashes so far for the 'data'-SEXPS as Vectors, lists, pairlists
@@ -97,7 +97,7 @@ where
             .expect("thread failed recieve, likely a user interrupt")
     }
 
-    pub fn update_global(&self, conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>)
+    pub fn update_global(&self, conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>)
     where
         S: Send,
         R: Send,
@@ -114,7 +114,7 @@ where
         }
     }
 
-    pub fn kill_global(conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>) {
+    pub fn kill_global(conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>) {
         let mut val = conf
             .get()
             .write()
@@ -122,7 +122,7 @@ where
         *val = None;
     }
 
-    pub fn from_global(config: &Storage<RwLock<Option<ThreadCom<S, R>>>>) -> Self
+    pub fn from_global(config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>) -> Self
     where
         S: Send,
         R: Send,
@@ -139,7 +139,7 @@ where
     }
 
     pub fn try_from_global(
-        config: &Storage<RwLock<Option<ThreadCom<S, R>>>>,
+        config: &InitCell<RwLock<Option<ThreadCom<S, R>>>>,
     ) -> std::result::Result<Self, String>
     where
         S: Send,
@@ -180,7 +180,7 @@ pub fn concurrent_handler<F, I, R, S, T>(
     f: F,
     //y: Y,
     i: I,
-    conf: &Storage<RwLock<Option<ThreadCom<S, R>>>>,
+    conf: &InitCell<RwLock<Option<ThreadCom<S, R>>>>,
 ) -> std::result::Result<T, Box<dyn std::error::Error>>
 where
     F: FnOnce(ThreadCom<S, R>) -> T + Send + 'static,

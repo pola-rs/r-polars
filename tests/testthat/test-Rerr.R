@@ -31,3 +31,14 @@ test_that("set/replace/read rcall & rinfo", {
   err_b = unwrap_err(result(unwrap(Err(err_a), "in $joe()")))
   expect_identical(err_b$get_rcall(), call_to_string(sys.call(1)))
 })
+
+
+test_that("err_on_named_args", {
+  # ok on no named args
+  expect_identical(err_on_named_args(1, "a") |> unwrap(), list(1, "a"))
+
+  # err on named args
+  ctx = err_on_named_args(a = 1, b = 2)$err$contexts()
+  expect_identical(names(ctx), c("Hint", "PlainErrorMessage", "BadArgument"))
+  expect_identical(ctx$BadArgument, "a, b")
+})

@@ -13,6 +13,7 @@ load_polars = function(
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
+    RPOLARS_PROFILE = "release",
     ...,
     .packages = c("arrow", "nanoarrow")) {
   # bundle all envvars
@@ -45,6 +46,7 @@ build_polars = function(
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
+    RPOLARS_PROFILE = "release",
     ...,
     .packages = c("arrow", "nanoarrow")) {
   # bundle all envvars
@@ -78,6 +80,7 @@ check_polars = function(
     RPOLARS_RUST_SOURCE = paste0(getwd(), "/src/rust"),
     RPOLARS_FULL_FEATURES = "true",
     NOT_CRAN = "true",
+    RPOLARS_PROFILE = "release",
     RPOLARS_CARGO_CLEAN_DEPS = "false",
     FILTER_CHECK_NO_FILTER = "false",
     ...,
@@ -264,4 +267,35 @@ find_missing_return = function() {
     })
 
   names(all_doc_values[sapply(all_doc_values, length) < 1])
+}
+
+
+
+#' run_all_examples collect error
+#' @details reloading polars can be slow. For faster development running all
+#'
+#' pass return $oks to skip_these to not rerun oks again
+#' @param skip_these names of doc files to skip, use for for not running non failed again
+#' @return list of errors: list of all captured errors + print, oks names of files with no errors
+#'
+#' @export
+#'
+#' @examples
+run_all_examples_collect_errors = \(skip_these = character()) {
+  paths = list.files(full.names = TRUE, path = "./man/.")
+  fnames = list.files(full.names = FALSE, path = "./man/.")
+  names(paths) = fnames
+
+  paths = paths[!fnames %in% skip_these]
+
+
+  out = lapply(paths, \(path) {
+    print(path)
+    txt = capture.output({
+      err = polars:::result(pkgload::run_example(path = path))$err
+    })
+    if (!is.null(err)) list(err = err, txt = txt)
+  })
+
+  list(errors = out[!sapply(out, is.null)], oks = names(out)[sapply(out, is.null)])
 }

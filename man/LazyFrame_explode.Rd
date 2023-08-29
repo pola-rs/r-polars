@@ -40,7 +40,7 @@ df$explode("letters")$collect()
 
 # explode two columns of same nesting structure, by names or the common dtype
 # "List(Float64)"
-df$explode(c("numbers","numbers_2"))$collect()
+df$explode(c("numbers", "numbers_2"))$collect()
 df$explode(pl$col(pl$List(pl$Float64)))$collect()
 }
 \keyword{LazyFrame}

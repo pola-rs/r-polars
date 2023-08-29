@@ -106,8 +106,11 @@ nightly features enabled.
 
 ### Build from source
 
-For source installation, the Rust toolchain (Rust 1.65 or later) must be
+For source installation, the Rust toolchain (Rust 1.70 or later) must be
 configured.
+
+Currently you should install rust \>=1.70 or nightly-2023-07-27 (for
+full features (simd)).
 
 Please check the <https://github.com/r-rust/hellorust> repository for
 about Rust code in R packages.
@@ -116,9 +119,8 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-05-07)
-- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization,
-  requires Rust 1.66 or later)
+  requires Rust toolchain nightly-2023-07-27)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
 
@@ -235,8 +237,8 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly-2023-05-07
-  rustup default nightly-2023-05-07
+  rustup toolchain install nightly-2023-07-27
+  rustup default nightly-2023-07-27
   ```
 
 - Windows: Make sure the latest version of

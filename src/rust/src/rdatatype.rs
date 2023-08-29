@@ -1,10 +1,10 @@
-use crate::utils::r_result_list;
+use crate::robj_to;
 use crate::utils::wrappers::Wrap;
+use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
-use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
@@ -12,6 +12,7 @@ use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RField(pub pl::Field);
 use pl::UniqueKeepStrategy;
+use polars::prelude::AsofStrategy;
 
 #[extendr]
 impl RField {
@@ -119,10 +120,9 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> List {
-        let result = robj_to_timeunit(tu)
-            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
-        r_result_list(result)
+    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
+        robj_to!(timeunit, tu)
+            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
     pub fn new_duration() -> RPolarsDataType {
@@ -293,10 +293,10 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
     }
 }
 
-pub fn new_asof_strategy(s: &str) -> Result<polars::chunked_array::object::AsofStrategy, String> {
+pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
     match s {
-        "forward" => Ok(polars::chunked_array::object::AsofStrategy::Forward),
-        "backward" => Ok(polars::chunked_array::object::AsofStrategy::Backward),
+        "forward" => Ok(AsofStrategy::Forward),
+        "backward" => Ok(AsofStrategy::Backward),
         _ => Err(format!(
             "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
             s
@@ -317,31 +317,32 @@ pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrate
     }
 }
 
-pub fn new_quantile_interpolation_option(
-    s: &str,
-) -> std::result::Result<QuantileInterpolOptions, String> {
+pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
+    let s = robj_to_string(robj.clone())?;
     use pl::QuantileInterpolOptions::*;
-    match s {
+    match s.as_ref() {
         "nearest" => Ok(Nearest),
         "higher" => Ok(Higher),
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => Err(format!("interpolation choice: [{}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'",s))
+        _ => rerr()
+            .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
+            .bad_robj(&robj),
     }
 }
 
-pub fn new_closed_window(s: &str) -> std::result::Result<pl::ClosedWindow, String> {
+pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
+    let s = robj_to_string(robj.clone())?;
     use pl::ClosedWindow as CW;
-    match s {
+    match s.as_str() {
         "both" => Ok(CW::Both),
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
-        _ => Err(format!(
-            "ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'",
-            s
-        )),
+        _ => rerr()
+            .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
+            .bad_robj(&robj),
     }
 }
 
@@ -458,23 +459,17 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
-    let s = robj.as_str().ok_or_else(|| {
-        format!(
-            "Robj must be a string to be matched as TimeUnit, got a [{:?}]",
-            robj
-        )
-    })?;
+pub fn robj_to_timeunit(robj: Robj) -> RResult<pl::TimeUnit> {
+    let s = robj_to!(str, robj)?;
 
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
         "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
-        _ => Err(format!(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ",
-            s
-        )),
+        _ => rerr().bad_val(
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ".to_string(),
+        ),
     }
 }
 
