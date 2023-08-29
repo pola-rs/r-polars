@@ -1,6 +1,7 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
-BUILD_COMMAND = cargo build --target=$(TARGET) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 RPOLARS_PROFILE ?= release
+BUILD_COMMAND = cargo build --target=$(TARGET) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+
 
 TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)

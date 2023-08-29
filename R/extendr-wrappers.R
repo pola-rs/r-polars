@@ -35,9 +35,7 @@ concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
 
-r_date_range <- function(start, stop, every, closed, name, tu, tz) .Call(wrap__r_date_range, start, stop, every, closed, name, tu, tz)
-
-r_date_range_lazy <- function(start, end, every, closed, tz) .Call(wrap__r_date_range_lazy, start, end, every, closed, tz)
+r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
@@ -321,6 +319,52 @@ RThreadHandle$thread_description <- function() .Call(wrap__RThreadHandle__thread
 #' @export
 `[[.RThreadHandle` <- `$.RThreadHandle`
 
+When <- new.env(parent = emptyenv())
+
+When$new <- function(condition) .Call(wrap__When__new, condition)
+
+When$then <- function(statement) .Call(wrap__When__then, self, statement)
+
+#' @export
+`$.When` <- function (self, name) { func <- When[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.When` <- `$.When`
+
+Then <- new.env(parent = emptyenv())
+
+Then$when <- function(condition) .Call(wrap__Then__when, self, condition)
+
+Then$otherwise <- function(statement) .Call(wrap__Then__otherwise, self, statement)
+
+#' @export
+`$.Then` <- function (self, name) { func <- Then[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.Then` <- `$.Then`
+
+ChainedWhen <- new.env(parent = emptyenv())
+
+ChainedWhen$then <- function(statement) .Call(wrap__ChainedWhen__then, self, statement)
+
+#' @export
+`$.ChainedWhen` <- function (self, name) { func <- ChainedWhen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.ChainedWhen` <- `$.ChainedWhen`
+
+ChainedThen <- new.env(parent = emptyenv())
+
+ChainedThen$when <- function(condition) .Call(wrap__ChainedThen__when, self, condition)
+
+ChainedThen$otherwise <- function(statement) .Call(wrap__ChainedThen__otherwise, self, statement)
+
+#' @export
+`$.ChainedThen` <- function (self, name) { func <- ChainedThen[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.ChainedThen` <- `$.ChainedThen`
+
 Expr <- new.env(parent = emptyenv())
 
 Expr$col <- function(name) .Call(wrap__Expr__col, name)
@@ -433,21 +477,21 @@ Expr$reinterpret <- function(signed) .Call(wrap__Expr__reinterpret, self, signed
 
 Expr$interpolate <- function(method) .Call(wrap__Expr__interpolate, self, method)
 
-Expr$rolling_min <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_min, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_min <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_min, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_max <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_max, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_max <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_max, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_mean <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_mean, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_mean <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_mean, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_sum <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_sum, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_sum <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_sum, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_std <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_std, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_std <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_std, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_var <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_var, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_var <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_var, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_median <- function(window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_median, self, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_median <- function(window_size, weights, min_periods, center, by_null, closed_null) .Call(wrap__Expr__rolling_median, self, window_size, weights, min_periods, center, by_null, closed_null)
 
-Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights_robj, min_periods_float, center, by_null, closed_null) .Call(wrap__Expr__rolling_quantile, self, quantile, interpolation, window_size, weights_robj, min_periods_float, center, by_null, closed_null)
+Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__Expr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
 
 Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
 
@@ -501,11 +545,11 @@ Expr$arctanh <- function() .Call(wrap__Expr__arctanh, self)
 
 Expr$reshape <- function(dims) .Call(wrap__Expr__reshape, self, dims)
 
-Expr$shuffle <- function(seed) .Call(wrap__Expr__shuffle, self, seed)
+Expr$shuffle <- function(seed, fixed_seed) .Call(wrap__Expr__shuffle, self, seed, fixed_seed)
 
-Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed)
+Expr$sample_n <- function(n, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed, fixed_seed)
 
-Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
+Expr$sample_frac <- function(frac, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed, fixed_seed)
 
 Expr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
 
@@ -567,13 +611,13 @@ Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr
 
 Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
 
-Expr$str_parse_date <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_date, self, format, strict, exact, cache)
+Expr$str_to_date <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, use_earliest)
 
-Expr$str_parse_datetime <- function(format, strict, exact, cache, tu) .Call(wrap__Expr__str_parse_datetime, self, format, strict, exact, cache, tu)
+Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, use_earliest)
 
-Expr$str_parse_time <- function(format, strict, exact, cache) .Call(wrap__Expr__str_parse_time, self, format, strict, exact, cache)
+Expr$str_to_time <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, use_earliest)
 
-Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
+Expr$dt_truncate <- function(every, offset, use_earliest) .Call(wrap__Expr__dt_truncate, self, every, offset, use_earliest)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
@@ -620,8 +664,6 @@ Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self
 Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
 Expr$dt_replace_time_zone <- function(tz, use_earliest) .Call(wrap__Expr__dt_replace_time_zone, self, tz, use_earliest)
-
-Expr$dt_tz_localize <- function(tz) .Call(wrap__Expr__dt_tz_localize, self, tz)
 
 Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
 
@@ -707,9 +749,9 @@ Expr$unique_stable <- function() .Call(wrap__Expr__unique_stable, self)
 
 Expr$agg_groups <- function() .Call(wrap__Expr__agg_groups, self)
 
-Expr$all <- function() .Call(wrap__Expr__all, self)
+Expr$all <- function(drop_nulls) .Call(wrap__Expr__all, self, drop_nulls)
 
-Expr$any <- function() .Call(wrap__Expr__any, self)
+Expr$any <- function(drop_nulls) .Call(wrap__Expr__any, self, drop_nulls)
 
 Expr$count <- function() .Call(wrap__Expr__count, self)
 
@@ -743,7 +785,7 @@ Expr$apply_in_background <- function(lambda, output_type) .Call(wrap__Expr__appl
 
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
-Expr$approx_unique <- function() .Call(wrap__Expr__approx_unique, self)
+Expr$approx_n_unique <- function() .Call(wrap__Expr__approx_n_unique, self)
 
 Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
@@ -783,7 +825,7 @@ Expr$str_starts_with <- function(sub) .Call(wrap__Expr__str_starts_with, self, s
 
 Expr$str_json_path_match <- function(pat) .Call(wrap__Expr__str_json_path_match, self, pat)
 
-Expr$str_json_extract <- function(dtype) .Call(wrap__Expr__str_json_extract, self, dtype)
+Expr$str_json_extract <- function(dtype, infer_schema_len) .Call(wrap__Expr__str_json_extract, self, dtype, infer_schema_len)
 
 Expr$str_hex_encode <- function() .Call(wrap__Expr__str_hex_encode, self)
 
@@ -885,50 +927,6 @@ ProtoExprArray$print <- function() invisible(.Call(wrap__ProtoExprArray__print, 
 #' @export
 `[[.ProtoExprArray` <- `$.ProtoExprArray`
 
-When <- new.env(parent = emptyenv())
-
-When$when <- function(predicate) .Call(wrap__When__when, predicate)
-
-When$then <- function(expr) .Call(wrap__When__then, self, expr)
-
-When$print <- function() invisible(.Call(wrap__When__print, self))
-
-#' @export
-`$.When` <- function (self, name) { func <- When[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.When` <- `$.When`
-
-WhenThen <- new.env(parent = emptyenv())
-
-WhenThen$when <- function(predicate) .Call(wrap__WhenThen__when, self, predicate)
-
-WhenThen$otherwise <- function(expr) .Call(wrap__WhenThen__otherwise, self, expr)
-
-WhenThen$print <- function() invisible(.Call(wrap__WhenThen__print, self))
-
-#' @export
-`$.WhenThen` <- function (self, name) { func <- WhenThen[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.WhenThen` <- `$.WhenThen`
-
-WhenThenThen <- new.env(parent = emptyenv())
-
-WhenThenThen$when <- function(predicate) .Call(wrap__WhenThenThen__when, self, predicate)
-
-WhenThenThen$then <- function(expr) .Call(wrap__WhenThenThen__then, self, expr)
-
-WhenThenThen$otherwise <- function(expr) .Call(wrap__WhenThenThen__otherwise, self, expr)
-
-WhenThenThen$print <- function() invisible(.Call(wrap__WhenThenThen__print, self))
-
-#' @export
-`$.WhenThenThen` <- function (self, name) { func <- WhenThenThen[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.WhenThenThen` <- `$.WhenThenThen`
-
 LazyFrame <- new.env(parent = emptyenv())
 
 LazyFrame$print <- function() .Call(wrap__LazyFrame__print, self)
@@ -1005,7 +1003,7 @@ LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, all
 
 LazyFrame$join <- function(other, left_on, right_on, how, suffix, allow_parallel, force_parallel) .Call(wrap__LazyFrame__join, self, other, left_on, right_on, how, suffix, allow_parallel, force_parallel)
 
-LazyFrame$sort_by_exprs <- function(by, descending, nulls_last) .Call(wrap__LazyFrame__sort_by_exprs, self, by, descending, nulls_last)
+LazyFrame$sort_by_exprs <- function(by, dotdotdot, descending, nulls_last, maintain_order) .Call(wrap__LazyFrame__sort_by_exprs, self, by, dotdotdot, descending, nulls_last, maintain_order)
 
 LazyFrame$melt <- function(id_vars, value_vars, value_name, variable_name, streamable) .Call(wrap__LazyFrame__melt, self, id_vars, value_vars, value_name, variable_name, streamable)
 
@@ -1015,7 +1013,7 @@ LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
 LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
 
-LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, cse, streaming) .Call(wrap__LazyFrame__optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, cse, streaming)
+LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming) .Call(wrap__LazyFrame__optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming)
 
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
@@ -1077,7 +1075,7 @@ Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
 
 Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
 
-Series$is_sorted <- function(descending, nulls_last) .Call(wrap__Series__is_sorted, self, descending, nulls_last)
+Series$is_sorted <- function(descending) .Call(wrap__Series__is_sorted, self, descending)
 
 Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
 

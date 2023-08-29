@@ -88,8 +88,9 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$Expr = extendr_method_to_pure_functions(Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
 .pr$When = extendr_method_to_pure_functions(When)
-.pr$WhenThen = extendr_method_to_pure_functions(WhenThen)
-.pr$WhenThenThen = extendr_method_to_pure_functions(WhenThenThen)
+.pr$Then = extendr_method_to_pure_functions(Then)
+.pr$ChainedWhen = extendr_method_to_pure_functions(ChainedWhen)
+.pr$ChainedThen = extendr_method_to_pure_functions(ChainedThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
@@ -265,7 +266,7 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 pl_class_names = sort(
   c(
     "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame",
-    "When", "WhenThen", "WhenThenThen"
+    "When", "Then", "ChainedWhen", "ChainedThen"
   )
 ) # TODO discover all public class automatically
 

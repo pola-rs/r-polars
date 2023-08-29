@@ -10,7 +10,8 @@ LazyFrame_collect(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  common_subplan_elimination = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
   no_optimization = FALSE,
   streaming = FALSE,
   collect_in_background = FALSE
@@ -32,14 +33,18 @@ and replacing expensive operations with faster alternatives.}
 Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that
-are used by multiple subtrees in the query plan.}
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that occur on self-joins
+or unions.}
+
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and reused.
+or unions.}
 
 \item{no_optimization}{Boolean. Turn off the following optimizations:
 predicate_pushdown = FALSE
 projection_pushdown = FALSE
 slice_pushdown = FALSE
-common_subplan_elimination = FALSE}
+comm_subplan_elim = FALSE
+comm_subexpr_elim = FALSE}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}

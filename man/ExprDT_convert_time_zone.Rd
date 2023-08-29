@@ -23,10 +23,10 @@ corresponds to in R manually modifying the tzone attribute of POSIXt objects
 \examples{
 df = pl$DataFrame(
   date = pl$date_range(
-    low = as.Date("2001-3-1"),
-    high = as.Date("2001-5-1"),
-    interval = "1mo",
-    lazy = FALSE
+    start = as.Date("2001-3-1"),
+    end = as.Date("2001-5-1"),
+    interval = "1mo12m34s",
+    eager = TRUE
   )
 )
 df$select(
@@ -34,10 +34,7 @@ df$select(
   pl$col("date")
   $dt$replace_time_zone("Europe/Amsterdam")
   $dt$convert_time_zone("Europe/London")
-  $alias("London_with"),
-  pl$col("date")
-  $dt$tz_localize("Europe/London")
-  $alias("London_localize")
+  $alias("London_with")
 )
 }
 \keyword{ExprDT}

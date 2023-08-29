@@ -10,6 +10,7 @@ Expr_sample(
   with_replacement = TRUE,
   shuffle = FALSE,
   seed = NULL,
+  fixed_seed = FALSE,
   n = NULL
 )
 }
@@ -23,6 +24,10 @@ Expr_sample(
 \item{seed}{Seed for the random number generator. If set to None (default), a random
 seed is used.}
 
+\item{fixed_seed}{Boolean. If True, The seed will not be incremented between draws. This can make output
+predictable because draw ordering can change due to threads being scheduled in a different order.
+Should be used together with seed}
+
 \item{n}{Number of items to return. Cannot be used with \code{frac}.}
 }
 \value{
@@ -34,9 +39,7 @@ Expr
 \examples{
 df = pl$DataFrame(a = 1:3)
 df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
-
 df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
-
 df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 }
 \keyword{Expr}

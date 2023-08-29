@@ -16,10 +16,10 @@ Extract the minutes from a Duration type.
 \examples{
 df = pl$DataFrame(
   date = pl$date_range(
-    low = as.Date("2020-1-1"),
-    high = as.Date("2020-1-4"),
+    start = as.Date("2020-1-1"),
+    end = as.Date("2020-1-4"),
     interval = "1d",
-    lazy = FALSE
+    eager = TRUE
   )
 )
 df$select(

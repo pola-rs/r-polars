@@ -8,16 +8,16 @@ use crate::apply_output;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
+use crate::lazy::dsl::Expr;
 use crate::make_r_na_fun;
 use crate::rdataframe::DataFrame;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
-use crate::rpolarserr::*;
+use crate::rpolarserr::RResult;
 use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_result_list};
 
-use crate::lazy::dsl::Expr;
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
 use pl::SeriesMethods;
 use polars::datatypes::*;
@@ -25,7 +25,7 @@ use polars::prelude as pl;
 use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
-
+use crate::rpolarserr::polars_to_rpolars_err;
 use std::convert::TryInto;
 use std::result::Result;
 
@@ -139,14 +139,15 @@ impl Series {
         )
     }
 
-    pub fn is_sorted(&self, descending: bool, nulls_last: Nullable<bool>) -> bool {
-        let nulls_last = null_to_opt(nulls_last).unwrap_or(descending);
+    pub fn is_sorted(&self, descending: Robj) -> RResult<bool> {
+        let descending = robj_to!(bool, descending)?;
         let options = pl::SortOptions {
-            descending: descending,
-            nulls_last,
-            multithreaded: false,
+            descending,
+            nulls_last: descending,
+            multithreaded: true,
+            maintain_order: false,
         };
-        self.0.is_sorted(options)
+        self.0.is_sorted(options).map_err(polars_to_rpolars_err)
     }
 
     pub fn series_equal(&self, other: &Series, null_equal: bool, strict: bool) -> bool {

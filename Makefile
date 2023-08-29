@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-05-07
+RUST_TOOLCHAIN_VERSION := nightly-2023-07-27
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
@@ -50,7 +50,7 @@ build: ## Compile polars R package with all features and generate Rd files
 	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: install
-install:
+install: ## Install the R package
 	export RPOLARS_FULL_FEATURES=true \
 	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
@@ -77,8 +77,8 @@ LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
 
 .PHONY: test
-test: build ## Run fast unittests
-	Rscript -e 'devtools::load_all(); devtools::test()'
+test: build install ## Run fast unittests
+	Rscript -e 'devtools::test()'
 
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files

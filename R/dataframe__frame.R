@@ -670,19 +670,7 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' DataFrame Sort
-#' @description sort a DataFrame by on or more Expr.
-#'
-#' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
-#' column name strings).
-#' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
-#' as number of Expr's from above by + ....
-#' @param nulls_last Bool default FALSE, place all nulls_last?
-#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
-#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
-#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
-#'
+#' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
@@ -697,12 +685,15 @@ DataFrame_to_series = function(idx = 0) {
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
 #' df$sort(pl$col("cyl"), pl$col("mpg"))
 DataFrame_sort = function(
-    by, # : IntoExpr | List[IntoExpr],
-    ..., # unnamed Into expr
-    descending = FALSE, #  bool | vector[bool] = False,
-    nulls_last = FALSE) {
-  # args after ... must be named
-  self$lazy()$sort(by, ..., descending = descending, nulls_last = nulls_last)$collect()
+    by,
+    ...,
+    descending = FALSE,
+    nulls_last = FALSE,
+    maintain_order = FALSE) {
+  self$lazy()$sort(
+    by, ...,
+    descending = descending, nulls_last = nulls_last, maintain_order = maintain_order
+  )$collect()
 }
 
 

@@ -268,6 +268,7 @@ test_that("sorted flags, sort", {
   )
 })
 
+# TODO rework this test
 # test_that("is_sorted  sort", {
 #   s = pl$Series(c(NA,2,1,3,NA))
 #   s_sorted = s$sort(descending = FALSE)
