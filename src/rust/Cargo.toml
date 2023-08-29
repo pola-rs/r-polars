@@ -20,7 +20,7 @@ rpolars_debug_print = []
 mimalloc = { version = "0.1.34", default-features = false }
 
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
-jemallocator = { version = "0.5.0", features = [ "disable_initial_exec_tls" ] }
+jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
 
 # use opt-level = 1 for argminmax package unless profile is profile.release-optimized to support Rust < 1.66
@@ -36,20 +36,21 @@ opt-level = 3
 
 [dependencies]
 extendr-api = { git = "https://github.com/rpolars/extendr", branch = "pl0.7.0rc", default-features = false, features = [
-  "result_list", "serde"
+  "result_list",
+  "serde",
 ] }
 flume = "0.11.0"
 indenter = "0.3.3"
 ipc-channel = "0.17.0"
 once_cell = "1.18.0"
 rayon = "1.6.1"
-serde = { version = "1.0.164", features = [ "derive" ] }
+serde = { version = "1.0.164", features = ["derive"] }
 serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.40"
-polars-core = {git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false}
-polars-lazy = {git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false}
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5", default-features = false }
 #features copied from node-polars
 
 [dependencies.polars]
@@ -94,7 +95,6 @@ features = [
   "diff",
   "pct_change",
   "moment",
- 
   "true_div",
   "dtype-categorical",
   # "string_justify",  #new feature to impl
@@ -145,4 +145,3 @@ features = [
 ]
 git = "https://github.com/pola-rs/polars.git"
 rev = "c10be8a6598d2f0b14b9da2c39b61ca1a3dd7af5"
-
