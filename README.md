@@ -106,7 +106,7 @@ nightly features enabled.
 
 ### Build from source
 
-For source installation, the Rust toolchain (Rust 1.65 or later) must be
+For source installation, the Rust toolchain (Rust 1.70 or later) must be
 configured.
 
 Currently you should install rust \>=1.70 or nightly-2023-07-27 (for
@@ -120,8 +120,7 @@ enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
   requires Rust toolchain nightly-2023-07-27)
-- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization,
-  requires Rust or later)
+- `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
 
