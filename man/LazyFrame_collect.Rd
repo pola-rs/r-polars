@@ -24,20 +24,21 @@ run on minimal required memory.}
 \item{predicate_pushdown}{Boolean. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Select only the columns that are needed at the scan level.}
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
 
-\item{simplify_expression}{Boolean. Various optimizations, such as constant folding
-and replacing expensive operations with faster alternatives.}
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
 Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that occur on self-joins
-or unions.}
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+occur on self-joins or unions.}
 
-\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and reused.
-or unions.}
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+reused.}
 
 \item{no_optimization}{Boolean. Turn off the following optimizations:
 predicate_pushdown = FALSE

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_fetch}
 \alias{LazyFrame_fetch}
-\title{Fetch}
+\title{Fetch \code{n} rows of a LazyFrame}
 \usage{
 LazyFrame_fetch(
   n_rows = 500,
@@ -11,13 +11,14 @@ LazyFrame_fetch(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  common_subplan_elimination = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
   no_optimization = FALSE,
   streaming = FALSE
 )
 }
 \arguments{
-\item{n_rows}{number (\verb{Into<usize>}) of rows to fetch at maximum.}
+\item{n_rows}{Integer. Maximum number of rows to fetch.}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
@@ -34,8 +35,11 @@ by multiple subtrees in the query plan.}
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that
-are used by multiple subtrees in the query plan.}
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+occur on self-joins or unions.}
+
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+reused.}
 
 \item{no_optimization}{Boolean. Turn off the following optimizations:
 predicate_pushdown = FALSE
@@ -50,22 +54,22 @@ common_subplan_elimination = FALSE}
 A DataFrame of maximum n_rows
 }
 \description{
-limit number of rows at scan level for fast trying a query
+This is similar to \verb{$collect()} but limit the number of rows to collect. It
+is mostly useful to check that a query works as expected.
 }
 \details{
-Collect a small number of rows for debugging purposes.
-Fetch is like the \code{\link[=LazyFrame_collect]{$collect()}} operation, but it overwrites the number of
-rows read by every scan operation. This is a utility that helps debug a query on a smaller number
-of rows. Note that the fetch does not guarantee the final number of rows in the DataFrame. Filter
-, join operations and a lower number of rows available in the scanned file influence the final
-number of rows.
+\verb{$fetch()} does not guarantee the final number of rows in the DataFrame output.
+It only guarantees that \code{n} rows are used at the beginning of the query.
+Filters, join operations and a lower number of rows available in the scanned
+file influence the final number of rows.
 }
 \examples{
 
-# fetch 3
+# fetch 3 rows
 pl$LazyFrame(iris)$fetch(3)
 
-# this fetch-query returns 4 and not 3 entries, see details.
+# this fetch-query returns 4 rows, because we started with 3 and appended one
+# row in the query (see section 'Details')
 pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
 }
 \seealso{

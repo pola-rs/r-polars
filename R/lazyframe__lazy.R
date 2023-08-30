@@ -269,16 +269,17 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' run on minimal required memory.
 #' @param predicate_pushdown Boolean. Applies filters as early as possible at
 #' scan level.
-#' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
-#' @param simplify_expression Boolean. Various optimizations, such as constant folding
-#' and replacing expensive operations with faster alternatives.
+#' @param projection_pushdown Boolean. Select only the columns that are needed
+#' at the scan level.
+#' @param simplify_expression Boolean. Various optimizations, such as constant
+#' folding and replacing expensive operations with faster alternatives.
 #' @param slice_pushdown Boolean. Only load the required slice from the scan
 #' Don't materialize sliced outputs
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that occur on self-joins
-#' or unions.
-#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and reused.
-#' or unions.
+#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that
+#'  occur on self-joins or unions.
+#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and
+#' reused.
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
@@ -1189,17 +1190,19 @@ LazyFrame_dtypes = method_as_property(function() {
 })
 
 
-#' @title Fetch
-#' @description limit number of rows at scan level for fast trying a query
+#' Fetch `n` rows of a LazyFrame
+#'
+#' This is similar to `$collect()` but limit the number of rows to collect. It
+#' is mostly useful to check that a query works as expected.
+#'
 #' @keywords LazyFrame
 #' @details
-#' Collect a small number of rows for debugging purposes.
-#' Fetch is like the [`$collect()`][LazyFrame_collect] operation, but it overwrites the number of
-#' rows read by every scan operation. This is a utility that helps debug a query on a smaller number
-#' of rows. Note that the fetch does not guarantee the final number of rows in the DataFrame. Filter
-#' , join operations and a lower number of rows available in the scanned file influence the final
-#' number of rows.
-#' @param n_rows  number (`Into<usize>`) of rows to fetch at maximum.
+#' `$fetch()` does not guarantee the final number of rows in the DataFrame output.
+#' It only guarantees that `n` rows are used at the beginning of the query.
+#' Filters, join operations and a lower number of rows available in the scanned
+#' file influence the final number of rows.
+#'
+#' @param n_rows Integer. Maximum number of rows to fetch.
 #' @param type_coercion Boolean. Coerce types such that operations succeed and
 #' run on minimal required memory.
 #' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
@@ -1210,8 +1213,10 @@ LazyFrame_dtypes = method_as_property(function() {
 #' by multiple subtrees in the query plan.
 #' @param slice_pushdown  Boolean. Only load the required slice from the scan
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param common_subplan_elimination  Boolean. Cache subtrees/file scans that
-#' are used by multiple subtrees in the query plan.
+#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that
+#' occur on self-joins or unions.
+#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and
+#' reused.
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
@@ -1228,10 +1233,11 @@ LazyFrame_dtypes = method_as_property(function() {
 #'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 #' @examples
 #'
-#' # fetch 3
+#' # fetch 3 rows
 #' pl$LazyFrame(iris)$fetch(3)
 #'
-#' # this fetch-query returns 4 and not 3 entries, see details.
+#' # this fetch-query returns 4 rows, because we started with 3 and appended one
+#' # row in the query (see section 'Details')
 #' pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
 LazyFrame_fetch = function(
     n_rows = 500,
@@ -1240,20 +1246,22 @@ LazyFrame_fetch = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    common_subplan_elimination = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
     no_optimization = FALSE,
     streaming = FALSE) {
+
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
   }
 
   if (isTRUE(streaming)) {
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
   }
-
 
   self |>
     .pr$LazyFrame$optimization_toggle(
@@ -1262,7 +1270,8 @@ LazyFrame_fetch = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      common_subplan_elimination,
+      comm_subplan_elim,
+      comm_subexpr_elim,
       streaming
     ) |>
     and_then(\(self) .pr$LazyFrame$fetch(self, n_rows)) |>
