@@ -94,32 +94,6 @@ fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
     .into())
 }
 
-// #[extendr]
-// fn r_date_range(
-//     start: Robj,
-//     end: Robj,
-//     every: Robj,
-//     closed: Robj, //Wap<ClosedWindow>
-//     name: Robj,
-//     time_unit: Robj,
-//     time_zone: Robj,
-// ) -> RResult<Series> {
-//     use pl::IntoSeries;
-//     Ok(Series(
-//         polars::time::date_range_impl(
-//             robj_to!(str, name)?,
-//             robj_to!(i64, start)?,
-//             robj_to!(i64, end)?,
-//             pl::Duration::parse(robj_to!(str, every)?),
-//             robj_to!(new_closed_window, closed)?,
-//             robj_to!(timeunit, time_unit)?,
-//             robj_to!(Option, String, time_zone)?.as_ref(),
-//         )
-//         .map_err(polars_to_rpolars_err)?
-//         .into_series(),
-//     ))
-// }
-
 #[extendr]
 fn r_date_range_lazy(
     start: Robj,
@@ -178,14 +152,6 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
         Ok(struct_expr.into())
     }
 }
-
-// #[extendr]
-// fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
-//     let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
-
-//     rprintln!("hurray we read an arrow field {:?}", x);
-//     Ok(extendr_api::NULL.into())
-// }
 
 #[extendr]
 fn arrow_stream_to_rust(rbr: Robj) {

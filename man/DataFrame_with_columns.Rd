@@ -41,7 +41,7 @@ l_expr = list(
   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 )
-pl$DataFrame(iris)$with_columns(l)
+pl$DataFrame(iris)$with_columns(l_expr)
 
 
 # rename columns by naming expression is concidered experimental

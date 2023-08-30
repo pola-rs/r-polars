@@ -20,46 +20,6 @@ pub fn robj_to_col(name: Robj) -> RResult<Expr> {
     Ok(Expr::cols(vs))
 }
 
-// #[extendr]
-// pub fn robj_to_col(name: Robj, dotdot: Robj) -> RResult<Expr> {
-//     // let last_type_str = None;
-//     // use crate::utils::unpack_r_eval;
-//     // let name = if name.inherits("Series") {
-//     //     unpack_r_eval(R!(polars:::result({{name}}$to_vector())))?
-//     // } else {
-//     //     name
-//     // };
-
-//     let name = robj_to!(Vec, String, name)?;
-//     //let _ddd = robj_to!(Vec, String, dotdot)?;
-//     //name.append(&mut ddd);
-//     Ok(Expr::cols(name))
-
-//     // match () {
-//     //     _ if name.is_char() => {
-//     //         let name = robj_to!(Vec, String, name)?;
-//     //         //let _ddd = robj_to!(Vec, String, dotdot)?;
-//     //         //name.append(&mut ddd);
-//     //         Ok(Expr::cols(name))
-//     //     }
-
-//     //     _ => todo!(),
-//     // }
-
-//     // if ddd.length() > 0 {
-
-//     // }
-//     // if res.is_ok() {
-//     //     return res;
-//     // } else {
-//     //     res_dtype = robj_to!(Vec, RPolarsDataType, name);
-//     //     if res_dtype.is_ok() {
-//     //         return ();
-//     //     }
-//     // }
-//     // let ddd = dotdotdot.as_list().unwrap();
-// }
-
 extendr_module! {
     mod construct_expr;
     fn internal_wrap_e;
