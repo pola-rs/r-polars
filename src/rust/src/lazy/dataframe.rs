@@ -208,13 +208,20 @@ impl LazyFrame {
         )))
     }
 
+    pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
+        let exprs =
+            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $with_columns()")?;
+        Ok(LazyFrame(self.clone().0.with_columns(exprs)))
+    }
+
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
-        let exprs = robj_to!(VecPLExprCol, exprs).when("preparing expressions before select")?;
+        let exprs =
+            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $select()")?;
         Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
     pub fn select_str_as_lit(&self, exprs: Robj) -> RResult<Self> {
-        let exprs = robj_to!(VecPLExpr, exprs).when("preparing columns for DataFrame")?;
+        let exprs = robj_to!(VecPLExprNamed, exprs).when("preparing columns for DataFrame")?;
         Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
@@ -260,10 +267,6 @@ impl LazyFrame {
         } else {
             Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
         }
-    }
-
-    fn with_columns(&self, exprs: &ProtoExprArray) -> LazyFrame {
-        LazyFrame(self.0.clone().with_columns(pra_to_vec(exprs, "select")))
     }
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
@@ -383,8 +386,8 @@ impl LazyFrame {
         nulls_last: Robj,
         maintain_order: Robj,
     ) -> RResult<Self> {
-        let mut exprs = robj_to!(Vec, PLExprCol, by)?;
-        let mut ddd = robj_to!(Vec, PLExprCol, dotdotdot)?;
+        let mut exprs = robj_to!(VecPLExprCol, by)?;
+        let mut ddd = robj_to!(VecPLExprCol, dotdotdot)?;
         exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
@@ -471,11 +474,11 @@ impl LazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+    fn explode(&self, dotdotdot: Robj) -> RResult<LazyFrame> {
         Ok(self
             .0
             .clone()
-            .explode(robj_to!(Vec, PLExprCol, dotdotdot_args)?)
+            .explode(robj_to!(VecPLExprColNamed, dotdotdot)?)
             .into())
     }
 
@@ -494,8 +497,9 @@ impl LazyGroupBy {
     }
 
     fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
-        let expr_vec: Vec<pl::Expr> = robj_to!(VecPLExprCol, exprs)?;
-        Ok(LazyFrame(self.0.clone().agg(expr_vec)))
+        Ok(LazyFrame(
+            self.0.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
+        ))
     }
 
     fn head(&self, n: f64) -> List {

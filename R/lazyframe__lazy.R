@@ -213,24 +213,21 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #' @title Lazy_select
 #' @description select on a LazyFrame
 #' @keywords LazyFrame
-#'
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
-  args = unpack_list(...)
-  .pr$LazyFrame$select(self, args) |>
+  .pr$LazyFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
 }
 
 #' @title Lazy with columns
 #' @description add or replace columns of LazyFrame
 #' @keywords LazyFrame
-#'
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with added/modified columns.
 LazyFrame_with_columns = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$with_columns(self, pra)
+  .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
+    unwrap("in $with_columns()")
 }
 
 #' @title Lazy with column
@@ -937,7 +934,7 @@ LazyFrame_sort = function(
     nulls_last = FALSE,
     maintain_order = FALSE) {
   .pr$LazyFrame$sort_by_exprs(
-    self, by, err_on_named_args(...), descending, nulls_last, maintain_order
+    self, unpack_list(by), err_on_named_args(...), descending, nulls_last, maintain_order
   ) |>
     unwrap("in $sort():")
 }

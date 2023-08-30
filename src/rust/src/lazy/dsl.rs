@@ -290,12 +290,11 @@ impl Expr {
         self.clone().0.take(idx.0.clone()).into()
     }
 
-    pub fn sort_by(&self, by: Robj, descending: Robj) -> Result<Expr, String> {
-        let expr = Expr(
-            self.clone()
-                .0
-                .sort_by(robj_to!(VecPLExpr, by)?, robj_to!(Vec, bool, descending)?),
-        );
+    pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<Expr> {
+        let expr = Expr(self.clone().0.sort_by(
+            robj_to!(VecPLExprCol, by)?,
+            robj_to!(Vec, bool, descending)?,
+        ));
         Ok(expr)
     }
 

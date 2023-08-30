@@ -743,8 +743,7 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  .pr$DataFrame$with_columns(self$lazy(), unpack_list(...)) |>
-    .pr$LazyFrame$collect() |>
+  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
 }
 

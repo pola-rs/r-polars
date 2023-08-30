@@ -266,8 +266,12 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&mut self, exprs: Robj) -> RResult<DataFrame> {
+    pub fn select(&self, exprs: Robj) -> RResult<DataFrame> {
         self.lazy().select(exprs)?.collect()
+    }
+
+    pub fn with_columns(&self, exprs: Robj) -> RResult<DataFrame> {
+        self.lazy().with_columns(exprs)?.collect()
     }
 
     //used in GroupBy, not DataFrame

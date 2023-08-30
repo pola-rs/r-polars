@@ -143,6 +143,8 @@ DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place,
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
 
+DataFrame$with_columns <- function(exprs) .Call(wrap__DataFrame__with_columns, self, exprs)
+
 DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__DataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
 
 DataFrame$to_struct <- function(name) .Call(wrap__DataFrame__to_struct, self, name)
@@ -979,6 +981,8 @@ LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, se
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
+LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
 LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__LazyFrame__select_str_as_lit, self, exprs)
@@ -994,8 +998,6 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
 LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
@@ -1019,7 +1021,7 @@ LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, pro
 
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
-LazyFrame$explode <- function(dotdotdot_args) .Call(wrap__LazyFrame__explode, self, dotdotdot_args)
+LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
 
 LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 

@@ -702,7 +702,7 @@ test_that("join_asof_simple", {
     group = c("b", "b", "a", "a")
   )
 
-  gdp = pl$DataFrame(l_gdp)$sort("date")
+  gdp = pl$DataFrame(l_gdp)$sort(list("date"))
   pop = pl$DataFrame(l_pop)$sort("date")
 
   # strategy param

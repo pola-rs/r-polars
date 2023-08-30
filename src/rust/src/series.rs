@@ -550,7 +550,7 @@ impl Series {
     }
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
-        let s = if !&robj.inherits("Series") {
+        let s = if !robj.inherits("Series") {
             robjname2series(robj, "")?
         } else {
             Series::inner_from_robj_clone(&robj)

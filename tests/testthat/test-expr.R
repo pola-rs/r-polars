@@ -2367,6 +2367,6 @@ test_that("concat_str", {
   ctxs = pl$concat_str("a", complex(1)) |>
     (\(x) result(x)$err$contexts())()
   expect_identical(ctxs$BadArgument, " `...` ")
-  expect_identical(ctxs$Hint, "element no. [2] ")
+  expect_identical(ctxs$When, "converting element 2 into an Expr")
   expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })
