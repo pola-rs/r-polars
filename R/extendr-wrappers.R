@@ -1011,6 +1011,8 @@ LazyFrame$rename <- function(existing, new) .Call(wrap__LazyFrame__rename, self,
 
 LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
+LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
+
 LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming) .Call(wrap__LazyFrame__optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expr, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming)
 
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)

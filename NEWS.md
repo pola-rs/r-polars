@@ -57,6 +57,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Stream query to file with `pl$sink_ipc()` and `pl$sink_parquet()` (#343)
 - New method `$explode()` for `DataFrame` and `LazyFrame` (#314).
 - New method `$clone()` for `LazyFrame` (#347).
+- New method `$fetch()` for `LazyFrame` (#319).
 - New methods `$optimization_toggle()` and `$profile()` for `LazyFrame` (#323).
 - `$with_column()` is now deprecated (following upstream `polars`). It will be
   removed in 0.9.0. It should be replaced with `$with_columns()` (#313).

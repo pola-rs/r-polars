@@ -32,6 +32,7 @@ call_to_string = function(call) paste(capture.output(print(call)), collapse = "\
 #' @param err any type which impl as.character
 #' @param context calling context
 #' @keywords internal
+#' @noRd
 #' @return err as string
 #' @examples
 #' #
