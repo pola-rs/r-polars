@@ -748,7 +748,11 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
     Ok(LazyFrame(ext_ldf.0.clone()))
 }
 
-pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl::Expr>> {
+pub fn list_expr_to_vec_pl_expr(
+    robj: Robj,
+    str_to_lit: bool,
+    named: bool,
+) -> RResult<Vec<pl::Expr>> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
     let l = robj
@@ -760,7 +764,13 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         let name = arg_names.next().unwrap_or("");
         robj_to_rexpr(robj.clone(), str_to_lit)
             .when(format!("converting element {} into an Expr", i + 1))
-            .map(|e| if name != "" { e.0.alias(name) } else { e.0 })
+            .map(|e| {
+                if name != "" && named {
+                    e.0.alias(name)
+                } else {
+                    e.0
+                }
+            })
     });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
@@ -855,11 +865,19 @@ macro_rules! robj_to_inner {
     };
 
     (VecPLExpr, $a:ident) => {
-        $crate::utils::list_expr_to_vec_pl_expr($a, true)
+        $crate::utils::list_expr_to_vec_pl_expr($a, true, false)
+    };
+
+    (VecPLExprNamed, $a:ident) => {
+        $crate::utils::list_expr_to_vec_pl_expr($a, true, true)
     };
 
     (VecPLExprCol, $a:ident) => {
-        $crate::utils::list_expr_to_vec_pl_expr($a, false)
+        $crate::utils::list_expr_to_vec_pl_expr($a, false, false)
+    };
+
+    (VecPLExprColNamed, $a:ident) => {
+        $crate::utils::list_expr_to_vec_pl_expr($a, false, true)
     };
 
     (RPolarsDataType, $a:ident) => {

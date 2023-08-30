@@ -14,7 +14,6 @@ use crate::rdataframe::DataFrame;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
-use crate::utils::extendr_concurrent::ParRObj;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_result_list};
 

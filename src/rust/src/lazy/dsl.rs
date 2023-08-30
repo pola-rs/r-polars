@@ -2609,6 +2609,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
                 let mut name = robj_to!(Vec, String, name)?;
                 let mut ddd = robj_to!(Vec, String, dotdotdot)?;
                 name.append(&mut ddd);
+
                 Ok(Expr::cols(name))
             }
         }

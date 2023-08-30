@@ -655,19 +655,7 @@ DataFrame_sort = function(
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  args = unpack_list(...)
-  .pr$DataFrame$select(self, args) |>
-    and_then(\(df) result(msg = "internal error while renaming columns", {
-      expr_names = names(args)
-      if (!is.null(expr_names)) {
-        old_names = df$columns
-        new_names = old_names
-        has_expr_name = nchar(expr_names) >= 1L
-        new_names[has_expr_name] = expr_names[has_expr_name]
-        df$columns = new_names
-      }
-      df
-    })) |>
+  .pr$DataFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
 }
 
@@ -755,14 +743,9 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  largs = unpack_list(...)
-
-  # unpack a single list
-  if (length(largs) == 1 && is.list(largs[[1]])) {
-    largs = largs[[1]]
-  }
-
-  do.call(self$lazy()$with_columns, largs)$collect()
+  .pr$DataFrame$with_columns(self$lazy(), unpack_list(...)) |>
+    .pr$LazyFrame$collect() |>
+    unwrap("in $with_columns()")
 }
 
 #' modify/append one column

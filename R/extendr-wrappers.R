@@ -111,8 +111,6 @@ DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__se
 
 DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_column_from_series, self, x)
 
-DataFrame$new_par_from_list <- function(robj_list) .Call(wrap__DataFrame__new_par_from_list, robj_list)
-
 DataFrame$with_row_count <- function(name, offset) .Call(wrap__DataFrame__with_row_count, self, name, offset)
 
 DataFrame$print <- function() .Call(wrap__DataFrame__print, self)

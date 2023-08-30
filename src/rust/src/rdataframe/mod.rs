@@ -278,7 +278,7 @@ impl DataFrame {
         maintain_order: Robj,
     ) -> RResult<DataFrame> {
         let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
-        let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, agg_exprs)?;
+        let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprColNamed, agg_exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         let lazy_df = self.clone().0.lazy();
         let lgb = if maintain_order {
