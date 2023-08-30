@@ -58,7 +58,7 @@ impl From<&Expr> for pl::PolarsResult<Series> {
 impl Series {
     //utility methods
     pub fn new(x: Robj, name: Robj) -> RResult<Series> {
-        robjname2series(&ParRObj(x), robj_to!(Option, str, name)?.unwrap_or(""))
+        robjname2series(x, robj_to!(Option, str, name)?.unwrap_or(""))
             .map_err(polars_to_rpolars_err)
             .map(Series)
     }
@@ -552,7 +552,7 @@ impl Series {
 
     pub fn any_robj_to_pl_series_result(robj: Robj) -> pl::PolarsResult<pl::Series> {
         let s = if !&robj.inherits("Series") {
-            robjname2series(&ParRObj(robj), "")?
+            robjname2series(robj, "")?
         } else {
             Series::inner_from_robj_clone(&robj)
                 .map_err(|err| {

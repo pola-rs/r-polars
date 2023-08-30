@@ -330,11 +330,6 @@ test_that("col DataType + col(s) + col regex", {
     iris[, Names]
   )
 
-  # warn no multiple regex
-
-  expect_warning(
-    pl$col(c("^Sepal.*$", "Species"))
-  )
 })
 
 

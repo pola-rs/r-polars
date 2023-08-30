@@ -72,48 +72,8 @@ pl$all = function(name = NULL) {
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
 pl$col = function(name = "", ...) {
-  pl_col_internal(name, ...) |>
-    result() |>
+  robj_to_col(name, list2(...)) |>
     unwrap("in pl$col()")
-}
-
-# This function throws error freely prefer pl$col
-pl_col_internal = function(name = "", ...) {
-  # preconvert Series into char name(s)
-  if (inherits(name, "Series")) name <- name$to_vector()
-
-  name_add = list(...)
-  if (length(name_add) > 0) {
-    if (is_string(name) && all(sapply(name_add, is_string))) {
-      name = c(name, unlist(name_add))
-    } else {
-      warning("Additional arguments supplied to `pl$col()` are ignored because one of `name` or the additional arguments is not a string.")
-    }
-  }
-
-  if (is_string(name)) {
-    return(.pr$Expr$col(name))
-  }
-  if (is.character(name)) {
-    if (any(sapply(name, \(x) {
-      isTRUE(substr(x, 1, 1) == "^") && isTRUE(substr(x, nchar(x), nchar(x)) == "$")
-    }))) {
-      warning("cannot use regex syntax when param name, has length > 1")
-    }
-    return(.pr$Expr$cols(name))
-  }
-  if (inherits(name, "RPolarsDataType")) {
-    return(.pr$Expr$dtype_cols(construct_DataTypeVector(list(name))))
-  }
-  if (is.list(name)) {
-    if (all(sapply(name, inherits, "RPolarsDataType"))) {
-      return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
-    } else {
-      stopf("all elements of list must be a RPolarsDataType")
-    }
-  }
-  # TODO implement series, DataType
-  stopf(paste("cannot make a column expression from:", str_string(name)))
 }
 
 #' an element in 'eval'-expr

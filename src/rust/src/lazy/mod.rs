@@ -1,6 +1,6 @@
 //mod apply;
 //pub mod dataframe;
-pub mod construct_expr;
+use extendr_api::*;
 pub mod dataframe;
 pub mod dsl;
 pub mod whenthen;
@@ -37,7 +37,7 @@ pub mod whenthen;
 //         unsafe { std::mem::transmute(self) }
 //     }
 // }
-use extendr_api::*;
+
 extendr_module! {
     mod lazy;
     use whenthen;

@@ -210,6 +210,11 @@ impl LazyFrame {
         Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
+    pub fn select_str_as_lit(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExpr, exprs).when("preparing columns for DataFrame")?;
+        Ok(LazyFrame(self.clone().0.select(exprs)))
+    }
+
     fn limit(&self, n: Robj) -> Result<Self, String> {
         Ok(self.0.clone().limit(robj_to!(u32, n)?).into())
     }

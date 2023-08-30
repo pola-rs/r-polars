@@ -128,18 +128,21 @@ fn r_date_range_lazy(
     closed: Robj,
     time_unit: Robj,
     time_zone: Robj,
+    explode: Robj,
 ) -> RResult<Expr> {
-    Ok(Expr(
-        polars::lazy::dsl::functions::date_range(
-            robj_to!(PLExprCol, start)?,
-            robj_to!(PLExprCol, end)?,
-            robj_to!(pl_duration, every)?,
-            robj_to!(new_closed_window, closed)?,
-            robj_to!(Option, timeunit, time_unit)?,
-            robj_to!(Option, String, time_zone)?,
-        )
-        .explode(),
-    ))
+    let expr = polars::lazy::dsl::functions::date_range(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, every)?,
+        robj_to!(new_closed_window, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    );
+    if robj_to!(bool, explode)? {
+        Ok(Expr(expr.explode()))
+    } else {
+        Ok(Expr(expr))
+    }
 }
 
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
@@ -212,16 +215,6 @@ pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     Ok(dtype.to_string())
 }
 
-// replaces wrap_e_legacy, derived from robj_to!
-#[extendr]
-fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
-    if robj_to!(bool, str_to_lit)? {
-        robj_to!(Expr, robj)
-    } else {
-        robj_to!(ExprCol, robj)
-    }
-}
-
 // setting functions
 
 // -- Meta Robj functions
@@ -236,7 +229,6 @@ pub fn mem_address(robj: Robj) -> String {
 pub fn clone_robj(robj: Robj) -> Robj {
     robj.clone()
 }
-
 // -- Special functions just for unit testing
 #[extendr]
 fn test_robj_to_usize(robj: Robj) -> RResult<String> {
@@ -302,7 +294,6 @@ extendr_module! {
     fn dtype_str_repr;
 
     //robj meta
-    fn internal_wrap_e;
     fn mem_address;
     fn clone_robj;
 

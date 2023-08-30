@@ -291,10 +291,6 @@ pub fn polars_to_rpolars_err(polars_err: polars::error::PolarsError) -> RPolarsE
     let rplerr = RPolarsErr::new_from_ctx(Rctx::Polars(format!("{}", polars_err)));
     match polars_err {
         ComputeError(s) => serde_json::from_str(s.to_string().as_str()).unwrap_or(rplerr),
-        InvalidOperation(s) => rplerr.hint(format!(
-            "something (likely a column) with name {:?} is not found",
-            s
-        )),
         _ => rplerr,
     }
 }

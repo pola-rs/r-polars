@@ -6,9 +6,11 @@ use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
 
+use crate::rpolarserr::polars_to_rpolars_err;
 use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list};
@@ -25,6 +27,8 @@ use polars::prelude::SortOptions;
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
+use crate::utils::r_expr_to_rust_expr;
+use crate::utils::unpack_r_eval;
 #[derive(Clone, Debug)]
 
 pub struct Expr(pub pl::Expr);
@@ -39,6 +43,12 @@ impl Deref for Expr {
 impl DerefMut for Expr {
     fn deref_mut(&mut self) -> &mut pl::Expr {
         &mut self.0
+    }
+}
+
+impl From<Expr> for pl::Expr {
+    fn from(x: Expr) -> Self {
+        x.0
     }
 }
 
@@ -65,13 +75,24 @@ impl Expr {
         dsl::cols(names).into()
     }
 
-    //TODO expand usecases to series and datatime
     pub fn lit(robj: Robj) -> RResult<Expr> {
         let rtype = robj.rtype();
         let rlen = robj.len();
 
+        fn to_series_then_lit(robj: Robj) -> RResult<pl::Expr> {
+            Series::any_robj_to_pl_series_result(robj)
+                .map_err(polars_to_rpolars_err)
+                .map(dsl::lit)
+        }
+
         match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
+            (_, rlen) if rlen != 1 => to_series_then_lit(robj),
+            (Rtype::List, _) => to_series_then_lit(robj),
+            (_, _) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
+                to_series_then_lit(robj)
+            }
+
             (Rtype::Integers, 1) => {
                 let opt_val = robj.as_integer();
                 if let Some(val) = opt_val {
@@ -127,15 +148,27 @@ impl Expr {
                     let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
                     Ok(pl::lit(s.0))
                 }
+
+                _ if robj.inherits("Expr") => {
+                    let expr: Expr = unsafe { &mut *robj.external_ptr_addr::<Expr>() }.clone();
+                    Ok(expr.0)
+                }
+
+                _ if robj_inherits(&robj, ["Then", "ChainedThen"]) => unpack_r_eval(R!(
+                    "polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"
+                ))
+                .and_then(r_expr_to_rust_expr)
+                .map(|expr| expr.0),
+
+                _ if robj_inherits(&robj, ["When", "ChainedWhen"]) => rerr()
+                    .plain("Cannot use a When or ChainedWhen-statement as Expr without a $then()"),
+
                 _ => rerr()
                     .bad_robj(&robj)
-                    .plain("pl$lit() currently only support ExternalPtr's to polars 'Series'"),
+                    .plain("pl$lit() this ExternalPtr class is not currently supported"),
             },
 
-            (_, 1) => rerr().bad_robj(&robj).plain("unsupported R type "),
-            (_, n) => rerr()
-                .bad_robj(&robj)
-                .plain(format!("literals mush have length [1], not [{n}]")),
+            (_, _) => rerr().bad_robj(&robj).plain("unsupported R type "),
         }
         .map(Expr)
         .when("constructing polars literal from Robj")
@@ -2534,10 +2567,73 @@ pub fn make_rolling_options(
 // }
 
 #[extendr]
+pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
+    if robj_to!(bool, str_to_lit)? {
+        robj_to!(Expr, robj)
+    } else {
+        robj_to!(ExprCol, robj)
+    }
+}
+
+#[extendr]
+pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<Expr> {
+    //let last_type_str = None;
+
+    || -> RResult<Expr> {
+        use crate::utils::unpack_r_eval;
+        let name = if name.inherits("Series") {
+            unpack_r_eval(R!("polars:::result({{name}}$to_vector())"))?
+        } else {
+            name
+        };
+
+        match () {
+            _ if name.is_string() && name.len() == 1 && dotdotdot.len() == 0 => {
+                Ok(Expr::col(name.as_str().unwrap_or(&"")))
+            }
+            _ if name.inherits("RPolarsDataType")
+                //or if name is a list and first element is RPolarsDataType
+                | if let Some(Ok(robj)) = name.as_list().map(|l| l.elt(0)) {
+                    robj.inherits("RPolarsDataType")
+                } else {
+                    false
+                } =>
+            {
+                let mut name = robj_to!(Vec, PLPolarsDataType, name)?;
+                let mut ddd = robj_to!(Vec, PLPolarsDataType, dotdotdot)?;
+                name.append(&mut ddd);
+                Ok(Expr(dsl::dtype_cols(name)))
+            }
+
+            _ => {
+                let mut name = robj_to!(Vec, String, name)?;
+                let mut ddd = robj_to!(Vec, String, dotdotdot)?;
+                name.append(&mut ddd);
+                Ok(Expr::cols(name))
+            }
+        }
+    }()
+    .when("constructing a Column Expr")
+
+    // if ddd.length() > 0 {}
+    // if res.is_ok() {
+    //     return res;
+    // } else {
+    //     res_dtype = robj_to!(Vec, RPolarsDataType, name);
+    //     if res_dtype.is_ok() {
+    //         return ();
+    //     }
+    // }
+    // let ddd = dotdotdot.as_list().unwrap();
+}
+
+#[extendr]
 extendr_module! {
     mod dsl;
     impl Expr;
     impl ProtoExprArray;
+    fn internal_wrap_e;
+    fn robj_to_col;
 
 
 }

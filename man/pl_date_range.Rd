@@ -20,6 +20,9 @@ interval are missing, then single datetime is constructed.}
 \item{time_unit}{option string ("ns" "us" "ms") duration of one int64 value on polars side}
 
 \item{time_zone}{optional string describing a timezone.}
+
+\item{explode}{if TRUE (default) all created ranges will be "unlisted" into on column, if FALSE
+output will be a list of ranges.}
 }
 \value{
 a datetime

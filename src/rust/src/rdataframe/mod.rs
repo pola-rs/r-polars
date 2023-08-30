@@ -11,7 +11,7 @@ use crate::rdatatype::RPolarsDataType;
 use crate::rlib;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
-use crate::utils::extendr_concurrent::ParRObj;
+
 pub use lazy::dataframe::*;
 
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -108,7 +108,7 @@ impl DataFrame {
 
     //internal use
     pub fn set_column_from_robj(&mut self, robj: Robj, name: &str) -> Result<(), String> {
-        robjname2series(&ParRObj(robj), name)
+        robjname2series(robj, name)
             .and_then(|s| self.0.with_column(s).map(|_| ()))
             .map_err(|err| format!("in set_column_from_robj: {:?}", err))
     }
@@ -120,18 +120,6 @@ impl DataFrame {
             .with_column(s)
             .map(|_| ())
             .map_err(|err| format!("in set_column_from_series: {:?}", err))
-    }
-
-    pub fn new_par_from_list(robj_list: List) -> Result<DataFrame, String> {
-        let v: Vec<(ParRObj, String)> = robj_list
-            .iter()
-            .map(|(str, robj)| (ParRObj(robj), str.to_owned()))
-            .collect();
-
-        crate::conversion_r_to_s::par_read_robjs(v)
-            .and_then(pl::DataFrame::new)
-            .map_err(|err| err.to_string())
-            .map(DataFrame)
     }
 
     pub fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {

@@ -138,16 +138,8 @@ test_that("pl$first pl$last", {
     pl$last(pl$Series(integer())),
     c("last()", "The series is empty, so no last value can be returned")
   )
-
-  # caught errors via pl$col
-  expect_grepl_error(
-    pl$first(1),
-    c("first()", "cannot make a column expression")
-  )
-  expect_grepl_error(
-    pl$last(1),
-    c("last()", "cannot make a column expression")
-  )
+  expect_error(pl$first(1))
+  expect_error(pl$last(1))
 })
 
 
@@ -165,7 +157,7 @@ test_that("pl$count", {
   expect_identical(pl$count(s), s$len())
 
   # pass invalid column name type to pl$col
-  expect_grepl_error(pl$count(1), c("count()", "cannot make a column expression"))
+  expect_error(pl$count(1))
 })
 
 
@@ -175,7 +167,12 @@ test_that("pl$implode", {
   exp = pl$col("bob")$implode()
   expect_true(act$meta$eq(exp))
 
-  expect_grepl_error(pl$implode(42), c("in pl\\$implode()", "cannot make a column expression from"))
+  ctx = pl$implode(42) |> get_err_ctx()
+
+  expect_identical(ctx$BadArgument,"name")
+  expect_identical(ctx$When,"constructing a Column Expr")
+
+
 })
 
 

@@ -104,7 +104,7 @@ list2 = list
 #' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
 unpack_list = function(...) {
-  l = list(...)
+  l = list2(...)
   if (length(l) == 1L && is.list(l[[1L]])) {
     l[[1L]]
   } else {

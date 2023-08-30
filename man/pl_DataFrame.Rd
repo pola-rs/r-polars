@@ -15,10 +15,6 @@ Columns will be named as of named arguments or alternatively by names of Series 
 placeholder name.}
 
 \item{make_names_unique}{default TRUE, any duplicated names will be prefixed a running number}
-
-\item{parallel}{bool default FALSE, experimental multithreaded interpretation of R vectors
-into a polars DataFrame. This is experimental as multiple threads read from R mem simultaneously.
-So far no issues parallel read from R has been found.}
 }
 \value{
 DataFrame
