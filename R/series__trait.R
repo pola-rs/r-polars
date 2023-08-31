@@ -6,6 +6,7 @@
 #' @param ... optional others args which may be used by a specific class implementation
 #' @keywords internal
 #' @return a Series or an Robj that pl$Series can convert natively
+#' @export
 #' @examples
 #'
 #' pl$Series(1:5)
