@@ -14,7 +14,7 @@ test_that("When-class", {
   ctx = result(pl$when(complex(2)))$err$contexts()
   expect_identical(
     names(ctx),
-    c("BadArgument", "PlainErrorMessage", "BadValue", "PlainErrorMessage")
+    c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError")
   )
   expect_identical(
     ctx$BadArgument,
@@ -32,7 +32,7 @@ test_that("Then-class", {
   ctx = result(pl$when("a")$then(complex(2)))$err$contexts()
   expect_identical(
     names(ctx),
-    c("BadArgument", "PlainErrorMessage", "BadValue", "PlainErrorMessage")
+    c("BadArgument", "PlainErrorMessage", "BadValue", "When", "PolarsError")
   )
   expect_identical(
     ctx$BadArgument,

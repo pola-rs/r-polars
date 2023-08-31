@@ -921,19 +921,8 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  pcase(
-    is.null(x),
-    .pr$Expr$lit(NULL),
-    inherits(x, "Expr"),
-    Ok(x),
-    inherits(x, "Series"),
-    .pr$Expr$lit(x),
-    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")),
-    {
-      result(pl$Series(x)) |> and_then(.pr$Expr$lit)
-    },
-    or_else = .pr$Expr$lit(x)
-  ) |> unwrap("in lit()")
+  .Call(wrap__Expr__lit, x) |>  #use .call reduces eval from 22us to 15us, not a bottle-next anyways
+    unwrap("in $lit()")
 }
 
 #' polars suffix

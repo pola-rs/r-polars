@@ -80,6 +80,9 @@ features. Unrelated breaking changes and new features are put in separate sectio
   and allowed as default (#357).
 - Added methods `pl$enable_string_cache()`, `pl$with_string_cache()` and `pl$using_string_cache()`
   for joining/comparing Categorical series/columns (#361).
+- Added an S3 generic `as_polars_series()` where users or developers of extensions
+  can define a custom way to convert their format to Polars format. This generic
+  must return a Polars series. See #368 for an example (#369).
 
 # polars 0.7.0
 

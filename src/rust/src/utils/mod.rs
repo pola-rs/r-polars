@@ -3,14 +3,13 @@ pub mod extendr_concurrent;
 pub mod extendr_helpers;
 pub mod wrappers;
 
-use extendr_helpers::robj_inherits;
-
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
+use crate::lazy::dsl::robj_to_col;
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
@@ -706,19 +705,9 @@ pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr>
     let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
 
     //use R side wrap_e to convert any R value into Expr or
-    use extendr_api::*;
-    let robj_expr = internal_rust_wrap_e(robj, str_to_lit)
+    internal_rust_wrap_e(robj, str_to_lit)
         .bad_robj(&robj_clone)
-        .plain("cannot be converted into an Expr")?;
-
-    //PolarsExpr -> RExpr
-    let res: ExtendrResult<ExternalPtr<Expr>> = robj_expr.clone().try_into();
-    let ext_expr = res
-        .bad_robj(&robj_expr)
-        .mistyped(tn::<Expr>())
-        .when("converting R extptr PolarsExpr to rust RExpr")
-        .plain("internal error: wrap_e should fail or return an Expr")?;
-    Ok(Expr(ext_expr.0.clone()))
+        .plain("cannot be converted into an Expr")
 }
 
 // used in conjunction with R!("...")
@@ -728,27 +717,25 @@ pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     })?)
 }
 
-fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Robj> {
-    use extendr_api::Rtype::*;
+pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<Expr> {
+    let res: ExtendrResult<extendr_api::ExternalPtr<Expr>> = robj_expr.clone().try_into();
+    Ok(Expr(
+        res.bad_robj(&robj_expr)
+            .mistyped(tn::<Expr>())
+            .when("converting R extptr PolarsExpr to rust RExpr")
+            .plain("internal error: could not convert R Expr (externalptr) to rust Expr")?
+            .0
+            .clone(),
+    ))
+}
+
+fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Expr> {
     use extendr_api::*;
 
-    match robj.rtype() {
-        ExternalPtr if robj.inherits("Expr") => Ok(robj),
-        ExternalPtr if robj.inherits("Series") => {
-            unpack_r_eval(R!("polars:::result(polars::pl$lit({{robj}}))"))
-        }
-        ExternalPtr if robj_inherits(&robj, ["Then", "ChainedThen"]) => unpack_r_eval(R!(
-            "polars:::result({{robj}}$otherwise(polars::pl$lit(NULL)))"
-        )),
-        ExternalPtr if robj_inherits(&robj, ["When", "ChainedWhen"]) => {
-            rerr().plain("Cannot use a When-statement as Expr without a $then()")
-        }
-        _h @ Logicals | _h @ List | _h @ Doubles | _h @ Integers => {
-            unpack_r_eval(R!("polars:::result(polars::pl$lit({{robj}}))"))
-        }
-        _ if str_to_lit => unpack_r_eval(R!("polars:::result(polars::pl$lit({{robj}}))")),
-
-        _ => unpack_r_eval(R!("polars:::result(polars::pl$col({{robj}}))")),
+    if !str_to_lit && robj.rtype() == Rtype::Strings {
+        robj_to_col(robj, extendr_api::NULL.into())
+    } else {
+        Expr::lit(robj)
     }
 }
 
@@ -761,7 +748,11 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
     Ok(LazyFrame(ext_ldf.0.clone()))
 }
 
-pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl::Expr>> {
+pub fn list_expr_to_vec_pl_expr(
+    robj: Robj,
+    str_to_lit: bool,
+    named: bool,
+) -> RResult<Vec<pl::Expr>> {
     use extendr_api::*;
     let robj = unpack_r_result_list(robj)?;
     let l = robj
@@ -773,7 +764,13 @@ pub fn list_expr_to_vec_pl_expr(robj: Robj, str_to_lit: bool) -> RResult<Vec<pl:
         let name = arg_names.next().unwrap_or("");
         robj_to_rexpr(robj.clone(), str_to_lit)
             .when(format!("converting element {} into an Expr", i + 1))
-            .map(|e| if name != "" { e.0.alias(name) } else { e.0 })
+            .map(|e| {
+                if name != "" && named {
+                    e.0.alias(name)
+                } else {
+                    e.0
+                }
+            })
     });
     crate::utils::collect_hinted_result_rerr::<pl::Expr>(l.len(), iter)
 }
@@ -868,15 +865,26 @@ macro_rules! robj_to_inner {
     };
 
     (VecPLExpr, $a:ident) => {
-        $crate::utils::list_expr_to_vec_pl_expr($a, true)
+        $crate::utils::list_expr_to_vec_pl_expr($a, true, false)
+    };
+
+    (VecPLExprNamed, $a:ident) => {
+        $crate::utils::list_expr_to_vec_pl_expr($a, true, true)
     };
 
     (VecPLExprCol, $a:ident) => {
-        $crate::utils::list_expr_to_vec_pl_expr($a, false)
+        $crate::utils::list_expr_to_vec_pl_expr($a, false, false)
+    };
+
+    (VecPLExprColNamed, $a:ident) => {
+        $crate::utils::list_expr_to_vec_pl_expr($a, false, true)
     };
 
     (RPolarsDataType, $a:ident) => {
         $crate::utils::robj_to_datatype($a)
+    };
+    (PLPolarsDataType, $a:ident) => {
+        $crate::utils::robj_to_datatype($a).map(|dt| dt.0)
     };
 
     (RField, $a:ident) => {

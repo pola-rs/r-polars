@@ -47,43 +47,7 @@ impl RField {
     pub fn set_datatype_mut(&mut self, datatype: &RPolarsDataType) {
         self.0.dtype = datatype.0.clone()
     }
-
-    // pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
-    //     if robj.check_external_ptr_type::<RField>() {
-    //         let x: RField = unsafe { &mut *robj.external_ptr_addr::<RField>() }.clone();
-    //         Ok(x)
-    //     } else {
-    //         Err("expected RField")
-    //     }
-    // }
-
-    // pub fn any_robj_to_pl_RField_result(robj: &Robj) -> pl::PolarsResult<pl::RField> {
-    //     let s = if !&robj.inherits("RField") {
-    //         robjname2series(&robj, &"")?
-    //     } else {
-    //         Series::inner_from_robj_clone(&robj)
-    //             .map_err(|err| {
-    //                 //convert any error from R to a polars error
-    //                 pl::PolarsError::ComputeError(err.into()))
-    //             })?
-    //             .0
-    //     };
-    //     Ok(s)
-    // }
 }
-
-// impl TryFrom<Robj> for RField {
-//     type Error = String;
-
-//     fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
-//         if  &robj.inherits("RField") {
-//             lrobj.try_into()
-//             Ok(EvenNumber(value))
-//         } else {
-//             Err(())
-//         }
-//     }
-// }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);

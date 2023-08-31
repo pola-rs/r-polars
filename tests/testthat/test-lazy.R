@@ -300,7 +300,7 @@ test_that("sort", {
 
   # test raise error for ... named arg
   ctx = pl$DataFrame(mtcars)$lazy()$sort(by = "cyl", maintain_ord = TRUE) |> get_err_ctx()
-  expect_identical(ctx$BadArgument, "maintain_ord")
+  expect_identical(ctx$BadArgument, " `...` ")
 
   # test raise error for missing by
   expect_grepl_error(

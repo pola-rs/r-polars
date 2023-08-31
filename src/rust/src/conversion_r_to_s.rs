@@ -1,11 +1,12 @@
+use crate::series::Series;
 use crate::utils::collect_hinted_result;
+use crate::utils::unpack_r_result_list;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
 use polars::prelude as pl;
 use polars::prelude::IntoSeries;
 use polars::prelude::NamedFrom;
-use rayon::prelude::IntoParallelIterator;
 // Internal tree structure to contain Series of fully parsed nested Robject.
 // It is easier to resolve concatenated datatype after all elements have been parsed
 // because empty lists have no type in R, but the corrosponding polars type must be known before
@@ -17,19 +18,16 @@ enum SeriesTree {
     SeriesEmptyVec, // likely an R NULL or list() delayed conversion as corrosponding polars is yet given
 }
 
-use crate::utils::extendr_concurrent::ParRObj;
-
-pub fn par_read_robjs(x: Vec<(ParRObj, String)>) -> pl::PolarsResult<Vec<pl::Series>> {
-    use rayon::iter::ParallelIterator;
-    x.into_par_iter()
-        .map(|(probj, name)| robjname2series(&probj, name.as_str()))
-        .collect()
-}
-
 // Main module function: Convert any potentially nested R object handled in three steps
-pub fn robjname2series(x: &ParRObj, name: &str) -> pl::PolarsResult<pl::Series> {
+pub fn robjname2series(x: Robj, name: &str) -> pl::PolarsResult<pl::Series> {
+    // check for any dependency injection
+    let opt_new_robj = unpack_r_result_list(
+        R!("polars:::result(polars:::as_polars_series({{&x}}))").expect("result cannot fail"),
+    );
+    let x = opt_new_robj.unwrap_or(x);
+
     // 1 parse any (potentially) R structure, into a tree of Series, boubble any parse error
-    let st = recursive_robjname2series_tree(&x.0, name)?;
+    let st = recursive_robjname2series_tree(&x, name)?;
 
     // 2 search for first leaf dtype, returns None for empty list or lists of empty lists and so on ...
     let first_leaf_dtype = find_first_leaf_datatype(&st);
@@ -55,8 +53,19 @@ fn find_first_leaf_datatype(st: &SeriesTree) -> Option<pl::DataType> {
 fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<SeriesTree> {
     let rtype = x.rtype();
 
+    // preprocess types
+
     // handle any supported Robj
     let series_result = match rtype {
+        Rtype::ExternalPtr => match () {
+            _ if x.inherits("Series") => {
+                let s: Series = unsafe { &mut *x.external_ptr_addr::<Series>() }.clone();
+                Ok(SeriesTree::Series(s.0))
+            }
+            _ => Err(pl::PolarsError::InvalidOperation(
+                "This externalPtr is currently not supported".into(),
+            )),
+        },
         Rtype::Doubles if x.inherits("integer64") => {
             let rdouble: Doubles = x.try_into().expect("as matched");
             if rdouble.no_na().is_true() {
@@ -165,7 +174,6 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     };
 
     //post process derived R types
-    //let x_class: Vec<&str> = x.class().map(|itr| itr.collect()).unwrap_or_else(||Vec::new());
     match series_result {
         Ok(SeriesTree::Series(s)) if x.inherits("POSIXct") => {
             let tz = x

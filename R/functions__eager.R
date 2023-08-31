@@ -86,6 +86,8 @@ pl$concat = function(
 #' @param name name of series
 #' @param time_unit option string ("ns" "us" "ms") duration of one int64 value on polars side
 #' @param time_zone optional string describing a timezone.
+#' @param explode if TRUE (default) all created ranges will be "unlisted" into on column, if FALSE
+#' output will be a list of ranges.
 #'
 #' @details
 #' If param time_zone is not defined the Series will have no time zone.
@@ -133,7 +135,8 @@ pl$date_range = function(
     closed = "both", # : ClosedInterval = "both",
     name = NULL, # : str | None = None,
     time_unit = "us",
-    time_zone = NULL # : str | None = None
+    time_zone = NULL, # : str | None = None
+    explode = TRUE
     ) {
   if (missing(end)) {
     end = start
@@ -154,7 +157,7 @@ pl$date_range = function(
   start = cast_naive_value_to_datetime_expr(start)
   end = cast_naive_value_to_datetime_expr(end)
 
-  r_date_range_lazy(start, end, interval, closed, time_unit, time_zone) |>
+  r_date_range_lazy(start, end, interval, closed, time_unit, time_zone, explode) |>
     and_then(f_eager_eval) |>
     unwrap("in pl$date_range()")
 }

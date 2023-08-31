@@ -35,7 +35,7 @@ concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
 
-r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone)
+r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)
 
 as_struct <- function(exprs) .Call(wrap__as_struct, exprs)
 
@@ -46,8 +46,6 @@ rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches
 arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
 
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
-
-internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
@@ -85,6 +83,10 @@ test_rthreadhandle <- function() .Call(wrap__test_rthreadhandle)
 
 test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 
+internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
+
+robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
+
 enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
@@ -108,8 +110,6 @@ DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_wit
 DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__set_column_from_robj, self, robj, name)
 
 DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_column_from_series, self, x)
-
-DataFrame$new_par_from_list <- function(robj_list) .Call(wrap__DataFrame__new_par_from_list, robj_list)
 
 DataFrame$with_row_count <- function(name, offset) .Call(wrap__DataFrame__with_row_count, self, name, offset)
 
@@ -142,6 +142,8 @@ DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, s
 DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
 
 DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
+
+DataFrame$with_columns <- function(exprs) .Call(wrap__DataFrame__with_columns, self, exprs)
 
 DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__DataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
 
@@ -979,7 +981,11 @@ LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, se
 
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
+LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
+
+LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__LazyFrame__select_str_as_lit, self, exprs)
 
 LazyFrame$limit <- function(n) .Call(wrap__LazyFrame__limit, self, n)
 
@@ -992,8 +998,6 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
 LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
@@ -1017,7 +1021,7 @@ LazyFrame$optimization_toggle <- function(type_coercion, predicate_pushdown, pro
 
 LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
-LazyFrame$explode <- function(dotdotdot_args) .Call(wrap__LazyFrame__explode, self, dotdotdot_args)
+LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
 
 LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
 
