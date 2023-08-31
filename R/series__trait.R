@@ -42,3 +42,8 @@ as_polars_series.POSIXlt = function(x, ...) {
 }
 
 
+#' @export
+as_polars_series.vctrs_rcrd = function(x, ...) {
+  pl$DataFrame(unclass(x))$to_struct()
+}
+
