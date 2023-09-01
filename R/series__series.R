@@ -9,7 +9,7 @@
 #' Most methods return another `Series`-class instance or similar which allows for method chaining.
 #' This class system in lack of a better name could be called "environment classes" and is the same class
 #' system extendr provides, except here there is both a public and private set of methods. For implementation
-#' reasons, the private methods are external and must be called from polars:::.pr.$Series$methodname(), also
+#' reasons, the private methods are external and must be called from `.pr$Series$methodname()`, also
 #' all private methods must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -20,12 +20,10 @@
 #'
 #' @keywords Series
 #' @examples
-#' # see all exported methods
-#' ls(polars:::Series)
+#' pl$show_all_public_methods("Series")
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$Series)
-#'
+#' ls(.pr$Series)
 #'
 #' # make an object
 #' s = pl$Series(1:3)
@@ -83,7 +81,9 @@ Series_print = function() {
 #' @description called by the interactive R session internally
 #' @param x Series
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.Series = function(x, pattern = "") {
   get_method_usages(Series, pattern = pattern)
@@ -136,11 +136,9 @@ pl$Series = function(x, name = NULL) {
   if (inherits(x, "Series")) {
     return(x)
   }
-  if (is.null(name)) name <- ""
-  if (!is_string(name)) stopf("name must be NULL or a string")
   x = convert_to_fewer_types(x) # type conversions on R side
-  return(unwrap(.pr$Series$new(x, name)))
-  stopf("x must be a double, interger, char, or logical vector")
+  .pr$Series$new(x, name) |>
+    unwrap("in pl$Series()")
 }
 
 
@@ -365,6 +363,7 @@ Series_to_vector = \() {
 }
 
 #' Alias to Series_to_vector (backward compatibility)
+#' @return R vector
 #' @noRd
 Series_to_r_vector = Series_to_vector
 
@@ -781,14 +780,13 @@ Series_flags = method_as_property(function() {
 #' is_sorted
 #' @keywords Series
 #' @param descending Check if the Series is sorted in descending order.
-#' @param nulls_last bool where to keep nulls, default same as reverse
 #' @return DataType
 #' @aliases is_sorted
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
 #' pl$Series(1:4)$sort()$is_sorted()
-Series_is_sorted = function(descending = FALSE, nulls_last = NULL) {
-  .pr$Series$is_sorted(self, descending, nulls_last)
+Series_is_sorted = function(descending = FALSE) {
+  .pr$Series$is_sorted(self, descending) |> unwrap("in $is_sorted()")
 }
 
 

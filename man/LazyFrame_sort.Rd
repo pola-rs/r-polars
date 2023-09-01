@@ -4,11 +4,17 @@
 \alias{LazyFrame_sort}
 \title{LazyFrame Sort}
 \usage{
-LazyFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
+LazyFrame_sort(
+  by,
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{by}{Column(s) to sort by. Column name strings, character vector of
-column names, or Iterable Into\if{html}{\out{<Expr>}} (e.g. one Expr, or list mixed Expr and
+column names, or Iterable \verb{Into<Expr>} (e.g. one Expr, or list mixed Expr and
 column name strings).}
 
 \item{...}{more columns to sort by as above but provided one Expr per argument.}
@@ -17,12 +23,16 @@ column name strings).}
 as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
+
+\item{maintain_order}{Whether the order should be maintained if elements are equal. Note that if
+true streaming is not possible and performance might be worse since this requires a stable
+search.}
 }
 \value{
 LazyFrame
 }
 \description{
-sort a LazyFrame by on or more Expr
+sort by one or more Expr.
 }
 \details{
 by and ... args allow to either provide e.g. a list of Expr or something which can
@@ -41,4 +51,4 @@ df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
 df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 }
-\keyword{DataFrame}
+\keyword{LazyFrame}

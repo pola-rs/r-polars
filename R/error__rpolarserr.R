@@ -2,7 +2,9 @@
 #' @description called by the interactive R session internally
 #' @param x RPolarsErr
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.RPolarsErr = function(x, pattern = "") {
   get_method_usages(RPolarsErr, pattern = pattern)
@@ -49,4 +51,28 @@ upgrade_err.RPolarsErr = function(err) { # already RPolarsErr pass through
 # short hand  for starting new error with a bad robj input
 bad_robj = function(r) {
   .pr$RPolarsErr$new()$bad_robj(r)
+}
+
+Err_plain = function(x) {
+  Err(.pr$RPolarsErr$new()$plain(x))
+}
+
+# short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr
+get_err_ctx = \(x) unwrap_err(result(x))$contexts()
+
+
+# wrapper to return Result
+err_on_named_args = function(...) {
+  l = list2(...)
+  if (is.null(names(l)) || all(names(l) == "")) {
+    Ok(l)
+  } else {
+    bad_names = names(l)[names(l) != ""]
+    .pr$RPolarsErr$
+      new()$
+      bad_arg(paste(bad_names, collapse = ", "))$
+      plain("... args not allowed to be named here")$
+      hint("named ... arg was passed, or a non ... arg was misspelled") |>
+      Err()
+  }
 }

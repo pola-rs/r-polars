@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-05-07
+RUST_TOOLCHAIN_VERSION := nightly-2023-07-27
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
@@ -46,15 +46,19 @@ requirements-rs:
 
 .PHONY: build
 build: ## Compile polars R package with all features and generate Rd files
-	export RPOLARS_ALL_FEATURES=true \
-	&& export RPOLARS_PROFILE=release-optimized \
+	export RPOLARS_FULL_FEATURES=true \
 	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
+
+.PHONY: install
+install: ## Install the R package
+	export RPOLARS_FULL_FEATURES=true \
+	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
 .PHONY: all
 all: fmt build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
-docs: build README.md docs/docs/reference_home.md ## Generate docs
+docs: build install README.md docs/docs/reference_home.md ## Generate docs
 	cp docs/mkdocs.orig.yml docs/mkdocs.yml
 	Rscript -e 'altdoc::update_docs(custom_reference = "docs/make-docs.R")'
 	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
@@ -73,12 +77,8 @@ LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
 
 .PHONY: test
-test: build ## Run fast unittests
-	Rscript -e 'devtools::load_all(); devtools::test()'
-
-.PHONY: install
-install: ## Install this R package locally
-	Rscript -e 'devtools::install(pkg = ".", dependencies = TRUE)'
+test: build install ## Run fast unittests
+	Rscript -e 'devtools::test()'
 
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files

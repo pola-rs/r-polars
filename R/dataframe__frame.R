@@ -11,7 +11,7 @@
 #' This class system in lack of a better name could be called "environment classes"
 #' and is the same class system extendr provides, except here there is
 #' both a public and private set of methods. For implementation reasons, the private methods are
-#' external and must be called from polars:::.pr.$DataFrame$methodname(), also all private methods
+#' external and must be called from `.pr$DataFrame$methodname()`, also all private methods
 #' must take any self as an argument, thus they are pure functions. Having the private methods
 #' as pure functions solved/simplified self-referential complications.
 #'
@@ -22,22 +22,24 @@
 #' prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
+#' @return not applicable
 #' @examples
-#' # see all exported methods
-#' ls(polars:::DataFrame)
+#' # see all public exported method names (normally accessed via a class instance with $)
+#' ls(.pr$env$DataFrame)
 #'
 #' # see all private methods (not intended for regular use)
-#' ls(polars:::.pr$DataFrame)
+#' ls(.pr$DataFrame)
 #'
 #'
 #' # make an object
 #' df = pl$DataFrame(iris)
 #'
+#'
 #' # use a public method/property
 #' df$shape
 #' df2 = df
 #' # use a private method, which has mutability
-#' result = polars:::.pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
+#' result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 #'
 #' # column exists in both dataframes-objects now, as they are just pointers to the same object
 #' # there are no public methods with mutability
@@ -55,7 +57,7 @@
 #' # method does not return any ok-value.
 #'
 #' # try unwrapping an error from polars due to unmatching column lengths
-#' err_result = polars:::.pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
+#' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 DataFrame
 
@@ -67,7 +69,9 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x DataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
 .DollarNames.DataFrame = function(x, pattern = "") {
   get_method_usages(DataFrame, pattern = pattern)
@@ -78,7 +82,9 @@ DataFrame
 #' @description called by the interactive R session internally
 #' @param x VecDataFrame
 #' @param pattern code-stump as string to auto-complete
+#' @return char vec
 #' @export
+#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
   get_method_usages(VecDataFrame, pattern = pattern)
@@ -99,9 +105,6 @@ DataFrame
 #' placeholder name.
 #'
 #' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
-#' @param parallel bool default FALSE, experimental multithreaded interpretation of R vectors
-#' into a polars DataFrame. This is experimental as multiple threads read from R mem simultaneously.
-#' So far no issues parallel read from R has been found.
 #'
 #' @return DataFrame
 #' @keywords DataFrame_new
@@ -122,8 +125,10 @@ DataFrame
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
-pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
-  largs = list2(...)
+pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select =TRUE) {
+
+
+  largs = unpack_list(...)
 
   # no args crete empty DataFrame
   if (length(largs) == 0L) {
@@ -134,16 +139,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
   if (inherits(largs[[1L]], "DataFrame")) {
     return(largs[[1L]])
   }
-
-  # if input is one list of expression unpack this one
-  Data = if (length(largs) == 1L && is.list(largs[[1]])) {
-    largs = largs[[1L]]
-    if (length(largs) == 0) {
-      return(.pr$DataFrame$default())
-    }
-    largs
-  }
-
 
 
   # input guard
@@ -157,8 +152,8 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
 
 
   ## step 00 get max length to allow cycle 1-length inputs
-  largs_lengths = sapply(largs, length)
-  largs_lengths_max = if (is.integer(largs_lengths)) max(largs_lengths) else NULL
+  # largs_lengths = sapply(largs, length)
+  # largs_lengths_max = if (is.integer(largs_lengths)) max(largs_lengths) else NULL
 
   ## step1 handle column names
   # keys are tentative new column names
@@ -194,64 +189,14 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
     }
   }
 
-  ## step 4
+  ## pass to pl$
+  names(largs) = keys
+  result(
+    lapply(largs, pl$lit) |>
+    do.call(what = pl$select)
+  ) |>
+    unwrap("in pl$DataFrame()")
 
-  if (parallel) {
-    # interpret R vectors into series in DataFrame in parallel
-    aux_df = NULL # save Series temp to here
-    l = mapply(largs, keys, SIMPLIFY = FALSE, FUN = function(column, key) {
-      if (inherits(column, "Series")) {
-        if (is.null(aux_df)) {
-          aux_df <<- .pr$DataFrame$new_with_capacity(length(largs))
-        }
-        .pr$Series$rename_mut(column, key)
-        unwrap(.pr$DataFrame$set_column_from_series(aux_df, column))
-        column = NULL
-      } else {
-        if (length(column) == 1L && isTRUE(largs_lengths_max > 1L)) {
-          column = rep(column, largs_lengths_max)
-        }
-        column = convert_to_fewer_types(column) # type conversions on R side
-      }
-      column
-    })
-    names(l) = keys
-    # drop series from converted columns
-    l = l |> (\(x) if (length(x)) x[!sapply(x, is.null)] else x)()
-
-
-
-    if (length(l)) {
-      self = unwrap(.pr$DataFrame$new_par_from_list(l))
-    } else {
-      self = aux_df
-    }
-
-    # combine DataFrame if both defined and reorder columns
-    if (!is.null(aux_df) && length(l)) {
-      self = pl$concat(list(self, aux_df), rechunk = FALSE, how = "horizontal")
-      self = do.call(self$select, unname(lapply(keys, pl$col))) # reorder columns by keys
-    }
-  } else {
-    # buildDataFrame one column at the time
-    self = .pr$DataFrame$new_with_capacity(length(largs))
-    mapply(largs, keys, FUN = function(column, key) {
-      if (inherits(column, "Series")) {
-        .pr$Series$rename_mut(column, key)
-
-        unwrap(.pr$DataFrame$set_column_from_series(self, column))
-      } else {
-        if (length(column) == 1L && isTRUE(largs_lengths_max > 1L)) {
-          column = rep(column, largs_lengths_max)
-        }
-        column = convert_to_fewer_types(column) # type conversions on R side
-        unwrap(.pr$DataFrame$set_column_from_robj(self, column, key))
-      }
-      return(NULL)
-    })
-  }
-
-  return(self)
 }
 
 
@@ -260,8 +205,6 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE) {
 #' @keywords internal
 #' @param x DataFrame
 #' @param ... not used
-#'
-#' @name print()
 #'
 #' @return self
 #' @export
@@ -273,8 +216,8 @@ print.DataFrame = function(x, ...) {
 }
 
 #' internal method print DataFrame
-#'
-#'
+#' @noRd
+#' @keywords internal
 #' @return self
 #'
 #' @examples pl$DataFrame(iris)
@@ -286,15 +229,16 @@ DataFrame_print = function() {
 ## "Class methods"
 
 #' Validate data input for create Dataframe with pl$DataFrame
-#'
+#' @noRd
 #' @param x any R object to test if suitable as input to DataFrame
-#'
+#' @keywords internal
 #' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
 #'
 #' @return bool
 #'
-#' @examples polars:::is_DataFrame_data_input(iris)
-#' polars:::is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
+#' @examples
+#' .pr$env$is_DataFrame_data_input(iris)
+#' .pr$env$is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
 is_DataFrame_data_input = function(x) {
   inherits(x, "data.frame") ||
     is.list(x) ||
@@ -307,8 +251,10 @@ is_DataFrame_data_input = function(x) {
 ## internal bookkeeping of methods which should behave as properties
 DataFrame.property_setters = new.env(parent = emptyenv())
 
+
+
 #' generic setter method
-#'
+#' @noRd
 #' @param self DataFrame
 #' @param name name method/property to set
 #' @param value value to insert
@@ -323,8 +269,8 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @export
 #' @examples
 #' # For internal use
-#' # is only activated for following methods of DataFrame
-#' ls(polars:::DataFrame.property_setters)
+#' # show what methods of DataFrame have active property setters
+#' with(.pr$env, ls(DataFrame.property_setters))
 #'
 #' # specific use case for one object property 'columns' (names)
 #' df = pl$DataFrame(iris)
@@ -350,10 +296,9 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' # for stable code prefer e.g.  df$columns = letters[5:1]
 #'
-#' # to see inside code of a property use the [[]] syntax instead
+#' # to verify inside code of a property, use the [[]] syntax instead.
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
-#' polars:::DataFrame.property_setters$columns # and even more obscure to see setter code
-#'
+#' DataFrame.property_setters$columns # and even more obscure to see setter code
 "$<-.DataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 
@@ -369,7 +314,16 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   self
 }
 
-
+#' @title Eager with_row_count
+#' @description Add a new column at index 0 that counts the rows
+#' @keywords DataFrame
+#' @param name string name of the created column
+#' @param offset positive integer offset for the start of the counter
+#' @return A new `DataFrame` object with a counter column in front
+#' @docType NULL
+DataFrame_with_row_count = function(name, offset = NULL) {
+  .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
+}
 
 #' Get and set column names of a DataFrame
 #' @name DataFrame_columns
@@ -655,20 +609,8 @@ DataFrame_to_series = function(idx = 0) {
 }
 
 #' DataFrame Sort
-#' @description sort a DataFrame by on or more Expr.
-#'
-#' @param by Column(s) to sort by. Column name strings, character vector of
-#' column names, or Iterable Into<Expr> (e.g. one Expr, or list mixed Expr and
-#' column name strings).
-#' @param ... more columns to sort by as above but provided one Expr per argument.
-#' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
-#' as number of Expr's from above by + ....
-#' @param nulls_last Bool default FALSE, place all nulls_last?
-#' @details by and ... args allow to either provide e.g. a list of Expr or something which can
-#' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
-#' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
-#'
-#' @return LazyFrame
+#' @inherit LazyFrame_sort details description params
+#' @return DataFrame
 #' @keywords  DataFrame
 #' @examples
 #' df = mtcars
@@ -682,12 +624,15 @@ DataFrame_to_series = function(idx = 0) {
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
 #' df$sort(pl$col("cyl"), pl$col("mpg"))
 DataFrame_sort = function(
-    by, # : IntoExpr | List[IntoExpr],
-    ..., # unnamed Into expr
-    descending = FALSE, #  bool | vector[bool] = False,
-    nulls_last = FALSE) {
-  # args after ... must be named
-  self$lazy()$sort(by, ..., descending = descending, nulls_last = nulls_last)$collect()
+    by,
+    ...,
+    descending = FALSE,
+    nulls_last = FALSE,
+    maintain_order = FALSE) {
+  self$lazy()$sort(
+    by, ...,
+    descending = descending, nulls_last = nulls_last, maintain_order = maintain_order
+  )$collect()
 }
 
 
@@ -701,26 +646,16 @@ DataFrame_sort = function(
 #' (e.g `list(pl$col("a"))`).
 #'
 #' @aliases select
+#' @return DataFrame
 #' @keywords  DataFrame
+#' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 DataFrame_select = function(...) {
-  args = unpack_list(...)
-  .pr$DataFrame$select(self, args) |>
-    and_then(\(df) result(msg = "internal error while renaming columns", {
-      expr_names = names(args)
-      if (!is.null(expr_names)) {
-        old_names = df$columns
-        new_names = old_names
-        has_expr_name = nchar(expr_names) >= 1L
-        new_names[has_expr_name] = expr_names[has_expr_name]
-        df$columns = new_names
-      }
-      df
-    })) |>
+  .pr$DataFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
 }
 
@@ -783,7 +718,8 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' @description Add or modify columns with expressions
 #' @name DataFrame_with_columns
 #' @aliases with_columns
-#' @param ... any expressions or string column name, or same wrapped in a list
+#' @param ... any expressions or string column name, or same wrapped in a list. If first and only
+#' element is a list, it is unwrap as a list of args.
 #' @keywords  DataFrame
 #' @return DataFrame
 #' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
@@ -793,21 +729,22 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
 #'
+#' # same query
+#' l_expr = list(
+#'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+#'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+#' )
+#' pl$DataFrame(iris)$with_columns(l_expr)
+#'
+#'
 #' # rename columns by naming expression is concidered experimental
-#' pl$set_polars_options(named_exprs = TRUE) # unlock
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
 DataFrame_with_columns = function(...) {
-  largs = list2(...)
-
-  # unpack a single list
-  if (length(largs) == 1 && is.list(largs[[1]])) {
-    largs = largs[[1]]
-  }
-
-  do.call(self$lazy()$with_columns, largs)$collect()
+  .pr$DataFrame$with_columns(self, unpack_list(...)) |>
+    unwrap("in $with_columns()")
 }
 
 #' modify/append one column
@@ -818,6 +755,7 @@ DataFrame_with_columns = function(...) {
 #' @return DataFrame
 #' @details with_column is derived from with_columns but takes only one expression argument
 DataFrame_with_column = function(expr) {
+  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   self$with_columns(expr)
 }
 
@@ -901,11 +839,11 @@ DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 
 
 
-#' return polars DataFrame as R data.frame
+#' Return Polars DataFrame as R data.frame
 #'
 #' @param ... any args pased to as.data.frame()
 #'
-#' @return data.frame
+#' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
@@ -925,6 +863,7 @@ DataFrame_to_data_frame = function(...) {
 }
 
 #' Alias for to_data_frame (backward compatibility)
+#' @return An R data.frame
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
@@ -984,13 +923,13 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' @keywords DataFrame
 #' @examples
 #' # inner join by default
-#' df1 <- pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
-#' df2 <- pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
+#' df1 = pl$DataFrame(list(key = 1:3, payload = c("f", "i", NA)))
+#' df2 = pl$DataFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
 #' df1$join(other = df2, on = "key")
 #'
 #' # cross join
-#' df1 <- pl$DataFrame(x = letters[1:3])
-#' df2 <- pl$DataFrame(y = 1:4)
+#' df1 = pl$DataFrame(x = letters[1:3])
+#' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
 #'
 DataFrame_join = function(
@@ -1136,7 +1075,7 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @title Reverse
 #' @description Reverse the DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
@@ -1174,7 +1113,7 @@ DataFrame_fill_null = function(fill_value) {
 #' @title Slice
 #' @description Get a slice of this DataFrame.
 #' @keywords LazyFrame
-#' @return LazyFrame
+#' @return DataFrame
 #' @param offset integer
 #' @param length integer or NULL
 #' @examples
@@ -1446,12 +1385,12 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 
           # compute aggregates
           df_aggs = do.call(self$select, largs)
-          e_col_row_names = pl$lit(df_aggs$columns)$str$split(":")
+          e_col_row_names = pl$lit(df_aggs$columns)$str$splitn(":", 2)
 
           # pivotize
           df_pivot = pl$select(
-            e_col_row_names$arr$first()$alias("rowname"),
-            e_col_row_names$arr$last()$alias("colname"),
+            e_col_row_names$struct$field("field_0")$alias("rowname"),
+            e_col_row_names$struct$field("field_1")$alias("colname"),
             pl$lit(unlist(as.data.frame(df_aggs)))$alias("value")
           )$pivot(
             values = "value", index = "rowname", columns = "colname"
@@ -1526,4 +1465,21 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 
   # chose return type
   if (return_as_string) output else invisible(cat(output))
+}
+
+
+#' @inherit LazyFrame_explode title params
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(
+#'   letters = c("a", "a", "b", "c"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#' )
+#' df
+#'
+#' df$explode("numbers")
+DataFrame_explode = function(...) {
+  self$lazy()$explode(...)$collect()
 }

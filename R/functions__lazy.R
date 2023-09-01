@@ -23,6 +23,9 @@ pl$all = function(name = NULL) {
 }
 
 
+
+
+
 #' Start Expression with a column
 #' @name pl_col
 #' @description
@@ -69,41 +72,8 @@ pl$all = function(name = NULL) {
 #' # from Series of names
 #' df$select(pl$col(pl$Series(c("bar", "foobar"))))
 pl$col = function(name = "", ...) {
-  # preconvert Series into char name(s)
-  if (inherits(name, "Series")) name <- name$to_vector()
-
-  name_add = list(...)
-  if (length(name_add) > 0) {
-    if (is_string(name) && all(sapply(name_add, is_string))) {
-      name = c(name, unlist(name_add))
-    } else {
-      warning("Additional arguments supplied to `pl$col()` are ignored because one of `name` or the additional arguments is not a string.")
-    }
-  }
-
-  if (is_string(name)) {
-    return(.pr$Expr$col(name))
-  }
-  if (is.character(name)) {
-    if (any(sapply(name, \(x) {
-      isTRUE(substr(x, 1, 1) == "^") && isTRUE(substr(x, nchar(x), nchar(x)) == "$")
-    }))) {
-      warning("cannot use regex syntax when param name, has length > 1")
-    }
-    return(.pr$Expr$cols(name))
-  }
-  if (inherits(name, "RPolarsDataType")) {
-    return(.pr$Expr$dtype_cols(construct_DataTypeVector(list(name))))
-  }
-  if (is.list(name)) {
-    if (all(sapply(name, inherits, "RPolarsDataType"))) {
-      return(.pr$Expr$dtype_cols(construct_DataTypeVector(name)))
-    } else {
-      stopf("all elements of list must be a RPolarsDataType")
-    }
-  }
-  # TODO implement series, DataType
-  stopf(paste("cannot make a column expression from:", str_string(name)))
+  robj_to_col(name, list2(...)) |>
+    unwrap("in pl$col()")
 }
 
 #' an element in 'eval'-expr
@@ -452,43 +422,43 @@ pl$n_unique = function(column) { #-> int or Expr
 }
 
 #' Approximate count of unique values.
-#' @name pl_approx_unique
+#' @name pl_approx_n_unique
 #' @description This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @param column if dtype is:
-#' - String: syntactic sugar for `pl$col(column)$approx_unique()`, returns Expr
-#' - Expr: syntactic sugar for `column$approx_unique()`, returns Expr
+#' - String: syntactic sugar for `pl$col(column)$approx_n_unique()`, returns Expr
+#' - Expr: syntactic sugar for `column$approx_n_unique()`, returns Expr
 #'
 #' @keywords Expr_new
 #'
 #' @return Expr
 #'
-#' @details The approx_unique is likely only warranted for large columns. See example.
-#' It appears approx_unique scales better than n_unique, such that the relative performance
+#' @details The approx_n_unique is likely only warranted for large columns. See example.
+#' It appears approx_n_unique scales better than n_unique, such that the relative performance
 #' difference increases with column size.
 #'
 #' @examples
 #' # column as Series
-#' pl$approx_unique(pl$lit(1:4)) == 4
+#' pl$approx_n_unique(pl$lit(1:4)) == 4
 #'
 #' # column as String
-#' expr = pl$approx_unique("bob")
+#' expr = pl$approx_n_unique("bob")
 #' print(expr)
 #' pl$DataFrame(bob = 1:80)$select(expr)
 #'
 #' # colum as Expr
-#' pl$DataFrame(bob = 1:4)$select(pl$approx_unique(pl$col("bob")))
+#' pl$DataFrame(bob = 1:4)$select(pl$approx_n_unique(pl$col("bob")))
 #'
 #' # comparison with n_unique for 2 million integers. (try change example to 20 million ints)
 #' lit_series = pl$lit(c(1:1E6, 1E6:1, 1:1E6))
-#' system.time(pl$approx_unique(lit_series)$lit_to_s()$print())
+#' system.time(pl$approx_n_unique(lit_series)$lit_to_s()$print())
 #' system.time(pl$n_unique(lit_series)$lit_to_s()$print())
-pl$approx_unique = function(column) { #-> int or Expr
+pl$approx_n_unique = function(column) { #-> int or Expr
   pcase(
-    inherits(column, "Expr"), result(column$approx_unique()),
-    is_string(column), result(pl$col(column)$approx_unique()),
+    inherits(column, "Expr"), result(column$approx_n_unique()),
+    is_string(column), result(pl$col(column)$approx_n_unique()),
     or_else = Err(paste("arg [column] is neither Expr or String, but", str_string(column)))
   ) |>
-    unwrap("in pl$approx_unique():")
+    unwrap("in pl$approx_n_unique():")
 }
 
 
@@ -519,12 +489,12 @@ pl$approx_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # column as list
-#' df$with_column(pl$sum(list("a", "c")))
-#' df$with_column(pl$sum(list("a", "c", 42L)))
+#' df$with_columns(pl$sum(list("a", "c")))
+#' df$with_columns(pl$sum(list("a", "c", 42L)))
 #'
 #' # two eqivalent lines
-#' df$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
-#' df$with_column(pl$sum(list("*")))
+#' df$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
+#' df$with_columns(pl$sum(list("*")))
 pl$sum = function(...) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -566,7 +536,7 @@ pl$sum = function(...) {
 #'   d = c(1:2, NA_real_, -Inf)
 #' )
 #' # use min to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$min("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -613,7 +583,7 @@ pl$min = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -659,7 +629,7 @@ pl$max = function(...) {
 #'   c = c(1:3, NA_real_)
 #' )
 #' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_column(
+#' df$with_columns(
 #'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
 #' )
 #'
@@ -675,6 +645,7 @@ pl$coalesce = function(...) {
 #' Standard deviation
 #' @description  syntactic sugar for starting a expression with std
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr or Series matching type of input column
 #' @name pl_std
 pl$std = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -693,6 +664,7 @@ pl$std = function(column, ddof = 1) {
 #' Variance
 #' @description  syntactic sugar for starting a expression with var
 #' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr or Series matching type of input column
 #' @name pl_var
 pl$var = function(column, ddof = 1) {
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -831,4 +803,107 @@ pl$struct = function(
     unwrap( # raise any error with context
       "in pl$struct:"
     )
+}
+
+#' Horizontally concatenate columns into a single string column
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals. Non-Utf8 columns are cast to Utf8.
+#' @param separator String that will be used to separate the values of each
+#' column.
+#' @name pl_concat_str
+#' @return Expr
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(1, 2, 3),
+#'   b = c("dogs", "cats", NA),
+#'   c = c("play", "swim", "walk")
+#' )
+#'
+#' df$with_columns(
+#'   pl$concat_str(
+#'     pl$col("a") * 2,
+#'     "b",
+#'     "c",
+#'     pl$lit("!"),
+#'     separator = " "
+#'   )$alias("full_sentence")
+#' )
+#'
+pl$concat_str = function(..., separator = "") {
+  concat_str(list2(...), separator) |> unwrap("in $concat_str()")
+}
+
+#' Covariance
+#' @name pl_cov
+#' @description Calculates the covariance between two columns / expressions.
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @return Expr for the computed covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$cov("a", "b"))$collect()
+#' pl$cov(c(1, 8, 3), c(4, 5, 2))$to_r()
+pl$cov = function(a, b) {
+  .pr$Expr$cov(a, b) |>
+    unwrap("in pl$cov()")
+}
+
+#' Rolling covariance
+#' @name pl_rolling_cov
+#' @description Calculates the rolling covariance between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling covariance
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_cov("a", "b", window_size = 2))$collect()
+pl$rolling_cov = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_cov(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_cov()")
+}
+
+#' Correlation
+#' @name pl_corr
+#' @description Calculates the correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param method str One of 'pearson' or 'spearman'
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @param propagate_nans bool Used only when calculating the spearman rank correlation.
+#' If `True` any `NaN` encountered will lead to `NaN` in the output.
+#' Defaults to `False` where `NaN` are regarded as larger than any finite number and thus lead to the highest rank.
+#' @return Expr for the computed correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$corr("a", "b", method = "spearman"))$collect()
+pl$corr = function(a, b, method = "pearson", ddof = 1, propagate_nans = FALSE) {
+  .pr$Expr$corr(a, b, method, ddof, propagate_nans) |> unwrap("in pl$corr()")
+}
+
+#' Rolling correlation
+#' @name pl_rolling_corr
+#' @description Calculates the rolling correlation between two columns
+#' @param a One column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param b Another column name or Expr or anything convertible Into<Expr> via `pl$col()`.
+#' @param window_size int The length of the window
+#' @param min_periods NULL or int The number of values in the window that should be non-null before computing a result.
+#' If NULL, it will be set equal to window size.
+#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return Expr for the computed rolling correlation
+#' @examples
+#' lf = pl$LazyFrame(data.frame(a = c(1, 8, 3), b = c(4, 5, 2)))
+#' lf$select(pl$rolling_corr("a", "b", window_size = 2))$collect()
+pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
+  if (is.null(min_periods)) {
+    min_periods = window_size
+  }
+  .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
 }

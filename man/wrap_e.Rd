@@ -13,7 +13,8 @@ wrap_e(e, str_to_lit = TRUE)
 Expr
 }
 \description{
-wrap as literal
+use robj_to!(Expr) on rust side or rarely wrap_e on R-side
+This function is only kept for reference
 }
 \details{
 used internally to ensure an object is an expression

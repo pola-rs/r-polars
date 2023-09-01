@@ -1,8 +1,18 @@
+## after-wrappers.R
+## THIS FILE IS SOURCED IMMEDIATELY AFTER extendr-wrappers.R . THIS FILE EXTENDS THE BEHAVIOUR
+## OF EXTENDR-CLASS-SYSTEM WITH:
+## 1. SEPARATE PRIVATE (.pr$) AND PUBLIC (pl$) METHODS/FUNCTIONS
+## 2. ADD INTERNAL PROFILER, pl$set_polars_options(debug_polars = TRUE)
+## 3. ADD build_debug_print TO DEBUG CLASS CONSTRUCTION DURING PACKAGE BUILDTIME (rarely used)
+## 4. ADD BETTER METHOD LOOKUP ERR MSGS macro_add_syntax_check_to_class(), HELPS END USER
+## 5. ADD OPTION TO FLAG A METHOD TO BEHAVE LIKE A PROPERTY method_as_property()
+
+
 # Build time options
 build_debug_print = FALSE
 
 #' extendr methods into pure functions
-#'
+#' @noRd
 #' @param env environment object output from extendr-wrappers.R classes
 #' @param class_name optional class string, only used for debug printing
 #' Default NULL, will infer class_name automatically
@@ -31,6 +41,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 
 #' get private method from Class
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
+#' @noRd
 #' @export
 #' @keywords internal
 "$.private_polars_env" = function(self, name) {
@@ -50,45 +61,59 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' @title polars-API: private calls to rust-polars
 #' @description `.pr`
 #' Original extendr bindings converted into pure functions
+#' @details
+#' .pr gives access to all private methods of package polars. Use at own discretion.
+#' The polars package may introduce breaking changes to any private method in a patch with no
+#' deprecation warning. Most private methods takes `self` as a first argument, the object the
+#' method should be called upon.
 #' @aliases  .pr
 #' @keywords internal api_private
+#' @return not applicable
 #' @export
 #' @examples
 #' # .pr$DataFrame$print() is an external function where self is passed as arg
-#' polars:::.pr$DataFrame$print(self = pl$DataFrame(iris))
-#' @keywords internal
-#' @examples
-#' polars:::print_env(.pr, ".pr the collection of private method calls to rust-polars")
+#' .pr$DataFrame$print(self = pl$DataFrame(iris))
+#'
+#' # show all content of .pr
+#' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
 .pr = new.env(parent = emptyenv())
 .pr$Series = extendr_method_to_pure_functions(Series)
 .pr$DataFrame = extendr_method_to_pure_functions(DataFrame)
 .pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
 .pr$LazyFrame = extendr_method_to_pure_functions(LazyFrame)
 .pr$LazyGroupBy = extendr_method_to_pure_functions(LazyGroupBy)
-.pr$PolarsBackgroundHandle = extendr_method_to_pure_functions(PolarsBackgroundHandle)
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
 .pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
 .pr$RField = extendr_method_to_pure_functions(RField)
 .pr$Expr = extendr_method_to_pure_functions(Expr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
 .pr$When = extendr_method_to_pure_functions(When)
-.pr$WhenThen = extendr_method_to_pure_functions(WhenThen)
-.pr$WhenThenThen = extendr_method_to_pure_functions(WhenThenThen)
+.pr$Then = extendr_method_to_pure_functions(Then)
+.pr$ChainedWhen = extendr_method_to_pure_functions(ChainedWhen)
+.pr$ChainedThen = extendr_method_to_pure_functions(ChainedThen)
 .pr$VecDataFrame = extendr_method_to_pure_functions(VecDataFrame)
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
-
-# TODO remove export
-
+.pr$RThreadHandle = extendr_method_to_pure_functions(RThreadHandle)
 
 
-## this macro must be defined now
 
-#' @title add syntax verification to class
+# add package environment to .pr, this can be used as replacement for :::, where cran does not
+# allow that. Ok use :
+#  - internal documentation (noRd) to show case inner workings of code.
+#  - unit tests, which needs to verify an internal state.
+.pr$env = getNamespace("polars")
+.pr$print_env = print_env
+
+
+
+##### -----  MACROS used at package build time
+
+#' @title add syntax verification to a class
 #' @include utils.R
 #' @param Class_name string name of env class
 #' @rdname macro_add_syntax_check_to
-#'
+#' @noRd
 #' @keywords internal
 #' @return dollarsign method with syntax verification
 #'
@@ -139,6 +164,7 @@ if (build_debug_print) cat("\n")
 
 #' Give a class method property behavior
 #' @description Internal function, see use in source
+#' @noRd
 #' @param f a function
 #' @param setter bool, if true a property method can be modified by user
 #' @keywords internal
@@ -165,29 +191,60 @@ method_as_property = function(f, setter = FALSE) {
 #' @keywords api
 #' @details If someone do not particularly like the letter combination `pl`, they are free to
 #' bind the environment to another variable name as `simon_says = pl` or even do `attach(pl)`
-#'
+#' @return not applicable
 #' @export
 #' @examples
 #' # how to use polars via `pl`
 #' pl$col("colname")$sum() / pl$lit(42L) # expression ~ chain-method / literal-expression
 #'
-#' # pl inventory
-#' polars:::print_env(pl, "polars public functions")
-#'
-#' # all accessible classes and their public methods
-#' polars:::print_env(
-#'   polars:::pl_pub_class_env,
-#'   "polars public class methods, access via object$method()"
-#' )
+#' # show all public functions, RPolarsDataTypes, classes and methods
+#' pl$show_all_public_functions()
+#' pl$show_all_public_methods()
 pl = new.env(parent = emptyenv())
-
 class(pl) = c("pl_polars_env", "environment")
 
 
+#' show all public functions / objects
+#' @name show_all_public_functions
+#' @description print any object(function, RPolarsDataType) available via `pl$`.
+#' @return NULL
+#' @keywords functions
+#' @examples
+#' pl$show_all_public_functions()
+pl$show_all_public_functions = function() {
+  print_env(pl, "polars public functions via pl$...")
+}
+
+#' show all public methods
+#' @name show_all_public_methods
+#' @description methods are listed by their Class
+#' @param class_names character vector of polars class names to show, Default NULL is all.
+#' @return NULL
+#' @keywords functions
+#' @examples
+#' pl$show_all_public_methods()
+pl$show_all_public_methods = function(class_names = NULL) {
+  # subset classes to show
+  show_this_env = if (!is.null(class_names)) {
+    as.environment(mget(class_names, envir = pl_pub_class_env))
+  } else {
+    pl_pub_class_env
+  }
+
+  print_env(
+    show_this_env,
+    paste(
+      paste(class_names, collapse = ", "),
+      "class methods, access via object$method()"
+    )
+  )
+}
 
 #' get public function from pl namespace/env
 #' @details This method if polars_optenv$debug_polars == TRUE will print what methods are called
+#' @return an element from the public namespace `pl` polars. Likely a function or an RPolarsDataType
 #' @export
+#' @noRd
 #' @keywords internal
 "$.pl_polars_env" = function(self, name) {
   # print called private class in debug mode
@@ -208,8 +265,8 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 # used for printing public environment
 pl_class_names = sort(
   c(
-    "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame", "PolarsBackgroundHandle",
-    "When", "WhenThen", "WhenThenThen"
+    "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame",
+    "When", "Then", "ChainedWhen", "ChainedThen"
   )
 ) # TODO discover all public class automatically
 
@@ -218,9 +275,9 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 
 
 #' @title Any polars class object is made of this
+#' @name polars_class_object
 #' @description One SEXP of Rtype: "externalptr" + a class attribute
 #' @keywords api_object
-#'
 #' @details
 #'  - `object$method()` calls are facilitated by a `$.ClassName`- s3method see 'R/after-wrappers.R'
 #'  - Code completion is facilitated by `.DollarNames.ClassName`-s3method see e.g. 'R/dataframe__frame.R'
@@ -228,8 +285,15 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 #'  See function macro_add_syntax_check_to_class().
 #'
 #' @importFrom utils .DollarNames
+#' @return not applicable
 #' @examples
-#' # all a polars object is made of:
+#' # all a polars object is only made of:
 #' some_polars_object = pl$DataFrame(iris)
 #' str(some_polars_object) # External Pointer tagged with a class attribute.
-object = "place_holder"
+#'
+#' # All state is stored on rust side.
+#'
+#' # The single exception from the rule is class "GroupBy", where objects also have
+#' # two private attributes "groupby_input" and "maintain_order".
+#' str(pl$DataFrame(iris)$groupby("Species"))
+NULL

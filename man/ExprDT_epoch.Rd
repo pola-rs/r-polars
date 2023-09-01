@@ -21,9 +21,9 @@ ns and perhaps us will exceed integerish limit if returning to
 R as flaot64/double.
 }
 \examples{
-pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$epoch("ns")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$epoch("ms")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$epoch("s")$lit_to_s()
-pl$date_range(as.Date("2022-1-1"), lazy = TRUE)$dt$epoch("d")$lit_to_s()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ns")$lit_to_s()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("ms")$lit_to_s()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("s")$lit_to_s()
+pl$date_range(as.Date("2022-1-1"), eager = FALSE)$dt$epoch("d")$lit_to_s()
 }
 \keyword{ExprDT}

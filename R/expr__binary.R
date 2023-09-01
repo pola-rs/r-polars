@@ -22,6 +22,7 @@ ExprBin_contains = function(lit) {
 #' @description   Check if values starts with a binary substring.
 #' @keywords ExprBin
 #' @param sub Prefix substring.
+#' @return Expr returing a Boolean
 ExprBin_starts_with = function(sub) {
   unwrap(.pr$Expr$bin_starts_with(self, sub))
 }

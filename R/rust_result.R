@@ -56,7 +56,7 @@ Err = function(x) {
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
 map_err = function(x, f) {
-  if (is_err(x)) x$err <- f(x$err)
+  if (is_err(x)) x$err = f(x$err)
   x
 }
 
@@ -65,7 +65,7 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  if (is_ok(x)) x$ok <- f(x$ok)
+  if (is_ok(x)) x$ok = f(x$ok)
   x
 }
 
@@ -111,6 +111,7 @@ unwrap_or = function(x, or) {
 
 
 #' pstop
+#' @noRd
 #' @description DEPRECATED USE stopf instead
 #' @param err error msg string
 #' @param call calling context
@@ -119,7 +120,7 @@ unwrap_or = function(x, or) {
 #' @return throws an error
 #'
 #' @examples
-#' f = function() polars:::pstop("this aint right!!")
+#' f = function() .pr$env$pstop("this aint right!!")
 #' tryCatch(f(), error = \(e) as.character(e))
 pstop = function(err, call = sys.call(1L)) {
   unwrap(list(ok = NULL, err = err), call = call)

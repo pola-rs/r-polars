@@ -4,7 +4,10 @@
 \alias{Expr_any}
 \title{Any (is true)}
 \usage{
-Expr_any
+Expr_any(drop_nulls = TRUE)
+}
+\arguments{
+\item{drop_nulls}{Boolean. Default TRUE, as name says.}
 }
 \value{
 Boolean literal

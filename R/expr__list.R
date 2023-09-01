@@ -17,7 +17,7 @@
 #' @aliases lengths arr.lengths arr_lengths
 #' @examples
 #' df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c")))
-#' df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
+#' df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
 ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 
 #' Sum lists
@@ -168,16 +168,25 @@ ExprArr_get = function(index) .pr$Expr$lst_get(self, wrap_e(index, str_to_lit = 
 #' @name arr_take
 #' @description Get the take value of the sublists.
 #' @keywords ExprArr
+#' @param index R list of integers for each sub-element or Expr or Series of type `List[usize]`
+#' @param null_on_oob boolean
 #' @format function
 #' @return Expr
 #' @aliases arr_take arr.take
 #' @examples
-#' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' idx = pl$Series(list(0:1, 1L, 1L))
-#' df$select(pl$col("a")$arr$take(99))
+#' df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
+#' idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
+#' df$select(pl$col("a")$arr$take(pl$lit(idx), null_on_oob = TRUE))
+#'
+#' # with implicit conversion to Expr
+#' df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+#'
+#' # by some column name, must cast to an Int/Uint type to work
+#' df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 ExprArr_take = function(index, null_on_oob = FALSE) {
   expr = wrap_e(index, str_to_lit = FALSE)
-  .pr$Expr$lst_take(self, expr, null_on_oob)
+  .pr$Expr$lst_take(self, expr, null_on_oob) |>
+    unwrap("in $take()")
 }
 
 #' First in sublists
@@ -415,7 +424,7 @@ ExprArr_to_struct = function(
 #' @aliases arr_eval arr.eval
 #' @examples
 #' df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
-#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_column(
+#' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
 #'   pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
 #' )
 ExprArr_eval = function(expr, parallel = FALSE) {

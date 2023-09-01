@@ -5,7 +5,7 @@
 if (build_debug_print) {
   print(paste(
     "Modifying extendr bindings,",
-    "originals converted to pure functions and saved to polars:::.pr"
+    "originals converted to pure functions and saved to .pr"
   ))
 }
 
@@ -22,9 +22,6 @@ replace_private_with_pub_methods(LazyFrame, "^LazyFrame_")
 
 # LazyGroupBy
 replace_private_with_pub_methods(LazyGroupBy, "^LazyGroupBy_")
-
-# PolarsBackgroundHandle
-replace_private_with_pub_methods(PolarsBackgroundHandle, "^PolarsBackgroundHandle_")
 
 # Expr
 replace_private_with_pub_methods(Expr, "^Expr_")
@@ -59,14 +56,20 @@ expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
 expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
 
 replace_private_with_pub_methods(When, "^When_")
-replace_private_with_pub_methods(WhenThen, "^WhenThen_")
-replace_private_with_pub_methods(WhenThenThen, "^WhenThenThen_")
-
+replace_private_with_pub_methods(Then, "^Then_")
+replace_private_with_pub_methods(ChainedWhen, "^ChainedWhen_")
+replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
 
 
 # any sub-namespace inherits 'method_environment'
 # This s3 method performs auto-completion
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x string, name of method in method_environment (sub-namespace)
+#' @param pattern code-stump as string to auto-complete
 #' @export
+#' @inherit .DollarNames.DataFrame return
+#' @keywords internal
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
   # temp store full class and upcast to plain environment
@@ -90,9 +93,13 @@ replace_private_with_pub_methods(RField, "^RField_")
 # Series
 replace_private_with_pub_methods(Series, "^Series_")
 
+# RThreadHandle
+replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
 
 
-# expression constructors
+
+
+# expression constructors, why not just pl$lit = Expr_lit?
 move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 
@@ -104,7 +111,6 @@ move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 #' @return String of mem address
 #' @examples pl$mem_address(pl$Series(1:3))
 pl$mem_address = mem_address
-
 
 
 # tell testthat data.table is suggested
@@ -136,7 +142,7 @@ pl$mem_address = mem_address
   # see doc below, R CMD check did not like this function def
   pl$select = .pr$DataFrame$default()$select
 
-
+  setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }
 

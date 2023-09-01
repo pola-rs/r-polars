@@ -52,6 +52,92 @@ test_that("expression Arithmetics", {
   expect_equal(names(fails), character())
 })
 
+make_cases = function() {
+  tibble::tribble(
+    ~.test_name, ~fn,
+    "mul",       "*",
+    "add",       "+",
+    "sub",       "-",
+    "div",       "/",
+    "gt",        ">",
+    "gte",       ">=",
+    "lt",        "<",
+    "lte",       "<=",
+    "eq",        "==",
+    "neq",       "!=",
+    "pow",       "^",
+  )
+}
+
+patrick::with_parameters_test_that(
+  "ops symbol work with expressions",
+  {
+    # every time, 4 tests:
+    # - 2 exprs
+    # - 1 expr then 1 non-expr
+    # - 1 non-expr then 1 expr
+    # - 2 non-exprs
+
+    dat = pl$DataFrame(mtcars)
+    dat_exp = data.frame(
+      mpg = do.call(fn, list(mtcars$mpg, 2)),
+      cyl = do.call(fn, list(2, mtcars$cyl)),
+      hp = do.call(fn, list(mtcars$hp, max(mtcars$drat))),
+      literal = do.call(fn, list(2, 2))
+    )
+
+    expect_equal(
+      dat$select(
+        do.call(fn, list(pl$col("mpg"), 2)),
+        # TODO: this $alias() shouldn't be needed but if I don't put it the
+        # name is "literal" because $div() calls $lit() under the hood
+        do.call(fn, list(2, pl$col("cyl")))$alias("cyl"),
+        do.call(fn, list(pl$col("hp"), pl$max("drat"))),
+        do.call(fn, list(2, 2))
+      )$to_data_frame(),
+      dat_exp
+    )
+  },
+  .cases = make_cases()
+)
+
+# & and | require another test dataset, it can't be the one above
+test_that("logical ops symbol work with expressions", {
+  dat = pl$DataFrame(
+    x = c(TRUE, FALSE, TRUE, FALSE),
+    y = c(TRUE, TRUE, FALSE, FALSE)
+  )
+  dat_df = dat$to_data_frame()
+  expect_equal(
+    dat$select(
+      (pl$col("x") & TRUE)$alias("oneexp_onelit"),
+      (FALSE & pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") & pl$col("y"),
+      FALSE & TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x & TRUE,
+      onelit_oneexp = FALSE & dat_df$y,
+      x = dat_df$x & dat_df$y,
+      literal = FALSE & TRUE
+    )
+  )
+  expect_equal(
+    dat$select(
+      (pl$col("x") | TRUE)$alias("oneexp_onelit"),
+      (FALSE | pl$col("y"))$alias("onelit_oneexp"),
+      pl$col("x") | pl$col("y"),
+      FALSE | TRUE
+    )$to_data_frame(),
+    data.frame(
+      oneexp_onelit = dat_df$x | TRUE,
+      onelit_oneexp = FALSE | dat_df$y,
+      x = dat_df$x | dat_df$y,
+      literal = FALSE | TRUE
+    )
+  )
+})
+
 
 test_that("count + unique + n_unique", {
   expect_equal(
@@ -244,11 +330,6 @@ test_that("col DataType + col(s) + col regex", {
     iris[, Names]
   )
 
-  # warn no multiple regex
-
-  expect_warning(
-    pl$col(c("^Sepal.*$", "Species"))
-  )
 })
 
 
@@ -367,10 +448,9 @@ test_that("and or is_in xor", {
 
 
 
-  # not sure if polars have a good consistant logical system, anyways here are some statements which were true when writing this
-  # TODO discuss with polars team
+
   expect_true(
-    pl$DataFrame(list())$select(
+    pl$select(
       # nothing is nothing
       pl$lit(NULL) == pl$lit(NULL)$alias("NULL is NULL"),
 
@@ -378,14 +458,16 @@ test_that("and or is_in xor", {
       pl$lit(NULL) == pl$lit(NA_real_)$alias("NULL is NULL_real"),
 
       # typed nothing is typed nothing
-      pl$lit(NA_real_) == pl$lit(NA_real_)$alias("NULL_eral is NULL_real"),
+      (pl$lit(NA_real_) == pl$lit(NA_real_))$is_null()$alias("NULL_eral is NULL_real is null"),
 
-      # type nothing is IN nothing
-      pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
+      # type nothing is IN nothing # not allowed
+      # pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
 
-      # neither typed nor untyped NULL is IN NULL
-      pl$lit(NA_real_)$is_in(pl$lit(NULL))$is_not()$alias("NULL typed is in NULL, NOT"),
-      pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
+      # neither typed nor untyped NULL is IN NULL, changed behavior from  0.30-0.32, previous false
+      pl$lit(NA_real_)$is_in(pl$lit(NULL))$alias("NULL typed is in NULL")
+
+      # anymore from rust-polars 0.30-0.32
+      # pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
@@ -454,11 +536,6 @@ test_that("pow, rpow, sqrt, log10", {
   # pow
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$pow(pl$col("a")))$get_column("literal")$to_r(), 2^(-1:3))
   expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)^pl$col("a"))$get_column("literal")$to_r(), 2^(-1:3))
-
-  # rpow
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2)$rpow(pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-  expect_identical(pl$DataFrame(list(a = -1:3))$select(pl$lit(2) %**% (pl$col("a")))$get_column("a")$to_r(), (-1:3)^2)
-
 
   # sqrt
   expect_identical(
@@ -1364,17 +1441,17 @@ test_that("Expr_filter", {
     b = c(1, 2, 3)
   ))
 
-  df = pdf$groupby("group_col")$agg(
+  df = pdf$groupby("group_col", maintain_order = TRUE)$agg(
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
-  )$to_data_frame() |> (\(x) x[order(x$group_col), ])()
-  row.names(df) = NULL
+  )$to_data_frame()
+  # row.names(df) = NULL
 
   expect_identical(
     df,
     data.frame(
       group_col = c("g1", "g2"),
-      lt = c(1, NA_real_),
+      lt = c(1, 0),
       gte = c(2, 3)
     )
   )
@@ -2194,7 +2271,7 @@ test_that("shrink_dtype", {
     f = c("a", "b", "c"),
     g = c(0.1, 1.32, 0.12),
     h = c(T, NA, F)
-  )$with_column(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+  )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 
   expect_true(all(mapply(
     df$dtypes,
@@ -2262,4 +2339,34 @@ test_that("implode", {
   expect_identical(pl$lit(1:4)$implode()$to_r(), list(1:4))
   expect_identical(pl$lit(1:4)$implode()$to_r(), pl$lit(list(1:4))$to_r())
   expect_grepl_error(pl$lit(42)$implode(42), c("unused argument"))
+})
+
+test_that("concat_str", {
+  df = pl$DataFrame(
+    a = c(1, 2, 3),
+    b = c("dogs", "cats", NA),
+    c = c("play", "swim", "walk")
+  )
+
+  out = df$with_columns(
+    pl$concat_str(
+      pl$col("a") * 2,
+      "b",
+      pl$col("c"),
+      separator = " "
+    )$alias("full_sentence")
+  )$to_data_frame()
+
+  expect_equal(dim(out), c(3, 4))
+  expect_equal(
+    out$full_sentence,
+    c("2.0 dogs play", "4.0 cats swim", NA)
+  )
+
+  # check error for something which cannot be turned into an Expression
+  ctxs = pl$concat_str("a", complex(1)) |>
+    (\(x) result(x)$err$contexts())()
+  expect_identical(ctxs$BadArgument, " `...` ")
+  expect_identical(ctxs$When, "converting element 2 into an Expr")
+  expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })

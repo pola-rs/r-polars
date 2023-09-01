@@ -13,6 +13,7 @@
 #' @name knit_print.DataFrame
 #' @param x a polars DataFrame to knit_print
 #' @param ... additional arguments, not used
+#' @return invisible x or NULL
 #' @keywords DataFrame
 #' @export
 knit_print.DataFrame = function(x, ...) {

@@ -12,8 +12,8 @@
 #' @param memmap bool, mapped memory
 #'
 #' @return LazyFrame
-#' @name scan_arrow_ipc
-pl$scan_arrow_ipc = function(
+#' @name scan_ipc
+pl$scan_ipc = function(
     path, # : str | Path,
     n_rows = NULL, # : int | None = None,
     cache = TRUE, # : bool = True,

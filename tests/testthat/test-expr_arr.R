@@ -1,6 +1,6 @@
 test_that("arr$lengths", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
-  l = df$with_column(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))$to_list()
+  l = df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
     l |> lapply(\(x) if (inherits(x, "integer64")) as.numeric(x) else x),
@@ -219,12 +219,12 @@ test_that("arg_min arg_max", {
   l_exp_arg_min = list(
     l_i32 = c(0, 0, 0),
     l_f64 = c(4, 0, NA),
-    l_char = c(0, 0, NA)
+    l_char = c(0, 0, 0) # 0 for character() bug https://github.com/pola-rs/polars/issues/10703
   )
   l_exp_arg_max = list(
     l_i32 = c(4, 2, 9),
     l_f64 = c(5, 0, NA),
-    l_char = c(25, 2, NA)
+    l_char = c(25, 2, 4294967295) # bug as above
   )
 
   expect_identical(l_act_arg_min |> lapply(as.numeric), l_exp_arg_min)
@@ -424,7 +424,7 @@ test_that("to_struct", {
 
 test_that("eval", {
   df = pl$DataFrame(a = list(a = c(1, 8, 3), b = c(4, 5, 2)))
-  l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_column(
+  l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_columns(
     pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
   )$to_list()
   expect_identical(

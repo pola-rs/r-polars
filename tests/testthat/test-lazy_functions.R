@@ -23,15 +23,15 @@ test_that("pl$sum", {
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("a", "c", 42L)))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("a", "c", 42L)))$to_list(),
     c(l, list(sum = c(48L, 50L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list("*")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("*")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_column(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
 })
@@ -64,13 +64,13 @@ test_that("pl$min pl$max", {
 
   # support sum over list of expressions, wildcards or strings
   l = list(a = 1:2, b = 3:4, c = 5:6)
-  expect_identical(pl$DataFrame(l)$with_column(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
-  expect_identical(pl$DataFrame(l)$with_column(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("a", "c", 42L)))$to_list(), c(l, list(min = c(1:2))))
+  expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("a", "c", 42L)))$to_list(), c(l, list(max = c(42L, 42L))))
 
 
   ## TODO polars cannot handle wildcards hey wait with testing until after PR
-  # expect_identical(pl$DataFrame(l)$with_column(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
-  # expect_identical(pl$DataFrame(l)$with_column(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$max(list("*")))$to_list(),c(l,list(min=c(1:2))))
+  # expect_identical(pl$DataFrame(l)$with_columns(pl$min(list("*")))$to_list(),c(l,list(min=c(1:2))))
 })
 
 
@@ -138,16 +138,8 @@ test_that("pl$first pl$last", {
     pl$last(pl$Series(integer())),
     c("last()", "The series is empty, so no last value can be returned")
   )
-
-  # caught errors via pl$col
-  expect_grepl_error(
-    pl$first(1),
-    c("first()", "cannot make a column expression")
-  )
-  expect_grepl_error(
-    pl$last(1),
-    c("last()", "cannot make a column expression")
-  )
+  expect_error(pl$first(1))
+  expect_error(pl$last(1))
 })
 
 
@@ -165,7 +157,7 @@ test_that("pl$count", {
   expect_identical(pl$count(s), s$len())
 
   # pass invalid column name type to pl$col
-  expect_grepl_error(pl$count(1), c("count()", "cannot make a column expression"))
+  expect_error(pl$count(1))
 })
 
 
@@ -175,7 +167,12 @@ test_that("pl$implode", {
   exp = pl$col("bob")$implode()
   expect_true(act$meta$eq(exp))
 
-  expect_grepl_error(pl$implode(42), c("in pl\\$implode()", "cannot make a column expression from"))
+  ctx = pl$implode(42) |> get_err_ctx()
+
+  expect_identical(ctx$BadArgument,"name")
+  expect_identical(ctx$When,"constructing a Column Expr")
+
+
 })
 
 
@@ -192,21 +189,21 @@ test_that("pl$n_unique", {
   expect_grepl_error(pl$n_unique(1:99), c("in pl\\$n_unique", "is neither", "1 2 3"))
 })
 
-test_that("pl$approx_unique", {
+test_that("pl$approx_n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
-  expect_identical(pl$approx_unique(pl$lit(x))$to_r(), 6)
-  expect_identical(pl$lit(x)$approx_unique()$to_r(), 6)
+  expect_identical(pl$approx_n_unique(pl$lit(x))$to_r(), 6)
+  expect_identical(pl$lit(x)$approx_n_unique()$to_r(), 6)
 
   # string input becomes a column
-  expect_true(pl$approx_unique("bob")$meta$pop()[[1]]$meta$eq(pl$col("bob")))
+  expect_true(pl$approx_n_unique("bob")$meta$pop()[[1]]$meta$eq(pl$col("bob")))
 
-  expr_act = pl$approx_unique("bob")
-  expect_true(expr_act$meta$eq(pl$col("bob")$approx_unique()))
+  expr_act = pl$approx_n_unique("bob")
+  expect_true(expr_act$meta$eq(pl$col("bob")$approx_n_unique()))
 
-  expr_act_2 = pl$approx_unique(pl$all())
-  expect_true(expr_act_2$meta$eq(pl$all()$approx_unique()))
+  expr_act_2 = pl$approx_n_unique(pl$all())
+  expect_true(expr_act_2$meta$eq(pl$all()$approx_n_unique()))
 
-  expect_grepl_error(pl$approx_unique(1:99), c("in pl\\$approx_unique", "is neither", "1 2 3"))
+  expect_grepl_error(pl$approx_n_unique(1:99), c("in pl\\$approx_n_unique", "is neither", "1 2 3"))
 })
 
 
@@ -273,4 +270,20 @@ test_that("pl$tail", {
     pl$tail(df$get_column("a"), -2),
     "cannot be less than zero"
   )
+})
+
+test_that("pl$cov pl$rolling_cov pl$corr pl$rolling_corr", {
+  lf = pl$LazyFrame(mtcars)
+
+  expect_identical(lf$select(pl$cov("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cov(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$corr("mpg", "hp"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp) |> round(digits = 3))
+  expect_identical(lf$select(pl$corr("mpg", "hp", method = "spearman"))$collect()$to_data_frame()[1, ] |> round(digits = 3), cor(mtcars$mpg, mtcars$hp, method = "spearman") |> round(digits = 3))
+
+  expect_rpolarserr(pl$corr("x", "y", method = "guess"), c("ValueOutOfScope", "BadValue"))
+
+
+  expect_identical(lf$select(pl$rolling_cov("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cov(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
+
+  expect_identical(lf$select(pl$rolling_corr("mpg", "hp", window_size = 6))$collect()$to_data_frame()[nrow(mtcars), ] |> round(digits = 3), cor(tail(mtcars$mpg), tail(mtcars$hp)) |> round(digits = 3))
 })

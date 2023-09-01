@@ -1,15 +1,18 @@
-use crate::utils::r_result_list;
+use crate::robj_to;
 use crate::utils::wrappers::Wrap;
+use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
-use polars::prelude::{self as pl};
+use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
 //expose polars DateType in R
+use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, WithRctx};
 use crate::utils::collect_hinted_result;
 use crate::utils::wrappers::null_to_opt;
 use std::result::Result;
 #[derive(Debug, Clone, PartialEq)]
 pub struct RField(pub pl::Field);
 use pl::UniqueKeepStrategy;
+use polars::prelude::AsofStrategy;
 
 #[extendr]
 impl RField {
@@ -44,43 +47,7 @@ impl RField {
     pub fn set_datatype_mut(&mut self, datatype: &RPolarsDataType) {
         self.0.dtype = datatype.0.clone()
     }
-
-    // pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
-    //     if robj.check_external_ptr_type::<RField>() {
-    //         let x: RField = unsafe { &mut *robj.external_ptr_addr::<RField>() }.clone();
-    //         Ok(x)
-    //     } else {
-    //         Err("expected RField")
-    //     }
-    // }
-
-    // pub fn any_robj_to_pl_RField_result(robj: &Robj) -> pl::PolarsResult<pl::RField> {
-    //     let s = if !&robj.inherits("RField") {
-    //         robjname2series(&robj, &"")?
-    //     } else {
-    //         Series::inner_from_robj_clone(&robj)
-    //             .map_err(|err| {
-    //                 //convert any error from R to a polars error
-    //                 pl::PolarsError::ComputeError(err.into()))
-    //             })?
-    //             .0
-    //     };
-    //     Ok(s)
-    // }
 }
-
-// impl TryFrom<Robj> for RField {
-//     type Error = String;
-
-//     fn try_from(robj: Robj) -> std::result::Result<Self, Self::Error> {
-//         if  &robj.inherits("RField") {
-//             lrobj.try_into()
-//             Ok(EvenNumber(value))
-//         } else {
-//             Err(())
-//         }
-//     }
-// }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RPolarsDataType(pub pl::DataType);
@@ -117,10 +84,9 @@ impl RPolarsDataType {
         RPolarsDataType(pl_datatype)
     }
 
-    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> List {
-        let result = robj_to_timeunit(tu)
-            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))));
-        r_result_list(result)
+    pub fn new_datetime(tu: Robj, tz: Nullable<String>) -> RResult<RPolarsDataType> {
+        robj_to!(timeunit, tu)
+            .map(|dt| RPolarsDataType(pl::DataType::Datetime(dt, null_to_opt(tz))))
     }
 
     pub fn new_duration() -> RPolarsDataType {
@@ -291,10 +257,10 @@ pub fn new_join_type(s: &str) -> pl::JoinType {
     }
 }
 
-pub fn new_asof_strategy(s: &str) -> Result<polars::chunked_array::object::AsofStrategy, String> {
+pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
     match s {
-        "forward" => Ok(polars::chunked_array::object::AsofStrategy::Forward),
-        "backward" => Ok(polars::chunked_array::object::AsofStrategy::Backward),
+        "forward" => Ok(AsofStrategy::Forward),
+        "backward" => Ok(AsofStrategy::Backward),
         _ => Err(format!(
             "asof strategy choice: [{}] is not any of 'forward' or 'backward'",
             s
@@ -315,31 +281,32 @@ pub fn new_unique_keep_strategy(s: &str) -> std::result::Result<UniqueKeepStrate
     }
 }
 
-pub fn new_quantile_interpolation_option(
-    s: &str,
-) -> std::result::Result<QuantileInterpolOptions, String> {
+pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpolOptions> {
+    let s = robj_to_string(robj.clone())?;
     use pl::QuantileInterpolOptions::*;
-    match s {
+    match s.as_ref() {
         "nearest" => Ok(Nearest),
         "higher" => Ok(Higher),
         "lower" => Ok(Lower),
         "midpoint" => Ok(Midpoint),
         "linear" => Ok(Linear),
-        _ => Err(format!("interpolation choice: [{}] is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'",s))
+        _ => rerr()
+            .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
+            .bad_robj(&robj),
     }
 }
 
-pub fn new_closed_window(s: &str) -> std::result::Result<pl::ClosedWindow, String> {
+pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
+    let s = robj_to_string(robj.clone())?;
     use pl::ClosedWindow as CW;
-    match s {
+    match s.as_str() {
         "both" => Ok(CW::Both),
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
-        _ => Err(format!(
-            "ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'",
-            s
-        )),
+        _ => rerr()
+            .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
+            .bad_robj(&robj),
     }
 }
 
@@ -456,23 +423,17 @@ pub fn new_width_strategy(s: &str) -> std::result::Result<pl::ListToStructWidthS
     }
 }
 
-pub fn robj_to_timeunit(robj: Robj) -> std::result::Result<pl::TimeUnit, String> {
-    let s = robj.as_str().ok_or_else(|| {
-        format!(
-            "Robj must be a string to be matched as TimeUnit, got a [{:?}]",
-            robj
-        )
-    })?;
+pub fn robj_to_timeunit(robj: Robj) -> RResult<pl::TimeUnit> {
+    let s = robj_to!(str, robj)?;
 
     match s {
         "ns" => Ok(pl::TimeUnit::Nanoseconds),
         "us" | "μs" => Ok(pl::TimeUnit::Microseconds),
         "ms" => Ok(pl::TimeUnit::Milliseconds),
 
-        _ => Err(format!(
-            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ",
-            s
-        )),
+        _ => rerr().bad_val(
+            "str to polars TimeUnit: [{}] is not any of 'ns', 'us/μs' or 'ms' ".to_string(),
+        ),
     }
 }
 
@@ -495,6 +456,60 @@ pub fn new_categorical_ordering(s: &str) -> Result<pl::CategoricalOrdering, Stri
             s
         )),
     }
+}
+
+pub fn new_parquet_compression(
+    compression_method: Robj,
+    compression_level: Robj,
+) -> RResult<pl::ParquetCompression> {
+    use pl::ParquetCompression::*;
+    match robj_to!(String, compression_method)?.as_str() {
+        "uncompressed" => Ok(Uncompressed),
+        "snappy" => Ok(Snappy),
+        "gzip" => robj_to!(Option, u8, compression_level)?
+            .map(polars::prelude::GzipLevel::try_new)
+            .transpose()
+            .map(Gzip),
+        "lzo" => Ok(Lzo),
+        "brotli" => robj_to!(Option, u32, compression_level)?
+            .map(polars::prelude::BrotliLevel::try_new)
+            .transpose()
+            .map(Brotli),
+        "zstd" => robj_to!(Option, i32, compression_level)?
+            .map(polars::prelude::ZstdLevel::try_new)
+            .transpose()
+            .map(Zstd),
+        m => Err(polars::prelude::PolarsError::ComputeError(
+            format!("Failed to set parquet compression method as [{m}]").into(),
+        )),
+    }
+    .map_err(polars_to_rpolars_err)
+    .misvalued("should be one of ['uncompressed', 'snappy', 'gzip', 'brotli', 'zstd']")
+}
+
+pub fn new_ipc_compression(compression_method: Robj) -> RResult<Option<pl::IpcCompression>> {
+    use pl::IpcCompression::*;
+    robj_to!(Option, String, compression_method)?
+        .map(|cm| match cm.as_str() {
+            "lz4" => Ok(LZ4),
+            "zstd" => Ok(ZSTD),
+            m => rerr()
+                .bad_val(m)
+                .misvalued("should be one of ['lz4', 'zstd']"),
+        })
+        .transpose()
+}
+
+pub fn new_rolling_cov_options(
+    window_size: Robj,
+    min_periods: Robj,
+    ddof: Robj,
+) -> RResult<pl::RollingCovOptions> {
+    Ok(pl::RollingCovOptions {
+        window_size: robj_to!(u32, window_size)?,
+        min_periods: robj_to!(u32, min_periods)?,
+        ddof: robj_to!(u8, ddof)?,
+    })
 }
 
 extendr_module! {
