@@ -178,6 +178,17 @@ fn arrow_stream_to_s(robj_str: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
+unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
+    let res: ExternalPtr<DataFrame> = robj_df.try_into()?;
+    let pl_df = DataFrame(res.0.clone()).0;
+    //safety robj_str must be ptr to a arrow2 stream ready to export into
+    unsafe {
+        crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
+    }
+    Ok(robj_str)
+}
+
+#[extendr]
 fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
     let mut iter = r_batches.into_iter().map(|(_, robj)| {
         let robj = call!(r"\(x) x$columns", robj)?;
@@ -281,6 +292,7 @@ extendr_module! {
     fn new_arrow_stream;
     fn arrow_stream_to_df;
     fn arrow_stream_to_s;
+    fn export_df_to_arrow_stream;
 
     //robj meta
     fn mem_address;

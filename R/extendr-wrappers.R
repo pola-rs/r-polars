@@ -51,6 +51,8 @@ arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_st
 
 arrow_stream_to_s <- function(robj_str) .Call(wrap__arrow_stream_to_s, robj_str)
 
+export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
+
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 
 clone_robj <- function(robj) .Call(wrap__clone_robj, robj)

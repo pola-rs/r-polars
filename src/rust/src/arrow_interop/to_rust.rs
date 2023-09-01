@@ -183,3 +183,14 @@ fn consume_arrow_stream_to_s(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResul
     }
     Ok(s)
 }
+
+pub unsafe fn export_df_as_stream(df: pl::DataFrame, robj_str_ref: &Robj) -> RResult<()> {
+    let stream_ptr =
+        crate::utils::robj_str_ptr_to_usize(robj_str_ref)? as *mut ffi::ArrowArrayStream;
+    let schema = df.schema().to_arrow();
+    let data_type = pl::ArrowDataType::Struct(schema.fields);
+    let field = pl::ArrowField::new("", data_type, false);
+    let iter_boxed = Box::new(crate::rdataframe::OwnedDataFrameIterator::new(df));
+    unsafe { *stream_ptr = ffi::export_iterator(iter_boxed, field) };
+    Ok(())
+}
