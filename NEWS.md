@@ -1,6 +1,4 @@
-# polars (development version)
-
-# polars 0.7.0.9000
+# polars 0.8.0
 
 ## CHANGES DUE TO RUST-POLARS 0.32.0
 
