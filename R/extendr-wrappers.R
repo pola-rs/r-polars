@@ -49,7 +49,7 @@ new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
 
 arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
 
-arrow_stream_to_s <- function(robj_str) .Call(wrap__arrow_stream_to_s, robj_str)
+arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
 
 export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
 

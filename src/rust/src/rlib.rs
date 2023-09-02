@@ -161,7 +161,7 @@ fn new_arrow_stream() -> Robj {
 use crate::rpolarserr::*;
 #[extendr]
 fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_s_internal(robj_str)?;
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
     let ca = s
         .struct_()
         .map_err(polars_to_rpolars_err)
@@ -172,8 +172,8 @@ fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-fn arrow_stream_to_s(robj_str: Robj) -> RResult<Robj> {
-    let s = crate::arrow_interop::to_rust::arrow_stream_to_s_internal(robj_str)?;
+fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
     Ok(Series(s).into_robj())
 }
 
@@ -291,7 +291,7 @@ extendr_module! {
     // arrow conversions
     fn new_arrow_stream;
     fn arrow_stream_to_df;
-    fn arrow_stream_to_s;
+    fn arrow_stream_to_series;
     fn export_df_to_arrow_stream;
 
     //robj meta

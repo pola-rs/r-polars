@@ -144,18 +144,18 @@ pub fn new_arrow_stream_internal() -> Robj {
 }
 
 // r-polars as consumer 2: recieve to pointer to own stream, which producer has exported to. Consume it. Return Series.
-pub fn arrow_stream_to_s_internal(robj_str: Robj) -> RResult<pl::Series> {
+pub fn arrow_stream_to_series_internal(robj_str: Robj) -> RResult<pl::Series> {
     // reclaim ownership of leaked box, and then drop/release it when consumed.
     let us = crate::utils::robj_str_ptr_to_usize(&robj_str)?;
     let boxed_stream = unsafe { Box::from_raw(us as *mut ffi::ArrowArrayStream) };
 
     //consume stream and produce a r-polars Series return as Robj
-    let s = consume_arrow_stream_to_s(boxed_stream)?;
+    let s = consume_arrow_stream_to_series(boxed_stream)?;
     Ok(s)
 }
 
 // implementation of consuming stream to Series. Stream is drop/released hereafter.
-fn consume_arrow_stream_to_s(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResult<pl::Series> {
+fn consume_arrow_stream_to_series(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResult<pl::Series> {
     let mut iter = unsafe { ffi::ArrowArrayStreamReader::try_new(boxed_stream) }?;
 
     //import first array into pl::Series
