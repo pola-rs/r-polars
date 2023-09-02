@@ -83,6 +83,9 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Added an S3 generic `as_polars_series()` where users or developers of extensions
   can define a custom way to convert their format to Polars format. This generic
   must return a Polars series. See #368 for an example (#369).
+- Private API Support for Arrow Stream import/export of DataFrame between two R packages that uses
+  rust-polars. [See R package example here](https://github.com/rpolars/extendrpolarsexamples)
+  (#326).
 
 # polars 0.7.0
 
