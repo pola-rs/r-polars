@@ -1987,23 +1987,6 @@ impl Expr {
         let infer_schema_len = robj_to!(Option, usize, infer_schema_len)?;
         Ok(self
             .0
-            // =======
-            //     pub fn str_json_extract(&self, dtype: Nullable<&RPolarsDataType>) -> Self {
-            //         let dtype = null_to_opt(dtype).map(|dt| dt.0.clone());
-            //         use pl::*;
-            //         let output_type = match dtype.clone() {
-            //             Some(dtype) => pl::GetOutput::from_type(dtype),
-            //             None => pl::GetOutput::from_type(DataType::Unknown),
-            //         };
-            //         let function = move |s: Series| {
-            //             let ca = s.utf8()?;
-            //             match ca.json_extract(dtype.clone()) {
-            //                 Ok(ca) => Ok(Some(ca.into_series())),
-            //                 Err(e) => Err(PolarsError::ComputeError(format!("{e:?}").into())),
-            //             }
-            //         };
-            //         self.0
-            // >>>>>>> origin/main
             .clone()
             .str()
             .json_extract(dtype, infer_schema_len)

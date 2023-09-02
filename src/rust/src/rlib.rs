@@ -4,6 +4,7 @@ use crate::rdataframe::DataFrame;
 use crate::robj_to;
 
 use crate::rpolarserr::{rdbg, RResult};
+use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
@@ -154,9 +155,37 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
 }
 
 #[extendr]
-fn arrow_stream_to_rust(rbr: Robj) {
-    let x = crate::arrow_interop::to_rust::arrow_array_stream_to_rust(rbr, None).unwrap();
-    dbg!(x);
+fn new_arrow_stream() -> Robj {
+    crate::arrow_interop::to_rust::new_arrow_stream_internal()
+}
+use crate::rpolarserr::*;
+#[extendr]
+fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
+    let ca = s
+        .struct_()
+        .map_err(polars_to_rpolars_err)
+        .when("unpack struct from producer")
+        .hint("producer exported a plain Series not a Struct series")?;
+    let df: pl::DataFrame = ca.clone().into();
+    Ok(DataFrame(df).into_robj())
+}
+
+#[extendr]
+fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
+    Ok(Series(s).into_robj())
+}
+
+#[extendr]
+unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
+    let res: ExternalPtr<DataFrame> = robj_df.try_into()?;
+    let pl_df = DataFrame(res.0.clone()).0;
+    //safety robj_str must be ptr to a arrow2 stream ready to export into
+    unsafe {
+        crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
+    }
+    Ok(robj_str)
 }
 
 #[extendr]
@@ -256,8 +285,14 @@ extendr_module! {
     //fn series_from_arrow;
     //fn rb_to_df;
     fn rb_list_to_df;
-    fn arrow_stream_to_rust;
+
     fn dtype_str_repr;
+
+    // arrow conversions
+    fn new_arrow_stream;
+    fn arrow_stream_to_df;
+    fn arrow_stream_to_series;
+    fn export_df_to_arrow_stream;
 
     //robj meta
     fn mem_address;

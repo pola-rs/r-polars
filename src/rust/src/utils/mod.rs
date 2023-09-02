@@ -1006,3 +1006,19 @@ pub fn collect_hinted_result_rerr<T>(
     }
     Ok(new_vec)
 }
+
+//keep error simple to interface with other libs
+pub fn robj_str_ptr_to_usize(robj: &Robj) -> RResult<usize> {
+    || -> RResult<usize> {
+        let str: &str = robj
+            .as_str()
+            .ok_or(RPolarsErr::new().plain("robj str ptr not a str".into()))?;
+        let us: usize = str.parse()?;
+        Ok(us)
+    }()
+    .when("converting robj str pointer to usize")
+}
+
+pub fn usize_to_robj_str(us: usize) -> Robj {
+    format!("{us}").into()
+}

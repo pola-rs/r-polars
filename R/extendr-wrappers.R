@@ -43,9 +43,15 @@ struct_ <- function(exprs, eager, schema) .Call(wrap__struct_, exprs, eager, sch
 
 rb_list_to_df <- function(r_batches, names) .Call(wrap__rb_list_to_df, r_batches, names)
 
-arrow_stream_to_rust <- function(rbr) invisible(.Call(wrap__arrow_stream_to_rust, rbr))
-
 dtype_str_repr <- function(dtype) .Call(wrap__dtype_str_repr, dtype)
+
+new_arrow_stream <- function() .Call(wrap__new_arrow_stream)
+
+arrow_stream_to_df <- function(robj_str) .Call(wrap__arrow_stream_to_df, robj_str)
+
+arrow_stream_to_series <- function(robj_str) .Call(wrap__arrow_stream_to_series, robj_str)
+
+export_df_to_arrow_stream <- function(robj_df, robj_str) .Call(wrap__export_df_to_arrow_stream, robj_df, robj_str)
 
 mem_address <- function(robj) .Call(wrap__mem_address, robj)
 

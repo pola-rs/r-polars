@@ -35,7 +35,7 @@ pub struct OwnedDataFrameIterator {
 }
 
 impl OwnedDataFrameIterator {
-    fn new(df: polars::frame::DataFrame) -> Self {
+    pub fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
         let data_type = DataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
