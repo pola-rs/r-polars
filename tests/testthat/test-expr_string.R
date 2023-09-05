@@ -126,7 +126,7 @@ test_that("str$concat", {
 })
 
 
-test_that("str$to_uppercase to_lowercase", {
+test_that("to_uppercase, to_lowercase, to_titlecase", {
   # concatenate a Series of strings to a single string
   df = pl$DataFrame(foo = c("1", "æøå", letters, LETTERS))
 
@@ -138,6 +138,13 @@ test_that("str$to_uppercase to_lowercase", {
   expect_identical(
     df$select(pl$col("foo")$str$to_lowercase())$to_list()$foo,
     tolower(df$to_list()$foo)
+  )
+
+  df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
+
+  expect_identical(
+    df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
+    c("Hi There", "Hi, There", NA)
   )
 })
 

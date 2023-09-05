@@ -180,6 +180,18 @@ ExprStr_to_lowercase = function() {
   .pr$Expr$str_to_lowercase(self)
 }
 
+#' To titlecase
+#' @name ExprStr_to_titlecase
+#' @description Transform to titlecase variant.
+#' @aliases expr_str_to_titlecase
+#' @keywords ExprStr
+#' @return Expr of Utf8 titlecase chars
+#' @examples
+#' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+ExprStr_to_titlecase = function() {
+  .pr$Expr$str_to_titlecase(self)
+}
+
 
 #' Strip
 #' @name ExprStr_strip

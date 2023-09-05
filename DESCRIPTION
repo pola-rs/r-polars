@@ -35,6 +35,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
+    tools,
     withr
 Config/Needs/website:
     etiennebacher/altdoc,

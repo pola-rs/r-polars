@@ -813,6 +813,8 @@ Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
 
 Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
 
+Expr$str_to_titlecase <- function() .Call(wrap__Expr__str_to_titlecase, self)
+
 Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
 
 Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)

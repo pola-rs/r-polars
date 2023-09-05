@@ -1902,6 +1902,10 @@ impl Expr {
         self.0.clone().str().to_lowercase().into()
     }
 
+    pub fn str_to_titlecase(&self) -> Self {
+        self.0.clone().str().to_titlecase().into()
+    }
+
     pub fn str_strip(&self, matches: Nullable<String>) -> Self {
         self.0.clone().str().strip(null_to_opt(matches)).into()
     }
