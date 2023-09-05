@@ -2384,13 +2384,12 @@ impl Expr {
 // handle varition in implementation if not full_features
 // could not get cfg feature flags conditions to work inside extendr macro
 // Therefore place it outside here instead
-#[cfg(feature = "full_features")]
+#[allow(unused)]
 fn f_str_to_titlecase(expr: &Expr) -> RResult<Expr> {
-    Ok(expr.0.clone().str().to_titlecase().into())
-}
+    #[cfg(feature = "full_features")]
+    return (Ok(expr.0.clone().str().to_titlecase().into()));
 
-#[cfg(not(feature = "full_features"))]
-fn f_str_to_titlecase(_expr: &Expr) -> RResult<Expr> {
+    #[cfg(not(feature = "full_features"))]
     rerr().plain(
         "$to_titlecase() is only available with 'full_features' enabled. Try our github \
     binary releases or compile with env var RPOLARS_FULL_FEATURES = 'true'",

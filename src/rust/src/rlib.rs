@@ -265,15 +265,9 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
     Ok(R!("pl$lit({{robj}})")?) // this call should have been polars::pl$lit(...
 }
 
-#[cfg(feature = "full_features")]
-const POLARS_FEATURE_FULL_FEATURES: bool = true;
-
-#[cfg(not(feature = "full_features"))]
-const POLARS_FEATURE_FULL_FEATURES: bool = false;
-
 #[extendr]
 fn polars_has_full_features() -> bool {
-    POLARS_FEATURE_FULL_FEATURES
+    cfg!(not(feature = "full_features"))
 }
 
 extendr_module! {

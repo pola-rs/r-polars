@@ -11,6 +11,12 @@ Expr of Utf8 titlecase chars
 Transform to titlecase variant.
 }
 \examples{
-pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+
+# this method is only availble with rust compiler flag "full_features" which can
+be set via envvar "RPOLARS_FULL_FEATURES" and it requires rust nightly to compile.
+
+# wrapped tryCatch to not trigger any CI error
+f = \() pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+tryCatch(f(), error = function(err) {as.character(err)})
 }
 \keyword{ExprStr}
