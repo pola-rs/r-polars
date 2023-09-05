@@ -187,7 +187,13 @@ ExprStr_to_lowercase = function() {
 #' @keywords ExprStr
 #' @return Expr of Utf8 titlecase chars
 #' @examples
-#' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+#'
+#' # this method is only availble with rust compiler flag "full_features" which can
+#' be set via envvar "RPOLARS_FULL_FEATURES" and it requires rust nightly to compile.
+#'
+#' # wrapped tryCatch to not trigger any CI error
+#' f = \() pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
+#' tryCatch(f(), error = function(err) {as.character(err)})
 ExprStr_to_titlecase = function() {
   .pr$Expr$str_to_titlecase(self) |>
     unwrap("in $to_titlecase():")
