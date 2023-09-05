@@ -266,8 +266,13 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-fn polars_has_full_features() -> bool {
-    cfg!(feature = "full_features")
+fn polars_features() -> List {
+    list!(
+        full_features = cfg!(feature = "full_features"),
+        default = cfg!(feature = "default"),
+        simd = cfg!(feature = "simd"),
+        rpolars_debug_print = cfg!(feature = "rpolars_debug_print")
+    )
 }
 
 extendr_module! {
@@ -314,5 +319,5 @@ extendr_module! {
     fn test_wrong_call_pl_lit;
 
     //feature flags
-    fn polars_has_full_features;
+    fn polars_features;
 }

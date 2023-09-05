@@ -147,7 +147,7 @@ test_that("to_uppercase, to_lowercase", {
 
 test_that("to_titlecase - enabled via full_features", {
 
- skip_if_not(polars:::polars_has_full_features())
+ skip_if_not(polars_features()$full_features)
  df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
@@ -156,7 +156,7 @@ test_that("to_titlecase - enabled via full_features", {
 })
 
 test_that("to_titlecase - enabled via full_features", {
- skip_if(polars:::polars_has_full_features())
+ skip_if(polars_features()$full_features)
  expect_error(pl$col("foo")$str$to_titlecase())
 })
 
