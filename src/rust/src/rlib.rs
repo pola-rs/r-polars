@@ -267,7 +267,7 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
 
 #[extendr]
 fn polars_has_full_features() -> bool {
-    cfg!(not(feature = "full_features"))
+    cfg!(feature = "full_features")
 }
 
 extendr_module! {
