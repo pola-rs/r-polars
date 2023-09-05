@@ -10,7 +10,7 @@
 \item{n}{Number of splits to make.}
 }
 \value{
-Struct where each of n+1 fields is of Utf8 type
+Struct where each of n fields is of Utf8 type
 }
 \description{
 Split the string by a substring, restricted to returning at most \code{n} items.
