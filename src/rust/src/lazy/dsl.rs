@@ -1902,8 +1902,8 @@ impl Expr {
         self.0.clone().str().to_lowercase().into()
     }
 
-    pub fn str_to_titlecase(&self) -> Self {
-        self.0.clone().str().to_titlecase().into()
+    pub fn str_to_titlecase(&self) -> RResult<Self> {
+        f_str_to_titlecase(&self)
     }
 
     pub fn str_strip(&self, matches: Nullable<String>) -> Self {
@@ -2379,6 +2379,22 @@ impl Expr {
         )
         .into())
     }
+}
+
+// handle varition in implementation if not full_features
+// could not get cfg feature flags conditions to work inside extendr macro
+// Therefore place it outside here instead
+#[cfg(feature = "full_features")]
+fn f_str_to_titlecase(expr: &Expr) -> RResult<Expr> {
+    Ok(expr.0.clone().str().to_titlecase().into())
+}
+
+#[cfg(not(feature = "full_features"))]
+fn f_str_to_titlecase(_expr: &Expr) -> RResult<Expr> {
+    rerr().plain(
+        "$to_titlecase() is only available with 'full_features' enabled. Try our github \
+    binary releases or compile with env var RPOLARS_FULL_FEATURES = 'true'",
+    )
 }
 
 //allow proto expression that yet only are strings

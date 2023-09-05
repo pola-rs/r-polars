@@ -126,7 +126,9 @@ test_that("str$concat", {
 })
 
 
-test_that("to_uppercase, to_lowercase, to_titlecase", {
+test_that("to_uppercase, to_lowercase", {
+
+
   # concatenate a Series of strings to a single string
   df = pl$DataFrame(foo = c("1", "æøå", letters, LETTERS))
 
@@ -140,12 +142,22 @@ test_that("to_uppercase, to_lowercase, to_titlecase", {
     tolower(df$to_list()$foo)
   )
 
-  df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
+})
 
+
+test_that("to_titlecase - enabled via full_features", {
+
+ skip_if_not(polars:::polars_has_full_features())
+ df2 = pl$DataFrame(foo = c("hi there", "HI, THERE", NA))
   expect_identical(
     df2$select(pl$col("foo")$str$to_titlecase())$to_list()$foo,
     c("Hi There", "Hi, There", NA)
-  )
+)
+})
+
+test_that("to_titlecase - enabled via full_features", {
+ skip_if(polars:::polars_has_full_features())
+ expect_error(pl$col("foo")$str$to_titlecase())
 })
 
 

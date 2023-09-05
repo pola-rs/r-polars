@@ -73,6 +73,8 @@ test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
+polars_has_full_features <- function() .Call(wrap__polars_has_full_features)
+
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
 setup_renv <- function() .Call(wrap__setup_renv)

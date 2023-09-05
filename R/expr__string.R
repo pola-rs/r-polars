@@ -189,7 +189,8 @@ ExprStr_to_lowercase = function() {
 #' @examples
 #' pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
 ExprStr_to_titlecase = function() {
-  .pr$Expr$str_to_titlecase(self)
+  .pr$Expr$str_to_titlecase(self) |>
+    unwrap("in $to_titlecase():")
 }
 
 
