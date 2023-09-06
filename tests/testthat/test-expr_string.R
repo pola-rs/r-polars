@@ -127,8 +127,6 @@ test_that("str$concat", {
 
 
 test_that("to_uppercase, to_lowercase", {
-
-
   # concatenate a Series of strings to a single string
   df = pl$DataFrame(foo = c("1", "æøå", letters, LETTERS))
 
@@ -143,7 +141,6 @@ test_that("to_uppercase, to_lowercase", {
   )
 
 })
-
 
 test_that("to_titlecase - enabled via full_features", {
  skip_if_not(pl$polars_info()$features$full_features)

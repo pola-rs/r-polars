@@ -4,7 +4,6 @@
 
 - New string method `to_titlecase()` (#371).
 
-
 # polars 0.8.0
 
 ## CHANGES DUE TO RUST-POLARS 0.32.0
