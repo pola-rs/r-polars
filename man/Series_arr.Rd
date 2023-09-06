@@ -2,20 +2,22 @@
 % Please edit documentation in R/series__series.R
 \name{Series_arr}
 \alias{Series_arr}
-\title{arr: list related methods on Series of dtype List}
+\title{arr: list related methods on Series of dtype List DEPRECATED}
 \usage{
 Series_arr()
 }
 \value{
-Expr
+Series
 }
 \description{
-Create an object namespace of all list related methods.
-See the individual method pages for full details
+DEPRECATED AND REMOVED FROM polars 0.9.0 use \verb{<Series>$list$} instead
 }
 \examples{
 s = pl$Series(list(1:3, 1:2, NULL))
 s
-s$list$first()
+s$arr$first()
+}
+\seealso{
+\code{\link[=Series_list]{<Series>$list$...}}
 }
 \keyword{Series}

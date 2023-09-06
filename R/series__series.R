@@ -960,18 +960,46 @@ Series_is_numeric = function() {
 }
 
 
-#' arr: list related methods on Series of dtype List
+#' arr: list related methods on Series of dtype List DEPRECATED
+#' @description
+#' DEPRECATED AND REMOVED FROM polars 0.9.0 use `<Series>$list$` instead
+#' @keywords Series
+#' @return Series
+#' @aliases Series_arr
+#' @seealso \code{\link[=Series_list]{<Series>$list$...}}
+#' @examples
+#' s = pl$Series(list(1:3, 1:2, NULL))
+#' s
+#' s$arr$first()
+Series_arr = method_as_property(function() {
+  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_series)) {
+    warning(
+      "in <Series>$list$: `<Series>$list$...` is deprecated and removed from polars 0.9.0 . ",
+      "Use `<Series>$list$` instead. It is only a renaming to match py-polars renaming.",
+      call. = FALSE
+    )
+    runtime_state$warned_deprecate_sns_arr_series = TRUE
+  }
+  df = pl$DataFrame(self)
+  arr = expr_arr_make_sub_ns(pl$col(self$name))
+  lapply(arr, \(f) {
+    \(...) df$select(f(...))
+  })
+})
+
+
+#' list: list related methods on Series of dtype List
 #' @description
 #' Create an object namespace of all list related methods.
 #' See the individual method pages for full details
 #' @keywords Series
-#' @return Expr
-#' @aliases Series_arr
+#' @return Series
+#' @aliases Series_list
 #' @examples
 #' s = pl$Series(list(1:3, 1:2, NULL))
 #' s
 #' s$list$first()
-Series_arr = method_as_property(function() {
+Series_list = method_as_property(function() {
   df = pl$DataFrame(self)
   arr = expr_arr_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
