@@ -635,7 +635,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #' @param n Number of splits to make.
 #'
 #' @return
-#' Struct where each of n+1 fields is of Utf8 type
+#' Struct where each of n fields is of Utf8 type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
