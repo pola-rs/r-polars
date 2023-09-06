@@ -436,3 +436,12 @@ test_that("eval", {
     )
   )
 })
+
+
+test_that("$arr$ warn once but give same ns as $list$", {
+  runtime_state$warned_deprecate_sns_arr = FALSE
+  expect_warning(pl$lit(42)$arr)
+  expect_no_warning(pl$lit(42)$arr)
+  expect_no_warning(pl$lit(42)$list)
+  expect_identical(ls(pl$lit(42)$arr), ls(pl$lit(42)$list))
+})

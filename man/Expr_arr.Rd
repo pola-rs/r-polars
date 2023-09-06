@@ -3,7 +3,7 @@
 \name{Expr_arr}
 \alias{Expr_arr}
 \alias{arr_ns}
-\title{arr: list related methods}
+\title{arr: list related methods DEPRECATED}
 \usage{
 Expr_arr()
 }
@@ -11,21 +11,9 @@ Expr_arr()
 Expr
 }
 \description{
-Create an object namespace of all list related methods.
-See the individual method pages for full details
+DEPRECATED FROM 0.9.0 USE \verb{<Expr>$list$...} instead. Subnamespace is simple renamed.
 }
-\examples{
-df_with_list = pl$DataFrame(
-  group = c(1, 1, 2, 2, 3),
-  value = c(1:5)
-)$groupby(
-  "group",
-  maintain_order = TRUE
-)$agg(
-  pl$col("value") * 3L
-)
-df_with_list$with_columns(
-  pl$col("value")$arr$lengths()$alias("group_size")
-)
+\seealso{
+\code{\link[=Expr_list]{<Expr>$list$...}}
 }
 \keyword{Expr}

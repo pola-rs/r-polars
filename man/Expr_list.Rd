@@ -4,15 +4,23 @@
 \alias{Expr_list}
 \alias{Expr_implode}
 \alias{list}
+\alias{arr_ns}
 \title{Wrap column in list}
 \usage{
 Expr_implode
+
+Expr_list()
 }
 \value{
+Expr
+
 Expr
 }
 \description{
 Aggregate values into a list.
+
+Create an object namespace of all list related methods.
+See the individual method pages for full details
 }
 \details{
 use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
@@ -24,5 +32,17 @@ df = pl$DataFrame(
   b = 4:6
 )
 df$select(pl$all()$implode())
+df_with_list = pl$DataFrame(
+  group = c(1, 1, 2, 2, 3),
+  value = c(1:5)
+)$groupby(
+  "group",
+  maintain_order = TRUE
+)$agg(
+  pl$col("value") * 3L
+)
+df_with_list$with_columns(
+  pl$col("value")$list$lengths()$alias("group_size")
+)
 }
 \keyword{Expr}
