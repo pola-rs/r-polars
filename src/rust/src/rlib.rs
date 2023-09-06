@@ -265,6 +265,16 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
     Ok(R!("pl$lit({{robj}})")?) // this call should have been polars::pl$lit(...
 }
 
+#[extendr]
+fn polars_features() -> List {
+    list!(
+        full_features = cfg!(feature = "full_features"),
+        default = cfg!(feature = "default"),
+        simd = cfg!(feature = "simd"),
+        rpolars_debug_print = cfg!(feature = "rpolars_debug_print")
+    )
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -307,4 +317,7 @@ extendr_module! {
     fn test_print_string;
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
+
+    //feature flags
+    fn polars_features;
 }

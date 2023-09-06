@@ -73,6 +73,8 @@ test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
+polars_features <- function() .Call(wrap__polars_features)
+
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
 setup_renv <- function() .Call(wrap__setup_renv)
@@ -92,6 +94,10 @@ test_serde_df <- function(df) .Call(wrap__test_serde_df, df)
 internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj, str_to_lit)
 
 robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
+
+cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
+
+rust_polars_version <- function() .Call(wrap__rust_polars_version)
 
 enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
 
@@ -813,6 +819,8 @@ Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
 
 Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
 
+Expr$str_to_titlecase <- function() .Call(wrap__Expr__str_to_titlecase, self)
+
 Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
 
 Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
@@ -1158,18 +1166,6 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
-
-FeatureInfo <- new.env(parent = emptyenv())
-
-FeatureInfo$new <- function() .Call(wrap__FeatureInfo__new)
-
-FeatureInfo$to_r <- function() .Call(wrap__FeatureInfo__to_r, self)
-
-#' @export
-`$.FeatureInfo` <- function (self, name) { func <- FeatureInfo[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.FeatureInfo` <- `$.FeatureInfo`
 
 
 # nolint end

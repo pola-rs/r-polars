@@ -6,7 +6,10 @@
       r-polars package version : 999.999.999
       rust-polars crate version: 999.999.999
       
-      Features:          
-      simd FALSE
+      Features:                         
+      default             FALSE
+      full_features       FALSE
+      simd                FALSE
+      rpolars_debug_print FALSE
       
 
