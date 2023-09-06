@@ -18,6 +18,6 @@ tail the first \code{n} values of every sublist.
 }
 \examples{
 df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("a")$arr$tail(2))
+df$select(pl$col("a")$list$tail(2))
 }
 \keyword{ExprArr}

@@ -4,7 +4,7 @@
 \alias{Expr_list}
 \alias{Expr_implode}
 \alias{list}
-\alias{arr_ns}
+\alias{list_ns}
 \title{Wrap column in list}
 \usage{
 Expr_implode

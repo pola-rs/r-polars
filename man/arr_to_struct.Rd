@@ -32,7 +32,7 @@ List to Struct
 }
 \examples{
 df = pl$DataFrame(list(a = list(1:3, 1:2)))
-df2 = df$select(pl$col("a")$arr$to_struct(
+df2 = df$select(pl$col("a")$list$to_struct(
   name_generator = \(idx) paste0("hello_you_", idx)
 ))
 df2$unnest()

@@ -15,6 +15,6 @@ Compute the mean value of the lists in the array.
 }
 \examples{
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$arr$mean())
+df$select(pl$col("values")$list$mean())
 }
 \keyword{ExprArr}

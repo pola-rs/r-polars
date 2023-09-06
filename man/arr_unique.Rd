@@ -15,6 +15,6 @@ Get the unique/distinct values in the list.
 }
 \examples{
 df = pl$DataFrame(list(a = list(1, 1, 2)))
-df$select(pl$col("a")$arr$unique())
+df$select(pl$col("a")$list$unique())
 }
 \keyword{ExprArr}

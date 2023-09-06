@@ -16,6 +16,6 @@ Retrieve the index of the maximum value in every sublist.
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
-df$select(pl$col("s")$arr$arg_max())
+df$select(pl$col("s")$list$arg_max())
 }
 \keyword{ExprArr}

@@ -16,6 +16,6 @@ Compute the max value of the lists in the array.
 }
 \examples{
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-df$select(pl$col("values")$arr$max())
+df$select(pl$col("values")$list$max())
 }
 \keyword{ExprArr}

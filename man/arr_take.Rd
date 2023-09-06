@@ -21,12 +21,12 @@ Get the take value of the sublists.
 \examples{
 df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
 idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-df$select(pl$col("a")$arr$take(pl$lit(idx), null_on_oob = TRUE))
+df$select(pl$col("a")$list$take(pl$lit(idx), null_on_oob = TRUE))
 
 # with implicit conversion to Expr
-df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+df$select(pl$col("a")$list$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
 
 # by some column name, must cast to an Int/Uint type to work
-df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
+df$select(pl$col("a")$list$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 }
 \keyword{ExprArr}

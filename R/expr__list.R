@@ -1,4 +1,4 @@
-# this file sources list-expression functions to be bundled in the 'expr$arr' sub namespace
+# this file sources list-expression functions to be bundled in the 'expr$list' sub namespace
 # the sub name space is instantiated from Expr_arr- function
 # bundling these functions into an environment, depends on a macro call in zzz.R
 # expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
@@ -17,7 +17,7 @@
 #' @aliases lengths arr.lengths arr_lengths
 #' @examples
 #' df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c")))
-#' df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))
+#' df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))
 ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 
 #' Sum lists
@@ -30,7 +30,7 @@ ExprArr_lengths = function() .pr$Expr$arr_lengths(self)
 #' @aliases arr_sum arr.sum
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$arr$sum())
+#' df$select(pl$col("values")$list$sum())
 ExprArr_sum = function() .pr$Expr$lst_sum(self)
 
 #' Max lists
@@ -43,7 +43,7 @@ ExprArr_sum = function() .pr$Expr$lst_sum(self)
 #' @aliases Expr_arr_max Expr_arr.max
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$arr$max())
+#' df$select(pl$col("values")$list$max())
 ExprArr_max = function() .pr$Expr$lst_max(self)
 
 #'  #' Min lists
@@ -56,7 +56,7 @@ ExprArr_max = function() .pr$Expr$lst_max(self)
 #' @aliases Expr_arr_min Expr_arr.min
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$arr$min())
+#' df$select(pl$col("values")$list$min())
 ExprArr_min = function() .pr$Expr$lst_min(self)
 
 #' Mean of lists
@@ -69,7 +69,7 @@ ExprArr_min = function() .pr$Expr$lst_min(self)
 #' @aliases arr_mean arr.mean
 #' @examples
 #' df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
-#' df$select(pl$col("values")$arr$mean())
+#' df$select(pl$col("values")$list$mean())
 ExprArr_mean = function() .pr$Expr$lst_mean(self)
 
 #' @inherit Expr_sort title description return
@@ -89,7 +89,7 @@ ExprArr_sort = function(descending = FALSE) .pr$Expr$lst_sort(self, descending)
 #' df = pl$DataFrame(list(
 #'   values = list(3:1, c(9L, 1:2))
 #' ))
-#' df$select(pl$col("values")$arr$reverse())
+#' df$select(pl$col("values")$list$reverse())
 ExprArr_reverse = function() .pr$Expr$lst_reverse(self)
 
 #' Unique list
@@ -102,7 +102,7 @@ ExprArr_reverse = function() .pr$Expr$lst_reverse(self)
 #' @aliases arr_unique arr.unique
 #' @examples
 #' df = pl$DataFrame(list(a = list(1, 1, 2)))
-#' df$select(pl$col("a")$arr$unique())
+#' df$select(pl$col("a")$list$unique())
 ExprArr_unique = function() .pr$Expr$lst_unique(self)
 
 
@@ -119,11 +119,11 @@ ExprArr_unique = function() .pr$Expr$lst_unique(self)
 #'   a = list("a", "x"),
 #'   b = list(c("b", "c"), c("y", "z"))
 #' )
-#' df$select(pl$col("a")$arr$concat(pl$col("b")))
+#' df$select(pl$col("a")$list$concat(pl$col("b")))
 #'
-#' df$select(pl$col("a")$arr$concat("hello from R"))
+#' df$select(pl$col("a")$list$concat("hello from R"))
 #'
-#' df$select(pl$col("a")$arr$concat(list("hello", c("hello", "world"))))
+#' df$select(pl$col("a")$list$concat(list("hello", c("hello", "world"))))
 ExprArr_concat = function(other) {
   pl$concat_list(list(self, other))
 }
@@ -144,8 +144,8 @@ ExprArr_concat = function(other) {
 #' @aliases Expr_arr_get Expr_arr.get
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr$get(0))
-#' df$select(pl$col("a")$arr$get(c(2, 0, -1)))
+#' df$select(pl$col("a")$list$get(0))
+#' df$select(pl$col("a")$list$get(c(2, 0, -1)))
 ExprArr_get = function(index) .pr$Expr$lst_get(self, wrap_e(index, str_to_lit = FALSE))
 
 #' Get list
@@ -157,8 +157,8 @@ ExprArr_get = function(index) .pr$Expr$lst_get(self, wrap_e(index, str_to_lit = 
 #' `[.ExprArrNameSpace` used as e.g. `pl$col("a")$arr[0]` same as `pl$col("a")$get(0)`
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr[0])
-#' df$select(pl$col("a")$arr[c(2, 0, -1)])
+#' df$select(pl$col("a")$list[0])
+#' df$select(pl$col("a")$list[c(2, 0, -1)])
 `[.ExprArrNameSpace` = function(x, index) { # S3 sub class-name set in zzz.R
   x$get(index)
 }
@@ -176,13 +176,13 @@ ExprArr_get = function(index) .pr$Expr$lst_get(self, wrap_e(index, str_to_lit = 
 #' @examples
 #' df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
 #' idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-#' df$select(pl$col("a")$arr$take(pl$lit(idx), null_on_oob = TRUE))
+#' df$select(pl$col("a")$list$take(pl$lit(idx), null_on_oob = TRUE))
 #'
 #' # with implicit conversion to Expr
-#' df$select(pl$col("a")$arr$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+#' df$select(pl$col("a")$list$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
 #'
 #' # by some column name, must cast to an Int/Uint type to work
-#' df$select(pl$col("a")$arr$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
+#' df$select(pl$col("a")$list$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 ExprArr_take = function(index, null_on_oob = FALSE) {
   expr = wrap_e(index, str_to_lit = FALSE)
   .pr$Expr$lst_take(self, expr, null_on_oob) |>
@@ -198,7 +198,7 @@ ExprArr_take = function(index, null_on_oob = FALSE) {
 #' @aliases arr_first arr.first
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr$first())
+#' df$select(pl$col("a")$list$first())
 ExprArr_first = function(index) .pr$Expr$lst_get(self, wrap_e(0L, str_to_lit = FALSE))
 
 #' Last in sublists
@@ -210,7 +210,7 @@ ExprArr_first = function(index) .pr$Expr$lst_get(self, wrap_e(0L, str_to_lit = F
 #' @aliases arr_last arr.last
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr$last())
+#' df$select(pl$col("a")$list$last())
 ExprArr_last = function(index) .pr$Expr$lst_get(self, wrap_e(-1L, str_to_lit = FALSE))
 
 #' Sublists contains
@@ -223,7 +223,7 @@ ExprArr_last = function(index) .pr$Expr$lst_get(self, wrap_e(-1L, str_to_lit = F
 #' @aliases arr_contains arr.contains
 #' @examples
 #' df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-#' df$select(pl$col("a")$arr$contains(1L))
+#' df$select(pl$col("a")$list$contains(1L))
 ExprArr_contains = function(other) .pr$Expr$arr_contains(self, wrap_e(other))
 
 
@@ -239,7 +239,7 @@ ExprArr_contains = function(other) .pr$Expr$arr_contains(self, wrap_e(other))
 #' @aliases arr_join arr.join
 #' @examples
 #' df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))
-#' df$select(pl$col("s")$arr$join(" "))
+#' df$select(pl$col("s")$list$join(" "))
 ExprArr_join = function(separator) .pr$Expr$lst_join(self, separator)
 
 #' Arg min sublists
@@ -251,7 +251,7 @@ ExprArr_join = function(separator) .pr$Expr$lst_join(self, separator)
 #' @aliases arr_arg_min arr.arg_min
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
-#' df$select(pl$col("s")$arr$arg_min())
+#' df$select(pl$col("s")$list$arg_min())
 ExprArr_arg_min = function() .pr$Expr$lst_arg_min(self)
 
 #' Arg max sublists
@@ -263,7 +263,7 @@ ExprArr_arg_min = function() .pr$Expr$lst_arg_min(self)
 #' @aliases Expr_arr_arg_max Expr_arr.arg_max
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:2, 2:1)))
-#' df$select(pl$col("s")$arr$arg_max())
+#' df$select(pl$col("s")$list$arg_max())
 ExprArr_arg_max = function() .pr$Expr$lst_arg_max(self)
 
 
@@ -280,7 +280,7 @@ ExprArr_arg_max = function() .pr$Expr$lst_arg_max(self)
 #' @aliases Expr_arr_diff Expr_arr.diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$arr$diff())
+#' df$select(pl$col("s")$list$diff())
 ExprArr_diff = function(n = 1, null_behavior = "ignore") {
   unwrap(.pr$Expr$lst_diff(self, n, null_behavior))
 }
@@ -295,7 +295,7 @@ ExprArr_diff = function(n = 1, null_behavior = "ignore") {
 #' @aliases arr_shift arr.shift
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$arr$shift())
+#' df$select(pl$col("s")$list$shift())
 ExprArr_shift = function(periods = 1) unwrap(.pr$Expr$lst_shift(self, periods))
 
 #' Slice sublists
@@ -311,7 +311,7 @@ ExprArr_shift = function(periods = 1) unwrap(.pr$Expr$lst_shift(self, periods))
 #' @aliases arr_slice arr.slice
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$arr$slice(2))
+#' df$select(pl$col("s")$list$slice(2))
 ExprArr_slice = function(offset, length = NULL) {
   offset = wrap_e(offset, str_to_lit = FALSE)
   if (!is.null(length)) {
@@ -333,9 +333,9 @@ ExprArr_slice = function(offset, length = NULL) {
 #' @aliases arr_head arr.head
 #' @examples
 #' df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("a")$arr$head(2))
+#' df$select(pl$col("a")$list$head(2))
 ExprArr_head = function(n = 5L) {
-  self$arr$slice(0L, n)
+  self$list$slice(0L, n)
 }
 
 #' Tails of sublists
@@ -348,10 +348,10 @@ ExprArr_head = function(n = 5L) {
 #' @aliases arr_tail arr.tail
 #' @examples
 #' df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("a")$arr$tail(2))
+#' df$select(pl$col("a")$list$tail(2))
 ExprArr_tail = function(n = 5L) {
   offset = -wrap_e(n, str_to_lit = FALSE)
-  self$arr$slice(offset, n)
+  self$list$slice(offset, n)
 }
 
 
@@ -381,7 +381,7 @@ ExprArr_tail = function(n = 5L) {
 #' @aliases arr_to_struct arr.to_struct
 #' @examples
 #' df = pl$DataFrame(list(a = list(1:3, 1:2)))
-#' df2 = df$select(pl$col("a")$arr$to_struct(
+#' df2 = df$select(pl$col("a")$list$to_struct(
 #'   name_generator = \(idx) paste0("hello_you_", idx)
 #' ))
 #' df2$unnest()
@@ -425,7 +425,7 @@ ExprArr_to_struct = function(
 #' @examples
 #' df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
 #' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
-#'   pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
+#'   pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
 #' )
 ExprArr_eval = function(expr, parallel = FALSE) {
   .pr$Expr$lst_eval(self, expr, parallel)

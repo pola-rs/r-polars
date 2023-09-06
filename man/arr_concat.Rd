@@ -21,10 +21,10 @@ df = pl$DataFrame(
   a = list("a", "x"),
   b = list(c("b", "c"), c("y", "z"))
 )
-df$select(pl$col("a")$arr$concat(pl$col("b")))
+df$select(pl$col("a")$list$concat(pl$col("b")))
 
-df$select(pl$col("a")$arr$concat("hello from R"))
+df$select(pl$col("a")$list$concat("hello from R"))
 
-df$select(pl$col("a")$arr$concat(list("hello", c("hello", "world"))))
+df$select(pl$col("a")$list$concat(list("hello", c("hello", "world"))))
 }
 \keyword{ExprArr}

@@ -1,6 +1,6 @@
 test_that("arr$lengths", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
-  l = df$with_columns(pl$col("list_of_strs")$arr$lengths()$alias("list_of_strs_lengths"))$to_list()
+  l = df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))$to_list()
 
   expect_identical(
     l |> lapply(\(x) if (inherits(x, "integer64")) as.numeric(x) else x),
@@ -46,10 +46,10 @@ test_that("arr$sum max min mean", {
 
   df = pl$DataFrame(list(x = ints))
   p_res = df$select(
-    pl$col("x")$arr$sum()$alias("sum"),
-    pl$col("x")$arr$max()$alias("max"),
-    pl$col("x")$arr$min()$alias("min"),
-    pl$col("x")$arr$mean()$alias("mean")
+    pl$col("x")$list$sum()$alias("sum"),
+    pl$col("x")$list$max()$alias("max"),
+    pl$col("x")$list$min()$alias("min"),
+    pl$col("x")$list$mean()$alias("mean")
   )$to_list()
 
   r_res = list(
@@ -65,10 +65,10 @@ test_that("arr$sum max min mean", {
 
   df = pl$DataFrame(list(x = floats))
   p_res = df$select(
-    pl$col("x")$arr$sum()$alias("sum"),
-    pl$col("x")$arr$max()$alias("max"),
-    pl$col("x")$arr$min()$alias("min"),
-    pl$col("x")$arr$mean()$alias("mean")
+    pl$col("x")$list$sum()$alias("sum"),
+    pl$col("x")$list$max()$alias("max"),
+    pl$col("x")$list$min()$alias("min"),
+    pl$col("x")$list$mean()$alias("mean")
   )$to_list()
 
   r_res = list(
@@ -91,7 +91,7 @@ test_that("arr$reverse", {
     l_char = list(letters, LETTERS)
   )
   df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$reverse())$to_list()
+  p_res = df$select(pl$all()$list$reverse())$to_list()
   r_res = lapply(l, lapply, rev)
   expect_identical(p_res, r_res)
 })
@@ -106,13 +106,13 @@ test_that("arr$unique arr$sort", {
     l_char = list(c(letters, letters), c("a", "a", "b"))
   )
   df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$unique()$arr$sort())$to_list()
+  p_res = df$select(pl$all()$list$unique()$list$sort())$to_list()
   r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE))
   expect_equal(p_res, r_res)
 
 
   df = pl$DataFrame(l)
-  p_res = df$select(pl$all()$arr$unique()$arr$sort(descending = TRUE))$to_list()
+  p_res = df$select(pl$all()$list$unique()$list$sort(descending = TRUE))$to_list()
   r_res = lapply(l, lapply, \(x)  sort(unique(x), na.last = FALSE, decr = TRUE))
   expect_equal(p_res, r_res)
 })
@@ -127,7 +127,7 @@ test_that("arr$get", {
 
   for (i in -5:5) {
     df = pl$DataFrame(l)
-    p_res = df$select(pl$all()$arr$get(i))$to_list()
+    p_res = df$select(pl$all()$list$get(i))$to_list()
     r_res = lapply(l, sapply, \(x) pcase(
       i >= 0, x[i + 1],
       i < 0, rev(x)[-i],
@@ -139,19 +139,19 @@ test_that("arr$get", {
 
 test_that("take", {
   l = list(1:3, 1:2, 1:1)
-  l_roundtrip = pl$lit(l)$arr$take(lapply(l, "-", 1L))$to_r()
+  l_roundtrip = pl$lit(l)$list$take(lapply(l, "-", 1L))$to_r()
   expect_identical(l_roundtrip, l)
 
 
   l = list(1:3, 4:5, 6L)
   expect_identical(
-    pl$lit(l)$arr$take(list(c(0:3), 0L, 0L), null_on_oob = TRUE)$to_r(),
+    pl$lit(l)$list$take(list(c(0:3), 0L, 0L), null_on_oob = TRUE)$to_r(),
     list(c(1:3, NA), 4L, 6L)
   )
 
 
   expected_err = "Take indices are out of bounds."
-  expect_grepl_error(pl$lit(l)$arr$take(list(c(0:3), 0L, 0L))$to_r(), expected_err)
+  expect_grepl_error(pl$lit(l)$list$take(list(c(0:3), 0L, 0L))$to_r(), expected_err)
 })
 
 test_that("first last head tail", {
@@ -164,17 +164,17 @@ test_that("first last head tail", {
 
   # first
 
-  p_res = df$select(pl$all()$arr$first())$to_list()
+  p_res = df$select(pl$all()$list$first())$to_list()
   r_res = lapply(l, sapply, function(x) x[1])
   expect_equal(p_res, r_res)
 
   # last
-  p_res = df$select(pl$all()$arr$last())$to_list()
+  p_res = df$select(pl$all()$list$last())$to_list()
   r_res = lapply(l, sapply, function(x) rev(x)[1])
   expect_equal(p_res, r_res)
 
   for (i in 0:5) {
-    p_res = df$select(pl$all()$arr$head(i))$to_list()
+    p_res = df$select(pl$all()$list$head(i))$to_list()
     r_res = lapply(l, lapply, \(x) pcase(
       i >= 0, head(x, i),
       i < 0, head(x, i),
@@ -184,7 +184,7 @@ test_that("first last head tail", {
   }
 
   for (i in 0:5) {
-    p_res = df$select(pl$all()$arr$tail(i))$to_list()
+    p_res = df$select(pl$all()$list$tail(i))$to_list()
     r_res = lapply(l, lapply, \(x) pcase(
       i >= 0, tail(x, i),
       i < 0, tail(x, i),
@@ -198,7 +198,7 @@ test_that("first last head tail", {
 test_that("join", {
   l = list(letters, as.character(1:5))
   s = pl$Series(l)
-  l_act = s$to_lit()$arr$join("-")$lit_to_df()$to_list()
+  l_act = s$to_lit()$list$join("-")$lit_to_df()$to_list()
   l_exp = list(sapply(l, paste, collapse = "-"))
   names(l_exp) = ""
   expect_identical(l_act, l_exp)
@@ -212,8 +212,8 @@ test_that("arg_min arg_max", {
   )
   df = pl$DataFrame(l)
 
-  l_act_arg_min = df$select(pl$all()$arr$arg_min())$to_list()
-  l_act_arg_max = df$select(pl$all()$arr$arg_max())$to_list()
+  l_act_arg_min = df$select(pl$all()$list$arg_min())$to_list()
+  l_act_arg_max = df$select(pl$all()$list$arg_max())$to_list()
 
   # not the same as R NA is min
   l_exp_arg_min = list(
@@ -245,15 +245,15 @@ test_that("diff", {
     x - data.table::shift(x, n)
   }
 
-  l_act_diff_1 = df$select(pl$all()$arr$diff())$to_list()
+  l_act_diff_1 = df$select(pl$all()$list$diff())$to_list()
   l_exp_diff_1 = lapply(l, sapply, r_diff)
   expect_identical(l_act_diff_1, l_exp_diff_1)
 
-  l_act_diff_2 = df$select(pl$all()$arr$diff(n = 2))$to_list()
+  l_act_diff_2 = df$select(pl$all()$list$diff(n = 2))$to_list()
   l_exp_diff_2 = lapply(l, sapply, r_diff, n = 2)
   expect_identical(l_act_diff_2, l_exp_diff_2)
 
-  l_act_diff_0 = df$select(pl$all()$arr$diff(n = 0))$to_list()
+  l_act_diff_0 = df$select(pl$all()$list$diff(n = 0))$to_list()
   l_exp_diff_0 = lapply(l, sapply, r_diff, n = 0)
   expect_identical(l_act_diff_0, l_exp_diff_0)
 })
@@ -272,19 +272,19 @@ test_that("shift", {
     data.table::shift(x, n) # <3 data.table
   }
 
-  l_act_diff_1 = df$select(pl$all()$arr$shift())$to_list()
+  l_act_diff_1 = df$select(pl$all()$list$shift())$to_list()
   l_exp_diff_1 = lapply(l, sapply, r_shift)
   expect_identical(l_act_diff_1, l_exp_diff_1)
 
-  l_act_diff_2 = df$select(pl$all()$arr$shift(2))$to_list()
+  l_act_diff_2 = df$select(pl$all()$list$shift(2))$to_list()
   l_exp_diff_2 = lapply(l, sapply, r_shift, 2)
   expect_identical(l_act_diff_2, l_exp_diff_2)
 
-  l_act_diff_0 = df$select(pl$all()$arr$shift(0))$to_list()
+  l_act_diff_0 = df$select(pl$all()$list$shift(0))$to_list()
   l_exp_diff_0 = lapply(l, sapply, r_shift, 0)
   expect_identical(l_act_diff_0, l_exp_diff_0)
 
-  l_act_diff_m1 = df$select(pl$all()$arr$shift(-1))$to_list()
+  l_act_diff_m1 = df$select(pl$all()$list$shift(-1))$to_list()
   l_exp_diff_m1 = lapply(l, sapply, r_shift, -1)
   expect_identical(l_act_diff_m1, l_exp_diff_m1)
 })
@@ -310,31 +310,31 @@ test_that("slice", {
     x[s]
   }
 
-  l_act_slice = df$select(pl$all()$arr$slice(0, 3))$to_list()
+  l_act_slice = df$select(pl$all()$list$slice(0, 3))$to_list()
   l_exp_slice = lapply(l, lapply, r_slice, 0, 3)
   expect_identical(l_act_slice, l_exp_slice)
 
 
-  l_act_slice = df$select(pl$all()$arr$slice(1, 3))$to_list()
+  l_act_slice = df$select(pl$all()$list$slice(1, 3))$to_list()
   l_exp_slice = lapply(l, lapply, r_slice, 1, 3)
   expect_identical(l_act_slice, l_exp_slice)
 
 
-  l_act_slice = df$select(pl$all()$arr$slice(1, 5))$to_list()
+  l_act_slice = df$select(pl$all()$list$slice(1, 5))$to_list()
   l_exp_slice = lapply(l, lapply, r_slice, 1, 5)
   expect_identical(l_act_slice, l_exp_slice)
 
-  l_act_slice = df$select(pl$all()$arr$slice(-1, 1))$to_list()
+  l_act_slice = df$select(pl$all()$list$slice(-1, 1))$to_list()
   l_exp_slice = lapply(l, lapply, r_slice, -1, 1)
   expect_identical(l_act_slice, l_exp_slice)
 
   l2 = list(a = list(1:3, 1:2, 1:1, integer()))
   df2 = pl$DataFrame(l2)
-  l_act_slice = df2$select(pl$all()$arr$slice(-2, 2))$to_list()
+  l_act_slice = df2$select(pl$all()$list$slice(-2, 2))$to_list()
   l_exp_slice = lapply(l2, lapply, r_slice, -2, 2)
   expect_identical(l_act_slice, l_exp_slice)
 
-  l_act_slice = df2$select(pl$all()$arr$slice(1, ))$to_list()
+  l_act_slice = df2$select(pl$all()$list$slice(1, ))$to_list()
   l_exp_slice = lapply(l2, lapply, r_slice, 1)
   expect_identical(l_act_slice, l_exp_slice)
 })
@@ -348,9 +348,9 @@ test_that("contains", {
   df = pl$DataFrame(l)
 
   l_act = df$select(
-    pl$col("i32")$arr$contains(2L),
-    pl$col("f64")$arr$contains(Inf),
-    pl$col("utf")$arr$contains("a")
+    pl$col("i32")$list$contains(2L),
+    pl$col("f64")$list$contains(Inf),
+    pl$col("utf")$list$contains("a")
   )$to_list()
 
   l_exp = list(
@@ -370,17 +370,17 @@ test_that("concat", {
   )
 
   expect_identical(
-    df$select(pl$col("a")$arr$concat(pl$col("b")))$to_list(),
+    df$select(pl$col("a")$list$concat(pl$col("b")))$to_list(),
     list(a = list(c("a", "b", "c"), c("x", "y", "z")))
   )
 
   expect_identical(
-    df$select(pl$col("a")$arr$concat("hello from R"))$to_list(),
+    df$select(pl$col("a")$list$concat("hello from R"))$to_list(),
     list(a = list(c("a", "hello from R"), c("x", "hello from R")))
   )
 
   expect_identical(
-    df$select(pl$col("a")$arr$concat(c("hello", "world")))$to_list(),
+    df$select(pl$col("a")$list$concat(c("hello", "world")))$to_list(),
     list(a = list(c("a", "hello"), c("x", "world")))
   )
 })
@@ -390,12 +390,12 @@ test_that("concat", {
 test_that("to_struct", {
   l = list(integer(), 1:2, 1:3, 1:2)
   df = pl$DataFrame(list(a = l))
-  act_1 = df$select(pl$col("a")$arr$to_struct(
+  act_1 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "first_non_null",
     name_generator = \(idx) paste0("hello_you_", idx)
   ))$to_list()
 
-  act_2 = df$select(pl$col("a")$arr$to_struct(
+  act_2 = df$select(pl$col("a")$list$to_struct(
     n_field_strategy = "max_width",
     name_generator = \(idx) paste0("hello_you_", idx)
   ))$to_list()
@@ -425,7 +425,7 @@ test_that("to_struct", {
 test_that("eval", {
   df = pl$DataFrame(a = list(a = c(1, 8, 3), b = c(4, 5, 2)))
   l_act = df$select(pl$all()$cast(pl$dtypes$Float64))$with_columns(
-    pl$concat_list(c("a", "b"))$arr$eval(pl$element()$rank())$alias("rank")
+    pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
   )$to_list()
   expect_identical(
     l_act,
@@ -438,7 +438,7 @@ test_that("eval", {
 })
 
 
-test_that("$arr$ warn once but give same ns as $list$", {
+test_that("$list$ warn once but give same ns as $list$", {
   runtime_state$warned_deprecate_sns_arr = FALSE
   expect_warning(pl$lit(42)$arr)
   expect_no_warning(pl$lit(42)$arr)

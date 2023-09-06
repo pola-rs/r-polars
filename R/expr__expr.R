@@ -4262,7 +4262,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 Expr_arr = method_as_property(function() {
   if (!isTRUE(runtime_state$warned_deprecate_sns_arr)) {
     warning(
-      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated and removed from polars 0.9.0 . ",
+      "in <Expr>$list$: `<Expr>$list$...` is deprecated and removed from polars 0.9.0 . ",
       "Use `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
       call. = FALSE
     )
@@ -4413,7 +4413,7 @@ Expr_to_struct = function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $arr$lengths()
+#'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $lit_to_s()
@@ -4433,7 +4433,7 @@ Expr_lit_to_s = function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $arr$lengths()
+#'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $lit_to_df()

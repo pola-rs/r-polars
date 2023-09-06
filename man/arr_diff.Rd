@@ -21,6 +21,6 @@ Calculate the n-th discrete difference of every sublist.
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-df$select(pl$col("s")$arr$diff())
+df$select(pl$col("s")$list$diff())
 }
 \keyword{ExprArr}

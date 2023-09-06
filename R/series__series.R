@@ -970,7 +970,7 @@ Series_is_numeric = function() {
 #' @examples
 #' s = pl$Series(list(1:3, 1:2, NULL))
 #' s
-#' s$arr$first()
+#' s$list$first()
 Series_arr = method_as_property(function() {
   df = pl$DataFrame(self)
   arr = expr_arr_make_sub_ns(pl$col(self$name))
@@ -1044,7 +1044,7 @@ Series_expr = method_as_property(function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $arr$lengths()
+#'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $lit_to_s()

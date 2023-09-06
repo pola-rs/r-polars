@@ -15,6 +15,6 @@ Retrieve the index of the minimal value in every sublist.
 }
 \examples{
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
-df$select(pl$col("s")$arr$arg_min())
+df$select(pl$col("s")$list$arg_min())
 }
 \keyword{ExprArr}

@@ -18,6 +18,6 @@ Check if sublists contain the given item.
 }
 \examples{
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
-df$select(pl$col("a")$arr$contains(1L))
+df$select(pl$col("a")$list$contains(1L))
 }
 \keyword{ExprArr}
