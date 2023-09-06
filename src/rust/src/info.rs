@@ -1,22 +1,23 @@
 use extendr_api::prelude::*;
+use polars;
 
-struct FeatureInfo {
-    simd: bool,
+#[extendr]
+fn cargo_rpolars_feature_info() -> List {
+    list!(
+        default = cfg!(feature = "default"),
+        full_features = cfg!(feature = "full_features"),
+        simd = cfg!(feature = "simd"),
+        rpolars_debug_print = cfg!(feature = "rpolars_debug_print"),
+    )
 }
 
 #[extendr]
-impl FeatureInfo {
-    fn new() -> FeatureInfo {
-        FeatureInfo {
-            simd: cfg!(feature = "simd"),
-        }
-    }
-    fn to_r(&self) -> List {
-        list!(simd = self.simd)
-    }
+fn rust_polars_version() -> String {
+    polars::VERSION.into()
 }
 
 extendr_module! {
     mod info;
-    impl FeatureInfo;
+    fn cargo_rpolars_feature_info;
+    fn rust_polars_version;
 }

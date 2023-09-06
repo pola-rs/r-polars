@@ -95,6 +95,10 @@ internal_wrap_e <- function(robj, str_to_lit) .Call(wrap__internal_wrap_e, robj,
 
 robj_to_col <- function(name, dotdotdot) .Call(wrap__robj_to_col, name, dotdotdot)
 
+cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
+
+rust_polars_version <- function() .Call(wrap__rust_polars_version)
+
 enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
@@ -1162,18 +1166,6 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
-
-FeatureInfo <- new.env(parent = emptyenv())
-
-FeatureInfo$new <- function() .Call(wrap__FeatureInfo__new)
-
-FeatureInfo$to_r <- function() .Call(wrap__FeatureInfo__to_r, self)
-
-#' @export
-`$.FeatureInfo` <- function (self, name) { func <- FeatureInfo[[name]]; environment(func) <- environment(); func }
-
-#' @export
-`[[.FeatureInfo` <- `$.FeatureInfo`
 
 
 # nolint end

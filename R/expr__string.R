@@ -188,14 +188,15 @@ ExprStr_to_lowercase = function() {
 #' @return Expr of Utf8 titlecase chars
 #' @details
 #' This method is only available with rust compiler flag "full_features" which can
-#' be set via envvar "RPOLARS_FULL_FEATURES" and it requires rust nightly to compile
-#'
+#' be set via envvar "RPOLARS_FULL_FEATURES" and it requires rust nightly to compile.
 #' Polars GitHub binary releases are compiled with "full_features".
-#'
 #' @examples
-#' # wrapped tryCatch to not trigger any CI error
 #' f = \() pl$lit(c("hello there", "HI, THERE", NA))$str$to_titlecase()$lit_to_s()
-#' tryCatch(f(), error = function(err) {as.character(err)})
+#' if (pl$polars_info()$features$full_features) {
+#'   f()
+#' } else {
+#'   tryCatch(f(), error = as.character)
+#' }
 ExprStr_to_titlecase = function() {
   .pr$Expr$str_to_titlecase(self) |>
     unwrap("in $to_titlecase():")
