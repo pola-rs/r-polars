@@ -4254,7 +4254,8 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 
 #' arr: list related methods DEPRECATED
 #' @description
-#' DEPRECATED FROM 0.9.0 USE `<Expr>$list$...` instead. Subnamespace is simple renamed.
+#' Deprecated since 0.8.1, will be removed in 0.9.0.
+#' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
 #' @keywords Expr
 #' @return Expr
 #' @aliases arr_ns
@@ -4262,7 +4263,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 Expr_arr = method_as_property(function() {
   if (!isTRUE(runtime_state$warned_deprecate_sns_arr)) {
     warning(
-      "in <Expr>$list$: `<Expr>$list$...` is deprecated and removed from polars 0.9.0 . ",
+      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and removed from polars 0.9.0.",
       "Use `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
       call. = FALSE
     )

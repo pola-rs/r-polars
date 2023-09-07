@@ -11,7 +11,8 @@ Expr_arr()
 Expr
 }
 \description{
-DEPRECATED FROM 0.9.0 USE \verb{<Expr>$list$...} instead. Subnamespace is simple renamed.
+Deprecated since 0.8.1, will be removed in 0.9.0.
+USE \verb{<Expr>$list$...} instead. Subnamespace is simply renamed.
 }
 \seealso{
 \code{\link[=Expr_list]{<Expr>$list$...}}
