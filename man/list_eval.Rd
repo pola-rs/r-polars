@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_eval}
 \alias{list_eval}
-\alias{arr.eval}
 \title{eval sublists (kinda like lapply)}
 \format{
 function
@@ -29,4 +28,4 @@ df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
   pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
 )
 }
-\keyword{ExprArr}
+\keyword{ExprList}

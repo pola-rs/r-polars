@@ -3,7 +3,6 @@
 \name{list_diff}
 \alias{list_diff}
 \alias{Expr_list_diff}
-\alias{Expr_arr.diff}
 \title{Diff sublists}
 \format{
 function
@@ -23,4 +22,4 @@ Calculate the n-th discrete difference of every sublist.
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("s")$list$diff())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

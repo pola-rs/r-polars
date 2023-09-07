@@ -1,4 +1,4 @@
-test_that("arr$lengths", {
+test_that("list$lengths", {
   df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c", character(), list(), NULL)))
   l = df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))$to_list()
 
@@ -12,7 +12,7 @@ test_that("arr$lengths", {
 })
 
 
-test_that("arr$sum max min mean", {
+test_that("list$sum max min mean", {
   # outcommented ones have different behavior in R and polars
 
   ints = list(
@@ -84,7 +84,7 @@ test_that("arr$sum max min mean", {
   )
 })
 
-test_that("arr$reverse", {
+test_that("list$reverse", {
   l = list(
     l_i32 = list(1:5, c(NA_integer_, 3:1)),
     l_f64 = list(c(1, 3, 2, 4, NA, Inf), (3:1) * 1),
@@ -99,7 +99,7 @@ test_that("arr$reverse", {
 
 
 
-test_that("arr$unique arr$sort", {
+test_that("list$unique arr$sort", {
   l = list(
     l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2)),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1)),
@@ -118,7 +118,7 @@ test_that("arr$unique arr$sort", {
 })
 
 
-test_that("arr$get", {
+test_that("list$get", {
   l = list(
     l_i32 = list(c(1:2, 1:2), c(NA_integer_, NA_integer_, 3L, 1:2), integer()),
     l_f64 = list(c(1, 1, 2, 3, NA, Inf, NA, Inf), c(1), numeric()),

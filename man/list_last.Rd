@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_last}
 \alias{list_last}
-\alias{arr.last}
 \title{Last in sublists}
 \format{
 function
@@ -17,4 +16,4 @@ Get the last value of the sublists.
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 df$select(pl$col("a")$list$last())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

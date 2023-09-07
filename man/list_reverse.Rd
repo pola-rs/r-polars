@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_reverse}
 \alias{list_reverse}
-\alias{arr.reverse}
 \title{Reverse list}
 \format{
 function
@@ -19,4 +18,4 @@ df = pl$DataFrame(list(
 ))
 df$select(pl$col("values")$list$reverse())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

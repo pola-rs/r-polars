@@ -3,7 +3,6 @@
 \name{list_arg_max}
 \alias{list_arg_max}
 \alias{Expr_list_arg_max}
-\alias{Expr_arr.arg_max}
 \title{Arg max sublists}
 \format{
 function
@@ -18,4 +17,4 @@ Retrieve the index of the maximum value in every sublist.
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
 df$select(pl$col("s")$list$arg_max())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

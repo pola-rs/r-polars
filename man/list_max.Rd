@@ -3,7 +3,6 @@
 \name{list_max}
 \alias{list_max}
 \alias{Expr_list_max}
-\alias{Expr_arr.max}
 \title{Max lists}
 \format{
 function
@@ -18,4 +17,4 @@ Compute the max value of the lists in the array.
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
 df$select(pl$col("values")$list$max())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_shift}
 \alias{list_shift}
-\alias{arr.shift}
 \title{Shift sublists}
 \format{
 function
@@ -20,4 +19,4 @@ Shift values by the given period.
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("s")$list$shift())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

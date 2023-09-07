@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_head}
 \alias{list_head}
-\alias{arr.head}
 \title{Heads of sublists}
 \format{
 function
@@ -20,4 +19,4 @@ head the first \code{n} values of every sublist.
 df = pl$DataFrame(list(a = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("a")$list$head(2))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

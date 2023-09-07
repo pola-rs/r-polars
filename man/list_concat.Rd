@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_concat}
 \alias{list_concat}
-\alias{arr.concat}
 \title{concat another list}
 \format{
 function
@@ -27,4 +26,4 @@ df$select(pl$col("a")$list$concat("hello from R"))
 
 df$select(pl$col("a")$list$concat(list("hello", c("hello", "world"))))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

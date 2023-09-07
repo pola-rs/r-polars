@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_to_struct}
 \alias{list_to_struct}
-\alias{arr.to_struct}
 \title{List to Struct}
 \format{
 function
@@ -39,4 +38,4 @@ df2$unnest()
 
 df2$to_list()
 }
-\keyword{ExprArr}
+\keyword{ExprList}

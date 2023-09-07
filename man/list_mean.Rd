@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_mean}
 \alias{list_mean}
-\alias{arr.mean}
 \title{Mean of lists}
 \format{
 function
@@ -17,4 +16,4 @@ Compute the mean value of the lists in the array.
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
 df$select(pl$col("values")$list$mean())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

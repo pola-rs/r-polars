@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_sum}
 \alias{list_sum}
-\alias{arr.sum}
 \title{Sum lists}
 \format{
 function
@@ -17,4 +16,4 @@ Sum all the lists in the array.
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
 df$select(pl$col("values")$list$sum())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

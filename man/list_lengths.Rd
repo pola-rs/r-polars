@@ -3,7 +3,6 @@
 \name{list_lengths}
 \alias{list_lengths}
 \alias{lengths}
-\alias{arr.lengths}
 \title{Lengths arrays in list}
 \format{
 function
@@ -18,4 +17,4 @@ Get the length of the arrays as UInt32
 df = pl$DataFrame(list_of_strs = pl$Series(list(c("a", "b"), "c")))
 df$with_columns(pl$col("list_of_strs")$list$lengths()$alias("list_of_strs_lengths"))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

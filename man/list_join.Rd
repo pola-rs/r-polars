@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_join}
 \alias{list_join}
-\alias{arr.join}
 \title{Join sublists}
 \format{
 function
@@ -21,4 +20,4 @@ This errors if inner type of list \verb{!= Utf8}.
 df = pl$DataFrame(list(s = list(c("a", "b", "c"), c("x", "y"))))
 df$select(pl$col("s")$list$join(" "))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

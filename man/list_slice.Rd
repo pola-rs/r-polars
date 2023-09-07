@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_slice}
 \alias{list_slice}
-\alias{arr.slice}
 \title{Slice sublists}
 \format{
 function
@@ -24,4 +23,4 @@ Slice every sublist.
 df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
 df$select(pl$col("s")$list$slice(2))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

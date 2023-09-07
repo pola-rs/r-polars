@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_take}
 \alias{list_take}
-\alias{arr.take}
 \title{take in sublists}
 \format{
 function
@@ -29,4 +28,4 @@ df$select(pl$col("a")$list$take(list(0:1, integer(), c(1L, 999L)), null_on_oob =
 # by some column name, must cast to an Int/Uint type to work
 df$select(pl$col("a")$list$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

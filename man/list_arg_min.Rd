@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_arg_min}
 \alias{list_arg_min}
-\alias{arr.arg_min}
 \title{Arg min sublists}
 \format{
 function
@@ -17,4 +16,4 @@ Retrieve the index of the minimal value in every sublist.
 df = pl$DataFrame(list(s = list(1:2, 2:1)))
 df$select(pl$col("s")$list$arg_min())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

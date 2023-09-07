@@ -3,7 +3,6 @@
 \name{list_min}
 \alias{list_min}
 \alias{Expr_list_min}
-\alias{Expr_arr.min}
 \title{#' Min lists}
 \format{
 function
@@ -18,4 +17,4 @@ Compute the min value of the lists in the array.
 df = pl$DataFrame(values = pl$Series(list(1L, 2:3)))
 df$select(pl$col("values")$list$min())
 }
-\keyword{ExprArr}
+\keyword{ExprList}

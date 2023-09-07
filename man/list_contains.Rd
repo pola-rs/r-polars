@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_contains}
 \alias{list_contains}
-\alias{arr.contains}
 \title{Sublists contains}
 \format{
 function
@@ -20,4 +19,4 @@ Check if sublists contain the given item.
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 df$select(pl$col("a")$list$contains(1L))
 }
-\keyword{ExprArr}
+\keyword{ExprList}

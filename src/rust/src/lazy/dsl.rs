@@ -1061,11 +1061,11 @@ impl Expr {
     }
 
     fn list_sum(&self) -> Self {
-        self.0.clone().list().sum().with_fmt("arr.sum").into()
+        self.0.clone().list().sum().with_fmt("list.sum").into()
     }
 
     fn list_mean(&self) -> Self {
-        self.0.clone().list().mean().with_fmt("arr.mean").into()
+        self.0.clone().list().mean().with_fmt("list.mean").into()
     }
 
     fn list_sort(&self, descending: bool) -> Self {
@@ -1076,7 +1076,7 @@ impl Expr {
                 descending: descending,
                 ..Default::default()
             })
-            .with_fmt("arr.sort")
+            .with_fmt("list.sort")
             .into()
     }
 
@@ -1085,12 +1085,12 @@ impl Expr {
             .clone()
             .list()
             .reverse()
-            .with_fmt("arr.reverse")
+            .with_fmt("list.reverse")
             .into()
     }
 
     fn list_unique(&self) -> Self {
-        self.0.clone().list().unique().with_fmt("arr.unique").into()
+        self.0.clone().list().unique().with_fmt("list.unique").into()
     }
 
     fn list_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
@@ -1125,7 +1125,7 @@ impl Expr {
                 new_null_behavior(null_behavior)?,
             )))
         }()
-        .map_err(|err| format!("arr.diff: {}", err));
+        .map_err(|err| format!("list.diff: {}", err));
         r_result_list(expr_res)
     }
 
@@ -1135,7 +1135,7 @@ impl Expr {
                 self.0.clone().list().shift(try_f64_into_i64(periods)?),
             ))
         }()
-        .map_err(|err| format!("arr.shift: {}", err));
+        .map_err(|err| format!("list.shift: {}", err));
         r_result_list(expr_res)
     }
 

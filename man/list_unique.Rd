@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__list.R
 \name{list_unique}
 \alias{list_unique}
-\alias{arr.unique}
 \title{Unique list}
 \format{
 function
@@ -17,4 +16,4 @@ Get the unique/distinct values in the list.
 df = pl$DataFrame(list(a = list(1, 1, 2)))
 df$select(pl$col("a")$list$unique())
 }
-\keyword{ExprArr}
+\keyword{ExprList}
