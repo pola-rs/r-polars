@@ -974,7 +974,8 @@ Series_is_numeric = function() {
 Series_arr = method_as_property(function() {
   if (!isTRUE(runtime_state$warned_deprecate_sns_arr_series)) {
     warning(
-      "in <Series>$list$: `<Series>$list$...` is deprecated and removed from polars 0.9.0 . ",
+      "in <Series>$arr$: ",
+      "`<Series>$arr$...` is deprecated since 0.8.1 and removed from polars 0.9.0. ",
       "Use `<Series>$list$` instead. It is only a renaming to match py-polars renaming.",
       call. = FALSE
     )
