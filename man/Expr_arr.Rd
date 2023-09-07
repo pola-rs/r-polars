@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arr}
 \alias{Expr_arr}
-\alias{arr_ns}
 \title{arr: list related methods DEPRECATED}
 \usage{
 Expr_arr()

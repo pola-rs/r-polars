@@ -439,7 +439,7 @@ test_that("eval", {
 
 
 test_that("Series$list$ warn once but give same ns as $list$", {
-  runtime_state$warned_deprecate_sns_arr = FALSE
+  runtime_state$warned_deprecate_sns_arr_expr = FALSE
   expect_warning(pl$lit(42)$arr)
   expect_no_warning(pl$lit(42)$arr)
   expect_no_warning(pl$lit(42)$list)

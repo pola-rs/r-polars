@@ -99,8 +99,8 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
                 arr.data_type(),
                 ArrowDataType::Utf8 | ArrowDataType::Dictionary(_, _, _)
             );
-            let arr_res: Result<_, String> = Ok(arr);
-            arr_res
+            let list_res: Result<_, String> = Ok(arr);
+            list_res
         });
         let arrays_vec = crate::utils::collect_hinted_result(n_columns, array_iter)?;
 

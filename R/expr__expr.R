@@ -4258,18 +4258,17 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
 #' @keywords Expr
 #' @return Expr
-#' @aliases arr_ns
 #' @seealso \code{\link[=Expr_list]{<Expr>$list$...}}
 Expr_arr = method_as_property(function() {
-  if (!isTRUE(runtime_state$warned_deprecate_sns_arr)) {
+  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
     warning(
       "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and removed from polars 0.9.0.",
       "Use `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
       call. = FALSE
     )
-    runtime_state$warned_deprecate_sns_arr = TRUE
+    runtime_state$warned_deprecate_sns_arr_expr = TRUE
   }
-  expr_arr_make_sub_ns(self)
+  expr_list_make_sub_ns(self)
 })
 
 #' list: list related methods
@@ -4293,7 +4292,7 @@ Expr_arr = method_as_property(function() {
 #'   pl$col("value")$list$lengths()$alias("group_size")
 #' )
 Expr_list = method_as_property(function() {
-  expr_arr_make_sub_ns(self)
+  expr_list_make_sub_ns(self)
 })
 
 

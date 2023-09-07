@@ -981,7 +981,7 @@ Series_arr = method_as_property(function() {
     runtime_state$warned_deprecate_sns_arr_series = TRUE
   }
   df = pl$DataFrame(self)
-  arr = expr_arr_make_sub_ns(pl$col(self$name))
+  arr = expr_list_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
     \(...) df$select(f(...))
   })
@@ -1001,7 +1001,7 @@ Series_arr = method_as_property(function() {
 #' s$list$first()
 Series_list = method_as_property(function() {
   df = pl$DataFrame(self)
-  arr = expr_arr_make_sub_ns(pl$col(self$name))
+  arr = expr_list_make_sub_ns(pl$col(self$name))
   lapply(arr, \(f) {
     \(...) df$select(f(...))
   })

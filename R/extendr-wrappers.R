@@ -587,43 +587,43 @@ Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
-Expr$arr_lengths <- function() .Call(wrap__Expr__arr_lengths, self)
+Expr$list_lengths <- function() .Call(wrap__Expr__list_lengths, self)
 
-Expr$arr_contains <- function(other) .Call(wrap__Expr__arr_contains, self, other)
+Expr$list_contains <- function(other) .Call(wrap__Expr__list_contains, self, other)
 
-Expr$lst_max <- function() .Call(wrap__Expr__lst_max, self)
+Expr$list_max <- function() .Call(wrap__Expr__list_max, self)
 
-Expr$lst_min <- function() .Call(wrap__Expr__lst_min, self)
+Expr$list_min <- function() .Call(wrap__Expr__list_min, self)
 
-Expr$lst_sum <- function() .Call(wrap__Expr__lst_sum, self)
+Expr$list_sum <- function() .Call(wrap__Expr__list_sum, self)
 
-Expr$lst_mean <- function() .Call(wrap__Expr__lst_mean, self)
+Expr$list_mean <- function() .Call(wrap__Expr__list_mean, self)
 
-Expr$lst_sort <- function(descending) .Call(wrap__Expr__lst_sort, self, descending)
+Expr$list_sort <- function(descending) .Call(wrap__Expr__list_sort, self, descending)
 
-Expr$lst_reverse <- function() .Call(wrap__Expr__lst_reverse, self)
+Expr$list_reverse <- function() .Call(wrap__Expr__list_reverse, self)
 
-Expr$lst_unique <- function() .Call(wrap__Expr__lst_unique, self)
+Expr$list_unique <- function() .Call(wrap__Expr__list_unique, self)
 
-Expr$lst_take <- function(index, null_on_oob) .Call(wrap__Expr__lst_take, self, index, null_on_oob)
+Expr$list_take <- function(index, null_on_oob) .Call(wrap__Expr__list_take, self, index, null_on_oob)
 
-Expr$lst_get <- function(index) .Call(wrap__Expr__lst_get, self, index)
+Expr$list_get <- function(index) .Call(wrap__Expr__list_get, self, index)
 
-Expr$lst_join <- function(separator) .Call(wrap__Expr__lst_join, self, separator)
+Expr$list_join <- function(separator) .Call(wrap__Expr__list_join, self, separator)
 
-Expr$lst_arg_min <- function() .Call(wrap__Expr__lst_arg_min, self)
+Expr$list_arg_min <- function() .Call(wrap__Expr__list_arg_min, self)
 
-Expr$lst_arg_max <- function() .Call(wrap__Expr__lst_arg_max, self)
+Expr$list_arg_max <- function() .Call(wrap__Expr__list_arg_max, self)
 
-Expr$lst_diff <- function(n, null_behavior) .Call(wrap__Expr__lst_diff, self, n, null_behavior)
+Expr$list_diff <- function(n, null_behavior) .Call(wrap__Expr__list_diff, self, n, null_behavior)
 
-Expr$lst_shift <- function(periods) .Call(wrap__Expr__lst_shift, self, periods)
+Expr$list_shift <- function(periods) .Call(wrap__Expr__list_shift, self, periods)
 
-Expr$lst_slice <- function(offset, length) .Call(wrap__Expr__lst_slice, self, offset, length)
+Expr$list_slice <- function(offset, length) .Call(wrap__Expr__list_slice, self, offset, length)
 
-Expr$lst_eval <- function(expr, parallel) .Call(wrap__Expr__lst_eval, self, expr, parallel)
+Expr$list_eval <- function(expr, parallel) .Call(wrap__Expr__list_eval, self, expr, parallel)
 
-Expr$lst_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__lst_to_struct, self, width_strat, name_gen, upper_bound)
+Expr$list_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, width_strat, name_gen, upper_bound)
 
 Expr$str_to_date <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, use_earliest)
 
