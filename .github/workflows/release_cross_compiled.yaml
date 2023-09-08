@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (target - ${{ matrix.config.target }})
 
     permissions:
       contents: write
@@ -65,14 +65,16 @@ jobs:
       - name: cross compile
         run: |
           pwd
-          rustup target add "${{ runner.target }}"
-          rustup default "${{ runner.target }}"
+          rustup target add "$RUNNER_TARGET"
+          rustup default "$RUNNER_TARGET"
           cargo build --lib --profile release-optimized --manifest-path=./src/rust/Cargo.toml
           mv ./src/rust/target/release-optimized/libr_polars.a ./inst/
-          echo "${{ runner.os }}" > .inst/target.txt
+          echo "$RUNNER_TARGET" > .inst/target.txt
           cat .inst/target.txt
           ls -l
           ls ./inst/ -l
+        env:
+          RUNNER_TARGET: "${{ matrix.config.target }}"
         shell: bash
 
       - name: build source (with object file)
