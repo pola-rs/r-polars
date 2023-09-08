@@ -7,9 +7,8 @@
   Finally at polars 0.9.0 the "arr" will be removed (#375).
 - Polars github release now includes cross-compiled binary for Mac Arm CPUs (aarch-apple-darwin).
   See installation instructions in README.md. (#377)
-- Bugfix: Although stated in news for PR (#334) `strip = true` was not actually set for the 
-  "release-optimized" compilation profile. Now it is. This and `lto="fat"` give smaller binaries
-  (#377).
+- Although stated in news for PR (#334) `strip = true` was not actually set for the 
+  "release-optimized" compilation profile. Now it is, but the binary sizes seems unchanged (#377).
 
 # polars 0.8.0
 

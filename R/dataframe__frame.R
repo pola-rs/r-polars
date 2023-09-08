@@ -127,10 +127,7 @@ DataFrame
 #'
 #' # from a data.frame
 #' pl$DataFrame(mtcars)
-
-pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select =TRUE) {
-
-
+pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select = TRUE) {
   largs = unpack_list(...)
 
   # no args crete empty DataFrame
@@ -196,10 +193,9 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_sel
   names(largs) = keys
   result(
     lapply(largs, pl$lit) |>
-    do.call(what = pl$select)
+      do.call(what = pl$select)
   ) |>
     unwrap("in pl$DataFrame()")
-
 }
 
 
@@ -332,7 +328,6 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #'
 #' # but in R, we use a 1-index
 #' df$with_row_count("idx", offset = 1)
-
 DataFrame_with_row_count = function(name, offset = NULL) {
   .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
 }
@@ -353,7 +348,6 @@ DataFrame_with_row_count = function(name, offset = NULL) {
 #' # set + get values
 #' df$columns = letters[1:5] # <- is fine too
 #' df$columns
-
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
 }, setter = TRUE)
@@ -370,7 +364,6 @@ DataFrame.property_setters$columns = function(self, names) {
 #' from the DataFrame.
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
-
 DataFrame_drop = function(columns) {
   self$lazy()$drop(columns)$collect()
 }
@@ -395,7 +388,6 @@ DataFrame_drop = function(columns) {
 #' tmp$drop_nulls()$height
 #' tmp$drop_nulls("mpg")$height
 #' tmp$drop_nulls(c("mpg", "hp"))$height
-
 DataFrame_drop_nulls = function(subset = NULL) {
   self$lazy()$drop_nulls(subset)$collect()
 }
@@ -430,7 +422,6 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
-
 DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
   self$lazy()$unique(subset, keep, maintain_order)$collect()
 }
@@ -445,7 +436,6 @@ DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$shape
-
 DataFrame_shape = method_as_property(function() {
   .pr$DataFrame$shape(self)
 })
@@ -461,7 +451,6 @@ DataFrame_shape = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height
-
 DataFrame_height = method_as_property(function() {
   .pr$DataFrame$shape(self)[1L]
 })
@@ -475,7 +464,6 @@ DataFrame_height = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
-
 DataFrame_width = method_as_property(function() {
   .pr$DataFrame$shape(self)[2L]
 })
@@ -496,7 +484,6 @@ DataFrame_width = method_as_property(function() {
 #' pl$DataFrame(iris)$dtypes
 #'
 #' pl$DataFrame(iris)$schema
-
 DataFrame_dtypes = method_as_property(function() {
   .pr$DataFrame$dtypes(self)
 })
@@ -513,7 +500,6 @@ DataFrame_dtypes = method_as_property(function() {
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtype_strings()
-
 DataFrame_dtype_strings = "use_extendr_wrapper"
 
 #' @rdname DataFrame_dtypes
@@ -566,7 +552,6 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
-
 DataFrame_lazy = "use_extendr_wrapper"
 
 #' Clone a DataFrame
@@ -583,7 +568,6 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' df3 = df1
 #' pl$mem_address(df1) != pl$mem_address(df2)
 #' pl$mem_address(df1) == pl$mem_address(df3)
-
 DataFrame_clone = function() {
   .pr$DataFrame$clone_see_me_macro(self)
 }
@@ -613,7 +597,6 @@ DataFrame_get_columns = "use_extendr_wrapper"
 #' @examples
 #' df = pl$DataFrame(iris[1:2, ])
 #' df$get_column("Species")
-
 DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
 }
@@ -642,7 +625,6 @@ DataFrame_get_column = function(name) {
 #'
 #' # doesn't error if the column isn't there
 #' df$to_series(idx = 8)
-
 DataFrame_to_series = function(idx = 0) {
   if (!is.numeric(idx) || isTRUE(idx < 0)) {
     pstop(err = "idx must be non-negative numeric")
@@ -665,7 +647,6 @@ DataFrame_to_series = function(idx = 0) {
 #' df$sort(c("cyl", "mpg"), descending = TRUE)
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
 #' df$sort(pl$col("cyl"), pl$col("mpg"))
-
 DataFrame_sort = function(
     by,
     ...,
@@ -697,7 +678,6 @@ DataFrame_sort = function(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-
 DataFrame_select = function(...) {
   .pr$DataFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
@@ -715,7 +695,6 @@ DataFrame_select = function(...) {
 #' x = dat$drop_in_place("Species")
 #' x
 #' dat$columns
-
 DataFrame_drop_in_place = function(name) {
   .pr$DataFrame$drop_in_place(self, name)
 }
@@ -733,7 +712,6 @@ DataFrame_drop_in_place = function(name) {
 #' dat3 = pl$DataFrame(mtcars)
 #' dat1$frame_equal(dat2)
 #' dat1$frame_equal(dat3)
-
 DataFrame_frame_equal = function(other) {
   .pr$DataFrame$frame_equal(self, other)
 }
@@ -752,7 +730,6 @@ DataFrame_frame_equal = function(other) {
 #' pl$DataFrame(mtcars)$shift(2)
 #'
 #' pl$DataFrame(mtcars)$shift(-2)
-
 DataFrame_shift = function(periods = 1) {
   self$lazy()$shift(periods)$collect()
 }
@@ -775,7 +752,6 @@ DataFrame_shift = function(periods = 1) {
 #'
 #' # automatic conversion of logical value to numeric
 #' df$shift_and_fill(TRUE, 2)
-
 DataFrame_shift_and_fill = function(fill_value, periods = 1) {
   self$lazy()$shift_and_fill(fill_value, periods)$collect()
 }
@@ -812,7 +788,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
-
 DataFrame_with_columns = function(...) {
   .pr$DataFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
@@ -839,7 +814,6 @@ DataFrame_with_column = function(expr) {
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$limit(6)
-
 DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
 }
@@ -891,7 +865,6 @@ DataFrame_tail = function(n) {
 #' df = pl$DataFrame(iris2)
 #'
 #' df$filter(pl$col("Species") == "setosa")
-
 DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }
@@ -915,7 +888,6 @@ DataFrame_filter = function(bool_expr) {
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-
 DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
@@ -931,7 +903,6 @@ DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
-
 DataFrame_to_data_frame = function(...) {
   # do not unnest structs and mark with I to also preserve categoricals as is
   l = lapply(self$to_list(unnest_structs = FALSE), I)
@@ -1019,7 +990,6 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' df1 = pl$DataFrame(x = letters[1:3])
 #' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
-
 DataFrame_join = function(
     other, # : LazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -1053,7 +1023,6 @@ DataFrame_join = function(
 #' # Convert back to a DataFrame
 #' df_s = s$to_frame()
 #' df_s
-
 DataFrame_to_struct = function(name = "") {
   .pr$DataFrame$to_struct(self, name)
 }
@@ -1072,7 +1041,6 @@ DataFrame_to_struct = function(name = "") {
 #' df
 #'
 #' df$unnest()
-
 DataFrame_unnest = function(names = NULL) {
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
@@ -1083,7 +1051,6 @@ DataFrame_unnest = function(names = NULL) {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$first()
-
 DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
@@ -1092,7 +1059,6 @@ DataFrame_first = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$last()
-
 DataFrame_last = function() {
   self$lazy()$last()$collect()
 }
@@ -1102,7 +1068,6 @@ DataFrame_last = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$max()
-
 DataFrame_max = function() {
   self$lazy()$max()$collect()
 }
@@ -1112,7 +1077,6 @@ DataFrame_max = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$mean()
-
 DataFrame_mean = function() {
   self$lazy()$mean()$collect()
 }
@@ -1122,7 +1086,6 @@ DataFrame_mean = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$median()
-
 DataFrame_median = function() {
   self$lazy()$median()$collect()
 }
@@ -1132,7 +1095,6 @@ DataFrame_median = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$min()
-
 DataFrame_min = function() {
   self$lazy()$min()$collect()
 }
@@ -1142,7 +1104,6 @@ DataFrame_min = function() {
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$sum()
-
 DataFrame_sum = function() {
   self$lazy()$sum()$collect()
 }
@@ -1154,7 +1115,6 @@ DataFrame_sum = function() {
 #' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$var()
-
 DataFrame_var = function(ddof = 1) {
   self$lazy()$var(ddof)$collect()
 }
@@ -1167,7 +1127,6 @@ DataFrame_var = function(ddof = 1) {
 #' N - ddof, where N represents the number of elements. By default ddof is 1.
 #' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$std()
-
 DataFrame_std = function(ddof = 1) {
   self$lazy()$std(ddof)$collect()
 }
@@ -1181,7 +1140,6 @@ DataFrame_std = function(ddof = 1) {
 #' "midpoint", or "linear".
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$quantile(.4)
-
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
   self$lazy()$quantile(quantile, interpolation)$collect()
 }
@@ -1190,7 +1148,6 @@ DataFrame_quantile = function(quantile, interpolation = "nearest") {
 #' @description Reverse the DataFrame (the last row becomes the first one, etc.).
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
-
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
@@ -1206,7 +1163,6 @@ DataFrame_reverse = function() {
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)
-
 DataFrame_fill_nan = function(fill_value) {
   self$lazy()$fill_nan(fill_value)$collect()
 }
@@ -1226,7 +1182,6 @@ DataFrame_fill_nan = function(fill_value) {
 #' df$fill_null(99)
 #'
 #' df$fill_null(pl$col("a")$mean())
-
 DataFrame_fill_null = function(fill_value) {
   self$lazy()$fill_null(fill_value)$collect()
 }
@@ -1244,7 +1199,6 @@ DataFrame_fill_null = function(fill_value) {
 #'
 #' # this is equivalent to:
 #' mtcars[3:6, ]
-
 DataFrame_slice = function(offset, length = NULL) {
   self$lazy()$slice(offset, length)$collect()
 }
@@ -1262,7 +1216,6 @@ DataFrame_slice = function(offset, length = NULL) {
 #' x = mtcars
 #' x[1, 2:3] = NA
 #' pl$DataFrame(x)$null_count()
-
 DataFrame_null_count = "use_extendr_wrapper"
 
 
@@ -1276,7 +1229,6 @@ DataFrame_null_count = "use_extendr_wrapper"
 #' @format function
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
-
 DataFrame_estimated_size = "use_extendr_wrapper"
 
 
@@ -1319,7 +1271,6 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #'
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
-
 DataFrame_join_asof = function(
     other,
     ...,
@@ -1374,7 +1325,6 @@ DataFrame_join_asof = function(
 #'   d = c(7, 8, 9)
 #' )
 #' df$melt(id_vars = "a", value_vars = c("b", "c", "d"))
-
 DataFrame_melt = function(
     id_vars = NULL,
     value_vars = NULL,
@@ -1431,7 +1381,6 @@ DataFrame_melt = function(
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean()
 #' )
-
 DataFrame_pivot = function(
     values,
     index,
@@ -1473,9 +1422,8 @@ DataFrame_pivot = function(
 #'
 #' df$rename(miles_per_gallon = "mpg", horsepower = "hp")
 #'
-#' replacements <- list(miles_per_gallon = "mpg", horsepower = "hp")
+#' replacements = list(miles_per_gallon = "mpg", horsepower = "hp")
 #' df$rename(replacements)
-
 DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
 }
@@ -1492,7 +1440,6 @@ DataFrame_rename = function(...) {
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$describe()
-
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 
@@ -1561,7 +1508,6 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$glimpse()
-
 DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # guard input
   if (!is_bool(return_as_string)) {
@@ -1632,7 +1578,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' df
 #'
 #' df$explode("numbers")
-
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
 }

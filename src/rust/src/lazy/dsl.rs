@@ -1090,7 +1090,12 @@ impl Expr {
     }
 
     fn list_unique(&self) -> Self {
-        self.0.clone().list().unique().with_fmt("list.unique").into()
+        self.0
+            .clone()
+            .list()
+            .unique()
+            .with_fmt("list.unique")
+            .into()
     }
 
     fn list_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
