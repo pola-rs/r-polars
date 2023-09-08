@@ -377,8 +377,7 @@ DataFrame_drop = function(columns) {
 
 
 #' @title Drop nulls (missing values)
-#' @description Drop all rows that contain nulls (which correspond to `NA` in
-#' a classic data.frame).
+#' @description Drop all rows that contain nulls (which correspond to `NA` in R).
 #' @keywords DataFrame
 #' @param subset A character vector with the names of the column(s) for which
 #' nulls are considered. If `NULL` (default), use all columns.
@@ -1213,8 +1212,8 @@ DataFrame_fill_nan = function(fill_value) {
 }
 
 #' @title Fill nulls
-#' @description Fill null values (which correspond to `NA` in a classic
-#' data.frame) using the specified value or strategy.
+#' @description Fill null values (which correspond to `NA` in R) using the
+#' specified value or strategy.
 #' @keywords DataFrame
 #' @param fill_value Value to fill nulls with.
 #' @return DataFrame
@@ -1253,7 +1252,7 @@ DataFrame_slice = function(offset, length = NULL) {
 
 #' @title Count null values
 #' @description Create a new DataFrame that shows the null (which correspond
-#' to `NA` in a classic data.frame) counts per column.
+#' to `NA` in R) counts per column.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @docType NULL

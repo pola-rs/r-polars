@@ -13,8 +13,8 @@ DataFrame_fill_null(fill_value)
 DataFrame
 }
 \description{
-Fill null values (which correspond to \code{NA} in a classic
-data.frame) using the specified value or strategy.
+Fill null values (which correspond to \code{NA} in R) using the
+specified value or strategy.
 }
 \examples{
 df = pl$DataFrame(

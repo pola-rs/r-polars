@@ -14,7 +14,7 @@ DataFrame
 }
 \description{
 Create a new DataFrame that shows the null (which correspond
-to \code{NA} in a classic data.frame) counts per column.
+to \code{NA} in R) counts per column.
 }
 \examples{
 x = mtcars

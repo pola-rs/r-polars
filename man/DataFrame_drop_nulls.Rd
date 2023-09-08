@@ -14,8 +14,7 @@ nulls are considered. If \code{NULL} (default), use all columns.}
 DataFrame
 }
 \description{
-Drop all rows that contain nulls (which correspond to \code{NA} in
-a classic data.frame).
+Drop all rows that contain nulls (which correspond to \code{NA} in R).
 }
 \examples{
 tmp = mtcars
