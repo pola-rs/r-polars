@@ -7,7 +7,7 @@ on:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   workflow_dispatch:
 
-name: Release
+name: Release_cross_compiled
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
