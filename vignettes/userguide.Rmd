@@ -470,7 +470,7 @@ grades$with_columns(
     # select all columns except the intermediate list
     pl$all()$exclude("all_grades"),
     # compute the rank by calling `arr$eval`
-    pl$col("all_grades")$arr$eval(rank_pct, parallel = TRUE)$alias("grades_rank")
+    pl$col("all_grades")$list$eval(rank_pct, parallel = TRUE)$alias("grades_rank")
 ))
 ```
 

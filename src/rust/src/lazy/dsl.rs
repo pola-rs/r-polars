@@ -1044,31 +1044,31 @@ impl Expr {
 
     //arr/list methods
 
-    fn arr_lengths(&self) -> Self {
+    fn list_lengths(&self) -> Self {
         self.0.clone().list().lengths().into()
     }
 
-    pub fn arr_contains(&self, other: &Expr) -> Expr {
+    pub fn list_contains(&self, other: &Expr) -> Expr {
         self.0.clone().list().contains(other.0.clone()).into()
     }
 
-    fn lst_max(&self) -> Self {
+    fn list_max(&self) -> Self {
         self.0.clone().list().max().into()
     }
 
-    fn lst_min(&self) -> Self {
+    fn list_min(&self) -> Self {
         self.0.clone().list().min().into()
     }
 
-    fn lst_sum(&self) -> Self {
-        self.0.clone().list().sum().with_fmt("arr.sum").into()
+    fn list_sum(&self) -> Self {
+        self.0.clone().list().sum().with_fmt("list.sum").into()
     }
 
-    fn lst_mean(&self) -> Self {
-        self.0.clone().list().mean().with_fmt("arr.mean").into()
+    fn list_mean(&self) -> Self {
+        self.0.clone().list().mean().with_fmt("list.mean").into()
     }
 
-    fn lst_sort(&self, descending: bool) -> Self {
+    fn list_sort(&self, descending: bool) -> Self {
         self.0
             .clone()
             .list()
@@ -1076,24 +1076,24 @@ impl Expr {
                 descending: descending,
                 ..Default::default()
             })
-            .with_fmt("arr.sort")
+            .with_fmt("list.sort")
             .into()
     }
 
-    fn lst_reverse(&self) -> Self {
+    fn list_reverse(&self) -> Self {
         self.0
             .clone()
             .list()
             .reverse()
-            .with_fmt("arr.reverse")
+            .with_fmt("list.reverse")
             .into()
     }
 
-    fn lst_unique(&self) -> Self {
-        self.0.clone().list().unique().with_fmt("arr.unique").into()
+    fn list_unique(&self) -> Self {
+        self.0.clone().list().unique().with_fmt("list.unique").into()
     }
 
-    fn lst_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
+    fn list_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1102,44 +1102,44 @@ impl Expr {
             .into())
     }
 
-    fn lst_get(&self, index: &Expr) -> Self {
+    fn list_get(&self, index: &Expr) -> Self {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn lst_join(&self, separator: &str) -> Self {
+    fn list_join(&self, separator: &str) -> Self {
         self.0.clone().list().join(separator).into()
     }
 
-    fn lst_arg_min(&self) -> Self {
+    fn list_arg_min(&self) -> Self {
         self.0.clone().list().arg_min().into()
     }
 
-    fn lst_arg_max(&self) -> Self {
+    fn list_arg_max(&self) -> Self {
         self.0.clone().list().arg_max().into()
     }
 
-    fn lst_diff(&self, n: f64, null_behavior: &str) -> List {
+    fn list_diff(&self, n: f64, null_behavior: &str) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(self.0.clone().list().diff(
                 try_f64_into_i64(n)?,
                 new_null_behavior(null_behavior)?,
             )))
         }()
-        .map_err(|err| format!("arr.diff: {}", err));
+        .map_err(|err| format!("list.diff: {}", err));
         r_result_list(expr_res)
     }
 
-    fn lst_shift(&self, periods: f64) -> List {
+    fn list_shift(&self, periods: f64) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(
                 self.0.clone().list().shift(try_f64_into_i64(periods)?),
             ))
         }()
-        .map_err(|err| format!("arr.shift: {}", err));
+        .map_err(|err| format!("list.shift: {}", err));
         r_result_list(expr_res)
     }
 
-    fn lst_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
+    fn list_slice(&self, offset: &Expr, length: Nullable<&Expr>) -> Self {
         let length = match null_to_opt(length) {
             Some(i) => i.0.clone(),
             None => dsl::lit(i64::MAX),
@@ -1147,12 +1147,17 @@ impl Expr {
         self.0.clone().list().slice(offset.0.clone(), length).into()
     }
 
-    fn lst_eval(&self, expr: &Expr, parallel: bool) -> Self {
+    fn list_eval(&self, expr: &Expr, parallel: bool) -> Self {
         use pl::*;
         self.0.clone().list().eval(expr.0.clone(), parallel).into()
     }
 
-    fn lst_to_struct(&self, width_strat: &str, name_gen: Nullable<Robj>, upper_bound: f64) -> List {
+    fn list_to_struct(
+        &self,
+        width_strat: &str,
+        name_gen: Nullable<Robj>,
+        upper_bound: f64,
+    ) -> List {
         use crate::rdatatype::new_width_strategy;
         use crate::utils::extendr_concurrent::ParRObj;
         use pl::NamedFrom;

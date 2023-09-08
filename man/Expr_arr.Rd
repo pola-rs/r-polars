@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arr}
 \alias{Expr_arr}
-\alias{arr_ns}
-\title{arr: list related methods}
+\title{arr: list related methods DEPRECATED}
 \usage{
 Expr_arr()
 }
@@ -11,21 +10,10 @@ Expr_arr()
 Expr
 }
 \description{
-Create an object namespace of all list related methods.
-See the individual method pages for full details
+Deprecated since 0.8.1, will be removed in 0.9.0.
+USE \verb{<Expr>$list$...} instead. Subnamespace is simply renamed.
 }
-\examples{
-df_with_list = pl$DataFrame(
-  group = c(1, 1, 2, 2, 3),
-  value = c(1:5)
-)$groupby(
-  "group",
-  maintain_order = TRUE
-)$agg(
-  pl$col("value") * 3L
-)
-df_with_list$with_columns(
-  pl$col("value")$arr$lengths()$alias("group_size")
-)
+\seealso{
+\code{\link[=Expr_list]{<Expr>$list$...}}
 }
 \keyword{Expr}
