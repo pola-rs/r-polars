@@ -1071,7 +1071,7 @@ DataFrame_to_struct = function(name = "") {
 #' df = df$to_struct()$to_frame()
 #' df
 #'
-#' df_s$unnest()
+#' df$unnest()
 
 DataFrame_unnest = function(names = NULL) {
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")

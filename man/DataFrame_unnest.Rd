@@ -22,6 +22,6 @@ df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
 df = df$to_struct()$to_frame()
 df
 
-df_s$unnest()
+df$unnest()
 }
 \keyword{DataFrame}
