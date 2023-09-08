@@ -31,8 +31,8 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-latest,  r: 'release', target: 'x86_64-apple-darwin'}
-          - {os: ubuntu-latest,  r: 'release', target: 'aarch64-apple-darwin'}
+          - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
+          - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
 
     steps:
       - uses: actions/checkout@v3
