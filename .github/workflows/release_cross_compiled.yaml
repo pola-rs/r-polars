@@ -69,8 +69,6 @@ jobs:
           rustup target add "$RUNNER_TARGET"
           cargo build --lib --profile release-optimized  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml
           mv ./src/rust/target/"$RUNNER_TARGET"/release-optimized/libr_polars.a ./inst/
-          echo "$RUNNER_TARGET" > .inst/target.txt
-          cat .inst/target.txt
           ls -l
           ls ./inst/ -l
         env:
@@ -79,24 +77,21 @@ jobs:
 
       - name: build source (with object file)
         run: |
-          runner_os <- readLines("./inst/target.txt")[1]
+          runner_target <- Sys.getenv("RUNNER_TARGET")
           fn = devtools::build(vignettes = FALSE)
-          if (R.version$os != "mingw32") {
-            newfn = paste0(substr(fn,1,regexpr("_",fn)),"_cross_",runner_os,"_",R.version$platform,".",tools::file_ext(fn))
-            file.rename(fn, newfn)
-          } else {
-            file.rename(fn,"../polars.zip") #R expects specific windows binary filename
-          }
+          newfn = paste0(substr(fn,1,regexpr("_",fn)),"cross_",runner_target,".tar.gz")
+          file.rename(fn, newfn)
         shell: Rscript {0}
+        env:
+          RUNNER_TARGET: "${{ matrix.config.target }}"
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
         with:
           files: |
-            ../polars_*
-            ../polars.zip
-
+            ../polars_cross_*
+           
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
         shell: Rscript {0}
