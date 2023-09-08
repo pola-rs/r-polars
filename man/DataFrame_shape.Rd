@@ -2,18 +2,18 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_shape}
 \alias{DataFrame_shape}
-\title{Shape of  DataFrame}
+\title{Dimensions of a DataFrame}
 \usage{
 DataFrame_shape()
 }
 \value{
-two length numeric vector of c(nrows,ncols)
+Numeric vector of length two with the number of rows and the number
+of columns.
 }
 \description{
 Get shape/dimensions of DataFrame
 }
 \examples{
-df = pl$DataFrame(iris)$shape
-
+pl$DataFrame(iris)$shape
 }
 \keyword{DataFrame}

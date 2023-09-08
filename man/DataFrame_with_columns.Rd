@@ -12,23 +12,19 @@ DataFrame_with_columns(...)
 DataFrame_with_column(expr)
 }
 \arguments{
-\item{...}{any expressions or string column name, or same wrapped in a list. If first and only
-element is a list, it is unwrap as a list of args.}
+\item{...}{Any expressions or string column name, or same wrapped in a list.
+If first and only element is a list, it is unwrapped as a list of args.}
 
 \item{expr}{a single expression or string}
 }
 \value{
-DataFrame
-
-DataFrame
+A DataFrame
 }
 \description{
-Add or modify columns with expressions
-}
-\details{
-Like dplyr \code{mutate()} as it keeps unmentioned columns unlike $select().
-
-with_column is derived from with_columns but takes only one expression argument
+Add columns or modify existing ones with expressions. This is
+the equivalent of \code{dplyr::mutate()} as it keeps unmentioned columns (unlike
+\verb{$select()}).
+\strong{\verb{$with_column()} function is deprecated, use \verb{$with_columns()} instead.}
 }
 \examples{
 pl$DataFrame(iris)$with_columns(

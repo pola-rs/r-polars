@@ -117,7 +117,7 @@ DataFrame
 #'   d = list(1:1, 1:2, 1:3, 1:4, 1:5)
 #' ) # directly from vectors
 #'
-#' # from a list of vectors or data.frame
+#' # from a list of vectors
 #' pl$DataFrame(list(
 #'   a = c(1, 2, 3, 4, 5),
 #'   b = 1:5,
@@ -125,6 +125,9 @@ DataFrame
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
 #'
+#' # from a data.frame
+#' pl$DataFrame(mtcars)
+
 pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select =TRUE) {
 
 
@@ -321,6 +324,15 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' @param offset positive integer offset for the start of the counter
 #' @return A new `DataFrame` object with a counter column in front
 #' @docType NULL
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # by default, the index starts at 0 (to mimic the behavior of Python Polars)
+#' df$with_row_count("idx")
+#'
+#' # but in R, we use a 1-index
+#' df$with_row_count("idx", offset = 1)
+
 DataFrame_with_row_count = function(name, offset = NULL) {
   .pr$DataFrame$with_row_count(self, name, offset) |> unwrap()
 }
@@ -341,50 +353,62 @@ DataFrame_with_row_count = function(name, offset = NULL) {
 #' # set + get values
 #' df$columns = letters[1:5] # <- is fine too
 #' df$columns
+
 DataFrame_columns = method_as_property(function() {
   .pr$DataFrame$columns(self)
 }, setter = TRUE)
+
 # define setter function
-DataFrame.property_setters$columns =
-  function(self, names) unwrap(.pr$DataFrame$set_column_names_mut(self, names))
+DataFrame.property_setters$columns = function(self, names) {
+  unwrap(.pr$DataFrame$set_column_names_mut(self, names))
+}
 
 
 #' @title Drop columns of a DataFrame
 #' @keywords DataFrame
-#' @param columns A character vector containing the names of the column(s) to
-#' remove from the DataFrame.
+#' @param columns A character vector with the names of the column(s) to remove
+#' from the DataFrame.
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
+
 DataFrame_drop = function(columns) {
   self$lazy()$drop(columns)$collect()
 }
 
 
-#' @title Drop nulls
-#' @description Drop all rows that contain null values.
+#' @title Drop nulls (missing values)
+#' @description Drop all rows that contain nulls (which correspond to `NA` in
+#' a classic data.frame).
 #' @keywords DataFrame
-#' @param subset string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.
+#' @param subset A character vector with the names of the column(s) for which
+#' nulls are considered. If `NULL` (default), use all columns.
 #'
 #' @return DataFrame
 #' @examples
 #' tmp = mtcars
 #' tmp[1:3, "mpg"] = NA
 #' tmp[4, "hp"] = NA
-#' pl$DataFrame(tmp)$drop_nulls()$height
-#' pl$DataFrame(tmp)$drop_nulls("mpg")$height
-#' pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height
+#' tmp = pl$DataFrame(tmp)
+#'
+#' # number of rows in `tmp` before dropping nulls
+#' tmp$height
+#'
+#' tmp$drop_nulls()$height
+#' tmp$drop_nulls("mpg")$height
+#' tmp$drop_nulls(c("mpg", "hp"))$height
+
 DataFrame_drop_nulls = function(subset = NULL) {
   self$lazy()$drop_nulls(subset)$collect()
 }
 
 
-#' @title DataFrame_unique
-#' @description Drop duplicate rows from this dataframe.
+#' @title Drop duplicated rows
+#'
 #' @keywords DataFrame
 #'
-#' @param subset string or vector of strings. Column name(s) to consider when
-#'  identifying duplicates. If set to NULL (default), use all columns.
-#' @param keep string. Which of the duplicate rows to keep:
+#' @param subset A character vector with the names of the column(s) to use to
+#'  identify duplicates. If `NULL` (default), use all columns.
+#' @param keep Which of the duplicate rows to keep:
 #' * "first": Keep first unique row.
 #' * "last": Keep last unique row.
 #' * "none": Don’t keep duplicate rows.
@@ -395,100 +419,106 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   x = as.numeric(c(1, 1:5)),
-#'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4))
+#'   x = sample(10, 100, rep = TRUE),
+#'   y = sample(10, 100, rep = TRUE)
 #' )
+#' df$height
+#'
 #' df$unique()$height
-#' df$unique(subset = c("x", "z"), keep = "last")$height
+#' df$unique(subset = "x")$height
+#'
+#' df$unique(keep = "last")
+#'
+#' # only keep unique rows
+#' df$unique(keep = "none")
+
 DataFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
   self$lazy()$unique(subset, keep, maintain_order)$collect()
 }
 
 
-#' Shape of  DataFrame
+#' Dimensions of a DataFrame
 #' @name DataFrame_shape
 #' @description Get shape/dimensions of DataFrame
 #'
-#' @return two length numeric vector of c(nrows,ncols)
-#' @keywords  DataFrame
+#' @return Numeric vector of length two with the number of rows and the number
+#' of columns.
+#' @keywords DataFrame
 #' @examples
-#' df = pl$DataFrame(iris)$shape
-#'
+#' pl$DataFrame(iris)$shape
+
 DataFrame_shape = method_as_property(function() {
   .pr$DataFrame$shape(self)
 })
 
 
 
-#' Height of DataFrame
+#' Number of rows of a DataFrame
 #' @name DataFrame_height
-#' @description Get height(nrow) of DataFrame
+#' @description Get the number of rows (height) of a DataFrame
 #'
-#' @return height as numeric
+#' @return The number of rows of the DataFrame
 #' @aliases height nrow
-#' @keywords  DataFrame
+#' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$height
-#'
+
 DataFrame_height = method_as_property(function() {
   .pr$DataFrame$shape(self)[1L]
 })
 
 
-
-#' Width of DataFrame
+#' Number of columns of a DataFrame
 #' @name DataFrame_width
-#' @description Get width(ncol) of DataFrame
+#' @description Get the number of columns (width) of a DataFrame
 #'
-#' @return width as numeric scalar
-#' @keywords  DataFrame
+#' @return The number of columns of a DataFrame
+#' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$width
-#'
+
 DataFrame_width = method_as_property(function() {
   .pr$DataFrame$shape(self)[2L]
 })
 
 
-
-
-#' DataFrame dtypes
+#' Data types information
 #' @name DataFrame_dtypes
-#' @description Get the data types of columns in DataFrame.
-#' Data types can also be found in column headers when printing the DataFrame.
+#' @description Get the data type of all columns. You can see all available
+#' types with `names(pl$dtypes)`. The data type of each column is also shown
+#' when printing the DataFrame.
 #'
-#' @return width as numeric scalar
-#' @keywords  DataFrame
+#' @return
+#' `$dtypes` returns an unnamed list with the data type of each column.
+#' `$schema` returns a named list with the column names and the data type of
+#' each column.
+#' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtypes
 #'
+#' pl$DataFrame(iris)$schema
+
 DataFrame_dtypes = method_as_property(function() {
   .pr$DataFrame$dtypes(self)
 })
 
-#' DataFrame dtype strings
+#' Data types information
 #' @name DataFrame_dtype_strings
-#' @description Get column types as strings.
+#' @description Get the data type of all columns as strings. You can see all
+#' available types with `names(pl$dtypes)`. The data type of each column is also
+#' shown when printing the DataFrame.
 #'
 #' @docType NULL
 #' @format NULL
-#' @return string vector
+#' @return A character vector with the data type of each column
 #' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$dtype_strings()
+
 DataFrame_dtype_strings = "use_extendr_wrapper"
 
-#' DataFrame dtypes
-#' @name DataFrame_dtypes
-#' @description Get dtypes of columns in DataFrame.
-#' Dtypes can also be found in column headers when printing the DataFrame.
-#'
-#' @return width as numeric scalar
-#' @keywords  DataFrame
-#' @examples
-#' pl$DataFrame(iris)$schema
-#'
+#' @rdname DataFrame_dtypes
+
 DataFrame_schema = method_as_property(function() {
   .pr$DataFrame$schema(self)
 })
@@ -537,7 +567,7 @@ DataFrameCompareToOtherDF = function(self, other, op) {
 #' @keywords  DataFrame LazyFrame_new
 #' @examples
 #' pl$DataFrame(iris)$lazy()
-#'
+
 DataFrame_lazy = "use_extendr_wrapper"
 
 #' Clone a DataFrame
@@ -554,53 +584,66 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' df3 = df1
 #' pl$mem_address(df1) != pl$mem_address(df2)
 #' pl$mem_address(df1) == pl$mem_address(df3)
-#'
+
 DataFrame_clone = function() {
   .pr$DataFrame$clone_see_me_macro(self)
 }
 
 #' Get columns (as Series)
 #' @name DataFrame_get_columns
-#' @description get columns as list of series
+#' @description Extract all DataFrame columns as a list of Polars series.
 #'
-#' @return list of series
+#' @return A list of series
 #' @keywords  DataFrame
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' df = pl$DataFrame(iris[1, ])
+#' df = pl$DataFrame(iris[1:2, ])
 #' df$get_columns()
 DataFrame_get_columns = "use_extendr_wrapper"
 
-#' Get Column (as one Series)
+#' Get column (as one Series)
 #' @name DataFrame_get_column
-#' @description get one column by name as series
+#' @description Extract a DataFrame column as a Polars series.
 #'
-#' @param name name of column to extract as Series
+#' @param name Name of the column to extract.
 #'
 #' @return Series
 #' @aliases DataFrame_get_column
 #' @keywords  DataFrame
 #' @examples
-#' df = pl$DataFrame(iris[1, ])
+#' df = pl$DataFrame(iris[1:2, ])
 #' df$get_column("Species")
+
 DataFrame_get_column = function(name) {
   unwrap(.pr$DataFrame$get_column(self, name), "in $get_column():")
 }
 
-#' Get Series by idx, if there
-#'
-#' @param idx numeric default 0, zero-index of what column to return as Series
+#' Get column by index
 #'
 #' @name DataFrame_to_series
-#' @description get one column by idx as series from DataFrame.
-#' Unlike get_column this method will not fail if no series found at idx but
-#' return a NULL, idx is zero idx.
+#' @description Extract a DataFrame column (by index) as a Polars series. Unlike
+#' `get_column()`, this method will not fail but will return a `NULL` if the
+#' index doesn't exist in the DataFrame. Keep in mind that Polars is 0-indexed
+#' so "0" is the first column.
+#'
+#' @param idx Index of the column to return as Series. Defaults to 0, which is
+#' the first column.
 #'
 #' @return Series or NULL
 #' @keywords  DataFrame
 #' @examples
-#' pl$DataFrame(a = 1:4)$to_series()
+#' df = pl$DataFrame(iris[1:10, ])
+#'
+#' # default is to extract the first column
+#' df$to_series()
+#'
+#' # Polars is 0-indexed, so we use idx = 1 to extract the *2nd* column
+#' df$to_series(idx = 1)
+#'
+#' # doesn't error if the column isn't there
+#' df$to_series(idx = 8)
+
 DataFrame_to_series = function(idx = 0) {
   if (!is.numeric(idx) || isTRUE(idx < 0)) {
     pstop(err = "idx must be non-negative numeric")
@@ -608,7 +651,7 @@ DataFrame_to_series = function(idx = 0) {
   .pr$DataFrame$select_at_idx(self, idx)$ok
 }
 
-#' DataFrame Sort
+#' Sort a DataFrame
 #' @inherit LazyFrame_sort details description params
 #' @return DataFrame
 #' @keywords  DataFrame
@@ -623,6 +666,7 @@ DataFrame_to_series = function(idx = 0) {
 #' df$sort(c("cyl", "mpg"), descending = TRUE)
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))
 #' df$sort(pl$col("cyl"), pl$col("mpg"))
+
 DataFrame_sort = function(
     by,
     ...,
@@ -638,7 +682,7 @@ DataFrame_sort = function(
 
 #' Select and modify columns of a DataFrame
 #' @name DataFrame_select
-#' @description Related to dplyr `mutate()`. However, it discards unmentioned
+#' @description Similar to `dplyr::mutate()`. However, it discards unmentioned
 #' columns (like `.()` in `data.table`).
 #'
 #' @param ... Columns to keep. Those can be expressions (e.g `pl$col("a")`),
@@ -654,6 +698,7 @@ DataFrame_sort = function(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
+
 DataFrame_select = function(...) {
   .pr$DataFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
@@ -671,58 +716,84 @@ DataFrame_select = function(...) {
 #' x = dat$drop_in_place("Species")
 #' x
 #' dat$columns
+
 DataFrame_drop_in_place = function(name) {
   .pr$DataFrame$drop_in_place(self, name)
 }
 
-#' Drop in place
+#' Compare two DataFrames
 #' @name DataFrame_frame_equal
-#' @description Check if DataFrame is equal to other.
+#' @description Check if two DataFrames are equal.
 #'
 #' @param other DataFrame to compare with.
-#' @return bool
-#' @keywords  DataFrame
+#' @return A boolean.
+#' @keywords DataFrame
 #' @examples
 #' dat1 = pl$DataFrame(iris)
 #' dat2 = pl$DataFrame(iris)
 #' dat3 = pl$DataFrame(mtcars)
 #' dat1$frame_equal(dat2)
 #' dat1$frame_equal(dat3)
+
 DataFrame_frame_equal = function(other) {
   .pr$DataFrame$frame_equal(self, other)
 }
 
-#' @title Shift
-#' @description Shift the values by a given period.
+#' Shift a DataFrame
+#'
+#' @description Shift the values by a given period. If the period (`n`) is positive,
+#' then `n` rows will be inserted at the top of the DataFrame and the last `n`
+#' rows will be discarded. Vice-versa if the period is negative. In the end,
+#' the total number of rows of the DataFrame doesn't change.
+#'
 #' @keywords DataFrame
-#' @param periods integer Number of periods to shift (may be negative).
+#' @param periods Number of periods to shift (can be negative).
 #' @return DataFrame
-#' @examples pl$DataFrame(mtcars)$shift(2)
+#' @examples
+#' pl$DataFrame(mtcars)$shift(2)
+#'
+#' pl$DataFrame(mtcars)$shift(-2)
+
 DataFrame_shift = function(periods = 1) {
   self$lazy()$shift(periods)$collect()
 }
 
 #' @title Shift and fill
-#' @description Shift the values by a given period and fill the resulting null values.
+#'
+#' @description Shift the values by a given period and fill the resulting null
+#' values. See the docs of `$shift()` for more details on shifting.
 #' @keywords DataFrame
-#' @param fill_value Fill values with the result of this expression.
-#' @param periods Integer indicating the number of periods to shift (may be
-#' negative).
+#'
+#' @param fill_value Fill new `NULL` values with this value. Must of length 1.
+#' A logical value will be converted to numeric.
+#' @param periods Number of periods to shift (can be negative).
 #' @return DataFrame
-#' @examples pl$DataFrame(mtcars)$shift_and_fill(0, 2)
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # insert two rows filled with 0 at the top of the DataFrame
+#' df$shift_and_fill(0, 2)
+#'
+#' # automatic conversion of logical value to numeric
+#' df$shift_and_fill(TRUE, 2)
+
 DataFrame_shift_and_fill = function(fill_value, periods = 1) {
   self$lazy()$shift_and_fill(fill_value, periods)$collect()
 }
 
-#' @title Modify/append column(s)
-#' @description Add or modify columns with expressions
+#' Modify/append column(s)
+#'
+#' Add columns or modify existing ones with expressions. This is
+#' the equivalent of `dplyr::mutate()` as it keeps unmentioned columns (unlike
+#' `$select()`).
+#' **`$with_column()` function is deprecated, use `$with_columns()` instead.**
+#'
 #' @name DataFrame_with_columns
 #' @aliases with_columns
-#' @param ... any expressions or string column name, or same wrapped in a list. If first and only
-#' element is a list, it is unwrap as a list of args.
-#' @keywords  DataFrame
-#' @return DataFrame
-#' @details   Like dplyr `mutate()` as it keeps unmentioned columns unlike $select().
+#' @param ... Any expressions or string column name, or same wrapped in a list.
+#' If first and only element is a list, it is unwrapped as a list of args.
+#' @keywords DataFrame
+#' @return A DataFrame
 #' @examples
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
@@ -742,18 +813,16 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
+
 DataFrame_with_columns = function(...) {
   .pr$DataFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
 }
 
-#' modify/append one column
 #' @rdname DataFrame_with_columns
 #' @aliases with_column
 #' @param expr a single expression or string
-#' @keywords  DataFrame
-#' @return DataFrame
-#' @details with_column is derived from with_columns but takes only one expression argument
+
 DataFrame_with_column = function(expr) {
   warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
   self$with_columns(expr)

@@ -4,18 +4,17 @@
 \alias{DataFrame_height}
 \alias{height}
 \alias{nrow}
-\title{Height of DataFrame}
+\title{Number of rows of a DataFrame}
 \usage{
 DataFrame_height()
 }
 \value{
-height as numeric
+The number of rows of the DataFrame
 }
 \description{
-Get height(nrow) of DataFrame
+Get the number of rows (height) of a DataFrame
 }
 \examples{
 pl$DataFrame(iris)$height
-
 }
 \keyword{DataFrame}

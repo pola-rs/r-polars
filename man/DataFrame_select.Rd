@@ -18,7 +18,7 @@ DataFrame
 DataFrame
 }
 \description{
-Related to dplyr \code{mutate()}. However, it discards unmentioned
+Similar to \code{dplyr::mutate()}. However, it discards unmentioned
 columns (like \code{.()} in \code{data.table}).
 }
 \examples{
