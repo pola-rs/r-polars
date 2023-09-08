@@ -10,7 +10,7 @@ DataFrame_rename(...)
 \item{...}{One of the following:
 \itemize{
 \item params like \code{new_name = "old_name"} to rename selected variables.
-\item as above but, but params wrapped in a list
+\item as above but with params wrapped in a list
 }}
 }
 \value{
@@ -20,7 +20,11 @@ DataFrame
 Rename columns of a DataFrame
 }
 \examples{
-pl$DataFrame(mtcars)$
-  rename(miles_per_gallon = "mpg", horsepower = "hp")
+df = pl$DataFrame(mtcars)
+
+df$rename(miles_per_gallon = "mpg", horsepower = "hp")
+
+replacements <- list(miles_per_gallon = "mpg", horsepower = "hp")
+df$rename(replacements)
 }
 \keyword{DataFrame}

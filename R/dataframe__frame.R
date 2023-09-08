@@ -1174,7 +1174,8 @@ DataFrame_std = function(ddof = 1) {
 }
 
 #' @title Quantile
-#' @description Aggregate the columns in the DataFrame to their quantile value.
+#' @description Aggregate the columns in the DataFrame to a unique quantile
+#' value. Use `$describe()` to specify several quantiles.
 #' @keywords DataFrame
 #' @param quantile Numeric of length 1 between 0 and 1.
 #' @param interpolation Interpolation method: "nearest", "higher", "lower",
@@ -1285,9 +1286,9 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #' @inherit LazyFrame_join_asof
 #' @param other DataFrame or LazyFrame
 #' @keywords DataFrame
-#' @return new joined DataFrame
+#' @return New joined DataFrame
 #' @examples
-#' # create two DataFrame to join asof
+#' # create two DataFrames to join asof
 #' gdp = pl$DataFrame(
 #'   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
 #'   gdp = c(4321, 4164, 4411, 4566, 4696),
@@ -1319,6 +1320,7 @@ DataFrame_estimated_size = "use_extendr_wrapper"
 #'
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)
+
 DataFrame_join_asof = function(
     other,
     ...,
@@ -1369,9 +1371,11 @@ DataFrame_join_asof = function(
 #' df = pl$DataFrame(
 #'   a = c("x", "y", "z"),
 #'   b = c(1, 3, 5),
-#'   c = c(2, 4, 6)
+#'   c = c(2, 4, 6),
+#'   d = c(7, 8, 9)
 #' )
-#' df$melt(id_vars = "a", value_vars = c("b", "c"))
+#' df$melt(id_vars = "a", value_vars = c("b", "c", "d"))
+
 DataFrame_melt = function(
     id_vars = NULL,
     value_vars = NULL,
@@ -1385,17 +1389,19 @@ DataFrame_melt = function(
 
 
 
-#' Create a spreadsheet-style pivot table as a DataFrame.
-#' @param values Column values to aggregate. Can be multiple columns if the `columns`
-#'             arguments contains multiple columns as well.
+#' Pivot data from long to wide
+#' @param values Column values to aggregate. Can be multiple columns if the
+#' `columns` arguments contains multiple columns as well.
 #' @param index  One or multiple keys to group by.
-#' @param columns  Name of the column(s) whose values will be used as the header of the output
-#'            DataFrame.
-#' @param aggregate_function
-#'             String naming Expr to aggregate with, or an Expr e.g. `pl$element()$sum()`,
-#'             examples of strings:'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'
-#' @param maintain_order  Sort the grouped keys so that the output order is predictable.
-#' @param sort_columns  Sort the transposed columns by name. Default is by order of discovery.
+#' @param columns  Name of the column(s) whose values will be used as the header
+#' of the output DataFrame.
+#' @param aggregate_function One of:
+#'   - string indicating the expressions to aggregate with, such as 'first',
+#'     'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
+#'   - an Expr e.g. `pl$element()$sum()`
+#' @inheritParams DataFrame_unique
+#' @param sort_columns Sort the transposed columns by name. Default is by order
+#' of discovery.
 #' @param separator Used as separator/delimiter in generated column names.
 #'
 #' @return DataFrame
@@ -1406,10 +1412,11 @@ DataFrame_melt = function(
 #'   bar = c("A", "B", "C", "A", "B", "C"),
 #'   baz = c(1, 2, 3, 4, 5, 6)
 #' )
-#' df$pivot(
-#'   values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
-#' )
+#' df
 #'
+#' df$pivot(
+#'   values = "baz", index = "foo", columns = "bar"
+#' )
 #'
 #' # Run an expression as aggregation function
 #' df = pl$DataFrame(
@@ -1417,12 +1424,15 @@ DataFrame_melt = function(
 #'   col2 = c("x", "x", "x", "x", "y", "y"),
 #'   col3 = c(6, 7, 3, 2, 5, 7)
 #' )
+#' df
+#'
 #' df$pivot(
 #'   index = "col1",
 #'   columns = "col2",
 #'   values = "col3",
 #'   aggregate_function = pl$element()$tanh()$mean()
 #' )
+
 DataFrame_pivot = function(
     values,
     index,
@@ -1457,22 +1467,33 @@ DataFrame_pivot = function(
 #' @keywords DataFrame
 #' @param ... One of the following:
 #'  - params like `new_name = "old_name"` to rename selected variables.
-#'  - as above but, but params wrapped in a list
+#'  - as above but with params wrapped in a list
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(mtcars)$
-#'   rename(miles_per_gallon = "mpg", horsepower = "hp")
+#' df = pl$DataFrame(mtcars)
+#'
+#' df$rename(miles_per_gallon = "mpg", horsepower = "hp")
+#'
+#' replacements <- list(miles_per_gallon = "mpg", horsepower = "hp")
+#' df$rename(replacements)
+
 DataFrame_rename = function(...) {
   self$lazy()$rename(...)$collect()
 }
 
 #' @title Summary statistics for a DataFrame
+#'
+#' @description This returns the total number of rows, the number of missing
+#' values, the mean, standard deviation, min, max, median and the percentiles
+#' specified in the argument `percentiles`.
+#'
 #' @param percentiles One or more percentiles to include in the summary statistics.
 #' All values must be in the range `[0; 1]`.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$describe()
+
 DataFrame_describe = function(percentiles = c(.25, .75)) {
   perc = percentiles
 
@@ -1536,10 +1557,12 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
 #' @title Glimpse values in a DataFrame
 #' @keywords DataFrame
 #' @param ... not used
-#' @param return_as_string Boolean (default `FALSE`). If `TRUE`, return the output as a string.
+#' @param return_as_string Boolean (default `FALSE`). If `TRUE`, return the
+#' output as a string.
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$glimpse()
+
 DataFrame_glimpse = function(..., return_as_string = FALSE) {
   # guard input
   if (!is_bool(return_as_string)) {
@@ -1556,7 +1579,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
   max_col_name_trunc = 50
   parse_column_ = \(col_name, dtype) {
     dtype_str = dtype_str_repr(dtype) |> unwrap_or(paste0("??", str_string(dtype)))
-    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0("<", dtype_str, ">")
+    if (inherits(dtype, "RPolarsDataType")) dtype_str <- paste0(" <", dtype_str, ">")
     val = self$select(pl$col(col_name)$slice(0, max_num_value))$to_list()[[1]]
     val_str = paste(val, collapse = ", ")
     if (nchar(col_name) > max_col_name_trunc) {
@@ -1610,6 +1633,7 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' df
 #'
 #' df$explode("numbers")
+
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
 }

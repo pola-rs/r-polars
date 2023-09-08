@@ -16,7 +16,8 @@ DataFrame_quantile(quantile, interpolation = "nearest")
 DataFrame
 }
 \description{
-Aggregate the columns in the DataFrame to their quantile value.
+Aggregate the columns in the DataFrame to a unique quantile
+value. Use \verb{$describe()} to specify several quantiles.
 }
 \examples{
 pl$DataFrame(mtcars)$quantile(.4)
