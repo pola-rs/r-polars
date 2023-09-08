@@ -65,6 +65,7 @@ jobs:
       - name: cross compile
         run: |
           pwd
+          make requirements-rs
           rustup target add "$RUNNER_TARGET"
           rustup default "$RUNNER_TARGET"
           cargo build --lib --profile release-optimized --manifest-path=./src/rust/Cargo.toml
