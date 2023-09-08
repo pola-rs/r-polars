@@ -7,9 +7,10 @@
 DataFrame_quantile(quantile, interpolation = "nearest")
 }
 \arguments{
-\item{quantile}{numeric Quantile between 0.0 and 1.0.}
+\item{quantile}{Numeric of length 1 between 0 and 1.}
 
-\item{interpolation}{string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".}
+\item{interpolation}{Interpolation method: "nearest", "higher", "lower",
+"midpoint", or "linear".}
 }
 \value{
 DataFrame

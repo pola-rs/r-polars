@@ -833,58 +833,74 @@ DataFrame_with_column = function(expr) {
 #' Limit a DataFrame
 #' @name DataFrame_limit
 #' @description Take some maximum number of rows.
-#' @param n Positive numeric or integer number not larger than 2^32
+#' @param n Positive number not larger than 2^32.
 #'
-#' @details Any number will converted to u32.
+#' @details Any number will converted to u32. Negative raises error.
 #' @keywords  DataFrame
 #' @return DataFrame
 #' @examples
 #' pl$DataFrame(iris)$limit(6)
-#'
+
 DataFrame_limit = function(n) {
   self$lazy()$limit(n)$collect()
 }
 
 #' Head of a DataFrame
 #' @name DataFrame_head
-#' @description Get the first n rows of the query.
-#' @param n positive numeric or integer number not larger than 2^32
+#' @description Get the first `n` rows of the query.
+#' @param n Positive number not larger than 2^32.
 #'
-#' @details any number will converted to u32. Negative raises error
+#' @inherit DataFrame_limit details
 #' @keywords  DataFrame
 #' @return DataFrame
+
 DataFrame_head = function(n) {
   self$lazy()$head(n)$collect()
 }
 
 #' Tail a DataFrame
 #' @name DataFrame_tail
-#' @description Get the last n rows.
-#' @param n positive numeric of integer number not larger than 2^32
+#' @description Get the last `n` rows.
+#' @param n Positive number not larger than 2^32.
 #'
-#' @details any number will converted to u32. Negative raises error
+#' @inherit DataFrame_limit details
 #' @keywords  DataFrame
 #' @return DataFrame
+
 DataFrame_tail = function(n) {
   self$lazy()$tail(n)$collect()
 }
 
 
-#' filter DataFrame
-#' @aliases DataFrame_filter
-#' @description DataFrame$filter(bool_expr)
-#'
-#' @param bool_expr Polars expression which will evaluate to a bool pl$Series
-#' @keywords DataFrame
-#' @return filtered DataFrame
-#' @examples pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+#' Filter rows of a DataFrame
 #' @name DataFrame_filter
+#'
+#' @description This is equivalent to `dplyr::filter()`. Note that rows where
+#' the condition returns `NA` are dropped, unlike base subsetting with `[`.
+#'
+#' @param bool_expr Polars expression which will evaluate to a boolean.
+#' @keywords DataFrame
+#' @return A DataFrame with only the rows where the conditions are `TRUE`.
+#' @examples
+#' df = pl$DataFrame(iris)
+#'
+#' df$filter(pl$col("Sepal.Length") > 5)
+#'
+#' # rows where condition is NA are dropped
+#' iris2 = iris
+#' iris2[c(1, 3, 5), "Species"] = NA
+#' df = pl$DataFrame(iris2)
+#'
+#' df$filter(pl$col("Species") == "setosa")
+
 DataFrame_filter = function(bool_expr) {
   .pr$DataFrame$lazy(self)$filter(bool_expr)$collect()
 }
 
-#' groupby a DataFrame
-#' @description create GroupBy from DataFrame
+#' Group a DataFrame
+#' @description This doesn't modify the data but only stores information about
+#' the group structure. This structure can then be used by several functions
+#' (`$agg()`, `$filter()`, etc.).
 #' @inherit LazyFrame_groupby
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
@@ -893,30 +909,30 @@ DataFrame_filter = function(bool_expr) {
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
 #' )$groupby("foo", maintain_order = TRUE)
-#' print(gb)
+#'
+#' gb
 #'
 #' gb$agg(
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
+
 DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
 
-
-
-
 #' Return Polars DataFrame as R data.frame
 #'
-#' @param ... any args pased to as.data.frame()
+#' @param ... Any args pased to `as.data.frame()`.
 #'
 #' @return An R data.frame
 #' @keywords DataFrame
 #' @examples
 #' df = pl$DataFrame(iris[1:3, ])
 #' df$to_data_frame()
+
 DataFrame_to_data_frame = function(...) {
   # do not unnest structs and mark with I to also preserve categoricals as is
   l = lapply(self$to_list(unnest_structs = FALSE), I)
@@ -942,8 +958,7 @@ DataFrame_as_data_frame = DataFrame_to_data_frame
 # DataFrame_to_data_frame = DataFrame_to_data_frame
 
 #' @rdname DataFrame_to_data_frame
-#' @param x DataFrame
-#' @param ... any params passed to as.data.frame
+#' @param x A DataFrame
 #'
 #' @return data.frame
 #' @export
@@ -951,17 +966,18 @@ as.data.frame.DataFrame = function(x, ...) {
   x$to_data_frame(...)
 }
 
-#' return polars DataFrame as R lit of vectors
+#' Return Polars DataFrame as a list of vectors
 #'
-#' @param unnest_structs bool default true, as calling $unnest() on any struct column
+#' @param unnest_structs Boolean. If `TRUE` (default), then `$unnest()` is applied
+#' on any struct column.
 #'
 #' @name to_list
 #'
 #' @details
-#' This implementation for simplicity reasons relies on unnesting all structs before
-#' exporting to R. unnest_structs = FALSE, the previous struct columns will be re-
-#' nested. A struct in a R is a lists of lists, where each row is a list of values.
-#' Such a structure is not very typical or efficient in R.
+#' For simplicity reasons, this implementation relies on unnesting all structs
+#' before exporting to R. If `unnest_structs = FALSE`, then `struct` columns
+#' will be returned as nested lists, where each row is a list of values. Such a
+#' structure is not very typical or efficient in R.
 #'
 #' @return R list of vectors
 #' @keywords DataFrame
@@ -975,19 +991,23 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
   }
 }
 
-
-
-#' join DataFrame with other DataFrame
+#' Join DataFrames
 #'
+#' This function can do both mutating joins (adding columns based on matching
+#' observations, for example with `how = "left"`) and filtering joins (keeping
+#' observations based on matching observations, for example with `how = "inner"`).
 #'
 #' @param other DataFrame
-#' @param on named columns as char vector of named columns, or list of expressions and/or strings.
-#' @param left_on names of columns in self LazyFrame, order should match. Type, see on param.
-#' @param right_on names of columns in other LazyFrame, order should match. Type, see on param.
-#' @param how a string selecting one of the following methods: inner, left, outer, semi, anti, cross
-#' @param suffix name to added right table
-#' @param allow_parallel bool
-#' @param force_parallel bool
+#' @param on Either a vector of column names or a list of expressions and/or
+#' strings. Use `left_on` and `right_on` if the column names to match on are
+#' different between the two DataFrames.
+#' @param left_on,right_on Same as `on` but only for the left or the right
+#' DataFrame. They must have the same length.
+#' @param how One of the following methods: "inner", "left", "outer", "semi",
+#' "anti", "cross".
+#' @param suffix Suffix to add to duplicated column names.
+#' @param allow_parallel Boolean.
+#' @param force_parallel Boolean.
 #' @return DataFrame
 #' @keywords DataFrame
 #' @examples
@@ -1000,7 +1020,7 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' df1 = pl$DataFrame(x = letters[1:3])
 #' df2 = pl$DataFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
-#'
+
 DataFrame_join = function(
     other, # : LazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -1017,9 +1037,9 @@ DataFrame_join = function(
   )$collect()
 }
 
-#' to_struct
-#' @param name name of new Series
-#' @return to_struct() returns a Series
+#' Convert DataFrame to a Series of type "struct"
+#' @param name Name given to the new Series
+#' @return A Series of type "struct"
 #' @aliases to_struct
 #' @keywords DataFrame
 #' @examples
@@ -1027,9 +1047,14 @@ DataFrame_join = function(
 #' df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
 #' s = df$to_struct()
 #' s
-#' s$to_r() # to r list
-#' df_s = s$to_frame() # place series in a new DataFrame
-#' df_s$unnest() # back to starting df
+#'
+#' # convert to an R list
+#' s$to_r()
+#'
+#' # Convert back to a DataFrame
+#' df_s = s$to_frame()
+#' df_s
+
 DataFrame_to_struct = function(name = "") {
   .pr$DataFrame$to_struct(self, name)
 }
@@ -1038,29 +1063,37 @@ DataFrame_to_struct = function(name = "") {
 ## TODO contribute polars add r-polars defaults for to_struct and unnest
 #' Unnest a DataFrame struct columns.
 #' @keywords DataFrame
-#' @param names names of struct columns to unnest, default NULL unnest any struct column
-#' @return $unnest() returns a DataFrame with all column including any that has been unnested
+#' @param names Names of the struct columns to unnest. If `NULL` (default), then
+#' all "struct" columns are unnested.
+#' @return A DataFrame where all "struct" columns are unnested. Non-struct
+#' columns are not modified.
+#' @examples
+#' df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
+#' df = df$to_struct()$to_frame()
+#' df
+#'
+#' df_s$unnest()
+
 DataFrame_unnest = function(names = NULL) {
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
 
 
 
-
-#' @title First
-#' @description Get the first row of the DataFrame.
+#' @title Get the first row of the DataFrame.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied filter.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$first()
+
 DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
 
-#' @title Last
-#' @description Get the last row of the DataFrame.
+#' @title Get the last row of the DataFrame.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied filter.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$last()
+
 DataFrame_last = function() {
   self$lazy()$last()$collect()
 }
@@ -1068,8 +1101,9 @@ DataFrame_last = function() {
 #' @title Max
 #' @description Aggregate the columns in the DataFrame to their maximum value.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied aggregation.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$max()
+
 DataFrame_max = function() {
   self$lazy()$max()$collect()
 }
@@ -1077,8 +1111,9 @@ DataFrame_max = function() {
 #' @title Mean
 #' @description Aggregate the columns in the DataFrame to their mean value.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied aggregation.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$mean()
+
 DataFrame_mean = function() {
   self$lazy()$mean()$collect()
 }
@@ -1086,8 +1121,9 @@ DataFrame_mean = function() {
 #' @title Median
 #' @description Aggregate the columns in the DataFrame to their median value.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied aggregation.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$median()
+
 DataFrame_median = function() {
   self$lazy()$median()$collect()
 }
@@ -1095,8 +1131,9 @@ DataFrame_median = function() {
 #' @title Min
 #' @description Aggregate the columns in the DataFrame to their minimum value.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied aggregation.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$min()
+
 DataFrame_min = function() {
   self$lazy()$min()$collect()
 }
@@ -1104,8 +1141,9 @@ DataFrame_min = function() {
 #' @title Sum
 #' @description Aggregate the columns of this DataFrame to their sum values.
 #' @keywords DataFrame
-#' @return A new `DataFrame` object with applied aggregation.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$sum()
+
 DataFrame_sum = function() {
   self$lazy()$sum()$collect()
 }
@@ -1113,19 +1151,24 @@ DataFrame_sum = function() {
 #' @title Var
 #' @description Aggregate the columns of this DataFrame to their variance values.
 #' @keywords DataFrame
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
-#' @return A new `DataFrame` object with applied aggregation.
+#' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
+#' N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$var()
+
 DataFrame_var = function(ddof = 1) {
   self$lazy()$var(ddof)$collect()
 }
 
 #' @title Std
-#' @description Aggregate the columns of this DataFrame to their standard deviation values.
+#' @description Aggregate the columns of this DataFrame to their standard
+#' deviation values.
 #' @keywords DataFrame
-#' @param ddof integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.
-#' @return A new `DataFrame` object with applied aggregation.
+#' @param ddof Delta Degrees of Freedom: the divisor used in the calculation is
+#' N - ddof, where N represents the number of elements. By default ddof is 1.
+#' @return A DataFrame with one row.
 #' @examples pl$DataFrame(mtcars)$std()
+
 DataFrame_std = function(ddof = 1) {
   self$lazy()$std(ddof)$collect()
 }
@@ -1133,27 +1176,29 @@ DataFrame_std = function(ddof = 1) {
 #' @title Quantile
 #' @description Aggregate the columns in the DataFrame to their quantile value.
 #' @keywords DataFrame
-#' @param quantile numeric Quantile between 0.0 and 1.0.
-#' @param interpolation string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".
+#' @param quantile Numeric of length 1 between 0 and 1.
+#' @param interpolation Interpolation method: "nearest", "higher", "lower",
+#' "midpoint", or "linear".
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$quantile(.4)
+
 DataFrame_quantile = function(quantile, interpolation = "nearest") {
   self$lazy()$quantile(quantile, interpolation)$collect()
 }
 
 #' @title Reverse
-#' @description Reverse the DataFrame.
-#' @keywords LazyFrame
+#' @description Reverse the DataFrame (the last row becomes the first one, etc.).
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$reverse()
+
 DataFrame_reverse = function() {
   self$lazy()$reverse()$collect()
 }
 
-#' @title Fill NaN
-#' @description Fill floating point NaN values by an Expression evaluation.
+#' @title Fill `NaN`
+#' @description Fill `NaN` values by an Expression evaluation.
 #' @keywords DataFrame
-#' @param fill_value Value to fill NaN with.
+#' @param fill_value Value to fill `NaN` with.
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
@@ -1161,40 +1206,53 @@ DataFrame_reverse = function() {
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)
+
 DataFrame_fill_nan = function(fill_value) {
   self$lazy()$fill_nan(fill_value)$collect()
 }
 
-#' @title Fill null
-#' @description Fill null values using the specified value or strategy.
+#' @title Fill nulls
+#' @description Fill null values (which correspond to `NA` in a classic
+#' data.frame) using the specified value or strategy.
 #' @keywords DataFrame
-#' @param fill_value Value to fill `NA` with.
+#' @param fill_value Value to fill nulls with.
 #' @return DataFrame
 #' @examples
-#' pl$DataFrame(
+#' df = pl$DataFrame(
 #'   a = c(1.5, 2, NA, 4),
 #'   b = c(1.5, NA, NA, 4)
-#' )$fill_null(99)
+#' )
+#'
+#' df$fill_null(99)
+#'
+#' df$fill_null(pl$col("a")$mean())
+
 DataFrame_fill_null = function(fill_value) {
   self$lazy()$fill_null(fill_value)$collect()
 }
 
 #' @title Slice
-#' @description Get a slice of this DataFrame.
-#' @keywords LazyFrame
+#' @description Get a slice of the DataFrame.
 #' @return DataFrame
-#' @param offset integer
-#' @param length integer or NULL
+#' @param offset Start index, can be a negative value. This is 0-indexed, so
+#' `offset = 1` doesn't include the first row.
+#' @param length Length of the slice. If `NULL` (default), all rows starting at
+#' the offset will be selected.
 #' @examples
+#' # skip the first 2 rows and take the 4 following rows
 #' pl$DataFrame(mtcars)$slice(2, 4)
-#' mtcars[2:6, ]
+#'
+#' # this is equivalent to:
+#' mtcars[3:6, ]
+
 DataFrame_slice = function(offset, length = NULL) {
   self$lazy()$slice(offset, length)$collect()
 }
 
 
-#' @title Null count
-#' @description Create a new DataFrame that shows the null counts per column.
+#' @title Count null values
+#' @description Create a new DataFrame that shows the null (which correspond
+#' to `NA` in a classic data.frame) counts per column.
 #' @keywords DataFrame
 #' @return DataFrame
 #' @docType NULL
@@ -1204,18 +1262,21 @@ DataFrame_slice = function(offset, length = NULL) {
 #' x = mtcars
 #' x[1, 2:3] = NA
 #' pl$DataFrame(x)$null_count()
+
 DataFrame_null_count = "use_extendr_wrapper"
 
 
 #' @title Estimated size
-#' @description Return an estimation of the total (heap) allocated size of the DataFrame.
+#' @description Return an estimation of the total (heap) allocated size of the
+#' DataFrame.
 #' @keywords DataFrame
-#' @return Bytes
+#' @return Estimated size in bytes
 #' @docType NULL
 #' @format NULL
 #' @format function
 #' @examples
 #' pl$DataFrame(mtcars)$estimated_size()
+
 DataFrame_estimated_size = "use_extendr_wrapper"
 
 

@@ -7,10 +7,11 @@
 DataFrame_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
+\item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is
+N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
-A new \code{DataFrame} object with applied aggregation.
+A DataFrame with one row.
 }
 \description{
 Aggregate the columns of this DataFrame to their variance values.

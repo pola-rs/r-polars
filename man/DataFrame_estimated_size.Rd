@@ -10,10 +10,11 @@ function
 DataFrame_estimated_size
 }
 \value{
-Bytes
+Estimated size in bytes
 }
 \description{
-Return an estimation of the total (heap) allocated size of the DataFrame.
+Return an estimation of the total (heap) allocated size of the
+DataFrame.
 }
 \examples{
 pl$DataFrame(mtcars)$estimated_size()
