@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_groupby}
 \alias{DataFrame_groupby}
-\title{groupby a DataFrame}
+\title{Group a DataFrame}
 \usage{
 DataFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
 }
@@ -18,14 +18,17 @@ FALSE = slightly faster, but not deterministic order. Default is FALSE, can be c
 GroupBy (a DataFrame with special groupby methods like \verb{$agg()})
 }
 \description{
-create GroupBy from DataFrame
+This doesn't modify the data but only stores information about
+the group structure. This structure can then be used by several functions
+(\verb{$agg()}, \verb{$filter()}, etc.).
 }
 \examples{
 gb = pl$DataFrame(
   foo = c("one", "two", "two", "one", "two"),
   bar = c(5, 3, 2, 4, 1)
 )$groupby("foo", maintain_order = TRUE)
-print(gb)
+
+gb
 
 gb$agg(
   pl$col("bar")$sum()$suffix("_sum"),

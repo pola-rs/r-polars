@@ -17,4 +17,13 @@ A new \code{DataFrame} object with a counter column in front
 \description{
 Add a new column at index 0 that counts the rows
 }
+\examples{
+df = pl$DataFrame(mtcars)
+
+# by default, the index starts at 0 (to mimic the behavior of Python Polars)
+df$with_row_count("idx")
+
+# but in R, we use a 1-index
+df$with_row_count("idx", offset = 1)
+}
 \keyword{DataFrame}

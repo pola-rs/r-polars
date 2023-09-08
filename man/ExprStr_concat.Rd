@@ -20,6 +20,6 @@ df$select(pl$col("foo")$str$concat("-"))
 
 # Series list of strings to Series of concatenated strings
 df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
-df$select(pl$col("bar")$arr$eval(pl$col()$str$concat())$arr$first())
+df$select(pl$col("bar")$list$eval(pl$col()$str$concat())$list$first())
 }
 \keyword{ExprStr}

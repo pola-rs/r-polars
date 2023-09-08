@@ -2,23 +2,28 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_fill_null}
 \alias{DataFrame_fill_null}
-\title{Fill null}
+\title{Fill nulls}
 \usage{
 DataFrame_fill_null(fill_value)
 }
 \arguments{
-\item{fill_value}{Value to fill \code{NA} with.}
+\item{fill_value}{Value to fill nulls with.}
 }
 \value{
 DataFrame
 }
 \description{
-Fill null values using the specified value or strategy.
+Fill null values (which correspond to \code{NA} in R) using the
+specified value or strategy.
 }
 \examples{
-pl$DataFrame(
+df = pl$DataFrame(
   a = c(1.5, 2, NA, 4),
   b = c(1.5, NA, NA, 4)
-)$fill_null(99)
+)
+
+df$fill_null(99)
+
+df$fill_null(pl$col("a")$mean())
 }
 \keyword{DataFrame}

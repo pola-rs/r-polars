@@ -18,7 +18,7 @@ collect an expression based on literals into a DataFrame
   pl$Series(list(1:1, 1:2, 1:3, 1:4))
   $print()
   $to_lit()
-  $arr$lengths()
+  $list$lengths()
   $sum()
   $cast(pl$dtypes$Int8)
   $lit_to_df()

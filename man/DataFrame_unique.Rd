@@ -2,15 +2,15 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_unique}
 \alias{DataFrame_unique}
-\title{DataFrame_unique}
+\title{Drop duplicated rows}
 \usage{
 DataFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
 }
 \arguments{
-\item{subset}{string or vector of strings. Column name(s) to consider when
-identifying duplicates. If set to NULL (default), use all columns.}
+\item{subset}{A character vector with the names of the column(s) to use to
+identify duplicates. If \code{NULL} (default), use all columns.}
 
-\item{keep}{string. Which of the duplicate rows to keep:
+\item{keep}{Which of the duplicate rows to keep:
 \itemize{
 \item "first": Keep first unique row.
 \item "last": Keep last unique row.
@@ -25,15 +25,21 @@ to run on the streaming engine.}
 DataFrame
 }
 \description{
-Drop duplicate rows from this dataframe.
+Drop duplicated rows
 }
 \examples{
 df = pl$DataFrame(
-  x = as.numeric(c(1, 1:5)),
-  y = as.numeric(c(1, 1:5)),
-  z = as.numeric(c(1, 1, 1:4))
+  x = sample(10, 100, rep = TRUE),
+  y = sample(10, 100, rep = TRUE)
 )
+df$height
+
 df$unique()$height
-df$unique(subset = c("x", "z"), keep = "last")$height
+df$unique(subset = "x")$height
+
+df$unique(keep = "last")
+
+# only keep unique rows
+df$unique(keep = "none")
 }
 \keyword{DataFrame}

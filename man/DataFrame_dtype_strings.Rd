@@ -2,15 +2,17 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_dtype_strings}
 \alias{DataFrame_dtype_strings}
-\title{DataFrame dtype strings}
+\title{Data types information}
 \usage{
 DataFrame_dtype_strings
 }
 \value{
-string vector
+A character vector with the data type of each column
 }
 \description{
-Get column types as strings.
+Get the data type of all columns as strings. You can see all
+available types with \code{names(pl$dtypes)}. The data type of each column is also
+shown when printing the DataFrame.
 }
 \examples{
 pl$DataFrame(iris)$dtype_strings()

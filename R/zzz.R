@@ -28,8 +28,8 @@ replace_private_with_pub_methods(Expr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
-`$.ExprArrNameSpace` = sub_name_space_accessor_function
-expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
+`$.ExprListNameSpace` = sub_name_space_accessor_function
+expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
 
 #' @export
 `$.ExprStrNameSpace` = sub_name_space_accessor_function
