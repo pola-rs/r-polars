@@ -7,18 +7,25 @@
 DataFrame_shift_and_fill(fill_value, periods = 1)
 }
 \arguments{
-\item{fill_value}{Fill values with the result of this expression.}
+\item{fill_value}{Fill new \code{NULL} values with this value. Must of length 1.
+A logical value will be converted to numeric.}
 
-\item{periods}{Integer indicating the number of periods to shift (may be
-negative).}
+\item{periods}{Number of periods to shift (can be negative).}
 }
 \value{
 DataFrame
 }
 \description{
-Shift the values by a given period and fill the resulting null values.
+Shift the values by a given period and fill the resulting null
+values. See the docs of \verb{$shift()} for more details on shifting.
 }
 \examples{
-pl$DataFrame(mtcars)$shift_and_fill(0, 2)
+df = pl$DataFrame(mtcars)
+
+# insert two rows filled with 0 at the top of the DataFrame
+df$shift_and_fill(0, 2)
+
+# automatic conversion of logical value to numeric
+df$shift_and_fill(TRUE, 2)
 }
 \keyword{DataFrame}

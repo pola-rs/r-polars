@@ -2,20 +2,25 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_shift}
 \alias{DataFrame_shift}
-\title{Shift}
+\title{Shift a DataFrame}
 \usage{
 DataFrame_shift(periods = 1)
 }
 \arguments{
-\item{periods}{integer Number of periods to shift (may be negative).}
+\item{periods}{Number of periods to shift (can be negative).}
 }
 \value{
 DataFrame
 }
 \description{
-Shift the values by a given period.
+Shift the values by a given period. If the period (\code{n}) is positive,
+then \code{n} rows will be inserted at the top of the DataFrame and the last \code{n}
+rows will be discarded. Vice-versa if the period is negative. In the end,
+the total number of rows of the DataFrame doesn't change.
 }
 \examples{
 pl$DataFrame(mtcars)$shift(2)
+
+pl$DataFrame(mtcars)$shift(-2)
 }
 \keyword{DataFrame}

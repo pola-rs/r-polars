@@ -2,20 +2,30 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_filter}
 \alias{DataFrame_filter}
-\title{filter DataFrame}
+\title{Filter rows of a DataFrame}
 \usage{
 DataFrame_filter(bool_expr)
 }
 \arguments{
-\item{bool_expr}{Polars expression which will evaluate to a bool pl$Series}
+\item{bool_expr}{Polars expression which will evaluate to a boolean.}
 }
 \value{
-filtered DataFrame
+A DataFrame with only the rows where the conditions are \code{TRUE}.
 }
 \description{
-DataFrame$filter(bool_expr)
+This is equivalent to \code{dplyr::filter()}. Note that rows where
+the condition returns \code{NA} are dropped, unlike base subsetting with \code{[}.
 }
 \examples{
-pl$DataFrame(iris)$lazy()$filter(pl$col("Sepal.Length") > 5)$collect()
+df = pl$DataFrame(iris)
+
+df$filter(pl$col("Sepal.Length") > 5)
+
+# rows where condition is NA are dropped
+iris2 = iris
+iris2[c(1, 3, 5), "Species"] = NA
+df = pl$DataFrame(iris2)
+
+df$filter(pl$col("Species") == "setosa")
 }
 \keyword{DataFrame}

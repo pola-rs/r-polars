@@ -7,15 +7,15 @@
 DataFrame_tail(n)
 }
 \arguments{
-\item{n}{positive numeric of integer number not larger than 2^32}
+\item{n}{Positive number not larger than 2^32.}
 }
 \value{
 DataFrame
 }
 \description{
-Get the last n rows.
+Get the last \code{n} rows.
 }
 \details{
-any number will converted to u32. Negative raises error
+Any number will converted to u32. Negative raises error.
 }
 \keyword{DataFrame}

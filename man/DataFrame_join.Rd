@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_join}
 \alias{DataFrame_join}
-\title{join DataFrame with other DataFrame}
+\title{Join DataFrames}
 \usage{
 DataFrame_join(
   other,
@@ -18,25 +18,29 @@ DataFrame_join(
 \arguments{
 \item{other}{DataFrame}
 
-\item{left_on}{names of columns in self LazyFrame, order should match. Type, see on param.}
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
 
-\item{right_on}{names of columns in other LazyFrame, order should match. Type, see on param.}
+\item{on}{Either a vector of column names or a list of expressions and/or
+strings. Use \code{left_on} and \code{right_on} if the column names to match on are
+different between the two DataFrames.}
 
-\item{on}{named columns as char vector of named columns, or list of expressions and/or strings.}
+\item{how}{One of the following methods: "inner", "left", "outer", "semi",
+"anti", "cross".}
 
-\item{how}{a string selecting one of the following methods: inner, left, outer, semi, anti, cross}
+\item{suffix}{Suffix to add to duplicated column names.}
 
-\item{suffix}{name to added right table}
+\item{allow_parallel}{Boolean.}
 
-\item{allow_parallel}{bool}
-
-\item{force_parallel}{bool}
+\item{force_parallel}{Boolean.}
 }
 \value{
 DataFrame
 }
 \description{
-join DataFrame with other DataFrame
+This function can do both mutating joins (adding columns based on matching
+observations, for example with \code{how = "left"}) and filtering joins (keeping
+observations based on matching observations, for example with \code{how = "inner"}).
 }
 \examples{
 # inner join by default
@@ -48,6 +52,5 @@ df1$join(other = df2, on = "key")
 df1 = pl$DataFrame(x = letters[1:3])
 df2 = pl$DataFrame(y = 1:4)
 df1$join(other = df2, how = "cross")
-
 }
 \keyword{DataFrame}

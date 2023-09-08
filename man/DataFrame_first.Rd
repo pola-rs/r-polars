@@ -2,12 +2,12 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_first}
 \alias{DataFrame_first}
-\title{First}
+\title{Get the first row of the DataFrame.}
 \usage{
 DataFrame_first()
 }
 \value{
-A new \code{DataFrame} object with applied filter.
+A DataFrame with one row.
 }
 \description{
 Get the first row of the DataFrame.

@@ -2,21 +2,21 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_get_column}
 \alias{DataFrame_get_column}
-\title{Get Column (as one Series)}
+\title{Get column (as one Series)}
 \usage{
 DataFrame_get_column(name)
 }
 \arguments{
-\item{name}{name of column to extract as Series}
+\item{name}{Name of the column to extract.}
 }
 \value{
 Series
 }
 \description{
-get one column by name as series
+Extract a DataFrame column as a Polars series.
 }
 \examples{
-df = pl$DataFrame(iris[1, ])
+df = pl$DataFrame(iris[1:2, ])
 df$get_column("Species")
 }
 \keyword{DataFrame}
