@@ -7,12 +7,21 @@
 DataFrame_unnest(names = NULL)
 }
 \arguments{
-\item{names}{names of struct columns to unnest, default NULL unnest any struct column}
+\item{names}{Names of the struct columns to unnest. If \code{NULL} (default), then
+all "struct" columns are unnested.}
 }
 \value{
-$unnest() returns a DataFrame with all column including any that has been unnested
+A DataFrame where all "struct" columns are unnested. Non-struct
+columns are not modified.
 }
 \description{
 Unnest a DataFrame struct columns.
+}
+\examples{
+df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
+df = df$to_struct()$to_frame()
+df
+
+df$unnest()
 }
 \keyword{DataFrame}

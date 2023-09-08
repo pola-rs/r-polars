@@ -2,18 +2,17 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_width}
 \alias{DataFrame_width}
-\title{Width of DataFrame}
+\title{Number of columns of a DataFrame}
 \usage{
 DataFrame_width()
 }
 \value{
-width as numeric scalar
+The number of columns of a DataFrame
 }
 \description{
-Get width(ncol) of DataFrame
+Get the number of columns (width) of a DataFrame
 }
 \examples{
 pl$DataFrame(iris)$width
-
 }
 \keyword{DataFrame}

@@ -7,13 +7,13 @@
 DataFrame_get_columns
 }
 \value{
-list of series
+A list of series
 }
 \description{
-get columns as list of series
+Extract all DataFrame columns as a list of Polars series.
 }
 \examples{
-df = pl$DataFrame(iris[1, ])
+df = pl$DataFrame(iris[1:2, ])
 df$get_columns()
 }
 \keyword{DataFrame}

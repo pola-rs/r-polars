@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_pivot}
 \alias{DataFrame_pivot}
-\title{Create a spreadsheet-style pivot table as a DataFrame.}
+\title{Pivot data from long to wide}
 \usage{
 DataFrame_pivot(
   values,
@@ -15,20 +15,27 @@ DataFrame_pivot(
 )
 }
 \arguments{
-\item{values}{Column values to aggregate. Can be multiple columns if the \code{columns}
-arguments contains multiple columns as well.}
+\item{values}{Column values to aggregate. Can be multiple columns if the
+\code{columns} arguments contains multiple columns as well.}
 
 \item{index}{One or multiple keys to group by.}
 
-\item{columns}{Name of the column(s) whose values will be used as the header of the output
-DataFrame.}
+\item{columns}{Name of the column(s) whose values will be used as the header
+of the output DataFrame.}
 
-\item{aggregate_function}{String naming Expr to aggregate with, or an Expr e.g. \code{pl$element()$sum()},
-examples of strings:'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'count'}
+\item{aggregate_function}{One of:
+\itemize{
+\item string indicating the expressions to aggregate with, such as 'first',
+'sum', 'max', 'min', 'mean', 'median', 'last', 'count'),
+\item an Expr e.g. \code{pl$element()$sum()}
+}}
 
-\item{maintain_order}{Sort the grouped keys so that the output order is predictable.}
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine.}
 
-\item{sort_columns}{Sort the transposed columns by name. Default is by order of discovery.}
+\item{sort_columns}{Sort the transposed columns by name. Default is by order
+of discovery.}
 
 \item{separator}{Used as separator/delimiter in generated column names.}
 }
@@ -36,7 +43,7 @@ examples of strings:'first', 'sum', 'max', 'min', 'mean', 'median', 'last', 'cou
 DataFrame
 }
 \description{
-Create a spreadsheet-style pivot table as a DataFrame.
+Pivot data from long to wide
 }
 \examples{
 df = pl$DataFrame(
@@ -44,10 +51,11 @@ df = pl$DataFrame(
   bar = c("A", "B", "C", "A", "B", "C"),
   baz = c(1, 2, 3, 4, 5, 6)
 )
-df$pivot(
-  values = "baz", index = "foo", columns = "bar", aggregate_function = "first"
-)
+df
 
+df$pivot(
+  values = "baz", index = "foo", columns = "bar"
+)
 
 # Run an expression as aggregation function
 df = pl$DataFrame(
@@ -55,6 +63,8 @@ df = pl$DataFrame(
   col2 = c("x", "x", "x", "x", "y", "y"),
   col3 = c(6, 7, 3, 2, 5, 7)
 )
+df
+
 df$pivot(
   index = "col1",
   columns = "col2",

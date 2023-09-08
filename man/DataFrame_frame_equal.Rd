@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_frame_equal}
 \alias{DataFrame_frame_equal}
-\title{Drop in place}
+\title{Compare two DataFrames}
 \usage{
 DataFrame_frame_equal(other)
 }
@@ -10,10 +10,10 @@ DataFrame_frame_equal(other)
 \item{other}{DataFrame to compare with.}
 }
 \value{
-bool
+A boolean.
 }
 \description{
-Check if DataFrame is equal to other.
+Check if two DataFrames are equal.
 }
 \examples{
 dat1 = pl$DataFrame(iris)

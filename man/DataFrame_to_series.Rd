@@ -2,22 +2,33 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_to_series}
 \alias{DataFrame_to_series}
-\title{Get Series by idx, if there}
+\title{Get column by index}
 \usage{
 DataFrame_to_series(idx = 0)
 }
 \arguments{
-\item{idx}{numeric default 0, zero-index of what column to return as Series}
+\item{idx}{Index of the column to return as Series. Defaults to 0, which is
+the first column.}
 }
 \value{
 Series or NULL
 }
 \description{
-get one column by idx as series from DataFrame.
-Unlike get_column this method will not fail if no series found at idx but
-return a NULL, idx is zero idx.
+Extract a DataFrame column (by index) as a Polars series. Unlike
+\code{get_column()}, this method will not fail but will return a \code{NULL} if the
+index doesn't exist in the DataFrame. Keep in mind that Polars is 0-indexed
+so "0" is the first column.
 }
 \examples{
-pl$DataFrame(a = 1:4)$to_series()
+df = pl$DataFrame(iris[1:10, ])
+
+# default is to extract the first column
+df$to_series()
+
+# Polars is 0-indexed, so we use idx = 1 to extract the *2nd* column
+df$to_series(idx = 1)
+
+# doesn't error if the column isn't there
+df$to_series(idx = 8)
 }
 \keyword{DataFrame}

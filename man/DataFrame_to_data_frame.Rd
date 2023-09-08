@@ -10,9 +10,9 @@ DataFrame_to_data_frame(...)
 \method{as.data.frame}{DataFrame}(x, ...)
 }
 \arguments{
-\item{...}{any params passed to as.data.frame}
+\item{...}{Any args pased to \code{as.data.frame()}.}
 
-\item{x}{DataFrame}
+\item{x}{A DataFrame}
 }
 \value{
 An R data.frame

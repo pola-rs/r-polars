@@ -10,9 +10,8 @@ DataFrame_reverse()
 DataFrame
 }
 \description{
-Reverse the DataFrame.
+Reverse the DataFrame (the last row becomes the first one, etc.).
 }
 \examples{
 pl$DataFrame(mtcars)$reverse()
 }
-\keyword{LazyFrame}

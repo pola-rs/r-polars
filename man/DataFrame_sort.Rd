@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_sort}
 \alias{DataFrame_sort}
-\title{DataFrame Sort}
+\title{Sort a DataFrame}
 \usage{
 DataFrame_sort(
   by,

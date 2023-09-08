@@ -3,28 +3,25 @@
 \name{DataFrame_dtypes}
 \alias{DataFrame_dtypes}
 \alias{DataFrame_schema}
-\title{DataFrame dtypes}
+\title{Data types information}
 \usage{
 DataFrame_dtypes()
 
 DataFrame_schema()
 }
 \value{
-width as numeric scalar
-
-width as numeric scalar
+\verb{$dtypes} returns an unnamed list with the data type of each column.
+\verb{$schema} returns a named list with the column names and the data type of
+each column.
 }
 \description{
-Get the data types of columns in DataFrame.
-Data types can also be found in column headers when printing the DataFrame.
-
-Get dtypes of columns in DataFrame.
-Dtypes can also be found in column headers when printing the DataFrame.
+Get the data type of all columns. You can see all available
+types with \code{names(pl$dtypes)}. The data type of each column is also shown
+when printing the DataFrame.
 }
 \examples{
 pl$DataFrame(iris)$dtypes
 
 pl$DataFrame(iris)$schema
-
 }
 \keyword{DataFrame}
