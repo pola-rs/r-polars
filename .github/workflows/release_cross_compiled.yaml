@@ -70,7 +70,7 @@ jobs:
           cargo build --lib --profile release-optimized  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml
           mv ./src/rust/target/"$RUNNER_TARGET"/release-optimized/libr_polars.a ./inst/
           ls -l
-          ls ./inst/ -l
+          ls -l ./inst/
         env:
           RUNNER_TARGET: "${{ matrix.config.target }}"
         shell: bash
