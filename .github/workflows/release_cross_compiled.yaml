@@ -67,9 +67,8 @@ jobs:
           pwd
           make requirements-rs
           rustup target add "$RUNNER_TARGET"
-          rustup default nightly-2023-07-27-aarch64-apple-darwin
-          cargo build --lib --profile release-optimized --manifest-path=./src/rust/Cargo.toml
-          mv ./src/rust/target/release-optimized/libr_polars.a ./inst/
+          cargo build --lib --profile release-optimized  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml
+          mv ./src/rust/target/"$RUNNER_TARGET"/release-optimized/libr_polars.a ./inst/
           echo "$RUNNER_TARGET" > .inst/target.txt
           cat .inst/target.txt
           ls -l
