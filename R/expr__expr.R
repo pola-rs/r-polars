@@ -4262,8 +4262,8 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 Expr_arr = method_as_property(function() {
   if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
     warning(
-      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and removed from polars 0.9.0.",
-      "Use `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
+      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and will be removed in polars 0.9.0.",
+      "\nUse `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
       call. = FALSE
     )
     runtime_state$warned_deprecate_sns_arr_expr = TRUE
