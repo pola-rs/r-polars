@@ -2,23 +2,22 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_limit}
 \alias{LazyFrame_limit}
-\title{Limits}
+\title{Limit a LazyFrame}
 \usage{
 LazyFrame_limit(n)
 }
 \arguments{
-\item{n}{positive numeric or integer number not larger than 2^32}
+\item{n}{Positive number not larger than 2^32.}
 }
 \value{
-A new \code{LazyFrame} object with applied filter.
+A \code{LazyFrame}
 }
 \description{
-take limit of n rows of query
+Take some maximum number of rows.
 }
 \details{
-any number will converted to u32. Negative raises error
+Any number will converted to u32. Negative raises error.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$limit(4)$collect()
+pl$LazyFrame(mtcars)$limit(4)$collect()
 }
-\keyword{LazyFrame}

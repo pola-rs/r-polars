@@ -2,30 +2,31 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_groupby}
 \alias{LazyFrame_groupby}
-\title{Lazy_groupby}
+\title{Group a LazyFrame}
 \usage{
 LazyFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
 }
 \arguments{
-\item{...}{any Expr(s) or string(s) naming a column
-... args can also be passed wrapped in a list \verb{$agg(list(e1,e2,e3))}}
+\item{...}{Any Expr(s) or string(s) naming a column.}
 
-\item{maintain_order}{bool, should an aggregate of a GroupBy retain order of groups?
-FALSE = slightly faster, but not deterministic order. Default is FALSE, can be changed with
-\code{pl$options$default_maintain_order(TRUE)} .}
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine. The default value can be changed with
+\code{pl$options$default_maintain_order(TRUE/FALSE)}.}
 }
 \value{
-A new \code{LazyGroupBy} object with applied groups.
+LazyGroupBy (a LazyFrame with special groupby methods like \verb{$agg()})
 }
 \description{
-Create a LazyGroupBy from a LazyFrame.
+This doesn't modify the data but only stores information about
+the group structure. This structure can then be used by several functions
+(\verb{$agg()}, \verb{$filter()}, etc.).
 }
 \examples{
-pl$DataFrame(
+pl$LazyFrame(
   foo = c("one", "two", "two", "one", "two"),
   bar = c(5, 3, 2, 4, 1)
 )$
-  lazy()$
   groupby("foo")$
   agg(
   pl$col("bar")$sum()$suffix("_sum"),

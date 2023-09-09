@@ -2,38 +2,44 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_unique}
 \alias{LazyFrame_unique}
-\title{Lazy_unique}
+\title{Drop duplicated rows}
 \usage{
 LazyFrame_unique(subset = NULL, keep = "first", maintain_order = FALSE)
 }
 \arguments{
-\item{subset}{string or vector of strings. Column name(s) to consider when
-identifying duplicates. If set to NULL (default), use all columns.}
+\item{subset}{A character vector with the names of the column(s) to use to
+identify duplicates. If \code{NULL} (default), use all columns.}
 
-\item{keep}{string. Which of the duplicate rows to keep:
+\item{keep}{Which of the duplicate rows to keep:
 \itemize{
 \item "first": Keep first unique row.
 \item "last": Keep last unique row.
 \item "none": Don’t keep duplicate rows.
 }}
 
-\item{maintain_order}{Keep the same order as the original \code{LazyFrame.} This
-is more expensive to compute. Settings this to \code{TRUE} blocks the possibility
-to run on the streaming engine.}
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine. The default value can be changed with
+\code{pl$options$default_maintain_order(TRUE/FALSE)}.}
 }
 \value{
 LazyFrame
 }
 \description{
-Drop duplicate rows from this dataframe.
+Drop duplicated rows
 }
 \examples{
-df = pl$DataFrame(
-  x = c(1L, 1:3, 3L),
-  y = c(1L, 1:3, 3L),
-  z = c(1L, 1:3, 4L)
+df = pl$LazyFrame(
+  x = sample(10, 100, rep = TRUE),
+  y = sample(10, 100, rep = TRUE)
 )
-df$lazy()$unique()$collect()$height
-df$lazy()$unique(subset = c("x", "y"), keep = "last", maintain_order = TRUE)$collect()
+df$collect()$height
+
+df$unique()$collect()$height
+df$unique(subset = "x")$collect()$height
+
+df$unique(keep = "last")
+
+# only keep unique rows
+df$unique(keep = "none")
 }
-\keyword{LazyFrame}

@@ -7,15 +7,16 @@
 LazyFrame_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
+\item{ddof}{Delta Degrees of Freedom: the divisor used in the calculation is
+N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
-A new \code{LazyFrame} object with applied aggregation.
+A LazyFrame with one row
 }
 \description{
 Aggregate the columns of this LazyFrame to their variance values.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$var()$collect()
+pl$LazyFrame(mtcars)$var()$collect()
 }
 \keyword{LazyFrame}

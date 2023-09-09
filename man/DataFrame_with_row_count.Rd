@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_with_row_count}
 \alias{DataFrame_with_row_count}
-\title{Eager with_row_count}
+\title{Add a column for row indices}
 \usage{
 DataFrame_with_row_count(name, offset = NULL)
 }

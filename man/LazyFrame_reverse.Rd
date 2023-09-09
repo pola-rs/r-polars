@@ -14,9 +14,9 @@ LazyFrame_reverse
 LazyFrame
 }
 \description{
-Reverse the DataFrame.
+Reverse the LazyFrame (the last row becomes the first one, etc.).
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$reverse()$collect()
+pl$LazyFrame(mtcars)$reverse()$collect()
 }
 \keyword{LazyFrame}

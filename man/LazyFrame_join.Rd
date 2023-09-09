@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_join}
 \alias{LazyFrame_join}
-\title{LazyFrame join}
+\title{Join LazyFrames}
 \usage{
 LazyFrame_join(
   other,
@@ -16,26 +16,40 @@ LazyFrame_join(
 )
 }
 \arguments{
-\item{other}{LazyFrame}
+\item{other}{DataFrame}
 
-\item{left_on}{names of columns in self LazyFrame, order should match. Type, see on param.}
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
 
-\item{right_on}{names of columns in other LazyFrame, order should match. Type, see on param.}
+\item{on}{Either a vector of column names or a list of expressions and/or
+strings. Use \code{left_on} and \code{right_on} if the column names to match on are
+different between the two DataFrames.}
 
-\item{on}{named columns as char vector of named columns, or list of expressions and/or strings.}
+\item{how}{One of the following methods: "inner", "left", "outer", "semi",
+"anti", "cross".}
 
-\item{how}{a string selecting one of the following methods: inner, left, outer, semi, anti, cross}
+\item{suffix}{Suffix to add to duplicated column names.}
 
-\item{suffix}{name to added right table}
+\item{allow_parallel}{Boolean.}
 
-\item{allow_parallel}{bool}
-
-\item{force_parallel}{bool}
+\item{force_parallel}{Boolean.}
 }
 \value{
-A new \code{LazyFrame} object with applied join.
+LazyFrame
 }
 \description{
-join a LazyFrame
+This function can do both mutating joins (adding columns based on matching
+observations, for example with \code{how = "left"}) and filtering joins (keeping
+observations based on matching observations, for example with \code{how = "inner"}).
 }
-\keyword{LazyFrame}
+\examples{
+# inner join by default
+df1 = pl$LazyFrame(list(key = 1:3, payload = c("f", "i", NA)))
+df2 = pl$LazyFrame(list(key = c(3L, 4L, 5L, NA_integer_)))
+df1$join(other = df2, on = "key")
+
+# cross join
+df1 = pl$LazyFrame(x = letters[1:3])
+df2 = pl$LazyFrame(y = 1:4)
+df1$join(other = df2, how = "cross")
+}

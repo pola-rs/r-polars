@@ -2,25 +2,30 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_drop_nulls}
 \alias{LazyFrame_drop_nulls}
-\title{Lazy_drop_nulls}
+\title{Drop nulls (missing values)}
 \usage{
 LazyFrame_drop_nulls(subset = NULL)
 }
 \arguments{
-\item{subset}{string or vector of strings. Column name(s) for which null values are considered. If set to NULL (default), use all columns.}
+\item{subset}{A character vector with the names of the column(s) for which
+nulls are considered. If \code{NULL} (default), use all columns.}
 }
 \value{
 LazyFrame
 }
 \description{
-Drop all rows that contain null values.
+Drop all rows that contain nulls (which correspond to \code{NA} in R).
 }
 \examples{
 tmp = mtcars
 tmp[1:3, "mpg"] = NA
 tmp[4, "hp"] = NA
-pl$DataFrame(tmp)$lazy()$drop_nulls()$collect()$height
-pl$DataFrame(tmp)$lazy()$drop_nulls("mpg")$collect()$height
-pl$DataFrame(tmp)$lazy()$drop_nulls(c("mpg", "hp"))$collect()$height
+tmp = pl$LazyFrame(tmp)
+
+# number of rows in `tmp` before dropping nulls
+tmp$collect()$height
+
+tmp$drop_nulls()$collect()$height
+tmp$drop_nulls("mpg")$collect()$height
+tmp$drop_nulls(c("mpg", "hp"))$collect()$height
 }
-\keyword{LazyFrame}

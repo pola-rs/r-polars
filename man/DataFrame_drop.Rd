@@ -7,8 +7,7 @@
 DataFrame_drop(columns)
 }
 \arguments{
-\item{columns}{A character vector with the names of the column(s) to remove
-from the DataFrame.}
+\item{columns}{A character vector with the names of the column(s) to remove.}
 }
 \value{
 DataFrame
