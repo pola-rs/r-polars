@@ -52,10 +52,10 @@ larger than RAM as it would crash the R session if it was collected into R.
 tmpf = tempfile()
 pl$LazyFrame(mtcars)$sink_ipc(tmpf)
 
-# stream a query end-to-end
-tmpf2 = tempfile()
-pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$collect()$sink_ipc(tmpf2)
+# stream a query end-to-end (not supported yet, https://github.com/pola-rs/polars/issues/1040)
+# tmpf2 = tempfile()
+# pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$sink_ipc(tmpf2)
 
 # load ipc directly into a DataFrame / memory
-pl$scan_ipc(tmpf2)$collect()
+# pl$scan_ipc(tmpf2)$collect()
 }

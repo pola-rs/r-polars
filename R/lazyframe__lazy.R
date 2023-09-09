@@ -281,7 +281,7 @@ LazyFrame_with_row_count = function(name, offset = NULL) {
 #' @return A new `LazyFrame` object with add/modified column.
 #' @docType NULL
 #' @usage LazyFrame_filter(expr)
-#' @examples pl$DataFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
+#' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 LazyFrame_filter = "use_extendr_wrapper"
 
 #' @title Collect a query into a DataFrame
@@ -515,12 +515,12 @@ LazyFrame_sink_parquet = function(
 #' tmpf = tempfile()
 #' pl$LazyFrame(mtcars)$sink_ipc(tmpf)
 #'
-#' # stream a query end-to-end
-#' tmpf2 = tempfile()
-#' pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$collect()$sink_ipc(tmpf2)
+#' # stream a query end-to-end (not supported yet, https://github.com/pola-rs/polars/issues/1040)
+#' # tmpf2 = tempfile()
+#' # pl$scan_ipc(tmpf)$select(pl$col("cyl") * 2)$sink_ipc(tmpf2)
 #'
 #' # load ipc directly into a DataFrame / memory
-#' pl$scan_ipc(tmpf2)$collect()
+#' # pl$scan_ipc(tmpf2)$collect()
 
 LazyFrame_sink_ipc = function(
     path,
@@ -700,7 +700,7 @@ LazyFrame_fill_nan = function(fill_value) {
 #' @keywords LazyFrame
 #' @return LazyFrame
 #' @examples
-#' df = pl$DataFrame(
+#' df = pl$LazyFrame(
 #'   a = c(1.5, 2, NA, 4),
 #'   b = c(1.5, NA, NA, 4)
 #' )
@@ -783,11 +783,11 @@ LazyFrame_tail = function(n) {
 #' tmp = pl$LazyFrame(tmp)
 #'
 #' # number of rows in `tmp` before dropping nulls
-#' tmp$height
+#' tmp$collect()$height
 #'
-#' tmp$drop_nulls()$height
-#' tmp$drop_nulls("mpg")$height
-#' tmp$drop_nulls(c("mpg", "hp"))$height
+#' tmp$drop_nulls()$collect()$height
+#' tmp$drop_nulls("mpg")$collect()$height
+#' tmp$drop_nulls(c("mpg", "hp"))$collect()$height
 
 LazyFrame_drop_nulls = function(subset = NULL) {
   pra = do.call(construct_ProtoExprArray, as.list(subset))
@@ -802,10 +802,10 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #'   x = sample(10, 100, rep = TRUE),
 #'   y = sample(10, 100, rep = TRUE)
 #' )
-#' df$height
+#' df$collect()$height
 #'
-#' df$unique()$height
-#' df$unique(subset = "x")$height
+#' df$unique()$collect()$height
+#' df$unique(subset = "x")$collect()$height
 #'
 #' df$unique(keep = "last")
 #'
@@ -1103,7 +1103,6 @@ LazyFrame_melt = function(
 #' @return LazyFrame
 #' @examples
 #' pl$LazyFrame(mtcars)$
-#'   lazy()$
 #'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
 #'   collect()
 

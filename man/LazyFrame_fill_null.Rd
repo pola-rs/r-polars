@@ -17,7 +17,7 @@ Fill null values (which correspond to \code{NA} in R) using the
 specified value or strategy.
 }
 \examples{
-df = pl$DataFrame(
+df = pl$LazyFrame(
   a = c(1.5, 2, NA, 4),
   b = c(1.5, NA, NA, 4)
 )

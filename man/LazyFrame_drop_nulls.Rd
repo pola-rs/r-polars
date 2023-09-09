@@ -23,9 +23,9 @@ tmp[4, "hp"] = NA
 tmp = pl$LazyFrame(tmp)
 
 # number of rows in `tmp` before dropping nulls
-tmp$height
+tmp$collect()$height
 
-tmp$drop_nulls()$height
-tmp$drop_nulls("mpg")$height
-tmp$drop_nulls(c("mpg", "hp"))$height
+tmp$drop_nulls()$collect()$height
+tmp$drop_nulls("mpg")$collect()$height
+tmp$drop_nulls(c("mpg", "hp"))$collect()$height
 }

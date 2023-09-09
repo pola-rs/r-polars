@@ -33,10 +33,10 @@ df = pl$LazyFrame(
   x = sample(10, 100, rep = TRUE),
   y = sample(10, 100, rep = TRUE)
 )
-df$height
+df$collect()$height
 
-df$unique()$height
-df$unique(subset = "x")$height
+df$unique()$collect()$height
+df$unique(subset = "x")$collect()$height
 
 df$unique(keep = "last")
 

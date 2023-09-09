@@ -21,7 +21,6 @@ Rename columns of a DataFrame
 }
 \examples{
 pl$LazyFrame(mtcars)$
-  lazy()$
   rename(miles_per_gallon = "mpg", horsepower = "hp")$
   collect()
 }
