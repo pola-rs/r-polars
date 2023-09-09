@@ -41,6 +41,7 @@ nav:
   - Articles:
     - Get started: articles/polars.md
     - Polars User Guide: articles/userguide.md
+    - Optimize `polars` performance: articles/performance.md
   - Reference: # Auto updated by altdoc
   - About: about.md
   - Changelog: NEWS.md
