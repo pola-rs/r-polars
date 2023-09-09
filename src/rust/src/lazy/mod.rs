@@ -1,7 +1,9 @@
 //mod apply;
 //pub mod dataframe;
+use extendr_api::*;
 pub mod dataframe;
 pub mod dsl;
+pub mod whenthen;
 //#[cfg(feature = "meta")]
 //mod meta;
 //pub mod utils;
@@ -35,9 +37,10 @@ pub mod dsl;
 //         unsafe { std::mem::transmute(self) }
 //     }
 // }
-use extendr_api::*;
+
 extendr_module! {
     mod lazy;
+    use whenthen;
     use dsl;
     use dataframe;
 }

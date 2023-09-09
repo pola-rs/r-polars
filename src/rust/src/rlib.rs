@@ -1,8 +1,8 @@
 use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
-use crate::rdatatype::robj_to_timeunit;
 use crate::robj_to;
+
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
@@ -59,13 +59,13 @@ pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
 #[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::min_exprs(exprs).into()
+    polars::lazy::dsl::min_horizontal(exprs).into()
 }
 
 #[extendr]
 fn max_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::max_exprs(exprs).into()
+    polars::lazy::dsl::max_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -77,7 +77,7 @@ fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
 #[extendr]
 fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs = exprs.to_vec("select");
-    pl::sum_exprs(exprs).into()
+    polars::lazy::dsl::sum_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -89,74 +89,42 @@ fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
 #[extendr]
 fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
     Ok(pl::concat_str(
-        robj_to!(Vec, PLExprCol, dotdotdot)?,
+        robj_to!(VecPLExprCol, dotdotdot)?,
         robj_to!(str, separator)?,
     )
     .into())
 }
 
 #[extendr]
-fn r_date_range(
-    start: f64,
-    stop: f64,
-    every: &str,
-    closed: &str, //Wap<ClosedWindow>
-    name: &str,
-    tu: Robj,
-    tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    use crate::utils::try_f64_into_i64;
-
-    use pl::IntoSeries;
-
-    let res = || -> std::result::Result<Series, String> {
-        Ok(Series(
-            polars::time::date_range_impl(
-                name,
-                try_f64_into_i64(start)?,
-                try_f64_into_i64(stop)?,
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                robj_to_timeunit(tu)?,
-                tz.into_option().as_ref(),
-            )
-            .map_err(|err| format!("in r_date_range: {}", err))?
-            .into_series(),
-        ))
-    }();
-    r_result_list(res)
-}
-
-#[extendr]
 fn r_date_range_lazy(
-    start: &Expr,
-    end: &Expr,
-    every: &str,
-    closed: &str,
-    tz: Nullable<String>,
-) -> List {
-    use crate::rdatatype::new_closed_window;
-    let res = || -> std::result::Result<Expr, String> {
-        Ok(Expr(
-            polars::lazy::dsl::functions::date_range(
-                start.0.clone(),
-                end.0.clone(),
-                pl::Duration::parse(every),
-                new_closed_window(closed)?,
-                tz.into_option(),
-            )
-            .explode(),
-        ))
-    }();
-    r_result_list(res)
+    start: Robj,
+    end: Robj,
+    every: Robj,
+    closed: Robj,
+    time_unit: Robj,
+    time_zone: Robj,
+    explode: Robj,
+) -> RResult<Expr> {
+    let expr = polars::lazy::dsl::functions::date_range(
+        robj_to!(PLExprCol, start)?,
+        robj_to!(PLExprCol, end)?,
+        robj_to!(pl_duration, every)?,
+        robj_to!(new_closed_window, closed)?,
+        robj_to!(Option, timeunit, time_unit)?,
+        robj_to!(Option, String, time_zone)?,
+    );
+    if robj_to!(bool, explode)? {
+        Ok(Expr(expr.explode()))
+    } else {
+        Ok(Expr(expr))
+    }
 }
 
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
 //for now just use inner directly
 #[extendr]
 fn as_struct(exprs: Robj) -> Result<Expr, String> {
-    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true)?.as_slice()).into())
+    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?.as_slice()).into())
 }
 
 #[extendr]
@@ -186,18 +154,38 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
     }
 }
 
-// #[extendr]
-// fn field_to_rust2(arrow_array: Robj) -> Result<Robj, String> {
-//     let x = crate::arrow_interop::to_rust::arrow_array_to_rust(arrow_array)?;
-
-//     rprintln!("hurray we read an arrow field {:?}", x);
-//     Ok(extendr_api::NULL.into())
-// }
+#[extendr]
+fn new_arrow_stream() -> Robj {
+    crate::arrow_interop::to_rust::new_arrow_stream_internal()
+}
+use crate::rpolarserr::*;
+#[extendr]
+fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
+    let ca = s
+        .struct_()
+        .map_err(polars_to_rpolars_err)
+        .when("unpack struct from producer")
+        .hint("producer exported a plain Series not a Struct series")?;
+    let df: pl::DataFrame = ca.clone().into();
+    Ok(DataFrame(df).into_robj())
+}
 
 #[extendr]
-fn arrow_stream_to_rust(rbr: Robj) {
-    let x = crate::arrow_interop::to_rust::arrow_array_stream_to_rust(rbr, None).unwrap();
-    dbg!(x);
+fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
+    let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
+    Ok(Series(s).into_robj())
+}
+
+#[extendr]
+unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
+    let res: ExternalPtr<DataFrame> = robj_df.try_into()?;
+    let pl_df = DataFrame(res.0.clone()).0;
+    //safety robj_str must be ptr to a arrow2 stream ready to export into
+    unsafe {
+        crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
+    }
+    Ok(robj_str)
 }
 
 #[extendr]
@@ -222,15 +210,7 @@ pub fn dtype_str_repr(dtype: Robj) -> RResult<String> {
     Ok(dtype.to_string())
 }
 
-// replaces wrap_e_legacy, derived from robj_to!
-#[extendr]
-fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
-    if robj_to!(bool, str_to_lit)? {
-        robj_to!(Expr, robj)
-    } else {
-        robj_to!(ExprCol, robj)
-    }
-}
+// setting functions
 
 // -- Meta Robj functions
 #[extendr]
@@ -244,7 +224,6 @@ pub fn mem_address(robj: Robj) -> String {
 pub fn clone_robj(robj: Robj) -> Robj {
     robj.clone()
 }
-
 // -- Special functions just for unit testing
 #[extendr]
 fn test_robj_to_usize(robj: Robj) -> RResult<String> {
@@ -286,6 +265,16 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
     Ok(R!("pl$lit({{robj}})")?) // this call should have been polars::pl$lit(...
 }
 
+#[extendr]
+fn polars_features() -> List {
+    list!(
+        full_features = cfg!(feature = "full_features"),
+        default = cfg!(feature = "default"),
+        simd = cfg!(feature = "simd"),
+        rpolars_debug_print = cfg!(feature = "rpolars_debug_print")
+    )
+}
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -298,7 +287,7 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
-    fn r_date_range;
+    //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
     fn struct_;
@@ -306,13 +295,20 @@ extendr_module! {
     //fn series_from_arrow;
     //fn rb_to_df;
     fn rb_list_to_df;
-    fn arrow_stream_to_rust;
+
     fn dtype_str_repr;
 
-    fn internal_wrap_e;
+    // arrow conversions
+    fn new_arrow_stream;
+    fn arrow_stream_to_df;
+    fn arrow_stream_to_series;
+    fn export_df_to_arrow_stream;
+
+    //robj meta
     fn mem_address;
     fn clone_robj;
 
+    //for testing
     fn test_robj_to_usize;
     fn test_robj_to_f64;
     fn test_robj_to_i64;
@@ -321,4 +317,7 @@ extendr_module! {
     fn test_print_string;
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
+
+    //feature flags
+    fn polars_features;
 }

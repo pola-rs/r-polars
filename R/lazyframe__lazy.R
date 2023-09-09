@@ -213,24 +213,21 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #' @title Lazy_select
 #' @description select on a LazyFrame
 #' @keywords LazyFrame
-#'
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with applied filter.
 LazyFrame_select = function(...) {
-  args = unpack_list(...)
-  .pr$LazyFrame$select(self, args) |>
+  .pr$LazyFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
 }
 
 #' @title Lazy with columns
 #' @description add or replace columns of LazyFrame
 #' @keywords LazyFrame
-#'
 #' @param ... any single Expr or string naming a column
 #' @return A new `LazyFrame` object with added/modified columns.
 LazyFrame_with_columns = function(...) {
-  pra = construct_ProtoExprArray(...)
-  .pr$LazyFrame$with_columns(self, pra)
+  .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
+    unwrap("in $with_columns()")
 }
 
 #' @title Lazy with column
@@ -269,19 +266,23 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' run on minimal required memory.
 #' @param predicate_pushdown Boolean. Applies filters as early as possible at
 #' scan level.
-#' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
-#' @param simplify_expression Boolean. Various optimizations, such as constant folding
-#' and replacing expensive operations with faster alternatives.
+#' @param projection_pushdown Boolean. Select only the columns that are needed
+#' at the scan level.
+#' @param simplify_expression Boolean. Various optimizations, such as constant
+#' folding and replacing expensive operations with faster alternatives.
 #' @param slice_pushdown Boolean. Only load the required slice from the scan
 #' Don't materialize sliced outputs
 #' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
-#' @param common_subplan_elimination Boolean. Cache subtrees/file scans that
-#' are used by multiple subtrees in the query plan.
+#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that
+#'  occur on self-joins or unions.
+#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and
+#' reused.
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
 #' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
 #' @param collect_in_background Boolean. Detach this query from R session.
@@ -294,6 +295,11 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @return A `DataFrame`
 #' @examples pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 #' @seealso
+#'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
+#'  - [`$profile()`][LazyFrame_profile] - returns as `$collect()` but also table with each operation
+#'  profiled.
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 #'  - [`$sink_parquet()`][LazyFrame_sink_parquet()] stream query to a parquet file.
 #'  - [`$sink_ipc()`][LazyFrame_sink_ipc()] stream query to a arrow file.
 LazyFrame_collect = function(
@@ -302,7 +308,8 @@ LazyFrame_collect = function(
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
     slice_pushdown = TRUE,
-    common_subplan_elimination = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
     no_optimization = FALSE,
     streaming = FALSE,
     collect_in_background = FALSE) {
@@ -310,11 +317,12 @@ LazyFrame_collect = function(
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
   }
 
   if (isTRUE(streaming)) {
-    common_subplan_elimination = FALSE
+    comm_subplan_elim = FALSE
   }
 
   collect_f = if (isTRUE(collect_in_background)) {
@@ -330,7 +338,8 @@ LazyFrame_collect = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      common_subplan_elimination,
+      comm_subplan_elim,
+      comm_subexpr_elim,
       streaming
     ) |>
     and_then(collect_f) |>
@@ -407,14 +416,15 @@ LazyFrame_collect_in_background = function() {
 #' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
 #' @param simplify_expression Boolean. Various optimizations, such as constant folding
 #' and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Boolean. Only load the required slice from the scan
-#' Don't materialize sliced outputs
-#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
 #' tmpf = tempfile()
@@ -438,14 +448,14 @@ LazyFrame_sink_parquet = function(
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    no_optimization = FALSE) {
+    no_optimization = FALSE,
+    slice_pushdown = TRUE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
-
+  call_ctx = "in $sink_parquet(...)"
   self |>
     .pr$LazyFrame$optimization_toggle(
       type_coercion,
@@ -453,10 +463,11 @@ LazyFrame_sink_parquet = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      FALSE,
-      TRUE
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = TRUE
     ) |>
-    unwrap("in $sink_parquet(...)") |>
+    unwrap(call_ctx) |>
     .pr$LazyFrame$sink_parquet(
       path,
       compression,
@@ -466,7 +477,7 @@ LazyFrame_sink_parquet = function(
       data_pagesize_limit,
       maintain_order
     ) |>
-    unwrap("in $sink_parquet(...)") |>
+    unwrap(call_ctx) |>
     invisible()
 }
 
@@ -487,14 +498,15 @@ LazyFrame_sink_parquet = function(
 #' @param projection_pushdown Boolean. Select only the columns that are needed at the scan level.
 #' @param simplify_expression Boolean. Various optimizations, such as constant folding
 #' and replacing expensive operations with faster alternatives.
-#' @param slice_pushdown Boolean. Only load the required slice from the scan
-#' Don't materialize sliced outputs
-#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @param no_optimization  Boolean. Turn off the following optimizations:
 #'  predicate_pushdown = FALSE
 #'  projection_pushdown = FALSE
 #'  slice_pushdown = FALSE
-#'  common_subplan_elimination = FALSE
+#'  comm_subplan_elim = FALSE
+#'  comm_subexpr_elim = FALSE
+#' @param slice_pushdown Boolean. Only load the required slice from the scan
+#' Don't materialize sliced outputs
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
@@ -515,8 +527,8 @@ LazyFrame_sink_ipc = function(
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
     simplify_expression = TRUE,
-    slice_pushdown = TRUE,
-    no_optimization = FALSE) {
+    no_optimization = FALSE,
+    slice_pushdown = TRUE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -530,8 +542,9 @@ LazyFrame_sink_ipc = function(
       projection_pushdown,
       simplify_expression,
       slice_pushdown,
-      FALSE,
-      TRUE
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = TRUE
     ) |>
     unwrap("in $sink_ipc(...)") |>
     .pr$LazyFrame$sink_ipc(
@@ -887,8 +900,7 @@ LazyFrame_join = function(
 
 
 #' LazyFrame Sort
-#' @description sort a LazyFrame by on or more Expr
-#'
+#' @description sort by one or more Expr.
 #' @param by Column(s) to sort by. Column name strings, character vector of
 #' column names, or Iterable `Into<Expr>` (e.g. one Expr, or list mixed Expr and
 #' column name strings).
@@ -896,13 +908,14 @@ LazyFrame_join = function(
 #' @param descending Sort descending? Default = FALSE logical vector of length 1 or same length
 #' as number of Expr's from above by + ....
 #' @param nulls_last Bool default FALSE, place all nulls_last?
+#' @param maintain_order Whether the order should be maintained if elements are equal. Note that if
+#' true streaming is not possible and performance might be worse since this requires a stable
+#' search.
 #' @details by and ... args allow to either provide e.g. a list of Expr or something which can
 #' be converted into an Expr e.g. `$sort(list(e1,e2,e3))`,
 #' or provide each Expr as an individual argument `$sort(e1,e2,e3)`´ ... or both.
-#'
-#'
 #' @return LazyFrame
-#' @keywords  DataFrame
+#' @keywords  LazyFrame
 #' @examples
 #' df = mtcars
 #' df$mpg[1] = NA
@@ -918,28 +931,12 @@ LazyFrame_sort = function(
     by, # : IntoExpr | List[IntoExpr],
     ..., # unnamed Into expr
     descending = FALSE, #  bool | vector[bool] = False,
-    nulls_last = FALSE) {
-  largs = list2(...)
-  nargs = names(largs)
-
-  # match on args to check for ...
-  pcase(
-    # all the bad stuff
-    !is.null(nargs) && length(nargs) && any(nchar(nargs)), Err("arg [...] cannot be named"),
-    missing(by), Err("arg [by] is missing"),
-
-    # iterate over by + ... to wrap into Expr. Capture ok/err in results
-    or_else = Ok(c(
-      lapply(by, wrap_e_result, str_to_lit = FALSE),
-      lapply(largs, wrap_e_result, str_to_lit = FALSE)
-    ))
+    nulls_last = FALSE,
+    maintain_order = FALSE) {
+  .pr$LazyFrame$sort_by_exprs(
+    self, unpack_list(by), err_on_named_args(...), descending, nulls_last, maintain_order
   ) |>
-    # and_then skips step, if input is an Error otherwise call rust wrapper
-    and_then(\(by_combined) { # by_combined has Rtyp" List<Result<Expr,String>>
-      .pr$LazyFrame$sort_by_exprs(self, by_combined, descending, nulls_last)
-    }) |>
-    # add same context to any Error
-    unwrap("in sort():")
+    unwrap("in $sort():")
 }
 
 
@@ -1189,13 +1186,108 @@ LazyFrame_dtypes = method_as_property(function() {
     unwrap("in $dtypes()")
 })
 
+
+#' Fetch `n` rows of a LazyFrame
+#'
+#' This is similar to `$collect()` but limit the number of rows to collect. It
+#' is mostly useful to check that a query works as expected.
+#'
+#' @keywords LazyFrame
+#' @details
+#' `$fetch()` does not guarantee the final number of rows in the DataFrame output.
+#' It only guarantees that `n` rows are used at the beginning of the query.
+#' Filters, join operations and a lower number of rows available in the scanned
+#' file influence the final number of rows.
+#'
+#' @param n_rows Integer. Maximum number of rows to fetch.
+#' @param type_coercion Boolean. Coerce types such that operations succeed and
+#' run on minimal required memory.
+#' @param predicate_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param projection_pushdown  Boolean. Applies filters as early as possible / at
+#' scan level.
+#' @param simplify_expression  Boolean. Cache subtrees/file scans that are used
+#' by multiple subtrees in the query plan.
+#' @param slice_pushdown  Boolean. Only load the required slice from the scan
+#' level. Don't materialize sliced outputs (e.g. `join$head(10)`).
+#' @param comm_subplan_elim Boolean. Will try to cache branching subplans that
+#' occur on self-joins or unions.
+#' @param comm_subexpr_elim Boolean. Common subexpressions will be cached and
+#' reused.
+#' @param no_optimization  Boolean. Turn off the following optimizations:
+#'  predicate_pushdown = FALSE
+#'  projection_pushdown = FALSE
+#'  slice_pushdown = FALSE
+#'  common_subplan_elimination = FALSE
+#' @param streaming  Boolean. Run parts of the query in a streaming fashion
+#' (this is in an alpha state).
+#' @return A DataFrame of maximum n_rows
+#' @seealso
+#'  - [`$collect()`][LazyFrame_collect] - regular collect.
+#'  - [`$profile()`][LazyFrame_profile] - returns as `$collect()` but also table with each operation
+#'  profiled.
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
+#' @examples
+#'
+#' # fetch 3 rows
+#' pl$LazyFrame(iris)$fetch(3)
+#'
+#' # this fetch-query returns 4 rows, because we started with 3 and appended one
+#' # row in the query (see section 'Details')
+#' pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
+LazyFrame_fetch = function(
+    n_rows = 500,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    no_optimization = FALSE,
+    streaming = FALSE) {
+
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    comm_subplan_elim = FALSE
+  }
+
+  self |>
+    .pr$LazyFrame$optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim,
+      comm_subexpr_elim,
+      streaming
+    ) |>
+    and_then(\(self) .pr$LazyFrame$fetch(self, n_rows)) |>
+    unwrap("in $fetch()")
+}
+
 #' @title Collect and profile a lazy query.
 #' @description This will run the query and return a list containing the materialized DataFrame and
 #'  a DataFrame that contains profiling information of each node that is executed.
 #' @details The units of the timings are microseconds.
 #'
 #' @keywords LazyFrame
-#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of each step.
+#' @return List of two `DataFrame`s: one with the collected result, the other with the timings of
+#' each step.
+#' @seealso
+#'  - [`$collect()`][LazyFrame_collect] - regular collect.
+#'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
+#'  - [`$collect_in_background()`][LazyFrame_collect_in_background] - non-blocking collect returns
+#'  a future handle. Can also just be used via `$collect(collect_in_background = TRUE)`.
 #' @examples
 #'
 #' ## Simplest use case
@@ -1259,7 +1351,7 @@ LazyFrame_profile = function() {
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers","numbers_2"))$collect()
+#' df$explode(c("numbers", "numbers_2"))$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)

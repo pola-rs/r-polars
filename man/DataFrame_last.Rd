@@ -2,12 +2,12 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_last}
 \alias{DataFrame_last}
-\title{Last}
+\title{Get the last row of the DataFrame.}
 \usage{
 DataFrame_last()
 }
 \value{
-A new \code{DataFrame} object with applied filter.
+A DataFrame with one row.
 }
 \description{
 Get the last row of the DataFrame.

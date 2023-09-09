@@ -6,7 +6,7 @@
 \arguments{
 \item{datatype}{a temporal data type either pl$Date, pl$Time or pl$Datetime}
 
-\item{fmt}{fmt string for parsing see
+\item{format}{format string for parsing see
 see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
 Notice time_zone \%Z is not supported and will just ignore timezones. Numeric tz  like
 \%z, \%:z  .... are supported.}
@@ -40,7 +40,7 @@ s = pl$Series(
   ),
   "date"
 )
-#' #join multiple passes with different fmt
+#' #join multiple passes with different format
 s$to_frame()$with_columns(
   pl$col("date")
   $str$strptime(pl$Date, "\%F", strict = FALSE)
@@ -57,7 +57,7 @@ txt_datetimes = c(
 
 pl$lit(txt_datetimes)$str$strptime(
   pl$Datetime("ns"),
-  fmt = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
+  format = "\%Y-\%m-\%d \%H:\%M:\%S \%z", strict = FALSE,
 )$lit_to_s()
 }
 \keyword{ExprStr}

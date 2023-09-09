@@ -2,9 +2,15 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_sort}
 \alias{DataFrame_sort}
-\title{DataFrame Sort}
+\title{Sort a DataFrame}
 \usage{
-DataFrame_sort(by, ..., descending = FALSE, nulls_last = FALSE)
+DataFrame_sort(
+  by,
+  ...,
+  descending = FALSE,
+  nulls_last = FALSE,
+  maintain_order = FALSE
+)
 }
 \arguments{
 \item{by}{Column(s) to sort by. Column name strings, character vector of
@@ -17,12 +23,16 @@ column name strings).}
 as number of Expr's from above by + ....}
 
 \item{nulls_last}{Bool default FALSE, place all nulls_last?}
+
+\item{maintain_order}{Whether the order should be maintained if elements are equal. Note that if
+true streaming is not possible and performance might be worse since this requires a stable
+search.}
 }
 \value{
 DataFrame
 }
 \description{
-sort a DataFrame by on or more Expr.
+sort by one or more Expr.
 }
 \details{
 by and ... args allow to either provide e.g. a list of Expr or something which can

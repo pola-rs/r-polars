@@ -10,7 +10,8 @@ LazyFrame_collect(
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
   slice_pushdown = TRUE,
-  common_subplan_elimination = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
   no_optimization = FALSE,
   streaming = FALSE,
   collect_in_background = FALSE
@@ -23,23 +24,28 @@ run on minimal required memory.}
 \item{predicate_pushdown}{Boolean. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Select only the columns that are needed at the scan level.}
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
 
-\item{simplify_expression}{Boolean. Various optimizations, such as constant folding
-and replacing expensive operations with faster alternatives.}
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
 Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
-\item{common_subplan_elimination}{Boolean. Cache subtrees/file scans that
-are used by multiple subtrees in the query plan.}
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+occur on self-joins or unions.}
+
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+reused.}
 
 \item{no_optimization}{Boolean. Turn off the following optimizations:
 predicate_pushdown = FALSE
 projection_pushdown = FALSE
 slice_pushdown = FALSE
-common_subplan_elimination = FALSE}
+comm_subplan_elim = FALSE
+comm_subexpr_elim = FALSE}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
@@ -63,6 +69,11 @@ pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 }
 \seealso{
 \itemize{
+\item \code{\link[=LazyFrame_fetch]{$fetch()}} - fast limited query check
+\item \code{\link[=LazyFrame_profile]{$profile()}} - returns as \verb{$collect()} but also table with each operation
+profiled.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
+a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
 \item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} stream query to a parquet file.
 \item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} stream query to a arrow file.
 }

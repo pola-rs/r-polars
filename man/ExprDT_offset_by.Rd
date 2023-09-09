@@ -46,7 +46,7 @@ df = pl$DataFrame(
     as.Date("2000-1-1"),
     as.Date("2005-1-1"),
     "1y",
-    lazy = FALSE
+    eager = TRUE
   )
 )
 df$select(

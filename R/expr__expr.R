@@ -85,10 +85,10 @@ wrap_e_legacy = function(e, str_to_lit = TRUE) {
     return(e)
   }
   # terminate WhenThen's to yield an Expr
-  if (inherits(e, c("WhenThen", "WhenThenThen"))) {
+  if (inherits(e, c("Then", "ChainedThen"))) {
     return(e$otherwise(pl$lit(NULL)))
   }
-  if (inherits(e, "When")) {
+  if (inherits(e, c("When", "ChainedWhen"))) {
     return(stopf("Cannot use a When-statement as Expr without a $then()"))
   }
   if (str_to_lit || is.numeric(e) || is.list(e) || is_bool(e)) {
@@ -449,6 +449,7 @@ Expr_alias = "use_extendr_wrapper"
 #' This method is an expression - not to be confused with
 #' `pl$all` which is a function to select all columns.
 #' @aliases Expr_all
+#' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
 #' @docType NULL
 #' @format NULL
@@ -462,12 +463,16 @@ Expr_alias = "use_extendr_wrapper"
 #' )$select(
 #'   pl$all()$all()
 #' )
-Expr_all = "use_extendr_wrapper"
+Expr_all = function(drop_nulls = TRUE) {
+  .pr$Expr$all(self, drop_nulls) |>
+    unwrap("in $all()")
+}
 
 #' Any (is true)
 #' @keywords Expr
 #' @description
 #' Check if any boolean value in a Boolean column is `TRUE`.
+#' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
 #' @docType NULL
 #' @format NULL
@@ -479,7 +484,10 @@ Expr_all = "use_extendr_wrapper"
 #' )$select(
 #'   pl$all()$any()
 #' )
-Expr_any = "use_extendr_wrapper"
+Expr_any = function(drop_nulls = TRUE) {
+  .pr$Expr$any(self, drop_nulls) |>
+    unwrap("in $all()")
+}
 
 
 
@@ -637,7 +645,6 @@ construct_ProtoExprArray = function(...) {
 
     # if args named, convert string to col and alias any column by name if a name
   } else {
-
     for (i in seq_along(args)) {
       arg = args[[i]]
       name = arg_names[i]
@@ -914,19 +921,8 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  pcase(
-    is.null(x),
-    .pr$Expr$lit(NULL),
-    inherits(x, "Expr"),
-    Ok(x),
-    inherits(x, "Series"),
-    .pr$Expr$lit(x),
-    length(x) != 1L || inherits(x, c("list", "POSIXct", "PTime", "Date")),
-    {
-      result(pl$Series(x)) |> and_then(.pr$Expr$lit)
-    },
-    or_else = .pr$Expr$lit(x)
-  ) |> unwrap("in lit()")
+  .Call(wrap__Expr__lit, x) |> # use .call reduces eval from 22us to 15us, not a bottle-next anyways
+    unwrap("in $lit()")
 }
 
 #' polars suffix
@@ -2121,13 +2117,13 @@ Expr_n_unique = "use_extendr_wrapper"
 #' @keywords Expr
 #' @description
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
-#' @aliases approx_unique
+#' @aliases approx_n_unique
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$approx_unique())
-Expr_approx_unique = "use_extendr_wrapper"
+#' pl$DataFrame(iris)$select(pl$col("Species")$approx_n_unique())
+Expr_approx_n_unique = "use_extendr_wrapper"
 
 #' Count `Nulls`
 #' @keywords Expr
@@ -3757,16 +3753,18 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
+#' @param fixed_seed
+#' Boolean. If True, The seed will not be incremented between draws. This can make output
+#' predictable because draw ordering can change due to threads being scheduled in a different order.
+#' Should be used together with seed
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-Expr_shuffle = function(seed = NULL) {
-  seed = seed %||% sample(0:10000, 1L)
-  if (!is.numeric(seed) || any(is.na(seed)) || length(seed) != 1L) pstop(err = "seed must be non NA/NaN numeric scalar")
-  unwrap(.pr$Expr$shuffle(self, seed))
+Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
+  .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
 }
 
 
@@ -3782,6 +3780,10 @@ Expr_shuffle = function(seed = NULL) {
 #' @param  seed
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
+#' @param fixed_seed
+#' Boolean. If True, The seed will not be incremented between draws. This can make output
+#' predictable because draw ordering can change due to threads being scheduled in a different order.
+#' Should be used together with seed
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr
@@ -3791,26 +3793,21 @@ Expr_shuffle = function(seed = NULL) {
 #' @examples
 #' df = pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
-#'
 #' df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
-#'
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
-Expr_sample = function(frac = NULL, with_replacement = TRUE, shuffle = FALSE, seed = NULL, n = NULL) {
-  # check seed
-  seed = seed %||% sample(0:10000, 1L)
-  if (!is.numeric(seed) || any(is.na(seed)) || length(seed) != 1L) pstop(err = "seed must be non NA/NaN numeric scalar")
-
-  # check not both n and frac
-  if (!is.null(n) && !is.null(frac)) pstop(err = "cannot specify both `n` and `frac`")
-
-  # use n
-  if (!is.null(n)) {
-    return(unwrap(.pr$Expr$sample_n(self, n, with_replacement, shuffle, seed)))
-  }
-
-  # use frac
-  if (is.null(frac)) frac <- 1
-  unwrap(.pr$Expr$sample_frac(self, frac, with_replacement, shuffle, seed))
+Expr_sample = function(
+    frac = NULL, with_replacement = TRUE, shuffle = FALSE,
+    seed = NULL, fixed_seed = FALSE, n = NULL) {
+  pcase(
+    !is.null(n) && !is.null(frac), {
+      Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
+    },
+    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+    or_else = {
+      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+    }
+  ) |>
+    unwrap("in $sample()")
 }
 
 
@@ -4255,13 +4252,32 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 
 
 
-#' arr: list related methods
+#' arr: list related methods DEPRECATED
+#' @description
+#' Deprecated since 0.8.1, will be removed in 0.9.0.
+#' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
+#' @keywords Expr
+#' @return Expr
+#' @seealso \code{\link[=Expr_list]{<Expr>$list$...}}
+Expr_arr = method_as_property(function() {
+  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
+    warning(
+      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and removed from polars 0.9.0.",
+      "Use `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
+      call. = FALSE
+    )
+    runtime_state$warned_deprecate_sns_arr_expr = TRUE
+  }
+  expr_list_make_sub_ns(self)
+})
+
+#' list: list related methods
 #' @description
 #' Create an object namespace of all list related methods.
 #' See the individual method pages for full details
 #' @keywords Expr
 #' @return Expr
-#' @aliases arr_ns
+#' @aliases list_ns
 #' @examples
 #' df_with_list = pl$DataFrame(
 #'   group = c(1, 1, 2, 2, 3),
@@ -4273,10 +4289,10 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #'   pl$col("value") * 3L
 #' )
 #' df_with_list$with_columns(
-#'   pl$col("value")$arr$lengths()$alias("group_size")
+#'   pl$col("value")$list$lengths()$alias("group_size")
 #' )
-Expr_arr = method_as_property(function() {
-  expr_arr_make_sub_ns(self)
+Expr_list = method_as_property(function() {
+  expr_list_make_sub_ns(self)
 })
 
 
@@ -4397,7 +4413,7 @@ Expr_to_struct = function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $arr$lengths()
+#'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $lit_to_s()
@@ -4417,7 +4433,7 @@ Expr_lit_to_s = function() {
 #'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
 #'   $print()
 #'   $to_lit()
-#'   $arr$lengths()
+#'   $list$lengths()
 #'   $sum()
 #'   $cast(pl$dtypes$Int8)
 #'   $lit_to_df()

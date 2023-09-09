@@ -23,7 +23,7 @@ concurrency:
 env:
   RPOLARS_FULL_FEATURES: "true"
   RPOLARS_CARGO_CLEAN_DEPS: "true"
-  RPOLARS_PROFILE: release-optimized
+  RPOLARS_PROFILE: release
 
 jobs:
   documentation:

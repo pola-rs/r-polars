@@ -3,26 +3,30 @@
 \name{DataFrame_to_struct}
 \alias{DataFrame_to_struct}
 \alias{to_struct}
-\title{to_struct}
+\title{Convert DataFrame to a Series of type "struct"}
 \usage{
 DataFrame_to_struct(name = "")
 }
 \arguments{
-\item{name}{name of new Series}
+\item{name}{Name given to the new Series}
 }
 \value{
-to_struct() returns a Series
+A Series of type "struct"
 }
 \description{
-to_struct
+Convert DataFrame to a Series of type "struct"
 }
 \examples{
 # round-trip conversion from DataFrame with two columns
 df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
 s = df$to_struct()
 s
-s$to_r() # to r list
-df_s = s$to_frame() # place series in a new DataFrame
-df_s$unnest() # back to starting df
+
+# convert to an R list
+s$to_r()
+
+# Convert back to a DataFrame
+df_s = s$to_frame()
+df_s
 }
 \keyword{DataFrame}

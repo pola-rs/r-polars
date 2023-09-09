@@ -39,8 +39,9 @@ two non-identifier columns, 'variable' and 'value'.
 df = pl$DataFrame(
   a = c("x", "y", "z"),
   b = c(1, 3, 5),
-  c = c(2, 4, 6)
+  c = c(2, 4, 6),
+  d = c(7, 8, 9)
 )
-df$melt(id_vars = "a", value_vars = c("b", "c"))
+df$melt(id_vars = "a", value_vars = c("b", "c", "d"))
 }
 \keyword{DataFrame}

@@ -268,6 +268,7 @@ test_that("sorted flags, sort", {
   )
 })
 
+# TODO rework this test
 # test_that("is_sorted  sort", {
 #   s = pl$Series(c(NA,2,1,3,NA))
 #   s_sorted = s$sort(descending = FALSE)
@@ -532,4 +533,13 @@ test_that("n_unique", {
   x = c(1:4, NA, NaN, 1) # 6 unique one repeated
   expect_identical(pl$Series(x)$n_unique(), 6)
   expect_grepl_error(pl$Series(c())$n_unique(), "operation not supported for dtype")
+})
+
+
+test_that("$list$ warn once but give same ns as $list$", {
+  runtime_state$warned_deprecate_sns_arr_series = FALSE
+  expect_warning(pl$Series(42)$arr)
+  expect_no_warning(pl$Series(42)$arr)
+  expect_no_warning(pl$Series(42)$list)
+  expect_identical(ls(pl$Series(42)$arr), ls(pl$Series(42)$list))
 })

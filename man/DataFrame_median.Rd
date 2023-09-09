@@ -7,7 +7,7 @@
 DataFrame_median()
 }
 \value{
-A new \code{DataFrame} object with applied aggregation.
+A DataFrame with one row.
 }
 \description{
 Aggregate the columns in the DataFrame to their median value.

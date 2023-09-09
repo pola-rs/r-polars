@@ -14,7 +14,9 @@ All values must be in the range \verb{[0; 1]}.}
 DataFrame
 }
 \description{
-Summary statistics for a DataFrame
+This returns the total number of rows, the number of missing
+values, the mean, standard deviation, min, max, median and the percentiles
+specified in the argument \code{percentiles}.
 }
 \examples{
 pl$DataFrame(iris)$describe()

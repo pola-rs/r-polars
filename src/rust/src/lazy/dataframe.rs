@@ -1,19 +1,23 @@
-use crate::concurrent::{collect_with_r_func_support, profile_with_r_func_support};
+use crate::concurrent::{
+    collect_with_r_func_support, fetch_with_r_func_support, profile_with_r_func_support,
+};
 use crate::conversion::strings_to_smartstrings;
+
 use crate::lazy::dsl::*;
+
 use crate::rdataframe::DataFrame as RDF;
 use crate::rdatatype::{
     new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
-    new_quantile_interpolation_option, new_unique_keep_strategy, RPolarsDataType,
+    new_unique_keep_strategy, RPolarsDataType,
 };
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, rerr, RResult, Rctx, WithRctx};
+use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
-use polars::chunked_array::object::AsOfOptions;
 use polars::frame::explode::MeltArgs;
 use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
+use polars::prelude::AsOfOptions;
 
 #[allow(unused_imports)]
 use std::result::Result;
@@ -146,12 +150,14 @@ impl LazyFrame {
         Ok(self.clone().0.var(robj_to!(u8, ddof)?).into())
     }
 
-    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> Result<Self, String> {
-        let res = new_quantile_interpolation_option(robj_to!(str, interpolation)?).unwrap();
+    pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
         Ok(self
             .clone()
             .0
-            .quantile(robj_to!(Expr, quantile)?.0, res)
+            .quantile(
+                robj_to!(PLExpr, quantile)?,
+                robj_to!(new_quantile_interpolation_option, interpolation)?,
+            )
             .into())
     }
 
@@ -202,8 +208,20 @@ impl LazyFrame {
         )))
     }
 
+    pub fn with_columns(&self, exprs: Robj) -> RResult<Self> {
+        let exprs =
+            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $with_columns()")?;
+        Ok(LazyFrame(self.clone().0.with_columns(exprs)))
+    }
+
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
-        let exprs = robj_to!(VecPLExprCol, exprs).when("preparing expressions before select")?;
+        let exprs =
+            robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $select()")?;
+        Ok(LazyFrame(self.clone().0.select(exprs)))
+    }
+
+    pub fn select_str_as_lit(&self, exprs: Robj) -> RResult<Self> {
+        let exprs = robj_to!(VecPLExprNamed, exprs).when("preparing columns for DataFrame")?;
         Ok(LazyFrame(self.clone().0.select(exprs)))
     }
 
@@ -249,10 +267,6 @@ impl LazyFrame {
         } else {
             Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
         }
-    }
-
-    fn with_columns(&self, exprs: &ProtoExprArray) -> LazyFrame {
-        LazyFrame(self.0.clone().with_columns(pra_to_vec(exprs, "select")))
     }
 
     fn with_column(&self, expr: &Expr) -> LazyFrame {
@@ -367,14 +381,22 @@ impl LazyFrame {
     pub fn sort_by_exprs(
         &self,
         by: Robj,
+        dotdotdot: Robj,
         descending: Robj,
         nulls_last: Robj,
-    ) -> Result<Self, String> {
-        let ldf = self.0.clone();
-        let exprs = robj_to!(VecPLExpr, by).map_err(|err| format!("the arg [...] or {}", err))?;
+        maintain_order: Robj,
+    ) -> RResult<Self> {
+        let mut exprs = robj_to!(VecPLExprCol, by)?;
+        let mut ddd = robj_to!(VecPLExprCol, dotdotdot)?;
+        exprs.append(&mut ddd);
         let descending = robj_to!(Vec, bool, descending)?;
         let nulls_last = robj_to!(bool, nulls_last)?;
-        Ok(ldf.sort_by_exprs(exprs, descending, nulls_last).into())
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        Ok(self
+            .0
+            .clone()
+            .sort_by_exprs(exprs, descending, nulls_last, maintain_order)
+            .into())
     }
 
     fn melt(
@@ -417,6 +439,10 @@ impl LazyFrame {
         ))
     }
 
+    fn fetch(&self, n_rows: Robj) -> RResult<RDF> {
+        fetch_with_r_func_support(self.0.clone(), robj_to!(usize, n_rows)?)
+    }
+
     #[allow(clippy::too_many_arguments)]
     fn optimization_toggle(
         &self,
@@ -425,7 +451,8 @@ impl LazyFrame {
         projection_pushdown: Robj,
         simplify_expr: Robj,
         slice_pushdown: Robj,
-        cse: Robj,
+        comm_subplan_elim: Robj,
+        comm_subexpr_elim: Robj,
         streaming: Robj,
     ) -> RResult<Self> {
         let ldf = self
@@ -437,7 +464,8 @@ impl LazyFrame {
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
-            .with_common_subplan_elimination(robj_to!(bool, cse)?);
+            .with_comm_subplan_elim(robj_to!(bool, comm_subplan_elim)?)
+            .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
 
         Ok(ldf.into())
     }
@@ -446,11 +474,11 @@ impl LazyFrame {
         profile_with_r_func_support(self.0.clone()).map(|(r, p)| list!(result = r, profile = p))
     }
 
-    fn explode(&self, dotdotdot_args: Robj) -> RResult<LazyFrame> {
+    fn explode(&self, dotdotdot: Robj) -> RResult<LazyFrame> {
         Ok(self
             .0
             .clone()
-            .explode(robj_to!(Vec, PLExprCol, dotdotdot_args)?)
+            .explode(robj_to!(VecPLExprColNamed, dotdotdot)?)
             .into())
     }
 
@@ -469,8 +497,9 @@ impl LazyGroupBy {
     }
 
     fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
-        let expr_vec: Vec<pl::Expr> = robj_to!(VecPLExprCol, exprs)?;
-        Ok(LazyFrame(self.0.clone().agg(expr_vec)))
+        Ok(LazyFrame(
+            self.0.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
+        ))
     }
 
     fn head(&self, n: f64) -> List {

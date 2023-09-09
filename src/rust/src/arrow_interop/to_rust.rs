@@ -1,3 +1,4 @@
+use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::export::rayon::prelude::*;
@@ -38,33 +39,6 @@ pub fn arrow_array_to_rust(
 unsafe fn wrap_make_external_ptr<T>(t: &mut T) -> Robj {
     //use extendr_api::{Integers, Rinternals};
     unsafe { <Integers>::make_external_ptr(t, r!(extendr_api::NULL)) }
-}
-//does not support chunked array
-pub fn arrow_array_stream_to_rust(
-    arrow_stream_reader: Robj,
-    opt_f: Option<&Function>,
-) -> Result<ArrayRef, String> {
-    let mut stream = Box::new(ffi::ArrowArrayStream::empty());
-    //let mut schema = Box::new(ffi::ArrowSchema::empty());
-    let ext_stream = unsafe { wrap_make_external_ptr(&mut *stream) };
-
-    if let Some(f) = opt_f {
-        f.call(pairlist!(arrow_stream_reader, ext_stream))?;
-    } else {
-        call!(r"\(x,y) x$export_to_c(y)", arrow_stream_reader, ext_stream)?;
-    };
-    dbg!("after export");
-
-    let mut iter =
-        unsafe { ffi::ArrowArrayStreamReader::try_new(stream) }.map_err(|err| err.to_string())?;
-    dbg!("after reader");
-
-    while let Some(array_res) = unsafe { iter.next() } {
-        let array = array_res.map_err(|err| err.to_string())?;
-        dbg!(&array);
-    }
-
-    todo!("not  more for now");
 }
 
 pub fn rb_to_rust_df(r_rb_columns: List, names: &[String]) -> Result<pl::DataFrame, String> {
@@ -125,8 +99,8 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
                 arr.data_type(),
                 ArrowDataType::Utf8 | ArrowDataType::Dictionary(_, _, _)
             );
-            let arr_res: Result<_, String> = Ok(arr);
-            arr_res
+            let list_res: Result<_, String> = Ok(arr);
+            list_res
         });
         let arrays_vec = crate::utils::collect_hinted_result(n_columns, array_iter)?;
 
@@ -159,4 +133,64 @@ pub fn to_rust_df(rb: Robj) -> Result<pl::DataFrame, String> {
     });
     let dfs = crate::utils::collect_hinted_result(rb_len, dfs_iter)?;
     Ok(accumulate_dataframes_vertical_unchecked(dfs))
+}
+
+// r-polars as consumer 1: create a new stream and wrap pointer in Robj as str.
+pub fn new_arrow_stream_internal() -> Robj {
+    let aas = Box::new(ffi::ArrowArrayStream::empty());
+    let x = Box::leak(aas); // leak box to make lifetime static
+    let x = x as *mut ffi::ArrowArrayStream;
+    crate::utils::usize_to_robj_str(x as usize)
+}
+
+// r-polars as consumer 2: recieve to pointer to own stream, which producer has exported to. Consume it. Return Series.
+pub fn arrow_stream_to_series_internal(robj_str: Robj) -> RResult<pl::Series> {
+    // reclaim ownership of leaked box, and then drop/release it when consumed.
+    let us = crate::utils::robj_str_ptr_to_usize(&robj_str)?;
+    let boxed_stream = unsafe { Box::from_raw(us as *mut ffi::ArrowArrayStream) };
+
+    //consume stream and produce a r-polars Series return as Robj
+    let s = consume_arrow_stream_to_series(boxed_stream)?;
+    Ok(s)
+}
+
+// implementation of consuming stream to Series. Stream is drop/released hereafter.
+fn consume_arrow_stream_to_series(boxed_stream: Box<ffi::ArrowArrayStream>) -> RResult<pl::Series> {
+    let mut iter = unsafe { ffi::ArrowArrayStreamReader::try_new(boxed_stream) }?;
+
+    //import first array into pl::Series
+    let mut s = if let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res?;
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+        let series = series_res.map_err(polars_to_rpolars_err)?;
+        series
+    } else {
+        rerr()
+            .plain("Arrow array stream was empty")
+            .hint("producer did not export to stream")
+            .when("consuming arrow array stream")?;
+        unreachable!();
+    };
+
+    // append any other arrays to Series
+    while let Some(array_res) = unsafe { iter.next() } {
+        let array = array_res?;
+        let series_res: pl::PolarsResult<pl::Series> =
+            std::convert::TryFrom::try_from(("df", array));
+        let series = series_res.map_err(polars_to_rpolars_err)?;
+        s.append(&series).map_err(polars_to_rpolars_err)?;
+    }
+    Ok(s)
+}
+
+pub unsafe fn export_df_as_stream(df: pl::DataFrame, robj_str_ref: &Robj) -> RResult<()> {
+    let stream_ptr =
+        crate::utils::robj_str_ptr_to_usize(robj_str_ref)? as *mut ffi::ArrowArrayStream;
+    let schema = df.schema().to_arrow();
+    let data_type = pl::ArrowDataType::Struct(schema.fields);
+    let field = pl::ArrowField::new("", data_type, false);
+    let iter_boxed = Box::new(crate::rdataframe::OwnedDataFrameIterator::new(df));
+    unsafe { *stream_ptr = ffi::export_iterator(iter_boxed, field) };
+    Ok(())
 }

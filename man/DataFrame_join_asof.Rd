@@ -74,7 +74,7 @@ computation of both DataFrames up to the join in parallel.}
 DataFrames up to the join in parallel.}
 }
 \value{
-new joined DataFrame
+New joined DataFrame
 }
 \description{
 Perform an asof join.
@@ -95,7 +95,7 @@ For each row in the left DataFrame:
 The default is "backward".
 }
 \examples{
-# create two DataFrame to join asof
+# create two DataFrames to join asof
 gdp = pl$DataFrame(
   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
   gdp = c(4321, 4164, 4411, 4566, 4696),

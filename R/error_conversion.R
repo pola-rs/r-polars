@@ -1,13 +1,18 @@
 # THIS FILE IMPLEMENTS ERROR CONVERSION, FOR R TO Result-list & FOR Result-list TO R
 
-# TODO unwrap should be eventually renamed to unwrap_with_context (or similar)
-# a simpler unwrap without where_in and when_calling should be defined in rust_result.R
 
-#' rust-like unwrapping of result. Useful to keep error handling on the R side.
+#' unwrap
+#' @description rust-like unwrapping of result. Useful to keep error handling on the R side.
 #' @noRd
 #' @param result a list here either element ok or err is NULL, or both if ok is litteral NULL
 #' @param call context of error or string
 #' @param context a msg to prefix a raised error with
+#'
+#' @details
+#' unwraps any ok value and raises any err values
+#' when raising error value, the error will be called with methods where_in() a simple lexical
+#' context and when_calling() to add the call context and finally to_condition() to convert any
+#' error into an R error condition. These s3 methods can be implemented for any future error type.
 #'
 #' @return the ok-element of list , or a error will be thrown
 #' @keywords internal

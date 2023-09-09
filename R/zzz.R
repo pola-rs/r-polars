@@ -28,8 +28,8 @@ replace_private_with_pub_methods(Expr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
-`$.ExprArrNameSpace` = sub_name_space_accessor_function
-expr_arr_make_sub_ns = macro_new_subnamespace("^ExprArr_", "ExprArrNameSpace")
+`$.ExprListNameSpace` = sub_name_space_accessor_function
+expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
 
 #' @export
 `$.ExprStrNameSpace` = sub_name_space_accessor_function
@@ -56,9 +56,9 @@ expr_cat_make_sub_ns = macro_new_subnamespace("^ExprCat_", "ExprCatNameSpace")
 expr_bin_make_sub_ns = macro_new_subnamespace("^ExprBin_", "ExprBinNameSpace")
 
 replace_private_with_pub_methods(When, "^When_")
-replace_private_with_pub_methods(WhenThen, "^WhenThen_")
-replace_private_with_pub_methods(WhenThenThen, "^WhenThenThen_")
-
+replace_private_with_pub_methods(Then, "^Then_")
+replace_private_with_pub_methods(ChainedWhen, "^ChainedWhen_")
+replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
 
 
 # any sub-namespace inherits 'method_environment'

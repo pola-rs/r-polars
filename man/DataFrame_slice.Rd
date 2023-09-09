@@ -7,18 +7,22 @@
 DataFrame_slice(offset, length = NULL)
 }
 \arguments{
-\item{offset}{integer}
+\item{offset}{Start index, can be a negative value. This is 0-indexed, so
+\code{offset = 1} doesn't include the first row.}
 
-\item{length}{integer or NULL}
+\item{length}{Length of the slice. If \code{NULL} (default), all rows starting at
+the offset will be selected.}
 }
 \value{
 DataFrame
 }
 \description{
-Get a slice of this DataFrame.
+Get a slice of the DataFrame.
 }
 \examples{
+# skip the first 2 rows and take the 4 following rows
 pl$DataFrame(mtcars)$slice(2, 4)
-mtcars[2:6, ]
+
+# this is equivalent to:
+mtcars[3:6, ]
 }
-\keyword{LazyFrame}

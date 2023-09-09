@@ -7,7 +7,8 @@
 LazyFrame_profile()
 }
 \value{
-List of two \code{DataFrame}s: one with the collected result, the other with the timings of each step.
+List of two \code{DataFrame}s: one with the collected result, the other with the timings of
+each step.
 }
 \description{
 This will run the query and return a list containing the materialized DataFrame and
@@ -44,5 +45,13 @@ pl$LazyFrame(iris)$
   agg(pl$col(pl$Float64)$apply(r_func))$
   profile()
 
+}
+\seealso{
+\itemize{
+\item \code{\link[=LazyFrame_collect]{$collect()}} - regular collect.
+\item \code{\link[=LazyFrame_fetch]{$fetch()}} - fast limited query check
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
+a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
+}
 }
 \keyword{LazyFrame}

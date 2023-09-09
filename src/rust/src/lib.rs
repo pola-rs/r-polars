@@ -22,6 +22,7 @@ pub mod rdataframe;
 pub mod rdatatype;
 pub mod rlib;
 pub mod rpolarserr;
+pub mod rstringcache;
 pub mod series;
 pub mod utils;
 pub use serde_json;
@@ -33,9 +34,9 @@ use polars::prelude::Series;
 pub use polars_core;
 pub use smartstring;
 
-use crate::utils::extendr_concurrent::{Storage, ThreadCom};
-type ThreadComStorage = Storage<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
-static CONFIG: ThreadComStorage = Storage::new();
+use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
+type ThreadComStorage = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
+static CONFIG: ThreadComStorage = InitCell::new();
 pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports
@@ -47,4 +48,5 @@ extendr_module! {
     use lazy;
     use series;
     use info;
+    use rstringcache;
 }

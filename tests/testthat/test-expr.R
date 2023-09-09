@@ -330,11 +330,6 @@ test_that("col DataType + col(s) + col regex", {
     iris[, Names]
   )
 
-  # warn no multiple regex
-
-  expect_warning(
-    pl$col(c("^Sepal.*$", "Species"))
-  )
 })
 
 
@@ -453,10 +448,9 @@ test_that("and or is_in xor", {
 
 
 
-  # not sure if polars have a good consistant logical system, anyways here are some statements which were true when writing this
-  # TODO discuss with polars team
+
   expect_true(
-    pl$DataFrame(list())$select(
+    pl$select(
       # nothing is nothing
       pl$lit(NULL) == pl$lit(NULL)$alias("NULL is NULL"),
 
@@ -464,14 +458,16 @@ test_that("and or is_in xor", {
       pl$lit(NULL) == pl$lit(NA_real_)$alias("NULL is NULL_real"),
 
       # typed nothing is typed nothing
-      pl$lit(NA_real_) == pl$lit(NA_real_)$alias("NULL_eral is NULL_real"),
+      (pl$lit(NA_real_) == pl$lit(NA_real_))$is_null()$alias("NULL_eral is NULL_real is null"),
 
-      # type nothing is IN nothing
-      pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
+      # type nothing is IN nothing # not allowed
+      # pl$lit(NA_real_)$is_in(pl$lit(NA_real_))$alias("NULL typed is in  NULL typed"),
 
-      # neither typed nor untyped NULL is IN NULL
-      pl$lit(NA_real_)$is_in(pl$lit(NULL))$is_not()$alias("NULL typed is in NULL, NOT"),
-      pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
+      # neither typed nor untyped NULL is IN NULL, changed behavior from  0.30-0.32, previous false
+      pl$lit(NA_real_)$is_in(pl$lit(NULL))$alias("NULL typed is in NULL")
+
+      # anymore from rust-polars 0.30-0.32
+      # pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
@@ -1445,17 +1441,17 @@ test_that("Expr_filter", {
     b = c(1, 2, 3)
   ))
 
-  df = pdf$groupby("group_col")$agg(
+  df = pdf$groupby("group_col", maintain_order = TRUE)$agg(
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
-  )$to_data_frame() |> (\(x) x[order(x$group_col), ])()
-  row.names(df) = NULL
+  )$to_data_frame()
+  # row.names(df) = NULL
 
   expect_identical(
     df,
     data.frame(
       group_col = c("g1", "g2"),
-      lt = c(1, NA_real_),
+      lt = c(1, 0),
       gte = c(2, 3)
     )
   )
@@ -2371,6 +2367,6 @@ test_that("concat_str", {
   ctxs = pl$concat_str("a", complex(1)) |>
     (\(x) result(x)$err$contexts())()
   expect_identical(ctxs$BadArgument, " `...` ")
-  expect_identical(ctxs$Hint, "element no. [2] ")
+  expect_identical(ctxs$When, "converting element 2 into an Expr")
   expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })
