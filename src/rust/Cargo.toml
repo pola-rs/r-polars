@@ -22,14 +22,15 @@ mimalloc = { version = "0.1.34", default-features = false }
 [target.'cfg(all(target_os = "linux", not(use_mimalloc)))'.dependencies]
 jemallocator = { version = "0.5.0", features = ["disable_initial_exec_tls"] }
 
+
+# use opt-level = 1 for argminmax package unless profile is profile.release-optimized to support Rust < 1.66
 [profile.release-optimized]
 inherits = "release"
 codegen-units = 1
 lto = "fat"
-strip = true
 
 [profile.release.package.argminmax]
-opt-level = 3 # was 1 to support 1.66, but since 1.70 is needed anyway it does not matter anymore
+opt-level = 1
 [profile.release-optimized.package.argminmax]
 opt-level = 3
 

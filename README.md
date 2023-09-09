@@ -64,20 +64,12 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-GitHub releases have faster and smaller binaries, as they are compiled
-by nightly rust with some more opimizations. This inludes SIMD
-operations, full link time optimizations (lto=“fat”). The pre-compiled
-binaries are available for various operating systems / architectures,
-including MacOS ARM CPUs. See latest and all previous [GitHub Releases
-here](https://github.com/pola-rs/r-polars/releases).
-
-You can download and install these files manually, or install directly
-from R. Simply match the URL for your operating system and the desired
-release. For example, to install the latest release of **polars** on one
-can use:
-
-Just remember to invoke the `repos = NULL` argument if you are
-installing these binary builds directly from within R.
+We also provide pre-compiled binaries for various operating systems on
+our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
+page. You can download and install these files manually, or install
+directly from R. Simply match the URL for your operating system and the
+desired release. For example, to install the latest release of
+**polars** on one can use:
 
 #### Linux (x86_64)
 
@@ -106,21 +98,11 @@ install.packages(
 )
 ```
 
-#### macOS(aarch64 / arm64)
+Just remember to invoke the `repos = NULL` argument if you are
+installing these binary builds directly from within R.
 
-This release is a little different from above, notice `type = "source"`.
-To install Make + Xcode is required but not rustc / cargo. The release
-is actually a source release bundled with a pre- cross-compiled object
-file `./inst/libr_polars.a`. The final linking / building of any R
-packages must be done on the native OS/architecture, but that should
-take only ~20 seconds.
-
-``` r
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/download/cross_test10/polars_cross_aarch64-apple-darwin.tar.gz",
-  repos = NULL, type = "source"
-)
-```
+Binary packages on GitHub releases are compiled by nightly Rust, with
+nightly features enabled.
 
 ### Build from source
 
