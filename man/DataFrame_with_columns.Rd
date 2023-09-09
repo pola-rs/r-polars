@@ -39,8 +39,6 @@ l_expr = list(
 )
 pl$DataFrame(iris)$with_columns(l_expr)
 
-
-# rename columns by naming expression is concidered experimental
 pl$DataFrame(iris)$with_columns(
   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
   SW_add_2 = (pl$col("Sepal.Width") + 2)

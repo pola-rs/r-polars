@@ -2,20 +2,20 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_drop}
 \alias{LazyFrame_drop}
-\title{Drop}
+\title{Drop columns of a LazyFrame}
 \usage{
 LazyFrame_drop(columns)
 }
 \arguments{
-\item{columns}{character vector Name of the column(s) that should be removed from the dataframe.}
+\item{columns}{A character vector with the names of the column(s) to remove.}
 }
 \value{
 LazyFrame
 }
 \description{
-Remove columns from the dataframe.
+Drop columns of a LazyFrame
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$drop(c("mpg", "hp"))
+pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))
 }
 \keyword{LazyFrame}

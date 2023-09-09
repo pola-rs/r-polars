@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_explode}
 \alias{LazyFrame_explode}
-\title{Explode the DataFrame to long format by exploding the given columns}
+\title{Explode columns containing a list of values}
 \usage{
 LazyFrame_explode(...)
 }
@@ -17,7 +17,8 @@ of \verb{Into<Expr>}. In a handful of places in rust-polars, only the plain vari
 LazyFrame
 }
 \description{
-Explode the DataFrame to long format by exploding the given columns
+This will take every element of a list column and add it on an
+additional row.
 }
 \details{
 Only columns of DataType \code{List} or \code{Utf8} can be exploded.
@@ -36,6 +37,8 @@ df
 
 # explode a single column, append others
 df$explode("numbers")$collect()
+
+# it doesn't change anything if the input is not a list-column
 df$explode("letters")$collect()
 
 # explode two columns of same nesting structure, by names or the common dtype

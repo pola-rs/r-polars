@@ -7,17 +7,18 @@
 LazyFrame_quantile(quantile, interpolation = "nearest")
 }
 \arguments{
-\item{quantile}{numeric Quantile between 0.0 and 1.0.}
+\item{quantile}{Numeric of length 1 between 0 and 1.}
 
-\item{interpolation}{string Interpolation method: "nearest", "higher", "lower", "midpoint", or "linear".}
+\item{interpolation}{Interpolation method: "nearest", "higher", "lower",
+"midpoint", or "linear".}
 }
 \value{
 LazyFrame
 }
 \description{
-Aggregate the columns in the DataFrame to their quantile value.
+Aggregate the columns in the DataFrame to a unique quantile
+value. Use \verb{$describe()} to specify several quantiles.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$quantile(.4)$collect()
+pl$LazyFrame(mtcars)$quantile(.4)$collect()
 }
-\keyword{LazyFrame}

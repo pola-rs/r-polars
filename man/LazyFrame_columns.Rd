@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_columns}
 \alias{LazyFrame_columns}
-\title{Columns}
+\title{Get the column names of a LazyFrame}
 \usage{
 LazyFrame_columns()
 }
@@ -10,10 +10,9 @@ LazyFrame_columns()
 A vector of column names
 }
 \description{
-Get the column names of the LazyFrame
+Get the column names of a LazyFrame
 }
 \examples{
 pl$LazyFrame(mtcars)$columns
-
 }
 \keyword{LazyFrame}

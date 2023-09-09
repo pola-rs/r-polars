@@ -23,26 +23,35 @@ LazyFrame_join_asof(
 \arguments{
 \item{other}{LazyFrame}
 
-\item{...}{not used, blocks use of further positional arguments}
+\item{...}{Not used, blocks use of further positional arguments}
 
-\item{left_on}{column name or Expr,  join column of left table}
+\item{left_on, right_on}{Same as \code{on} but only for the left or the right
+DataFrame. They must have the same length.}
 
-\item{right_on}{column name or Expr, join column of right (other) table}
+\item{on}{Either a vector of column names or a list of expressions and/or
+strings. Use \code{left_on} and \code{right_on} if the column names to match on are
+different between the two DataFrames.}
 
-\item{on}{column name or Expr, sets both left_on and right_on}
+\item{by_left, by_right}{Same as \code{by} but only for the left or the right
+table. They must have the same length.}
 
-\item{by_left}{Default NULL (no grouping) or character vector of columns to group by in left
-table.}
+\item{by}{Join on these columns before performing asof join. Either a vector
+of column names or a list of expressions and/or strings. Use \code{left_by} and
+\code{right_by} if the column names to match on are different between the two
+tables.}
 
-\item{by_right}{Default NULL (no grouping) or character vector of columns to group by in right
-table.}
+\item{strategy}{Strategy for where to find match:
+\itemize{
+\item "backward" (default): search for the last row in the right table whose \code{on}
+key is less than or equal to the left’s key.
+\item "forward": search for the first row in the right table whose \code{on} key is
+greater than or equal to the left’s key.
+\item "nearest": search for the last row in the right table whose value is nearest
+to the left’s key. String keys are not currently supported for a nearest
+search.
+}}
 
-\item{by}{Default NULL, optional set/override by_left and by_right simultaneously}
-
-\item{strategy}{Default "backward". Strategy for where to find match. "Backward" searches in a
-descending direction and "Forward" searches in Ascending direction.}
-
-\item{suffix}{Suffix to append to the right (other) columns, if there are duplicated names}
+\item{suffix}{Suffix to add to duplicated column names.}
 
 \item{tolerance}{Numeric tolerance. By setting this the join will only be done if the near
 keys are within this distance. If an asof join is done on columns of dtype
@@ -63,51 +72,38 @@ keys are within this distance. If an asof join is done on columns of dtype
 
 Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
 
-There may be a circumstance where R types are not sufficient to express a numeric tolerance.
-For that case expression syntax is also enabled like e.g.
+There may be a circumstance where R types are not sufficient to express a
+numeric tolerance. In that case, you can use the expression syntax like
 \code{tolerance = pl$lit(42)$cast(pl$Uint64)}}
 
-\item{allow_parallel}{Default TRUE. Allow the physical plan to optionally evaluate the
-computation of both DataFrames up to the join in parallel.}
+\item{allow_parallel}{Boolean.}
 
-\item{force_parallel}{Default FALSE. Force the physical plan to evaluate the computation of both
-DataFrames up to the join in parallel.}
+\item{force_parallel}{Boolean.}
 }
 \value{
-new joined LazyFrame
+A LazyFrame
 }
 \description{
-Perform an asof join.
+This is similar to a left-join except that we match on nearest key rather
+than equal keys.
 }
 \details{
-This is similar to a left-join except that we match on nearest key rather than equal keys.
-
-Both DataFrames must be sorted by the asof_join key.
-
-For each row in the left DataFrame:
-\itemize{
-\item A "backward" search selects the last row in the right DataFrame whose
-'on' key is less than or equal to the left's key.
-\item A "forward" search selects the first row in the right DataFrame whose
-'on' key is greater than or equal to the left's key.
-}
-
-The default is "backward".
+Both tables (DataFrames or LazyFrames) must be sorted by the asof_join key.
 }
 \examples{
 #
 # create two LazyFrame to join asof
-gdp = pl$DataFrame(
+gdp = pl$LazyFrame(
   date = as.Date(c("2015-1-1", "2016-1-1", "2017-5-1", "2018-1-1", "2019-1-1")),
   gdp = c(4321, 4164, 4411, 4566, 4696),
   group = c("b", "a", "a", "b", "b")
-)$lazy()
+)
 
-pop = pl$DataFrame(
+pop = pl$LazyFrame(
   date = as.Date(c("2016-5-12", "2017-5-12", "2018-5-12", "2019-5-12")),
   population = c(82.19, 82.66, 83.12, 83.52),
   group = c("b", "b", "a", "a")
-)$lazy()
+)
 
 # optional make sure tables are already sorted with "on" join-key
 gdp = gdp$sort("date")

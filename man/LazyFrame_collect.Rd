@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_collect}
 \alias{LazyFrame_collect}
-\title{New DataFrame from LazyFrame_object$collect()}
+\title{Collect a query into a DataFrame}
 \usage{
 LazyFrame_collect(
   type_coercion = TRUE,
@@ -31,7 +31,6 @@ at the scan level.}
 folding and replacing expensive operations with faster alternatives.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
-Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
 \item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
@@ -40,12 +39,9 @@ occur on self-joins or unions.}
 \item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
 reused.}
 
-\item{no_optimization}{Boolean. Turn off the following optimizations:
-predicate_pushdown = FALSE
-projection_pushdown = FALSE
-slice_pushdown = FALSE
-comm_subplan_elim = FALSE
-comm_subexpr_elim = FALSE}
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
@@ -58,7 +54,8 @@ into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 A \code{DataFrame}
 }
 \description{
-collect DataFrame by lazy query
+\verb{$collect()} performs the query on the LazyFrame. It returns a
+DataFrame
 }
 \details{
 Note: use \verb{$fetch(n)} if you want to run your query on the first \code{n} rows only.
@@ -70,12 +67,13 @@ pl$LazyFrame(iris)$filter(pl$col("Species") == "setosa")$collect()
 \seealso{
 \itemize{
 \item \code{\link[=LazyFrame_fetch]{$fetch()}} - fast limited query check
-\item \code{\link[=LazyFrame_profile]{$profile()}} - returns as \verb{$collect()} but also table with each operation
-profiled.
-\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
-a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
-\item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} stream query to a parquet file.
-\item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} stream query to a arrow file.
+\item \code{\link[=LazyFrame_profile]{$profile()}} - same as \verb{$collect()} but also returns
+a table with each operation profiled.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking
+collect returns a future handle. Can also just be used via
+\verb{$collect(collect_in_background = TRUE)}.
+\item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} streams query to a parquet file.
+\item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }
 }
 \keyword{DataFrame_new}

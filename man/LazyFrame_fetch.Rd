@@ -23,14 +23,14 @@ LazyFrame_fetch(
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
 
-\item{predicate_pushdown}{Boolean. Applies filters as early as possible / at
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Applies filters as early as possible / at
-scan level.}
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
 
-\item{simplify_expression}{Boolean. Cache subtrees/file scans that are used
-by multiple subtrees in the query plan.}
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
@@ -41,11 +41,9 @@ occur on self-joins or unions.}
 \item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
 reused.}
 
-\item{no_optimization}{Boolean. Turn off the following optimizations:
-predicate_pushdown = FALSE
-projection_pushdown = FALSE
-slice_pushdown = FALSE
-common_subplan_elimination = FALSE}
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
@@ -64,21 +62,26 @@ Filters, join operations and a lower number of rows available in the scanned
 file influence the final number of rows.
 }
 \examples{
-
+#'
 # fetch 3 rows
 pl$LazyFrame(iris)$fetch(3)
 
 # this fetch-query returns 4 rows, because we started with 3 and appended one
 # row in the query (see section 'Details')
-pl$LazyFrame(iris)$select(pl$col("Species")$append("flora gigantica, alien"))$fetch(3)
+pl$LazyFrame(iris)$
+  select(pl$col("Species")$append("flora gigantica, alien"))$
+  fetch(3)
 }
 \seealso{
 \itemize{
 \item \code{\link[=LazyFrame_collect]{$collect()}} - regular collect.
-\item \code{\link[=LazyFrame_profile]{$profile()}} - returns as \verb{$collect()} but also table with each operation
-profiled.
-\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
-a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
+\item \code{\link[=LazyFrame_profile]{$profile()}} - same as \verb{$collect()} but also returns
+a table with each operation profiled.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking
+collect returns a future handle. Can also just be used via
+\verb{$collect(collect_in_background = TRUE)}.
+\item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} streams query to a parquet file.
+\item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }
 }
 \keyword{LazyFrame}
