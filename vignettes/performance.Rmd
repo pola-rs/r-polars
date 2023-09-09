@@ -48,8 +48,10 @@ take this into account, sorting data before filtering it can slow down our
 pipeline significantly.
 
 ```{r}
-countries = c("France", "Germany", "United Kingdom", "Japan", "Columbia", 
-               "South Korea", "Vietnam", "South Africa", "Senegal", "Iran")
+countries = c(
+  "France", "Germany", "United Kingdom", "Japan", "Columbia",
+  "South Korea", "Vietnam", "South Africa", "Senegal", "Iran"
+)
 
 set.seed(123)
 test = data.frame(
@@ -57,7 +59,6 @@ test = data.frame(
   x = sample(1:100, 1e6, TRUE),
   y = sample(1:1000, 1e6, TRUE)
 )
-
 ```
 
 ```r
@@ -123,8 +124,8 @@ Now, we can convert the base R code above to a `polars` query:
 df_test$
   sort(pl$col("country"))$
   filter(
-    pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-  )
+  pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
+)
 ```
 
 This works for the `DataFrame`, that uses eager execution. For the `LazyFrame`, we can write the same query:
@@ -133,8 +134,8 @@ This works for the `DataFrame`, that uses eager execution. For the `LazyFrame`, 
 lazy_query = lf_test$
   sort(pl$col("country"))$
   filter(
-    pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
-  )
+  pl$col("country")$is_in(pl$lit(c("United Kingdom", "Japan", "Vietnam")))
+)
 
 lazy_query
 ```
