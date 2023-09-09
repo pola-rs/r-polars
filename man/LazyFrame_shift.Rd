@@ -16,6 +16,6 @@ LazyFrame
 Shift the values by a given period.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$shift(2)$collect()
+pl$LazyFrame(mtcars)$shift(2)$collect()
 }
 \keyword{LazyFrame}

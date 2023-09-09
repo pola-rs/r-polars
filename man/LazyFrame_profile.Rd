@@ -7,18 +7,18 @@
 LazyFrame_profile()
 }
 \value{
-List of two \code{DataFrame}s: one with the collected result, the other with the timings of
-each step.
+List of two \code{DataFrame}s: one with the collected result, the other
+with the timings of each step.
 }
 \description{
-This will run the query and return a list containing the materialized DataFrame and
-a DataFrame that contains profiling information of each node that is executed.
+This will run the query and return a list containing the
+materialized DataFrame and a DataFrame that contains profiling information
+of each node that is executed.
 }
 \details{
 The units of the timings are microseconds.
 }
 \examples{
-
 ## Simplest use case
 pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
 
@@ -44,14 +44,16 @@ pl$LazyFrame(iris)$
   groupby("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$apply(r_func))$
   profile()
-
 }
 \seealso{
 \itemize{
 \item \code{\link[=LazyFrame_collect]{$collect()}} - regular collect.
 \item \code{\link[=LazyFrame_fetch]{$fetch()}} - fast limited query check
-\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking collect returns
-a future handle. Can also just be used via \verb{$collect(collect_in_background = TRUE)}.
+\item \code{\link[=LazyFrame_collect_in_background]{$collect_in_background()}} - non-blocking
+collect returns a future handle. Can also just be used via
+\verb{$collect(collect_in_background = TRUE)}.
+\item \code{\link[=LazyFrame_sink_parquet]{$sink_parquet()}} streams query to a parquet file.
+\item \code{\link[=LazyFrame_sink_ipc]{$sink_ipc()}} streams query to a arrow file.
 }
 }
 \keyword{LazyFrame}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_tail}
 \alias{DataFrame_tail}
-\title{Tail a DataFrame}
+\title{Tail of a DataFrame}
 \usage{
 DataFrame_tail(n)
 }

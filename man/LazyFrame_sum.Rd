@@ -7,12 +7,12 @@
 LazyFrame_sum
 }
 \value{
-LazyFrame
+A LazyFrame with one row
 }
 \description{
-Aggregate the columns of this DataFrame to their sum values.
+Aggregate the columns of this LazyFrame to their sum values.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$sum()$collect()
+pl$LazyFrame(mtcars)$sum()$collect()
 }
 \keyword{LazyFrame}

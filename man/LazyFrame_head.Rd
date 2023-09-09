@@ -2,23 +2,22 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_head}
 \alias{LazyFrame_head}
-\title{Head}
+\title{Head of a LazyFrame}
 \usage{
 LazyFrame_head(n)
 }
 \arguments{
-\item{n}{positive numeric or integer number not larger than 2^32}
+\item{n}{Positive number not larger than 2^32.}
 }
 \value{
 A new \code{LazyFrame} object with applied filter.
 }
 \description{
-Get the first n rows.
+Get the first \code{n} rows of the query.
 }
 \details{
-any number will converted to u32. Negative raises error
+Any number will converted to u32. Negative raises error.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$head(4)$collect()
+pl$LazyFrame(mtcars)$head(4)$collect()
 }
-\keyword{LazyFrame}

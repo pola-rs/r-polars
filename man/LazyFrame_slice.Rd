@@ -7,19 +7,17 @@
 LazyFrame_slice(offset, length = NULL)
 }
 \arguments{
-\item{offset}{integer}
+\item{offset}{Start index, can be a negative value. This is 0-indexed, so
+\code{offset = 1} doesn't include the first row.}
 
-\item{length}{integer or NULL}
-}
-\value{
-DataFrame
+\item{length}{Length of the slice. If \code{NULL} (default), all rows starting at
+the offset will be selected.}
 }
 \description{
-Get a slice of this DataFrame.
+Get a slice of the LazyFrame.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$slice(2, 4)$collect()
-pl$DataFrame(mtcars)$lazy()$slice(30)$collect()
+pl$LazyFrame(mtcars)$slice(2, 4)$collect()
+pl$LazyFrame(mtcars)$slice(30)$collect()
 mtcars[2:6, ]
 }
-\keyword{DataFrame}

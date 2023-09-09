@@ -29,6 +29,5 @@ pl$LazyFrame(list(
   c = letters[1:5],
   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 ))
-
 }
 \keyword{LazyFrame_new}

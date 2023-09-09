@@ -18,7 +18,7 @@ self
 print LazyFrame s3 method
 }
 \examples{
-print(pl$DataFrame(iris)$lazy())
+pl$LazyFrame(iris)
 }
 \keyword{LazyFrame}
 \keyword{internal}

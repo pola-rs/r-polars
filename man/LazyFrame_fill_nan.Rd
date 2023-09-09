@@ -2,24 +2,24 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_fill_nan}
 \alias{LazyFrame_fill_nan}
-\title{Fill NaN}
+\title{Fill \code{NaN}}
 \usage{
 LazyFrame_fill_nan(fill_value)
 }
 \arguments{
-\item{fill_value}{Value to fill NaN with.}
+\item{fill_value}{Value to fill \code{NaN} with.}
 }
 \value{
 LazyFrame
 }
 \description{
-Fill floating point NaN values by an Expression evaluation.
+Fill \code{NaN} values by an Expression evaluation.
 }
 \examples{
-df = pl$DataFrame(
+df = pl$LazyFrame(
   a = c(1.5, 2, NaN, 4),
   b = c(1.5, NaN, NaN, 4)
-)$lazy()
+)
 df$fill_nan(99)$collect()
 }
 \keyword{LazyFrame}

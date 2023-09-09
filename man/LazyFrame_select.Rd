@@ -2,17 +2,25 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_select}
 \alias{LazyFrame_select}
-\title{Lazy_select}
+\title{Select and modify columns of a LazyFrame}
 \usage{
 LazyFrame_select(...)
 }
 \arguments{
-\item{...}{any single Expr or string naming a column}
+\item{...}{Columns to keep. Those can be expressions (e.g \code{pl$col("a")}),
+column names  (e.g \code{"a"}), or list containing expressions or column names
+(e.g \code{list(pl$col("a"))}).}
 }
 \value{
-A new \code{LazyFrame} object with applied filter.
+A LazyFrame
 }
 \description{
-select on a LazyFrame
+Similar to \code{dplyr::mutate()}. However, it discards unmentioned
+columns (like \code{.()} in \code{data.table}).
 }
-\keyword{LazyFrame}
+\examples{
+pl$LazyFrame(iris)$select(
+  pl$col("Sepal.Length")$abs()$alias("abs_SL"),
+  (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
+)
+}

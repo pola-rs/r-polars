@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_collect_in_background}
 \alias{LazyFrame_collect_in_background}
-\title{Collect a Lazy Query in background}
+\title{Collect a query in background}
 \usage{
 LazyFrame_collect_in_background()
 }
@@ -10,19 +10,19 @@ LazyFrame_collect_in_background()
 RThreadHandle, a future-like thread handle for the task
 }
 \description{
-Collect runs non-blocking in a detached thread
+This doesn't block the R session as it calls \verb{$collect()} in a
+a detached thread. This can also be used via \verb{$collect(collect_in_background = TRUE)}.
 }
 \details{
-Can also be used via \verb{$colllect(collect_in_background = TRUE)}.
-
 This function immediately returns an \link[=RThreadHandle_RThreadHandle_class]{RThreadHandle}.
 Use \code{\link[=RThreadHandle_is_finished]{<RThreadHandle>$is_finished()}} to see if done.
 Use \code{\link[=RThreadHandle_join]{<RThreadHandle>$join()}} to wait and get the final result.
 
-Useful to not block the R session while query executes. Any use of \code{\link[=Expr_map]{<Expr>$map()}} or
-\code{\link[=Expr_apply]{<Expr>apply()}}, which runs R functions will fail when collect_in_background if
-not \code{in_background = TRUE} because the main R session is not available for polars execution. See
-also examples below.
+It is useful to not block the R session while query executes. If you use
+\code{\link[=Expr_map]{<Expr>$map()}} or \code{\link[=Expr_apply]{<Expr>apply()}} to run R functions
+in the query, then you must pass \code{in_background = TRUE} in \verb{$map()} (or
+\verb{$apply()}). Otherwise, \verb{$collect_in_background()} will fail because the main
+R session is not available for polars execution. See also examples below.
 }
 \examples{
 # Some expression which does contain a map

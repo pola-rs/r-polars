@@ -13,5 +13,13 @@ A LazyFrame
 This makes a very cheap deep copy/clone of an existing \code{LazyFrame}.
 }
 \examples{
-pl$LazyFrame(mtcars)$clone()
+df1 = pl$LazyFrame(iris)
+df2 = df1$clone()
+df3 = df1
+
+# the clone and the original don't have the same address...
+pl$mem_address(df1) != pl$mem_address(df2)
+
+# ... but simply assigning df1 to df3 change the address anyway
+pl$mem_address(df1) == pl$mem_address(df3)
 }

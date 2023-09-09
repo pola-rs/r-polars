@@ -74,6 +74,7 @@ RField.property_setters = new.env(parent = emptyenv())
 #' @return name
 #' @keywords DataType
 #'
+#' @noRd
 #' @examples
 #' field = pl$Field("Cities", pl$Utf8)
 #'

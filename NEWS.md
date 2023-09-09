@@ -9,6 +9,7 @@
   See installation instructions in README.md. (#377)
 - Although stated in news for PR (#334) `strip = true` was not actually set for the 
   "release-optimized" compilation profile. Now it is, but the binary sizes seems unchanged (#377).
+- New vignette on best practices to improve `polars` performance (#188).
 
 # polars 0.8.0
 
