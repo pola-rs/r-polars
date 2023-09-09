@@ -25,7 +25,7 @@ any self as an argument, thus they are pure functions. Having the private method
 as pure functions solved/simplified self-referential complications.
 
 \code{DataFrame} and \code{LazyFrame} can both be said to be a \code{Frame}. To convert use
-\code{DataFrame_object$lazy() -> LazyFrame_object} and \code{LazyFrame_object$collect() -> DataFrame_object}.
+\code{DataFrame_object$lazy() -> LazyFrame_object} and \code{LazyFrame_object$collect() -> DataFrame_object}. You can also create a \code{LazyFrame} directly with \code{pl$LazyFrame()}.
 This is quite similar to the lazy-collect syntax of the dplyrpackage to
 interact with database connections such as SQL variants. Most SQL databases
 would be able to perform the same optimizations as polars such Predicate Pushdown

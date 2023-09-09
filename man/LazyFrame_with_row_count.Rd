@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_with_row_count}
 \alias{LazyFrame_with_row_count}
-\title{Lazy with_row_count}
+\title{Add a column for row indices}
 \usage{
 LazyFrame_with_row_count(name, offset = NULL)
 }
@@ -12,9 +12,17 @@ LazyFrame_with_row_count(name, offset = NULL)
 \item{offset}{positive integer offset for the start of the counter}
 }
 \value{
-A new \code{LazyFrame} object with a counter column in front
+A new LazyFrame with a counter column in front
 }
 \description{
 Add a new column at index 0 that counts the rows
 }
-\keyword{LazyFrame}
+\examples{
+df = pl$LazyFrame(mtcars)
+
+# by default, the index starts at 0 (to mimic the behavior of Python Polars)
+df$with_row_count("idx")
+
+# but in R, we use a 1-index
+df$with_row_count("idx", offset = 1)
+}

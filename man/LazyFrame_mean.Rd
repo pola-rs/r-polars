@@ -7,12 +7,12 @@
 LazyFrame_mean
 }
 \value{
-A new \code{LazyFrame} object with applied aggregation.
+A LazyFrame with one row
 }
 \description{
-Aggregate the columns in the DataFrame to their mean value.
+Aggregate the columns in the LazyFrame to their mean value.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$mean()$collect()
+pl$LazyFrame(mtcars)$mean()$collect()
 }
 \keyword{LazyFrame}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_sort}
 \alias{LazyFrame_sort}
-\title{LazyFrame Sort}
+\title{Sort a LazyFrame}
 \usage{
 LazyFrame_sort(
   by,
@@ -13,42 +13,38 @@ LazyFrame_sort(
 )
 }
 \arguments{
-\item{by}{Column(s) to sort by. Column name strings, character vector of
-column names, or Iterable \verb{Into<Expr>} (e.g. one Expr, or list mixed Expr and
-column name strings).}
+\item{by}{Column(s) to sort by. Can be character vector of column names,
+a list of Expr(s) or a list with a mix of Expr(s) and column names.}
 
-\item{...}{more columns to sort by as above but provided one Expr per argument.}
+\item{...}{More columns to sort by as above but provided one Expr per argument.}
 
-\item{descending}{Sort descending? Default = FALSE logical vector of length 1 or same length
-as number of Expr's from above by + ....}
+\item{descending}{Boolean. Sort in descending order (default is \code{FALSE}). This must be
+either of length 1 or a logical vector of the same length as the number of
+Expr(s) specified in \code{by} and \code{...}.}
 
-\item{nulls_last}{Bool default FALSE, place all nulls_last?}
+\item{nulls_last}{Boolean. Place \code{NULL}s at the end? Default is \code{FALSE}.}
 
-\item{maintain_order}{Whether the order should be maintained if elements are equal. Note that if
-true streaming is not possible and performance might be worse since this requires a stable
-search.}
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine. The default value can be changed with
+\code{pl$options$default_maintain_order(TRUE/FALSE)} .}
 }
 \value{
 LazyFrame
 }
 \description{
-sort by one or more Expr.
-}
-\details{
-by and ... args allow to either provide e.g. a list of Expr or something which can
-be converted into an Expr e.g. \verb{$sort(list(e1,e2,e3))},
-or provide each Expr as an individual argument \verb{$sort(e1,e2,e3)}´ ... or both.
+Sort by one or more Expressions.
 }
 \examples{
 df = mtcars
 df$mpg[1] = NA
-df = pl$DataFrame(df)
-df$lazy()$sort("mpg")$collect()
-df$lazy()$sort("mpg", nulls_last = TRUE)$collect()
-df$lazy()$sort("cyl", "mpg")$collect()
-df$lazy()$sort(c("cyl", "mpg"))$collect()
-df$lazy()$sort(c("cyl", "mpg"), descending = TRUE)$collect()
-df$lazy()$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
-df$lazy()$sort(pl$col("cyl"), pl$col("mpg"))$collect()
+df = pl$LazyFrame(df)
+df$sort("mpg")$collect()
+df$sort("mpg", nulls_last = TRUE)$collect()
+df$sort("cyl", "mpg")$collect()
+df$sort(c("cyl", "mpg"))$collect()
+df$sort(c("cyl", "mpg"), descending = TRUE)$collect()
+df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
+df$sort(pl$col("cyl"), pl$col("mpg"))$collect()
 }
 \keyword{LazyFrame}

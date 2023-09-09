@@ -7,12 +7,12 @@
 LazyFrame_median
 }
 \value{
-A new \code{LazyFrame} object with applied aggregation.
+A LazyFrame with one row
 }
 \description{
-Aggregate the columns in the DataFrame to their median value.
+Aggregate the columns in the LazyFrame to their median value.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$median()$collect()
+pl$LazyFrame(mtcars)$median()$collect()
 }
 \keyword{LazyFrame}

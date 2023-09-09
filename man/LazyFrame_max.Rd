@@ -7,12 +7,12 @@
 LazyFrame_max
 }
 \value{
-A new \code{LazyFrame} object with applied aggregation.
+A LazyFrame with one row
 }
 \description{
-Aggregate the columns in the DataFrame to their maximum value.
+Aggregate the columns in the LazyFrame to their maximum value.
 }
 \examples{
-pl$DataFrame(mtcars)$lazy()$max()$collect()
+pl$LazyFrame(mtcars)$max()$collect()
 }
 \keyword{LazyFrame}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_sink_parquet}
 \alias{LazyFrame_sink_parquet}
-\title{LazyFrame stream output to parquet file}
+\title{Stream the output of a query to a Parquet file}
 \usage{
 LazyFrame_sink_parquet(
   path,
@@ -23,28 +23,41 @@ LazyFrame_sink_parquet(
 \arguments{
 \item{path}{String. The path of the parquet file}
 
-\item{compression}{String. The compression method. One of
-\code{c('uncompressed', 'snappy', 'gzip', 'lzo', 'brotli', 'zstd')}
-Choose “zstd” for good compression performance. Choose “lz4” for fast compression/decompression.
-Choose “snappy” for more backwards compatibility guarantees when you deal with older parquet
-readers.}
+\item{compression}{String. The compression method. One of:
+\itemize{
+\item "lz4": fast compression/decompression.
+\item "uncompressed"
+\item "snappy": this guarantees that the parquet file will be compatible with
+older parquet readers.
+\item "gzip"
+\item "lzo"
+\item "brotli"
+\item "zstd": good compression performance.
+}}
 
-\item{compression_level}{NULL or Integer. Only used if method is one of
-\verb{c('gzip', 'brotli', 'zstd'}. The level of compression to use. Higher compression means smaller
-files on disk. “gzip” : min-level: 0, max-level: 10. “brotli” : min-level: 0, max-level: 11.
-“zstd” : min-level: 1, max-level: 22.}
+\item{compression_level}{\code{NULL} or Integer. The level of compression to use.
+Only used if method is one of 'gzip', 'brotli', or 'zstd'. Higher compression
+means smaller files on disk:
+\itemize{
+\item "gzip": min-level: 0, max-level: 10.
+\item "brotli": min-level: 0, max-level: 11.
+\item "zstd": min-level: 1, max-level: 22.
+}}
 
 \item{statistics}{Boolean. Whether compute and write column statistics.
 This requires extra compute.}
 
-\item{row_group_size}{NULL or Integer. Size of the row groups in number of rows. If NULL
-(default), the chunks of the DataFrame are used. Writing in smaller chunks may reduce memory
-pressure and improve writing speeds.}
+\item{row_group_size}{\code{NULL} or Integer. Size of the row groups in number of
+rows. If \code{NULL} (default), the chunks of the DataFrame are used. Writing in
+smaller chunks may reduce memory pressure and improve writing speeds.}
 
-\item{data_pagesize_limit}{NULL or Integer. If set NULL the limit will be ~1MB.}
+\item{data_pagesize_limit}{\code{NULL} or Integer. If \code{NULL} (default), the limit
+will be ~1MB.}
 
-\item{maintain_order}{Boolean. Whether maintain the order the data was processed.
-Setting this to False will be slightly faster.}
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine. The default value can be changed with
+\code{pl$options$default_maintain_order(TRUE/FALSE)} .}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
@@ -52,25 +65,23 @@ run on minimal required memory.}
 \item{predicate_pushdown}{Boolean. Applies filters as early as possible at
 scan level.}
 
-\item{projection_pushdown}{Boolean. Select only the columns that are needed at the scan level.}
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
 
-\item{simplify_expression}{Boolean. Various optimizations, such as constant folding
-and replacing expensive operations with faster alternatives.}
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
 
-\item{no_optimization}{Boolean. Turn off the following optimizations:
-predicate_pushdown = FALSE
-projection_pushdown = FALSE
-slice_pushdown = FALSE
-comm_subplan_elim = FALSE
-comm_subexpr_elim = FALSE}
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
-Don't materialize sliced outputs
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 }
 \description{
-Persists a LazyFrame at the provided path.
-This allows streaming results that are larger than RAM to be written to disk.
+This writes the output of a query directly to a Parquet file without collecting
+it in the R session first. This is useful if the output of the query is still
+larger than RAM as it would crash the R session if it was collected into R.
 }
 \examples{
 # sink table 'mtcars' from mem to parquet

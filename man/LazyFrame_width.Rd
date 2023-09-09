@@ -2,15 +2,15 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_width}
 \alias{LazyFrame_width}
-\title{Width}
+\title{Number of columns of a LazyFrame}
 \usage{
 LazyFrame_width()
 }
 \value{
-Integer
+The number of columns of a DataFrame
 }
 \description{
-Get the width of the LazyFrame
+Get the number of columns (width) of a LazyFrame
 }
 \examples{
 pl$LazyFrame(mtcars)$width

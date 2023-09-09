@@ -19,6 +19,6 @@ self
 can be used i the middle of a method chain
 }
 \examples{
-pl$DataFrame(iris)$lazy()$print()
+pl$LazyFrame(iris)$print()
 }
 \keyword{LazyFrame}

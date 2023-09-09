@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_rename}
 \alias{LazyFrame_rename}
-\title{Rename columns of a LazyFrame}
+\title{Rename columns of a DataFrame}
 \usage{
 LazyFrame_rename(...)
 }
@@ -10,20 +10,19 @@ LazyFrame_rename(...)
 \item{...}{One of the following:
 \itemize{
 \item params like \code{new_name = "old_name"} to rename selected variables.
-\item as above but, but params wrapped in a list
+\item as above but with params wrapped in a list
 }}
 }
 \value{
 LazyFrame
 }
 \description{
-Rename columns of a LazyFrame
+Rename columns of a DataFrame
 }
 \examples{
-pl$DataFrame(mtcars)$
+pl$LazyFrame(mtcars)$
   lazy()$
   rename(miles_per_gallon = "mpg", horsepower = "hp")$
   collect()
-
 }
 \keyword{LazyFrame}

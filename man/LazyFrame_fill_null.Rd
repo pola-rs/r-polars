@@ -2,24 +2,25 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_fill_null}
 \alias{LazyFrame_fill_null}
-\title{Fill null}
+\title{Fill nulls}
 \usage{
 LazyFrame_fill_null(fill_value)
 }
 \arguments{
-\item{fill_value}{Value to fill \code{NA} with.}
+\item{fill_value}{Value to fill nulls with.}
 }
 \value{
 LazyFrame
 }
 \description{
-Fill null values using the specified value or strategy.
+Fill null values (which correspond to \code{NA} in R) using the
+specified value or strategy.
 }
 \examples{
 df = pl$DataFrame(
   a = c(1.5, 2, NA, 4),
   b = c(1.5, NA, NA, 4)
-)$lazy()
+)
 df$fill_null(99)$collect()
 }
 \keyword{LazyFrame}

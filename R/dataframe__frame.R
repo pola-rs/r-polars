@@ -317,7 +317,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
   self
 }
 
-#' @title Eager with_row_count
+#' @title Add a column for row indices
 #' @description Add a new column at index 0 that counts the rows
 #' @keywords DataFrame
 #' @param name string name of the created column
@@ -366,8 +366,7 @@ DataFrame.property_setters$columns = function(self, names) {
 
 #' @title Drop columns of a DataFrame
 #' @keywords DataFrame
-#' @param columns A character vector with the names of the column(s) to remove
-#' from the DataFrame.
+#' @param columns A character vector with the names of the column(s) to remove.
 #' @return DataFrame
 #' @examples pl$DataFrame(mtcars)$drop(c("mpg", "hp"))
 
@@ -413,7 +412,8 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' * "none": Don’t keep duplicate rows.
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
-#'  to run on the streaming engine.
+#'  to run on the streaming engine. The default value can be changed with
+#' `pl$options$default_maintain_order(TRUE/FALSE)` .
 #'
 #' @return DataFrame
 #' @examples
@@ -581,7 +581,11 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' df1 = pl$DataFrame(iris)
 #' df2 = df1$clone()
 #' df3 = df1
+#'
+#' # the clone and the original don't have the same address...
 #' pl$mem_address(df1) != pl$mem_address(df2)
+#'
+#' # ... but simply assigning df1 to df3 change the address anyway
 #' pl$mem_address(df1) == pl$mem_address(df3)
 
 DataFrame_clone = function() {
@@ -690,8 +694,7 @@ DataFrame_sort = function(
 #'
 #' @aliases select
 #' @return DataFrame
-#' @keywords  DataFrame
-#' @return DataFrame
+#' @keywords DataFrame
 #' @examples
 #' pl$DataFrame(iris)$select(
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
@@ -806,8 +809,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' )
 #' pl$DataFrame(iris)$with_columns(l_expr)
 #'
-#'
-#' # rename columns by naming expression is concidered experimental
 #' pl$DataFrame(iris)$with_columns(
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
@@ -857,7 +858,7 @@ DataFrame_head = function(n) {
   self$lazy()$head(n)$collect()
 }
 
-#' Tail a DataFrame
+#' Tail of a DataFrame
 #' @name DataFrame_tail
 #' @description Get the last `n` rows.
 #' @param n Positive number not larger than 2^32.
@@ -897,10 +898,7 @@ DataFrame_filter = function(bool_expr) {
 }
 
 #' Group a DataFrame
-#' @description This doesn't modify the data but only stores information about
-#' the group structure. This structure can then be used by several functions
-#' (`$agg()`, `$filter()`, etc.).
-#' @inherit LazyFrame_groupby
+#' @inherit LazyFrame_groupby description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
@@ -1626,12 +1624,22 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' @return DataFrame
 #' @examples
 #' df = pl$DataFrame(
-#'   letters = c("a", "a", "b", "c"),
-#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8))
+#'   letters = c("aa", "aa", "bb", "cc"),
+#'   numbers = list(1, c(2, 3), c(4, 5), c(6, 7, 8)),
+#'   numbers_2 = list(0, c(1, 2), c(3, 4), c(5, 6, 7)) # same structure as numbers
 #' )
 #' df
 #'
+#' # explode a single column, append others
 #' df$explode("numbers")
+#'
+#' # it doesn't change anything if the input is not a list-column
+#' df$explode("letters")
+#'
+#' # explode two columns of same nesting structure, by names or the common dtype
+#' # "List(Float64)"
+#' df$explode(c("numbers", "numbers_2"))
+#' df$explode(pl$col(pl$List(pl$Float64)))
 
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()

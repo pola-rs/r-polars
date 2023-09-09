@@ -14,21 +14,16 @@ LazyFrame_describe_optimized_plan()
 LazyFrame_describe_plan
 }
 \value{
-invisible NULL
+This only prints the plan in the console, it doesn't return any value.
 }
 \description{
-\verb{$describe_plan()} shows our query in the format that \code{polars}
+\verb{$describe_plan()} shows the query in the format that \code{polars}
 understands. \verb{$describe_optimized_plan()} shows the optimized query plan that
-\code{polars} will execute when \verb{$collect()} or \verb{$compute()} is called. It is possible
-that both plans are identical if \code{polars} doesn't find any way to optimize the
-query.
+\code{polars} will execute when \verb{$collect()} is called. It is possible that both
+plans are identical if \code{polars} doesn't find any way to optimize the query.
 }
 \examples{
-my_file = tempfile()
-write.csv(iris, my_file)
-
-# Read the file and make a LazyFrame
-lazy_frame = pl$scan_csv(path = my_file)
+lazy_frame = pl$LazyFrame(iris)
 
 # Prepare your query
 lazy_query = lazy_frame$sort("Species")$filter(pl$col("Species") != "setosa")
