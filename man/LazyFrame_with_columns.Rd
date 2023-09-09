@@ -17,8 +17,6 @@ LazyFrame_with_column
 \arguments{
 \item{...}{Any expressions or string column name, or same wrapped in a list.
 If first and only element is a list, it is unwrapped as a list of args.}
-
-\item{expr}{a single expression or string}
 }
 \value{
 A LazyFrame

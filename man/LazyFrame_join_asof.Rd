@@ -32,6 +32,9 @@ DataFrame. They must have the same length.}
 strings. Use \code{left_on} and \code{right_on} if the column names to match on are
 different between the two DataFrames.}
 
+\item{by_left, by_right}{Same as \code{by} but only for the left or the right
+table. They must have the same length.}
+
 \item{by}{Join on these columns before performing asof join. Either a vector
 of column names or a list of expressions and/or strings. Use \code{left_by} and
 \code{right_by} if the column names to match on are different between the two
@@ -76,9 +79,6 @@ numeric tolerance. In that case, you can use the expression syntax like
 \item{allow_parallel}{Boolean.}
 
 \item{force_parallel}{Boolean.}
-
-\item{left_by, right_by}{Same as \code{by} but only for the left or the right
-table. They must have the same length.}
 }
 \value{
 A LazyFrame

@@ -413,7 +413,7 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$options$default_maintain_order(TRUE/FALSE)` .
+#' `pl$options$default_maintain_order(TRUE/FALSE)`.
 #'
 #' @return DataFrame
 #' @examples

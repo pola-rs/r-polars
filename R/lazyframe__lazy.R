@@ -254,7 +254,6 @@ LazyFrame_with_columns = function(...) {
 
 #' @rdname LazyFrame_with_columns
 #' @aliases with_column
-#' @param expr a single expression or string
 
 LazyFrame_with_column = "use_extendr_wrapper"
 
@@ -510,6 +509,7 @@ LazyFrame_sink_parquet = function(
 #' "lz4" or "zstd". Choose "zstd" for good compression performance. Choose "lz4"
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
+#' @inheritParams DataFrame_unique
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
@@ -946,7 +946,7 @@ LazyFrame_sort = function(
 #' of column names or a list of expressions and/or strings. Use `left_by` and
 #' `right_by` if the column names to match on are different between the two
 #' tables.
-#' @param left_by,right_by Same as `by` but only for the left or the right
+#' @param by_left,by_right Same as `by` but only for the left or the right
 #' table. They must have the same length.
 #' @param strategy Strategy for where to find match:
 #' * "backward" (default): search for the last row in the right table whose `on`
