@@ -58,6 +58,9 @@ test = data.frame(
   y = sample(1:1000, 1e6, TRUE)
 )
 
+```
+
+```r
 bench::mark(
   sort_filter = {
     tmp = test[order(test$country), ]
@@ -68,7 +71,17 @@ bench::mark(
     tmp[order(tmp$country), ]
   }
 )
+
+#> Warning: Some expressions had a GC in every iteration; so filtering is
+#> disabled.
+#> # A tibble: 2 × 6
+#>   expression       min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>  <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 sort_filter    10.4s    10.4s    0.0964    87.2MB    0.193
+#> 2 filter_sort     2.4s     2.4s    0.417     67.1MB    0.835
 ```
+
+
 
 
 ## How does `polars` help?
@@ -131,7 +144,7 @@ end. We can now compare the two approaches (in the `lazy` timing, calling `colle
 both reads the data and process it, so we include the data loading part in the
 `eager` timing as well):
 
-```{r}
+```r
 bench::mark(
   eager = df_test$
     sort(pl$col("country"))$
@@ -141,6 +154,12 @@ bench::mark(
   lazy = lazy_query$collect(),
   iterations = 10
 )
+
+#> # A tibble: 2 × 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 eager         1.18s    1.28s     0.754    9.95KB        0
+#> 2 lazy       526.98ms 577.35ms     1.72       864B        0
 ```
 
 
@@ -177,7 +196,7 @@ to check whether each country contains "na". This can be done in (at least) two
 ways: with the built-in function `contains()` and with the base R function 
 `grepl()`. However, using the built-in function is much faster:
 
-```{r}
+```r
 bench::mark(
   contains = df_test$with_columns(
     pl$col("country")$str$contains("na")
@@ -194,6 +213,16 @@ bench::mark(
   ),
   iterations = 10
 )
+
+
+#> Warning: Some expressions had a GC in every iteration; so filtering is
+#> disabled.
+#> # A tibble: 3 × 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 contains   387.02ms 432.12ms     2.27   401.86KB    0    
+#> 2 grepl         2.06s    2.11s     0.466  114.79MB    0.512
+#> 3 grepl_nv      6.42s    6.52s     0.153    7.65MB   10.3
 ```
 
 Using custom R functions can be useful, but when possible, you should use the 
@@ -214,10 +243,16 @@ Finally, quoting [Polars User Guide](https://pola-rs.github.io/polars-book/user-
 To use streaming mode, we can just add `streaming = TRUE` in `collect()` (note
 that this is still an alpha feature):
 
-```{r}
+```r
 bench::mark(
   lazy = lazy_query$collect(),
   lazy_streaming = lazy_query$collect(streaming = TRUE),
   iterations = 20
 )
+
+#> # A tibble: 2 × 6
+#>   expression          min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 lazy              482ms    546ms      1.85      864B        0
+#> 2 lazy_streaming    292ms    346ms      2.90      864B        0
 ```
