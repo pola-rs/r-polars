@@ -4,7 +4,6 @@
 \name{LazyFrame_with_columns}
 \alias{LazyFrame_with_columns}
 \alias{LazyFrame_with_column}
-\alias{with_column}
 \title{Select and modify columns of a LazyFrame}
 \format{
 An object of class \code{character} of length 1.

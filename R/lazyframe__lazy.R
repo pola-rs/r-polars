@@ -253,7 +253,6 @@ LazyFrame_with_columns = function(...) {
 }
 
 #' @rdname LazyFrame_with_columns
-#' @aliases with_column
 
 LazyFrame_with_column = "use_extendr_wrapper"
 
@@ -726,7 +725,7 @@ LazyFrame_shift = function(periods = 1) {
 #' then `n` rows will be inserted at the top of the LazyFrame and the last `n`
 #' rows will be discarded. Vice-versa if the period is negative. In the end,
 #' the total number of rows of the LazyFrame doesn't change.
-#' @inheritParams DataFrame_shift
+#' @inheritParams DataFrame_shift_and_fill
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$as_data_frame()
 

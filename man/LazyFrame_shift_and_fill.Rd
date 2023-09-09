@@ -7,6 +7,9 @@
 LazyFrame_shift_and_fill(fill_value, periods = 1)
 }
 \arguments{
+\item{fill_value}{Fill new \code{NULL} values with this value. Must of length 1.
+A logical value will be converted to numeric.}
+
 \item{periods}{Number of periods to shift (can be negative).}
 }
 \value{
