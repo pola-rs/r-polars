@@ -3,6 +3,7 @@
 ## What's changed
 
 - New string method `to_titlecase()` (#371).
+- New vignette on best practices to improve `polars` performance (#188).
 
 # polars 0.8.0
 
