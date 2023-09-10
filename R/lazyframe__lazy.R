@@ -96,7 +96,6 @@
 #'
 #' # a user might write it as a one-liner like so:
 #' Pdf_best2 = pl$scan_csv(temp_filepath)$filter(pl$col("Species") == "setosa")
-
 LazyFrame
 
 
@@ -141,8 +140,6 @@ LazyFrame
 #'   c = letters[1:5],
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
-
-
 pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
@@ -158,7 +155,6 @@ pl$LazyFrame = function(...) {
 #' @export
 #'
 #' @examples pl$LazyFrame(iris)
-
 print.LazyFrame = function(x, ...) {
   print("polars LazyFrame naive plan: (run ldf$describe_optimized_plan() to see the optimized plan)")
   cloned_x = .pr$LazyFrame$print(x)
@@ -175,7 +171,6 @@ print.LazyFrame = function(x, ...) {
 #'
 #' @usage LazyFrame_print(x)
 #' @examples pl$LazyFrame(iris)$print()
-
 LazyFrame_print = "use_extendr_wrapper"
 
 # TODO write missing examples in this file
@@ -202,7 +197,6 @@ LazyFrame_print = "use_extendr_wrapper"
 #' # This is the query after `polars` optimizes it: instead of sorting first and
 #' # then filtering, it is faster to filter first and then sort the rest.
 #' lazy_query$describe_optimized_plan()
-
 LazyFrame_describe_optimized_plan = function() {
   unwrap(.pr$LazyFrame$describe_optimized_plan(self), "in $describe_optimized_plan():")
   invisible(NULL)
@@ -219,7 +213,6 @@ LazyFrame_describe_plan = "use_extendr_wrapper"
 #'   pl$col("Sepal.Length")$abs()$alias("abs_SL"),
 #'   (pl$col("Sepal.Length") + 2)$alias("add_2_SL")
 #' )
-
 LazyFrame_select = function(...) {
   .pr$LazyFrame$select(self, unpack_list(...)) |>
     unwrap("in $select()")
@@ -246,7 +239,6 @@ LazyFrame_select = function(...) {
 #'   pl$col("Sepal.Length")$abs(), # not named expr will keep name "Sepal.Length"
 #'   SW_add_2 = (pl$col("Sepal.Width") + 2)
 #' )
-
 LazyFrame_with_columns = function(...) {
   .pr$LazyFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
@@ -267,7 +259,6 @@ LazyFrame_with_column = "use_extendr_wrapper"
 #'
 #' # but in R, we use a 1-index
 #' df$with_row_count("idx", offset = 1)
-
 LazyFrame_with_row_count = function(name, offset = NULL) {
   .pr$LazyFrame$with_row_count(self, name, offset) |> unwrap()
 }
@@ -405,7 +396,6 @@ LazyFrame_collect = function(
 #' # get result, blocking until polars query is done
 #' df = handle$join()
 #' df
-
 LazyFrame_collect_in_background = function() {
   .pr$LazyFrame$collect_in_background(self)
 }
@@ -451,7 +441,6 @@ LazyFrame_collect_in_background = function() {
 #'
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_parquet(tmpf2)$collect()
-
 LazyFrame_sink_parquet = function(
     path,
     compression = "zstd",
@@ -520,7 +509,6 @@ LazyFrame_sink_parquet = function(
 #'
 #' # load ipc directly into a DataFrame / memory
 #' # pl$scan_ipc(tmpf2)$collect()
-
 LazyFrame_sink_ipc = function(
     path,
     compression = "zstd",
@@ -563,7 +551,6 @@ LazyFrame_sink_ipc = function(
 #' @inherit DataFrame_limit description params details
 #' @return A `LazyFrame`
 #' @examples pl$LazyFrame(mtcars)$limit(4)$collect()
-
 LazyFrame_limit = function(n) {
   unwrap(.pr$LazyFrame$limit(self, n), "in $limit():")
 }
@@ -584,7 +571,6 @@ LazyFrame_head = function(n) {
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$first()$collect()
-
 LazyFrame_first = "use_extendr_wrapper"
 
 #' @title Get the last row of a LazyFrame
@@ -594,7 +580,6 @@ LazyFrame_first = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$last()$collect()
-
 LazyFrame_last = "use_extendr_wrapper"
 
 #' @title Max
@@ -604,7 +589,6 @@ LazyFrame_last = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$max()$collect()
-
 LazyFrame_max = "use_extendr_wrapper"
 
 #' @title Mean
@@ -614,7 +598,6 @@ LazyFrame_max = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$mean()$collect()
-
 LazyFrame_mean = "use_extendr_wrapper"
 
 #' @title Median
@@ -624,7 +607,6 @@ LazyFrame_mean = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$median()$collect()
-
 LazyFrame_median = "use_extendr_wrapper"
 
 #' @title Min
@@ -634,7 +616,6 @@ LazyFrame_median = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$min()$collect()
-
 LazyFrame_min = "use_extendr_wrapper"
 
 #' @title Sum
@@ -644,7 +625,6 @@ LazyFrame_min = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples pl$LazyFrame(mtcars)$sum()$collect()
-
 LazyFrame_sum = "use_extendr_wrapper"
 
 #' @title Var
@@ -653,7 +633,6 @@ LazyFrame_sum = "use_extendr_wrapper"
 #' @inheritParams DataFrame_var
 #' @return A LazyFrame with one row
 #' @examples pl$LazyFrame(mtcars)$var()$collect()
-
 LazyFrame_var = function(ddof = 1) {
   unwrap(.pr$LazyFrame$var(self, ddof), "in $var():")
 }
@@ -665,7 +644,6 @@ LazyFrame_var = function(ddof = 1) {
 #' @inheritParams DataFrame_std
 #' @return A LazyFrame with one row
 #' @examples pl$LazyFrame(mtcars)$std()$collect()
-
 LazyFrame_std = function(ddof = 1) {
   unwrap(.pr$LazyFrame$std(self, ddof), "in $std():")
 }
@@ -676,7 +654,6 @@ LazyFrame_std = function(ddof = 1) {
 #' @inheritParams DataFrame_quantile
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$quantile(.4)$collect()
-
 LazyFrame_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$LazyFrame$quantile(self, wrap_e_result(quantile), interpolation), "in $quantile():")
 }
@@ -690,7 +667,6 @@ LazyFrame_quantile = function(quantile, interpolation = "nearest") {
 #'   b = c(1.5, NaN, NaN, 4)
 #' )
 #' df$fill_nan(99)$collect()
-
 LazyFrame_fill_nan = function(fill_value) {
   unwrap(.pr$LazyFrame$fill_nan(self, wrap_e_result(fill_value)), "in $fill_nan():")
 }
@@ -704,7 +680,6 @@ LazyFrame_fill_nan = function(fill_value) {
 #'   b = c(1.5, NA, NA, 4)
 #' )
 #' df$fill_null(99)$collect()
-
 LazyFrame_fill_null = function(fill_value) {
   unwrap(.pr$LazyFrame$fill_null(self, wrap_e_result(fill_value)), "in $fill_null():")
 }
@@ -728,7 +703,6 @@ LazyFrame_shift = function(periods = 1) {
 #' @inheritParams DataFrame_shift_and_fill
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$as_data_frame()
-
 LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
   unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
@@ -738,7 +712,6 @@ LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' @inheritParams DataFrame_drop
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$drop(c("mpg", "hp"))
-
 LazyFrame_drop = function(columns) {
   unwrap(.pr$LazyFrame$drop(self, columns), "in $drop():")
 }
@@ -748,7 +721,6 @@ LazyFrame_drop = function(columns) {
 #' @keywords LazyFrame
 #' @return LazyFrame
 #' @examples pl$LazyFrame(mtcars)$reverse()$collect()
-
 LazyFrame_reverse = "use_extendr_wrapper"
 
 #' @title Slice
@@ -758,7 +730,6 @@ LazyFrame_reverse = "use_extendr_wrapper"
 #' pl$LazyFrame(mtcars)$slice(2, 4)$collect()
 #' pl$LazyFrame(mtcars)$slice(30)$collect()
 #' mtcars[2:6, ]
-
 LazyFrame_slice = function(offset, length = NULL) {
   unwrap(.pr$LazyFrame$slice(self, offset, length), "in $slice():")
 }
@@ -767,7 +738,6 @@ LazyFrame_slice = function(offset, length = NULL) {
 #' @inherit DataFrame_tail description params details
 #' @return A LazyFrame
 #' @examples pl$LazyFrame(mtcars)$tail(2)$collect()
-
 LazyFrame_tail = function(n) {
   unwrap(.pr$LazyFrame$tail(self, n), "in $tail():")
 }
@@ -787,7 +757,6 @@ LazyFrame_tail = function(n) {
 #' tmp$drop_nulls()$collect()$height
 #' tmp$drop_nulls("mpg")$collect()$height
 #' tmp$drop_nulls(c("mpg", "hp"))$collect()$height
-
 LazyFrame_drop_nulls = function(subset = NULL) {
   pra = do.call(construct_ProtoExprArray, as.list(subset))
   .pr$LazyFrame$drop_nulls(self, pra)
@@ -810,7 +779,6 @@ LazyFrame_drop_nulls = function(subset = NULL) {
 #'
 #' # only keep unique rows
 #' df$unique(keep = "none")
-
 LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALSE) {
   unwrap(.pr$LazyFrame$unique(self, subset, keep, maintain_order), "in unique():")
 }
@@ -834,7 +802,6 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-
 LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
   .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
@@ -854,7 +821,6 @@ LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_o
 #' df1 = pl$LazyFrame(x = letters[1:3])
 #' df2 = pl$LazyFrame(y = 1:4)
 #' df1$join(other = df2, how = "cross")
-
 LazyFrame_join = function(
     other, # : LazyFrame or DataFrame,
     left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
@@ -919,7 +885,6 @@ LazyFrame_join = function(
 #' df$sort(c("cyl", "mpg"), descending = TRUE)$collect()
 #' df$sort(c("cyl", "mpg"), descending = c(TRUE, FALSE))$collect()
 #' df$sort(pl$col("cyl"), pl$col("mpg"))$collect()
-
 LazyFrame_sort = function(
     by, # : IntoExpr | List[IntoExpr],
     ..., # unnamed Into expr
@@ -1017,7 +982,6 @@ LazyFrame_sort = function(
 #'
 #' # only look 11 days back (numeric tolerance depends on polars type, <date> is in days)
 #' pop$join_asof(gdp, on = "date", strategy = "backward", tolerance = 11)$collect()
-
 LazyFrame_join_asof = function(
     other,
     ...,
@@ -1082,7 +1046,6 @@ LazyFrame_join_asof = function(
 #'   c = c(2, 4, 6)
 #' )
 #' lf$melt(id_vars = "a", value_vars = c("b", "c"))$collect()
-
 LazyFrame_melt = function(
     id_vars = NULL,
     value_vars = NULL,
@@ -1104,7 +1067,6 @@ LazyFrame_melt = function(
 #' pl$LazyFrame(mtcars)$
 #'   rename(miles_per_gallon = "mpg", horsepower = "hp")$
 #'   collect()
-
 LazyFrame_rename = function(...) {
   mapping = list2(...)
   if (length(mapping) == 0) {
@@ -1130,7 +1092,6 @@ LazyFrame_schema = method_as_property(function() {
 #' @return A vector of column names
 #' @examples
 #' pl$LazyFrame(mtcars)$columns
-
 LazyFrame_columns = method_as_property(function() {
   self$schema |>
     names() |>
@@ -1157,7 +1118,6 @@ LazyFrame_width = method_as_property(function() {
 #' pl$LazyFrame(iris)$dtypes
 #'
 #' pl$LazyFrame(iris)$schema
-
 LazyFrame_dtypes = method_as_property(function() {
   self$schema |>
     unlist() |>
@@ -1213,7 +1173,6 @@ LazyFrame_fetch = function(
     comm_subexpr_elim = TRUE,
     no_optimization = FALSE,
     streaming = FALSE) {
-
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1285,7 +1244,6 @@ LazyFrame_fetch = function(
 #'   groupby("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
-
 LazyFrame_profile = function() {
   .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
 }
@@ -1328,7 +1286,6 @@ LazyFrame_profile = function() {
 #' # "List(Float64)"
 #' df$explode(c("numbers", "numbers_2"))$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
-
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)
   .pr$LazyFrame$explode(self, dotdotdot_args) |>
@@ -1349,7 +1306,6 @@ LazyFrame_explode = function(...) {
 #'
 #' # ... but simply assigning df1 to df3 change the address anyway
 #' pl$mem_address(df1) == pl$mem_address(df3)
-
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
 }

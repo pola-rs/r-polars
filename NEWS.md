@@ -4,7 +4,8 @@
 
 - New string method `to_titlecase()` (#371).
 - New vignette on best practices to improve `polars` performance (#188).
-
+- Subnamespace name "arr" as in  `<Expr>$arr$` & `<Series>$arr$` is deprecated in favor of "list". 
+  Finally at polars 0.9.0 the "arr" will be removed (#375).
 # polars 0.8.0
 
 ## CHANGES DUE TO RUST-POLARS 0.32.0

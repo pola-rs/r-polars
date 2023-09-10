@@ -24,7 +24,7 @@ df = pl$DataFrame(mtcars)
 
 df$rename(miles_per_gallon = "mpg", horsepower = "hp")
 
-replacements <- list(miles_per_gallon = "mpg", horsepower = "hp")
+replacements = list(miles_per_gallon = "mpg", horsepower = "hp")
 df$rename(replacements)
 }
 \keyword{DataFrame}
