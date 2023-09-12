@@ -81,7 +81,7 @@ test_that("shift    _and_fill", {
 
 
 test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
-  prev_setting = pl$set_polars_options(default_maintain_order = TRUE)
+  prev_setting = pl$set_options(maintain_order = TRUE)
   df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "DataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
@@ -91,11 +91,11 @@ test_that("groupby, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  do.call(pl$set_polars_options, prev_setting)
+  do.call(pl$set_options, prev_setting)
 })
 
 test_that("agg, lazygroupby unpack + charvec same as list of strings", {
-  prev_setting = pl$set_polars_options(default_maintain_order = TRUE)
+  prev_setting = pl$set_options(maintain_order = TRUE)
   df = pl$DataFrame(mtcars)
   to_l = \(x) (if (inherits(x, "DataFrame")) x else x$collect())$to_list()
   for (x in list(df, df$lazy())) {
@@ -105,5 +105,5 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df2 |> to_l())
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
-  do.call(pl$set_polars_options, prev_setting)
+  do.call(pl$set_options, prev_setting)
 })

@@ -405,7 +405,7 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$options$default_maintain_order(TRUE/FALSE)`.
+#' `pl$options$maintain_order(TRUE/FALSE)`.
 #'
 #' @return DataFrame
 #' @examples
@@ -886,7 +886,7 @@ DataFrame_filter = function(bool_expr) {
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+DataFrame_groupby = function(..., maintain_order = pl$options$maintain_order()) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }

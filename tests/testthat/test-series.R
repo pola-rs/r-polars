@@ -113,7 +113,7 @@ test_that("pl$Series_alias", {
 
 
 test_that("Series_append", {
-  pl$set_polars_options(strictly_immutable = FALSE)
+  pl$set_options(strictly_immutable = FALSE)
 
   s = pl$Series(letters, "foo")
   s2 = s
@@ -137,7 +137,7 @@ test_that("Series_append", {
   s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
   expect_identical(s_new$to_vector(), s_mut_copy$to_vector())
 
-  pl$reset_polars_options()
+  pl$reset_options()
 
   expect_error(
     s_new <- s_mut$append(pl$Series(1:3), immutable = FALSE),
@@ -283,14 +283,14 @@ test_that("sorted flags, sort", {
 # })
 
 test_that("set_sorted", {
-  pl$reset_polars_options()
+  pl$reset_options()
 
   expect_error(
     pl$Series(c(1, 3, 2, 4))$set_sorted(in_place = TRUE),
     regexp = "breaks immutability"
   )
 
-  pl$set_polars_options(strictly_immutable = FALSE)
+  pl$set_options(strictly_immutable = FALSE)
 
   # test in_place, test set_sorted
   s = pl$Series(c(1, 3, 2, 4))
@@ -322,7 +322,7 @@ test_that("set_sorted", {
     to_r()
   expect_identical(s, c(1, 3, 2, 4))
 
-  pl$reset_polars_options()
+  pl$reset_options()
 })
 
 test_that("value counts", {

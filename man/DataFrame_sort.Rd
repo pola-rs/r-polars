@@ -27,7 +27,7 @@ Expr(s) specified in \code{by} and \code{...}.}
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$options$default_maintain_order(TRUE/FALSE)}.}
+\code{pl$options$maintain_order(TRUE/FALSE)}.}
 }
 \value{
 DataFrame
