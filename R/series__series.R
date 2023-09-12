@@ -133,10 +133,6 @@ length.Series = \(x) x$len()
 #'   pl$Series(1:4)
 #' }
 pl$Series = function(x, name = NULL) {
-  if (inherits(x, "Series")) {
-    return(x)
-  }
-  x = convert_to_fewer_types(x) # type conversions on R side
   .pr$Series$new(x, name) |>
     unwrap("in pl$Series()")
 }

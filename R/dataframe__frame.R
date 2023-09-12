@@ -127,7 +127,7 @@ DataFrame
 #'
 #' # from a data.frame
 #' pl$DataFrame(mtcars)
-pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select = TRUE) {
+pl$DataFrame = function(..., make_names_unique = TRUE) {
   largs = unpack_list(...)
 
   # no args crete empty DataFrame
@@ -140,29 +140,9 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_sel
     return(largs[[1L]])
   }
 
-
-  # input guard
-  if (!is_DataFrame_data_input(largs)) {
-    stopf("input must inherit data.frame or be a list of vectors and/or  Series")
-  }
-
-  if (inherits(largs, "data.frame")) {
-    largs = as.data.frame(largs)
-  }
-
-
-  ## step 00 get max length to allow cycle 1-length inputs
-  # largs_lengths = sapply(largs, length)
-  # largs_lengths_max = if (is.integer(largs_lengths)) max(largs_lengths) else NULL
-
-  ## step1 handle column names
   # keys are tentative new column names
-  # fetch keys from names, if missing set as NA
   keys = names(largs)
   if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
-
-  ## step2
-  # if missing key use pl$Series name or generate new
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
       if (inherits(column, "Series")) {
@@ -174,27 +154,27 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_sel
     return(key)
   })
 
-  ## step 3
-  # check for conflicting names, to avoid silent overwrite
-  if (any(duplicated(keys))) {
-    if (make_names_unique) {
-      keys = make.unique(keys, sep = "_")
-    } else {
-      stopf(
-        paste(
-          "conflicting column names not allowed:",
-          paste(unique(keys[duplicated(keys)]), collapse = ", ")
-        )
-      )
-    }
-  }
 
-  ## pass to pl$
-  names(largs) = keys
-  result(
+  result({
+    # check for conflicting names, to avoid silent overwrite
+    if (any(duplicated(keys))) {
+      if (make_names_unique) {
+        keys = make.unique(keys, sep = "_")
+      } else {
+        stopf(
+          paste(
+            "conflicting column names not allowed:",
+            paste(unique(keys[duplicated(keys)]), collapse = ", ")
+          )
+        )
+      }
+    }
+
+    ## pass each arg to pl$lit and all args to pl$select
+    names(largs) = keys
     lapply(largs, pl$lit) |>
       do.call(what = pl$select)
-  ) |>
+  }) |>
     unwrap("in pl$DataFrame()")
 }
 
@@ -226,24 +206,6 @@ DataFrame_print = function() {
 }
 
 ## "Class methods"
-
-#' Validate data input for create Dataframe with pl$DataFrame
-#' @noRd
-#' @param x any R object to test if suitable as input to DataFrame
-#' @keywords internal
-#' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
-#'
-#' @return bool
-#'
-#' @examples
-#' .pr$env$is_DataFrame_data_input(iris)
-#' .pr$env$is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
-is_DataFrame_data_input = function(x) {
-  inherits(x, "data.frame") ||
-    is.list(x) ||
-    all(sapply(x, function(x) is.vector(x) || inherits(x, "Series")))
-}
-
 
 # "properties"
 
