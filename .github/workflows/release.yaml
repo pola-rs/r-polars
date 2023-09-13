@@ -89,7 +89,7 @@ jobs:
         shell: Rscript {0}
 
       - name: cross compile rust object files for another target arch
-        if: matrix.config.target == ''
+        if: matrix.config.target != ''
         run: |
           pwd
           make requirements-rs
@@ -120,7 +120,6 @@ jobs:
           files: |
             ../polars_*
             ../polars.zip
-            ../polars_cross_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
