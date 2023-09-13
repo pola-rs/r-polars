@@ -44,11 +44,11 @@ jobs:
       - uses: ./.github/actions/setup
 
       - name: test if not cross
-        if: matrix.config.target == ""
+        if: matrix.config.target == ''
         run: echo "this is not cross"
       
       - name: test if cross
-        if: matrix.config.target != ""
+        if: matrix.config.target != ''
         run: echo "this is cross"
 
       - name: Fix path for Windows caching
@@ -75,7 +75,7 @@ jobs:
           CI: false
 
       - name: make binary R package + test on host arch
-        if: matrix.config.target == ""
+        if: matrix.config.target == ''
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)
@@ -89,7 +89,7 @@ jobs:
         shell: Rscript {0}
 
       - name: cross compile rust object files for another target arch
-        if: matrix.config.target == ""
+        if: matrix.config.target == ''
         run: |
           pwd
           make requirements-rs
@@ -103,7 +103,7 @@ jobs:
         shell: bash
 
       - name: make source R package with pre-cross-compiled rust binaries for another target arch
-        if: matrix.config.target != ""
+        if: matrix.config.target != ''
         run: |
           runner_target <- Sys.getenv("RUNNER_TARGET")
           fn = devtools::build(vignettes = FALSE)
