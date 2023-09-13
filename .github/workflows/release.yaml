@@ -34,6 +34,9 @@ jobs:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release', rtools-version: ""}
           - {os: ubuntu-latest,   r: 'release'}
+          - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
+          - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
+          
 
     steps:
       - uses: actions/checkout@v3
@@ -63,14 +66,11 @@ jobs:
         env:
           CI: false
 
-      - name: build package + test
+      - name: make binary R package + test on host arch
+        if: ${{ matrix.config.target }} == ""
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)
-        shell: Rscript {0}
-
-      - name: build binary
-        run: |
           fn = devtools::build(binary = TRUE, args = c('--preclean'))
           if (R.version$os != "mingw32") {
             newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
@@ -80,13 +80,39 @@ jobs:
           }
         shell: Rscript {0}
 
-      - name: Release
+      - name: cross compile rust object files for another target arch
+        if: ${{ matrix.config.target }} != ""
+        run: |
+          pwd
+          make requirements-rs
+          rustup target add "$RUNNER_TARGET"
+          cargo build --lib --profile release-optimized  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml
+          mv ./src/rust/target/"$RUNNER_TARGET"/release-optimized/libr_polars.a ./inst/
+          ls -l
+          ls -l ./inst/
+        env:
+          RUNNER_TARGET: "${{ matrix.config.target }}"
+        shell: bash
+
+      - name: make source R package with pre-cross-compiled rust binaries for another target arch
+        if: ${{ matrix.config.target }} != ""
+        run: |
+          runner_target <- Sys.getenv("RUNNER_TARGET")
+          fn = devtools::build(vignettes = FALSE)
+          newfn = paste0(substr(fn,1,regexpr("_",fn)),"cross_",runner_target,".tar.gz")
+          file.rename(fn, newfn)
+        shell: Rscript {0}
+        env:
+          RUNNER_TARGET: "${{ matrix.config.target }}"
+
+      - name: Upload produced R packages (source or binary) to release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
         with:
           files: |
             ../polars_*
             ../polars.zip
+            ../polars_cross_*
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
