@@ -13,35 +13,27 @@ polars_optenv$debug_polars = FALSE
 
 ## END OF DEFINED OPTIONS
 
-#' @details Every option can be accessed via `pl$options$<name>()` or changed
-#' with `pl$options$<name>(<value>)`
-#' @rdname polars_options
-#' @name pl_options
-#' @examples
-#' # polars options read via `pl$options$<name>()`
-#' pl$options$strictly_immutable()
-#' pl$options$maintain_order()
-#'
-#' # write via `pl$options$<name>(<value>)`, invalided values/types are rejected
-#' pl$options$maintain_order(TRUE)
-#' tryCatch(
-#'   {
-#'     pl$options$maintain_order(42)
-#'   },
-#'   error = function(err) cat(as.character(err))
-#' )
-pl$options = lapply(names(polars_optenv), \(name) {
-  get(name, envir = polars_optenv)
-})
-names(pl$options) = names(polars_optenv)
-
 
 #' Set polars options
+#'
+#' Get and set polars options.
+#'
+#' @usage
+#' pl$options
+#' pl$set_options(
+#'   strictly_immutable = TRUE,
+#'   maintain_order = FALSE,
+#'   do_not_repeat_call = FALSE,
+#'   debug_polars = FALSE,
+#'   no_messages = FALSE
+#' )
+#' pl$reset_options()
 #'
 #' @param strictly_immutable Keep polars strictly immutable. Polars/arrow is in
 #' general pro "immutable objects". Immutability is also classic in R. To mimic
 #' the Python-polars API, set this to `FALSE.`
-#' @param maintain_order Set `maintain_order = TRUE` as default.
+#' @param maintain_order Default for all `maintain_order` options (present in
+#' `$groupby()` or `$unique()` for example).
 #' @param do_not_repeat_call Do not print the call causing the error in error
 #' messages. The default (`FALSE`) is to show them.
 #' @param debug_polars Print additional information to debug Polars.
@@ -49,19 +41,26 @@ names(pl$options) = names(polars_optenv)
 #'
 #' @rdname polars_options
 #' @name set_options
-#' @return current settings as list
-#' @details setting an options may be rejected if not passing opt_requirements
+#'
+#' @return
+#' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
+#' each option.
+#' `pl$set_options()` silently modifies the options values.
+#' `pl$reset_options()` silently resets the options to their default values.
+#'
 #' @examples
-#' pl$set_options(strictly_immutable = FALSE)
+#' pl$set_options(maintain_order = TRUE, strictly_immutable = FALSE)
 #' pl$options
 #'
-#'
-#' # setting strictly_immutable = 42 will be rejected as
+#' # these options only accept booleans (TRUE or FALSE)
 #' tryCatch(
 #'   pl$set_options(strictly_immutable = 42),
 #'   error = function(e) print(e)
 #' )
 #'
+#' # reset options to their default value
+#' pl$reset_options()
+
 pl$set_options = function(
     strictly_immutable = TRUE,
     maintain_order = FALSE,
@@ -82,22 +81,33 @@ pl$set_options = function(
   # modified in the first call)
   args_modified = names(as.list(sys.call()[-1]))
   for (i in seq_along(args_modified)) {
-    assign(args_modified[i], args[[args_modified[i]]], envir = polars_optenv)
+    value = args[[args_modified[i]]]
+    if (length(value) > 1) {
+      stop(paste0("`", args_modified[i], "` must be of length 1."))
+    }
+    if (!is.logical(value)) {
+      stop(paste0("`", args_modified[i], "` only accepts `TRUE` or `FALSE`."))
+    }
+    assign(args_modified[i], value, envir = polars_optenv)
   }
 
   unlockBinding("options", env = pl)
   assign("options", as.list(polars_optenv), envir = pl)
 }
 
-pl$get_polars_options = function() {
-  as.list(polars_optenv)
-}
+
+#' @rdname polars_options
+#' @name options
+
+pl$options = lapply(names(polars_optenv), \(name) {
+  get(name, envir = polars_optenv)
+})
+names(pl$options) = names(polars_optenv)
+
 
 #' @rdname polars_options
 #' @name reset_options
-#' @examples
-#' # reset options like this
-#' pl$reset_options()
+
 pl$reset_options = function() {
   assign("strictly_immutable", TRUE, envir = polars_optenv)
   assign("maintain_order", FALSE, envir = polars_optenv)
@@ -114,6 +124,7 @@ pl$reset_options = function() {
 #' @name polars_runtime_flags
 #' @keywords internal
 #' @return not applicable
+#' @noRd
 #' @description This environment is used internally for the package to remember
 #' what has been going on. Currently only used to throw one-time warnings()
 runtime_state = new.env(parent = emptyenv())

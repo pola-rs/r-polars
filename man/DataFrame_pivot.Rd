@@ -33,7 +33,7 @@ of the output DataFrame.}
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$options$maintain_order(TRUE/FALSE)}.}
+\code{pl$set_options(maintain_order = TRUE)}.}
 
 \item{sort_columns}{Sort the transposed columns by name. Default is by order
 of discovery.}
