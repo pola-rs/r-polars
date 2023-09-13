@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.target }}
 
     permissions:
       contents: write
