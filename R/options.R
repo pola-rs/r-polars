@@ -69,19 +69,12 @@ pl$set_options = function(
     no_messages = FALSE
   ) {
 
-  args <- list(
-    strictly_immutable = strictly_immutable,
-    maintain_order = maintain_order,
-    do_not_repeat_call = do_not_repeat_call,
-    debug_polars = debug_polars,
-    no_messages = no_messages
-  )
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
   args_modified = names(as.list(sys.call()[-1]))
   for (i in seq_along(args_modified)) {
-    value = args[[args_modified[i]]]
+    value = get(args_modified[i])
     if (length(value) > 1) {
       stop(paste0("`", args_modified[i], "` must be of length 1."))
     }
@@ -90,20 +83,23 @@ pl$set_options = function(
     }
     assign(args_modified[i], value, envir = polars_optenv)
   }
-
-  unlockBinding("options", env = pl)
-  assign("options", as.list(polars_optenv), envir = pl)
 }
 
 
 #' @rdname polars_options
 #' @name options
 
-pl$options = lapply(names(polars_optenv), \(name) {
-  get(name, envir = polars_optenv)
-})
-names(pl$options) = names(polars_optenv)
-
+makeActiveBinding(
+  "options",
+  function() {
+    out <- lapply(names(polars_optenv), \(name) {
+      get(name, envir = polars_optenv)
+    })
+    names(out) = names(polars_optenv)
+    out
+  },
+  env = pl
+)
 
 #' @rdname polars_options
 #' @name reset_options
@@ -114,8 +110,6 @@ pl$reset_options = function() {
   assign("do_not_repeat_call", FALSE, envir = polars_optenv)
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
-  unlockBinding("options", env = pl)
-  assign("options", as.list(polars_optenv), envir = pl)
 }
 
 

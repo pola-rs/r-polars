@@ -25,7 +25,7 @@ expect_different = function(x, y) {
 expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call = TRUE, ...) {
   # turn of including call in err msg
   if (do_not_repeat_call) {
-    old_options = pl$set_options(do_not_repeat_call = TRUE)
+    pl$set_options(do_not_repeat_call = TRUE)
   }
 
   # capture err msg
@@ -35,7 +35,9 @@ expect_grepl_error = function(expr, expected_err = NULL, do_not_repeat_call = TR
   })
 
   # restore previous options state
-  if (do_not_repeat_call) do.call(pl$set_options, old_options)
+  if (do_not_repeat_call) {
+    pl$set_options(do_not_repeat_call = FALSE)
+  }
 
   # check if error message contains pattern
   founds = sapply(expected_err, \(x) isTRUE(grepl(x, err, ignore.case = TRUE)[1]))
