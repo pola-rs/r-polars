@@ -86,8 +86,14 @@ jobs:
           pwd
           make requirements-rs
           rustup target add "$RUNNER_TARGET"
-          cargo build --lib --profile release-optimized  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml
-          mv ./src/rust/target/"$RUNNER_TARGET"/release-optimized/libr_polars.a ./inst/
+          BUILD_COMMAND="cargo build --lib --profile $(RPOLARS_PROFILE)  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml"
+          if [ "$(RPOLARS_FULL_FEATURES)" == 'true' ]
+          then
+		        $(BUILD_COMMAND) --features "full_features"
+	        else
+		        $(BUILD_COMMAND)
+	        fi
+          mv ./src/rust/target/"$RUNNER_TARGET"/$(RPOLARS_PROFILE)/libr_polars.a ./inst/
           ls -l
           ls -l ./inst/
         env:
