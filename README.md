@@ -106,22 +106,6 @@ install.packages(
 )
 ```
 
-#### macOS(aarch64 / arm64)
-
-This release is a little different from above, notice `type = "source"`.
-To install Make + Xcode is required but not rustc / cargo. The release
-is actually a source release bundled with a pre- cross-compiled object
-file `./inst/libr_polars.a`. The final linking / building of any R
-packages must be done on the native OS/architecture, but that should
-take only ~20 seconds.
-
-``` r
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/download/cross_test10/polars_cross_aarch64-apple-darwin.tar.gz",
-  repos = NULL, type = "source"
-)
-```
-
 ### Build from source
 
 For source installation, the Rust toolchain (Rust 1.70 or later) must be
