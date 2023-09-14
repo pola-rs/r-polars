@@ -36,20 +36,12 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
           - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
           - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
-          
+
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: ./.github/actions/setup
-
-      - name: test if not cross
-        if: matrix.config.target == ''
-        run: echo "this is not cross"
-      
-      - name: test if cross
-        if: matrix.config.target != ''
-        run: echo "this is cross"
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
