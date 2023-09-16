@@ -16,10 +16,10 @@ CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
 	if [ -f "$(CURDIR)/../inst/libr_polars.a" ]; then \
-	  echo "refer directly to a precompiled object file + skip cargo build"; \
-	  mkdir -p ./rust/target/$(RPOLARS_PROFILE) ; \
-	  mv $(CURDIR)/../inst/libr_polars.a ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
-	  exit 0 ; \
+		echo "refer directly to a precompiled object file + skip cargo build"; \
+		mkdir -p ./rust/target/$(RPOLARS_PROFILE) ; \
+		mv $(CURDIR)/../inst/libr_polars.a ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
+		exit 0 ; \
 	fi && \
 	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
