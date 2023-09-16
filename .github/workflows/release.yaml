@@ -111,6 +111,13 @@ jobs:
         env:
           RUNNER_TARGET: "${{ matrix.config.target }}"
 
+      - name: Upload produced R packages
+        uses: actions/upload-artifact@v3
+        with:
+          files: |
+            ../polars_*
+            ../polars.zip
+
       - name: Upload produced R packages (source or binary) to release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
