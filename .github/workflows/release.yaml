@@ -42,6 +42,8 @@ jobs:
           - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
           - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
 
+    env:
+      RUNNER_TARGET: "${{ matrix.config.target }}"
 
     steps:
       - uses: actions/checkout@v3
@@ -87,34 +89,28 @@ jobs:
 
       - name: cross compile rust object files for another target arch
         if: matrix.config.target != ''
+        env:
+          RPOLARS_BUILD_COMMAND_BASE: "cargo build --target=${RUNNER_TARGET}"
         run: |
           pwd
           make requirements-rs
-          rustup target add "$RUNNER_TARGET"
-          BUILD_COMMAND="cargo build --lib --profile ${RPOLARS_PROFILE}  --target "$RUNNER_TARGET" --manifest-path=./src/rust/Cargo.toml"
-          if [ "${RPOLARS_FULL_FEATURES}" == 'true' ]
-          then
-            ${BUILD_COMMAND} --features "full_features"
-          else
-            ${BUILD_COMMAND}
-          fi
-          mv ./src/rust/target/"$RUNNER_TARGET"/${RPOLARS_PROFILE}/libr_polars.a ./inst/
+          rustup target add "${RUNNER_TARGET}"
+          pushd src
+          make -f Makevars "./rust/target/${RPOLARS_PROFILE}/libr_polars.a"
+          popd
+          mv "./src/rust/target/"${RUNNER_TARGET}"/${RPOLARS_PROFILE}/libr_polars.a" ./inst/
           ls -l
           ls -l ./inst/
-        env:
-          RUNNER_TARGET: "${{ matrix.config.target }}"
         shell: bash
 
       - name: make source R package with pre-cross-compiled rust binaries for another target arch
         if: matrix.config.target != ''
         run: |
-          runner_target <- Sys.getenv("RUNNER_TARGET")
+          runner_target = Sys.getenv("RUNNER_TARGET")
           fn = devtools::build(vignettes = FALSE)
           newfn = paste0(substr(fn,1,regexpr("_",fn)),"cross_",runner_target,".tar.gz")
           file.rename(fn, newfn)
         shell: Rscript {0}
-        env:
-          RUNNER_TARGET: "${{ matrix.config.target }}"
 
       - name: Upload produced R packages
         uses: actions/upload-artifact@v3

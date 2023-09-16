@@ -1,5 +1,6 @@
 RPOLARS_PROFILE ?= release
-BUILD_COMMAND = cargo build --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+RPOLARS_BUILD_COMMAND_BASE ?= cargo build
+BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
 LIBDIR = ./rust/target/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
