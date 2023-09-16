@@ -44,6 +44,13 @@ jobs:
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
 
+      - name: Set env vars for build option
+        if: matrix.config.full-features
+        shell: bash
+        run: |
+          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
+          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
+
       - uses: ./.github/actions/setup
         with:
           rust-nightly: "${{ matrix.config.full-features }}"
@@ -75,13 +82,6 @@ jobs:
         shell: bash
         run: |
           echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-
-      - name: Set env vars for build option
-        if: matrix.config.full-features
-        shell: bash
-        run: |
-          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
-          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
         with:
