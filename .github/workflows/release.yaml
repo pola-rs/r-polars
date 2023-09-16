@@ -76,6 +76,12 @@ jobs:
         env:
           CI: false
 
+      - name: find polars rust source/cache, used by Makevars in check step
+        id: get_the_rust_sauce
+        shell: bash
+        run: |
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+
       - name: make binary R package + test on host arch
         if: matrix.config.target == ''
         run: |
