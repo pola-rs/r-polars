@@ -49,6 +49,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - uses: ./.github/actions/setup
+        with:
+          rust-nightly: true
+          target: ${{ matrix.config.target }}
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
@@ -92,9 +95,6 @@ jobs:
         env:
           RPOLARS_BUILD_COMMAND_BASE: "cargo build --target=${RUNNER_TARGET}"
         run: |
-          pwd
-          make requirements-rs
-          rustup target add "${RUNNER_TARGET}"
           pushd src
           make -f Makevars "./rust/target/${RPOLARS_PROFILE}/libr_polars.a"
           popd
