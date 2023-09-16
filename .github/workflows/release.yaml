@@ -115,7 +115,7 @@ jobs:
       - name: Upload produced R packages
         uses: actions/upload-artifact@v3
         with:
-          files: |
+          path: |
             ../polars_*
             ../polars.zip
 
