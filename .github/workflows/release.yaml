@@ -118,20 +118,24 @@ jobs:
           file.rename(fn, newfn)
         shell: Rscript {0}
 
+      - name: prep upload
+        run: |
+          mv ../polars* ./
+
       - name: Upload produced R packages
         uses: actions/upload-artifact@v3
         with:
           path: |
-            ../polars_*
-            ../polars.zip
+            polars_*
+            polars.zip
 
       - name: Upload produced R packages (source or binary) to release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
         with:
           files: |
-            ../polars_*
-            ../polars.zip
+            polars_*
+            polars.zip
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
