@@ -37,8 +37,8 @@ $(STATLIB):
 	fi
 	if [ -f "$(STATLIB)" ]; then \
 		echo "file is there: "; \
-	elif [ "$(rpolars_ext_binary)" != "$(STATLIB)" ]; then \
-		echo "no, file is NOT there: "; \
+	elif [ -f "$(rpolars_ext_binary)" ]; then \
+		echo "file is '$(rpolars_ext_binary)'"; \
 		mkdir -p $(LIBDIR) ; \
 		echo "trying to symlink in $(rpolars_ext_binary)"; \
 		ln -s $(rpolars_ext_binary) $(STATLIB) ; \

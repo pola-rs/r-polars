@@ -43,8 +43,9 @@ $(STATLIB):
 	# This solves both caching and R CMD check failing cargo build files
 	# see issue #28
 	if [ -f "$(STATLIB)" ]; then \
-		echo "found binary proceed to linking"; \
-	elif [ "$(rpolars_ext_binary)" != "$(STATLIB)" ]; then \
+		echo "file is there: "; \
+	elif [ -f "$(rpolars_ext_binary)" ]; then \
+		echo "file is '$(rpolars_ext_binary)'"; \
 		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
 		mkdir -p $(LIBDIR) ; \
 		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
