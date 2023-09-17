@@ -37,11 +37,11 @@ $(STATLIB):
 	fi
 	if [ -f "$(STATLIB)" ]; then \
 		echo "file is there: "; \
-	else \
+	elif [ "$(rpolars_ext_binary)" != "$(STATLIB)" ]; then \
 		echo "no, file is NOT there: "; \
-		mkdir -p ./rust/target/$(RPOLARS_PROFILE) ; \
+		mkdir -p $(LIBDIR) ; \
 		echo "trying to symlink in $(rpolars_ext_binary)"; \
-		ln -s $(rpolars_ext_binary) ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
+		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
 	fi
 
 	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \

@@ -44,10 +44,10 @@ $(STATLIB):
 	# see issue #28
 	if [ -f "$(STATLIB)" ]; then \
 		echo "found binary proceed to linking"; \
-	else \
+	elif [ "$(rpolars_ext_binary)" != "$(STATLIB)" ]; then \
 		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
 		mkdir -p $(LIBDIR) ; \
-		ln -s $(rpolars_ext_binary) $(LIBDIR)/libr_polars.a ; \
+		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
