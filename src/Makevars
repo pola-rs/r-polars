@@ -2,12 +2,12 @@ RPOLARS_PROFILE ?= release
 RPOLARS_BUILD_COMMAND_BASE ?= cargo build
 BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
-LIBDIR = ./rust/target/$(RPOLARS_PROFILE)
+LIBDIR = $(CURDIR)/rust/target/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars
-RPOLARS_RUST_SOURCE ?= ./rust
+RPOLARS_RUST_SOURCE ?= $(CURDIR)/rust
 
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(RPOLARS_PROFILE)/libr_polars.a"
+rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(RPOLARS_PROFILE)/libr_polars.a
 
 all: C_clean
 
