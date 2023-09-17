@@ -4,13 +4,13 @@ RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
 BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
 
-TARGET_DIR = $(CURDIR)/rust/target
+TARGET_DIR = ./rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/libr_polars.a
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
-RPOLARS_RUST_SOURCE ?= $(CURDIR)/rust
+RPOLARS_RUST_SOURCE ?= ./rust
 
-rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/libr_polars.a
+rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/libr_polars.a"
 
 all: C_clean
 

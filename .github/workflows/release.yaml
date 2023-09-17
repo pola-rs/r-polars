@@ -102,7 +102,7 @@ jobs:
           RPOLARS_BUILD_COMMAND_BASE: "cargo build --target=${{ env.RUNNER_TARGET }}"
         run: |
           pushd src
-          make -f Makevars "$(pwd)/rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
+          make -f Makevars "./rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
           popd
           mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./inst/
           ls -l
