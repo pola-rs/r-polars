@@ -116,7 +116,8 @@ jobs:
           fn = devtools::build(vignettes = FALSE)
           newfn = paste0(substr(fn,1,regexpr("_",fn)),"cross_",runner_target,".tar.gz")
           file.rename(fn, newfn)
-          writeLines(basename(newfn),"../polars_source_package_name.txt") #save for unit testing
+          writeLines(basename(newfn),"polars_source_package_name.txt") #save for unit testing
+          list.files()
         shell: Rscript {0}
 
       - name: prep upload
@@ -141,7 +142,8 @@ jobs:
       - name: unittest cross compilation, when host == target == 'x86_64-apple-darwin'
         if: matrix.config.target == 'x86_64-apple-darwin'
         run: |
-          polars_source_package_name = readLines("../polars_source_package_name.txt")
+          list.files()
+          polars_source_package_name = readLines("polars_source_package_name.txt")
           install.packages(polars_source_package_name, repos = NULL, source = TRUE)
           attach(getNamespace("polars")) # testthat assumes private namespace is in scope
           testthat::test_dir("tests/testthat/")
