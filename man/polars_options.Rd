@@ -5,17 +5,6 @@
 \alias{options}
 \alias{reset_options}
 \title{Set polars options}
-\usage{
-pl$options
-pl$set_options(
-  strictly_immutable = TRUE,
-  maintain_order = FALSE,
-  do_not_repeat_call = FALSE,
-  debug_polars = FALSE,
-  no_messages = FALSE
-)
-pl$reset_options()
-}
 \arguments{
 \item{strictly_immutable}{Keep polars strictly immutable. Polars/arrow is in
 general pro "immutable objects". Immutability is also classic in R. To mimic
@@ -38,7 +27,8 @@ each option.
 \code{pl$reset_options()} silently resets the options to their default values.
 }
 \description{
-Get and set polars options.
+Get and set polars options. See sections "Value" and "Examples" below for
+more details.
 }
 \examples{
 pl$set_options(maintain_order = TRUE, strictly_immutable = FALSE)

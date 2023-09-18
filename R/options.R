@@ -16,18 +16,8 @@ polars_optenv$debug_polars = FALSE
 
 #' Set polars options
 #'
-#' Get and set polars options.
-#'
-#' @usage
-#' pl$options
-#' pl$set_options(
-#'   strictly_immutable = TRUE,
-#'   maintain_order = FALSE,
-#'   do_not_repeat_call = FALSE,
-#'   debug_polars = FALSE,
-#'   no_messages = FALSE
-#' )
-#' pl$reset_options()
+#' Get and set polars options. See sections "Value" and "Examples" below for
+#' more details.
 #'
 #' @param strictly_immutable Keep polars strictly immutable. Polars/arrow is in
 #' general pro "immutable objects". Immutability is also classic in R. To mimic
@@ -41,6 +31,8 @@ polars_optenv$debug_polars = FALSE
 #'
 #' @rdname polars_options
 #' @name set_options
+#'
+#' @docType NULL
 #'
 #' @return
 #' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
