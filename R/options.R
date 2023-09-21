@@ -77,32 +77,6 @@ pl$set_options = function(
   }
 }
 
-
-#' @rdname polars_options
-#' @name options
-
-# NOTE: we have put 'pl$options' in an active binding so that it is updated with
-# the last values of `polars_optenv` everytime it's called. The thing is that when
-# we pass pl$options$maintain_order as the default argument of a function (for
-# example groupby()), then it is never actually evaluated (while if we specify
-# maintain_order = TRUE/FALSE explicitly when we call the function, it does get
-# evaluated and hence updated).
-#
-# THEREFORE, we still need to use polars_optenv to set up the default options in
-# function calls.
-
-makeActiveBinding(
-  "options",
-  function() {
-    out <- lapply(names(polars_optenv), \(name) {
-      get(name, envir = polars_optenv)
-    })
-    names(out) = names(polars_optenv)
-    out
-  },
-  env = pl
-)
-
 #' @rdname polars_options
 #' @name reset_options
 

@@ -2,7 +2,6 @@
 % Please edit documentation in R/options.R
 \name{set_options}
 \alias{set_options}
-\alias{options}
 \alias{reset_options}
 \title{Set polars options}
 \arguments{
