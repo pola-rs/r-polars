@@ -359,7 +359,7 @@ check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 
 If you experience unexpected sluggish performance, when using polars in
 a given IDE, we’d like to hear about it. You can try to activate
-`pl$set_polars_options(debug_polars = TRUE)` to profile what methods are
+`pl$set_options(debug_polars = TRUE)` to profile what methods are
 being touched (not necessarily run) and how fast. Below is an example of
 good behavior.
 
