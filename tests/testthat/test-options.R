@@ -26,12 +26,12 @@ test_that("pl$options$ read-write", {
   # set_options() only accepts booleans
   expect_error(
     pl$set_options(maintain_order = 42),
-    "only accepts `TRUE` or `FALSE`"
+    "Incorrect input"
   )
 
   expect_error(
     pl$set_options(strictly_immutable = c(TRUE, TRUE)),
-    "must be of length 1"
+    "Incorrect input"
   )
 
   # reset_options() works

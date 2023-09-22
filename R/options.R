@@ -2,16 +2,28 @@
 ## all polars sessions options saved to here
 
 polars_optenv = new.env(parent = emptyenv())
+polars_optreq = list()
 
-# WRITE ALL DEFINED OPTIONS BELOW HERE
+# WRITE ALL DEFINED OPTIONS AND THEIR REQUIREMENTS
+# Requirements will be used to validate inputs passed in pl$set_options()
 
 polars_optenv$strictly_immutable = TRUE
+polars_optreq$strictly_immutable = list(is_bool)
+
 polars_optenv$no_messages = FALSE
+polars_optreq$no_messages = list(is_bool)
+
 polars_optenv$do_not_repeat_call = FALSE
+polars_optreq$do_not_repeat_call = list(is_bool)
+
 polars_optenv$maintain_order = FALSE
+polars_optreq$maintain_order = list(is_bool)
+
 polars_optenv$debug_polars = FALSE
+polars_optreq$debug_polars = list(is_bool)
 
 ## END OF DEFINED OPTIONS
+
 
 
 #' Set polars options
@@ -65,14 +77,19 @@ pl$set_options = function(
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
   args_modified = names(as.list(sys.call()[-1]))
+
   for (i in seq_along(args_modified)) {
     value = get(args_modified[i])
-    if (length(value) > 1) {
-      stop(paste0("`", args_modified[i], "` must be of length 1."))
+
+    # each argument has its own input requirements
+    validation <- c()
+    for (fun in seq_along(polars_optreq[[args_modified[i]]])) {
+      validation[fun] <- do.call(polars_optreq[[args_modified[i]]][[fun]], list(value))
     }
-    if (!is.logical(value)) {
-      stop(paste0("`", args_modified[i], "` only accepts `TRUE` or `FALSE`."))
+    if (!all(validation)) {
+      stop(paste0("Incorrect input for argument `", args_modified, "`.\n"))
     }
+
     assign(args_modified[i], value, envir = polars_optenv)
   }
 }
