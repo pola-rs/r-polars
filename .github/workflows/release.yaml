@@ -41,8 +41,8 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
           - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
           - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
-          - {os: ubuntu-latest,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
-          - {os: ubuntu-latest,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
+          - {os: ubuntu-20.04,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
+          - {os: ubuntu-20.04,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
 
     env:
       RUNNER_TARGET: "${{ matrix.config.target }}"
