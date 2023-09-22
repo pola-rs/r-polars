@@ -41,6 +41,8 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
           - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
           - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
+          - {os: ubuntu-latest,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
+          - {os: ubuntu-latest,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
 
     env:
       RUNNER_TARGET: "${{ matrix.config.target }}"
@@ -52,6 +54,20 @@ jobs:
         with:
           rust-nightly: true
           target: ${{ matrix.config.target }}
+
+      - name: Install cross
+        if: runner.os == 'Linux' && matrix.config.target != ''
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cross
+
+      - name: Set cross as build command
+        if: runner.os == 'Linux' && matrix.config.target != ''
+        run: echo "RPOLARS_BUILD_COMMAND_BASE=cross build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
+
+      - name: Set build command
+        if: runner.os != 'Linux' && matrix.config.target != ''
+        run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
@@ -98,8 +114,6 @@ jobs:
 
       - name: cross compile rust object files for another target arch
         if: matrix.config.target != ''
-        env:
-          RPOLARS_BUILD_COMMAND_BASE: "cargo build --target=${{ env.RUNNER_TARGET }}"
         run: |
           pushd src
           make -f Makevars "./rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
@@ -140,7 +154,7 @@ jobs:
             polars.zip
 
       - name: unittest cross compilation, when host == target == 'x86_64-apple-darwin'
-        if: matrix.config.target == 'x86_64-apple-darwin'
+        if: matrix.config.target == 'x86_64-apple-darwin' || matrix.config.target == 'x86_64-unknown-linux-gnu'
         run: |
           list.files()
           polars_source_package_name = readLines("polars_source_package_name.txt")
