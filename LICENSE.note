@@ -52,6 +52,13 @@ License:     BSD-3-Clause
 
 -------------------------------------------------------------
 
+Name:        allocator-api2
+Repository:  https://github.com/zakarumych/allocator-api2
+Authors:     Zakarum
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        android-tzdata
 Repository:  https://github.com/RumovZ/android-tzdata
 Authors:     RumovZ
@@ -143,6 +150,20 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        bincode
+Repository:  https://github.com/servo/bincode
+Authors:     Ty Overby, Francesco Mazzoli, David Tolnay, Zoey Riordan
+License:     MIT
+
+-------------------------------------------------------------
+
+Name:        bitflags
+Repository:  https://github.com/bitflags/bitflags
+Authors:     The Rust Project Developers
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        bitflags
 Repository:  https://github.com/bitflags/bitflags
 Authors:     The Rust Project Developers
@@ -189,6 +210,13 @@ Name:        bytes
 Repository:  https://github.com/tokio-rs/bytes
 Authors:     Carl Lerche, Sean McArthur
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        cfg-if
+Repository:  https://github.com/alexcrichton/cfg-if
+Authors:     Alex Crichton
+License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -325,6 +353,20 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        errno
+Repository:  https://github.com/lambda-fairy/rust-errno
+Authors:     Chris Wong
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        errno-dragonfly
+Repository:  https://github.com/mneumann/errno-dragonfly-rs
+Authors:     Michael Neumann
+License:     MIT
+
+-------------------------------------------------------------
+
 Name:        ethnum
 Repository:  https://github.com/nlordell/ethnum-rs
 Authors:     Nicholas Rodrigues Lordello
@@ -367,6 +409,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        fastrand
+Repository:  https://github.com/smol-rs/fastrand
+Authors:     Stjepan Glavina
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        flate2
 Repository:  https://github.com/rust-lang/flate2-rs
 Authors:     Alex Crichton, Josh Triplett
@@ -388,10 +437,31 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        fnv
+Repository:  https://github.com/servo/rust-fnv
+Authors:     Alex Crichton
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        foreign_vec
 Repository:  https://github.com/DataEngineeringLabs/foreign_vec
 Authors:     Jorge C. Leitao
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        fuchsia-zircon
+Repository:  https://fuchsia.googlesource.com/garnet/
+Authors:     Raph Levien
+License:     BSD-3-Clause
+
+-------------------------------------------------------------
+
+Name:        fuchsia-zircon-sys
+Repository:  https://fuchsia.googlesource.com/garnet/
+Authors:     Raph Levien
+License:     BSD-3-Clause
 
 -------------------------------------------------------------
 
@@ -514,13 +584,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        hashbrown
-Repository:  https://github.com/rust-lang/hashbrown
-Authors:     Amanieu d'Antras
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
 Name:        heck
 Repository:  https://github.com/withoutboats/heck
 Authors:     Without Boats
@@ -577,17 +640,17 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        indexmap
-Repository:  https://github.com/bluss/indexmap
-Authors:     indexmap authors
+Name:        iovec
+Repository:  https://github.com/carllerche/iovec
+Authors:     Carl Lerche
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        instant
-Repository:  https://github.com/sebcrozet/instant
-Authors:     sebcrozet
-License:     BSD-3-Clause
+Name:        ipc-channel
+Repository:  https://github.com/servo/ipc-channel
+Authors:     The Servo Project Developers
+License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -629,6 +692,13 @@ License:     Apache-2.0 OR MIT
 Name:        jsonpath_lib
 Repository:  https://github.com/freestrings/jsonpath
 Authors:     Changseok Han
+License:     MIT
+
+-------------------------------------------------------------
+
+Name:        kernel32-sys
+Repository:  https://github.com/retep998/winapi-rs
+Authors:     Peter Atashian
 License:     MIT
 
 -------------------------------------------------------------
@@ -733,8 +803,15 @@ License:     MIT
 
 Name:        libz-ng-sys
 Repository:  https://github.com/rust-lang/libz-sys
-Authors:     Alex Crichton, Josh Triplett
+Authors:     Alex Crichton, Josh Triplett, Sebastian Thiel
 License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        linux-raw-sys
+Repository:  https://github.com/sunfishcode/linux-raw-sys
+Authors:     Dan Gohman
+License:     Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT
 
 -------------------------------------------------------------
 
@@ -824,8 +901,22 @@ License:     Apache-2.0 OR MIT OR Zlib
 
 Name:        mio
 Repository:  https://github.com/tokio-rs/mio
+Authors:     Carl Lerche
+License:     MIT
+
+-------------------------------------------------------------
+
+Name:        mio
+Repository:  https://github.com/tokio-rs/mio
 Authors:     Carl Lerche, Thomas de Zeeuw, Tokio Contributors
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        miow
+Repository:  https://github.com/alexcrichton/miow
+Authors:     Alex Crichton
+License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -853,6 +944,13 @@ License:     Zlib
 Name:        ndarray
 Repository:  https://github.com/rust-ndarray/ndarray
 Authors:     Ulrik Sverdrup "bluss", Jim Turner
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        net2
+Repository:  https://github.com/deprecrated/net2-rs
+Authors:     Alex Crichton
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -934,20 +1032,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        parking_lot
-Repository:  https://github.com/Amanieu/parking_lot
-Authors:     Amanieu d'Antras
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        parking_lot_core
-Repository:  https://github.com/Amanieu/parking_lot
-Authors:     Amanieu d'Antras
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
 Name:        parking_lot_core
 Repository:  https://github.com/Amanieu/parking_lot
 Authors:     Amanieu d'Antras
@@ -990,20 +1074,6 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        pin-project
-Repository:  https://github.com/taiki-e/pin-project
-Authors:     pin-project authors
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        pin-project-internal
-Repository:  https://github.com/taiki-e/pin-project
-Authors:     pin-project-internal authors
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
 Name:        pin-project-lite
 Repository:  https://github.com/taiki-e/pin-project-lite
 Authors:     pin-project-lite authors
@@ -1027,98 +1097,98 @@ License:     Apache-2.0 OR MIT
 
 Name:        polars
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-arrow
-Repository:  
-Authors:     ritchie46
+Repository:  https://github.com/pola-rs/polars
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-core
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-error
 Repository:  https://github.com/pola-rs/polars
-Authors:     polars-error authors
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-io
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-json
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-lazy
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-ops
 Repository:  https://github.com/pola-rs/polars
-Authors:     ritchie46
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-pipe
 Repository:  https://github.com/pola-rs/polars
-Authors:     polars-pipe authors
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-plan
 Repository:  https://github.com/pola-rs/polars
-Authors:     polars-plan authors
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-row
 Repository:  https://github.com/pola-rs/polars
-Authors:     polars-row authors
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-sql
 Repository:  https://github.com/pola-rs/polars
-Authors:     polars-sql authors
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-time
-Repository:  
-Authors:     ritchie46
+Repository:  https://github.com/pola-rs/polars
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
 
 Name:        polars-utils
-Repository:  
-Authors:     ritchie46
+Repository:  https://github.com/pola-rs/polars
+Authors:     Ritchie Vink
 License:     MIT
 
 -------------------------------------------------------------
@@ -1200,13 +1270,6 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        redox_syscall
-Repository:  https://gitlab.redox-os.org/redox-os/syscall
-Authors:     Jeremy Soller
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        regex
 Repository:  https://github.com/rust-lang/regex
 Authors:     The Rust Project Developers, Andrew Gallant
@@ -1253,6 +1316,13 @@ Name:        rustc-demangle
 Repository:  https://github.com/alexcrichton/rustc-demangle
 Authors:     Alex Crichton
 License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        rustix
+Repository:  https://github.com/bytecodealliance/rustix
+Authors:     Dan Gohman, Jakub Konka
+License:     Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT
 
 -------------------------------------------------------------
 
@@ -1459,6 +1529,13 @@ License:     MIT
 
 -------------------------------------------------------------
 
+Name:        strum_macros
+Repository:  https://github.com/Peternator7/strum
+Authors:     Peter Glotfelty
+License:     MIT
+
+-------------------------------------------------------------
+
 Name:        syn
 Repository:  https://github.com/dtolnay/syn
 Authors:     David Tolnay
@@ -1487,6 +1564,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        tempfile
+Repository:  https://github.com/Stebalien/tempfile
+Authors:     Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        thiserror
 Repository:  https://github.com/dtolnay/thiserror
 Authors:     David Tolnay
@@ -1504,13 +1588,6 @@ License:     Apache-2.0 OR MIT
 Name:        thread_local
 Repository:  https://github.com/Amanieu/thread_local-rs
 Authors:     Amanieu d'Antras
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        time
-Repository:  https://github.com/time-rs/time
-Authors:     The Rust Project Developers
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -1571,6 +1648,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        uuid
+Repository:  https://github.com/uuid-rs/uuid
+Authors:     Ashley Mannix<ashleymannix@live.com.au>, Christopher Armstrong, Dylan DPC<dylan.dpc@gmail.com>, Hunar Roop Kahlon<hunar.roop@gmail.com>
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        valuable
 Repository:  https://github.com/tokio-rs/valuable
 Authors:     valuable authors
@@ -1592,13 +1676,6 @@ License:     Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT
 
 -------------------------------------------------------------
 
-Name:        wasi
-Repository:  https://github.com/bytecodealliance/wasi
-Authors:     The Cranelift Project Developers
-License:     Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT
-
--------------------------------------------------------------
-
 Name:        wasm-bindgen
 Repository:  https://github.com/rustwasm/wasm-bindgen
 Authors:     The wasm-bindgen Developers
@@ -1608,13 +1685,6 @@ License:     Apache-2.0 OR MIT
 
 Name:        wasm-bindgen-backend
 Repository:  https://github.com/rustwasm/wasm-bindgen/tree/master/crates/backend
-Authors:     The wasm-bindgen Developers
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        wasm-bindgen-futures
-Repository:  https://github.com/rustwasm/wasm-bindgen/tree/master/crates/futures
 Authors:     The wasm-bindgen Developers
 License:     Apache-2.0 OR MIT
 
@@ -1641,17 +1711,10 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        wasm-timer
-Repository:  https://github.com/tomaka/wasm-timer
-Authors:     Pierre Krieger
+Name:        winapi
+Repository:  https://github.com/retep998/winapi-rs
+Authors:     Peter Atashian
 License:     MIT
-
--------------------------------------------------------------
-
-Name:        web-sys
-Repository:  https://github.com/rustwasm/wasm-bindgen/tree/master/crates/web-sys
-Authors:     The wasm-bindgen Developers
-License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -1743,6 +1806,13 @@ Name:        windows_x86_64_msvc
 Repository:  https://github.com/microsoft/windows-rs
 Authors:     Microsoft
 License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        ws2_32-sys
+Repository:  https://github.com/retep998/winapi-rs
+Authors:     Peter Atashian
+License:     MIT
 
 -------------------------------------------------------------
 
