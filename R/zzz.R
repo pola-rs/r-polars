@@ -138,18 +138,9 @@ pl$mem_address = mem_address
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
 
+
   # see doc below, R CMD check did not like this function def
   pl$select = .pr$DataFrame$default()$select
-
-  # create the binding for options on loading, otherwise its values are frozen
-  # to what the default values were at build time
-  makeActiveBinding(
-    "options",
-    function() {
-      as.list(polars_optenv)
-    },
-    env = pl
-  )
 
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)

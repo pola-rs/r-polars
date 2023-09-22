@@ -653,9 +653,3 @@ sub_name_space_accessor_function = function(self, name) {
 "%in_list%" = \(lhs_element, rhs_list) rhs_list |>
   sapply("==", lhs_element) |>
   any()
-
-
-# helper used to validate inputs passed to pl$set_options()
-is_bool = function(x) {
-  is.logical(x) && length(x) == 1 && !is.na(x)
-}
