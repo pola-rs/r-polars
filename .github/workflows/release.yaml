@@ -55,18 +55,15 @@ jobs:
           rust-nightly: true
           target: ${{ matrix.config.target }}
 
-      - name: Install cross
-        if: runner.os == 'Linux' && matrix.config.target != ''
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cross
-
-      - name: Set cross as build command
-        if: runner.os == 'Linux' && matrix.config.target != ''
-        run: echo "RPOLARS_BUILD_COMMAND_BASE=cross build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
+      - name: Set for arm64 Linux
+        if: matrix.config.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
 
       - name: Set build command
-        if: runner.os != 'Linux' && matrix.config.target != ''
+        if: matrix.config.target != ''
         run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
 
       - name: Fix path for Windows caching
