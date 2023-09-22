@@ -125,6 +125,7 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
+  old_option = pl$options$do_not_repeat_call
   pl$set_options(do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
@@ -138,8 +139,10 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
     )
   )
 
-  # restore options
-  pl$set_options(do_not_repeat_call = FALSE)
+  # restore this option but only if it was originally FALSE
+  if (isFALSE(old_option)) {
+    pl$set_options(do_not_repeat_call = FALSE)
+  }
 
   expr_result
 }
