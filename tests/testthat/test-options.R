@@ -1,40 +1,42 @@
 test_that("pl$options$ read-write", {
-  pl$reset_options()
-
-  # basic checks
+  # same names and values are read
   expect_identical(
-    pl$options,
+    lapply(pl$options, \(f) f()),
     as.list(polars_optenv)
   )
+
+  # pl$get_polars_options() get all options as in innner state
   expect_identical(
-    pl$options$maintain_order,
-    polars_optenv$maintain_order
+    pl$get_polars_options(),
+    as.list(polars_optenv)
   )
 
-  old_options = pl$options
-
-  # set_options() works
-  pl$set_options(maintain_order = TRUE)
-  expect_true(pl$options$maintain_order)
-
-  # set_options() only modifies the value for arguments that were explicitly
-  # called
-  pl$set_options(do_not_repeat_call = TRUE)
-  expect_true(pl$options$do_not_repeat_call)
-  expect_true(pl$options$maintain_order)
-
-  # set_options() only accepts booleans
-  expect_error(
-    pl$set_options(maintain_order = 42),
-    "Incorrect input"
+  # single read identical, to inner state
+  expect_identical(
+    pl$options$default_maintain_order(),
+    polars_optenv$default_maintain_order
   )
 
-  expect_error(
-    pl$set_options(strictly_immutable = c(TRUE, TRUE)),
-    "Incorrect input"
+  # store old options and flip one bool option to opposite
+  # test if option was flipped
+  old_options = pl$get_polars_options()
+  pl$options$default_maintain_order(!old_options$default_maintain_order)
+  expect_true(
+    old_options$default_maintain_order !=
+      pl$options$default_maintain_order()
   )
 
-  # reset_options() works
-  pl$reset_options()
-  expect_identical(pl$options, old_options)
+  # check if not identical, reset options, check if identical
+  expect_false(identical(old_options, as.list(polars_optenv)))
+  do.call(pl$set_polars_options, old_options)
+  expect_identical(
+    old_options,
+    as.list(polars_optenv)
+  )
+
+  # test, try write wrong value/type is rejected with error
+  expect_grepl_error(
+    pl$options$default_maintain_order(42),
+    c("default_maintain_order", "requirement named is_bool")
+  )
 })

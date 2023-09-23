@@ -1031,22 +1031,3 @@ test_that("with_row_count", {
   df = pl$DataFrame(mtcars)
   expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })
-
-test_that("strictly_immutable = FALSE", {
-  # check dataframe is immutable by setting
-  df = pl$DataFrame(iris)
-  df_immutable_copy = df
-  df_immutable_copy$columns = paste0(df_immutable_copy$columns, "_modified")
-  expect_true(all(names(df) != names(df_immutable_copy)))
-
-  # setting and option returns the previous/state state as defualt
-  pl$set_options(strictly_immutable = FALSE)
-
-  # check change setting took effect
-  df = pl$DataFrame(iris)
-  df_mutable_copy = df
-  df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
-  expect_true(all(names(df) == names(df_mutable_copy)))
-
-  pl$reset_options()
-})

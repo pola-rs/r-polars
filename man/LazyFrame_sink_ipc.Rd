@@ -26,7 +26,7 @@ for fast compression/decompression.}
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$set_options(maintain_order = TRUE)}.}
+\code{pl$options$default_maintain_order(TRUE/FALSE)}.}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}

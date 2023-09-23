@@ -304,7 +304,7 @@ cd r-polars
 
 ### Misc
 
-If you experience unexpected sluggish performance, when using polars in a given IDE, we'd like to hear about it. You can try to activate `pl$set_options(debug_polars = TRUE)` to profile what methods are being touched (not necessarily run) and how fast. Below is an example of good behavior.
+If you experience unexpected sluggish performance, when using polars in a given IDE, we'd like to hear about it. You can try to activate `pl$set_polars_options(debug_polars = TRUE)` to profile what methods are being touched (not necessarily run) and how fast. Below is an example of good behavior.
 
 ```r
 #run e.g. an eager query after setting debug_polars = TRUE
