@@ -5,6 +5,11 @@ on:
     branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release.yaml
   workflow_dispatch:
 
 name: Release
@@ -22,7 +27,7 @@ jobs:
   build:
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) - ${{ matrix.config.target }}
 
     permissions:
       contents: write
@@ -34,11 +39,32 @@ jobs:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release', rtools-version: ""}
           - {os: ubuntu-latest,   r: 'release'}
+          - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
+          - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
+          - {os: ubuntu-latest,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
+          - {os: ubuntu-latest,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
+
+    env:
+      RUNNER_TARGET: "${{ matrix.config.target }}"
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: ./.github/actions/setup
+        with:
+          rust-nightly: true
+          target: ${{ matrix.config.target }}
+
+      - name: Set for arm64 Linux
+        if: matrix.config.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
+
+      - name: Set build command
+        if: matrix.config.target != ''
+        run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
@@ -63,14 +89,17 @@ jobs:
         env:
           CI: false
 
-      - name: build package + test
+      - name: find polars rust source/cache, used by Makevars in check step
+        id: get_the_rust_sauce
+        shell: bash
+        run: |
+          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+
+      - name: make binary R package + test on host arch
+        if: matrix.config.target == ''
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)
-        shell: Rscript {0}
-
-      - name: build binary
-        run: |
           fn = devtools::build(binary = TRUE, args = c('--preclean'))
           if (R.version$os != "mingw32") {
             newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
@@ -80,18 +109,55 @@ jobs:
           }
         shell: Rscript {0}
 
-      - name: Release
+      - name: cross compile rust object files for another target arch
+        if: matrix.config.target != ''
+        run: |
+          pushd src
+          make -f Makevars "./rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
+          popd
+          mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./inst/
+          ls -l
+          ls -l ./inst/
+        shell: bash
+
+      - name: make source R package with pre-cross-compiled rust binaries for another target arch
+        if: matrix.config.target != ''
+        run: |
+          fine_name="$(R -s -e 'devtools::build(vignettes = FALSE, quiet = TRUE) |> cat()')"
+          new_file_name="$(echo $fine_name | sed "s/_.*/_cross_${{ env.RUNNER_TARGET }}.tar.gz/")"
+          mv $fine_name $new_file_name
+          echo "new_file_name=${new_file_name}" >>"$GITHUB_ENV"
+        shell: bash
+
+      - name: unittest cross compilation, when host == target == 'x86_64-apple-darwin'
+        if: matrix.config.target == 'x86_64-apple-darwin' || matrix.config.target == 'x86_64-unknown-linux-gnu'
+        run: |
+          list.files()
+          polars_source_package_name = Sys.getenv("new_file_name")
+          install.packages(polars_source_package_name, repos = NULL, source = TRUE)
+          attach(getNamespace("polars")) # testthat assumes private namespace is in scope
+          testthat::test_dir("tests/testthat/")
+        shell: Rscript {0}
+
+      - name: prep upload
+        run: |
+          mv ../polars* ./
+
+      - name: Upload produced R packages
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            polars_*
+            polars.zip
+
+      - name: Upload produced R packages (source or binary) to release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
         with:
           files: |
-            ../polars_*
-            ../polars.zip
+            polars_*
+            polars.zip
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
-
-      - name: print wd
-        run: print(getwd())
         shell: Rscript {0}

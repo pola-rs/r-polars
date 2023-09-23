@@ -64,12 +64,20 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-We also provide pre-compiled binaries for various operating systems on
-our [GitHub releases](https://github.com/pola-rs/r-polars/releases)
-page. You can download and install these files manually, or install
-directly from R. Simply match the URL for your operating system and the
-desired release. For example, to install the latest release of
-**polars** on one can use:
+GitHub releases have faster and smaller binaries, as they are compiled
+by nightly rust with some more opimizations. This inludes SIMD
+operations, full link time optimizations (lto=“fat”). The pre-compiled
+binaries are available for various operating systems / architectures,
+including MacOS ARM CPUs. See latest and all previous [GitHub Releases
+here](https://github.com/pola-rs/r-polars/releases).
+
+You can download and install these files manually, or install directly
+from R. Simply match the URL for your operating system and the desired
+release. For example, to install the latest release of **polars** on one
+can use:
+
+Just remember to invoke the `repos = NULL` argument if you are
+installing these binary builds directly from within R.
 
 #### Linux (x86_64)
 
@@ -97,12 +105,6 @@ install.packages(
   repos = NULL
 )
 ```
-
-Just remember to invoke the `repos = NULL` argument if you are
-installing these binary builds directly from within R.
-
-Binary packages on GitHub releases are compiled by nightly Rust, with
-nightly features enabled.
 
 ### Build from source
 

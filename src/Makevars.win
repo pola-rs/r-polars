@@ -1,6 +1,7 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 RPOLARS_PROFILE ?= release
-BUILD_COMMAND = cargo build --target=$(TARGET) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
+BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
 
 TARGET_DIR = ./rust/target
@@ -42,11 +43,12 @@ $(STATLIB):
 	# This solves both caching and R CMD check failing cargo build files
 	# see issue #28
 	if [ -f "$(STATLIB)" ]; then \
-		echo "found binary proceed to linking"; \
-	else \
+		echo "file is there: "; \
+	elif [ -f "$(rpolars_ext_binary)" ]; then \
+		echo "file is '$(rpolars_ext_binary)'"; \
 		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
 		mkdir -p $(LIBDIR) ; \
-		ln -s $(rpolars_ext_binary) $(LIBDIR)/libr_polars.a ; \
+		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
