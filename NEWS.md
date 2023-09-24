@@ -1,4 +1,4 @@
-# polars (development version)
+# polars 0.8.1
 
 ## What's changed
 
