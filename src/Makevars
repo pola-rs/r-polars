@@ -26,7 +26,7 @@ $(STATLIB):
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
 	export PATH="$(PATH):$(HOME)/.cargo/bin" && \
-	if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+	if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
 		$(BUILD_COMMAND) --features "full_features"; \
 	else \
 		$(BUILD_COMMAND); \
@@ -44,7 +44,7 @@ $(STATLIB):
 		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
 	fi
 
-	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" = "true" ]; then \
 		echo "cleanup!!" ; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \
