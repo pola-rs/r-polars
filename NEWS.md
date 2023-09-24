@@ -1,5 +1,7 @@
 # polars (development version)
 
+# polars 0.8.1
+
 ## What's changed
 
 - New string method `to_titlecase()` (#371).
