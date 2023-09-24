@@ -2,7 +2,6 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
     tags:
       - "**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
@@ -10,6 +9,7 @@ on:
       - main
     paths:
       - .github/workflows/release.yaml
+      - src/Makevars*
   workflow_dispatch:
 
 name: Release

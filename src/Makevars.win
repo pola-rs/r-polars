@@ -28,7 +28,7 @@ $(STATLIB):
 	fi && \
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+		if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
 			$(BUILD_COMMAND) --features "full_features"; \
 		else \
 			$(BUILD_COMMAND); \
@@ -52,7 +52,7 @@ $(STATLIB):
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
-	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" = "true" ]; then \
 		echo "clean up target, to not let R CMD check fail on rust files"; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \
