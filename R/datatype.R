@@ -168,7 +168,7 @@ DataType_constructors = list(
   },
 
   # doc below pl_List
-  List = function(datatype) {
+  List = function(datatype = "unknown") {
     if (is.character(datatype) && length(datatype) == 1) {
       datatype = .pr$DataType$new(datatype)
     }
