@@ -88,7 +88,7 @@ install.packages(
 )
 ```
 
-#### Windows
+#### Windows (x86_64)
 
 ``` r
 install.packages(
@@ -97,11 +97,38 @@ install.packages(
 )
 ```
 
-#### macOS(x86_64)
+#### macOS (x86_64)
 
 ``` r
 install.packages(
   "https://github.com/pola-rs/r-polars/releases/latest/download/polars__x86_64-apple-darwin20.tgz",
+  repos = NULL
+)
+```
+
+#### Linux (aarch64) / macOS (aarch64)
+
+GitHub releases also provide pre-compiled packages for arm64 (aarch64)
+platforms.
+
+These are a little different from above. To install, requiring make (and
+Xcode for macOS) but not rustc / cargo. They are actually source
+releases bundled with a pre-compiled object file `./inst/libr_polars.a`.
+The final linking / building of any R packages must be done on the
+native OS/architecture, but that should take only ~20 seconds.
+
+``` r
+# Linux
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-unknown-linux-gnu.tar.gz",
+  repos = NULL
+)
+```
+
+``` r
+# macOS
+install.packages(
+  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-apple-darwin.tar.gz",
   repos = NULL
 )
 ```
@@ -359,9 +386,9 @@ check_polars() #assumes rust target at `paste0(getwd(),"/src/rust")`
 
 If you experience unexpected sluggish performance, when using polars in
 a given IDE, we’d like to hear about it. You can try to activate
-`pl$set_options(debug_polars = TRUE)` to profile what methods are
-being touched (not necessarily run) and how fast. Below is an example of
-good behavior.
+`pl$set_options(debug_polars = TRUE)` to profile what methods are being
+touched (not necessarily run) and how fast. Below is an example of good
+behavior.
 
 ``` r
 #run e.g. an eager query after setting debug_polars = TRUE
