@@ -21,4 +21,11 @@ pl$List(pl$List(pl$Boolean))
 
 # Find any DataType via pl$dtypes
 print(pl$dtypes)
+
+#check if some maybe_Struct any kind Struct DataType
+maybe_Struct = pl$Struct(pl$UInt64)
+pl$same_outer_dt(maybe_Struct, pl$Struct())
+
+#this will yield FALSE is not exactly the same
+maybe_Struct == pl$Struct()
 }

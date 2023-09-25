@@ -251,11 +251,11 @@ NULL
 #' Create List DataType
 #' @keywords pl
 #' @name pl_List
-#' @param datatype an inner DataType, default is "Unknown" (likely not so useful)
+#' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
+#' does not matter, e.g. as used in example)
 #' @return a list DataType with an inner DataType
 #' @format function
 #' @examples
-#'
 #' # some nested List
 #' pl$List(pl$List(pl$Boolean))
 #'
