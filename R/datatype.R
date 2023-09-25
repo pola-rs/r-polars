@@ -185,7 +185,7 @@ DataType_constructors = list(
   Struct = function(...) {
     result({
       largs = list2(...)
-      if (is.list(largs[[1]])) {
+      if (length(largs) >= 1 && is.list(largs[[1]])) {
         largs = largs[[1]]
         element_name = "list element"
       } else {
