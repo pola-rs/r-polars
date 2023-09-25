@@ -4,6 +4,10 @@ inputs:
   rust-nightly:
     description: Set up Rust nightly toolchain?
     required: false
+  target:
+    description: Rust toolchain to use
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -33,8 +37,14 @@ runs:
         run: |
           make requirements-rs
 
+      - name: Set up Rust target
+        if: inputs.target != ''
+        shell: bash
+        run: |
+          rustup target add ${{ inputs.target }}
+
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: build
+          shared-key: build-${{ env.RPOLARS_PROFILE }}-${{ inputs.target }}
           workspaces: ./src/rust/

@@ -1,8 +1,12 @@
 # polars (development version)
 
+# polars 0.8.1
+
 ## What's changed
 
 - New string method `to_titlecase()` (#371).
+- Although stated in news for PR (#334) `strip = true` was not actually set for the 
+  "release-optimized" compilation profile. Now it is, but the binary sizes seems unchanged (#377).
 - New vignette on best practices to improve `polars` performance (#188).
 - Subnamespace name "arr" as in  `<Expr>$arr$` & `<Series>$arr$` is deprecated 
   in favor of "list". The subnamespace "arr" will be removed in polars 0.9.0 (#375).
