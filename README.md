@@ -111,11 +111,11 @@ install.packages(
 GitHub releases also provide pre-compiled packages for arm64 (aarch64)
 platforms.
 
-These are a little different from above. To install Make + Xcode is
-required but not rustc / cargo. They are actually source releases
-bundled with a pre-compiled object file `./inst/libr_polars.a`. The
-final linking / building of any R packages must be done on the native
-OS/architecture, but that should take only ~20 seconds.
+These are a little different from above. To install, requiring make (and
+Xcode for macOS) but not rustc / cargo. They are actually source
+releases bundled with a pre-compiled object file `./inst/libr_polars.a`.
+The final linking / building of any R packages must be done on the
+native OS/architecture, but that should take only ~20 seconds.
 
 ``` r
 # Linux
