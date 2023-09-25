@@ -4,7 +4,7 @@
 \alias{LazyFrame_groupby}
 \title{Group a LazyFrame}
 \usage{
-LazyFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
+LazyFrame_groupby(..., maintain_order = pl$options$maintain_order)
 }
 \arguments{
 \item{...}{Any Expr(s) or string(s) naming a column.}
@@ -12,7 +12,7 @@ LazyFrame_groupby(..., maintain_order = pl$options$default_maintain_order())
 \item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
 this to \code{TRUE} makes it more expensive to compute and blocks the possibility
 to run on the streaming engine. The default value can be changed with
-\code{pl$options$default_maintain_order(TRUE/FALSE)}.}
+\code{pl$set_options(maintain_order = TRUE)}.}
 }
 \value{
 LazyGroupBy (a LazyFrame with special groupby methods like \verb{$agg()})
