@@ -1309,3 +1309,26 @@ LazyFrame_explode = function(...) {
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
 }
+
+
+#' Unnest a LazyFrame struct columns.
+#' @keywords DataFrame
+#' @inheritParams DataFrame_unnest
+#' @return A LazyFrame where all "struct" columns are unnested. Non-struct
+#' columns are not modified.
+#' @examples
+#' lf = pl$LazyFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))$
+#'  with_columns(
+#'    pl$col("b")$to_struct()
+#'  )
+#' lf
+#'
+#' lf$unnest()
+
+LazyFrame_unnest = function(names = NULL) {
+  # if (is.null(names)) {
+  #   names <- names(Filter(\(x) x == pl$struct, .pr$LazyFrame$schema(self)))
+  # }
+
+  unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
+}

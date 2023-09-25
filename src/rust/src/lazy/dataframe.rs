@@ -19,6 +19,7 @@ use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 use polars::prelude::AsOfOptions;
 
+
 #[allow(unused_imports)]
 use std::result::Result;
 
@@ -212,6 +213,10 @@ impl LazyFrame {
         let exprs =
             robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $with_columns()")?;
         Ok(LazyFrame(self.clone().0.with_columns(exprs)))
+    }
+
+    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
+        Ok(LazyFrame(self.clone().0.unnest(names)))
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
