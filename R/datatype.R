@@ -239,13 +239,27 @@ NULL
 #'
 #' # Find any DataType via pl$dtypes
 #' print(pl$dtypes)
+#'
+#' #check if some maybe_Struct any kind Struct DataType
+#' maybe_Struct = pl$Struct(pl$UInt64)
+#' pl$same_outer_dt(maybe_Struct, pl$Struct())
+#'
+#' #this will yield FALSE is not exactly the same
+#' maybe_Struct == pl$Struct()
 NULL
 
 #' Create List DataType
 #' @keywords pl
 #' @name pl_List
-#' @param datatype an inner DataType
+#' @param datatype an inner DataType, default is "Unknown" (likely not so useful)
 #' @return a list DataType with an inner DataType
 #' @format function
-#' @examples pl$List(pl$List(pl$Boolean))
+#' @examples
+#'
+#' # some nested List
+#' pl$List(pl$List(pl$Boolean))
+#'
+#' # check if some maybe_list is a List DataType
+#' maybe_List = pl$List(pl$UInt64)
+#' pl$same_outer_dt(maybe_List, pl$List())
 NULL
