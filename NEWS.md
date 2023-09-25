@@ -1,9 +1,13 @@
 # polars (development version)
 
-## What's changed
+## Breaking changes
 
 - Setting and getting polars options is now made with `pl$options`, 
   `pl$set_options()` and `pl$reset_options()` (#384).
+
+## What's changed
+
+- New method `$unnest()` for `LazyFrame` (#397).
 
 # polars 0.8.1
 
