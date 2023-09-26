@@ -385,20 +385,18 @@ impl DataFrame {
         n: Robj,
         with_replacement: Robj,
         shuffle: Robj,
-        seed: Robj
-    ) -> Result<Self, String>  {
-      let df = self
-            .0
+        seed: Robj,
+    ) -> RResult<Self> {
+        self.0
             .clone()
             .sample_n(
                 robj_to!(usize, n)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
-                robj_to!(Option, u64, seed)?
+                robj_to!(Option, u64, seed)?,
             )
-            .map_err(|s| s.to_string())?;
-
-        Ok(DataFrame(df))
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
     }
 
     pub fn sample_frac(
@@ -406,22 +404,19 @@ impl DataFrame {
         frac: Robj,
         with_replacement: Robj,
         shuffle: Robj,
-        seed: Robj
-    ) -> Result<Self, String> {
-        let df = self
-            .0
+        seed: Robj,
+    ) -> RResult<Self> {
+        self.0
             .clone()
             .sample_frac(
                 robj_to!(f64, frac)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
-                robj_to!(Option, u64, seed)?
+                robj_to!(Option, u64, seed)?,
             )
-            .map_err(|s| s.to_string())?;
-        
-        Ok(DataFrame(df))
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
     }
-
 }
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
