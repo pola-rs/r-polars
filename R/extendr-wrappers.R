@@ -175,6 +175,10 @@ DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call
 
 DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__DataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
 
+DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
+
+DataFrame$sample_frac <- function(fraction, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, fraction, with_replacement, shuffle, seed)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 

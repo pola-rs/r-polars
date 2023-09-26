@@ -379,6 +379,49 @@ impl DataFrame {
         .map_err(|err| err.to_string())
         .map(|ok| ok.into())
     }
+
+    pub fn sample_n(
+        &self,
+        n: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj
+    ) -> Result<Self, String>  {
+      let df = self
+            .0
+            .clone()
+            .sample_n(
+                robj_to!(usize, n)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?
+            )
+            .map_err(|s| s.to_string())?;
+
+        Ok(DataFrame(df))
+    }
+
+    pub fn sample_frac(
+        &self,
+        frac: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj
+    ) -> Result<Self, String> {
+        let df = self
+            .0
+            .clone()
+            .sample_frac(
+                robj_to!(f64, frac)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?
+            )
+            .map_err(|s| s.to_string())?;
+        
+        Ok(DataFrame(df))
+    }
+
 }
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {

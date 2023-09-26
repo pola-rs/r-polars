@@ -1050,3 +1050,25 @@ test_that("strictly_immutable = FALSE", {
 
   pl$reset_options()
 })
+
+test_that("sample", {
+  df = pl$DataFrame(iris)
+
+  expect_identical(df$sample(n = 20)$height, 20)
+  expect_identical(df$sample(frac = 0.1)$height, 15)
+
+  expect_error(
+    df$sample(),
+    "need to specify either"
+  )
+  expect_error(
+    df$sample(n = 2, fraction = 0.1),
+    "not both"
+  )
+
+  # seed works
+  expect_identical(
+    df$sample(fraction = 0.1, seed = 123)$to_data_frame(),
+    df$sample(fraction = 0.1, seed = 123)$to_data_frame()
+  )
+})

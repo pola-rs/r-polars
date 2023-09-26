@@ -1604,3 +1604,42 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
 }
+
+#' Take a sample of rows from a DataFrame
+#'
+#' @param n Number of rows to return. Cannot be used with `fraction`.
+#' @param fraction Fraction of rows to return (between 0 and 1). Cannot be used
+#' with `n`.
+#' @param with_replacement Allow values to be sampled more than once.
+#' @param shuffle If `TRUE`, the order of the sampled rows will be shuffled. If
+#' `FALSE` (default), the order of the returned rows will be neither stable nor
+#' fully random.
+#' @param seed Seed for the random number generator. If set to `NULL` (default),
+#' a random seed is generated for each sample operation.
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$sample(n = 20)
+#' df$sample(frac = 0.1)
+
+DataFrame_sample = function(n = NULL, fraction = NULL, with_replacement = FALSE,
+                            shuffle = FALSE, seed = NULL) {
+
+  if (is.null(n) && is.null(fraction)) {
+    stop("You need to specify either `n` or `fraction`.")
+  }
+  if (!is.null(n) && !is.null(fraction)) {
+    stop("You need to specify either `n` or `fraction` but not both.")
+  }
+  if (is.null(seed)) seed = sample(0:10000, 1)
+
+  if (!is.null(n)) {
+    .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed)  |>
+      unwrap("in $sample():")
+  } else if (!is.null(fraction)) {
+    .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed) |>
+      unwrap("in $sample():")
+  }
+}
