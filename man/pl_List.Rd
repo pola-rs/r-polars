@@ -7,7 +7,8 @@
 function
 }
 \arguments{
-\item{datatype}{an inner DataType}
+\item{datatype}{an inner DataType, default is "Unknown" (placeholder for when inner DataType
+does not matter, e.g. as used in example)}
 }
 \value{
 a list DataType with an inner DataType
@@ -16,6 +17,11 @@ a list DataType with an inner DataType
 Create List DataType
 }
 \examples{
+# some nested List
 pl$List(pl$List(pl$Boolean))
+
+# check if some maybe_list is a List DataType
+maybe_List = pl$List(pl$UInt64)
+pl$same_outer_dt(maybe_List, pl$List())
 }
 \keyword{pl}
