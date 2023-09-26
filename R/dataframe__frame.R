@@ -1027,19 +1027,34 @@ DataFrame_to_struct = function(name = "") {
 
 
 ## TODO contribute polars add r-polars defaults for to_struct and unnest
-#' Unnest a DataFrame struct columns.
+#' Unnest the Struct columns of a DataFrame
 #' @keywords DataFrame
 #' @param names Names of the struct columns to unnest. If `NULL` (default), then
 #' all "struct" columns are unnested.
 #' @return A DataFrame where all "struct" columns are unnested. Non-struct
 #' columns are not modified.
 #' @examples
-#' df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
-#' df = df$to_struct()$to_frame()
+#' df = pl$DataFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#'   c = 6:10
+#' )$
+#'  select(
+#'    pl$col("b")$to_struct(),
+#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
+#'  )
 #' df
 #'
+#' # by default, all struct columns are unnested
 #' df$unnest()
+#'
+#' # we can specify specific columns to unnest
+#' df$unnest("a_and_c")
+
 DataFrame_unnest = function(names = NULL) {
+  if (is.null(names)) {
+    names <- names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+  }
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
 

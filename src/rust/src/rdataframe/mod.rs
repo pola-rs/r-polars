@@ -299,26 +299,8 @@ impl DataFrame {
         s.into_series().into()
     }
 
-    pub fn unnest(&self, names: Nullable<Vec<String>>) -> List {
-        let names = if let Some(vec_string) = null_to_opt(names) {
-            vec_string
-        } else {
-            //missing names choose to unnest any column of DataType Struct
-            self.0
-                .dtypes()
-                .iter()
-                .zip(self.0.get_column_names().iter())
-                .filter(|(dtype, _)| matches!(dtype, pl::DataType::Struct(_)))
-                .map(|(_, y)| y.to_string())
-                .collect::<Vec<String>>()
-        };
-
-        r_result_list(
-            self.0
-                .unnest(names)
-                .map(DataFrame)
-                .map_err(|err| format!("in unnest: {:?}", err)),
-        )
+    pub fn unnest(&self, names: Vec<String>) -> RResult<Self>  {
+        self.lazy().unnest(names)?.collect()
     }
 
     pub fn export_stream(&self, stream_ptr: &str) {
@@ -398,7 +380,6 @@ impl DataFrame {
         .map(|ok| ok.into())
     }
 }
-use crate::utils::wrappers::null_to_opt;
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
