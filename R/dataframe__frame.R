@@ -1027,7 +1027,7 @@ DataFrame_to_struct = function(name = "") {
 
 
 ## TODO contribute polars add r-polars defaults for to_struct and unnest
-#' Unnest a DataFrame struct columns.
+#' Unnest the Struct columns of a DataFrame
 #' @keywords DataFrame
 #' @param names Names of the struct columns to unnest. If `NULL` (default), then
 #' all "struct" columns are unnested.

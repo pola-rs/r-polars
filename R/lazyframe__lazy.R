@@ -1311,8 +1311,8 @@ LazyFrame_clone = function() {
 }
 
 
-#' Unnest a LazyFrame struct columns.
-#' @keywords DataFrame
+#' Unnest the Struct columns of a LazyFrame
+#'
 #' @inheritParams DataFrame_unnest
 #' @return A LazyFrame where all "struct" columns are unnested. Non-struct
 #' columns are not modified.

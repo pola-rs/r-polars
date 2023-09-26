@@ -2,7 +2,7 @@
 % Please edit documentation in R/lazyframe__lazy.R
 \name{LazyFrame_unnest}
 \alias{LazyFrame_unnest}
-\title{Unnest a LazyFrame struct columns.}
+\title{Unnest the Struct columns of a LazyFrame}
 \usage{
 LazyFrame_unnest(names = NULL)
 }
@@ -15,7 +15,7 @@ A LazyFrame where all "struct" columns are unnested. Non-struct
 columns are not modified.
 }
 \description{
-Unnest a LazyFrame struct columns.
+Unnest the Struct columns of a LazyFrame
 }
 \examples{
 lf = pl$LazyFrame(
@@ -35,4 +35,3 @@ lf$unnest()$collect()
 # we can specify specific columns to unnest
 lf$unnest("a_and_c")$collect()
 }
-\keyword{DataFrame}
