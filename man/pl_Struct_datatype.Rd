@@ -22,10 +22,10 @@ pl$List(pl$List(pl$Boolean))
 # Find any DataType via pl$dtypes
 print(pl$dtypes)
 
-#check if some maybe_Struct any kind Struct DataType
-maybe_Struct = pl$Struct(pl$UInt64)
-pl$same_outer_dt(maybe_Struct, pl$Struct())
+# check if an element is any kind of Struct()
+test = pl$Struct(pl$UInt64)
+pl$same_outer_dt(test, pl$Struct())
 
-#this will yield FALSE is not exactly the same
-maybe_Struct == pl$Struct()
+# `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
+test == pl$Struct()
 }
