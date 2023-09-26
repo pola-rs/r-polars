@@ -299,7 +299,7 @@ impl DataFrame {
         s.into_series().into()
     }
 
-    pub fn unnest(&self, names: Vec<String>) -> RResult<Self>  {
+    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
         self.lazy().unnest(names)?.collect()
     }
 

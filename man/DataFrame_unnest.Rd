@@ -23,10 +23,10 @@ df = pl$DataFrame(
   b = c("one", "two", "three", "four", "five"),
   c = 6:10
 )$
- select(
-   pl$col("b")$to_struct(),
-   pl$col("a", "c")$to_struct()$alias("a_and_c")
- )
+  select(
+  pl$col("b")$to_struct(),
+  pl$col("a", "c")$to_struct()$alias("a_and_c")
+)
 df
 
 # by default, all struct columns are unnested

@@ -1039,10 +1039,10 @@ DataFrame_to_struct = function(name = "") {
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
 #' )$
-#'  select(
-#'    pl$col("b")$to_struct(),
-#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
-#'  )
+#'   select(
+#'   pl$col("b")$to_struct(),
+#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#' )
 #' df
 #'
 #' # by default, all struct columns are unnested
@@ -1050,10 +1050,9 @@ DataFrame_to_struct = function(name = "") {
 #'
 #' # we can specify specific columns to unnest
 #' df$unnest("a_and_c")
-
 DataFrame_unnest = function(names = NULL) {
   if (is.null(names)) {
-    names <- names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+    names = names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
   }
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
@@ -1623,20 +1622,18 @@ DataFrame_explode = function(...) {
 #' df = pl$DataFrame(iris)
 #' df$sample(n = 20)
 #' df$sample(frac = 0.1)
-
 DataFrame_sample = function(n = NULL, fraction = NULL, with_replacement = FALSE,
-                            shuffle = FALSE, seed = NULL) {
-
+                             shuffle = FALSE, seed = NULL) {
   if (is.null(n) && is.null(fraction)) {
     stop("You need to specify either `n` or `fraction`.")
   }
   if (!is.null(n) && !is.null(fraction)) {
     stop("You need to specify either `n` or `fraction` but not both.")
   }
-  if (is.null(seed)) seed = sample(0:10000, 1)
+  if (is.null(seed)) seed <- sample(0:10000, 1)
 
   if (!is.null(n)) {
-    .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed)  |>
+    .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed) |>
       unwrap("in $sample():")
   } else if (!is.null(fraction)) {
     .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed) |>

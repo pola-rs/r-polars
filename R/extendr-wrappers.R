@@ -177,7 +177,7 @@ DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_co
 
 DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
 
-DataFrame$sample_frac <- function(fraction, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, fraction, with_replacement, shuffle, seed)
+DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
@@ -1001,6 +1001,8 @@ LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, 
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
+LazyFrame$unnest <- function(names) .Call(wrap__LazyFrame__unnest, self, names)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
 LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__LazyFrame__select_str_as_lit, self, exprs)
@@ -1042,8 +1044,6 @@ LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
 
 LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
-
-LazyFrame$unnest <- function(names) .Call(wrap__LazyFrame__unnest, self, names)
 
 #' @export
 `$.LazyFrame` <- function (self, name) { func <- LazyFrame[[name]]; environment(func) <- environment(); func }
