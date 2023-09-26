@@ -8,6 +8,7 @@
 ## What's changed
 
 - New method `$unnest()` for `LazyFrame` (#397).
+- New method `$sample()` for `DataFrame`.
 
 # polars 0.8.1
 

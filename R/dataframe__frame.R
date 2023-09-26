@@ -1039,10 +1039,10 @@ DataFrame_to_struct = function(name = "") {
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
 #' )$
-#'  select(
-#'    pl$col("b")$to_struct(),
-#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
-#'  )
+#'   select(
+#'   pl$col("b")$to_struct(),
+#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#' )
 #' df
 #'
 #' # by default, all struct columns are unnested
@@ -1050,10 +1050,9 @@ DataFrame_to_struct = function(name = "") {
 #'
 #' # we can specify specific columns to unnest
 #' df$unnest("a_and_c")
-
 DataFrame_unnest = function(names = NULL) {
   if (is.null(names)) {
-    names <- names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+    names = names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
   }
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
@@ -1603,4 +1602,34 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' df$explode(pl$col(pl$List(pl$Float64)))
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
+}
+
+#' Take a sample of rows from a DataFrame
+#'
+#' @param n Number of rows to return. Cannot be used with `fraction`.
+#' @param fraction Fraction of rows to return (between 0 and 1). Cannot be used
+#' with `n`.
+#' @param with_replacement Allow values to be sampled more than once.
+#' @param shuffle If `TRUE`, the order of the sampled rows will be shuffled. If
+#' `FALSE` (default), the order of the returned rows will be neither stable nor
+#' fully random.
+#' @param seed Seed for the random number generator. If set to `NULL` (default),
+#' a random seed is generated for each sample operation.
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$sample(n = 20)
+#' df$sample(frac = 0.1)
+DataFrame_sample = function(
+    n = NULL, fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
+  seed = seed %||% sample(0:10000, 1)
+  pcase(
+    !xor(is.null(n), is.null(fraction)), Err_plain("Pass either arg `n` or `fraction`, not both."),
+    is.null(fraction), .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed),
+    is.null(n), .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed),
+    or_else = Err_plain("internal error")
+  ) |>
+    unwrap("in $sample():")
 }

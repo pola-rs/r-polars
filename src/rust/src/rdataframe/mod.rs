@@ -299,7 +299,7 @@ impl DataFrame {
         s.into_series().into()
     }
 
-    pub fn unnest(&self, names: Vec<String>) -> RResult<Self>  {
+    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
         self.lazy().unnest(names)?.collect()
     }
 
@@ -378,6 +378,44 @@ impl DataFrame {
         )
         .map_err(|err| err.to_string())
         .map(|ok| ok.into())
+    }
+
+    pub fn sample_n(
+        &self,
+        n: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+    ) -> RResult<Self> {
+        self.0
+            .clone()
+            .sample_n(
+                robj_to!(usize, n)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+            )
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
+    }
+
+    pub fn sample_frac(
+        &self,
+        frac: Robj,
+        with_replacement: Robj,
+        shuffle: Robj,
+        seed: Robj,
+    ) -> RResult<Self> {
+        self.0
+            .clone()
+            .sample_frac(
+                robj_to!(f64, frac)?,
+                robj_to!(bool, with_replacement)?,
+                robj_to!(bool, shuffle)?,
+                robj_to!(Option, u64, seed)?,
+            )
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
     }
 }
 impl DataFrame {
