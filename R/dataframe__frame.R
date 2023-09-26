@@ -1622,21 +1622,14 @@ DataFrame_explode = function(...) {
 #' df = pl$DataFrame(iris)
 #' df$sample(n = 20)
 #' df$sample(frac = 0.1)
-DataFrame_sample = function(n = NULL, fraction = NULL, with_replacement = FALSE,
-                             shuffle = FALSE, seed = NULL) {
-  if (is.null(n) && is.null(fraction)) {
-    stop("You need to specify either `n` or `fraction`.")
-  }
-  if (!is.null(n) && !is.null(fraction)) {
-    stop("You need to specify either `n` or `fraction` but not both.")
-  }
-  if (is.null(seed)) seed <- sample(0:10000, 1)
-
-  if (!is.null(n)) {
-    .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed) |>
-      unwrap("in $sample():")
-  } else if (!is.null(fraction)) {
-    .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed) |>
-      unwrap("in $sample():")
-  }
+DataFrame_sample = function(
+    n = NULL, fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
+  seed = seed %||% sample(0:10000, 1)
+  pcase(
+    !xor(is.null(n), is.null(fraction)), Err_plain("Pass either arg `n` or `fraction`, not both."),
+    is.null(fraction), .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed),
+    is.null(n), .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed),
+    or_else = Err_plain("internal error")
+  ) |>
+    unwrap("in $sample():")
 }
