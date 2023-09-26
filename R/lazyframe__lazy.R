@@ -1317,21 +1317,26 @@ LazyFrame_clone = function() {
 #' @return A LazyFrame where all "struct" columns are unnested. Non-struct
 #' columns are not modified.
 #' @examples
-#' lf = pl$LazyFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))$
-#'  with_columns(
-#'    pl$col("b")$to_struct()
+#' lf = pl$LazyFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#'   c = 6:10
+#' )$
+#'  select(
+#'    pl$col("b")$to_struct(),
+#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
 #'  )
-#' lf
+#' lf$collect()
 #'
-#' lf$unnest()
+#' # by default, all struct columns are unnested
+#' lf$unnest()$collect()
+#'
+#' # we can specify specific columns to unnest
+#' lf$unnest("a_and_c")$collect()
 
 LazyFrame_unnest = function(names = NULL) {
   if (is.null(names)) {
-    dtypes_are_struct = function(dtypes) {
-      sapply(dtypes, \(dt) pl$same_outer_dt(dt, pl$Struct()))
-    }
     names <- names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
   }
-
   unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }
