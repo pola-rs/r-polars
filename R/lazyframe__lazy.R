@@ -1326,9 +1326,12 @@ LazyFrame_clone = function() {
 #' lf$unnest()
 
 LazyFrame_unnest = function(names = NULL) {
-  # if (is.null(names)) {
-  #   names <- names(Filter(\(x) x == pl$struct, .pr$LazyFrame$schema(self)))
-  # }
+  if (is.null(names)) {
+    dtypes_are_struct = function(dtypes) {
+      sapply(dtypes, \(dt) pl$same_outer_dt(dt, pl$Struct()))
+    }
+    names <- names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+  }
 
   unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }
