@@ -153,7 +153,8 @@ ExprMeta_is_regex_projection = function() {
 
 #' Format an expression as a tree
 #'
-#' @param return_as_string
+#' @param return_as_string Return the tree as a character vector? If `FALSE`
+#' (default), the tree is printed in the console.
 #'
 #' @return
 #' If `return_as_string` is `TRUE`, a character vector describing the tree.
