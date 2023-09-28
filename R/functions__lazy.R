@@ -937,7 +937,6 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 pl$fold = function(acc, lambda, exprs) {
   l_expr = lapply(as.list(exprs), wrap_e)
   pra = do.call(construct_ProtoExprArray, l_expr)
-  browser()
   unwrap(fold(acc, lambda, pra))
 }
 

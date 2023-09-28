@@ -283,8 +283,8 @@ fn polars_features() -> List {
 fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
     use polars::prelude::Series;
- 
-    // `fold_exprs()` takes two inputs ("acc" and "exprs"). I must run an R process that 
+
+    // `fold_exprs()` takes two inputs ("acc" and "exprs"). I must run an R process that
     // will convert the R function that is passed ("lambda") in a function that takes two
     // Series and returns a Series.
     // Took some code from the implementation of `map()` but here I need to pass two inputs,
@@ -294,7 +294,7 @@ fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
 
 
     //find a way not to push lambda everytime to main thread handler
-    //safety only accessed in main thread, can be temp owned by other threads 
+    //safety only accessed in main thread, can be temp owned by other threads
     let probj = ParRObj(lambda);
     type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
     static FOO: foo = InitCell::new();
@@ -311,7 +311,7 @@ fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
 
         //wrap as series
         Ok(Some(s))
-    };  
+    };
 
     let exprs = exprs.to_vec("select");
     Ok(fold_exprs(acc.clone().into(), f, exprs).into())
@@ -321,7 +321,7 @@ fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
 fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
     use polars::prelude::*;
-     
+
     // The code below takes one input and runs the lambda function with this input in R.
     // I need to find a way to pass two inputs to thread_com.send()
     // For now, when I run pl$fold() from R, I get "Error in (function (acc, x) : argument
@@ -329,7 +329,7 @@ fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     // ("acc") in tread_com.send()
 
     //find a way not to push lambda everytime to main thread handler
-    //safety only accessed in main thread, can be temp owned by other threads 
+    //safety only accessed in main thread, can be temp owned by other threads
     let probj = ParRObj(lambda);
     type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
     static FOO: foo = InitCell::new();
@@ -348,9 +348,7 @@ fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
 
         //wrap as series
         Ok(Some(s))
-    };  
-
-    let hello = &f;
+    };
 
     let exprs = exprs.to_vec("select");
     Ok(reduce_exprs(f, exprs).into())
