@@ -1019,8 +1019,6 @@ LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
 
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
-
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
 LazyFrame$join_asof <- function(other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str) .Call(wrap__LazyFrame__join_asof, self, other, left_on, right_on, left_by, right_by, allow_parallel, force_parallel, suffix, strategy, tolerance, tolerance_str)

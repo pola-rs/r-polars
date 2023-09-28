@@ -4255,25 +4255,6 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 
 
 
-#' arr: list related methods DEPRECATED
-#' @description
-#' Deprecated since 0.8.1, will be removed in 0.9.0.
-#' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
-#' @keywords Expr
-#' @return Expr
-#' @seealso \code{\link[=Expr_list]{<Expr>$list$...}}
-Expr_arr = method_as_property(function() {
-  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
-    warning(
-      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and will be removed in polars 0.9.0.",
-      "\nUse `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
-      call. = FALSE
-    )
-    runtime_state$warned_deprecate_sns_arr_expr = TRUE
-  }
-  expr_list_make_sub_ns(self)
-})
-
 #' list: list related methods
 #' @description
 #' Create an object namespace of all list related methods.
