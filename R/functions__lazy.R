@@ -907,3 +907,53 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
   }
   .pr$Expr$rolling_corr(a, b, window_size, min_periods, ddof) |> unwrap("in pl$rolling_corr()")
 }
+
+
+
+#' Accumulate over multiple columns horizontally / rowwise with a left fold
+#'
+#' @description
+#' `pl$fold()` and `pl$reduce()` allows one to do rowwise operations. The only
+#' difference between them is that `pl$fold()` has an additional argument (`acc`)
+#' that contains the value that will be initialized when the fold starts.
+#'
+#' @name pl_reduce
+#'
+#' @param lambda Function to apply over the accumulator and the value.
+#' @param exprs Expressions to aggregate over. May also be a wildcard expression.
+#'
+#' @return An expression that will be applied rowwise
+#'
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # Make the rowwise sum of all columns and add 1 to it
+#' df$with_columns(
+#'   pl$fold(
+#'     acc = pl$lit(1), lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
+#'   )
+#' )
+
+pl$fold = function(acc, lambda, exprs) {
+  l_expr = lapply(as.list(exprs), wrap_e)
+  pra = do.call(construct_ProtoExprArray, l_expr)
+  browser()
+  unwrap(fold(acc, lambda, pra))
+}
+
+
+#' @examples
+#' df = pl$DataFrame(mtcars)
+#'
+#' # Make the rowwise sum of all columns and add 1 to it
+#' df$with_columns(
+#'   pl$reduce(
+#'      lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
+#'   )
+#' )
+
+pl$reduce = function(lambda, exprs) {
+  l_expr = lapply(as.list(exprs), wrap_e)
+  pra = do.call(construct_ProtoExprArray, l_expr)
+  unwrap(reduce(lambda, pra))
+}

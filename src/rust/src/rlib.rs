@@ -3,12 +3,16 @@ use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
 
+use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::CONFIG;
+
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
+use polars_lazy::dsl::fold_exprs;
 use std::result::Result;
 
 #[extendr]
@@ -275,6 +279,89 @@ fn polars_features() -> List {
     )
 }
 
+#[extendr]
+fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
+    use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
+    use polars::prelude::Series;
+ 
+    // `fold_exprs()` takes two inputs ("acc" and "exprs"). I must run an R process that 
+    // will convert the R function that is passed ("lambda") in a function that takes two
+    // Series and returns a Series.
+    // Took some code from the implementation of `map()` but here I need to pass two inputs,
+    // not only one, to thread_com.send().
+    // The "solution" I have so far is to create a new type for InitCell that accepts two
+    // Series.
+
+
+    //find a way not to push lambda everytime to main thread handler
+    //safety only accessed in main thread, can be temp owned by other threads 
+    let probj = ParRObj(lambda);
+    type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
+    static FOO: foo = InitCell::new();
+    let f = move |a: pl::Series, b: pl::Series| {
+        //acquire channel to R via main thread handler
+        let thread_com = ThreadCom::try_from_global(&FOO)
+            .expect("polars was thread could not initiate ThreadCommunication to R");
+        //this could happen if running in background mode, but inly panic is possible here
+
+        //send request to run in R
+        thread_com.send((probj.clone(), a, b));
+        //recieve answer
+        let s = thread_com.recv();
+
+        //wrap as series
+        Ok(Some(s))
+    };  
+
+    let exprs = exprs.to_vec("select");
+    Ok(fold_exprs(acc.clone().into(), f, exprs).into())
+}
+
+#[extendr]
+fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
+    use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
+    use polars::prelude::*;
+     
+    // The code below takes one input and runs the lambda function with this input in R.
+    // I need to find a way to pass two inputs to thread_com.send()
+    // For now, when I run pl$fold() from R, I get "Error in (function (acc, x) : argument
+    //  "x" is missing, with no default", which makes sense since I only pass the first arg
+    // ("acc") in tread_com.send()
+
+    //find a way not to push lambda everytime to main thread handler
+    //safety only accessed in main thread, can be temp owned by other threads 
+    let probj = ParRObj(lambda);
+    type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
+    static FOO: foo = InitCell::new();
+    let f = move |a: pl::Series, b: pl::Series| {
+        //acquire channel to R via main thread handler
+        let thread_com = ThreadCom::try_from_global(&FOO)
+            .expect("polars was thread could not initiate ThreadCommunication to R");
+        //this could happen if running in background mode, but inly panic is possible here
+
+        //send request to run in R
+        thread_com.send((probj.clone(), a, b));
+        //recieve answer
+        let s = thread_com.recv();
+
+        println!("{:?}", s);
+
+        //wrap as series
+        Ok(Some(s))
+    };  
+
+    let hello = &f;
+
+    let exprs = exprs.to_vec("select");
+    Ok(reduce_exprs(f, exprs).into())
+}
+
+
+
+
+
+
+
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -287,6 +374,8 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
+    fn fold;
+    fn reduce;
     //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
