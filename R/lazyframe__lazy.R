@@ -345,7 +345,7 @@ LazyFrame_collect = function(
   }
 
   self |>
-    .pr$LazyFrame$optimization_toggle(
+    .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -462,7 +462,7 @@ LazyFrame_sink_parquet = function(
   }
   call_ctx = "in $sink_parquet(...)"
   self |>
-    .pr$LazyFrame$optimization_toggle(
+    .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -526,7 +526,7 @@ LazyFrame_sink_ipc = function(
   }
 
   self |>
-    .pr$LazyFrame$optimization_toggle(
+    .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -1186,7 +1186,7 @@ LazyFrame_fetch = function(
   }
 
   self |>
-    .pr$LazyFrame$optimization_toggle(
+    .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -1198,6 +1198,17 @@ LazyFrame_fetch = function(
     ) |>
     and_then(\(self) .pr$LazyFrame$fetch(self, n_rows)) |>
     unwrap("in $fetch()")
+}
+
+#' @title Get optimization settings
+#' @description Get the current optimization toggles for the lazy query
+#' @keywords LazyFrame
+#' @return List of optimization toggles
+#' @examples 
+#' pl$LazyFrame(mtcars)$get_optimization_toggle()
+LazyFrame_get_optimization_toggle = function() {
+  self |>
+    .pr$LazyFrame$get_optimization_toggle()
 }
 
 #' @title Collect and profile a lazy query.

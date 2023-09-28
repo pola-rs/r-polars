@@ -448,7 +448,7 @@ impl LazyFrame {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn optimization_toggle(
+    fn set_optimization_toggle(
         &self,
         type_coercion: Robj,
         predicate_pushdown: Robj,
@@ -472,6 +472,31 @@ impl LazyFrame {
             .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
 
         Ok(ldf.into())
+    }
+
+    fn get_optimization_toggle(&self) -> List {
+        let pl::OptState {
+            projection_pushdown,
+            predicate_pushdown,
+            type_coercion,
+            simplify_expr,
+            file_caching,
+            slice_pushdown,
+            comm_subplan_elim,
+            comm_subexpr_elim,
+            streaming,
+        } = self.0.get_current_optimizations();
+        list!(
+            projection_pushdown = projection_pushdown,
+            predicate_pushdown = predicate_pushdown,
+            type_coercion = type_coercion,
+            simplify_expr = simplify_expr,
+            file_caching = file_caching,
+            slice_pushdown = slice_pushdown,
+            comm_subplan_elim = comm_subplan_elim,
+            comm_subexpr_elim = comm_subexpr_elim,
+            streaming = streaming,
+        )
     }
 
     fn profile(&self) -> RResult<List> {

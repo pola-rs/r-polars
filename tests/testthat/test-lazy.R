@@ -766,3 +766,8 @@ test_that("unnest", {
       to_data_frame()
   )
 })
+
+test_that("opt_toggles", {
+  lf = pl$LazyFrame(mtcars)$select(pl$col("mpg") * 0.42)
+  expect_true(is.is.list(lf$get_optimization_toggle()))
+})
