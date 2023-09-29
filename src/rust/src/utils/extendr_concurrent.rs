@@ -146,10 +146,6 @@ where
         R: Send,
     {
         let lock = config.try_get();
-
-        #[cfg(feature = "rpolars_debug_print")]
-        dbg!(&lock);
-
         let inner_lock = lock
             .ok_or(
                 "Failed to communicate with R from polars. \
@@ -158,10 +154,9 @@ where
             .read()
             .expect("failded to restore thread_com");
 
-        #[cfg(feature = "rpolars_debug_print")]
-        dbg!(&inner_lock);
+        let opt_thread_com = inner_lock.as_ref();
 
-        let thread_com = inner_lock.as_ref().unwrap().clone();
+        let thread_com = opt_thread_com.expect("failed to get threadcom").clone();
 
         Ok(thread_com)
     }

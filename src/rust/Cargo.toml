@@ -10,7 +10,7 @@ crate-type = ['staticlib']
 
 [features]
 default = []
-full_features = ["simd"]
+full_features = ["simd", "rpolars_debug_print"]
 simd = ["polars/simd"]
 rpolars_debug_print = []
 
