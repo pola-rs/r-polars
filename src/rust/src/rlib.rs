@@ -3,10 +3,12 @@ use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
 
+use crate::rdataframe::LazyFrame;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
+use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
 use std::result::Result;
@@ -42,6 +44,21 @@ fn concat_df(vdf: &VecDataFrame) -> List {
         .map(DataFrame);
 
     r_result_list(result.map_err(|err| format!("{:?}", err)))
+}
+
+#[extendr]
+fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RResult<LazyFrame> {
+    let vlf = robj_to!(Vec, PLLazyFrame, l)?;
+    dsl::concat(
+        vlf,
+        pl::UnionArgs {
+            parallel,
+            rechunk,
+            to_supertypes,
+        },
+    )
+    .map_err(polars_to_rpolars_err)
+    .map(LazyFrame)
 }
 
 #[extendr]
@@ -278,6 +295,7 @@ fn polars_features() -> List {
 extendr_module! {
     mod rlib;
     fn concat_df;
+    fn concat_lf;
     fn hor_concat_df;
     fn diag_concat_df;
     fn min_exprs;

@@ -6,10 +6,12 @@ pub mod wrappers;
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
+
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
+use crate::rdataframe::{DataFrame, LazyFrame};
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
@@ -742,8 +744,23 @@ fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Expr> {
 pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::LazyFrame> {
     let robj = unpack_r_result_list(robj)?;
     let rv = rdbg(&robj);
-    use crate::rdataframe::LazyFrame;
-    let res: Result<ExternalPtr<LazyFrame>, _> = robj.try_into();
+
+    // closure to allow ?-convert extendr::Result to RResult
+    let res = || -> RResult<LazyFrame> {
+        match () {
+            // allow input as a DataFrame
+            _ if robj.inherits("DataFrame") => {
+                let extptr_df: ExternalPtr<DataFrame> = robj.try_into()?;
+                Ok(extptr_df.lazy())
+            }
+            _ => {
+                let lf: ExternalPtr<LazyFrame> = robj.try_into()?;
+                let lf = LazyFrame(lf.0.clone());
+                Ok(lf)
+            }
+        }
+    }();
+
     let ext_ldf = res.bad_val(rv).mistyped(tn::<LazyFrame>())?;
     Ok(LazyFrame(ext_ldf.0.clone()))
 }
@@ -893,6 +910,10 @@ macro_rules! robj_to_inner {
 
     (LazyFrame, $a:ident) => {
         $crate::utils::robj_to_lazyframe($a)
+    };
+
+    (PLLazyFrame, $a:ident) => {
+        $crate::utils::robj_to_lazyframe($a).map(|lf| lf.0)
     };
 
     (RArrow_schema, $a:ident) => {
