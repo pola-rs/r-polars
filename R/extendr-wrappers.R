@@ -909,6 +909,8 @@ Expr$meta_has_multiple_outputs <- function() .Call(wrap__Expr__meta_has_multiple
 
 Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_projection, self)
 
+Expr$meta_tree_format <- function() .Call(wrap__Expr__meta_tree_format, self)
+
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
 Expr$new_count <- function() .Call(wrap__Expr__new_count)
