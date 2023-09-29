@@ -287,7 +287,7 @@ fn fold2(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
 
     let f = move |a: pl::Series, b: pl::Series| -> pl::PolarsResult<Option<pl::Series>> {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
-            .expect("polars was thread could not initiate ThreadCommunication to R");
+            .expect("a polars thread could not initiate ThreadCommunication to R");
 
         #[cfg(feature = "rpolars_debug_print")]
         println!("getting a thread with fold2");
