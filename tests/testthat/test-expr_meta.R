@@ -76,3 +76,9 @@ test_that("meta$is_regex_projection", {
   expect_true(e1$meta$is_regex_projection())
   expect_false(e2$meta$is_regex_projection())
 })
+
+test_that("meta$tree_format", {
+  e = (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
+  expect_true(is.character(e$meta$tree_format(return_as_string = TRUE)))
+  expect_snapshot(e$meta$tree_format())
+})

@@ -740,7 +740,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' Add columns or modify existing ones with expressions. This is
 #' the equivalent of `dplyr::mutate()` as it keeps unmentioned columns (unlike
 #' `$select()`).
-#' **`$with_column()` function is deprecated, use `$with_columns()` instead.**
 #'
 #' @name DataFrame_with_columns
 #' @aliases with_columns
@@ -768,15 +767,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 DataFrame_with_columns = function(...) {
   .pr$DataFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
-}
-
-#' @rdname DataFrame_with_columns
-#' @aliases with_column
-#' @param expr a single expression or string
-
-DataFrame_with_column = function(expr) {
-  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
-  self$with_columns(expr)
 }
 
 

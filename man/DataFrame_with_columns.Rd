@@ -3,19 +3,13 @@
 \name{DataFrame_with_columns}
 \alias{DataFrame_with_columns}
 \alias{with_columns}
-\alias{DataFrame_with_column}
-\alias{with_column}
 \title{Modify/append column(s)}
 \usage{
 DataFrame_with_columns(...)
-
-DataFrame_with_column(expr)
 }
 \arguments{
 \item{...}{Any expressions or string column name, or same wrapped in a list.
 If first and only element is a list, it is unwrapped as a list of args.}
-
-\item{expr}{a single expression or string}
 }
 \value{
 A DataFrame
@@ -24,7 +18,6 @@ A DataFrame
 Add columns or modify existing ones with expressions. This is
 the equivalent of \code{dplyr::mutate()} as it keeps unmentioned columns (unlike
 \verb{$select()}).
-\strong{\verb{$with_column()} function is deprecated, use \verb{$with_columns()} instead.}
 }
 \examples{
 pl$DataFrame(iris)$with_columns(
