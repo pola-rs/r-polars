@@ -68,7 +68,7 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #'   Sys.sleep(1.5)
 #'   x * 0.43
 #' }, in_background = TRUE)$alias("kml")
-#' handle = pl$LazyFrame(mtcars)$with_column(prexpr)$collect_in_background()
+#' handle = pl$LazyFrame(mtcars)$with_columns(prexpr)$collect_in_background()
 #' if (!handle$is_finished()) print("not done yet")
 #' df = handle$join() # get result
 #' df

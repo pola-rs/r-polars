@@ -4,6 +4,10 @@
 
 - Setting and getting polars options is now made with `pl$options`, 
   `pl$set_options()` and `pl$reset_options()` (#384).
+- Method `$with_column()` has been removed (it was deprecated since 0.8.0). Use 
+  `$with_columns()` instead (#402).
+- Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
+  instead (#402).
 
 ## What's changed
 
