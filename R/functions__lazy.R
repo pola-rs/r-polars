@@ -944,7 +944,7 @@ pl$fold = function(acc, lambda, exprs) {
 #' fold2
 #' @name pl_fold2
 #' @examples
-#' folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1)))
+#' folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1), pl$lit(11:15)))
 #' pl$select(folded_expr)
 pl$fold2 = function(acc, lambda, exprs) {
 
@@ -952,7 +952,6 @@ pl$fold2 = function(acc, lambda, exprs) {
   # probably .pr$DataFrame$new_with_capcaity with be fine also if length of exprs
   # is less than some few thousands
   wrapped_lambda = function(s) {
-    browser()
     df = .Call(wrap__DataFrame__new_with_capacity, 1L)
     .Call(wrap__DataFrame__set_column_from_robj, df, s, "") # minor internal bug, name "" not used if already Series
     df = .Call(wrap__DataFrame__unnest, df, "struct")$ok

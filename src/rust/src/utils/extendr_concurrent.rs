@@ -147,31 +147,31 @@ where
     {
         let lock = config.try_get();
         let inner_lock = lock
-            .ok_or(
-                "Failed to communicate with R from polars. \
-                It is not possible collect_background a LazyFrame containing user R functions",
-            )?
+            .ok_or("internal error: global ThreadCom storage has not already been initialized")?
             .read()
-            .expect("failded to restore thread_com");
+            .expect("internal error: RwLock was poisoned (some other thread used the RwLock but panicked)");
 
         let opt_thread_com = inner_lock.as_ref();
 
-        let thread_com = opt_thread_com.expect("failed to get threadcom").clone();
+        let thread_com = opt_thread_com
+            .ok_or("Global ThreadCom storage is empty")?
+            .clone();
 
         Ok(thread_com)
     }
 }
 
 // //debug threads
-// impl<S, R> Drop for ThreadCom<S, R> {
-//     fn drop(&mut self) {
-//         let mut lock = self.counter.lock().unwrap();
-//         *lock = *lock - 1;
-//         let drop_count = *(lock);
-//         dbg!(drop_count);
-//         println!("Dropping ThreadCom");
-//     }
-// }
+#[cfg(feature = "rpolars_debug_print")]
+impl<S, R> Drop for ThreadCom<S, R> {
+    fn drop(&mut self) {
+        // let mut lock = self.counter.lock().unwrap();
+        // *lock = *lock - 1;
+        // let drop_count = *(lock);
+        // dbg!(drop_count);
+        println!("Dropping a ThreadCom");
+    }
+}
 
 //start serving requests from child threads.
 //f is closure of child threads to start, child thread takes an ThreadCom argument

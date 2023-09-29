@@ -7,6 +7,6 @@
 fold2
 }
 \examples{
-folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1)))
+folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1), pl$lit(11:15)))
 pl$select(folded_expr)
 }

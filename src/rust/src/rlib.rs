@@ -289,6 +289,9 @@ fn fold2(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
             .expect("polars was thread could not initiate ThreadCommunication to R");
 
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("getting a thread with fold2");
+
         //wrap a(acc) and b(x) input series in a struct to match single series signature of utils::concurrent::serve_r
         use pl::IntoSeries;
 
@@ -299,9 +302,17 @@ fn fold2(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
         let ca_struct = pl::DataFrame::new(vec![a_mut, b])?
             .into_struct("struct")
             .into_series();
+
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("fold2 sending job");
+
         thread_com.send((probj.clone(), ca_struct));
 
         let s = thread_com.recv();
+
+        #[cfg(feature = "rpolars_debug_print")]
+        println!("fold2: job answer recieved");
+
         Ok(Some(s))
     };
     let exprs = robj_to!(Vec, PLExpr, exprs)?;
