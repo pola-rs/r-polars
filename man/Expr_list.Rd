@@ -2,36 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_list}
 \alias{Expr_list}
-\alias{Expr_implode}
-\alias{list}
 \alias{list_ns}
-\title{Wrap column in list}
+\title{list: list related methods}
 \usage{
-Expr_implode
-
 Expr_list()
 }
 \value{
 Expr
-
-Expr
 }
 \description{
-Aggregate values into a list.
-
 Create an object namespace of all list related methods.
 See the individual method pages for full details
 }
-\details{
-use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
-as list() .
-}
 \examples{
-df = pl$DataFrame(
-  a = 1:3,
-  b = 4:6
-)
-df$select(pl$all()$implode())
 df_with_list = pl$DataFrame(
   group = c(1, 1, 2, 2, 3),
   value = c(1:5)

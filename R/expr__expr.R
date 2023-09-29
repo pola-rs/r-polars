@@ -4208,7 +4208,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' @docType NULL
 #' @format NULL
 #' @aliases list
-#' @name Expr_list
 #' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
 #' as list() .
 #' @format NULL
@@ -4219,15 +4218,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' )
 #' df$select(pl$all()$implode())
 Expr_implode = "use_extendr_wrapper"
-
-## TODO REMOVE AT A BREAKING CHANGE
-Expr_list = function() {
-  if (is.null(runtime_state$warned_deprecate_list)) {
-    runtime_state$warned_deprecate_list = TRUE
-    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
-  }
-  self$implode()
-}
 
 
 
