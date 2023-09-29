@@ -929,10 +929,11 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #'
 #' # Make the rowwise sum of all columns and add 1 to it
 #' df$with_columns(
-#'   pl$fold(
-#'     acc = pl$lit(1), lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
+#'   pl$reduce(
+#'      lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
 #'   )
 #' )
+
 
 pl$fold = function(acc, lambda, exprs) {
   l_expr = lapply(as.list(exprs), wrap_e)
@@ -940,16 +941,30 @@ pl$fold = function(acc, lambda, exprs) {
   unwrap(fold(acc, lambda, pra))
 }
 
-
+#' fold2
+#' @name pl_fold2
 #' @examples
-#' df = pl$DataFrame(mtcars)
-#'
-#' # Make the rowwise sum of all columns and add 1 to it
-#' df$with_columns(
-#'   pl$reduce(
-#'      lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
-#'   )
-#' )
+#' folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1)))
+#' pl$select(folded_expr)
+pl$fold2 = function(acc, lambda, exprs) {
+
+  # using naked .Calls to make as light weight as possible
+  # probably .pr$DataFrame$new_with_capcaity with be fine also if length of exprs
+  # is less than some few thousands
+  wrapped_lambda = function(s) {
+    browser()
+    df = .Call(wrap__DataFrame__new_with_capacity, 1L)
+    .Call(wrap__DataFrame__set_column_from_robj, df, s, "") # minor internal bug, name "" not used if already Series
+    df = .Call(wrap__DataFrame__unnest, df, "struct")$ok
+    lambda(df$to_series(0L),df$to_series(1L))
+  }
+
+  fold2(acc, wrapped_lambda, exprs) |>
+    unwrap("in pl$fold2():")
+}
+
+
+
 
 pl$reduce = function(lambda, exprs) {
   l_expr = lapply(as.list(exprs), wrap_e)

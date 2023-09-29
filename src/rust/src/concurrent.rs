@@ -14,6 +14,9 @@ use std::result::Result;
 // This is the standard way the main thread which can call the R session,
 // should process a request from a polars thread worker to run an R function
 fn serve_r((probj, s): (ParRObj, pl::Series)) -> Result<pl::Series, Box<dyn std::error::Error>> {
+    #[cfg(feature = "rpolars_debug_print")]
+    dbg!(&s);
+
     //unpack user-R-function
     let f = probj.0.as_function().ok_or_else(|| {
         extendr_api::error::Error::Other(format!(
@@ -22,8 +25,14 @@ fn serve_r((probj, s): (ParRObj, pl::Series)) -> Result<pl::Series, Box<dyn std:
         ))
     })?;
 
+    #[cfg(feature = "rpolars_debug_print")]
+    dbg!(&f);
+
     // call user-R-function with Series as input, return Robj (likeliy as Series)
     let rseries_robj = f.call(pairlist!(Series(s)))?;
+
+    #[cfg(feature = "rpolars_debug_print")]
+    dbg!(&rseries_robj);
 
     // return of user-R-function may not be Series, return Err if so
     let s = Series::any_robj_to_pl_series_result(rseries_robj)?;

@@ -280,6 +280,36 @@ fn polars_features() -> List {
 }
 
 #[extendr]
+fn fold2(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    //use crate::utils::unpack_r_eval;
+
+    let probj = ParRObj(lambda);
+
+    let f = move |a: pl::Series, b: pl::Series| -> pl::PolarsResult<Option<pl::Series>> {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .expect("polars was thread could not initiate ThreadCommunication to R");
+
+        //wrap a(acc) and b(x) input series in a struct to match single series signature of utils::concurrent::serve_r
+        use pl::IntoSeries;
+
+        //avoid name collision with b also having ""
+        let mut a_mut = a;
+        a_mut.rename("_a");
+
+        let ca_struct = pl::DataFrame::new(vec![a_mut, b])?
+            .into_struct("struct")
+            .into_series();
+        thread_com.send((probj.clone(), ca_struct));
+
+        let s = thread_com.recv();
+        Ok(Some(s))
+    };
+    let exprs = robj_to!(Vec, PLExpr, exprs)?;
+    let acc = robj_to!(PLExpr, acc)?;
+    Ok(Expr(fold_exprs(acc, f, exprs)))
+}
+
+#[extendr]
 fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
     use polars::prelude::Series;
@@ -291,7 +321,6 @@ fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     // not only one, to thread_com.send().
     // The "solution" I have so far is to create a new type for InitCell that accepts two
     // Series.
-
 
     //find a way not to push lambda everytime to main thread handler
     //safety only accessed in main thread, can be temp owned by other threads
@@ -354,12 +383,6 @@ fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
     Ok(reduce_exprs(f, exprs).into())
 }
 
-
-
-
-
-
-
 extendr_module! {
     mod rlib;
     fn concat_df;
@@ -373,6 +396,7 @@ extendr_module! {
     fn concat_list;
     fn concat_str;
     fn fold;
+    fn fold2;
     fn reduce;
     //fn r_date_range;
     fn r_date_range_lazy;

@@ -37,6 +37,8 @@ concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, 
 
 fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
+fold2 <- function(acc, lambda, exprs) .Call(wrap__fold2, acc, lambda, exprs)
+
 reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
 
 r_date_range_lazy <- function(start, end, every, closed, time_unit, time_zone, explode) .Call(wrap__r_date_range_lazy, start, end, every, closed, time_unit, time_zone, explode)

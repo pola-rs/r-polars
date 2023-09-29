@@ -145,17 +145,23 @@ where
         S: Send,
         R: Send,
     {
-        let thread_com = config
-            .try_get()
+        let lock = config.try_get();
+
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!(&lock);
+
+        let inner_lock = lock
             .ok_or(
                 "Failed to communicate with R from polars. \
                 It is not possible collect_background a LazyFrame containing user R functions",
             )?
             .read()
-            .expect("failded to restore thread_com")
-            .as_ref()
-            .unwrap()
-            .clone();
+            .expect("failded to restore thread_com");
+
+        #[cfg(feature = "rpolars_debug_print")]
+        dbg!(&inner_lock);
+
+        let thread_com = inner_lock.as_ref().unwrap().clone();
 
         Ok(thread_com)
     }
@@ -223,7 +229,8 @@ where
 
             c_tx.send(a).unwrap();
         } else if let Err(recv_err) = any_new_msg {
-            //dbg!(&recv_err);
+            #[cfg(feature = "rpolars_debug_print")]
+            dbg!(&recv_err);
             match recv_err {
                 //no threadcoms connections left, new request impossible, shut down loop,
                 flume::RecvTimeoutError::Disconnected => {
@@ -234,7 +241,8 @@ where
                 flume::RecvTimeoutError::Timeout => {
                     //check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
                     let res_res = extendr_api::eval_string("Sys.sleep(0)");
-                    //dbg!(&res_res);
+                    #[cfg(feature = "rpolars_debug_print")]
+                    dbg!(&res_res);
                     if res_res.is_err() {
                         rprintln!("R user interrupt");
                         return Err("interupt by user".into());

@@ -134,6 +134,7 @@ features = [
   "dtype-datetime",
   "dtype-time",
   "dtype-duration",
+  "dtype-struct",
   "date_offset",
   "string_justify",
   "is_unique",
