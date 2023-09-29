@@ -137,15 +137,6 @@ pl$implode = function(name) { # -> Expr
     unwrap("in pl$implode():")
 }
 
-## TODO REMOVE AT A BREAKING CHANGE
-pl$list = function(name) {
-  if (is.null(runtime_state$warned_deprecate_list)) {
-    runtime_state$warned_deprecate_list = TRUE
-    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
-  }
-  pl$implode(name)
-}
-
 #' pl$first
 #' @name pl_first
 #' @description  Depending on the input type this function does different things:

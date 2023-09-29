@@ -244,9 +244,6 @@ LazyFrame_with_columns = function(...) {
     unwrap("in $with_columns()")
 }
 
-#' @rdname LazyFrame_with_columns
-
-LazyFrame_with_column = "use_extendr_wrapper"
 
 #' @inherit DataFrame_with_row_count title description params
 #' @return A new LazyFrame with a counter column in front
