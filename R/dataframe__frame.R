@@ -381,7 +381,7 @@ DataFrame_drop_nulls = function(subset = NULL) {
 #' @param maintain_order Keep the same order as the original `DataFrame`. Setting
 #'  this to `TRUE` makes it more expensive to compute and blocks the possibility
 #'  to run on the streaming engine. The default value can be changed with
-#' `pl$options$default_maintain_order(TRUE/FALSE)`.
+#' `pl$set_options(maintain_order = TRUE)`.
 #'
 #' @return DataFrame
 #' @examples
@@ -862,7 +862,7 @@ DataFrame_filter = function(bool_expr) {
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+DataFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
   construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
@@ -1003,19 +1003,33 @@ DataFrame_to_struct = function(name = "") {
 
 
 ## TODO contribute polars add r-polars defaults for to_struct and unnest
-#' Unnest a DataFrame struct columns.
+#' Unnest the Struct columns of a DataFrame
 #' @keywords DataFrame
 #' @param names Names of the struct columns to unnest. If `NULL` (default), then
 #' all "struct" columns are unnested.
 #' @return A DataFrame where all "struct" columns are unnested. Non-struct
 #' columns are not modified.
 #' @examples
-#' df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
-#' df = df$to_struct()$to_frame()
+#' df = pl$DataFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#'   c = 6:10
+#' )$
+#'   select(
+#'   pl$col("b")$to_struct(),
+#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#' )
 #' df
 #'
+#' # by default, all struct columns are unnested
 #' df$unnest()
+#'
+#' # we can specify specific columns to unnest
+#' df$unnest("a_and_c")
 DataFrame_unnest = function(names = NULL) {
+  if (is.null(names)) {
+    names = names(which(dtypes_are_struct(.pr$DataFrame$schema(self))))
+  }
   unwrap(.pr$DataFrame$unnest(self, names), "in $unnest():")
 }
 
@@ -1564,4 +1578,34 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' df$explode(pl$col(pl$List(pl$Float64)))
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
+}
+
+#' Take a sample of rows from a DataFrame
+#'
+#' @param n Number of rows to return. Cannot be used with `fraction`.
+#' @param fraction Fraction of rows to return (between 0 and 1). Cannot be used
+#' with `n`.
+#' @param with_replacement Allow values to be sampled more than once.
+#' @param shuffle If `TRUE`, the order of the sampled rows will be shuffled. If
+#' `FALSE` (default), the order of the returned rows will be neither stable nor
+#' fully random.
+#' @param seed Seed for the random number generator. If set to `NULL` (default),
+#' a random seed is generated for each sample operation.
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#' df = pl$DataFrame(iris)
+#' df$sample(n = 20)
+#' df$sample(frac = 0.1)
+DataFrame_sample = function(
+    n = NULL, fraction = NULL, with_replacement = FALSE, shuffle = FALSE, seed = NULL) {
+  seed = seed %||% sample(0:10000, 1)
+  pcase(
+    !xor(is.null(n), is.null(fraction)), Err_plain("Pass either arg `n` or `fraction`, not both."),
+    is.null(fraction), .pr$DataFrame$sample_n(self, n, with_replacement, shuffle, seed),
+    is.null(n), .pr$DataFrame$sample_frac(self, fraction, with_replacement, shuffle, seed),
+    or_else = Err_plain("internal error")
+  ) |>
+    unwrap("in $sample():")
 }

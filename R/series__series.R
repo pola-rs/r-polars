@@ -519,7 +519,7 @@ Series_chunk_lengths = "use_extendr_wrapper"
 #' s_mut = pl$Series(1:3)
 #' s_mut_copy = s_mut
 #' # must deactivate this to allow to use immutable=FALSE
-#' pl$set_polars_options(strictly_immutable = FALSE)
+#' pl$set_options(strictly_immutable = FALSE)
 #' s_new = s_mut$append(pl$Series(1:3), immutable = FALSE)
 #' identical(s_new$to_vector(), s_mut_copy$to_vector())
 Series_append = function(other, immutable = TRUE) {
@@ -529,7 +529,7 @@ Series_append = function(other, immutable = TRUE) {
     if (polars_optenv$strictly_immutable) {
       stopf(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
-        "`pl$set_polars_options(strictly_immutable = FALSE)`"
+        "`pl$set_options(strictly_immutable = FALSE)`"
       ))
     }
     unwrap(.pr$Series$append_mut(self, other), "in $append():")
@@ -790,7 +790,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' @keywords Series
 #' @param descending Sort the columns in descending order.
 #' @param in_place if TRUE, will set flag mutably and return NULL. Remember to use
-#' pl$set_polars_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
+#' pl$set_options(strictly_immutable = FALSE) otherwise an error will be thrown. If FALSE
 #' will return a cloned Series with set_flag which in the very most cases should be just fine.
 #' @return Series invisible
 #' @aliases Series_set_sorted
@@ -801,7 +801,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
-      "`pl$set_polars_options(strictly_immutable = FALSE)`"
+      "`pl$set_options(strictly_immutable = FALSE)`"
     ))
   }
 
@@ -821,7 +821,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' @param descending Sort in descending order..
 #' @param in_place bool sort mutable in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_polars_options(strictly_immutable = FALSE)`
+#' `pl$set_options(strictly_immutable = FALSE)`
 #'
 #' @return Series
 #'
@@ -831,7 +831,7 @@ Series_sort = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
-      "`pl$set_polars_options(strictly_immutable = FALSE)`"
+      "`pl$set_options(strictly_immutable = FALSE)`"
     ))
   }
   if (!in_place) {
@@ -883,7 +883,7 @@ Series_series_equal = function(other, null_equal = FALSE, strict = FALSE) {
 #' @param name string the new name
 #' @param in_place bool rename in-place, breaks immutability
 #' If true will throw an error unless this option has been set:
-#' `pl$set_polars_options(strictly_immutable = FALSE)`
+#' `pl$set_options(strictly_immutable = FALSE)`
 #'
 #' @name Series_rename
 #' @return bool
@@ -900,7 +900,7 @@ Series_rename = function(name, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
     stopf(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
-      "To enable mutable features run: `pl$set_polars_options(strictly_immutable = FALSE)`"
+      "To enable mutable features run: `pl$set_options(strictly_immutable = FALSE)`"
     ))
   }
 

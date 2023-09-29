@@ -175,6 +175,10 @@ DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call
 
 DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__DataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
 
+DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
+
+DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -996,6 +1000,8 @@ LazyFrame$fill_null <- function(fill_value) .Call(wrap__LazyFrame__fill_null, se
 LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, offset, length)
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
+
+LazyFrame$unnest <- function(names) .Call(wrap__LazyFrame__unnest, self, names)
 
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_unnest}
 \alias{DataFrame_unnest}
-\title{Unnest a DataFrame struct columns.}
+\title{Unnest the Struct columns of a DataFrame}
 \usage{
 DataFrame_unnest(names = NULL)
 }
@@ -15,13 +15,24 @@ A DataFrame where all "struct" columns are unnested. Non-struct
 columns are not modified.
 }
 \description{
-Unnest a DataFrame struct columns.
+Unnest the Struct columns of a DataFrame
 }
 \examples{
-df = pl$DataFrame(a = 1:5, b = c("one", "two", "three", "four", "five"))
-df = df$to_struct()$to_frame()
+df = pl$DataFrame(
+  a = 1:5,
+  b = c("one", "two", "three", "four", "five"),
+  c = 6:10
+)$
+  select(
+  pl$col("b")$to_struct(),
+  pl$col("a", "c")$to_struct()$alias("a_and_c")
+)
 df
 
+# by default, all struct columns are unnested
 df$unnest()
+
+# we can specify specific columns to unnest
+df$unnest("a_and_c")
 }
 \keyword{DataFrame}

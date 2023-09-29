@@ -21,4 +21,11 @@ pl$List(pl$List(pl$Boolean))
 
 # Find any DataType via pl$dtypes
 print(pl$dtypes)
+
+# check if an element is any kind of Struct()
+test = pl$Struct(pl$UInt64)
+pl$same_outer_dt(test, pl$Struct())
+
+# `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
+test == pl$Struct()
 }
