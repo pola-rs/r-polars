@@ -140,6 +140,35 @@ test_that("get set properties", {
   )
 })
 
+
+test_that("DataFrame, custom schema", {
+  df = pl$DataFrame(
+    iris,
+    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+  )
+  # dtypes from object are as expected
+  expect_true(
+    all(mapply(
+      df$dtypes,
+      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      FUN = "=="
+    ))
+  )
+  expect_identical(names(df$schema), names(iris))
+
+  # works fine if a variable is called "schema"
+  expect_no_error(
+   pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
+  )
+  # errors if incorrect datatype
+  expect_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
+
+  # TODO: why doesn't this error?
+  # expect_error(pl$DataFrame(x = 1, schema = list(schema = pl$foo)))
+})
+
+
+
 test_that("DataFrame, select sum over", {
   df = pl$DataFrame(iris)$select(
     pl$col("Sepal.Width")$sum()$over("Species")$alias("miah"),

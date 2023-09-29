@@ -11,10 +11,14 @@
 \item mixed vectors and/or Series of equal length
 }
 
-Columns will be named as of named arguments or alternatively by names of Series or given a
-placeholder name.}
+Columns will be named as of named arguments or alternatively by names of
+Series or given a placeholder name.}
 
-\item{make_names_unique}{default TRUE, any duplicated names will be prefixed a running number}
+\item{make_names_unique}{If \code{TRUE} (default), any duplicated names will be
+prefixed a running number.}
+
+\item{schema}{A named list that will be used to convert a variable to a
+specific DataType. See Examples.}
 }
 \value{
 DataFrame
@@ -40,5 +44,8 @@ pl$DataFrame(list(
 
 # from a data.frame
 pl$DataFrame(mtcars)
+
+# custom schema
+pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
 }
 \keyword{DataFrame_new}

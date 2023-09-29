@@ -101,10 +101,13 @@ DataFrame
 #'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'
-#' Columns will be named as of named arguments or alternatively by names of Series or given a
-#' placeholder name.
+#' Columns will be named as of named arguments or alternatively by names of
+#' Series or given a placeholder name.
 #'
-#' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
+#' @param make_names_unique If `TRUE` (default), any duplicated names will be
+#'  prefixed a running number.
+#' @param schema A named list that will be used to convert a variable to a
+#' specific DataType. See Examples.
 #'
 #' @return DataFrame
 #' @keywords DataFrame_new
@@ -127,7 +130,11 @@ DataFrame
 #'
 #' # from a data.frame
 #' pl$DataFrame(mtcars)
-pl$DataFrame = function(..., make_names_unique = TRUE) {
+#'
+#' # custom schema
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
+
+pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   largs = unpack_list(...)
 
   # no args crete empty DataFrame
@@ -157,7 +164,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE) {
 
   result({
     # check for conflicting names, to avoid silent overwrite
-    if (any(duplicated(keys))) {
+    if (anyDuplicated(keys) > 0) {
       if (make_names_unique) {
         keys = make.unique(keys, sep = "_")
       } else {
@@ -172,7 +179,14 @@ pl$DataFrame = function(..., make_names_unique = TRUE) {
 
     ## pass each arg to pl$lit and all args to pl$select
     names(largs) = keys
-    lapply(largs, pl$lit) |>
+    lapply(seq_along(largs), \(x) {
+      varname = keys[x]
+      out <- pl$lit(largs[[x]])
+      if (!is.null(schema) && varname %in% names(schema)) {
+        out <- out$cast(schema[[varname]], strict = TRUE)
+      }
+      out$alias(varname)
+    }) |>
       do.call(what = pl$select)
   }) |>
     unwrap("in pl$DataFrame()")
