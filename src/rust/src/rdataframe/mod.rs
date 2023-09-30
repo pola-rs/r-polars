@@ -339,7 +339,7 @@ impl DataFrame {
         value_vars: Robj,
         value_name: Robj,
         variable_name: Robj,
-    ) -> Result<Self, String> {
+    ) -> RResult<Self> {
         let args = MeltArgs {
             id_vars: strings_to_smartstrings(robj_to!(Vec, String, id_vars)?),
             value_vars: strings_to_smartstrings(robj_to!(Vec, String, value_vars)?),
@@ -347,8 +347,11 @@ impl DataFrame {
             variable_name: robj_to!(Option, String, variable_name)?.map(|s| s.into()),
             streamable: false,
         };
-        let df = self.0.melt2(args).map_err(|s| s.to_string())?;
-        Ok(DataFrame(df))
+
+        self.0
+            .melt2(args)
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
     }
 
     pub fn pivot_expr(
@@ -360,7 +363,7 @@ impl DataFrame {
         sort_columns: Robj,
         aggregate_expr: Robj,
         separator: Robj,
-    ) -> Result<Self, String> {
+    ) -> RResult<Self> {
         let fun = if robj_to!(bool, maintain_order)? {
             pivot_stable
         } else {
@@ -376,8 +379,8 @@ impl DataFrame {
             robj_to!(Option, PLExpr, aggregate_expr)?,
             robj_to!(Option, str, separator)?,
         )
-        .map_err(|err| err.to_string())
-        .map(|ok| ok.into())
+        .map_err(polars_to_rpolars_err)
+        .map(DataFrame)
     }
 
     pub fn sample_n(

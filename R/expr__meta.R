@@ -150,3 +150,29 @@ ExprMeta_has_multiple_outputs = function() {
 ExprMeta_is_regex_projection = function() {
   .pr$Expr$meta_is_regex_projection(self)
 }
+
+#' Format an expression as a tree
+#'
+#' @param return_as_string Return the tree as a character vector? If `FALSE`
+#' (default), the tree is printed in the console.
+#'
+#' @return
+#' If `return_as_string` is `TRUE`, a character vector describing the tree.
+#'
+#' If `return_as_string` is `FALSE`, prints the tree in the console but doesn't
+#' return any value.
+#'
+#' @name ExprMeta_tree_format
+#' @examples
+#' my_expr = (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
+#' my_expr$meta$tree_format()
+
+ExprMeta_tree_format = function(return_as_string = FALSE) {
+  out <- .pr$Expr$meta_tree_format(self) |>
+    unwrap("in $tree_format():")
+  if (isTRUE(return_as_string)) {
+    out
+  } else {
+    cat(out)
+  }
+}
