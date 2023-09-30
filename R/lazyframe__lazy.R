@@ -353,6 +353,7 @@ LazyFrame_collect = function(
       streaming
     ) |>
     and_then(collect_f) |>
+
     unwrap("in $collect():")
 }
 

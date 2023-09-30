@@ -53,8 +53,8 @@ bad_robj = function(r) {
   .pr$RPolarsErr$new()$bad_robj(r)
 }
 
-Err_plain = function(x) {
-  Err(.pr$RPolarsErr$new()$plain(x))
+Err_plain = function(...) {
+  Err(.pr$RPolarsErr$new()$plain(paste(..., collapse=" ")))
 }
 
 # short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr

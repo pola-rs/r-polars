@@ -3,10 +3,11 @@ pub mod extendr_concurrent;
 pub mod extendr_helpers;
 pub mod wrappers;
 
+use crate::conversion_r_to_s::robjname2series;
 use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
-use crate::rpolarserr::{rdbg, rerr, RPolarsErr, RResult, WithRctx};
-
+use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
+use crate::series::Series;
 use extendr_api::prelude::list;
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
@@ -741,7 +742,7 @@ fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Expr> {
     }
 }
 
-pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::LazyFrame> {
+pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
     let robj = unpack_r_result_list(robj)?;
     let rv = rdbg(&robj);
 
@@ -753,16 +754,60 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<crate::rdataframe::
                 let extptr_df: ExternalPtr<DataFrame> = robj.try_into()?;
                 Ok(extptr_df.lazy())
             }
-            _ => {
+            _ if robj.inherits("LazyFrame") => {
                 let lf: ExternalPtr<LazyFrame> = robj.try_into()?;
                 let lf = LazyFrame(lf.0.clone());
                 Ok(lf)
             }
+            _ => Ok(DataFrame::new_with_capacity(1)
+                .lazy()
+                .0
+                .select(&[robj_to_rexpr(robj, true)?.0]))
+            .map(LazyFrame),
         }
     }();
 
-    let ext_ldf = res.bad_val(rv).mistyped(tn::<LazyFrame>())?;
-    Ok(LazyFrame(ext_ldf.0.clone()))
+    res.bad_val(rv).mistyped(tn::<LazyFrame>())
+}
+
+pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
+    let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone();
+
+    // closure to allow ?-convert extendr::Result to RResult
+    let res = || -> RResult<DataFrame> {
+        match () {
+            // allow input as a DataFrame
+            _ if robj.inherits("DataFrame") => {
+                let extptr_df: ExternalPtr<DataFrame> = robj.try_into()?;
+                Ok(extptr_df.0.clone())
+            }
+            _ if robj.inherits("LazyFrame") => {
+                let lf: ExternalPtr<LazyFrame> = robj.try_into()?;
+                lf.0.clone().collect()
+            }
+            _ => DataFrame::new_with_capacity(1)
+                .lazy()
+                .0
+                .select(&[robj_to_rexpr(robj, true)?.0])
+                .collect(),
+        }
+        .map(DataFrame)
+        .map_err(polars_to_rpolars_err)
+    }();
+
+    res.bad_val(rdbg(robj_clone))
+        .plain("could not be converted into a DataFrame")
+}
+
+pub fn robj_to_series(robj: extendr_api::Robj) -> RResult<Series> {
+    let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone();
+    robjname2series(robj, "")
+        .map(Series)
+        .map_err(polars_to_rpolars_err)
+        .bad_val(rdbg(robj_clone))
+        .plain("could not be converted into a DataFrame")
 }
 
 pub fn list_expr_to_vec_pl_expr(
@@ -865,6 +910,14 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_binary_vec($a)
     };
 
+    (Series, $a:ident) => {
+        $crate::utils::robj_to_series($a)
+    };
+
+    (PLSeries, $a:ident) => {
+        $crate::utils::robj_to_series($a).map(|ok| ok.0)
+    };
+
     (Expr, $a:ident) => {
         $crate::utils::robj_to_rexpr($a, true)
     };
@@ -914,6 +967,14 @@ macro_rules! robj_to_inner {
 
     (PLLazyFrame, $a:ident) => {
         $crate::utils::robj_to_lazyframe($a).map(|lf| lf.0)
+    };
+
+    (DataFrame, $a:ident) => {
+        $crate::utils::robj_to_dataframe($a)
+    };
+
+    (PLDataFrame, $a:ident) => {
+        $crate::utils::robj_to_dataframe($a).map(|lf| lf.0)
     };
 
     (RArrow_schema, $a:ident) => {

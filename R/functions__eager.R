@@ -3,7 +3,8 @@
 #' @param l list of DataFrame, or Series, LazyFrame or Expr
 #' @param rechunk perform a rechunk at last
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally
-#' @param parallel BOOL default TRUE, only used for LazyFrames
+#' @param parallel Boolean default TRUE, only used for LazyFrames
+#' @param to_supertypes Boolean default TRUE, cast columns shared super types, if any.
 #'
 #' @details
 #' Categorical columns/Series must have been constructed while global string cache enabled
@@ -37,41 +38,68 @@
 #' # diagonal
 #' pl$concat(l_hor, how = "diagonal")
 pl$concat = function(
-    l, # list of DataFrames or Series or lazyFrames or expr
+    ..., # list of DataFrames or Series or lazyFrames or expr
     rechunk = TRUE,
-    how = c("vertical", "horizontal", "diagonal"),
-    parallel = TRUE # not used yet
+    how = c("vertical", "horizontal", "diagonal"),#, "vertical_relaxed","diangonal_relaxed"),
+    parallel = TRUE,
+    eager = FALSE,
+    to_supertypes = FALSE
     ) {
+  browser()
+  l = unpack_list(...)
   ## Check inputs
-  how = match.arg(how[1L], c("vertical", "horizontal", "diagonal"))
+  how_args =  c("vertical", "horizontal", "diagonal")#, "vertical_relaxed", "diangonal_relaxed")
+
+  how = match.arg(how[1L], how_args) |>
+    result() |>
+    unwrap("in pl$concat()")
+
+  first = l[[1]]
+  eager = isTRUE(eager) #!inherits(first,"LazyFrame")
+  args_modified = names(as.list(sys.call()[-1]))
 
   # dispatch on item class and how
-  first = l[[1L]]
-  result = pcase(
-    inherits(first, "DataFrame"),
-    {
-      vdf = l_to_vdf(l)
-      pcase(
-        how == "vertical",   concat_df(vdf),
-        how == "diagonal",   diag_concat_df(vdf),
-        how == "horizontal", hor_concat_df(vdf),
-        or_else = stopf("Internal error")
-      )
+
+  pcase(
+    how == "vertical" && (inherits(first, "Series") || is.vector(first)), {
+      if(any(args_modified %in% c("eager","parallel", "to_super_types", "rechunk"))) {
+        warning(
+          "args: parallel and eager takes no effect when concat Series"
+        )
+      }
+      concat_series(l, rechunk, to_supertypes)
     },
-    inherits(first, "Series"),
-    {
-      stopf("not implemented Series")
+
+    how == "vertical",  concat_lf(l, rechunk, parallel, to_supertypes),
+    how == "diagonal",  diag_concat_lf(l, rechunk, parallel, to_supertypes),
+
+    how == "horizontal" && !eager, {
+       Err_plain("how=='horizontal' is not supported for !eager. Try e.g. <LazyFrame>$join() .")
     },
-    inherits(first, "Expr"),
-    {
-      stopf("not implemented Expr")
+
+    how == "horizontal", {
+      if(any(args_modified %in% c("parallel", "to_super_types"))) {
+        warning(
+          "args parallel, rechunk, eager and to_supertypes",
+          "takes no effect for how=='horizontal'"
+        )
+      }
+      concat_df(l)
     },
 
     # TODO implement Series, Expr, Lazy etc
-    or_else = stopf(paste0("type of first list element: '", class(first), "' is not supported"))
-  )
+    or_else = Err_plain("type of first list element: '", class(first), "' is not supported")
 
-  unwrap(result)
+  ) |> and_then(\(x) {
+    pcase(
+      inherits(x,"DataFrame") && !eager, Err_plain("internal logical error in pl$concat()"),
+      inherits(x,"LazyFrame") &&  eager, Ok(x$lazy()),
+      or_else = Ok(x)
+    )
+
+  }) |> unwrap(
+    "in pl$concat()"
+  )
 }
 
 

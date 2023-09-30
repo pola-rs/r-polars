@@ -8,7 +8,6 @@ use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
 use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
-use crate::rlib;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
@@ -463,7 +462,7 @@ extendr_module! {
     use read_ipc;
     use read_parquet;
     use rdatatype;
-    use rlib;
+
     impl DataFrame;
     impl VecDataFrame;
 }

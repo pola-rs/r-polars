@@ -10,7 +10,9 @@
 
 \item{how}{choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally}
 
-\item{parallel}{BOOL default TRUE, only used for LazyFrames}
+\item{parallel}{Boolean default TRUE, only used for LazyFrames}
+
+\item{to_supertypes}{Boolean default TRUE, cast columns shared super types, if any.}
 }
 \value{
 DataFrame, or Series, LazyFrame or Expr
