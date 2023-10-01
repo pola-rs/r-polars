@@ -4,46 +4,12 @@ use crate::robj_to;
 use crate::rdataframe::LazyFrame;
 use crate::rpolarserr::*;
 use crate::series::Series;
-use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars_core;
 use polars_core::functions as pl_functions;
 use std::result::Result;
-
-#[extendr]
-fn concat_df(vdf: &VecDataFrame) -> List {
-    //-> PyResult<PyDataFrame> {
-
-    use polars_core::error::PolarsResult;
-    use polars_core::utils::rayon::prelude::*;
-
-    let identity_df = (*vdf.0.iter().peekable().peek().unwrap())
-        .clone()
-        .slice(0, 0);
-    let rdfs: Vec<pl::PolarsResult<pl::DataFrame>> =
-        vdf.0.iter().map(|df| Ok(df.clone())).collect();
-    let identity = || Ok(identity_df.clone());
-
-    let result = polars_core::POOL
-        .install(|| {
-            rdfs.into_par_iter()
-                .fold(identity, |acc: PolarsResult<pl::DataFrame>, df| {
-                    let mut acc = acc?;
-                    acc.vstack_mut(&df?)?;
-                    Ok(acc)
-                })
-                .reduce(identity, |acc, df| {
-                    let mut acc = acc?;
-                    acc.vstack_mut(&df?)?;
-                    Ok(acc)
-                })
-        })
-        .map(DataFrame);
-
-    r_result_list(result.map_err(|err| format!("{:?}", err)))
-}
 
 #[extendr]
 fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RResult<LazyFrame> {
@@ -58,14 +24,6 @@ fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RRe
     )
     .map_err(polars_to_rpolars_err)
     .map(LazyFrame)
-}
-
-#[extendr]
-fn diag_concat_df(dfs: Robj) -> RResult<DataFrame> {
-    let df_vec = robj_to!(Vec, PLDataFrame, dfs)?;
-    pl_functions::diag_concat_df(&df_vec)
-        .map_err(polars_to_rpolars_err)
-        .map(DataFrame)
 }
 
 #[extendr]
@@ -96,7 +54,7 @@ pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<Ser
             .map(|s| s.dtype().clone())
             .fold(Ok(None), |acc, x| match acc {
                 Err(err) => Err(err),
-                Ok(None) => Ok(Some(x)),
+                Ok(None) => Ok(Some(x)), // first fold, acc is None, just us x,
                 Ok(Some(acc)) => polars_core::utils::get_supertype(&acc, &x)
                     .ok_or(RPolarsErr::new().plain("Series' have no common supertype".to_string()))
                     .map(|dt| Some(dt)),
@@ -129,10 +87,7 @@ pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<Ser
 
 extendr_module! {
     mod concat;
-
-    fn concat_df;
     fn concat_lf;
-    fn diag_concat_df;
     fn diag_concat_lf;
     fn hor_concat_df;
     fn concat_series;

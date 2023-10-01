@@ -77,12 +77,31 @@ impl From<pl::DataFrame> for DataFrame {
         DataFrame(item)
     }
 }
-
+use crate::rpolarserr::*;
 #[extendr]
 impl DataFrame {
     pub fn shape(&self) -> Robj {
         let shp = self.0.shape();
         r!([shp.0, shp.1])
+    }
+
+    pub fn n_chunks(&self, strategy: Robj) -> RResult<Vec<f64>> {
+        let nchks: Vec<_> = self.0.iter().map(|s| s.n_chunks() as f64).collect();
+
+        match robj_to!(str, strategy)? {
+            "all" => Ok(nchks),
+            "first" => {
+                if nchks.is_empty() {
+                    Ok(vec![])
+                } else {
+                    Ok(vec![nchks.into_iter().next().expect("has atleast len 1")])
+                }
+            }
+            _ => {
+                Err(RPolarsErr::new()
+                    .plain("strategy not recognized, neither 'all' or 'first'".into()))
+            }
+        }
     }
 
     //renamed back to clone

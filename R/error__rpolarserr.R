@@ -58,7 +58,14 @@ Err_plain = function(...) {
 }
 
 # short hand for extracting an error context in unit testing, will raise error if not an RPolarsErr
-get_err_ctx = \(x) unwrap_err(result(x))$contexts()
+get_err_ctx = \(x, select = NULL) {
+  ctx = unwrap_err(result(x))$contexts()
+  if(is.null(select)) {
+    ctx
+  } else {
+    ctx[[match.arg(select,names(ctx))]]
+  }
+}
 
 
 # wrapper to return Result

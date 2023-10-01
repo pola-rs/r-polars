@@ -13,9 +13,11 @@ use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
 use crate::rdataframe::{DataFrame, LazyFrame};
+use extendr_api::eval_string_with_params;
 use extendr_api::Attributes;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
+use extendr_api::R;
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -759,6 +761,11 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
                 let lf = LazyFrame(lf.0.clone());
                 Ok(lf)
             }
+            _ if robj.inherits("data.frame") => {
+                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
+                Ok(extptr_df.lazy())
+            }
             _ => Ok(DataFrame::new_with_capacity(1)
                 .lazy()
                 .0
@@ -785,6 +792,11 @@ pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
             _ if robj.inherits("LazyFrame") => {
                 let lf: ExternalPtr<LazyFrame> = robj.try_into()?;
                 lf.0.clone().collect()
+            }
+            _ if robj.inherits("data.frame") => {
+                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
+                Ok(extptr_df.0.clone())
             }
             _ => DataFrame::new_with_capacity(1)
                 .lazy()

@@ -63,11 +63,7 @@ test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, rob
 
 polars_features <- function() .Call(wrap__polars_features)
 
-concat_df <- function(vdf) .Call(wrap__concat_df, vdf)
-
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
-
-diag_concat_df <- function(dfs) .Call(wrap__diag_concat_df, dfs)
 
 diag_concat_lf <- function(l, rechunk, parallel) .Call(wrap__diag_concat_lf, l, rechunk, parallel)
 
@@ -116,6 +112,8 @@ reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
+
+DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, strategy)
 
 DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
 

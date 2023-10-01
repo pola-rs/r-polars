@@ -1057,6 +1057,25 @@ DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
 
+
+#' @title Get the number of chunks of the Series' in a DataFrame
+#' @keywords DataFrame
+#' @param strategy string either 'all' or 'first'. 'first' only returns chunks for first Series.
+#' @return real vector of chunk counts per Series.
+#' @examples
+#' df = pl$concat(
+#'   1:10,
+#'   pl$concat(1:5,1:5, rechunk = FALSE, how = "vertical")$rename("b"),
+#'   how = "horizontal"
+#' )
+#' df
+#' df$n_chunks()
+DataFrame_n_chunks = function(strategy = "all") {
+  .pr$DataFrame$n_chunks(self, strategy) |>
+    unwrap("in n_chunks():")
+}
+
+
 #' @title Get the last row of the DataFrame.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.
