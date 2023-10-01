@@ -1065,7 +1065,7 @@ DataFrame_first = function() {
 #' @examples
 #' df = pl$concat(
 #'   1:10,
-#'   pl$concat(1:5,1:5, rechunk = FALSE, how = "vertical")$rename("b"),
+#'   pl$concat(1:5, 1:5, rechunk = FALSE, how = "vertical")$rename("b"),
 #'   how = "horizontal"
 #' )
 #' df

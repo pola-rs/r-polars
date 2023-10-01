@@ -104,12 +104,12 @@ list2 = list
 #' f = \(...) unpack_list(list(...))
 #' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
-unpack_list = function(..., skip_classes=NULL) {
+unpack_list = function(..., skip_classes = NULL) {
   l = list2(...)
   if (
     length(l) == 1L &&
-    is.list(l[[1L]]) &&
-    !( !is.null(skip_classes) && inherits(l[[1L]],skip_classes) )
+      is.list(l[[1L]]) &&
+      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes))
   ) {
     l[[1L]]
   } else {

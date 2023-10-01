@@ -353,7 +353,6 @@ LazyFrame_collect = function(
       streaming
     ) |>
     and_then(collect_f) |>
-
     unwrap("in $collect():")
 }
 
@@ -1320,10 +1319,10 @@ LazyFrame_clone = function() {
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
 #' )$
-#'  select(
-#'    pl$col("b")$to_struct(),
-#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
-#'  )
+#'   select(
+#'   pl$col("b")$to_struct(),
+#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#' )
 #' lf$collect()
 #'
 #' # by default, all struct columns are unnested
@@ -1331,10 +1330,9 @@ LazyFrame_clone = function() {
 #'
 #' # we can specify specific columns to unnest
 #' lf$unnest("a_and_c")$collect()
-
 LazyFrame_unnest = function(names = NULL) {
   if (is.null(names)) {
-    names <- names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+    names = names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
   }
   unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }

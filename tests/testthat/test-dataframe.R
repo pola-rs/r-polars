@@ -776,22 +776,21 @@ test_that("join_asof_simple", {
 })
 
 test_that("n_chunks", {
-
   df = pl$concat(
     1:10,
-    pl$concat(1:5,1:5, rechunk = FALSE, how = "vertical")$rename("b"),
+    pl$concat(1:5, 1:5, rechunk = FALSE, how = "vertical")$rename("b"),
     how = "horizontal"
   )
 
-  expect_identical( df$n_chunks(),  c(1,2))
-  expect_identical( df$n_chunks("first"),  c(1))
-  expect_identical( pl$DataFrame()$n_chunks(),  numeric())
-  expect_identical( pl$DataFrame()$n_chunks("first"),  numeric())
+  expect_identical(df$n_chunks(), c(1, 2))
+  expect_identical(df$n_chunks("first"), c(1))
+  expect_identical(pl$DataFrame()$n_chunks(), numeric())
+  expect_identical(pl$DataFrame()$n_chunks("first"), numeric())
 
-   pl$DataFrame()$n_chunks("wrong strat") |>
-     get_err_ctx("Plain") |>
-     grepl(pat = "strategy") |>
-     expect_true()
+  pl$DataFrame()$n_chunks("wrong strat") |>
+    get_err_ctx("Plain") |>
+    grepl(pat = "strategy") |>
+    expect_true()
 })
 
 
