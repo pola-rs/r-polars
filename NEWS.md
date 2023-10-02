@@ -14,6 +14,8 @@
 - New method `$unnest()` for `LazyFrame` (#397).
 - New method `$sample()` for `DataFrame` (#399).
 - New method `$meta$tree_format()` to display an `Expr` as a tree (#401).
+- New argument `schema` in `pl$DataFrame()` and `pl$LazyFrame()` to override the
+  automatic type detection (#385).
 
 # polars 0.8.1
 

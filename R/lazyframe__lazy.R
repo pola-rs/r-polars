@@ -140,6 +140,13 @@ LazyFrame
 #'   c = letters[1:5],
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
+#'
+#' # custom schema
+#' pl$LazyFrame(
+#'   iris,
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#' )$collect()
+
 pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
