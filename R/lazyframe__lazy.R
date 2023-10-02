@@ -251,9 +251,6 @@ LazyFrame_with_columns = function(...) {
     unwrap("in $with_columns()")
 }
 
-#' @rdname LazyFrame_with_columns
-
-LazyFrame_with_column = "use_extendr_wrapper"
 
 #' @inherit DataFrame_with_row_count title description params
 #' @return A new LazyFrame with a counter column in front
@@ -809,7 +806,7 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_groupby = function(..., maintain_order = pl$options$default_maintain_order()) {
+LazyFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
   .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
     unwrap("in $groupby():")
 }
@@ -1315,4 +1312,35 @@ LazyFrame_explode = function(...) {
 #' pl$mem_address(df1) == pl$mem_address(df3)
 LazyFrame_clone = function() {
   .pr$LazyFrame$clone_see_me_macro(self)
+}
+
+
+#' Unnest the Struct columns of a LazyFrame
+#'
+#' @inheritParams DataFrame_unnest
+#' @return A LazyFrame where all "struct" columns are unnested. Non-struct
+#' columns are not modified.
+#' @examples
+#' lf = pl$LazyFrame(
+#'   a = 1:5,
+#'   b = c("one", "two", "three", "four", "five"),
+#'   c = 6:10
+#' )$
+#'  select(
+#'    pl$col("b")$to_struct(),
+#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
+#'  )
+#' lf$collect()
+#'
+#' # by default, all struct columns are unnested
+#' lf$unnest()$collect()
+#'
+#' # we can specify specific columns to unnest
+#' lf$unnest("a_and_c")$collect()
+
+LazyFrame_unnest = function(names = NULL) {
+  if (is.null(names)) {
+    names <- names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+  }
+  unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }

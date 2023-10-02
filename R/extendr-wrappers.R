@@ -175,6 +175,10 @@ DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call
 
 DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__DataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
 
+DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
+
+DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -905,6 +909,8 @@ Expr$meta_has_multiple_outputs <- function() .Call(wrap__Expr__meta_has_multiple
 
 Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_projection, self)
 
+Expr$meta_tree_format <- function() .Call(wrap__Expr__meta_tree_format, self)
+
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
 Expr$new_count <- function() .Call(wrap__Expr__new_count)
@@ -997,6 +1003,8 @@ LazyFrame$slice <- function(offset, length) .Call(wrap__LazyFrame__slice, self, 
 
 LazyFrame$with_columns <- function(exprs) .Call(wrap__LazyFrame__with_columns, self, exprs)
 
+LazyFrame$unnest <- function(names) .Call(wrap__LazyFrame__unnest, self, names)
+
 LazyFrame$select <- function(exprs) .Call(wrap__LazyFrame__select, self, exprs)
 
 LazyFrame$select_str_as_lit <- function(exprs) .Call(wrap__LazyFrame__select_str_as_lit, self, exprs)
@@ -1012,8 +1020,6 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 

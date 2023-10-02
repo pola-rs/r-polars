@@ -2318,6 +2318,16 @@ impl Expr {
         self.0.clone().meta().is_regex_projection()
     }
 
+    fn meta_tree_format(&self) -> RResult<String> {
+        let e = self
+            .0
+            .clone()
+            .meta()
+            .into_tree_formatter()
+            .map_err(polars_to_rpolars_err)?;
+        Ok(format!("{e}"))
+    }
+
     //the only cat ns function from dsl.rs
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {

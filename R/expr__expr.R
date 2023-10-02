@@ -125,7 +125,8 @@ wrap_e = function(e, str_to_lit = TRUE) {
 #' @examples pl$col("foo") < 5
 wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
   # disable call info
-  old_option = pl$set_polars_options(do_not_repeat_call = TRUE)
+  old_option = pl$options$do_not_repeat_call
+  pl$set_options(do_not_repeat_call = TRUE)
 
   # wrap_e and catch nay error in a result
   expr_result = result(
@@ -138,8 +139,10 @@ wrap_e_result = function(e, str_to_lit = TRUE, argname = NULL) {
     )
   )
 
-  # restore options
-  do.call(pl$set_polars_options, old_option)
+  # restore this option but only if it was originally FALSE
+  if (isFALSE(old_option)) {
+    pl$set_options(do_not_repeat_call = FALSE)
+  }
 
   expr_result
 }
@@ -4205,7 +4208,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' @docType NULL
 #' @format NULL
 #' @aliases list
-#' @name Expr_list
 #' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
 #' as list() .
 #' @format NULL
@@ -4216,15 +4218,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' )
 #' df$select(pl$all()$implode())
 Expr_implode = "use_extendr_wrapper"
-
-## TODO REMOVE AT A BREAKING CHANGE
-Expr_list = function() {
-  if (is.null(runtime_state$warned_deprecate_list)) {
-    runtime_state$warned_deprecate_list = TRUE
-    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
-  }
-  self$implode()
-}
 
 
 
@@ -4251,25 +4244,6 @@ Expr_list = function() {
 Expr_shrink_dtype = "use_extendr_wrapper"
 
 
-
-#' arr: list related methods DEPRECATED
-#' @description
-#' Deprecated since 0.8.1, will be removed in 0.9.0.
-#' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
-#' @keywords Expr
-#' @return Expr
-#' @seealso \code{\link[=Expr_list]{<Expr>$list$...}}
-Expr_arr = method_as_property(function() {
-  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
-    warning(
-      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and will be removed in polars 0.9.0.",
-      "\nUse `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
-      call. = FALSE
-    )
-    runtime_state$warned_deprecate_sns_arr_expr = TRUE
-  }
-  expr_list_make_sub_ns(self)
-})
 
 #' list: list related methods
 #' @description

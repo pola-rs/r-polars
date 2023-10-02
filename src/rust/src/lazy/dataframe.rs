@@ -214,6 +214,10 @@ impl LazyFrame {
         Ok(LazyFrame(self.clone().0.with_columns(exprs)))
     }
 
+    pub fn unnest(&self, names: Vec<String>) -> RResult<Self> {
+        Ok(LazyFrame(self.clone().0.unnest(names)))
+    }
+
     pub fn select(&self, exprs: Robj) -> RResult<Self> {
         let exprs =
             robj_to!(VecPLExprColNamed, exprs).when("preparing expressions for $select()")?;
@@ -267,12 +271,6 @@ impl LazyFrame {
         } else {
             Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
         }
-    }
-
-    fn with_column(&self, expr: &Expr) -> LazyFrame {
-        R!("warning('`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.')")
-        .expect("warning will not fail");
-        LazyFrame(self.0.clone().with_column(expr.0.clone()))
     }
 
     fn with_row_count(&self, name: Robj, offset: Robj) -> RResult<Self> {

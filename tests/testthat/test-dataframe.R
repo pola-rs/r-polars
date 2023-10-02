@@ -1060,3 +1060,49 @@ test_that("with_row_count", {
   df = pl$DataFrame(mtcars)
   expect_identical(df$with_row_count("idx", 42)$select(pl$col("idx"))$to_data_frame()$idx, as.double(42:(41 + nrow(mtcars))))
 })
+
+test_that("strictly_immutable = FALSE", {
+  # check dataframe is immutable by setting
+  df = pl$DataFrame(iris)
+  df_immutable_copy = df
+  df_immutable_copy$columns = paste0(df_immutable_copy$columns, "_modified")
+  expect_true(all(names(df) != names(df_immutable_copy)))
+
+  # setting and option returns the previous/state state as defualt
+  pl$set_options(strictly_immutable = FALSE)
+
+  # check change setting took effect
+  df = pl$DataFrame(iris)
+  df_mutable_copy = df
+  df_mutable_copy$columns = paste0(df_mutable_copy$columns, "_modified")
+  expect_true(all(names(df) == names(df_mutable_copy)))
+
+  pl$reset_options()
+})
+
+test_that("sample", {
+  df = pl$DataFrame(iris)
+
+  # plain use
+  expect_identical(df$sample(n = 20)$height, 20)
+  expect_identical(df$sample(frac = 0.1)$height, 15)
+
+  # must pass either n or fraction and not both
+  expect_error(df$sample(), "Pass either arg")
+  expect_error(df$sample(n = 2, fraction = 0.1), "not both")
+
+  # single check of some conversion errors
+  ctx = df$sample(frac = 0.1, seed = "not even a written number") |> get_err_ctx()
+  expect_identical(ctx$PlainErrorMessage, "ParseIntError { kind: InvalidDigit }")
+
+  # single check on rust-polars errors
+  ctx = df$sample(n = 151) |> get_err_ctx()
+  expect_true(isTRUE(grepl("larger sample than the total population", ctx$PolarsError)))
+  expect_no_error(df$sample(n = 151, with_replacement = TRUE))
+
+  # seed works
+  expect_identical(
+    df$sample(fraction = 0.1, seed = 123)$to_data_frame(),
+    df$sample(fraction = 0.1, seed = "123")$to_data_frame()
+  )
+})

@@ -168,7 +168,7 @@ DataType_constructors = list(
   },
 
   # doc below pl_List
-  List = function(datatype) {
+  List = function(datatype = "unknown") {
     if (is.character(datatype) && length(datatype) == 1) {
       datatype = .pr$DataType$new(datatype)
     }
@@ -185,7 +185,7 @@ DataType_constructors = list(
   Struct = function(...) {
     result({
       largs = list2(...)
-      if (is.list(largs[[1]])) {
+      if (length(largs) >= 1 && is.list(largs[[1]])) {
         largs = largs[[1]]
         element_name = "list element"
       } else {
@@ -239,13 +239,27 @@ NULL
 #'
 #' # Find any DataType via pl$dtypes
 #' print(pl$dtypes)
+#'
+#' # check if an element is any kind of Struct()
+#' test = pl$Struct(pl$UInt64)
+#' pl$same_outer_dt(test, pl$Struct())
+#'
+#' # `test` is a type of Struct, but it doesn't mean it is equal to an empty Struct
+#' test == pl$Struct()
 NULL
 
 #' Create List DataType
 #' @keywords pl
 #' @name pl_List
-#' @param datatype an inner DataType
+#' @param datatype an inner DataType, default is "Unknown" (placeholder for when inner DataType
+#' does not matter, e.g. as used in example)
 #' @return a list DataType with an inner DataType
 #' @format function
-#' @examples pl$List(pl$List(pl$Boolean))
+#' @examples
+#' # some nested List
+#' pl$List(pl$List(pl$Boolean))
+#'
+#' # check if some maybe_list is a List DataType
+#' maybe_List = pl$List(pl$UInt64)
+#' pl$same_outer_dt(maybe_List, pl$List())
 NULL

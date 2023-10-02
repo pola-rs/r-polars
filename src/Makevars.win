@@ -1,6 +1,7 @@
 TARGET = $(subst 64,x86_64,$(subst 32,i686,$(WIN)))-pc-windows-gnu
 RPOLARS_PROFILE ?= release
-BUILD_COMMAND = cargo build --target=$(TARGET) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
+RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
+BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
 
 TARGET_DIR = ./rust/target
@@ -27,7 +28,7 @@ $(STATLIB):
 	fi && \
 	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
 		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
-		if [ "$(RPOLARS_FULL_FEATURES)" == "true" ]; then \
+		if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
 			$(BUILD_COMMAND) --features "full_features"; \
 		else \
 			$(BUILD_COMMAND); \
@@ -42,15 +43,16 @@ $(STATLIB):
 	# This solves both caching and R CMD check failing cargo build files
 	# see issue #28
 	if [ -f "$(STATLIB)" ]; then \
-		echo "found binary proceed to linking"; \
-	else \
+		echo "file is there: "; \
+	elif [ -f "$(rpolars_ext_binary)" ]; then \
+		echo "file is '$(rpolars_ext_binary)'"; \
 		echo "binary not built here, trying to symlink in $(rpolars_ext_binary)"; \
 		mkdir -p $(LIBDIR) ; \
-		ln -s $(rpolars_ext_binary) $(LIBDIR)/libr_polars.a ; \
+		ln -s $(rpolars_ext_binary) $(STATLIB) ; \
 	fi
 
 	# CRAN might even need more files to be gone, delete them here...
-	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" == "true" ]; then \
+	if [ "$(RPOLARS_CARGO_CLEAN_DEPS)" = "true" ]; then \
 		echo "clean up target, to not let R CMD check fail on rust files"; \
 		mv $(STATLIB) $(LIBDIR)/../temp_binary.a; \
 		rm -rf $(LIBDIR); \

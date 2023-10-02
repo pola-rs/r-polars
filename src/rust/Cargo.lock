@@ -546,7 +546,7 @@ checksum = "0198b9d0078e0f30dedc7acbb21c974e838fc8fae3ee170128658a98cb2c1c04"
 [[package]]
 name = "extendr-api"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#ee8d3754aba4ffc0e6740d1abbd257f7b62285cf"
+source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#d06f3bc96b168dae1a63f6e625c5bf80e98adc1b"
 dependencies = [
  "extendr-engine",
  "extendr-macros",
@@ -559,7 +559,7 @@ dependencies = [
 [[package]]
 name = "extendr-engine"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#ee8d3754aba4ffc0e6740d1abbd257f7b62285cf"
+source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#d06f3bc96b168dae1a63f6e625c5bf80e98adc1b"
 dependencies = [
  "libR-sys",
 ]
@@ -567,7 +567,7 @@ dependencies = [
 [[package]]
 name = "extendr-macros"
 version = "0.4.0"
-source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#ee8d3754aba4ffc0e6740d1abbd257f7b62285cf"
+source = "git+https://github.com/rpolars/extendr?branch=pl0.7.0rc#d06f3bc96b168dae1a63f6e625c5bf80e98adc1b"
 dependencies = [
  "proc-macro2",
  "quote",

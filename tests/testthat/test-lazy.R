@@ -731,3 +731,38 @@ test_that("fetch", {
     )
   )
 })
+
+
+test_that("unnest", {
+  # round-trip conversion from LazyFrame with two columns
+  df = pl$LazyFrame(
+    a = 1:5,
+    b = c("one", "two", "three", "four", "five"),
+    c = TRUE,
+    d = 42.0,
+    e = NaN,
+    f = NA_real_
+  )
+
+  df2 = df$
+    select(
+      pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
+      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+    )
+
+  expect_identical(
+    df2$unnest()$collect()$to_data_frame(),
+    df$collect()$to_data_frame()
+  )
+
+  expect_identical(
+    df2$unnest("first_struct")$collect()$to_data_frame(),
+    df$
+      select(
+        pl$col("a", "b", "c"),
+        pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+      )$
+      collect()$
+      to_data_frame()
+  )
+})
