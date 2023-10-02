@@ -162,6 +162,10 @@ test_that("DataFrame, custom schema", {
   )
   # errors if incorrect datatype
   expect_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
+  expect_error(
+    pl$DataFrame(x = 1, schema = list(x = "foo")),
+    "expected RPolarsDataType"
+  )
 
   # TODO: why doesn't this error?
   # expect_error(pl$DataFrame(x = 1, schema = list(schema = pl$foo)))
