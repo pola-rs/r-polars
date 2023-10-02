@@ -44,6 +44,10 @@ folding and replacing expensive operations with faster alternatives.}
 \item{slice_pushdown}{Boolean. Only load the required slice from the scan
 level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
 
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
+
 \item{inherit_optimization}{Boolean. Use existing optimization settings
 regardless the settings specified in this function call.}
 }

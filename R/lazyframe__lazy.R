@@ -334,6 +334,9 @@ LazyFrame_set_optimization_toggle = function(
 #' @description `$collect()` performs the query on the LazyFrame. It returns a
 #' DataFrame
 #' @inheritParams LazyFrame_set_optimization_toggle
+#' @param no_optimization  Boolean. Sets the following parameters to `FALSE`:
+#'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
+#'  `comm_subplan_elim`, `comm_subexpr_elim`.
 #' @param inherit_optimization  Boolean. Use existing optimization settings
 #' regardless the settings specified in this function call.
 #' @param collect_in_background Boolean. Detach this query from R session.
