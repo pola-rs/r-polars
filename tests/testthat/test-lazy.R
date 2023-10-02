@@ -30,6 +30,34 @@ test_that("create LazyFrame", {
   )
 })
 
+test_that("LazyFrame, custom schema", {
+  df = pl$LazyFrame(
+    iris,
+    schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+  )$collect()
+
+  # dtypes from object are as expected
+  expect_true(
+    all(mapply(
+      df$dtypes,
+      pl$dtypes[c("Float32", rep("Float64", 3), "Utf8")],
+      FUN = "=="
+    ))
+  )
+  expect_identical(names(df$schema), names(iris))
+
+  # works fine if a variable is called "schema"
+  expect_no_error(
+    pl$LazyFrame(list(schema = 1), schema = list(schema = pl$Float32))
+  )
+  # errors if incorrect datatype
+  expect_error(pl$LazyFrame(x = 1, schema = list(schema = foo)))
+  expect_error(
+    pl$LazyFrame(x = 1, schema = list(x = "foo")),
+    "expected RPolarsDataType"
+  )
+})
+
 test_that("lazy filter", {
   ## preparation
 
