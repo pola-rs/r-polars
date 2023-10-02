@@ -44,7 +44,6 @@ pl$concat = function(
     parallel = TRUE,
     # eager = FALSE,
     to_supertypes = FALSE) {
-  if (exists("do_browse", .GlobalEnv) && do_browse) browser()
 
   # unpack arg list
   l = unpack_list(..., skip_classes = "data.frame")
@@ -67,7 +66,7 @@ pl$concat = function(
     {
       if (any(args_modified %in% c("parallel"))) {
         warning(
-          "in pl:concat(): args: parallel takes no effect when concatenating Series",
+          "in pl$concat(): argument `parallel` is not used when concatenating Series",
           call. = FALSE
         )
       }
@@ -79,8 +78,7 @@ pl$concat = function(
     {
       if (any(args_modified %in% c("to_supertypes"))) {
         warning(
-          "Args to_supertypes",
-          "takes no effect for how=='diagonal'",
+          "Argument `to_supertypes` is not used when how=='diagonal'",
           call. = FALSE
         )
       }
@@ -90,7 +88,7 @@ pl$concat = function(
     {
       Err_plain(
         "how=='horizontal' is not supported for lazy (first element is LazyFrame).",
-        "Try e.g. <LazyFrame>$join() to get Lazy join or pl$concat(lf1$collect(),lf2,lf3).",
+        "Try e.g. <LazyFrame>$join() to get Lazy join or pl$concat(lf1$collect(), lf2, lf3).",
         "to get a eager horizontal concatenation"
       )
     },
@@ -98,8 +96,7 @@ pl$concat = function(
     {
       if (any(args_modified %in% c("parallel", "to_supertypes"))) {
         warning(
-          "Args parallel, rechunk, eager and to_supertypes",
-          "takes no effect for how=='horizontal'",
+          "Arguments `parallel`, `rechunk`, `eager` and `to_supertypes` are not used when how=='horizontal'",
           call. = FALSE
         )
       }
