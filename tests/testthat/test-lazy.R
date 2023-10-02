@@ -769,5 +769,15 @@ test_that("unnest", {
 
 test_that("opt_toggles", {
   lf = pl$LazyFrame(mtcars)$select(pl$col("mpg") * 0.42)
-  expect_true(is.list(lf$get_optimization_toggle()))
+  opt_settings = list(
+    type_coercion = FALSE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = FALSE,
+    comm_subplan_elim = FALSE,
+    comm_subexpr_elim = FALSE,
+    streaming = TRUE
+  )
+  expect_identical(do.call(lf$set_optimization_toggle, opt_settings)$get_optimization_toggle(), opt_settings)
 })

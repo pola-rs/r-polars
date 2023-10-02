@@ -453,7 +453,7 @@ impl LazyFrame {
         type_coercion: Robj,
         predicate_pushdown: Robj,
         projection_pushdown: Robj,
-        simplify_expr: Robj,
+        simplify_expression: Robj,
         slice_pushdown: Robj,
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
@@ -464,7 +464,7 @@ impl LazyFrame {
             .clone()
             .with_type_coercion(robj_to!(bool, type_coercion)?)
             .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
-            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expression)?)
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
@@ -480,18 +480,17 @@ impl LazyFrame {
             predicate_pushdown,
             type_coercion,
             simplify_expr,
-            file_caching,
+            file_caching: _,
             slice_pushdown,
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
         } = self.0.get_current_optimizations();
         list!(
-            projection_pushdown = projection_pushdown,
-            predicate_pushdown = predicate_pushdown,
             type_coercion = type_coercion,
-            simplify_expr = simplify_expr,
-            file_caching = file_caching,
+            predicate_pushdown = predicate_pushdown,
+            projection_pushdown = projection_pushdown,
+            simplify_expression = simplify_expr,
             slice_pushdown = slice_pushdown,
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
