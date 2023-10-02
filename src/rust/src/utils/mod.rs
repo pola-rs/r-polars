@@ -436,7 +436,7 @@ pub fn reinterpret(s: &pl::Series, signed: bool) -> pl::PolarsResult<pl::Series>
     }
 }
 
-fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj> {
+pub fn inner_unpack_r_result_list(robj: extendr_api::Robj) -> Result<Robj, Robj> {
     use extendr_api::*;
     if robj.inherits("extendr_result") {
         let l = robj.as_list().expect("extendr_result is a list");

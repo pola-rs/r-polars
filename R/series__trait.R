@@ -11,29 +11,20 @@
 #'
 #' pl$Series(1:5)
 #'
-#' #warning this method makes polars very useless
+#' # warning this method makes polars very useless
 #' as_polars_series.numeric = function(x, ...) {
-#'   head(x,3)
+#'   head(x, 3)
 #' }
 #'
 #' pl$Series(1:5)
 #'
 as_polars_series = function(x, ...) {
-    UseMethod("as_polars_series", x)
+  UseMethod("as_polars_series", x)
 }
 
 #' @export
 as_polars_series.default = function(x, ...) {
-  # Err(
-  #   .pr$RPolarsErr$
-  #     new()$
-  #     bad_robj(x)$
-  #     plain("polars did not know how to handle this R object")$
-  #     when("converting into a Series")$
-  #     plain("advice: define as_polars_series.YourClass to solve this see more at ?as_polars_series")
-  # )
-  stop(paste("no as_polars_series implemented for", str_string(x))) #|>
-    #unwrap("in S3 method as_polars_series()")
+  stop("no `as_polars_series` impl for:", class(x))
 }
 
 #' @export
@@ -41,9 +32,7 @@ as_polars_series.POSIXlt = function(x, ...) {
   as.POSIXct(x)
 }
 
-
 #' @export
 as_polars_series.vctrs_rcrd = function(x, ...) {
   pl$DataFrame(unclass(x))$to_struct()
 }
-
