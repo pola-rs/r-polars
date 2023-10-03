@@ -736,7 +736,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  (if( isTRUE(in_background)) {
+  (if (isTRUE(in_background)) {
     .pr$Expr$map_in_background(self, f, output_type, agg_list)
   } else {
     .pr$Expr$map(self, f, output_type, agg_list)
@@ -2686,7 +2686,7 @@ Expr_inspect = function(fmt = "{}") {
 
   # add a map to expression printing the evaluated series
   .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE) |>
-     unwrap("in $inspect()")
+    unwrap("in $inspect()")
 }
 
 

@@ -386,10 +386,8 @@ ExprList_tail = function(n = 5L) {
 #' df2$unnest()
 #'
 #' df2$to_list()
-
 ExprList_to_struct = function(
     n_field_strategy = "first_non_null", name_generator = NULL, upper_bound = 0) {
-
   .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
     unwrap("in <List>$to_struct():")
 }
