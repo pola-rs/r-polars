@@ -6,6 +6,8 @@ use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
+use polars_core::functions as pl_functions;
+
 use std::result::Result;
 
 #[extendr]
@@ -237,6 +239,7 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
+
     //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;
