@@ -15,8 +15,8 @@ use std::result::Result;
 #[derive(Debug)]
 pub enum RFnSignature {
     //... read as function with input 1 Series mapped to output 1 Series
-    FnSeriesTOSeries(ParRObj, pl::Series),
-    FnTwoSeriesTOSeries(ParRObj, pl::Series, pl::Series),
+    FnSeriesToSeries(ParRObj, pl::Series),
+    FnTwoSeriesToSeries(ParRObj, pl::Series, pl::Series),
     FnF64ToString(ParRObj, f64),
 }
 
@@ -40,13 +40,13 @@ impl RFnSignature {
         };
 
         match self {
-            RFnSignature::FnSeriesTOSeries(f, s) => {
+            RFnSignature::FnSeriesToSeries(f, s) => {
                 let s = unpack_rfn(f)?
                     .call(pairlist!(Series(s)))
                     .map(Series::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
             }
-            RFnSignature::FnTwoSeriesTOSeries(f, s1, s2) => {
+            RFnSignature::FnTwoSeriesToSeries(f, s1, s2) => {
                 let s = unpack_rfn(f)?
                     .call(pairlist!(Series(s1), Series(s2)))
                     .map(Series::any_robj_to_pl_series_result)??;

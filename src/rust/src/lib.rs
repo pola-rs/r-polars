@@ -28,9 +28,6 @@ pub mod utils;
 pub use serde_json;
 
 use extendr_api::prelude::*;
-use utils::extendr_concurrent::ParRObj;
-
-use polars::prelude::Series;
 pub use polars_core;
 pub use smartstring;
 

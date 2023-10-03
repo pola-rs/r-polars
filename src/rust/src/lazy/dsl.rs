@@ -1,4 +1,4 @@
-use crate::concurrent::{RFnOutput, RFnSignature};
+use crate::concurrent::RFnSignature;
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_rank_method;
@@ -1701,53 +1701,41 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(
-        &self,
-        lambda: Robj,
-        output_type: Nullable<&RPolarsDataType>,
-        agg_list: bool,
-    ) -> Self {
-        use crate::utils::wrappers::null_to_opt;
-
+    pub fn map(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
+        // define closure how to request R code evaluated in main thread from a some polars sub thread
         let par_fn = ParRObj(lambda);
-
         let f = move |s: pl::Series| {
-            //acquire channel to R via main thread handler
             let thread_com = ThreadCom::try_from_global(&CONFIG)
                 .expect("polars was thread could not initiate ThreadCommunication to R");
-            //this could happen if running in background mode, but inly panic is possible here
-
-            //send request to run Signature in R
-            thread_com.send(RFnSignature::FnSeriesTOSeries(par_fn.clone(), s));
-
-            //recieve answer and unwrap into a series
+            thread_com.send(RFnSignature::FnSeriesToSeries(par_fn.clone(), s));
             let s = thread_com.recv().unwrap_series();
-
-            //wrap as series
             Ok(Some(s))
         };
 
-        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
-
+        // set expected type of output from R function
+        let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
             Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
             None => fld.clone(),
         });
 
-        if agg_list {
-            self.clone().0.map_list(f, output_map)
-        } else {
-            self.clone().0.map(f, output_map)
-        }
-        .into()
+        robj_to!(bool, agg_list)
+            .map(|agg_list| {
+                if agg_list {
+                    self.clone().0.map_list(f, output_map)
+                } else {
+                    self.clone().0.map(f, output_map)
+                }
+            })
+            .map(Expr)
     }
 
     pub fn map_in_background(
         &self,
         lambda: Robj,
-        output_type: Nullable<&RPolarsDataType>,
-        agg_list: bool,
-    ) -> Self {
+        output_type: Robj,
+        agg_list: Robj,
+    ) -> RResult<Self> {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
         let rbgfunc = move |s| {
@@ -1758,19 +1746,22 @@ impl Expr {
             .map(Some)
         };
 
-        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+        let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
             Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
             None => fld.clone(),
         });
 
-        if agg_list {
-            self.clone().0.map_list(rbgfunc, output_map)
-        } else {
-            self.clone().0.map(rbgfunc, output_map)
-        }
-        .into()
+        robj_to!(bool, agg_list)
+            .map(|agg_list| {
+                if agg_list {
+                    self.clone().0.map_list(rbgfunc, output_map)
+                } else {
+                    self.clone().0.map(rbgfunc, output_map)
+                }
+            })
+            .map(Expr)
     }
 
     pub fn apply_in_background(

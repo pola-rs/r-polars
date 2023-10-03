@@ -1,6 +1,5 @@
 use crate::series::Series;
 use crate::utils::collect_hinted_result;
-use crate::utils::unpack_r_result_list;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
