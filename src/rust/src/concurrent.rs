@@ -11,33 +11,77 @@ use extendr_api::prelude::*;
 use extendr_api::Conversions;
 use std::result::Result;
 
+// define any possible signature of R lambdas
+#[derive(Debug)]
+pub enum RFnSignature {
+    //... read as function with input 1 Series mapped to output 1 Series
+    FnSeriesTOSeries(ParRObj, pl::Series),
+    FnTwoSeriesTOSeries(ParRObj, pl::Series, pl::Series),
+    // FnUsizeTOString(ParRObj, pl::Series),
+}
+
+//any possible output from an R lambda
+#[derive(Debug)]
+pub enum RFnOutput {
+    Series(pl::Series),
+    String(String),
+}
+
+impl RFnSignature {
+    // main thread serving R call should just eval any variant of RFnSignature
+    pub fn eval(self) -> Result<RFnOutput, Box<dyn std::error::Error>> {
+        let unpack_rfn = |f: ParRObj| -> extendr_api::Result<extendr_api::Function> {
+            f.0.as_function().ok_or_else(|| {
+                extendr_api::error::Error::Other(format!(
+                    "provided input is not an R function but a: {:?}",
+                    f.0
+                ))
+            })
+        };
+
+        match self {
+            RFnSignature::FnSeriesTOSeries(f, s) => {
+                let s = unpack_rfn(f)?
+                    .call(pairlist!(Series(s)))
+                    .map(Series::any_robj_to_pl_series_result)??;
+                Ok(RFnOutput::Series(s))
+            }
+            RFnSignature::FnTwoSeriesTOSeries(f, s1, s2) => {
+                let s = unpack_rfn(f)?
+                    .call(pairlist!(Series(s1), Series(s2)))
+                    .map(Series::any_robj_to_pl_series_result)??;
+                Ok(RFnOutput::Series(s))
+            } // RFnSignature::FnUsizeToString(f, usize) => {
+              //     let s = unpack_rfn(f)?
+              //         .call(pairlist!(Series(s1), Series(s2)))
+              //         .map(Series::any_robj_to_pl_series_result)??;
+              //     Ok(RFnOutput::Series(s))
+              // }
+        }
+    }
+}
+
+impl RFnOutput {
+    // main thread serving R call should just eval any variant of RFnSignature
+    pub fn unwrap_series(self) -> pl::Series {
+        match self {
+            RFnOutput::Series(out) => out,
+            _ => panic!("internal error unexpected type of returned answer"),
+        }
+    }
+
+    pub fn unwrap_string(self) -> String {
+        match self {
+            RFnOutput::String(out) => out,
+            _ => panic!("internal error unexpected type of returned answer"),
+        }
+    }
+}
+
 // This is the standard way the main thread which can call the R session,
 // should process a request from a polars thread worker to run an R function
-fn serve_r((probj, s): (ParRObj, pl::Series)) -> Result<pl::Series, Box<dyn std::error::Error>> {
-    #[cfg(feature = "rpolars_debug_print")]
-    dbg!(&s);
-
-    //unpack user-R-function
-    let f = probj.0.as_function().ok_or_else(|| {
-        extendr_api::error::Error::Other(format!(
-            "provided input is not an R function but a: {:?}",
-            probj.0
-        ))
-    })?;
-
-    #[cfg(feature = "rpolars_debug_print")]
-    dbg!(&f);
-
-    // call user-R-function with Series as input, return Robj (likeliy as Series)
-    let rseries_robj = f.call(pairlist!(Series(s)))?;
-
-    #[cfg(feature = "rpolars_debug_print")]
-    dbg!(&rseries_robj);
-
-    // return of user-R-function may not be Series, return Err if so
-    let s = Series::any_robj_to_pl_series_result(rseries_robj)?;
-
-    Ok(s)
+fn serve_r(rfsig: RFnSignature) -> Result<RFnOutput, Box<dyn std::error::Error>> {
+    rfsig.eval()
 }
 
 // This functions allows to call .collect() on polars lazy frame. A lazy frame may contain user defined functions

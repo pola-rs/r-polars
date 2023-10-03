@@ -34,8 +34,9 @@ use polars::prelude::Series;
 pub use polars_core;
 pub use smartstring;
 
+use crate::concurrent::{RFnOutput, RFnSignature};
 use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
-type ThreadComStorage = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series), Series>>>>;
+type ThreadComStorage = InitCell<std::sync::RwLock<Option<ThreadCom<RFnSignature, RFnOutput>>>>;
 static CONFIG: ThreadComStorage = InitCell::new();
 pub use crate::rbackground::RBGPOOL;
 

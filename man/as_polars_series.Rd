@@ -21,9 +21,9 @@ Internal generic method to convert some Robj into Series
 
 pl$Series(1:5)
 
-#warning this method makes polars very useless
+# warning this method makes polars very useless
 as_polars_series.numeric = function(x, ...) {
-  head(x,3)
+  head(x, 3)
 }
 
 pl$Series(1:5)

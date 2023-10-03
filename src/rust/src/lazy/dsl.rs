@@ -1,3 +1,4 @@
+use crate::concurrent::{RFnOutput, RFnSignature};
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_rank_method;
@@ -5,7 +6,6 @@ use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-
 use crate::rpolarserr::polars_to_rpolars_err;
 use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
@@ -1173,14 +1173,14 @@ impl Expr {
         let name_gen: std::option::Option<
             Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
         > = if let Some(robj) = null_to_opt(name_gen) {
-            let probj: ParRObj = robj.into();
+            let par_fn: ParRObj = robj.into();
             let x: std::option::Option<
                 Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
             > = Some(pl::Arc::new(move |idx: usize| {
                 let thread_com = ThreadCom::from_global(&CONFIG);
                 let s = pl::Series::new("", &[idx as u64]);
-                thread_com.send((probj.clone(), s));
-                let s = thread_com.recv();
+                thread_com.send(RFnSignature::FnSeriesTOSeries(par_fn.clone(), s));
+                let s = thread_com.recv().unwrap_series();
                 let s: SmartString<LazyCompact> = s.0.name().to_string().into();
                 s
             }));
@@ -1712,10 +1712,7 @@ impl Expr {
     ) -> Self {
         use crate::utils::wrappers::null_to_opt;
 
-        //find a way not to push lambda everytime to main thread handler
-        //safety only accessed in main thread, can be temp owned by other threads
-        let probj = ParRObj(lambda);
-        //}
+        let par_fn = ParRObj(lambda);
 
         let f = move |s: pl::Series| {
             //acquire channel to R via main thread handler
@@ -1723,11 +1720,11 @@ impl Expr {
                 .expect("polars was thread could not initiate ThreadCommunication to R");
             //this could happen if running in background mode, but inly panic is possible here
 
-            //send request to run in R
-            thread_com.send((probj.clone(), s));
+            //send request to run Signature in R
+            thread_com.send(RFnSignature::FnSeriesTOSeries(par_fn.clone(), s));
 
-            //recieve answer
-            let s = thread_com.recv();
+            //recieve answer and unwrap into a series
+            let s = thread_com.recv().unwrap_series();
 
             //wrap as series
             Ok(Some(s))
