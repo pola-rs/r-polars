@@ -774,9 +774,9 @@ test_that("unnest", {
 
   df2 = df$
     select(
-      pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
-      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
-    )
+    pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
+    pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+  )
 
   expect_identical(
     df2$unnest()$collect()$to_data_frame(),
@@ -787,9 +787,9 @@ test_that("unnest", {
     df2$unnest("first_struct")$collect()$to_data_frame(),
     df$
       select(
-        pl$col("a", "b", "c"),
-        pl$col("d", "e", "f")$to_struct()$alias("second_struct")
-      )$
+      pl$col("a", "b", "c"),
+      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+    )$
       collect()$
       to_data_frame()
   )
