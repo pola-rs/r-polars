@@ -104,6 +104,10 @@ impl DataFrame {
         }
     }
 
+    pub fn rechunk(&self) -> Self {
+        self.0.agg_chunks().into()
+    }
+
     //renamed back to clone
     pub fn clone_see_me_macro(&self) -> DataFrame {
         self.clone()
