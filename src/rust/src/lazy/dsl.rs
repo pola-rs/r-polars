@@ -1165,11 +1165,9 @@ impl Expr {
     ) -> List {
         use crate::rdatatype::new_width_strategy;
         use crate::utils::extendr_concurrent::ParRObj;
-        use pl::NamedFrom;
         use smartstring::{LazyCompact, SmartString};
         use std::sync::Arc;
-        // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
-        // here a usize is wrapped in Series
+
         let name_gen: std::option::Option<
             Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
         > = if let Some(robj) = null_to_opt(name_gen) {
@@ -1178,10 +1176,9 @@ impl Expr {
                 Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
             > = Some(pl::Arc::new(move |idx: usize| {
                 let thread_com = ThreadCom::from_global(&CONFIG);
-                let s = pl::Series::new("", &[idx as u64]);
-                thread_com.send(RFnSignature::FnSeriesTOSeries(par_fn.clone(), s));
-                let s = thread_com.recv().unwrap_series();
-                let s: SmartString<LazyCompact> = s.0.name().to_string().into();
+                thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+                let s = thread_com.recv().unwrap_string();
+                let s: SmartString<LazyCompact> = s.into();
                 s
             }));
             x

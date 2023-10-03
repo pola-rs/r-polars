@@ -17,7 +17,7 @@ pub enum RFnSignature {
     //... read as function with input 1 Series mapped to output 1 Series
     FnSeriesTOSeries(ParRObj, pl::Series),
     FnTwoSeriesTOSeries(ParRObj, pl::Series, pl::Series),
-    // FnUsizeTOString(ParRObj, pl::Series),
+    FnF64ToString(ParRObj, f64),
 }
 
 //any possible output from an R lambda
@@ -51,12 +51,14 @@ impl RFnSignature {
                     .call(pairlist!(Series(s1), Series(s2)))
                     .map(Series::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
-            } // RFnSignature::FnUsizeToString(f, usize) => {
-              //     let s = unpack_rfn(f)?
-              //         .call(pairlist!(Series(s1), Series(s2)))
-              //         .map(Series::any_robj_to_pl_series_result)??;
-              //     Ok(RFnOutput::Series(s))
-              // }
+            }
+            RFnSignature::FnF64ToString(f, f64_val) => {
+                let s = unpack_rfn(f)?
+                    .call(pairlist!(f64_val))?
+                    .as_str()
+                    .ok_or("wrong return value, expected a string")?;
+                Ok(RFnOutput::String(s.to_string()))
+            }
         }
     }
 }

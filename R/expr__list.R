@@ -362,8 +362,9 @@ ExprList_tail = function(n = 5L) {
 #' List to Struct
 #' @param n_field_strategy Strategy to determine the number of fields of the struct.
 #'  default = 'first_non_null' else 'max_width'
-#' @param name_generator an R function that takes a scalar column number
-#' and outputs a string value. The default NULL is equivalent to the R function
+#' @param name_generator an R function that takes an R scalar double
+#' and outputs a string value. It is a f64 because i32 might not be a big enough enumerate all.
+#' The default NULL is equivalent to the R function
 #' `\(idx) paste0("field_",idx)`
 #' @param upper_bound upper_bound numeric
 #' A polars `LazyFrame` needs to know the schema at all time.
@@ -389,23 +390,9 @@ ExprList_tail = function(n = 5L) {
 #' df2$to_list()
 ExprList_to_struct = function(
     n_field_strategy = "first_non_null", name_generator = NULL, upper_bound = 0) {
-  # extendr_concurrent now only supports series communication, wrap out of series
-  # wrapped into series on rust side
-  if (!is.null(name_generator)) {
-    if (!is.function(name_generator)) {
-      stopf("name_generator must be an R function")
-    }
-    name_generator_wrapped = \(s) {
-      .pr$Series$rename_mut(s, name_generator(s$to_r())[1])
-      s
-    }
-  } else {
-    name_generator_wrapped = NULL
-  }
 
-  unwrap(.pr$Expr$list_to_struct(
-    self, n_field_strategy, name_generator_wrapped, upper_bound
-  ))
+  .pr$Expr$list_to_struct(self, n_field_strategy, name_generator, upper_bound) |>
+    unwrap("in <List>$to_struct():")
 }
 
 #' eval sublists (kinda like lapply)
