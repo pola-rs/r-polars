@@ -44,9 +44,13 @@ pl$concat = function(
     parallel = TRUE,
     # eager = FALSE,
     to_supertypes = FALSE) {
-
   # unpack arg list
   l = unpack_list(..., skip_classes = "data.frame")
+
+  # nothing becomes NULL
+  if (length(l) == 0L) {
+    return(NULL)
+  }
 
   ## Check inputs
   how_args = c("vertical", "horizontal", "diagonal") # , "vertical_relaxed", "diangonal_relaxed")
