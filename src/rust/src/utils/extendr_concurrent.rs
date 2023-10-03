@@ -145,16 +145,16 @@ where
         S: Send,
         R: Send,
     {
-        let thread_com = config
-            .try_get()
-            .ok_or(
-                "Failed to communicate with R from polars. \
-                It is not possible collect_background a LazyFrame containing user R functions",
-            )?
+        let lock = config.try_get();
+        let inner_lock = lock
+            .ok_or("internal error: global ThreadCom storage has not already been initialized")?
             .read()
-            .expect("failded to restore thread_com")
-            .as_ref()
-            .unwrap()
+            .expect("internal error: RwLock was poisoned (some other thread used the RwLock but panicked)");
+
+        let opt_thread_com = inner_lock.as_ref();
+
+        let thread_com = opt_thread_com
+            .ok_or("Global ThreadCom storage is empty")?
             .clone();
 
         Ok(thread_com)
@@ -162,15 +162,16 @@ where
 }
 
 // //debug threads
-// impl<S, R> Drop for ThreadCom<S, R> {
-//     fn drop(&mut self) {
-//         let mut lock = self.counter.lock().unwrap();
-//         *lock = *lock - 1;
-//         let drop_count = *(lock);
-//         dbg!(drop_count);
-//         println!("Dropping ThreadCom");
-//     }
-// }
+#[cfg(feature = "rpolars_debug_print")]
+impl<S, R> Drop for ThreadCom<S, R> {
+    fn drop(&mut self) {
+        // let mut lock = self.counter.lock().unwrap();
+        // *lock = *lock - 1;
+        // let drop_count = *(lock);
+        // dbg!(drop_count);
+        println!("Dropping a ThreadCom");
+    }
+}
 
 //start serving requests from child threads.
 //f is closure of child threads to start, child thread takes an ThreadCom argument
@@ -223,7 +224,8 @@ where
 
             c_tx.send(a).unwrap();
         } else if let Err(recv_err) = any_new_msg {
-            //dbg!(&recv_err);
+            #[cfg(feature = "rpolars_debug_print")]
+            dbg!(&recv_err);
             match recv_err {
                 //no threadcoms connections left, new request impossible, shut down loop,
                 flume::RecvTimeoutError::Disconnected => {
@@ -234,7 +236,8 @@ where
                 flume::RecvTimeoutError::Timeout => {
                     //check user interrupts flags in R in a fast high-level way with Sys.sleep(0)
                     let res_res = extendr_api::eval_string("Sys.sleep(0)");
-                    //dbg!(&res_res);
+                    #[cfg(feature = "rpolars_debug_print")]
+                    dbg!(&res_res);
                     if res_res.is_err() {
                         rprintln!("R user interrupt");
                         return Err("interupt by user".into());

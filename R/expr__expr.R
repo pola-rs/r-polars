@@ -736,8 +736,12 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
-  map_fn(self, f, output_type, agg_list)
+  (if (isTRUE(in_background)) {
+    .pr$Expr$map_in_background(self, f, output_type, agg_list)
+  } else {
+    .pr$Expr$map(self, f, output_type, agg_list)
+  }) |>
+    unwrap("in $map():")
 }
 
 #' Expr_apply
@@ -891,7 +895,8 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
   }
 
   # return expression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE)
+  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
+    unwrap("in $apply()")
 }
 
 
@@ -2664,11 +2669,11 @@ Expr_inspect = function(fmt = "{}") {
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if (identical(strs, "")) strs <- c("", "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
-    stopf(paste0(
+    result(stopf(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
       " a string containing the two consecutive chars `{}` once. \n",
       "a valid string is e.g. `hello{}world`"
-    ))
+    ))) |> unwrap("in $inspect()")
   }
 
   # function to print the evaluated Series
@@ -2680,7 +2685,8 @@ Expr_inspect = function(fmt = "{}") {
   }
 
   # add a map to expression printing the evaluated series
-  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE)
+  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE) |>
+    unwrap("in $inspect()")
 }
 
 
