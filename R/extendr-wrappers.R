@@ -115,6 +115,8 @@ DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
 
 DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, strategy)
 
+DataFrame$rechunk <- function() .Call(wrap__DataFrame__rechunk, self)
+
 DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
 
 DataFrame$default <- function() .Call(wrap__DataFrame__default)
