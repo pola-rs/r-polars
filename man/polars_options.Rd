@@ -18,16 +18,38 @@ messages. The default (\code{FALSE}) is to show them.}
 \item{debug_polars}{Print additional information to debug Polars.}
 
 \item{no_messages}{Hide messages.}
+
+\item{rpool_cap}{The maximum number of R sessions that can be used to process
+R code in the background. See Details.}
 }
 \value{
 \code{pl$options} returns a named list with the value (\code{TRUE} or \code{FALSE}) of
 each option.
+
 \code{pl$set_options()} silently modifies the options values.
+
 \code{pl$reset_options()} silently resets the options to their default values.
 }
 \description{
 Get and set polars options. See sections "Value" and "Examples" below for
 more details.
+}
+\details{
+\code{pl$options$rpool_avail} indicates the number of R sessions are already
+spawned in pool. \code{pl$options$rpool_cap} indicates the maximum number of new R
+sessions that can be spawned. Anytime a polars thread worker needs a background
+R session specifically to run R code embedded in a query via
+\verb{$map(..., in_background = TRUE)} or \verb{$apply(..., in_background = TRUE)}, it
+will obtain any R session idling in rpool, or spawn a new R session (process)
+and add it to the rpool if \code{rpool_cap} is not already reached. If \code{rpool_cap}
+is already reached, the thread worker will sleep until an R session is idling.
+
+Background R sessions communicate via polars arrow IPC (series/vectors) or R
+serialize + shared memory buffers via the rust crate \code{ipc-channel}.
+Multi-process communication has overhead because all data must be
+serialized/de-serialized and sent via buffers. Using multiple R sessions
+will likely only give a speed-up in a \verb{low io - high cpu} scenario. Native
+polars query syntax runs in threads and have no overhead.
 }
 \examples{
 pl$set_options(maintain_order = TRUE, strictly_immutable = FALSE)

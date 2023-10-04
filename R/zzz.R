@@ -151,6 +151,20 @@ pl$mem_address = mem_address
     env = pl
   )
 
+  makeActiveBinding(
+    "rpool_avail",
+    function() {
+      unwrap(get_global_rpool_cap())[["available"]]
+    },
+    env = polars_optenv
+  )
+
+  rpool_cap = unwrap(get_global_rpool_cap())[["capacity"]]
+  polars_optenv$rpool_cap = rpool_cap
+  # the max number of R session is the number returned the first time, this is
+  # not updated after because it will always be the limit
+  polars_optenv$rpool_cap_max = rpool_cap
+
   setup_renv()
   lockEnvironment(pl, bindings = TRUE)
 }

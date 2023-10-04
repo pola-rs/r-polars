@@ -8,22 +8,40 @@ polars_optreq = list()
 # Requirements will be used to validate inputs passed in pl$set_options()
 
 polars_optenv$strictly_immutable = TRUE
-polars_optreq$strictly_immutable = list(is_bool)
+polars_optreq$strictly_immutable = list(must_be_bool = is_bool)
 
 polars_optenv$no_messages = FALSE
-polars_optreq$no_messages = list(is_bool)
+polars_optreq$no_messages = list(must_be_bool = is_bool)
 
 polars_optenv$do_not_repeat_call = FALSE
-polars_optreq$do_not_repeat_call = list(is_bool)
+polars_optreq$do_not_repeat_call = list(must_be_bool = is_bool)
 
 polars_optenv$maintain_order = FALSE
-polars_optreq$maintain_order = list(is_bool)
+polars_optreq$maintain_order = list(must_be_bool = is_bool)
 
 polars_optenv$debug_polars = FALSE
-polars_optreq$debug_polars = list(is_bool)
+polars_optreq$debug_polars = list(must_be_bool = is_bool)
+
+# rpool_avail, rpool_cap, and rpool_cap_max are updated with their real values
+# in .onLoad() because we can't run `unwrap()` while the package is loading.
+#
+# rpool_avail and rpool_cap_max are only informative, they can't be changed by
+# the user so they don't have any requirements
+
+polars_optreq$rpool_cap = list(
+  must_be_scalar = \(x) length(x) == 1,
+  # allow 2 instead of 2L, but doesn't allow 2.5
+  must_be_integer = \(x) {
+    all(!is.na(x) & x == round(x))
+  },
+  must_be_smaller_than_max = \(x) {
+    max_cap = polars_optenv$rpool_cap_max
+    all(x <= max_cap)
+  }
+)
+
 
 ## END OF DEFINED OPTIONS
-
 
 
 #' Set polars options
@@ -40,16 +58,37 @@ polars_optreq$debug_polars = list(is_bool)
 #' messages. The default (`FALSE`) is to show them.
 #' @param debug_polars Print additional information to debug Polars.
 #' @param no_messages Hide messages.
+#' @param rpool_cap The maximum number of R sessions that can be used to process
+#' R code in the background. See Details.
 #'
 #' @rdname polars_options
 #' @name set_options
 #'
 #' @docType NULL
 #'
+#' @details
+#' `pl$options$rpool_avail` indicates the number of R sessions are already
+#' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
+#' sessions that can be spawned. Anytime a polars thread worker needs a background
+#' R session specifically to run R code embedded in a query via
+#' `$map(..., in_background = TRUE)` or `$apply(..., in_background = TRUE)`, it
+#' will obtain any R session idling in rpool, or spawn a new R session (process)
+#' and add it to the rpool if `rpool_cap` is not already reached. If `rpool_cap`
+#' is already reached, the thread worker will sleep until an R session is idling.
+#'
+#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
+#' serialize + shared memory buffers via the rust crate `ipc-channel`.
+#' Multi-process communication has overhead because all data must be
+#' serialized/de-serialized and sent via buffers. Using multiple R sessions
+#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
+#' polars query syntax runs in threads and have no overhead.
+#'
 #' @return
 #' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
 #' each option.
+#'
 #' `pl$set_options()` silently modifies the options values.
+#'
 #' `pl$reset_options()` silently resets the options to their default values.
 #'
 #' @examples
@@ -70,7 +109,8 @@ pl$set_options = function(
     maintain_order = FALSE,
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
-    no_messages = FALSE
+    no_messages = FALSE,
+    rpool_cap = NULL
   ) {
 
   # only modify arguments that were explicitly written in the function call
@@ -84,13 +124,30 @@ pl$set_options = function(
     # each argument has its own input requirements
     validation <- c()
     for (fun in seq_along(polars_optreq[[args_modified[i]]])) {
-      validation[fun] <- do.call(polars_optreq[[args_modified[i]]][[fun]], list(value))
+      validation[fun] = do.call(
+        polars_optreq[[args_modified[i]]][[fun]],
+        list(value)
+      )
     }
+    names(validation) = names(polars_optreq[[args_modified[i]]])
     if (!all(validation)) {
-      stop(paste0("Incorrect input for argument `", args_modified, "`.\n"))
+      failures = names(which(!validation))
+      failures= translate_failures(failures)
+      stop(
+        paste0(
+          "Incorrect input for argument `", args_modified[i], "`. Failures:\n",
+          paste("    *", failures, "\n", collapse = "")
+        )
+      )
     }
 
     assign(args_modified[i], value, envir = polars_optenv)
+
+    if (args_modified == "rpool_cap") {
+      set_global_rpool_cap(value) |>
+        unwrap() |>
+        invisible()
+    }
   }
 }
 
@@ -103,7 +160,26 @@ pl$reset_options = function() {
   assign("do_not_repeat_call", FALSE, envir = polars_optenv)
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
+  assign("rpool_cap", polars_optenv$rpool_cap_max, envir = polars_optenv)
 }
+
+
+
+translate_failures = function(x) {
+  x = ifelse(
+    x == "must_be_scalar", "Input must be of length one.", x
+  )
+  x = ifelse(
+    x == "must_be_integer", "Input must be an integer.", x
+  )
+  x = ifelse(
+    x == "must_be_smaller_than_max", "Input must be smaller than the maximum capacity. Use \n      `pl$options$rpool_cap_max` to know the maximum capacity.", x
+  )
+  x = ifelse(
+    x == "must_be_bool", "Input must be TRUE or FALSE", x
+  )
+}
+
 
 
 
@@ -204,45 +280,4 @@ pl$with_string_cache = function(expr) {
 
 
 
-#' Get/set global R session pool capacity
-#'
-#' @name global_rpool_cap
-#' @param n Integer, the capacity limit R sessions to process R code.
-#'
-#' @details
-#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
-#' serialize + shared memory buffers via the rust crate `ipc-channel`.
-#' Multi-process communication has overhead because all data must be
-#' serialized/de-serialized and sent via buffers. Using multiple R sessions
-#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
-#' polars query syntax runs in threads and have no overhead.
-#'
-#' @return
-#' `pl$get_global_rpool_cap()` returns a list with two elements `available`
-#' and `capacity`. `available` is the number of R sessions are already spawned
-#' in pool. `capacity` is the limit of new R sessions to spawn. Anytime a polars
-#' thread worker needs a background R session specifically to run R code embedded
-#' in a query via `$map(..., in_background = TRUE)` or
-#' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
-#' rpool, or spawn a new R session (process) and add it to pool if `capacity`
-#' is not already reached. If `capacity` is already reached, the thread worker
-#' will sleep until an R session is idling.
-#'
-#' @keywords options
-#' @examples
-#' default = pl$get_global_rpool_cap()
-#' print(default)
-#' pl$set_global_rpool_cap(8)
-#' pl$get_global_rpool_cap()
-#' pl$set_global_rpool_cap(default$capacity)
-pl$get_global_rpool_cap = function() {
-  get_global_rpool_cap() |> unwrap()
-}
 
-#' @rdname global_rpool_cap
-#' @name set_global_rpool_cap
-pl$set_global_rpool_cap = function(n) {
-  set_global_rpool_cap(n) |>
-    unwrap() |>
-    invisible()
-}
