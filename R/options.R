@@ -143,7 +143,7 @@ pl$set_options = function(
 
     assign(args_modified[i], value, envir = polars_optenv)
 
-    if (args_modified == "rpool_cap") {
+    if (args_modified[i] == "rpool_cap") {
       set_global_rpool_cap(value) |>
         unwrap() |>
         invisible()

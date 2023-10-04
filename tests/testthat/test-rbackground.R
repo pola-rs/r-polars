@@ -66,6 +66,15 @@ test_that("rpool_cap_max always stays the same", {
   expect_identical(pl$options$rpool_cap_max, orig)
 })
 
+test_that("reset rpool_cap", {
+  orig = pl$options$rpool_cap_max
+  pl$set_options(rpool_cap = orig - 1)
+  expect_different(pl$options$rpool_cap, orig)
+  pl$reset_options()
+  expect_identical(pl$options$rpool_cap, orig)
+})
+
+
 test_that("rpool errors", {
   rpool_cap_max = pl$options$rpool_cap_max
   expect_error(
