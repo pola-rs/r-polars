@@ -32,7 +32,7 @@ polars_optreq$rpool_cap = list(
   must_be_scalar = \(x) length(x) == 1,
   # allow 2 instead of 2L, but doesn't allow 2.5
   must_be_integer = \(x) {
-    all(!is.na(x) & x == round(x))
+    all(!is.na(x) & is.numeric(x) & x == round(x))
   },
   must_be_smaller_than_max = \(x) {
     max_cap = polars_optenv$rpool_cap_max
