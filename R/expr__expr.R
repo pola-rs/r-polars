@@ -946,16 +946,18 @@ Expr_lit = function(x) {
 #' @seealso
 #' [`$prefix()`][Expr_prefix] to add a prefix
 #' @examples
-#' pl$DataFrame(mtcars)$
-#'   select(
-#'     pl$col("mpg"),
-#'     pl$col("mpg")$suffix("_foo")
-#'   )
+#' dat = pl$DataFrame(mtcars)
+#'
+#' dat$select(
+#'   pl$col("mpg"),
+#'   pl$col("mpg")$suffix("_foo"),
+#'   pl$col("cyl", "drat")$suffix("_bar")
+#' )
 
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
 }
-#
+
 #' Add a prefix to a column name
 #' @keywords Expr
 #'
@@ -966,11 +968,13 @@ Expr_suffix = function(suffix) {
 #' @seealso
 #' [`$suffix()`][Expr_suffix] to add a suffix
 #' @examples
-#' pl$DataFrame(mtcars)$
-#'   select(
-#'     pl$col("mpg"),
-#'     pl$col("mpg")$prefix("foo_")
-#'   )
+#' dat = pl$DataFrame(mtcars)
+#'
+#' dat$select(
+#'   pl$col("mpg"),
+#'   pl$col("mpg")$prefix("foo_"),
+#'   pl$col("cyl", "drat")$prefix("bar_")
+#' )
 
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)

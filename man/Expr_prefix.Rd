@@ -17,11 +17,13 @@ Expr
 Add a prefix to a column name
 }
 \examples{
-pl$DataFrame(mtcars)$
-  select(
-    pl$col("mpg"),
-    pl$col("mpg")$prefix("foo_")
-  )
+dat = pl$DataFrame(mtcars)
+
+dat$select(
+  pl$col("mpg"),
+  pl$col("mpg")$prefix("foo_"),
+  pl$col("cyl", "drat")$prefix("bar_")
+)
 }
 \seealso{
 \code{\link[=Expr_suffix]{$suffix()}} to add a suffix
