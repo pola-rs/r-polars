@@ -13,6 +13,7 @@
 #'
 #' @return LazyFrame
 #' @name scan_ipc
+#' @rdname IO_scan_ipc
 pl$scan_ipc = function(
     path, # : str | Path,
     n_rows = NULL, # : int | None = None,

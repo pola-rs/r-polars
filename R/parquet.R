@@ -12,6 +12,7 @@
 #'
 #' @return LazyFrame
 #' @name scan_parquet
+#' @rdname IO_scan_parquet
 #' @examples
 #' # TODO write parquet example
 pl$scan_parquet = function(

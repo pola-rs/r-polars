@@ -434,6 +434,9 @@ LazyFrame_collect_in_background = function() {
 #' will be ~1MB.
 #' @inheritParams DataFrame_unique
 #' @inheritParams LazyFrame_collect
+#'
+#' @rdname IO_sink_parquet
+#'
 #' @examples
 #' # sink table 'mtcars' from mem to parquet
 #' tmpf = tempfile()
@@ -502,6 +505,9 @@ LazyFrame_sink_parquet = function(
 #' for fast compression/decompression.
 #' @inheritParams LazyFrame_collect
 #' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_ipc
+#'
 #' @examples
 #' # sink table 'mtcars' from mem to ipc
 #' tmpf = tempfile()
@@ -1156,7 +1162,7 @@ LazyFrame_dtypes = method_as_property(function() {
 #'  - [`$sink_parquet()`][LazyFrame_sink_parquet()] streams query to a parquet file.
 #'  - [`$sink_ipc()`][LazyFrame_sink_ipc()] streams query to a arrow file.
 #'
-#' @examples#'
+#' @examples
 #' # fetch 3 rows
 #' pl$LazyFrame(iris)$fetch(3)
 #'

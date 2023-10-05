@@ -28,6 +28,7 @@ NULL
 #' @return self
 #' @export
 #' @keywords internal
+#' @noRd
 #'
 #' @examples
 #' pl$col("some_column")$sum()$over("some_other_column")
@@ -55,6 +56,7 @@ Expr_print = function() {
 #' @param pattern code-stump as string to auto-complete
 #' @inherit .DollarNames.DataFrame return
 #' @export
+#' @noRd
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(Expr, pattern = pattern), "()")
@@ -65,37 +67,11 @@ Expr_print = function() {
 #' @param x Expr
 #' @param ... not used
 #' @return One Expr wrapped in a list
+#' @noRd
 #' @export
 #' @keywords Expr
 as.list.Expr = function(x, ...) {
   list(x)
-}
-
-#' DEPRECATED wrap as literal
-#' @description use robj_to!(Expr) on rust side or rarely wrap_e on R-side
-#' This function is only kept for reference
-#' @param e an Expr(polars) or any R expression
-#' @details
-#' used internally to ensure an object is an expression
-#' @keywords internal
-#' @return Expr
-#' @examples pl$col("foo") < 5
-wrap_e_legacy = function(e, str_to_lit = TRUE) {
-  if (inherits(e, "Expr")) {
-    return(e)
-  }
-  # terminate WhenThen's to yield an Expr
-  if (inherits(e, c("Then", "ChainedThen"))) {
-    return(e$otherwise(pl$lit(NULL)))
-  }
-  if (inherits(e, c("When", "ChainedWhen"))) {
-    return(stopf("Cannot use a When-statement as Expr without a $then()"))
-  }
-  if (str_to_lit || is.numeric(e) || is.list(e) || is_bool(e)) {
-    return(pl$lit(e))
-  } else {
-    pl$col(e)
-  }
 }
 
 #' wrap as literal
@@ -675,37 +651,52 @@ construct_ProtoExprArray = function(...) {
 ## TODO Contribute polars, seems polars now prefer word f or function in map/apply/rolling/apply
 # over lambda. However lambda is still in examples.
 ## TODO Better explain aggregate list
+
 #' Map an expression with an R function.
 #' @keywords Expr
 #'
 #' @param f a function to map with
-#' @param output_type NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
-#' This is used to inform schema of the actual return type of the R function. Setting this wrong
+#' @param output_type `NULL` or a type available in `names(pl$dtypes)`. If `NULL`
+#' (default), the output datatype will match is the input datatype. This is used
+#' to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
-#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
-#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
-#' in parallel R sessions. The communication speed between processes is quite slower than between
-#' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
-#' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
+#' @param in_background Boolean. Whether to execute the map in a background R
+#' process. Combined with setting e.g. `pl$set_global_rpool_cap(4)` it can speed
+#' up some slow R functions as they can run in parallel R sessions. The
+#' communication speed between processes is quite slower than between threads.
+#' This will likely only give a speed-up in a "low IO - high CPU" usecase.
+#' If there are multiple `$map(in_background = TRUE)` calls in the query, they
+#' will be run in parallel.
 #'
 #' @return Expr
-#' @details Sometime some specific R function is just necessary to perform a column transformation.
-#' Using R maps is slower than native polars. User function must take one polars `Series` as input
-#' and the return should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
-#' Map fully supports `browser()`. If `in_background = FALSE` the function can access any global
-#' variable of the R session. But all R maps in the query sequentially share the same main R
-#' session. Any native polars computations can still be executed meanwhile. In
-#' `in_background = TRUE` the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()` to see and
-#' view number of parallel R sessions.
+#' @details
+#' It is sometimes necessary to apply a specific R function on one or several
+#' columns. However, note that using R code in `$map()` is slower than native
+#' polars. The user function must take one polars `Series` as input and the return
+#' should be a `Series` or any Robj convertible into a `Series` (e.g. vectors).
+#' Map fully supports `browser()`.
+#'
+#' If `in_background = FALSE` the function can access any global variable of the
+#' R session. However, note that several calls to `$map()` will sequentially
+#' share the same main R session, so the global environment might change between
+#' the start of the query and the moment a `map()` call is evaluated. Any native
+#' polars computations can still be executed meanwhile. If `in_background = TRUE`,
+#' the map will run in one or more other R sessions and will not have access
+#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()`
+#' to see and view number of parallel R sessions.
+#'
 #' @name Expr_map
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
-#'   paste("cheese", as.character(x$to_vector()))
-#' }, pl$dtypes$Utf8))
+#' pl$DataFrame(iris)$
+#'   select(
+#'     pl$col("Sepal.Length")$map(\(x) {
+#'       paste("cheese", as.character(x$to_vector()))
+#'     }, pl$dtypes$Utf8)
+#'    )
 #'
-#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
+#' # computation.
 #'
 #' # map a,b,c,d sequentially
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
@@ -734,7 +725,7 @@ construct_ProtoExprArray = function(...) {
 #'     s * 2
 #'   }, in_background = TRUE)
 #' )$collect() |> system.time()
-#'
+
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
   (if (isTRUE(in_background)) {
     .pr$Expr$map_in_background(self, f, output_type, agg_list)

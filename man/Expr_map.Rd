@@ -9,17 +9,20 @@ Expr_map(f, output_type = NULL, agg_list = FALSE, in_background = FALSE)
 \arguments{
 \item{f}{a function to map with}
 
-\item{output_type}{NULL or one of pl$dtypes$..., the output datatype, NULL is the same as input.
-This is used to inform schema of the actual return type of the R function. Setting this wrong
+\item{output_type}{\code{NULL} or a type available in \code{names(pl$dtypes)}. If \code{NULL}
+(default), the output datatype will match is the input datatype. This is used
+to inform schema of the actual return type of the R function. Setting this wrong
 could theoretically have some downstream implications to the query.}
 
 \item{agg_list}{Aggregate list. Map from vector to group in groupby context.}
 
-\item{in_background}{Boolean. Whether to execute the map in a background R process. Combined wit
-setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed up some slow R functions as they can run
-in parallel R sessions. The communication speed between processes is quite slower than between
-threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
-be paralleled, only in case of multiple \verb{$map}(s) in the query these can be run in parallel.}
+\item{in_background}{Boolean. Whether to execute the map in a background R
+process. Combined with setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed
+up some slow R functions as they can run in parallel R sessions. The
+communication speed between processes is quite slower than between threads.
+This will likely only give a speed-up in a "low IO - high CPU" usecase.
+If there are multiple \verb{$map(in_background = TRUE)} calls in the query, they
+will be run in parallel.}
 }
 \value{
 Expr
@@ -28,22 +31,31 @@ Expr
 Map an expression with an R function.
 }
 \details{
-Sometime some specific R function is just necessary to perform a column transformation.
-Using R maps is slower than native polars. User function must take one polars \code{Series} as input
-and the return should be a \code{Series} or any Robj convertible into a \code{Series} (e.g. vectors).
-Map fully supports \code{browser()}. If \code{in_background = FALSE} the function can access any global
-variable of the R session. But all R maps in the query sequentially share the same main R
-session. Any native polars computations can still be executed meanwhile. In
-\code{in_background = TRUE} the map will run in one or more other R sessions and will not have access
-to global variables. Use \code{pl$set_global_rpool_cap(4)} and \code{pl$get_global_rpool_cap()} to see and
-view number of parallel R sessions.
+It is sometimes necessary to apply a specific R function on one or several
+columns. However, note that using R code in \verb{$map()} is slower than native
+polars. The user function must take one polars \code{Series} as input and the return
+should be a \code{Series} or any Robj convertible into a \code{Series} (e.g. vectors).
+Map fully supports \code{browser()}.
+
+If \code{in_background = FALSE} the function can access any global variable of the
+R session. However, note that several calls to \verb{$map()} will sequentially
+share the same main R session, so the global environment might change between
+the start of the query and the moment a \code{map()} call is evaluated. Any native
+polars computations can still be executed meanwhile. If \code{in_background = TRUE},
+the map will run in one or more other R sessions and will not have access
+to global variables. Use \code{pl$set_global_rpool_cap(4)} and \code{pl$get_global_rpool_cap()}
+to see and view number of parallel R sessions.
 }
 \examples{
-pl$DataFrame(iris)$select(pl$col("Sepal.Length")$map(\(x) {
-  paste("cheese", as.character(x$to_vector()))
-}, pl$dtypes$Utf8))
+pl$DataFrame(iris)$
+  select(
+    pl$col("Sepal.Length")$map(\(x) {
+      paste("cheese", as.character(x$to_vector()))
+    }, pl$dtypes$Utf8)
+   )
 
-# R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+# R parallel process example, use Sys.sleep() to imitate some CPU expensive
+# computation.
 
 # map a,b,c,d sequentially
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
@@ -72,6 +84,5 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
     s * 2
   }, in_background = TRUE)
 )$collect() |> system.time()
-
 }
 \keyword{Expr}
