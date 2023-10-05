@@ -929,7 +929,6 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
-
 Expr_lit = function(x) {
   # use .call reduces eval from 22us to 15us, not a bottle-next anyways
   .Call(wrap__Expr__lit, x) |>
@@ -953,7 +952,6 @@ Expr_lit = function(x) {
 #'   pl$col("mpg")$suffix("_foo"),
 #'   pl$col("cyl", "drat")$suffix("_bar")
 #' )
-
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
 }
@@ -975,7 +973,6 @@ Expr_suffix = function(suffix) {
 #'   pl$col("mpg")$prefix("foo_"),
 #'   pl$col("cyl", "drat")$prefix("bar_")
 #' )
-
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)
 }
@@ -987,7 +984,6 @@ Expr_prefix = function(prefix) {
 #' @name Expr_reverse
 #' @examples
 #' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
-
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }

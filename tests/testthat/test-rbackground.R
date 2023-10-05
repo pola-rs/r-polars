@@ -22,7 +22,8 @@ test_that("Test using $map() in background", {
 
   compute = lf$select(pl$col("y")$map(\(x) x * x, in_background = FALSE))
   compute_bg = lf$select(pl$col("y")$map(\(x) {
-    Sys.sleep(2); x * x
+    Sys.sleep(2)
+    x * x
   }, in_background = TRUE))
   res_ref = compute$collect()$to_data_frame()
 

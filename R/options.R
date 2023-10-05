@@ -103,16 +103,13 @@ polars_optreq$rpool_cap = list(
 #'
 #' # reset options to their default value
 #' pl$reset_options()
-
 pl$set_options = function(
     strictly_immutable = TRUE,
     maintain_order = FALSE,
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
     no_messages = FALSE,
-    rpool_cap = NULL
-  ) {
-
+    rpool_cap = NULL) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -122,7 +119,7 @@ pl$set_options = function(
     value = get(args_modified[i])
 
     # each argument has its own input requirements
-    validation <- c()
+    validation = c()
     for (fun in seq_along(polars_optreq[[args_modified[i]]])) {
       validation[fun] = do.call(
         polars_optreq[[args_modified[i]]][[fun]],
@@ -132,7 +129,7 @@ pl$set_options = function(
     names(validation) = names(polars_optreq[[args_modified[i]]])
     if (!all(validation)) {
       failures = names(which(!validation))
-      failures= translate_failures(failures)
+      failures = translate_failures(failures)
       stop(
         paste0(
           "Incorrect input for argument `", args_modified[i], "`. Failures:\n",
@@ -222,7 +219,6 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' @examples
 #' pl$enable_string_cache(TRUE)
 #' pl$using_string_cache()
-
 pl$enable_string_cache = function(toggle) {
   enable_string_cache(toggle) |>
     unwrap("in pl$enable_string_cache()") |>
@@ -246,7 +242,6 @@ pl$enable_string_cache = function(toggle) {
 #' pl$using_string_cache()
 #' pl$enable_string_cache(FALSE)
 #' pl$using_string_cache()
-
 pl$using_string_cache = function() {
   using_string_cache()
 }
@@ -270,14 +265,8 @@ pl$using_string_cache = function() {
 #'   df2 = pl$DataFrame(tail(iris, 2))
 #' })
 #' pl$concat(list(df1, df2))
-
 pl$with_string_cache = function(expr) {
   increment_string_cache_counter(TRUE)
   on.exit(increment_string_cache_counter(FALSE))
   eval(expr, envir = parent.frame())
 }
-
-
-
-
-
