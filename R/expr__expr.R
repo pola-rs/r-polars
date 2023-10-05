@@ -900,24 +900,25 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 }
 
 
-#' polars literal
-#' @keywords Expr
+#' Return an expression representing a literal value
 #'
-#' @param x an R Scalar, or R vector/list (via Series) into Expr
-#' @rdname Expr
-#' @return Expr, literal of that value
+#' @param x An R Scalar, or R vector/list (via Series)
+#'
+#' @return Expr
+#'
 #' @aliases lit
-#' @name Expr_lit
-#' @details pl$lit(NULL) translates into a typeless polars Null
+#' @details
+#' `pl$lit(NULL)` translates into a polars `null`.
+#'
 #' @examples
-#' # scalars to literal, explit `pl$lit(42)` implicit `+ 2`
+#' # scalars to literal, explicit `pl$lit(42)` implicit `+ 2`
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' # vector to literal explicitly via Series and back again
 #' # R vector to expression and back again
 #' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
 #'
-#' # r vecot to literal and back r vector
+#' # r vector to literal and back r vector
 #' pl$lit(1:4)$to_r()
 #'
 #' # r vector to literal to dataframe
@@ -928,44 +929,61 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
+
 Expr_lit = function(x) {
-  .Call(wrap__Expr__lit, x) |> # use .call reduces eval from 22us to 15us, not a bottle-next anyways
+  # use .call reduces eval from 22us to 15us, not a bottle-next anyways
+  .Call(wrap__Expr__lit, x) |>
     unwrap("in $lit()")
 }
 
-#' polars suffix
+#' Add a suffix to a column name
 #' @keywords Expr
 #'
-#' @param suffix string suffix to be added to a name
-#' @rdname Expr
+#' @param suffix Suffix to be added to column name(s)
+#' @rdname Expr_suffix
 #' @return Expr
 #' @aliases suffix
-#' @name Expr_suffix
-#' @examples pl$col("some")$suffix("_column")
+#' @seealso
+#' [`$prefix()`][Expr_prefix] to add a prefix
+#' @examples
+#' pl$DataFrame(mtcars)$
+#'   select(
+#'     pl$col("mpg"),
+#'     pl$col("mpg")$suffix("_foo")
+#'   )
+
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
 }
-
-#' polars prefix
+#
+#' Add a prefix to a column name
 #' @keywords Expr
 #'
-#' @param prefix string suffix to be added to a name
-#' @rdname Expr
+#' @param prefix Prefix to be added to column name(s)
+#' @rdname Expr_prefix
 #' @return Expr
 #' @aliases prefix
-#' @name Expr_prefix
-#' @examples pl$col("some")$suffix("_column")
+#' @seealso
+#' [`$suffix()`][Expr_suffix] to add a suffix
+#' @examples
+#' pl$DataFrame(mtcars)$
+#'   select(
+#'     pl$col("mpg"),
+#'     pl$col("mpg")$prefix("foo_")
+#'   )
+
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)
 }
 
 #' polars reverse
 #' @keywords Expr
-#' @rdname Expr
 #' @return Expr
 #' @aliases reverse
 #' @name Expr_reverse
-#' @examples pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
+#' @examples
+#' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
+
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
