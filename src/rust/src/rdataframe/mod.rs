@@ -437,7 +437,7 @@ impl DataFrame {
         float_precision: Robj,
         null_value: Robj,
         quote_style: Robj,        
-    ) -> List {
+    ) -> RResult<()> {
 
         let null = robj_to!(Option, String, null_value).unwrap_or_default().unwrap();
         let path = robj_to!(str, path).unwrap();
@@ -457,11 +457,9 @@ impl DataFrame {
             .with_null_value(null)
             .with_quote_style(qs);
 
-        let result = r
+        r
             .finish(&mut self.0)
-            .map_err(polars_to_rpolars_err);
-
-        r_result_list(result)
+            .map_err(polars_to_rpolars_err)
     }
 }
 
