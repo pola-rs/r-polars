@@ -4,7 +4,10 @@
 \alias{pl_concat}
 \title{Concat polars objects}
 \arguments{
-\item{l}{list of DataFrame, or Series, LazyFrame or Expr}
+\item{...}{individual unpacked args or args wrappend in list(). Args should either be eager
+as DataFrame, Series and R vectors, OR lazy as LazyFrame and Expr. If first argument is lazy
+the return is LazyFrame, otherwise DataFrame. If returning a DataFrame all args must be eager,
+to avoid some implicit collect.}
 
 \item{rechunk}{perform a rechunk at last}
 
