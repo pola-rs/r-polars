@@ -1,4 +1,24 @@
 test_that("concat dataframe", {
+  # mixing lazy with first eager not allowed
+  ctx = pl$concat(pl$DataFrame(mtcars), pl$LazyFrame(mtcars), how = "vertical") |> get_err_ctx()
+  expect_true(endsWith(ctx$BadArgument, "number 2"))
+  expect_true(endsWith(ctx$PlainErrorMessage, "avoid implicit collect"))
+
+  ctx = pl$concat(pl$DataFrame(mtcars), mtcars$hp, pl$lit(mtcars$mpg), how = "horizontal") |>
+    get_err_ctx()
+  expect_true(endsWith(ctx$BadArgument, "number 3"))
+  expect_true(endsWith(ctx$PlainErrorMessage, "avoid implicit collect"))
+
+  # mixing eager with first lazy is allowd
+  df_ref = rbind(mtcars, mtcars)
+  row.names(df_ref) = 1:64
+  expect_identical(
+    pl$concat(pl$LazyFrame(mtcars), pl$DataFrame(mtcars), how = "vertical")$
+      collect()$
+      to_data_frame(),
+    df_ref
+  )
+
   # vertical dfs
   l_ver = lapply(1:3, function(i) {
     l_internal = list(
@@ -7,7 +27,6 @@ test_that("concat dataframe", {
     )
     pl$DataFrame(l_internal)
   })
-
 
   df_ver = pl$concat(l_ver, how = "vertical")
   expect_equal(

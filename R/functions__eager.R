@@ -1,6 +1,9 @@
 #' Concat polars objects
 #' @name pl_concat
-#' @param l list of DataFrame, or Series, LazyFrame or Expr
+#' @param ... individual unpacked args or args wrappend in list(). Args should either be eager
+#' as DataFrame, Series and R vectors, OR lazy as LazyFrame and Expr. If first argument is lazy
+#' the return is LazyFrame, otherwise DataFrame. If returning a DataFrame all args must be eager,
+#' to avoid some implicit collect.
 #' @param rechunk perform a rechunk at last
 #' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally
 #' @param parallel Boolean default TRUE, only used for LazyFrames
@@ -40,9 +43,8 @@
 pl$concat = function(
     ..., # list of DataFrames or Series or lazyFrames or expr
     rechunk = TRUE,
-    how = c("vertical", "horizontal", "diagonal"), # , "vertical_relaxed","diangonal_relaxed"),
+    how = c("vertical", "horizontal", "diagonal"),
     parallel = TRUE,
-    # eager = FALSE,
     to_supertypes = FALSE) {
   # unpack arg list
   l = unpack_list(..., skip_classes = "data.frame")
@@ -63,8 +65,22 @@ pl$concat = function(
   eager = !inherits(first, "LazyFrame")
   args_modified = names(as.list(sys.call()[-1L]))
 
-  # dispatch on item class and how
+  # check not using any mixing of types which could lead to implicit collect
+  if (eager) {
+    for (i in seq_along(l)) {
+      if (inherits(l[[i]], c("LazyFrame", "Expr"))) {
+        .pr$RPolarsErr$new()$
+          plain("tip: explitcit collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
+          plain("LazyFrame or Expr not allowed if first arg is a DataFrame, to avoid implicit collect")$
+          bad_robj(l[[i]])$
+          bad_arg(paste("of those to concatenate, number", i)) |>
+          Err() |>
+          unwrap("in pl$concat()")
+      }
+    }
+  }
 
+  # dispatch on item class and how
   Result_out = pcase(
     how == "vertical" && (inherits(first, "Series") || is.vector(first)),
     {
@@ -114,13 +130,16 @@ pl$concat = function(
   # convert back from lazy if eager
   and_then(Result_out, \(x) {
     pcase(
+      # run-time assertion for future changes
       inherits(x, "DataFrame") && !eager, Err_plain("internal logical error in pl$concat()"),
+
+      # must collect as in rust side only lazy concat is implemented. Eager inputs are wrapped in
+      # lazy and then collected again. This does not mean any user input is collected.
       inherits(x, "LazyFrame") && eager, Ok(x$collect()),
       or_else = Ok(x)
     )
-  }) |> unwrap(
-    "in pl$concat()"
-  )
+  }) |>
+    unwrap("in pl$concat()")
 }
 
 
