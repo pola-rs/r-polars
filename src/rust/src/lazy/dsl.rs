@@ -2320,8 +2320,8 @@ impl Expr {
         Ok(self.0.clone().cat().set_ordering(ordering).into())
     }
 
-    fn cat_get_categories(&self) -> RResult<Expr> {
-        Ok(self.0.clone().cat().get_categories().into())
+    fn cat_get_categories(&self) -> Expr {
+        self.0.clone().cat().get_categories().into()
     }
 
     // external expression function which typically starts a new expression chain

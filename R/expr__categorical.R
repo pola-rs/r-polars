@@ -39,7 +39,6 @@ ExprCat_set_ordering = function(ordering) {
 #' df$select(
 #'   pl$col("vals")$cat$get_categories()
 #' )
-
 ExprCat_get_categories = function() {
-  .pr$Expr$cat_get_categories(self) |> unwrap("in $cat$get_categories:")
+  .pr$Expr$cat_get_categories(self)
 }
