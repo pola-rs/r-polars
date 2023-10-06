@@ -12,6 +12,8 @@ use crate::rlib;
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
+use polars::prelude::{CsvWriter, QuoteStyle, SerWriter};
+
 pub use lazy::dataframe::*;
 
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -420,7 +422,61 @@ impl DataFrame {
             .map_err(polars_to_rpolars_err)
             .map(DataFrame)
     }
+
+    pub fn write_csv(
+        &mut self,
+        path: Robj,
+        has_header: Robj,
+        separator: Robj,
+        line_terminator: Robj,
+        quote: Robj,
+        batch_size: Robj,
+        datetime_format: Robj,
+        date_format: Robj,
+        time_format: Robj,
+        float_precision: Robj,
+        null_value: Robj,
+        quote_style: Robj,        
+    ) -> List {
+
+        let null = robj_to!(Option, String, null_value).unwrap_or_default().unwrap();
+        let path = robj_to!(str, path).unwrap();
+        let f = std::fs::File::create(path).unwrap();
+        let qs = parse_quote_style(quote_style);    
+
+        let mut r = CsvWriter::new(f)
+            .has_header(robj_to!(bool, has_header).unwrap())
+            .with_delimiter(robj_to!(u8, separator).unwrap())
+            .with_line_terminator(robj_to!(String, line_terminator).unwrap())
+            .with_quoting_char(robj_to!(u8, quote).unwrap())
+            .with_batch_size(robj_to!(usize, batch_size).unwrap())
+            .with_datetime_format(robj_to!(Option, String, datetime_format).unwrap())
+            .with_date_format(robj_to!(Option, String, date_format).unwrap())
+            .with_time_format(robj_to!(Option, String, time_format).unwrap())
+            .with_float_precision(robj_to!(Option, usize, float_precision).unwrap())
+            .with_null_value(null)
+            .with_quote_style(qs);
+
+        let result = r
+            .finish(&mut self.0)
+            .map_err(polars_to_rpolars_err);
+
+        r_result_list(result)
+    }
 }
+
+pub fn parse_quote_style(x: Robj) -> QuoteStyle {
+    match robj_to!(Option, String, x).unwrap_or_default().unwrap().as_str() {
+        "always" => QuoteStyle::Always,
+        "necessary" => QuoteStyle::Necessary,
+        "non_numeric" => QuoteStyle::NonNumeric,
+        // "never" was added in 0.34
+        // "never" => QuoteStyle::Never,
+        _ => panic!("polars internal error: `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+    }
+}
+
+
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported

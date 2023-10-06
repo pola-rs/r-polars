@@ -634,3 +634,9 @@ is_bool = function(x) {
 dtypes_are_struct = function(dtypes) {
   sapply(dtypes, \(dt) pl$same_outer_dt(dt, pl$Struct()))
 }
+
+# from tools::file_ext()
+file_ext <- function(x) {
+  pos <- regexpr("\\.([[:alnum:]]+)$", x)
+  ifelse(pos > -1L, substring(x, pos + 1L), "")
+}
