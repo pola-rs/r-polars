@@ -78,9 +78,9 @@ test_that("reset rpool_cap", {
 
 test_that("rpool errors", {
   rpool_cap_max = pl$options$rpool_cap_max
-  expect_error(
+  expect_message(
     pl$set_options(rpool_cap = rpool_cap_max + 1),
-    "must be smaller than the maximum capacity"
+    "above the default value"
   )
   expect_error(
     pl$set_options(rpool_cap = c(1, 2)),

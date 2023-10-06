@@ -33,10 +33,6 @@ polars_optreq$rpool_cap = list(
   # allow 2 instead of 2L, but doesn't allow 2.5
   must_be_integer = \(x) {
     all(!is.na(x) & is.numeric(x) & x == round(x))
-  },
-  must_be_smaller_than_max = \(x) {
-    max_cap = polars_optenv$rpool_cap_max
-    all(x <= max_cap)
   }
 )
 
@@ -141,6 +137,9 @@ pl$set_options = function(
     assign(args_modified[i], value, envir = polars_optenv)
 
     if (args_modified[i] == "rpool_cap") {
+      if (value > polars_optenv$rpool_cap_max) {
+        message("Setting `rpool_cap` above the default value will likely not generate major speedup.")
+      }
       set_global_rpool_cap(value) |>
         unwrap() |>
         invisible()
