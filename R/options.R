@@ -161,23 +161,20 @@ pl$reset_options = function() {
 }
 
 
-
-translate_failures = function(x) {
-  x = ifelse(
-    x == "must_be_scalar", "Input must be of length one.", x
+translate_failures = \(x) {
+  lookups = c(
+    "must_be_scalar" = "Input must be of length one.",
+    "must_be_integer" = "Input must be an integer.",
+    "must_be_smaller_than_max" = paste0(
+      "Input must be smaller than the maximum capacity. Use \n",
+      "`pl$options$rpool_cap_max` to know the maximum capacity."
+    ),
+    "must_be_bool" = "Input must be TRUE or FALSE"
   )
-  x = ifelse(
-    x == "must_be_integer", "Input must be an integer.", x
-  )
-  x = ifelse(
-    x == "must_be_smaller_than_max", "Input must be smaller than the maximum capacity. Use \n      `pl$options$rpool_cap_max` to know the maximum capacity.", x
-  )
-  x = ifelse(
-    x == "must_be_bool", "Input must be TRUE or FALSE", x
-  )
+  trans = lookups[x]
+  trans[is.na(trans)] = x[is.na(trans)]
+  unname(trans)
 }
-
-
 
 
 #' internal keeping of state at runtime
