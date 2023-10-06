@@ -444,7 +444,7 @@ impl DataFrame {
         let f = std::fs::File::create(path).unwrap();
         let qs = parse_quote_style(quote_style);    
 
-        let mut r = CsvWriter::new(f)
+        CsvWriter::new(f)
             .has_header(robj_to!(bool, has_header).unwrap())
             .with_delimiter(robj_to!(u8, separator).unwrap())
             .with_line_terminator(robj_to!(String, line_terminator).unwrap())
@@ -455,9 +455,7 @@ impl DataFrame {
             .with_time_format(robj_to!(Option, String, time_format).unwrap())
             .with_float_precision(robj_to!(Option, usize, float_precision).unwrap())
             .with_null_value(null)
-            .with_quote_style(qs);
-
-        r
+            .with_quote_style(qs)
             .finish(&mut self.0)
             .map_err(polars_to_rpolars_err)
     }
@@ -468,7 +466,7 @@ pub fn parse_quote_style(x: Robj) -> QuoteStyle {
         "always" => QuoteStyle::Always,
         "necessary" => QuoteStyle::Necessary,
         "non_numeric" => QuoteStyle::NonNumeric,
-        // "never" was added in 0.34
+        // "never" is available in rust-polars devel only for now (will be added in 0.34)
         // "never" => QuoteStyle::Never,
         _ => panic!("polars internal error: `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
     }
