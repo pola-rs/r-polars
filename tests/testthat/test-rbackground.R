@@ -61,15 +61,11 @@ test_that("Test using $map() in background", {
   expect_rpolarserr(handle$join(), "Handled")
 })
 
-test_that("rpool_cap_max always stays the same", {
-  orig = pl$options$rpool_cap_max
-  pl$set_options(rpool_cap = orig - 1)
-  expect_identical(pl$options$rpool_cap_max, orig)
-})
 
 test_that("reset rpool_cap", {
-  orig = pl$options$rpool_cap_max
-  pl$set_options(rpool_cap = orig - 1)
+  pl$reset_options()
+  orig = pl$options$rpool_cap
+  pl$set_options(rpool_cap = orig + 1)
   expect_different(pl$options$rpool_cap, orig)
   pl$reset_options()
   expect_identical(pl$options$rpool_cap, orig)
@@ -77,17 +73,15 @@ test_that("reset rpool_cap", {
 
 
 test_that("rpool errors", {
-  rpool_cap_max = pl$options$rpool_cap_max
-  expect_message(
-    pl$set_options(rpool_cap = rpool_cap_max + 1),
-    "above the default value"
-  )
-  expect_error(
-    pl$set_options(rpool_cap = c(1, 2)),
-    "must be of length one"
-  )
-  expect_error(
-    pl$set_options(rpool_cap = 2.5),
-    "must be an integer"
-  )
+
+  ctx =  pl$set_options(rpool_cap = c(1, 2)) |> get_err_ctx()
+  expect_identical(ctx$BadArgument, "rpool_cap")
+  expect_true(startsWith(ctx$TypeMismatch,"i64"))
+
+  ctx = pl$set_options(rpool_cap = -1) |> get_err_ctx()
+  expect_identical(ctx$ValueOutOfScope, "cannot be less than zero")
+
+  ctx = {polars_optenv$rpool_avail <- 0} |> get_err_ctx()
+  expect_true(endsWith(ctx$PlainErrorMessage,"rpool_avail cannot be set directly"))
+
 })

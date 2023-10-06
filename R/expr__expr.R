@@ -683,7 +683,7 @@ construct_ProtoExprArray = function(...) {
 #' This is used to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
-#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined with
 #' setting e.g. `pl$set_options(rpool_cap = 4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not

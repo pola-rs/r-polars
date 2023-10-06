@@ -22,19 +22,8 @@ polars_optreq$maintain_order = list(must_be_bool = is_bool)
 polars_optenv$debug_polars = FALSE
 polars_optreq$debug_polars = list(must_be_bool = is_bool)
 
-# rpool_avail, rpool_cap, and rpool_cap_max are updated with their real values
-# in .onLoad() because we can't run `unwrap()` while the package is loading.
-#
-# rpool_avail and rpool_cap_max are only informative, they can't be changed by
-# the user so they don't have any requirements
-
-polars_optreq$rpool_cap = list(
-  must_be_scalar = \(x) length(x) == 1,
-  # allow 2 instead of 2L, but doesn't allow 2.5
-  must_be_integer = \(x) {
-    all(!is.na(x) & is.numeric(x) & x == round(x))
-  }
-)
+#polars_optenv$rpool_cap # active binding for getting value, not for
+polars_optreq$rpool_cap = list() # rust-side options already check args
 
 
 ## END OF DEFINED OPTIONS
@@ -105,7 +94,7 @@ pl$set_options = function(
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
     no_messages = FALSE,
-    rpool_cap = NULL) {
+    rpool_cap = 4) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -126,24 +115,21 @@ pl$set_options = function(
     if (!all(validation)) {
       failures = names(which(!validation))
       failures = translate_failures(failures)
-      stop(
-        paste0(
-          "Incorrect input for argument `", args_modified[i], "`. Failures:\n",
-          paste("    *", failures, "\n", collapse = "")
-        )
-      )
+      err = .pr$RPolarsErr$new()
+      {for(fail in failures) err = err$plain(fail)}
+      err$
+        bad_robj(value)$
+        bad_arg(args_modified[i]) |>
+        Err() |>
+        unwrap("in pl$set_options")
     }
 
-    assign(args_modified[i], value, envir = polars_optenv)
+    assign(args_modified[i], value, envir = polars_optenv) |>
+    result() |>
+    map_err(\(err) err$bad_arg(args_modified[i])) |>
+    unwrap("in pl$set_options") |>
+    invisible()
 
-    if (args_modified[i] == "rpool_cap") {
-      if (value > polars_optenv$rpool_cap_max) {
-        message("Setting `rpool_cap` above the default value will likely not generate major speedup.")
-      }
-      set_global_rpool_cap(value) |>
-        unwrap() |>
-        invisible()
-    }
   }
 }
 
@@ -156,7 +142,7 @@ pl$reset_options = function() {
   assign("do_not_repeat_call", FALSE, envir = polars_optenv)
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
-  assign("rpool_cap", polars_optenv$rpool_cap_max, envir = polars_optenv)
+  assign("rpool_cap", 4, envir = polars_optenv)
 }
 
 
@@ -164,10 +150,6 @@ translate_failures = \(x) {
   lookups = c(
     "must_be_scalar" = "Input must be of length one.",
     "must_be_integer" = "Input must be an integer.",
-    "must_be_smaller_than_max" = paste0(
-      "Input must be smaller than the maximum capacity. Use \n",
-      "`pl$options$rpool_cap_max` to know the maximum capacity."
-    ),
     "must_be_bool" = "Input must be TRUE or FALSE"
   )
   trans = lookups[x]
