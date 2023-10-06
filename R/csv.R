@@ -141,7 +141,7 @@ pl$scan_csv = function(
 }
 
 #' Shortcut for pl$scan_csv()$collect()
-#' @rdname IO_scan_csv
+#' @rdname IO_read_csv
 #' @return DataFrame
 #' @name read_csv
 pl$read_csv = function(
