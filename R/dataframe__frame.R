@@ -1640,8 +1640,12 @@ DataFrame_sample = function(
 #' @return
 #' This doesn't return anything but creates a CSV file.
 #' @export
+#' @rdname IO_write_csv
 #'
 #' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+
 DataFrame_write_csv = function(
     path,
     has_header = TRUE,
@@ -1663,6 +1667,11 @@ DataFrame_write_csv = function(
 
   if (is.null(null_values)) {
     stop("Argument `null_values` cannot be NULL.")
+  }
+
+  if (length(quote_style) == 0 ||
+      !quote_style %in% c("always", "necessary", "non_numeric")) {
+    stop("Argument `quote_style` must be one of 'always', 'necessary', or 'non_numeric'.")
   }
 
   .pr$DataFrame$write_csv(
