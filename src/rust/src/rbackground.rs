@@ -396,7 +396,7 @@ impl RBackgroundPool {
                 println!("lease fail cap <0 ");
                 rerr()
                     .plain("cannot run background R process with zero capacity")
-                    .hint("try increase cap e.g. pl$set_global_rpool_cap(4)")
+                    .hint("try increase cap e.g. pl$set_options(rpool_cap = 4)")
             }
             None if pool_guard.active < pool_guard.cap => {
                 #[cfg(feature = "rpolars_debug_print")]
@@ -521,7 +521,7 @@ pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
 pub fn get_global_rpool_cap() -> RResult<List> {
     let pool_guard = RBGPOOL.0.lock()?;
     Ok(list!(
-        available = pool_guard.active,
+        active = pool_guard.active,
         capacity = pool_guard.cap
     ))
 }
