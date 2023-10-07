@@ -52,7 +52,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' @docType NULL
 #'
 #' @details
-#' `pl$options$rpool_avail` indicates the number of R sessions are already
+#' `pl$options$rpool_active` indicates the number of R sessions already
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
 #' R session specifically to run R code embedded in a query via

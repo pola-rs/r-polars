@@ -14,10 +14,10 @@ test_that("Test using $map() in background", {
   # change capacity
   pl$set_options(rpool_cap = 0)
   expect_equal(pl$options$rpool_cap, 0)
-  expect_equal(pl$options$rpool_avail, 0)
+  expect_equal(pl$options$rpool_active, 0)
   pl$set_options(rpool_cap = 1)
   expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_avail, 0)
+  expect_equal(pl$options$rpool_active, 0)
 
 
   compute = lf$select(pl$col("y")$map(\(x) x * x, in_background = FALSE))
@@ -29,12 +29,12 @@ test_that("Test using $map() in background", {
 
   # no process spawned yet
   expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_avail, 0)
+  expect_equal(pl$options$rpool_active, 0)
 
   # process was spawned
   res_fg_map_bg = compute_bg$collect()$to_data_frame()
   expect_equal(pl$options$rpool_cap, 1)
-  expect_equal(pl$options$rpool_avail, 1)
+  expect_equal(pl$options$rpool_active, 1)
 
   # same result
   expect_identical(res_ref, res_fg_map_bg)
@@ -81,7 +81,7 @@ test_that("rpool errors", {
   ctx = pl$set_options(rpool_cap = -1) |> get_err_ctx()
   expect_identical(ctx$ValueOutOfScope, "cannot be less than zero")
 
-  ctx = {polars_optenv$rpool_avail <- 0} |> get_err_ctx()
-  expect_true(endsWith(ctx$PlainErrorMessage,"rpool_avail cannot be set directly"))
+  ctx = {polars_optenv$rpool_active <- 0} |> get_err_ctx()
+  expect_true(endsWith(ctx$PlainErrorMessage,"rpool_active cannot be set directly"))
 
 })
