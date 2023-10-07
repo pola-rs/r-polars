@@ -55,7 +55,9 @@ df$n_chunks()
 # it was a regular vector.
 "+.chunked_vector" = \(x, y) structure(list(unlist(x) + unlist(y)), class = "chunked_vector")
 print.chunked_vector = \(x, ...) print(unlist(x), ...)
-c.chunked_vector = \(...) structure(do.call(c, lapply(list(...), unclass)), class = "chunked_vector")
+c.chunked_vector = \(...) {
+  structure(do.call(c, lapply(list(...), unclass)), class = "chunked_vector")
+}
 rechunk = \(x) structure(unlist(x), class = "chunked_vector")
 x = structure(list(1:4, 5L), class = "chunked_vector")
 x
