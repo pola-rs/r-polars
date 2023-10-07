@@ -248,3 +248,56 @@ pl$with_string_cache = function(expr) {
   on.exit(increment_string_cache_counter(FALSE))
   eval(expr, envir = parent.frame())
 }
+
+
+
+#' Get/set global R session pool capacity (DEPRECATED)
+#' @description Deprecated. Use pl$options to get, and pl$set_options() to set.
+#' @name global_rpool_cap
+#' @param n Integer, the capacity limit R sessions to process R code.
+#'
+#' @details
+#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
+#' serialize + shared memory buffers via the rust crate `ipc-channel`.
+#' Multi-process communication has overhead because all data must be
+#' serialized/de-serialized and sent via buffers. Using multiple R sessions
+#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
+#' polars query syntax runs in threads and have no overhead.
+#'
+#' @return
+#' `pl$get_global_rpool_cap()` returns a list with two elements `available`
+#' and `capacity`. `available` is the number of R sessions are already spawned
+#' in pool. `capacity` is the limit of new R sessions to spawn. Anytime a polars
+#' thread worker needs a background R session specifically to run R code embedded
+#' in a query via `$map(..., in_background = TRUE)` or
+#' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
+#' rpool, or spawn a new R session (process) and add it to pool if `capacity`
+#' is not already reached. If `capacity` is already reached, the thread worker
+#' will sleep until an R session is idling.
+#'
+#' @keywords options
+#' @examples
+#' default = pl$get_global_rpool_cap()
+#' print(default)
+#' pl$set_global_rpool_cap(8)
+#' pl$get_global_rpool_cap()
+#' pl$set_global_rpool_cap(default$capacity)
+pl$get_global_rpool_cap = function() {
+  warning(
+    "in pl$get_global_rpool_cap(): Deprecated. Use pl$options$rpool_cap instead.",
+    .Call = NULL
+  )
+  get_global_rpool_cap() |> unwrap()
+}
+
+#' @rdname global_rpool_cap
+#' @name set_global_rpool_cap
+pl$set_global_rpool_cap = function(n) {
+  warning(
+    "in pl$get_global_rpool_cap(): Deprecated. Use pl$set_options(rpool_cap = ?) instead.",
+    .Call = NULL
+  )
+  set_global_rpool_cap(n) |>
+    unwrap() |>
+    invisible()
+}
