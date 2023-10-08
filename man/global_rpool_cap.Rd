@@ -3,7 +3,7 @@
 \name{global_rpool_cap}
 \alias{global_rpool_cap}
 \alias{set_global_rpool_cap}
-\title{Get/set global R session pool capacity}
+\title{Get/set global R session pool capacity (DEPRECATED)}
 \arguments{
 \item{n}{Integer, the capacity limit R sessions to process R code.}
 }
@@ -19,7 +19,7 @@ is not already reached. If \code{capacity} is already reached, the thread worker
 will sleep until an R session is idling.
 }
 \description{
-Get/set global R session pool capacity
+Deprecated. Use pl$options to get, and pl$set_options() to set.
 }
 \details{
 Background R sessions communicate via polars arrow IPC (series/vectors) or R

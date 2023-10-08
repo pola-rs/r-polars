@@ -13,6 +13,7 @@ use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
 use polars_lazy::dsl::fold_exprs;
+
 use std::result::Result;
 
 #[extendr]
@@ -406,9 +407,11 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
+
     fn fold;
     fn fold2;
     fn reduce;
+
     //fn r_date_range;
     fn r_date_range_lazy;
     fn as_struct;

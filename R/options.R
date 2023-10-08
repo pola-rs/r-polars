@@ -8,22 +8,25 @@ polars_optreq = list()
 # Requirements will be used to validate inputs passed in pl$set_options()
 
 polars_optenv$strictly_immutable = TRUE
-polars_optreq$strictly_immutable = list(is_bool)
+polars_optreq$strictly_immutable = list(must_be_bool = is_bool)
 
 polars_optenv$no_messages = FALSE
-polars_optreq$no_messages = list(is_bool)
+polars_optreq$no_messages = list(must_be_bool = is_bool)
 
 polars_optenv$do_not_repeat_call = FALSE
-polars_optreq$do_not_repeat_call = list(is_bool)
+polars_optreq$do_not_repeat_call = list(must_be_bool = is_bool)
 
 polars_optenv$maintain_order = FALSE
-polars_optreq$maintain_order = list(is_bool)
+polars_optreq$maintain_order = list(must_be_bool = is_bool)
 
 polars_optenv$debug_polars = FALSE
-polars_optreq$debug_polars = list(is_bool)
+polars_optreq$debug_polars = list(must_be_bool = is_bool)
+
+#polars_optenv$rpool_cap # active binding for getting value, not for
+polars_optreq$rpool_cap = list() # rust-side options already check args
+
 
 ## END OF DEFINED OPTIONS
-
 
 
 #' Set polars options
@@ -40,16 +43,37 @@ polars_optreq$debug_polars = list(is_bool)
 #' messages. The default (`FALSE`) is to show them.
 #' @param debug_polars Print additional information to debug Polars.
 #' @param no_messages Hide messages.
+#' @param rpool_cap The maximum number of R sessions that can be used to process
+#' R code in the background. See Details.
 #'
 #' @rdname polars_options
 #' @name set_options
 #'
 #' @docType NULL
 #'
+#' @details
+#' `pl$options$rpool_active` indicates the number of R sessions already
+#' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
+#' sessions that can be spawned. Anytime a polars thread worker needs a background
+#' R session specifically to run R code embedded in a query via
+#' `$map(..., in_background = TRUE)` or `$apply(..., in_background = TRUE)`, it
+#' will obtain any R session idling in rpool, or spawn a new R session (process)
+#' and add it to the rpool if `rpool_cap` is not already reached. If `rpool_cap`
+#' is already reached, the thread worker will sleep until an R session is idling.
+#'
+#' Background R sessions communicate via polars arrow IPC (series/vectors) or R
+#' serialize + shared memory buffers via the rust crate `ipc-channel`.
+#' Multi-process communication has overhead because all data must be
+#' serialized/de-serialized and sent via buffers. Using multiple R sessions
+#' will likely only give a speed-up in a `low io - high cpu` scenario. Native
+#' polars query syntax runs in threads and have no overhead.
+#'
 #' @return
 #' `pl$options` returns a named list with the value (`TRUE` or `FALSE`) of
 #' each option.
+#'
 #' `pl$set_options()` silently modifies the options values.
+#'
 #' `pl$reset_options()` silently resets the options to their default values.
 #'
 #' @examples
@@ -64,15 +88,13 @@ polars_optreq$debug_polars = list(is_bool)
 #'
 #' # reset options to their default value
 #' pl$reset_options()
-
 pl$set_options = function(
     strictly_immutable = TRUE,
     maintain_order = FALSE,
     do_not_repeat_call = FALSE,
     debug_polars = FALSE,
-    no_messages = FALSE
-  ) {
-
+    no_messages = FALSE,
+    rpool_cap = 4) {
   # only modify arguments that were explicitly written in the function call
   # (otherwise calling set_options() twice in a row would reset the args
   # modified in the first call)
@@ -82,15 +104,32 @@ pl$set_options = function(
     value = get(args_modified[i])
 
     # each argument has its own input requirements
-    validation <- c()
+    validation = c()
     for (fun in seq_along(polars_optreq[[args_modified[i]]])) {
-      validation[fun] <- do.call(polars_optreq[[args_modified[i]]][[fun]], list(value))
+      validation[fun] = do.call(
+        polars_optreq[[args_modified[i]]][[fun]],
+        list(value)
+      )
     }
+    names(validation) = names(polars_optreq[[args_modified[i]]])
     if (!all(validation)) {
-      stop(paste0("Incorrect input for argument `", args_modified, "`.\n"))
+      failures = names(which(!validation))
+      failures = translate_failures(failures)
+      err = .pr$RPolarsErr$new()
+      {for(fail in failures) err = err$plain(fail)}
+      err$
+        bad_robj(value)$
+        bad_arg(args_modified[i]) |>
+        Err() |>
+        unwrap("in pl$set_options")
     }
 
-    assign(args_modified[i], value, envir = polars_optenv)
+    assign(args_modified[i], value, envir = polars_optenv) |>
+    result() |>
+    map_err(\(err) err$bad_arg(args_modified[i])) |>
+    unwrap("in pl$set_options") |>
+    invisible()
+
   }
 }
 
@@ -103,8 +142,20 @@ pl$reset_options = function() {
   assign("do_not_repeat_call", FALSE, envir = polars_optenv)
   assign("debug_polars", FALSE, envir = polars_optenv)
   assign("no_messages", FALSE, envir = polars_optenv)
+  assign("rpool_cap", 4, envir = polars_optenv)
 }
 
+
+translate_failures = \(x) {
+  lookups = c(
+    "must_be_scalar" = "Input must be of length one.",
+    "must_be_integer" = "Input must be an integer.",
+    "must_be_bool" = "Input must be TRUE or FALSE"
+  )
+  trans = lookups[x]
+  trans[is.na(trans)] = x[is.na(trans)]
+  unname(trans)
+}
 
 
 #' internal keeping of state at runtime
@@ -146,7 +197,6 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 #' @examples
 #' pl$enable_string_cache(TRUE)
 #' pl$using_string_cache()
-
 pl$enable_string_cache = function(toggle) {
   enable_string_cache(toggle) |>
     unwrap("in pl$enable_string_cache()") |>
@@ -170,7 +220,6 @@ pl$enable_string_cache = function(toggle) {
 #' pl$using_string_cache()
 #' pl$enable_string_cache(FALSE)
 #' pl$using_string_cache()
-
 pl$using_string_cache = function() {
   using_string_cache()
 }
@@ -194,7 +243,6 @@ pl$using_string_cache = function() {
 #'   df2 = pl$DataFrame(tail(iris, 2))
 #' })
 #' pl$concat(list(df1, df2))
-
 pl$with_string_cache = function(expr) {
   increment_string_cache_counter(TRUE)
   on.exit(increment_string_cache_counter(FALSE))
@@ -203,9 +251,8 @@ pl$with_string_cache = function(expr) {
 
 
 
-
-#' Get/set global R session pool capacity
-#'
+#' Get/set global R session pool capacity (DEPRECATED)
+#' @description Deprecated. Use pl$options to get, and pl$set_options() to set.
 #' @name global_rpool_cap
 #' @param n Integer, the capacity limit R sessions to process R code.
 #'
@@ -236,12 +283,20 @@ pl$with_string_cache = function(expr) {
 #' pl$get_global_rpool_cap()
 #' pl$set_global_rpool_cap(default$capacity)
 pl$get_global_rpool_cap = function() {
+  warning(
+    "in pl$get_global_rpool_cap(): Deprecated. Use pl$options$rpool_cap instead.",
+    .Call = NULL
+  )
   get_global_rpool_cap() |> unwrap()
 }
 
 #' @rdname global_rpool_cap
 #' @name set_global_rpool_cap
 pl$set_global_rpool_cap = function(n) {
+  warning(
+    "in pl$get_global_rpool_cap(): Deprecated. Use pl$set_options(rpool_cap = ?) instead.",
+    .Call = NULL
+  )
   set_global_rpool_cap(n) |>
     unwrap() |>
     invisible()

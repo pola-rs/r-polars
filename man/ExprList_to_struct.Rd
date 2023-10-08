@@ -11,18 +11,17 @@ function
 \item{n_field_strategy}{Strategy to determine the number of fields of the struct.
 default = 'first_non_null' else 'max_width'}
 
-\item{name_generator}{an R function that takes a scalar column number
-and outputs a string value. The default NULL is equivalent to the R function
-\verb{\\(idx) paste0("field_",idx)}}
+\item{name_generator}{an R function that takes an R scalar double and outputs
+a string value. It is a f64 because i32 might not be a big enough enumerate all.
+The default (\code{NULL}) is equivalent to the R function
+\verb{\\(idx) paste0("field_", idx)}}
 
-\item{upper_bound}{upper_bound numeric
-A polars \code{LazyFrame} needs to know the schema at all time.
-The caller therefore must provide an \code{upper_bound} of
-struct fields that will be set.
-If this is incorrectly downstream operation may fail.
-For instance an \verb{all().sum()} expression will look in
-the current schema to determine which columns to select.
-It is advised to set this value in a lazy query.}
+\item{upper_bound}{upper_bound A polars \code{LazyFrame} needs to know the schema
+at all time. The caller therefore must provide an \code{upper_bound} of struct
+fields that will be set. If set incorrectly, downstream operation may fail.
+For instance an \code{all()$sum()} expression will look in the current schema to
+determine which columns to select. It is advised to set this value in a lazy
+query.}
 }
 \value{
 Expr
