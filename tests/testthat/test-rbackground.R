@@ -85,3 +85,24 @@ test_that("rpool errors", {
   expect_true(endsWith(ctx$PlainErrorMessage,"rpool_active cannot be set directly"))
 
 })
+
+test_that("reduce cap and active while jobs in queue",{
+  pl$set_options(rpool_cap = 3)
+  l_expr = lapply(1:5,\(i) {
+    pl$lit(i)$map(\(x) {Sys.sleep(.4); -i}, in_background = TRUE)$alias(paste0("lit_",i))
+  })
+  lf = pl$LazyFrame()$select(l_expr)
+  handle = lf$collect(collect_in_background = TRUE)
+  Sys.sleep(.2)
+  pl$set_options(rpool_cap = 2)
+  Sys.sleep(.1)
+  pl$set_options(rpool_cap = 1)
+  df = handle$join()
+
+  expect_identical(
+    df$to_list(),
+    list(lit_1 = -1L, lit_2 = -2L, lit_3 = -3L, lit_4 = -4L, lit_5 = -5L)
+  )
+
+  pl$reset_options()
+} )
