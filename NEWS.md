@@ -11,6 +11,7 @@
 
 ## What's changed
 
+- `pl$concat()` now also supports `Series`, `Expr` and `LazyFrame` (#407).
 - New method `$unnest()` for `LazyFrame` (#397).
 - New method `$sample()` for `DataFrame` (#399).
 - New method `$meta$tree_format()` to display an `Expr` as a tree (#401).

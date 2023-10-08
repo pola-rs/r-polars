@@ -9,7 +9,7 @@ use crate::lazy;
 use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, RResult};
+use crate::rpolarserr::*;
 
 pub use lazy::dataframe::*;
 
@@ -77,7 +77,7 @@ impl From<pl::DataFrame> for DataFrame {
         DataFrame(item)
     }
 }
-use crate::rpolarserr::*;
+
 #[extendr]
 impl DataFrame {
     pub fn shape(&self) -> Robj {
