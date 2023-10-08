@@ -1794,7 +1794,7 @@ impl Expr {
     }
 
     pub fn is_first(&self) -> Self {
-        self.clone().0.is_first().into()
+        self.clone().0.is_first_distinct().into()
     }
 
     pub fn map_alias(&self, lambda: Robj) -> Self {
