@@ -853,11 +853,11 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn shuffle(&self, seed: Robj, fixed_seed: Robj) -> RResult<Self> {
+    pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
-            .shuffle(robj_to!(Option, u64, seed)?, robj_to!(bool, fixed_seed)?)
+            .shuffle(robj_to!(Option, u64, seed)?)
             .into())
     }
 
@@ -866,8 +866,7 @@ impl Expr {
         n: Robj,
         with_replacement: Robj,
         shuffle: Robj,
-        seed: Robj,
-        fixed_seed: Robj,
+        seed: Robj
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -877,7 +876,6 @@ impl Expr {
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
-                robj_to!(bool, fixed_seed)?,
             )
             .into())
     }
@@ -888,7 +886,6 @@ impl Expr {
         with_replacement: Robj,
         shuffle: Robj,
         seed: Robj,
-        fixed_seed: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -898,7 +895,6 @@ impl Expr {
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
-                robj_to!(bool, fixed_seed)?,
             )
             .into())
     }
