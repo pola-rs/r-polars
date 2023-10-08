@@ -2,8 +2,8 @@ use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
-
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::RFnSignature;
 use crate::CONFIG;
 
 use crate::rpolarserr::{rdbg, RResult};
@@ -12,7 +12,6 @@ use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
-use polars_lazy::dsl::fold_exprs;
 
 use std::result::Result;
 
@@ -281,118 +280,29 @@ fn polars_features() -> List {
 }
 
 #[extendr]
-fn fold2(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
-    //use crate::utils::unpack_r_eval;
-
-    let probj = ParRObj(lambda);
-
-    let f = move |a: pl::Series, b: pl::Series| -> pl::PolarsResult<Option<pl::Series>> {
+fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
-            .expect("a polars thread could not initiate ThreadCommunication to R");
-
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("getting a thread with fold2");
-
-        //wrap a(acc) and b(x) input series in a struct to match single series signature of utils::concurrent::serve_r
-        use pl::IntoSeries;
-
-        //avoid name collision with b also having ""
-        let mut a_mut = a;
-        a_mut.rename("_a");
-
-        let ca_struct = pl::DataFrame::new(vec![a_mut, b])?
-            .into_struct("struct")
-            .into_series();
-
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("fold2 sending job");
-
-        thread_com.send((probj.clone(), ca_struct));
-
-        let s = thread_com.recv();
-
-        #[cfg(feature = "rpolars_debug_print")]
-        println!("fold2: job answer recieved");
-
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
         Ok(Some(s))
     };
-    let exprs = robj_to!(Vec, PLExpr, exprs)?;
-    let acc = robj_to!(PLExpr, acc)?;
-    Ok(Expr(fold_exprs(acc, f, exprs)))
+    Ok(pl::fold_exprs(robj_to!(PLExpr, acc)?, f, robj_to!(Vec, PLExpr, exprs)?).into())
 }
 
 #[extendr]
-fn fold(acc: &Expr, lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
-    use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
-    use polars::prelude::Series;
-
-    // `fold_exprs()` takes two inputs ("acc" and "exprs"). I must run an R process that
-    // will convert the R function that is passed ("lambda") in a function that takes two
-    // Series and returns a Series.
-    // Took some code from the implementation of `map()` but here I need to pass two inputs,
-    // not only one, to thread_com.send().
-    // The "solution" I have so far is to create a new type for InitCell that accepts two
-    // Series.
-
-    //find a way not to push lambda everytime to main thread handler
-    //safety only accessed in main thread, can be temp owned by other threads
-    let probj = ParRObj(lambda);
-    type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
-    static FOO: foo = InitCell::new();
-    let f = move |a: pl::Series, b: pl::Series| {
-        //acquire channel to R via main thread handler
-        let thread_com = ThreadCom::try_from_global(&FOO)
-            .expect("polars was thread could not initiate ThreadCommunication to R");
-        //this could happen if running in background mode, but inly panic is possible here
-
-        //send request to run in R
-        thread_com.send((probj.clone(), a, b));
-        //recieve answer
-        let s = thread_com.recv();
-
-        //wrap as series
+fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
         Ok(Some(s))
     };
-
-    let exprs = exprs.to_vec("select");
-    Ok(fold_exprs(acc.clone().into(), f, exprs).into())
-}
-
-#[extendr]
-fn reduce(lambda: Robj, exprs: &ProtoExprArray) -> RResult<Expr> {
-    use crate::utils::extendr_concurrent::{InitCell, ThreadCom};
-    use polars::prelude::*;
-
-    // The code below takes one input and runs the lambda function with this input in R.
-    // I need to find a way to pass two inputs to thread_com.send()
-    // For now, when I run pl$fold() from R, I get "Error in (function (acc, x) : argument
-    //  "x" is missing, with no default", which makes sense since I only pass the first arg
-    // ("acc") in tread_com.send()
-
-    //find a way not to push lambda everytime to main thread handler
-    //safety only accessed in main thread, can be temp owned by other threads
-    let probj = ParRObj(lambda);
-    type foo = InitCell<std::sync::RwLock<Option<ThreadCom<(ParRObj, Series, Series), Series>>>>;
-    static FOO: foo = InitCell::new();
-    let f = move |a: pl::Series, b: pl::Series| {
-        //acquire channel to R via main thread handler
-        let thread_com = ThreadCom::try_from_global(&FOO)
-            .expect("polars was thread could not initiate ThreadCommunication to R");
-        //this could happen if running in background mode, but inly panic is possible here
-
-        //send request to run in R
-        thread_com.send((probj.clone(), a, b));
-        //recieve answer
-        let s = thread_com.recv();
-
-        println!("{:?}", s);
-
-        //wrap as series
-        Ok(Some(s))
-    };
-
-    let exprs = exprs.to_vec("select");
-    Ok(reduce_exprs(f, exprs).into())
+    Ok(pl::reduce_exprs(f, robj_to!(Vec, PLExpr, exprs)?).into())
 }
 
 extendr_module! {
@@ -409,7 +319,6 @@ extendr_module! {
     fn concat_str;
 
     fn fold;
-    fn fold2;
     fn reduce;
 
     //fn r_date_range;

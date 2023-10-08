@@ -900,64 +900,43 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 }
 
 
-# #' #Accumulate over multiple columns horizontally / rowwise with a left fold
-# #'
-# #' @description
-# #' `pl$fold()` and `pl$reduce()` allows one to do rowwise operations. The only
-# #' difference between them is that `pl$fold()` has an additional argument (`acc`)
-# #' that contains the value that will be initialized when the fold starts.
-# #'
-# #' @name pl_reduce
-# #'
-# #' @param lambda Function to apply over the accumulator and the value.
-# #' @param exprs Expressions to aggregate over. May also be a wildcard expression.
-# #'
-# #' @return An expression that will be applied rowwise
-# #'
-# #' #' @examples
-# #' # df = pl$DataFrame(mtcars)
-# #' #
-# #' # # Make the rowwise sum of all columns and add 1 to it
-# #' # df$with_columns(
-# #' #   pl$reduce(
-# #' #      lambda = \(acc, x) acc + x, exprs = pl$col("mpg", "drat")
-# #' #   )
-# #' # )
-
-
-pl$fold = function(acc, lambda, exprs) {
-  l_expr = lapply(as.list(exprs), wrap_e)
-  pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(fold(acc, lambda, pra))
-}
-
-
-## Support function to unpack struct of two Series
-## useful to allow double Series input signatures, see pl$fold2
-# using naked .Calls to make as light weight as possible
-# probably .pr$DataFrame$new_with_capcaity with be fine also if length of exprs
-# is less than some few thousands
-wrap_double_series_input = function(lambda) function(s) {
-  df = .Call(wrap__DataFrame__new_with_capacity, 1L)
-  # TODO minor internal bug, name "" not used if already Series
-  .Call(wrap__DataFrame__set_column_from_robj, df, s, "")
-  df = .Call(wrap__DataFrame__unnest, df, "struct")$ok
-  lambda(df$to_series(0L),df$to_series(1L))
-}
-
-#' fold2
-#' @name pl_fold2
+#' Accumulate over multiple columns horizontally with an R function
+#'
+#' @description `pl$fold()` and `pl$reduce()` allows one to do rowwise operations. The only
+#' difference between them is that `pl$fold()` has an additional argument (`acc`)
+#' that contains the value that will be initialized when the fold starts.
+#'
+#' @name pl_fold_reduce
+#'
+#' @param acc an Expr or Into<Expr> of the initial accumulator.
+#' @param lambda R Function which takes two polars Series as input and return one.
+#' @param exprs Expressions to aggregate over. May also be a wildcard expression.
+#'
+#' @return An expression that will be applied rowwise
+#'
 #' @examples
-#' folded_expr = pl$fold2(pl$lit(1:5),\(acc,x) acc + 2L*x, list(pl$lit(5:1), pl$lit(11:15)))
-#' pl$select(folded_expr)
-pl$fold2 = function(acc, lambda, exprs) {
-  fold2(acc, wrap_double_series_input(lambda), exprs) |>
-    unwrap("in pl$fold2():")
+#' df = pl$DataFrame(mtcars)
+#'
+#' # Make the row-wise sum of all columns with fold, reduce and vectorized "+"
+#' df$with_columns(
+#'   pl$reduce(
+#'     lambda = \(acc, x) acc + x,
+#'     exprs = pl$col("mpg", "drat")
+#'   )$alias("mpg_drat_sum_reduced"),
+#'   pl$fold(
+#'     acc = pl$lit(0),
+#'     lambda = \(acc, x) acc + x,
+#'     exprs = pl$col("mpg", "drat")
+#'   )$alias("mpg_drat_sum_folded"),
+#'   pl$col("mpg")$alias("mpg_drat_vector_sum") + pl$col("drat")
+#' )
+pl$fold = function(acc, lambda, exprs) {
+  fold(acc, lambda, exprs) |>
+    unwrap("in pl$fold():")
 }
-
-
+#' @rdname pl_fold_reduce
+#' @name pl_fold_reduce_part2
 pl$reduce = function(lambda, exprs) {
-  l_expr = lapply(as.list(exprs), wrap_e)
-  pra = do.call(construct_ProtoExprArray, l_expr)
-  unwrap(reduce(lambda, pra))
+  reduce(lambda, exprs) |>
+    unwrap("in pl$reduce():")
 }
