@@ -267,9 +267,9 @@ impl LazyFrame {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
-            Ok(LazyGroupBy(self.0.clone().groupby_stable(expr_vec)))
+            Ok(LazyGroupBy(self.0.clone().group_by_stable(expr_vec)))
         } else {
-            Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
+            Ok(LazyGroupBy(self.0.clone().group_by(expr_vec)))
         }
     }
 

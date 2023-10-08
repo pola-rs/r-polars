@@ -681,7 +681,7 @@ impl Expr {
         use pl::*;
         let expr =
             try_f64_into_usize(window_size_f).map(|ws| {
-                Expr(self.0.clone().rolling_apply_float(ws, move |ca| {
+                Expr(self.0.clone().rolling_map_float(ws, move |ca| {
                     ca.clone().into_series().skew(bias).unwrap()
                 }))
             });
