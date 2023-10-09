@@ -679,12 +679,13 @@ impl Expr {
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
         use pl::*;
-        let expr =
-            try_f64_into_usize(window_size_f).map(|ws| {
-                Expr(self.0.clone().rolling_map_float(ws, move |ca| {
-                    ca.clone().into_series().skew(bias).unwrap()
-                }))
-            });
+        let expr = try_f64_into_usize(window_size_f).map(|ws| {
+            Expr(
+                self.0
+                    .clone()
+                    .rolling_map_float(ws, move |ca| ca.clone().into_series().skew(bias).unwrap()),
+            )
+        });
         r_result_list(expr)
     }
 
@@ -854,11 +855,7 @@ impl Expr {
     }
 
     pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .shuffle(robj_to!(Option, u64, seed)?)
-            .into())
+        Ok(self.0.clone().shuffle(robj_to!(Option, u64, seed)?).into())
     }
 
     pub fn sample_n(
@@ -866,7 +863,7 @@ impl Expr {
         n: Robj,
         with_replacement: Robj,
         shuffle: Robj,
-        seed: Robj
+        seed: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1200,7 +1197,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguouse: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1213,8 +1210,8 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguouse)?,
             )
             .into())
     }
@@ -1240,7 +1237,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguouse: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1254,8 +1251,8 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguouse)?,
             )
             .into())
     }
@@ -1266,7 +1263,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguouse: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1279,25 +1276,27 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguouse)?,
             )
             .into())
     }
 
     //end list/arr methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: Robj, use_earliest: Robj) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj, offset: Robj, ambiguouse: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .dt()
-            .truncate(pl::TruncateOptions {
-                every: robj_to!(pl_duration_string, every)?,
-                offset: robj_to!(Option, pl_duration_string, offset)?
-                    .unwrap_or_else(|| "0ns".into()),
-                use_earliest: robj_to!(Option, bool, use_earliest)?,
-            })
+            .truncate(
+                pl::TruncateOptions {
+                    every: robj_to!(pl_duration_string, every)?,
+                    offset: robj_to!(Option, pl_duration_string, offset)?
+                        .unwrap_or_else(|| "0ns".into()),
+                },
+                robj_to!(PLExpr, ambiguouse)?,
+            )
             .into())
     }
 
@@ -1408,11 +1407,11 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Nullable<bool>) -> Self {
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguouse: Robj) -> Self {
         self.0
             .clone()
             .dt()
-            .replace_time_zone(tz.into_option(), use_earliest.into_option())
+            .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguouse))
             .into()
     }
 
