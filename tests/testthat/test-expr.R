@@ -965,14 +965,13 @@ test_that("arg_min arg_max arg_sort", {
     )$select(pl$all()$cast(pl$Float64))$to_list()
   }
 
-  # it seems Null/NA is smallest value (arg_min)
   # it seems Inf is largest value to (arg_max)
   # however it seems NaN (arg_sort().tail(1))
   lapply(get_arg_min_max(l), function(idx) l$a[idx + 1])
 
   expect_identical(
     get_arg_min_max(l),
-    list(arg_min = 6, arg_max = 3, arg_sort_head_1 = 6, argsort_head_1 = 6, arg_sort_tail_1 = 5)
+    list(arg_min = 4, arg_max = 3, arg_sort_head_1 = 6, argsort_head_1 = 6, arg_sort_tail_1 = 5)
   )
 
   l_actual = pl$DataFrame(l)$select(
@@ -1323,7 +1322,7 @@ test_that("product", {
     )$to_list(),
     list(
       a = prod(l$a),
-      b = prod(l$b, na_rm = TRUE),
+      b = prod(l$b, na.rm = TRUE),
       c = prod(l$c)
     )
   )

@@ -3780,8 +3780,8 @@ Expr_reshape = function(dims) {
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
-  .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
+Expr_shuffle = function(seed = NULL) {
+  .pr$Expr$shuffle(self, seed) |> unwrap("in $shuffle()")
 }
 
 
@@ -3814,14 +3814,14 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
     frac = NULL, with_replacement = TRUE, shuffle = FALSE,
-    seed = NULL, fixed_seed = FALSE, n = NULL) {
+    seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
       Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
     },
-    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
-      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed)
     }
   ) |>
     unwrap("in $sample()")
