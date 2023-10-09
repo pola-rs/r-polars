@@ -1407,12 +1407,14 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> Self {
-        self.0
-            .clone()
-            .dt()
-            .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous))
-            .into()
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> RResult<Self> {
+        Ok(Expr(
+            self.0
+                .clone()
+                .dt()
+                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?)
+                .into(),
+        ))
     }
 
     pub fn duration_days(&self) -> Self {
@@ -1479,8 +1481,8 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_offset_by(&self, by: Robj) -> Self {
-        self.clone().0.dt().offset_by(robj_to!(PLExpr, by)).into()
+    pub fn dt_offset_by(&self, by: Robj) -> RResult<Self> {
+        Ok(self.clone().0.dt().offset_by(robj_to!(PLExpr, by)?).into())
     }
 
     pub fn pow(&self, exponent: Robj) -> RResult<Self> {
@@ -1896,15 +1898,27 @@ impl Expr {
     }
 
     pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip_chars(null_to_opt(matches)).into()
+        self.0
+            .clone()
+            .str()
+            .strip_chars(null_to_opt(matches))
+            .into()
     }
 
     pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip_chars_end(null_to_opt(matches)).into()
+        self.0
+            .clone()
+            .str()
+            .strip_chars_end(null_to_opt(matches))
+            .into()
     }
 
     pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip_chars_start(null_to_opt(matches)).into()
+        self.0
+            .clone()
+            .str()
+            .strip_chars_start(null_to_opt(matches))
+            .into()
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
@@ -2055,12 +2069,7 @@ impl Expr {
         let res = || -> Result<Expr, String> {
             let pat = robj_to!(PLExpr, pattern)?;
             let lit = robj_to!(bool, literal)?;
-            Ok(self
-                .0
-                .clone()
-                .str()
-                .count_matches(pat, lit)
-                .into())
+            Ok(self.0.clone().str().count_matches(pat, lit).into())
         }()
         .map_err(|err| format!("in str$count_match: {}", err));
         r_result_list(res)
