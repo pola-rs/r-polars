@@ -24,7 +24,7 @@ if FALSE will convert to a Polars Null and carry on.}
 but convert result to a polars Null and carry on.}
 
 \item{in_background}{Boolean. Whether to execute the map in a background R process. Combined wit
-setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed up some slow R functions as they can run
+setting e.g. \code{pl$set_options(rpool_cap = 4)} it can speed up some slow R functions as they can run
 in parallel R sessions. The communication speed between processes is quite slower than between
 threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
 be paralleled, only in case of multiple \verb{$map}(s) in the query these can be run in parallel.}
@@ -134,9 +134,9 @@ pl$LazyFrame(iris)$groupby("Species")$agg(
 )$collect() |> system.time()
 
 # map in parallel 1: Overhead to start up extra R processes / sessions
-pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
-pl$set_global_rpool_cap(4) # set back to 4, the default
-pl$get_global_rpool_cap()
+pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
+pl$set_options(rpool_cap = 4) # set back to 4, the default
+pl$options$rpool_cap
 pl$LazyFrame(iris)$groupby("Species")$agg(
   pl$all()$apply(\(s) {
     Sys.sleep(.1)
@@ -145,7 +145,7 @@ pl$LazyFrame(iris)$groupby("Species")$agg(
 )$collect() |> system.time()
 
 # map in parallel 2: Reuse R processes in "polars global_rpool".
-pl$get_global_rpool_cap()
+pl$options$rpool_cap
 pl$LazyFrame(iris)$groupby("Species")$agg(
   pl$all()$apply(\(s) {
     Sys.sleep(.1)

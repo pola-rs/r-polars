@@ -11,18 +11,6 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
-
-import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
-
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
-
-concat_df <- function(vdf) .Call(wrap__concat_df, vdf)
-
-hor_concat_df <- function(dfs) .Call(wrap__hor_concat_df, dfs)
-
-diag_concat_df <- function(dfs) .Call(wrap__diag_concat_df, dfs)
-
 min_exprs <- function(exprs) .Call(wrap__min_exprs, exprs)
 
 max_exprs <- function(exprs) .Call(wrap__max_exprs, exprs)
@@ -75,6 +63,20 @@ test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, rob
 
 polars_features <- function() .Call(wrap__polars_features)
 
+concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
+
+diag_concat_lf <- function(l, rechunk, parallel) .Call(wrap__diag_concat_lf, l, rechunk, parallel)
+
+hor_concat_df <- function(l) .Call(wrap__hor_concat_df, l)
+
+concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
+
+rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
+
+import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
+
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
+
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
 setup_renv <- function() .Call(wrap__setup_renv)
@@ -110,6 +112,10 @@ reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
 DataFrame <- new.env(parent = emptyenv())
 
 DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
+
+DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, strategy)
+
+DataFrame$rechunk <- function() .Call(wrap__DataFrame__rechunk, self)
 
 DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
 
@@ -922,6 +928,8 @@ Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_proj
 Expr$meta_tree_format <- function() .Call(wrap__Expr__meta_tree_format, self)
 
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
+
+Expr$cat_get_categories <- function() .Call(wrap__Expr__cat_get_categories, self)
 
 Expr$new_count <- function() .Call(wrap__Expr__new_count)
 

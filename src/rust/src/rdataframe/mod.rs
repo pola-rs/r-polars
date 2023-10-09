@@ -8,9 +8,8 @@ use crate::conversion_r_to_s::robjname2series;
 use crate::lazy;
 use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
-use crate::rlib;
 use crate::robj_to;
-use crate::rpolarserr::{polars_to_rpolars_err, RResult};
+use crate::rpolarserr::*;
 
 use polars::prelude::{CsvWriter, QuoteStyle, SerWriter};
 
@@ -86,6 +85,29 @@ impl DataFrame {
     pub fn shape(&self) -> Robj {
         let shp = self.0.shape();
         r!([shp.0, shp.1])
+    }
+
+    pub fn n_chunks(&self, strategy: Robj) -> RResult<Vec<f64>> {
+        let nchks: Vec<_> = self.0.iter().map(|s| s.n_chunks() as f64).collect();
+
+        match robj_to!(str, strategy)? {
+            "all" => Ok(nchks),
+            "first" => {
+                if nchks.is_empty() {
+                    Ok(vec![])
+                } else {
+                    Ok(vec![nchks.into_iter().next().expect("has atleast len 1")])
+                }
+            }
+            _ => {
+                Err(RPolarsErr::new()
+                    .plain("strategy not recognized, neither 'all' or 'first'".into()))
+            }
+        }
+    }
+
+    pub fn rechunk(&self) -> Self {
+        self.0.agg_chunks().into()
     }
 
     //renamed back to clone
@@ -515,7 +537,7 @@ extendr_module! {
     use read_ipc;
     use read_parquet;
     use rdatatype;
-    use rlib;
+
     impl DataFrame;
     impl VecDataFrame;
 }

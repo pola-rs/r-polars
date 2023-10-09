@@ -24,15 +24,13 @@ test_that("pl$options$ read-write", {
   expect_true(pl$options$maintain_order)
 
   # set_options() only accepts booleans
-  expect_error(
-    pl$set_options(maintain_order = 42),
-    "Incorrect input"
-  )
+  ctx = pl$set_options(maintain_order = 42) |> get_err_ctx()
+  expect_identical(ctx$BadArgument, "maintain_order")
+  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE")
 
-  expect_error(
-    pl$set_options(strictly_immutable = c(TRUE, TRUE)),
-    "Incorrect input"
-  )
+  ctx = pl$set_options(strictly_immutable = c(TRUE, TRUE)) |> get_err_ctx()
+  expect_identical(ctx$BadArgument, "strictly_immutable")
+  expect_identical(ctx$PlainErrorMessage, "Input must be TRUE or FALSE")
 
   # reset_options() works
   pl$reset_options()
