@@ -1479,9 +1479,8 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_offset_by(&self, by: &str) -> Self {
-        let by = pl::Duration::parse(by);
-        self.clone().0.dt().offset_by(by).into()
+    pub fn dt_offset_by(&self, by: Robj) -> Self {
+        self.clone().0.dt().offset_by(robj_to!(PLExpr, by)).into()
     }
 
     pub fn pow(&self, exponent: Robj) -> RResult<Self> {
@@ -2061,7 +2060,7 @@ impl Expr {
 
     //NOTE SHOW CASE all R side argument handling
     pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<Expr, String> {
-        let by = robj_to!(str, by)?;
+        let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
         if inclusive {
             Ok(self.0.clone().str().split_inclusive(by).into())
