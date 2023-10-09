@@ -384,7 +384,7 @@ LazyFrame_collect = function(
 #' # Some expression which does contain a map
 #' expr = pl$col("mpg")$map(
 #'   \(x) {
-#'     Sys.sleep(.5)
+#'     Sys.sleep(.1)
 #'     x * 0.43
 #'   },
 #'   in_background = TRUE # set TRUE if collecting in background queries with $map or $apply

@@ -701,7 +701,7 @@ construct_ProtoExprArray = function(...) {
 #' # map a,b,c,d sequentially
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
-#'     Sys.sleep(.5)
+#'     Sys.sleep(.1)
 #'     s * 2
 #'   })
 #' )$collect() |> system.time()
@@ -712,7 +712,7 @@ construct_ProtoExprArray = function(...) {
 #' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
-#'     Sys.sleep(.5)
+#'     Sys.sleep(.1)
 #'     s * 2
 #'   }, in_background = TRUE)
 #' )$collect() |> system.time()
@@ -721,7 +721,7 @@ construct_ProtoExprArray = function(...) {
 #' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
-#'     Sys.sleep(.5)
+#'     Sys.sleep(.1)
 #'     s * 2
 #'   }, in_background = TRUE)
 #' )$collect() |> system.time()

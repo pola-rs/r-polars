@@ -49,10 +49,10 @@ to see and view number of parallel R sessions.
 \examples{
 pl$DataFrame(iris)$
   select(
-    pl$col("Sepal.Length")$map(\(x) {
-      paste("cheese", as.character(x$to_vector()))
-    }, pl$dtypes$Utf8)
-   )
+  pl$col("Sepal.Length")$map(\(x) {
+    paste("cheese", as.character(x$to_vector()))
+  }, pl$dtypes$Utf8)
+)
 
 # R parallel process example, use Sys.sleep() to imitate some CPU expensive
 # computation.
@@ -60,7 +60,7 @@ pl$DataFrame(iris)$
 # map a,b,c,d sequentially
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map(\(s) {
-    Sys.sleep(.5)
+    Sys.sleep(.1)
     s * 2
   })
 )$collect() |> system.time()
@@ -71,7 +71,7 @@ pl$set_options(rpool_cap = 4) # set back to 4, the default
 pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map(\(s) {
-    Sys.sleep(.5)
+    Sys.sleep(.1)
     s * 2
   }, in_background = TRUE)
 )$collect() |> system.time()
@@ -80,7 +80,7 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map(\(s) {
-    Sys.sleep(.5)
+    Sys.sleep(.1)
     s * 2
   }, in_background = TRUE)
 )$collect() |> system.time()
