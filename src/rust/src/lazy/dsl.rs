@@ -2168,7 +2168,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .contains_literal(robj_to!(Raw, lit)?)
+            .contains_literal(robj_to!(PlExpr, lit)?)
             .into())
     }
 
@@ -2177,7 +2177,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .starts_with(robj_to!(Raw, sub)?)
+            .starts_with(robj_to!(PlExpr, sub)?)
             .into())
     }
 
@@ -2186,7 +2186,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .ends_with(robj_to!(Raw, sub)?)
+            .ends_with(robj_to!(PlExpr, sub)?)
             .into())
     }
 
