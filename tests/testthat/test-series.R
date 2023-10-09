@@ -327,8 +327,8 @@ test_that("set_sorted", {
 
 test_that("value counts", {
   s = pl$Series(c(1, 4, 4, 4, 4, 3, 3, 3, 2, 2, NA))
-  s_st = s$value_counts(sorted = TRUE, multithreaded = FALSE)
-  s_mt = s$value_counts(sorted = TRUE, multithreaded = FALSE)
+  s_st = s$value_counts(sort = TRUE, parallel = FALSE)
+  s_mt = s$value_counts(sort = TRUE, parallel = FALSE)
   df_st = s_st$to_data_frame()
   df_mt = s_st$to_data_frame()
 

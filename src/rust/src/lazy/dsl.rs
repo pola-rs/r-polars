@@ -1004,8 +1004,8 @@ impl Expr {
         }
     }
 
-    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> Self {
-        self.0.clone().value_counts(multithreaded, sorted).into()
+    pub fn value_counts(&self, sort: bool, parallel: bool) -> Self {
+        self.0.clone().value_counts(sort, parallel).into()
     }
 
     pub fn unique_counts(&self) -> Self {

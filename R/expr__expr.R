@@ -4089,18 +4089,17 @@ pl$expr_to_r = function(expr, df = NULL, i = 0) {
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
-#' @param multithreaded
-#' Better to turn this off in the aggregation context, as it can lead to contention.
-#' @param sort
-#' Ensure the output is sorted from most values to least.
+#' @param sort Ensure the output is sorted from most values to least.
+#' @param parallel Better to turn this off in the aggregation context, as it can
+#' lead to contention.
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
 #' df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
-Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
-  .pr$Expr$value_counts(self, multithreaded, sort)
+Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
+  .pr$Expr$value_counts(self, sort, parallel)
 }
 
 #' Value counts

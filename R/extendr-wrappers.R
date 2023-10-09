@@ -589,7 +589,7 @@ Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, se
 
 Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
-Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)
+Expr$value_counts <- function(sort, parallel) .Call(wrap__Expr__value_counts, self, sort, parallel)
 
 Expr$unique_counts <- function() .Call(wrap__Expr__unique_counts, self)
 
@@ -1101,7 +1101,7 @@ Series$name <- function() .Call(wrap__Series__name, self)
 
 Series$sort_mut <- function(descending) .Call(wrap__Series__sort_mut, self, descending)
 
-Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
+Series$value_counts <- function(sort, parallel) .Call(wrap__Series__value_counts, self, sort, parallel)
 
 Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
 
