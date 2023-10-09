@@ -1896,15 +1896,15 @@ impl Expr {
     }
 
     pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip(null_to_opt(matches)).into()
+        self.0.clone().str().strip_chars(null_to_opt(matches)).into()
     }
 
     pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+        self.0.clone().str().strip_chars_end(null_to_opt(matches)).into()
     }
 
     pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+        self.0.clone().str().strip_chars_start(null_to_opt(matches)).into()
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
@@ -2054,7 +2054,7 @@ impl Expr {
     pub fn str_count_match(&self, pattern: Robj) -> List {
         r_result_list(
             robj_to!(String, pattern, "in str$count_match:")
-                .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
+                .map(|s| Expr(self.0.clone().str().count_matches(s.as_str()))),
         )
     }
 
