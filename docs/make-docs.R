@@ -141,7 +141,7 @@ make_doc_hierarchy = function() {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
     cl_label = ifelse(cl == "pl", "Polars", cl)
-    cl_label = ifelse(cl == "IO", "Input/Output", cl)
+    cl_label = ifelse(cl == "IO", "Input/Output", cl_label)
     out = append(out, setNames(list(tmp), cl_label))
     other = setdiff(other, files)
   }
