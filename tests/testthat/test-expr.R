@@ -435,7 +435,7 @@ test_that("and or is_in xor", {
     pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_integer_))
     )$to_data_frame()[[1L]],
-    c(1:4, NA_integer_) %in% NA_real_
+    c(rep(FALSE, 4), NA)
   )
 
   # both R and polars aliases NA_int_ with NA_real_ in comparisons
@@ -443,7 +443,7 @@ test_that("and or is_in xor", {
     pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
       pl$col("a")$is_in(pl$lit(NA_real_))
     )$to_data_frame()[[1L]],
-    c(1:4, NA_integer_) %in% NA_real_
+    c(rep(FALSE, 4), NA)
   )
 
 
