@@ -563,11 +563,11 @@ Expr$arctanh <- function() .Call(wrap__Expr__arctanh, self)
 
 Expr$reshape <- function(dims) .Call(wrap__Expr__reshape, self, dims)
 
-Expr$shuffle <- function(seed, fixed_seed) .Call(wrap__Expr__shuffle, self, seed, fixed_seed)
+Expr$shuffle <- function(seed) .Call(wrap__Expr__shuffle, self, seed)
 
-Expr$sample_n <- function(n, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed, fixed_seed)
+Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed)
 
-Expr$sample_frac <- function(frac, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed, fixed_seed)
+Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
 
 Expr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
 
@@ -629,13 +629,13 @@ Expr$list_eval <- function(expr, parallel) .Call(wrap__Expr__list_eval, self, ex
 
 Expr$list_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, width_strat, name_gen, upper_bound)
 
-Expr$str_to_date <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, use_earliest)
+Expr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, ambiguous)
 
-Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, use_earliest)
+Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
 
-Expr$str_to_time <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, use_earliest)
+Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, ambiguous)
 
-Expr$dt_truncate <- function(every, offset, use_earliest) .Call(wrap__Expr__dt_truncate, self, every, offset, use_earliest)
+Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
@@ -681,7 +681,7 @@ Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self
 
 Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
-Expr$dt_replace_time_zone <- function(tz, use_earliest) .Call(wrap__Expr__dt_replace_time_zone, self, tz, use_earliest)
+Expr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__Expr__dt_replace_time_zone, self, tz, ambiguous)
 
 Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
 
@@ -859,7 +859,7 @@ Expr$str_extract <- function(pattern, group_index) .Call(wrap__Expr__str_extract
 
 Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, self, pattern)
 
-Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
+Expr$str_count_match <- function(pattern, literal) .Call(wrap__Expr__str_count_match, self, pattern, literal)
 
 Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
 
