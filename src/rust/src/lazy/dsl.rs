@@ -2051,11 +2051,19 @@ impl Expr {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
-    pub fn str_count_match(&self, pattern: Robj) -> List {
-        r_result_list(
-            robj_to!(String, pattern, "in str$count_match:")
-                .map(|s| Expr(self.0.clone().str().count_matches(s.as_str()))),
-        )
+    pub fn str_count_match(&self, pattern: Robj, literal: Robj) -> List {
+        let res = || -> Result<Expr, String> {
+            let pat = robj_to!(PlExpr, pattern)?;
+            let lit = robj_to!(bool, literal)?;
+            Ok(self
+                .0
+                .clone()
+                .str()
+                .count_matches(pat, lit)
+                .into())
+        }()
+        .map_err(|err| format!("in str$count_match: {}", err));
+        r_result_list(res)
     }
 
     //NOTE SHOW CASE all R side argument handling
