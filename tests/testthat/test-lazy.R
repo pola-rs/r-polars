@@ -807,5 +807,12 @@ test_that("opt_toggles", {
     comm_subexpr_elim = FALSE,
     streaming = TRUE
   )
-  expect_identical(do.call(lf$set_optimization_toggle, opt_settings)$get_optimization_toggle(), opt_settings)
+
+  updated_lf = do.call(lf$set_optimization_toggle, opt_settings)
+  
+  expect_identical(updated_lf$get_optimization_toggle(), opt_settings)
+
+  expected_result = lf$collect()$to_data_frame()
+
+  expect_identical(updated_lf$collect()$to_data_frame(), expected_result)
 })
