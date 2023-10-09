@@ -7,7 +7,7 @@
 ## TODO revisit array, list terminology and pick one way, e.g list of sublists or list of elements
 
 #' Lengths arrays in list
-#' @rdname list_lengths
+#' @rdname ExprList_lengths
 #' @name ExprList_lengths
 #' @description
 #' Get the length of the arrays as UInt32
@@ -149,7 +149,7 @@ ExprList_concat = function(other) {
 ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit = FALSE))
 
 #' Get list
-#' @rdname list_get
+#' @rdname ExprList_get
 #' @export
 #' @param x ExprListNameSpace
 #' @param index value to get

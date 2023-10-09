@@ -21,6 +21,7 @@
   complete in one edge case (#409).
 - New method `$cat$get_categories()` to list unique values of categorical 
   variables (#412).
+- New methods `$fold()` and `$reduce()` to apply an R function rowwise (#403).
 
 # polars 0.8.1
 

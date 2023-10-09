@@ -2,6 +2,7 @@
 #' @description will scan the csv when collect(), not now.
 #' read_csv is a shortcut for scan_csv$collect().
 #' @name scan_csv
+#' @rdname IO_scan_csv
 #' @details  Read a file from path into a polars lazy frame. Not yet supporting eol_char and with_column_names
 #' @keywords LazyFrame_new
 #'
@@ -140,7 +141,7 @@ pl$scan_csv = function(
 }
 
 #' Shortcut for pl$scan_csv()$collect()
-#' @rdname scan_csv
+#' @rdname IO_read_csv
 #' @return DataFrame
 #' @name read_csv
 pl$read_csv = function(
