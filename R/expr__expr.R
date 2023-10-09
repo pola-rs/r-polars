@@ -690,10 +690,10 @@ construct_ProtoExprArray = function(...) {
 #' @examples
 #' pl$DataFrame(iris)$
 #'   select(
-#'     pl$col("Sepal.Length")$map(\(x) {
-#'       paste("cheese", as.character(x$to_vector()))
-#'     }, pl$dtypes$Utf8)
-#'    )
+#'   pl$col("Sepal.Length")$map(\(x) {
+#'     paste("cheese", as.character(x$to_vector()))
+#'   }, pl$dtypes$Utf8)
+#' )
 #'
 #' # R parallel process example, use Sys.sleep() to imitate some CPU expensive
 #' # computation.
@@ -725,7 +725,6 @@ construct_ProtoExprArray = function(...) {
 #'     s * 2
 #'   }, in_background = TRUE)
 #' )$collect() |> system.time()
-
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
   (if (isTRUE(in_background)) {
     .pr$Expr$map_in_background(self, f, output_type, agg_list)

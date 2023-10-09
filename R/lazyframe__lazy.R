@@ -1170,7 +1170,6 @@ LazyFrame_dtypes = method_as_property(function() {
 #' pl$LazyFrame(iris)$
 #'   select(pl$col("Species")$append("flora gigantica, alien"))$
 #'   fetch(3)
-
 LazyFrame_fetch = function(
     n_rows = 500,
     type_coercion = TRUE,
