@@ -693,7 +693,7 @@ Series_dtype = method_as_property(function() {
 #' @keywords Series
 #' @return DataType
 #' @aliases Series_flags
-#' @name Series_dtype
+#' @name Series_flags
 #' @details property sorted flags are not settable, use set_sorted
 #' @examples
 #' pl$Series(1:4)$sort()$flags

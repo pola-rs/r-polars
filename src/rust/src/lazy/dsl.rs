@@ -2313,12 +2313,15 @@ impl Expr {
         Ok(format!("{e}"))
     }
 
-    //the only cat ns function from dsl.rs
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
+    }
+
+    fn cat_get_categories(&self) -> Expr {
+        self.0.clone().cat().get_categories().into()
     }
 
     // external expression function which typically starts a new expression chain

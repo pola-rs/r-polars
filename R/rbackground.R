@@ -49,7 +49,7 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
 #' to process R code embedded in polars query via `$map(...,background = TRUE)` or
-#' `$apply(background=TRUE)`. Use [`pl$set_global_rpool_cap()`][global_rpool_cap] to limit number of
+#' `$apply(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
 #'  parallel R sessions.
 #' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
 #' e.g. some `$map(...,background = FALSE)` will raise an Error as the main R session is not

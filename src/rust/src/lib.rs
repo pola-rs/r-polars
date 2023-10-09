@@ -13,6 +13,7 @@ pub mod concurrent;
 pub mod lazy;
 
 pub mod arrow_interop;
+pub mod concat;
 pub mod conversion;
 pub mod conversion_r_to_s;
 pub mod conversion_s_to_r;
@@ -40,6 +41,8 @@ pub use crate::rbackground::RBGPOOL;
 // Macro to generate exports
 extendr_module! {
     mod polars;
+    use rlib;
+    use concat;
     use rdataframe;
     use rpolarserr;
     use rbackground;

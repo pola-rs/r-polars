@@ -17,7 +17,7 @@ could theoretically have some downstream implications to the query.}
 \item{agg_list}{Aggregate list. Map from vector to group in groupby context.}
 
 \item{in_background}{Boolean. Whether to execute the map in a background R
-process. Combined with setting e.g. \code{pl$set_global_rpool_cap(4)} it can speed
+process. Combined with setting e.g. \code{pl$set_options(rpool_cap = 4)} it can speed
 up some slow R functions as they can run in parallel R sessions. The
 communication speed between processes is quite slower than between threads.
 This will likely only give a speed-up in a "low IO - high CPU" usecase.
@@ -43,7 +43,7 @@ share the same main R session, so the global environment might change between
 the start of the query and the moment a \code{map()} call is evaluated. Any native
 polars computations can still be executed meanwhile. If \code{in_background = TRUE},
 the map will run in one or more other R sessions and will not have access
-to global variables. Use \code{pl$set_global_rpool_cap(4)} and \code{pl$get_global_rpool_cap()}
+to global variables. Use \code{pl$set_options(rpool_cap = 4)} and \code{pl$options$rpool_cap}
 to see and view number of parallel R sessions.
 }
 \examples{
@@ -66,9 +66,9 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 )$collect() |> system.time()
 
 # map in parallel 1: Overhead to start up extra R processes / sessions
-pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
-pl$set_global_rpool_cap(4) # set back to 4, the default
-pl$get_global_rpool_cap()
+pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+pl$set_options(rpool_cap = 4) # set back to 4, the default
+pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map(\(s) {
     Sys.sleep(.5)
@@ -77,7 +77,7 @@ pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 )$collect() |> system.time()
 
 # map in parallel 2: Reuse R processes in "polars global_rpool".
-pl$get_global_rpool_cap()
+pl$options$rpool_cap
 pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
   pl$all()$map(\(s) {
     Sys.sleep(.5)

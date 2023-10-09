@@ -662,7 +662,7 @@ construct_ProtoExprArray = function(...) {
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
 #' @param in_background Boolean. Whether to execute the map in a background R
-#' process. Combined with setting e.g. `pl$set_global_rpool_cap(4)` it can speed
+#' process. Combined with setting e.g. `pl$set_options(rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
 #' This will likely only give a speed-up in a "low IO - high CPU" usecase.
@@ -683,7 +683,7 @@ construct_ProtoExprArray = function(...) {
 #' the start of the query and the moment a `map()` call is evaluated. Any native
 #' polars computations can still be executed meanwhile. If `in_background = TRUE`,
 #' the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()`
+#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap`
 #' to see and view number of parallel R sessions.
 #'
 #' @name Expr_map
@@ -707,9 +707,9 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
-#' pl$set_global_rpool_cap(4) # set back to 4, the default
-#' pl$get_global_rpool_cap()
+#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
 #'     Sys.sleep(.5)
@@ -718,7 +718,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$get_global_rpool_cap()
+#' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
 #'     Sys.sleep(.5)
@@ -750,7 +750,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
 #' but convert result to a polars Null and carry on.
 #' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
-#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' setting e.g. `pl$set_options(rpool_cap = 4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
 #' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
@@ -856,9 +856,9 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
-#' pl$set_global_rpool_cap(4) # set back to 4, the default
-#' pl$get_global_rpool_cap()
+#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
+#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' pl$options$rpool_cap
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
@@ -867,7 +867,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$get_global_rpool_cap()
+#' pl$options$rpool_cap
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
@@ -920,7 +920,6 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #'
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
-
 Expr_lit = function(x) {
   # use .call reduces eval from 22us to 15us, not a bottle-next anyways
   .Call(wrap__Expr__lit, x) |>
@@ -944,7 +943,6 @@ Expr_lit = function(x) {
 #'   pl$col("mpg")$suffix("_foo"),
 #'   pl$col("cyl", "drat")$suffix("_bar")
 #' )
-
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
 }
@@ -966,7 +964,6 @@ Expr_suffix = function(suffix) {
 #'   pl$col("mpg")$prefix("foo_"),
 #'   pl$col("cyl", "drat")$prefix("bar_")
 #' )
-
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)
 }
@@ -978,7 +975,6 @@ Expr_prefix = function(prefix) {
 #' @name Expr_reverse
 #' @examples
 #' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
-
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
