@@ -49,10 +49,10 @@ to see and view number of parallel R sessions.
 \examples{
 pl$DataFrame(iris)$
   select(
-    pl$col("Sepal.Length")$map(\(x) {
-      paste("cheese", as.character(x$to_vector()))
-    }, pl$dtypes$Utf8)
-   )
+  pl$col("Sepal.Length")$map(\(x) {
+    paste("cheese", as.character(x$to_vector()))
+  }, pl$dtypes$Utf8)
+)
 
 # R parallel process example, use Sys.sleep() to imitate some CPU expensive
 # computation.
