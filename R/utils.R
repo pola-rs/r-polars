@@ -93,6 +93,7 @@ list2 = list
 #' Internal unpack list
 #' @noRd
 #' @param l any list
+#' @param skip_classes char vec, do not unpack list inherits skip_classes.
 #' @details py-polars syntax only allows e.g. `df.select([expr1, expr2,])` and not
 #' `df.select(expr1, expr2,)`. r-polars also allows user to directly write
 #' `df$select(expr1, expr2)` or `df$select(list(expr1,expr2))`. Unpack list
@@ -103,9 +104,13 @@ list2 = list
 #' f = \(...) unpack_list(list(...))
 #' identical(f(list(1L, 2L, 3L)), f(1L, 2L, 3L)) # is TRUE
 #' identical(f(list(1L, 2L), 3L), f(1L, 2L, 3L)) # is FALSE
-unpack_list = function(...) {
+unpack_list = function(..., skip_classes = NULL) {
   l = list2(...)
-  if (length(l) == 1L && is.list(l[[1L]])) {
+  if (
+    length(l) == 1L &&
+      is.list(l[[1L]]) &&
+      !(!is.null(skip_classes) && inherits(l[[1L]], skip_classes))
+  ) {
     l[[1L]]
   } else {
     l

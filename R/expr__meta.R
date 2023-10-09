@@ -166,9 +166,8 @@ ExprMeta_is_regex_projection = function() {
 #' @examples
 #' my_expr = (pl$col("foo") * pl$col("bar"))$sum()$over(pl$col("ham")) / 2
 #' my_expr$meta$tree_format()
-
 ExprMeta_tree_format = function(return_as_string = FALSE) {
-  out <- .pr$Expr$meta_tree_format(self) |>
+  out = .pr$Expr$meta_tree_format(self) |>
     unwrap("in $tree_format():")
   if (isTRUE(return_as_string)) {
     out
