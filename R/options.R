@@ -52,6 +52,8 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' @docType NULL
 #'
 #' @details
+#' All args must be explicitly and fully named.
+#'
 #' `pl$options$rpool_active` indicates the number of R sessions already
 #' spawned in pool. `pl$options$rpool_cap` indicates the maximum number of new R
 #' sessions that can be spawned. Anytime a polars thread worker needs a background
@@ -106,7 +108,13 @@ pl$set_options = function(
   }
 
   for (i in seq_along(args_modified)) {
-    value = get(args_modified[i])
+    value = result(get(args_modified[i])) |>
+      map_err(\(rp_err) {
+        rp_err$
+          hint("arg-name does not match any defined args of `?set_options`")$
+          bad_arg(args_modified[i])
+      }) |>
+      unwrap("in pl$set_options")
 
     # each argument has its own input requirements
     validation = c()

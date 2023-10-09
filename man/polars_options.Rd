@@ -35,6 +35,8 @@ Get and set polars options. See sections "Value" and "Examples" below for
 more details.
 }
 \details{
+All args must be explicitly and fully named.
+
 \code{pl$options$rpool_active} indicates the number of R sessions already
 spawned in pool. \code{pl$options$rpool_cap} indicates the maximum number of new R
 sessions that can be spawned. Anytime a polars thread worker needs a background
