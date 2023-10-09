@@ -902,14 +902,14 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 
 #' Accumulate over multiple columns horizontally with an R function
 #'
-#' @description `pl$fold()` and `pl$reduce()` allows one to do rowwise operations. The only
-#' difference between them is that `pl$fold()` has an additional argument (`acc`)
-#' that contains the value that will be initialized when the fold starts.
+#' @description `pl$fold()` and `pl$reduce()` allows one to do rowwise operations.
+#' The only difference between them is that `pl$fold()` has an additional argument
+#' (`acc`) that contains the value that will be initialized when the fold starts.
 #'
 #' @name pl_fold_reduce
 #'
 #' @param acc an Expr or Into<Expr> of the initial accumulator.
-#' @param lambda R Function which takes two polars Series as input and return one.
+#' @param lambda R function which takes two polars Series as input and return one.
 #' @param exprs Expressions to aggregate over. May also be a wildcard expression.
 #'
 #' @return An expression that will be applied rowwise
@@ -928,12 +928,13 @@ pl$rolling_corr = function(a, b, window_size, min_periods = NULL, ddof = 1) {
 #'     lambda = \(acc, x) acc + x,
 #'     exprs = pl$col("mpg", "drat")
 #'   )$alias("mpg_drat_sum_folded"),
-#'   pl$col("mpg")$alias("mpg_drat_vector_sum") + pl$col("drat")
+#'   (pl$col("mpg") + pl$col("drat"))$alias("mpg_drat_vector_sum")
 #' )
 pl$fold = function(acc, lambda, exprs) {
   fold(acc, lambda, exprs) |>
     unwrap("in pl$fold():")
 }
+
 #' @rdname pl_fold_reduce
 #' @name pl_fold_reduce_part2
 pl$reduce = function(lambda, exprs) {

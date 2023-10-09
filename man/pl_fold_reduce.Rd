@@ -7,7 +7,7 @@
 \arguments{
 \item{acc}{an Expr or Into\if{html}{\out{<Expr>}} of the initial accumulator.}
 
-\item{lambda}{R Function which takes two polars Series as input and return one.}
+\item{lambda}{R function which takes two polars Series as input and return one.}
 
 \item{exprs}{Expressions to aggregate over. May also be a wildcard expression.}
 }
@@ -15,9 +15,9 @@
 An expression that will be applied rowwise
 }
 \description{
-\code{pl$fold()} and \code{pl$reduce()} allows one to do rowwise operations. The only
-difference between them is that \code{pl$fold()} has an additional argument (\code{acc})
-that contains the value that will be initialized when the fold starts.
+\code{pl$fold()} and \code{pl$reduce()} allows one to do rowwise operations.
+The only difference between them is that \code{pl$fold()} has an additional argument
+(\code{acc}) that contains the value that will be initialized when the fold starts.
 }
 \examples{
 df = pl$DataFrame(mtcars)
@@ -33,6 +33,6 @@ df$with_columns(
     lambda = \(acc, x) acc + x,
     exprs = pl$col("mpg", "drat")
   )$alias("mpg_drat_sum_folded"),
-  pl$col("mpg")$alias("mpg_drat_vector_sum") + pl$col("drat")
+  (pl$col("mpg") + pl$col("drat"))$alias("mpg_drat_vector_sum")
 )
 }
