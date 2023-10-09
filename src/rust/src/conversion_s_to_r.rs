@@ -104,16 +104,21 @@ pub fn pl_series_to_list(
                 let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
                 let ca = s.list().unwrap();
 
-                for opt_s in unsafe { ca.amortized_iter() } {
-                    match opt_s {
-                        Some(s) => {
-                            let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref, tag_structs, bit64)?;
-                            v.push(inner_val);
-                        }
+                // Safty:amortized_iter()  The returned should never be cloned or taken longer than a single iteration,
+                // as every call on next of the iterator will change the contents of that Series.
+                unsafe {
+                    for opt_s in ca.amortized_iter() {
+                        match opt_s {
+                            Some(s) => {
+                                let s_ref = s.as_ref();
+                                // is safe because s is read to generate new Robj, then discarded.
+                                let inner_val = to_list_recursive(s_ref, tag_structs, bit64)?;
+                                v.push(inner_val);
+                            }
 
-                        None => {
-                            v.push(r!(extendr_api::NULL));
+                            None => {
+                                v.push(r!(extendr_api::NULL));
+                            }
                         }
                     }
                 }
