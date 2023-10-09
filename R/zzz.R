@@ -105,7 +105,8 @@ move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 #' Get Memory Address
 #' @name pl_mem_address
-#' @description mimics pl$mem_address
+#' @description Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#' @details Does not give meaningful answers for regular R objects.
 #' @param robj an R object
 #' @aliases mem_address
 #' @return String of mem address
