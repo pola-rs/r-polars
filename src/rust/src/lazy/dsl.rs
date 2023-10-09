@@ -2053,7 +2053,7 @@ impl Expr {
 
     pub fn str_count_match(&self, pattern: Robj, literal: Robj) -> List {
         let res = || -> Result<Expr, String> {
-            let pat = robj_to!(PlExpr, pattern)?;
+            let pat = robj_to!(PLExpr, pattern)?;
             let lit = robj_to!(bool, literal)?;
             Ok(self
                 .0
@@ -2168,7 +2168,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .contains_literal(robj_to!(PlExpr, lit)?)
+            .contains_literal(robj_to!(PLExpr, lit)?)
             .into())
     }
 
@@ -2177,7 +2177,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .starts_with(robj_to!(PlExpr, sub)?)
+            .starts_with(robj_to!(PLExpr, sub)?)
             .into())
     }
 
@@ -2186,7 +2186,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .ends_with(robj_to!(PlExpr, sub)?)
+            .ends_with(robj_to!(PLExpr, sub)?)
             .into())
     }
 
