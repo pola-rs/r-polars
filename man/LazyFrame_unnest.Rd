@@ -23,10 +23,10 @@ lf = pl$LazyFrame(
   b = c("one", "two", "three", "four", "five"),
   c = 6:10
 )$
- select(
-   pl$col("b")$to_struct(),
-   pl$col("a", "c")$to_struct()$alias("a_and_c")
- )
+  select(
+  pl$col("b")$to_struct(),
+  pl$col("a", "c")$to_struct()$alias("a_and_c")
+)
 lf$collect()
 
 # by default, all struct columns are unnested
