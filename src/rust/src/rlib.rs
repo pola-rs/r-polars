@@ -2,6 +2,9 @@ use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
+use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::RFnSignature;
+use crate::CONFIG;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use extendr_api::prelude::*;
@@ -229,6 +232,32 @@ fn polars_features() -> List {
     )
 }
 
+#[extendr]
+fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
+        Ok(Some(s))
+    };
+    Ok(pl::fold_exprs(robj_to!(PLExpr, acc)?, f, robj_to!(Vec, PLExpr, exprs)?).into())
+}
+
+#[extendr]
+fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
+        Ok(Some(s))
+    };
+    Ok(pl::reduce_exprs(f, robj_to!(Vec, PLExpr, exprs)?).into())
+}
+
 extendr_module! {
     mod rlib;
 
@@ -239,6 +268,9 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
+
+    fn fold;
+    fn reduce;
 
     //fn r_date_range;
     fn r_date_range_lazy;

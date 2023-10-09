@@ -134,13 +134,14 @@ make_doc_hierarchy = function() {
   # order determines order in sidebar
   classes = c(
     "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-    "LazyGroupBy", "ExprList", "ExprBin", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
-    "Expr", "RThreadHandle"
+    "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
+    "Expr", "IO", "RThreadHandle"
   )
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
     cl_label = ifelse(cl == "pl", "Polars", cl)
+    cl_label = ifelse(cl == "IO", "Input/Output", cl_label)
     out = append(out, setNames(list(tmp), cl_label))
     other = setdiff(other, files)
   }
@@ -149,6 +150,7 @@ make_doc_hierarchy = function() {
     "Expr" = "All others",
     "ExprList" = "List",
     "ExprBin" = "Binary",
+    "ExprCat" = "Categorical",
     "ExprDT" = "DateTime",
     "ExprMeta" = "Meta",
     "ExprStr" = "String",

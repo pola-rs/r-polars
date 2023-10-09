@@ -2,6 +2,7 @@
 #' @param activate bool default TRUE, enable chained auto-completion
 #' @name extra_auto_completion
 #' @return invisible NULL
+#' @noRd
 #'
 #' @details polars always supports auto completion via .DollarNames.
 #' However chained methods like x$a()$b()$? are not supported vi .DollarNames.

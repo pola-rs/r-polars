@@ -2,7 +2,6 @@
 % Please edit documentation in R/csv.R
 \name{scan_csv}
 \alias{scan_csv}
-\alias{read_csv}
 \title{new LazyFrame from csv}
 \arguments{
 \item{path}{string, Path to a file or URL}
@@ -67,8 +66,6 @@ cache the downloaded files in session for an easy reuse.}
 }
 \value{
 scan_csv returns a LazyFrame. read_csv returns a DataFrame.
-
-DataFrame
 }
 \description{
 will scan the csv when collect(), not now.

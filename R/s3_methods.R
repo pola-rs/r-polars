@@ -214,6 +214,66 @@ as.character.Series = function(x, ..., str_length = NULL) {
   }
 }
 
+
+#' Print Series
+#' @export
+#' @param x Series
+#' @param ... not used
+#' @keywords internal
+#' @name Series_print
+#' @noRd
+#'
+#' @return invisible(self)
+#' @examples print(pl$Series(1:3))
+print.Series = function(x, ...) {
+  cat("polars Series: ")
+  x$print()
+  invisible(x)
+}
+
+
+#' @title auto complete $-access into a polars object
+#' @description called by the interactive R session internally
+#' @param x Series
+#' @param pattern code-stump as string to auto-complete
+#' @return char vec
+#' @export
+#' @noRd
+#' @inherit .DollarNames.DataFrame return
+#' @keywords internal
+.DollarNames.Series = function(x, pattern = "") {
+  get_method_usages(Series, pattern = pattern)
+}
+
+#' Immutable combine series
+#' @param x a Series
+#' @param ... Series(s) or any object into Series meaning `pl$Series(object)` returns a series
+#' @return a combined Series
+#' @details append datatypes has to match. Combine does not rechunk.
+#' Read more about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
+#' @examples
+#' s = c(pl$Series(1:5), 3:1, NA_integer_)
+#' s$chunk_lengths() # the series contain three unmerged chunks
+#' @export
+#' @noRd
+c.Series = \(x, ...) {
+  l = list2(...)
+  x = x$clone() # clone to retain an immutable api, append_mut is not immutable
+  for (i in seq_along(l)) { # append each element of i being either Series or Into<Series>
+    unwrap(.pr$Series$append_mut(x, wrap_s(l[[i]])), "in $c:")
+  }
+  x
+}
+
+#' Length of series
+#' @param x a Series
+#' @return the length as a double
+#' @export
+#' @noRd
+length.Series = \(x) x$len()
+
+
+
 #' @export
 #' @noRd
 max.Series = function(x, ...) x$max()
