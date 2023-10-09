@@ -576,7 +576,8 @@ ExprStr_extract_all = function(pattern) {
 #'   pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
 #' )
 ExprStr_count_match = function(pattern, literal = FALSE) {
-  unwrap(.pr$Expr$str_count_match(self, pattern, literal))
+  .pr$Expr$str_count_match(self, pattern, literal) |>
+    unwrap("in $str$count_match():")
 }
 
 
