@@ -780,8 +780,10 @@ ExprDT_convert_time_zone = function(tz) {
 #'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
 #' )
 ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
-  valid_tz = check_tz_to_result(tz)
-  .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous) |>
+  check_tz_to_result(tz) |>
+    map(\(valid_tz) {
+      .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous)
+    }) |>
     unwrap("in $replace_time_zone():")
 }
 

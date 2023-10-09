@@ -585,17 +585,17 @@ str_string = function(x, collapse = " ") {
 #' check_tz_to_result(42)
 #' check_tz_to_result(NULL, allow_null = FALSE)
 check_tz_to_result = function(tz, allow_null = TRUE) {
-  if (is.null(tz) && !allow_null) {
-    stop("pre-check tz: here NULL tz is not allowed")
-  }
-  if (!is.null(tz) && # null tz is fine
-      (!is_string(tz) || !tz %in% base::OlsonNames()) # otherwise must be a string of OlsenNames
-  ) {
-    stop(paste0(
-      "pre-check tz: '", tz, "' is not a valid time zone string from base::OlsonNames() or NULL"
-    ))
-  }
-  tz
+  pcase(
+    is.null(tz) && !allow_null, Err_plain("pre-check tz: here NULL tz is not allowed"),
+
+    !is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames()), Err_plain(
+      "pre-check tz: '",
+      tz,
+      "' is not a valid time zone string from base::OlsonNames() or NULL"
+    ),
+
+    or_else = Ok(tz)
+  )
 }
 
 
