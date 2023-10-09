@@ -520,10 +520,7 @@ pub fn set_global_rpool_cap(c: Robj) -> RResult<()> {
 #[extendr]
 pub fn get_global_rpool_cap() -> RResult<List> {
     let pool_guard = RBGPOOL.0.lock()?;
-    Ok(list!(
-        active = pool_guard.active,
-        capacity = pool_guard.cap
-    ))
+    Ok(list!(active = pool_guard.active, capacity = pool_guard.cap))
 }
 
 #[extendr]
