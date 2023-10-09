@@ -909,7 +909,11 @@ Expr$meta_has_multiple_outputs <- function() .Call(wrap__Expr__meta_has_multiple
 
 Expr$meta_is_regex_projection <- function() .Call(wrap__Expr__meta_is_regex_projection, self)
 
+Expr$meta_tree_format <- function() .Call(wrap__Expr__meta_tree_format, self)
+
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
+
+Expr$cat_get_categories <- function() .Call(wrap__Expr__cat_get_categories, self)
 
 Expr$new_count <- function() .Call(wrap__Expr__new_count)
 
@@ -1018,8 +1022,6 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
 LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
-
-LazyFrame$with_column <- function(expr) .Call(wrap__LazyFrame__with_column, self, expr)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 

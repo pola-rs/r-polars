@@ -140,6 +140,13 @@ LazyFrame
 #'   c = letters[1:5],
 #'   d = list(1L, 1:2, 1:3, 1:4, 1:5)
 #' ))
+#'
+#' # custom schema
+#' pl$LazyFrame(
+#'   iris,
+#'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
+#' )$collect()
+
 pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
@@ -244,9 +251,6 @@ LazyFrame_with_columns = function(...) {
     unwrap("in $with_columns()")
 }
 
-#' @rdname LazyFrame_with_columns
-
-LazyFrame_with_column = "use_extendr_wrapper"
 
 #' @inherit DataFrame_with_row_count title description params
 #' @return A new LazyFrame with a counter column in front

@@ -683,8 +683,8 @@ construct_ProtoExprArray = function(...) {
 #' This is used to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
 #' @param agg_list Aggregate list. Map from vector to group in groupby context.
-#' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
-#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' @param in_background Boolean. Whether to execute the map in a background R process. Combined with
+#' setting e.g. `pl$set_options(rpool_cap = 4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
 #' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
@@ -697,7 +697,7 @@ construct_ProtoExprArray = function(...) {
 #' variable of the R session. But all R maps in the query sequentially share the same main R
 #' session. Any native polars computations can still be executed meanwhile. In
 #' `in_background = TRUE` the map will run in one or more other R sessions and will not have access
-#' to global variables. Use `pl$set_global_rpool_cap(4)` and `pl$get_global_rpool_cap()` to see and
+#' to global variables. Use `pl$set_options(rpool_cap = 4)` and `pl$options$rpool_cap` to see and
 #' view number of parallel R sessions.
 #' @name Expr_map
 #' @examples
@@ -716,9 +716,9 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead
-#' pl$set_global_rpool_cap(4) # set back to 4, the default
-#' pl$get_global_rpool_cap()
+#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead
+#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
 #'     Sys.sleep(.5)
@@ -727,7 +727,7 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$get_global_rpool_cap()
+#' pl$options$rpool_cap
 #' pl$LazyFrame(a = 1, b = 2, c = 3, d = 4)$select(
 #'   pl$all()$map(\(s) {
 #'     Sys.sleep(.5)
@@ -736,8 +736,12 @@ construct_ProtoExprArray = function(...) {
 #' )$collect() |> system.time()
 #'
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  map_fn = ifelse(in_background, .pr$Expr$map_in_background, .pr$Expr$map)
-  map_fn(self, f, output_type, agg_list)
+  (if (isTRUE(in_background)) {
+    .pr$Expr$map_in_background(self, f, output_type, agg_list)
+  } else {
+    .pr$Expr$map(self, f, output_type, agg_list)
+  }) |>
+    unwrap("in $map():")
 }
 
 #' Expr_apply
@@ -755,7 +759,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' @param allow_fail_eval  bool (default FALSE), if TRUE will not raise user function error
 #' but convert result to a polars Null and carry on.
 #' @param in_background Boolean. Whether to execute the map in a background R process. Combined wit
-#' setting e.g. `pl$set_global_rpool_cap(4)` it can speed up some slow R functions as they can run
+#' setting e.g. `pl$set_options(rpool_cap = 4)` it can speed up some slow R functions as they can run
 #' in parallel R sessions. The communication speed between processes is quite slower than between
 #' threads. Will likely only give a speed-up in a "low IO - high CPU" usecase. A single map will not
 #' be paralleled, only in case of multiple `$map`(s) in the query these can be run in parallel.
@@ -861,9 +865,9 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 1: Overhead to start up extra R processes / sessions
-#' pl$set_global_rpool_cap(0) # drop any previous processes, just to show start-up overhead here
-#' pl$set_global_rpool_cap(4) # set back to 4, the default
-#' pl$get_global_rpool_cap()
+#' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
+#' pl$set_options(rpool_cap = 4) # set back to 4, the default
+#' pl$options$rpool_cap
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
@@ -872,7 +876,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' )$collect() |> system.time()
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
-#' pl$get_global_rpool_cap()
+#' pl$options$rpool_cap
 #' pl$LazyFrame(iris)$groupby("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
@@ -891,28 +895,30 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
   }
 
   # return expression from the functions above, activate agg_list (grouped mapping)
-  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE)
+  .pr$Expr$map(self, lambda = wrap_f, output_type = return_type, agg_list = TRUE) |>
+    unwrap("in $apply()")
 }
 
 
-#' polars literal
-#' @keywords Expr
+#' Return an expression representing a literal value
 #'
-#' @param x an R Scalar, or R vector/list (via Series) into Expr
-#' @rdname Expr
-#' @return Expr, literal of that value
+#' @param x An R Scalar, or R vector/list (via Series)
+#'
+#' @return Expr
+#'
 #' @aliases lit
-#' @name Expr_lit
-#' @details pl$lit(NULL) translates into a typeless polars Null
+#' @details
+#' `pl$lit(NULL)` translates into a polars `null`.
+#'
 #' @examples
-#' # scalars to literal, explit `pl$lit(42)` implicit `+ 2`
+#' # scalars to literal, explicit `pl$lit(42)` implicit `+ 2`
 #' pl$col("some_column") / pl$lit(42) + 2
 #'
 #' # vector to literal explicitly via Series and back again
 #' # R vector to expression and back again
 #' pl$select(pl$lit(pl$Series(1:4)))$to_list()[[1L]]
 #'
-#' # r vecot to literal and back r vector
+#' # r vector to literal and back r vector
 #' pl$lit(1:4)$to_r()
 #'
 #' # r vector to literal to dataframe
@@ -924,43 +930,60 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  .Call(wrap__Expr__lit, x) |> # use .call reduces eval from 22us to 15us, not a bottle-next anyways
+  # use .call reduces eval from 22us to 15us, not a bottle-next anyways
+  .Call(wrap__Expr__lit, x) |>
     unwrap("in $lit()")
 }
 
-#' polars suffix
+#' Add a suffix to a column name
 #' @keywords Expr
 #'
-#' @param suffix string suffix to be added to a name
-#' @rdname Expr
+#' @param suffix Suffix to be added to column name(s)
+#' @rdname Expr_suffix
 #' @return Expr
 #' @aliases suffix
-#' @name Expr_suffix
-#' @examples pl$col("some")$suffix("_column")
+#' @seealso
+#' [`$prefix()`][Expr_prefix] to add a prefix
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' dat$select(
+#'   pl$col("mpg"),
+#'   pl$col("mpg")$suffix("_foo"),
+#'   pl$col("cyl", "drat")$suffix("_bar")
+#' )
 Expr_suffix = function(suffix) {
   .pr$Expr$suffix(self, suffix)
 }
 
-#' polars prefix
+#' Add a prefix to a column name
 #' @keywords Expr
 #'
-#' @param prefix string suffix to be added to a name
-#' @rdname Expr
+#' @param prefix Prefix to be added to column name(s)
+#' @rdname Expr_prefix
 #' @return Expr
 #' @aliases prefix
-#' @name Expr_prefix
-#' @examples pl$col("some")$suffix("_column")
+#' @seealso
+#' [`$suffix()`][Expr_suffix] to add a suffix
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' dat$select(
+#'   pl$col("mpg"),
+#'   pl$col("mpg")$prefix("foo_"),
+#'   pl$col("cyl", "drat")$prefix("bar_")
+#' )
 Expr_prefix = function(prefix) {
   .pr$Expr$prefix(self, prefix)
 }
 
 #' polars reverse
 #' @keywords Expr
-#' @rdname Expr
 #' @return Expr
 #' @aliases reverse
 #' @name Expr_reverse
-#' @examples pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
+#' @examples
+#' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
 Expr_reverse = function() {
   .pr$Expr$reverse(self)
 }
@@ -2664,11 +2687,11 @@ Expr_inspect = function(fmt = "{}") {
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if (identical(strs, "")) strs <- c("", "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
-    stopf(paste0(
+    result(stopf(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
       " a string containing the two consecutive chars `{}` once. \n",
       "a valid string is e.g. `hello{}world`"
-    ))
+    ))) |> unwrap("in $inspect()")
   }
 
   # function to print the evaluated Series
@@ -2680,7 +2703,8 @@ Expr_inspect = function(fmt = "{}") {
   }
 
   # add a map to expression printing the evaluated series
-  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE)
+  .pr$Expr$map(self = self, lambda = f_inspect, output_type = NULL, agg_list = TRUE) |>
+    unwrap("in $inspect()")
 }
 
 
@@ -4208,7 +4232,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' @docType NULL
 #' @format NULL
 #' @aliases list
-#' @name Expr_list
 #' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
 #' as list() .
 #' @format NULL
@@ -4219,15 +4242,6 @@ Expr_set_sorted = function(descending = FALSE) {
 #' )
 #' df$select(pl$all()$implode())
 Expr_implode = "use_extendr_wrapper"
-
-## TODO REMOVE AT A BREAKING CHANGE
-Expr_list = function() {
-  if (is.null(runtime_state$warned_deprecate_list)) {
-    runtime_state$warned_deprecate_list = TRUE
-    warning("polars pl$list and <Expr>$list are deprecated, use $implode instead.")
-  }
-  self$implode()
-}
 
 
 
@@ -4254,25 +4268,6 @@ Expr_list = function() {
 Expr_shrink_dtype = "use_extendr_wrapper"
 
 
-
-#' arr: list related methods DEPRECATED
-#' @description
-#' Deprecated since 0.8.1, will be removed in 0.9.0.
-#' USE `<Expr>$list$...` instead. Subnamespace is simply renamed.
-#' @keywords Expr
-#' @return Expr
-#' @seealso \code{\link[=Expr_list]{<Expr>$list$...}}
-Expr_arr = method_as_property(function() {
-  if (!isTRUE(runtime_state$warned_deprecate_sns_arr_expr)) {
-    warning(
-      "in <Expr>$arr$: `<Expr>$arr$...` is deprecated since 0.8.1 and will be removed in polars 0.9.0.",
-      "\nUse `<Expr>$list$` instead. It is only a renaming to match py-polars renaming.",
-      call. = FALSE
-    )
-    runtime_state$warned_deprecate_sns_arr_expr = TRUE
-  }
-  expr_list_make_sub_ns(self)
-})
 
 #' list: list related methods
 #' @description

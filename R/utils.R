@@ -558,20 +558,6 @@ str_string = function(x, collapse = " ") {
 }
 
 
-# not all R types may be immediately supported by polars but has reasonble conversion to a type
-# that is supported
-convert_to_fewer_types = function(x) {
-  pcase(
-    # PSOIXlt not directly supported by polars but POSIXct is
-    inherits(x, "POSIXlt"), as.POSIXct(x),
-
-    # Date converted to  POSIXct, tz GMT is assumed
-    # inherits(x, "Date"), .POSIXct(unclass(x) * 86400,tz="GMT",cl = "POSIXct"),
-
-    # no conversion needed/supported
-    or_else = x
-  )
-}
 
 
 #' Verify correct time zone
@@ -608,23 +594,6 @@ check_tz_to_result = function(tz, allow_null = TRUE) {
     Ok(tz)
   }
 }
-
-
-# not all R types may be immediately supported by polars but has reasonble conversion to a type
-# that is supported
-convert_to_fewer_types = function(x) {
-  pcase(
-    # PSOIXlt not directly supported by polars but POSIXct is
-    inherits(x, "POSIXlt"), as.POSIXct(x),
-
-    # Date converted to  POSIXct, tz GMT is assumed
-    # inherits(x, "Date"), .POSIXct(unclass(x) * 86400,tz="GMT",cl = "POSIXct"),
-
-    # no conversion needed/supported
-    or_else = x
-  )
-}
-
 
 check_tz_to_result = function(tz, allow_null = TRUE) {
   if (is.null(tz) && !allow_null) {

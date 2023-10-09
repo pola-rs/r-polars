@@ -1,3 +1,4 @@
+use crate::concurrent::RFnSignature;
 use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_rank_method;
@@ -5,7 +6,6 @@ use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
-
 use crate::rpolarserr::polars_to_rpolars_err;
 use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
@@ -1165,23 +1165,20 @@ impl Expr {
     ) -> List {
         use crate::rdatatype::new_width_strategy;
         use crate::utils::extendr_concurrent::ParRObj;
-        use pl::NamedFrom;
         use smartstring::{LazyCompact, SmartString};
         use std::sync::Arc;
-        // TODO improve extendr_concurrent to support other closures thatn |Series|->Series
-        // here a usize is wrapped in Series
+
         let name_gen: std::option::Option<
             Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
         > = if let Some(robj) = null_to_opt(name_gen) {
-            let probj: ParRObj = robj.into();
+            let par_fn: ParRObj = robj.into();
             let x: std::option::Option<
                 Arc<(dyn Fn(usize) -> SmartString<LazyCompact> + Send + Sync + 'static)>,
             > = Some(pl::Arc::new(move |idx: usize| {
                 let thread_com = ThreadCom::from_global(&CONFIG);
-                let s = pl::Series::new("", &[idx as u64]);
-                thread_com.send((probj.clone(), s));
-                let s = thread_com.recv();
-                let s: SmartString<LazyCompact> = s.0.name().to_string().into();
+                thread_com.send(RFnSignature::FnF64ToString(par_fn.clone(), idx as f64));
+                let s = thread_com.recv().unwrap_string();
+                let s: SmartString<LazyCompact> = s.into();
                 s
             }));
             x
@@ -1704,56 +1701,41 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(
-        &self,
-        lambda: Robj,
-        output_type: Nullable<&RPolarsDataType>,
-        agg_list: bool,
-    ) -> Self {
-        use crate::utils::wrappers::null_to_opt;
-
-        //find a way not to push lambda everytime to main thread handler
-        //safety only accessed in main thread, can be temp owned by other threads
-        let probj = ParRObj(lambda);
-        //}
-
+    pub fn map(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
+        // define closure how to request R code evaluated in main thread from a some polars sub thread
+        let par_fn = ParRObj(lambda);
         let f = move |s: pl::Series| {
-            //acquire channel to R via main thread handler
             let thread_com = ThreadCom::try_from_global(&CONFIG)
                 .expect("polars was thread could not initiate ThreadCommunication to R");
-            //this could happen if running in background mode, but inly panic is possible here
-
-            //send request to run in R
-            thread_com.send((probj.clone(), s));
-
-            //recieve answer
-            let s = thread_com.recv();
-
-            //wrap as series
+            thread_com.send(RFnSignature::FnSeriesToSeries(par_fn.clone(), s));
+            let s = thread_com.recv().unwrap_series();
             Ok(Some(s))
         };
 
-        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
-
+        // set expected type of output from R function
+        let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
             Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
             None => fld.clone(),
         });
 
-        if agg_list {
-            self.clone().0.map_list(f, output_map)
-        } else {
-            self.clone().0.map(f, output_map)
-        }
-        .into()
+        robj_to!(bool, agg_list)
+            .map(|agg_list| {
+                if agg_list {
+                    self.clone().0.map_list(f, output_map)
+                } else {
+                    self.clone().0.map(f, output_map)
+                }
+            })
+            .map(Expr)
     }
 
     pub fn map_in_background(
         &self,
         lambda: Robj,
-        output_type: Nullable<&RPolarsDataType>,
-        agg_list: bool,
-    ) -> Self {
+        output_type: Robj,
+        agg_list: Robj,
+    ) -> RResult<Self> {
         let raw_func = crate::rbackground::serialize_robj(lambda).unwrap();
 
         let rbgfunc = move |s| {
@@ -1764,19 +1746,22 @@ impl Expr {
             .map(Some)
         };
 
-        let ot = null_to_opt(output_type).map(|rdt| rdt.0.clone());
+        let ot = robj_to!(Option, PLPolarsDataType, output_type)?;
 
         let output_map = pl::GetOutput::map_field(move |fld| match ot {
             Some(ref dt) => pl::Field::new(fld.name(), dt.clone()),
             None => fld.clone(),
         });
 
-        if agg_list {
-            self.clone().0.map_list(rbgfunc, output_map)
-        } else {
-            self.clone().0.map(rbgfunc, output_map)
-        }
-        .into()
+        robj_to!(bool, agg_list)
+            .map(|agg_list| {
+                if agg_list {
+                    self.clone().0.map_list(rbgfunc, output_map)
+                } else {
+                    self.clone().0.map(rbgfunc, output_map)
+                }
+            })
+            .map(Expr)
     }
 
     pub fn apply_in_background(
@@ -2318,12 +2303,25 @@ impl Expr {
         self.0.clone().meta().is_regex_projection()
     }
 
-    //the only cat ns function from dsl.rs
+    fn meta_tree_format(&self) -> RResult<String> {
+        let e = self
+            .0
+            .clone()
+            .meta()
+            .into_tree_formatter()
+            .map_err(polars_to_rpolars_err)?;
+        Ok(format!("{e}"))
+    }
+
     fn cat_set_ordering(&self, ordering: Robj) -> Result<Expr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;
         Ok(self.0.clone().cat().set_ordering(ordering).into())
+    }
+
+    fn cat_get_categories(&self) -> Expr {
+        self.0.clone().cat().get_categories().into()
     }
 
     // external expression function which typically starts a new expression chain

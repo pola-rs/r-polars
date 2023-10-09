@@ -4,11 +4,22 @@
 
 - Setting and getting polars options is now made with `pl$options`, 
   `pl$set_options()` and `pl$reset_options()` (#384).
+- Method `$with_column()` has been removed (it was deprecated since 0.8.0). Use 
+  `$with_columns()` instead (#402).
+- Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
+  instead (#402).
 
 ## What's changed
 
 - New method `$unnest()` for `LazyFrame` (#397).
-- New method `$sample()` for `DataFrame`.
+- New method `$sample()` for `DataFrame` (#399).
+- New method `$meta$tree_format()` to display an `Expr` as a tree (#401).
+- New argument `schema` in `pl$DataFrame()` and `pl$LazyFrame()` to override the
+  automatic type detection (#385).
+- Fix bug when calling R from polars via e.g. `$map()` where query would not
+  complete in one edge case (#409).
+- New method `$cat$get_categories()` to list unique values of categorical 
+  variables (#412).
 
 # polars 0.8.1
 

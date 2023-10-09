@@ -1,6 +1,5 @@
 use crate::series::Series;
 use crate::utils::collect_hinted_result;
-use crate::utils::unpack_r_result_list;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
 /// most other R to polars conversion uses the module only pub function robjname2series()
@@ -21,8 +20,9 @@ enum SeriesTree {
 // Main module function: Convert any potentially nested R object handled in three steps
 pub fn robjname2series(x: Robj, name: &str) -> pl::PolarsResult<pl::Series> {
     // check for any dependency injection
-    let opt_new_robj = unpack_r_result_list(
-        R!("polars:::result(polars:::as_polars_series({{&x}}))").expect("result cannot fail"),
+    let opt_new_robj = crate::utils::inner_unpack_r_result_list(
+        R!("polars:::result_minimal(polars:::as_polars_series({{&x}}))")
+            .expect("result cannot fail"),
     );
     let x = opt_new_robj.unwrap_or(x);
 

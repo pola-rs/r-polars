@@ -101,10 +101,13 @@ DataFrame
 #'  - a list of mixed vectors and Series of equal length
 #'  - mixed vectors and/or Series of equal length
 #'
-#' Columns will be named as of named arguments or alternatively by names of Series or given a
-#' placeholder name.
+#' Columns will be named as of named arguments or alternatively by names of
+#' Series or given a placeholder name.
 #'
-#' @param make_names_unique default TRUE, any duplicated names will be prefixed a running number
+#' @param make_names_unique If `TRUE` (default), any duplicated names will be
+#'  prefixed a running number.
+#' @param schema A named list that will be used to convert a variable to a
+#' specific DataType. See Examples.
 #'
 #' @return DataFrame
 #' @keywords DataFrame_new
@@ -127,7 +130,11 @@ DataFrame
 #'
 #' # from a data.frame
 #' pl$DataFrame(mtcars)
-pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_select = TRUE) {
+#'
+#' # custom schema
+#' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
+
+pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   largs = unpack_list(...)
 
   # no args crete empty DataFrame
@@ -140,29 +147,9 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_sel
     return(largs[[1L]])
   }
 
-
-  # input guard
-  if (!is_DataFrame_data_input(largs)) {
-    stopf("input must inherit data.frame or be a list of vectors and/or  Series")
-  }
-
-  if (inherits(largs, "data.frame")) {
-    largs = as.data.frame(largs)
-  }
-
-
-  ## step 00 get max length to allow cycle 1-length inputs
-  # largs_lengths = sapply(largs, length)
-  # largs_lengths_max = if (is.integer(largs_lengths)) max(largs_lengths) else NULL
-
-  ## step1 handle column names
   # keys are tentative new column names
-  # fetch keys from names, if missing set as NA
   keys = names(largs)
   if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
-
-  ## step2
-  # if missing key use pl$Series name or generate new
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
       if (inherits(column, "Series")) {
@@ -174,27 +161,34 @@ pl$DataFrame = function(..., make_names_unique = TRUE, parallel = FALSE, via_sel
     return(key)
   })
 
-  ## step 3
-  # check for conflicting names, to avoid silent overwrite
-  if (any(duplicated(keys))) {
-    if (make_names_unique) {
-      keys = make.unique(keys, sep = "_")
-    } else {
-      stopf(
-        paste(
-          "conflicting column names not allowed:",
-          paste(unique(keys[duplicated(keys)]), collapse = ", ")
-        )
-      )
-    }
-  }
 
-  ## pass to pl$
-  names(largs) = keys
-  result(
-    lapply(largs, pl$lit) |>
+  result({
+    # check for conflicting names, to avoid silent overwrite
+    if (anyDuplicated(keys) > 0) {
+      if (make_names_unique) {
+        keys = make.unique(keys, sep = "_")
+      } else {
+        stopf(
+          paste(
+            "conflicting column names not allowed:",
+            paste(unique(keys[duplicated(keys)]), collapse = ", ")
+          )
+        )
+      }
+    }
+
+    ## pass each arg to pl$lit and all args to pl$select
+    names(largs) = keys
+    lapply(seq_along(largs), \(x) {
+      varname = keys[x]
+      out <- pl$lit(largs[[x]])
+      if (!is.null(schema) && varname %in% names(schema)) {
+        out <- out$cast(schema[[varname]], strict = TRUE)
+      }
+      out$alias(varname)
+    }) |>
       do.call(what = pl$select)
-  ) |>
+  }) |>
     unwrap("in pl$DataFrame()")
 }
 
@@ -226,24 +220,6 @@ DataFrame_print = function() {
 }
 
 ## "Class methods"
-
-#' Validate data input for create Dataframe with pl$DataFrame
-#' @noRd
-#' @param x any R object to test if suitable as input to DataFrame
-#' @keywords internal
-#' @description The Dataframe constructors accepts data.frame inheritors or list of vectors and/or Series.
-#'
-#' @return bool
-#'
-#' @examples
-#' .pr$env$is_DataFrame_data_input(iris)
-#' .pr$env$is_DataFrame_data_input(list(1:5, pl$Series(1:5), letters[1:5]))
-is_DataFrame_data_input = function(x) {
-  inherits(x, "data.frame") ||
-    is.list(x) ||
-    all(sapply(x, function(x) is.vector(x) || inherits(x, "Series")))
-}
-
 
 # "properties"
 
@@ -764,7 +740,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 #' Add columns or modify existing ones with expressions. This is
 #' the equivalent of `dplyr::mutate()` as it keeps unmentioned columns (unlike
 #' `$select()`).
-#' **`$with_column()` function is deprecated, use `$with_columns()` instead.**
 #'
 #' @name DataFrame_with_columns
 #' @aliases with_columns
@@ -792,15 +767,6 @@ DataFrame_shift_and_fill = function(fill_value, periods = 1) {
 DataFrame_with_columns = function(...) {
   .pr$DataFrame$with_columns(self, unpack_list(...)) |>
     unwrap("in $with_columns()")
-}
-
-#' @rdname DataFrame_with_columns
-#' @aliases with_column
-#' @param expr a single expression or string
-
-DataFrame_with_column = function(expr) {
-  warning("`with_column()` is deprecated and will be removed in polars 0.9.0. Please use `with_columns()` instead.")
-  self$with_columns(expr)
 }
 
 
