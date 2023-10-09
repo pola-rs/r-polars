@@ -100,6 +100,11 @@ pl$set_options = function(
   # modified in the first call)
   args_modified = names(as.list(sys.call()[-1]))
 
+  if (is.null(args_modified) || any(nchar(args_modified) == 0L)) {
+    Err_plain("all args must be named")|>
+      unwrap("in pl$set_options")
+  }
+
   for (i in seq_along(args_modified)) {
     value = get(args_modified[i])
 
@@ -262,26 +267,28 @@ pl$with_string_cache = function(expr) {
 #' Multi-process communication has overhead because all data must be
 #' serialized/de-serialized and sent via buffers. Using multiple R sessions
 #' will likely only give a speed-up in a `low io - high cpu` scenario. Native
-#' polars query syntax runs in threads and have no overhead.
+#' polars query syntax runs in threads and have no overhead. Polars has as default
+#' double as many thread workers as cores. If any worker are queuing for or using R sessions,
+#' other workers can still continue any native polars parts as much as possible.
 #'
 #' @return
-#' `pl$get_global_rpool_cap()` returns a list with two elements `available`
-#' and `capacity`. `available` is the number of R sessions are already spawned
-#' in pool. `capacity` is the limit of new R sessions to spawn. Anytime a polars
+#' `pl$options$rpool_cap` returns the capacity ("limit") of co-running external R sessions /
+#' processes. `pl$options$rpool_active` is the number of R sessions are already spawned
+#' in the pool. `rpool_cap` is the limit of new R sessions to spawn. Anytime a polars
 #' thread worker needs a background R session specifically to run R code embedded
 #' in a query via `$map(..., in_background = TRUE)` or
 #' `$apply(..., in_background = TRUE)`, it will obtain any R session idling in
-#' rpool, or spawn a new R session (process) and add it to pool if `capacity`
+#' rpool, or spawn a new R session (process) if `capacity`
 #' is not already reached. If `capacity` is already reached, the thread worker
-#' will sleep until an R session is idling.
+#' will sleep and in a R job queue until an R session is idle.
 #'
 #' @keywords options
 #' @examples
-#' default = pl$get_global_rpool_cap()
-#' print(default)
-#' pl$set_global_rpool_cap(8)
-#' pl$get_global_rpool_cap()
-#' pl$set_global_rpool_cap(default$capacity)
+#' default = pl$options$rpool_cap |> print()
+#' pl$set_options(rpool_cap = 8)
+#' pl$options$rpool_cap
+#' pl$set_options(rpool_cap = default)
+#' pl$options$rpool_cap
 pl$get_global_rpool_cap = function() {
   warning(
     "in pl$get_global_rpool_cap(): Deprecated. Use pl$options$rpool_cap instead.",

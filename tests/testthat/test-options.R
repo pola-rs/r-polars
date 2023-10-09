@@ -35,4 +35,15 @@ test_that("pl$options$ read-write", {
   # reset_options() works
   pl$reset_options()
   expect_identical(pl$options, old_options)
+
+  # all set_options args must be named
+  expect_identical(
+    pl$set_options(42) |> get_err_ctx("Plain"),
+    "all args must be named"
+  )
+  expect_identical(
+    pl$set_options(rpool_cap = 42, 42)|> get_err_ctx("Plain"),
+    "all args must be named"
+  )
+
 })
