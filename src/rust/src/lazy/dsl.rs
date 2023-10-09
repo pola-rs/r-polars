@@ -1197,7 +1197,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        ambiguouse: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1211,7 +1211,7 @@ impl Expr {
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
                 },
-                robj_to!(PLExpr, ambiguouse)?,
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1237,7 +1237,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        ambiguouse: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1252,7 +1252,7 @@ impl Expr {
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
                 },
-                robj_to!(PLExpr, ambiguouse)?,
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1263,7 +1263,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        ambiguouse: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1277,14 +1277,14 @@ impl Expr {
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
                 },
-                robj_to!(PLExpr, ambiguouse)?,
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
 
     //end list/arr methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: Robj, ambiguouse: Robj) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1295,7 +1295,7 @@ impl Expr {
                     offset: robj_to!(Option, pl_duration_string, offset)?
                         .unwrap_or_else(|| "0ns".into()),
                 },
-                robj_to!(PLExpr, ambiguouse)?,
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1407,11 +1407,11 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguouse: Robj) -> Self {
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> Self {
         self.0
             .clone()
             .dt()
-            .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguouse))
+            .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous))
             .into()
     }
 
