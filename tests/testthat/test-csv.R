@@ -46,8 +46,7 @@ test_that("write_csv: path works", {
 
 test_that("write_csv: null_values works", {
   expect_error(
-    dat_pl$write_csv(temp_out, null_values = NULL),
-    "cannot be NULL"
+    dat_pl$write_csv(temp_out, null_values = NULL)
   )
   dat_pl$write_csv(temp_out, null_values = "hello")
   tmp = pl$read_csv(temp_out)$to_data_frame()
@@ -56,7 +55,7 @@ test_that("write_csv: null_values works", {
 })
 
 
-test_that("write_csv: null_values works", {
+test_that("write_csv: separator works", {
   dat_pl$write_csv(temp_out, separator = "|")
   expect_identical(
     pl$read_csv(temp_out, sep = "|")$to_data_frame(),

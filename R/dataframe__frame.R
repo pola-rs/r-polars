@@ -1665,10 +1665,6 @@ DataFrame_write_csv = function(
     stop("Argument `path` must the path to a CSV file.")
   }
 
-  if (is.null(null_values)) {
-    stop("Argument `null_values` cannot be NULL.")
-  }
-
   if (length(quote_style) == 0 ||
       !quote_style %in% c("always", "necessary", "non_numeric")) {
     stop("Argument `quote_style` must be one of 'always', 'necessary', or 'non_numeric'.")

@@ -436,13 +436,13 @@ impl DataFrame {
         time_format: Robj,
         float_precision: Robj,
         null_value: Robj,
-        quote_style: Robj,        
+        quote_style: Robj,
     ) -> RResult<()> {
 
-        let null = robj_to!(Option, String, null_value).unwrap_or_default().unwrap();
+        let null = robj_to!(String, null_value).unwrap();
         let path = robj_to!(str, path).unwrap();
         let f = std::fs::File::create(path).unwrap();
-        let qs = parse_quote_style(quote_style);    
+        let qs = parse_quote_style(quote_style);
 
         CsvWriter::new(f)
             .has_header(robj_to!(bool, has_header).unwrap())
