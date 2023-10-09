@@ -104,7 +104,7 @@ pub fn pl_series_to_list(
                 let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
                 let ca = s.list().unwrap();
 
-                for opt_s in ca.amortized_iter() {
+                for opt_s in unsafe { ca.amortized_iter() } {
                     match opt_s {
                         Some(s) => {
                             let s_ref = s.as_ref();
