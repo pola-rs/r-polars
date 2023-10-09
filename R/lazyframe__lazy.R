@@ -330,8 +330,7 @@ LazyFrame_set_optimization_toggle = function(
       comm_subplan_elim,
       comm_subexpr_elim,
       streaming
-    ) |>
-    unwrap("in $set_optimization_toggle()")
+    )
 }
 
 #' @title Collect a query into a DataFrame
@@ -390,10 +389,10 @@ LazyFrame_collect = function(
 
   collect_f = ifelse(isTRUE(collect_in_background), \(...) Ok(.pr$LazyFrame$collect_in_background(...)), .pr$LazyFrame$collect)
 
-  if (isTRUE(inherit_optimization)) {
-    self
-  } else {
-    self$set_optimization_toggle(
+  lf = self
+  
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -402,8 +401,10 @@ LazyFrame_collect = function(
       comm_subplan_elim,
       comm_subexpr_elim,
       streaming
-    )
-  } |>
+    ) |> unwrap("in $collect():")
+  }
+
+  lf |>
     collect_f() |>
     unwrap("in $collect():")
 }
@@ -511,10 +512,11 @@ LazyFrame_sink_parquet = function(
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
-  if (isTRUE(inherit_optimization)) {
-    self
-  } else {
-    self$set_optimization_toggle(
+  
+  lf = self
+  
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -523,8 +525,10 @@ LazyFrame_sink_parquet = function(
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
       streaming = FALSE
-    )
-  } |>
+    ) |> unwrap("in $sink_parquet()")
+  }
+
+  lf |>
     .pr$LazyFrame$sink_parquet(
       path,
       compression,
@@ -578,10 +582,11 @@ LazyFrame_sink_ipc = function(
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
-  if (isTRUE(inherit_optimization)) {
-    self
-  } else {
-    self$set_optimization_toggle(
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -590,8 +595,10 @@ LazyFrame_sink_ipc = function(
       comm_subplan_elim = FALSE,
       comm_subexpr_elim = FALSE,
       streaming = FALSE
-    )
-  } |>
+    ) |> unwrap("in $sink_ipc()")
+  }
+    
+  lf |>
     .pr$LazyFrame$sink_ipc(
       path,
       compression,
@@ -1242,10 +1249,10 @@ LazyFrame_fetch = function(
     comm_subplan_elim = FALSE
   }
 
-  if (isTRUE(inherit_optimization)) {
-    self
-  } else {
-    self$set_optimization_toggle(
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
       type_coercion,
       predicate_pushdown,
       projection_pushdown,
@@ -1254,10 +1261,10 @@ LazyFrame_fetch = function(
       comm_subplan_elim,
       comm_subexpr_elim,
       streaming
-    )
-  } |>
-    result() |>
-    and_then(\(self) .pr$LazyFrame$fetch(self, n_rows)) |>
+    ) |> unwrap("in $fetch()")
+  }
+
+  .pr$LazyFrame$fetch(lf, n_rows) |>
     unwrap("in $fetch()")
 }
 

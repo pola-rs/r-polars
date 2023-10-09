@@ -808,11 +808,20 @@ test_that("opt_toggles", {
     streaming = TRUE
   )
 
-  updated_lf = do.call(lf$set_optimization_toggle, opt_settings)
+  updated_lf = do.call(lf$set_optimization_toggle, opt_settings) |> unwrap("in $set_optimization_toggles")
   
   expect_identical(updated_lf$get_optimization_toggle(), opt_settings)
 
   expected_result = lf$collect()$to_data_frame()
 
-  expect_identical(updated_lf$collect()$to_data_frame(), expected_result)
+  expect_identical(updated_lf$collect(inherit_optimization = TRUE)$to_data_frame(), expected_result)
+  
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+
+  updated_lf$sink_ipc(tmpf, inherit_optimization = TRUE)
+
+  expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), expected_result)
 })
+
+
