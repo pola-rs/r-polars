@@ -919,6 +919,8 @@ Expr$meta_tree_format <- function() .Call(wrap__Expr__meta_tree_format, self)
 
 Expr$cat_set_ordering <- function(ordering) .Call(wrap__Expr__cat_set_ordering, self, ordering)
 
+Expr$cat_get_categories <- function() .Call(wrap__Expr__cat_get_categories, self)
+
 Expr$new_count <- function() .Call(wrap__Expr__new_count)
 
 Expr$new_first <- function() .Call(wrap__Expr__new_first)

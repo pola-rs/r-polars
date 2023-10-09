@@ -20,7 +20,7 @@ query detached from the R session and return an \code{RThreadHandle} immediately
 NOTICE:
 The background thread cannot use the main R session, but can access the pool of extra R sessions
 to process R code embedded in polars query via \verb{$map(...,background = TRUE)} or
-\verb{$apply(background=TRUE)}. Use \code{\link[=global_rpool_cap]{pl$set_global_rpool_cap()}} to limit number of
+\verb{$apply(background=TRUE)}. Use \code{\link[=set_options]{pl$set_options(rpool_cap = XX)}} to limit number of
 parallel R sessions.
 Starting polars  \code{\link[=LazyFrame_collect_in_background]{<LazyFrame>$collect_in_background()}} with
 e.g. some \verb{$map(...,background = FALSE)} will raise an Error as the main R session is not
