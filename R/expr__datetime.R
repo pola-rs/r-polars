@@ -4,8 +4,10 @@
 #' @name ExprDT_truncate
 #' @param every string encoding duration see details.
 #' @param offset optional string encoding duration see details.
-#' @param use_earliest Determine how to deal with ambiguous datetimes:
-#' NULL (default) raise, TRUE use the earliest datetime, FALSE use the latest datetime.
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): raise
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
 #'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
@@ -40,8 +42,8 @@
 ExprDT_truncate = function(
     every, # str
     offset = NULL, # : str | timedelta | None = None,
-    use_earliest = NULL) {
-  .pr$Expr$dt_truncate(self, every, offset, use_earliest) |>
+    ambiguous = "raise") {
+  .pr$Expr$dt_truncate(self, every, offset, ambiguous) |>
     unwrap("in dt$truncate()")
 }
 
@@ -747,10 +749,10 @@ ExprDT_convert_time_zone = function(tz) {
 #'
 #' @name ExprDT_replace_time_zone
 #' @param tz NULL or string time zone from [base::OlsonNames()]
-#' @param use_earliest NULL or logical.
-#' If localizing an ambiguous datetime (say, due to daylight saving time),
-#' determine whether to localize to the earliest datetime or not.
-#' If NULL (the default), then ambiguous datetimes will raise.
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): raise
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
 #' @return Expr of i64
 #' @keywords ExprDT
 #' @format function
@@ -764,7 +766,7 @@ ExprDT_convert_time_zone = function(tz) {
 #'   pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
 #' )
 #'
-#' # You can use use_earliest to deal with ambiguous datetimes
+#' # You can use ambiguous to deal with ambiguous datetimes
 #' df_2 = pl$DataFrame(
 #'   x = seq(
 #'     as.POSIXct("2018-10-28 01:30", tz = "UTC"),
@@ -774,14 +776,13 @@ ExprDT_convert_time_zone = function(tz) {
 #' )
 #'
 #' df_2$with_columns(
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", TRUE)$alias("use_earliest_true"),
-#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", FALSE)$alias("use_earliest_false")
+#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
+#'   pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
 #' )
-ExprDT_replace_time_zone = function(tz, use_earliest = NULL) {
-  check_tz_to_result(tz) |>
-    map(\(valid_tz) .pr$Expr$dt_replace_time_zone(self, valid_tz, use_earliest)) |>
-    map_err(\(err) paste("in dt$replace_time_zone:", err)) |>
-    unwrap()
+ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
+  valid_tz = check_tz_to_result(tz)
+  .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous) |>
+    unwrap("in $replace_time_zone():")
 }
 
 
@@ -1000,5 +1001,6 @@ ExprDT_nanoseconds = function() {
 #'   pl$col("dates")$dt$offset_by("-1y2mo")$alias("date_min")
 #' )
 ExprDT_offset_by = function(by) {
-  .pr$Expr$dt_offset_by(self, by)
+  .pr$Expr$dt_offset_by(self, by) |>
+    unwrap("in $offset_by():")
 }

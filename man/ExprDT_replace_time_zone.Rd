@@ -10,10 +10,12 @@ function
 \arguments{
 \item{tz}{NULL or string time zone from \code{\link[base:timezones]{base::OlsonNames()}}}
 
-\item{use_earliest}{NULL or logical.
-If localizing an ambiguous datetime (say, due to daylight saving time),
-determine whether to localize to the earliest datetime or not.
-If NULL (the default), then ambiguous datetimes will raise.}
+\item{ambiguous}{Determine how to deal with ambiguous datetimes:
+\itemize{
+\item \code{"raise"} (default): raise
+\item \code{"earliest"}: use the earliest datetime
+\item \code{"latest"}: use the latest datetime
+}}
 }
 \value{
 Expr of i64
@@ -31,7 +33,7 @@ df_1$with_columns(
   pl$col("x")$dt$replace_time_zone("Europe/Amsterdam")$alias("cest")
 )
 
-# You can use use_earliest to deal with ambiguous datetimes
+# You can use ambiguous to deal with ambiguous datetimes
 df_2 = pl$DataFrame(
   x = seq(
     as.POSIXct("2018-10-28 01:30", tz = "UTC"),
@@ -41,8 +43,8 @@ df_2 = pl$DataFrame(
 )
 
 df_2$with_columns(
-  pl$col("x")$dt$replace_time_zone("Europe/Brussels", TRUE)$alias("use_earliest_true"),
-  pl$col("x")$dt$replace_time_zone("Europe/Brussels", FALSE)$alias("use_earliest_false")
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
+  pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
 )
 }
 \keyword{ExprDT}

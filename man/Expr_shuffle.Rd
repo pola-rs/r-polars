@@ -5,7 +5,7 @@
 \alias{shuffle}
 \title{Shuffle}
 \usage{
-Expr_shuffle(seed = NULL, fixed_seed = FALSE)
+Expr_shuffle(seed = NULL)
 }
 \arguments{
 \item{seed}{numeric value of 0 to 2^52

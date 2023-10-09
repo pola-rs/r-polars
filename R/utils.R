@@ -586,35 +586,18 @@ str_string = function(x, collapse = " ") {
 #' check_tz_to_result(NULL, allow_null = FALSE)
 check_tz_to_result = function(tz, allow_null = TRUE) {
   if (is.null(tz) && !allow_null) {
-    return(Err("pre-check tz: here NULL tz is not allowed"))
+    stop("pre-check tz: here NULL tz is not allowed")
   }
-  if (
-    (!is.null(tz)) && # null tz is fine
+  if (!is.null(tz) && # null tz is fine
       (!is_string(tz) || !tz %in% base::OlsonNames()) # otherwise must be a string of OlsenNames
   ) {
-    Err(paste0(
+    stop(paste0(
       "pre-check tz: '", tz, "' is not a valid time zone string from base::OlsonNames() or NULL"
     ))
-  } else {
-    Ok(tz)
   }
+  tz
 }
 
-check_tz_to_result = function(tz, allow_null = TRUE) {
-  if (is.null(tz) && !allow_null) {
-    return(Err("pre-check tz: here NULL tz is not allowed"))
-  }
-  if (
-    (!is.null(tz)) && # null tz is fine
-      (!is_string(tz) || !tz %in% base::OlsonNames()) # otherwise must be a string of OlsenNames
-  ) {
-    Err(paste0(
-      "pre-check tz: the tz '", tz, "' is not a valid string from base::OlsonNames() or NULL"
-    ))
-  } else {
-    Ok(tz)
-  }
-}
 
 # this function is used in zzz.R to defined how to access methods of a subname space
 sub_name_space_accessor_function = function(self, name) {

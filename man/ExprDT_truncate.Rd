@@ -12,8 +12,12 @@ function
 
 \item{offset}{optional string encoding duration see details.}
 
-\item{use_earliest}{Determine how to deal with ambiguous datetimes:
-NULL (default) raise, TRUE use the earliest datetime, FALSE use the latest datetime.}
+\item{ambiguous}{Determine how to deal with ambiguous datetimes:
+\itemize{
+\item \code{"raise"} (default): raise
+\item \code{"earliest"}: use the earliest datetime
+\item \code{"latest"}: use the latest datetime
+}}
 }
 \value{
 Date/Datetime expr
