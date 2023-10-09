@@ -422,8 +422,8 @@ test_that("str$count_match", {
   )
 
   expect_grepl_error(
-    pl$col("foo")$str$count_match(5),
-    "String"
+    df$select(pl$col("foo")$str$count_match(5)),
+    "data types don't match"
   )
 })
 
@@ -445,8 +445,8 @@ test_that("str$split", {
   )
 
   expect_grepl_error(
-    pl$lit("42")$str$split(by = 42L, inclusive = TRUE),
-    "str"
+    pl$DataFrame(pl$lit("42")$str$split(by = 42L, inclusive = TRUE)),
+    "data types don't match"
   )
 
   expect_grepl_error(

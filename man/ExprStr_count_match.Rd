@@ -6,6 +6,8 @@
 \title{count_match}
 \arguments{
 \item{pattern}{A valid regex pattern}
+
+\item{literal}{Boolean. Treat pattern as a literal string.}
 }
 \value{
 UInt32 array. Contain null if original value is null or regex capture nothing.

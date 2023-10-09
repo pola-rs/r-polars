@@ -17,6 +17,10 @@
 #' @param exact bool , If True, require an exact format match. If False, allow the format to match
 #' anywhere in the target string.
 #' @param cache Use a cache of unique, converted dates to apply the datetime conversion.
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): raise
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
 #' @details Notes When parsing a Datetime the column precision will be inferred from the format
 #' string, if given, eg: “%F %T%.3f” => Datetime(“ms”). If no fractional second component is found
 #' then the default is “us”.
@@ -57,7 +61,7 @@ ExprStr_strptime = function(
     strict = TRUE, # : bool = True,
     exact = TRUE, # : bool = True,
     cache = TRUE, # : bool = True,
-    use_earliest = NULL) { #-> Expr:
+    ambiguous = "raise") {
 
   # match on datatype, return RResult<Expr>
   pcase(
@@ -71,7 +75,7 @@ ExprStr_strptime = function(
     {
       datetime_type = .pr$DataType$get_insides(datatype)
       .pr$Expr$str_to_datetime(
-        self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, use_earliest
+        self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, ambiguous
       ) |> and_then(
         \(expr) .pr$Expr$dt_cast_time_unit(expr, datetime_type$tu) # cast if not an err
       )
@@ -79,11 +83,11 @@ ExprStr_strptime = function(
 
     # Date
     datatype == pl$Date,
-    .pr$Expr$str_to_date(self, format, strict, exact, cache, use_earliest),
+    .pr$Expr$str_to_date(self, format, strict, exact, cache, ambiguous),
 
     # Time
     datatype == pl$Time,
-    .pr$Expr$str_to_time(self, format, strict, exact, cache, use_earliest),
+    .pr$Expr$str_to_time(self, format, strict, exact, cache, ambiguous),
 
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
@@ -561,6 +565,7 @@ ExprStr_extract_all = function(pattern) {
 #' @description Count all successive non-overlapping regex matches.
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return
 #' UInt32 array. Contain null if original value is null or regex capture nothing.
@@ -570,8 +575,8 @@ ExprStr_extract_all = function(pattern) {
 #' df$select(
 #'   pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
 #' )
-ExprStr_count_match = function(pattern) {
-  unwrap(.pr$Expr$str_count_match(self, pattern))
+ExprStr_count_match = function(pattern, literal = FALSE) {
+  unwrap(.pr$Expr$str_count_match(self, pattern, literal))
 }
 
 
@@ -656,7 +661,7 @@ ExprStr_splitn = function(by, n) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, Treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
@@ -682,7 +687,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
@@ -707,7 +712,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr: Series of dtype Utf8.
 #'
