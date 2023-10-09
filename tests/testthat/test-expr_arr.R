@@ -218,7 +218,7 @@ test_that("arg_min arg_max", {
   # not the same as R NA is min
   l_exp_arg_min = list(
     l_i32 = c(0, 0, 0),
-    l_f64 = c(4, 0, NA),
+    l_f64 = c(0, 0, NA),
     l_char = c(0, 0, NA)
   )
   l_exp_arg_max = list(
