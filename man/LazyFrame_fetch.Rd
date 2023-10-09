@@ -62,7 +62,6 @@ Filters, join operations and a lower number of rows available in the scanned
 file influence the final number of rows.
 }
 \examples{
-#'
 # fetch 3 rows
 pl$LazyFrame(iris)$fetch(3)
 

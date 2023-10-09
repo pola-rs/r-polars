@@ -3,18 +3,18 @@
 \name{ExprList_get}
 \alias{ExprList_get}
 \alias{Expr_list_get}
+\alias{[.ExprListNameSpace}
 \title{Get list}
 \format{
 function
 }
+\usage{
+\method{[}{ExprListNameSpace}(x, index)
+}
 \arguments{
-\item{index}{numeric vector or Expr of length 1 or same length of Series.
-if length 1 pick same value from each sublist, if length as Series/column,
-pick by individual index across sublists.
+\item{x}{ExprListNameSpace}
 
-So index \code{0} would return the first item of every sublist
-and index \code{-1} would return the last item of every sublist
-if an index is out of bounds, it will return a \code{None}.}
+\item{index}{value to get}
 }
 \value{
 Expr
@@ -22,9 +22,15 @@ Expr
 \description{
 Get the value by index in the sublists.
 }
+\details{
+\verb{[.ExprListNameSpace} used as e.g. \code{pl$col("a")$arr[0]} same as \code{pl$col("a")$get(0)}
+}
 \examples{
 df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
 df$select(pl$col("a")$list$get(0))
 df$select(pl$col("a")$list$get(c(2, 0, -1)))
+df = pl$DataFrame(list(a = list(3:1, NULL, 1:2))) # NULL or integer() or list()
+df$select(pl$col("a")$list[0])
+df$select(pl$col("a")$list[c(2, 0, -1)])
 }
 \keyword{ExprList}
