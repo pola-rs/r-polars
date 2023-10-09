@@ -7,33 +7,33 @@
 DataFrame_rechunk()
 }
 \value{
-real vector of chunk counts per Series.
+A DataFrame
 }
 \description{
-Rechunking re-allocates any "chunked" memory allocations to speed-up e.g. vectorized
-operations.
+Rechunking re-allocates any "chunked" memory allocations to
+speed-up e.g. vectorized operations.
 }
 \details{
-DataFrame is a vector of Series'. Each Series in rust-polars is a wrapper around a ChunkedArray,
-which is like a virtual contiguous vector, which is physically backed by an ordered set of
-chunks. Each chunk of values has a contiguous memory layout and is an arrow array. Arrow arrays
-are a fast, thread-safe and cross-platform  memory layout.
+A DataFrame is a vector of Series. Each Series in rust-polars is a wrapper
+around a ChunkedArray, which is like a virtual contiguous vector physically
+backed by an ordered set of chunks. Each chunk of values has a contiguous
+memory layout and is an arrow array. Arrow arrays are a fast, thread-safe and
+cross-platform memory layout.
 
-In R when combining with \code{c()} or \code{rbind()}, it requires immediate vector re-allocation to place
-vector values in contiguous memory, hence repeated appending to a vector in R is discouraged
-because slow.
+In R, combining with \code{c()} or \code{rbind()} requires immediate vector re-allocation
+to place vector values in contiguous memory. This is slow and memory consuming,
+and it is why repeatedly appending to a vector in R is discouraged.
 
-When concatenating/appending to Series' or DataFrame' re-allocation can be avoided or delayed,
-by simply appending chunks to each individual Series.
-
-However, if chunks become many and small or are misaligned across Series, this can hurt the
-performance of following operations.
+In polars, when we concatenate or append to Series or DataFrame, the
+re-allocation can be avoided or delayed by simply appending chunks to each
+individual Series. However, if chunks become many and small or are misaligned
+across Series, this can hurt the performance of subsequent operations.
 
 Most places in the polars api where chunking could occur, the user have to
-typically actively opt-out by setting and arg \code{rechunk = FALSE}. Thus it is not normal
+typically actively opt-out by setting an argument \code{rechunk = FALSE}.
 }
 \examples{
-# create DataFrame with miss alligned chunks
+# create DataFrame with misaligned chunks
 df = pl$concat(
   1:10, # single chunk
   pl$concat(1:5, 1:5, rechunk = FALSE, how = "vertical")$rename("b"), # two chunks
@@ -48,9 +48,9 @@ df$rechunk()$n_chunks()
 # rechunk is not an in-place operation
 df$n_chunks()
 
-# The following toy example emulates the Series "chunkyness" in R. Here it a S3-classed list with
-# same type of vectors and where have all relevant S3 generics implemented to make behave as if
-# it was a regular vector.
+# The following toy example emulates the Series "chunkyness" in R. Here it a
+# S3-classed list with same type of vectors and where have all relevant S3
+# generics implemented to make behave as if it was a regular vector.
 "+.chunked_vector" = \(x, y) structure(list(unlist(x) + unlist(y)), class = "chunked_vector")
 print.chunked_vector = \(x, ...) print(unlist(x), ...)
 c.chunked_vector = \(...) {

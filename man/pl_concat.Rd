@@ -4,18 +4,25 @@
 \alias{pl_concat}
 \title{Concat polars objects}
 \arguments{
-\item{...}{individual unpacked args or args wrappend in list(). Args should either be eager
-as DataFrame, Series and R vectors, OR lazy as LazyFrame and Expr. If first argument is lazy
-the return is LazyFrame, otherwise DataFrame. If returning a DataFrame all args must be eager,
-to avoid some implicit collect.}
+\item{...}{Either individual unpacked args or args wrapped in list(). Args can
+be eager as DataFrame, Series and R vectors, or lazy as LazyFrame and Expr.
+The first element determines the output of \verb{$concat()}: if the first element
+is lazy, a LazyFrame is returned; otherwise, a DataFrame is returned (note
+that if the first element is eager, all other elements have to be eager to
+avoid implicit collect).}
 
-\item{rechunk}{perform a rechunk at last}
+\item{rechunk}{Perform a rechunk at last.}
 
-\item{how}{choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally}
+\item{how}{Bind direction. Can be "vertical" (like \code{rbind()}), "horizontal"
+(like \code{cbind()}), or "diagonal".}
 
-\item{parallel}{Boolean default TRUE, only used for LazyFrames}
+\item{parallel}{Only used for LazyFrames. If \code{TRUE} (default), lazy
+computations may be executed in parallel.}
 
-\item{to_supertypes}{Boolean default TRUE, cast columns shared super types, if any.}
+\item{to_supertypes}{If \code{TRUE} (default), cast columns shared super types, if
+any. For example, if we try to vertically concatenate two columns of types \code{i32}
+and \code{f64}, the column of type \code{i32} will be cast to \code{f64} beforehand. This
+argument is equivalent to the "_relaxed" operations in Python polars.}
 }
 \value{
 DataFrame, or Series, LazyFrame or Expr
@@ -24,8 +31,8 @@ DataFrame, or Series, LazyFrame or Expr
 Concat polars objects
 }
 \details{
-Categorical columns/Series must have been constructed while global string cache enabled
-\code{\link[=pl_enable_string_cache]{pl$enable_string_cache()}}
+Categorical columns/Series must have been constructed while global string
+cache enabled. See \code{\link[=pl_enable_string_cache]{pl$enable_string_cache()}}.
 }
 \examples{
 # vertical
@@ -38,7 +45,6 @@ l_ver = lapply(1:10, function(i) {
 })
 pl$concat(l_ver, how = "vertical")
 
-
 # horizontal
 l_hor = lapply(1:10, function(i) {
   l_internal = list(
@@ -49,6 +55,14 @@ l_hor = lapply(1:10, function(i) {
   pl$DataFrame(l_internal)
 })
 pl$concat(l_hor, how = "horizontal")
+
 # diagonal
 pl$concat(l_hor, how = "diagonal")
+
+# if two columns don't share the same type, concat() will error unless we use
+# `to_supertypes = TRUE`:
+test = pl$DataFrame(x = 1L) # i32
+test2 = pl$DataFrame(x = 1.0) #f64
+
+pl$concat(test, test2, to_supertypes = TRUE)
 }

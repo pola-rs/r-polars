@@ -1,17 +1,24 @@
 #' Concat polars objects
 #' @name pl_concat
-#' @param ... individual unpacked args or args wrappend in list(). Args should either be eager
-#' as DataFrame, Series and R vectors, OR lazy as LazyFrame and Expr. If first argument is lazy
-#' the return is LazyFrame, otherwise DataFrame. If returning a DataFrame all args must be eager,
-#' to avoid some implicit collect.
-#' @param rechunk perform a rechunk at last
-#' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally
-#' @param parallel Boolean default TRUE, only used for LazyFrames
-#' @param to_supertypes Boolean default TRUE, cast columns shared super types, if any.
+#' @param ... Either individual unpacked args or args wrapped in list(). Args can
+#' be eager as DataFrame, Series and R vectors, or lazy as LazyFrame and Expr.
+#' The first element determines the output of `$concat()`: if the first element
+#' is lazy, a LazyFrame is returned; otherwise, a DataFrame is returned (note
+#' that if the first element is eager, all other elements have to be eager to
+#' avoid implicit collect).
+#' @param rechunk Perform a rechunk at last.
+#' @param how Bind direction. Can be "vertical" (like `rbind()`), "horizontal"
+#' (like `cbind()`), or "diagonal".
+#' @param parallel Only used for LazyFrames. If `TRUE` (default), lazy
+#' computations may be executed in parallel.
+#' @param to_supertypes If `TRUE` (default), cast columns shared super types, if
+#' any. For example, if we try to vertically concatenate two columns of types `i32`
+#' and `f64`, the column of type `i32` will be cast to `f64` beforehand. This
+#' argument is equivalent to the "_relaxed" operations in Python polars.
 #'
 #' @details
-#' Categorical columns/Series must have been constructed while global string cache enabled
-#' [`pl$enable_string_cache()`][pl_enable_string_cache]
+#' Categorical columns/Series must have been constructed while global string
+#' cache enabled. See [`pl$enable_string_cache()`][pl_enable_string_cache].
 #'
 #'
 #' @return DataFrame, or Series, LazyFrame or Expr
@@ -27,7 +34,6 @@
 #' })
 #' pl$concat(l_ver, how = "vertical")
 #'
-#'
 #' # horizontal
 #' l_hor = lapply(1:10, function(i) {
 #'   l_internal = list(
@@ -38,8 +44,16 @@
 #'   pl$DataFrame(l_internal)
 #' })
 #' pl$concat(l_hor, how = "horizontal")
+#'
 #' # diagonal
 #' pl$concat(l_hor, how = "diagonal")
+#'
+#' # if two columns don't share the same type, concat() will error unless we use
+#' # `to_supertypes = TRUE`:
+#' test = pl$DataFrame(x = 1L) # i32
+#' test2 = pl$DataFrame(x = 1.0) #f64
+#'
+#' pl$concat(test, test2, to_supertypes = TRUE)
 pl$concat = function(
     ..., # list of DataFrames or Series or lazyFrames or expr
     rechunk = TRUE,
@@ -70,7 +84,7 @@ pl$concat = function(
     for (i in seq_along(l)) {
       if (inherits(l[[i]], c("LazyFrame", "Expr"))) {
         .pr$RPolarsErr$new()$
-          plain("tip: explitcit collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
+          plain("tip: explicitly collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
           plain("LazyFrame or Expr not allowed if first arg is a DataFrame, to avoid implicit collect")$
           bad_robj(l[[i]])$
           bad_arg(paste("of those to concatenate, number", i)) |>
