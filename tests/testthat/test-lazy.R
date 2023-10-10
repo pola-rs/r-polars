@@ -796,7 +796,8 @@ test_that("unnest", {
 })
 
 test_that("opt_toggles", {
-  lf = pl$LazyFrame(mtcars)$select(pl$col("mpg") * 0.42)
+
+  # some optimization settings
   opt_settings = list(
     type_coercion = FALSE,
     predicate_pushdown = TRUE,
@@ -807,21 +808,30 @@ test_that("opt_toggles", {
     comm_subexpr_elim = FALSE,
     streaming = TRUE
   )
+  opt_settings2 = lapply(opt_settings, `!`)
 
-  updated_lf = do.call(lf$set_optimization_toggle, opt_settings) |> unwrap("in $set_optimization_toggles")
-  
-  expect_identical(updated_lf$get_optimization_toggle(), opt_settings)
+  # some LazyFrames
+  lf = pl$LazyFrame(mtcars)$select(pl$col("mpg") * 0.42)
+  lf_new_opts = do.call(lf$set_optimization_toggle, opt_settings)$ok
+  lf_new_opts2 = do.call(lf$set_optimization_toggle, opt_settings2)$ok
 
-  expected_result = lf$collect()$to_data_frame()
+  # Check set/get roundtrip
+  expect_identical(lf_new_opts$get_optimization_toggle(), opt_settings)
+  expect_identical(lf_new_opts2$get_optimization_toggle(), opt_settings2)
 
-  expect_identical(updated_lf$collect(inherit_optimization = TRUE)$to_data_frame(), expected_result)
-  
+  # collect - same result, no matter opts
+  df_new_opts = lf_new_opts$collect(inherit_optimization = TRUE)$to_data_frame()
+  df_new_opts2 = lf_new_opts2$collect(inherit_optimization = TRUE)$to_data_frame()
+  df_defaults = lf$collect()$to_data_frame()
+  expect_identical(df_new_opts, df_defaults)
+  expect_identical(df_new_opts2, df_defaults)
+
+  # sink_ipc - same results
   tmpf = tempfile()
   on.exit(unlink(tmpf))
+  lf_new_opts$sink_ipc(tmpf, inherit_optimization = TRUE)
+  expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), df_defaults)
 
-  updated_lf$sink_ipc(tmpf, inherit_optimization = TRUE)
-
-  expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), expected_result)
 })
 
 
