@@ -24,10 +24,6 @@ Expr_sample(
 seed is used.}
 
 \item{n}{Number of items to return. Cannot be used with \code{frac}.}
-
-\item{fixed_seed}{Boolean. If True, The seed will not be incremented between draws. This can make output
-predictable because draw ordering can change due to threads being scheduled in a different order.
-Should be used together with seed}
 }
 \value{
 Expr

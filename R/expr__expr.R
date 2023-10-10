@@ -3770,10 +3770,6 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
@@ -3797,10 +3793,6 @@ Expr_shuffle = function(seed = NULL) {
 #' @param  seed
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr
