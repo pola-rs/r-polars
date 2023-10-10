@@ -781,7 +781,7 @@ ExprDT_convert_time_zone = function(tz) {
 #' )
 ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
   check_tz_to_result(tz) |>
-    map(\(valid_tz) {
+    and_then(\(valid_tz) {
       .pr$Expr$dt_replace_time_zone(self, valid_tz, ambiguous)
     }) |>
     unwrap("in $replace_time_zone():")
