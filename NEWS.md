@@ -1,5 +1,18 @@
 # polars (development version)
 
+## CHANGES DUE TO RUST-POLARS 0.33.2
+
+- In all date-time related methods, the argument `use_earliest` is now called
+  `ambiguous` and defaults to `"raise"`.
+- In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
+- In `$value_counts()`, the arguments `multithreaded` and `sort` (sometimes called
+  `sorted`) have been swapped and renamed `sort` and `parallel`.
+- `$str$count_match()` gains a `literal` argument.
+- `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the
+  behavior of `$min()`).
+- Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
+- Updated Rust toolchain.
+
 ## Breaking changes
 
 - Setting and getting polars options is now made with `pl$options`, 
