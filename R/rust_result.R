@@ -56,7 +56,7 @@ Err = function(x) {
 #' @param f a closure that takes the err part as input
 #' @return same R object wrapped in a Err-result
 map_err = function(x, f) {
-  if (is_err(x)) x$err = f(x$err)
+  if (is_err(x)) x$err <- f(x$err)
   x
 }
 
@@ -65,7 +65,7 @@ map_err = function(x, f) {
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
 map = function(x, f) {
-  if (is_ok(x)) x$ok = f(x$ok)
+  if (is_ok(x)) x$ok <- f(x$ok)
   x
 }
 

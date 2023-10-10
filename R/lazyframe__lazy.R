@@ -146,7 +146,6 @@ LazyFrame
 #'   iris,
 #'   schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8)
 #' )$collect()
-
 pl$LazyFrame = function(...) {
   pl$DataFrame(...)$lazy()
 }
@@ -281,7 +280,7 @@ LazyFrame_filter = "use_extendr_wrapper"
 #' @description Get the current optimization toggles for the lazy query
 #' @keywords LazyFrame
 #' @return List of optimization toggles
-#' @examples 
+#' @examples
 #' pl$LazyFrame(mtcars)$get_optimization_toggle()
 LazyFrame_get_optimization_toggle = function() {
   self |>
@@ -308,18 +307,17 @@ LazyFrame_get_optimization_toggle = function() {
 #' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
 #' @return LazyFrame with specified optimization toggles
-#' @examples 
+#' @examples
 #' pl$LazyFrame(mtcars)$set_optimization_toggle(type_coercion = FALSE)
 LazyFrame_set_optimization_toggle = function(
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  streaming = FALSE
-) {
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE) {
   self |>
     .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
@@ -363,18 +361,17 @@ LazyFrame_set_optimization_toggle = function(
 #'  - [`$sink_ipc()`][LazyFrame_sink_ipc()] streams query to a arrow file.
 
 LazyFrame_collect = function(
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  streaming = FALSE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE,
-  collect_in_background = FALSE
-) {
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE,
+    collect_in_background = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -390,7 +387,7 @@ LazyFrame_collect = function(
   collect_f = ifelse(isTRUE(collect_in_background), \(...) Ok(.pr$LazyFrame$collect_in_background(...)), .pr$LazyFrame$collect)
 
   lf = self
-  
+
   if (isFALSE(inherit_optimization)) {
     lf = self$set_optimization_toggle(
       type_coercion,
@@ -492,29 +489,28 @@ LazyFrame_collect_in_background = function() {
 #' # load parquet directly into a DataFrame / memory
 #' pl$scan_parquet(tmpf2)$collect()
 LazyFrame_sink_parquet = function(
-  path,
-  compression = "zstd",
-  compression_level = 3,
-  statistics = FALSE,
-  row_group_size = NULL,
-  data_pagesize_limit = NULL,
-  maintain_order = TRUE,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
-) {
+    path,
+    compression = "zstd",
+    compression_level = 3,
+    statistics = FALSE,
+    row_group_size = NULL,
+    data_pagesize_limit = NULL,
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
     slice_pushdown = FALSE
   }
-  
+
   lf = self
-  
+
   if (isFALSE(inherit_optimization)) {
     lf = self$set_optimization_toggle(
       type_coercion,
@@ -566,17 +562,16 @@ LazyFrame_sink_parquet = function(
 #' # load ipc directly into a DataFrame / memory
 #' # pl$scan_ipc(tmpf2)$collect()
 LazyFrame_sink_ipc = function(
-  path,
-  compression = "zstd",
-  maintain_order = TRUE,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
-) {
+    path,
+    compression = "zstd",
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -597,7 +592,7 @@ LazyFrame_sink_ipc = function(
       streaming = FALSE
     ) |> unwrap("in $sink_ipc()")
   }
-    
+
   lf |>
     .pr$LazyFrame$sink_ipc(
       path,
@@ -1225,18 +1220,17 @@ LazyFrame_dtypes = method_as_property(function() {
 #'   fetch(3)
 
 LazyFrame_fetch = function(
-  n_rows = 500,
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  streaming = FALSE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE
-) {
+    n_rows = 500,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE
@@ -1390,10 +1384,10 @@ LazyFrame_clone = function() {
 #'   b = c("one", "two", "three", "four", "five"),
 #'   c = 6:10
 #' )$
-#'  select(
-#'    pl$col("b")$to_struct(),
-#'    pl$col("a", "c")$to_struct()$alias("a_and_c")
-#'  )
+#'   select(
+#'   pl$col("b")$to_struct(),
+#'   pl$col("a", "c")$to_struct()$alias("a_and_c")
+#' )
 #' lf$collect()
 #'
 #' # by default, all struct columns are unnested
@@ -1401,10 +1395,9 @@ LazyFrame_clone = function() {
 #'
 #' # we can specify specific columns to unnest
 #' lf$unnest("a_and_c")$collect()
-
 LazyFrame_unnest = function(names = NULL) {
   if (is.null(names)) {
-    names <- names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
+    names = names(which(dtypes_are_struct(.pr$LazyFrame$schema(self)$ok)))
   }
   unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }

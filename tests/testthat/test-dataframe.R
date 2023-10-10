@@ -158,7 +158,7 @@ test_that("DataFrame, custom schema", {
 
   # works fine if a variable is called "schema"
   expect_no_error(
-   pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
+    pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
   # errors if incorrect datatype
   expect_error(pl$DataFrame(x = 1, schema = list(schema = foo)))

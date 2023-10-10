@@ -774,9 +774,9 @@ test_that("unnest", {
 
   df2 = df$
     select(
-      pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
-      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
-    )
+    pl$col("a", "b", "c")$to_struct()$alias("first_struct"),
+    pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+  )
 
   expect_identical(
     df2$unnest()$collect()$to_data_frame(),
@@ -787,16 +787,15 @@ test_that("unnest", {
     df2$unnest("first_struct")$collect()$to_data_frame(),
     df$
       select(
-        pl$col("a", "b", "c"),
-        pl$col("d", "e", "f")$to_struct()$alias("second_struct")
-      )$
+      pl$col("a", "b", "c"),
+      pl$col("d", "e", "f")$to_struct()$alias("second_struct")
+    )$
       collect()$
       to_data_frame()
   )
 })
 
 test_that("opt_toggles", {
-
   # some optimization settings
   opt_settings = list(
     type_coercion = FALSE,
@@ -831,7 +830,4 @@ test_that("opt_toggles", {
   on.exit(unlink(tmpf))
   lf_new_opts$sink_ipc(tmpf, inherit_optimization = TRUE)
   expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), df_defaults)
-
 })
-
-

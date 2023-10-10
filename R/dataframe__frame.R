@@ -133,7 +133,6 @@ DataFrame
 #'
 #' # custom schema
 #' pl$DataFrame(iris, schema = list(Sepal.Length = pl$Float32, Species = pl$Utf8))
-
 pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   largs = unpack_list(...)
 
@@ -181,9 +180,9 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     names(largs) = keys
     lapply(seq_along(largs), \(x) {
       varname = keys[x]
-      out <- pl$lit(largs[[x]])
+      out = pl$lit(largs[[x]])
       if (!is.null(schema) && varname %in% names(schema)) {
-        out <- out$cast(schema[[varname]], strict = TRUE)
+        out = out$cast(schema[[varname]], strict = TRUE)
       }
       out$alias(varname)
     }) |>

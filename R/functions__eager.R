@@ -136,8 +136,7 @@ pl$date_range = function(
     name = NULL, # : str | None = None,
     time_unit = "us",
     time_zone = NULL, # : str | None = None
-    explode = TRUE
-    ) {
+    explode = TRUE) {
   if (missing(end)) {
     end = start
     interval = "1h"
