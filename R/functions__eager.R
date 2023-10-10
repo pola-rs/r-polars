@@ -1,13 +1,24 @@
 #' Concat polars objects
 #' @name pl_concat
-#' @param l list of DataFrame, or Series, LazyFrame or Expr
-#' @param rechunk perform a rechunk at last
-#' @param how choice of bind direction "vertical"(rbind) "horizontal"(cbind) "diagonal" diagonally
-#' @param parallel BOOL default TRUE, only used for LazyFrames
+#' @param ... Either individual unpacked args or args wrapped in list(). Args can
+#' be eager as DataFrame, Series and R vectors, or lazy as LazyFrame and Expr.
+#' The first element determines the output of `$concat()`: if the first element
+#' is lazy, a LazyFrame is returned; otherwise, a DataFrame is returned (note
+#' that if the first element is eager, all other elements have to be eager to
+#' avoid implicit collect).
+#' @param rechunk Perform a rechunk at last.
+#' @param how Bind direction. Can be "vertical" (like `rbind()`), "horizontal"
+#' (like `cbind()`), or "diagonal".
+#' @param parallel Only used for LazyFrames. If `TRUE` (default), lazy
+#' computations may be executed in parallel.
+#' @param to_supertypes If `TRUE` (default), cast columns shared super types, if
+#' any. For example, if we try to vertically concatenate two columns of types `i32`
+#' and `f64`, the column of type `i32` will be cast to `f64` beforehand. This
+#' argument is equivalent to the "_relaxed" operations in Python polars.
 #'
 #' @details
-#' Categorical columns/Series must have been constructed while global string cache enabled
-#' [`pl$enable_string_cache()`][pl_enable_string_cache]
+#' Categorical columns/Series must have been constructed while global string
+#' cache enabled. See [`pl$enable_string_cache()`][pl_enable_string_cache].
 #'
 #'
 #' @return DataFrame, or Series, LazyFrame or Expr
@@ -23,7 +34,6 @@
 #' })
 #' pl$concat(l_ver, how = "vertical")
 #'
-#'
 #' # horizontal
 #' l_hor = lapply(1:10, function(i) {
 #'   l_internal = list(
@@ -34,44 +44,116 @@
 #'   pl$DataFrame(l_internal)
 #' })
 #' pl$concat(l_hor, how = "horizontal")
+#'
 #' # diagonal
 #' pl$concat(l_hor, how = "diagonal")
+#'
+#' # if two columns don't share the same type, concat() will error unless we use
+#' # `to_supertypes = TRUE`:
+#' test = pl$DataFrame(x = 1L) # i32
+#' test2 = pl$DataFrame(x = 1.0) #f64
+#'
+#' pl$concat(test, test2, to_supertypes = TRUE)
 pl$concat = function(
-    l, # list of DataFrames or Series or lazyFrames or expr
+    ..., # list of DataFrames or Series or lazyFrames or expr
     rechunk = TRUE,
     how = c("vertical", "horizontal", "diagonal"),
-    parallel = TRUE # not used yet
-    ) {
+    parallel = TRUE,
+    to_supertypes = FALSE) {
+  # unpack arg list
+  l = unpack_list(..., skip_classes = "data.frame")
+
+  # nothing becomes NULL
+  if (length(l) == 0L) {
+    return(NULL)
+  }
+
   ## Check inputs
-  how = match.arg(how[1L], c("vertical", "horizontal", "diagonal"))
+  how_args = c("vertical", "horizontal", "diagonal") # , "vertical_relaxed", "diangonal_relaxed")
+
+  how = match.arg(how[1L], how_args) |>
+    result() |>
+    unwrap("in pl$concat()")
+
+  first = l[[1L]]
+  eager = !inherits(first, "LazyFrame")
+  args_modified = names(as.list(sys.call()[-1L]))
+
+  # check not using any mixing of types which could lead to implicit collect
+  if (eager) {
+    for (i in seq_along(l)) {
+      if (inherits(l[[i]], c("LazyFrame", "Expr"))) {
+        .pr$RPolarsErr$new()$
+          plain("tip: explicitly collect lazy inputs first, e.g. pl$concat(dataframe, lazyframe$collect())")$
+          plain("LazyFrame or Expr not allowed if first arg is a DataFrame, to avoid implicit collect")$
+          bad_robj(l[[i]])$
+          bad_arg(paste("of those to concatenate, number", i)) |>
+          Err() |>
+          unwrap("in pl$concat()")
+      }
+    }
+  }
 
   # dispatch on item class and how
-  first = l[[1L]]
-  result = pcase(
-    inherits(first, "DataFrame"),
+  Result_out = pcase(
+    how == "vertical" && (inherits(first, "Series") || is.vector(first)),
     {
-      vdf = l_to_vdf(l)
-      pcase(
-        how == "vertical",   concat_df(vdf),
-        how == "diagonal",   diag_concat_df(vdf),
-        how == "horizontal", hor_concat_df(vdf),
-        or_else = stopf("Internal error")
+      if (any(args_modified %in% c("parallel"))) {
+        warning(
+          "in pl$concat(): argument `parallel` is not used when concatenating Series",
+          call. = FALSE
+        )
+      }
+      concat_series(l, rechunk, to_supertypes)
+    },
+    how == "vertical",
+    concat_lf(l, rechunk, parallel, to_supertypes),
+    how == "diagonal",
+    {
+      if (any(args_modified %in% c("to_supertypes"))) {
+        warning(
+          "Argument `to_supertypes` is not used when how=='diagonal'",
+          call. = FALSE
+        )
+      }
+      diag_concat_lf(l, rechunk, parallel)
+    },
+    how == "horizontal" && !eager,
+    {
+      Err_plain(
+        "how=='horizontal' is not supported for lazy (first element is LazyFrame).",
+        "Try e.g. <LazyFrame>$join() to get Lazy join or pl$concat(lf1$collect(), lf2, lf3).",
+        "to get a eager horizontal concatenation"
       )
     },
-    inherits(first, "Series"),
+    how == "horizontal",
     {
-      stopf("not implemented Series")
-    },
-    inherits(first, "Expr"),
-    {
-      stopf("not implemented Expr")
+      if (any(args_modified %in% c("parallel", "to_supertypes"))) {
+        warning(
+          "Arguments `parallel`, `rechunk`, `eager` and `to_supertypes` are not used when how=='horizontal'",
+          call. = FALSE
+        )
+      }
+      hor_concat_df(l)
     },
 
     # TODO implement Series, Expr, Lazy etc
-    or_else = stopf(paste0("type of first list element: '", class(first), "' is not supported"))
+    or_else = Err_plain("internal error:", how, "not handled")
   )
 
-  unwrap(result)
+  # convert back from lazy if eager
+  and_then(Result_out, \(x) {
+    pcase(
+      # run-time assertion for future changes
+      inherits(x, "DataFrame") && !eager, Err_plain("internal logical error in pl$concat()"),
+
+      # must collect as in rust side only lazy concat is implemented. Eager inputs are wrapped in
+      # lazy and then collected again. This does not mean any user input is collected.
+      inherits(x, "LazyFrame") && eager, Ok(x$collect()),
+      or_else = Ok(x)
+    )
+  }) |>
+    unwrap("in pl$concat()")
 }
 
 

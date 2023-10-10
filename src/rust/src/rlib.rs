@@ -2,60 +2,16 @@ use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
-
+use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::RFnSignature;
+use crate::CONFIG;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
-use crate::{rdataframe::VecDataFrame, utils::r_result_list};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::functions as pl_functions;
 
 use std::result::Result;
-
-#[extendr]
-fn concat_df(vdf: &VecDataFrame) -> List {
-    //-> PyResult<PyDataFrame> {
-
-    use polars_core::error::PolarsResult;
-    use polars_core::utils::rayon::prelude::*;
-
-    let identity_df = (*vdf.0.iter().peekable().peek().unwrap())
-        .clone()
-        .slice(0, 0);
-    let rdfs: Vec<pl::PolarsResult<pl::DataFrame>> =
-        vdf.0.iter().map(|df| Ok(df.clone())).collect();
-    let identity = || Ok(identity_df.clone());
-
-    let result = polars_core::POOL
-        .install(|| {
-            rdfs.into_par_iter()
-                .fold(identity, |acc: PolarsResult<pl::DataFrame>, df| {
-                    let mut acc = acc?;
-                    acc.vstack_mut(&df?)?;
-                    Ok(acc)
-                })
-                .reduce(identity, |acc, df| {
-                    let mut acc = acc?;
-                    acc.vstack_mut(&df?)?;
-                    Ok(acc)
-                })
-        })
-        .map(DataFrame);
-
-    r_result_list(result.map_err(|err| format!("{:?}", err)))
-}
-
-#[extendr]
-fn diag_concat_df(dfs: &VecDataFrame) -> List {
-    let df = pl_functions::diag_concat_df(&dfs.0[..]).map(DataFrame);
-    r_result_list(df.map_err(|err| format!("{:?}", err)))
-}
-
-#[extendr]
-pub fn hor_concat_df(dfs: &VecDataFrame) -> List {
-    let df = pl_functions::hor_concat_df(&dfs.0[..]).map(DataFrame);
-    r_result_list(df.map_err(|err| format!("{:?}", err)))
-}
 
 #[extendr]
 fn min_exprs(exprs: &ProtoExprArray) -> Expr {
@@ -276,11 +232,35 @@ fn polars_features() -> List {
     )
 }
 
+#[extendr]
+fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
+        Ok(Some(s))
+    };
+    Ok(pl::fold_exprs(robj_to!(PLExpr, acc)?, f, robj_to!(Vec, PLExpr, exprs)?).into())
+}
+
+#[extendr]
+fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
+    let par_fn = ParRObj(lambda);
+    let f = move |acc: pl::Series, x: pl::Series| {
+        let thread_com = ThreadCom::try_from_global(&CONFIG)
+            .map_err(|err| pl::polars_err!(ComputeError: err))?;
+        thread_com.send(RFnSignature::FnTwoSeriesToSeries(par_fn.clone(), acc, x));
+        let s = thread_com.recv().unwrap_series();
+        Ok(Some(s))
+    };
+    Ok(pl::reduce_exprs(f, robj_to!(Vec, PLExpr, exprs)?).into())
+}
+
 extendr_module! {
     mod rlib;
-    fn concat_df;
-    fn hor_concat_df;
-    fn diag_concat_df;
+
     fn min_exprs;
     fn max_exprs;
     fn coalesce_exprs;
@@ -288,6 +268,9 @@ extendr_module! {
 
     fn concat_list;
     fn concat_str;
+
+    fn fold;
+    fn reduce;
 
     //fn r_date_range;
     fn r_date_range_lazy;

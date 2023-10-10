@@ -1032,6 +1032,88 @@ DataFrame_first = function() {
   self$lazy()$first()$collect()
 }
 
+
+#' @title Number of chunks of the Series in a DataFrame
+#' @description
+#' Number of chunks (memory allocations) for all or first Series in a DataFrame.
+#' @details
+#' A DataFrame is a vector of Series. Each Series in rust-polars is a wrapper
+#' around a ChunkedArray, which is like a virtual contiguous vector physically
+#' backed by an ordered set of chunks. Each chunk of values has a contiguous
+#' memory layout and is an arrow array. Arrow arrays are a fast, thread-safe and
+#' cross-platform memory layout.
+#'
+#' In R, combining with `c()` or `rbind()` requires immediate vector re-allocation
+#' to place vector values in contiguous memory. This is slow and memory consuming,
+#' and it is why repeatedly appending to a vector in R is discouraged.
+#'
+#' In polars, when we concatenate or append to Series or DataFrame, the
+#' re-allocation can be avoided or delayed by simply appending chunks to each
+#' individual Series. However, if chunks become many and small or are misaligned
+#' across Series, this can hurt the performance of subsequent operations.
+#'
+#' Most places in the polars api where chunking could occur, the user have to
+#' typically actively opt-out by setting an argument `rechunk = FALSE`.
+#'
+#' @keywords DataFrame
+#' @param strategy Either `"all"` or `"first"`. `"first"` only returns chunks
+#' for the first Series.
+#' @return A real vector of chunk counts per Series.
+#' @seealso [`<DataFrame>$rechunk()`][DataFrame_rechunk]
+#' @examples
+#' # create DataFrame with misaligned chunks
+#' df = pl$concat(
+#'   1:10, # single chunk
+#'   pl$concat(1:5, 1:5, rechunk = FALSE, how = "vertical")$rename("b"), # two chunks
+#'   how = "horizontal"
+#' )
+#' df
+#' df$n_chunks()
+#'
+#' # rechunk a chunked DataFrame
+#' df$rechunk()$n_chunks()
+#'
+#' # rechunk is not an in-place operation
+#' df$n_chunks()
+#'
+#' # The following toy example emulates the Series "chunkyness" in R. Here it a
+#' # S3-classed list with same type of vectors and where have all relevant S3
+#' # generics implemented to make behave as if it was a regular vector.
+#' "+.chunked_vector" = \(x, y) structure(list(unlist(x) + unlist(y)), class = "chunked_vector")
+#' print.chunked_vector = \(x, ...) print(unlist(x), ...)
+#' c.chunked_vector = \(...) {
+#'   structure(do.call(c, lapply(list(...), unclass)), class = "chunked_vector")
+#' }
+#' rechunk = \(x) structure(unlist(x), class = "chunked_vector")
+#' x = structure(list(1:4, 5L), class = "chunked_vector")
+#' x
+#' x + 5:1
+#' lapply(x, tracemem) # trace chunks to verify no re-allocation
+#' z = c(x, x)
+#' z # looks like a plain vector
+#' lapply(z, tracemem) # mem allocation  in z are the same from x
+#' str(z)
+#' z = rechunk(z)
+#' str(z)
+DataFrame_n_chunks = function(strategy = "all") {
+  .pr$DataFrame$n_chunks(self, strategy) |>
+    unwrap("in n_chunks():")
+}
+
+
+#' @title Rechunk a DataFrame
+#' @description Rechunking re-allocates any "chunked" memory allocations to
+#' speed-up e.g. vectorized operations.
+#' @inherit DataFrame_n_chunks details examples
+#'
+#' @keywords DataFrame
+#' @return A DataFrame
+#' @seealso [`<DataFrame>$n_chunks()`][DataFrame_n_chunks]
+DataFrame_rechunk = function() {
+  .pr$DataFrame$rechunk(self)
+}
+
+
 #' @title Get the last row of the DataFrame.
 #' @keywords DataFrame
 #' @return A DataFrame with one row.

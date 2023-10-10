@@ -1,5 +1,3 @@
-// replaces wrap_e_legacy, derived from robj_to!
-
 use crate::lazy::dsl::Expr;
 use crate::robj_to;
 use crate::rpolarserr::*;

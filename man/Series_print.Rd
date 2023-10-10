@@ -2,30 +2,16 @@
 % Please edit documentation in R/series__series.R
 \name{Series_print}
 \alias{Series_print}
-\alias{print.Series}
 \title{Print Series}
 \usage{
-\method{print}{Series}(x, ...)
-
 Series_print()
 }
-\arguments{
-\item{x}{Series}
-
-\item{...}{not used}
-}
 \value{
-invisible(self)
-
 self
 }
 \description{
 Print Series
-
-Print Series
 }
 \examples{
-print(pl$Series(1:3))
 pl$Series(1:3)
 }
-\keyword{internal}

@@ -64,6 +64,7 @@ map_err = function(x, f) {
 #' @param x any R object
 #' @param f a closure that takes the ok part as input
 #' @return same R object wrapped in a Err-result
+#' @noRd
 map = function(x, f) {
   if (is_ok(x)) x$ok <- f(x$ok)
   x
