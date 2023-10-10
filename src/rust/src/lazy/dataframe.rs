@@ -442,12 +442,12 @@ impl LazyFrame {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn optimization_toggle(
+    fn set_optimization_toggle(
         &self,
         type_coercion: Robj,
         predicate_pushdown: Robj,
         projection_pushdown: Robj,
-        simplify_expr: Robj,
+        simplify_expression: Robj,
         slice_pushdown: Robj,
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
@@ -458,7 +458,7 @@ impl LazyFrame {
             .clone()
             .with_type_coercion(robj_to!(bool, type_coercion)?)
             .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
-            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expression)?)
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
@@ -466,6 +466,30 @@ impl LazyFrame {
             .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
 
         Ok(ldf.into())
+    }
+
+    fn get_optimization_toggle(&self) -> List {
+        let pl::OptState {
+            projection_pushdown,
+            predicate_pushdown,
+            type_coercion,
+            simplify_expr,
+            file_caching: _,
+            slice_pushdown,
+            comm_subplan_elim,
+            comm_subexpr_elim,
+            streaming,
+        } = self.0.get_current_optimizations();
+        list!(
+            type_coercion = type_coercion,
+            predicate_pushdown = predicate_pushdown,
+            projection_pushdown = projection_pushdown,
+            simplify_expression = simplify_expr,
+            slice_pushdown = slice_pushdown,
+            comm_subplan_elim = comm_subplan_elim,
+            comm_subexpr_elim = comm_subexpr_elim,
+            streaming = streaming,
+        )
     }
 
     fn profile(&self) -> RResult<List> {

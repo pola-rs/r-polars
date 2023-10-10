@@ -12,8 +12,9 @@ LazyFrame_collect(
   slice_pushdown = TRUE,
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
-  no_optimization = FALSE,
   streaming = FALSE,
+  no_optimization = FALSE,
+  inherit_optimization = FALSE,
   collect_in_background = FALSE
 )
 }
@@ -39,12 +40,15 @@ occur on self-joins or unions.}
 \item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
 reused.}
 
+\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+(this is in an alpha state).}
+
 \item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
-\item{streaming}{Boolean. Run parts of the query in a streaming fashion
-(this is in an alpha state).}
+\item{inherit_optimization}{Boolean. Use existing optimization settings
+regardless the settings specified in this function call.}
 
 \item{collect_in_background}{Boolean. Detach this query from R session.
 Computation will start in background. Get a handle which later can be converted
