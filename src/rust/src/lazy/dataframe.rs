@@ -491,8 +491,6 @@ impl LazyFrame {
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
             streaming = streaming,
-            fast_projection = fast_projection,
-            eager = eager,
         )
     }
 
