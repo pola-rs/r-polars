@@ -207,67 +207,76 @@ ExprStr_to_titlecase = function() {
 }
 
 
-#' Strip
-#' @name ExprStr_strip
-#' @aliases expr_str_strip
+#' Strip leading and trailing characters
+#'
+#' @name ExprStr_strip_chars
+#' @aliases expr_str_strip_chars
 #' @description  Remove leading and trailing characters.
+#'
 #' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars()` removes characters at the beginning and the end of the string.
+#' Use `strip_chars_start()` and `strip_chars_end()` to remove characters only
+#' from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_strip = function(matches = NULL) {
-  .pr$Expr$str_strip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars())
+#' df$select(pl$col("foo")$str$strip_chars(" hel rld"))
+ExprStr_strip_chars = function(matches = NULL) {
+  .pr$Expr$str_strip_chars(self, matches)
 }
 
-#' lstrip
-#' @name ExprStr_lstrip
-#' @aliases expr_str_lstrip
+#' Strip leading characters
+#'
+#' @name ExprStr_strip_chars_start
+#' @aliases expr_str_strip_chars_start
 #' @description  Remove leading characters.
-#' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#'
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars_start()` removes characters at the beginning of the string only.
+#' Use `strip_chars()` and `strip_chars_end()` to remove characters from the left
+#' and right or only from the right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_lstrip = function(matches = NULL) {
-  .pr$Expr$str_lstrip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars_start(" hel rld"))
+ExprStr_strip_chars_start = function(matches = NULL) {
+  .pr$Expr$str_strip_chars_start(self, matches)
 }
 
-#' rstrip
-#' @name ExprStr_rstrip
-#' @aliases expr_str_rstrip
-#' @description  Remove leading characters.
-#' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `rstrip()`and `rstrip()` starts from left and right respectively.
+#' Strip trailing characters
+#'
+#' @name ExprStr_strip_chars_end
+#' @aliases expr_str_strip_chars_end
+#' @description  Remove trailing characters.
+#'
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars_end()` removes characters at the end of the string only.
+#' Use `strip_chars()` and `strip_chars_start()` to remove characters from the left
+#' and right or only from the left respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_rstrip = function(matches = NULL) {
-  .pr$Expr$str_rstrip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars_end(" hel\trld"))
+#' df$select(pl$col("foo")$str$strip_chars_end("rldhel\t "))
+ExprStr_strip_chars_end = function(matches = NULL) {
+  .pr$Expr$str_strip_chars_end(self, matches)
 }
 
 

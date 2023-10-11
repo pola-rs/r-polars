@@ -1897,7 +1897,7 @@ impl Expr {
         f_str_to_titlecase(&self)
     }
 
-    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
+    pub fn str_strip_chars(&self, matches: Nullable<String>) -> Self {
         self.0
             .clone()
             .str()
@@ -1905,7 +1905,7 @@ impl Expr {
             .into()
     }
 
-    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
+    pub fn str_strip_chars_end(&self, matches: Nullable<String>) -> Self {
         self.0
             .clone()
             .str()
@@ -1913,7 +1913,7 @@ impl Expr {
             .into()
     }
 
-    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
+    pub fn str_strip_chars_start(&self, matches: Nullable<String>) -> Self {
         self.0
             .clone()
             .str()

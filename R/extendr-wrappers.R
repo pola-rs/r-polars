@@ -835,11 +835,11 @@ Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
 
 Expr$str_to_titlecase <- function() .Call(wrap__Expr__str_to_titlecase, self)
 
-Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
+Expr$str_strip_chars <- function(matches) .Call(wrap__Expr__str_strip_chars, self, matches)
 
-Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
+Expr$str_strip_chars_end <- function(matches) .Call(wrap__Expr__str_strip_chars_end, self, matches)
 
-Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
+Expr$str_strip_chars_start <- function(matches) .Call(wrap__Expr__str_strip_chars_start, self, matches)
 
 Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
 

@@ -160,19 +160,19 @@ test_that("strip rstrip lstrip", {
   lit = pl$lit(" 123abc ")
 
   # strip
-  expect_identical(lit$str$strip()$to_r(), "123abc")
-  expect_identical(lit$str$strip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$strip("1c ")$to_r(), "23ab")
+  expect_identical(lit$str$strip_chars()$to_r(), "123abc")
+  expect_identical(lit$str$strip_chars("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars("1c ")$to_r(), "23ab")
 
   # lstrip
-  expect_identical(lit$str$lstrip()$to_r(), "123abc ")
-  expect_identical(lit$str$lstrip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$lstrip("1c ")$to_r(), "23abc ")
+  expect_identical(lit$str$strip_chars_start()$to_r(), "123abc ")
+  expect_identical(lit$str$strip_chars_start("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars_start("1c ")$to_r(), "23abc ")
 
   # rstrip
-  expect_identical(lit$str$rstrip()$to_r(), " 123abc")
-  expect_identical(lit$str$rstrip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$rstrip("1c ")$to_r(), " 123ab")
+  expect_identical(lit$str$strip_chars_end()$to_r(), " 123abc")
+  expect_identical(lit$str$strip_chars_end("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars_end("1c ")$to_r(), " 123ab")
 })
 
 
