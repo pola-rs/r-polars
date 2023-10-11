@@ -463,6 +463,13 @@ test_that("str$split", {
     pl$lit("42")$str$split(by = "blop", inclusive = 42),
     "bool"
   )
+
+  # with expression in "by" arg
+  df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+  expect_identical(
+    df$select(pl$col("s")$str$split(by = pl$col("by")))$to_list()[[1]],
+    list("foo^bar", c("foo", "bar"), c("foo", "bar", "baz"))
+  )
 })
 
 test_that("str$split_exact", {
