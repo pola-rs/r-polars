@@ -869,7 +869,7 @@ Expr$str_extract <- function(pattern, group_index) .Call(wrap__Expr__str_extract
 
 Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, self, pattern)
 
-Expr$str_count_match <- function(pattern, literal) .Call(wrap__Expr__str_count_match, self, pattern, literal)
+Expr$str_count_matches <- function(pattern, literal) .Call(wrap__Expr__str_count_matches, self, pattern, literal)
 
 Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
 

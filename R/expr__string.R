@@ -559,9 +559,9 @@ ExprStr_extract_all = function(pattern) {
   .pr$Expr$str_extract_all(self, wrap_e(pattern))
 }
 
-#' count_match
-#' @name ExprStr_count_match
-#' @aliases expr_str_count_match
+#' Count all successive non-overlapping regex matches.
+#' @name ExprStr_count_matches
+#' @aliases expr_str_count_matches
 #' @description Count all successive non-overlapping regex matches.
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
@@ -573,11 +573,11 @@ ExprStr_extract_all = function(pattern) {
 #' @examples
 #' df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
 #' df$select(
-#'   pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+#'   pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
 #' )
-ExprStr_count_match = function(pattern, literal = FALSE) {
-  .pr$Expr$str_count_match(self, pattern, literal) |>
-    unwrap("in $str$count_match():")
+ExprStr_count_matches = function(pattern, literal = FALSE) {
+  .pr$Expr$str_count_matches(self, pattern, literal) |>
+    unwrap("in $str$count_matches():")
 }
 
 

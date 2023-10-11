@@ -2065,7 +2065,7 @@ impl Expr {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
-    pub fn str_count_match(&self, pattern: Robj, literal: Robj) -> RResult<Self> {
+    pub fn str_count_matches(&self, pattern: Robj, literal: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()

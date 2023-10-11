@@ -411,10 +411,10 @@ test_that("str$extract_all", {
 })
 
 
-test_that("str$count_match", {
+test_that("str$count_matches", {
   df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
   actual = df$select(
-    pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+    pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
   )
   expect_identical(
     actual$to_list() |> lapply(as.numeric),
@@ -422,7 +422,7 @@ test_that("str$count_match", {
   )
 
   expect_grepl_error(
-    df$select(pl$col("foo")$str$count_match(5)),
+    df$select(pl$col("foo")$str$count_matches(5)),
     "data types don't match"
   )
 })
