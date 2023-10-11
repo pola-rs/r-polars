@@ -320,10 +320,18 @@ impl InnerRBackgroundPool {
 
     fn release_handler(&mut self, mut handle: RBackgroundHandler) -> RResult<()> {
         match (handle.proc.try_wait()?, self.queue.pop_front()) {
-            // 1a: too many active handlers. Kill it !
-            (_, _) if self.active > self.cap => {
+            // 1a-a: too many active handlers. Kill it ! + Put back first queue member in queue
+            (_, Some(first_queue_member)) if self.active > self.cap => {
                 #[cfg(feature = "rpolars_debug_print")]
-                println!("1a - too many kill it!");
+                println!("1a-a -  ");
+                self.queue.push_front(first_queue_member);
+                self.destroy_handler(handle)
+            }
+
+            // 1a-a: too many active handlers and not needed. Kill it !
+            (_, None) if self.active > self.cap => {
+                #[cfg(feature = "rpolars_debug_print")]
+                println!("1a-b -  ");
                 self.destroy_handler(handle)
             }
 

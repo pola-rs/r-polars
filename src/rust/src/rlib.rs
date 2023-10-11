@@ -61,7 +61,7 @@ fn r_date_range_lazy(
     time_zone: Robj,
     explode: Robj,
 ) -> RResult<Expr> {
-    let expr = polars::lazy::dsl::functions::date_range(
+    let expr = polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         robj_to!(pl_duration, every)?,
