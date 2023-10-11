@@ -474,11 +474,13 @@ impl LazyFrame {
             predicate_pushdown,
             type_coercion,
             simplify_expr,
-            file_caching: _,
             slice_pushdown,
+            file_caching: _,
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
+            fast_projection,
+            eager
         } = self.0.get_current_optimizations();
         list!(
             type_coercion = type_coercion,
@@ -489,6 +491,8 @@ impl LazyFrame {
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
             streaming = streaming,
+            fast_projection = fast_projection,
+            eager = eager,
         )
     }
 

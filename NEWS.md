@@ -16,6 +16,8 @@
     - `$str$strip()` -> `$str$strip_chars()`
     - `$str$lstrip()` -> `$str$strip_chars_start()`
     - `$str$rstrip()` -> `$str$strip_chars_end()`
+- `$get_optimization_toggle()` now returns two additional values: `fast_projection`
+  and `eager`.
 - Updated Rust toolchain.
 
 ## Breaking changes
