@@ -156,7 +156,7 @@ test_that("to_titlecase - enabled via full_features", {
 })
 
 
-test_that("strip rstrip lstrip", {
+test_that("strip_chars_*()", {
   lit = pl$lit(" 123abc ")
 
   # strip
@@ -424,6 +424,16 @@ test_that("str$count_matches", {
   expect_grepl_error(
     df$select(pl$col("foo")$str$count_matches(5)),
     "data types don't match"
+  )
+
+  df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
+  actual = df2$select(
+    pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+  )
+
+  expect_identical(
+    actual$to_list() |> lapply(as.numeric),
+    list(reg_count = c(1, 2))
   )
 })
 

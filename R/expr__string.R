@@ -573,7 +573,7 @@ ExprStr_extract_all = function(pattern) {
 #' @aliases expr_str_count_matches
 #' @description Count all successive non-overlapping regex matches.
 #' @keywords ExprStr
-#' @param pattern A valid regex pattern
+#' @param pattern String or Expr of a string, a valid regex pattern.
 #' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return
@@ -584,8 +584,15 @@ ExprStr_extract_all = function(pattern) {
 #' df$select(
 #'   pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
 #' )
+#'
+#' # we can use Polars expressions as pattern so that it's not necessarily the
+#' # same for all rows
+#' df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
+#' df2$with_columns(
+#'   pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+#' )
 ExprStr_count_matches = function(pattern, literal = FALSE) {
-  .pr$Expr$str_count_matches(self, pattern, literal) |>
+  .pr$Expr$str_count_matches(self, wrap_e(pattern), literal) |>
     unwrap("in $str$count_matches():")
 }
 
