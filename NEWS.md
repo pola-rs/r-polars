@@ -11,6 +11,11 @@
 - `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the
   behavior of `$min()`).
 - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
+- Renamed functions:
+    - `$str$count_match()` -> `$str$count_matches()`
+    - `$str$strip()` -> `$str$strip_chars()`
+    - `$str$lstrip()` -> `$str$strip_chars_start()`
+    - `$str$rstrip()` -> `$str$strip_chars_end()`
 - Updated Rust toolchain.
 
 ## Breaking changes
