@@ -16,8 +16,9 @@ LazyFrame_sink_parquet(
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
   simplify_expression = TRUE,
+  slice_pushdown = TRUE,
   no_optimization = FALSE,
-  slice_pushdown = TRUE
+  inherit_optimization = FALSE
 )
 }
 \arguments{
@@ -71,12 +72,15 @@ at the scan level.}
 \item{simplify_expression}{Boolean. Various optimizations, such as constant
 folding and replacing expensive operations with faster alternatives.}
 
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+
 \item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
 \code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
 \code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
 
-\item{slice_pushdown}{Boolean. Only load the required slice from the scan
-level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+\item{inherit_optimization}{Boolean. Use existing optimization settings
+regardless the settings specified in this function call.}
 }
 \description{
 This writes the output of a query directly to a Parquet file without collecting
