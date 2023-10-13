@@ -1373,7 +1373,7 @@ Expr_rechunk = "use_extendr_wrapper"
 #' @aliases Expr_cumsum
 #' @name Expr_cumsum
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @format NULL
 #' @examples
@@ -1394,7 +1394,7 @@ Expr_cumsum = function(reverse = FALSE) {
 #' @aliases cumprod
 #' @name Expr_cumprod
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' @format NULL
@@ -1415,7 +1415,7 @@ Expr_cumprod = function(reverse = FALSE) {
 #' @aliases cummin
 #' @name Expr_cummin
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1437,7 +1437,7 @@ Expr_cummin = function(reverse = FALSE) {
 #' @aliases cummin
 #' @name Expr_cummin
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1460,7 +1460,7 @@ Expr_cummax = function(reverse = FALSE) {
 #' @aliases cumcount
 #' @name Expr_cumcount
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' cumcount does not seem to count within lists.
@@ -2065,7 +2065,7 @@ Expr_nan_min = "use_extendr_wrapper"
 #' Get sum value
 #'
 #' @details
-#'  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#'  Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' @return Expr
