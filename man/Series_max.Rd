@@ -13,7 +13,7 @@ R scalar value
 Reduce Series with max
 }
 \details{
-Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+Dtypes in \verb{\{Int8, UInt8, Int16, UInt16\}} are cast to
 Int64 before maxming to prevent overflow issues.
 }
 \examples{
