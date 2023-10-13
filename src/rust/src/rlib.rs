@@ -2,14 +2,13 @@ use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
 use crate::rdataframe::DataFrame;
 use crate::robj_to;
+use crate::rpolarserr::{rdbg, RResult};
+use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::RFnSignature;
 use crate::CONFIG;
-use crate::rpolarserr::{rdbg, RResult};
-use crate::series::Series;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-use polars_core::functions as pl_functions;
 
 use std::result::Result;
 

@@ -1865,6 +1865,7 @@ dependencies = [
 name = "r-polars"
 version = "0.1.0"
 dependencies = [
+ "either",
  "extendr-api",
  "flume",
  "indenter",

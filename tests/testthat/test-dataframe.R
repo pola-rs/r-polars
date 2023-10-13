@@ -1128,3 +1128,65 @@ test_that("sample", {
     df$sample(fraction = 0.1, seed = "123")$to_data_frame()
   )
 })
+
+test_that("transpose", {
+  # R function to mimic polars transpose
+  R_t_df = \(df, include_header = FALSE, header_name = "column", column_names = NULL) {
+    tdf = as.data.frame(t(df))
+
+    if (include_header) {
+      header_name_df = data.frame(column = rownames(tdf))
+      colnames(header_name_df) = header_name
+      tdf = cbind(header_name_df, tdf)
+    }
+    rownames(tdf) = NULL
+    tdf
+  }
+
+
+  # include_header + custom header column name + column names
+  expect_identical(
+    pl$DataFrame(mtcars)$
+      transpose(include_header = TRUE, header_name = "alice", column_names = rownames(mtcars))$
+      to_data_frame(),
+    R_t_df(mtcars, include_header = TRUE, header_name = "alice")
+  )
+
+  # same but default column name
+  expect_identical(
+    pl$DataFrame(mtcars)$
+      transpose(include_header = TRUE, column_names = rownames(mtcars))$
+      to_data_frame(),
+    R_t_df(mtcars, include_header = TRUE)
+  )
+
+  # no heaser column
+  expect_identical(
+    pl$DataFrame(mtcars)$
+      transpose(include_header = FALSE, column_names = rownames(mtcars))$
+      to_data_frame(),
+    R_t_df(mtcars, include_header = FALSE)
+  )
+
+  # use default column names
+  df_expected = R_t_df(mtcars, include_header = FALSE)
+  colnames(df_expected) = paste0("column_", seq_len(ncol(df_expected)) - 1L)
+  expect_identical(
+    pl$DataFrame(mtcars)$
+      transpose(include_header = FALSE, column_names = NULL)$
+      to_data_frame(),
+    df_expected
+  )
+
+  # transpose mixed types with a shared super tpye
+  df_expected = R_t_df(iris, include_header = FALSE)
+  colnames(df_expected) = paste0("column_", seq_len(ncol(df_expected)) - 1L)
+  expect_identical(
+    pl$DataFrame(iris)$
+      with_columns(pl$col("Species")$
+      cast(pl$Utf8))$
+      transpose(FALSE)$
+      to_data_frame(),
+    df_expected
+  )
+})
