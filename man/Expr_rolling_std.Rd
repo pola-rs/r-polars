@@ -44,7 +44,7 @@ a result. If None, it will be set equal to window size.}
 set the column that will be used to determine the windows. This column must
 be of dtype \verb{\{Date, Datetime\}}}
 
-\item{closed}{: {'left', 'right', 'both', 'none'}
+\item{closed}{: \verb{\{'left', 'right', 'both', 'none'\}}
 Define whether the temporal window interval is closed or not.}
 }
 \value{

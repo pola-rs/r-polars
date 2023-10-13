@@ -3045,7 +3045,7 @@ Expr_rolling_sum = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed : {'left', 'right', 'both', 'none'}
+#' @param closed : `{'left', 'right', 'both', 'none'}`
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
