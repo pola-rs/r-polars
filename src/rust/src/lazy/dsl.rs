@@ -13,7 +13,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
-use crate::utils::{r_error_list, r_ok_list, r_result_list};
+use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
 use crate::utils::{
     try_f64_into_i64, try_f64_into_u32, try_f64_into_usize, try_f64_into_usize_no_zero,
 };
@@ -87,6 +87,7 @@ impl Expr {
 
         match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
+            (Rtype::Raw, _) => Ok(dsl::lit(robj_to_binary_vec(robj)?)), // Raw in R is seen as a vector of bytes, in polars it is a Literal, not wrapped in a Series.
             (_, rlen) if rlen != 1 => to_series_then_lit(robj),
             (Rtype::List, _) => to_series_then_lit(robj),
             (_, _) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
