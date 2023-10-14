@@ -97,6 +97,22 @@ pub fn pl_series_to_list(
             Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
 
             Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
+            Binary => s.binary().map(|ca| {
+                let x: Vec<_> = ca
+                    .into_iter()
+                    .map(|opt_slice_binary| {
+                        if let Some(slice_binary) = opt_slice_binary {
+                            r!(Raw::from_bytes(slice_binary))
+                        } else {
+                            r!(extendr_api::NULL)
+                        }
+                    })
+                    .collect();
+                extendr_api::List::from_values(x)
+                    .into_robj()
+                    .set_class(["rpolars_raw_list", "list"])
+                    .expect("this class label is always valid")
+            }),
             Categorical(_) => s
                 .categorical()
                 .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
