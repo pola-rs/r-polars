@@ -3042,10 +3042,10 @@ Expr_rolling_sum = function(
 #' @param center
 #' Set the labels at the center of the window
 #' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
+#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
 #' set the column that will be used to determine the windows. This column must
-#' be of dtype `{Date, Datetime}`
-#' @param closed : `{'left', 'right', 'both', 'none'}`
+#' be of DataType: Date or DateTime.
+#' @param closed string option `c("left", "right", "both", "none")`.
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -3066,13 +3066,14 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE, # :bool,
     by = NULL, # : Nullable<String>,
-    closed = "left" # ;: Nullable<String>,
+    closed = c("left", "right", "both", "none")
     ) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
-  unwrap(.pr$Expr$rolling_std(
+  .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed
-  ))
+    wargs$min_periods, center, by, closed[1L]
+  ) |>
+    unwrap("in $rolling_std(): ")
 }
 
 #' Rolling var
