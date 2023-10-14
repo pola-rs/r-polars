@@ -112,7 +112,7 @@ impl Series {
     pub fn value_counts(
         &self,
         sort: bool,
-        parallel: bool
+        parallel: bool,
     ) -> std::result::Result<DataFrame, String> {
         self.0
             .value_counts(sort, parallel)
