@@ -83,17 +83,16 @@ test_that("bin$encode and bin$decode", {
 
 
 test_that("Raw to lit and series", {
-
-  #craete a rpolars_raw_list
-  raw_list = pl$raw_list(raw(1),raw(3), charToRaw("alice"), NULL)
+  # craete a rpolars_raw_list
+  raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
   bin_series = pl$Series(raw_list)
 
   # round trip conversion
   expect_identical(bin_series$to_r(), raw_list)
 
   # non isomorphic conversions of plain Raw, via Series and lit
-  expect_identical(pl$Series(raw())$to_r(), pl$raw_list(raw())) #plain raw becomes, rpolars_raw_list
-  expect_identical(pl$lit(raw())$to_r(), pl$raw_list(raw())) #plain lit becomes, rpolars_raw_list
+  expect_identical(pl$Series(raw())$to_r(), pl$raw_list(raw())) # plain raw becomes, rpolars_raw_list
+  expect_identical(pl$lit(raw())$to_r(), pl$raw_list(raw())) # plain lit becomes, rpolars_raw_list
 
   # raw -> lit -> s -> R == raw -> s -> R
   expect_identical(pl$lit(raw())$lit_to_s()$to_r(), pl$Series(raw())$to_r())
@@ -101,13 +100,12 @@ test_that("Raw to lit and series", {
   # raw -> s -> lit -> R  == raw -> lit -> R
   expect_identical(pl$lit(pl$Series(raw()))$to_r(), pl$lit(raw())$to_r())
 
-  #empty raw_list
+  # empty raw_list
   expect_identical(pl$Series(pl$raw_list())$to_r(), raw_list[c()])
 
   # subset
-  expect_identical(pl$raw_list(raw(1),raw(2),raw(3))[2:4],pl$raw_list(raw(2),raw(3), NULL))
+  expect_identical(pl$raw_list(raw(1), raw(2), raw(3))[2:4], pl$raw_list(raw(2), raw(3), NULL))
 
   # convert
   expect_identical(as.list(raw_list), unclass(raw_list))
-
 })

@@ -1005,18 +1005,17 @@ ExprDT_nanoseconds = function() {
 #'
 #' # the "by" argument also accepts expressions
 #' df = pl$DataFrame(
-#' dates = pl$date_range(
-#'   as.POSIXct("2022-01-01", tz = "GMT"),
-#'   as.POSIXct("2022-01-02", tz = "GMT"),
-#'   interval = "6h", time_unit = "ms", time_zone = "GMT"
-#' )$to_r(),
-#' offset = c("1d", "-2d", "1mo", NA, "1y")
+#'   dates = pl$date_range(
+#'     as.POSIXct("2022-01-01", tz = "GMT"),
+#'     as.POSIXct("2022-01-02", tz = "GMT"),
+#'     interval = "6h", time_unit = "ms", time_zone = "GMT"
+#'   )$to_r(),
+#'   offset = c("1d", "-2d", "1mo", NA, "1y")
 #' )
 #'
 #' df
 #'
 #' df$with_columns(new_dates = pl$col("dates")$dt$offset_by(pl$col("offset")))
-
 ExprDT_offset_by = function(by) {
   .pr$Expr$dt_offset_by(self, by) |>
     unwrap("in $offset_by():")

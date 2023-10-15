@@ -36,8 +36,8 @@ the same as unclass(x)
 }
 \examples{
 
-#craete a rpolars_raw_list
-raw_list = pl$raw_list(raw(1),raw(3), charToRaw("alice"), NULL)
+# craete a rpolars_raw_list
+raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
 
 
 # pass it to Series or lit
@@ -48,12 +48,11 @@ pl$lit(raw_list)
 pl$Series(raw_list)$to_r()
 
 
-#NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
-pl$Series(list(raw(1),raw(2)))
+# NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
+pl$Series(list(raw(1), raw(2)))
 
 # to regular list, use as.list or unclass
 as.list(raw_list)
-
 
 # subsetting preserves class
 pl$raw_list(NULL, raw(2), raw(3))[1:2]

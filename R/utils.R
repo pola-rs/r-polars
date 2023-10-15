@@ -587,13 +587,11 @@ str_string = function(x, collapse = " ") {
 check_tz_to_result = function(tz, allow_null = TRUE) {
   pcase(
     is.null(tz) && !allow_null, Err_plain("pre-check tz: here NULL tz is not allowed"),
-
     !is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames()), Err_plain(
       "pre-check tz: '",
       tz,
       "' is not a valid time zone string from base::OlsonNames() or NULL"
     ),
-
     or_else = Ok(tz)
   )
 }

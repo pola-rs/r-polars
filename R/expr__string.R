@@ -62,7 +62,6 @@ ExprStr_strptime = function(
     exact = TRUE, # : bool = True,
     cache = TRUE, # : bool = True,
     ambiguous = "raise") {
-
   # match on datatype, return RResult<Expr>
   pcase(
 

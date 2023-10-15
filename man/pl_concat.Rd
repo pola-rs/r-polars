@@ -62,7 +62,7 @@ pl$concat(l_hor, how = "diagonal")
 # if two columns don't share the same type, concat() will error unless we use
 # `to_supertypes = TRUE`:
 test = pl$DataFrame(x = 1L) # i32
-test2 = pl$DataFrame(x = 1.0) #f64
+test2 = pl$DataFrame(x = 1.0) # f64
 
 pl$concat(test, test2, to_supertypes = TRUE)
 }

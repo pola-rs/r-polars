@@ -329,7 +329,6 @@ test_that("col DataType + col(s) + col regex", {
     pl$DataFrame(iris)$select(pl$col("^Sepal.*$"))$to_data_frame(),
     iris[, Names]
   )
-
 })
 
 
@@ -705,7 +704,7 @@ test_that("slice", {
     )$to_list(),
     # TODO likely bug in rust-polars update test at next bump
     # https://github.com/pola-rs/polars/issues/11647
-    list(a = 50.5, b = 50.5)  #original answer lapply(l, head, length(l$a) / 2)
+    list(a = 50.5, b = 50.5) # original answer lapply(l, head, length(l$a) / 2)
   )
 
   # use default length (max length)

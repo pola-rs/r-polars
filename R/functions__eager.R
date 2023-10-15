@@ -51,7 +51,7 @@
 #' # if two columns don't share the same type, concat() will error unless we use
 #' # `to_supertypes = TRUE`:
 #' test = pl$DataFrame(x = 1L) # i32
-#' test2 = pl$DataFrame(x = 1.0) #f64
+#' test2 = pl$DataFrame(x = 1.0) # f64
 #'
 #' pl$concat(test, test2, to_supertypes = TRUE)
 pl$concat = function(
@@ -301,8 +301,8 @@ difftime_to_pl_duration = function(dft) {
 #'
 #' @examples
 #'
-#' #craete a rpolars_raw_list
-#' raw_list = pl$raw_list(raw(1),raw(3), charToRaw("alice"), NULL)
+#' # craete a rpolars_raw_list
+#' raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
 #'
 #'
 #' # pass it to Series or lit
@@ -313,22 +313,23 @@ difftime_to_pl_duration = function(dft) {
 #' pl$Series(raw_list)$to_r()
 #'
 #'
-#' #NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
-#' pl$Series(list(raw(1),raw(2)))
+#' # NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
+#' pl$Series(list(raw(1), raw(2)))
 #'
 #' # to regular list, use as.list or unclass
 #' as.list(raw_list)
 #'
-#'
 pl$raw_list = function(...) {
   l = list2(...)
-  if( length(l) > 0L && !all(sapply(l, is.raw) | sapply(l, is.null)) ) {
+  if (length(l) > 0L && !all(sapply(l, is.raw) | sapply(l, is.null))) {
     Err_plain("some elements where not raw")
   } else {
-    Ok(c())
-  } |>
-    unwrap("in pl$raw_list")
-  class(l) = c("rpolars_raw_list","list")
+    {
+      Ok(c())
+    } |>
+      unwrap("in pl$raw_list")
+  }
+  class(l) = c("rpolars_raw_list", "list")
   l
 }
 
@@ -343,7 +344,7 @@ pl$raw_list = function(...) {
 #' pl$raw_list(NULL, raw(2), raw(3))[1:2]
 "[.rpolars_raw_list" = function(x, index) {
   x = unclass(x)[index]
-  class(x) = c("rpolars_raw_list","list")
+  class(x) = c("rpolars_raw_list", "list")
   x
 }
 
@@ -358,7 +359,3 @@ pl$raw_list = function(...) {
 "as.list.rpolars_raw_list" = function(x, ...) {
   unclass(x)
 }
-
-
-
-
