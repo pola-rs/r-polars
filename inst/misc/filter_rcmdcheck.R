@@ -19,7 +19,14 @@ ignore_rules = list(
     }
   ),
   warnings = list(),
-  errors = list()
+  errors = list(
+
+    #R4.3.x devel now requires no unquoted braces '{' in docs. This filter turns off that error
+    # until fixed likely via PR #424
+    ignore_lost_braces = function(msg) {
+      isTRUE(grepl("Lost braces",msg))
+    }
+  )
 )
 
 
