@@ -289,7 +289,7 @@ difftime_to_pl_duration = function(dft) {
 #' @param ... elements
 #' @details
 #' In R raw can contain a binary sequence of bytes, and the length is the number of bytes.
-#' In polars a Series of DataType [binary] is more like a vector of vectors of bytes and missings
+#' In polars a Series of DataType [Binary][pl_dtypes] is more like a vector of vectors of bytes and missings
 #' 'Nulls' is allowed, similar to R NAs in vectors.
 #'
 #' To ensure correct round-trip conversion r-polars uses an R list where any elements must be

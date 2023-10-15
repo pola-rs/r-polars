@@ -26,7 +26,7 @@ create an "rpolars_raw_list", which is an R list where all elements must be an R
 }
 \details{
 In R raw can contain a binary sequence of bytes, and the length is the number of bytes.
-In polars a Series of DataType \link{binary} is more like a vector of vectors of bytes and missings
+In polars a Series of DataType \link[=pl_dtypes]{Binary} is more like a vector of vectors of bytes and missings
 'Nulls' is allowed, similar to R NAs in vectors.
 
 To ensure correct round-trip conversion r-polars uses an R list where any elements must be
