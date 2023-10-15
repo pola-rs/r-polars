@@ -1,6 +1,6 @@
 # polars (development version)
 
-## CHANGES DUE TO RUST-POLARS 0.33.2
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.33.2 (#417)
   - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
@@ -54,7 +54,7 @@
 
 # polars 0.8.0
 
-## CHANGES DUE TO RUST-POLARS 0.32.0
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 rust-polars was updated to 0.32.0, which comes with many breaking changes and new
 features. Unrelated breaking changes and new features are put in separate sections
