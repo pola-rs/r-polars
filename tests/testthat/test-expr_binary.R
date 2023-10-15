@@ -108,4 +108,11 @@ test_that("Raw to lit and series", {
 
   # convert
   expect_identical(as.list(raw_list), unclass(raw_list))
+
+  # test non-raw invalid input
+  expect_identical(
+    pl$raw_list(42) |> get_err_ctx("Plain"),
+    "some elements where not raw or NULL"
+  )
+
 })

@@ -321,13 +321,9 @@ difftime_to_pl_duration = function(dft) {
 #'
 pl$raw_list = function(...) {
   l = list2(...)
-  if (length(l) > 0L && !all(sapply(l, is.raw) | sapply(l, is.null))) {
-    Err_plain("some elements where not raw")
-  } else {
-    {
-      Ok(c())
-    } |>
-      unwrap("in pl$raw_list")
+  if ( any(!sapply(l, is.raw) & !sapply(l, is.null))) {
+    Err_plain("some elements where not raw or NULL") |>
+      unwrap("in pl$raw_list():")
   }
   class(l) = c("rpolars_raw_list", "list")
   l
