@@ -5,7 +5,8 @@
 \alias{expr_str_split}
 \title{split}
 \arguments{
-\item{by}{Substring to split by.}
+\item{by}{String or Expr of a string, a valid regex pattern that will be
+used to split the string.}
 
 \item{inclusive}{If True, include the split character/string in the results.}
 }
@@ -18,5 +19,8 @@ Split the string by a substring.
 \examples{
 df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 df$select(pl$col("s")$str$split(by = " "))
+
+df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
 }
 \keyword{ExprStr}

@@ -156,23 +156,23 @@ test_that("to_titlecase - enabled via full_features", {
 })
 
 
-test_that("strip rstrip lstrip", {
+test_that("strip_chars_*()", {
   lit = pl$lit(" 123abc ")
 
   # strip
-  expect_identical(lit$str$strip()$to_r(), "123abc")
-  expect_identical(lit$str$strip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$strip("1c ")$to_r(), "23ab")
+  expect_identical(lit$str$strip_chars()$to_r(), "123abc")
+  expect_identical(lit$str$strip_chars("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars("1c ")$to_r(), "23ab")
 
   # lstrip
-  expect_identical(lit$str$lstrip()$to_r(), "123abc ")
-  expect_identical(lit$str$lstrip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$lstrip("1c ")$to_r(), "23abc ")
+  expect_identical(lit$str$strip_chars_start()$to_r(), "123abc ")
+  expect_identical(lit$str$strip_chars_start("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars_start("1c ")$to_r(), "23abc ")
 
   # rstrip
-  expect_identical(lit$str$rstrip()$to_r(), " 123abc")
-  expect_identical(lit$str$rstrip("1c")$to_r(), " 123abc ")
-  expect_identical(lit$str$rstrip("1c ")$to_r(), " 123ab")
+  expect_identical(lit$str$strip_chars_end()$to_r(), " 123abc")
+  expect_identical(lit$str$strip_chars_end("1c")$to_r(), " 123abc ")
+  expect_identical(lit$str$strip_chars_end("1c ")$to_r(), " 123ab")
 })
 
 
@@ -411,10 +411,10 @@ test_that("str$extract_all", {
 })
 
 
-test_that("str$count_match", {
+test_that("str$count_matches", {
   df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
   actual = df$select(
-    pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+    pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
   )
   expect_identical(
     actual$to_list() |> lapply(as.numeric),
@@ -422,8 +422,18 @@ test_that("str$count_match", {
   )
 
   expect_grepl_error(
-    pl$col("foo")$str$count_match(5),
-    "String"
+    df$select(pl$col("foo")$str$count_matches(5)),
+    "data types don't match"
+  )
+
+  df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
+  actual = df2$select(
+    pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+  )
+
+  expect_identical(
+    actual$to_list() |> lapply(as.numeric),
+    list(reg_count = c(1, 2))
   )
 })
 
@@ -445,13 +455,20 @@ test_that("str$split", {
   )
 
   expect_grepl_error(
-    pl$lit("42")$str$split(by = 42L, inclusive = TRUE),
-    "str"
+    pl$DataFrame(pl$lit("42")$str$split(by = 42L, inclusive = TRUE)),
+    "data types don't match"
   )
 
   expect_grepl_error(
     pl$lit("42")$str$split(by = "blop", inclusive = 42),
     "bool"
+  )
+
+  # with expression in "by" arg
+  df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+  expect_identical(
+    df$select(pl$col("s")$str$split(by = pl$col("by")))$to_list()[[1]],
+    list("foo^bar", c("foo", "bar"), c("foo", "bar", "baz"))
   )
 })
 

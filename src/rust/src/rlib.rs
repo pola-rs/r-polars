@@ -9,7 +9,6 @@ use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-use polars_core::functions as pl_functions;
 
 use std::result::Result;
 
