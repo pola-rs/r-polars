@@ -2,22 +2,21 @@
 
 ## CHANGES DUE TO RUST-POLARS 0.33.2
 
-- In all date-time related methods, the argument `use_earliest` is now called
-  `ambiguous` and defaults to `"raise"`.
-- In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
-- In `$value_counts()`, the arguments `multithreaded` and `sort` (sometimes called
-  `sorted`) have been swapped and renamed `sort` and `parallel`.
-- `$str$count_match()` gains a `literal` argument.
-- `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the
-  behavior of `$min()`).
-- Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
-- Renamed functions:
-    - `$str$count_match()` -> `$str$count_matches()`
-    - `$str$strip()` -> `$str$strip_chars()`
-    - `$str$lstrip()` -> `$str$strip_chars_start()`
-    - `$str$rstrip()` -> `$str$strip_chars_end()`
-- Argument `pattern` of `$str$count_matches()` can now use expressions.
-- Updated Rust toolchain.
+- rust-polars is updated to 0.33.2 (#417)
+  - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
+  - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
+  - In `$value_counts()`, the arguments `multithreaded` and `sort`
+    (sometimes called `sorted`) have been swapped and renamed `sort` and `parallel`.
+  - `$str$count_match()` gains a `literal` argument.
+  - `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the behavior of `$min()`).
+  - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
+  - Argument `pattern` of `$str$count_matches()` can now use expressions.
+  - Needs Rust toolchain `nightly-2023-08-26` for to build with full features.
+- Rename R functions to match rust-polars
+  - `$str$count_match()` -> `$str$count_matches()` (#417)
+  - `$str$strip()` -> `$str$strip_chars()` (#417)
+  - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
+  - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
 
 ## Breaking changes
 
