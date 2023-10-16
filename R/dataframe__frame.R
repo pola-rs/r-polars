@@ -836,14 +836,14 @@ DataFrame_filter = function(bool_expr) {
 }
 
 #' Group a DataFrame
-#' @inherit LazyFrame_groupby description params
+#' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
 #' gb = pl$DataFrame(
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
-#' )$groupby("foo", maintain_order = TRUE)
+#' )$group_by("foo", maintain_order = TRUE)
 #'
 #' gb
 #'
@@ -851,9 +851,9 @@ DataFrame_filter = function(bool_expr) {
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
+DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
 

@@ -1441,7 +1441,7 @@ test_that("Expr_filter", {
     b = c(1, 2, 3)
   ))
 
-  df = pdf$groupby("group_col", maintain_order = TRUE)$agg(
+  df = pdf$group_by("group_col", maintain_order = TRUE)$agg(
     pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
     pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
   )$to_data_frame()
@@ -1468,7 +1468,7 @@ test_that("Expr explode/flatten", {
   )
 
   little_iris = iris[c(1:3, 51:53), ]
-  listed_group_df = pl$DataFrame(little_iris)$groupby("Species", maintain_order = TRUE)$agg(pl$all())
+  listed_group_df = pl$DataFrame(little_iris)$group_by("Species", maintain_order = TRUE)$agg(pl$all())
   vectors_df = listed_group_df$select(
     pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
   )
