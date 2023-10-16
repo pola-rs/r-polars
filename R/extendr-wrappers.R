@@ -65,6 +65,8 @@ test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
+test_robj_to_roption <- function(robj) .Call(wrap__test_robj_to_roption, robj)
+
 polars_features <- function() .Call(wrap__polars_features)
 
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)

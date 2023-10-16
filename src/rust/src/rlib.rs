@@ -5,12 +5,11 @@ use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
+use crate::utils::robj_to_roption;
 use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
 use polars::prelude as pl;
-use polars_core::functions as pl_functions;
-
 use std::result::Result;
 
 #[extendr]
@@ -223,6 +222,12 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
+fn test_robj_to_roption(robj: Robj) -> RResult<String> {
+    // robj can be any non-zero length char vec, will return first string.
+    robj_to_roption(robj)
+}
+
+#[extendr]
 fn polars_features() -> List {
     list!(
         full_features = cfg!(feature = "full_features"),
@@ -302,6 +307,7 @@ extendr_module! {
     fn test_print_string;
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
+    fn test_robj_to_roption;
 
     //feature flags
     fn polars_features;

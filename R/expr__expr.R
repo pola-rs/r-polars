@@ -3071,7 +3071,7 @@ Expr_rolling_std = function(
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
-    wargs$min_periods, center, by, closed[1L]
+    wargs$min_periods, center, by, closed
   ) |>
     unwrap("in $rolling_std(): ")
 }

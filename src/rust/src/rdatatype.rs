@@ -1,6 +1,6 @@
 use crate::robj_to;
 use crate::utils::wrappers::Wrap;
-use crate::utils::{r_result_list, robj_to_string};
+use crate::utils::{r_result_list, robj_to_roption, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
@@ -297,16 +297,15 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
 }
 
 pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
-    let s = robj_to_string(robj.clone())?;
     use pl::ClosedWindow as CW;
-    match s.as_str() {
+    match robj_to_roption(robj)?.as_str() {
         "both" => Ok(CW::Both),
         "left" => Ok(CW::Left),
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
-        _ => rerr()
-            .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
-            .bad_robj(&robj),
+        s => rerr().bad_val(format!(
+            "ClosedWindow choice ['{s}'] is not any of 'both', 'left', 'none' or 'right'"
+        )),
     }
 }
 

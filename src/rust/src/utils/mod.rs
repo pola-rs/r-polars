@@ -8,16 +8,19 @@ use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use crate::series::Series;
-use extendr_api::prelude::list;
+
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
 use crate::rdataframe::{DataFrame, LazyFrame};
 use extendr_api::eval_string_with_params;
+use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
+use extendr_api::CanBeNA;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
 use extendr_api::R;
+
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -529,6 +532,27 @@ pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> RResult<&'a str> {
         (Some(x), 1) => Ok(x),
         (_, _) => rerr().bad_robj(&robj).mistyped(tn::<&'a str>()),
     }
+}
+
+// this conversion exists to support R option char vec e.g. c("a", "b"), it will only get "a" and igonore the rest
+// conversion error if not a char vec or zero length
+pub fn robj_to_roption(robj: extendr_api::Robj) -> RResult<String> {
+    let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone();
+    let s_res: EResult<Strings> = robj.try_into();
+    let opt_str = s_res.map(|s| s.iter().next().map(|rstr| rstr.clone()));
+    match opt_str {
+        Ok(Some(rstr)) if rstr.is_na() => {
+            Err(RPolarsErr::new().plain("an R option/choice should not be a NA_character".into()))
+        }
+        Ok(Some(rstr)) => Ok(rstr.to_string()),
+        Err(_) => {
+            Err(RPolarsErr::new().plain("an R option/choice should be a character vector".into()))
+        }
+        Ok(None) => Err(RPolarsErr::new()
+            .plain("an R option/choice character vector cannot have zero length".into())),
+    }
+    .map_err(|err| err.bad_robj(robj_clone))
 }
 
 pub fn robj_to_usize(robj: extendr_api::Robj) -> RResult<usize> {
