@@ -263,7 +263,7 @@ impl LazyFrame {
         Ok(lf.into())
     }
 
-    fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
+    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {

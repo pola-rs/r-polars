@@ -213,7 +213,7 @@ df$with_columns(
   pl$col("random")$count()$alias("count")
 )
 
-df$groupby("groups")$agg(
+df$group_by("groups")$agg(
   pl$sum("nrs"),  # sum nrs by groups
   pl$col("random")$count()$alias("count"),  # count group members
   # sum random where name != null
@@ -293,7 +293,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -308,7 +308,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -323,7 +323,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -482,17 +482,17 @@ df = pl$DataFrame(
   "values" = c(10, 7, 1)
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
         pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
         pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
   pl$col("values")$apply(function(s) s$shift())$alias("shift_map"),
   pl$col("values")$shift()$alias("shift_expression")
 )
@@ -602,14 +602,14 @@ df$select(
 #   pl$fold(0, function(a, b) a + b, c( pl$col("A"), "B", pl$col("B")**2,))$alias("fold")
 # )
 
-df$groupby("fruits")$
+df$group_by("fruits")$
   agg(
     pl$col("B")$count()$alias("B_count"),
     pl$col("B")$sum()$alias("B_sum")
   )
 
 # We can aggregate many expressions at once
-df$groupby("fruits")$
+df$group_by("fruits")$
   agg(
             pl$col("B")$sum()$alias("B_sum"),# Sum of B
             # pl$first("fruits")$alias("fruits_first"),# First value of fruits

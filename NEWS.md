@@ -26,6 +26,7 @@
   `$with_columns()` instead (#402).
 - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
   instead (#402).
+- `$groupby()` is renamed `$group_by()`.
 
 ## What's changed
 

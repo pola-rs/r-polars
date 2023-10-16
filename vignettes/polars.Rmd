@@ -69,7 +69,7 @@ accessed by typing these commands:
 
 ```r
 ?DataFrame
-?DataFrame_groupby
+?DataFrame_group_by
 ```
 
 The [Polars book](https://pola-rs.github.io/polars-book/user-guide/) offers a
@@ -89,7 +89,7 @@ df.groupby("id").mean()
 
 ```r
 # R
-df$groupby("id")$mean()
+df$group_by("id")$mean()
 ```
 
 ## `Series` and `DataFrames`
@@ -213,7 +213,7 @@ and `$groupby` which allow us to do powerful data manipulations easily. To give
 you a small taste, we now take group-wise means:
 
 ```{r}
-dat$groupby("cyl")$mean()
+dat$group_by("cyl")$mean()
 ```
 
 ## Subset
@@ -274,7 +274,7 @@ by groups instead of modifying them. We need simply invoke the `groupby()` and
 [`agg()`](https://rpolars.github.io/reference/Expr_agg_groups/) methods.
 
 ```{r}
-dat$groupby(
+dat$group_by(
   "cyl",
   maintain_order = TRUE
 )$agg(
@@ -290,7 +290,7 @@ The same principles of method chaining can be combined very flexibly to group by
 multiple variables and aggregation types.
 
 ```{r}
-dat$groupby(
+dat$group_by(
   "cyl",
   pl$col("am")$cast(pl$Boolean)$alias("manual")
 )$agg(
@@ -460,7 +460,7 @@ aq = pl$scan_parquet("airquality.parquet") # lazy version (better)
 
 aq$filter(
   pl$col("Month") <= 6
-)$groupby(
+)$group_by(
   "Month"
 )$agg(
   pl$col(c("Ozone", "Temp"))$mean()

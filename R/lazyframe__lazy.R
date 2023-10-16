@@ -859,15 +859,15 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#'   groupby("foo")$
+#'   group_by("foo")$
 #'   agg(
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
-  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
-    unwrap("in $groupby():")
+LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+  .pr$LazyFrame$group_by(self, unpack_list(...), maintain_order) |>
+    unwrap("in $group_by():")
 }
 
 #' Join LazyFrames
@@ -1294,7 +1294,7 @@ LazyFrame_fetch = function(
 #' # -1-  map each Species-group with native polars, takes ~120us only
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
-#'   groupby("Species", maintain_order = TRUE)$
+#'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$first() + 5)$
 #'   profile()
 #'
@@ -1308,7 +1308,7 @@ LazyFrame_fetch = function(
 #'
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
-#'   groupby("Species", maintain_order = TRUE)$
+#'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
 LazyFrame_profile = function() {
