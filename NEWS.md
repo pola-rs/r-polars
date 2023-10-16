@@ -1,10 +1,28 @@
 # polars (development version)
 
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 0.33.2 (#417)
+  - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
+  - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
+  - In `$value_counts()`, the arguments `multithreaded` and `sort`
+    (sometimes called `sorted`) have been swapped and renamed `sort` and `parallel`.
+  - `$str$count_match()` gains a `literal` argument.
+  - `$arg_min()` doesn't consider `NA` as the minimum anymore (this was already the behavior of `$min()`).
+  - Using `$is_in()` with `NA` on both sides now returns `NA` and not `TRUE` anymore.
+  - Argument `pattern` of `$str$count_matches()` can now use expressions.
+  - Needs Rust toolchain `nightly-2023-08-26` for to build with full features.
+- Rename R functions to match rust-polars
+  - `$str$count_match()` -> `$str$count_matches()` (#417)
+  - `$str$strip()` -> `$str$strip_chars()` (#417)
+  - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
+  - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
+
 ## Breaking changes
 
-- Setting and getting polars options is now made with `pl$options`, 
+- Setting and getting polars options is now made with `pl$options`,
   `pl$set_options()` and `pl$reset_options()` (#384).
-- Method `$with_column()` has been removed (it was deprecated since 0.8.0). Use 
+- Method `$with_column()` has been removed (it was deprecated since 0.8.0). Use
   `$with_columns()` instead (#402).
 - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
   instead (#402).
@@ -19,70 +37,73 @@
   automatic type detection (#385).
 - Fix bug when calling R from polars via e.g. `$map()` where query would not
   complete in one edge case (#409).
-- New method `$cat$get_categories()` to list unique values of categorical 
+- New method `$cat$get_categories()` to list unique values of categorical
   variables (#412).
 - New methods `$fold()` and `$reduce()` to apply an R function rowwise (#403).
+- New function `pl$raw_list` and class `rpolars_raw_list` a list of R Raw's, where missing is
+  encoded as `NULL` to aid conversion to polars binary Series. Support back and forth conversion
+  from polars binary literal and Series to R raw (#417).
 
 # polars 0.8.1
 
 ## What's changed
 
 - New string method `to_titlecase()` (#371).
-- Although stated in news for PR (#334) `strip = true` was not actually set for the 
+- Although stated in news for PR (#334) `strip = true` was not actually set for the
   "release-optimized" compilation profile. Now it is, but the binary sizes seems unchanged (#377).
 - New vignette on best practices to improve `polars` performance (#188).
-- Subnamespace name "arr" as in  `<Expr>$arr$` & `<Series>$arr$` is deprecated 
+- Subnamespace name "arr" as in `<Expr>$arr$` & `<Series>$arr$` is deprecated
   in favor of "list". The subnamespace "arr" will be removed in polars 0.9.0 (#375).
 
 # polars 0.8.0
 
-## CHANGES DUE TO RUST-POLARS 0.32.0
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 rust-polars was updated to 0.32.0, which comes with many breaking changes and new
 features. Unrelated breaking changes and new features are put in separate sections
 (#334):
-  
-- update of rust toolchain: nightly bumped to nightly-2023-07-27 and MSRV is 
+
+- update of rust toolchain: nightly bumped to nightly-2023-07-27 and MSRV is
   now >=1.70.
 - param `common_subplan_elimination = TRUE` in `<LazyFrame>` methods `$collect()`,
-  `$sink_ipc()` and `$sink_parquet()` is renamed and split into 
+  `$sink_ipc()` and `$sink_parquet()` is renamed and split into
   `comm_subplan_elim = TRUE` and `comm_subexpr_elim = TRUE`.
 - Series_is_sorted: nulls_last argument is dropped.
-- `when-then-otherwise` classes are renamed to `When`, `Then`, `ChainedWhen` 
+- `when-then-otherwise` classes are renamed to `When`, `Then`, `ChainedWhen`
   and `ChainedThen`. The syntactically illegal methods have been removed, e.g.
   chaining `$when()` twice.
 - Github release + R-universe is compiled with `profile=release-optimized`,
-  which now includes `strip=false`, `lto=fat` & `codegen-units=1`. This should 
-  make the binary a bit smaller and faster. See also FULL_FEATURES=`true` env 
+  which now includes `strip=false`, `lto=fat` & `codegen-units=1`. This should
+  make the binary a bit smaller and faster. See also FULL_FEATURES=`true` env
   flag to enable simd with nightly rust. For development or faster compilation,
   use instead `profile=release`.
-- `fmt` arg is renamed `format` in `pl$Ptimes` and `<Expr>$str$strptime`. 
+- `fmt` arg is renamed `format` in `pl$Ptimes` and `<Expr>$str$strptime`.
 - `<Expr>$approx_unique()` changed name to `<Expr>$approx_n_unique()`.
 - `<Expr>$str$json_extract` arg `pat` changed to `dtype` and has a new argument
   `infer_schema_length = 100`.
-- Some arguments in `pl$date_range()` have changed: `low` -> `start`,   
-  `high` -> `end`, `lazy = TRUE` -> `eager = FALSE`. Args `time_zone` and `time_unit` 
+- Some arguments in `pl$date_range()` have changed: `low` -> `start`,  
+  `high` -> `end`, `lazy = TRUE` -> `eager = FALSE`. Args `time_zone` and `time_unit`
   can no longer be used to implicitly cast time types. These two args can only
   be used to annotate a naive time unit. Mixing `time_zone` and `time_unit` for
   `start` and `end` is not allowed anymore.
 - `<Expr>$is_in()` operation no longer supported for dtype `null`.
-- Various subtle changes: 
-    - `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null` 
-      not `true`.
-    - `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false` 
-      and before `true`
-    - `pl$lit(numeric(0))$sum()$lit_to_s()` now yields `0f64` and not `null`.
+- Various subtle changes:
+  - `(pl$lit(NA_real_) == pl$lit(NA_real_))$lit_to_s()` renders now to `null`
+    not `true`.
+  - `pl$lit(NA_real_)$is_in(pl$lit(NULL))$lit_to_s()` renders now to `false`
+    and before `true`
+  - `pl$lit(numeric(0))$sum()$lit_to_s()` now yields `0f64` and not `null`.
 - `<Expr>$all()` and `<Expr>$any()` have a new arg `drop_nulls = TRUE`.
 - `<Expr>$sample()` and `<Expr>$shuffle()` have a new arg `fix_seed`.
-- `<DataFrame>$sort()` and `<LazyFrame>$sort()` have a new arg 
+- `<DataFrame>$sort()` and `<LazyFrame>$sort()` have a new arg
   `maintain_order = FALSE`.
 
 ## OTHER BREAKING CHANGES
 
-- `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()` 
+- `$rpow()` is removed. It should never have been translated. Use `^` and `$pow()`
   instead (#346).
-- `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()` 
-  and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to 
+- `<LazyFrame>$collect_background()` renamed `<LazyFrame>$collect_in_background()`
+  and reworked. Likewise `PolarsBackgroundHandle` reworked and renamed to
   `RThreadHandle` (#311).
 - `pl$scan_arrow_ipc` is now called `pl$scan_ipc` (#343).
 
@@ -102,7 +123,7 @@ features. Unrelated breaking changes and new features are put in separate sectio
   `in_background = FALSE` param to `<Expr>$map()` and `$apply()`. It is now possible to run R code
   with `<LazyFrame>collect_in_background()` and/or let polars parallize R code in an R processes
   pool. See `RThreadHandle-class` in reference docs for more info. (#311)
-- Internal IPC/shared-mem channel to serialize and send R objects / polars DataFrame across 
+- Internal IPC/shared-mem channel to serialize and send R objects / polars DataFrame across
   R processes. (#311)
 - Compile environment flag RPOLARS_ALL_FEATURES changes name to RPOLARS_FULL_FEATURES. If 'true'
   will trigger something like `Cargo build --features "full_features"` which is not exactly the same
@@ -128,11 +149,11 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - Replace the argument `reverse` by `descending` in all sorting functions. This
   is for consistency with the upstream Polars (#291, #293).
 - Bump rust-polars from 2023-04-20 unreleased version to version 0.30.0 released in 2023-05-30 (#289).
-    - Rename `concat_lst` to `concat_list`.
-    - Rename `$str$explode` to `$str$str_explode`.
-    - Remove `tz_aware` and `utc` arguments from `str_parse`.
-    - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
-- The functions to read CSV have been renamed `scan_csv` and `read_csv` for 
+  - Rename `concat_lst` to `concat_list`.
+  - Rename `$str$explode` to `$str$str_explode`.
+  - Remove `tz_aware` and `utc` arguments from `str_parse`.
+  - in `$date_range`'s the `lazy` argument is now `TRUE` by default.
+- The functions to read CSV have been renamed `scan_csv` and `read_csv` for
   consistency with the upstream Polars. `scan_xxx` and `read_xxx` functions are now accessed via `pl`,
   e.g. `pl$scan_csv()` (#305).
 
@@ -141,18 +162,18 @@ features. Unrelated breaking changes and new features are put in separate sectio
 - New method `$rename()` for `LazyFrame` and `DataFrame` (#239)
 - `<DataFrame>$unique()` and `<LazyFrame>$unique()` gain a `maintain_order` argument (#238).
 - New `pl$LazyFrame()` to quickly create a `LazyFrame`, mostly in examples or
-for demonstration purposes (#240).
+  for demonstration purposes (#240).
 - Polars is internally moving away from string errors to a new error-type called `RPolarsErr` both on rust- and R-side. Final error messages should look very similar (#233).
 - `$columns()`, `$schema()`, `$dtypes()` for `LazyFrame` implemented (#250).
 - Improvements to internal `RPolarsErr`. Also `RPolarsErr` will now print each context of the error on a separate line (#250).
 - Fix memory leak on error bug. Fix printing of `%` bug. Prepare for renaming of polars classes (#252).
 - Add helpful reference landing page at `polars.github.io/reference_home` (#223, #264).
 - Supports Rust 1.65 (#262, #280)
-    - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
-      `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
-    - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
-      The profile can be changed by setting the environment variable `RPOLARS_PROFILE` (when set to `release-optimized`,
-      `opt-level` of `argminmax` is set to `3`).
+  - rust-polars' `simd` feature is now disabled by default. To enable it, set the environment variable
+    `RPOLARS_ALL_FEATURES` to `true` when build r-polars (#262).
+  - `opt-level` of `argminmax` is now set to `1` in the `release` profile to support Rust < 1.66.
+    The profile can be changed by setting the environment variable `RPOLARS_PROFILE` (when set to `release-optimized`,
+    `opt-level` of `argminmax` is set to `3`).
 - A new function `pl$polars_info()` will tell which features enabled (#271, #285, #305).
 - `select()` now accepts lists of expressions. For example, `<DataFrame>$select(l_expr)`
   works with `l_expr = list(pl$col("a"))` (#265).
@@ -163,8 +184,8 @@ for demonstration purposes (#240).
 - Cross joining is now possible with `how = "cross"` in `$join()` (#310).
 - Add license info of all rust crates to `LICENSE.note` (#309).
 - With CRAN 0.7.0 release candidate (#308).
-    - New author accredited, SHIMA Tatsuya (@eitsupi).
-    - DESCRIPTION revised.
+  - New author accredited, SHIMA Tatsuya (@eitsupi).
+  - DESCRIPTION revised.
 
 # polars 0.6.1
 
@@ -204,7 +225,7 @@ for demonstration purposes (#240).
 ## What's changed
 
 - Several new methods for DataFrame, LazyFrame & GroupBy translated (#103, #105 @vincentarelbundock)
-- Doc fixes (#102, #109  @etiennebacher)
+- Doc fixes (#102, #109 @etiennebacher)
 - Experimental opt-in auto completion (#96 @sorhawell)
 - Base R functions work on DataFrame and LazyFrame objects via S3 methods: as.data.frame, as.matrix, dim, head, length, max, mean, median, min, na.omit, names, sum, tail, unique, ncol, nrow (#107 @vincentarelbundock).
 
@@ -274,6 +295,7 @@ Release date: 2023-02-21. Full Changelog: [v0.4.3...v0.4.5](https://github.com/p
   - Str continued by @sorhawell in #43
   - Str even more by @sorhawell in #47
 - Starting to roll out new error-handling and type-conversions between R and rust.
+
   - Precise source of error should be very clear even in a long method-chain e.g.
 
   ```r

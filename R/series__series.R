@@ -323,8 +323,8 @@ Series_abs = function() {
 
 #' Value Counts as DataFrame
 #'
-#' @param sorted bool, default TRUE: sort table by value; FALSE: random
-#' @param multithreaded bool, default FALSE, process multithreaded. Likely faster
+#' @param sort bool, default TRUE: sort table by value; FALSE: random
+#' @param parallel bool, default FALSE, process multithreaded. Likely faster
 #' to have TRUE for a big Series. If called within an already multithreaded context
 #' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
 #'
@@ -333,8 +333,8 @@ Series_abs = function() {
 #' @name Series_value_count
 #' @examples
 #' pl$Series(iris$Species, "flower species")$value_counts()
-Series_value_counts = function(sorted = TRUE, multithreaded = FALSE) {
-  unwrap(.pr$Series$value_counts(self, multithreaded, sorted), "in $value_counts():")
+Series_value_counts = function(sort = TRUE, parallel = FALSE) {
+  unwrap(.pr$Series$value_counts(self, sort, parallel), "in $value_counts():")
 }
 
 

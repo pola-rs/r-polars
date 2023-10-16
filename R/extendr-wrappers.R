@@ -573,11 +573,11 @@ Expr$arctanh <- function() .Call(wrap__Expr__arctanh, self)
 
 Expr$reshape <- function(dims) .Call(wrap__Expr__reshape, self, dims)
 
-Expr$shuffle <- function(seed, fixed_seed) .Call(wrap__Expr__shuffle, self, seed, fixed_seed)
+Expr$shuffle <- function(seed) .Call(wrap__Expr__shuffle, self, seed)
 
-Expr$sample_n <- function(n, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed, fixed_seed)
+Expr$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_n, self, n, with_replacement, shuffle, seed)
 
-Expr$sample_frac <- function(frac, with_replacement, shuffle, seed, fixed_seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed, fixed_seed)
+Expr$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__Expr__sample_frac, self, frac, with_replacement, shuffle, seed)
 
 Expr$ewm_mean <- function(alpha, adjust, min_periods, ignore_nulls) .Call(wrap__Expr__ewm_mean, self, alpha, adjust, min_periods, ignore_nulls)
 
@@ -589,7 +589,7 @@ Expr$extend_constant <- function(value, n) .Call(wrap__Expr__extend_constant, se
 
 Expr$rep <- function(n, rechunk) .Call(wrap__Expr__rep, self, n, rechunk)
 
-Expr$value_counts <- function(multithreaded, sorted) .Call(wrap__Expr__value_counts, self, multithreaded, sorted)
+Expr$value_counts <- function(sort, parallel) .Call(wrap__Expr__value_counts, self, sort, parallel)
 
 Expr$unique_counts <- function() .Call(wrap__Expr__unique_counts, self)
 
@@ -639,13 +639,13 @@ Expr$list_eval <- function(expr, parallel) .Call(wrap__Expr__list_eval, self, ex
 
 Expr$list_to_struct <- function(width_strat, name_gen, upper_bound) .Call(wrap__Expr__list_to_struct, self, width_strat, name_gen, upper_bound)
 
-Expr$str_to_date <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, use_earliest)
+Expr$str_to_date <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_date, self, format, strict, exact, cache, ambiguous)
 
-Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, use_earliest)
+Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_datetime, self, format, time_unit, time_zone, strict, exact, cache, ambiguous)
 
-Expr$str_to_time <- function(format, strict, exact, cache, use_earliest) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, use_earliest)
+Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, ambiguous)
 
-Expr$dt_truncate <- function(every, offset, use_earliest) .Call(wrap__Expr__dt_truncate, self, every, offset, use_earliest)
+Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
@@ -691,7 +691,7 @@ Expr$dt_cast_time_unit <- function(tu) .Call(wrap__Expr__dt_cast_time_unit, self
 
 Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone, self, tz)
 
-Expr$dt_replace_time_zone <- function(tz, use_earliest) .Call(wrap__Expr__dt_replace_time_zone, self, tz, use_earliest)
+Expr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__Expr__dt_replace_time_zone, self, tz, ambiguous)
 
 Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
 
@@ -835,11 +835,11 @@ Expr$str_to_lowercase <- function() .Call(wrap__Expr__str_to_lowercase, self)
 
 Expr$str_to_titlecase <- function() .Call(wrap__Expr__str_to_titlecase, self)
 
-Expr$str_strip <- function(matches) .Call(wrap__Expr__str_strip, self, matches)
+Expr$str_strip_chars <- function(matches) .Call(wrap__Expr__str_strip_chars, self, matches)
 
-Expr$str_rstrip <- function(matches) .Call(wrap__Expr__str_rstrip, self, matches)
+Expr$str_strip_chars_end <- function(matches) .Call(wrap__Expr__str_strip_chars_end, self, matches)
 
-Expr$str_lstrip <- function(matches) .Call(wrap__Expr__str_lstrip, self, matches)
+Expr$str_strip_chars_start <- function(matches) .Call(wrap__Expr__str_strip_chars_start, self, matches)
 
 Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
 
@@ -869,7 +869,7 @@ Expr$str_extract <- function(pattern, group_index) .Call(wrap__Expr__str_extract
 
 Expr$str_extract_all <- function(pattern) .Call(wrap__Expr__str_extract_all, self, pattern)
 
-Expr$str_count_match <- function(pattern) .Call(wrap__Expr__str_count_match, self, pattern)
+Expr$str_count_matches <- function(pattern, literal) .Call(wrap__Expr__str_count_matches, self, pattern, literal)
 
 Expr$str_split <- function(by, inclusive) .Call(wrap__Expr__str_split, self, by, inclusive)
 
@@ -1103,7 +1103,7 @@ Series$name <- function() .Call(wrap__Series__name, self)
 
 Series$sort_mut <- function(descending) .Call(wrap__Series__sort_mut, self, descending)
 
-Series$value_counts <- function(multithreaded, sorted) .Call(wrap__Series__value_counts, self, multithreaded, sorted)
+Series$value_counts <- function(sort, parallel) .Call(wrap__Series__value_counts, self, sort, parallel)
 
 Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
 

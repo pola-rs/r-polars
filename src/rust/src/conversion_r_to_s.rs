@@ -150,6 +150,33 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
 
         Rtype::Null => Ok(SeriesTree::SeriesEmptyVec), // flag NULL with this enum, to resolve polars type later
 
+        Rtype::Raw => {
+            let rpolars_raw_list = list!(x)
+                .set_class(["rpolars_raw_list", "list"])
+                .map_err(|err| pl::polars_err!(ComputeError: err.to_string()))?;
+            recursive_robjname2series_tree(&rpolars_raw_list, name)
+        }
+
+        Rtype::List if x.inherits("rpolars_raw_list") => {
+            let l = x.as_list().expect("as_matched");
+            use crate::utils::robj_to_binary_vec;
+            let l_len = l.len();
+            let iter = l.into_iter().map(|(_, robj)| {
+                if robj.is_null() {
+                    Ok(None)
+                } else {
+                    Some(robj_to_binary_vec(robj)).transpose()
+                }
+            });
+
+            let binary_vec_vec_res: crate::rpolarserr::RResult<Vec<Option<Vec<u8>>>> =
+                collect_hinted_result(l_len, iter);
+            let binary_vec_vec =
+                binary_vec_vec_res.map_err(|err| pl::polars_err!(ComputeError: err.to_string()))?;
+            let binary_series = pl::Series::new(name, binary_vec_vec.as_slice());
+            Ok(SeriesTree::Series(binary_series))
+        }
+
         Rtype::List => {
             // Recusively handle elements of list
             let result_series_vec: pl::PolarsResult<Vec<SeriesTree>> = collect_hinted_result(

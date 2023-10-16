@@ -3771,18 +3771,14 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
-  .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
+Expr_shuffle = function(seed = NULL) {
+  .pr$Expr$shuffle(self, seed) |> unwrap("in $shuffle()")
 }
 
 
@@ -3798,10 +3794,6 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' @param  seed
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr
@@ -3815,14 +3807,14 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
     frac = NULL, with_replacement = TRUE, shuffle = FALSE,
-    seed = NULL, fixed_seed = FALSE, n = NULL) {
+    seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
       Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
     },
-    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
-      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed)
     }
   ) |>
     unwrap("in $sample()")
@@ -4090,18 +4082,17 @@ pl$expr_to_r = function(expr, df = NULL, i = 0) {
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
-#' @param multithreaded
-#' Better to turn this off in the aggregation context, as it can lead to contention.
-#' @param sort
-#' Ensure the output is sorted from most values to least.
+#' @param sort Ensure the output is sorted from most values to least.
+#' @param parallel Better to turn this off in the aggregation context, as it can
+#' lead to contention.
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
 #' df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
-Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
-  .pr$Expr$value_counts(self, multithreaded, sort)
+Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
+  .pr$Expr$value_counts(self, sort, parallel)
 }
 
 #' Value counts

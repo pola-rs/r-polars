@@ -18,6 +18,13 @@ polars \code{null}.}
 anywhere in the target string.}
 
 \item{cache}{Use a cache of unique, converted dates to apply the datetime conversion.}
+
+\item{ambiguous}{Determine how to deal with ambiguous datetimes:
+\itemize{
+\item \code{"raise"} (default): raise
+\item \code{"earliest"}: use the earliest datetime
+\item \code{"latest"}: use the latest datetime
+}}
 }
 \value{
 Expr of a Data, Datetime or Time Series

@@ -17,6 +17,10 @@
 #' @param exact bool , If True, require an exact format match. If False, allow the format to match
 #' anywhere in the target string.
 #' @param cache Use a cache of unique, converted dates to apply the datetime conversion.
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): raise
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
 #' @details Notes When parsing a Datetime the column precision will be inferred from the format
 #' string, if given, eg: “%F %T%.3f” => Datetime(“ms”). If no fractional second component is found
 #' then the default is “us”.
@@ -57,8 +61,7 @@ ExprStr_strptime = function(
     strict = TRUE, # : bool = True,
     exact = TRUE, # : bool = True,
     cache = TRUE, # : bool = True,
-    use_earliest = NULL) { #-> Expr:
-
+    ambiguous = "raise") {
   # match on datatype, return RResult<Expr>
   pcase(
 
@@ -71,7 +74,7 @@ ExprStr_strptime = function(
     {
       datetime_type = .pr$DataType$get_insides(datatype)
       .pr$Expr$str_to_datetime(
-        self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, use_earliest
+        self, format, datetime_type$tu, datetime_type$tz, strict, exact, cache, ambiguous
       ) |> and_then(
         \(expr) .pr$Expr$dt_cast_time_unit(expr, datetime_type$tu) # cast if not an err
       )
@@ -79,11 +82,11 @@ ExprStr_strptime = function(
 
     # Date
     datatype == pl$Date,
-    .pr$Expr$str_to_date(self, format, strict, exact, cache, use_earliest),
+    .pr$Expr$str_to_date(self, format, strict, exact, cache, ambiguous),
 
     # Time
     datatype == pl$Time,
-    .pr$Expr$str_to_time(self, format, strict, exact, cache, use_earliest),
+    .pr$Expr$str_to_time(self, format, strict, exact, cache, ambiguous),
 
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
@@ -203,67 +206,76 @@ ExprStr_to_titlecase = function() {
 }
 
 
-#' Strip
-#' @name ExprStr_strip
-#' @aliases expr_str_strip
+#' Strip leading and trailing characters
+#'
+#' @name ExprStr_strip_chars
+#' @aliases expr_str_strip_chars
 #' @description  Remove leading and trailing characters.
+#'
 #' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars()` removes characters at the beginning and the end of the string.
+#' Use `strip_chars_start()` and `strip_chars_end()` to remove characters only
+#' from left and right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_strip = function(matches = NULL) {
-  .pr$Expr$str_strip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars())
+#' df$select(pl$col("foo")$str$strip_chars(" hel rld"))
+ExprStr_strip_chars = function(matches = NULL) {
+  .pr$Expr$str_strip_chars(self, matches)
 }
 
-#' lstrip
-#' @name ExprStr_lstrip
-#' @aliases expr_str_lstrip
+#' Strip leading characters
+#'
+#' @name ExprStr_strip_chars_start
+#' @aliases expr_str_strip_chars_start
 #' @description  Remove leading characters.
-#' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `lstrip()`and `rstrip()` starts from left and right respectively.
+#'
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars_start()` removes characters at the beginning of the string only.
+#' Use `strip_chars()` and `strip_chars_end()` to remove characters from the left
+#' and right or only from the right respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_lstrip = function(matches = NULL) {
-  .pr$Expr$str_lstrip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars_start(" hel rld"))
+ExprStr_strip_chars_start = function(matches = NULL) {
+  .pr$Expr$str_strip_chars_start(self, matches)
 }
 
-#' rstrip
-#' @name ExprStr_rstrip
-#' @aliases expr_str_rstrip
-#' @description  Remove leading characters.
-#' @keywords ExprStr
-#' @param matches The set of characters to be removed. All combinations of this set of
-#' characters will be stripped. If set to NULL (default), all whitespace is removed instead.
-#' @details will not strip any chars beyond the first char not matched. `strip()` starts from
-#' both left and right. Whereas `rstrip()`and `rstrip()` starts from left and right respectively.
+#' Strip trailing characters
+#'
+#' @name ExprStr_strip_chars_end
+#' @aliases expr_str_strip_chars_end
+#' @description  Remove trailing characters.
+#'
+#' @param matches The set of characters to be removed. All combinations of this
+#' set of characters will be stripped. If `NULL` (default), all whitespace is
+#' removed instead.
+#'
+#' @details
+#' This function will not strip any chars beyond the first char not matched.
+#' `strip_chars_end()` removes characters at the end of the string only.
+#' Use `strip_chars()` and `strip_chars_start()` to remove characters from the left
+#' and right or only from the left respectively.
 #' @return Expr of Utf8 lowercase chars
 #' @examples
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
-#' df$select(pl$col("foo")$str$strip())
-#' df$select(pl$col("foo")$str$strip(" hel rld"))
-#' df$select(pl$col("foo")$str$lstrip(" hel rld"))
-#' df$select(pl$col("foo")$str$rstrip(" hel\trld"))
-#' df$select(pl$col("foo")$str$rstrip("rldhel\t "))
-ExprStr_rstrip = function(matches = NULL) {
-  .pr$Expr$str_rstrip(self, matches)
+#' df$select(pl$col("foo")$str$strip_chars_end(" hel\trld"))
+#' df$select(pl$col("foo")$str$strip_chars_end("rldhel\t "))
+ExprStr_strip_chars_end = function(matches = NULL) {
+  .pr$Expr$str_strip_chars_end(self, matches)
 }
 
 
@@ -555,12 +567,13 @@ ExprStr_extract_all = function(pattern) {
   .pr$Expr$str_extract_all(self, wrap_e(pattern))
 }
 
-#' count_match
-#' @name ExprStr_count_match
-#' @aliases expr_str_count_match
+#' Count all successive non-overlapping regex matches.
+#' @name ExprStr_count_matches
+#' @aliases expr_str_count_matches
 #' @description Count all successive non-overlapping regex matches.
 #' @keywords ExprStr
-#' @param pattern A valid regex pattern
+#' @param pattern String or Expr of a string, a valid regex pattern.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return
 #' UInt32 array. Contain null if original value is null or regex capture nothing.
@@ -568,10 +581,18 @@ ExprStr_extract_all = function(pattern) {
 #' @examples
 #' df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
 #' df$select(
-#'   pl$col("foo")$str$count_match(r"{(\d)}")$alias("count digits")
+#'   pl$col("foo")$str$count_matches(r"{(\d)}")$alias("count digits")
 #' )
-ExprStr_count_match = function(pattern) {
-  unwrap(.pr$Expr$str_count_match(self, pattern))
+#'
+#' # we can use Polars expressions as pattern so that it's not necessarily the
+#' # same for all rows
+#' df2 = pl$DataFrame(foo = c("hello", "hi there"), pat = c("ell", "e"))
+#' df2$with_columns(
+#'   pl$col("foo")$str$count_matches(pl$col("pat"))$alias("reg_count")
+#' )
+ExprStr_count_matches = function(pattern, literal = FALSE) {
+  .pr$Expr$str_count_matches(self, wrap_e(pattern), literal) |>
+    unwrap("in $str$count_matches():")
 }
 
 
@@ -582,7 +603,8 @@ ExprStr_count_match = function(pattern) {
 #' @aliases expr_str_split
 #' @description Split the string by a substring.
 #' @keywords ExprStr
-#' @param by Substring to split by.
+#' @param by String or Expr of a string, a valid regex pattern that will be
+#' used to split the string.
 #' @param inclusive If True, include the split character/string in the results.
 #'
 #' @return
@@ -591,6 +613,9 @@ ExprStr_count_match = function(pattern) {
 #' @examples
 #' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 #' df$select(pl$col("s")$str$split(by = " "))
+#'
+#' df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+#' df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
 ExprStr_split = function(by, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split(self, result(by), result(inclusive)),
@@ -656,7 +681,7 @@ ExprStr_splitn = function(by, n) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, Treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
@@ -682,7 +707,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
@@ -707,7 +732,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' @keywords ExprStr
 #' @param pattern `Into<Expr>`, regex pattern
 #' @param value `Into<Expr>` replacement
-#' @param literal bool, treat pattern as a literal string.
+#' @param literal Boolean. Treat pattern as a literal string.
 #'
 #' @return Expr: Series of dtype Utf8.
 #'
