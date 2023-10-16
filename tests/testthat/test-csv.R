@@ -72,3 +72,15 @@ test_that("write_csv: quote_style and quote works", {
   dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
   expect_snapshot_file(temp_out)
 })
+
+patrick::with_parameters_test_that(
+  "write_csv: quote_style",
+  {
+    df = pl$DataFrame(
+      a = c(r"("foo")", "bar"),
+      b = 1:2,
+      c = letters[1:2]
+    )$write_csv(temp_out, quote_style = quote_style)
+  },
+  quote_style = c("necessary", "always", "non_numeric")
+)
