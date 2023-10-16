@@ -5,12 +5,12 @@
 \alias{Series_value_counts}
 \title{Value Counts as DataFrame}
 \usage{
-Series_value_counts(sorted = TRUE, multithreaded = FALSE)
+Series_value_counts(sort = TRUE, parallel = FALSE)
 }
 \arguments{
-\item{sorted}{bool, default TRUE: sort table by value; FALSE: random}
+\item{sort}{bool, default TRUE: sort table by value; FALSE: random}
 
-\item{multithreaded}{bool, default FALSE, process multithreaded. Likely faster
+\item{parallel}{bool, default FALSE, process multithreaded. Likely faster
 to have TRUE for a big Series. If called within an already multithreaded context
 such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.}
 }

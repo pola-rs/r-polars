@@ -97,6 +97,22 @@ pub fn pl_series_to_list(
             Utf8 => s.utf8().map(|ca| ca.into_iter().collect_robj()),
 
             Boolean => s.bool().map(|ca| ca.into_iter().collect_robj()),
+            Binary => s.binary().map(|ca| {
+                let x: Vec<_> = ca
+                    .into_iter()
+                    .map(|opt_slice_binary| {
+                        if let Some(slice_binary) = opt_slice_binary {
+                            r!(Raw::from_bytes(slice_binary))
+                        } else {
+                            r!(extendr_api::NULL)
+                        }
+                    })
+                    .collect();
+                extendr_api::List::from_values(x)
+                    .into_robj()
+                    .set_class(["rpolars_raw_list", "list"])
+                    .expect("this class label is always valid")
+            }),
             Categorical(_) => s
                 .categorical()
                 .map(|ca| extendr_api::call!("factor", ca.iter_str().collect_robj()).unwrap()),
@@ -104,16 +120,21 @@ pub fn pl_series_to_list(
                 let mut v: Vec<extendr_api::Robj> = Vec::with_capacity(s.len());
                 let ca = s.list().unwrap();
 
-                for opt_s in ca.amortized_iter() {
-                    match opt_s {
-                        Some(s) => {
-                            let s_ref = s.as_ref();
-                            let inner_val = to_list_recursive(s_ref, tag_structs, bit64)?;
-                            v.push(inner_val);
-                        }
+                // Safty:amortized_iter()  The returned should never be cloned or taken longer than a single iteration,
+                // as every call on next of the iterator will change the contents of that Series.
+                unsafe {
+                    for opt_s in ca.amortized_iter() {
+                        match opt_s {
+                            Some(s) => {
+                                let s_ref = s.as_ref();
+                                // is safe because s is read to generate new Robj, then discarded.
+                                let inner_val = to_list_recursive(s_ref, tag_structs, bit64)?;
+                                v.push(inner_val);
+                            }
 
-                        None => {
-                            v.push(r!(extendr_api::NULL));
+                            None => {
+                                v.push(r!(extendr_api::NULL));
+                            }
                         }
                     }
                 }

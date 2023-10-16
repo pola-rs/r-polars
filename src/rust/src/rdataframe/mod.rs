@@ -310,9 +310,9 @@ impl DataFrame {
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         let lazy_df = self.clone().0.lazy();
         let lgb = if maintain_order {
-            lazy_df.groupby_stable(group_exprs)
+            lazy_df.group_by_stable(group_exprs)
         } else {
-            lazy_df.groupby(group_exprs)
+            lazy_df.group_by(group_exprs)
         };
         LazyFrame(lgb.agg(agg_exprs)).collect()
     }

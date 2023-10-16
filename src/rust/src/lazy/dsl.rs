@@ -13,7 +13,7 @@ use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
-use crate::utils::{r_error_list, r_ok_list, r_result_list};
+use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
 use crate::utils::{
     try_f64_into_i64, try_f64_into_u32, try_f64_into_usize, try_f64_into_usize_no_zero,
 };
@@ -87,6 +87,7 @@ impl Expr {
 
         match (rtype, rlen) {
             (Rtype::Null, _) => Ok(dsl::lit(pl::NULL)),
+            (Rtype::Raw, _) => Ok(dsl::lit(robj_to_binary_vec(robj)?)), // Raw in R is seen as a vector of bytes, in polars it is a Literal, not wrapped in a Series.
             (_, rlen) if rlen != 1 => to_series_then_lit(robj),
             (Rtype::List, _) => to_series_then_lit(robj),
             (_, _) if robj_inherits(&robj, ["POSIXct", "PTime", "Date"]) => {
@@ -679,12 +680,13 @@ impl Expr {
 
     pub fn rolling_skew(&self, window_size_f: f64, bias: bool) -> List {
         use pl::*;
-        let expr =
-            try_f64_into_usize(window_size_f).map(|ws| {
-                Expr(self.0.clone().rolling_apply_float(ws, move |ca| {
-                    ca.clone().into_series().skew(bias).unwrap()
-                }))
-            });
+        let expr = try_f64_into_usize(window_size_f).map(|ws| {
+            Expr(
+                self.0
+                    .clone()
+                    .rolling_map_float(ws, move |ca| ca.clone().into_series().skew(bias).unwrap()),
+            )
+        });
         r_result_list(expr)
     }
 
@@ -853,12 +855,8 @@ impl Expr {
         r_result_list(expr_result)
     }
 
-    pub fn shuffle(&self, seed: Robj, fixed_seed: Robj) -> RResult<Self> {
-        Ok(self
-            .0
-            .clone()
-            .shuffle(robj_to!(Option, u64, seed)?, robj_to!(bool, fixed_seed)?)
-            .into())
+    pub fn shuffle(&self, seed: Robj) -> RResult<Self> {
+        Ok(self.0.clone().shuffle(robj_to!(Option, u64, seed)?).into())
     }
 
     pub fn sample_n(
@@ -867,7 +865,6 @@ impl Expr {
         with_replacement: Robj,
         shuffle: Robj,
         seed: Robj,
-        fixed_seed: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -877,7 +874,6 @@ impl Expr {
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
-                robj_to!(bool, fixed_seed)?,
             )
             .into())
     }
@@ -888,7 +884,6 @@ impl Expr {
         with_replacement: Robj,
         shuffle: Robj,
         seed: Robj,
-        fixed_seed: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -898,7 +893,6 @@ impl Expr {
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
-                robj_to!(bool, fixed_seed)?,
             )
             .into())
     }
@@ -1011,8 +1005,8 @@ impl Expr {
         }
     }
 
-    pub fn value_counts(&self, multithreaded: bool, sorted: bool) -> Self {
-        self.0.clone().value_counts(multithreaded, sorted).into()
+    pub fn value_counts(&self, sort: bool, parallel: bool) -> Self {
+        self.0.clone().value_counts(sort, parallel).into()
     }
 
     pub fn unique_counts(&self) -> Self {
@@ -1204,7 +1198,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1217,8 +1211,8 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1244,7 +1238,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1258,8 +1252,8 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1270,7 +1264,7 @@ impl Expr {
         strict: Robj,
         exact: Robj,
         cache: Robj,
-        use_earliest: Robj,
+        ambiguous: Robj,
     ) -> RResult<Self> {
         Ok(self
             .0
@@ -1283,25 +1277,27 @@ impl Expr {
                     strict: robj_to!(bool, strict)?,
                     exact: robj_to!(bool, exact)?,
                     cache: robj_to!(bool, cache)?,
-                    use_earliest: robj_to!(Option, bool, use_earliest)?,
                 },
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
 
     //end list/arr methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: Robj, use_earliest: Robj) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
             .dt()
-            .truncate(pl::TruncateOptions {
-                every: robj_to!(pl_duration_string, every)?,
-                offset: robj_to!(Option, pl_duration_string, offset)?
-                    .unwrap_or_else(|| "0ns".into()),
-                use_earliest: robj_to!(Option, bool, use_earliest)?,
-            })
+            .truncate(
+                pl::TruncateOptions {
+                    every: robj_to!(pl_duration_string, every)?,
+                    offset: robj_to!(Option, pl_duration_string, offset)?
+                        .unwrap_or_else(|| "0ns".into()),
+                },
+                robj_to!(PLExpr, ambiguous)?,
+            )
             .into())
     }
 
@@ -1412,12 +1408,14 @@ impl Expr {
         self.0.clone().dt().convert_time_zone(tz).into()
     }
 
-    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, use_earliest: Nullable<bool>) -> Self {
-        self.0
-            .clone()
-            .dt()
-            .replace_time_zone(tz.into_option(), use_earliest.into_option())
-            .into()
+    pub fn dt_replace_time_zone(&self, tz: Nullable<String>, ambiguous: Robj) -> RResult<Self> {
+        Ok(Expr(
+            self.0
+                .clone()
+                .dt()
+                .replace_time_zone(tz.into_option(), robj_to!(PLExpr, ambiguous)?)
+                .into(),
+        ))
     }
 
     pub fn duration_days(&self) -> Self {
@@ -1484,9 +1482,8 @@ impl Expr {
             .into()
     }
 
-    pub fn dt_offset_by(&self, by: &str) -> Self {
-        let by = pl::Duration::parse(by);
-        self.clone().0.dt().offset_by(by).into()
+    pub fn dt_offset_by(&self, by: Robj) -> RResult<Self> {
+        Ok(self.clone().0.dt().offset_by(robj_to!(PLExpr, by)?).into())
     }
 
     pub fn pow(&self, exponent: Robj) -> RResult<Self> {
@@ -1798,7 +1795,7 @@ impl Expr {
     }
 
     pub fn is_first(&self) -> Self {
-        self.clone().0.is_first().into()
+        self.clone().0.is_first_distinct().into()
     }
 
     pub fn map_alias(&self, lambda: Robj) -> Self {
@@ -1901,16 +1898,28 @@ impl Expr {
         f_str_to_titlecase(&self)
     }
 
-    pub fn str_strip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().strip(null_to_opt(matches)).into()
+    pub fn str_strip_chars(&self, matches: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .str()
+            .strip_chars(null_to_opt(matches))
+            .into()
     }
 
-    pub fn str_rstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().rstrip(null_to_opt(matches)).into()
+    pub fn str_strip_chars_end(&self, matches: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .str()
+            .strip_chars_end(null_to_opt(matches))
+            .into()
     }
 
-    pub fn str_lstrip(&self, matches: Nullable<String>) -> Self {
-        self.0.clone().str().lstrip(null_to_opt(matches)).into()
+    pub fn str_strip_chars_start(&self, matches: Nullable<String>) -> Self {
+        self.0
+            .clone()
+            .str()
+            .strip_chars_start(null_to_opt(matches))
+            .into()
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
@@ -2057,16 +2066,18 @@ impl Expr {
         self.0.clone().str().extract_all(pattern.0.clone()).into()
     }
 
-    pub fn str_count_match(&self, pattern: Robj) -> List {
-        r_result_list(
-            robj_to!(String, pattern, "in str$count_match:")
-                .map(|s| Expr(self.0.clone().str().count_match(s.as_str()))),
-        )
+    pub fn str_count_matches(&self, pattern: Robj, literal: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .str()
+            .count_matches(robj_to!(PLExpr, pattern)?, robj_to!(bool, literal)?)
+            .into())
     }
 
     //NOTE SHOW CASE all R side argument handling
     pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<Expr, String> {
-        let by = robj_to!(str, by)?;
+        let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
         if inclusive {
             Ok(self.0.clone().str().split_inclusive(by).into())
@@ -2166,7 +2177,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .contains_literal(robj_to!(Raw, lit)?)
+            .contains_literal(robj_to!(PLExpr, lit)?)
             .into())
     }
 
@@ -2175,7 +2186,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .starts_with(robj_to!(Raw, sub)?)
+            .starts_with(robj_to!(PLExpr, sub)?)
             .into())
     }
 
@@ -2184,7 +2195,7 @@ impl Expr {
             .0
             .clone()
             .binary()
-            .ends_with(robj_to!(Raw, sub)?)
+            .ends_with(robj_to!(PLExpr, sub)?)
             .into())
     }
 
