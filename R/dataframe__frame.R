@@ -1742,10 +1742,6 @@ DataFrame_write_csv = function(
     quote_style = "necessary"
 ) {
 
-  if (file_ext(path) != "csv") {
-    stop("Argument `path` must the path to a CSV file.")
-  }
-
   if (length(quote_style) == 0 ||
       !quote_style %in% c("always", "necessary", "non_numeric")) {
     stop("Argument `quote_style` must be one of 'always', 'necessary', or 'non_numeric'.")
