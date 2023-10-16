@@ -111,11 +111,11 @@ impl Series {
 
     pub fn value_counts(
         &self,
-        multithreaded: bool,
-        sorted: bool,
+        sort: bool,
+        parallel: bool,
     ) -> std::result::Result<DataFrame, String> {
         self.0
-            .value_counts(multithreaded, sorted)
+            .value_counts(sort, parallel)
             .map(DataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }

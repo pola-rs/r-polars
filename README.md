@@ -148,7 +148,7 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-07-27)
+  requires Rust toolchain nightly-2023-08-26)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
@@ -266,8 +266,8 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly-2023-07-27
-  rustup default nightly-2023-07-27
+  rustup toolchain install nightly-2023-08-26
+  rustup default nightly-2023-08-26
   ```
 
 - Windows: Make sure the latest version of

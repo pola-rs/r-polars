@@ -9,7 +9,7 @@
 
 \item{value}{\verb{Into<Expr>} replacement}
 
-\item{literal}{bool, Treat pattern as a literal string.}
+\item{literal}{Boolean. Treat pattern as a literal string.}
 }
 \value{
 Expr of Utf8 Series
