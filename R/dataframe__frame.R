@@ -1704,7 +1704,7 @@ DataFrame_sample = function(
 #' @param null_values A string representing null values (defaulting to the empty
 #' string).
 #' @param quote_style Determines the quoting strategy used.
-#' * "`necessary"` (default): This puts quotes around fields only when necessary.
+#' * `"necessary"` (default): This puts quotes around fields only when necessary.
 #'   They are necessary when fields contain a quote, delimiter or record
 #'   terminator. Quotes are also necessary when writing an empty record (which
 #'   is indistinguishable from a record with one empty field). This is the

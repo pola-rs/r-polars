@@ -51,7 +51,7 @@ string).}
 
 \item{quote_style}{Determines the quoting strategy used.
 \itemize{
-\item "\verb{necessary"} (default): This puts quotes around fields only when necessary.
+\item \code{"necessary"} (default): This puts quotes around fields only when necessary.
 They are necessary when fields contain a quote, delimiter or record
 terminator. Quotes are also necessary when writing an empty record (which
 is indistinguishable from a record with one empty field). This is the
