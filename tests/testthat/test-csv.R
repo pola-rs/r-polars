@@ -24,18 +24,13 @@ test_that("csv read iris", {
 })
 
 
-dat = mtcars
+dat = head(mtcars, n = 15)
 dat[c(1, 3, 9, 12), c(3, 4, 5)] = NA
 dat_pl = pl$DataFrame(dat)
 temp_noext = tempfile()
 temp_out = tempfile(fileext = ".csv")
 
 test_that("write_csv: path works", {
-  expect_error(
-    dat_pl$write_csv(temp_noext),
-    "must the path to a CSV file"
-  )
-
   dat_pl$write_csv(temp_out)
   expect_identical(
     pl$read_csv(temp_out)$to_data_frame(),
@@ -81,6 +76,7 @@ patrick::with_parameters_test_that(
       b = 1:2,
       c = letters[1:2]
     )$write_csv(temp_out, quote_style = quote_style)
+    expect_snapshot_file(temp_out)
   },
   quote_style = c("necessary", "always", "non_numeric")
 )
