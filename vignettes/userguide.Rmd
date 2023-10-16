@@ -27,7 +27,7 @@ These functions/methods are either missing, broken, or Vincent can't figure out 
 * `pl$col("Defense")$mean()$over(c("Type 1", "Type 2"))$alias("avg_defense_by_type_combination"),`
 * `pl$fold`
 * `DataFrame.explode`
-* Custom R function in an agg on groupby
+* Custom R function in an agg on group_by
   
 Requires new Polars version:
 
@@ -60,13 +60,13 @@ df = pl$read_csv("https://j.mp/iriscsv")
 ```
 ```{r}
 df$filter(pl$col("sepal_length") > 5)$
-  groupby("species", maintain_order = TRUE)$
+  group_by("species", maintain_order = TRUE)$
   agg(pl$all()$sum())
 
 df$
   lazy()$
   filter(pl$col("sepal_length") > 5)$
-  groupby("species", maintain_order = TRUE)$
+  group_by("species", maintain_order = TRUE)$
   agg(pl$all()$sum())$
   collect()
 ```
@@ -135,7 +135,7 @@ df$with_columns((pl$col("a") * pl$col("b"))$alias("a * b"))$select(pl$all()$excl
 df = pl$DataFrame("x" = 0:7, "y" = c("A", "A", "A", "B", "B", "C", "X", "X"))
 
 df$
-  groupby("y", maintain_order = FALSE)$
+  group_by("y", maintain_order = FALSE)$
   agg(
     pl$col("*")$count()$alias("count"),
     pl$col("*")$sum()$alias("sum")
@@ -213,7 +213,7 @@ df$with_columns(
   pl$col("random")$count()$alias("count")
 )
 
-df$groupby("groups")$agg(
+df$group_by("groups")$agg(
   pl$sum("nrs"),  # sum nrs by groups
   pl$col("random")$count()$alias("count"),  # count group members
   # sum random where name != null
@@ -240,7 +240,7 @@ dataset = pl$read_csv(url)$with_columns(pl$col("birthday")$str$strptime(pl$Date,
 
 dataset$
   lazy()$
-  groupby("first_name")$
+  group_by("first_name")$
   agg(
     pl$count(),
     pl$col("gender"),
@@ -250,7 +250,7 @@ dataset$
   collect()
 
 dataset$lazy()$
-  groupby("state")$
+  group_by("state")$
   agg(
     (pl$col("party") == "Anti-Administration")$sum()$alias("anti"),
     (pl$col("party") == "Pro-Administration")$sum()$alias("pro"))$
@@ -260,7 +260,7 @@ dataset$lazy()$
 
 dataset$
   lazy()$
-  groupby(c("state", "party"))$
+  group_by(c("state", "party"))$
   agg(pl$count("party")$alias("count"))$
   filter((pl$col("party") == "Anti-Administration") | (pl$col("party") == "Pro-Administration"))$
   sort("count", descending = TRUE)$
@@ -278,7 +278,7 @@ avg_birthday = function(gender) {
 
 q = (
     dataset$lazy()$
-    groupby("state")$
+    group_by("state")$
     agg(avg_birthday("M"),
         avg_birthday("F"),
         (pl$col("gender") == "M")$sum()$alias("# male"),
@@ -293,7 +293,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -308,7 +308,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -323,7 +323,7 @@ q$collect()
 # q = (
 #     dataset$lazy()
 #     $sort("birthday", descending=True)
-#     $groupby(["state"])
+#     $group_by(["state"])
 #     $agg(
 #         [
 #             get_person()$first()$alias("youngest"),
@@ -482,17 +482,17 @@ df = pl$DataFrame(
   "values" = c(10, 7, 1)
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
         pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
         pl$col("values")$map(function(s) s$shift())$alias("shift_map"),
         pl$col("values")$shift()$alias("shift_expression")
 )
 
-df$groupby("keys")$agg(
+df$group_by("keys")$agg(
   pl$col("values")$apply(function(s) s$shift())$alias("shift_map"),
   pl$col("values")$shift()$alias("shift_expression")
 )
@@ -602,14 +602,14 @@ df$select(
 #   pl$fold(0, function(a, b) a + b, c( pl$col("A"), "B", pl$col("B")**2,))$alias("fold")
 # )
 
-df$groupby("fruits")$
+df$group_by("fruits")$
   agg(
     pl$col("B")$count()$alias("B_count"),
     pl$col("B")$sum()$alias("B_sum")
   )
 
 # We can aggregate many expressions at once
-df$groupby("fruits")$
+df$group_by("fruits")$
   agg(
             pl$col("B")$sum()$alias("B_sum"),# Sum of B
             # pl$first("fruits")$alias("fruits_first"),# First value of fruits
@@ -624,7 +624,7 @@ df$groupby("fruits")$
 # We can explode the list column "cars" to a new row for each element in the list
 df$
   # sort("cars")$
-  groupby("fruits")$
+  group_by("fruits")$
   agg(
     # pl$col("B")$sum()$alias("B_sum"),
     # pl$col("B")$sum()$alias("B_sum2"),  # syntactic sugar for the first
@@ -640,14 +640,14 @@ df$
 ```{r}
 # We can also get a list of the row indices for each group with `agg_groups()`
 df$
-  groupby("fruits")$
+  group_by("fruits")$
   agg(pl$col("B")$agg_groups()$alias("group_row_indices"))
 
-# We can also do filter predicates in groupby
+# We can also do filter predicates in group_by
 # In this example we do not include values of B that are smaller than 1
 # in the sum
 df$
-  groupby("fruits")$
+  group_by("fruits")$
   agg(pl$col("B")$filter(pl$col("B") > 1)$sum())
 
 
@@ -659,7 +659,7 @@ df$
     "B",
     pl$col("B")$sum()$over("fruits")$alias("B_sum_by_fruits"))
 
-# We can also use window functions to do groupby over multiple columns
+# We can also use window functions to do group_by over multiple columns
 df$
   select(
     "fruits",
