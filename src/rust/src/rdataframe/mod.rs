@@ -460,7 +460,6 @@ impl DataFrame {
         null_value: Robj,
         quote_style: Robj,
     ) -> RResult<()> {
-
         let null = robj_to!(String, null_value).unwrap();
         let path = robj_to!(str, path).unwrap();
         let f = std::fs::File::create(path).unwrap();
@@ -484,16 +483,21 @@ impl DataFrame {
 }
 
 pub fn parse_quote_style(x: Robj) -> QuoteStyle {
-    match robj_to!(Option, String, x).unwrap_or_default().unwrap().as_str() {
+    match robj_to!(Option, String, x)
+        .unwrap_or_default()
+        .unwrap()
+        .as_str()
+    {
         "always" => QuoteStyle::Always,
         "necessary" => QuoteStyle::Necessary,
         "non_numeric" => QuoteStyle::NonNumeric,
         // "never" is available in rust-polars devel only for now (will be added in 0.34)
         // "never" => QuoteStyle::Never,
-        _ => panic!("polars internal error: `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+        _ => panic!(
+            "polars internal error: `quote_style` must be 'always', 'necessary' or 'non_numeric'."
+        ),
     }
 }
-
 
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {

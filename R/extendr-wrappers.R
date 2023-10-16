@@ -189,15 +189,7 @@ DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__D
 
 DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
-DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size,
-                                datetime_format, date_format, time_format, float_precision,
-                                null_values, quote_style) .Call(wrap__DataFrame__write_csv, self, path,
-                                                                has_header, separator,
-                                                                line_terminator, quote,
-                                                                batch_size,
-                                                                datetime_format, date_format,
-                                                                time_format, float_precision,
-                                                                null_values, quote_style)
+DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
