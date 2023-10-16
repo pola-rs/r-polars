@@ -49,19 +49,13 @@ test_that("write_csv: null_values works", {
     dat_pl$write_csv(temp_out, null_values = NULL)
   )
   dat_pl$write_csv(temp_out, null_values = "hello")
-  tmp = pl$read_csv(temp_out)$to_data_frame()
-  expect_true(is.character(tmp$disp) && is.character(tmp$hp) && is.character(tmp$drat))
-  expect_equal(tmp[1:2, "disp"], c("hello", "160.0"))
+  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
 })
 
 
 test_that("write_csv: separator works", {
   dat_pl$write_csv(temp_out, separator = "|")
-  expect_identical(
-    pl$read_csv(temp_out, sep = "|")$to_data_frame(),
-    dat,
-    ignore_attr = TRUE # rownames are lost when writing / reading from CSV
-  )
+  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
 })
 
 test_that("write_csv: quote_style and quote works", {
@@ -73,18 +67,8 @@ test_that("write_csv: quote_style and quote works", {
   )
 
   dat_pl2$write_csv(temp_out, quote_style = "always", quote = "+")
-  expect_identical(
-    head(pl$read_csv(temp_out)$to_data_frame()[["+Sepal.Length+"]], n = 2),
-    c("+5.1+", "+4.9+")
-  )
+  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
 
   dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
-  expect_identical(
-    head(pl$read_csv(temp_out)$to_data_frame()[["+Sepal.Length+"]], n = 2),
-    c(5.1, 4.9)
-  )
-  expect_identical(
-    head(pl$read_csv(temp_out)$to_data_frame()[["+Species+"]], n = 2),
-    c("+setosa+", "+setosa+")
-  )
+  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
 })
