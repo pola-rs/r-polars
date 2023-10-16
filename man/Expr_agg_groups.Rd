@@ -18,6 +18,6 @@ df = pl$DataFrame(list(
   group = c("one", "one", "one", "two", "two", "two"),
   value = c(94, 95, 96, 97, 97, 99)
 ))
-df$groupby("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
 }
 \keyword{Expr}

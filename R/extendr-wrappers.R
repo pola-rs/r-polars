@@ -1041,7 +1041,7 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
-LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
+LazyFrame$group_by <- function(exprs, maintain_order) .Call(wrap__LazyFrame__group_by, self, exprs, maintain_order)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 
