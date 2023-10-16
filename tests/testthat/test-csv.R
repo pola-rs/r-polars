@@ -49,13 +49,13 @@ test_that("write_csv: null_values works", {
     dat_pl$write_csv(temp_out, null_values = NULL)
   )
   dat_pl$write_csv(temp_out, null_values = "hello")
-  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
+  expect_snapshot_file(temp_out)
 })
 
 
 test_that("write_csv: separator works", {
   dat_pl$write_csv(temp_out, separator = "|")
-  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
+  expect_snapshot_file(temp_out)
 })
 
 test_that("write_csv: quote_style and quote works", {
@@ -67,8 +67,8 @@ test_that("write_csv: quote_style and quote works", {
   )
 
   dat_pl2$write_csv(temp_out, quote_style = "always", quote = "+")
-  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
+  expect_snapshot_file(temp_out)
 
   dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
-  expect_snapshot(readLines(temp_out) |> cat(sep = "\n"))
+  expect_snapshot_file(temp_out)
 })

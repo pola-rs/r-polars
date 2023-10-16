@@ -1,7 +1,7 @@
 # write_csv: null_values works
 
     Code
-      cat(readLines(temp_out), sep = "\n")
+      cat(readLines(path), sep = "\n")
     Output
       mpg,cyl,disp,hp,drat,wt,qsec,vs,am,gear,carb
       21.0,6.0,hello,hello,hello,2.62,16.46,0.0,1.0,4.0,4.0
@@ -40,7 +40,7 @@
 # write_csv: separator works
 
     Code
-      cat(readLines(temp_out), sep = "\n")
+      cat(readLines(path), sep = "\n")
     Output
       mpg|cyl|disp|hp|drat|wt|qsec|vs|am|gear|carb
       21.0|6.0||||2.62|16.46|0.0|1.0|4.0|4.0
@@ -79,7 +79,7 @@
 # write_csv: quote_style and quote works
 
     Code
-      cat(readLines(temp_out), sep = "\n")
+      cat(readLines(path), sep = "\n")
     Output
       +Sepal.Length+,+Sepal.Width+,+Petal.Length+,+Petal.Width+,+Species+
       +5.1+,+3.5+,+1.4+,+0.2+,+setosa+
@@ -236,7 +236,7 @@
 ---
 
     Code
-      cat(readLines(temp_out), sep = "\n")
+      cat(readLines(path), sep = "\n")
     Output
       +Sepal.Length+,+Sepal.Width+,+Petal.Length+,+Petal.Width+,+Species+
       5.1,3.5,1.4,0.2,+setosa+
