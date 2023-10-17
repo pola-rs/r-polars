@@ -417,18 +417,6 @@
       18h00m - 01/01/2020
       00h00m - 02/01/2020
 
-# write_csv: time_format works
-
-    Code
-      cat(readLines(path), sep = "\n")
-    Output
-      date
-      2023-10-16T22:00:00.000000
-      2023-10-16T22:15:00.000000
-      2023-10-16T22:30:00.000000
-      2023-10-16T22:45:00.000000
-      2023-10-16T23:00:00.000000
-
 # write_csv: float_precision works
 
     Code

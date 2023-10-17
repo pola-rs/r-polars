@@ -109,18 +109,19 @@ test_that("write_csv: datetime_format works", {
   expect_snapshot_file(temp_out)
 })
 
-test_that("write_csv: time_format works", {
-  dat <- pl$DataFrame(
-    date = pl$date_range(
-      strptime("00:00:00", format = "%H:%M:%S"),
-      strptime("01:00:00", format = "%H:%M:%S"),
-      interval = "15m",
-      eager = TRUE
-    )
-  )
-  dat$write_csv(temp_out, time_format = "%Hh%Mm%%Ss")
-  expect_snapshot_file(temp_out)
-})
+# TODO: uncomment this when $dt$time is implemented
+# test_that("write_csv: time_format works", {
+#   dat <- pl$DataFrame(
+#     date = pl$date_range(
+#       strptime("00:00:00", format = "%H:%M:%S"),
+#       strptime("01:00:00", format = "%H:%M:%S"),
+#       interval = "15m",
+#       eager = TRUE
+#     )$dt$time()
+#   )
+#   dat$write_csv(temp_out, time_format = "%Hh%Mm%%Ss")
+#   expect_snapshot_file(temp_out)
+# })
 
 
 test_that("write_csv: float_precision works", {
