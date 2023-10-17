@@ -71,4 +71,8 @@ Write to comma-separated values (CSV) file
 \examples{
 dat = pl$DataFrame(mtcars)
 
+destination = tempfile(fileext = ".csv")
+dat$select(pl$col("drat", "mpg"))$write_csv(destination)
+
+pl$read_csv(destination)
 }

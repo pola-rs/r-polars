@@ -1726,6 +1726,10 @@ DataFrame_sample = function(
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
+#' destination = tempfile(fileext = ".csv")
+#' dat$select(pl$col("drat", "mpg"))$write_csv(destination)
+#'
+#' pl$read_csv(destination)
 
 DataFrame_write_csv = function(
     path,
