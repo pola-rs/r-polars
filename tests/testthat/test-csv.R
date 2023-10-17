@@ -56,16 +56,35 @@ test_that("write_csv: separator works", {
 test_that("write_csv: quote_style and quote works", {
   dat_pl2 = pl$DataFrame(iris)
 
-  expect_error(
-    dat_pl2$write_csv(temp_out, quote_style = "foo"),
-    "must be one of"
-  )
+  #wrong quote_style
+  ctx = dat_pl2$write_csv(temp_out, quote_style = "foo") |> get_err_ctx()
+  expect_identical(ctx$BadArgument, "quote_style")
+  expect_identical(ctx$Plain, "a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
 
+  # wrong quote_style type
+  ctx = dat_pl2$write_csv(temp_out, quote_style = 42) |> get_err_ctx()
+  expect_identical(ctx$TypeMismatch, "&str")
+
+  # ok quote_style and quote
   dat_pl2$write_csv(temp_out, quote_style = "always", quote = "+")
   expect_snapshot_file(temp_out)
 
-  dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
+  # ok also
+  ctx = dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
   expect_snapshot_file(temp_out)
+
+  # zero byte quote
+  ctx = dat_pl2$write_csv(temp_out, quote = "") |> get_err_ctx()
+  expect_identical(ctx$Plain, "cannot extract single byte from empty string")
+
+  # multi byte quote not allowed
+  ctx = dat_pl2$write_csv(temp_out, quote = "£") |> get_err_ctx()
+  expect_identical(ctx$Plain, "multi byte-string not allowed")
+
+  # multi string not allowed
+  ctx = dat_pl2$write_csv(temp_out, quote = c("a","b")) |> get_err_ctx()
+  expect_identical(ctx$TypeMismatch, "&str")
+
 })
 
 patrick::with_parameters_test_that(
