@@ -80,3 +80,44 @@ patrick::with_parameters_test_that(
   },
   quote_style = c("necessary", "always", "non_numeric")
 )
+
+test_that("write_csv: date_format works", {
+  dat <- pl$DataFrame(
+    date = pl$date_range(
+      as.Date("2020-01-01"),
+      as.Date("2023-01-02"),
+      interval = "1y",
+      eager = TRUE
+    )
+  )
+  dat$write_csv(temp_out, date_format = "%Y")
+  expect_snapshot_file(temp_out)
+  dat$write_csv(temp_out, date_format = "%d/%m/%Y")
+  expect_snapshot_file(temp_out)
+})
+
+test_that("write_csv: datetime_format works", {
+  dat <- pl$DataFrame(
+    date = pl$date_range(
+      as.Date("2020-01-01"),
+      as.Date("2020-01-02"),
+      interval = "6h",
+      eager = TRUE
+    )
+  )
+  dat$write_csv(temp_out, datetime_format = "%Hh%Mm - %d/%m/%Y")
+  expect_snapshot_file(temp_out)
+})
+
+test_that("write_csv: time_format works", {
+  dat <- pl$DataFrame(
+    date = pl$date_range(
+      strptime("00:00:00", format = "%H:%M:%S"),
+      strptime("01:00:00", format = "%H:%M:%S"),
+      interval = "15m",
+      eager = TRUE
+    )
+  )
+  dat$write_csv(temp_out, time_format = "%Hh%Mm%%Ss")
+  expect_snapshot_file(temp_out)
+})

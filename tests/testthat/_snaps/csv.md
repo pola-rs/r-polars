@@ -383,3 +383,49 @@
       """foo""",1,"a"
       "bar",2,"b"
 
+# write_csv: date_format works
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      date
+      2020
+      2021
+      2022
+      2023
+
+---
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      date
+      01/01/2020
+      01/01/2021
+      01/01/2022
+      01/01/2023
+
+# write_csv: datetime_format works
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      date
+      00h00m - 01/01/2020
+      06h00m - 01/01/2020
+      12h00m - 01/01/2020
+      18h00m - 01/01/2020
+      00h00m - 02/01/2020
+
+# write_csv: time_format works
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      date
+      2023-10-16T22:00:00.000000
+      2023-10-16T22:15:00.000000
+      2023-10-16T22:30:00.000000
+      2023-10-16T22:45:00.000000
+      2023-10-16T23:00:00.000000
+
