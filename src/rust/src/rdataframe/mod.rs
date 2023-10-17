@@ -1,5 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
-use polars::prelude::{self as pl, IntoLazy};
+use polars::prelude::{self as pl, IntoLazy, SerWriter};
 use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
@@ -10,8 +10,6 @@ use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::*;
-
-use polars::prelude::{CsvWriter, QuoteStyle, SerWriter};
 
 pub use lazy::dataframe::*;
 
@@ -446,7 +444,7 @@ impl DataFrame {
     }
 
     pub fn write_csv(
-        &mut self,
+        &self,
         path: Robj,
         has_header: Robj,
         separator: Robj,
@@ -460,42 +458,22 @@ impl DataFrame {
         null_value: Robj,
         quote_style: Robj,
     ) -> RResult<()> {
-        let null = robj_to!(String, null_value).unwrap();
-        let path = robj_to!(str, path).unwrap();
-        let f = std::fs::File::create(path).unwrap();
-        let qs = parse_quote_style(quote_style);
-
-        CsvWriter::new(f)
-            .has_header(robj_to!(bool, has_header).unwrap())
-            .with_delimiter(robj_to!(u8, separator).unwrap())
-            .with_line_terminator(robj_to!(String, line_terminator).unwrap())
-            .with_quoting_char(robj_to!(u8, quote).unwrap())
-            .with_batch_size(robj_to!(usize, batch_size).unwrap())
-            .with_datetime_format(robj_to!(Option, String, datetime_format).unwrap())
-            .with_date_format(robj_to!(Option, String, date_format).unwrap())
-            .with_time_format(robj_to!(Option, String, time_format).unwrap())
-            .with_float_precision(robj_to!(Option, usize, float_precision).unwrap())
-            .with_null_value(null)
-            .with_quote_style(qs)
-            .finish(&mut self.0)
+        let path = robj_to!(str, path)?;
+        let f = std::fs::File::create(path)?;
+        pl::CsvWriter::new(f)
+            .has_header(robj_to!(bool, has_header)?)
+            .with_delimiter(robj_to!(Utf8Byte, separator)?)
+            .with_line_terminator(robj_to!(String, line_terminator)?)
+            .with_quoting_char(robj_to!(Utf8Byte, quote)?)
+            .with_batch_size(robj_to!(usize, batch_size)?)
+            .with_datetime_format(robj_to!(Option, String, datetime_format)?)
+            .with_date_format(robj_to!(Option, String, date_format)?)
+            .with_time_format(robj_to!(Option, String, time_format)?)
+            .with_float_precision(robj_to!(Option, usize, float_precision)?)
+            .with_null_value(robj_to!(String, null_value)?)
+            .with_quote_style(robj_to!(QuoteStyle, quote_style)?)
+            .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
-    }
-}
-
-pub fn parse_quote_style(x: Robj) -> QuoteStyle {
-    match robj_to!(Option, String, x)
-        .unwrap_or_default()
-        .unwrap()
-        .as_str()
-    {
-        "always" => QuoteStyle::Always,
-        "necessary" => QuoteStyle::Necessary,
-        "non_numeric" => QuoteStyle::NonNumeric,
-        // "never" is available in rust-polars devel only for now (will be added in 0.34)
-        // "never" => QuoteStyle::Never,
-        _ => panic!(
-            "polars internal error: `quote_style` must be 'always', 'necessary' or 'non_numeric'."
-        ),
     }
 }
 

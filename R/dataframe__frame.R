@@ -1730,7 +1730,6 @@ DataFrame_sample = function(
 #' dat$select(pl$col("drat", "mpg"))$write_csv(destination)
 #'
 #' pl$read_csv(destination)
-
 DataFrame_write_csv = function(
     path,
     has_header = TRUE,
@@ -1746,14 +1745,9 @@ DataFrame_write_csv = function(
     quote_style = "necessary"
 ) {
 
-  if (length(quote_style) == 0 ||
-      !quote_style %in% c("always", "necessary", "non_numeric")) {
-    stop("Argument `quote_style` must be one of 'always', 'necessary', or 'non_numeric'.")
-  }
-
   .pr$DataFrame$write_csv(
     self,
-    path, has_header, utf8ToInt(separator), line_terminator, utf8ToInt(quote), batch_size,
+    path, has_header, separator, line_terminator, quote, batch_size,
     datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>
