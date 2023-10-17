@@ -44,6 +44,7 @@
 - New function `pl$raw_list` and class `rpolars_raw_list` a list of R Raw's, where missing is
   encoded as `NULL` to aid conversion to polars binary Series. Support back and forth conversion
   from polars binary literal and Series to R raw (#417).
+- New method `$dt$time()` to extract the time from a `datetime` variable (#428).
 
 # polars 0.8.1
 
