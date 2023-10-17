@@ -429,3 +429,21 @@
       2023-10-16T22:45:00.000000
       2023-10-16T23:00:00.000000
 
+# write_csv: float_precision works
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      x
+      1.2
+      5.6
+
+---
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      x
+      1.234
+      5.600
+

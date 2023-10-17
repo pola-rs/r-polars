@@ -121,3 +121,13 @@ test_that("write_csv: time_format works", {
   dat$write_csv(temp_out, time_format = "%Hh%Mm%%Ss")
   expect_snapshot_file(temp_out)
 })
+
+
+test_that("write_csv: float_precision works", {
+  dat <- pl$DataFrame(x = c(1.234, 5.6))
+  dat$write_csv(temp_out, float_precision = 1)
+  expect_snapshot_file(temp_out)
+
+  dat$write_csv(temp_out, float_precision = 3)
+  expect_snapshot_file(temp_out)
+})
