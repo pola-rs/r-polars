@@ -1027,14 +1027,16 @@ ExprDT_offset_by = function(by) {
 #' This only works on Datetime Series, it will error on Date Series.
 #'
 #' @return A Time Expr
-#' @export
 #'
+#' @name ExprDT_time
 #' @examples
-#' dates <- c("02/27/92", "02/27/92", "01/14/92", "02/28/92", "02/01/92")
-#' times <- c("23:03:20", "22:29:56", "01:03:30", "18:21:03", "16:56:26")
-#' x <- paste(dates, times)
-#' df = pl$DataFrame(dates = strptime(x, "%m/%d/%y %H:%M:%S"))
-#' df
+#' df = pl$DataFrame(dates = pl$date_range(
+#'     as.Date("2000-1-1"),
+#'     as.Date("2000-1-2"),
+#'     "1h",
+#'     eager = TRUE
+#'   )
+#' )
 #'
 #' df$with_columns(times = pl$col("dates")$dt$time())
 ExprDT_time = function() {

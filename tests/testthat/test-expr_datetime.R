@@ -831,3 +831,31 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
 })
+
+
+test_that("$dt$time()", {
+  df = pl$DataFrame(
+    dates = pl$date_range(
+      as.Date("2000-1-1"),
+      as.Date("2000-1-2"),
+      "6h",
+      eager = TRUE
+    )
+  )
+  expect_identical(
+    as.numeric(df$select(times = pl$col("dates")$dt$time())$to_list()[[1]]),
+    c(0.00e+00, 2.16e+13, 4.32e+13, 6.48e+13, 0.00e+00)
+  )
+
+  df = pl$DataFrame(
+    dates = pl$date_range(
+      as.Date("2000-1-1"),
+      as.Date("2000-1-2"),
+      "1d",
+      eager = TRUE
+    )
+  )
+  expect_error(
+    df$select(times = pl$col("dates")$dt$time())
+  )
+})
