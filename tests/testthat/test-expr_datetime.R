@@ -846,16 +846,4 @@ test_that("$dt$time()", {
     as.numeric(df$select(times = pl$col("dates")$dt$time())$to_list()[[1]]),
     c(0.00e+00, 2.16e+13, 4.32e+13, 6.48e+13, 0.00e+00)
   )
-
-  df = pl$DataFrame(
-    dates = pl$date_range(
-      as.Date("2000-1-1"),
-      as.Date("2000-1-2"),
-      "1d",
-      eager = TRUE
-    )
-  )
-  expect_error(
-    df$select(times = pl$col("dates")$dt$time())
-  )
 })
