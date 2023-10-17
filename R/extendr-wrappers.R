@@ -649,7 +649,7 @@ Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_trun
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
-Expr$dt_time <- function(every, offset) .Call(wrap__Expr__dt_time, self)
+Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
 
 Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
 
