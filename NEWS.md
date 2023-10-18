@@ -17,16 +17,17 @@
   - `$str$strip()` -> `$str$strip_chars()` (#417)
   - `$str$lstrip()` -> `$str$strip_chars_start()` (#417)
   - `$str$rstrip()` -> `$str$strip_chars_end()` (#417)
+  - `$groupby()` is renamed `$group_by()`. (#427)
 
 ## Breaking changes
 
+- Remove some deprecated methods.
+  - Method `$with_column()` has been removed (it was deprecated since 0.8.0).
+    Use `$with_columns()` instead (#402).
+  - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1).
+    Use `$list` instead (#402).
 - Setting and getting polars options is now made with `pl$options`,
   `pl$set_options()` and `pl$reset_options()` (#384).
-- Method `$with_column()` has been removed (it was deprecated since 0.8.0). Use
-  `$with_columns()` instead (#402).
-- Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
-  instead (#402).
-- `$groupby()` is renamed `$group_by()`. (#427)
 
 ## What's changed
 
