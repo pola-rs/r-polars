@@ -26,6 +26,7 @@ Suggests:
     bit64,
     callr,
     data.table,
+    ggplot2,
     knitr,
     lubridate,
     nanoarrow,
