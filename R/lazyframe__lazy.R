@@ -1360,27 +1360,23 @@ LazyFrame_profile = function(
     .pr$LazyFrame$profile() |>
     unwrap("in $profile()")
 
-  if (isTRUE(show_plot)) {
+  if (isTRUE(show_plot) && requireNamespace("ggplot2", quietly = TRUE)) {
     timings = out$profile$to_data_frame()
     timings$node = factor(timings$node, levels = unique(timings$node))
     total_timing = max(timings$end)
     if (total_timing > 10000000) {
       unit = "s"
       total_timing = paste0(total_timing/1000000, "s")
-      timings$start <- timings$start / 1000000
-      timings$end <- timings$end / 1000000
+      timings$start = timings$start / 1000000
+      timings$end = timings$end / 1000000
     } else if (total_timing > 10000) {
       unit = "ms"
       total_timing = paste0(total_timing/1000, "ms")
-      timings$start <- timings$start / 1000
-      timings$end <- timings$end / 1000
+      timings$start = timings$start / 1000
+      timings$end = timings$end / 1000
     } else {
       unit = "µs"
       total_timing = paste0(total_timing, "µs")
-    }
-
-    if (!"ggplot2" %in% rownames(installed.packages())) {
-      unwrap("in $profile(): argument `show_plot` requires the package 'ggplot2'.")
     }
 
     plot = ggplot2::ggplot(timings, ggplot2::aes(x = start, xend = end, y = node, yend = node)) +
