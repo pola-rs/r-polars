@@ -1720,7 +1720,7 @@ DataFrame_sample = function(
 
 #' @return
 #' This doesn't return anything but creates a CSV file.
-#' @export
+#'
 #' @rdname IO_write_csv
 #'
 #' @examples
