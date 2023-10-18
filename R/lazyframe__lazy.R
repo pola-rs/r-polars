@@ -977,11 +977,11 @@ LazyFrame_sort = function(
 #' table. They must have the same length.
 #' @param strategy Strategy for where to find match:
 #' * "backward" (default): search for the last row in the right table whose `on`
-#'   key is less than or equal to the left’s key.
+#'   key is less than or equal to the left key.
 #' * "forward": search for the first row in the right table whose `on` key is
-#'   greater than or equal to the left’s key.
+#'   greater than or equal to the left key.
 #' * "nearest": search for the last row in the right table whose value is nearest
-#'   to the left’s key. String keys are not currently supported for a nearest
+#'   to the left key. String keys are not currently supported for a nearest
 #'   search.
 #' @param tolerance
 #' Numeric tolerance. By setting this the join will only be done if the near
