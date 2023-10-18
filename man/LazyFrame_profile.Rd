@@ -4,7 +4,58 @@
 \alias{LazyFrame_profile}
 \title{Collect and profile a lazy query.}
 \usage{
-LazyFrame_profile()
+LazyFrame_profile(
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  streaming = FALSE,
+  no_optimization = FALSE,
+  inherit_optimization = FALSE,
+  collect_in_background = FALSE,
+  show_plot = FALSE
+)
+}
+\arguments{
+\item{type_coercion}{Boolean. Coerce types such that operations succeed and
+run on minimal required memory.}
+
+\item{predicate_pushdown}{Boolean. Applies filters as early as possible at
+scan level.}
+
+\item{projection_pushdown}{Boolean. Select only the columns that are needed
+at the scan level.}
+
+\item{simplify_expression}{Boolean. Various optimizations, such as constant
+folding and replacing expensive operations with faster alternatives.}
+
+\item{slice_pushdown}{Boolean. Only load the required slice from the scan
+level. Don't materialize sliced outputs (e.g. \code{join$head(10)}).}
+
+\item{comm_subplan_elim}{Boolean. Will try to cache branching subplans that
+occur on self-joins or unions.}
+
+\item{comm_subexpr_elim}{Boolean. Common subexpressions will be cached and
+reused.}
+
+\item{streaming}{Boolean. Run parts of the query in a streaming fashion
+(this is in an alpha state).}
+
+\item{no_optimization}{Boolean. Sets the following parameters to \code{FALSE}:
+\code{predicate_pushdown}, \code{projection_pushdown}, \code{slice_pushdown},
+\code{comm_subplan_elim}, \code{comm_subexpr_elim}.}
+
+\item{inherit_optimization}{Boolean. Use existing optimization settings
+regardless the settings specified in this function call.}
+
+\item{collect_in_background}{Boolean. Detach this query from R session.
+Computation will start in background. Get a handle which later can be converted
+into the resulting DataFrame. Useful in interactive mode to not lock R session.}
+
+\item{show_plot}{Show a Gantt chart of the profiling result}
 }
 \value{
 List of two \code{DataFrame}s: one with the collected result, the other

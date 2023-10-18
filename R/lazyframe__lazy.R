@@ -1271,6 +1271,10 @@ LazyFrame_fetch = function(
 #' @description This will run the query and return a list containing the
 #' materialized DataFrame and a DataFrame that contains profiling information
 #' of each node that is executed.
+#'
+#' @inheritParams LazyFrame_collect
+#' @param show_plot Show a Gantt chart of the profiling result
+#'
 #' @details The units of the timings are microseconds.
 #'
 #' @keywords LazyFrame
@@ -1311,8 +1315,89 @@ LazyFrame_fetch = function(
 #'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
-LazyFrame_profile = function() {
-  .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
+LazyFrame_profile = function(
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  streaming = FALSE,
+  no_optimization = FALSE,
+  inherit_optimization = FALSE,
+  collect_in_background = FALSE,
+  show_plot = FALSE) {
+
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    comm_subplan_elim = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim,
+      comm_subexpr_elim,
+      streaming
+    ) |> unwrap("in $profile():")
+  }
+
+  out = lf |>
+    .pr$LazyFrame$profile() |>
+    unwrap("in $profile()")
+
+  if (isTRUE(show_plot)) {
+    timings = out$profile$to_data_frame()
+    timings$node = factor(timings$node, levels = unique(timings$node))
+    total_timing = max(timings$end)
+    if (total_timing > 10000000) {
+      unit = "s"
+      total_timing = paste0(total_timing/1000000, "s")
+      timings$start <- timings$start / 1000000
+      timings$end <- timings$end / 1000000
+    } else if (total_timing > 10000) {
+      unit = "ms"
+      total_timing = paste0(total_timing/1000, "ms")
+      timings$start <- timings$start / 1000
+      timings$end <- timings$end / 1000
+    } else {
+      unit = "µs"
+      total_timing = paste0(total_timing, "µs")
+    }
+
+    if (!"ggplot2" %in% rownames(installed.packages())) {
+      unwrap("in $profile(): argument `show_plot` requires the package 'ggplot2'.")
+    }
+
+    plot = ggplot2::ggplot(timings, ggplot2::aes(x = start, xend = end, y = node, yend = node)) +
+      ggplot2::geom_segment(size = 6) +
+      ggplot2::xlab(
+        paste0("Node duration in ", unit, ". Total duration: ", total_timing)
+      ) +
+      ggplot2::ylab(NULL) +
+      ggplot2::scale_y_discrete(limits = rev) +
+      ggplot2::theme(
+        axis.text = ggplot2::element_text(size = 12)
+      )
+
+    print(plot)
+  }
+
+  out
 }
 
 #' @title Explode columns containing a list of values
