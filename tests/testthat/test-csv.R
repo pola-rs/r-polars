@@ -56,7 +56,7 @@ test_that("write_csv: separator works", {
 test_that("write_csv: quote_style and quote works", {
   dat_pl2 = pl$DataFrame(iris)
 
-  #wrong quote_style
+  # wrong quote_style
   ctx = dat_pl2$write_csv(temp_out, quote_style = "foo") |> get_err_ctx()
   expect_identical(ctx$BadArgument, "quote_style")
   expect_identical(ctx$Plain, "a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
@@ -82,9 +82,8 @@ test_that("write_csv: quote_style and quote works", {
   expect_identical(ctx$Plain, "multi byte-string not allowed")
 
   # multi string not allowed
-  ctx = dat_pl2$write_csv(temp_out, quote = c("a","b")) |> get_err_ctx()
+  ctx = dat_pl2$write_csv(temp_out, quote = c("a", "b")) |> get_err_ctx()
   expect_identical(ctx$TypeMismatch, "&str")
-
 })
 
 patrick::with_parameters_test_that(
@@ -101,7 +100,7 @@ patrick::with_parameters_test_that(
 )
 
 test_that("write_csv: date_format works", {
-  dat <- pl$DataFrame(
+  dat = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-01-01"),
       as.Date("2023-01-02"),
@@ -116,7 +115,7 @@ test_that("write_csv: date_format works", {
 })
 
 test_that("write_csv: datetime_format works", {
-  dat <- pl$DataFrame(
+  dat = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-01-01"),
       as.Date("2020-01-02"),
@@ -129,7 +128,7 @@ test_that("write_csv: datetime_format works", {
 })
 
 test_that("write_csv: time_format works", {
-  dat <- pl$DataFrame(
+  dat = pl$DataFrame(
     date = pl$date_range(
       as.Date("2020-10-17"),
       as.Date("2020-10-18"),
@@ -143,7 +142,7 @@ test_that("write_csv: time_format works", {
 
 
 test_that("write_csv: float_precision works", {
-  dat <- pl$DataFrame(x = c(1.234, 5.6))
+  dat = pl$DataFrame(x = c(1.234, 5.6))
   dat$write_csv(temp_out, float_precision = 1)
   expect_snapshot_file(temp_out)
 

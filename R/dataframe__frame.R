@@ -1742,9 +1742,7 @@ DataFrame_write_csv = function(
     time_format = NULL,
     float_precision = NULL,
     null_values = "",
-    quote_style = "necessary"
-) {
-
+    quote_style = "necessary") {
   .pr$DataFrame$write_csv(
     self,
     path, has_header, separator, line_terminator, quote, batch_size,
