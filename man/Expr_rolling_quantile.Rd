@@ -12,7 +12,7 @@ Expr_rolling_quantile(
   min_periods = NULL,
   center = FALSE,
   by = NULL,
-  closed = "left"
+  closed = c("left", "right", "both", "none")
 )
 }
 \arguments{
@@ -46,11 +46,11 @@ a result. If None, it will be set equal to window size.}
 
 \item{center}{Set the labels at the center of the window}
 
-\item{by}{If the \code{window_size} is temporal for instance \code{"5h"} or \verb{"3s}, you must
+\item{by}{If the \code{window_size} is temporal for instance \code{"5h"} or \code{"3s"}, you must
 set the column that will be used to determine the windows. This column must
-be of dtype \verb{\{Date, Datetime\}}}
+be of DataType: Date or DateTime.}
 
-\item{closed}{String options \verb{\{'left', 'right', 'both', 'none'\}}
+\item{closed}{string option \code{c("left", "right", "both", "none")}.
 Define whether the temporal window interval is closed or not.}
 }
 \value{
