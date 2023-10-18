@@ -1375,15 +1375,18 @@ LazyFrame_profile = function(
       timings$start = timings$start / 1000
       timings$end = timings$end / 1000
     } else {
-      unit = "µs"
-      total_timing = paste0(total_timing, "µs")
+      unit = "\U00B5s"
+      total_timing = paste0(total_timing, "\U00B5s")
     }
+
+    # for some reason, there's an error if I use rlang::.data directly in aes()
+    .data <- rlang::.data
 
     plot = ggplot2::ggplot(
       timings,
-      ggplot2::aes(x = rlang::.data$start, xend = rlang::.data$end,
-                   y = rlang::.data$node, yend = rlang::.data$node)) +
-      ggplot2::geom_segment(size = 6) +
+      ggplot2::aes(x = .data[["start"]], xend = .data[["end"]],
+                   y = .data[["node"]], yend = .data[["node"]])) +
+      ggplot2::geom_segment(linewidth = 6) +
       ggplot2::xlab(
         paste0("Node duration in ", unit, ". Total duration: ", total_timing)
       ) +
