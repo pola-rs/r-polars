@@ -33,6 +33,7 @@ Suggests:
     nycflights13,
     patrick,
     pillar,
+    rlang,
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,

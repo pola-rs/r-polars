@@ -1379,7 +1379,10 @@ LazyFrame_profile = function(
       total_timing = paste0(total_timing, "µs")
     }
 
-    plot = ggplot2::ggplot(timings, ggplot2::aes(x = start, xend = end, y = node, yend = node)) +
+    plot = ggplot2::ggplot(
+      timings,
+      ggplot2::aes(x = rlang::.data$start, xend = rlang::.data$end,
+                   y = rlang::.data$node, yend = rlang::.data$node)) +
       ggplot2::geom_segment(size = 6) +
       ggplot2::xlab(
         paste0("Node duration in ", unit, ". Total duration: ", total_timing)
