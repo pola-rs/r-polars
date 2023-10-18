@@ -131,9 +131,9 @@ test_that("write_csv: datetime_format works", {
 test_that("write_csv: time_format works", {
   dat <- pl$DataFrame(
     date = pl$date_range(
-      strptime("00:00:00", format = "%H:%M:%S"),
-      strptime("01:00:00", format = "%H:%M:%S"),
-      interval = "15m",
+      as.Date("2020-10-17"),
+      as.Date("2020-10-18"),
+      "8h",
       eager = TRUE
     )
   )$with_columns(pl$col("date")$dt$time())

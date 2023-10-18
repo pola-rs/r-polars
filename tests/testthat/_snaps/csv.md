@@ -423,11 +423,10 @@
       cat(readLines(path), sep = "\n")
     Output
       date
-      22h00m00s
-      22h15m00s
-      22h30m00s
-      22h45m00s
-      23h00m00s
+      00h00m00s
+      08h00m00s
+      16h00m00s
+      00h00m00s
 
 # write_csv: float_precision works
 
