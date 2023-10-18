@@ -70,6 +70,11 @@ Namely, when writing a field that does not parse as a valid float or integer,
 then quotes will be used even if they aren`t strictly necessary.
 }}
 
+\item{maintain_order}{Keep the same order as the original \code{DataFrame}. Setting
+this to \code{TRUE} makes it more expensive to compute and blocks the possibility
+to run on the streaming engine. The default value can be changed with
+\code{pl$set_options(maintain_order = TRUE)}.}
+
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
 

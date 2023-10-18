@@ -618,6 +618,7 @@ LazyFrame_sink_ipc = function(
 #'
 #' @inheritParams DataFrame_write_csv
 #' @inheritParams LazyFrame_collect
+#' @inheritParams DataFrame_unique
 #'
 #' @rdname IO_sink_csv
 #'
