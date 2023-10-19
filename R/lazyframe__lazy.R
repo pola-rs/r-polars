@@ -1274,6 +1274,8 @@ LazyFrame_fetch = function(
 #'
 #' @inheritParams LazyFrame_collect
 #' @param show_plot Show a Gantt chart of the profiling result
+#' @param truncate_nodes Truncate the label lengths in the Gantt chart to this
+#' number of characters. If `0` (default), do not truncate.
 #'
 #' @details The units of the timings are microseconds.
 #'
@@ -1327,7 +1329,8 @@ LazyFrame_profile = function(
   no_optimization = FALSE,
   inherit_optimization = FALSE,
   collect_in_background = FALSE,
-  show_plot = FALSE) {
+  show_plot = FALSE,
+  truncate_nodes = 0) {
 
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
@@ -1391,10 +1394,22 @@ LazyFrame_profile = function(
         paste0("Node duration in ", unit, ". Total duration: ", total_timing)
       ) +
       ggplot2::ylab(NULL) +
-      ggplot2::scale_y_discrete(limits = rev) +
       ggplot2::theme(
         axis.text = ggplot2::element_text(size = 12)
       )
+
+    if (truncate_nodes > 0) {
+      plot = plot +
+        ggplot2::scale_y_discrete(
+          labels = paste0(strtrim(timings$node, truncate_nodes), "..."),
+          limits = rev
+        )
+    } else {
+      plot = plot +
+        ggplot2::scale_y_discrete(
+          limits = rev
+        )
+    }
 
     print(plot)
   }

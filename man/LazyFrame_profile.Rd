@@ -16,7 +16,8 @@ LazyFrame_profile(
   no_optimization = FALSE,
   inherit_optimization = FALSE,
   collect_in_background = FALSE,
-  show_plot = FALSE
+  show_plot = FALSE,
+  truncate_nodes = 0
 )
 }
 \arguments{
@@ -56,6 +57,9 @@ Computation will start in background. Get a handle which later can be converted
 into the resulting DataFrame. Useful in interactive mode to not lock R session.}
 
 \item{show_plot}{Show a Gantt chart of the profiling result}
+
+\item{truncate_nodes}{Truncate the label lengths in the Gantt chart to this
+number of characters. If \code{0} (default), do not truncate.}
 }
 \value{
 List of two \code{DataFrame}s: one with the collected result, the other
