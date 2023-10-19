@@ -46,6 +46,7 @@
   encoded as `NULL` to aid conversion to polars binary Series. Support back and forth conversion
   from polars binary literal and Series to R raw (#417).
 - New method `$write_csv()` for `DataFrame` (#414).
+- New method `$sink_csv()` for `LazyFrame` (#432).
 - New method `$dt$time()` to extract the time from a `datetime` variable (#428).
 - Method `$profile()` gains optimization arguments and plot-related arguments (#429).
 
