@@ -1469,7 +1469,7 @@ LazyFrame_profile = function(
     }
 
     # for some reason, there's an error if I use rlang::.data directly in aes()
-    .data <- rlang::.data
+    .data = rlang::.data
 
     plot = ggplot2::ggplot(
       timings,
@@ -1487,7 +1487,7 @@ LazyFrame_profile = function(
     if (truncate_nodes > 0) {
       plot = plot +
         ggplot2::scale_y_discrete(
-          labels = paste0(strtrim(timings$node, truncate_nodes), "..."),
+          labels = rev(paste0(strtrim(timings$node, truncate_nodes), "...")),
           limits = rev
         )
     } else {
