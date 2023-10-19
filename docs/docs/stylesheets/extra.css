@@ -12,9 +12,16 @@ pre.r-example {
 }
 
 .md-typeset pre > code {
-	font-size: 0.7rem;
+	font-size: 0.73rem;
 }
 
+.md-typeset code {
+  font-size: 0.8rem;
+}
+
+.md-typeset h2 > code {
+	font-size: 1.2rem;
+}
 
 /*
 Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
@@ -22,11 +29,11 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 [data-md-color-scheme="default"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --md-primary-fg-color: #ecf4ff;
-  --md-primary-bg-color: #646464;
+  --md-primary-fg-color: #0B7189;
+  --md-primary-bg-color: #eef5f7;
 
-  --md-typeset-a-color-custom: #459db9;
-  --md-typeset-a-color-hover: #8fc5d6;
+  --md-typeset-a-color-custom: #65a6b3;
+  --md-typeset-a-color-hover: #98c4cd;
 
   --search-bar-border: #cccccc;
 
@@ -41,14 +48,16 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 /* Dark theme */
 [data-md-color-scheme="slate"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --md-primary-fg-color: #333333;
-  --md-primary-bg-color: #a6a6a6;
-  --md-default-bg-color: #121212;
+  --md-primary-fg-color: #0B7189;
+  --md-primary-bg-color: #eef5f7;
+  --md-default-bg-color: #262626;
 
-  --md-typeset-a-color-custom: #79a6d2;
-  --md-typeset-a-color-hover: #538cc6;
+  --md-typeset-a-color-custom-tab: #cee3e7;
+  --md-typeset-a-color-custom: #65a6b3;
+  --md-typeset-a-color-hover: #98c4cd;
 
-  --search-bar-border: #666666;
+
+  --search-bar-border: #bbd8dd;
 
   --custom-scrollbar-col: var(--md-typeset-a-color-custom) #000;
 
@@ -68,8 +77,12 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 }
 
 .md-tabs__link--active, .md-nav__item .md-nav__link--active,
-.md-tabs__link:is(:focus, :hover), .md-typeset a {
-	color: var(--md-typeset-a-color-custom);
+.md-tabs__link:is(:focus, :hover) {
+	color: var(--md-typeset-a-color-custom-tab);
+}
+
+.md-typeset a {
+  color: var(--md-typeset-a-color-custom);
 }
 
 .md-typeset a:focus, .md-typeset a:hover,
