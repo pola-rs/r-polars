@@ -610,6 +610,92 @@ LazyFrame_sink_ipc = function(
 }
 
 
+#' @title Stream the output of a query to a CSV file
+#' @description
+#' This writes the output of a query directly to a CSV file without collecting
+#' it in the R session first. This is useful if the output of the query is still
+#' larger than RAM as it would crash the R session if it was collected into R.
+#'
+#' @inheritParams DataFrame_write_csv
+#' @inheritParams LazyFrame_collect
+#' @inheritParams DataFrame_unique
+#'
+#' @rdname IO_sink_csv
+#'
+#' @examples
+#' # sink table 'mtcars' from mem to CSV
+#' tmpf = tempfile()
+#' pl$LazyFrame(mtcars)$sink_csv(tmpf)
+#'
+#' # stream a query end-to-end
+#' tmpf2 = tempfile()
+#' pl$scan_csv(tmpf)$select(pl$col("cyl") * 2)$sink_csv(tmpf2)
+#'
+#' # load parquet directly into a DataFrame / memory
+#' pl$scan_csv(tmpf2)$collect()
+LazyFrame_sink_csv = function(
+    path,
+    has_header = TRUE,
+    separator = ",",
+    line_terminator = "\n",
+    quote = '"',
+    batch_size = 1024,
+    datetime_format = NULL,
+    date_format = NULL,
+    time_format = NULL,
+    float_precision = NULL,
+    null_values = "",
+    quote_style = "necessary",
+    maintain_order = TRUE,
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE) {
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim = FALSE,
+      comm_subexpr_elim = FALSE,
+      streaming = FALSE
+    ) |> unwrap("in $sink_csv()")
+  }
+
+  lf |>
+    .pr$LazyFrame$sink_csv(
+      path,
+      has_header,
+      separator,
+      line_terminator,
+      quote,
+      batch_size,
+      datetime_format,
+      date_format,
+      time_format,
+      float_precision,
+      null_values,
+      quote_style,
+      maintain_order
+    ) |>
+    unwrap("in $sink_csv()") |>
+    invisible()
+}
+
+
 #' @title Limit a LazyFrame
 #' @inherit DataFrame_limit description params details
 #' @return A `LazyFrame`
@@ -859,15 +945,15 @@ LazyFrame_unique = function(subset = NULL, keep = "first", maintain_order = FALS
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#'   groupby("foo")$
+#'   group_by("foo")$
 #'   agg(
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )$
 #'   collect()
-LazyFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
-  .pr$LazyFrame$groupby(self, unpack_list(...), maintain_order) |>
-    unwrap("in $groupby():")
+LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
+  .pr$LazyFrame$group_by(self, unpack_list(...), maintain_order) |>
+    unwrap("in $group_by():")
 }
 
 #' Join LazyFrames
@@ -1294,7 +1380,7 @@ LazyFrame_fetch = function(
 #' # -1-  map each Species-group with native polars, takes ~120us only
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
-#'   groupby("Species", maintain_order = TRUE)$
+#'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$first() + 5)$
 #'   profile()
 #'
@@ -1308,7 +1394,7 @@ LazyFrame_fetch = function(
 #'
 #' pl$LazyFrame(iris)$
 #'   sort("Sepal.Length")$
-#'   groupby("Species", maintain_order = TRUE)$
+#'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
 LazyFrame_profile = function() {

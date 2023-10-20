@@ -535,6 +535,29 @@ pub fn robj_to_usize(robj: extendr_api::Robj) -> RResult<usize> {
     robj_to_u64(robj).and_then(try_u64_into_usize)
 }
 
+pub fn robj_to_utf8_byte(robj: extendr_api::Robj) -> RResult<u8> {
+    let mut utf8_byte_iter = robj_to_str(robj)?.as_bytes().iter();
+    match (utf8_byte_iter.next(), utf8_byte_iter.next()) {
+        (Some(s), None) => Ok(*s),
+        (None, None) => rerr().plain("cannot extract single byte from empty string"),
+        (Some(_), Some(_)) => rerr().plain("multi byte-string not allowed"),
+        (None, Some(_)) => unreachable!("the iter() cannot yield Some after None(depleted)"),
+    }
+}
+
+pub fn robj_to_quote_style(robj: Robj) -> RResult<pl::QuoteStyle> {
+    match robj_to_str(robj.clone())? {
+        "always" => Ok(pl::QuoteStyle::Always),
+        "necessary" => Ok(pl::QuoteStyle::Necessary),
+        "non_numeric" => Ok(pl::QuoteStyle::NonNumeric),
+        // "never" is available in rust-polars devel only for now (will be added in 0.34)
+        // "never" => Ok(QuoteStyle::Never),
+        _ => rerr()
+            .plain("a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+            .bad_robj(&robj),
+    }
+}
+
 fn err_no_nan<T>() -> RResult<T> {
     rerr().plain("any NA value is not allowed here".to_string())
 }
@@ -885,6 +908,10 @@ macro_rules! robj_to_inner {
         $crate::utils::robj_to_u8($a)
     };
 
+    (Utf8Byte, $a:ident) => {
+        $crate::utils::robj_to_utf8_byte($a)
+    };
+
     (char, $a:ident) => {
         $crate::utils::robj_to_char($a)
     };
@@ -983,6 +1010,10 @@ macro_rules! robj_to_inner {
 
     (PLDataFrame, $a:ident) => {
         $crate::utils::robj_to_dataframe($a).map(|lf| lf.0)
+    };
+
+    (QuoteStyle, $a:ident) => {
+        $crate::utils::robj_to_quote_style($a)
     };
 
     (RArrow_schema, $a:ident) => {

@@ -42,7 +42,7 @@ GroupBy = new.env(parent = emptyenv())
 #' @keywords internal
 #' @return The input as grouped DataFrame
 #' @noRd
-construct_groupby = function(df, groupby_input, maintain_order) {
+construct_group_by = function(df, groupby_input, maintain_order) {
   if (!inherits(df, "DataFrame")) stopf("internal error: construct_group called not on DataFrame")
   df = df$clone()
   attr(df, "private") = list(groupby_input = groupby_input, maintain_order = maintain_order)
@@ -59,7 +59,7 @@ construct_groupby = function(df, groupby_input, maintain_order) {
 #' @return self
 #' @export
 #'
-#' @examples pl$DataFrame(iris)$groupby("Species")
+#' @examples pl$DataFrame(iris)$group_by("Species")
 print.GroupBy = function(x, ...) {
   .pr$DataFrame$print(x)
   cat("groups: ")
@@ -81,7 +81,7 @@ print.GroupBy = function(x, ...) {
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
 #' )$
-#'   groupby("foo")$
+#'   group_by("foo")$
 #'   agg(
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
@@ -108,7 +108,7 @@ GroupBy_agg = function(...) {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$first()
+#' df$group_by("d", maintain_order = TRUE)$first()
 GroupBy_first = function() {
   self$agg(pl$all()$first())
 }
@@ -124,7 +124,7 @@ GroupBy_first = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$last()
+#' df$group_by("d", maintain_order = TRUE)$last()
 GroupBy_last = function() {
   self$agg(pl$all()$last())
 }
@@ -140,7 +140,7 @@ GroupBy_last = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$max()
+#' df$group_by("d", maintain_order = TRUE)$max()
 GroupBy_max = function() {
   self$agg(pl$all()$max())
 }
@@ -156,7 +156,7 @@ GroupBy_max = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$mean()
+#' df$group_by("d", maintain_order = TRUE)$mean()
 GroupBy_mean = function() {
   self$agg(pl$all()$mean())
 }
@@ -172,7 +172,7 @@ GroupBy_mean = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$median()
+#' df$group_by("d", maintain_order = TRUE)$median()
 GroupBy_median = function() {
   self$agg(pl$all()$median())
 }
@@ -188,7 +188,7 @@ GroupBy_median = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$min()
+#' df$group_by("d", maintain_order = TRUE)$min()
 GroupBy_min = function() {
   self$agg(pl$all()$min())
 }
@@ -204,7 +204,7 @@ GroupBy_min = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$sum()
+#' df$group_by("d", maintain_order = TRUE)$sum()
 GroupBy_sum = function() {
   self$agg(pl$all()$sum())
 }
@@ -220,7 +220,7 @@ GroupBy_sum = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$var()
+#' df$group_by("d", maintain_order = TRUE)$var()
 GroupBy_var = function() {
   self$agg(pl$all()$var())
 }
@@ -236,7 +236,7 @@ GroupBy_var = function() {
 #'   c = c(TRUE, TRUE, TRUE, FALSE, FALSE, TRUE),
 #'   d = c("Apple", "Orange", "Apple", "Apple", "Banana", "Banana")
 #' )
-#' df$groupby("d", maintain_order = TRUE)$std()
+#' df$group_by("d", maintain_order = TRUE)$std()
 GroupBy_std = function() {
   self$agg(pl$all()$std())
 }
@@ -257,7 +257,7 @@ GroupBy_quantile = function(quantile, interpolation = "nearest") {
 #' @keywords GroupBy
 #' @param periods integer Number of periods to shift (may be negative).
 #' @return GroupBy
-#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift(2)
+#' @examples pl$DataFrame(mtcars)$group_by("cyl")$shift(2)
 GroupBy_shift = function(periods = 1) {
   self$agg(pl$all()$shift(periods))
 }
@@ -268,7 +268,7 @@ GroupBy_shift = function(periods = 1) {
 #' @param fill_value fill None values with the result of this expression.
 #' @param periods integer Number of periods to shift (may be negative).
 #' @return GroupBy
-#' @examples pl$DataFrame(mtcars)$groupby("cyl")$shift_and_fill(99, 1)
+#' @examples pl$DataFrame(mtcars)$group_by("cyl")$shift_and_fill(99, 1)
 GroupBy_shift_and_fill = function(fill_value, periods = 1) {
   self$agg(pl$all()$shift_and_fill(periods, fill_value))
 }
@@ -280,7 +280,7 @@ GroupBy_shift_and_fill = function(fill_value, periods = 1) {
 #' @examples
 #' x = mtcars
 #' x[1:10, 3:5] = NA
-#' pl$DataFrame(x)$groupby("cyl")$null_count()
+#' pl$DataFrame(x)$group_by("cyl")$null_count()
 GroupBy_null_count = function() {
   self$agg(pl$all()$null_count())
 }

@@ -28,7 +28,7 @@ df = pl$DataFrame(list(
   b = c(1, 2, 3)
 ))
 
-df$groupby("group_col")$agg(
+df$group_by("group_col")$agg(
   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 )

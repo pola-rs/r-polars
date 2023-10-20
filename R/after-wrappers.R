@@ -295,5 +295,5 @@ pl_pub_class_env = as.environment(mget(pl_class_names, envir = pl_pub_env))
 #'
 #' # The single exception from the rule is class "GroupBy", where objects also have
 #' # two private attributes "groupby_input" and "maintain_order".
-#' str(pl$DataFrame(iris)$groupby("Species"))
+#' str(pl$DataFrame(iris)$group_by("Species"))
 NULL

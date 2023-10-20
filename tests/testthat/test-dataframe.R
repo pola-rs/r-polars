@@ -534,7 +534,7 @@ test_that("null_count 64bit", {
   b = sapply(tmp, function(x) sum(is.na(x)))
   expect_equal(a, b)
 
-  a = pl$DataFrame(tmp)$groupby("vs")$null_count()$to_data_frame()
+  a = pl$DataFrame(tmp)$group_by("vs")$null_count()$to_data_frame()
   expect_equal(dim(a), c(2, 11))
 })
 

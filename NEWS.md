@@ -26,6 +26,16 @@
   `$with_columns()` instead (#402).
 - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1). Use `$list`
   instead (#402).
+  - `$groupby()` is renamed `$group_by()`. (#427)
+
+## Breaking changes
+- Remove some deprecated methods.
+  - Method `$with_column()` has been removed (it was deprecated since 0.8.0).
+    Use `$with_columns()` instead (#402).
+  - Subnamespace `$arr` has been removed (it was deprecated since 0.8.1).
+    Use `$list` instead (#402).
+- Setting and getting polars options is now made with `pl$options`,
+  `pl$set_options()` and `pl$reset_options()` (#384).
 
 ## What's changed
 
@@ -43,6 +53,11 @@
 - New function `pl$raw_list` and class `rpolars_raw_list` a list of R Raw's, where missing is
   encoded as `NULL` to aid conversion to polars binary Series. Support back and forth conversion
   from polars binary literal and Series to R raw (#417).
+- New method `$write_csv()` for `DataFrame` (#414).
+- New method `$sink_csv()` for `LazyFrame` (#432).
+- New method `$dt$time()` to extract the time from a `datetime` variable (#428).
+- New method `pl$read_parquet()` that is a shortcut for `pl$scan_parquet()$collect()` (#434).
+
 
 # polars 0.8.1
 

@@ -1,4 +1,4 @@
-#' new LazyFrame from parquet file
+#' Scan a parquet file
 #' @keywords LazyFrame_new
 #'
 #' @param file string filepath
@@ -50,6 +50,34 @@ pl$scan_parquet = function(
 
   unwrap(result_lf)
 }
+
+
+#' Read a parquet file
+#' @rdname IO_read_parquet
+#' @param file string filepath
+#' @param n_rows limit rows to scan
+#' @param cache bool use cache
+#' @param parallel String either Auto, None, Columns or RowGroups. The way to parallelized the scan.
+#' @param rechunk bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.
+#' @param row_count_name NULL or string, if a string add a rowcount column named by this string
+#' @param row_count_offset integer, the rowcount column can be offset by this value
+#' @param low_memory bool, try reduce memory footprint
+#' @return DataFrame
+#' @name read_parquet
+pl$read_parquet = function(
+    file,
+    n_rows = NULL,
+    cache = TRUE,
+    parallel = c("Auto", "None", "Columns", "RowGroups"),
+    rechunk = TRUE,
+    row_count_name = NULL,
+    row_count_offset = 0L,
+    low_memory = FALSE) {
+  mc = match.call()
+  mc[[1]] = quote(pl$scan_parquet)
+  eval.parent(mc)$collect()
+}
+
 
 #
 # def _prepare_row_count_args(

@@ -1020,3 +1020,26 @@ ExprDT_offset_by = function(by) {
   .pr$Expr$dt_offset_by(self, by) |>
     unwrap("in $offset_by():")
 }
+
+
+#' Extract time from a Datetime Series
+#'
+#' This only works on Datetime Series, it will error on Date Series.
+#'
+#' @return A Time Expr
+#'
+#' @name ExprDT_time
+#' @examples
+#' df = pl$DataFrame(dates = pl$date_range(
+#'     as.Date("2000-1-1"),
+#'     as.Date("2000-1-2"),
+#'     "1h",
+#'     eager = TRUE
+#'   )
+#' )
+#'
+#' df$with_columns(times = pl$col("dates")$dt$time())
+ExprDT_time = function() {
+  .pr$Expr$dt_time(self) |>
+    unwrap("in dt$time()")
+}

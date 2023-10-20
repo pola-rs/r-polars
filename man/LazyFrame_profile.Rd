@@ -27,7 +27,7 @@ pl$LazyFrame()$select(pl$lit(2) + 2)$profile()
 # -1-  map each Species-group with native polars, takes ~120us only
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$
-  groupby("Species", maintain_order = TRUE)$
+  group_by("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$first() + 5)$
   profile()
 
@@ -41,7 +41,7 @@ r_func = \(s) {
 
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$
-  groupby("Species", maintain_order = TRUE)$
+  group_by("Species", maintain_order = TRUE)$
   agg(pl$col(pl$Float64)$apply(r_func))$
   profile()
 }

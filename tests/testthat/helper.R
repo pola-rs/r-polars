@@ -84,3 +84,7 @@ expect_rpolarserr = function(expr, ctxs) {
   expect_identical(class(res$err), "RPolarsErr")
   expect_identical(names(res$err$contexts()), ctxs)
 }
+
+expect_snapshot_file = function(path, ...) {
+  expect_snapshot(readLines(path) |> cat(sep = "\n"), ...)
+}
