@@ -191,6 +191,8 @@ DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(w
 
 DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
 
+DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -651,6 +653,8 @@ Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_trun
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
+Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
+
 Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
 
 Expr$dt_strftime <- function(fmt) .Call(wrap__Expr__dt_strftime, self, fmt)
@@ -980,6 +984,8 @@ LazyFrame$collect_in_background <- function() .Call(wrap__LazyFrame__collect_in_
 LazyFrame$sink_parquet <- function(path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order) .Call(wrap__LazyFrame__sink_parquet, self, path, compression_method, compression_level, statistics, row_group_size, data_pagesize_limit, maintain_order)
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
+
+LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 

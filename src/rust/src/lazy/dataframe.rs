@@ -19,6 +19,9 @@ use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 use polars::prelude::AsOfOptions;
 
+use polars::io::csv::SerializeOptions;
+use polars_lazy::prelude::CsvWriterOptions;
+
 #[allow(unused_imports)]
 use std::result::Result;
 
@@ -111,6 +114,61 @@ impl LazyFrame {
         self.0
             .clone()
             .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_csv(
+        &self,
+        path: Robj,
+        has_header: Robj,
+        separator: Robj,
+        line_terminator: Robj,
+        quote: Robj,
+        batch_size: Robj,
+        datetime_format: Robj,
+        date_format: Robj,
+        time_format: Robj,
+        float_precision: Robj,
+        null_value: Robj,
+        quote_style: Robj,
+        maintain_order: Robj,
+    ) -> RResult<()> {
+        // using robj_to!() directly in SerializeOptions doesn't work
+        let date_format = robj_to!(Option, String, date_format)?;
+        let time_format = robj_to!(Option, String, time_format)?;
+        let datetime_format = robj_to!(Option, String, datetime_format)?;
+        let float_precision = robj_to!(Option, usize, float_precision)?;
+        let separator = robj_to!(Utf8Byte, separator)?;
+        let quote = robj_to!(Utf8Byte, quote)?;
+        let null_value = robj_to!(String, null_value)?;
+        let line_terminator = robj_to!(String, line_terminator)?;
+        let quote_style = robj_to!(QuoteStyle, quote_style)?;
+        let has_header = robj_to!(bool, has_header)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let batch_size = robj_to!(usize, batch_size)?;
+
+        let serialize_options = SerializeOptions {
+            date_format,
+            time_format,
+            datetime_format,
+            float_precision,
+            delimiter: separator,
+            quote,
+            null: null_value,
+            line_terminator,
+            quote_style,
+        };
+
+        let options = CsvWriterOptions {
+            has_header,
+            maintain_order,
+            batch_size,
+            serialize_options,
+        };
+
+        self.0
+            .clone()
+            .sink_csv(robj_to!(String, path)?.into(), options)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -479,8 +537,8 @@ impl LazyFrame {
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
-            fast_projection,
-            eager,
+            fast_projection: _,
+            eager: _,
         } = self.0.get_current_optimizations();
         list!(
             type_coercion = type_coercion,
