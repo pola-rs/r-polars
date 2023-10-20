@@ -64,7 +64,7 @@ Users can find detailed documentation for all objects, functions, and methods
 on the Reference page of [this website](https://rpolars.github.io/). This documentation
 can also be accessed from the R console using the typical `?` syntax. For
 example, we will later use the `DataFrame()` constructor function and apply the
-`groupby()` method to a `DataFrame` object. The documentation for these can be
+`group_by()` method to a `DataFrame` object. The documentation for these can be
 accessed by typing these commands:
 
 ```r
@@ -84,7 +84,7 @@ dataset.
 
 ```python
 # Python
-df.groupby("id").mean()
+df.group_by("id").mean()
 ```
 
 ```r
@@ -270,7 +270,7 @@ dat$with_columns(
 ```
 
 Similarly, here's how we could have aggregated (i.e., collapsed) the dataset
-by groups instead of modifying them. We need simply invoke the `groupby()` and
+by groups instead of modifying them. We need simply invoke the `group_by()` and
 [`agg()`](https://rpolars.github.io/reference/Expr_agg_groups/) methods.
 
 ```{r}
