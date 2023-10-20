@@ -10,7 +10,7 @@ Expr_inspect(fmt = "{}")
 \arguments{
 \item{fmt}{format string, should contain one set of \code{{}} where object will be printed
 This formatting mimics python "string".format() use in pypolars. The string can
-contain any thing but should have exactly one set of curly bracket \code{{}}.}
+contain any thing but should have exactly one set of curly bracket {}.}
 }
 \value{
 Expr

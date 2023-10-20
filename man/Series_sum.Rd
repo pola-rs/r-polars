@@ -13,7 +13,7 @@ R scalar value
 Reduce Series with sum
 }
 \details{
-Dtypes in \verb{\{Int8, UInt8, Int16, UInt16\}} are cast to
+Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 }
 \examples{

@@ -24,12 +24,12 @@ Get an array with the cumulative min computed at every element.
 Get an array with the cumulative max computed at every element.
 }
 \details{
-Dtypes in \verb{\{Int8, UInt8, Int16, UInt16\}} are cast to
+Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 
-Dtypes in \verb{\{Int8, UInt8, Int16, UInt16\}} are cast to
+Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 Int64 before summing to prevent overflow issues.
 
 See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}

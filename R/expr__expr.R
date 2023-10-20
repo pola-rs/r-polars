@@ -1373,7 +1373,7 @@ Expr_rechunk = "use_extendr_wrapper"
 #' @aliases Expr_cumsum
 #' @name Expr_cumsum
 #' @details
-#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @format NULL
 #' @examples
@@ -1394,7 +1394,7 @@ Expr_cumsum = function(reverse = FALSE) {
 #' @aliases cumprod
 #' @name Expr_cumprod
 #' @details
-#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' @format NULL
@@ -1415,7 +1415,7 @@ Expr_cumprod = function(reverse = FALSE) {
 #' @aliases cummin
 #' @name Expr_cummin
 #' @details
-#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1437,7 +1437,7 @@ Expr_cummin = function(reverse = FALSE) {
 #' @aliases cummin
 #' @name Expr_cummin
 #' @details
-#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
@@ -1460,7 +1460,7 @@ Expr_cummax = function(reverse = FALSE) {
 #' @aliases cumcount
 #' @name Expr_cumcount
 #' @details
-#' Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' cumcount does not seem to count within lists.
@@ -2065,7 +2065,7 @@ Expr_nan_min = "use_extendr_wrapper"
 #' Get sum value
 #'
 #' @details
-#'  Dtypes in `{Int8, UInt8, Int16, UInt16}` are cast to
+#'  Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
 #' @return Expr
@@ -2664,7 +2664,7 @@ Expr_reinterpret = function(signed = TRUE) {
 #' The printing will happen when the expression evaluates, not when it is formed.
 #' @param fmt format string, should contain one set of `{}` where object will be printed
 #' This formatting mimics python "string".format() use in pypolars. The string can
-#' contain any thing but should have exactly one set of curly bracket `{}`.
+#' contain any thing but should have exactly one set of curly bracket {}.
 #' @return Expr
 #' @aliases inspect
 #' @examples
@@ -2782,7 +2782,7 @@ prepare_rolling_window_args = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -2848,7 +2848,7 @@ Expr_rolling_min = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -2914,7 +2914,7 @@ Expr_rolling_max = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #' @details
 #' This functionality is experimental and may change without it being considered a
@@ -2980,7 +2980,7 @@ Expr_rolling_mean = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #' @details
 #' This functionality is experimental and may change without it being considered a
@@ -3042,10 +3042,10 @@ Expr_rolling_sum = function(
 #' @param center
 #' Set the labels at the center of the window
 #' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
+#' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
+#' be of dtype `{Date, Datetime}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -3066,14 +3066,13 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE, # :bool,
     by = NULL, # : Nullable<String>,
-    closed = c("left", "right", "both", "none")
+    closed = "left" # ;: Nullable<String>,
     ) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
-  .pr$Expr$rolling_std(
+  unwrap(.pr$Expr$rolling_std(
     self, wargs$window_size, weights,
     wargs$min_periods, center, by, closed
-  ) |>
-    unwrap("in $rolling_std(): ")
+  ))
 }
 
 #' Rolling var
@@ -3112,7 +3111,7 @@ Expr_rolling_std = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -3178,7 +3177,7 @@ Expr_rolling_var = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'
@@ -3249,7 +3248,7 @@ Expr_rolling_median = function(
 #' If the `window_size` is temporal for instance `"5h"` or `"3s`, you must
 #' set the column that will be used to determine the windows. This column must
 #' be of dtype `{Date, Datetime}`
-#' @param closed String options `{'left', 'right', 'both', 'none'}`
+#' @param closed : {'left', 'right', 'both', 'none'}
 #' Define whether the temporal window interval is closed or not.
 #'
 #'

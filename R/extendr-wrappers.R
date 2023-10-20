@@ -985,7 +985,7 @@ LazyFrame$sink_parquet <- function(path, compression_method, compression_level, 
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_values, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_values, quote_style, maintain_order)
+LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
