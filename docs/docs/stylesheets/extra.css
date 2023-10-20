@@ -29,11 +29,11 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 [data-md-color-scheme="default"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --md-primary-fg-color: #0B7189;
-  --md-primary-bg-color: #eef5f7;
+  --md-primary-fg-color: #ecf4ff;
+  --md-primary-bg-color: #646464;
 
-  --md-typeset-a-color-custom: #65a6b3;
-  --md-typeset-a-color-hover: #98c4cd;
+  --md-typeset-a-color-custom: #459db9;
+  --md-typeset-a-color-hover: #8fc5d6;
 
   --search-bar-border: #cccccc;
 
@@ -48,8 +48,8 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 /* Dark theme */
 [data-md-color-scheme="slate"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --md-primary-fg-color: #0B7189;
-  --md-primary-bg-color: #eef5f7;
+  --md-primary-fg-color: #132639;
+  --md-primary-bg-color: #cccccc;
   --md-default-bg-color: #262626;
 
   --md-typeset-a-color-custom-tab: #cee3e7;
