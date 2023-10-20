@@ -76,7 +76,7 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 
 .md-tabs__link--active, .md-nav__item .md-nav__link--active,
 .md-tabs__link:is(:focus, :hover), .md-typeset a {
-	color: var(--md-typeset-a-color-custom-tab);
+	color: var(--md-typeset-a-color-custom);
 }
 
 .md-typeset a:focus, .md-typeset a:hover,
