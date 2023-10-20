@@ -65,7 +65,6 @@ ExprStr_strptime = function(
     exact = TRUE,
     cache = TRUE,
     ambiguous = "raise") {
-
   pcase(
 
     # not a datatype
@@ -94,7 +93,7 @@ ExprStr_strptime = function(
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
   ) |>
-    unwrap("in str$strptime:")
+    unwrap("in str$strptime():")
 }
 
 
@@ -293,7 +292,8 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' # char vector
 #' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$zfill(5)$to_r()
 ExprStr_zfill = function(alignment) {
-  unwrap(.pr$Expr$str_zfill(self, alignment))
+  .pr$Expr$str_zfill(self, alignment) |>
+    unwrap("in str$zfill():")
 }
 
 
@@ -310,7 +310,8 @@ ExprStr_zfill = function(alignment) {
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$ljust(8, "*"))
 ExprStr_ljust = function(width, fillchar = " ") {
-  unwrap(.pr$Expr$str_ljust(self, width, fillchar))
+  .pr$Expr$str_ljust(self, width, fillchar) |>
+    unwrap("in str$ljust(): ")
 }
 
 
@@ -325,7 +326,8 @@ ExprStr_ljust = function(width, fillchar = " ") {
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$rjust(8, "*"))
 ExprStr_rjust = function(width, fillchar = " ") {
-  unwrap(.pr$Expr$str_rjust(self, width, fillchar))
+  .pr$Expr$str_rjust(self, width, fillchar) |>
+    unwrap("in str$rjust(): ")
 }
 
 
@@ -427,7 +429,8 @@ ExprStr_json_extract = function(dtype, infer_schema_length = 100) {
 #' )
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
 ExprStr_json_path_match = function(pat) {
-  unwrap(.pr$Expr$str_json_path_match(self, pat))
+  .pr$Expr$str_json_path_match(self, pat) |>
+    unwrap("in str$json_path_match(): ")
 }
 
 
@@ -508,7 +511,8 @@ ExprStr_encode = function(encoding) {
 #'   pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
 #' )
 ExprStr_extract = function(pattern, group_index) {
-  unwrap(.pr$Expr$str_extract(self, pattern, group_index))
+  .pr$Expr$str_extract(self, pattern, group_index) |>
+    unwrap("in str$extract(): ")
 }
 
 
@@ -582,7 +586,7 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 ExprStr_split = function(by, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split(self, result(by), result(inclusive)),
-    context = "in str$split:"
+    context = "in str$split():"
   )
 }
 
@@ -604,7 +608,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
-    context = "in str$split_exact:"
+    context = "in str$split_exact():"
   )
 }
 
@@ -628,7 +632,7 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #' df$select(pl$col("s")$str$splitn(by = "_", 1))
 #' df$select(pl$col("s")$str$splitn(by = "_", 2))
 ExprStr_splitn = function(by, n) {
-  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn")
+  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn():")
 }
 
 
@@ -650,7 +654,7 @@ ExprStr_splitn = function(by, n) {
 #' )
 ExprStr_replace = function(pattern, value, literal = FALSE) {
   .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace:")
+    unwrap("in str$replace():")
 }
 
 
@@ -673,7 +677,7 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' )
 ExprStr_replace_all = function(pattern, value, literal = FALSE) {
   .pr$Expr$str_replace_all(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace_all:")
+    unwrap("in str$replace_all():")
 }
 
 
@@ -693,7 +697,7 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' )
 ExprStr_slice = function(offset, length = NULL) {
   .pr$Expr$str_slice(self, result(offset), result(length)) |>
-    unwrap("in str$slice:")
+    unwrap("in str$slice():")
 }
 
 #' Returns a column with a separate row for every string character
@@ -705,7 +709,7 @@ ExprStr_slice = function(offset, length = NULL) {
 #' df$select(pl$col("a")$str$explode())
 ExprStr_explode = function() {
   .pr$Expr$str_explode(self) |>
-    unwrap("in str$explode:")
+    unwrap("in str$explode():")
 }
 
 #' Parse integers with base radix from strings
@@ -726,5 +730,5 @@ ExprStr_explode = function() {
 #' df = pl$DataFrame(x = c("1", "2", "foo"))
 #' df$select(pl$col("x")$str$parse_int(10, FALSE))
 ExprStr_parse_int = function(radix = 2, strict = TRUE) {
-  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int:")
+  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int():")
 }
