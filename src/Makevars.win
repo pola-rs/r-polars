@@ -23,6 +23,11 @@ $(STATLIB):
 	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
+	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+		mkdir -p "$(LIBDIR)" ; \
+		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		exit 0; \
+	fi && \
 	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
