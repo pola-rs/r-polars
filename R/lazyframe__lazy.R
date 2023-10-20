@@ -1449,7 +1449,10 @@ LazyFrame_profile = function(
     .pr$LazyFrame$profile() |>
     unwrap("in $profile()")
 
-  if (isTRUE(show_plot) && requireNamespace("ggplot2", quietly = TRUE)) {
+  if (isTRUE(show_plot)) {
+    if (!requireNamespace("ggplot2", quietly = TRUE)) {
+      stop('The package "ggplot2" is required.')
+    }
     timings = out$profile$to_data_frame()
     timings$node = factor(timings$node, levels = unique(timings$node))
     total_timing = max(timings$end)
@@ -1498,6 +1501,7 @@ LazyFrame_profile = function(
     }
 
     print(plot)
+    out[["plot"]] = plot
   }
 
   out
