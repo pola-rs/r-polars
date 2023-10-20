@@ -72,8 +72,7 @@ pl$read_parquet = function(
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0L,
-    low_memory = FALSE
-) {
+    low_memory = FALSE) {
   mc = match.call()
   mc[[1]] = quote(pl$scan_parquet)
   eval.parent(mc)$collect()
