@@ -26,3 +26,10 @@ DataFrame
 \description{
 Read a parquet file
 }
+\examples{
+# read parquet directly to DataFrame
+pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+df = pl$read_parquet("my.parquet")
+
+print(df)
+}

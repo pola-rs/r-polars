@@ -14,7 +14,22 @@
 #' @name scan_parquet
 #' @rdname IO_scan_parquet
 #' @examples
-#' # TODO write parquet example
+#' #write example file
+#' pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+#'
+#' # scan and get (project) only one column "cyl" but filter (apply predicate) on "hp".
+#' lf = pl$scan_parquet("my.parquet")$
+#'   filter(pl$col("hp") > 250)$
+#'   select(pl$col("cyl") * 2)
+#'
+#' # LayFrame with a logical plan (query)
+#' print(lf)
+#'
+#' # see optimized plan
+#' lf$describe_optimized_plan()
+#'
+#' # Execute and get result DataFrame
+#' lf$collect()
 pl$scan_parquet = function(
     file, # : str | Path,
     n_rows = NULL, # : int | None = None,
@@ -64,6 +79,12 @@ pl$scan_parquet = function(
 #' @param low_memory bool, try reduce memory footprint
 #' @return DataFrame
 #' @name read_parquet
+#' @examples
+#' # read parquet directly to DataFrame
+#' pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+#' df = pl$read_parquet("my.parquet")
+#'
+#' print(df)
 pl$read_parquet = function(
     file,
     n_rows = NULL,
@@ -73,9 +94,26 @@ pl$read_parquet = function(
     row_count_name = NULL,
     row_count_offset = 0L,
     low_memory = FALSE) {
+
+  #construct a derived call
   mc = match.call()
   mc[[1]] = quote(pl$scan_parquet)
-  eval.parent(mc)$collect()
+
+  # eval call, and add to error context
+  mod_err_ctx = \(res) result(res) |> unwrap("in pl$read_parquet():")
+  lf = eval.parent(mc) |> mod_err_ctx()
+  lf$collect() |> mod_err_ctx()
+
+  # alternative style #1
+  # lf = pl$scan_parquet(...) |> mod_err_ctx()
+  # lf$collect() |> mod_err_ctx()
+
+  # alternative style #2
+  # pl$scan_parquet(...) |>
+  #  result() |>
+  #  and_then(\(lf) lf$collect()) |>
+  #  unwrap("in pl$read_parquet():")
+
 }
 
 

@@ -27,6 +27,21 @@ LazyFrame
 Scan a parquet file
 }
 \examples{
-# TODO write parquet example
+#write example file
+pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+
+# scan and get (project) only one column "cyl" but filter (apply predicate) on "hp".
+lf = pl$scan_parquet("my.parquet")$
+  filter(pl$col("hp") > 250)$
+  select(pl$col("cyl") * 2)
+
+# LayFrame with a logical plan (query)
+print(lf)
+
+# see optimized plan
+lf$describe_optimized_plan()
+
+# Execute and get result DataFrame
+lf$collect()
 }
 \keyword{LazyFrame_new}
