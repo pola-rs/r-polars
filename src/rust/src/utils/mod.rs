@@ -542,13 +542,21 @@ pub fn robj_to_roption(robj: extendr_api::Robj) -> RResult<String> {
     let s_res: EResult<Strings> = robj.try_into();
     let opt_str = s_res.map(|s| s.iter().next().map(|rstr| rstr.clone()));
     match opt_str {
+        // NA_CHARACTER not allowed as first element return error
         Ok(Some(rstr)) if rstr.is_na() => {
             Err(RPolarsErr::new().plain("an R option/choice should not be a NA_character".into()))
         }
+
+        // At least one string, return first string
         Ok(Some(rstr)) => Ok(rstr.to_string()),
-        Err(_) => {
-            Err(RPolarsErr::new().plain("an R option/choice should be a character vector".into()))
+
+        // Not character vector, return Error
+        Err(extendr_err) => {
+            let rpolars_err: RPolarsErr = extendr_err.into();
+            Err(rpolars_err.plain("an R option/choice should be a character vector".into()))
         }
+
+        // An empty chr vec, return Error
         Ok(None) => Err(RPolarsErr::new()
             .plain("an R option/choice character vector cannot have zero length".into())),
     }
