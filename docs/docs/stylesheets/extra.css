@@ -48,16 +48,14 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 /* Dark theme */
 [data-md-color-scheme="slate"] {
   --md-code-font: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --md-primary-fg-color: #132639;
-  --md-primary-bg-color: #cccccc;
-  --md-default-bg-color: #262626;
+  --md-primary-fg-color: #333333;
+  --md-primary-bg-color: #a6a6a6;
+  --md-default-bg-color: #121212;
 
-  --md-typeset-a-color-custom-tab: #cee3e7;
-  --md-typeset-a-color-custom: #65a6b3;
-  --md-typeset-a-color-hover: #98c4cd;
+  --md-typeset-a-color-custom: #79a6d2;
+  --md-typeset-a-color-hover: #538cc6;
 
-
-  --search-bar-border: #bbd8dd;
+  --search-bar-border: #666666;
 
   --custom-scrollbar-col: var(--md-typeset-a-color-custom) #000;
 
@@ -77,12 +75,8 @@ Fonts are the same as pkgdown websites (otherwise tables not properly formatted)
 }
 
 .md-tabs__link--active, .md-nav__item .md-nav__link--active,
-.md-tabs__link:is(:focus, :hover) {
+.md-tabs__link:is(:focus, :hover), .md-typeset a {
 	color: var(--md-typeset-a-color-custom-tab);
-}
-
-.md-typeset a {
-  color: var(--md-typeset-a-color-custom);
 }
 
 .md-typeset a:focus, .md-typeset a:hover,
