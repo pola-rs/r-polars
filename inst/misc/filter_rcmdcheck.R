@@ -12,13 +12,21 @@ print(getwd())
 #define ignore rules for notes, warnings and errors
 ignore_rules = list(
   notes = list(
-    #if note contains this phrase then skip it by returning TRUE.
+    #NOTE-A if note contains this phrase then skip it by returning TRUE.
     #yes polars is huge way above 10Mb nothing to do about that
     ignore_lib_size = function(msg) {
       isTRUE(grepl("checking installed package size ... NOTE",msg))
+    },
+
+    #NOTE-B R4.3.x devel now requires no unquoted braces '{' in docs. This filter turns off that error
+    # until fixed likely via PR #424
+    ignore_lost_braces = function(msg) {
+      isTRUE(grepl("Lost braces",msg))
     }
   ),
+
   warnings = list(),
+
   errors = list()
 )
 

@@ -148,7 +148,7 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-07-27)
+  requires Rust toolchain nightly-2023-08-26)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
@@ -206,11 +206,11 @@ dat[1:4, c("mpg", "qsec", "hp")]
 
 However, the true power of Polars is unlocked by using *methods*, which
 are encapsulated in the `DataFrame` object itself. For example, we can
-chain the `$groupby()` and the `$mean()` methods to compute group-wise
+chain the `$group_by()` and the `$mean()` methods to compute group-wise
 means for each column of the dataset:
 
 ``` r
-dat$groupby("cyl", maintain_order = TRUE)$mean()
+dat$group_by("cyl", maintain_order = TRUE)$mean()
 #> shape: (3, 11)
 #> ┌─────┬───────────┬────────────┬────────────┬───┬──────────┬──────────┬──────────┬──────────┐
 #> │ cyl ┆ mpg       ┆ disp       ┆ hp         ┆ … ┆ vs       ┆ am       ┆ gear     ┆ carb     │
@@ -266,8 +266,8 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly-2023-07-27
-  rustup default nightly-2023-07-27
+  rustup toolchain install nightly-2023-08-26
+  rustup default nightly-2023-08-26
   ```
 
 - Windows: Make sure the latest version of

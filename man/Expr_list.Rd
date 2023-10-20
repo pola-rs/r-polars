@@ -18,7 +18,7 @@ See the individual method pages for full details
 df_with_list = pl$DataFrame(
   group = c(1, 1, 2, 2, 3),
   value = c(1:5)
-)$groupby(
+)$group_by(
   "group",
   maintain_order = TRUE
 )$agg(

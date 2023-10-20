@@ -18,14 +18,14 @@ test_that("<LazyFrame>$profile", {
   # profile supports with and without R functions
   p1 = pl$LazyFrame(iris)$
     sort("Sepal.Length")$
-    groupby("Species", maintain_order = TRUE)$
+    group_by("Species", maintain_order = TRUE)$
     agg(pl$col(pl$Float64)$first()$add(5)$suffix("_apply"))$
     profile()
 
   r_func = \(s) s$to_r()[1] + 5
   p2 = pl$LazyFrame(iris)$
     sort("Sepal.Length")$ # for no specific reason
-    groupby("Species", maintain_order = TRUE)$
+    group_by("Species", maintain_order = TRUE)$
     agg(pl$col(pl$Float64)$apply(r_func))$
     profile()
 

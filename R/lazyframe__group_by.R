@@ -16,7 +16,7 @@ print.LazyGroupBy = function(x, ...) {
 
 #' @title LazyGroupBy_agg
 #' @description
-#' aggregate a polar_lazy_groupby
+#' aggregate a polar_lazy_group_by
 #' @param ... exprs to aggregate over.
 #' ... args can also be passed wrapped in a list `$agg(list(e1,e2,e3))`
 #' @return A new `LazyFrame` object.
@@ -26,7 +26,7 @@ print.LazyGroupBy = function(x, ...) {
 #'   bar = c(5, 3, 2, 4, 1)
 #' )$
 #'   lazy()$
-#'   groupby("foo")
+#'   group_by("foo")
 #'
 #' #
 #' print(lgb)

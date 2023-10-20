@@ -405,7 +405,7 @@ Expr_gt_eq = function(other) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
-#' df$groupby("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+#' df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
 Expr_agg_groups = "use_extendr_wrapper"
 
 
@@ -794,7 +794,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' e_all = pl$all() # perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
 #' e_sum = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
 #' e_head = e_all$apply(\(s) head(s$to_r(), 2))$suffix("_head")
-#' pl$DataFrame(iris)$groupby("Species")$agg(e_sum, e_head)
+#' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #'
 #' # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
@@ -847,7 +847,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 #'
 #' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -858,7 +858,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
 #' pl$set_options(rpool_cap = 4) # set back to 4, the default
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -867,7 +867,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -2368,7 +2368,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #'   b = c(1, 2, 3)
 #' ))
 #'
-#' df$groupby("group_col")$agg(
+#' df$group_by("group_col")$agg(
 #'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
 #'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 #' )
@@ -2406,7 +2406,7 @@ Expr_where = Expr_filter
 #' @examples
 #' pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$take(0:5))
 #'
-#' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$groupby("Species")$agg(pl$all())
+#' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$group_by("Species")$agg(pl$all())
 #' print(listed_group_df)
 #' vectors_df = listed_group_df$select(
 #'   pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
@@ -3771,18 +3771,14 @@ Expr_reshape = function(dims) {
 #' @param seed numeric value of 0 to 2^52
 #' Seed for the random number generator. If set to Null (default), a random
 #' seed value integerish value between 0 and 10000 is picked
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
-Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
-  .pr$Expr$shuffle(self, seed, fixed_seed) |> unwrap("in $shuffle()")
+Expr_shuffle = function(seed = NULL) {
+  .pr$Expr$shuffle(self, seed) |> unwrap("in $shuffle()")
 }
 
 
@@ -3798,10 +3794,6 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' @param  seed
 #' Seed for the random number generator. If set to None (default), a random
 #' seed is used.
-#' @param fixed_seed
-#' Boolean. If True, The seed will not be incremented between draws. This can make output
-#' predictable because draw ordering can change due to threads being scheduled in a different order.
-#' Should be used together with seed
 #' @param n
 #' Number of items to return. Cannot be used with `frac`.
 #' @return  Expr
@@ -3815,14 +3807,14 @@ Expr_shuffle = function(seed = NULL, fixed_seed = FALSE) {
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 Expr_sample = function(
     frac = NULL, with_replacement = TRUE, shuffle = FALSE,
-    seed = NULL, fixed_seed = FALSE, n = NULL) {
+    seed = NULL, n = NULL) {
   pcase(
     !is.null(n) && !is.null(frac), {
       Err(.pr$RPolarsErr$new()$plain("either arg `n` or `frac` must be NULL"))
     },
-    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed, fixed_seed),
+    !is.null(n), .pr$Expr$sample_n(self, n, with_replacement, shuffle, seed),
     or_else = {
-      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed, fixed_seed)
+      .pr$Expr$sample_frac(self, frac %||% 1.0, with_replacement, shuffle, seed)
     }
   ) |>
     unwrap("in $sample()")
@@ -4090,18 +4082,17 @@ pl$expr_to_r = function(expr, df = NULL, i = 0) {
 #' @description
 #' Count all unique values and create a struct mapping value to count.
 #' @return Expr
-#' @param multithreaded
-#' Better to turn this off in the aggregation context, as it can lead to contention.
-#' @param sort
-#' Ensure the output is sorted from most values to least.
+#' @param sort Ensure the output is sorted from most values to least.
+#' @param parallel Better to turn this off in the aggregation context, as it can
+#' lead to contention.
 #' @format NULL
 #' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
 #' df$unnest()$to_data_frame() # recommended to unnest structs before converting to R
-Expr_value_counts = function(multithreaded = FALSE, sort = FALSE) {
-  .pr$Expr$value_counts(self, multithreaded, sort)
+Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
+  .pr$Expr$value_counts(self, sort, parallel)
 }
 
 #' Value counts
@@ -4271,7 +4262,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' df_with_list = pl$DataFrame(
 #'   group = c(1, 1, 2, 2, 3),
 #'   value = c(1:5)
-#' )$groupby(
+#' )$group_by(
 #'   "group",
 #'   maintain_order = TRUE
 #' )$agg(

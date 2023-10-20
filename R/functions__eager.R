@@ -51,7 +51,7 @@
 #' # if two columns don't share the same type, concat() will error unless we use
 #' # `to_supertypes = TRUE`:
 #' test = pl$DataFrame(x = 1L) # i32
-#' test2 = pl$DataFrame(x = 1.0) #f64
+#' test2 = pl$DataFrame(x = 1.0) # f64
 #'
 #' pl$concat(test, test2, to_supertypes = TRUE)
 pl$concat = function(
@@ -278,4 +278,80 @@ difftime_to_pl_duration = function(dft) {
     or_else = stopf("unknown difftime units: %s", u)
   )
   paste0(value, unit)
+}
+
+
+
+#' Polars raw list
+#' @description
+#' create an "rpolars_raw_list", which is an R list where all elements must be an R raw or NULL.
+#' @name pl_raw_list
+#' @param ... elements
+#' @details
+#' In R raw can contain a binary sequence of bytes, and the length is the number of bytes.
+#' In polars a Series of DataType [Binary][pl_dtypes] is more like a vector of vectors of bytes and missings
+#' 'Nulls' is allowed, similar to R NAs in vectors.
+#'
+#' To ensure correct round-trip conversion r-polars uses an R list where any elements must be
+#' raw or NULL(encodes missing), and the S3 class is c("rpolars_raw_list","list").
+#'
+#' @return an R list where any elements must be raw, and the S3 class is
+#' c("rpolars_raw_list","list").
+#' @keywords functions
+#'
+#' @examples
+#'
+#' # craete a rpolars_raw_list
+#' raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
+#'
+#'
+#' # pass it to Series or lit
+#' pl$Series(raw_list)
+#' pl$lit(raw_list)
+#'
+#' # convert polars bianry Series to rpolars_raw_list
+#' pl$Series(raw_list)$to_r()
+#'
+#'
+#' # NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
+#' pl$Series(list(raw(1), raw(2)))
+#'
+#' # to regular list, use as.list or unclass
+#' as.list(raw_list)
+#'
+pl$raw_list = function(...) {
+  l = list2(...)
+  if ( any(!sapply(l, is.raw) & !sapply(l, is.null))) {
+    Err_plain("some elements where not raw or NULL") |>
+      unwrap("in pl$raw_list():")
+  }
+  class(l) = c("rpolars_raw_list", "list")
+  l
+}
+
+
+#' subset polars raw list
+#' @rdname pl_raw_list
+#' @export
+#' @param x rpolars_raw_list list
+#' @param index elements to get subset
+#' @examples
+#' # subsetting preserves class
+#' pl$raw_list(NULL, raw(2), raw(3))[1:2]
+"[.rpolars_raw_list" = function(x, index) {
+  x = unclass(x)[index]
+  class(x) = c("rpolars_raw_list", "list")
+  x
+}
+
+#' coerce polars raw list to list
+#' @rdname pl_raw_list
+#' @export
+#' @details the same as unclass(x)
+#' @param x rpolars_raw_list list
+#' @examples
+#' # to regular list, use as.list or unclass
+#' pl$raw_list(NULL, raw(2), raw(3)) |> as.list()
+"as.list.rpolars_raw_list" = function(x, ...) {
+  unclass(x)
 }
