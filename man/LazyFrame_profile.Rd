@@ -63,7 +63,8 @@ number of characters. If \code{0} (default), do not truncate.}
 }
 \value{
 List of two \code{DataFrame}s: one with the collected result, the other
-with the timings of each step.
+with the timings of each step. If \code{show_graph = TRUE}, then the plot is
+also stored in the list.
 }
 \description{
 This will run the query and return a list containing the

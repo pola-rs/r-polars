@@ -1367,7 +1367,8 @@ LazyFrame_fetch = function(
 #'
 #' @keywords LazyFrame
 #' @return List of two `DataFrame`s: one with the collected result, the other
-#' with the timings of each step.
+#' with the timings of each step. If `show_graph = TRUE`, then the plot is
+#' also stored in the list.
 #' @seealso
 #'  - [`$collect()`][LazyFrame_collect] - regular collect.
 #'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
