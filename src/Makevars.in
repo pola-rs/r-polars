@@ -10,6 +10,8 @@ STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 RPOLARS_RUST_SOURCE ?= ./rust
 
+LIBR_POLARS_PATH = @LIBR_POLARS_PATH@
+
 rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
 all: C_clean
@@ -19,9 +21,9 @@ $(SHLIB): $(STATLIB)
 CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
-	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+	if [ -f "$(LIBR_POLARS_PATH)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
-		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		mv "$(LIBR_POLARS_PATH)" "$(STATLIB)" ; \
 		exit 0; \
 	fi && \
 	if [ "true" != "true" ]; then \

@@ -53,6 +53,8 @@ check_bin_lib() {
     echo "--------------------------------------------------------------------"
     echo ""
     sed -e "s|@RUST_TARGET@||" src/Makevars.in >src/Makevars
+    sed -e "s|@LIBR_POLARS_PATH@|${LIBR_POLARS_PATH}|" src/Makevars >src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
+    sed -e "s|@LIBR_POLARS_PATH@|${LIBR_POLARS_PATH}|" src/Makevars.win >src/Makevars.tmp && mv src/Makevars.tmp src/Makevars.win
     exit 0
   elif [ "${LIBR_POLARS_BUILD}" = "false" ]; then
     echo ""

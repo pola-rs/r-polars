@@ -10,6 +10,8 @@ STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars -lws2_32 -ladvapi32 -luserenv -lbcrypt -lole32 -lntdll -lpsapi -liphlpapi -lpdh -lpowrprof -loleaut32 -lnetapi32 -lsecur32 -t
 RPOLARS_RUST_SOURCE ?= ./rust
 
+LIBR_POLARS_PATH = @LIBR_POLARS_PATH@
+
 rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
 # Rtools42 doesn't have the linker in the location that cargo expects, so we
@@ -27,9 +29,9 @@ $(STATLIB):
 	mkdir -p $(TARGET_DIR)/libgcc_mock && touch $(TARGET_DIR)/libgcc_mock/libgcc_eh.a
 
 	# CARGO_LINKER is provided in Makevars.ucrt for R >= 4.2
-	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+	if [ -f "$(@LIBR_POLARS_PATH@)" ]; then \
 		mkdir -p "$(LIBDIR)" ; \
-		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		mv "$(@LIBR_POLARS_PATH@)" "$(STATLIB)" ; \
 		exit 0; \
 	fi && \
 	if [ "true" != "true" ]; then \
