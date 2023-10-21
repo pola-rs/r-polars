@@ -48,7 +48,7 @@ runs:
           rustup target add ${{ inputs.target }}
 
       - name: Set up Rust pfofile
-        if: env.RPOLARS_PROFILE != ''
+        if: env.RPOLARS_PROFILE == ''
         shell: bash
         run: |
           echo "RPOLARS_PROFILE=release" >>"$GITHUB_ENV"
