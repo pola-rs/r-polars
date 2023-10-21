@@ -37,8 +37,8 @@ $(STATLIB):
 	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \
 	fi && \
-	export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
-		export LIBRARY_PATH="$${LIBRARY_PATH};$(CURDIR)/$(TARGET_DIR)/libgcc_mock" && \
+		export CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER="$(CARGO_LINKER)" && \
+		export LIBRARY_PATH="$${LIBRARY_PATH};$(TARGET_DIR)/libgcc_mock" && \
 		if [ "$(RPOLARS_FULL_FEATURES)" = "true" ]; then \
 			$(BUILD_COMMAND) --features "full_features"; \
 		else \
