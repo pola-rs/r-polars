@@ -2,17 +2,17 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_extract_all}
 \alias{ExprStr_extract_all}
-\alias{expr_str_extract_all}
-\title{extract_all}
+\title{Extract all matches for the given regex pattern}
 \arguments{
 \item{pattern}{A valid regex pattern}
 }
 \value{
-\code{List[Utf8]} array. Contain null if original value is null or regex capture nothing.
+\code{List[Utf8]} array. Contain null if original value is null or regex capture
+nothing.
 }
 \description{
-Extracts all matches for the given regex pattern. Extracts each successive
-non-overlapping regex match in an individual string as an array.
+Extracts all matches for the given regex pattern. Extracts each
+successive non-overlapping regex match in an individual string as an array.
 }
 \examples{
 df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
