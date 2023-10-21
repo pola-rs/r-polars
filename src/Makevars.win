@@ -12,6 +12,10 @@ RPOLARS_RUST_SOURCE ?= ./rust
 
 rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
+# Rtools42 doesn't have the linker in the location that cargo expects, so we
+# need to overwrite it via configuration.
+CARGO_LINKER = x86_64-w64-mingw32.static.posix-gcc.exe
+
 all: C_clean
 
 $(SHLIB): $(STATLIB)
