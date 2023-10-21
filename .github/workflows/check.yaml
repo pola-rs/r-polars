@@ -99,6 +99,8 @@ jobs:
         with:
           upload-snapshots: false
           error-on: '"never"' #errors are filtered by rules below
+        env:
+          LIBR_POLARS_BUILD: "false"
 
       # - name: print R CMD check - install log
       #   shell: bash
