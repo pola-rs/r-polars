@@ -209,7 +209,7 @@ dat$tail(10)$max()$to_data_frame()
 ```
 
 Below, we will introduce several other methods, including `$select`, `$filter`,
-and `$groupby` which allow us to do powerful data manipulations easily. To give
+and `$group_by` which allow us to do powerful data manipulations easily. To give
 you a small taste, we now take group-wise means:
 
 ```{r}

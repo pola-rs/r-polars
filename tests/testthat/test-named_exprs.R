@@ -1,7 +1,7 @@
 test_that("named expressions", {
   # works in agg
   expect_identical(
-    pl$LazyFrame(iris)$groupby("Species")$agg(
+    pl$LazyFrame(iris)$group_by("Species")$agg(
       mysum = pl$col("Sepal.Length")$sum(),
       pl$col("Sepal.Length")$sum()
     )$collect()$columns,
