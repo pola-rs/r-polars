@@ -5,9 +5,8 @@ inputs:
     description: Set up Rust nightly toolchain?
     required: false
   target:
-    description: Rust toolchain to use
-    required: false
-    default: ""
+    description: Rust target triple to use
+    required: true
 
 runs:
   using: composite
@@ -43,8 +42,23 @@ runs:
         run: |
           rustup target add ${{ inputs.target }}
 
+      - name: Set up Rust pfofile
+        if: env.RPOLARS_PROFILE != ''
+        shell: bash
+        run: |
+          echo "RPOLARS_PROFILE=release" >>"$GITHUB_ENV"
+
       - name: Cache Rust
+        if: inputs.target != ''
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: build-${{ env.RPOLARS_PROFILE }}-${{ inputs.target }}
-          workspaces: ./src/rust/
+          workspaces: "src/rust -> target"
+
+      - name: Build library
+        if: inputs.target != ''
+        working-directory: src
+        shell: bash
+        run: |
+          LIB_PATH="$(pwd)/rust/target/${{ inputs.target }}/${RPOLARS_PROFILE}/libr_polars.a"
+          make -f Makevars${{ runner.os == 'Windows' && '.win' || '.in' }} "${LIB_PATH}"
