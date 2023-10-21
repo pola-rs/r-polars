@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_starts_with}
 \alias{ExprStr_starts_with}
-\alias{expr_str_starts_with}
-\title{starts_with}
+\title{Check if string starts with a regex}
 \arguments{
 \item{sub}{Prefix substring or Expr.}
 }
@@ -14,8 +13,7 @@ Expr returning a Boolean
 Check if string values starts with a substring.
 }
 \details{
-contains : Check if string contains a substring that matches a regex.
-ends_with : Check if string values end with a substring.
+See also \verb{$str$contains()} and \verb{$str$ends_with()}.
 }
 \examples{
 df = pl$DataFrame(fruits = c("apple", "mango", NA))

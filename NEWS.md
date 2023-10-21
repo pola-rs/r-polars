@@ -49,6 +49,7 @@
 - New method `$sink_csv()` for `LazyFrame` (#432).
 - New method `$dt$time()` to extract the time from a `datetime` variable (#428).
 - New method `pl$read_parquet()` that is a shortcut for `pl$scan_parquet()$collect()` (#434).
+- Rename `$str$str_explode()` to `$str$explode()` (#436).
 
 # polars 0.8.1
 

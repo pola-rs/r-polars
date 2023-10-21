@@ -2,20 +2,17 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_lengths}
 \alias{ExprStr_lengths}
-\alias{expr_str_lengths}
-\title{lengths}
-\format{
-function
-}
+\title{Get the number of bytes in strings}
 \value{
-Expr of u32 lengths
+Expr of u32
 }
 \description{
-Get length of the strings as UInt32 (as number of bytes).
+Get length of the strings as UInt32 (as number of bytes). Use \verb{$str$n_chars()}
+to get the number of characters.
 }
 \details{
-The returned lengths are equal to the number of bytes in the UTF8 string. If you
-need the length in terms of the number of characters, use \code{n_chars} instead.
+If you know that you are working with ASCII text, \code{lengths} will be
+equivalent, and faster (returns length in terms of the number of bytes).
 }
 \examples{
 pl$DataFrame(
