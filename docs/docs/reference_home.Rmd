@@ -46,7 +46,7 @@ of contexts:
 
 * select and modify columns with `select()` and `with_columns()`;
 * filter rows with `filter()`;
-* group and aggregate rows with `groupby()` and `agg()`
+* group and aggregate rows with `group_by()` and `agg()`
 
 Inside each context, you can use various **expressions** (aka. `Expr`). Some expressions cannot
 be used in some contexts. For example, in `with_columns()`, you can only apply
@@ -76,7 +76,7 @@ they are returned in a list, and only the new columns or the grouping columns
 are returned.
 
 ```{r}
-test$groupby(pl$col("cyl"))$agg(
+test$group_by(pl$col("cyl"))$agg(
   pl$col("mpg"), # varying number of values
   pl$col("mpg")$slice(0, 2)$suffix("_sliced"), # two values
   # aggregated to one value and implicitly unpacks list

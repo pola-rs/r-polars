@@ -193,11 +193,11 @@ dat[1:4, c("mpg", "qsec", "hp")]
 
 However, the true power of Polars is unlocked by using *methods*, which are
 encapsulated in the `DataFrame` object itself. For example, we can chain the
-`$groupby()` and the `$mean()` methods to compute group-wise means for each
+`$group_by()` and the `$mean()` methods to compute group-wise means for each
 column of the dataset:
 
 ```{r}
-dat$groupby("cyl", maintain_order = TRUE)$mean()
+dat$group_by("cyl", maintain_order = TRUE)$mean()
 ```
 
 Note that we use `maintain_order = TRUE` so that `polars` always keeps the groups

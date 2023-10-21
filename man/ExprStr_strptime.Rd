@@ -2,22 +2,24 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_strptime}
 \alias{ExprStr_strptime}
-\title{Parse a Date or DateTime Series}
+\title{Convert a Utf8 column into a Date/Datetime/Time column.}
 \arguments{
-\item{datatype}{a temporal data type either pl$Date, pl$Time or pl$Datetime}
+\item{datatype}{The data type to convert into. Can be either Date, Datetime,
+or Time.}
 
-\item{format}{format string for parsing see
-see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
-Notice time_zone \%Z is not supported and will just ignore timezones. Numeric tz  like
-\%z, \%:z  .... are supported.}
+\item{format}{Format to use for conversion. See \code{?strptime} for possible
+values. Example: "\%Y-\%m-\%d \%H:\%M:\%S". If \code{NULL} (default), the format is
+inferred from the data. Notice that time zone \verb{\%Z} is not supported and will
+just ignore timezones. Numeric time zones like \verb{\%z} or \verb{\%:z}  are supported.}
 
-\item{strict}{bool, if true raise error if a single string cannot be parsed, else produce a
-polars \code{null}.}
+\item{strict}{If \code{TRUE} (default), raise an error if a single string cannot
+be parsed. Otherwise, produce a polars \code{null}.}
 
-\item{exact}{bool , If True, require an exact format match. If False, allow the format to match
-anywhere in the target string.}
+\item{exact}{If \code{TRUE} (default), require an exact format match. Otherwise,
+allow the format to match anywhere in the target string.}
 
-\item{cache}{Use a cache of unique, converted dates to apply the datetime conversion.}
+\item{cache}{Use a cache of unique, converted dates to apply the datetime
+conversion.}
 
 \item{ambiguous}{Determine how to deal with ambiguous datetimes:
 \itemize{
@@ -27,15 +29,15 @@ anywhere in the target string.}
 }}
 }
 \value{
-Expr of a Data, Datetime or Time Series
+Expr of a Date, Datetime or Time Series
 }
 \description{
-Parse a Series of dtype Utf8 to a Date/Datetime Series.
+Convert a Utf8 column into a Date/Datetime/Time column.
 }
 \details{
-Notes When parsing a Datetime the column precision will be inferred from the format
-string, if given, eg: “\%F \%T\%.3f” => Datetime(“ms”). If no fractional second component is found
-then the default is “us”.
+When parsing a Datetime the column precision will be inferred from the format
+string, if given, eg: “\%F \%T\%.3f" => Datetime("ms"). If no fractional second
+component is found then the default is "us" (microsecond).
 }
 \examples{
 s = pl$Series(

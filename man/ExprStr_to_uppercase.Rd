@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_uppercase}
 \alias{ExprStr_to_uppercase}
-\alias{expr_str_to_uppercase}
-\title{To uppercase}
+\title{Convert a string to uppercase}
 \value{
 Expr of Utf8 uppercase chars
 }

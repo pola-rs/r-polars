@@ -405,7 +405,7 @@ Expr_gt_eq = function(other) {
 #'   group = c("one", "one", "one", "two", "two", "two"),
 #'   value = c(94, 95, 96, 97, 97, 99)
 #' ))
-#' df$groupby("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
+#' df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
 Expr_agg_groups = "use_extendr_wrapper"
 
 
@@ -794,7 +794,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' e_all = pl$all() # perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
 #' e_sum = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
 #' e_head = e_all$apply(\(s) head(s$to_r(), 2))$suffix("_head")
-#' pl$DataFrame(iris)$groupby("Species")$agg(e_sum, e_head)
+#' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #'
 #' # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
@@ -847,7 +847,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 #'
 #' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -858,7 +858,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
 #' pl$set_options(rpool_cap = 4) # set back to 4, the default
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -867,7 +867,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'
 #' # map in parallel 2: Reuse R processes in "polars global_rpool".
 #' pl$options$rpool_cap
-#' pl$LazyFrame(iris)$groupby("Species")$agg(
+#' pl$LazyFrame(iris)$group_by("Species")$agg(
 #'   pl$all()$apply(\(s) {
 #'     Sys.sleep(.1)
 #'     s$sum()
@@ -2368,7 +2368,7 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #'   b = c(1, 2, 3)
 #' ))
 #'
-#' df$groupby("group_col")$agg(
+#' df$group_by("group_col")$agg(
 #'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
 #'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 #' )
@@ -2406,7 +2406,7 @@ Expr_where = Expr_filter
 #' @examples
 #' pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$take(0:5))
 #'
-#' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$groupby("Species")$agg(pl$all())
+#' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$group_by("Species")$agg(pl$all())
 #' print(listed_group_df)
 #' vectors_df = listed_group_df$select(
 #'   pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
@@ -4262,7 +4262,7 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' df_with_list = pl$DataFrame(
 #'   group = c(1, 1, 2, 2, 3),
 #'   value = c(1:5)
-#' )$groupby(
+#' )$group_by(
 #'   "group",
 #'   maintain_order = TRUE
 #' )$agg(

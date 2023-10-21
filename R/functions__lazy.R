@@ -112,7 +112,7 @@ pl$element = function() pl$col("")
 #' df$select(pl$count())
 #'
 #'
-#' df$groupby("c", maintain_order = TRUE)$agg(pl$count())
+#' df$group_by("c", maintain_order = TRUE)$agg(pl$count())
 pl$count = function(column = NULL) { # -> Expr | int:
   if (is.null(column)) {
     return(.pr$Expr$new_count())

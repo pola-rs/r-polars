@@ -1313,6 +1313,10 @@ impl Expr {
             .into())
     }
 
+    pub fn dt_time(&self) -> RResult<Self> {
+        Ok(self.0.clone().dt().time().into())
+    }
+
     pub fn dt_combine(&self, time: Robj, tu: Robj) -> RResult<Expr> {
         Ok(self
             .0

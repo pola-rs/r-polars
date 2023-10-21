@@ -2,18 +2,17 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_count_matches}
 \alias{ExprStr_count_matches}
-\alias{expr_str_count_matches}
-\title{Count all successive non-overlapping regex matches.}
+\title{Count all successive non-overlapping regex matches}
 \arguments{
-\item{pattern}{String or Expr of a string, a valid regex pattern.}
+\item{pattern}{A valid regex pattern}
 
-\item{literal}{Boolean. Treat pattern as a literal string.}
+\item{literal}{Treat pattern as a literal string.}
 }
 \value{
-UInt32 array. Contain null if original value is null or regex capture nothing.
+UInt32 array. Contains null if original value is null or regex capture nothing.
 }
 \description{
-Count all successive non-overlapping regex matches.
+Count all successive non-overlapping regex matches
 }
 \examples{
 df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))

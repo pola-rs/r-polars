@@ -38,7 +38,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' general pro "immutable objects". Immutability is also classic in R. To mimic
 #' the Python-polars API, set this to `FALSE.`
 #' @param maintain_order Default for all `maintain_order` options (present in
-#' `$groupby()` or `$unique()` for example).
+#' `$group_by()` or `$unique()` for example).
 #' @param do_not_repeat_call Do not print the call causing the error in error
 #' messages. The default (`FALSE`) is to show them.
 #' @param debug_polars Print additional information to debug Polars.

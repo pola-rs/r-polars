@@ -9,7 +9,7 @@
 #
 #   three_sums = (
 #       df$filter(pl$col("sepal_length") > pl$lit(5))
-#       $groupby("species",maintain_order = TRUE)
+#       $group_by("species",maintain_order = TRUE)
 #       $agg(pl$all()$sum())
 #       $to_data_frame()
 #       $sepal_length
@@ -24,7 +24,7 @@
 #
 #   l = pl$read_csv("https://j.mp/iriscsv",lazy = FALSE)$lazy()
 #   l = l$filter(pl$col("sepal_length") > 5)
-#   l = l$groupby("species",maintain_order = TRUE)
+#   l = l$group_by("species",maintain_order = TRUE)
 #   l = l$agg(pl$col("sepal_length")$sum())
 #   capture.output(l$describe_optimized_plan())
 #   df = l$collect()

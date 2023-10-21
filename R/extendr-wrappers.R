@@ -189,6 +189,8 @@ DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__D
 
 DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
+DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
@@ -649,6 +651,8 @@ Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_trun
 
 Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
+Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
+
 Expr$dt_combine <- function(time, tu) .Call(wrap__Expr__dt_combine, self, time, tu)
 
 Expr$dt_strftime <- function(fmt) .Call(wrap__Expr__dt_strftime, self, fmt)
@@ -979,6 +983,8 @@ LazyFrame$sink_parquet <- function(path, compression_method, compression_level, 
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
+LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
+
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
 LazyFrame$last <- function() .Call(wrap__LazyFrame__last, self)
@@ -1031,7 +1037,7 @@ LazyFrame$drop_nulls <- function(subset) .Call(wrap__LazyFrame__drop_nulls, self
 
 LazyFrame$unique <- function(subset, keep, maintain_order) .Call(wrap__LazyFrame__unique, self, subset, keep, maintain_order)
 
-LazyFrame$groupby <- function(exprs, maintain_order) .Call(wrap__LazyFrame__groupby, self, exprs, maintain_order)
+LazyFrame$group_by <- function(exprs, maintain_order) .Call(wrap__LazyFrame__group_by, self, exprs, maintain_order)
 
 LazyFrame$with_row_count <- function(name, offset) .Call(wrap__LazyFrame__with_row_count, self, name, offset)
 

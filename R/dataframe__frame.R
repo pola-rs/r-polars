@@ -836,14 +836,14 @@ DataFrame_filter = function(bool_expr) {
 }
 
 #' Group a DataFrame
-#' @inherit LazyFrame_groupby description params
+#' @inherit LazyFrame_group_by description params
 #' @keywords DataFrame
 #' @return GroupBy (a DataFrame with special groupby methods like `$agg()`)
 #' @examples
 #' gb = pl$DataFrame(
 #'   foo = c("one", "two", "two", "one", "two"),
 #'   bar = c(5, 3, 2, 4, 1)
-#' )$groupby("foo", maintain_order = TRUE)
+#' )$group_by("foo", maintain_order = TRUE)
 #'
 #' gb
 #'
@@ -851,9 +851,9 @@ DataFrame_filter = function(bool_expr) {
 #'   pl$col("bar")$sum()$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
-DataFrame_groupby = function(..., maintain_order = pl$options$maintain_order) {
+DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
   # clone the DataFrame, bundle args as attributes. Non fallible.
-  construct_groupby(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
+  construct_group_by(self, groupby_input = unpack_list(...), maintain_order = maintain_order)
 }
 
 
@@ -1679,4 +1679,76 @@ DataFrame_sample = function(
     or_else = Err_plain("internal error")
   ) |>
     unwrap("in $sample():")
+}
+
+
+
+#' Write to comma-separated values (CSV) file
+#'
+#' @param path File path to which the result should be written.
+#' @param has_header Whether to include header in the CSV output.
+#' @param separator Separate CSV fields with this symbol.
+#' @param line_terminator String used to end each row.
+#' @param quote Byte to use as quoting character.
+#' @param batch_size Number of rows that will be processed per thread.
+#' @param datetime_format A format string, with the specifiers defined by the
+#' chrono Rust crate. If no format specified, the default fractional-second
+#' precision is inferred from the maximum timeunit found in the frame’s Datetime
+#'  cols (if any).
+#' @param date_format A format string, with the specifiers defined by the chrono
+#' Rust crate.
+#' @param time_format A format string, with the specifiers defined by the chrono
+#' Rust crate.
+#' @param float_precision Number of decimal places to write, applied to both
+#' Float32 and Float64 datatypes.
+#' @param null_values A string representing null values (defaulting to the empty
+#' string).
+#' @param quote_style Determines the quoting strategy used.
+#' * `"necessary"` (default): This puts quotes around fields only when necessary.
+#'   They are necessary when fields contain a quote, delimiter or record
+#'   terminator. Quotes are also necessary when writing an empty record (which
+#'   is indistinguishable from a record with one empty field). This is the
+#'   default.
+#' * `"always"`: This puts quotes around every field.
+#' * `"non_numeric"`: This puts quotes around all fields that are non-numeric.
+#'   Namely, when writing a field that does not parse as a valid float or integer,
+#'   then quotes will be used even if they aren`t strictly necessary.
+
+# TODO: include "never" when bumping rust-polars to 0.34
+# * `"never"`: This never puts quotes around fields, even if that results in
+#   invalid CSV data (e.g.: by not quoting strings containing the separator).
+
+#' @return
+#' This doesn't return anything but creates a CSV file.
+#'
+#' @rdname IO_write_csv
+#'
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".csv")
+#' dat$select(pl$col("drat", "mpg"))$write_csv(destination)
+#'
+#' pl$read_csv(destination)
+DataFrame_write_csv = function(
+    path,
+    has_header = TRUE,
+    separator = ",",
+    line_terminator = "\n",
+    quote = '"',
+    batch_size = 1024,
+    datetime_format = NULL,
+    date_format = NULL,
+    time_format = NULL,
+    float_precision = NULL,
+    null_values = "",
+    quote_style = "necessary") {
+  .pr$DataFrame$write_csv(
+    self,
+    path, has_header, separator, line_terminator, quote, batch_size,
+    datetime_format, date_format, time_format, float_precision,
+    null_values, quote_style
+  ) |>
+    unwrap("in $write_csv():") |>
+    invisible()
 }

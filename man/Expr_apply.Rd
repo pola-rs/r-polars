@@ -73,7 +73,7 @@ to achieve the best performance.
 e_all = pl$all() # perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
 e_sum = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
 e_head = e_all$apply(\(s) head(s$to_r(), 2))$suffix("_head")
-pl$DataFrame(iris)$groupby("Species")$agg(e_sum, e_head)
+pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 
 
 # apply over single values (should be avoided as it takes ~2.5us overhead + R function exec time
@@ -126,7 +126,7 @@ system.time({
 #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 
 # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
-pl$LazyFrame(iris)$groupby("Species")$agg(
+pl$LazyFrame(iris)$group_by("Species")$agg(
   pl$all()$apply(\(s) {
     Sys.sleep(.1)
     s$sum()
@@ -137,7 +137,7 @@ pl$LazyFrame(iris)$groupby("Species")$agg(
 pl$set_options(rpool_cap = 0) # drop any previous processes, just to show start-up overhead here
 pl$set_options(rpool_cap = 4) # set back to 4, the default
 pl$options$rpool_cap
-pl$LazyFrame(iris)$groupby("Species")$agg(
+pl$LazyFrame(iris)$group_by("Species")$agg(
   pl$all()$apply(\(s) {
     Sys.sleep(.1)
     s$sum()
@@ -146,7 +146,7 @@ pl$LazyFrame(iris)$groupby("Species")$agg(
 
 # map in parallel 2: Reuse R processes in "polars global_rpool".
 pl$options$rpool_cap
-pl$LazyFrame(iris)$groupby("Species")$agg(
+pl$LazyFrame(iris)$group_by("Species")$agg(
   pl$all()$apply(\(s) {
     Sys.sleep(.1)
     s$sum()
