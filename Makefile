@@ -42,7 +42,9 @@ requirements-rs:
 	rustup default $(RUST_TOOLCHAIN)
 	rustup component add rustfmt
 	rustup component add clippy
-	cargo install cargo-license
+	if [[ -z "$(CI)" ]]; then \
+		cargo install cargo-license; \
+	fi
 
 .PHONY: build
 build: ## Compile polars R package with all features and generate Rd files
