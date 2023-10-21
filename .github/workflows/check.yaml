@@ -44,12 +44,9 @@ jobs:
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
 
-      - name: Set env vars for build option
-        if: matrix.config.full-features
+      - name: Set rust target
         shell: bash
         run: |
-          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
-          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
           if [ "${{ runner.os }}" == "Windows" ]; then
             echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_ENV
           elif [ "${{ runner.os }}" == "macOS" ]; then
@@ -57,6 +54,13 @@ jobs:
           else
             echo "TARGET=x86_64-unknown-linux-musl" >>$GITHUB_ENV
           fi
+
+      - name: Set env vars for build option
+        if: matrix.config.full-features
+        shell: bash
+        run: |
+          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
+          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: ./.github/actions/setup
         id: build-lib
