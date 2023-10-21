@@ -7,6 +7,10 @@ inputs:
   target:
     description: Rust target triple to use
     required: true
+outputs:
+  binary-path:
+    description: Path to the built binary
+    value: ${{ steps.build-lib.outputs.lib-path }}
 
 runs:
   using: composite
@@ -56,9 +60,11 @@ runs:
           workspaces: "src/rust -> target"
 
       - name: Build library
+        id: build-lib
         if: inputs.target != ''
         working-directory: src
         shell: bash
         run: |
           LIB_PATH="$(pwd)/rust/target/${{ inputs.target }}/${RPOLARS_PROFILE}/libr_polars.a"
           make -f Makevars${{ runner.os == 'Windows' && '.win' || '.in' }} "${LIB_PATH}"
+          echo "lib-path=${LIB_PATH}" >>"$GITHUB_OUTPUT"
