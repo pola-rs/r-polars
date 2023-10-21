@@ -2,16 +2,13 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_n_chars}
 \alias{ExprStr_n_chars}
-\alias{expr_str_n_chars}
-\title{n_chars}
-\format{
-function
-}
+\title{Get the number of characters in strings}
 \value{
-Expr of u32 n_chars
+Expr of u32
 }
 \description{
-Get length of the strings as UInt32 (as number of chars).
+Get length of the strings as UInt32 (as number of characters). Use
+\verb{$str$lengths()} to get the number of bytes.
 }
 \details{
 If you know that you are working with ASCII text, \code{lengths} will be

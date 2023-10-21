@@ -4,28 +4,31 @@
 # expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 
 
-#' Parse a Date or DateTime Series
-#' @description  Parse a Series of dtype Utf8 to a Date/Datetime Series.
+#' Convert a Utf8 column into a Date/Datetime/Time column.
+#'
 #' @name ExprStr_strptime
-#' @param datatype a temporal data type either pl$Date, pl$Time or pl$Datetime
-#' @param format format string for parsing see
-#' see details here https://docs.rs/chrono/latest/chrono/format/strftime/index.html#fn6
-#' Notice time_zone %Z is not supported and will just ignore timezones. Numeric tz  like
-#' %z, %:z  .... are supported.
-#' @param strict bool, if true raise error if a single string cannot be parsed, else produce a
-#' polars `null`.
-#' @param exact bool , If True, require an exact format match. If False, allow the format to match
-#' anywhere in the target string.
-#' @param cache Use a cache of unique, converted dates to apply the datetime conversion.
+#' @param datatype The data type to convert into. Can be either Date, Datetime,
+#' or Time.
+#' @param format Format to use for conversion. See `?strptime` for possible
+#' values. Example: "%Y-%m-%d %H:%M:%S". If `NULL` (default), the format is
+#' inferred from the data. Notice that time zone `%Z` is not supported and will
+#' just ignore timezones. Numeric time zones like `%z` or `%:z`  are supported.
+#' @param strict If `TRUE` (default), raise an error if a single string cannot
+#' be parsed. Otherwise, produce a polars `null`.
+#' @param exact If `TRUE` (default), require an exact format match. Otherwise,
+#' allow the format to match anywhere in the target string.
+#' @param cache Use a cache of unique, converted dates to apply the datetime
+#' conversion.
 #' @param ambiguous Determine how to deal with ambiguous datetimes:
 #' * `"raise"` (default): raise
 #' * `"earliest"`: use the earliest datetime
 #' * `"latest"`: use the latest datetime
-#' @details Notes When parsing a Datetime the column precision will be inferred from the format
-#' string, if given, eg: “%F %T%.3f” => Datetime(“ms”). If no fractional second component is found
-#' then the default is “us”.
+#' @details
+#' When parsing a Datetime the column precision will be inferred from the format
+#' string, if given, eg: “%F %T%.3f" => Datetime("ms"). If no fractional second
+#' component is found then the default is "us" (microsecond).
 #' @keywords ExprStr
-#' @return Expr of a Data, Datetime or Time Series
+#' @return Expr of a Date, Datetime or Time Series
 #' @examples
 #' s = pl$Series(
 #'   c(
@@ -56,13 +59,12 @@
 #'   format = "%Y-%m-%d %H:%M:%S %z", strict = FALSE,
 #' )$lit_to_s()
 ExprStr_strptime = function(
-    datatype, # : PolarsTemporalType,
-    format, # : str | None = None,
-    strict = TRUE, # : bool = True,
-    exact = TRUE, # : bool = True,
-    cache = TRUE, # : bool = True,
+    datatype,
+    format,
+    strict = TRUE,
+    exact = TRUE,
+    cache = TRUE,
     ambiguous = "raise") {
-  # match on datatype, return RResult<Expr>
   pcase(
 
     # not a datatype
@@ -91,19 +93,20 @@ ExprStr_strptime = function(
     # Other
     or_else = Err_plain("datatype should be of type {Date, Datetime, Time}")
   ) |>
-    unwrap("in str$strptime:")
+    unwrap("in str$strptime():")
 }
 
 
-#' lengths
-#' @description  Get length of the strings as UInt32 (as number of bytes).
+#' Get the number of bytes in strings
+#' @description
+#' Get length of the strings as UInt32 (as number of bytes). Use `$str$n_chars()`
+#' to get the number of characters.
 #' @name ExprStr_lengths
-#' @aliases expr_str_lengths
-#' @format function
 #' @keywords ExprStr
-#' @details The returned lengths are equal to the number of bytes in the UTF8 string. If you
-#' need the length in terms of the number of characters, use ``n_chars`` instead.
-#' @return Expr of u32 lengths
+#' @details
+#' If you know that you are working with ASCII text, `lengths` will be
+#' equivalent, and faster (returns length in terms of the number of bytes).
+#' @return Expr of u32
 #' @examples
 #' pl$DataFrame(
 #'   s = c("Café", NA, "345", "æøå")
@@ -116,35 +119,22 @@ ExprStr_lengths = function() {
   .pr$Expr$str_lengths(self)
 }
 
-#' n_chars
-#' @description   Get length of the strings as UInt32 (as number of chars).
+#' Get the number of characters in strings
+#' @description
+#' Get length of the strings as UInt32 (as number of characters). Use
+#' `$str$lengths()` to get the number of bytes.
 #' @name ExprStr_n_chars
-#' @aliases expr_str_n_chars
-#' @format function
 #' @keywords ExprStr
-#' @details  If you know that you are working with ASCII text, ``lengths`` will be
-#' equivalent, and faster (returns length in terms of the number of bytes).
-#' @keywords ExprStr
-#' @return Expr of u32 n_chars
-#' @examples
-#' pl$DataFrame(
-#'   s = c("Café", NA, "345", "æøå")
-#' )$select(
-#'   pl$col("s"),
-#'   pl$col("s")$str$lengths()$alias("lengths"),
-#'   pl$col("s")$str$n_chars()$alias("n_chars")
-#' )
+#' @inherit ExprStr_lengths examples details return
 ExprStr_n_chars = function() {
   .pr$Expr$str_n_chars(self)
 }
 
-
-
-#' Concat
+#' Vertically concatenate values of a Series
 #' @name ExprStr_concat
-#' @description Vertically concat the values in the Series to a single string value.
-#' @param delimiter string The delimiter to insert between consecutive string values.
-#' @aliases expr_str_concat
+#' @description Vertically concatenate the values in the Series to a single
+#' string value.
+#' @param delimiter The delimiter to insert between consecutive string values.
 #' @keywords ExprStr
 #' @return Expr of Utf8 concatenated
 #' @examples
@@ -159,10 +149,9 @@ ExprStr_concat = function(delimiter = "-") {
   .pr$Expr$str_concat(self, delimiter)
 }
 
-#' To uppercase
+#' Convert a string to uppercase
 #' @name ExprStr_to_uppercase
 #' @description Transform to uppercase variant.
-#' @aliases expr_str_to_uppercase
 #' @keywords ExprStr
 #' @return Expr of Utf8 uppercase chars
 #' @examples
@@ -171,10 +160,9 @@ ExprStr_to_uppercase = function() {
   .pr$Expr$str_to_uppercase(self)
 }
 
-#' To lowercase
+#' Convert a string to lowercase
 #' @name ExprStr_to_lowercase
 #' @description Transform to lowercase variant.
-#' @aliases expr_str_to_lowercase
 #' @keywords ExprStr
 #' @return Expr of Utf8 lowercase chars
 #' @examples
@@ -183,10 +171,9 @@ ExprStr_to_lowercase = function() {
   .pr$Expr$str_to_lowercase(self)
 }
 
-#' To titlecase
+#' Convert a string to titlecase
 #' @name ExprStr_to_titlecase
 #' @description Transform to titlecase variant.
-#' @aliases expr_str_to_titlecase
 #' @keywords ExprStr
 #' @return Expr of Utf8 titlecase chars
 #' @details
@@ -279,19 +266,20 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 }
 
 
-#' zfill
+#' Fills the string with zeroes.
 #' @name ExprStr_zfill
 #' @aliases expr_str_zfill
-#' @description   Fills the string with zeroes.
+#' @description Add zeroes to a string until it reaches `n` characters. If the
+#' number of characters is already greater than `n`, the string is not modified.
 #' @keywords ExprStr
-#' @param alignment Fill the value up to this length
+#' @param alignment Fill the value up to this length.
 #' @details
 #' Return a copy of the string left filled with ASCII '0' digits to make a string
 #' of length width.
 #'
 #' A leading sign prefix ('+'/'-') is handled by inserting the padding after the
 #' sign character rather than before. The original string is returned if width is
-#' less than or equal to ``len(s)``.
+#' less than or equal to `len(s)`.
 #'
 #' @return Expr
 #' @examples
@@ -300,61 +288,59 @@ ExprStr_strip_chars_end = function(matches = NULL) {
 #' # cast to Utf8 and ljust alignment = 5, and view as R char vector
 #' some_floats_expr$cast(pl$Utf8)$str$zfill(5)$to_r()
 #'
-#' # cast to int and the to utf8 and then ljust alignment = 5, and view as R char vector
+#' # cast to int and the to utf8 and then ljust alignment = 5, and view as R
+#' # char vector
 #' some_floats_expr$cast(pl$Int64)$cast(pl$Utf8)$str$zfill(5)$to_r()
 ExprStr_zfill = function(alignment) {
-  unwrap(.pr$Expr$str_zfill(self, alignment))
+  .pr$Expr$str_zfill(self, alignment) |>
+    unwrap("in str$zfill():")
 }
 
 
-#' ljust
+#' Left justify strings
 #' @name ExprStr_ljust
-#' @aliases expr_str_ljust
-#' @description Return the string left justified in a string of length ``width``.
+#' @description Return the string left justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify left to this length.
 #' @param fillchar Fill with this ASCII character.
-#' @details Padding is done using the specified ``fillchar``. The original string is returned if
-#' ``width`` is less than or equal to ``len(s)``.
+#' @details Padding is done using the specified `fillchar`. The original string
+#' is returned if `width` is less than or equal to `len(s)`.
 #' @return Expr of Utf8
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$ljust(8, "*"))
 ExprStr_ljust = function(width, fillchar = " ") {
-  unwrap(.pr$Expr$str_ljust(self, width, fillchar))
+  .pr$Expr$str_ljust(self, width, fillchar) |>
+    unwrap("in str$ljust(): ")
 }
 
 
-#' rjust
+#' Right justify strings
 #' @name ExprStr_rjust
-#' @aliases expr_str_rjust
-#' @description Return the string left justified in a string of length ``width``.
+#' @description Return the string right justified in a string of length `width`.
 #' @keywords ExprStr
-#' @param width Justify left to this length.
+#' @param width Justify right to this length.
 #' @param fillchar Fill with this ASCII character.
-#' @details Padding is done using the specified ``fillchar``. The original string is returned if
-#' ``width`` is less than or equal to ``len(s)``.
-#' @return Expr of Utf8
+#' @inherit ExprStr_ljust details return
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
 #' df$select(pl$col("a")$str$rjust(8, "*"))
 ExprStr_rjust = function(width, fillchar = " ") {
-  unwrap(.pr$Expr$str_rjust(self, width, fillchar))
+  .pr$Expr$str_rjust(self, width, fillchar) |>
+    unwrap("in str$rjust(): ")
 }
 
 
-#' contains
+#' Check if string contains a regex
 #' @name ExprStr_contains
-#' @aliases expr_str_contains
-#' @description R Check if string contains a substring that matches a regex.
+#' @description Check if string contains a substring that matches a regex.
 #' @keywords ExprStr
 #' @param pattern String or Expr of a string, a valid regex pattern.
-#' @param literal bool, treat pattern as a literal string. NULL is aliased with FALSE.
-#' @param strict bool, raise an error if the underlying pattern is not a valid
-#' regex expression, otherwise mask out with a null value.
+#' @param literal Treat pattern as a literal string.
+#' @param strict Raise an error if the underlying pattern is not a valid regex
+#' expression, otherwise replace the invalid regex with a null value.
 #' @details
-#'   starts_with : Check if string values start with a substring.
-#'   ends_with : Check if string values end with a substring.
+#' See also `$str$starts_with()` and `$str$ends_with()`.
 #' @return Expr returning a Boolean
 #' @examples
 #' df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))
@@ -367,16 +353,14 @@ ExprStr_contains = function(pattern, literal = FALSE, strict = TRUE) {
   .pr$Expr$str_contains(self, wrap_e(pattern, str_to_lit = TRUE), literal, strict)
 }
 
-#' ends_with
+#' Check if string ends with a regex
 #' @name ExprStr_ends_with
-#' @aliases expr_str_ends_with
-#' @description   Check if string values end with a substring.
+#' @description Check if string values end with a substring.
 #' @keywords ExprStr
 #' @param sub Suffix substring or Expr.
 #' @details
-#'    contains : Check if string contains a substring that matches a regex.
-#'    starts_with : Check if string values start with a substring.
-#' @return Expr returning a Boolean
+#' See also `$str$starts_with()` and `$str$contains()`.
+#' @inherit ExprStr_contains return
 #' @examples
 #' df = pl$DataFrame(fruits = c("apple", "mango", NA))
 #' df$select(
@@ -388,16 +372,14 @@ ExprStr_ends_with = function(sub) {
 }
 
 
-#' starts_with
+#' Check if string starts with a regex
 #' @name ExprStr_starts_with
-#' @aliases expr_str_starts_with
-#' @description   Check if string values starts with a substring.
+#' @description Check if string values starts with a substring.
 #' @keywords ExprStr
 #' @param sub Prefix substring or Expr.
 #' @details
-#' contains : Check if string contains a substring that matches a regex.
-#' ends_with : Check if string values end with a substring.
-#' @return Expr returning a Boolean
+#' See also `$str$contains()` and `$str$ends_with()`.
+#' @inherit ExprStr_contains return
 #' @examples
 #' df = pl$DataFrame(fruits = c("apple", "mango", NA))
 #' df$select(
@@ -408,19 +390,17 @@ ExprStr_starts_with = function(sub) {
   .pr$Expr$str_starts_with(self, wrap_e(sub, str_to_lit = TRUE))
 }
 
-#' json_extract
+#' Parse string values as JSON.
 #' @name ExprStr_json_extract
-#' @aliases expr_str_json_extract
-#' @description Parse string values as JSON.
 #' @keywords ExprStr
-#' @param dtype The dtype to cast the extracted value to. If None, the dtype will be
-#' inferred from the JSON value.
+#' @param dtype The dtype to cast the extracted value to. If `NULL`, the dtype
+#' will be inferred from the JSON value.
 #' @param infer_schema_length How many rows to parse to determine the schema.
-#' If None all rows are used.
+#' If `NULL`, all rows are used.
 #' @details
 #' Throw errors if encounter invalid json strings.
 #'
-#' @return Expr returning a boolean
+#' @return Expr returning a struct
 #' @examples
 #' df = pl$DataFrame(
 #'   json_val = c('{"a":1, "b": true}', NA, '{"a":2, "b": false}')
@@ -432,37 +412,35 @@ ExprStr_json_extract = function(dtype, infer_schema_length = 100) {
     unwrap("in str$json_extract():")
 }
 
-#' json_path_match
+#' Extract the first match of JSON string with the provided JSONPath expression
 #' @name ExprStr_json_path_match
-#' @aliases expr_json_path_match
-#' @description Extract the first match of json string with provided JSONPath expression.
 #' @keywords ExprStr
-#' @param  json_path A valid JSON path query string.
+#' @param json_path A valid JSON path query string.
 #' @details
-#' Throw errors if encounter invalid json strings.
-#' All return value will be casted to Utf8 regardless of the original value.
-#' Documentation on JSONPath standard can be found
-#' `here <https://goessner.net/articles/JsonPath/>`_.
-#' @return Utf8 array. Contain null if original value is null or the json_path return nothing.
+#' Throw errors if encounter invalid JSON strings. All return value will be
+#' cast to Utf8 regardless of the original value.
+#'
+#' Documentation on JSONPath standard can be found here: <https://goessner.net/articles/JsonPath/>.
+#' @return Utf8 array. Contain null if original value is null or the json_path
+#' return nothing.
 #' @examples
 #' df = pl$DataFrame(
 #'   json_val = c('{"a":"1"}', NA, '{"a":2}', '{"a":2.1}', '{"a":true}')
 #' )
 #' df$select(pl$col("json_val")$str$json_path_match("$.a"))
 ExprStr_json_path_match = function(pat) {
-  unwrap(.pr$Expr$str_json_path_match(self, pat))
+  .pr$Expr$str_json_path_match(self, pat) |>
+    unwrap("in str$json_path_match(): ")
 }
 
 
-#' decode
+#' Decode a value using the provided encoding
 #' @name ExprStr_decode
-#' @aliases expr_str_decode
-#' @description Decode a value using the provided encoding.
 #' @keywords ExprStr
-#' @param encoding string choice either 'hex' or 'base64'
-#' @param ... not used currently
-#' @param strict  Raise an error if the underlying value cannot be decoded,
-#'  otherwise mask out with a null value.
+#' @param encoding Either 'hex' or 'base64'.
+#' @param ... Not used currently.
+#' @param strict If `TRUE` (default), raise an error if the underlying value
+#' cannot be decoded. Otherwise, replace it with a null value.
 #'
 #' @return Utf8 array with values decoded using provided encoding
 #'
@@ -476,10 +454,7 @@ ExprStr_json_path_match = function(pat) {
 #'   pl$col("base64")$str$decode("base64")$alias("base64_decoded")$cast(pl$Utf8),
 #'   pl$col("hex")$str$decode("hex")$alias("hex_decoded")$cast(pl$Utf8)
 #' )
-ExprStr_decode = function(
-    encoding, # : TransferEncoding,
-    ...,
-    strict = TRUE) {
+ExprStr_decode = function(encoding, ..., strict = TRUE) {
   pcase(
     !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$str_hex_decode(self, strict),
@@ -488,13 +463,10 @@ ExprStr_decode = function(
   )
 }
 
-#' encode
+#' Encode a value using the provided encoding
 #' @name ExprStr_encode
-#' @aliases expr_str_encode
-#' @description  Encode a value using the provided encoding.
 #' @keywords ExprStr
-#' @param encoding string choice either 'hex' or 'base64'
-#'
+#' @param encoding Either 'hex' or 'base64'.
 #' @return Utf8 array with values encoded using provided encoding
 #'
 #' @examples
@@ -517,19 +489,15 @@ ExprStr_encode = function(encoding) {
 }
 
 
-#' extract
+#' Extract the target capture group from provided patterns
 #' @name ExprStr_extract
-#' @aliases expr_str_extract
-#' @description Extract the target capture group from provided patterns.
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
-#' @param group_index
-#' Index of the targeted capture group.
-#' Group 0 mean the whole pattern, first group begin at index 1.
-#' Default to the first capture group.
+#' @param group_index Index of the targeted capture group. Group 0 means the whole
+#' pattern, first group begin at index 1 (default).
 #'
 #' @return
-#' Utf8 array. Contain null if original value is null or regex capture nothing.
+#' Utf8 array. Contains null if original value is null or regex capture nothing.
 #'
 #' @examples
 #' df = pl$DataFrame(
@@ -543,20 +511,21 @@ ExprStr_encode = function(encoding) {
 #'   pl$col("a")$str$extract(r"(candidate=(\w+))", 1)
 #' )
 ExprStr_extract = function(pattern, group_index) {
-  unwrap(.pr$Expr$str_extract(self, pattern, group_index))
+  .pr$Expr$str_extract(self, pattern, group_index) |>
+    unwrap("in str$extract(): ")
 }
 
 
-#' extract_all
+#' Extract all matches for the given regex pattern
 #' @name ExprStr_extract_all
-#' @aliases expr_str_extract_all
-#' @description Extracts all matches for the given regex pattern. Extracts each successive
-#' non-overlapping regex match in an individual string as an array.
+#' @description Extracts all matches for the given regex pattern. Extracts each
+#' successive non-overlapping regex match in an individual string as an array.
 #' @keywords ExprStr
 #' @param pattern A valid regex pattern
 #'
 #' @return
-#' `List[Utf8]` array. Contain null if original value is null or regex capture nothing.
+#' `List[Utf8]` array. Contain null if original value is null or regex capture
+#' nothing.
 #'
 #' @examples
 #' df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
@@ -567,16 +536,14 @@ ExprStr_extract_all = function(pattern) {
   .pr$Expr$str_extract_all(self, wrap_e(pattern))
 }
 
-#' Count all successive non-overlapping regex matches.
+#' Count all successive non-overlapping regex matches
 #' @name ExprStr_count_matches
-#' @aliases expr_str_count_matches
-#' @description Count all successive non-overlapping regex matches.
 #' @keywords ExprStr
-#' @param pattern String or Expr of a string, a valid regex pattern.
-#' @param literal Boolean. Treat pattern as a literal string.
+#' @param pattern A valid regex pattern
+#' @param literal Treat pattern as a literal string.
 #'
 #' @return
-#' UInt32 array. Contain null if original value is null or regex capture nothing.
+#' UInt32 array. Contains null if original value is null or regex capture nothing.
 #'
 #' @examples
 #' df = pl$DataFrame(foo = c("123 bla 45 asd", "xyz 678 910t"))
@@ -596,16 +563,12 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 }
 
 
-
-
-#' split
+#' Split the string by a substring
 #' @name ExprStr_split
-#' @aliases expr_str_split
-#' @description Split the string by a substring.
 #' @keywords ExprStr
 #' @param by String or Expr of a string, a valid regex pattern that will be
 #' used to split the string.
-#' @param inclusive If True, include the split character/string in the results.
+#' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
 #' @return
 #' List of Utf8 type
@@ -614,54 +577,54 @@ ExprStr_count_matches = function(pattern, literal = FALSE) {
 #' df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 #' df$select(pl$col("s")$str$split(by = " "))
 #'
-#' df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+#' df = pl$DataFrame(
+#'   s = c("foo^bar", "foo_bar", "foo*bar*baz"),
+#'   by = c("_", "_", "*")
+#' )
+#' df
 #' df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
 ExprStr_split = function(by, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split(self, result(by), result(inclusive)),
-    context = "in str$split:"
+    context = "in str$split():"
   )
 }
 
 # TODO write 2nd example after expr_struct has been implemented
-#' split_exact
+#' Split the string by a substring using `n` splits
 #' @name ExprStr_split_exact
-#' @aliases expr_str_split_exact
-#' @description Split the string by a substring using ``n`` splits.
-#' Results in a struct of ``n+1`` fields.
-#' If it cannot make ``n`` splits, the remaining field elements will be null.
+#' @description This results in a struct of `n+1` fields. If it cannot make `n`
+#' splits, the remaining field elements will be null.
 #' @keywords ExprStr
 #' @param by Substring to split by.
 #' @param n Number of splits to make.
-#' @param inclusive If True, include the split_exact character/string in the results.
+#' @param inclusive If `TRUE`, include the split character/string in the results.
 #'
 #' @return Struct where each of n+1 fields is of Utf8 type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
 #' df$select(pl$col("s")$str$split_exact(by = "_", 1))
-#'
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
     .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
-    context = "in str$split_exact:"
+    context = "in str$split_exact():"
   )
 }
 
 
-#' splitn
+#' Split the string by a substring, restricted to returning at most `n` items
 #' @name ExprStr_splitn
-#' @aliases expr_str_splitn
-#' @description Split the string by a substring, restricted to returning at most ``n`` items.
-#' If the number of possible splits is less than ``n-1``, the remaining field
-#' elements will be null. If the number of possible splits is ``n-1`` or greater,
+#' @description
+#' If the number of possible splits is less than `n-1`, the remaining field
+#' elements will be null. If the number of possible splits is `n-1` or greater,
 #' the last (nth) substring will contain the remainder of the string.
 #' @keywords ExprStr
 #' @param by Substring to split by.
 #' @param n Number of splits to make.
 #'
 #' @return
-#' Struct where each of n fields is of Utf8 type
+#' Struct where each of `n` fields is of Utf8 type
 #'
 #' @examples
 #' df = pl$DataFrame(s = c("a_1", NA, "c", "d_4"))
@@ -669,23 +632,20 @@ ExprStr_split_exact = function(by, n, inclusive = FALSE) {
 #' df$select(pl$col("s")$str$splitn(by = "_", 1))
 #' df$select(pl$col("s")$str$splitn(by = "_", 2))
 ExprStr_splitn = function(by, n) {
-  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn")
+  .pr$Expr$str_splitn(self, result(by), result(n)) |> unwrap("in str$splitn():")
 }
 
 
-#' replace
+#' Replace first matching regex/literal substring with a new string value
 #' @name ExprStr_replace
-#' @aliases expr_str_replace
-#' @description
-#' Replace first matching regex/literal substring with a new string value.
 #' @keywords ExprStr
-#' @param pattern `Into<Expr>`, regex pattern
-#' @param value `Into<Expr>` replacement
-#' @param literal Boolean. Treat pattern as a literal string.
+#' @param pattern Regex pattern, can be an Expr.
+#' @param value Replacement, can be an Expr.
+#' @param literal Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
-#' @seealso replace_all : Replace all matching regex/literal substrings.
+#' @seealso `$str$replace_all()`: Replace all matching regex/literal substrings.
 #'
 #' @examples
 #' df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
@@ -694,24 +654,21 @@ ExprStr_splitn = function(by, n) {
 #' )
 ExprStr_replace = function(pattern, value, literal = FALSE) {
   .pr$Expr$str_replace(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace:")
+    unwrap("in str$replace():")
 }
 
 
 
-#' replace_all
+#' Replace all matching regex/literal substrings with a new string value
 #' @name ExprStr_replace_all
-#' @aliases expr_str_replace_all
-#' @description
-#' Replace all matching regex/literal substrings with a new string value.
 #' @keywords ExprStr
-#' @param pattern `Into<Expr>`, regex pattern
-#' @param value `Into<Expr>` replacement
-#' @param literal Boolean. Treat pattern as a literal string.
+#' @param pattern Regex pattern, can be an Expr.
+#' @param value Replacement, can be an Expr.
+#' @param literal Treat pattern as a literal string.
 #'
 #' @return Expr of Utf8 Series
 #'
-#' @seealso replace : Replace first matching regex/literal substring.
+#' @seealso `$str$replace()`: Replace first matching regex/literal substring.
 #'
 #' @examples
 #' df = pl$DataFrame(id = c(1, 2), text = c("abcabc", "123a123"))
@@ -720,19 +677,16 @@ ExprStr_replace = function(pattern, value, literal = FALSE) {
 #' )
 ExprStr_replace_all = function(pattern, value, literal = FALSE) {
   .pr$Expr$str_replace_all(self, wrap_e_result(pattern), wrap_e_result(value), result(literal)) |>
-    unwrap("in str$replace_all:")
+    unwrap("in str$replace_all():")
 }
 
 
-#' slice
+#' Create subslices of the string values of a Utf8 Series
 #' @name ExprStr_slice
-#' @aliases expr_str_slice
-#' @description
-#' Create subslices of the string values of a Utf8 Series.
 #' @keywords ExprStr
-#' @param pattern `Into<Expr>`, regex pattern
-#' @param value `Into<Expr>` replacement
-#' @param literal Boolean. Treat pattern as a literal string.
+#' @param offset Start index. Negative indexing is supported.
+#' @param length Length of the slice. If `NULL` (default), the slice is taken to
+#' the end of the string.
 #'
 #' @return Expr: Series of dtype Utf8.
 #'
@@ -743,33 +697,29 @@ ExprStr_replace_all = function(pattern, value, literal = FALSE) {
 #' )
 ExprStr_slice = function(offset, length = NULL) {
   .pr$Expr$str_slice(self, result(offset), result(length)) |>
-    unwrap("in str$slice:")
+    unwrap("in str$slice():")
 }
 
-#' str_explode
-#' @name ExprStr_str_explode
-#' @aliases expr_str_explode
-#' @description Returns a column with a separate row for every string character.
+#' Returns a column with a separate row for every string character
+#' @name ExprStr_explode
 #' @keywords ExprStr
 #' @return Expr: Series of dtype Utf8.
 #' @examples
 #' df = pl$DataFrame(a = c("foo", "bar"))
-#' df$select(pl$col("a")$str$str_explode())
-ExprStr_str_explode = function() {
+#' df$select(pl$col("a")$str$explode())
+ExprStr_explode = function() {
   .pr$Expr$str_explode(self) |>
-    unwrap("in str$str_explode:")
+    unwrap("in str$explode():")
 }
 
-#' parse_int
+#' Parse integers with base radix from strings
 #' @name ExprStr_parse_int
-#' @aliases expr_str_parse_int
-#' @description Parse integers with base radix from strings.
-#' By default base 2.
+#' @description Parse integers with base 2 by default.
 #' @keywords ExprStr
-#' @param radix Positive integer which is the base of the string we are parsing. Default: 2
-#' @param strict a logical. default is `TRUE`,
-#' which will raise any ParseError or overflow as ComputeError.
-#' False silently convert to `null`.
+#' @param radix Positive integer which is the base of the string we are parsing.
+#' Default is 2.
+#' @param strict If `TRUE` (default), integer overflow will raise an error.
+#' Otherwise, they will be converted to `null`.
 #' @return Expr: Series of dtype i32.
 #' @examples
 #' df = pl$DataFrame(bin = c("110", "101", "010"))
@@ -780,5 +730,5 @@ ExprStr_str_explode = function() {
 #' df = pl$DataFrame(x = c("1", "2", "foo"))
 #' df$select(pl$col("x")$str$parse_int(10, FALSE))
 ExprStr_parse_int = function(radix = 2, strict = TRUE) {
-  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int:")
+  .pr$Expr$str_parse_int(self, radix, strict) |> unwrap("in str$parse_int():")
 }
