@@ -572,7 +572,7 @@ Series_clone = "use_extendr_wrapper"
 #' @aliases Series_cumsum
 #' @name Series_cumsum
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
@@ -586,7 +586,7 @@ Series_cumsum = function(reverse = FALSE) {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
@@ -601,7 +601,7 @@ Series_sum = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before meanming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
@@ -616,7 +616,7 @@ Series_mean = function() {
 #' @return  R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before medianming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
@@ -631,7 +631,7 @@ Series_median = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before maxming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
@@ -646,7 +646,7 @@ Series_max = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before taking the min to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always
