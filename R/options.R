@@ -22,7 +22,7 @@ polars_optreq$maintain_order = list(must_be_bool = is_bool)
 polars_optenv$debug_polars = FALSE
 polars_optreq$debug_polars = list(must_be_bool = is_bool)
 
-#polars_optenv$rpool_cap # active binding for getting value, not for
+# polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
 
@@ -116,7 +116,9 @@ pl$set_options = function(
       failures = names(which(!validation))
       failures = translate_failures(failures)
       err = .pr$RPolarsErr$new()
-      {for(fail in failures) err = err$plain(fail)}
+      {
+        for (fail in failures) err = err$plain(fail)
+      }
       err$
         bad_robj(value)$
         bad_arg(args_modified[i]) |>
@@ -125,11 +127,10 @@ pl$set_options = function(
     }
 
     assign(args_modified[i], value, envir = polars_optenv) |>
-    result() |>
-    map_err(\(err) err$bad_arg(args_modified[i])) |>
-    unwrap("in pl$set_options") |>
-    invisible()
-
+      result() |>
+      map_err(\(err) err$bad_arg(args_modified[i])) |>
+      unwrap("in pl$set_options") |>
+      invisible()
   }
 }
 

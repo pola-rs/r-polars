@@ -31,17 +31,17 @@ test_that("groupby", {
 
 make_cases = function() {
   tibble::tribble(
-    ~.test_name, ~pola,   ~base,
-    "max",        "max",    max,
-    "mean",       "mean",   mean,
-    "median",     "median", median,
-    "max",        "max",    max,
-    "min",        "min",    min,
-    "std",        "std",    sd,
-    "sum",        "sum",    sum,
-    "var",        "var",    var,
-    "first",      "first",  function(x) head(x, 1),
-    "last",       "last",   function(x) tail(x, 1)
+    ~.test_name, ~pola, ~base,
+    "max", "max", max,
+    "mean", "mean", mean,
+    "median", "median", median,
+    "max", "max", max,
+    "min", "min", min,
+    "std", "std", sd,
+    "sum", "sum", sum,
+    "var", "var", var,
+    "first", "first", function(x) head(x, 1),
+    "last", "last", function(x) tail(x, 1)
   )
 }
 

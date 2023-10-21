@@ -2803,8 +2803,7 @@ Expr_rolling_min = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_min(
     self, wargs$window_size, weights,
@@ -2870,8 +2869,7 @@ Expr_rolling_max = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_max(
     self, wargs$window_size, weights,
@@ -2936,8 +2934,7 @@ Expr_rolling_mean = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_mean(
     self, wargs$window_size, weights,
@@ -3004,8 +3001,7 @@ Expr_rolling_sum = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_sum(
     self, wargs$window_size, weights,
@@ -3072,8 +3068,7 @@ Expr_rolling_std = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_std(
     self, wargs$window_size, weights,
@@ -3139,8 +3134,7 @@ Expr_rolling_var = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_var(
     self, wargs$window_size, weights,
@@ -3206,8 +3200,7 @@ Expr_rolling_median = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_median(
     self, wargs$window_size, weights,
@@ -3283,8 +3276,7 @@ Expr_rolling_quantile = function(
     min_periods = NULL,
     center = FALSE,
     by = NULL,
-    closed = c("left", "right", "both", "none")
-    ) {
+    closed = c("left", "right", "both", "none")) {
   wargs = prepare_rolling_window_args(window_size, min_periods)
   .pr$Expr$rolling_quantile(
     self, quantile, interpolation, wargs$window_size, weights,
