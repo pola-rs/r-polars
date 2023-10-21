@@ -13,7 +13,7 @@ R scalar value
 Reduce Series with median
 }
 \details{
-Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 Int64 before medianming to prevent overflow issues.
 }
 \examples{

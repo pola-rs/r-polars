@@ -2,25 +2,28 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_split}
 \alias{ExprStr_split}
-\alias{expr_str_split}
-\title{split}
+\title{Split the string by a substring}
 \arguments{
 \item{by}{String or Expr of a string, a valid regex pattern that will be
 used to split the string.}
 
-\item{inclusive}{If True, include the split character/string in the results.}
+\item{inclusive}{If \code{TRUE}, include the split character/string in the results.}
 }
 \value{
 List of Utf8 type
 }
 \description{
-Split the string by a substring.
+Split the string by a substring
 }
 \examples{
 df = pl$DataFrame(s = c("foo bar", "foo-bar", "foo bar baz"))
 df$select(pl$col("s")$str$split(by = " "))
 
-df = pl$DataFrame(s = c("foo^bar", "foo_bar", "foo*bar*baz"), "by" = c("_", "_", "*"))
+df = pl$DataFrame(
+  s = c("foo^bar", "foo_bar", "foo*bar*baz"),
+  by = c("_", "_", "*")
+)
+df
 df$select(pl$col("s")$str$split(by = pl$col("by"))$alias("split"))
 }
 \keyword{ExprStr}
