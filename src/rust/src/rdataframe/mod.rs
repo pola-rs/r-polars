@@ -1,5 +1,5 @@
 use extendr_api::{extendr, prelude::*, rprintln, Rinternals};
-use polars::prelude::{self as pl, IntoLazy};
+use polars::prelude::{self as pl, IntoLazy, SerWriter};
 use std::result::Result;
 pub mod read_csv;
 pub mod read_ipc;
@@ -308,9 +308,9 @@ impl DataFrame {
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         let lazy_df = self.clone().0.lazy();
         let lgb = if maintain_order {
-            lazy_df.groupby_stable(group_exprs)
+            lazy_df.group_by_stable(group_exprs)
         } else {
-            lazy_df.groupby(group_exprs)
+            lazy_df.group_by(group_exprs)
         };
         LazyFrame(lgb.agg(agg_exprs)).collect()
     }
@@ -442,7 +442,41 @@ impl DataFrame {
             .map_err(polars_to_rpolars_err)
             .map(DataFrame)
     }
+
+    pub fn write_csv(
+        &self,
+        path: Robj,
+        has_header: Robj,
+        separator: Robj,
+        line_terminator: Robj,
+        quote: Robj,
+        batch_size: Robj,
+        datetime_format: Robj,
+        date_format: Robj,
+        time_format: Robj,
+        float_precision: Robj,
+        null_value: Robj,
+        quote_style: Robj,
+    ) -> RResult<()> {
+        let path = robj_to!(str, path)?;
+        let f = std::fs::File::create(path)?;
+        pl::CsvWriter::new(f)
+            .has_header(robj_to!(bool, has_header)?)
+            .with_delimiter(robj_to!(Utf8Byte, separator)?)
+            .with_line_terminator(robj_to!(String, line_terminator)?)
+            .with_quoting_char(robj_to!(Utf8Byte, quote)?)
+            .with_batch_size(robj_to!(usize, batch_size)?)
+            .with_datetime_format(robj_to!(Option, String, datetime_format)?)
+            .with_date_format(robj_to!(Option, String, date_format)?)
+            .with_time_format(robj_to!(Option, String, time_format)?)
+            .with_float_precision(robj_to!(Option, usize, float_precision)?)
+            .with_null_value(robj_to!(String, null_value)?)
+            .with_quote_style(robj_to!(QuoteStyle, quote_style)?)
+            .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)
+    }
 }
+
 impl DataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported

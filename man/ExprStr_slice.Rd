@@ -2,20 +2,18 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_slice}
 \alias{ExprStr_slice}
-\alias{expr_str_slice}
-\title{slice}
+\title{Create subslices of the string values of a Utf8 Series}
 \arguments{
-\item{pattern}{\verb{Into<Expr>}, regex pattern}
+\item{offset}{Start index. Negative indexing is supported.}
 
-\item{value}{\verb{Into<Expr>} replacement}
-
-\item{literal}{bool, treat pattern as a literal string.}
+\item{length}{Length of the slice. If \code{NULL} (default), the slice is taken to
+the end of the string.}
 }
 \value{
 Expr: Series of dtype Utf8.
 }
 \description{
-Create subslices of the string values of a Utf8 Series.
+Create subslices of the string values of a Utf8 Series
 }
 \examples{
 df = pl$DataFrame(s = c("pear", NA, "papaya", "dragonfruit"))

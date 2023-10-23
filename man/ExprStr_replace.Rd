@@ -2,20 +2,19 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_replace}
 \alias{ExprStr_replace}
-\alias{expr_str_replace}
-\title{replace}
+\title{Replace first matching regex/literal substring with a new string value}
 \arguments{
-\item{pattern}{\verb{Into<Expr>}, regex pattern}
+\item{pattern}{Regex pattern, can be an Expr.}
 
-\item{value}{\verb{Into<Expr>} replacement}
+\item{value}{Replacement, can be an Expr.}
 
-\item{literal}{bool, Treat pattern as a literal string.}
+\item{literal}{Treat pattern as a literal string.}
 }
 \value{
 Expr of Utf8 Series
 }
 \description{
-Replace first matching regex/literal substring with a new string value.
+Replace first matching regex/literal substring with a new string value
 }
 \examples{
 df = pl$DataFrame(id = c(1, 2), text = c("123abc", "abc456"))
@@ -24,6 +23,6 @@ df$with_columns(
 )
 }
 \seealso{
-replace_all : Replace all matching regex/literal substrings.
+\verb{$str$replace_all()}: Replace all matching regex/literal substrings.
 }
 \keyword{ExprStr}

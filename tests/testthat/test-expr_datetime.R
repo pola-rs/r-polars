@@ -504,6 +504,26 @@ test_that("offset_by", {
     l_actual,
     l_expected
   )
+
+  # using expression in arg "by"
+  df = pl$DataFrame(
+    dates = pl$date_range(
+      as.POSIXct("2022-01-01", tz = "GMT"),
+      as.POSIXct("2022-01-02", tz = "GMT"),
+      interval = "6h", time_unit = "ms", time_zone = "GMT"
+    )$to_r(),
+    offset = c("1d", "-2d", "1mo", NA, "1y")
+  )
+  expect_identical(
+    df$with_columns(pl$col("dates")$dt$offset_by(pl$col("offset")))$to_data_frame()[["dates"]],
+    as.POSIXct(
+      c(
+        "2022-01-02 00:00:00", "2021-12-30 06:00:00", "2022-02-01 12:00:00", NA,
+        "2023-01-02 00:00:00"
+      ),
+      tz = "GMT"
+    )
+  )
 })
 
 
@@ -730,14 +750,14 @@ test_that("replace_time_zone for ambiguous time", {
   x = seq(as.POSIXct("2018-10-28 01:30", tz = "UTC"), as.POSIXct("2018-10-28 02:30", tz = "UTC"), by = "30 min")
 
   pl_out = pl$DataFrame(x = x)$with_columns(
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", TRUE)$alias("earliest"),
-    pl$col("x")$dt$replace_time_zone("Europe/Brussels", FALSE)$alias("not_earliest")
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "earliest")$alias("earliest"),
+    pl$col("x")$dt$replace_time_zone("Europe/Brussels", "latest")$alias("latest")
   )$to_data_frame()
 
   lubridate_out = data.frame(
     x = x,
     earliest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "pre")),
-    not_earliest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "post"))
+    latest = lubridate::force_tz(x, "Europe/Brussels", roll_dst = c("NA", "post"))
   )
 
   expect_equal(pl_out, lubridate_out)
@@ -810,4 +830,20 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
     pl$col("date")$diff()$dt$nanoseconds()$alias("diff")
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
+})
+
+
+test_that("$dt$time()", {
+  df = pl$DataFrame(
+    dates = pl$date_range(
+      as.Date("2000-1-1"),
+      as.Date("2000-1-2"),
+      "6h",
+      eager = TRUE
+    )
+  )
+  expect_identical(
+    as.numeric(df$select(times = pl$col("dates")$dt$time())$to_list()[[1]]),
+    c(0.00e+00, 2.16e+13, 4.32e+13, 6.48e+13, 0.00e+00)
+  )
 })

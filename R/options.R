@@ -22,7 +22,7 @@ polars_optreq$maintain_order = list(must_be_bool = is_bool)
 polars_optenv$debug_polars = FALSE
 polars_optreq$debug_polars = list(must_be_bool = is_bool)
 
-#polars_optenv$rpool_cap # active binding for getting value, not for
+# polars_optenv$rpool_cap # active binding for getting value, not for
 polars_optreq$rpool_cap = list() # rust-side options already check args
 
 
@@ -38,7 +38,7 @@ polars_optreq$rpool_cap = list() # rust-side options already check args
 #' general pro "immutable objects". Immutability is also classic in R. To mimic
 #' the Python-polars API, set this to `FALSE.`
 #' @param maintain_order Default for all `maintain_order` options (present in
-#' `$groupby()` or `$unique()` for example).
+#' `$group_by()` or `$unique()` for example).
 #' @param do_not_repeat_call Do not print the call causing the error in error
 #' messages. The default (`FALSE`) is to show them.
 #' @param debug_polars Print additional information to debug Polars.
@@ -129,7 +129,9 @@ pl$set_options = function(
       failures = names(which(!validation))
       failures = translate_failures(failures)
       err = .pr$RPolarsErr$new()
-      {for(fail in failures) err = err$plain(fail)}
+      {
+        for (fail in failures) err = err$plain(fail)
+      }
       err$
         bad_robj(value)$
         bad_arg(args_modified[i]) |>
@@ -138,11 +140,10 @@ pl$set_options = function(
     }
 
     assign(args_modified[i], value, envir = polars_optenv) |>
-    result() |>
-    map_err(\(err) err$bad_arg(args_modified[i])) |>
-    unwrap("in pl$set_options") |>
-    invisible()
-
+      result() |>
+      map_err(\(err) err$bad_arg(args_modified[i])) |>
+      unwrap("in pl$set_options") |>
+      invisible()
   }
 }
 

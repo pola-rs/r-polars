@@ -323,8 +323,8 @@ Series_abs = function() {
 
 #' Value Counts as DataFrame
 #'
-#' @param sorted bool, default TRUE: sort table by value; FALSE: random
-#' @param multithreaded bool, default FALSE, process multithreaded. Likely faster
+#' @param sort bool, default TRUE: sort table by value; FALSE: random
+#' @param parallel bool, default FALSE, process multithreaded. Likely faster
 #' to have TRUE for a big Series. If called within an already multithreaded context
 #' such calling apply on a GroupBy with many groups, then likely slightly faster to leave FALSE.
 #'
@@ -333,8 +333,8 @@ Series_abs = function() {
 #' @name Series_value_count
 #' @examples
 #' pl$Series(iris$Species, "flower species")$value_counts()
-Series_value_counts = function(sorted = TRUE, multithreaded = FALSE) {
-  unwrap(.pr$Series$value_counts(self, multithreaded, sorted), "in $value_counts():")
+Series_value_counts = function(sort = TRUE, parallel = FALSE) {
+  unwrap(.pr$Series$value_counts(self, sort, parallel), "in $value_counts():")
 }
 
 
@@ -572,7 +572,7 @@ Series_clone = "use_extendr_wrapper"
 #' @aliases Series_cumsum
 #' @name Series_cumsum
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
@@ -586,7 +586,7 @@ Series_cumsum = function(reverse = FALSE) {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$sum() # a NA is dropped always
@@ -601,7 +601,7 @@ Series_sum = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before meanming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$mean() # a NA is dropped always
@@ -616,7 +616,7 @@ Series_mean = function() {
 #' @return  R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before medianming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$median() # a NA is dropped always
@@ -631,7 +631,7 @@ Series_median = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before maxming to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$max() # a NA is dropped always
@@ -646,7 +646,7 @@ Series_max = function() {
 #' @return R scalar value
 #' @keywords Series
 #' @details
-#' Dtypes in {Int8, UInt8, Int16, UInt16} are cast to
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before taking the min to prevent overflow issues.
 #' @examples
 #' pl$Series(c(1:2, NA, 3, 5))$min() # a NA is dropped always

@@ -2,7 +2,7 @@
 % Please edit documentation in R/parquet.R
 \name{scan_parquet}
 \alias{scan_parquet}
-\title{new LazyFrame from parquet file}
+\title{Scan a parquet file}
 \arguments{
 \item{file}{string filepath}
 
@@ -24,7 +24,7 @@
 LazyFrame
 }
 \description{
-new LazyFrame from parquet file
+Scan a parquet file
 }
 \examples{
 # TODO write parquet example

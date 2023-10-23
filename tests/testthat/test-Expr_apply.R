@@ -4,9 +4,9 @@ test_that("Expr_apply works", {
     b = c("a", "b", "c", "c", "d", NA_character_, NA_character_)
   ))
 
-  df$groupby("b")$agg(pl$col("a")$sum())
-  # df$groupby("b")$agg(pl$col("a")$apply(function(s) {print("hej");(s*2)}))
-  rdf = df$groupby("b", maintain_order = TRUE)$agg(
+  df$group_by("b")$agg(pl$col("a")$sum())
+  # df$group_by("b")$agg(pl$col("a")$apply(function(s) {print("hej");(s*2)}))
+  rdf = df$group_by("b", maintain_order = TRUE)$agg(
     pl$col("a")$apply(function(s) {
       v = (s * 2)$to_r()
       which.max(v)
@@ -35,7 +35,7 @@ test_that("Expr_apply works", {
   edf = df$to_data_frame()[1:10, c("a", "b")]
   edf$count = c(rep(1, 9), 2)
   expect_identical(
-    df$groupby("a", "b", maintain_order = TRUE)$agg(
+    df$group_by("a", "b", maintain_order = TRUE)$agg(
       pl$col("val1")$apply(function(s) {
         s$len()
       })$alias("count")

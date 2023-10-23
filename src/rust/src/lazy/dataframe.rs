@@ -19,6 +19,9 @@ use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 use polars::prelude::AsOfOptions;
 
+use polars::io::csv::SerializeOptions;
+use polars_lazy::prelude::CsvWriterOptions;
+
 #[allow(unused_imports)]
 use std::result::Result;
 
@@ -111,6 +114,61 @@ impl LazyFrame {
         self.0
             .clone()
             .sink_ipc(robj_to!(String, path)?.into(), ipcwo)
+            .map_err(polars_to_rpolars_err)
+    }
+
+    fn sink_csv(
+        &self,
+        path: Robj,
+        has_header: Robj,
+        separator: Robj,
+        line_terminator: Robj,
+        quote: Robj,
+        batch_size: Robj,
+        datetime_format: Robj,
+        date_format: Robj,
+        time_format: Robj,
+        float_precision: Robj,
+        null_value: Robj,
+        quote_style: Robj,
+        maintain_order: Robj,
+    ) -> RResult<()> {
+        // using robj_to!() directly in SerializeOptions doesn't work
+        let date_format = robj_to!(Option, String, date_format)?;
+        let time_format = robj_to!(Option, String, time_format)?;
+        let datetime_format = robj_to!(Option, String, datetime_format)?;
+        let float_precision = robj_to!(Option, usize, float_precision)?;
+        let separator = robj_to!(Utf8Byte, separator)?;
+        let quote = robj_to!(Utf8Byte, quote)?;
+        let null_value = robj_to!(String, null_value)?;
+        let line_terminator = robj_to!(String, line_terminator)?;
+        let quote_style = robj_to!(QuoteStyle, quote_style)?;
+        let has_header = robj_to!(bool, has_header)?;
+        let maintain_order = robj_to!(bool, maintain_order)?;
+        let batch_size = robj_to!(usize, batch_size)?;
+
+        let serialize_options = SerializeOptions {
+            date_format,
+            time_format,
+            datetime_format,
+            float_precision,
+            delimiter: separator,
+            quote,
+            null: null_value,
+            line_terminator,
+            quote_style,
+        };
+
+        let options = CsvWriterOptions {
+            has_header,
+            maintain_order,
+            batch_size,
+            serialize_options,
+        };
+
+        self.0
+            .clone()
+            .sink_csv(robj_to!(String, path)?.into(), options)
             .map_err(polars_to_rpolars_err)
     }
 
@@ -263,13 +321,13 @@ impl LazyFrame {
         Ok(lf.into())
     }
 
-    fn groupby(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
+    fn group_by(&self, exprs: Robj, maintain_order: Robj) -> Result<LazyGroupBy, String> {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
-            Ok(LazyGroupBy(self.0.clone().groupby_stable(expr_vec)))
+            Ok(LazyGroupBy(self.0.clone().group_by_stable(expr_vec)))
         } else {
-            Ok(LazyGroupBy(self.0.clone().groupby(expr_vec)))
+            Ok(LazyGroupBy(self.0.clone().group_by(expr_vec)))
         }
     }
 
@@ -442,12 +500,12 @@ impl LazyFrame {
     }
 
     #[allow(clippy::too_many_arguments)]
-    fn optimization_toggle(
+    fn set_optimization_toggle(
         &self,
         type_coercion: Robj,
         predicate_pushdown: Robj,
         projection_pushdown: Robj,
-        simplify_expr: Robj,
+        simplify_expression: Robj,
         slice_pushdown: Robj,
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
@@ -458,7 +516,7 @@ impl LazyFrame {
             .clone()
             .with_type_coercion(robj_to!(bool, type_coercion)?)
             .with_predicate_pushdown(robj_to!(bool, predicate_pushdown)?)
-            .with_simplify_expr(robj_to!(bool, simplify_expr)?)
+            .with_simplify_expr(robj_to!(bool, simplify_expression)?)
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
@@ -466,6 +524,32 @@ impl LazyFrame {
             .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
 
         Ok(ldf.into())
+    }
+
+    fn get_optimization_toggle(&self) -> List {
+        let pl::OptState {
+            projection_pushdown,
+            predicate_pushdown,
+            type_coercion,
+            simplify_expr,
+            slice_pushdown,
+            file_caching: _,
+            comm_subplan_elim,
+            comm_subexpr_elim,
+            streaming,
+            fast_projection,
+            eager,
+        } = self.0.get_current_optimizations();
+        list!(
+            type_coercion = type_coercion,
+            predicate_pushdown = predicate_pushdown,
+            projection_pushdown = projection_pushdown,
+            simplify_expression = simplify_expr,
+            slice_pushdown = slice_pushdown,
+            comm_subplan_elim = comm_subplan_elim,
+            comm_subexpr_elim = comm_subexpr_elim,
+            streaming = streaming,
+        )
     }
 
     fn profile(&self) -> RResult<List> {

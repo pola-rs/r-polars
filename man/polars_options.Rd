@@ -10,7 +10,7 @@ general pro "immutable objects". Immutability is also classic in R. To mimic
 the Python-polars API, set this to \code{FALSE.}}
 
 \item{maintain_order}{Default for all \code{maintain_order} options (present in
-\verb{$groupby()} or \verb{$unique()} for example).}
+\verb{$group_by()} or \verb{$unique()} for example).}
 
 \item{do_not_repeat_call}{Do not print the call causing the error in error
 messages. The default (\code{FALSE}) is to show them.}

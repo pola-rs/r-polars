@@ -2,16 +2,15 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_encode}
 \alias{ExprStr_encode}
-\alias{expr_str_encode}
-\title{encode}
+\title{Encode a value using the provided encoding}
 \arguments{
-\item{encoding}{string choice either 'hex' or 'base64'}
+\item{encoding}{Either 'hex' or 'base64'.}
 }
 \value{
 Utf8 array with values encoded using provided encoding
 }
 \description{
-Encode a value using the provided encoding.
+Encode a value using the provided encoding
 }
 \examples{
 df = pl$DataFrame(strings = c("foo", "bar", NA))

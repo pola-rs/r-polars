@@ -2,21 +2,20 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_decode}
 \alias{ExprStr_decode}
-\alias{expr_str_decode}
-\title{decode}
+\title{Decode a value using the provided encoding}
 \arguments{
-\item{encoding}{string choice either 'hex' or 'base64'}
+\item{encoding}{Either 'hex' or 'base64'.}
 
-\item{...}{not used currently}
+\item{...}{Not used currently.}
 
-\item{strict}{Raise an error if the underlying value cannot be decoded,
-otherwise mask out with a null value.}
+\item{strict}{If \code{TRUE} (default), raise an error if the underlying value
+cannot be decoded. Otherwise, replace it with a null value.}
 }
 \value{
 Utf8 array with values decoded using provided encoding
 }
 \description{
-Decode a value using the provided encoding.
+Decode a value using the provided encoding
 }
 \examples{
 df = pl$DataFrame(strings = c("foo", "bar", NA))

@@ -2,16 +2,16 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_concat}
 \alias{ExprStr_concat}
-\alias{expr_str_concat}
-\title{Concat}
+\title{Vertically concatenate values of a Series}
 \arguments{
-\item{delimiter}{string The delimiter to insert between consecutive string values.}
+\item{delimiter}{The delimiter to insert between consecutive string values.}
 }
 \value{
 Expr of Utf8 concatenated
 }
 \description{
-Vertically concat the values in the Series to a single string value.
+Vertically concatenate the values in the Series to a single
+string value.
 }
 \examples{
 # concatenate a Series of strings to a single string

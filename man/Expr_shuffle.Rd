@@ -5,16 +5,12 @@
 \alias{shuffle}
 \title{Shuffle}
 \usage{
-Expr_shuffle(seed = NULL, fixed_seed = FALSE)
+Expr_shuffle(seed = NULL)
 }
 \arguments{
 \item{seed}{numeric value of 0 to 2^52
 Seed for the random number generator. If set to Null (default), a random
 seed value integerish value between 0 and 10000 is picked}
-
-\item{fixed_seed}{Boolean. If True, The seed will not be incremented between draws. This can make output
-predictable because draw ordering can change due to threads being scheduled in a different order.
-Should be used together with seed}
 }
 \value{
 Expr
