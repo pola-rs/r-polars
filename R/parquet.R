@@ -15,10 +15,11 @@
 #' @rdname IO_scan_parquet
 #' @examples
 #' #write example file
-#' pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+#' my_parquet = tempfile(fileext = ".parquet")
+#' pl$LazyFrame(mtcars)$sink_parquet(my_parquet)
 #'
 #' # scan and get (project) only one column "cyl" but filter (apply predicate) on "hp".
-#' lf = pl$scan_parquet("my.parquet")$
+#' lf = pl$scan_parquet(my_parquet)$
 #'   filter(pl$col("hp") > 250)$
 #'   select(pl$col("cyl") * 2)
 #'
@@ -81,8 +82,8 @@ pl$scan_parquet = function(
 #' @name read_parquet
 #' @examples
 #' # read parquet directly to DataFrame
-#' pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
-#' df = pl$read_parquet("my.parquet")
+#' pl$LazyFrame(mtcars)$sink_parquet(my_parquet)
+#' df = pl$read_parquet(my_parquet)
 #'
 #' print(df)
 pl$read_parquet = function(
