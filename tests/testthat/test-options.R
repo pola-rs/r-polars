@@ -49,7 +49,7 @@ test_that("pl$options$ read-write", {
   # incomplete/misspelled name not allowed
   expect_identical(
     pl$set_options(rpo = 42) |> get_err_ctx("Hint"),
-    "arg-name does not match any options"
+    "arg-name does not match any defined args of `?set_options`"
   )
 
 })
