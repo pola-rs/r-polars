@@ -82,6 +82,7 @@ pl$scan_parquet = function(
 #' @name read_parquet
 #' @examples
 #' # read parquet directly to DataFrame
+#' my_parquet = tempfile(fileext = ".parquet")
 #' pl$LazyFrame(mtcars)$sink_parquet(my_parquet)
 #' df = pl$read_parquet(my_parquet)
 #'
