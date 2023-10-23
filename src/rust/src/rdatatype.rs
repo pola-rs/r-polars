@@ -245,18 +245,6 @@ impl DataTypeVector {
     }
 }
 
-pub fn new_join_type(s: &str) -> pl::JoinType {
-    match s {
-        "cross" => pl::JoinType::Cross,
-        "inner" => pl::JoinType::Inner,
-        "left" => pl::JoinType::Left,
-        "outer" => pl::JoinType::Outer,
-        "semi" => pl::JoinType::Semi,
-        "anti" => pl::JoinType::Anti,
-        _ => panic!("polars internal error: jointype not recognized"),
-    }
-}
-
 pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
     match s {
         "forward" => Ok(AsofStrategy::Forward),

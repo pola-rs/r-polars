@@ -488,6 +488,21 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
     res
 }
 
+pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
+    let s = robj_to_roption(robj)?;
+    match s.as_str() {
+        "cross" => Ok(pl::JoinType::Cross),
+        "inner" => Ok(pl::JoinType::Inner),
+        "left" => Ok(pl::JoinType::Left),
+        "outer" => Ok(pl::JoinType::Outer),
+        "semi" => Ok(pl::JoinType::Semi),
+        "anti" => Ok(pl::JoinType::Anti),
+        s => rerr().bad_val(format!(
+            "[{s}] JoinType is not any of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
+        )),
+    }
+}
+
 //None if not real or Na.
 pub fn robj_bit64_to_opt_i64(robj: Robj) -> Option<i64> {
     robj.as_real()
@@ -1046,6 +1061,10 @@ macro_rules! robj_to_inner {
 
     (QuoteStyle, $a:ident) => {
         $crate::utils::robj_to_quote_style($a)
+    };
+
+    (JoinType, $a:ident) => {
+        $crate::utils::robj_to_join_type($a)
     };
 
     (RArrow_schema, $a:ident) => {
