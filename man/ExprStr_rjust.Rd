@@ -2,10 +2,9 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_rjust}
 \alias{ExprStr_rjust}
-\alias{expr_str_rjust}
-\title{rjust}
+\title{Right justify strings}
 \arguments{
-\item{width}{Justify left to this length.}
+\item{width}{Justify right to this length.}
 
 \item{fillchar}{Fill with this ASCII character.}
 }
@@ -13,11 +12,11 @@
 Expr of Utf8
 }
 \description{
-Return the string left justified in a string of length \code{width}.
+Return the string right justified in a string of length \code{width}.
 }
 \details{
-Padding is done using the specified \code{fillchar}. The original string is returned if
-\code{width} is less than or equal to \code{len(s)}.
+Padding is done using the specified \code{fillchar}. The original string
+is returned if \code{width} is less than or equal to \code{len(s)}.
 }
 \examples{
 df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))

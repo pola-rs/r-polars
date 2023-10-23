@@ -603,7 +603,7 @@ test_that("str$slice", {
 test_that("str$str_explode", {
   s = c("64", "255", "9", "11", "16", "2.5", NA, "not number")
   expect_identical(
-    pl$lit(s)$str$str_explode()$to_r(),
+    pl$lit(s)$str$explode()$to_r(),
     unlist(strsplit(s, split = ""))
   )
 })

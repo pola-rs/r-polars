@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_lowercase}
 \alias{ExprStr_to_lowercase}
-\alias{expr_str_to_lowercase}
-\title{To lowercase}
+\title{Convert a string to lowercase}
 \value{
 Expr of Utf8 lowercase chars
 }

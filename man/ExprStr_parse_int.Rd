@@ -2,21 +2,19 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_parse_int}
 \alias{ExprStr_parse_int}
-\alias{expr_str_parse_int}
-\title{parse_int}
+\title{Parse integers with base radix from strings}
 \arguments{
-\item{radix}{Positive integer which is the base of the string we are parsing. Default: 2}
+\item{radix}{Positive integer which is the base of the string we are parsing.
+Default is 2.}
 
-\item{strict}{a logical. default is \code{TRUE},
-which will raise any ParseError or overflow as ComputeError.
-False silently convert to \code{null}.}
+\item{strict}{If \code{TRUE} (default), integer overflow will raise an error.
+Otherwise, they will be converted to \code{null}.}
 }
 \value{
 Expr: Series of dtype i32.
 }
 \description{
-Parse integers with base radix from strings.
-By default base 2.
+Parse integers with base 2 by default.
 }
 \examples{
 df = pl$DataFrame(bin = c("110", "101", "010"))
