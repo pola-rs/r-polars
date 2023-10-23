@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_to_titlecase}
 \alias{ExprStr_to_titlecase}
-\alias{expr_str_to_titlecase}
-\title{To titlecase}
+\title{Convert a string to titlecase}
 \value{
 Expr of Utf8 titlecase chars
 }

@@ -209,7 +209,7 @@ dat$tail(10)$max()$to_data_frame()
 ```
 
 Below, we will introduce several other methods, including `$select`, `$filter`,
-and `$groupby` which allow us to do powerful data manipulations easily. To give
+and `$group_by` which allow us to do powerful data manipulations easily. To give
 you a small taste, we now take group-wise means:
 
 ```{r}
@@ -309,7 +309,7 @@ to long ("melt"). Let's switch to the `Indometh` dataset to demonstrate some
 basic examples. Note that the data are currently in long format.
 
 ```{r}
-(indo = pl$DataFrame(Indometh))
+indo = pl$DataFrame(Indometh)
 ```
 
 To go from long to wide, we use the
@@ -317,7 +317,7 @@ To go from long to wide, we use the
 Here we pivot the data so that every subject takes its own column.
 
 ```{r}
-(indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject"))
+indo_wide = indo$pivot(values = "conc", index = "time", columns = "Subject")
 ```
 
 To go from wide to long, we use the
@@ -325,7 +325,7 @@ To go from wide to long, we use the
 
 ```{r}
 # indo_wide$melt(id_vars = "time") # default column names are "variable" and "value"
-indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc") 
+indo_wide$melt(id_vars = "time", variable_name = "subject", value_name = "conc")
 ```
 
 Basic functionality aside, it should be noted that `pivot` can perform
