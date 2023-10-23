@@ -537,8 +537,8 @@ impl LazyFrame {
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
-            fast_projection,
-            eager,
+            fast_projection: _,
+            eager: _,
         } = self.0.get_current_optimizations();
         list!(
             type_coercion = type_coercion,
