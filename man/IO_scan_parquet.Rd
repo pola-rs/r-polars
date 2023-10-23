@@ -28,10 +28,11 @@ Scan a parquet file
 }
 \examples{
 #write example file
-pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
+my_parquet = tempfile(fileext = ".parquet")
+pl$LazyFrame(mtcars)$sink_parquet(my_parquet)
 
 # scan and get (project) only one column "cyl" but filter (apply predicate) on "hp".
-lf = pl$scan_parquet("my.parquet")$
+lf = pl$scan_parquet(my_parquet)$
   filter(pl$col("hp") > 250)$
   select(pl$col("cyl") * 2)
 

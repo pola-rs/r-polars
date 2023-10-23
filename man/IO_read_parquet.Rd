@@ -28,8 +28,9 @@ Read a parquet file
 }
 \examples{
 # read parquet directly to DataFrame
-pl$LazyFrame(mtcars)$sink_parquet("my.parquet")
-df = pl$read_parquet("my.parquet")
+my_parquet = tempfile(fileext = ".parquet")
+pl$LazyFrame(mtcars)$sink_parquet(my_parquet)
+df = pl$read_parquet(my_parquet)
 
 print(df)
 }
