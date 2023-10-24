@@ -46,7 +46,7 @@ of contexts:
 
 * select and modify columns with `select()` and `with_columns()`;
 * filter rows with `filter()`;
-* group and aggregate rows with `groupby()` and `agg()`
+* group and aggregate rows with `group_by()` and `agg()`
 
 Inside each context, you can use various **expressions** (aka. `Expr`). Some expressions cannot
 be used in some contexts. For example, in `with_columns()`, you can only apply
