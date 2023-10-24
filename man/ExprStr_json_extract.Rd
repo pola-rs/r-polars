@@ -2,17 +2,16 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_json_extract}
 \alias{ExprStr_json_extract}
-\alias{expr_str_json_extract}
-\title{json_extract}
+\title{Parse string values as JSON.}
 \arguments{
-\item{dtype}{The dtype to cast the extracted value to. If None, the dtype will be
-inferred from the JSON value.}
+\item{dtype}{The dtype to cast the extracted value to. If \code{NULL}, the dtype
+will be inferred from the JSON value.}
 
 \item{infer_schema_length}{How many rows to parse to determine the schema.
-If None all rows are used.}
+If \code{NULL}, all rows are used.}
 }
 \value{
-Expr returning a boolean
+Expr returning a struct
 }
 \description{
 Parse string values as JSON.

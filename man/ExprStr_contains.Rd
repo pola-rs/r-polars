@@ -2,25 +2,23 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_contains}
 \alias{ExprStr_contains}
-\alias{expr_str_contains}
-\title{contains}
+\title{Check if string contains a regex}
 \arguments{
 \item{pattern}{String or Expr of a string, a valid regex pattern.}
 
-\item{literal}{bool, treat pattern as a literal string. NULL is aliased with FALSE.}
+\item{literal}{Treat pattern as a literal string.}
 
-\item{strict}{bool, raise an error if the underlying pattern is not a valid
-regex expression, otherwise mask out with a null value.}
+\item{strict}{Raise an error if the underlying pattern is not a valid regex
+expression, otherwise replace the invalid regex with a null value.}
 }
 \value{
 Expr returning a Boolean
 }
 \description{
-R Check if string contains a substring that matches a regex.
+Check if string contains a substring that matches a regex.
 }
 \details{
-starts_with : Check if string values start with a substring.
-ends_with : Check if string values end with a substring.
+See also \verb{$str$starts_with()} and \verb{$str$ends_with()}.
 }
 \examples{
 df = pl$DataFrame(a = c("Crab", "cat and dog", "rab$bit", NA))

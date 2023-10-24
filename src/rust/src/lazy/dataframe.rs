@@ -510,6 +510,8 @@ impl LazyFrame {
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
         streaming: Robj,
+        // fast_projection: Robj, // There is no method like with_fast_projection
+        eager: Robj,
     ) -> RResult<Self> {
         let ldf = self
             .0
@@ -519,6 +521,7 @@ impl LazyFrame {
             .with_simplify_expr(robj_to!(bool, simplify_expression)?)
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
+            ._with_eager(robj_to!(bool, eager)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
             .with_comm_subplan_elim(robj_to!(bool, comm_subplan_elim)?)
             .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
@@ -549,6 +552,7 @@ impl LazyFrame {
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
             streaming = streaming,
+            eager = eager,
         )
     }
 

@@ -983,7 +983,7 @@ LazyFrame$sink_parquet <- function(path, compression_method, compression_level, 
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_values, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_values, quote_style, maintain_order)
+LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
@@ -1055,7 +1055,7 @@ LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
 LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
 
-LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming) .Call(wrap__LazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming)
+LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__LazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
 
 LazyFrame$get_optimization_toggle <- function() .Call(wrap__LazyFrame__get_optimization_toggle, self)
 

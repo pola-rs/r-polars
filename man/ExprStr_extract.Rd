@@ -2,20 +2,18 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_extract}
 \alias{ExprStr_extract}
-\alias{expr_str_extract}
-\title{extract}
+\title{Extract the target capture group from provided patterns}
 \arguments{
 \item{pattern}{A valid regex pattern}
 
-\item{group_index}{Index of the targeted capture group.
-Group 0 mean the whole pattern, first group begin at index 1.
-Default to the first capture group.}
+\item{group_index}{Index of the targeted capture group. Group 0 means the whole
+pattern, first group begin at index 1 (default).}
 }
 \value{
-Utf8 array. Contain null if original value is null or regex capture nothing.
+Utf8 array. Contains null if original value is null or regex capture nothing.
 }
 \description{
-Extract the target capture group from provided patterns.
+Extract the target capture group from provided patterns
 }
 \examples{
 df = pl$DataFrame(

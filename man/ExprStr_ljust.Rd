@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__string.R
 \name{ExprStr_ljust}
 \alias{ExprStr_ljust}
-\alias{expr_str_ljust}
-\title{ljust}
+\title{Left justify strings}
 \arguments{
 \item{width}{Justify left to this length.}
 
@@ -16,8 +15,8 @@ Expr of Utf8
 Return the string left justified in a string of length \code{width}.
 }
 \details{
-Padding is done using the specified \code{fillchar}. The original string is returned if
-\code{width} is less than or equal to \code{len(s)}.
+Padding is done using the specified \code{fillchar}. The original string
+is returned if \code{width} is less than or equal to \code{len(s)}.
 }
 \examples{
 df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))

@@ -50,6 +50,8 @@
 - New method `$dt$time()` to extract the time from a `datetime` variable (#428).
 - Method `$profile()` gains optimization arguments and plot-related arguments (#429).
 - New method `pl$read_parquet()` that is a shortcut for `pl$scan_parquet()$collect()` (#434).
+- Rename `$str$str_explode()` to `$str$explode()` (#436).
+- New argument `eager` of `LazyFrame$set_optimization_toggle()` (#439).
 
 # polars 0.8.1
 
