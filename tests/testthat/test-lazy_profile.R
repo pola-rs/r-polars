@@ -35,3 +35,15 @@ test_that("<LazyFrame>$profile", {
     p1$result$as_data_frame()
   )
 })
+
+
+test_that("profile: show_plot returns a plot in the list of outputs", {
+  skip_if_not_installed("ggplot2")
+  p1 = pl$LazyFrame(iris)$
+    sort("Sepal.Length")$
+    group_by("Species", maintain_order = TRUE)$
+    agg(pl$col(pl$Float64)$first()$add(5)$suffix("_apply"))$
+    profile(show_plot = TRUE)
+
+  expect_length(p1, 3)
+})
