@@ -43,11 +43,11 @@ tables.}
 \item{strategy}{Strategy for where to find match:
 \itemize{
 \item "backward" (default): search for the last row in the right table whose \code{on}
-key is less than or equal to the left’s key.
+key is less than or equal to the left key.
 \item "forward": search for the first row in the right table whose \code{on} key is
-greater than or equal to the left’s key.
+greater than or equal to the left key.
 \item "nearest": search for the last row in the right table whose value is nearest
-to the left’s key. String keys are not currently supported for a nearest
+to the left key. String keys are not currently supported for a nearest
 search.
 }}
 
