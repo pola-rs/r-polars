@@ -1685,7 +1685,7 @@ DataFrame_sample = function(
 #' Transpose a DataFrame over the diagonal.
 #'
 #' @param include_header If `TRUE`, the column names will be added as first column.
-#' @param header_name If `include_header` is `TRUE`, this determines the name of the column 
+#' @param header_name If `include_header` is `TRUE`, this determines the name of the column
 #' that will be inserted.
 #' @param column_names Character vector indicating the new column names. If `NULL` (default),
 #' the columns will be named as "column_1", "column_2", etc. The length of this vector must match
@@ -1709,37 +1709,6 @@ DataFrame_sample = function(
 #' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
 #' # of f64, and then dataset "Iris" can be transposed
 #' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
-#'
-#' # An example where transpose is warranted for speed.
-#' # Imagine mtcars is really a several million row LazyFrame and something like row-wise median
-#' # computation is needed. e.g. to compute MAD row-wise as this expression, does it column-wise.
-#' MAD_all_col_expr = pl$all()$median()$sub(pl$all())$abs()$mean() |> print()
-#'
-#' # Median cannot be folded or reduced because it included a sort of values.
-#'
-#' # our "very big" DataFrame to compute row-wise MAD
-#' total_N = nrow(mtcars) # all rows have same type or at least a meaningful shared supertype
-#' big_lf = pl$DataFrame(mtcars)$lazy()
-#' chunk_size = 11 # rows or maybe 5000 rows per chunk for bigger data
-#'
-#' # define chunks to not store an entire DataFrame of the HUGE maybe larger than memory LazyFrame.
-#' slice_off = c(floor(seq(0, total_N, by = chunk_size)), total_N) |> unique()
-#' slice_len = diff(slice_off)
-#' slice_off = head(slice_off, -1)
-#'
-#' # slice "very big" LazyFrame and transpose each chunk and then compute MAD on columns
-#' # and lastly transpose back and concat (rbind) chunks.
-#' MAD_df = lapply(seq_along(slice_off), \(i) {
-#'   big_lf$slice(slice_off[i], slice_len[i])$
-#'     collect()$
-#'     transpose()$
-#'     select(MAD_all_col_expr)$
-#'     transpose(column_names = "MADs")
-#' }) |>
-#'   pl$concat()
-#'
-#' big_lf_mad = big_lf$with_columns(MAD_df$get_column("MADs"))
-#' big_lf_mad$fetch()
 #'
 DataFrame_transpose = function(
     include_header = FALSE,
