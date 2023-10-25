@@ -51,6 +51,7 @@
 - New method `pl$read_parquet()` that is a shortcut for `pl$scan_parquet()$collect()` (#434).
 - Rename `$str$str_explode()` to `$str$explode()` (#436).
 - New method `$transpose()` for `DataFrame` (#440).
+- New argument `eager` of `LazyFrame$set_optimization_toggle()` (#439).
 
 # polars 0.8.1
 

@@ -306,6 +306,7 @@ LazyFrame_get_optimization_toggle = function() {
 #' reused.
 #' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
+#' @param eager Boolean. Run the query eagerly.
 #' @return LazyFrame with specified optimization toggles
 #' @examples
 #' pl$LazyFrame(mtcars)$set_optimization_toggle(type_coercion = FALSE)
@@ -317,7 +318,8 @@ LazyFrame_set_optimization_toggle = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
-    streaming = FALSE) {
+    streaming = FALSE,
+    eager = FALSE) {
   self |>
     .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
@@ -327,7 +329,8 @@ LazyFrame_set_optimization_toggle = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
-      streaming
+      streaming,
+      eager
     )
 }
 
