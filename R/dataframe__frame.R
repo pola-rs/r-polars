@@ -1684,16 +1684,15 @@ DataFrame_sample = function(
 
 #' Transpose a DataFrame over the diagonal.
 #'
-#' @param include_header boolean (default FALSE) if TRUE, add previous column names as
-#' a new Utf8 column.
-#' @param header_name string name of the header column containing previous column names. Only
-#' relevant if include_header = TRUE.
-#' @param column_names character vector or default NULL. How to name previous rows as columns.
-#' NULL is default and is "column_1", "column_2" ... . Length of column names must match n rows of
-#' input DataFrame.
+#' @param include_header If `TRUE`, the column names will be added as first column.
+#' @param header_name If `include_header` is `TRUE`, this determines the name of the column 
+#' that will be inserted.
+#' @param column_names Character vector indicating the new column names. If `NULL` (default),
+#' the columns will be named as "column_1", "column_2", etc. The length of this vector must match
+#' the number of rows of the original input.
 #'
 #' @details
-#' This is a very expensive operation. Perhaps you can do it differently.
+#' This is a very expensive operation.
 #'
 #' If you need to perform non foldable (see fold / reduce) row operations like median.
 #' Transpose may be the fastest option, for that.
