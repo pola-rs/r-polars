@@ -306,6 +306,7 @@ LazyFrame_get_optimization_toggle = function() {
 #' reused.
 #' @param streaming Boolean. Run parts of the query in a streaming fashion
 #' (this is in an alpha state).
+#' @param eager Boolean. Run the query eagerly.
 #' @return LazyFrame with specified optimization toggles
 #' @examples
 #' pl$LazyFrame(mtcars)$set_optimization_toggle(type_coercion = FALSE)
@@ -317,7 +318,8 @@ LazyFrame_set_optimization_toggle = function(
     slice_pushdown = TRUE,
     comm_subplan_elim = TRUE,
     comm_subexpr_elim = TRUE,
-    streaming = FALSE) {
+    streaming = FALSE,
+    eager = FALSE) {
   self |>
     .pr$LazyFrame$set_optimization_toggle(
       type_coercion,
@@ -327,7 +329,8 @@ LazyFrame_set_optimization_toggle = function(
       slice_pushdown,
       comm_subplan_elim,
       comm_subexpr_elim,
-      streaming
+      streaming,
+      eager
     )
 }
 
@@ -1063,11 +1066,11 @@ LazyFrame_sort = function(
 #' table. They must have the same length.
 #' @param strategy Strategy for where to find match:
 #' * "backward" (default): search for the last row in the right table whose `on`
-#'   key is less than or equal to the left’s key.
+#'   key is less than or equal to the left key.
 #' * "forward": search for the first row in the right table whose `on` key is
-#'   greater than or equal to the left’s key.
+#'   greater than or equal to the left key.
 #' * "nearest": search for the last row in the right table whose value is nearest
-#'   to the left’s key. String keys are not currently supported for a nearest
+#'   to the left key. String keys are not currently supported for a nearest
 #'   search.
 #' @param tolerance
 #' Numeric tolerance. By setting this the join will only be done if the near
@@ -1357,11 +1360,18 @@ LazyFrame_fetch = function(
 #' @description This will run the query and return a list containing the
 #' materialized DataFrame and a DataFrame that contains profiling information
 #' of each node that is executed.
+#'
+#' @inheritParams LazyFrame_collect
+#' @param show_plot Show a Gantt chart of the profiling result
+#' @param truncate_nodes Truncate the label lengths in the Gantt chart to this
+#' number of characters. If `0` (default), do not truncate.
+#'
 #' @details The units of the timings are microseconds.
 #'
 #' @keywords LazyFrame
 #' @return List of two `DataFrame`s: one with the collected result, the other
-#' with the timings of each step.
+#' with the timings of each step. If `show_graph = TRUE`, then the plot is
+#' also stored in the list.
 #' @seealso
 #'  - [`$collect()`][LazyFrame_collect] - regular collect.
 #'  - [`$fetch()`][LazyFrame_fetch] - fast limited query check
@@ -1397,8 +1407,59 @@ LazyFrame_fetch = function(
 #'   group_by("Species", maintain_order = TRUE)$
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
-LazyFrame_profile = function() {
-  .pr$LazyFrame$profile(self) |> unwrap("in $profile()")
+LazyFrame_profile = function(
+  type_coercion = TRUE,
+  predicate_pushdown = TRUE,
+  projection_pushdown = TRUE,
+  simplify_expression = TRUE,
+  slice_pushdown = TRUE,
+  comm_subplan_elim = TRUE,
+  comm_subexpr_elim = TRUE,
+  streaming = FALSE,
+  no_optimization = FALSE,
+  inherit_optimization = FALSE,
+  collect_in_background = FALSE,
+  show_plot = FALSE,
+  truncate_nodes = 0) {
+
+  if (isTRUE(no_optimization)) {
+    predicate_pushdown = FALSE
+    projection_pushdown = FALSE
+    slice_pushdown = FALSE
+    comm_subplan_elim = FALSE
+    comm_subexpr_elim = FALSE
+  }
+
+  if (isTRUE(streaming)) {
+    comm_subplan_elim = FALSE
+  }
+
+  lf = self
+
+  if (isFALSE(inherit_optimization)) {
+    lf = self$set_optimization_toggle(
+      type_coercion,
+      predicate_pushdown,
+      projection_pushdown,
+      simplify_expression,
+      slice_pushdown,
+      comm_subplan_elim,
+      comm_subexpr_elim,
+      streaming
+    ) |> unwrap("in $profile():")
+  }
+
+  out = lf |>
+    .pr$LazyFrame$profile() |>
+    unwrap("in $profile()")
+
+  if (isTRUE(show_plot)) {
+    out[["plot"]] = make_profile_plot(out, truncate_nodes) |>
+      result() |>
+      unwrap("in $profile()")
+  }
+
+  out
 }
 
 #' @title Explode columns containing a list of values
