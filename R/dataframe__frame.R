@@ -1682,6 +1682,42 @@ DataFrame_sample = function(
 }
 
 
+#' Transpose a DataFrame over the diagonal.
+#'
+#' @param include_header If `TRUE`, the column names will be added as first column.
+#' @param header_name If `include_header` is `TRUE`, this determines the name of the column
+#' that will be inserted.
+#' @param column_names Character vector indicating the new column names. If `NULL` (default),
+#' the columns will be named as "column_1", "column_2", etc. The length of this vector must match
+#' the number of rows of the original input.
+#'
+#' @details
+#' This is a very expensive operation.
+#'
+#' Transpose may be the fastest option to perform non foldable (see `fold()` or `reduce()`)
+#' row operations like median.
+#'
+#' Polars transpose is currently eager only, likely because it is not trivial to deduce the schema.
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#'
+#' # simple use-case
+#' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
+#'
+#' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
+#' # of f64, and then dataset "Iris" can be transposed
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#'
+DataFrame_transpose = function(
+    include_header = FALSE,
+    header_name = "column",
+    column_names = NULL) {
+  keep_names_as = if (isTRUE(include_header)) header_name else NULL
+  .pr$DataFrame$transpose(self, keep_names_as, column_names) |>
+    unwrap("in $transpose():")
+}
 
 #' Write to comma-separated values (CSV) file
 #'

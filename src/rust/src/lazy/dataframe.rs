@@ -540,7 +540,7 @@ impl LazyFrame {
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
-            fast_projection,
+            fast_projection: _,
             eager,
         } = self.0.get_current_optimizations();
         list!(
