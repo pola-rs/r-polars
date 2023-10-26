@@ -431,7 +431,7 @@ LazyFrame_collect = function(
 #' # Some expression which does contain a map
 #' expr = pl$col("mpg")$map(
 #'   \(x) {
-#'     Sys.sleep(.5)
+#'     Sys.sleep(.1)
 #'     x * 0.43
 #'   },
 #'   in_background = TRUE # set TRUE if collecting in background queries with $map or $apply
@@ -1408,20 +1408,19 @@ LazyFrame_fetch = function(
 #'   agg(pl$col(pl$Float64)$apply(r_func))$
 #'   profile()
 LazyFrame_profile = function(
-  type_coercion = TRUE,
-  predicate_pushdown = TRUE,
-  projection_pushdown = TRUE,
-  simplify_expression = TRUE,
-  slice_pushdown = TRUE,
-  comm_subplan_elim = TRUE,
-  comm_subexpr_elim = TRUE,
-  streaming = FALSE,
-  no_optimization = FALSE,
-  inherit_optimization = FALSE,
-  collect_in_background = FALSE,
-  show_plot = FALSE,
-  truncate_nodes = 0) {
-
+    type_coercion = TRUE,
+    predicate_pushdown = TRUE,
+    projection_pushdown = TRUE,
+    simplify_expression = TRUE,
+    slice_pushdown = TRUE,
+    comm_subplan_elim = TRUE,
+    comm_subexpr_elim = TRUE,
+    streaming = FALSE,
+    no_optimization = FALSE,
+    inherit_optimization = FALSE,
+    collect_in_background = FALSE,
+    show_plot = FALSE,
+    truncate_nodes = 0) {
   if (isTRUE(no_optimization)) {
     predicate_pushdown = FALSE
     projection_pushdown = FALSE

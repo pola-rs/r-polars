@@ -11,7 +11,10 @@
 String of mem address
 }
 \description{
-mimics pl$mem_address
+Get underlying mem address a rust object (via ExtPtr). Expert use only.
+}
+\details{
+Does not give meaningful answers for regular R objects.
 }
 \examples{
 pl$mem_address(pl$Series(1:3))
