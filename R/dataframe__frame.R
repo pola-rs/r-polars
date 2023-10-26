@@ -1694,7 +1694,7 @@ DataFrame_sample = function(
 #' @details
 #' This is a very expensive operation.
 #'
-#' Transpose may be the fastest option to perform non foldable (see `fold()` or `reduce()`) 
+#' Transpose may be the fastest option to perform non foldable (see `fold()` or `reduce()`)
 #' row operations like median.
 #'
 #' Polars transpose is currently eager only, likely because it is not trivial to deduce the schema.
@@ -1779,7 +1779,6 @@ DataFrame_write_csv = function(
     float_precision = NULL,
     null_values = "",
     quote_style = "necessary") {
-
   .pr$DataFrame$write_csv(
     self,
     path, has_header, separator, line_terminator, quote, batch_size,
