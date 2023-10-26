@@ -42,7 +42,7 @@ test_that("pl$options$ read-write", {
     "all args must be named"
   )
   expect_identical(
-    pl$set_options(rpool_cap = 42, 42)|> get_err_ctx("Plain"),
+    pl$set_options(rpool_cap = 42, 42) |> get_err_ctx("Plain"),
     "all args must be named"
   )
 
@@ -51,5 +51,4 @@ test_that("pl$options$ read-write", {
     pl$set_options(rpo = 42) |> get_err_ctx("Hint"),
     "arg-name does not match any defined args of `?set_options`"
   )
-
 })

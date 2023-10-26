@@ -148,22 +148,24 @@ pl$mem_address = mem_address
   makeActiveBinding(
     "rpool_cap",
     \(arg) {
-      if(missing(arg)) {
+      if (missing(arg)) {
         unwrap(get_global_rpool_cap())$capacity
       } else {
         unwrap(set_global_rpool_cap(arg))
       }
-    }, env = polars_optenv
+    },
+    env = polars_optenv
   )
   makeActiveBinding(
     "rpool_active",
     \(arg) {
-      if(missing(arg)) {
+      if (missing(arg)) {
         unwrap(get_global_rpool_cap())$active
       } else {
         unwrap(stop("internal error: polars_optenv$rpool_active cannot be set directly"))
       }
-    }, env = polars_optenv
+    },
+    env = polars_optenv
   )
 
   setup_renv()

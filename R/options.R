@@ -103,7 +103,7 @@ pl$set_options = function(
   args_modified = names(as.list(sys.call()[-1]))
 
   if (is.null(args_modified) || any(nchar(args_modified) == 0L)) {
-    Err_plain("all args must be named")|>
+    Err_plain("all args must be named") |>
       unwrap("in pl$set_options")
   }
 
