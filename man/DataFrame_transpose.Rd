@@ -29,8 +29,8 @@ Transpose a DataFrame over the diagonal.
 \details{
 This is a very expensive operation.
 
-If you need to perform non foldable (see fold / reduce) row operations like median.
-Transpose may be the fastest option, for that.
+Transpose may be the fastest option to perform non foldable (see \code{fold()} or \code{reduce()})
+row operations like median.
 
 Polars transpose is currently eager only, likely because it is not trivial to deduce the schema.
 }
