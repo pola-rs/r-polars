@@ -4,7 +4,8 @@ NOT_CRAN=${NOT_CRAN:-"false"}
 LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
 
 LIBNAME="libr_polars.a"
-LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-"$(pwd)/tools/${LIBNAME}"}
+LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
+LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
 
 export PATH="$PATH:$HOME/.cargo/bin"
 
@@ -41,7 +42,7 @@ check_bin_lib() {
   if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ] ; then
     echo ""
     echo "--------------- [ TRY TO DOWNLOAD PRE-BUILT BINARY ] ---------------"
-    Rscript "tools/prep-lib.R" || echo "Failed to download pre-built binary."
+    "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/prep-lib.R" || echo "Failed to download pre-built binary."
     echo "--------------------------------------------------------------------"
     echo ""
   fi
@@ -53,8 +54,14 @@ check_bin_lib() {
     echo "--------------------------------------------------------------------"
     echo ""
     sed -e "s|@RUST_TARGET@||" src/Makevars.in >src/Makevars
-    sed -e "s|@LIBR_POLARS_PATH@|${LIBR_POLARS_PATH}|" src/Makevars >src/Makevars.tmp && mv src/Makevars.tmp src/Makevars
-    sed -e "s|@LIBR_POLARS_PATH@|${LIBR_POLARS_PATH}|" src/Makevars.win >src/Makevars.tmp && mv src/Makevars.tmp src/Makevars.win
+    if [ "${LIBR_POLARS_PATH}" != "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+      echo ""
+      echo "------------------------ [COPYING BINARY] ------------------------"
+      echo "Copying <${LIBR_POLARS_PATH}> to <${LIBR_POLARS_DEFAULT_PATH}>."
+      cp "${LIBR_POLARS_PATH}" "${LIBR_POLARS_DEFAULT_PATH}" || echo "Failed to copy binary."
+      echo "------------------------------------------------------------------"
+      echo ""
+    fi
     exit 0
   elif [ "${LIBR_POLARS_BUILD}" = "false" ]; then
     echo ""
