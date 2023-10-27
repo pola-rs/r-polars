@@ -805,7 +805,8 @@ test_that("opt_toggles", {
     slice_pushdown = FALSE,
     comm_subplan_elim = FALSE,
     comm_subexpr_elim = FALSE,
-    streaming = TRUE
+    streaming = TRUE,
+    eager = TRUE
   )
   opt_settings2 = lapply(opt_settings, `!`)
 

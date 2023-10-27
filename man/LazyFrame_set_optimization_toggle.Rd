@@ -12,7 +12,8 @@ LazyFrame_set_optimization_toggle(
   slice_pushdown = TRUE,
   comm_subplan_elim = TRUE,
   comm_subexpr_elim = TRUE,
-  streaming = FALSE
+  streaming = FALSE,
+  eager = FALSE
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ reused.}
 
 \item{streaming}{Boolean. Run parts of the query in a streaming fashion
 (this is in an alpha state).}
+
+\item{eager}{Boolean. Run the query eagerly.}
 }
 \value{
 LazyFrame with specified optimization toggles
