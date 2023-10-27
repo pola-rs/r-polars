@@ -15,7 +15,6 @@ use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
 use polars::frame::explode::MeltArgs;
-use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 use polars::prelude::AsOfOptions;
 
@@ -152,7 +151,7 @@ impl LazyFrame {
             time_format,
             datetime_format,
             float_precision,
-            separator: separator,
+            separator,
             quote_char: quote,
             null: null_value,
             line_terminator,
@@ -387,7 +386,7 @@ impl LazyFrame {
             .right_on([robj_to!(ExprCol, right_on)?.0])
             .allow_parallel(robj_to!(bool, allow_parallel)?)
             .force_parallel(robj_to!(bool, force_parallel)?)
-            .how(JoinType::AsOf(AsOfOptions {
+            .how(pl::JoinType::AsOf(AsOfOptions {
                 strategy: robj_to!(str, strategy).and_then(|s| {
                     new_asof_strategy(s)
                         .map_err(Rctx::Plain)

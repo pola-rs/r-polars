@@ -415,7 +415,7 @@ impl DataFrame {
         self.0
             .clone()
             .sample_n(
-                robj_to!(usize, n)?,
+                &robj_to!(PLSeries, n)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -434,7 +434,7 @@ impl DataFrame {
         self.0
             .clone()
             .sample_frac(
-                robj_to!(f64, frac)?,
+                &robj_to!(PLSeries, frac)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
