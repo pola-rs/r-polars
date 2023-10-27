@@ -263,12 +263,12 @@ impl Expr {
             .into()
     }
 
-    pub fn top_k(&self, k: f64) -> Self {
-        self.0.clone().top_k(k as usize).into()
+    pub fn top_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
     }
 
-    pub fn bottom_k(&self, k: f64) -> Self {
-        self.0.clone().bottom_k(k as usize).into()
+    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
     }
 
     pub fn arg_max(&self) -> Self {
@@ -870,7 +870,7 @@ impl Expr {
             .0
             .clone()
             .sample_n(
-                robj_to!(usize, n)?,
+                robj_to!(PLExpr, n)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -889,7 +889,7 @@ impl Expr {
             .0
             .clone()
             .sample_frac(
-                robj_to!(f64, frac)?,
+                robj_to!(PLExpr, frac)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -1039,7 +1039,7 @@ impl Expr {
     //arr/list methods
 
     fn list_lengths(&self) -> Self {
-        self.0.clone().list().lengths().into()
+        self.0.clone().list().len().into()
     }
 
     pub fn list_contains(&self, other: &Expr) -> Expr {
@@ -1105,8 +1105,13 @@ impl Expr {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn list_join(&self, separator: &str) -> Self {
-        self.0.clone().list().join(separator).into()
+    fn list_join(&self, separator: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .join(robj_to!(PLExpr, separator)?)
+            .into())
     }
 
     fn list_arg_min(&self) -> Self {
@@ -1865,24 +1870,24 @@ impl Expr {
         use pl::*;
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
-            Ok(Some(ca.str_lengths().into_series()))
+            Ok(Some(ca.str_len_bytes().into_series()))
         };
         self.clone()
             .0
             .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
-            .with_fmt("str.lengths")
+            .with_fmt("str.len_bytes")
             .into()
     }
 
     pub fn str_n_chars(&self) -> Self {
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
-            Ok(Some(ca.str_n_chars().into_series()))
+            Ok(Some(ca.str_len_chars().into_series()))
         };
         self.clone()
             .0
             .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
-            .with_fmt("str.n_chars")
+            .with_fmt("str.len_chars")
             .into()
     }
 
@@ -1902,28 +1907,31 @@ impl Expr {
         f_str_to_titlecase(&self)
     }
 
-    pub fn str_strip_chars(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars(null_to_opt(matches))
-            .into()
+            .strip_chars(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
-    pub fn str_strip_chars_end(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars_end(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars_end(null_to_opt(matches))
-            .into()
+            .strip_chars_end(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
-    pub fn str_strip_chars_start(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars_start(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars_start(null_to_opt(matches))
-            .into()
+            .strip_chars_start(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
     pub fn str_zfill(&self, alignment: Robj) -> List {
@@ -2093,7 +2101,7 @@ impl Expr {
     //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
     //handled on rust side anyways
     pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> Result<Expr, String> {
-        let by = robj_to!(str, by)?;
+        let by = robj_to!(PLExpr, by)?;
         let n = robj_to!(usize, n)?;
         let inclusive = robj_to!(bool, inclusive)?;
         Ok(if inclusive {
@@ -2109,7 +2117,7 @@ impl Expr {
             .0
             .clone()
             .str()
-            .splitn(robj_to!(str, by)?, robj_to!(usize, n)?)
+            .splitn(robj_to!(PLExpr, by)?, robj_to!(usize, n)?)
             .into())
     }
 

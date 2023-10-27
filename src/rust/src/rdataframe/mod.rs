@@ -472,9 +472,9 @@ impl DataFrame {
         let f = std::fs::File::create(path)?;
         pl::CsvWriter::new(f)
             .has_header(robj_to!(bool, has_header)?)
-            .with_delimiter(robj_to!(Utf8Byte, separator)?)
+            .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)
-            .with_quoting_char(robj_to!(Utf8Byte, quote)?)
+            .with_quote_char(robj_to!(Utf8Byte, quote)?)
             .with_batch_size(robj_to!(usize, batch_size)?)
             .with_datetime_format(robj_to!(Option, String, datetime_format)?)
             .with_date_format(robj_to!(Option, String, date_format)?)

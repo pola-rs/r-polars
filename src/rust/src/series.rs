@@ -25,6 +25,7 @@ use polars::prelude::ArgAgg;
 use polars::prelude::IntoSeries;
 pub const R_INT_NA_ENC: i32 = -2147483648;
 use crate::rpolarserr::polars_to_rpolars_err;
+use polars::prelude::RoundSeries;
 use std::convert::TryInto;
 use std::result::Result;
 
