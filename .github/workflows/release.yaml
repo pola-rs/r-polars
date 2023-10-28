@@ -44,9 +44,6 @@ jobs:
           - {os: ubuntu-latest,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
           - {os: ubuntu-latest,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
 
-    env:
-      RUNNER_TARGET: "${{ matrix.config.target }}"
-
     steps:
       - uses: actions/checkout@v3
 
@@ -64,7 +61,7 @@ jobs:
 
       - name: Set build command
         if: matrix.config.target != ''
-        run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ env.RUNNER_TARGET }}" >>"$GITHUB_ENV"
+        run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ matrix.config.target }}" >>"$GITHUB_ENV"
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
@@ -112,7 +109,8 @@ jobs:
       - name: cross compile rust object files for another target arch
         if: matrix.config.target != ''
         run: |
-          LIB_PATH="$(pwd)/src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
+          export TARGET="${{ matrix.config.target }}"
+          LIB_PATH="$(pwd)/src/rust/target/${{ matrix.config.target }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
           pushd src
           make -f Makevars.in "${LIB_PATH}"
           popd
@@ -126,7 +124,7 @@ jobs:
         if: matrix.config.target != ''
         run: |
           fine_name="$(R -s -e 'devtools::build(vignettes = FALSE, quiet = TRUE) |> cat()')"
-          new_file_name="$(echo $fine_name | sed "s/_.*/_cross_${{ env.RUNNER_TARGET }}.tar.gz/")"
+          new_file_name="$(echo $fine_name | sed "s/_.*/_cross_${{ matrix.config.target }}.tar.gz/")"
           mv $fine_name $new_file_name
           echo "new_file_name=${new_file_name}" >>"$GITHUB_ENV"
         shell: bash
