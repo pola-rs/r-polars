@@ -95,10 +95,14 @@ jobs:
             TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
           fi
           Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/release/libr_polars.a" >>$GITHUB_ENV
+          mkdir -p tools
+          mv "$(pwd)/src/rust/target/${TARGET}/release/libr_polars.a" tools
+          echo "LIBR_POLARS_PATH=$(pwd)tools/libr_polars.a" >>$GITHUB_ENV
 
       - name: make binary R package + test on host arch
         if: matrix.config.target == ''
+        env:
+          NOT_CRAN: "true"
         run: |
           devtools::install(quick = TRUE)
           devtools::test(stop_on_failure = TRUE)
