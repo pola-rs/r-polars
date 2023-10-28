@@ -97,7 +97,7 @@ jobs:
           Rscript -e 'pkgbuild::compile_dll()'
           mkdir -p tools
           mv "$(pwd)/src/rust/target/${TARGET}/release/libr_polars.a" tools
-          echo "LIBR_POLARS_PATH=$(pwd)tools/libr_polars.a" >>$GITHUB_ENV
+          echo "LIBR_POLARS_PATH=$(pwd)/tools/libr_polars.a" >>$GITHUB_ENV
 
       - name: make binary R package + test on host arch
         if: matrix.config.target == ''
