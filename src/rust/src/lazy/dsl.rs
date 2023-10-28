@@ -720,11 +720,8 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_i64(n_float)
-            .map(|n| Expr(self.0.clone().pct_change(n)))
-            .map_err(|err| format!("pct_change: {}", err));
-        r_result_list(expr_res)
+    fn pct_change(&self, n_float: Robj) -> RResult<Self> {
+        Ok(Expr(self.0.clone().pct_change(robj_to!(PLExpr, n_float)?)))
     }
 
     fn skew(&self, bias: bool) -> Self {
@@ -736,52 +733,20 @@ impl Expr {
 
     //Note clip is implemented a bit different that py-polars
     //instead of PyValue -> AnyValue , it goes Robj -> Literal Expression -> AnyValue
-    pub fn clip(&self, min: &Expr, max: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match (min.clone().0, max.clone().0) {
-                (pl::Expr::Literal(mi), pl::Expr::Literal(ma)) => {
-                    let av_min = literal_to_any_value(mi)?;
-                    let av_max = literal_to_any_value(ma)?;
-                    Ok(Expr(self.0.clone().clip(av_min, av_max)))
-                }
-                (mi, pl::Expr::Literal(_)) => Err(format!("min [{:?}] was not a literal:", mi)),
-                (pl::Expr::Literal(_), ma) => Err(format!("max [{:?}] was not a literal:", ma)),
-                (mi, ma) => Err(format!(
-                    "neither min [{:?}] or max[{:?}] were literals:",
-                    mi, ma
-                )),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip(&self, min: Robj, max: Robj) -> RResult<Self> {
+        let av_min = robj_to!(PLExpr, min)?;
+        let av_max = robj_to!(PLExpr, max)?;
+        Ok(Expr(self.0.clone().clip(av_min, av_max)))
     }
 
-    pub fn clip_min(&self, min: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match min.clone().0 {
-                pl::Expr::Literal(mi) => {
-                    let av_min = literal_to_any_value(mi)?;
-                    Ok(Expr(self.0.clone().clip_min(av_min)))
-                }
-                mi => Err(format!("min [{:?}] was not a literal:", mi)),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip_min(&self, min: Robj) -> RResult<Self> {
+        let av_min = robj_to!(PLExpr, min)?;
+        Ok(Expr(self.0.clone().clip_min(av_min)))
     }
 
-    pub fn clip_max(&self, max: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match max.clone().0 {
-                pl::Expr::Literal(ma) => {
-                    let av_max = literal_to_any_value(ma)?;
-                    Ok(Expr(self.0.clone().clip_max(av_max)))
-                }
-                ma => Err(format!("max [{:?}] was not a literal:", ma)),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip_max(&self, max: Robj) -> RResult<Self> {
+        let av_max = robj_to!(PLExpr, max)?;
+        Ok(Expr(self.0.clone().clip_max(av_max)))
     }
 
     pub fn lower_bound(&self) -> Self {
@@ -1133,10 +1098,10 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn list_shift(&self, periods: f64) -> List {
+    fn list_shift(&self, periods: Robj) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(
-                self.0.clone().list().shift(try_f64_into_i64(periods)?),
+                self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
             ))
         }()
         .map_err(|err| format!("list.shift: {}", err));
@@ -1296,17 +1261,14 @@ impl Expr {
             .clone()
             .dt()
             .truncate(
-                pl::TruncateOptions {
-                    every: robj_to!(pl_duration_string, every)?,
-                    offset: robj_to!(Option, pl_duration_string, offset)?
-                        .unwrap_or_else(|| "0ns".into()),
-                },
+                robj_to!(PLExpr, every)?,
+                robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
                 robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
 
-    pub fn dt_round(&self, every: Robj, offset: Robj) -> RResult<Self> {
+    pub fn dt_round(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1314,6 +1276,7 @@ impl Expr {
             .round(
                 robj_to!(pl_duration_string, every)?,
                 robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -2156,18 +2119,7 @@ impl Expr {
         let offset = robj_to!(i64, offset)?;
         let length = robj_to!(Option, u64, length)?;
 
-        use pl::*;
-        let function = move |s: Series| {
-            let ca = s.utf8()?;
-            Ok(Some(ca.str_slice(offset, length)?.into_series()))
-        };
-
-        Ok(self
-            .clone()
-            .0
-            .map(function, pl::GetOutput::from_type(DataType::Utf8))
-            .with_fmt("str.slice")
-            .into())
+        Ok(self.clone().0.str().slice(offset, length).into())
     }
 
     pub fn str_explode(&self) -> Result<Expr, String> {
