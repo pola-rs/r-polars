@@ -17,7 +17,6 @@ runs:
         run: |
           sudo apt-get update \
           && sudo apt-get install -y \
-            musl-tools \
             libfontconfig1-dev \
             libfreetype6-dev \
             libfribidi-dev \
