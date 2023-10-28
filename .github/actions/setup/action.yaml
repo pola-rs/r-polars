@@ -7,10 +7,6 @@ inputs:
   target:
     description: Rust target triple to use
     required: true
-outputs:
-  binary-path:
-    description: Path to the built binary
-    value: ${{ steps.build-lib.outputs.lib-path }}
 
 runs:
   using: composite
@@ -59,17 +55,3 @@ runs:
         with:
           shared-key: build-${{ env.RPOLARS_PROFILE }}-${{ inputs.target }}
           workspaces: "src/rust -> target"
-
-      - name: Build library
-        id: build-lib
-        if: inputs.target != ''
-        shell: bash
-        run: |
-          LIB_PATH="$(pwd)/src/rust/target/${{ inputs.target }}/${RPOLARS_PROFILE}/libr_polars.a"
-          echo "lib-path=${LIB_PATH}" >>"$GITHUB_OUTPUT"
-          if [[ "${{ runner.os }}" == "Windows" ]]; then
-            Rscript -e 'pkgbuild::compile_dll()'
-          else
-            pushd src
-            make -f Makevars.in "${LIB_PATH}"
-          fi
