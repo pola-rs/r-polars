@@ -49,10 +49,8 @@ jobs:
         run: |
           if [ "${{ runner.os }}" == "Windows" ]; then
             echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_ENV
-          elif [ "${{ runner.os }}" == "macOS" ]; then
-            echo "TARGET=x86_64-apple-darwin" >>$GITHUB_ENV
           else
-            echo "TARGET=x86_64-unknown-linux-musl" >>$GITHUB_ENV
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_ENV
           fi
 
       - name: Set env vars for build option
