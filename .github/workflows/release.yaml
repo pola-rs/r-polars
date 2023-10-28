@@ -113,7 +113,7 @@ jobs:
         if: matrix.config.target != ''
         run: |
           pushd src
-          make -f Makevars "./rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
+          make -f Makevars "$(pwd)/rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
           popd
           mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./inst/
           ls -l
