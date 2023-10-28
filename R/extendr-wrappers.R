@@ -69,9 +69,9 @@ polars_features <- function() .Call(wrap__polars_features)
 
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
 
-diag_concat_lf <- function(l, rechunk, parallel) .Call(wrap__diag_concat_lf, l, rechunk, parallel)
+concat_lf_diagonal <- function(l, rechunk, parallel) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel)
 
-hor_concat_df <- function(l) .Call(wrap__hor_concat_df, l)
+concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 

@@ -19,6 +19,7 @@ pub use crate::series::*;
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
 use polars_core::error::PolarsError;
+use polars_core::utils::arrow;
 
 use crate::utils::{collect_hinted_result, r_result_list};
 

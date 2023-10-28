@@ -116,7 +116,7 @@ pl$concat = function(
           call. = FALSE
         )
       }
-      diag_concat_lf(l, rechunk, parallel)
+      concat_lf_diagonal(l, rechunk, parallel)
     },
     how == "horizontal" && !eager,
     {
@@ -134,7 +134,7 @@ pl$concat = function(
           call. = FALSE
         )
       }
-      hor_concat_df(l)
+      concat_df_horizontal(l)
     },
 
     # TODO implement Series, Expr, Lazy etc
