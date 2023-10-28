@@ -9,6 +9,8 @@
 #' @param row_count_name NULL or string, if a string add a rowcount column named by this string
 #' @param row_count_offset integer, the rowcount column can be offset by this value
 #' @param low_memory bool, try reduce memory footprint
+#' @param hive_partitioning Infer statistics and schema from hive partitioned URL
+#' and use them to prune reads.
 #'
 #' @return LazyFrame
 #' @name scan_parquet
@@ -29,7 +31,8 @@ pl$scan_parquet = function(
     row_count_name = NULL, # : str | None = None,
     row_count_offset = 0L, # : int = 0,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
-    low_memory = FALSE # : bool = False,
+    low_memory = FALSE, # : bool = False,
+    hive_partitioning = TRUE
     ) { #-> LazyFrame
 
   parallel = parallel[1L]
@@ -45,7 +48,8 @@ pl$scan_parquet = function(
     rechunk = rechunk,
     row_name = row_count_name,
     row_count = row_count_offset,
-    low_memory = low_memory
+    low_memory = low_memory,
+    hive_partitioning = hive_partitioning
   )
 
   unwrap(result_lf)
