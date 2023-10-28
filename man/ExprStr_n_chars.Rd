@@ -8,7 +8,7 @@ Expr of u32
 }
 \description{
 Get length of the strings as UInt32 (as number of characters). Use
-\verb{$str$lengths()} to get the number of bytes.
+\verb{$str$len_bytes()} to get the number of bytes.
 }
 \details{
 If you know that you are working with ASCII text, \code{lengths} will be
@@ -19,8 +19,8 @@ pl$DataFrame(
   s = c("Café", NA, "345", "æøå")
 )$select(
   pl$col("s"),
-  pl$col("s")$str$lengths()$alias("lengths"),
-  pl$col("s")$str$n_chars()$alias("n_chars")
+  pl$col("s")$str$len_bytes()$alias("lengths"),
+  pl$col("s")$str$len_chars()$alias("n_chars")
 )
 }
 \keyword{ExprStr}

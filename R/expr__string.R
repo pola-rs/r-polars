@@ -99,7 +99,7 @@ ExprStr_strptime = function(
 
 #' Get the number of bytes in strings
 #' @description
-#' Get length of the strings as UInt32 (as number of bytes). Use `$str$n_chars()`
+#' Get length of the strings as UInt32 (as number of bytes). Use `$str$len_chars()`
 #' to get the number of characters.
 #' @name ExprStr_lengths
 #' @keywords ExprStr
@@ -112,8 +112,8 @@ ExprStr_strptime = function(
 #'   s = c("Café", NA, "345", "æøå")
 #' )$select(
 #'   pl$col("s"),
-#'   pl$col("s")$str$lengths()$alias("lengths"),
-#'   pl$col("s")$str$n_chars()$alias("n_chars")
+#'   pl$col("s")$str$len_bytes()$alias("lengths"),
+#'   pl$col("s")$str$len_chars()$alias("n_chars")
 #' )
 ExprStr_lengths = function() {
   .pr$Expr$str_lengths(self)
@@ -122,7 +122,7 @@ ExprStr_lengths = function() {
 #' Get the number of characters in strings
 #' @description
 #' Get length of the strings as UInt32 (as number of characters). Use
-#' `$str$lengths()` to get the number of bytes.
+#' `$str$len_bytes()` to get the number of bytes.
 #' @name ExprStr_n_chars
 #' @keywords ExprStr
 #' @inherit ExprStr_lengths examples details return

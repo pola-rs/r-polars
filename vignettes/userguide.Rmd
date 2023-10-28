@@ -512,7 +512,7 @@ print(out)
 
 out = df$select(
   pl$struct(c("keys", "values"))$apply(lambda x = len(xc("keys")) + xc("values"))$alias("solution_apply"),
-  (pl$col("keys")$str$lengths() + pl$col("values"))$alias("solution_expr")
+  (pl$col("keys")$str$len_bytes() + pl$col("values"))$alias("solution_expr")
 )
 print(out)
 ```

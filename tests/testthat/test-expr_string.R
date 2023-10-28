@@ -85,7 +85,7 @@ test_that("str$strptime time", {
 
 
 
-test_that("str$lengths str$n_chars", {
+test_that("str$len_bytes str$len_chars", {
   test_str = c("Café", NA, "345", "東京") |> enc2utf8()
   Encoding(test_str)
 
@@ -93,8 +93,8 @@ test_that("str$lengths str$n_chars", {
     s = test_str
   )$select(
     pl$col("s"),
-    pl$col("s")$str$lengths()$alias("lengths"),
-    pl$col("s")$str$n_chars()$alias("n_chars")
+    pl$col("s")$str$len_bytes()$alias("lengths"),
+    pl$col("s")$str$len_chars()$alias("n_chars")
   )
 
   expect_identical(
