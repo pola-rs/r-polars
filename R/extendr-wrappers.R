@@ -829,9 +829,9 @@ Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
 
 Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
 
-Expr$str_lengths <- function() .Call(wrap__Expr__str_lengths, self)
+Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)
 
-Expr$str_n_chars <- function() .Call(wrap__Expr__str_n_chars, self)
+Expr$str_len_chars <- function() .Call(wrap__Expr__str_len_chars, self)
 
 Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
 

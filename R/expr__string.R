@@ -101,7 +101,7 @@ ExprStr_strptime = function(
 #' @description
 #' Get length of the strings as UInt32 (as number of bytes). Use `$str$len_chars()`
 #' to get the number of characters.
-#' @name ExprStr_lengths
+#' @name ExprStr_len_bytes
 #' @keywords ExprStr
 #' @details
 #' If you know that you are working with ASCII text, `lengths` will be
@@ -115,19 +115,19 @@ ExprStr_strptime = function(
 #'   pl$col("s")$str$len_bytes()$alias("lengths"),
 #'   pl$col("s")$str$len_chars()$alias("n_chars")
 #' )
-ExprStr_lengths = function() {
-  .pr$Expr$str_lengths(self)
+ExprStr_len_bytes = function() {
+  .pr$Expr$str_len_bytes(self)
 }
 
 #' Get the number of characters in strings
 #' @description
 #' Get length of the strings as UInt32 (as number of characters). Use
 #' `$str$len_bytes()` to get the number of bytes.
-#' @name ExprStr_n_chars
+#' @name ExprStr_len_chars
 #' @keywords ExprStr
-#' @inherit ExprStr_lengths examples details return
-ExprStr_n_chars = function() {
-  .pr$Expr$str_n_chars(self)
+#' @inherit ExprStr_len_bytes examples details return
+ExprStr_len_chars = function() {
+  .pr$Expr$str_len_chars(self)
 }
 
 #' Vertically concatenate values of a Series

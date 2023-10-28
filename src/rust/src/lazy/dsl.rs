@@ -1829,7 +1829,7 @@ impl Expr {
     }
 
     //string methods
-    pub fn str_lengths(&self) -> Self {
+    pub fn str_len_bytes(&self) -> Self {
         use pl::*;
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
@@ -1842,7 +1842,7 @@ impl Expr {
             .into()
     }
 
-    pub fn str_n_chars(&self) -> Self {
+    pub fn str_len_chars(&self) -> Self {
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
             Ok(Some(ca.str_len_chars().into_series()))
