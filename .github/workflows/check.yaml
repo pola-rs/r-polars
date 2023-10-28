@@ -65,7 +65,6 @@ jobs:
           echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
 
       - uses: ./.github/actions/setup
-        id: build-lib
         with:
           rust-nightly: "${{ matrix.config.full-features }}"
           target: "${{ steps.rust-target.outputs.TARGET }}"
