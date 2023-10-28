@@ -10,7 +10,7 @@ use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::*;
-
+use either::Either;
 pub use lazy::dataframe::*;
 
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -439,6 +439,16 @@ impl DataFrame {
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
             )
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
+    }
+
+    pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
+        let opt_s = robj_to!(Option, str, keep_names_as)?;
+        let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
+        let opt_either_vec_s = opt_vec_s.map(|vec_s| Either::Right(vec_s));
+        self.0
+            .transpose(opt_s, opt_either_vec_s)
             .map_err(polars_to_rpolars_err)
             .map(DataFrame)
     }
