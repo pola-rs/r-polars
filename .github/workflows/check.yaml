@@ -16,9 +16,6 @@ defaults:
   run:
     shell: bash
 
-env:
-  RPOLARS_CARGO_CLEAN_DEPS: "true"
-
 jobs:
   R-CMD-check:
     runs-on: ${{ matrix.config.os }}
