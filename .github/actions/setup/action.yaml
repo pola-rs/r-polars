@@ -42,7 +42,7 @@ runs:
         run: |
           rustup target add ${{ inputs.target }}
 
-      - name: Set up Rust pfofile
+      - name: Set up Rust profile
         if: env.RPOLARS_PROFILE == ''
         shell: bash
         run: |
