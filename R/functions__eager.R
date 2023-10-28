@@ -109,15 +109,7 @@ pl$concat = function(
     how == "vertical",
     concat_lf(l, rechunk, parallel, to_supertypes),
     how == "diagonal",
-    {
-      if (any(args_modified %in% c("to_supertypes"))) {
-        warning(
-          "Argument `to_supertypes` is not used when how=='diagonal'",
-          call. = FALSE
-        )
-      }
-      concat_lf_diagonal(l, rechunk, parallel)
-    },
+    concat_lf_diagonal(l, rechunk, parallel, to_supertypes),
     how == "horizontal" && !eager,
     {
       Err_plain(
