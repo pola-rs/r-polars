@@ -112,11 +112,12 @@ jobs:
       - name: cross compile rust object files for another target arch
         if: matrix.config.target != ''
         run: |
+          LIB_PATH="$(pwd)/src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
           pushd src
-          make -f Makevars.in "$(pwd)/rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
+          make -f Makevars.in "${LIB_PATH}"
           popd
           mkdir -p ./tools
-          mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./tools/
+          mv "${LIB_PATH}" ./tools/
           ls -l
           ls -l ./tools/
         shell: bash
