@@ -18,6 +18,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 env:
   RPOLARS_FULL_FEATURES: "true"
   RPOLARS_PROFILE: release-optimized
@@ -64,7 +68,6 @@ jobs:
 
       - name: Fix path for Windows caching
         if: runner.os == 'Windows'
-        shell: bash
         run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
 
       - uses: r-lib/actions/setup-pandoc@v2
@@ -89,7 +92,7 @@ jobs:
           if [ "${{ runner.os }}" == "Windows" ]; then
             TARGET=x86_64-pc-windows-gnu
           else
-            TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+            TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
           fi
           Rscript -e 'pkgbuild::compile_dll()'
           echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/release/libr_polars.a" >>$GITHUB_ENV
@@ -120,7 +123,6 @@ jobs:
           mv "${LIB_PATH}" ./tools/
           ls -l
           ls -l ./tools/
-        shell: bash
 
       - name: make source R package with pre-cross-compiled rust binaries for another target arch
         if: matrix.config.target != ''
@@ -129,7 +131,6 @@ jobs:
           new_file_name="$(echo $fine_name | sed "s/_.*/_cross_${{ matrix.config.target }}.tar.gz/")"
           mv $fine_name $new_file_name
           echo "new_file_name=${new_file_name}" >>"$GITHUB_ENV"
-        shell: bash
 
       - name: unittest cross compilation, when host == target == 'x86_64-apple-darwin'
         if: matrix.config.target == 'x86_64-apple-darwin' || matrix.config.target == 'x86_64-unknown-linux-gnu'
