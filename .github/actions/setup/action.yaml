@@ -5,9 +5,8 @@ inputs:
     description: Set up Rust nightly toolchain?
     required: false
   target:
-    description: Rust toolchain to use
-    required: false
-    default: ""
+    description: Rust target triple to use
+    required: true
 
 runs:
   using: composite
@@ -43,8 +42,26 @@ runs:
         run: |
           rustup target add ${{ inputs.target }}
 
+      - name: Set up Rust profile
+        if: env.RPOLARS_PROFILE == ''
+        shell: bash
+        run: |
+          echo "RPOLARS_PROFILE=release" >>"$GITHUB_ENV"
+
+      - name: Find default target
+        id: find-target
+        if: inputs.target == ''
+        shell: bash
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET=x86_64-pc-windows-gnu
+          else
+            TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+          fi
+          echo "target=${TARGET}" >>"$GITHUB_OUTPUT"
+
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: build-${{ env.RPOLARS_PROFILE }}-${{ inputs.target }}
-          workspaces: ./src/rust/
+          shared-key: build-${{ env.RPOLARS_PROFILE }}-${{ inputs.target || steps.find-target.outputs.target }}
+          workspaces: "src/rust -> target"

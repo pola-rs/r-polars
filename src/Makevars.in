@@ -1,13 +1,16 @@
+TARGET ?= @RUST_TARGET@
 RPOLARS_PROFILE ?= release
-RPOLARS_BUILD_COMMAND_BASE ?= cargo build
+RPOLARS_BUILD_COMMAND_BASE ?= cargo build --target=$(TARGET)
 BUILD_COMMAND = $(RPOLARS_BUILD_COMMAND_BASE) --lib --profile $(RPOLARS_PROFILE) --manifest-path="$(RPOLARS_RUST_SOURCE)/Cargo.toml"
 
-LIBDIR = ./rust/target/$(RPOLARS_PROFILE)
-STATLIB = $(LIBDIR)/libr_polars.a
+LIBNAME = libr_polars.a
+TARGET_DIR = $(CURDIR)/rust/target
+LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
+STATLIB = $(LIBDIR)/$(LIBNAME)
 PKG_LIBS = -L$(LIBDIR) -lr_polars
 RPOLARS_RUST_SOURCE ?= ./rust
 
-rpolars_ext_binary = "$(RPOLARS_RUST_SOURCE)/target/$(RPOLARS_PROFILE)/libr_polars.a"
+rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
 
 all: C_clean
 
@@ -16,11 +19,10 @@ $(SHLIB): $(STATLIB)
 CARGOTMP = $(CURDIR)/.cargo
 
 $(STATLIB):
-	if [ -f "$(CURDIR)/../inst/libr_polars.a" ]; then \
-		echo "refer directly to a precompiled object file + skip cargo build"; \
-		mkdir -p ./rust/target/$(RPOLARS_PROFILE) ; \
-		mv $(CURDIR)/../inst/libr_polars.a ./rust/target/$(RPOLARS_PROFILE)/libr_polars.a ; \
-		exit 0 ; \
+	if [ -f "$(CURDIR)/../tools/$(LIBNAME)" ]; then \
+		mkdir -p "$(LIBDIR)" ; \
+		mv "$(CURDIR)/../tools/$(LIBNAME)" "$(STATLIB)" ; \
+		exit 0; \
 	fi && \
 	if [ "true" != "true" ]; then \
 		export CARGO_HOME=$(CARGOTMP); \

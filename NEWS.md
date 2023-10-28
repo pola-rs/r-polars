@@ -31,6 +31,7 @@
 
 ## What's changed
 
+- Bump supported R version to 4.2 or later (#435).
 - `pl$concat()` now also supports `Series`, `Expr` and `LazyFrame` (#407).
 - New method `$unnest()` for `LazyFrame` (#397).
 - New method `$sample()` for `DataFrame` (#399).

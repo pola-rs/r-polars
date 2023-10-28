@@ -19,3 +19,5 @@
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
 ^\.devcontainer$
+^src/Makevars$
+^tools/libr_polars\.a$

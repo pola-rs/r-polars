@@ -1,0 +1,82 @@
+#!/usr/bin/env sh
+
+NOT_CRAN=${NOT_CRAN:-"false"}
+LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
+
+LIBNAME="libr_polars.a"
+LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
+LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
+
+export PATH="$PATH:$HOME/.cargo/bin"
+
+check_cargo() {
+  if [ ! "$(command -v cargo)" ]; then
+    echo ""
+    echo "------------------------- [RUST NOT FOUND] -------------------------"
+    echo "The 'cargo' command was not found on the PATH. Please install rustc"
+    echo "from: https://www.rust-lang.org/tools/install"
+    echo ""
+    echo "Alternatively, you may install cargo from your OS package manager:"
+    echo " - Debian/Ubuntu: apt-get install cargo"
+    echo " - Fedora/CentOS: dnf install cargo"
+    echo " - macOS: brew install rustc"
+    echo "--------------------------------------------------------------------"
+    echo ""
+    exit 1
+  else
+    echo ""
+    echo "--------------------------- [RUST FOUND] ---------------------------"
+    cargo -V
+    echo ""
+    rustc -vV
+    echo "--------------------------------------------------------------------"
+    echo ""
+  fi
+}
+
+check_bin_lib() {
+  if [ "${NOT_CRAN}" = "true" ] && [ -z "${LIBR_POLARS_BUILD}"  ]; then
+    LIBR_POLARS_BUILD="false"
+  fi
+
+  if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ] ; then
+    echo ""
+    echo "--------------- [ TRY TO DOWNLOAD PRE-BUILT BINARY ] ---------------"
+    "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/prep-lib.R" || echo "Failed to download pre-built binary."
+    echo "--------------------------------------------------------------------"
+    echo ""
+  fi
+
+  if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "${LIBR_POLARS_PATH}" ]; then
+    echo ""
+    echo "---------------------- [LIBRARY BINARY FOUND] ----------------------"
+    echo "The library was found at <${LIBR_POLARS_PATH}>. No need to build it."
+    echo "--------------------------------------------------------------------"
+    echo ""
+    sed -e "s|@RUST_TARGET@||" src/Makevars.in >src/Makevars
+    if [ "${LIBR_POLARS_PATH}" != "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+      echo ""
+      echo "------------------------ [COPYING BINARY] ------------------------"
+      echo "Copying <${LIBR_POLARS_PATH}> to <${LIBR_POLARS_DEFAULT_PATH}>."
+      mkdir -p "$(dirname "${LIBR_POLARS_DEFAULT_PATH}")"
+      cp "${LIBR_POLARS_PATH}" "${LIBR_POLARS_DEFAULT_PATH}" || echo "Failed to copy binary."
+      echo "------------------------------------------------------------------"
+      echo ""
+    fi
+    exit 0
+  elif [ "${LIBR_POLARS_BUILD}" = "false" ]; then
+    echo ""
+    echo "-------------------- [LIBRARY BINARY NOT FOUND] --------------------"
+    echo "The library was not found at <${LIBR_POLARS_PATH}>."
+    echo "Falling back to building from source."
+    echo "--------------------------------------------------------------------"
+    echo ""
+  fi
+}
+
+check_bin_lib
+check_cargo
+
+sed -e "s|@RUST_TARGET@|$(rustc -vV | grep host | cut -d' ' -f2)|" src/Makevars.in >src/Makevars
+
+exit 0
