@@ -57,7 +57,11 @@ ExprDT_truncate = function(
 #'
 #' @param every string encoding duration see details.
 #' @param ofset optional string encoding duration see details.
-
+#' @param ambiguous Determine how to deal with ambiguous datetimes:
+#' * `"raise"` (default): raise
+#' * `"earliest"`: use the earliest datetime
+#' * `"latest"`: use the latest datetime
+#'
 #' @details The ``every`` and ``offset`` argument are created with the
 #' the following string language:
 #' - 1ns # 1 nanosecond
@@ -92,8 +96,8 @@ ExprDT_truncate = function(
 #'   pl$col("datetime")$dt$truncate("4s", offset("3s"))$alias("truncated_4s_offset_2s")
 #' )
 #' df
-ExprDT_round = function(every, offset = NULL) {
-  .pr$Expr$dt_round(self, every, offset) |>
+ExprDT_round = function(every, offset = NULL, ambiguous = "raise") {
+  .pr$Expr$dt_round(self, every, offset, ambiguous) |>
     unwrap("in dt$round()")
 }
 

@@ -651,7 +651,7 @@ Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap
 
 Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
 
-Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
+Expr$dt_round <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_round, self, every, offset, ambiguous)
 
 Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
 
