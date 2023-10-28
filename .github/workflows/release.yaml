@@ -36,7 +36,7 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release', rtools-version: ""}
+          - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
           - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
@@ -74,16 +74,25 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          rtools-version: ${{ matrix.config.rtools-version }}
           Ncpus: 2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
           needs: dev
-          pak-version: devel
         env:
           CI: false
+
+      - name: Build lib
+        if: matrix.config.target == ''
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET=x86_64-pc-windows-gnu
+          else
+            TARGET=$(rustc -vV | grep host | cut -d' ' -f2)
+          fi
+          Rscript -e 'pkgbuild::compile_dll()'
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/release/libr_polars.a" >>$GITHUB_ENV
 
       - name: make binary R package + test on host arch
         if: matrix.config.target == ''
