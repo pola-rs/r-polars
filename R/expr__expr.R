@@ -1609,7 +1609,8 @@ Expr_sort = function(descending = FALSE, nulls_last = FALSE) { # param reverse n
 #' ))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k) {
   if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$top_k(self, k)
+  .pr$Expr$top_k(self, k) |>
+    unwrap("in $top_k():")
 }
 
 # TODO contribute polars, add arguments for Null/NaN/inf last/first, bottom_k unwraps k> len column
@@ -1630,7 +1631,8 @@ Expr_top_k = function(k) {
 #' ))$select(pl$col("a")$bottom_k(5))
 Expr_bottom_k = function(k) {
   if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
-  .pr$Expr$bottom_k(self, k)
+  .pr$Expr$bottom_k(self, k) |>
+    unwrap("in $bottom_k():")
 }
 
 

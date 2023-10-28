@@ -942,9 +942,6 @@ test_that("Expr_k_top", {
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
-
-  # TODO contribute polars k_top always places NaN first no matter reverse,
-  # this behavour does not match Expr_sort
 })
 
 
