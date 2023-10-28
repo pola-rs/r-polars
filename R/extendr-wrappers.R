@@ -105,13 +105,11 @@ cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
 
 rust_polars_version <- function() .Call(wrap__rust_polars_version)
 
-enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
+enable_string_cache <- function() .Call(wrap__enable_string_cache)
+
+disable_string_cache <- function() .Call(wrap__disable_string_cache)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
-
-increment_string_cache_counter <- function(toggle) .Call(wrap__increment_string_cache_counter, toggle)
-
-reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
 
 DataFrame <- new.env(parent = emptyenv())
 

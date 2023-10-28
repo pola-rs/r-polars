@@ -1,13 +1,16 @@
+use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 
 #[extendr]
-pub fn enable_string_cache() {
+pub fn enable_string_cache() -> RResult<()> {
     polars_core::enable_string_cache();
+    Ok(())
 }
 
 #[extendr]
-pub fn disable_string_cache() {
-    polars_core::disable_string_cache()
+pub fn disable_string_cache() -> RResult<()> {
+    polars_core::disable_string_cache();
+    Ok(())
 }
 
 #[extendr]

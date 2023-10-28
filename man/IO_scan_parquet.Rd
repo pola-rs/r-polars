@@ -19,6 +19,9 @@
 \item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
 \item{low_memory}{bool, try reduce memory footprint}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
 }
 \value{
 LazyFrame
