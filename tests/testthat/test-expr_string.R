@@ -173,6 +173,23 @@ test_that("strip_chars_*()", {
   expect_identical(lit$str$strip_chars_end()$to_r(), " 123abc")
   expect_identical(lit$str$strip_chars_end("1c")$to_r(), " 123abc ")
   expect_identical(lit$str$strip_chars_end("1c ")$to_r(), " 123ab")
+
+  df = pl$DataFrame(
+    foo = c("hello", "world"),
+    expr = c("heo", "wd")
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars(pl$col("expr")))$to_list(),
+    list(foo = c("ll", "orl"))
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars_start(pl$col("expr")))$to_list(),
+    list(foo = c("llo", "orld"))
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars_end(pl$col("expr")))$to_list(),
+    list(foo = c("hell", "worl"))
+  )
 })
 
 

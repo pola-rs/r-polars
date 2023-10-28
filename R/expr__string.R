@@ -202,7 +202,7 @@ ExprStr_to_titlecase = function() {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -215,7 +215,8 @@ ExprStr_to_titlecase = function() {
 #' df$select(pl$col("foo")$str$strip_chars())
 #' df$select(pl$col("foo")$str$strip_chars(" hel rld"))
 ExprStr_strip_chars = function(matches = NULL) {
-  .pr$Expr$str_strip_chars(self, matches)
+  .pr$Expr$str_strip_chars(self, matches) |>
+    unwrap("in $str$strip_chars():")
 }
 
 #' Strip leading characters
@@ -226,7 +227,7 @@ ExprStr_strip_chars = function(matches = NULL) {
 #'
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -238,7 +239,8 @@ ExprStr_strip_chars = function(matches = NULL) {
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
 #' df$select(pl$col("foo")$str$strip_chars_start(" hel rld"))
 ExprStr_strip_chars_start = function(matches = NULL) {
-  .pr$Expr$str_strip_chars_start(self, matches)
+  .pr$Expr$str_strip_chars_start(self, matches) |>
+    unwrap("in $str$strip_chars_start():")
 }
 
 #' Strip trailing characters
@@ -249,7 +251,7 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 #'
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -262,7 +264,8 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 #' df$select(pl$col("foo")$str$strip_chars_end(" hel\trld"))
 #' df$select(pl$col("foo")$str$strip_chars_end("rldhel\t "))
 ExprStr_strip_chars_end = function(matches = NULL) {
-  .pr$Expr$str_strip_chars_end(self, matches)
+  .pr$Expr$str_strip_chars_end(self, matches) |>
+    unwrap("in $str$strip_chars_end():")
 }
 
 
