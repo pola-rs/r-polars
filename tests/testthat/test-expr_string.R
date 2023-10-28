@@ -506,11 +506,6 @@ test_that("str$split_exact", {
   )
 
   expect_grepl_error(
-    pl$lit("42")$str$split_exact(by = 42L, n = 1, inclusive = TRUE),
-    "str"
-  )
-
-  expect_grepl_error(
     pl$lit("42")$str$split_exact(by = "a", n = -1, inclusive = TRUE),
     "cannot be less than zero"
   )

@@ -610,7 +610,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 #' df$select(pl$col("s")$str$split_exact(by = "_", 1))
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
-    .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
+    .pr$Expr$str_split_exact(self, by, result(n), result(inclusive)),
     context = "in str$split_exact():"
   )
 }
