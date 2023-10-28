@@ -52,11 +52,6 @@ jobs:
         with:
           target: "${{ steps.rust-target.outputs.TARGET }}"
 
-      - name: find polars rust source/cache, used by Makevars in check step
-        run: |
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-        shell: bash
-
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
