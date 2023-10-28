@@ -18,7 +18,7 @@ pub use crate::series::*;
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
-use polars_core::utils::arrow;
+use polars_core::error::PolarsError;
 
 use crate::utils::{collect_hinted_result, r_result_list};
 
@@ -48,7 +48,7 @@ impl OwnedDataFrameIterator {
 }
 
 impl Iterator for OwnedDataFrameIterator {
-    type Item = Result<Box<dyn arrow::array::Array>, arrow::error::Error>;
+    type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.idx >= self.n_chunks {
