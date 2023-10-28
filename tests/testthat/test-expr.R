@@ -702,9 +702,7 @@ test_that("slice", {
     pl$DataFrame(l)$select(
       pl$all()$slice(0, pl$col("a")$len() / 2)
     )$to_list(),
-    # TODO likely bug in rust-polars update test at next bump
-    # https://github.com/pola-rs/polars/issues/11647
-    list(a = 50.5, b = 50.5) # original answer lapply(l, head, length(l$a) / 2)
+    lapply(l, head, length(l$a) / 2)
   )
 
   # use default length (max length)
