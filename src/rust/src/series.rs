@@ -490,10 +490,11 @@ impl Series {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cumsum(&self, reverse: bool) -> Series {
-        Series(self.0.cumsum(reverse))
-    }
-    //
+    // TODO: uncomment this
+    // pub fn cumsum(&self, reverse: bool) -> Series {
+    //     Series(self.0.cumsum(reverse))
+    // }
+
     pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
         let mut df = DataFrame::new_with_capacity(1);
         df.set_column_from_series(self)?;
