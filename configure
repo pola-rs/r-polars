@@ -58,6 +58,7 @@ check_bin_lib() {
       echo ""
       echo "------------------------ [COPYING BINARY] ------------------------"
       echo "Copying <${LIBR_POLARS_PATH}> to <${LIBR_POLARS_DEFAULT_PATH}>."
+      mkdir -p "$(dirname "${LIBR_POLARS_DEFAULT_PATH}")"
       cp "${LIBR_POLARS_PATH}" "${LIBR_POLARS_DEFAULT_PATH}" || echo "Failed to copy binary."
       echo "------------------------------------------------------------------"
       echo ""
