@@ -115,9 +115,10 @@ jobs:
           pushd src
           make -f Makevars "$(pwd)/rust/target/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
           popd
-          mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./inst/
+          mkdir -p ./tools
+          mv "./src/rust/target/${{ env.RUNNER_TARGET }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" ./tools/
           ls -l
-          ls -l ./inst/
+          ls -l ./tools/
         shell: bash
 
       - name: make source R package with pre-cross-compiled rust binaries for another target arch
