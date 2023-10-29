@@ -64,6 +64,16 @@ check_bin_lib() {
       echo ""
     fi
     exit 0
+  elif [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+    echo ""
+    echo "---------------------- [LIBRARY BINARY FOUND] ----------------------"
+    echo "The library was not found at <${LIBR_POLARS_PATH}>,"
+    echo "but was found at <${LIBR_POLARS_DEFAULT_PATH}>."
+    echo "No need to build it."
+    echo "--------------------------------------------------------------------"
+    echo ""
+    sed -e "s|@RUST_TARGET@||" src/Makevars.in >src/Makevars
+    exit 0
   elif [ "${LIBR_POLARS_BUILD}" = "false" ]; then
     echo ""
     echo "-------------------- [LIBRARY BINARY NOT FOUND] --------------------"
