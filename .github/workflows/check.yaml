@@ -2,9 +2,33 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
+    paths:
+      - .Rbuildignore
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
   pull_request:
-    branches: [main, master]
+    branches:
+      - main
+    paths:
+      - .github/workflows/check.yaml
+      - .Rbuildignore
+      - R/**
+      - src/**
+      - tests/**
+      - tools/**
+      - vignettes/*
+      - configure*
+      - DESCRIPTION
+      - NAMESPACE
+  workflow_dispatch:
 
 name: R-CMD-check
 

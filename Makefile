@@ -48,12 +48,16 @@ requirements-rs:
 
 .PHONY: build
 build: ## Compile polars R package with all features and generate Rd files
-	export RPOLARS_FULL_FEATURES=true \
+	export NOT_CRAN=true \
+	&& export LIBR_POLARS_BUILD=true \
+	&& export RPOLARS_FULL_FEATURES=true \
 	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: install
 install: ## Install the R package
-	export RPOLARS_FULL_FEATURES=true \
+	export NOT_CRAN=true \
+	&& export LIBR_POLARS_BUILD=true \
+	&& export RPOLARS_FULL_FEATURES=true \
 	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
 .PHONY: all
