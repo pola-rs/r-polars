@@ -3,6 +3,9 @@
 NOT_CRAN=${NOT_CRAN:-"false"}
 LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
 
+# Detect if this is on R-universe.
+MY_UNIVERSE=${MY_UNIVERSE:-""}
+
 LIBNAME="libr_polars.a"
 LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
 LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
@@ -40,7 +43,7 @@ check_bin_lib() {
   fi
 
   # On R-universe, we try to download the pre-built binary from GitHub releases.
-  if [ -z "${NOT_CRAN}" ] && [ -n "${MY_UNIVERSE}" ]; then
+  if [ -n "${MY_UNIVERSE}" ]; then
     echo "It seems that this is on R-universe <${MY_UNIVERSE}>."
     echo "Trying to download pre-built binary."
     LIBR_POLARS_BUILD="false"
