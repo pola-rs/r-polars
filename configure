@@ -39,6 +39,13 @@ check_bin_lib() {
     LIBR_POLARS_BUILD="false"
   fi
 
+  # On R-universe, we try to download the pre-built binary from GitHub releases.
+  if [ -z "${NOT_CRAN}" ] && [ -n "${MY_UNIVERSE}" ]; then
+    echo "It seems that this is on R-universe <${MY_UNIVERSE}>."
+    echo "Trying to download pre-built binary."
+    LIBR_POLARS_BUILD="false"
+  fi
+
   if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ] ; then
     echo ""
     echo "--------------- [ TRY TO DOWNLOAD PRE-BUILT BINARY ] ---------------"
@@ -63,6 +70,16 @@ check_bin_lib() {
       echo "------------------------------------------------------------------"
       echo ""
     fi
+    exit 0
+  elif [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "${LIBR_POLARS_DEFAULT_PATH}" ]; then
+    echo ""
+    echo "---------------------- [LIBRARY BINARY FOUND] ----------------------"
+    echo "The library was not found at <${LIBR_POLARS_PATH}>,"
+    echo "but was found at <${LIBR_POLARS_DEFAULT_PATH}>."
+    echo "No need to build it."
+    echo "--------------------------------------------------------------------"
+    echo ""
+    sed -e "s|@RUST_TARGET@||" src/Makevars.in >src/Makevars
     exit 0
   elif [ "${LIBR_POLARS_BUILD}" = "false" ]; then
     echo ""
