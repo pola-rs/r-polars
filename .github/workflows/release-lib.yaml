@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             target: aarch64-unknown-linux-gnu
           - os: macos-latest
             target: x86_64-apple-darwin
@@ -69,19 +69,6 @@ jobs:
           sudo apt-get install -y gcc-aarch64-linux-gnu
           echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
 
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-          Ncpus: 2
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: dev
-        env:
-          CI: false
-
       - name: build lib
         env:
           NOT_CRAN: "true"
@@ -93,6 +80,7 @@ jobs:
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${TARGET}.tar.gz"
           if [[ ${{ runner.os }} == 'Windows' ]]; then
             pushd ..
+            Rscript -e 'install.packages("pkgbuild", repos = "https://cloud.r-project.org")'
             Rscript -e 'pkgbuild::compile_dll()' # Linker of Rtools is needed here.
             popd
           else
