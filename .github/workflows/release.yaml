@@ -3,7 +3,7 @@
 on:
   push:
     tags:
-      - "**" # Push events to every tag including hierarchical tags like v1.0/beta
+      - "v**" # Push events to every tag including hierarchical tags like v1.0/beta
   pull_request:
     branches:
       - main
@@ -25,6 +25,7 @@ defaults:
 env:
   RPOLARS_FULL_FEATURES: "true"
   RPOLARS_PROFILE: release-optimized
+  NOT_CRAN: "true"
 
 jobs:
   build:
@@ -42,10 +43,6 @@ jobs:
           - {os: macos-latest,   r: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: macos-latest,  r: 'release', target: 'x86_64-apple-darwin'}
-          - {os: macos-latest,  r: 'release', target: 'aarch64-apple-darwin'}
-          - {os: ubuntu-latest,  r: 'release', target: 'x86_64-unknown-linux-gnu'}
-          - {os: ubuntu-latest,  r: 'release', target: 'aarch64-unknown-linux-gnu'}
 
     steps:
       - uses: actions/checkout@v3
@@ -53,29 +50,12 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           rust-nightly: true
-          target: ${{ matrix.config.target }}
-
-      - name: Set for arm64 Linux
-        if: matrix.config.target == 'aarch64-unknown-linux-gnu'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu
-          echo 'CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc' >>"$GITHUB_ENV"
-
-      - name: Set build command
-        if: matrix.config.target != ''
-        run: echo "RPOLARS_BUILD_COMMAND_BASE=cargo build --target=${{ matrix.config.target }}" >>"$GITHUB_ENV"
-
-      - name: Fix path for Windows caching
-        if: runner.os == 'Windows'
-        run: echo "C:/Program Files/Git/usr/bin" >> $GITHUB_PATH
 
       - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           Ncpus: 2
 
@@ -109,37 +89,6 @@ jobs:
           } else {
             file.rename(fn,"../polars.zip") #R expects specific windows binary filename
           }
-        shell: Rscript {0}
-
-      - name: cross compile rust object files for another target arch
-        if: matrix.config.target != ''
-        run: |
-          export TARGET="${{ matrix.config.target }}"
-          LIB_PATH="$(pwd)/src/rust/target/${{ matrix.config.target }}/${{ env.RPOLARS_PROFILE }}/libr_polars.a"
-          pushd src
-          make -f Makevars.in "${LIB_PATH}"
-          popd
-          mkdir -p ./tools
-          mv "${LIB_PATH}" ./tools/
-          ls -l
-          ls -l ./tools/
-
-      - name: make source R package with pre-cross-compiled rust binaries for another target arch
-        if: matrix.config.target != ''
-        run: |
-          fine_name="$(R -s -e 'devtools::build(vignettes = FALSE, quiet = TRUE) |> cat()')"
-          new_file_name="$(echo $fine_name | sed "s/_.*/_cross_${{ matrix.config.target }}.tar.gz/")"
-          mv $fine_name $new_file_name
-          echo "new_file_name=${new_file_name}" >>"$GITHUB_ENV"
-
-      - name: unittest cross compilation, when host == target == 'x86_64-apple-darwin'
-        if: matrix.config.target == 'x86_64-apple-darwin' || matrix.config.target == 'x86_64-unknown-linux-gnu'
-        run: |
-          list.files()
-          polars_source_package_name = Sys.getenv("new_file_name")
-          install.packages(polars_source_package_name, repos = NULL, source = TRUE)
-          attach(getNamespace("polars")) # testthat assumes private namespace is in scope
-          testthat::test_dir("tests/testthat/")
         shell: Rscript {0}
 
       - name: prep upload

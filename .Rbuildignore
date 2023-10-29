@@ -21,3 +21,4 @@
 ^\.devcontainer$
 ^src/Makevars$
 ^tools/libr_polars\.a$
+^dev$

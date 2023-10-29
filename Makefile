@@ -57,7 +57,7 @@ install: ## Install the R package
 	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
 .PHONY: all
-all: fmt build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
+all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
 docs: build install README.md docs/docs/reference_home.md ## Generate docs
@@ -77,6 +77,10 @@ docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the re
 
 LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
+
+.PHONY: tools/lib-sums.tsv
+tools/lib-sums.tsv: ## Update the lib-sums.tsv file for pointing to the latest versions of the binary libraries
+	Rscript dev/generate-lib-sums.R
 
 .PHONY: test
 test: build install ## Run fast unittests
