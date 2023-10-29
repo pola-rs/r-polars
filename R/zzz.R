@@ -36,6 +36,10 @@ expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace"
 expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 
 #' @export
+`$.ExprNameNameSpace` = sub_name_space_accessor_function
+expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "ExprNameNameSpace")
+
+#' @export
 `$.ExprDTNameSpace` = sub_name_space_accessor_function
 expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "ExprDTNameSpace")
 

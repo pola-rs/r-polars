@@ -18,6 +18,7 @@ the \href{https://pola-rs.github.io/polars/py-polars/html/reference/expressions/
 \item Functions
 \item List
 \item Meta
+\item Name
 \item String
 \item Struct
 \item Temporal

@@ -1490,10 +1490,6 @@ impl Expr {
         self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
     }
 
-    pub fn keep_name(&self) -> Self {
-        self.0.clone().keep_name().into()
-    }
-
     pub fn alias(&self, s: &str) -> Self {
         self.0.clone().alias(s).into()
     }
@@ -1770,7 +1766,20 @@ impl Expr {
         self.clone().0.is_first_distinct().into()
     }
 
-    pub fn map_alias(&self, lambda: Robj) -> Self {
+    // name methods
+    pub fn name_keep(&self) -> Self {
+        self.0.clone().name().keep().into()
+    }
+
+    fn name_suffix(&self, suffix: String) -> Self {
+        self.0.clone().name().suffix(suffix.as_str()).into()
+    }
+
+    fn name_prefix(&self, prefix: String) -> Self {
+        self.0.clone().name().prefix(prefix.as_str()).into()
+    }
+
+    pub fn name_map(&self, lambda: Robj) -> Self {
         //find a way not to push lambda everytime to main thread handler
         //safety only accessed in main thread, can be temp owned by other threads
         let probj = ParRObj(lambda);
@@ -1802,14 +1811,14 @@ impl Expr {
                 .expect("internal error: this is not an R function");
 
             let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
-                let es = format!("in map_alias: user function raised this error: {:?}", err).into();
+                let es = format!("in $name$map(): user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
             })?;
 
             newname_robj
                 .as_str()
                 .ok_or_else(|| {
-                    let es = "in map_alias: R function return value was not a string"
+                    let es = "in $name$map(): R function return value was not a string"
                         .to_string()
                         .into();
                     pl_error::ComputeError(es)
@@ -1817,15 +1826,7 @@ impl Expr {
                 .map(|str| str.to_string())
         };
 
-        self.clone().0.map_alias(f).into()
-    }
-
-    fn suffix(&self, suffix: String) -> Self {
-        self.0.clone().suffix(suffix.as_str()).into()
-    }
-
-    fn prefix(&self, prefix: String) -> Self {
-        self.0.clone().prefix(prefix.as_str()).into()
+        self.clone().0.name().map(f).into()
     }
 
     //string methods

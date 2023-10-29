@@ -541,11 +541,15 @@ macro_new_subnamespace = function(class_pattern, subclass_env = NULL, remove_f =
     "}"
   )
 
+  # if (class_pattern %in% c("^ExprStruct_", "^ExprName_")) {
+  #   print(cat(string))
+  # }
+
   if (remove_f) {
     rm(list = class_methods, envir = parent.frame())
   }
 
-  if (build_debug_print) cat("new subnamespace: ", class_pattern, "\n", string)
+  if (TRUE) cat("\n\nnew subnamespace: ", class_pattern, "\n", string)
   eval(parse(text = string))
 }
 
