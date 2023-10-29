@@ -144,7 +144,7 @@ jobs:
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${LIB_TARGET}.tar.gz"
           mkdir -p tools
           tar -xzf "libs/${ARTIFACT_NAME}" -C "tools"
-          rm -rf "libs"
+          rm -rf libs tools/lib-sums.tsv
           echo "LIBR_POLARS_PATH=$(pwd)/tools/${LIB_NAME}.a" >>"$GITHUB_ENV"
 
       - uses: r-lib/actions/setup-pandoc@v2
