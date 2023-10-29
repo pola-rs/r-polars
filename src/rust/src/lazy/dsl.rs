@@ -1897,36 +1897,31 @@ impl Expr {
             .into())
     }
 
-    pub fn str_zfill(&self, alignment: Robj) -> List {
-        let res = robj_to!(usize, alignment, "in str$zfill()")
-            .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
-        r_result_list(res)
+    pub fn str_zfill(&self, alignment: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .zfill(robj_to!(usize, alignment)?)
+            .into())
     }
 
-    pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
-        let res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .ljust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
-            ))
-        }()
-        .map_err(|err| format!("in str$ljust: {:?}", err));
-        r_result_list(res)
+    pub fn str_pad_end(&self, width: Robj, fillchar: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .pad_end(robj_to!(usize, width)?, robj_to!(char, fillchar)?)
+            .into())
     }
 
-    pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
-        let res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .rjust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
-            ))
-        }()
-        .map_err(|err| format!("in str$rjust: {:?}", err));
-        r_result_list(res)
+    pub fn str_pad_start(&self, width: Robj, fillchar: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .pad_start(robj_to!(usize, width)?, robj_to!(char, fillchar)?)
+            .into())
     }
 
     pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {

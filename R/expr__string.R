@@ -301,7 +301,7 @@ ExprStr_zfill = function(alignment) {
 
 
 #' Left justify strings
-#' @name ExprStr_ljust
+#' @name ExprStr_pad_end
 #' @description Return the string left justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify left to this length.
@@ -311,25 +311,25 @@ ExprStr_zfill = function(alignment) {
 #' @return Expr of Utf8
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
-#' df$select(pl$col("a")$str$ljust(8, "*"))
-ExprStr_ljust = function(width, fillchar = " ") {
-  .pr$Expr$str_ljust(self, width, fillchar) |>
+#' df$select(pl$col("a")$str$pad_end(8, "*"))
+ExprStr_pad_end = function(width, fillchar = " ") {
+  .pr$Expr$str_pad_end(self, width, fillchar) |>
     unwrap("in str$ljust(): ")
 }
 
 
 #' Right justify strings
-#' @name ExprStr_rjust
+#' @name ExprStr_pad_start
 #' @description Return the string right justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify right to this length.
 #' @param fillchar Fill with this ASCII character.
-#' @inherit ExprStr_ljust details return
+#' @inherit ExprStr_pad_end details return
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
-#' df$select(pl$col("a")$str$rjust(8, "*"))
-ExprStr_rjust = function(width, fillchar = " ") {
-  .pr$Expr$str_rjust(self, width, fillchar) |>
+#' df$select(pl$col("a")$str$pad_start(8, "*"))
+ExprStr_pad_start = function(width, fillchar = " ") {
+  .pr$Expr$str_pad_start(self, width, fillchar) |>
     unwrap("in str$rjust(): ")
 }
 

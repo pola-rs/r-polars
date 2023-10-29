@@ -847,9 +847,9 @@ Expr$str_strip_chars_start <- function(matches) .Call(wrap__Expr__str_strip_char
 
 Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
 
-Expr$str_ljust <- function(width, fillchar) .Call(wrap__Expr__str_ljust, self, width, fillchar)
+Expr$str_pad_end <- function(width, fillchar) .Call(wrap__Expr__str_pad_end, self, width, fillchar)
 
-Expr$str_rjust <- function(width, fillchar) .Call(wrap__Expr__str_rjust, self, width, fillchar)
+Expr$str_pad_start <- function(width, fillchar) .Call(wrap__Expr__str_pad_start, self, width, fillchar)
 
 Expr$str_contains <- function(pat, literal, strict) .Call(wrap__Expr__str_contains, self, pat, literal, strict)
 
