@@ -41,21 +41,22 @@ The package can be installed from R-universe, or GitHub.
 Some platforms can install pre-compiled binaries, and others will need
 to build from source.
 
-### R-universe
+### R-universe (recommended)
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64)
 and Ubuntu 22.04 (x86_64) with source builds for other platforms.
 
-Binary packages on R-universe are compiled by stable Rust, with nightly
-features disabled.
+Binary packages on R-universe are compiled by nightly Rust, with nightly
+features enabled.
 
 ``` r
+# Binary installation for x86_64 Windows and macOS, source for other platforms
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
 ``` r
-# For Ubuntu binary installation
+# Binary installation for Ubuntu 22.04 (x86_64)
 install.packages("polars", repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.3")
 ```
 
@@ -64,11 +65,10 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-GitHub releases have faster and smaller binaries, as they are compiled
-by nightly rust with some more opimizations. This inludes SIMD
-operations, full link time optimizations (lto=“fat”). The pre-compiled
-binaries are available for various operating systems / architectures,
-including MacOS ARM CPUs. See latest and all previous [GitHub Releases
+Binary packages on GitHub releases are compiled by nightly Rust, with
+nightly features enabled.
+
+See latest and all previous [GitHub Releases
 here](https://github.com/pola-rs/r-polars/releases).
 
 You can download and install these files manually, or install directly
