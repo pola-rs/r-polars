@@ -12,8 +12,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  RPOLARS_CARGO_CLEAN_DEPS: "true"
+defaults:
+  run:
+    shell: bash
 
 jobs:
   R-CMD-check:
@@ -37,6 +38,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      LIBR_POLARS_BUILD: "true"
 
     steps:
       - uses: actions/checkout@v3
@@ -44,9 +46,17 @@ jobs:
       - name: Tune GitHub-hosted runner network
         uses: smorimoto/tune-github-hosted-runner-network@v1
 
+      - name: Set rust target
+        id: rust-target
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+          else
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+          fi
+
       - name: Set env vars for build option
         if: matrix.config.full-features
-        shell: bash
         run: |
           echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
           echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
@@ -54,6 +64,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           rust-nightly: "${{ matrix.config.full-features }}"
+          target: "${{ steps.rust-target.outputs.TARGET }}"
 
       - name: print files
         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
@@ -77,13 +88,16 @@ jobs:
         env:
           CI: false
 
-      - name: find polars rust source/cache, used by Makevars in check step
-        id: get_the_rust_sauce
-        shell: bash
+      - name: Build lib
+        env:
+          NOT_CRAN: "true"
         run: |
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
+          Rscript -e 'pkgbuild::compile_dll()'
+          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>$GITHUB_ENV
 
       - uses: r-lib/actions/check-r-package@v2
+        env:
+          LIBR_POLARS_BUILD: "false"
         with:
           upload-snapshots: false
           error-on: '"never"' #errors are filtered by rules below

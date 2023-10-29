@@ -22,7 +22,6 @@ concurrency:
 
 env:
   RPOLARS_FULL_FEATURES: "true"
-  RPOLARS_CARGO_CLEAN_DEPS: "true"
   RPOLARS_PROFILE: release
 
 jobs:
@@ -40,12 +39,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./.github/actions/setup
-
-      - name: find polars rust source/cache, used by Makevars in check step
+      - name: Set rust target
+        id: rust-target
         run: |
-          echo "RPOLARS_RUST_SOURCE=${PWD}/src/rust" >> $GITHUB_ENV
-        shell: bash
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+          else
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/actions/setup
+        with:
+          target: "${{ steps.rust-target.outputs.TARGET }}"
 
       - uses: actions/setup-python@v4
         with:

@@ -1,7 +1,7 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
 Version: 0.8.1.9000
-Depends: R (>= 4.1.0)
+Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
@@ -93,6 +93,7 @@ Collate:
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
+    'polars-package.R'
     'rbackground.R'
     'rlang.R'
     'rust_result.R'

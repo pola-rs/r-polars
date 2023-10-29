@@ -36,6 +36,7 @@ test.csv
 check
 inst/doc
 .DS_Store
+src/Makevars
 
 # Python
 .venv
