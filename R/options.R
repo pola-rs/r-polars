@@ -258,9 +258,9 @@ pl$disable_string_cache = function() {
 #' [`pl$with_string_cache`][pl_with_string_cache]
 #' [`pl$enable_enable_cache`][pl_enable_string_cache]
 #' @examples
-#' pl$enable_string_cache(TRUE)
+#' pl$enable_string_cache()
 #' pl$using_string_cache()
-#' pl$enable_string_cache(FALSE)
+#' pl$disable_string_cache()
 #' pl$using_string_cache()
 pl$using_string_cache = function() {
   using_string_cache()
