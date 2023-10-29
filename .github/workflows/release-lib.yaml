@@ -164,7 +164,7 @@ jobs:
         env:
           NOT_CRAN: "true"
         run: |
-          devtools::install_local()
+          devtools::install_local(force = TRUE)
           testthat::test_dir("tests")
 
   release:
