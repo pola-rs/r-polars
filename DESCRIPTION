@@ -48,7 +48,9 @@ Config/Needs/website:
 Config/Needs/dev:
     brio,
     devtools,
+    dplyr,
     RcppTOML,
+    readr,
     rextendr,
     robinlovelace/styler.equals,
     spelling,
@@ -105,3 +107,4 @@ Collate:
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
+Config/polars/LibVersion: 0.33.0
