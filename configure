@@ -43,7 +43,7 @@ check_bin_lib() {
   fi
 
   # On R-universe, we try to download the pre-built binary from GitHub releases.
-  if [ -n "${MY_UNIVERSE}" ]; then
+  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}"  ]; then
     echo ""
     echo "--------------------- [SETTING FOR R-UNIVERSE] ---------------------"
     echo "It seems that this is on R-universe <${MY_UNIVERSE}>."
