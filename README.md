@@ -106,40 +106,19 @@ install.packages(
 )
 ```
 
-#### Linux (aarch64) / macOS (aarch64)
-
-GitHub releases also provide pre-compiled packages for arm64 (aarch64)
-platforms.
-
-These are a little different from above. To install, requiring make (and
-Xcode for macOS) but not rustc / cargo. They are actually source
-releases bundled with a pre-compiled object file `./inst/libr_polars.a`.
-The final linking / building of any R packages must be done on the
-native OS/architecture, but that should take only ~20 seconds.
-
-``` r
-# Linux
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-unknown-linux-gnu.tar.gz",
-  repos = NULL
-)
-```
-
-``` r
-# macOS
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-apple-darwin.tar.gz",
-  repos = NULL
-)
-```
-
 ### Build from source
 
-For source installation, the Rust toolchain (Rust 1.70 or later) must be
-configured.
+For source installation, pre-built Rust libraries may be available if
+the environment variable `NOT_CRAN` is set to `"true"`. (Or, set
+`LIBR_POLARS_BUILD` to `"false"`)
 
-Currently you should install rust \>=1.70 or nightly-2023-07-27 (for
-full features (simd)).
+``` r
+Sys.setenv(NOT_CRAN = "true")
+install.packages("polars", repos = "https://rpolars.r-universe.dev")
+```
+
+Otherwise, the Rust library will be built from source. the Rust
+toolchain (Rust 1.70 or later) must be configured.
 
 Please check the <https://github.com/r-rust/hellorust> repository for
 about Rust code in R packages.
