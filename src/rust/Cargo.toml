@@ -1,12 +1,12 @@
 [package]
-name = 'r-polars'     # r-polars
-version = '0.1.0'     # this version no is not used
-edition = '2021'
+name = "r-polars"
+version = "0.33.0"
+edition = "2021"
 rust-version = "1.70"
+publish = false
 
 [lib]
 crate-type = ['staticlib']
-
 
 [features]
 default = []
