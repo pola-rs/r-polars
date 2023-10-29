@@ -40,3 +40,6 @@ src/Makevars
 
 # Python
 .venv
+
+# Binary files
+tools/libr_polars.a

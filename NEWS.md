@@ -1,5 +1,7 @@
 # polars (development version)
 
+# polars 0.9.0
+
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.33.2 (#417)
@@ -54,6 +56,16 @@
 - Rename `$str$str_explode()` to `$str$explode()` (#436).
 - New method `$transpose()` for `DataFrame` (#440).
 - New argument `eager` of `LazyFrame$set_optimization_toggle()` (#439).
+- `{polars}` can now be installed with "R source package with Rust library binary",
+  by a mechanism copied from [the prqlr package](https://CRAN.R-project.org/package=prqlr).
+
+  ```r
+  Sys.setenv(NOT_CRAN = "true")
+  install.packages("polars", repos = "https://rpolars.r-universe.dev")
+  ```
+
+  The URL and SHA256 hash of the available binaries are recorded in `tools/lib-sums.tsv`.
+  (#435, #448, #450, #451)
 
 # polars 0.8.1
 

@@ -3,6 +3,9 @@
 NOT_CRAN=${NOT_CRAN:-"false"}
 LIBR_POLARS_BUILD=${LIBR_POLARS_BUILD:-""}
 
+# Detect if this is on R-universe.
+MY_UNIVERSE=${MY_UNIVERSE:-""}
+
 LIBNAME="libr_polars.a"
 LIBR_POLARS_DEFAULT_PATH="$(pwd)/tools/${LIBNAME}"
 LIBR_POLARS_PATH=${LIBR_POLARS_PATH:-${LIBR_POLARS_DEFAULT_PATH}}
@@ -40,15 +43,19 @@ check_bin_lib() {
   fi
 
   # On R-universe, we try to download the pre-built binary from GitHub releases.
-  if [ -z "${NOT_CRAN}" ] && [ -n "${MY_UNIVERSE}" ]; then
+  if [ -n "${MY_UNIVERSE}" ] && [ -z "${LIBR_POLARS_BUILD}"  ]; then
+    echo ""
+    echo "--------------------- [SETTING FOR R-UNIVERSE] ---------------------"
     echo "It seems that this is on R-universe <${MY_UNIVERSE}>."
     echo "Trying to download pre-built binary."
+    echo "--------------------------------------------------------------------"
+    echo ""
     LIBR_POLARS_BUILD="false"
   fi
 
   if [ "${LIBR_POLARS_BUILD}" = "false" ] && [ -f "tools/lib-sums.tsv" ] && [ ! -f "${LIBR_POLARS_PATH}" ] ; then
     echo ""
-    echo "--------------- [ TRY TO DOWNLOAD PRE-BUILT BINARY ] ---------------"
+    echo "---------------- [TRY TO DOWNLOAD PRE-BUILT BINARY] ----------------"
     "${R_HOME}/bin${R_ARCH_BIN}/Rscript" "tools/prep-lib.R" || echo "Failed to download pre-built binary."
     echo "--------------------------------------------------------------------"
     echo ""
