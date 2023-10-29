@@ -30,6 +30,7 @@ concurrency:
 
 env:
   RPOLARS_FULL_FEATURES: "true"
+  LIBR_POLARS_BUILD: "true"
   RPOLARS_PROFILE: release
 
 jobs:
