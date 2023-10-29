@@ -74,6 +74,7 @@ jobs:
           NOT_CRAN: "true"
           TARGET: ${{ matrix.target }}
           RPOLARS_PROFILE: ${{ env.RPOLARS_PROFILE }}
+          LIBR_POLARS_BUILD: "true"
         working-directory: src
         run: |
           LIB_PATH="$(pwd)/rust/target/${TARGET}/${RPOLARS_PROFILE}/${LIB_NAME}.a"
