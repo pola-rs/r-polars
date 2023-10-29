@@ -141,6 +141,7 @@ jobs:
       - name: prep lib
         run: |
           ARTIFACT_NAME="${LIB_NAME}-${LIB_VERSION}-${LIB_TARGET}.tar.gz"
+          mkdir -p tools
           tar -xzf "libs/${ARTIFACT_NAME}" -C "tools"
           rm -rf "libs"
 
