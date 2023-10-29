@@ -54,7 +54,9 @@ ExprName_prefix = function(prefix) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
-ExprName_keep = "use_extendr_wrapper"
+ExprName_keep = function() {
+  .pr$Expr$name_keep(self)
+}
 
 # TODO contribute polars, $name$map unwrap user function errors instead of passing them back
 #' Map alias of expression with an R function
@@ -81,5 +83,5 @@ ExprName_map = function(fun) {
   }
   if (!is.function(fun)) pstop(err = "$name$map() fun must be a function")
   if (length(formals(fun)) == 0) pstop(err = "$name$map() fun must take at least one parameter")
-  .pr$Expr$name$map(self, fun)
+  .pr$Expr$name_map(self, fun)
 }

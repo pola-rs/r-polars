@@ -394,7 +394,7 @@ test_that("prefix suffix reverse", {
 
   df3 = df$select(
     pl$all(),
-    pl$all()$reverse()$prefix("reverse_")
+    pl$all()$reverse()$name$prefix("reverse_")
   )
   expect_equal(
     df3$columns,

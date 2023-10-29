@@ -18,7 +18,7 @@ dat = pl$DataFrame(mtcars)
 
 dat$select(
   pl$col("mpg"),
-  pl$col("mpg")$name$prefix("foo_"),
+  pl$col("mpg")$name$prefix("name_"),
   pl$col("cyl", "drat")$name$prefix("bar_")
 )
 }

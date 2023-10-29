@@ -4250,6 +4250,21 @@ Expr_meta = method_as_property(function() {
   expr_meta_make_sub_ns(self)
 })
 
+#' name: related methods
+#' @description
+#' Create an object namespace of all name related methods.
+#' See the individual method pages for full details
+#' @keywords Expr
+#' @return Expr
+#' @aliases name_ns
+#' @examples
+#'
+#' # missing
+#'
+Expr_name = method_as_property(function() {
+  expr_name_make_sub_ns(self)
+})
+
 #' cat: related methods
 #' @description
 #' Create an object namespace of all cat related methods.
