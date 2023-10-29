@@ -132,3 +132,64 @@ jobs:
          print(getwd());
          source("./inst/misc/filter_rcmdcheck.R");
         shell: Rscript {0}
+
+  source-with-bin-check:
+    runs-on: ${{ matrix.os }}
+
+    name: ${{ matrix.os }} with pre-built binary (${{ matrix.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - windows-latest
+          - ubuntu-latest
+        r:
+          - oldrel-1
+          - release
+          - devel
+        exclude:
+          - os: macos-latest
+            r: devel
+          - os: macos-latest
+            r: oldrel-1
+
+    env:
+      NOT_CRAN: "true"
+      LIB_SUMS_PATH: "tools/lib-sums.tsv"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for pre-built binary
+        run: |
+          if [[ -f "${LIB_SUMS_PATH}" ]]; then
+            echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
+            rm -f "$(rustup which cargo)"
+          else
+            echo "TEST_BIN_LIB=false" >>"${GITHUB_ENV}"
+          fi
+
+      - uses: r-lib/actions/setup-pandoc@v2
+        if: env.TEST_BIN_LIB == 'true'
+
+      - uses: r-lib/actions/setup-r@v2
+        if: env.TEST_BIN_LIB == 'true'
+        with:
+          r-version: ${{ matrix.r }}
+          use-public-rspm: true
+          Ncpus: "2"
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        if: env.TEST_BIN_LIB == 'true'
+        with:
+          extra-packages: any::testthat, any::remotes
+          needs: check
+
+      - name: Install with pre-built binary
+        if: env.TEST_BIN_LIB == 'true'
+        shell: Rscript {0}
+        run: |
+          remotes::install_local(force = TRUE)
+          testthat::test_dir("tests")
