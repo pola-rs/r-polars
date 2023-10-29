@@ -54,7 +54,7 @@
 - Rename `$str$str_explode()` to `$str$explode()` (#436).
 - New method `$transpose()` for `DataFrame` (#440).
 - New argument `eager` of `LazyFrame$set_optimization_toggle()` (#439).
-- `{polars}` can nov be installed with "R source package with Rust library binary",
+- `{polars}` can now be installed with "R source package with Rust library binary",
   by a mechanism copied from [the prqlr package](https://CRAN.R-project.org/package=prqlr).
 
   ```r
