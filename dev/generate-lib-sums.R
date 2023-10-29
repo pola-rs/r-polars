@@ -1,13 +1,13 @@
-base_url <- "https://github.com/pola-rs/r-polars/releases/download/"
+base_url = "https://github.com/pola-rs/r-polars/releases/download/"
 
-tag_prefix <- "lib-v"
+tag_prefix = "lib-v"
 
-lib_data_file_path <- file.path("tools", "lib-sums.tsv")
+lib_data_file_path = file.path("tools", "lib-sums.tsv")
 
-package_name <- desc::desc_get("Package")
-current_lib_version <- RcppTOML::parseTOML("src/rust/Cargo.toml")$package$version
+package_name = desc::desc_get("Package")
+current_lib_version = RcppTOML::parseTOML("src/rust/Cargo.toml")$package$version
 
-latest_released_lib_version <- gert::git_remote_ls(remote = "https://github.com/pola-rs/r-polars/") |>
+latest_released_lib_version = gert::git_remote_ls(remote = "https://github.com/pola-rs/r-polars/") |>
   dplyr::pull(ref) |>
   stringr::str_subset(stringr::str_c(r"(^refs/tags/)", tag_prefix)) |>
   stringr::str_remove(stringr::str_c(".*", tag_prefix)) |>
@@ -16,8 +16,8 @@ latest_released_lib_version <- gert::git_remote_ls(remote = "https://github.com/
   tail(1) |>
   as.character()
 
-write_bin_lib_data <- function(path, sums_url, libs_base_url) {
-  df <- readr::read_table(sums_url, col_names = FALSE, show_col_types = FALSE) |>
+write_bin_lib_data = function(path, sums_url, libs_base_url) {
+  df = readr::read_table(sums_url, col_names = FALSE, show_col_types = FALSE) |>
     dplyr::mutate(
       url = glue::glue("{libs_base_url}{X2}"),
       sha256sum = X1,
