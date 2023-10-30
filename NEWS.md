@@ -11,7 +11,7 @@
     `$str$strip_chars_end()`, `$str$split_exact()`.
   - The following methods were renamed:
     - `$str$n_chars()` -> `$str$len_chars()`
-    - `$str$lengths()` -> `$len_bytes()` 
+    - `$str$lengths()` -> `$str$len_bytes()` 
     - `$str$ljust()` -> `$str$pad_end()`
     - `$str$rjust()` -> `$str$pad_start()`
   - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
