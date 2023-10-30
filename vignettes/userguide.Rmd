@@ -217,7 +217,7 @@ df$group_by("groups")$agg(
   pl$sum("nrs"),  # sum nrs by groups
   pl$col("random")$count()$alias("count"),  # count group members
   # sum random where name != null
-  pl$col("random")$filter(pl$col("names")$is_not_null())$sum()$suffix("_sum"),
+  pl$col("random")$filter(pl$col("names")$is_not_null())$sum()$name$suffix("_sum"),
   pl$col("names")$reverse()$alias(("reversed names"))
 )
 ```
@@ -560,14 +560,14 @@ df$select(
 # Then we select everything in reversed order
 df$select(
   pl$all(),
-  pl$all()$reverse()$suffix("_reverse")
+  pl$all()$reverse()$name$suffix("_reverse")
 )
 
 # All expressions run in parallel
 # Single valued `Series` are broadcasted to the shape of the `DataFrame`
 df$select(
   pl$all(),
-  pl$all()$sum()$suffix("_sum") # This is a single valued Series broadcasted to the shape of the DataFrame
+  pl$all()$sum()$name$suffix("_sum") # This is a single valued Series broadcasted to the shape of the DataFrame
 )
 
 # Filters can also be applied within an expression
