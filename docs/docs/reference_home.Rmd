@@ -78,9 +78,9 @@ are returned.
 ```{r}
 test$group_by(pl$col("cyl"))$agg(
   pl$col("mpg"), # varying number of values
-  pl$col("mpg")$slice(0, 2)$suffix("_sliced"), # two values
+  pl$col("mpg")$slice(0, 2)$name$suffix("_sliced"), # two values
   # aggregated to one value and implicitly unpacks list
-  pl$col("mpg")$sum()$suffix("_summed")
+  pl$col("mpg")$sum()$name$suffix("_summed")
 )
 ```
 

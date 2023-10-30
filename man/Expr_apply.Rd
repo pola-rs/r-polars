@@ -86,7 +86,9 @@ e_add10 = e_all$apply(\(x)  {
 })$name$suffix("_sum")
 # quite silly index into alphabet(letters) by ceil of float value
 # must set return_type as not the same as input
-e_letter = e_all$apply(\(x) letters[ceiling(x)], return_type = pl$dtypes$Utf8)$name$suffix("_letter")
+e_letter = e_all$apply(\(x) {
+  letters[ceiling(x)]
+}, return_type = pl$dtypes$Utf8)$name$suffix("_letter")
 pl$DataFrame(iris)$select(e_add10, e_letter)
 
 
