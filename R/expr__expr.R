@@ -793,8 +793,8 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' # apply over groups - normal usage
 #' # s is a series of all values for one column within group, here Species
 #' e_all = pl$all() # perform groupby agg on all columns otherwise e.g. pl$col("Sepal.Length")
-#' e_sum = e_all$apply(\(s)  sum(s$to_r()))$suffix("_sum")
-#' e_head = e_all$apply(\(s) head(s$to_r(), 2))$suffix("_head")
+#' e_sum = e_all$apply(\(s)  sum(s$to_r()))$name$suffix("_sum")
+#' e_head = e_all$apply(\(s) head(s$to_r(), 2))$name$suffix("_head")
 #' pl$DataFrame(iris)$group_by("Species")$agg(e_sum, e_head)
 #'
 #'
@@ -805,10 +805,10 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #' e_all = pl$col(pl$dtypes$Float64)
 #' e_add10 = e_all$apply(\(x)  {
 #'   x + 10
-#' })$suffix("_sum")
+#' })$name$suffix("_sum")
 #' # quite silly index into alphabet(letters) by ceil of float value
 #' # must set return_type as not the same as input
-#' e_letter = e_all$apply(\(x) letters[ceiling(x)], return_type = pl$dtypes$Utf8)$suffix("_letter")
+#' e_letter = e_all$apply(\(x) letters[ceiling(x)], return_type = pl$dtypes$Utf8)$name$suffix("_letter")
 #' pl$DataFrame(iris)$select(e_add10, e_letter)
 #'
 #'

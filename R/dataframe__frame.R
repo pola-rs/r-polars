@@ -848,7 +848,7 @@ DataFrame_filter = function(bool_expr) {
 #' gb
 #'
 #' gb$agg(
-#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
