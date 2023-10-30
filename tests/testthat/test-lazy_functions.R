@@ -171,10 +171,8 @@ test_that("pl$implode", {
 
   ctx = pl$implode(42) |> get_err_ctx()
 
-  expect_identical(ctx$BadArgument,"name")
-  expect_identical(ctx$When,"constructing a Column Expr")
-
-
+  expect_identical(ctx$BadArgument, "name")
+  expect_identical(ctx$When, "constructing a Column Expr")
 })
 
 

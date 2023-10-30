@@ -32,8 +32,7 @@ pl$scan_parquet = function(
     row_count_offset = 0L, # : int = 0,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE, # : bool = False,
-    hive_partitioning = TRUE
-    ) { #-> LazyFrame
+    hive_partitioning = TRUE) { #-> LazyFrame
 
   parallel = parallel[1L]
   if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {

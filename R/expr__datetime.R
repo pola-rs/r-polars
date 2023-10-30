@@ -1035,12 +1035,11 @@ ExprDT_offset_by = function(by) {
 #' @name ExprDT_time
 #' @examples
 #' df = pl$DataFrame(dates = pl$date_range(
-#'     as.Date("2000-1-1"),
-#'     as.Date("2000-1-2"),
-#'     "1h",
-#'     eager = TRUE
-#'   )
-#' )
+#'   as.Date("2000-1-1"),
+#'   as.Date("2000-1-2"),
+#'   "1h",
+#'   eager = TRUE
+#' ))
 #'
 #' df$with_columns(times = pl$col("dates")$dt$time())
 ExprDT_time = function() {

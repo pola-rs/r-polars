@@ -1811,7 +1811,8 @@ impl Expr {
                 .expect("internal error: this is not an R function");
 
             let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
-                let es = format!("in $name$map(): user function raised this error: {:?}", err).into();
+                let es =
+                    format!("in $name$map(): user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
             })?;
 

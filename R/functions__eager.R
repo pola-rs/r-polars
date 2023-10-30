@@ -313,7 +313,7 @@ difftime_to_pl_duration = function(dft) {
 #'
 pl$raw_list = function(...) {
   l = list2(...)
-  if ( any(!sapply(l, is.raw) & !sapply(l, is.null))) {
+  if (any(!sapply(l, is.raw) & !sapply(l, is.null))) {
     Err_plain("some elements where not raw or NULL") |>
       unwrap("in pl$raw_list():")
   }

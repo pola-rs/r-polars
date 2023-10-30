@@ -1,5 +1,4 @@
 test_that("string cache", {
-
   # test using and enable
   before = pl$using_string_cache()
   if (before) {

@@ -727,14 +727,6 @@ Expr$exclude <- function(columns) .Call(wrap__Expr__exclude, self, columns)
 
 Expr$exclude_dtype <- function(columns) .Call(wrap__Expr__exclude_dtype, self, columns)
 
-Expr$name_keep <- function() .Call(wrap__Expr__name_keep, self)
-
-Expr$name_suffix <- function(suffix) .Call(wrap__Expr__name_suffix, self, suffix)
-
-Expr$name_prefix <- function(prefix) .Call(wrap__Expr__name_prefix, self, prefix)
-
-Expr$name_map <- function(lambda) .Call(wrap__Expr__name_map, self, lambda)
-
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
 Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
@@ -826,6 +818,14 @@ Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 Expr$approx_n_unique <- function() .Call(wrap__Expr__approx_n_unique, self)
 
 Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+
+Expr$name_keep <- function() .Call(wrap__Expr__name_keep, self)
+
+Expr$name_suffix <- function(suffix) .Call(wrap__Expr__name_suffix, self, suffix)
+
+Expr$name_prefix <- function(prefix) .Call(wrap__Expr__name_prefix, self, prefix)
+
+Expr$name_map <- function(lambda) .Call(wrap__Expr__name_map, self, lambda)
 
 Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)
 
@@ -1178,8 +1178,6 @@ Series$ceil <- function() .Call(wrap__Series__ceil, self)
 Series$floor <- function() .Call(wrap__Series__floor, self)
 
 Series$print <- function() invisible(.Call(wrap__Series__print, self))
-
-Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
 
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 

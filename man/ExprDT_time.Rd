@@ -11,12 +11,11 @@ This only works on Datetime Series, it will error on Date Series.
 }
 \examples{
 df = pl$DataFrame(dates = pl$date_range(
-    as.Date("2000-1-1"),
-    as.Date("2000-1-2"),
-    "1h",
-    eager = TRUE
-  )
-)
+  as.Date("2000-1-1"),
+  as.Date("2000-1-2"),
+  "1h",
+  eager = TRUE
+))
 
 df$with_columns(times = pl$col("dates")$dt$time())
 }

@@ -74,7 +74,7 @@ ExprName_keep = function() {
 ExprName_map = function(fun) {
   if (
     !polars_optenv$no_messages &&
-    !exists(".warn_map_alias", envir = runtime_state)
+      !exists(".warn_map_alias", envir = runtime_state)
   ) {
     assign(".warn_map_alias", 1L, envir = runtime_state)
     # it does not seem map alias is executed multi-threaded but rather immediately during building lazy query
