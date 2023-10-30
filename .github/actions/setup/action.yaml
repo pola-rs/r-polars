@@ -30,6 +30,12 @@ runs:
             libxml2-dev \
             libssl-dev
 
+      - name: Update Rust
+        if: inputs.rust-nightly != 'true' && env.RPOLARS_FULL_FEATURES != 'true'
+        shell: bash
+        run: |
+          rustup update
+
       - name: Set up Rust nightly toolchain
         if: inputs.rust-nightly == 'true' || env.RPOLARS_FULL_FEATURES == 'true'
         shell: bash
