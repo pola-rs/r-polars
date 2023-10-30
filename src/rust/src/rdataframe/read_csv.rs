@@ -3,6 +3,7 @@
 use crate::rdatatype::DataTypeVector;
 
 use crate::lazy::dataframe::LazyFrame;
+use std::path::PathBuf;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
@@ -43,8 +44,9 @@ impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
 
 #[allow(clippy::too_many_arguments)]
 #[extendr]
-pub fn rlazy_csv_reader(
-    path: String,
+pub fn new_from_csv(
+    path: Option<PathBuf>,
+    paths: Vec<PathBuf>,
     sep: &str,
     has_header: bool,
     ignore_errors: bool,
@@ -95,9 +97,15 @@ pub fn rlazy_csv_reader(
             offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
         });
 
+    let r = if let Some(path) = path.as_ref() {
+        pl::LazyCsvReader::new(path)
+    } else {
+        pl::LazyCsvReader::new_paths(paths.into())
+    };
+
     //TODO expose rework latest rust-polars features
     let _ = ignore_errors;
-    let r = pl::LazyCsvReader::new(path)
+    let mut r = r
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
         .with_delimiter(sep.as_bytes()[0])
         .has_header(has_header)
@@ -118,13 +126,13 @@ pub fn rlazy_csv_reader(
     let result = r
         .finish()
         .map(LazyFrame)
-        .map_err(|err| format!("in rlazy_csv_reader: {:?}", err));
+        .map_err(|err| format!("in new_from_csv: {:?}", err));
 
     r_result_list(result)
 }
 
 extendr_module! {
     mod read_csv;
-    fn rlazy_csv_reader;
+    fn new_from_csv;
     impl RNullValues;
 }

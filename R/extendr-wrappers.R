@@ -75,7 +75,7 @@ hor_concat_df <- function(l) .Call(wrap__hor_concat_df, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
-rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__rlazy_csv_reader, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
+new_from_csv <- function(path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates) .Call(wrap__new_from_csv, path, sep, has_header, ignore_errors, skip_rows, n_rows, cache, overwrite_dtype, low_memory, comment_char, quote_char, null_values, infer_schema_length, skip_rows_after_header, encoding, row_count_name, row_count_offset, parse_dates)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 

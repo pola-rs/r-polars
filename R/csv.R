@@ -80,34 +80,13 @@ pl$scan_csv = function(
   args = as.list(environment())
   args[["reuse_downloaded"]] = NULL
 
-  path = check_is_link(path, reuse_downloaded = reuse_downloaded)
-  args[["path"]] = path.expand(path)
+  # path = check_is_link(path, reuse_downloaded = reuse_downloaded)
+  # args[["path"]] = path.expand(path)
 
   # overwrite_dtype: convert named list of DataType's to DataTypeVector obj
   if (!is.null(args$overwrite_dtype)) {
-    owdtype = args$overwrite_dtype
-
-    if (!is.list(owdtype) || !is_named(owdtype)) {
-      stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
-    }
-    datatype_vector = DataTypeVector$new() # mutable
-    mapply(
-      name = names(owdtype),
-      type = unname(owdtype),
-      FUN = function(name, type) {
-        # convert possible string to datatype
-        if (is_string(type)) {
-          type = DataType$new(type)
-        }
-        if (!inherits(type, "RPolarsDataType")) {
-          stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
-        }
-        datatype_vector$push(name, type)
-      }
-    )
-    args$overwrite_dtype = datatype_vector
+    args$overwrite_dtype = list_to_datatype_vector(args$overwrite_dtype)
   }
-
 
   # null_values: convert string or un/named  char vec into RNullValues obj
   if (!is.null(args$null_values)) {
@@ -136,8 +115,9 @@ pl$scan_csv = function(
   }
 
   ## call low level function with args
-  check_no_missing_args(rlazy_csv_reader, args)
-  unwrap(do.call(rlazy_csv_reader, args))
+  check_no_missing_args(new_from_csv, args)
+  do.call(new_from_csv, args)
+  unwrap(do.call(new_from_csv, args))
 }
 
 #' Shortcut for pl$scan_csv()$collect()
@@ -206,4 +186,27 @@ check_is_link = function(path, reuse_downloaded) {
   }
 
   path
+}
+
+
+list_to_datatype_vector = function(x) {
+  if (!is.list(x) || !is_named(x)) {
+    stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
+  }
+  datatype_vector = DataTypeVector$new() # mutable
+  mapply(
+    name = names(x),
+    type = unname(x),
+    FUN = function(name, type) {
+      # convert possible string to datatype
+      if (is_string(type)) {
+        type = DataType$new(type)
+      }
+      if (!inherits(type, "RPolarsDataType")) {
+        stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
+      }
+      datatype_vector$push(name, type)
+    }
+  )
+  datatype_vector
 }
