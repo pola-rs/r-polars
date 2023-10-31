@@ -346,13 +346,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        errno-dragonfly
-Repository:  https://github.com/mneumann/errno-dragonfly-rs
-Authors:     Michael Neumann
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        ethnum
 Repository:  https://github.com/nlordell/ethnum-rs
 Authors:     Nicholas Rodrigues Lordello
@@ -367,16 +360,9 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        extendr-engine
-Repository:  https://github.com/extendr/extendr
-Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        extendr-macros
 Repository:  https://github.com/extendr/extendr
-Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov
+Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
 License:     MIT
 
 -------------------------------------------------------------
@@ -878,13 +864,6 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        mio
-Repository:  https://github.com/tokio-rs/mio
-Authors:     Carl Lerche, Thomas de Zeeuw, Tokio Contributors
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        miow
 Repository:  https://github.com/alexcrichton/miow
 Authors:     Alex Crichton
@@ -1263,6 +1242,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        regex-syntax
+Repository:  https://github.com/rust-lang/regex/tree/master/regex-syntax
+Authors:     The Rust Project Developers, Andrew Gallant
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        rle-decode-fast
 Repository:  https://github.com/WanzenBug/rle-decode-helper
 Authors:     Moritz Wanzenböck
@@ -1337,27 +1323,6 @@ Name:        sharded-slab
 Repository:  https://github.com/hawkw/sharded-slab
 Authors:     Eliza Weisman
 License:     MIT
-
--------------------------------------------------------------
-
-Name:        signal-hook
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Thomas Himmelstoss
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        signal-hook-mio
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Thomas Himmelstoss
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        signal-hook-registry
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Masaki Hara
-License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -1460,13 +1425,6 @@ License:     Apache-2.0 OR MIT
 -------------------------------------------------------------
 
 Name:        strum
-Repository:  https://github.com/Peternator7/strum
-Authors:     Peter Glotfelty
-License:     MIT
-
--------------------------------------------------------------
-
-Name:        strum_macros
 Repository:  https://github.com/Peternator7/strum
 Authors:     Peter Glotfelty
 License:     MIT
@@ -1683,6 +1641,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        windows-core
+Repository:  https://github.com/microsoft/windows-rs
+Authors:     Microsoft
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        windows-sys
 Repository:  https://github.com/microsoft/windows-rs
 Authors:     Microsoft
@@ -1757,6 +1722,20 @@ Name:        xxhash-rust
 Repository:  https://github.com/DoumanAsh/xxhash-rust
 Authors:     Douman
 License:     BSL-1.0
+
+-------------------------------------------------------------
+
+Name:        zerocopy
+Repository:  https://github.com/google/zerocopy
+Authors:     Joshua Liebow-Feeser
+License:     Apache-2.0 OR BSD-2-Clause OR MIT
+
+-------------------------------------------------------------
+
+Name:        zerocopy-derive
+Repository:  https://github.com/google/zerocopy
+Authors:     Joshua Liebow-Feeser
+License:     Apache-2.0 OR BSD-2-Clause OR MIT
 
 -------------------------------------------------------------
 
