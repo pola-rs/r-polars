@@ -41,3 +41,22 @@ test_that("string cache", {
   expect_identical(before, after)
   expect_true(during)
 })
+
+
+test_that("RPolarsStringCacheHolder", {
+  pl$disable_string_cache()
+
+  # hold and release token explicitly
+  token = .pr$RPolarsStringCacheHolder$hold()
+  expect_true(pl$using_string_cache())
+  token$release()
+  expect_false(pl$using_string_cache())
+
+  #hold and release token via garbage collection leads to drop
+  token = .pr$RPolarsStringCacheHolder$hold()
+  expect_true(pl$using_string_cache())
+  rm(token)
+  expect_true(pl$using_string_cache())
+  gc()
+  expect_false(pl$using_string_cache())
+})

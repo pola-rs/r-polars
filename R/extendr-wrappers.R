@@ -1193,5 +1193,17 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 #' @export
 `[[.Series` <- `$.Series`
 
+RPolarsStringCacheHolder <- new.env(parent = emptyenv())
+
+RPolarsStringCacheHolder$hold <- function() .Call(wrap__RPolarsStringCacheHolder__hold)
+
+RPolarsStringCacheHolder$release <- function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+
+#' @export
+`$.RPolarsStringCacheHolder` <- function (self, name) { func <- RPolarsStringCacheHolder[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsStringCacheHolder` <- `$.RPolarsStringCacheHolder`
+
 
 # nolint end

@@ -286,10 +286,8 @@ pl$using_string_cache = function() {
 #' })
 #' pl$concat(list(df1, df2))
 pl$with_string_cache = function(expr) {
-  if (!pl$using_string_cache()) {
-    pl$enable_string_cache()
-    on.exit(pl$disable_string_cache())
-  }
+  token = .pr$RPolarsStringCacheHolder$hold()
+  on.exit(token$release()) # if token was not release on exit, would release later on gc()
   eval(expr, envir = parent.frame())
 }
 
