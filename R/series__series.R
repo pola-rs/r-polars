@@ -564,23 +564,22 @@ Series_arg_min = "use_extendr_wrapper"
 #'
 Series_clone = "use_extendr_wrapper"
 
-# TODO: uncomment this section
-# #' Cumulative sum
-# #' @description  Get an array with the cumulative sum computed at every element.
-# #' @param reverse bool, default FALSE, if true roll over vector from back to forth
-# #' @return Series
-# #' @keywords Series
-# #' @aliases Series_cumsum
-# #' @name Series_cumsum
-# #' @details
-# #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-# #' Int64 before summing to prevent overflow issues.
-# #' @examples
-# #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
-# #' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
-# Series_cumsum = function(reverse = FALSE) {
-#   .pr$Series$cumsum(self, reverse)
-# }
+#' Cumulative sum
+#' @description  Get an array with the cumulative sum computed at every element.
+#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#' @return Series
+#' @keywords Series
+#' @aliases Series_cumsum
+#' @name Series_cumsum
+#' @details
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
+#' Int64 before summing to prevent overflow issues.
+#' @examples
+#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
+#' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
+Series_cumsum = function(reverse = FALSE) {
+  .pr$Series$cumsum(self, reverse) |> unwrap("in $cumsum()")
+}
 
 #' Sum
 #' @description  Reduce Series with sum

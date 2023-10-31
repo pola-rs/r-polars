@@ -1179,6 +1179,8 @@ Series$floor <- function() .Call(wrap__Series__floor, self)
 
 Series$print <- function() invisible(.Call(wrap__Series__print, self))
 
+Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
+
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 
 Series$set_sorted_mut <- function(descending) invisible(.Call(wrap__Series__set_sorted_mut, self, descending))
