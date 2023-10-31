@@ -2,7 +2,7 @@
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
-- rust-polars is updated to 0.34 (#442)
+- rust-polars is updated to 2023-10-25 unreleased version (#442)
   - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
     `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
   - `$dt$round()` gains an argument `ambiguous`.
@@ -11,7 +11,7 @@
     `$str$strip_chars_end()`, `$str$split_exact()`.
   - The following methods were renamed:
     - `$str$n_chars()` -> `$str$len_chars()`
-    - `$str$lengths()` -> `$str$len_bytes()` 
+    - `$str$lengths()` -> `$str$len_bytes()`
     - `$str$ljust()` -> `$str$pad_end()`
     - `$str$rjust()` -> `$str$pad_start()`
   - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
