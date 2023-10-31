@@ -55,7 +55,6 @@ either = "1"
 
 [dependencies.polars]
 features = [
-  "cum_agg",
   #"binary_encoding",  #new feature to impl
   "rolling_window",
   "json",
