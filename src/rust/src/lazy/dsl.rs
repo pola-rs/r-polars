@@ -263,12 +263,12 @@ impl Expr {
             .into()
     }
 
-    pub fn top_k(&self, k: f64) -> Self {
-        self.0.clone().top_k(k as usize).into()
+    pub fn top_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().top_k(robj_to!(PLExpr, k)?).into())
     }
 
-    pub fn bottom_k(&self, k: f64) -> Self {
-        self.0.clone().bottom_k(k as usize).into()
+    pub fn bottom_k(&self, k: Robj) -> RResult<Self> {
+        Ok(self.0.clone().bottom_k(robj_to!(PLExpr, k)?).into())
     }
 
     pub fn arg_max(&self) -> Self {
@@ -720,11 +720,8 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn pct_change(&self, n_float: f64) -> List {
-        let expr_res = try_f64_into_i64(n_float)
-            .map(|n| Expr(self.0.clone().pct_change(n)))
-            .map_err(|err| format!("pct_change: {}", err));
-        r_result_list(expr_res)
+    fn pct_change(&self, n_float: Robj) -> RResult<Self> {
+        Ok(Expr(self.0.clone().pct_change(robj_to!(PLExpr, n_float)?)))
     }
 
     fn skew(&self, bias: bool) -> Self {
@@ -736,52 +733,20 @@ impl Expr {
 
     //Note clip is implemented a bit different that py-polars
     //instead of PyValue -> AnyValue , it goes Robj -> Literal Expression -> AnyValue
-    pub fn clip(&self, min: &Expr, max: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match (min.clone().0, max.clone().0) {
-                (pl::Expr::Literal(mi), pl::Expr::Literal(ma)) => {
-                    let av_min = literal_to_any_value(mi)?;
-                    let av_max = literal_to_any_value(ma)?;
-                    Ok(Expr(self.0.clone().clip(av_min, av_max)))
-                }
-                (mi, pl::Expr::Literal(_)) => Err(format!("min [{:?}] was not a literal:", mi)),
-                (pl::Expr::Literal(_), ma) => Err(format!("max [{:?}] was not a literal:", ma)),
-                (mi, ma) => Err(format!(
-                    "neither min [{:?}] or max[{:?}] were literals:",
-                    mi, ma
-                )),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip(&self, min: Robj, max: Robj) -> RResult<Self> {
+        let av_min = robj_to!(PLExpr, min)?;
+        let av_max = robj_to!(PLExpr, max)?;
+        Ok(Expr(self.0.clone().clip(av_min, av_max)))
     }
 
-    pub fn clip_min(&self, min: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match min.clone().0 {
-                pl::Expr::Literal(mi) => {
-                    let av_min = literal_to_any_value(mi)?;
-                    Ok(Expr(self.0.clone().clip_min(av_min)))
-                }
-                mi => Err(format!("min [{:?}] was not a literal:", mi)),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip_min(&self, min: Robj) -> RResult<Self> {
+        let av_min = robj_to!(PLExpr, min)?;
+        Ok(Expr(self.0.clone().clip_min(av_min)))
     }
 
-    pub fn clip_max(&self, max: &Expr) -> List {
-        use crate::rdatatype::literal_to_any_value;
-        let expr_res = || -> Result<Expr, String> {
-            match max.clone().0 {
-                pl::Expr::Literal(ma) => {
-                    let av_max = literal_to_any_value(ma)?;
-                    Ok(Expr(self.0.clone().clip_max(av_max)))
-                }
-                ma => Err(format!("max [{:?}] was not a literal:", ma)),
-            }
-        }();
-        r_result_list(expr_res)
+    pub fn clip_max(&self, max: Robj) -> RResult<Self> {
+        let av_max = robj_to!(PLExpr, max)?;
+        Ok(Expr(self.0.clone().clip_max(av_max)))
     }
 
     pub fn lower_bound(&self) -> Self {
@@ -870,7 +835,7 @@ impl Expr {
             .0
             .clone()
             .sample_n(
-                robj_to!(usize, n)?,
+                robj_to!(PLExpr, n)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -889,7 +854,7 @@ impl Expr {
             .0
             .clone()
             .sample_frac(
-                robj_to!(f64, frac)?,
+                robj_to!(PLExpr, frac)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -1039,7 +1004,7 @@ impl Expr {
     //arr/list methods
 
     fn list_lengths(&self) -> Self {
-        self.0.clone().list().lengths().into()
+        self.0.clone().list().len().into()
     }
 
     pub fn list_contains(&self, other: &Expr) -> Expr {
@@ -1105,8 +1070,13 @@ impl Expr {
         self.0.clone().list().get(index.clone().0).into()
     }
 
-    fn list_join(&self, separator: &str) -> Self {
-        self.0.clone().list().join(separator).into()
+    fn list_join(&self, separator: Robj) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .list()
+            .join(robj_to!(PLExpr, separator)?)
+            .into())
     }
 
     fn list_arg_min(&self) -> Self {
@@ -1128,10 +1098,10 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn list_shift(&self, periods: f64) -> List {
+    fn list_shift(&self, periods: Robj) -> List {
         let expr_res = || -> Result<Expr, String> {
             Ok(Expr(
-                self.0.clone().list().shift(try_f64_into_i64(periods)?),
+                self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
             ))
         }()
         .map_err(|err| format!("list.shift: {}", err));
@@ -1291,17 +1261,14 @@ impl Expr {
             .clone()
             .dt()
             .truncate(
-                pl::TruncateOptions {
-                    every: robj_to!(pl_duration_string, every)?,
-                    offset: robj_to!(Option, pl_duration_string, offset)?
-                        .unwrap_or_else(|| "0ns".into()),
-                },
+                robj_to!(PLExpr, every)?,
+                robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
                 robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
 
-    pub fn dt_round(&self, every: Robj, offset: Robj) -> RResult<Self> {
+    pub fn dt_round(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1309,6 +1276,7 @@ impl Expr {
             .round(
                 robj_to!(pl_duration_string, every)?,
                 robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
+                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1520,10 +1488,6 @@ impl Expr {
 
     pub fn exclude_dtype(&self, columns: &DataTypeVector) -> Self {
         self.0.clone().exclude_dtype(columns.dtv_to_vec()).into()
-    }
-
-    pub fn keep_name(&self) -> Self {
-        self.0.clone().keep_name().into()
     }
 
     pub fn alias(&self, s: &str) -> Self {
@@ -1802,7 +1766,20 @@ impl Expr {
         self.clone().0.is_first_distinct().into()
     }
 
-    pub fn map_alias(&self, lambda: Robj) -> Self {
+    // name methods
+    pub fn name_keep(&self) -> Self {
+        self.0.clone().name().keep().into()
+    }
+
+    fn name_suffix(&self, suffix: String) -> Self {
+        self.0.clone().name().suffix(suffix.as_str()).into()
+    }
+
+    fn name_prefix(&self, prefix: String) -> Self {
+        self.0.clone().name().prefix(prefix.as_str()).into()
+    }
+
+    pub fn name_map(&self, lambda: Robj) -> Self {
         //find a way not to push lambda everytime to main thread handler
         //safety only accessed in main thread, can be temp owned by other threads
         let probj = ParRObj(lambda);
@@ -1834,14 +1811,15 @@ impl Expr {
                 .expect("internal error: this is not an R function");
 
             let newname_robj = rfun.call(pairlist!(name)).map_err(|err| {
-                let es = format!("in map_alias: user function raised this error: {:?}", err).into();
+                let es =
+                    format!("in $name$map(): user function raised this error: {:?}", err).into();
                 pl_error::ComputeError(es)
             })?;
 
             newname_robj
                 .as_str()
                 .ok_or_else(|| {
-                    let es = "in map_alias: R function return value was not a string"
+                    let es = "in $name$map(): R function return value was not a string"
                         .to_string()
                         .into();
                     pl_error::ComputeError(es)
@@ -1849,40 +1827,32 @@ impl Expr {
                 .map(|str| str.to_string())
         };
 
-        self.clone().0.map_alias(f).into()
-    }
-
-    fn suffix(&self, suffix: String) -> Self {
-        self.0.clone().suffix(suffix.as_str()).into()
-    }
-
-    fn prefix(&self, prefix: String) -> Self {
-        self.0.clone().prefix(prefix.as_str()).into()
+        self.clone().0.name().map(f).into()
     }
 
     //string methods
-    pub fn str_lengths(&self) -> Self {
+    pub fn str_len_bytes(&self) -> Self {
         use pl::*;
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
-            Ok(Some(ca.str_lengths().into_series()))
+            Ok(Some(ca.str_len_bytes().into_series()))
         };
         self.clone()
             .0
             .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
-            .with_fmt("str.lengths")
+            .with_fmt("str.len_bytes")
             .into()
     }
 
-    pub fn str_n_chars(&self) -> Self {
+    pub fn str_len_chars(&self) -> Self {
         let function = |s: pl::Series| {
             let ca = s.utf8()?;
-            Ok(Some(ca.str_n_chars().into_series()))
+            Ok(Some(ca.str_len_chars().into_series()))
         };
         self.clone()
             .0
             .map(function, pl::GetOutput::from_type(pl::DataType::UInt32))
-            .with_fmt("str.n_chars")
+            .with_fmt("str.len_chars")
             .into()
     }
 
@@ -1902,60 +1872,58 @@ impl Expr {
         f_str_to_titlecase(&self)
     }
 
-    pub fn str_strip_chars(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars(null_to_opt(matches))
-            .into()
+            .strip_chars(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
-    pub fn str_strip_chars_end(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars_end(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars_end(null_to_opt(matches))
-            .into()
+            .strip_chars_end(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
-    pub fn str_strip_chars_start(&self, matches: Nullable<String>) -> Self {
-        self.0
+    pub fn str_strip_chars_start(&self, matches: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .strip_chars_start(null_to_opt(matches))
-            .into()
+            .strip_chars_start(robj_to!(PLExpr, matches)?)
+            .into())
     }
 
-    pub fn str_zfill(&self, alignment: Robj) -> List {
-        let res = robj_to!(usize, alignment, "in str$zfill()")
-            .map(|alignment| Expr(self.clone().0.str().zfill(alignment)));
-        r_result_list(res)
+    pub fn str_zfill(&self, alignment: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .zfill(robj_to!(usize, alignment)?)
+            .into())
     }
 
-    pub fn str_ljust(&self, width: Robj, fillchar: Robj) -> List {
-        let res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .ljust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
-            ))
-        }()
-        .map_err(|err| format!("in str$ljust: {:?}", err));
-        r_result_list(res)
+    pub fn str_pad_end(&self, width: Robj, fillchar: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .pad_end(robj_to!(usize, width)?, robj_to!(char, fillchar)?)
+            .into())
     }
 
-    pub fn str_rjust(&self, width: Robj, fillchar: Robj) -> List {
-        let res = || -> Result<Expr, String> {
-            Ok(Expr(
-                self.clone()
-                    .0
-                    .str()
-                    .rjust(robj_to!(usize, width)?, robj_to!(char, fillchar)?),
-            ))
-        }()
-        .map_err(|err| format!("in str$rjust: {:?}", err));
-        r_result_list(res)
+    pub fn str_pad_start(&self, width: Robj, fillchar: Robj) -> RResult<Self> {
+        Ok(self
+            .clone()
+            .0
+            .str()
+            .pad_start(robj_to!(usize, width)?, robj_to!(char, fillchar)?)
+            .into())
     }
 
     pub fn str_contains(&self, pat: &Expr, literal: Nullable<bool>, strict: bool) -> Self {
@@ -2093,7 +2061,7 @@ impl Expr {
     //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
     //handled on rust side anyways
     pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> Result<Expr, String> {
-        let by = robj_to!(str, by)?;
+        let by = robj_to!(PLExpr, by)?;
         let n = robj_to!(usize, n)?;
         let inclusive = robj_to!(bool, inclusive)?;
         Ok(if inclusive {
@@ -2109,7 +2077,7 @@ impl Expr {
             .0
             .clone()
             .str()
-            .splitn(robj_to!(str, by)?, robj_to!(usize, n)?)
+            .splitn(robj_to!(PLExpr, by)?, robj_to!(usize, n)?)
             .into())
     }
 
@@ -2148,18 +2116,7 @@ impl Expr {
         let offset = robj_to!(i64, offset)?;
         let length = robj_to!(Option, u64, length)?;
 
-        use pl::*;
-        let function = move |s: Series| {
-            let ca = s.utf8()?;
-            Ok(Some(ca.str_slice(offset, length)?.into_series()))
-        };
-
-        Ok(self
-            .clone()
-            .0
-            .map(function, pl::GetOutput::from_type(DataType::Utf8))
-            .with_fmt("str.slice")
-            .into())
+        Ok(self.clone().0.str().slice(offset, length).into())
     }
 
     pub fn str_explode(&self) -> Result<Expr, String> {

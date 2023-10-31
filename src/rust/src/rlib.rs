@@ -80,7 +80,7 @@ fn r_date_range_lazy(
 //for now just use inner directly
 #[extendr]
 fn as_struct(exprs: Robj) -> Result<Expr, String> {
-    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?.as_slice()).into())
+    Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?).into())
 }
 
 #[extendr]

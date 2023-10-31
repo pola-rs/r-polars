@@ -134,7 +134,8 @@ make_doc_hierarchy = function() {
   # order determines order in sidebar
   classes = c(
     "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
-    "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT", "ExprMeta", "ExprStr", "ExprStruct",
+    "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
+    "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
     "Expr", "IO", "RThreadHandle"
   )
   for (cl in classes) {
@@ -153,6 +154,7 @@ make_doc_hierarchy = function() {
     "ExprCat" = "Categorical",
     "ExprDT" = "DateTime",
     "ExprMeta" = "Meta",
+    "ExprName" = "Name",
     "ExprStr" = "String",
     "ExprStruct" = "Struct"
   )

@@ -27,17 +27,29 @@ fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RRe
 }
 
 #[extendr]
-fn diag_concat_lf(l: Robj, rechunk: bool, parallel: bool) -> RResult<LazyFrame> {
+fn concat_lf_diagonal(
+    l: Robj,
+    rechunk: bool,
+    parallel: bool,
+    to_supertypes: bool,
+) -> RResult<LazyFrame> {
     let vlf = robj_to!(Vec, PLLazyFrame, l)?;
-    dsl::diag_concat_lf(vlf, rechunk, parallel)
-        .map_err(polars_to_rpolars_err)
-        .map(LazyFrame)
+    dsl::concat_lf_diagonal(
+        vlf,
+        pl::UnionArgs {
+            rechunk,
+            parallel,
+            to_supertypes,
+        },
+    )
+    .map_err(polars_to_rpolars_err)
+    .map(LazyFrame)
 }
 
 #[extendr]
-pub fn hor_concat_df(l: Robj) -> RResult<DataFrame> {
+pub fn concat_df_horizontal(l: Robj) -> RResult<DataFrame> {
     let df_vec = robj_to!(Vec, PLDataFrame, l)?;
-    pl_functions::hor_concat_df(&df_vec)
+    pl_functions::concat_df_horizontal(&df_vec)
         .map_err(polars_to_rpolars_err)
         .map(DataFrame)
 }
@@ -88,7 +100,7 @@ pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<Ser
 extendr_module! {
     mod concat;
     fn concat_lf;
-    fn diag_concat_lf;
-    fn hor_concat_df;
+    fn concat_lf_diagonal;
+    fn concat_df_horizontal;
     fn concat_series;
 }

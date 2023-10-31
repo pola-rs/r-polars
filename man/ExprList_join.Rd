@@ -8,7 +8,7 @@
 function
 }
 \arguments{
-\item{separator}{string to separate the items with}
+\item{separator}{String to separate the items with. Can be an Expr.}
 }
 \value{
 Series of dtype Utf8

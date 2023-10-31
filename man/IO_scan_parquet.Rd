@@ -19,6 +19,9 @@
 \item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
 \item{low_memory}{bool, try reduce memory footprint}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
 }
 \value{
 LazyFrame
@@ -27,6 +30,22 @@ LazyFrame
 Scan a parquet file
 }
 \examples{
-# TODO write parquet example
+\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+temp_dir = tempfile()
+# Write a hive-style partitioned parquet dataset
+arrow::write_dataset(
+  mtcars,
+  temp_dir,
+  partitioning = c("cyl", "gear"),
+  format = "parquet",
+  hive_style = TRUE
+)
+list.files(temp_dir, recursive = TRUE)
+
+# Read the dataset
+pl$scan_parquet(
+  file.path(temp_dir, "**/*.parquet")
+)$collect()
+\dontshow{\}) # examplesIf}
 }
 \keyword{LazyFrame_new}

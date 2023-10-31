@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-08-26
+RUST_TOOLCHAIN_VERSION := nightly-2023-10-12
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
@@ -88,7 +88,7 @@ tools/lib-sums.tsv: ## Update the lib-sums.tsv file for pointing to the latest v
 
 .PHONY: test
 test: build install ## Run fast unittests
-	Rscript -e 'devtools::test()'
+	Rscript -e 'devtools::test(); devtools::run_examples(document = FALSE)'
 
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files

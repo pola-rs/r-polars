@@ -109,15 +109,7 @@ pl$concat = function(
     how == "vertical",
     concat_lf(l, rechunk, parallel, to_supertypes),
     how == "diagonal",
-    {
-      if (any(args_modified %in% c("to_supertypes"))) {
-        warning(
-          "Argument `to_supertypes` is not used when how=='diagonal'",
-          call. = FALSE
-        )
-      }
-      diag_concat_lf(l, rechunk, parallel)
-    },
+    concat_lf_diagonal(l, rechunk, parallel, to_supertypes),
     how == "horizontal" && !eager,
     {
       Err_plain(
@@ -134,7 +126,7 @@ pl$concat = function(
           call. = FALSE
         )
       }
-      hor_concat_df(l)
+      concat_df_horizontal(l)
     },
 
     # TODO implement Series, Expr, Lazy etc
@@ -321,7 +313,7 @@ difftime_to_pl_duration = function(dft) {
 #'
 pl$raw_list = function(...) {
   l = list2(...)
-  if ( any(!sapply(l, is.raw) & !sapply(l, is.null))) {
+  if (any(!sapply(l, is.raw) & !sapply(l, is.null))) {
     Err_plain("some elements where not raw or NULL") |>
       unwrap("in pl$raw_list():")
   }

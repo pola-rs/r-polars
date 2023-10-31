@@ -99,9 +99,9 @@ ExprStr_strptime = function(
 
 #' Get the number of bytes in strings
 #' @description
-#' Get length of the strings as UInt32 (as number of bytes). Use `$str$n_chars()`
+#' Get length of the strings as UInt32 (as number of bytes). Use `$str$len_chars()`
 #' to get the number of characters.
-#' @name ExprStr_lengths
+#' @name ExprStr_len_bytes
 #' @keywords ExprStr
 #' @details
 #' If you know that you are working with ASCII text, `lengths` will be
@@ -112,22 +112,22 @@ ExprStr_strptime = function(
 #'   s = c("Café", NA, "345", "æøå")
 #' )$select(
 #'   pl$col("s"),
-#'   pl$col("s")$str$lengths()$alias("lengths"),
-#'   pl$col("s")$str$n_chars()$alias("n_chars")
+#'   pl$col("s")$str$len_bytes()$alias("lengths"),
+#'   pl$col("s")$str$len_chars()$alias("n_chars")
 #' )
-ExprStr_lengths = function() {
-  .pr$Expr$str_lengths(self)
+ExprStr_len_bytes = function() {
+  .pr$Expr$str_len_bytes(self)
 }
 
 #' Get the number of characters in strings
 #' @description
 #' Get length of the strings as UInt32 (as number of characters). Use
-#' `$str$lengths()` to get the number of bytes.
-#' @name ExprStr_n_chars
+#' `$str$len_bytes()` to get the number of bytes.
+#' @name ExprStr_len_chars
 #' @keywords ExprStr
-#' @inherit ExprStr_lengths examples details return
-ExprStr_n_chars = function() {
-  .pr$Expr$str_n_chars(self)
+#' @inherit ExprStr_len_bytes examples details return
+ExprStr_len_chars = function() {
+  .pr$Expr$str_len_chars(self)
 }
 
 #' Vertically concatenate values of a Series
@@ -202,7 +202,7 @@ ExprStr_to_titlecase = function() {
 #' @keywords ExprStr
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -215,7 +215,8 @@ ExprStr_to_titlecase = function() {
 #' df$select(pl$col("foo")$str$strip_chars())
 #' df$select(pl$col("foo")$str$strip_chars(" hel rld"))
 ExprStr_strip_chars = function(matches = NULL) {
-  .pr$Expr$str_strip_chars(self, matches)
+  .pr$Expr$str_strip_chars(self, matches) |>
+    unwrap("in $str$strip_chars():")
 }
 
 #' Strip leading characters
@@ -226,7 +227,7 @@ ExprStr_strip_chars = function(matches = NULL) {
 #'
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -238,7 +239,8 @@ ExprStr_strip_chars = function(matches = NULL) {
 #' df = pl$DataFrame(foo = c(" hello", "\tworld"))
 #' df$select(pl$col("foo")$str$strip_chars_start(" hel rld"))
 ExprStr_strip_chars_start = function(matches = NULL) {
-  .pr$Expr$str_strip_chars_start(self, matches)
+  .pr$Expr$str_strip_chars_start(self, matches) |>
+    unwrap("in $str$strip_chars_start():")
 }
 
 #' Strip trailing characters
@@ -249,7 +251,7 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 #'
 #' @param matches The set of characters to be removed. All combinations of this
 #' set of characters will be stripped. If `NULL` (default), all whitespace is
-#' removed instead.
+#' removed instead. This can be an Expr.
 #'
 #' @details
 #' This function will not strip any chars beyond the first char not matched.
@@ -262,7 +264,8 @@ ExprStr_strip_chars_start = function(matches = NULL) {
 #' df$select(pl$col("foo")$str$strip_chars_end(" hel\trld"))
 #' df$select(pl$col("foo")$str$strip_chars_end("rldhel\t "))
 ExprStr_strip_chars_end = function(matches = NULL) {
-  .pr$Expr$str_strip_chars_end(self, matches)
+  .pr$Expr$str_strip_chars_end(self, matches) |>
+    unwrap("in $str$strip_chars_end():")
 }
 
 
@@ -298,7 +301,7 @@ ExprStr_zfill = function(alignment) {
 
 
 #' Left justify strings
-#' @name ExprStr_ljust
+#' @name ExprStr_pad_end
 #' @description Return the string left justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify left to this length.
@@ -308,25 +311,25 @@ ExprStr_zfill = function(alignment) {
 #' @return Expr of Utf8
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
-#' df$select(pl$col("a")$str$ljust(8, "*"))
-ExprStr_ljust = function(width, fillchar = " ") {
-  .pr$Expr$str_ljust(self, width, fillchar) |>
+#' df$select(pl$col("a")$str$pad_end(8, "*"))
+ExprStr_pad_end = function(width, fillchar = " ") {
+  .pr$Expr$str_pad_end(self, width, fillchar) |>
     unwrap("in str$ljust(): ")
 }
 
 
 #' Right justify strings
-#' @name ExprStr_rjust
+#' @name ExprStr_pad_start
 #' @description Return the string right justified in a string of length `width`.
 #' @keywords ExprStr
 #' @param width Justify right to this length.
 #' @param fillchar Fill with this ASCII character.
-#' @inherit ExprStr_ljust details return
+#' @inherit ExprStr_pad_end details return
 #' @examples
 #' df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
-#' df$select(pl$col("a")$str$rjust(8, "*"))
-ExprStr_rjust = function(width, fillchar = " ") {
-  .pr$Expr$str_rjust(self, width, fillchar) |>
+#' df$select(pl$col("a")$str$pad_start(8, "*"))
+ExprStr_pad_start = function(width, fillchar = " ") {
+  .pr$Expr$str_pad_start(self, width, fillchar) |>
     unwrap("in str$rjust(): ")
 }
 
@@ -607,7 +610,7 @@ ExprStr_split = function(by, inclusive = FALSE) {
 #' df$select(pl$col("s")$str$split_exact(by = "_", 1))
 ExprStr_split_exact = function(by, n, inclusive = FALSE) {
   unwrap(
-    .pr$Expr$str_split_exact(self, result(by), result(n), result(inclusive)),
+    .pr$Expr$str_split_exact(self, by, result(n), result(inclusive)),
     context = "in str$split_exact():"
   )
 }
