@@ -30,6 +30,22 @@ LazyFrame
 Scan a parquet file
 }
 \examples{
-# TODO write parquet example
+\dontshow{if (requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+temp_dir = tempfile()
+# Write a hive-style partitioned parquet dataset
+arrow::write_dataset(
+  mtcars,
+  temp_dir,
+  partitioning = c("cyl", "gear"),
+  format = "parquet",
+  hive_style = TRUE
+)
+list.files(temp_dir, recursive = TRUE)
+
+# Read the dataset
+pl$scan_parquet(
+  file.path(temp_dir, "**/*.parquet")
+)$collect()
+\dontshow{\}) # examplesIf}
 }
 \keyword{LazyFrame_new}

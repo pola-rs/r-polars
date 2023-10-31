@@ -15,8 +15,22 @@
 #' @return LazyFrame
 #' @name scan_parquet
 #' @rdname IO_scan_parquet
-#' @examples
-#' # TODO write parquet example
+#' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
+#' temp_dir = tempfile()
+#' # Write a hive-style partitioned parquet dataset
+#' arrow::write_dataset(
+#'   mtcars,
+#'   temp_dir,
+#'   partitioning = c("cyl", "gear"),
+#'   format = "parquet",
+#'   hive_style = TRUE
+#' )
+#' list.files(temp_dir, recursive = TRUE)
+#'
+#' # Read the dataset
+#' pl$scan_parquet(
+#'   file.path(temp_dir, "**/*.parquet")
+#' )$collect()
 pl$scan_parquet = function(
     file, # : str | Path,
     n_rows = NULL, # : int | None = None,
