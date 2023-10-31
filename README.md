@@ -109,7 +109,7 @@ install.packages(
 ### Build from source
 
 Otherwise, the Rust library will be built from source. the Rust
-toolchain (Rust 1.71 or later) must be configured.
+toolchain (Rust 1.73 or later) must be configured.
 
 Please check the <https://github.com/r-rust/hellorust> repository for
 about Rust code in R packages.
@@ -118,7 +118,7 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-08-26)
+  requires Rust toolchain nightly-2023-10-12)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
@@ -236,8 +236,8 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly-2023-08-26
-  rustup default nightly-2023-08-26
+  rustup toolchain install nightly-2023-10-12
+  rustup default nightly-2023-10-12
   ```
 
 - Windows: Make sure the latest version of
