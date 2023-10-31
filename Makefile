@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-08-26
+RUST_TOOLCHAIN_VERSION := nightly-2023-10-12
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
