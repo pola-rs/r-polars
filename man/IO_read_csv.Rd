@@ -37,10 +37,9 @@ list is used while reading to overwrite dtypes. Supported types so far are:
 
 \item{null_values}{Values to interpret as \code{NA} values. Can be:
 \itemize{
-\item a string : all values equal to this string will be \code{NA};
-\item an unnamed character vector that matches the number of columns: the \code{n}th
-value will be replaced by \code{NA} in the \code{n}th column;
-\item a named character vector with column names and null values.
+\item a character vector: all values that match one of the values in this vector
+will be \code{NA};
+\item a named list with column names and null values.
 }}
 
 \item{missing_utf8_is_empty_string}{By default, a missing value is considered

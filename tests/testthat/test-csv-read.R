@@ -72,6 +72,43 @@ test_that("arg dtypes work", {
   expect_true(out$schema$Species == pl$Categorical)
 })
 
+test_that("arg raise_if_empty works", {
+  tmpf = tempfile()
+  writeLines("", tmpf)
+
+  expect_error(
+    pl$read_csv(tmpf),
+    "no data: empty CSV"
+  )
+  out = pl$read_csv(tmpf, raise_if_empty = FALSE)
+  expect_identical(dim(out), c(0, 0))
+})
+
+# TODO: why does this one fail?
+# test_that("arg missing_utf8_is_empty_string works", {
+#   tmpf = tempfile()
+#   writeLines("a,b\n1,a\n2,", tmpf)
+#
+#   out = pl$read_csv(tmpf)$to_data_frame()
+#   expect_identical(out$b, c("a", NA))
+#
+#   out = pl$read_csv(tmpf, missing_utf8_is_empty_string = TRUE)$to_data_frame()
+#   expect_identical(out$b, c("a", ""))
+# })
+
+test_that("arg null_values works", {
+  tmpf = tempfile()
+  writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
+
+  out = pl$read_csv(tmpf, null_values = c("a", 2))$to_list()
+  expect_identical(out, list(a = c(1.5, NA), b = c(NA_character_, NA_character_),
+                             c = c(NA_character_, NA_character_)))
+
+  out = pl$read_csv(tmpf, null_values = list(b = "a", c = 2))$to_list()
+  expect_identical(out, list(a = c(1.5, 2), b = c(NA_character_, NA_character_),
+                             c = c(NA_character_, NA_character_)))
+})
+
 test_that("multiple files works correctly if same schema", {
   dat1 = iris[1:75, ]
   dat2 = iris[76:150, ]

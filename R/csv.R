@@ -28,10 +28,9 @@
 #' * "Int64" or "integer64" for DataType::Int64,
 #' * "Utf8" or "character" for DataType::Utf8,
 #' @param null_values Values to interpret as `NA` values. Can be:
-#' * a string : all values equal to this string will be `NA`;
-#' * an unnamed character vector that matches the number of columns: the `n`th
-#'   value will be replaced by `NA` in the `n`th column;
-#' * a named character vector with column names and null values.
+#' * a character vector: all values that match one of the values in this vector
+#'   will be `NA`;
+#' * a named list with column names and null values.
 #' @param missing_utf8_is_empty_string By default, a missing value is considered
 #' to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
 #' as an empty character.
@@ -128,8 +127,8 @@ pl$scan_csv = function(
       }
 
       # named char vec is used as column(name) marker(value) pairs
-      if (is.character(nullvals) && is_named(nullvals)) {
-        return(RNullValues$new_named(null_values))
+      if (is.list(nullvals) && is_named(nullvals)) {
+        return(RNullValues$new_named(unlist(null_values)))
       }
 
       stopf("null_values arg must be a string OR unamed char vec OR named char vec")
@@ -172,10 +171,9 @@ pl$scan_csv = function(
 #' * "Int64" or "integer64" for DataType::Int64,
 #' * "Utf8" or "character" for DataType::Utf8,
 #' @param null_values Values to interpret as `NA` values. Can be:
-#' * a string : all values equal to this string will be `NA`;
-#' * an unnamed character vector that matches the number of columns: the `n`th
-#'   value will be replaced by `NA` in the `n`th column;
-#' * a named character vector with column names and null values.
+#' * a character vector: all values that match one of the values in this vector
+#'   will be `NA`;
+#' * a named list with column names and null values.
 #' @param missing_utf8_is_empty_string By default, a missing value is considered
 #' to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
 #' as an empty character.
