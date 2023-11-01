@@ -878,6 +878,13 @@ License:     MIT
 
 -------------------------------------------------------------
 
+Name:        mio
+Repository:  https://github.com/tokio-rs/mio
+Authors:     Carl Lerche, Thomas de Zeeuw, Tokio Contributors
+License:     MIT
+
+-------------------------------------------------------------
+
 Name:        miow
 Repository:  https://github.com/alexcrichton/miow
 Authors:     Alex Crichton
@@ -1266,13 +1273,6 @@ License:     Apache-2.0 OR MIT
 Name:        regex-syntax
 Repository:  https://github.com/rust-lang/regex
 Authors:     The Rust Project Developers
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        regex-syntax
-Repository:  https://github.com/rust-lang/regex/tree/master/regex-syntax
-Authors:     The Rust Project Developers, Andrew Gallant
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
