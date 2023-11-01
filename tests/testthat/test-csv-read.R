@@ -17,6 +17,14 @@ test_that("basic test", {
   )
 })
 
+test_that("works with single URL", {
+  skip_if_offline()
+  out = pl$read_csv(
+    "https://vincentarelbundock.github.io/Rdatasets/csv/AER/BenderlyZwick.csv"
+  )
+  expect_identical(dim(out), c(31, 6))
+})
+
 test_that("arg dtypes work", {
   dat = iris
   tmpf = tempfile()
