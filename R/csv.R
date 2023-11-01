@@ -103,9 +103,9 @@ pl$scan_csv = function(
     args["path"] = list(NULL)
   } else {
     args[["path"]] = check_is_link(args[["path"]], reuse_downloaded = reuse_downloaded)
-    args[["reuse_downloaded"]] = NULL
     args = append(args, list(paths = NULL), after = 1)
   }
+  args[["reuse_downloaded"]] = NULL
 
   # dtypes: convert named list of DataType's to DataTypeVector obj
   if (!is.null(args$dtypes)) {

@@ -25,6 +25,43 @@ test_that("works with single URL", {
   expect_identical(dim(out), c(31, 6))
 })
 
+test_that("args separator and eol work", {
+  dat = iris
+  tmpf = tempfile(fileext = ".csv")
+  write.table(dat, tmpf, row.names = FALSE, sep = "|", eol = "#")
+
+  out = pl$read_csv(tmpf, separator = "|", eol_char = "#")$
+    with_columns(pl$col("Species")$cast(pl$Categorical))$
+    to_data_frame()
+  expect_identical(read, iris, ignore_attr = TRUE)
+})
+
+test_that("args skip_rows and skip_rows_after_header work", {
+  dat = iris
+  tmpf = tempfile()
+  write.csv(dat, tmpf, row.names = FALSE)
+
+  out = pl$read_csv(tmpf, skip_rows = 25)
+  expect_identical(nrow(out), 125)
+  expect_named(out, c("4.8", "3.4", "1.9", "0.2", "setosa"))
+
+  out = pl$read_csv(tmpf, skip_rows_after_header = 25)
+  expect_identical(nrow(out), 125)
+  expect_named(out, names(iris))
+})
+
+test_that("arg try_parse_date work", {
+  dat = data.frame(foo = c("2023-10-31", "2023-11-01"))
+  tmpf = tempfile()
+  write.csv(dat, tmpf, row.names = FALSE)
+
+  out = pl$read_csv(tmpf)$to_data_frame()
+  expect_identical(class(out$foo), "character")
+
+  out = pl$read_csv(tmpf, try_parse_dates = TRUE)$to_data_frame()
+  expect_identical(class(out$foo), "Date")
+})
+
 test_that("arg dtypes work", {
   dat = iris
   tmpf = tempfile()
