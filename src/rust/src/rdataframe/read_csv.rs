@@ -52,14 +52,14 @@ pub fn new_from_csv(
     separator: Robj,
     comment_char: Robj,
     quote_char: Robj,
-    skip_rows: Robj,       //usize
-    dtypes: Nullable<&DataTypeVector>, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
+    skip_rows: Robj,      
+    dtypes: Nullable<&DataTypeVector>,
     null_values: Nullable<&RNullValues>,
     missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
     infer_schema_length: Nullable<i32>,
-    n_rows: Nullable<i32>, //option usize
+    n_rows: Nullable<i32>, 
     encoding: &str,
     low_memory: Robj,
     rechunk: Robj,
@@ -71,7 +71,6 @@ pub fn new_from_csv(
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
 ) -> RResult<LazyFrame> {
-// ) -> () {
 
     let separator = robj_to!(Utf8Byte, separator)?;
     let has_header = robj_to!(bool, has_header)?;
