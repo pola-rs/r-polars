@@ -142,7 +142,7 @@ pub fn new_from_csv(
         .with_skip_rows(skip_rows)
         .with_n_rows(null_to_opt(n_rows).map(|x| x as usize))
         .with_cache(cache)
-        // .with_dtype_overwrite(schema.as_ref())
+        .with_dtype_overwrite(schema.as_ref())
         .low_memory(low_memory)
         .with_comment_char(comment_char)
         .with_quote_char(quote_char)
