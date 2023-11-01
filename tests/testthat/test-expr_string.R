@@ -85,7 +85,7 @@ test_that("str$strptime time", {
 
 
 
-test_that("str$lengths str$n_chars", {
+test_that("str$len_bytes str$len_chars", {
   test_str = c("Café", NA, "345", "東京") |> enc2utf8()
   Encoding(test_str)
 
@@ -93,8 +93,8 @@ test_that("str$lengths str$n_chars", {
     s = test_str
   )$select(
     pl$col("s"),
-    pl$col("s")$str$lengths()$alias("lengths"),
-    pl$col("s")$str$n_chars()$alias("n_chars")
+    pl$col("s")$str$len_bytes()$alias("lengths"),
+    pl$col("s")$str$len_chars()$alias("n_chars")
   )
 
   expect_identical(
@@ -173,6 +173,23 @@ test_that("strip_chars_*()", {
   expect_identical(lit$str$strip_chars_end()$to_r(), " 123abc")
   expect_identical(lit$str$strip_chars_end("1c")$to_r(), " 123abc ")
   expect_identical(lit$str$strip_chars_end("1c ")$to_r(), " 123ab")
+
+  df = pl$DataFrame(
+    foo = c("hello", "world"),
+    expr = c("heo", "wd")
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars(pl$col("expr")))$to_list(),
+    list(foo = c("ll", "orl"))
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars_start(pl$col("expr")))$to_list(),
+    list(foo = c("llo", "orld"))
+  )
+  expect_identical(
+    df$select(pl$col("foo")$str$strip_chars_end(pl$col("expr")))$to_list(),
+    list(foo = c("hell", "worl"))
+  )
 })
 
 
@@ -209,50 +226,50 @@ test_that("str$ljust str$rjust", {
   # ljust
   df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
   expect_identical(
-    df$select(pl$col("a")$str$ljust(8, "*"))$to_list(),
+    df$select(pl$col("a")$str$pad_end(8, "*"))$to_list(),
     list(a = c("cow*****", "monkey**", NA, "hippopotamus"))
   )
 
   expect_identical(
-    df$select(pl$col("a")$str$ljust(7, "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_end(7, "w"))$to_list(),
     list(a = c("cowwwww", "monkeyw", NA, "hippopotamus"))
   )
 
   expect_grepl_error(
-    df$select(pl$col("a")$str$ljust("wrong_string", "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_end("wrong_string", "w"))$to_list(),
     "i64"
   )
   expect_grepl_error(
-    df$select(pl$col("a")$str$ljust(-2, "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_end(-2, "w"))$to_list(),
     "cannot be less than zero"
   )
   expect_grepl_error(
-    df$select(pl$col("a")$str$ljust(5, "multiple_chars"))$to_list(),
+    df$select(pl$col("a")$str$pad_end(5, "multiple_chars"))$to_list(),
     "char"
   )
 
 
   # rjust
   expect_identical(
-    df$select(pl$col("a")$str$rjust(8, "*"))$to_list(),
+    df$select(pl$col("a")$str$pad_start(8, "*"))$to_list(),
     list(a = c("*****cow", "**monkey", NA, "hippopotamus"))
   )
 
   expect_identical(
-    df$select(pl$col("a")$str$rjust(7, "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_start(7, "w"))$to_list(),
     list(a = c("wwwwcow", "wmonkey", NA, "hippopotamus"))
   )
 
   expect_grepl_error(
-    df$select(pl$col("a")$str$rjust("wrong_string", "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_start("wrong_string", "w"))$to_list(),
     "i64"
   )
   expect_grepl_error(
-    df$select(pl$col("a")$str$rjust(-2, "w"))$to_list(),
+    df$select(pl$col("a")$str$pad_start(-2, "w"))$to_list(),
     "cannot be less than zero"
   )
   expect_grepl_error(
-    df$select(pl$col("a")$str$rjust(5, "multiple_chars"))$to_list(),
+    df$select(pl$col("a")$str$pad_start(5, "multiple_chars"))$to_list(),
     "char"
   )
 })
@@ -486,11 +503,6 @@ test_that("str$split_exact", {
   expect_identical(
     pl$lit(c("foo bar", "foo-bar", "foo bar baz"))$str$split(by = "-", inclusive = TRUE)$to_r(),
     list("foo bar", c("foo-", "bar"), "foo bar baz")
-  )
-
-  expect_grepl_error(
-    pl$lit("42")$str$split_exact(by = 42L, n = 1, inclusive = TRUE),
-    "str"
   )
 
   expect_grepl_error(

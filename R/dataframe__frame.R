@@ -848,7 +848,7 @@ DataFrame_filter = function(bool_expr) {
 #' gb
 #'
 #' gb$agg(
-#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
@@ -1522,19 +1522,19 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
         result(msg = "internal error", {
           # make percentile expressions
           perc_exprs = lapply(
-            perc, \(x) pl$all()$quantile(x)$prefix(paste0(as.character(x * 100), "pct:"))
+            perc, \(x) pl$all()$quantile(x)$name$prefix(paste0(as.character(x * 100), "pct:"))
           )
 
           # bundle all expressions
           largs = c(
             list(
-              pl$all()$count()$prefix("count:"),
-              pl$all()$null_count()$prefix("null_count:"),
-              pl$all()$mean()$prefix("mean:"),
-              pl$all()$std()$prefix("std:"),
-              pl$all()$min()$prefix("min:"),
-              pl$all()$max()$prefix("max:"),
-              pl$all()$median()$prefix("median:")
+              pl$all()$count()$name$prefix("count:"),
+              pl$all()$null_count()$name$prefix("null_count:"),
+              pl$all()$mean()$name$prefix("mean:"),
+              pl$all()$std()$name$prefix("std:"),
+              pl$all()$min()$name$prefix("min:"),
+              pl$all()$max()$name$prefix("max:"),
+              pl$all()$median()$name$prefix("median:")
             ),
             perc_exprs
           )

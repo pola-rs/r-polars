@@ -19,6 +19,7 @@ pub fn new_from_parquet(
     row_name: Nullable<String>,
     row_count: u32,
     low_memory: bool,
+    hive_partitioning: bool,
 ) -> List {
     let parallel_strategy = match parallel {
         x if x == "Auto" => pl::ParallelStrategy::Auto,
@@ -42,6 +43,7 @@ pub fn new_from_parquet(
         low_memory,
         cloud_options: None,  //TODO implement cloud options
         use_statistics: true, //TODO expose use statistics
+        hive_partitioning,
     };
 
     let lf_result = pl::LazyFrame::scan_parquet(path, args)

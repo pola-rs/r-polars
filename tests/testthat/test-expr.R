@@ -237,7 +237,7 @@ test_that("is_null", {
   )
 
   expect_equal(
-    df$with_columns(pl$all()$is_null()$suffix("_isnull"))$to_data_frame(),
+    df$with_columns(pl$all()$is_null()$name$suffix("_isnull"))$to_data_frame(),
     data.frame(
       a = c(1:2, NA_integer_, 1L, 5L),
       b = c(1, 2, NaN, 1, 5),
@@ -247,8 +247,8 @@ test_that("is_null", {
   )
 
   expect_equal(
-    df$with_columns(pl$all()$is_not_null()$suffix("_isnull"))$to_data_frame(),
-    df$with_columns(pl$all()$is_null()$is_not()$suffix("_isnull"))$to_data_frame()
+    df$with_columns(pl$all()$is_not_null()$name$suffix("_isnull"))$to_data_frame(),
+    df$with_columns(pl$all()$is_null()$is_not()$name$suffix("_isnull"))$to_data_frame()
   )
 })
 
@@ -385,7 +385,7 @@ test_that("prefix suffix reverse", {
 
   df2 = df$select(
     pl$all(),
-    pl$all()$reverse()$suffix("_reverse")
+    pl$all()$reverse()$name$suffix("_reverse")
   )
   expect_equal(
     df2$columns,
@@ -394,7 +394,7 @@ test_that("prefix suffix reverse", {
 
   df3 = df$select(
     pl$all(),
-    pl$all()$reverse()$prefix("reverse_")
+    pl$all()$reverse()$name$prefix("reverse_")
   )
   expect_equal(
     df3$columns,
@@ -619,7 +619,7 @@ test_that("exclude", {
 test_that("keep_name", {
   expect_identical(
     pl$DataFrame(list(alice = 1:3))$select(
-      pl$col("alice")$alias("bob")$keep_name(),
+      pl$col("alice")$alias("bob")$name$keep(),
       pl$col("alice")$alias("bob")
     )$columns,
     c("alice", "bob")
@@ -628,12 +628,12 @@ test_that("keep_name", {
 
 
 # TODO find alternative to thread panic test
-test_that("map_alias", {
+test_that("$name$map()", {
   # skip map_alias thread-guard message
   pl$set_options(no_messages = TRUE)
 
   df = pl$DataFrame(list(alice = 1:3))$select(
-    pl$col("alice")$alias("joe_is_not_root")$map_alias(\(x) paste0(x, "_and_bob"))
+    pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
   )
   lf = df$lazy()
   expect_identical(lf$collect()$columns, "alice_and_bob")
@@ -641,7 +641,7 @@ test_that("map_alias", {
 
   expect_error(
     pl$DataFrame(list(alice = 1:3))$select(
-      pl$col("alice")$map_alias(\(x) 42) # wrong return
+      pl$col("alice")$name$map(\(x) 42) # wrong return
     ),
     "was not a string"
   )
@@ -649,7 +649,7 @@ test_that("map_alias", {
 
   # expect_error(
   #   pl$DataFrame(list(alice=1:3))$select(
-  #     pl$col("alice")$map_alias(\(x) stop()) #wrong return
+  #     pl$col("alice")$name$map(\(x) stop()) #wrong return
   #   ),
   #   "^when calling"
   # )
@@ -702,9 +702,7 @@ test_that("slice", {
     pl$DataFrame(l)$select(
       pl$all()$slice(0, pl$col("a")$len() / 2)
     )$to_list(),
-    # TODO likely bug in rust-polars update test at next bump
-    # https://github.com/pola-rs/polars/issues/11647
-    list(a = 50.5, b = 50.5) # original answer lapply(l, head, length(l$a) / 2)
+    lapply(l, head, length(l$a) / 2)
   )
 
   # use default length (max length)
@@ -942,9 +940,6 @@ test_that("Expr_k_top", {
     row.names = c(NA, -3L), class = "data.frame"
   )
   expect_equal(l_actual$to_data_frame(), known)
-
-  # TODO contribute polars k_top always places NaN first no matter reverse,
-  # this behavour does not match Expr_sort
 })
 
 
@@ -1293,10 +1288,10 @@ test_that("nan_min nan_max", {
 
   expect_identical(
     pl$DataFrame(l)$select(
-      pl$col("a")$nan_min()$suffix("_nan_min"),
-      pl$col("b")$nan_min()$suffix("_nan_min"),
-      pl$col("a")$nan_max()$suffix("_nan_max"),
-      pl$col("b")$nan_max()$suffix("_nan_max")
+      pl$col("a")$nan_min()$name$suffix("_nan_min"),
+      pl$col("b")$nan_min()$name$suffix("_nan_min"),
+      pl$col("a")$nan_max()$name$suffix("_nan_max"),
+      pl$col("b")$nan_max()$name$suffix("_nan_max")
     )$to_list(),
     list(
       a_nan_min = min(l$a),
@@ -1946,8 +1941,8 @@ test_that("upper lower bound", {
       i32 = 1L,
       f64 = 5
     )$select(
-      pl$all()$upper_bound()$suffix("_ub"),
-      pl$all()$lower_bound()$suffix("_lb")
+      pl$all()$upper_bound()$name$suffix("_ub"),
+      pl$all()$lower_bound()$name$suffix("_lb")
     )$to_list(),
     list(
       i32_ub = .Machine$integer.max,
