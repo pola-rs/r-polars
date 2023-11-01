@@ -19,7 +19,7 @@ test_that("<LazyFrame>$profile", {
   p1 = pl$LazyFrame(iris)$
     sort("Sepal.Length")$
     group_by("Species", maintain_order = TRUE)$
-    agg(pl$col(pl$Float64)$first()$add(5)$suffix("_apply"))$
+    agg(pl$col(pl$Float64)$first()$add(5)$name$suffix("_apply"))$
     profile()
 
   r_func = \(s) s$to_r()[1] + 5
@@ -42,7 +42,7 @@ test_that("profile: show_plot returns a plot in the list of outputs", {
   p1 = pl$LazyFrame(iris)$
     sort("Sepal.Length")$
     group_by("Species", maintain_order = TRUE)$
-    agg(pl$col(pl$Float64)$first()$add(5)$suffix("_apply"))$
+    agg(pl$col(pl$Float64)$first()$add(5)$name$suffix("_apply"))$
     profile(show_plot = TRUE)
 
   expect_length(p1, 3)

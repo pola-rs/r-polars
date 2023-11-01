@@ -1,5 +1,26 @@
 # polars (development version)
 
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 2023-10-25 unreleased version (#442)
+  - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
+    `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
+  - `$dt$round()` gains an argument `ambiguous`.
+  - The following methods now accept an `Expr` as input: `$top_k()`, `$bottom_k()`,
+    `$list$join()`, `$str$strip_chars()`, `$str$strip_chars_start()`,
+    `$str$strip_chars_end()`, `$str$split_exact()`.
+  - The following methods were renamed:
+    - `$str$n_chars()` -> `$str$len_chars()`
+    - `$str$lengths()` -> `$str$len_bytes()`
+    - `$str$ljust()` -> `$str$pad_end()`
+    - `$str$rjust()` -> `$str$pad_start()`
+  - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
+    to automatically convert concatenated columns to the same type.
+  - `pl$enable_string_cache()` doesn't take any argument anymore. The string cache
+    can now be disabled with `pl$disable_string_cache()`.
+  - `$scan_parquet()` gains an argument `hive_partitioning`.
+  - `$meta$tree_format()` has a better formatted output.
+
 # polars 0.9.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE

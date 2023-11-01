@@ -7,7 +7,7 @@
 \arguments{
 \item{matches}{The set of characters to be removed. All combinations of this
 set of characters will be stripped. If \code{NULL} (default), all whitespace is
-removed instead.}
+removed instead. This can be an Expr.}
 }
 \value{
 Expr of Utf8 lowercase chars

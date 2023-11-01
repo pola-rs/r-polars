@@ -265,7 +265,7 @@ For what it's worth, the previous query could have been written more concisely a
 
 ```{r}
 dat$with_columns(
-  pl$col(c("mpg", "hp"))$sum()$over("cyl")$prefix("sum_")
+  pl$col(c("mpg", "hp"))$sum()$over("cyl")$name$prefix("sum_")
 )
 ```
 

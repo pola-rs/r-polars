@@ -29,7 +29,7 @@ pl$LazyFrame(
 )$
   group_by("foo")$
   agg(
-  pl$col("bar")$sum()$suffix("_sum"),
+  pl$col("bar")$sum()$name$suffix("_sum"),
   pl$col("bar")$mean()$alias("bar_tail_sum")
 )$
   collect()

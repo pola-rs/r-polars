@@ -193,29 +193,57 @@ subtimer_ms = function(cap_name = NULL, cap = 9999) {
 
 ### Other options implemented on rust side (likely due to thread safety)
 
-#' Toggle the global string cache
+#' Enable the global string cache
 #'
 #' Some functions (e.g joins) can be applied on Categorical series only allowed
-#' if using the global string cache is enabled. This function enables or disables
-#' the string_cache and override any contexts made by `pl$with_string_cache()`.
-#' In general, you should use `pl$with_string_cache()` instead.
+#' if using the global string cache is enabled. This function enables
+#' the string_cache. In general, you should use `pl$with_string_cache()` instead.
 #'
 #' @name pl_enable_string_cache
 #'
 #' @keywords options
-#' @param toggle Boolean. TRUE enable, FALSE disable.
-#' @return enable_string_cache: no return
+#' @return This doesn't return any value.
 #' @seealso
 #' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$disable_string_cache`][pl_disable_string_cache]
 #' [`pl$with_string_cache`][pl_with_string_cache]
 #' @examples
-#' pl$enable_string_cache(TRUE)
+#' pl$enable_string_cache()
 #' pl$using_string_cache()
-pl$enable_string_cache = function(toggle) {
-  enable_string_cache(toggle) |>
+#' pl$disable_string_cache()
+#' pl$using_string_cache()
+pl$enable_string_cache = function() {
+  enable_string_cache() |>
     unwrap("in pl$enable_string_cache()") |>
     invisible()
 }
+
+
+#' Disable the global string cache
+#'
+#' Some functions (e.g joins) can be applied on Categorical series only allowed
+#' if using the global string cache is enabled. This function disables
+#' the string_cache. In general, you should use `pl$with_string_cache()` instead.
+#'
+#' @name pl_disable_string_cache
+#'
+#' @keywords options
+#' @return This doesn't return any value.
+#' @seealso
+#' [`pl$using_string_cache`][pl_using_string_cache]
+#' [`pl$enable_string_cache`][pl_enable_string_cache]
+#' [`pl$with_string_cache`][pl_with_string_cache]
+#' @examples
+#' pl$enable_string_cache()
+#' pl$using_string_cache()
+#' pl$disable_string_cache()
+#' pl$using_string_cache()
+pl$disable_string_cache = function() {
+  disable_string_cache() |>
+    unwrap("in pl$disable_string_cache()") |>
+    invisible()
+}
+
 
 
 #' Check if the global string cache is enabled
@@ -230,9 +258,9 @@ pl$enable_string_cache = function(toggle) {
 #' [`pl$with_string_cache`][pl_with_string_cache]
 #' [`pl$enable_enable_cache`][pl_enable_string_cache]
 #' @examples
-#' pl$enable_string_cache(TRUE)
+#' pl$enable_string_cache()
 #' pl$using_string_cache()
-#' pl$enable_string_cache(FALSE)
+#' pl$disable_string_cache()
 #' pl$using_string_cache()
 pl$using_string_cache = function() {
   using_string_cache()
@@ -258,8 +286,8 @@ pl$using_string_cache = function() {
 #' })
 #' pl$concat(list(df1, df2))
 pl$with_string_cache = function(expr) {
-  increment_string_cache_counter(TRUE)
-  on.exit(increment_string_cache_counter(FALSE))
+  token = .pr$RPolarsStringCacheHolder$hold()
+  on.exit(token$release()) # if token was not release on exit, would release later on gc()
   eval(expr, envir = parent.frame())
 }
 

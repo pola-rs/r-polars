@@ -107,7 +107,7 @@ pub fn new_from_csv(
     let _ = ignore_errors;
     let mut r = r
         .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
-        .with_delimiter(sep.as_bytes()[0])
+        .with_separator(sep.as_bytes()[0])
         .has_header(has_header)
         //.with_ignore_parser_errors(ignore_errors) //TODO check why no longer a thing
         .with_skip_rows(skip_rows as usize)

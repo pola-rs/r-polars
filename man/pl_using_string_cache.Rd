@@ -10,9 +10,9 @@ A boolean
 This function simply checks if the global string cache is active.
 }
 \examples{
-pl$enable_string_cache(TRUE)
+pl$enable_string_cache()
 pl$using_string_cache()
-pl$enable_string_cache(FALSE)
+pl$disable_string_cache()
 pl$using_string_cache()
 }
 \seealso{
