@@ -49,6 +49,10 @@
 #' parsed.
 #' @param skip_rows_after_header Parse the first row as headers, and then skip
 #' this number of rows.
+#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' the given name into the DataFrame.
+#' @param row_count_offset Offset to start the row_count column (only used if
+#' the name is set).
 #' @param try_parse_dates Try to automatically parse dates. Most ISO8601-like
 #' formats can be inferred, as well as a handful of others. If this does not
 #' succeed, the column remains of data type `pl$Utf8`.
@@ -85,8 +89,8 @@ pl$scan_csv = function(
     low_memory = FALSE,
     rechunk = TRUE,
     skip_rows_after_header = 0,
-    # row_count_name = NULL,
-    # row_count_offset = 0,
+    row_count_name = NULL,
+    row_count_offset = 0,
     try_parse_dates = FALSE,
     eol_char = "\n",
     raise_if_empty = TRUE,
@@ -114,7 +118,6 @@ pl$scan_csv = function(
   # null_values: convert string or un/named  char vec into RNullValues obj
   if (!is.null(args$null_values)) {
     nullvals = args$null_values
-    ## TODO support also unnamed list, like will be interpreted as positional dtypes args by polars.
     RNullValues = (function() {
       # one string is used as one NULL marker for all columns
       if (is_string(nullvals)) {
@@ -126,7 +129,7 @@ pl$scan_csv = function(
         return(RNullValues = RNullValues$new_columns(nullvals))
       }
 
-      # named char vec is used as column(name) marker(value) pairs
+      # named list is used as column(name) marker(value) pairs
       if (is.list(nullvals) && is_named(nullvals)) {
         return(RNullValues$new_named(unlist(null_values)))
       }
@@ -135,6 +138,10 @@ pl$scan_csv = function(
     })()
 
     args$null_values = RNullValues
+  }
+
+  if (is.null(row_count_name) && !is.null(row_count_offset)) {
+    args["row_count_offset"] = list(NULL)
   }
 
   ## call low level function with args
@@ -192,6 +199,10 @@ pl$scan_csv = function(
 #' parsed.
 #' @param skip_rows_after_header Parse the first row as headers, and then skip
 #' this number of rows.
+#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' the given name into the DataFrame.
+#' @param row_count_offset Offset to start the row_count column (only used if
+#' the name is set).
 #' @param try_parse_dates Try to automatically parse dates. Most ISO8601-like
 #' formats can be inferred, as well as a handful of others. If this does not
 #' succeed, the column remains of data type `pl$Utf8`.
@@ -222,8 +233,8 @@ pl$read_csv = function(
     low_memory = FALSE,
     rechunk = TRUE,
     skip_rows_after_header = 0,
-    # row_count_name = NULL,
-    # row_count_offset = 0,
+    row_count_name = NULL,
+    row_count_offset = 0,
     try_parse_dates = FALSE,
     eol_char = "\n",
     raise_if_empty = TRUE,

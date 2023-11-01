@@ -109,6 +109,17 @@ test_that("arg null_values works", {
                              c = c(NA_character_, NA_character_)))
 })
 
+test_that("args row_count_ work", {
+  dat = mtcars
+  tmpf = tempfile()
+  write.csv(dat, tmpf, row.names = FALSE)
+
+  out = pl$read_csv(tmpf, row_count_name = "foo")$to_data_frame()
+  expect_equal(out$foo, 0:31)
+  out = pl$read_csv(tmpf, row_count_name = "foo", row_count_offset = 1)$to_data_frame()
+  expect_equal(out$foo, 1:32)
+})
+
 test_that("multiple files works correctly if same schema", {
   dat1 = iris[1:75, ]
   dat2 = iris[76:150, ]

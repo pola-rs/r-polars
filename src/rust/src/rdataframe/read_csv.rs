@@ -5,6 +5,7 @@ use crate::rdatatype::DataTypeVector;
 use crate::lazy::dataframe::LazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
+use polars::io::RowCount;
 use std::path::PathBuf;
 
 //use crate::utils::wrappers::*;
@@ -52,18 +53,20 @@ pub fn new_from_csv(
     separator: Robj,
     comment_char: Robj,
     quote_char: Robj,
-    skip_rows: Robj,      
+    skip_rows: Robj,
     dtypes: Nullable<&DataTypeVector>,
     null_values: Nullable<&RNullValues>,
     missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
     infer_schema_length: Nullable<i32>,
-    n_rows: Nullable<i32>, 
+    n_rows: Nullable<i32>,
     encoding: &str,
     low_memory: Robj,
     rechunk: Robj,
     skip_rows_after_header: Robj,
+    row_count_name: Robj,
+    row_count_offset: Robj,
     //row_count: Option<(String, u32)>,
     try_parse_dates: Robj,
     eol_char: Robj,
@@ -71,7 +74,6 @@ pub fn new_from_csv(
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
 ) -> RResult<LazyFrame> {
-
     let separator = robj_to!(Utf8Byte, separator)?;
     let has_header = robj_to!(bool, has_header)?;
     let ignore_errors = robj_to!(bool, ignore_errors)?;
@@ -115,12 +117,11 @@ pub fn new_from_csv(
     });
 
     //construct optional RowCount parameter
-    // let row_count = row_count_name
-    //     .into_option()
-    //     .map(|name| polars::io::RowCount {
-    //         name,
-    //         offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
-    //     });
+    let row_count = Some((
+        robj_to!(String, row_count_name)?,
+        robj_to!(u32, row_count_offset)?,
+    ))
+    .map(|(name, offset)| RowCount { name, offset });
 
     let path = robj_to!(Option, String, path)?;
     let r = if path.is_some() {
@@ -150,7 +151,7 @@ pub fn new_from_csv(
         .with_rechunk(rechunk)
         .with_skip_rows_after_header(skip_rows_after_header)
         .with_encoding(encoding)
-        // .with_row_count(row_count)
+        .with_row_count(row_count)
         .with_try_parse_dates(try_parse_dates)
         .with_null_values(Wrap(null_values).into())
         .with_missing_is_null(!missing_utf8_is_empty_string)
