@@ -41,6 +41,21 @@ static CONFIG: ThreadComStorage = InitCell::new();
 pub use crate::rbackground::RBGPOOL;
 
 // Macro to generate exports
+#[cfg(not(feature = "sql"))]
+extendr_module! {
+    mod polars;
+    use rlib;
+    use concat;
+    use rdataframe;
+    use rpolarserr;
+    use rbackground;
+    use lazy;
+    use series;
+    use info;
+    use rstringcache;
+}
+
+#[cfg(feature = "sql")]
 extendr_module! {
     mod polars;
     use rlib;

@@ -1,15 +1,15 @@
+#![cfg(feature = "sql")]
+
 use extendr_api::prelude::*;
 use polars::sql::SQLContext;
 
 use crate::{rdataframe::LazyFrame, robj_to, rpolarserr::*};
 
-#[cfg(feature = "sql")]
 #[derive(Clone)]
 pub struct RPolarsSQLContext {
     pub context: SQLContext,
 }
 
-#[cfg(feature = "sql")]
 #[extendr]
 impl RPolarsSQLContext {
     pub fn new() -> Self {
@@ -41,7 +41,6 @@ impl RPolarsSQLContext {
     }
 }
 
-#[cfg(feature = "sql")]
 extendr_module! {
     mod sql;
     impl RPolarsSQLContext;
