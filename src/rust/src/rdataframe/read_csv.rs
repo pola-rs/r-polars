@@ -67,10 +67,8 @@ pub fn new_from_csv(
     skip_rows_after_header: Robj,
     row_count_name: Robj,
     row_count_offset: Robj,
-    //row_count: Option<(String, u32)>,
     try_parse_dates: Robj,
     eol_char: Robj,
-    //with_schema_modify: Option<PyObject>,
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
 ) -> RResult<LazyFrame> {
@@ -95,8 +93,8 @@ pub fn new_from_csv(
         "utf8" => pl::CsvEncoding::Utf8,
         "utf8-lossy" => pl::CsvEncoding::LossyUtf8,
         e => {
-            panic!("encoding {} not implemented.", e)
-            // let result = Err(format!("encoding {} not implemented.", e)).into();
+            panic!("encoding {} not implemented.", e);
+            // let result = Err(format!("encoding {} not implemented.", e)).unwrap();
             // return Ok(result)
             //     .map_err(polars_to_rpolars_err)
             //     .map(LazyFrame);
@@ -116,13 +114,7 @@ pub fn new_from_csv(
         pl::Schema::from_iter(fields)
     });
 
-    //construct optional RowCount parameter
-    let row_count = Some((
-        robj_to!(String, row_count_name)?,
-        robj_to!(u32, row_count_offset)?,
-    ))
-    .map(|(name, offset)| RowCount { name, offset });
-
+    //construct paths, depending on whether one or multiple paths were provided
     let path = robj_to!(Option, String, path)?;
     let r = if path.is_some() {
         let path = PathBuf::from(path.unwrap());
@@ -133,6 +125,20 @@ pub fn new_from_csv(
             .map(|x| PathBuf::from(x))
             .collect();
         pl::LazyCsvReader::new_paths(paths.into())
+    };
+
+    //construct optional RowCount parameter
+    let row_count_name = robj_to!(Option, String, row_count_name)?;
+    let r = if row_count_name.is_some() {
+        let row_count = Some((
+            row_count_name.unwrap(),
+            robj_to!(Option, u32, row_count_offset)?.unwrap_or(0),
+        ))
+        .map(|(name, offset)| RowCount { name, offset });
+
+        r.with_row_count(row_count)
+    } else {
+        r
     };
 
     let r = r
@@ -151,7 +157,6 @@ pub fn new_from_csv(
         .with_rechunk(rechunk)
         .with_skip_rows_after_header(skip_rows_after_header)
         .with_encoding(encoding)
-        .with_row_count(row_count)
         .with_try_parse_dates(try_parse_dates)
         .with_null_values(Wrap(null_values).into())
         .with_missing_is_null(!missing_utf8_is_empty_string)
