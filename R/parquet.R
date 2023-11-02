@@ -91,7 +91,7 @@ pl$read_parquet = function(
     row_count_offset = 0L,
     low_memory = FALSE) {
   mc = match.call()
-  mc[[1]] = quote(pl$scan_parquet)
+  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_parquet
   eval.parent(mc)$collect()
 }
 
