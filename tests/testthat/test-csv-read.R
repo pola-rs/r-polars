@@ -128,13 +128,16 @@ test_that("args row_count_ work", {
 })
 
 # TODO: uncomment when the panic! on the Rust side is removed
-# test_that("arg encoding works", {
-#   dat = mtcars
-#   tmpf = tempfile()
-#   write.csv(dat, tmpf, row.names = FALSE)
-#
-#   expect_error(pl$read_csv(tmpf, encoding = "foo"))
-# })
+test_that("arg encoding works", {
+  dat = mtcars
+  tmpf = tempfile()
+  write.csv(dat, tmpf, row.names = FALSE)
+
+  expect_error(
+    pl$read_csv(tmpf, encoding = "foo"),
+    "not implemented"
+  )
+})
 
 test_that("multiple files works correctly if same schema", {
   dat1 = iris[1:75, ]
