@@ -120,6 +120,14 @@ test_that("args row_count_ work", {
   expect_equal(out$foo, 1:32)
 })
 
+test_that("arg encoding works", {
+  dat = mtcars
+  tmpf = tempfile()
+  write.csv(dat, tmpf, row.names = FALSE)
+
+  expect_error(pl$read_csv(tmpf, encoding = "foo"))
+})
+
 test_that("multiple files works correctly if same schema", {
   dat1 = iris[1:75, ]
   dat2 = iris[76:150, ]
