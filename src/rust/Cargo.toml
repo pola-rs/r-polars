@@ -142,7 +142,8 @@ features = [
   "string_from_radix",
   "meta",
   "approx_unique",
-  "string_pad"
+  "string_pad",
+  "sql",
 ]
 git = "https://github.com/pola-rs/polars.git"
 rev = "7a215bfefb88f44b35681114b36ba9bef00fc017"

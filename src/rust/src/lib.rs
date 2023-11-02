@@ -25,6 +25,7 @@ pub mod rlib;
 pub mod rpolarserr;
 pub mod rstringcache;
 pub mod series;
+pub mod sql;
 pub mod utils;
 pub use serde_json;
 
@@ -48,6 +49,7 @@ extendr_module! {
     use rbackground;
     use lazy;
     use series;
+    use sql;
     use info;
     use rstringcache;
 }

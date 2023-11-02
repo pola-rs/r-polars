@@ -100,6 +100,8 @@ replace_private_with_pub_methods(Series, "^Series_")
 # RThreadHandle
 replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
 
+# SQLContext
+replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
 
 
