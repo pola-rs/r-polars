@@ -21,6 +21,11 @@
   - `$scan_parquet()` gains an argument `hive_partitioning`.
   - `$meta$tree_format()` has a better formatted output.
 
+## What's changed
+
+- New class `RPolarsSQLContext` and its methods.
+  To use this feature, needs to build Rust library with full features. (#457)
+
 # polars 0.9.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
