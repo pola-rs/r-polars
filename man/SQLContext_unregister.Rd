@@ -16,6 +16,7 @@ Returns the \link{RPolarsSQLContext} object invisibly.
 Unregister tables by name.
 }
 \examples{
+\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Initialise a new SQLContext and register the given tables.
 ctx = pl$SQLContext(x = mtcars, y = mtcars, z = mtcars)
 ctx$tables()
@@ -23,4 +24,5 @@ ctx$tables()
 # Unregister some tables.
 ctx$unregister(c("x", "y"))
 ctx$tables()
+\dontshow{\}) # examplesIf}
 }

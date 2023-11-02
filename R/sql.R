@@ -1,7 +1,10 @@
 #' @title Run SQL queries against DataFrame/LazyFrame data.
+#' @description Run SQL queries against DataFrame/LazyFrame data.
+#' @details Currently, only available when built with the `full` feature.
+#' See [polars_info()] for more information.
 #' @name SQLContext_class
 #' @keywords SQLContext
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' lf = pl$LazyFrame(a = 1:3, b = c("x", NA, "z"))
 #' res = pl$SQLContext(frame = lf)$execute(
 #'   "SELECT b, a*2 AS two_a FROM frame WHERE b IS NOT NULL"
@@ -29,7 +32,7 @@ RPolarsSQLContext
 #' @description Create a new SQLContext and register the given LazyFrames.
 #' @param ... Name-value pairs of [LazyFrame] like objects to register.
 #' @return RPolarsSQLContext
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext(mtcars = mtcars)
 #' ctx
 pl$SQLContext = function(...) {
@@ -57,7 +60,7 @@ pl$SQLContext = function(...) {
 #' @param eager A logical flag indicating whether to collect the result immediately.
 #' If FALSE (default), a [LazyFrame] is returned. If TRUE, a [DataFrame] is returned.
 #' @return A [LazyFrame] or [DataFrame] depending on the value of `eager`.
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' query = "SELECT * FROM mtcars WHERE cyl = 4"
 #' pl$SQLContext(mtcars = mtcars)$execute(query)
 #' pl$SQLContext(mtcars = mtcars)$execute(query, eager = TRUE)
@@ -78,7 +81,7 @@ SQLContext_execute = function(query, eager = FALSE) {
 #' @param name A string name to register the frame as.
 #' @param frame A [LazyFrame] like object to register.
 #' @return Returns the [RPolarsSQLContext] object invisibly.
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' ctx$register("mtcars", mtcars)
 #'
@@ -94,7 +97,7 @@ SQLContext_register = function(name, frame) {
 #' @description Register multiple frames as tables.
 #' @param ... Name-value pairs of [LazyFrame] like objects to register.
 #' @return Returns the [RPolarsSQLContext] object invisibly.
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' r_df = mtcars
 #' pl_df = pl$DataFrame(mtcars)
@@ -131,7 +134,7 @@ SQLContext_register_many = function(...) {
 #' @description Unregister tables by name.
 #' @param names A character vector of table names to unregister.
 #' @return Returns the [RPolarsSQLContext] object invisibly.
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' # Initialise a new SQLContext and register the given tables.
 #' ctx = pl$SQLContext(x = mtcars, y = mtcars, z = mtcars)
 #' ctx$tables()
@@ -151,7 +154,7 @@ SQLContext_unregister = function(names) {
 #' @title List registered tables
 #' @description Return a character vector of the registered table names.
 #' @return A character vector of the registered table names.
-#' @examples
+#' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' ctx$tables()
 #' ctx$register("df1", mtcars)

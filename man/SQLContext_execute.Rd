@@ -19,7 +19,9 @@ A \link{LazyFrame} or \link{DataFrame} depending on the value of \code{eager}.
 Parse the given SQL query and execute it against the registered frame data.
 }
 \examples{
+\dontshow{if (pl$polars_info()$features$sql) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 query = "SELECT * FROM mtcars WHERE cyl = 4"
 pl$SQLContext(mtcars = mtcars)$execute(query)
 pl$SQLContext(mtcars = mtcars)$execute(query, eager = TRUE)
+\dontshow{\}) # examplesIf}
 }

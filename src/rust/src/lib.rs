@@ -25,6 +25,7 @@ pub mod rlib;
 pub mod rpolarserr;
 pub mod rstringcache;
 pub mod series;
+#[cfg(feature = "sql")]
 pub mod sql;
 pub mod utils;
 pub use serde_json;

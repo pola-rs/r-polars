@@ -1,4 +1,6 @@
 test_that("Intialize SQLContext with LazyFrame like objects", {
+  skip_if_not(pl$polars_info()$features$sql)
+
   ctx = pl$SQLContext(
     r_df = mtcars,
     pl_df = pl$DataFrame(mtcars),
@@ -19,6 +21,8 @@ test_that("Intialize SQLContext with LazyFrame like objects", {
 })
 
 test_that("SQLContext_register, register_many, unregister", {
+  skip_if_not(pl$polars_info()$features$sql)
+
   ctx = pl$SQLContext()
   ctx$register("mtcars", mtcars)
 

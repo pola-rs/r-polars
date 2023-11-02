@@ -7,6 +7,7 @@ fn cargo_rpolars_feature_info() -> List {
         default = cfg!(feature = "default"),
         full_features = cfg!(feature = "full_features"),
         simd = cfg!(feature = "simd"),
+        sql = cfg!(feature = "sql"),
         rpolars_debug_print = cfg!(feature = "rpolars_debug_print"),
     )
 }
