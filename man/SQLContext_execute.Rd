@@ -10,10 +10,10 @@ SQLContext_execute(query, eager = FALSE)
 \item{query}{A valid string SQL query.}
 
 \item{eager}{A logical flag indicating whether to collect the result immediately.
-If FALSE (default), a \link{LazyFrame} is returned. If TRUE, a \link{DataFrame} is returned.}
+If FALSE (default), a \link[=LazyFrame_class]{LazyFrame} is returned. If TRUE, a \link[=DataFrame_class]{DataFrame} is returned.}
 }
 \value{
-A \link{LazyFrame} or \link{DataFrame} depending on the value of \code{eager}.
+A \link[=LazyFrame_class]{LazyFrame} or \link[=DataFrame_class]{DataFrame} depending on the value of \code{eager}.
 }
 \description{
 Parse the given SQL query and execute it against the registered frame data.

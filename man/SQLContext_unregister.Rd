@@ -10,7 +10,7 @@ SQLContext_unregister(names)
 \item{names}{A character vector of table names to unregister.}
 }
 \value{
-Returns the \link{RPolarsSQLContext} object invisibly.
+Returns the \link{SQLContext_class} object invisibly.
 }
 \description{
 Unregister tables by name.

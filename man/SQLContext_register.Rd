@@ -9,10 +9,10 @@ SQLContext_register(name, frame)
 \arguments{
 \item{name}{A string name to register the frame as.}
 
-\item{frame}{A \link{LazyFrame} like object to register.}
+\item{frame}{A \link[=LazyFrame_class]{LazyFrame} like object to register.}
 }
 \value{
-Returns the \link{RPolarsSQLContext} object invisibly.
+Returns the \link{SQLContext_class} object invisibly.
 }
 \description{
 Register a single frame as a table, using the given name.

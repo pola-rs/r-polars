@@ -30,7 +30,7 @@ RPolarsSQLContext
 #' Initialise a new SQLContext
 #' @name pl_SQLContext
 #' @description Create a new SQLContext and register the given LazyFrames.
-#' @param ... Name-value pairs of [LazyFrame] like objects to register.
+#' @param ... Name-value pairs of [LazyFrame][LazyFrame_class] like objects to register.
 #' @return RPolarsSQLContext
 #' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext(mtcars = mtcars)
@@ -58,8 +58,8 @@ pl$SQLContext = function(...) {
 #' @description Parse the given SQL query and execute it against the registered frame data.
 #' @param query A valid string SQL query.
 #' @param eager A logical flag indicating whether to collect the result immediately.
-#' If FALSE (default), a [LazyFrame] is returned. If TRUE, a [DataFrame] is returned.
-#' @return A [LazyFrame] or [DataFrame] depending on the value of `eager`.
+#' If FALSE (default), a [LazyFrame][LazyFrame_class] is returned. If TRUE, a [DataFrame][DataFrame_class] is returned.
+#' @return A [LazyFrame][LazyFrame_class] or [DataFrame][DataFrame_class] depending on the value of `eager`.
 #' @examplesIf pl$polars_info()$features$sql
 #' query = "SELECT * FROM mtcars WHERE cyl = 4"
 #' pl$SQLContext(mtcars = mtcars)$execute(query)
@@ -79,8 +79,8 @@ SQLContext_execute = function(query, eager = FALSE) {
 #' @title Register a single data as a table
 #' @description Register a single frame as a table, using the given name.
 #' @param name A string name to register the frame as.
-#' @param frame A [LazyFrame] like object to register.
-#' @return Returns the [RPolarsSQLContext] object invisibly.
+#' @param frame A [LazyFrame][LazyFrame_class] like object to register.
+#' @return Returns the [SQLContext_class] object invisibly.
 #' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' ctx$register("mtcars", mtcars)
@@ -95,8 +95,8 @@ SQLContext_register = function(name, frame) {
 
 #' @title Register multiple data as tables
 #' @description Register multiple frames as tables.
-#' @param ... Name-value pairs of [LazyFrame] like objects to register.
-#' @return Returns the [RPolarsSQLContext] object invisibly.
+#' @param ... Name-value pairs of [LazyFrame][LazyFrame_class] like objects to register.
+#' @return Returns the [SQLContext_class] object invisibly.
 #' @examplesIf pl$polars_info()$features$sql
 #' ctx = pl$SQLContext()
 #' r_df = mtcars
@@ -133,7 +133,7 @@ SQLContext_register_many = function(...) {
 #' @title Unregister tables by name
 #' @description Unregister tables by name.
 #' @param names A character vector of table names to unregister.
-#' @return Returns the [RPolarsSQLContext] object invisibly.
+#' @return Returns the [SQLContext_class] object invisibly.
 #' @examplesIf pl$polars_info()$features$sql
 #' # Initialise a new SQLContext and register the given tables.
 #' ctx = pl$SQLContext(x = mtcars, y = mtcars, z = mtcars)
