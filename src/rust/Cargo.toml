@@ -10,8 +10,9 @@ crate-type = ['staticlib']
 
 [features]
 default = []
-full_features = ["simd"]
+full_features = ["simd", "sql"]
 simd = ["polars/simd"]
+sql = ["polars/sql"]
 rpolars_debug_print = []
 
 [workspace]
@@ -142,7 +143,7 @@ features = [
   "string_from_radix",
   "meta",
   "approx_unique",
-  "string_pad"
+  "string_pad",
 ]
 git = "https://github.com/pola-rs/polars.git"
 rev = "7a215bfefb88f44b35681114b36ba9bef00fc017"

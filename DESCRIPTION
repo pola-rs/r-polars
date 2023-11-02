@@ -103,6 +103,7 @@ Collate:
     's3_methods.R'
     'series__series.R'
     'series__trait.R'
+    'sql.R'
     'translation.R'
     'vctrs.R'
     'zzz.R'

@@ -10,6 +10,7 @@
       default             FALSE
       full_features       FALSE
       simd                FALSE
+      sql                 FALSE
       rpolars_debug_print FALSE
       
 
