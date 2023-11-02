@@ -69,6 +69,12 @@ parsed.}
 \item{skip_rows_after_header}{Parse the first row as headers, and then skip
 this number of rows.}
 
+\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+the given name into the DataFrame.}
+
+\item{row_count_offset}{Offset to start the row_count column (only used if
+the name is set).}
+
 \item{try_parse_dates}{Try to automatically parse dates. Most ISO8601-like
 formats can be inferred, as well as a handful of others. If this does not
 succeed, the column remains of data type \code{pl$Utf8}.}
