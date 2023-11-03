@@ -39,7 +39,6 @@
 - New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
   a Series (#462).
 
-
 # polars 0.9.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
