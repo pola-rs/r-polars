@@ -603,6 +603,10 @@ Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
+Expr$peak_min <- function() .Call(wrap__Expr__peak_min, self)
+
+Expr$peak_max <- function() .Call(wrap__Expr__peak_max, self)
+
 Expr$list_lengths <- function() .Call(wrap__Expr__list_lengths, self)
 
 Expr$list_contains <- function(other) .Call(wrap__Expr__list_contains, self, other)
@@ -1192,6 +1196,24 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
+
+RPolarsSQLContext <- new.env(parent = emptyenv())
+
+RPolarsSQLContext$new <- function() .Call(wrap__RPolarsSQLContext__new)
+
+RPolarsSQLContext$execute <- function(query) .Call(wrap__RPolarsSQLContext__execute, self, query)
+
+RPolarsSQLContext$get_tables <- function() .Call(wrap__RPolarsSQLContext__get_tables, self)
+
+RPolarsSQLContext$register <- function(name, lf) .Call(wrap__RPolarsSQLContext__register, self, name, lf)
+
+RPolarsSQLContext$unregister <- function(name) .Call(wrap__RPolarsSQLContext__unregister, self, name)
+
+#' @export
+`$.RPolarsSQLContext` <- function (self, name) { func <- RPolarsSQLContext[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsSQLContext` <- `$.RPolarsSQLContext`
 
 RPolarsStringCacheHolder <- new.env(parent = emptyenv())
 
