@@ -1640,9 +1640,6 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' # explode a single column, append others
 #' df$explode("numbers")
 #'
-#' # it doesn't change anything if the input is not a list-column
-#' df$explode("letters")
-#'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
 #' df$explode(c("numbers", "numbers_2"))
