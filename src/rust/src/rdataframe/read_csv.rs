@@ -90,15 +90,12 @@ pub fn new_from_csv(
 
     //construct encoding parameter
     let encoding = match encoding {
-        "utf8" => pl::CsvEncoding::Utf8,
-        "utf8-lossy" => pl::CsvEncoding::LossyUtf8,
-        e => {
-            panic!("encoding {} not implemented.", e);
-            // let result = Err(format!("encoding {} not implemented.", e)).unwrap();
-            // return Ok(result)
-            //     .map_err(polars_to_rpolars_err)
-            //     .map(LazyFrame);
-        }
+        "utf8" => Ok(pl::CsvEncoding::Utf8),
+        "utf8-lossy" => Ok(pl::CsvEncoding::LossyUtf8),
+        _ => rerr().bad_val(format!(
+            "encoding choice: [{}] is not any 'utf8','utf8-lossy'",
+            encoding
+        )),
     };
 
     //construct optional Schema parameter for overwrite_dtype
@@ -156,7 +153,7 @@ pub fn new_from_csv(
         .with_end_of_line_char(eol_char)
         .with_rechunk(rechunk)
         .with_skip_rows_after_header(skip_rows_after_header)
-        .with_encoding(encoding)
+        .with_encoding(encoding?)
         .with_try_parse_dates(try_parse_dates)
         .with_null_values(Wrap(null_values).into())
         .with_missing_is_null(!missing_utf8_is_empty_string)
