@@ -1492,9 +1492,12 @@ LazyFrame_profile = function(
 #' # explode a single column, append others
 #' df$explode("numbers")$collect()
 #'
+#' # it is also possible to explode a character column to have one letter per row
+#' df$explode("letters")
+#'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers", "numbers_2"))$collect()
+#' df$explode("numbers", "numbers_2")$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)
