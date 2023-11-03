@@ -4359,7 +4359,6 @@ Expr_lit_to_df = function() {
 #' be a peak.
 #'
 #' @return Expr
-#' @export
 #' @seealso `$peak_max()`
 #'
 #' @examples
@@ -4378,7 +4377,6 @@ Expr_peak_min = function() {
 #' be a peak.
 #'
 #' @return Expr
-#' @export
 #' @seealso `$peak_min()`
 #'
 #' @examples
