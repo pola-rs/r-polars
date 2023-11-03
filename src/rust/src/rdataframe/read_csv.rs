@@ -93,7 +93,7 @@ pub fn new_from_csv(
         "utf8" => Ok(pl::CsvEncoding::Utf8),
         "utf8-lossy" => Ok(pl::CsvEncoding::LossyUtf8),
         _ => rerr().bad_val(format!(
-            "encoding choice: [{}] is not any 'utf8','utf8-lossy'",
+            "encoding choice: '{}' is not supported",
             encoding
         )),
     };
