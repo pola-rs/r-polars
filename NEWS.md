@@ -27,7 +27,14 @@
   like objects. To use this feature, needs to build Rust library with full features
   (#457).
 - New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
-  a Series.
+  a Series (#462).
+- `$scan_csv()` and `$read_csv()` now match more closely the Python-Polars API (#455):
+  - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`, 
+    `parse_dates` is renamed `try_parse_dates`.
+  - new arguments `missing_utf8_is_empty_string`, `rechunk`, `eol_char`, 
+    `raise_if_empty`, `truncate_ragged_lines`
+  - `path` can now be a vector of characters indicating several paths to CSV files. 
+    This only works if all CSV files have the same schema.
 
 # polars 0.9.0
 
