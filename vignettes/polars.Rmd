@@ -265,7 +265,7 @@ For what it's worth, the previous query could have been written more concisely a
 
 ```{r}
 dat$with_columns(
-  pl$col(c("mpg", "hp"))$sum()$over("cyl")$prefix("sum_")
+  pl$col(c("mpg", "hp"))$sum()$over("cyl")$name$prefix("sum_")
 )
 ```
 
@@ -467,11 +467,8 @@ aq$filter(
 )$collect()
 ```
 
-Finally, can read/scan multiple files in the same directory through pattern
-globbing. However, please note that partition-aware scanning is not yet 
-supported out of the box (e.g., Hive-style partitioned datasets). Follow
-[this issue](https://github.com/pola-rs/polars/issues/4347) for more details
-about when this will be resolved.
+Finally, we can read/scan multiple files in the same directory through pattern
+globbing.
 
 ```{r}
 dir.create("airquality-ds")
@@ -480,8 +477,7 @@ write_dataset(airquality, "airquality-ds", partitioning = "Month")
 # Use pattern globbing to scan all parquet files in the folder
 aq2 = pl$scan_parquet("airquality-ds/*/*.parquet")
 
-# Just print the first two rows. But note that the Month column
-# (which we used for partitioning) is missing.
+# Just print the first two rows. 
 aq2$limit(2)$collect()
 ```
 

@@ -2,6 +2,37 @@
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
+- rust-polars is updated to 2023-10-25 unreleased version (#442)
+  - New subnamespace `"name"` that contains methods `$prefix()`, `$suffix()`
+    `keep()` (renamed from `keep_name()`) and `map()` (renamed from `map_alias()`).
+  - `$dt$round()` gains an argument `ambiguous`.
+  - The following methods now accept an `Expr` as input: `$top_k()`, `$bottom_k()`,
+    `$list$join()`, `$str$strip_chars()`, `$str$strip_chars_start()`,
+    `$str$strip_chars_end()`, `$str$split_exact()`.
+  - The following methods were renamed:
+    - `$str$n_chars()` -> `$str$len_chars()`
+    - `$str$lengths()` -> `$str$len_bytes()`
+    - `$str$ljust()` -> `$str$pad_end()`
+    - `$str$rjust()` -> `$str$pad_start()`
+  - `$concat()` with `how = "diagonal"` now accepts an argument `to_supertypes`
+    to automatically convert concatenated columns to the same type.
+  - `pl$enable_string_cache()` doesn't take any argument anymore. The string cache
+    can now be disabled with `pl$disable_string_cache()`.
+  - `$scan_parquet()` gains an argument `hive_partitioning`.
+  - `$meta$tree_format()` has a better formatted output.
+
+## What's changed
+
+- New class `RPolarsSQLContext` and its methods to perform SQL queries on DataFrame-
+  like objects. To use this feature, needs to build Rust library with full features
+  (#457).
+- New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
+  a Series.
+
+# polars 0.9.0
+
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
 - rust-polars is updated to 0.33.2 (#417)
   - In all date-time related methods, the argument `use_earliest` is replaced by `ambiguous`.
   - In `$sample()` and `$shuffle()`, the argument `fixed_seed` is removed.
@@ -31,6 +62,7 @@
 
 ## What's changed
 
+- Bump supported R version to 4.2 or later (#435).
 - `pl$concat()` now also supports `Series`, `Expr` and `LazyFrame` (#407).
 - New method `$unnest()` for `LazyFrame` (#397).
 - New method `$sample()` for `DataFrame` (#399).
@@ -48,8 +80,21 @@
 - New method `$write_csv()` for `DataFrame` (#414).
 - New method `$sink_csv()` for `LazyFrame` (#432).
 - New method `$dt$time()` to extract the time from a `datetime` variable (#428).
+- Method `$profile()` gains optimization arguments and plot-related arguments (#429).
 - New method `pl$read_parquet()` that is a shortcut for `pl$scan_parquet()$collect()` (#434).
 - Rename `$str$str_explode()` to `$str$explode()` (#436).
+- New method `$transpose()` for `DataFrame` (#440).
+- New argument `eager` of `LazyFrame$set_optimization_toggle()` (#439).
+- `{polars}` can now be installed with "R source package with Rust library binary",
+  by a mechanism copied from [the prqlr package](https://CRAN.R-project.org/package=prqlr).
+
+  ```r
+  Sys.setenv(NOT_CRAN = "true")
+  install.packages("polars", repos = "https://rpolars.r-universe.dev")
+  ```
+
+  The URL and SHA256 hash of the available binaries are recorded in `tools/lib-sums.tsv`.
+  (#435, #448, #450, #451)
 
 # polars 0.8.1
 

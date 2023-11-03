@@ -71,9 +71,9 @@ polars_features <- function() .Call(wrap__polars_features)
 
 concat_lf <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf, l, rechunk, parallel, to_supertypes)
 
-diag_concat_lf <- function(l, rechunk, parallel) .Call(wrap__diag_concat_lf, l, rechunk, parallel)
+concat_lf_diagonal <- function(l, rechunk, parallel, to_supertypes) .Call(wrap__concat_lf_diagonal, l, rechunk, parallel, to_supertypes)
 
-hor_concat_df <- function(l) .Call(wrap__hor_concat_df, l)
+concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
@@ -81,7 +81,7 @@ rlazy_csv_reader <- function(path, sep, has_header, ignore_errors, skip_rows, n_
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -107,13 +107,11 @@ cargo_rpolars_feature_info <- function() .Call(wrap__cargo_rpolars_feature_info)
 
 rust_polars_version <- function() .Call(wrap__rust_polars_version)
 
-enable_string_cache <- function(toggle) .Call(wrap__enable_string_cache, toggle)
+enable_string_cache <- function() .Call(wrap__enable_string_cache)
+
+disable_string_cache <- function() .Call(wrap__disable_string_cache)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
-
-increment_string_cache_counter <- function(toggle) .Call(wrap__increment_string_cache_counter, toggle)
-
-reset_string_cache <- function(toggle) .Call(wrap__reset_string_cache, toggle)
 
 DataFrame <- new.env(parent = emptyenv())
 
@@ -190,6 +188,8 @@ DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_co
 DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
 
 DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
+
+DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
 
 DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
@@ -605,6 +605,10 @@ Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
+Expr$peak_min <- function() .Call(wrap__Expr__peak_min, self)
+
+Expr$peak_max <- function() .Call(wrap__Expr__peak_max, self)
+
 Expr$list_lengths <- function() .Call(wrap__Expr__list_lengths, self)
 
 Expr$list_contains <- function(other) .Call(wrap__Expr__list_contains, self, other)
@@ -651,7 +655,7 @@ Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap
 
 Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
 
-Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
+Expr$dt_round <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_round, self, every, offset, ambiguous)
 
 Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
 
@@ -728,8 +732,6 @@ Expr$exp <- function() .Call(wrap__Expr__exp, self)
 Expr$exclude <- function(columns) .Call(wrap__Expr__exclude, self, columns)
 
 Expr$exclude_dtype <- function(columns) .Call(wrap__Expr__exclude_dtype, self, columns)
-
-Expr$keep_name <- function() .Call(wrap__Expr__keep_name, self)
 
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
 
@@ -823,15 +825,17 @@ Expr$approx_n_unique <- function() .Call(wrap__Expr__approx_n_unique, self)
 
 Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
-Expr$map_alias <- function(lambda) .Call(wrap__Expr__map_alias, self, lambda)
+Expr$name_keep <- function() .Call(wrap__Expr__name_keep, self)
 
-Expr$suffix <- function(suffix) .Call(wrap__Expr__suffix, self, suffix)
+Expr$name_suffix <- function(suffix) .Call(wrap__Expr__name_suffix, self, suffix)
 
-Expr$prefix <- function(prefix) .Call(wrap__Expr__prefix, self, prefix)
+Expr$name_prefix <- function(prefix) .Call(wrap__Expr__name_prefix, self, prefix)
 
-Expr$str_lengths <- function() .Call(wrap__Expr__str_lengths, self)
+Expr$name_map <- function(lambda) .Call(wrap__Expr__name_map, self, lambda)
 
-Expr$str_n_chars <- function() .Call(wrap__Expr__str_n_chars, self)
+Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)
+
+Expr$str_len_chars <- function() .Call(wrap__Expr__str_len_chars, self)
 
 Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
 
@@ -849,9 +853,9 @@ Expr$str_strip_chars_start <- function(matches) .Call(wrap__Expr__str_strip_char
 
 Expr$str_zfill <- function(alignment) .Call(wrap__Expr__str_zfill, self, alignment)
 
-Expr$str_ljust <- function(width, fillchar) .Call(wrap__Expr__str_ljust, self, width, fillchar)
+Expr$str_pad_end <- function(width, fillchar) .Call(wrap__Expr__str_pad_end, self, width, fillchar)
 
-Expr$str_rjust <- function(width, fillchar) .Call(wrap__Expr__str_rjust, self, width, fillchar)
+Expr$str_pad_start <- function(width, fillchar) .Call(wrap__Expr__str_pad_start, self, width, fillchar)
 
 Expr$str_contains <- function(pat, literal, strict) .Call(wrap__Expr__str_contains, self, pat, literal, strict)
 
@@ -1057,7 +1061,7 @@ LazyFrame$schema <- function() .Call(wrap__LazyFrame__schema, self)
 
 LazyFrame$fetch <- function(n_rows) .Call(wrap__LazyFrame__fetch, self, n_rows)
 
-LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming) .Call(wrap__LazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming)
+LazyFrame$set_optimization_toggle <- function(type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager) .Call(wrap__LazyFrame__set_optimization_toggle, self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, slice_pushdown, comm_subplan_elim, comm_subexpr_elim, streaming, eager)
 
 LazyFrame$get_optimization_toggle <- function() .Call(wrap__LazyFrame__get_optimization_toggle, self)
 
@@ -1194,6 +1198,36 @@ Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name,
 
 #' @export
 `[[.Series` <- `$.Series`
+
+RPolarsSQLContext <- new.env(parent = emptyenv())
+
+RPolarsSQLContext$new <- function() .Call(wrap__RPolarsSQLContext__new)
+
+RPolarsSQLContext$execute <- function(query) .Call(wrap__RPolarsSQLContext__execute, self, query)
+
+RPolarsSQLContext$get_tables <- function() .Call(wrap__RPolarsSQLContext__get_tables, self)
+
+RPolarsSQLContext$register <- function(name, lf) .Call(wrap__RPolarsSQLContext__register, self, name, lf)
+
+RPolarsSQLContext$unregister <- function(name) .Call(wrap__RPolarsSQLContext__unregister, self, name)
+
+#' @export
+`$.RPolarsSQLContext` <- function (self, name) { func <- RPolarsSQLContext[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsSQLContext` <- `$.RPolarsSQLContext`
+
+RPolarsStringCacheHolder <- new.env(parent = emptyenv())
+
+RPolarsStringCacheHolder$hold <- function() .Call(wrap__RPolarsStringCacheHolder__hold)
+
+RPolarsStringCacheHolder$release <- function() .Call(wrap__RPolarsStringCacheHolder__release, self)
+
+#' @export
+`$.RPolarsStringCacheHolder` <- function (self, name) { func <- RPolarsStringCacheHolder[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsStringCacheHolder` <- `$.RPolarsStringCacheHolder`
 
 
 # nolint end

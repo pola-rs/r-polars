@@ -848,7 +848,7 @@ DataFrame_filter = function(bool_expr) {
 #' gb
 #'
 #' gb$agg(
-#'   pl$col("bar")$sum()$suffix("_sum"),
+#'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
 #' )
 DataFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
@@ -1522,19 +1522,19 @@ DataFrame_describe = function(percentiles = c(.25, .75)) {
         result(msg = "internal error", {
           # make percentile expressions
           perc_exprs = lapply(
-            perc, \(x) pl$all()$quantile(x)$prefix(paste0(as.character(x * 100), "pct:"))
+            perc, \(x) pl$all()$quantile(x)$name$prefix(paste0(as.character(x * 100), "pct:"))
           )
 
           # bundle all expressions
           largs = c(
             list(
-              pl$all()$count()$prefix("count:"),
-              pl$all()$null_count()$prefix("null_count:"),
-              pl$all()$mean()$prefix("mean:"),
-              pl$all()$std()$prefix("std:"),
-              pl$all()$min()$prefix("min:"),
-              pl$all()$max()$prefix("max:"),
-              pl$all()$median()$prefix("median:")
+              pl$all()$count()$name$prefix("count:"),
+              pl$all()$null_count()$name$prefix("null_count:"),
+              pl$all()$mean()$name$prefix("mean:"),
+              pl$all()$std()$name$prefix("std:"),
+              pl$all()$min()$name$prefix("min:"),
+              pl$all()$max()$name$prefix("max:"),
+              pl$all()$median()$name$prefix("median:")
             ),
             perc_exprs
           )
@@ -1640,12 +1640,12 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' # explode a single column, append others
 #' df$explode("numbers")
 #'
-#' # it doesn't change anything if the input is not a list-column
+#' # it is also possible to explode a character column to have one letter per row
 #' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers", "numbers_2"))
+#' df$explode("numbers", "numbers_2")
 #' df$explode(pl$col(pl$List(pl$Float64)))
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
@@ -1682,6 +1682,42 @@ DataFrame_sample = function(
 }
 
 
+#' Transpose a DataFrame over the diagonal.
+#'
+#' @param include_header If `TRUE`, the column names will be added as first column.
+#' @param header_name If `include_header` is `TRUE`, this determines the name of the column
+#' that will be inserted.
+#' @param column_names Character vector indicating the new column names. If `NULL` (default),
+#' the columns will be named as "column_1", "column_2", etc. The length of this vector must match
+#' the number of rows of the original input.
+#'
+#' @details
+#' This is a very expensive operation.
+#'
+#' Transpose may be the fastest option to perform non foldable (see `fold()` or `reduce()`)
+#' row operations like median.
+#'
+#' Polars transpose is currently eager only, likely because it is not trivial to deduce the schema.
+#'
+#' @keywords DataFrame
+#' @return DataFrame
+#' @examples
+#'
+#' # simple use-case
+#' pl$DataFrame(mtcars)$transpose(include_header = TRUE, column_names = rownames(mtcars))
+#'
+#' # All rows must have one shared supertype, recast Categorical to Utf8 which is a supertype
+#' # of f64, and then dataset "Iris" can be transposed
+#' pl$DataFrame(iris)$with_columns(pl$col("Species")$cast(pl$Utf8))$transpose()
+#'
+DataFrame_transpose = function(
+    include_header = FALSE,
+    header_name = "column",
+    column_names = NULL) {
+  keep_names_as = if (isTRUE(include_header)) header_name else NULL
+  .pr$DataFrame$transpose(self, keep_names_as, column_names) |>
+    unwrap("in $transpose():")
+}
 
 #' Write to comma-separated values (CSV) file
 #'

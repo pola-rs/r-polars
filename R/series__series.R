@@ -578,7 +578,7 @@ Series_clone = "use_extendr_wrapper"
 #' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
 #' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
 Series_cumsum = function(reverse = FALSE) {
-  .pr$Series$cumsum(self, reverse)
+  .pr$Series$cumsum(self, reverse) |> unwrap("in $cumsum()")
 }
 
 #' Sum

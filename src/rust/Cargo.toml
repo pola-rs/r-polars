@@ -1,17 +1,18 @@
 [package]
-name = 'r-polars'     # r-polars
-version = '0.1.0'     # this version no is not used
-edition = '2021'
-rust-version = "1.70"
+name = "r-polars"
+version = "0.34.0"
+edition = "2021"
+rust-version = "1.73"
+publish = false
 
 [lib]
 crate-type = ['staticlib']
 
-
 [features]
 default = []
-full_features = ["simd"]
+full_features = ["simd", "sql"]
 simd = ["polars/simd"]
+sql = ["polars/sql"]
 rpolars_debug_print = []
 
 [workspace]
@@ -48,8 +49,9 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.40"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7f8cd7dbd6bc09a21a99c13020fbac8cfdd4aa90", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "7f8cd7dbd6bc09a21a99c13020fbac8cfdd4aa90", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7a215bfefb88f44b35681114b36ba9bef00fc017", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "7a215bfefb88f44b35681114b36ba9bef00fc017", default-features = false }
+either = "1"
 #features copied from node-polars
 
 [dependencies.polars]
@@ -97,7 +99,6 @@ features = [
   "moment",
   "true_div",
   "dtype-categorical",
-  # "string_justify",  #new feature to impl
   "diagonal_concat",
   "horizontal_concat",
   "abs",
@@ -137,12 +138,13 @@ features = [
   "dtype-duration",
   #"dtype-struct",
   "date_offset",
-  "string_justify",
   "is_unique",
   "binary_encoding",
   "string_from_radix",
   "meta",
   "approx_unique",
+  "string_pad",
+  "peaks",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "7f8cd7dbd6bc09a21a99c13020fbac8cfdd4aa90"
+rev = "7a215bfefb88f44b35681114b36ba9bef00fc017"

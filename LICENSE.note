@@ -3,6 +3,13 @@ The binary compiled from the source code of this package contains the following 
 
 -------------------------------------------------------------
 
+Name:        addr2line
+Repository:  https://github.com/gimli-rs/addr2line
+Authors:     addr2line authors
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        adler
 Repository:  https://github.com/jonas-schievink/adler.git
 Authors:     Jonas Schievink
@@ -87,13 +94,6 @@ License:     Apache-2.0
 
 -------------------------------------------------------------
 
-Name:        arrow2
-Repository:  https://github.com/jorgecarleitao/arrow2
-Authors:     Jorge C. Leitao, Apache Arrow
-License:     Apache-2.0
-
--------------------------------------------------------------
-
 Name:        async-stream
 Repository:  https://github.com/tokio-rs/async-stream
 Authors:     Carl Lerche
@@ -125,6 +125,13 @@ License:     MIT
 Name:        avro-schema
 Repository:  https://github.com/DataEngineeringLabs/avro-schema
 Authors:     Jorge C. Leitao
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        backtrace
+Repository:  https://github.com/rust-lang/backtrace-rs
+Authors:     The Rust Project Developers
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -528,6 +535,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        gimli
+Repository:  https://github.com/gimli-rs/gimli
+Authors:     gimli authors
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        glob
 Repository:  https://github.com/rust-lang/glob
 Authors:     The Rust Project Developers
@@ -538,13 +552,6 @@ License:     Apache-2.0 OR MIT
 Name:        halfbrown
 Repository:  https://github.com/Licenser/halfbrown
 Authors:     Heinz N. Gies
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        hash_hasher
-Repository:  https://github.com/Fraser999/Hash-Hasher.git
-Authors:     Fraser Hutchison
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -566,6 +573,13 @@ License:     Apache-2.0 OR MIT
 Name:        heck
 Repository:  https://github.com/withoutboats/heck
 Authors:     Without Boats
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        hermit-abi
+Repository:  https://github.com/hermitcore/hermit-rs
+Authors:     Stefan Lankes
 License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
@@ -969,6 +983,20 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        num_cpus
+Repository:  https://github.com/seanmonstar/num_cpus
+Authors:     Sean McArthur
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        object
+Repository:  https://github.com/gimli-rs/object
+Authors:     object authors
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        once_cell
 Repository:  https://github.com/matklad/once_cell
 Authors:     Aleksey Kladov
@@ -1018,6 +1046,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        percent-encoding
+Repository:  https://github.com/servo/rust-url/
+Authors:     The rust-url developers
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        phf
 Repository:  https://github.com/rust-phf/rust-phf
 Authors:     Steven Fackler
@@ -1062,8 +1097,8 @@ License:     MIT
 
 Name:        polars-arrow
 Repository:  https://github.com/pola-rs/polars
-Authors:     Ritchie Vink
-License:     MIT
+Authors:     Jorge C. Leitao, Apache Arrow, Ritchie Vink
+License:     
 
 -------------------------------------------------------------
 
@@ -1270,6 +1305,13 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
+Name:        rustc-demangle
+Repository:  https://github.com/alexcrichton/rustc-demangle
+Authors:     Alex Crichton
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        rustix
 Repository:  https://github.com/bytecodealliance/rustix
 Authors:     Dan Gohman, Jakub Konka
@@ -1410,6 +1452,13 @@ License:     BSD-3-Clause
 
 -------------------------------------------------------------
 
+Name:        socket2
+Repository:  https://github.com/rust-lang/socket2
+Authors:     Alex Crichton, Thomas de Zeeuw
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        spin
 Repository:  https://github.com/mvdnes/spin-rs.git
 Authors:     Mathijs van de Nes, John Ericson, Joshua Barretto
@@ -1533,6 +1582,20 @@ Name:        thread_local
 Repository:  https://github.com/Amanieu/thread_local-rs
 Authors:     Amanieu d'Antras
 License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        tokio
+Repository:  https://github.com/tokio-rs/tokio
+Authors:     Tokio Contributors
+License:     MIT
+
+-------------------------------------------------------------
+
+Name:        tokio-util
+Repository:  https://github.com/tokio-rs/tokio
+Authors:     Tokio Contributors
+License:     MIT
 
 -------------------------------------------------------------
 
@@ -1760,10 +1823,38 @@ License:     BSL-1.0
 
 -------------------------------------------------------------
 
+Name:        zerocopy
+Repository:  https://github.com/google/zerocopy
+Authors:     Joshua Liebow-Feeser
+License:     Apache-2.0 OR BSD-2-Clause OR MIT
+
+-------------------------------------------------------------
+
+Name:        zerocopy-derive
+Repository:  https://github.com/google/zerocopy
+Authors:     Joshua Liebow-Feeser
+License:     Apache-2.0 OR BSD-2-Clause OR MIT
+
+-------------------------------------------------------------
+
 Name:        zstd
 Repository:  https://github.com/gyscos/zstd-rs
 Authors:     Alexandre Bury
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        zstd
+Repository:  https://github.com/gyscos/zstd-rs
+Authors:     Alexandre Bury
+License:     MIT
+
+-------------------------------------------------------------
+
+Name:        zstd-safe
+Repository:  https://github.com/gyscos/zstd-rs
+Authors:     Alexandre Bury
+License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 

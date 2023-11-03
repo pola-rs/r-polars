@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-08-26
+RUST_TOOLCHAIN_VERSION := nightly-2023-10-12
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
@@ -42,20 +42,26 @@ requirements-rs:
 	rustup default $(RUST_TOOLCHAIN)
 	rustup component add rustfmt
 	rustup component add clippy
-	cargo install cargo-license
+	if [[ -z "$(CI)" ]]; then \
+		cargo install cargo-license; \
+	fi
 
 .PHONY: build
 build: ## Compile polars R package with all features and generate Rd files
-	export RPOLARS_FULL_FEATURES=true \
+	export NOT_CRAN=true \
+	&& export LIBR_POLARS_BUILD=true \
+	&& export RPOLARS_FULL_FEATURES=true \
 	&& Rscript -e 'if (!(require(arrow)&&require(nanoarrow))) warning("could not load arrow/nanoarrow, igonore changes to nanoarrow.Rd"); rextendr::document()'
 
 .PHONY: install
 install: ## Install the R package
-	export RPOLARS_FULL_FEATURES=true \
+	export NOT_CRAN=true \
+	&& export LIBR_POLARS_BUILD=true \
+	&& export RPOLARS_FULL_FEATURES=true \
 	&& R CMD INSTALL --no-multiarch --with-keep.source .
 
 .PHONY: all
-all: fmt build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
+all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
 docs: build install README.md docs/docs/reference_home.md ## Generate docs
@@ -76,9 +82,13 @@ docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the re
 LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
 
+.PHONY: tools/lib-sums.tsv
+tools/lib-sums.tsv: ## Update the lib-sums.tsv file for pointing to the latest versions of the binary libraries
+	Rscript dev/generate-lib-sums.R
+
 .PHONY: test
 test: build install ## Run fast unittests
-	Rscript -e 'devtools::test()'
+	Rscript -e 'devtools::test(); devtools::run_examples(document = FALSE)'
 
 .PHONY: fmt
 fmt: fmt-rs fmt-r ## Format files

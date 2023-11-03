@@ -202,6 +202,15 @@ test_that("join", {
   l_exp = list(sapply(l, paste, collapse = "-"))
   names(l_exp) = ""
   expect_identical(l_act, l_exp)
+
+  df = pl$DataFrame(
+    s = list(c("a", "b", "c"), c("x", "y")),
+    separator = c("*", "_")
+  )
+  expect_identical(
+    df$select(pl$col("s")$list$join(pl$col("separator")))$to_list(),
+    list(s = c("a*b*c", "x_y"))
+  )
 })
 
 test_that("arg_min arg_max", {

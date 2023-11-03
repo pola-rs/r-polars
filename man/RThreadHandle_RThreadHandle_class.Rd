@@ -29,7 +29,7 @@ session.
 }
 \examples{
 prexpr = pl$col("mpg")$map(\(x) {
-  Sys.sleep(1.5)
+  Sys.sleep(.1)
   x * 0.43
 }, in_background = TRUE)$alias("kml")
 handle = pl$LazyFrame(mtcars)$with_columns(prexpr)$collect_in_background()

@@ -95,6 +95,8 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$RNullValues = extendr_method_to_pure_functions(RNullValues)
 .pr$RPolarsErr = extendr_method_to_pure_functions(RPolarsErr)
 .pr$RThreadHandle = extendr_method_to_pure_functions(RThreadHandle)
+.pr$RPolarsStringCacheHolder = extendr_method_to_pure_functions(RPolarsStringCacheHolder)
+.pr$RPolarsSQLContext = extendr_method_to_pure_functions(RPolarsSQLContext)
 
 
 
@@ -266,7 +268,7 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 pl_class_names = sort(
   c(
     "LazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "DataFrame",
-    "When", "Then", "ChainedWhen", "ChainedThen"
+    "When", "Then", "ChainedWhen", "ChainedThen", "RPolarsSQLContext"
   )
 ) # TODO discover all public class automatically
 

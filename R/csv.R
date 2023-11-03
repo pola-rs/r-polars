@@ -165,7 +165,7 @@ pl$read_csv = function(
     parse_dates = FALSE,
     reuse_downloaded = TRUE) {
   mc = match.call()
-  mc[[1]] = quote(pl$scan_csv)
+  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_csv
   eval.parent(mc)$collect()
 }
 

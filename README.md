@@ -41,21 +41,22 @@ The package can be installed from R-universe, or GitHub.
 Some platforms can install pre-compiled binaries, and others will need
 to build from source.
 
-### R-universe
+### R-universe (recommended)
 
 [R-universe](https://rpolars.r-universe.dev/polars#install) provides
 pre-compiled **polars** binaries for Windows (x86_64), macOS (x86_64)
 and Ubuntu 22.04 (x86_64) with source builds for other platforms.
 
-Binary packages on R-universe are compiled by stable Rust, with nightly
-features disabled.
+Binary packages on R-universe are compiled by nightly Rust, with nightly
+features enabled.
 
 ``` r
+# Binary installation for x86_64 Windows and macOS, source for other platforms
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
 
 ``` r
-# For Ubuntu binary installation
+# Binary installation for Ubuntu 22.04 (x86_64)
 install.packages("polars", repos = "https://rpolars.r-universe.dev/bin/linux/jammy/4.3")
 ```
 
@@ -64,11 +65,10 @@ the excellent R-universe support.
 
 ### GitHub releases
 
-GitHub releases have faster and smaller binaries, as they are compiled
-by nightly rust with some more opimizations. This inludes SIMD
-operations, full link time optimizations (lto=“fat”). The pre-compiled
-binaries are available for various operating systems / architectures,
-including MacOS ARM CPUs. See latest and all previous [GitHub Releases
+Binary packages on GitHub releases are compiled by nightly Rust, with
+nightly features enabled.
+
+See latest and all previous [GitHub Releases
 here](https://github.com/pola-rs/r-polars/releases).
 
 You can download and install these files manually, or install directly
@@ -106,40 +106,10 @@ install.packages(
 )
 ```
 
-#### Linux (aarch64) / macOS (aarch64)
-
-GitHub releases also provide pre-compiled packages for arm64 (aarch64)
-platforms.
-
-These are a little different from above. To install, requiring make (and
-Xcode for macOS) but not rustc / cargo. They are actually source
-releases bundled with a pre-compiled object file `./inst/libr_polars.a`.
-The final linking / building of any R packages must be done on the
-native OS/architecture, but that should take only ~20 seconds.
-
-``` r
-# Linux
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-unknown-linux-gnu.tar.gz",
-  repos = NULL
-)
-```
-
-``` r
-# macOS
-install.packages(
-  "https://github.com/pola-rs/r-polars/releases/latest/download/polars_cross_aarch64-apple-darwin.tar.gz",
-  repos = NULL
-)
-```
-
 ### Build from source
 
-For source installation, the Rust toolchain (Rust 1.70 or later) must be
-configured.
-
-Currently you should install rust \>=1.70 or nightly-2023-07-27 (for
-full features (simd)).
+Otherwise, the Rust library will be built from source. the Rust
+toolchain (Rust 1.73 or later) must be configured.
 
 Please check the <https://github.com/r-rust/hellorust> repository for
 about Rust code in R packages.
@@ -148,7 +118,7 @@ During source installation, some environment variables can be set to
 enable Rust features and profile changes.
 
 - `RPOLARS_FULL_FEATURES="true"` (Build with nightly feature enabled,
-  requires Rust toolchain nightly-2023-08-26)
+  requires Rust toolchain nightly-2023-10-12)
 - `RPOLARS_PROFILE="release-optimized"` (Build with more optimization)
 
 ## Quickstart example
@@ -266,8 +236,8 @@ you will to install the Rust toolchain:
   installer. Then:
 
   ``` sh
-  rustup toolchain install nightly-2023-08-26
-  rustup default nightly-2023-08-26
+  rustup toolchain install nightly-2023-10-12
+  rustup default nightly-2023-10-12
   ```
 
 - Windows: Make sure the latest version of

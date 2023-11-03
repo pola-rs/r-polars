@@ -2,25 +2,24 @@
 % Please edit documentation in R/options.R
 \name{pl_enable_string_cache}
 \alias{pl_enable_string_cache}
-\title{Toggle the global string cache}
-\arguments{
-\item{toggle}{Boolean. TRUE enable, FALSE disable.}
-}
+\title{Enable the global string cache}
 \value{
-enable_string_cache: no return
+This doesn't return any value.
 }
 \description{
 Some functions (e.g joins) can be applied on Categorical series only allowed
-if using the global string cache is enabled. This function enables or disables
-the string_cache and override any contexts made by \code{pl$with_string_cache()}.
-In general, you should use \code{pl$with_string_cache()} instead.
+if using the global string cache is enabled. This function enables
+the string_cache. In general, you should use \code{pl$with_string_cache()} instead.
 }
 \examples{
-pl$enable_string_cache(TRUE)
+pl$enable_string_cache()
+pl$using_string_cache()
+pl$disable_string_cache()
 pl$using_string_cache()
 }
 \seealso{
 \code{\link[=pl_using_string_cache]{pl$using_string_cache}}
+\code{\link[=pl_disable_string_cache]{pl$disable_string_cache}}
 \code{\link[=pl_with_string_cache]{pl$with_string_cache}}
 }
 \keyword{options}

@@ -15,7 +15,6 @@ use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
 use crate::utils::{r_result_list, try_f64_into_usize, wrappers::null_to_opt};
 use extendr_api::prelude::*;
 use polars::frame::explode::MeltArgs;
-use polars::frame::hash_join::JoinType;
 use polars::prelude as pl;
 use polars::prelude::AsOfOptions;
 
@@ -152,8 +151,8 @@ impl LazyFrame {
             time_format,
             datetime_format,
             float_precision,
-            delimiter: separator,
-            quote,
+            separator,
+            quote_char: quote,
             null: null_value,
             line_terminator,
             quote_style,
@@ -387,7 +386,7 @@ impl LazyFrame {
             .right_on([robj_to!(ExprCol, right_on)?.0])
             .allow_parallel(robj_to!(bool, allow_parallel)?)
             .force_parallel(robj_to!(bool, force_parallel)?)
-            .how(JoinType::AsOf(AsOfOptions {
+            .how(pl::JoinType::AsOf(AsOfOptions {
                 strategy: robj_to!(str, strategy).and_then(|s| {
                     new_asof_strategy(s)
                         .map_err(Rctx::Plain)
@@ -506,6 +505,8 @@ impl LazyFrame {
         comm_subplan_elim: Robj,
         comm_subexpr_elim: Robj,
         streaming: Robj,
+        // fast_projection: Robj, // There is no method like with_fast_projection
+        eager: Robj,
     ) -> RResult<Self> {
         let ldf = self
             .0
@@ -515,6 +516,7 @@ impl LazyFrame {
             .with_simplify_expr(robj_to!(bool, simplify_expression)?)
             .with_slice_pushdown(robj_to!(bool, slice_pushdown)?)
             .with_streaming(robj_to!(bool, streaming)?)
+            ._with_eager(robj_to!(bool, eager)?)
             .with_projection_pushdown(robj_to!(bool, projection_pushdown)?)
             .with_comm_subplan_elim(robj_to!(bool, comm_subplan_elim)?)
             .with_comm_subexpr_elim(robj_to!(bool, comm_subexpr_elim)?);
@@ -533,7 +535,7 @@ impl LazyFrame {
             comm_subplan_elim,
             comm_subexpr_elim,
             streaming,
-            fast_projection,
+            fast_projection: _,
             eager,
         } = self.0.get_current_optimizations();
         list!(
@@ -545,6 +547,7 @@ impl LazyFrame {
             comm_subplan_elim = comm_subplan_elim,
             comm_subexpr_elim = comm_subexpr_elim,
             streaming = streaming,
+            eager = eager,
         )
     }
 

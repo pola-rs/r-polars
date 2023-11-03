@@ -1,7 +1,7 @@
 Package: polars
 Title: Lightning-Fast 'DataFrame' Library
-Version: 0.8.1.9000
-Depends: R (>= 4.1.0)
+Version: 0.9.0.9000
+Depends: R (>= 4.2)
 Imports: utils, codetools
 Authors@R:
   c(person("Ritchie", "Vink", , "ritchie46@gmail.com", role = c("aut")),
@@ -26,12 +26,14 @@ Suggests:
     bit64,
     callr,
     data.table,
+    ggplot2,
     knitr,
     lubridate,
     nanoarrow,
     nycflights13,
     patrick,
     pillar,
+    rlang,
     rmarkdown,
     testthat (>= 3.0.0),
     tibble,
@@ -46,7 +48,9 @@ Config/Needs/website:
 Config/Needs/dev:
     brio,
     devtools,
+    dplyr,
     RcppTOML,
+    readr,
     rextendr,
     robinlovelace/styler.equals,
     spelling,
@@ -76,6 +80,7 @@ Collate:
     'expr__expr.R'
     'expr__list.R'
     'expr__meta.R'
+    'expr__name.R'
     'expr__string.R'
     'expr__struct.R'
     'functions__eager.R'
@@ -91,14 +96,17 @@ Collate:
     'parquet.R'
     'pkg-knitr.R'
     'pkg-nanoarrow.R'
+    'polars-package.R'
     'rbackground.R'
     'rlang.R'
     'rust_result.R'
     's3_methods.R'
     'series__series.R'
     'series__trait.R'
+    'sql.R'
     'translation.R'
     'vctrs.R'
     'zzz.R'
 Config/rextendr/version: 0.3.1
 VignetteBuilder: knitr
+Config/polars/LibVersion: 0.34.0

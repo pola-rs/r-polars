@@ -36,6 +36,10 @@ expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace"
 expr_str_make_sub_ns = macro_new_subnamespace("^ExprStr_", "ExprStrNameSpace")
 
 #' @export
+`$.ExprNameNameSpace` = sub_name_space_accessor_function
+expr_name_make_sub_ns = macro_new_subnamespace("^ExprName_", "ExprNameNameSpace")
+
+#' @export
 `$.ExprDTNameSpace` = sub_name_space_accessor_function
 expr_dt_make_sub_ns = macro_new_subnamespace("^ExprDT_", "ExprDTNameSpace")
 
@@ -96,6 +100,8 @@ replace_private_with_pub_methods(Series, "^Series_")
 # RThreadHandle
 replace_private_with_pub_methods(RThreadHandle, "^RThreadHandle_")
 
+# SQLContext
+replace_private_with_pub_methods(RPolarsSQLContext, "^SQLContext_")
 
 
 
@@ -105,7 +111,8 @@ move_env_elements(Expr, pl, c("lit"), remove = FALSE)
 
 #' Get Memory Address
 #' @name pl_mem_address
-#' @description mimics pl$mem_address
+#' @description Get underlying mem address a rust object (via ExtPtr). Expert use only.
+#' @details Does not give meaningful answers for regular R objects.
 #' @param robj an R object
 #' @aliases mem_address
 #' @return String of mem address
@@ -147,22 +154,24 @@ pl$mem_address = mem_address
   makeActiveBinding(
     "rpool_cap",
     \(arg) {
-      if(missing(arg)) {
+      if (missing(arg)) {
         unwrap(get_global_rpool_cap())$capacity
       } else {
         unwrap(set_global_rpool_cap(arg))
       }
-    }, env = polars_optenv
+    },
+    env = polars_optenv
   )
   makeActiveBinding(
     "rpool_active",
     \(arg) {
-      if(missing(arg)) {
+      if (missing(arg)) {
         unwrap(get_global_rpool_cap())$active
       } else {
         unwrap(stop("internal error: polars_optenv$rpool_active cannot be set directly"))
       }
-    }, env = polars_optenv
+    },
+    env = polars_optenv
   )
 
   setup_renv()

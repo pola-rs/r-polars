@@ -10,7 +10,7 @@ use crate::rdatatype;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::*;
-
+use either::Either;
 pub use lazy::dataframe::*;
 
 use crate::conversion_s_to_r::pl_series_to_list;
@@ -18,6 +18,7 @@ pub use crate::series::*;
 
 use arrow::datatypes::DataType;
 use polars::prelude::ArrowField;
+use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
 
 use crate::utils::{collect_hinted_result, r_result_list};
@@ -48,7 +49,7 @@ impl OwnedDataFrameIterator {
 }
 
 impl Iterator for OwnedDataFrameIterator {
-    type Item = Result<Box<dyn arrow::array::Array>, arrow::error::Error>;
+    type Item = Result<Box<dyn arrow::array::Array>, PolarsError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.idx >= self.n_chunks {
@@ -415,7 +416,7 @@ impl DataFrame {
         self.0
             .clone()
             .sample_n(
-                robj_to!(usize, n)?,
+                &robj_to!(PLSeries, n)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
@@ -434,11 +435,21 @@ impl DataFrame {
         self.0
             .clone()
             .sample_frac(
-                robj_to!(f64, frac)?,
+                &robj_to!(PLSeries, frac)?,
                 robj_to!(bool, with_replacement)?,
                 robj_to!(bool, shuffle)?,
                 robj_to!(Option, u64, seed)?,
             )
+            .map_err(polars_to_rpolars_err)
+            .map(DataFrame)
+    }
+
+    pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
+        let opt_s = robj_to!(Option, str, keep_names_as)?;
+        let opt_vec_s = robj_to!(Option, Vec, String, new_col_names)?;
+        let opt_either_vec_s = opt_vec_s.map(|vec_s| Either::Right(vec_s));
+        self.0
+            .transpose(opt_s, opt_either_vec_s)
             .map_err(polars_to_rpolars_err)
             .map(DataFrame)
     }
@@ -462,9 +473,9 @@ impl DataFrame {
         let f = std::fs::File::create(path)?;
         pl::CsvWriter::new(f)
             .has_header(robj_to!(bool, has_header)?)
-            .with_delimiter(robj_to!(Utf8Byte, separator)?)
+            .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)
-            .with_quoting_char(robj_to!(Utf8Byte, quote)?)
+            .with_quote_char(robj_to!(Utf8Byte, quote)?)
             .with_batch_size(robj_to!(usize, batch_size)?)
             .with_datetime_format(robj_to!(Option, String, datetime_format)?)
             .with_date_format(robj_to!(Option, String, date_format)?)

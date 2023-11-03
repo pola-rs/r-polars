@@ -21,17 +21,19 @@ test_that("pl$sum", {
 
 
   # support sum over list of expressions, wildcards or strings
+  # TODO: $sum() returns an i64 output. Is this normal? We use $shrink_dtype()
+  # for now
   l = list(a = 1:2, b = 3:4, c = 5:6)
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum(list("a", "c", 42L)))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("a", "c", 42L))$shrink_dtype())$to_list(),
     c(l, list(sum = c(48L, 50L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum(list("*")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list("*"))$shrink_dtype())$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
   expect_identical(
-    pl$DataFrame(l)$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))$to_list(),
+    pl$DataFrame(l)$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c"))$shrink_dtype())$to_list(),
     c(l, list(sum = c(9L, 12L)))
   )
 })
@@ -169,10 +171,8 @@ test_that("pl$implode", {
 
   ctx = pl$implode(42) |> get_err_ctx()
 
-  expect_identical(ctx$BadArgument,"name")
-  expect_identical(ctx$When,"constructing a Column Expr")
-
-
+  expect_identical(ctx$BadArgument, "name")
+  expect_identical(ctx$When, "constructing a Column Expr")
 })
 
 

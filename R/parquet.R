@@ -9,12 +9,28 @@
 #' @param row_count_name NULL or string, if a string add a rowcount column named by this string
 #' @param row_count_offset integer, the rowcount column can be offset by this value
 #' @param low_memory bool, try reduce memory footprint
+#' @param hive_partitioning Infer statistics and schema from hive partitioned URL
+#' and use them to prune reads.
 #'
 #' @return LazyFrame
 #' @name scan_parquet
 #' @rdname IO_scan_parquet
-#' @examples
-#' # TODO write parquet example
+#' @examplesIf requireNamespace("arrow", quietly = TRUE) && arrow::arrow_with_dataset() && arrow::arrow_with_parquet()
+#' temp_dir = tempfile()
+#' # Write a hive-style partitioned parquet dataset
+#' arrow::write_dataset(
+#'   mtcars,
+#'   temp_dir,
+#'   partitioning = c("cyl", "gear"),
+#'   format = "parquet",
+#'   hive_style = TRUE
+#' )
+#' list.files(temp_dir, recursive = TRUE)
+#'
+#' # Read the dataset
+#' pl$scan_parquet(
+#'   file.path(temp_dir, "**/*.parquet")
+#' )$collect()
 pl$scan_parquet = function(
     file, # : str | Path,
     n_rows = NULL, # : int | None = None,
@@ -29,8 +45,8 @@ pl$scan_parquet = function(
     row_count_name = NULL, # : str | None = None,
     row_count_offset = 0L, # : int = 0,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
-    low_memory = FALSE # : bool = False,
-    ) { #-> LazyFrame
+    low_memory = FALSE, # : bool = False,
+    hive_partitioning = TRUE) { #-> LazyFrame
 
   parallel = parallel[1L]
   if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {
@@ -45,7 +61,8 @@ pl$scan_parquet = function(
     rechunk = rechunk,
     row_name = row_count_name,
     row_count = row_count_offset,
-    low_memory = low_memory
+    low_memory = low_memory,
+    hive_partitioning = hive_partitioning
   )
 
   unwrap(result_lf)
@@ -74,7 +91,7 @@ pl$read_parquet = function(
     row_count_offset = 0L,
     low_memory = FALSE) {
   mc = match.call()
-  mc[[1]] = quote(pl$scan_parquet)
+  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_parquet
   eval.parent(mc)$collect()
 }
 
