@@ -603,6 +603,10 @@ Expr$implode <- function() .Call(wrap__Expr__implode, self)
 
 Expr$shrink_dtype <- function() .Call(wrap__Expr__shrink_dtype, self)
 
+Expr$peak_min <- function() .Call(wrap__Expr__peak_min, self)
+
+Expr$peak_max <- function() .Call(wrap__Expr__peak_max, self)
+
 Expr$list_lengths <- function() .Call(wrap__Expr__list_lengths, self)
 
 Expr$list_contains <- function(other) .Call(wrap__Expr__list_contains, self, other)

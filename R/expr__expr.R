@@ -4351,3 +4351,39 @@ Expr_lit_to_s = function() {
 Expr_lit_to_df = function() {
   pl$select(self)
 }
+
+#' Find local minima
+#'
+#' A local minimum is the point that marks the transition between a decrease
+#' and an increase in a Series. The first and last values of the Series can never
+#' be a peak.
+#'
+#' @return Expr
+#' @seealso `$peak_max()`
+#'
+#' @examples
+#' df = pl$DataFrame(x = c(1, 2, 3, 2, 3, 4, 5, 2))
+#' df
+#'
+#' df$with_columns(peak_min = pl$col("x")$peak_min())
+Expr_peak_min = function() {
+  .pr$Expr$peak_min(self)
+}
+
+#' Find local maxima
+#'
+#' A local maximum is the point that marks the transition between an increase
+#' and a decrease in a Series. The first and last values of the Series can never
+#' be a peak.
+#'
+#' @return Expr
+#' @seealso `$peak_min()`
+#'
+#' @examples
+#' df = pl$DataFrame(x = c(1, 2, 3, 2, 3, 4, 5, 2))
+#' df
+#'
+#' df$with_columns(peak_max = pl$col("x")$peak_max())
+Expr_peak_max = function() {
+  .pr$Expr$peak_max(self)
+}

@@ -1001,6 +1001,14 @@ impl Expr {
         self.0.clone().shrink_dtype().into()
     }
 
+    pub fn peak_min(&self) -> Self {
+        self.0.clone().peak_min().into()
+    }
+
+    pub fn peak_max(&self) -> Self {
+        self.0.clone().peak_max().into()
+    }
+
     //arr/list methods
 
     fn list_lengths(&self) -> Self {

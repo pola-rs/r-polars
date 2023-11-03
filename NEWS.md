@@ -23,8 +23,11 @@
 
 ## What's changed
 
-- New class `RPolarsSQLContext` and its methods to perform SQL queries on DataFrame like objects.
-  To use this feature, needs to build Rust library with full features. (#457)
+- New class `RPolarsSQLContext` and its methods to perform SQL queries on DataFrame-
+  like objects. To use this feature, needs to build Rust library with full features
+  (#457).
+- New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
+  a Series.
 
 # polars 0.9.0
 
