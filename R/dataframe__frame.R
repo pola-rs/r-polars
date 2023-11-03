@@ -1640,12 +1640,12 @@ DataFrame_glimpse = function(..., return_as_string = FALSE) {
 #' # explode a single column, append others
 #' df$explode("numbers")
 #'
-#' # it doesn't change anything if the input is not a list-column
+#' # it is also possible to explode a character column to have one letter per row
 #' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers", "numbers_2"))
+#' df$explode("numbers", "numbers_2")
 #' df$explode(pl$col(pl$List(pl$Float64)))
 DataFrame_explode = function(...) {
   self$lazy()$explode(...)$collect()
