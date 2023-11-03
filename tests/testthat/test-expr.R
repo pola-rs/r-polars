@@ -2365,3 +2365,15 @@ test_that("concat_str", {
   expect_identical(ctxs$When, "converting element 2 into an Expr")
   expect_identical(ctxs$PlainErrorMessage, "cannot be converted into an Expr")
 })
+
+test_that("peak_min, peak_max", {
+  df = pl$DataFrame(x = c(1, 2, 3, 2.2, 3, 4, 5, 2))
+  expect_identical(
+    df$select(peak_min = pl$col("x")$peak_min())$to_data_frame(),
+    data.frame(peak_min = c(rep(FALSE, 3), TRUE, rep(FALSE, 4)))
+  )
+  expect_identical(
+    df$select(peak_max = pl$col("x")$peak_max())$to_data_frame(),
+    data.frame(peak_max = c(rep(FALSE, 2), TRUE, rep(FALSE, 3), TRUE, FALSE))
+  )
+})
