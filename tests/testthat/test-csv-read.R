@@ -127,7 +127,6 @@ test_that("args row_count_ work", {
   expect_equal(out$foo, 1:32)
 })
 
-# TODO: uncomment when the panic! on the Rust side is removed
 test_that("arg encoding works", {
   dat = mtcars
   tmpf = tempfile()
@@ -135,7 +134,7 @@ test_that("arg encoding works", {
 
   expect_error(
     pl$read_csv(tmpf, encoding = "foo"),
-    "not implemented"
+    "encoding choice"
   )
 })
 
