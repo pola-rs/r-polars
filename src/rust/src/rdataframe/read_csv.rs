@@ -92,10 +92,7 @@ pub fn new_from_csv(
     let encoding = match encoding {
         "utf8" => Ok(pl::CsvEncoding::Utf8),
         "utf8-lossy" => Ok(pl::CsvEncoding::LossyUtf8),
-        _ => rerr().bad_val(format!(
-            "encoding choice: '{}' is not supported",
-            encoding
-        )),
+        _ => rerr().bad_val(format!("encoding choice: '{}' is not supported", encoding)),
     };
 
     //construct optional Schema parameter for overwrite_dtype
@@ -119,7 +116,7 @@ pub fn new_from_csv(
     } else {
         let paths: Vec<PathBuf> = robj_to!(Vec, String, paths)?
             .iter()
-            .map(|x| PathBuf::from(x))
+            .map(PathBuf::from)
             .collect();
         pl::LazyCsvReader::new_paths(paths.into())
     };
