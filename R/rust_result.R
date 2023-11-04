@@ -10,7 +10,7 @@ is_result = function(x) {
 }
 
 guard_result = function(x, msg = "") {
-  if (!is_result(x)) stop("internal error: expected a Result-type %s", msg)
+  if (!is_result(x)) stop("internal error: expected a Result-type ", msg)
   invisible(x)
 }
 

@@ -135,7 +135,7 @@ unpack_list = function(..., skip_classes = NULL) {
 #' .pr$env$pcase(
 #'   n < 5, "nope",
 #'   n > 6, "yeah",
-#'   or_else = stop("failed to have a case for n=%s", n)
+#'   or_else = stop("failed to have a case for n = ", n)
 #' )
 pcase = function(..., or_else = NULL) {
   # get unevaluated args except header-function-name and or_else
