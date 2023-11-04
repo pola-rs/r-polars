@@ -135,7 +135,7 @@ unpack_list = function(..., skip_classes = NULL) {
 #' .pr$env$pcase(
 #'   n < 5, "nope",
 #'   n > 6, "yeah",
-#'   or_else = stopf("failed to have a case for n=%s", n)
+#'   or_else = stop("failed to have a case for n=%s", n)
 #' )
 pcase = function(..., or_else = NULL) {
   # get unevaluated args except header-function-name and or_else
@@ -187,10 +187,10 @@ move_env_elements = function(from_env, to_env, element_names, remove = TRUE) {
 #' @keywords internal
 #' @return VecDataFrame
 l_to_vdf = function(l) {
-  if (!length(l)) stopf("cannot concat empty list l")
+  if (!length(l)) stop("cannot concat empty list l")
   do_inherit_DataFrame = sapply(l, inherits, "DataFrame")
   if (!all(do_inherit_DataFrame)) {
-    stopf(paste(
+    stop(paste(
       "element no(s) of concat param l:",
       paste(
         which(!do_inherit_DataFrame),
@@ -206,7 +206,7 @@ l_to_vdf = function(l) {
     tryCatch(vdf$push(item), error = function(e) {
       errors <<- as.character(e)
     })
-    if (!is.null(errors)) stopf(errors)
+    if (!is.null(errors)) stop(errors)
   }
   vdf
 }
@@ -329,7 +329,7 @@ construct_DataTypeVector = function(l) {
       dtv$push(names(l)[i], l[[i]])
       next
     }
-    stopf(paste("element:", i, "is not a DateType"))
+    stop(paste("element:", i, "is not a DateType"))
   }
   dtv
 }

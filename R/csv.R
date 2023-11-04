@@ -88,7 +88,7 @@ pl$scan_csv = function(
     owdtype = args$overwrite_dtype
 
     if (!is.list(owdtype) || !is_named(owdtype)) {
-      stopf("could not interpret overwrite_dtype, must be a named list of DataTypes")
+      stop("could not interpret overwrite_dtype, must be a named list of DataTypes")
     }
     datatype_vector = DataTypeVector$new() # mutable
     mapply(
@@ -100,7 +100,7 @@ pl$scan_csv = function(
           type = DataType$new(type)
         }
         if (!inherits(type, "RPolarsDataType")) {
-          stopf("arg overwrite_dtype must be a named list of dtypes or dtype names")
+          stop("arg overwrite_dtype must be a named list of dtypes or dtype names")
         }
         datatype_vector$push(name, type)
       }
@@ -129,7 +129,7 @@ pl$scan_csv = function(
         return(RNullValues$new_named(null_values))
       }
 
-      stopf("null_values arg must be a string OR unamed char vec OR named char vec")
+      stop("null_values arg must be a string OR unamed char vec OR named char vec")
     })()
 
     args$null_values = RNullValues

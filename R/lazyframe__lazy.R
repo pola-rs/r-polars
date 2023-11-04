@@ -987,7 +987,7 @@ LazyFrame_join = function(
   } else if (inherits(other, "DataFrame")) {
     other = other
   } else {
-    stopf(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+    stop(paste("Expected a `LazyFrame` as join table, got ", class(other)))
   }
 
   how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
@@ -1001,7 +1001,7 @@ LazyFrame_join = function(
     rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
   } else if (how != "cross") {
-    stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
+    stop("must specify `on` OR (  `left_on` AND `right_on` ) ")
   } else {
     rexprs_left = do.call(construct_ProtoExprArray, as.list(self$columns))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(other$columns))

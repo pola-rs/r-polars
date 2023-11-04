@@ -459,10 +459,10 @@ ExprStr_json_path_match = function(pat) {
 #' )
 ExprStr_decode = function(encoding, ..., strict = TRUE) {
   pcase(
-    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$str_hex_decode(self, strict),
     encoding == "base64", .pr$Expr$str_base64_decode(self, strict),
-    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
 }
 
@@ -484,10 +484,10 @@ ExprStr_decode = function(encoding, ..., strict = TRUE) {
 #' )
 ExprStr_encode = function(encoding) {
   pcase(
-    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$str_hex_encode(self),
     encoding == "base64", .pr$Expr$str_base64_encode(self),
-    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
 }
 

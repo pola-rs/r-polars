@@ -72,7 +72,7 @@ time_unit_conv_factor = c(
 pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
   tu = tu[1]
   if (!is_string(tu) || !tu %in% c("s", "ms", "us", "ns")) {
-    stopf("tu must be either 's','ms','us' ,or 'ns', not [%s]", str_string(tu))
+    stop("tu must be either 's','ms','us' ,or 'ns', not [%s]", str_string(tu))
   }
 
   if (is.character(x)) {
@@ -90,7 +90,7 @@ pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
 
   if (typeof(x) == "integer") {
     if (!tu %in% c("s", "ms")) {
-      stopf(
+      stop(
         "only 's' and 'ms' tu is supported for integer, set input x as double to use tu: [%s]", tu
       )
     }
@@ -100,12 +100,12 @@ pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
 
   # check type
   if (!type_ok) {
-    stopf("type of x is not double or integer, it was [%s]", typeof(x))
+    stop("type of x is not double or integer, it was [%s]", typeof(x))
   }
 
   # check boundaries
   if (isTRUE(any(x < 0))) {
-    stopf("no element of x can be negative")
+    stop("no element of x can be negative")
   }
   x = floor(x)
   limits = c(
@@ -115,7 +115,7 @@ pl$PTime = function(x, tu = c("s", "ms", "us", "ns"), format = "%H:%M:%S") {
     "ns" = 86400000000000
   )
   if (isTRUE(any(x > limits[tu]))) {
-    stopf("no elements can exceed 24 hours, the limit for tu '%s' is the value %s", tu, limits[tu])
+    stop("no elements can exceed 24 hours, the limit for tu '%s' is the value %s", tu, limits[tu])
   }
 
   attr(x, "tu") = tu
@@ -136,7 +136,7 @@ print.PTime = function(x, ...) {
     tu == "ms", 3,
     tu == "us", 6,
     tu == "ns", 9,
-    or_else = stopf("not recognized tu")
+    or_else = stop("not recognized tu")
   )
   val = unclass(x) / 10^tu_exp
   origin = structure(0, tzone = "GMT", class = c("POSIXct", "POSIXt"))
