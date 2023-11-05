@@ -59,8 +59,8 @@ pub fn new_from_csv(
     missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
-    infer_schema_length: Nullable<i32>,
-    n_rows: Nullable<i32>,
+    infer_schema_length: Robj,
+    n_rows: Robj,
     encoding: &str,
     low_memory: Robj,
     rechunk: Robj,
@@ -81,6 +81,8 @@ pub fn new_from_csv(
     let skip_rows = robj_to!(usize, skip_rows)?;
     let skip_rows_after_header = robj_to!(usize, skip_rows_after_header)?;
     let cache = robj_to!(bool, cache)?;
+    let infer_schema_length = robj_to!(Option, usize, infer_schema_length)?;
+    let n_rows = robj_to!(Option, usize, n_rows)?;
     let low_memory = robj_to!(bool, low_memory)?;
     let missing_utf8_is_empty_string = robj_to!(bool, missing_utf8_is_empty_string)?;
     let rechunk = robj_to!(bool, rechunk)?;
@@ -93,7 +95,7 @@ pub fn new_from_csv(
         "utf8" => Ok(pl::CsvEncoding::Utf8),
         "utf8-lossy" => Ok(pl::CsvEncoding::LossyUtf8),
         _ => rerr().bad_val(format!("encoding choice: '{}' is not supported", encoding)),
-    };
+    }?;
 
     //construct optional Schema parameter for overwrite_dtype
     let dtv = null_to_opt(dtypes).cloned();
@@ -136,12 +138,12 @@ pub fn new_from_csv(
     };
 
     let r = r
-        .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
+        .with_infer_schema_length(infer_schema_length)
         .with_separator(separator)
         .has_header(has_header)
         .with_ignore_errors(ignore_errors)
         .with_skip_rows(skip_rows)
-        .with_n_rows(null_to_opt(n_rows).map(|x| x as usize))
+        .with_n_rows(n_rows)
         .with_cache(cache)
         .with_dtype_overwrite(schema.as_ref())
         .low_memory(low_memory)
@@ -150,7 +152,7 @@ pub fn new_from_csv(
         .with_end_of_line_char(eol_char)
         .with_rechunk(rechunk)
         .with_skip_rows_after_header(skip_rows_after_header)
-        .with_encoding(encoding?)
+        .with_encoding(encoding)
         .with_try_parse_dates(try_parse_dates)
         .with_null_values(Wrap(null_values).into())
         .with_missing_is_null(!missing_utf8_is_empty_string)
