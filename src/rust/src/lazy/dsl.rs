@@ -1,10 +1,8 @@
 use crate::concurrent::RFnSignature;
-use crate::rdatatype::literal_to_any_value;
-use crate::rdatatype::new_null_behavior;
-use crate::rdatatype::new_rank_method;
-use crate::rdatatype::new_rolling_cov_options;
-use crate::rdatatype::robj_to_timeunit;
-use crate::rdatatype::{DataTypeVector, RPolarsDataType};
+use crate::rdatatype::{
+    literal_to_any_value, new_closed_window_opts, new_null_behavior, new_rank_method,
+    new_rolling_cov_options, robj_to_timeunit, DataTypeVector, RPolarsDataType,
+};
 use crate::robj_to;
 use crate::rpolarserr::polars_to_rpolars_err;
 use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
@@ -20,7 +18,10 @@ use crate::utils::{
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
-use pl::{BinaryNameSpaceImpl, DurationMethods, IntoSeries, TemporalMethods, Utf8NameSpaceImpl};
+use pl::{
+    BinaryNameSpaceImpl, Duration, DurationMethods, IntoSeries, RollingGroupOptions,
+    TemporalMethods, Utf8NameSpaceImpl,
+};
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars::prelude::SortOptions;
@@ -2366,6 +2367,31 @@ impl Expr {
             new_rolling_cov_options(window_size, min_periods, ddof)?,
         )
         .into())
+    }
+
+    pub fn rolling(
+        &self,
+        index_column: Robj,
+        period: Robj,
+        offset: Robj,
+        closed: Robj,
+        check_sorted: Robj,
+    ) -> RResult<Self> {
+        let index_column = robj_to!(String, index_column)?.into();
+        let period = Duration::parse(robj_to!(str, period)?);
+        let offset = Duration::parse(robj_to!(str, offset)?);
+        let closed_window = new_closed_window_opts(closed)?;
+        let check_sorted = robj_to!(bool, check_sorted)?;
+
+        let options = RollingGroupOptions {
+            index_column,
+            period,
+            offset,
+            closed_window,
+            check_sorted,
+        };
+
+        Ok(self.0.clone().rolling(options).into())
     }
 }
 

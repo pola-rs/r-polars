@@ -4387,3 +4387,45 @@ Expr_peak_min = function() {
 Expr_peak_max = function() {
   .pr$Expr$peak_max(self)
 }
+
+#' Create rolling groups based on a time or numeric column
+#'
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order. If this
+#' column represents an index, it has to be either Int32 or Int64. Note that
+#' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
+#' column.
+#' @param period Length of the window, must be non-negative.
+#' @param offset Offset of the window. Default is `-period`.
+#' @param closed Define which sides of the temporal interval are closed
+#' (inclusive). This can be either `"left"`, `"right"`, `"both"` or `"none"`.
+#' @param check_sorted Check whether data is actually sorted. Checking it is
+#' expensive so if you are sure the data within the by groups is sorted, you can
+#' set this to `FALSE` but note that if the data is unsorted, it will lead
+#' to incorrect output.
+#'
+#' @return Expr
+#'
+#' @examples
+#' # create a DataFrame with a Datetime column and an f64 column
+#' dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+#'           "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+#'
+#' df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+#'   with_columns(
+#'     pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+#'   )
+#'
+#' df$with_columns(
+#'   sum_a=pl$sum("a")$rolling(index_column="dt", period="2d"),
+#'   min_a=pl$min("a")$rolling(index_column="dt", period="2d"),
+#'   max_a=pl$max("a")$rolling(index_column="dt", period="2d")
+#' )
+Expr_rolling = function(index_column, period, offset = NULL,
+                        closed = "right", check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
+    unwrap("in $rolling():")
+}

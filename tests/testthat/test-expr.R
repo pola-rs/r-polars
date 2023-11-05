@@ -2377,3 +2377,57 @@ test_that("peak_min, peak_max", {
     data.frame(peak_max = c(rep(FALSE, 2), TRUE, rep(FALSE, 3), TRUE, FALSE))
   )
 })
+
+test_that("rolling, basic", {
+  dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+            "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    )
+
+  out = df$with_columns(
+    sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
+    min_a = pl$min("a")$rolling(index_column = "dt", period = "2d"),
+    max_a = pl$max("a")$rolling(index_column = "dt", period = "2d"),
+    mean_a = pl$mean("a")$rolling(index_column = "dt", period = "2d")
+  )$select("sum_a", "min_a", "max_a", "mean_a")$to_data_frame()
+
+  expect_identical(
+    out,
+    data.frame(
+      sum_a = c(3, 10, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(3, 7, 7, 9, 9, 1),
+      mean_a = c(3, 5, 5, 6, 5.5, 1)
+    )
+  )
+})
+
+test_that("rolling, arg closed", {
+  dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+            "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+    )
+
+  out = df$with_columns(
+    sum_a_left = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "left"),
+    sum_a_both = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "both"),
+    sum_a_none = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "none"),
+    sum_a_null = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = NULL)
+  )$select("sum_a_left", "sum_a_both", "sum_a_none", "sum_a_null")$to_data_frame()
+
+  expect_identical(
+    out,
+    data.frame(
+      sum_a_left = c(0, 3, 10, 15, 9, 0),
+      sum_a_both = c(3, 10, 15, 24, 11, 1),
+      sum_a_none = c(0, 3, 10, 15, 9, 0),
+      sum_a_null = c(3, 10, 15, 24, 11, 1)
+    )
+  )
+})

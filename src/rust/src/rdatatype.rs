@@ -512,6 +512,24 @@ pub fn new_rolling_cov_options(
     })
 }
 
+pub fn new_closed_window_opts(closed_window: Robj) -> RResult<pl::ClosedWindow> {
+    use pl::ClosedWindow;
+    match robj_to!(Option, String, closed_window)?
+        .unwrap_or("right".to_string())
+        .as_str()
+    {
+        "left" => Ok(ClosedWindow::Left),
+        "right" => Ok(ClosedWindow::Right),
+        "both" => Ok(ClosedWindow::Both),
+        "none" => Ok(ClosedWindow::None),
+        m => Err(polars::prelude::PolarsError::ComputeError(
+            format!("Failed to set closed_window as [{m}]").into(),
+        )),
+    }
+    .map_err(polars_to_rpolars_err)
+    .misvalued("should be one of ['left', 'right', 'both', 'none']")
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;

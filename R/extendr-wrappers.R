@@ -525,6 +525,8 @@ Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights,
 
 Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
 
+Expr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__Expr__rolling, self, index_column, period, offset, closed, check_sorted)
+
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
 Expr$rank <- function(method, descending) .Call(wrap__Expr__rank, self, method, descending)
