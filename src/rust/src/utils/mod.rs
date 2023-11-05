@@ -104,7 +104,7 @@ macro_rules! handle_type {
             if rvalue.is_na() {
                 Ok(None)
             } else {
-                Ok(Some(rvalue.0))
+                Ok(Some(rvalue.inner()))
             }
         } else {
             return Err(extendr_api::Error::Other(
@@ -115,7 +115,7 @@ macro_rules! handle_type {
     (Integers $opt_value:expr) => {{
         if let Some(rint) = $opt_value {
             //those with at least one return value
-            let val = rint.0;
+            let val = rint.inner();
 
             if val == R_INT_NA_ENC {
                 //those where value is R_NA_int, return NULL/none to polars
