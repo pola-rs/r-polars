@@ -488,21 +488,6 @@ pub fn unpack_r_result_list(robj: extendr_api::Robj) -> RResult<Robj> {
     res
 }
 
-pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
-    let s = robj_to_roption(robj)?;
-    match s.as_str() {
-        "cross" => Ok(pl::JoinType::Cross),
-        "inner" => Ok(pl::JoinType::Inner),
-        "left" => Ok(pl::JoinType::Left),
-        "outer" => Ok(pl::JoinType::Outer),
-        "semi" => Ok(pl::JoinType::Semi),
-        "anti" => Ok(pl::JoinType::Anti),
-        s => rerr().bad_val(format!(
-            "[{s}] JoinType is not any of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
-        )),
-    }
-}
-
 //None if not real or Na.
 pub fn robj_bit64_to_opt_i64(robj: Robj) -> Option<i64> {
     robj.as_real()
@@ -549,9 +534,12 @@ pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> RResult<&'a str> {
     }
 }
 
-// this conversion exists to support R option char vec e.g. c("a", "b"), it will only get "a" and igonore the rest
-// conversion error if not a char vec or zero length
-pub fn robj_to_roption(robj: extendr_api::Robj) -> RResult<String> {
+// This conversion assists conversion of R choice char vec e.g. c("a", "b")
+// Only the first element "a" will passed on as String
+// conversion error if not a char vec with none-zero length.
+// NA is not allowed
+// other conversions will use it e.g. robj_to_join_type() or robj_to_closed_window()
+pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
     let s_res: EResult<Strings> = robj.try_into();
@@ -559,7 +547,7 @@ pub fn robj_to_roption(robj: extendr_api::Robj) -> RResult<String> {
     match opt_str {
         // NA_CHARACTER not allowed as first element return error
         Ok(Some(rstr)) if rstr.is_na() => {
-            Err(RPolarsErr::new().plain("an R option/choice should not be a NA_character".into()))
+            Err(RPolarsErr::new().notachoice("NA_character is not allowed".into()))
         }
 
         // At least one string, return first string
@@ -568,12 +556,11 @@ pub fn robj_to_roption(robj: extendr_api::Robj) -> RResult<String> {
         // Not character vector, return Error
         Err(extendr_err) => {
             let rpolars_err: RPolarsErr = extendr_err.into();
-            Err(rpolars_err.plain("an R option/choice should be a character vector".into()))
+            Err(rpolars_err.notachoice("input is not a character vector".into()))
         }
 
         // An empty chr vec, return Error
-        Ok(None) => Err(RPolarsErr::new()
-            .plain("an R option/choice character vector cannot have zero length".into())),
+        Ok(None) => Err(RPolarsErr::new().notachoice("character vector has zero length".into())),
     }
     .map_err(|err| err.bad_robj(robj_clone))
 }
@@ -977,8 +964,8 @@ macro_rules! robj_to_inner {
     (timeunit, $a:ident) => {
         $crate::rdatatype::robj_to_timeunit($a)
     };
-    (new_closed_window, $a:ident) => {
-        $crate::rdatatype::new_closed_window($a)
+    (ClosedWindow, $a:ident) => {
+        $crate::rdatatype::robj_to_closed_window($a)
     };
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
@@ -1064,7 +1051,7 @@ macro_rules! robj_to_inner {
     };
 
     (JoinType, $a:ident) => {
-        $crate::utils::robj_to_join_type($a)
+        $crate::rdatatype::robj_to_join_type($a)
     };
 
     (RArrow_schema, $a:ident) => {

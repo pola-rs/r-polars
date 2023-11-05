@@ -65,7 +65,7 @@ test_robj_to_expr <- function(robj) .Call(wrap__test_robj_to_expr, robj)
 
 test_wrong_call_pl_lit <- function(robj) .Call(wrap__test_wrong_call_pl_lit, robj)
 
-test_robj_to_roption <- function(robj) .Call(wrap__test_robj_to_roption, robj)
+test_robj_to_rchoice <- function(robj) .Call(wrap__test_robj_to_rchoice, robj)
 
 polars_features <- function() .Call(wrap__polars_features)
 
@@ -318,6 +318,8 @@ RPolarsErr$hint <- function(s) .Call(wrap__RPolarsErr__hint, self, s)
 RPolarsErr$mistyped <- function(s) .Call(wrap__RPolarsErr__mistyped, self, s)
 
 RPolarsErr$misvalued <- function(s) .Call(wrap__RPolarsErr__misvalued, self, s)
+
+RPolarsErr$notachoice <- function(s) .Call(wrap__RPolarsErr__notachoice, self, s)
 
 RPolarsErr$plain <- function(s) .Call(wrap__RPolarsErr__plain, self, s)
 

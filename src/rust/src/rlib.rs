@@ -5,7 +5,7 @@ use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
-use crate::utils::robj_to_roption;
+use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
@@ -65,7 +65,7 @@ fn r_date_range_lazy(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
         robj_to!(pl_duration, every)?,
-        robj_to!(new_closed_window, closed)?,
+        robj_to!(ClosedWindow, closed)?,
         robj_to!(Option, timeunit, time_unit)?,
         robj_to!(Option, String, time_zone)?,
     );
@@ -222,9 +222,9 @@ fn test_wrong_call_pl_lit(robj: Robj) -> RResult<Robj> {
 }
 
 #[extendr]
-fn test_robj_to_roption(robj: Robj) -> RResult<String> {
+fn test_robj_to_rchoice(robj: Robj) -> RResult<String> {
     // robj can be any non-zero length char vec, will return first string.
-    robj_to_roption(robj)
+    robj_to_rchoice(robj)
 }
 
 #[extendr]
@@ -307,7 +307,7 @@ extendr_module! {
     fn test_print_string;
     fn test_robj_to_expr;
     fn test_wrong_call_pl_lit;
-    fn test_robj_to_roption;
+    fn test_robj_to_rchoice;
 
     //feature flags
     fn polars_features;

@@ -1,6 +1,6 @@
 use crate::robj_to;
 use crate::utils::wrappers::Wrap;
-use crate::utils::{r_result_list, robj_to_roption, robj_to_string};
+use crate::utils::{r_result_list, robj_to_string};
 use extendr_api::prelude::*;
 use polars::prelude as pl;
 use polars_core::prelude::QuantileInterpolOptions;
@@ -13,6 +13,8 @@ use std::result::Result;
 pub struct RField(pub pl::Field);
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
+
+use crate::utils::robj_to_rchoice;
 
 #[extendr]
 impl RField {
@@ -284,19 +286,6 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
     }
 }
 
-pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
-    use pl::ClosedWindow as CW;
-    match robj_to_roption(robj)?.as_str() {
-        "both" => Ok(CW::Both),
-        "left" => Ok(CW::Left),
-        "none" => Ok(CW::None),
-        "right" => Ok(CW::Right),
-        s => rerr().bad_val(format!(
-            "ClosedWindow choice ['{s}'] is not any of 'both', 'left', 'none' or 'right'"
-        )),
-    }
-}
-
 pub fn new_null_behavior(
     s: &str,
 ) -> std::result::Result<polars::series::ops::NullBehavior, String> {
@@ -497,6 +486,34 @@ pub fn new_rolling_cov_options(
         min_periods: robj_to!(u32, min_periods)?,
         ddof: robj_to!(u8, ddof)?,
     })
+}
+
+pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
+    let s = robj_to_rchoice(robj)?;
+    match s.as_str() {
+        "cross" => Ok(pl::JoinType::Cross),
+        "inner" => Ok(pl::JoinType::Inner),
+        "left" => Ok(pl::JoinType::Left),
+        "outer" => Ok(pl::JoinType::Outer),
+        "semi" => Ok(pl::JoinType::Semi),
+        "anti" => Ok(pl::JoinType::Anti),
+        s => rerr().bad_val(format!(
+            "JoinType choice ['{s}'] is not any of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
+        )),
+    }
+}
+
+pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
+    use pl::ClosedWindow as CW;
+    match robj_to_rchoice(robj)?.as_str() {
+        "both" => Ok(CW::Both),
+        "left" => Ok(CW::Left),
+        "none" => Ok(CW::None),
+        "right" => Ok(CW::Right),
+        s => rerr().bad_val(format!(
+            "ClosedWindow choice ['{s}'] is not any of 'both', 'left', 'none' or 'right'"
+        )),
+    }
 }
 
 extendr_module! {
