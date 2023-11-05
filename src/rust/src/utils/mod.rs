@@ -554,9 +554,9 @@ pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
         Ok(Some(rstr)) => Ok(rstr.to_string()),
 
         // Not character vector, return Error
-        Err(extendr_err) => {
-            let rpolars_err: RPolarsErr = extendr_err.into();
-            Err(rpolars_err.notachoice("input is not a character vector".into()))
+        Err(_extendr_err) => {
+            //let rpolars_err: RPolarsErr = _extendr_err.into(); extendr error not that helpful
+            Err(RPolarsErr::new().notachoice("input is not a character vector".into()))
         }
 
         // An empty chr vec, return Error
