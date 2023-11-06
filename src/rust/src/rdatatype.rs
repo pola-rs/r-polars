@@ -498,7 +498,7 @@ pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
         "semi" => Ok(pl::JoinType::Semi),
         "anti" => Ok(pl::JoinType::Anti),
         s => rerr().bad_val(format!(
-            "JoinType choice ['{s}'] is not any of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
+            "JoinType choice ['{s}'] should be one of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
         )),
     }
 }
@@ -511,7 +511,7 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
         "none" => Ok(CW::None),
         "right" => Ok(CW::Right),
         s => rerr().bad_val(format!(
-            "ClosedWindow choice ['{s}'] is not any of 'both', 'left', 'none' or 'right'"
+            "ClosedWindow choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
         )),
     }
 }

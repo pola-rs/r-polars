@@ -32,6 +32,3 @@ test_that("plStruct", {
 
   err_state = result(pl$Struct(bin = pl$Binary, pl$Boolean, bob = 42))
 })
-
-
-
