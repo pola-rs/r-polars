@@ -3,14 +3,17 @@
 use crate::rdatatype::DataTypeVector;
 
 use crate::lazy::dataframe::LazyFrame;
+use crate::robj_to;
+use crate::rpolarserr::*;
+use polars::io::RowCount;
+use std::path::PathBuf;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
 use extendr_api::{extendr, prelude::*, Rinternals};
 use polars::prelude as pl;
-//this function is derived from  polars/py-polars/src/lazy/DataFrame.rs new_from_csv
-use crate::utils::r_result_list;
 use std::result::Result;
+
 //see param, null_values
 #[derive(Clone, Debug)]
 pub struct RNullValues(pl::NullValues);
@@ -43,39 +46,59 @@ impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
 
 #[allow(clippy::too_many_arguments)]
 #[extendr]
-pub fn rlazy_csv_reader(
-    path: String,
-    sep: &str,
-    has_header: bool,
-    ignore_errors: bool,
-    skip_rows: i32,        //usize
-    n_rows: Nullable<i32>, //option usize
-    cache: bool,
-    overwrite_dtype: Nullable<&DataTypeVector>, //Option<Vec<(&str, Wrap<DataType>)>>, alias None/Null
-    low_memory: bool,
-    comment_char: Nullable<&str>,
-    quote_char: Nullable<&str>,
+pub fn new_from_csv(
+    path: Robj,
+    paths: Robj,
+    has_header: Robj,
+    separator: Robj,
+    comment_char: Robj,
+    quote_char: Robj,
+    skip_rows: Robj,
+    dtypes: Nullable<&DataTypeVector>,
     null_values: Nullable<&RNullValues>,
-    infer_schema_length: Nullable<i32>,
-    //with_schema_modify: Option<PyObject>,
-    skip_rows_after_header: i32,
+    // missing_utf8_is_empty_string: Robj,
+    ignore_errors: Robj,
+    cache: Robj,
+    infer_schema_length: Robj,
+    n_rows: Robj,
     encoding: &str,
-    row_count_name: Nullable<String>,
-    row_count_offset: i32, //replaced IdxSize with usize
-    parse_dates: bool,
-) -> List {
+    low_memory: Robj,
+    rechunk: Robj,
+    skip_rows_after_header: Robj,
+    row_count_name: Robj,
+    row_count_offset: Robj,
+    try_parse_dates: Robj,
+    eol_char: Robj,
+    raise_if_empty: Robj,
+    truncate_ragged_lines: Robj,
+) -> RResult<LazyFrame> {
+    let separator = robj_to!(Utf8Byte, separator)?;
+    let has_header = robj_to!(bool, has_header)?;
+    let ignore_errors = robj_to!(bool, ignore_errors)?;
+    let quote_char = robj_to!(Option, Utf8Byte, quote_char)?;
+    let comment_char = robj_to!(Option, Utf8Byte, comment_char)?;
+    let eol_char = robj_to!(Utf8Byte, eol_char)?;
+    let skip_rows = robj_to!(usize, skip_rows)?;
+    let skip_rows_after_header = robj_to!(usize, skip_rows_after_header)?;
+    let cache = robj_to!(bool, cache)?;
+    let infer_schema_length = robj_to!(Option, usize, infer_schema_length)?;
+    let n_rows = robj_to!(Option, usize, n_rows)?;
+    let low_memory = robj_to!(bool, low_memory)?;
+    // let missing_utf8_is_empty_string = robj_to!(bool, missing_utf8_is_empty_string)?;
+    let rechunk = robj_to!(bool, rechunk)?;
+    let try_parse_dates = robj_to!(bool, try_parse_dates)?;
+    let raise_if_empty = robj_to!(bool, raise_if_empty)?;
+    let truncate_ragged_lines = robj_to!(bool, truncate_ragged_lines)?;
+
     //construct encoding parameter
     let encoding = match encoding {
-        "utf8" => pl::CsvEncoding::Utf8,
-        "utf8-lossy" => pl::CsvEncoding::LossyUtf8,
-        e => {
-            let result: Result<(), String> = Err(format!("encoding {} not implemented.", e));
-            return r_result_list(result);
-        }
-    };
+        "utf8" => Ok(pl::CsvEncoding::Utf8),
+        "utf8-lossy" => Ok(pl::CsvEncoding::LossyUtf8),
+        _ => rerr().bad_val(format!("encoding choice: '{}' is not supported", encoding)),
+    }?;
 
     //construct optional Schema parameter for overwrite_dtype
-    let dtv = null_to_opt(overwrite_dtype).cloned();
+    let dtv = null_to_opt(dtypes).cloned();
     let schema = dtv.map(|some_od| {
         let fields = some_od.0.iter().map(|(name, dtype)| {
             if let Some(sname) = name {
@@ -87,44 +110,60 @@ pub fn rlazy_csv_reader(
         pl::Schema::from_iter(fields)
     });
 
-    //construct optional RowCount parameter
-    let row_count = row_count_name
-        .into_option()
-        .map(|name| polars::io::RowCount {
-            name,
-            offset: row_count_offset as u32, //could not point to type polars::polars_arrow::index::IdxSize
-        });
+    //construct paths, depending on whether one or multiple paths were provided
+    let path = robj_to!(Option, String, path)?;
+    let r = if path.is_some() {
+        let path = PathBuf::from(path.unwrap());
+        pl::LazyCsvReader::new(&path)
+    } else {
+        let paths: Vec<PathBuf> = robj_to!(Vec, String, paths)?
+            .iter()
+            .map(PathBuf::from)
+            .collect();
+        pl::LazyCsvReader::new_paths(paths.into())
+    };
 
-    //TODO expose rework latest rust-polars features
-    let _ = ignore_errors;
-    let r = pl::LazyCsvReader::new(path)
-        .with_infer_schema_length(null_to_opt(infer_schema_length).map(|x| x as usize))
-        .with_separator(sep.as_bytes()[0])
+    //construct optional RowCount parameter
+    let row_count_name = robj_to!(Option, String, row_count_name)?;
+    let r = if row_count_name.is_some() {
+        let row_count = Some((
+            row_count_name.unwrap(),
+            robj_to!(Option, u32, row_count_offset)?.unwrap_or(0),
+        ))
+        .map(|(name, offset)| RowCount { name, offset });
+
+        r.with_row_count(row_count)
+    } else {
+        r
+    };
+
+    let r = r
+        .with_infer_schema_length(infer_schema_length)
+        .with_separator(separator)
         .has_header(has_header)
-        //.with_ignore_parser_errors(ignore_errors) //TODO check why no longer a thing
-        .with_skip_rows(skip_rows as usize)
-        .with_n_rows(null_to_opt(n_rows).map(|x| x as usize))
+        .with_ignore_errors(ignore_errors)
+        .with_skip_rows(skip_rows)
+        .with_n_rows(n_rows)
         .with_cache(cache)
         .with_dtype_overwrite(schema.as_ref())
         .low_memory(low_memory)
-        .with_comment_char(null_to_opt(comment_char).map(|x| x.as_bytes()[0]))
-        .with_quote_char(null_to_opt(quote_char).map(|x| x.as_bytes()[0]))
-        .with_skip_rows_after_header(skip_rows_after_header as usize)
+        .with_comment_char(comment_char)
+        .with_quote_char(quote_char)
+        .with_end_of_line_char(eol_char)
+        .with_rechunk(rechunk)
+        .with_skip_rows_after_header(skip_rows_after_header)
         .with_encoding(encoding)
-        .with_row_count(row_count)
-        .with_try_parse_dates(parse_dates)
-        .with_null_values(Wrap(null_values).into());
+        .with_try_parse_dates(try_parse_dates)
+        .with_null_values(Wrap(null_values).into())
+        // .with_missing_is_null(!missing_utf8_is_empty_string)
+        .truncate_ragged_lines(truncate_ragged_lines)
+        .raise_if_empty(raise_if_empty);
 
-    let result = r
-        .finish()
-        .map(LazyFrame)
-        .map_err(|err| format!("in rlazy_csv_reader: {:?}", err));
-
-    r_result_list(result)
+    r.finish().map_err(polars_to_rpolars_err).map(LazyFrame)
 }
 
 extendr_module! {
     mod read_csv;
-    fn rlazy_csv_reader;
+    fn new_from_csv;
     impl RNullValues;
 }
