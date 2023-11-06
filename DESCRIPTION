@@ -25,6 +25,7 @@ Suggests:
     bench,
     bit64,
     callr,
+    curl,
     data.table,
     ggplot2,
     knitr,
@@ -39,6 +40,8 @@ Suggests:
     tibble,
     tools,
     withr
+Remotes:
+    r-lib/testthat
 Config/Needs/website:
     etiennebacher/altdoc,
     here,

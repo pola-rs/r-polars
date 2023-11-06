@@ -36,6 +36,8 @@ RPolarsSQLContext
 #' ctx = pl$SQLContext(mtcars = mtcars)
 #' ctx
 pl$SQLContext = function(...) {
+  check_feature("sql", "in $SQLContext()")
+
   self = .pr$RPolarsSQLContext$new()
   lazyframes = list(...)
 

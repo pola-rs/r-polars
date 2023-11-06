@@ -145,7 +145,7 @@ pub fn pl_series_to_list(
             }
             Struct(_) => {
                 let df = s.clone().into_frame().unnest([s.name()]).unwrap();
-                let l = DataFrame(df).to_list_result()?;
+                let mut l = DataFrame(df).to_list_result()?;
 
                 //TODO contribute extendr_api set_attrib mutates &self, change signature to surprise anyone
                 if tag_structs {
@@ -173,11 +173,11 @@ pub fn pl_series_to_list(
                         .collect_robj()
                 })
                 // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
-                .map(|robj| {
+                .map(|mut robj| {
                     robj.set_class(&["PTime"])
                         .expect("internal error: class label PTime failed")
                 })
-                .map(|robj| robj.set_attrib("tu", "ns"))
+                .map(|mut robj| robj.set_attrib("tu", "ns"))
                 .expect("internal error: attr tu failed")
                 .map_err(|err| {
                     pl_error::ComputeError(
@@ -202,11 +202,11 @@ pub fn pl_series_to_list(
                             .collect_robj()
                     })
                     // TODO set_class and set_attrib reallocates the vector, find some way to modify without.
-                    .map(|robj| {
+                    .map(|mut robj| {
                         robj.set_class(&["POSIXct", "POSIXt"])
                             .expect("internal error: class POSIXct label failed")
                     })
-                    .map(|robj| robj.set_attrib("tzone", tz))
+                    .map(|mut robj| robj.set_attrib("tzone", tz))
                     .expect("internal error: attr tzone failed")
                     .map_err(|err| {
                         pl_error::ComputeError(
