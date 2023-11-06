@@ -188,6 +188,8 @@ ExprStr_to_lowercase = function() {
 #'   tryCatch(f(), error = as.character)
 #' }
 ExprStr_to_titlecase = function() {
+  check_feature("full_features", "in $to_titlecase():")
+
   .pr$Expr$str_to_titlecase(self) |>
     unwrap("in $to_titlecase():")
 }
