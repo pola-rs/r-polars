@@ -56,7 +56,7 @@ pub fn new_from_csv(
     skip_rows: Robj,
     dtypes: Nullable<&DataTypeVector>,
     null_values: Nullable<&RNullValues>,
-    missing_utf8_is_empty_string: Robj,
+    // missing_utf8_is_empty_string: Robj,
     ignore_errors: Robj,
     cache: Robj,
     infer_schema_length: Robj,
@@ -84,7 +84,7 @@ pub fn new_from_csv(
     let infer_schema_length = robj_to!(Option, usize, infer_schema_length)?;
     let n_rows = robj_to!(Option, usize, n_rows)?;
     let low_memory = robj_to!(bool, low_memory)?;
-    let missing_utf8_is_empty_string = robj_to!(bool, missing_utf8_is_empty_string)?;
+    // let missing_utf8_is_empty_string = robj_to!(bool, missing_utf8_is_empty_string)?;
     let rechunk = robj_to!(bool, rechunk)?;
     let try_parse_dates = robj_to!(bool, try_parse_dates)?;
     let raise_if_empty = robj_to!(bool, raise_if_empty)?;
@@ -155,7 +155,7 @@ pub fn new_from_csv(
         .with_encoding(encoding)
         .with_try_parse_dates(try_parse_dates)
         .with_null_values(Wrap(null_values).into())
-        .with_missing_is_null(!missing_utf8_is_empty_string)
+        // .with_missing_is_null(!missing_utf8_is_empty_string)
         .truncate_ragged_lines(truncate_ragged_lines)
         .raise_if_empty(raise_if_empty);
 

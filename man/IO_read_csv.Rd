@@ -42,10 +42,6 @@ will be \code{NA};
 \item a named list with column names and null values.
 }}
 
-\item{missing_utf8_is_empty_string}{By default, a missing value is considered
-to be \code{NA}. Setting this parameter to \code{TRUE} will consider missing UTF8 values
-as an empty character.}
-
 \item{ignore_errors}{Keep reading the file even if some lines yield errors.
 You can also use \code{infer_schema_length = 0} to read all columns as UTF8 to
 check which values might cause an issue.}

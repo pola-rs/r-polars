@@ -31,9 +31,10 @@
 #' * a character vector: all values that match one of the values in this vector
 #'   will be `NA`;
 #' * a named list with column names and null values.
-#' @param missing_utf8_is_empty_string By default, a missing value is considered
-#' to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
-#' as an empty character.
+# TODO: reimplement this arg once we know why it doesn't work
+# @param missing_utf8_is_empty_string By default, a missing value is considered
+# to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
+# as an empty character.
 #' @param ignore_errors Keep reading the file even if some lines yield errors.
 #' You can also use `infer_schema_length = 0` to read all columns as UTF8 to
 #' check which values might cause an issue.
@@ -80,7 +81,7 @@ pl$scan_csv = function(
     skip_rows = 0,
     dtypes = NULL,
     null_values = NULL,
-    missing_utf8_is_empty_string = FALSE,
+    # missing_utf8_is_empty_string = FALSE,
     ignore_errors = FALSE,
     cache = FALSE,
     infer_schema_length = 100,
@@ -181,9 +182,9 @@ pl$scan_csv = function(
 #' * a character vector: all values that match one of the values in this vector
 #'   will be `NA`;
 #' * a named list with column names and null values.
-#' @param missing_utf8_is_empty_string By default, a missing value is considered
-#' to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
-#' as an empty character.
+# @param missing_utf8_is_empty_string By default, a missing value is considered
+# to be `NA`. Setting this parameter to `TRUE` will consider missing UTF8 values
+# as an empty character.
 #' @param ignore_errors Keep reading the file even if some lines yield errors.
 #' You can also use `infer_schema_length = 0` to read all columns as UTF8 to
 #' check which values might cause an issue.
@@ -224,7 +225,7 @@ pl$read_csv = function(
     skip_rows = 0,
     dtypes = NULL,
     null_values = NULL,
-    missing_utf8_is_empty_string = FALSE,
+    # missing_utf8_is_empty_string = FALSE,
     ignore_errors = FALSE,
     cache = FALSE,
     infer_schema_length = 100,
