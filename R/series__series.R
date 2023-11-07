@@ -201,7 +201,7 @@ Series_compare = function(other, op) {
       o_len != 1 &&
       s_len != 1
   ) {
-    stopf("in compare Series: not same length or either of length 1.")
+    stop("in compare Series: not same length or either of length 1.")
   }
   .pr$Series$compare(self, wrap_s(other), op)
 }
@@ -461,7 +461,7 @@ Series_append = function(other, immutable = TRUE) {
     c(self, other)
   } else {
     if (polars_optenv$strictly_immutable) {
-      stopf(paste(
+      stop(paste(
         "append(other , immutable=FALSE) breaks immutability, to enable mutable features run:\n",
         "`pl$set_options(strictly_immutable = FALSE)`"
       ))
@@ -733,7 +733,7 @@ Series_is_sorted = function(descending = FALSE) {
 #' s$flags
 Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
-    stopf(paste(
+    stop(paste(
       "in_place set_sorted() breaks immutability, to enable mutable features run:\n",
       "`pl$set_options(strictly_immutable = FALSE)`"
     ))
@@ -763,7 +763,7 @@ Series_set_sorted = function(descending = FALSE, in_place = FALSE) {
 #' pl$Series(c(1, NA, NaN, Inf, -Inf))$sort()
 Series_sort = function(descending = FALSE, in_place = FALSE) {
   if (in_place && polars_optenv$strictly_immutable) {
-    stopf(paste(
+    stop(paste(
       "in_place sort breaks immutability, to enable mutable features run:\n",
       "`pl$set_options(strictly_immutable = FALSE)`"
     ))
@@ -832,7 +832,7 @@ Series_rename = function(name, in_place = FALSE) {
     return(self)
   } # no change needed
   if (in_place && polars_optenv$strictly_immutable) {
-    stopf(paste(
+    stop(paste(
       "in_place breaks \"objects are immutable\" which is expected in R.",
       "To enable mutable features run: `pl$set_options(strictly_immutable = FALSE)`"
     ))
@@ -862,8 +862,8 @@ Series_rename = function(name, in_place = FALSE) {
 #' @examples
 #' pl$Series(1:2, "bob")$rep(3)
 Series_rep = function(n, rechunk = TRUE) {
-  if (!is.numeric(n)) stopf("n must be numeric")
-  if (!is_bool(rechunk)) stopf("rechunk must be a bool")
+  if (!is.numeric(n)) stop("n must be numeric")
+  if (!is_bool(rechunk)) stop("rechunk must be a bool")
   unwrap(.pr$Series$rep(self, n, rechunk), "in $rep():")
 }
 

@@ -10,7 +10,7 @@ is_result = function(x) {
 }
 
 guard_result = function(x, msg = "") {
-  if (!is_result(x)) stopf("internal error: expected a Result-type %s", msg)
+  if (!is_result(x)) stop("internal error: expected a Result-type ", msg)
   invisible(x)
 }
 
@@ -45,7 +45,7 @@ Ok = function(x) {
 #' @keywords internal
 #' @return same R object wrapped in a Err-result
 Err = function(x) {
-  if (is.null(x)) stopf("internal error in Err(x): x cannot be a NULL, not allowed")
+  if (is.null(x)) stop("internal error in Err(x): x cannot be a NULL, not allowed")
   structure(list(ok = NULL, err = x), class = "extendr_result")
 }
 

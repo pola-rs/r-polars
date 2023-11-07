@@ -50,7 +50,7 @@ pl$scan_parquet = function(
 
   parallel = parallel[1L]
   if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {
-    stopf("unknown parallel strategy")
+    stop("unknown parallel strategy")
   }
 
   result_lf = new_from_parquet(

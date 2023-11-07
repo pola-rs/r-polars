@@ -142,7 +142,7 @@ ExprDT_round = function(every, offset = NULL, ambiguous = "raise") {
 #' expr$cast(pl$Datetime(tu = "us", tz = "GMT"))$to_r()
 ExprDT_combine = function(tm, tu = "us") {
   if (inherits(tm, "PTime")) tu <- "ns" # PTime implicitly gets converted to "ns"
-  if (!is_string(tu)) stopf("combine: input tu is not a string, [%s ]", str_string(tu))
+  if (!is_string(tu)) stop("combine: input tu is not a string, [%s ]", str_string(tu))
   unwrap(.pr$Expr$dt_combine(self, wrap_e(tm), tu))
 }
 

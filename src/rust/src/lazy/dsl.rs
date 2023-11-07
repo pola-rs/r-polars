@@ -668,7 +668,7 @@ impl Expr {
             min_periods: robj_to!(usize, min_periods)?,
             center: robj_to!(bool, center)?,
             by: robj_to!(Option, String, by)?,
-            closed_window: robj_to!(Option, new_closed_window, closed)?,
+            closed_window: robj_to!(Option, ClosedWindow, closed)?,
             fn_params: Some(pl::Arc::new(pl::RollingQuantileParams {
                 prob: robj_to!(f64, quantile)?,
                 interpol: robj_to!(new_quantile_interpolation_option, interpolation)?,
@@ -2472,7 +2472,7 @@ pub fn make_rolling_options(
         min_periods: robj_to!(usize, min_periods)?,
         center: robj_to!(bool, center)?,
         by: robj_to!(Option, String, by_null)?,
-        closed_window: robj_to!(Option, new_closed_window, closed_null)?,
+        closed_window: robj_to!(Option, ClosedWindow, closed_null)?,
         ..Default::default()
     })
 }

@@ -376,12 +376,12 @@ test_that("encode decode", {
 
   expect_grepl_error(
     pl$lit("?")$str$decode("invalid_name"),
-    r"{encoding must be one of 'hex' or 'base64'\, got invalid_name}"
+    r"{encoding must be one of 'hex' or 'base64', got invalid_name}"
   )
 
   expect_grepl_error(
     pl$lit("?")$str$encode("invalid_name"),
-    r"{encoding must be one of 'hex' or 'base64'\, got invalid_name}"
+    r"{encoding must be one of 'hex' or 'base64', got invalid_name}"
   )
 })
 

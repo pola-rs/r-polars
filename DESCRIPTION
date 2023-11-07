@@ -109,7 +109,6 @@ Collate:
     'series__series.R'
     'series__trait.R'
     'sql.R'
-    'translation.R'
     'vctrs.R'
     'zzz.R'
 Config/rextendr/version: 0.3.1
