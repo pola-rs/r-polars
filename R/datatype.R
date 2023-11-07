@@ -35,7 +35,7 @@ wrap_proto_schema = function(x) {
       names(x) = x
       lapply(x, \(x) NULL)
     },
-    or_else = stopf(
+    or_else = stop(
       "arg schema must be a list of named DataType/RPolarsDataType or char vec of no NAs"
     )
   )
@@ -162,7 +162,7 @@ DataType_constructors = list(
   # docs bwlow pl_DataTime
   Datetime = function(tu = "us", tz = NULL) {
     if (!is.null(tz) && (!is_string(tz) || !tz %in% base::OlsonNames())) {
-      stopf("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
+      stop("Datetime: the tz '%s' is not a valid timezone string, see base::OlsonNames()", tz)
     }
     unwrap(.pr$DataType$new_datetime(tu, tz))
   },
@@ -173,7 +173,7 @@ DataType_constructors = list(
       datatype = .pr$DataType$new(datatype)
     }
     if (!inherits(datatype, "RPolarsDataType")) {
-      stopf(paste(
+      stop(paste(
         "input for generating a list DataType must be another DataType",
         "or an interpretable name thereof."
       ))
@@ -202,7 +202,7 @@ DataType_constructors = list(
           if (inherits(arg, "RField")) {
             return(arg)
           }
-          stopf(
+          stop(
             "%s [%s] {name:'%s', value:%s} must either be a Field (pl$Field) or a named %s",
             element_name, i, name, arg, "DataType see (pl$dtypes), see examples for pl$Struct()"
           )

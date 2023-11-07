@@ -48,7 +48,7 @@ LazyGroupBy_agg = agg = function(...) {
 #' @param f  R function to apply
 #' @return A new `LazyFrame` object.
 LazyGroupBy_apply = function(f) {
-  stopf("this function is not yet implemented")
+  stop("this function is not yet implemented")
 }
 
 #' @title LazyGroupBy_head

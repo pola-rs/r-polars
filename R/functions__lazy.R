@@ -17,7 +17,7 @@ pl$all = function(name = NULL) {
     return(.pr$Expr$col("*"))
   }
 
-  stopf("not implemented")
+  stop("not implemented")
   # TODO implement input list of Expr as in:
   # https://github.com/pola-rs/polars/blob/589f36432de6e95e81d9715a77d6fe78360512e5/py-polars/polars/internals/lazy_functions.py#L1095
 }
@@ -502,7 +502,7 @@ pl$sum = function(...) {
     pra = do.call(construct_ProtoExprArray, column)
     return(sum_exprs(pra))
   }
-  stopf("pl$sum: this input is not supported")
+  stop("pl$sum: this input is not supported")
 }
 
 
@@ -547,7 +547,7 @@ pl$min = function(...) {
     pra = do.call(construct_ProtoExprArray, column)
     return(min_exprs(pra))
   }
-  stopf("pl$min: this input is not supported")
+  stop("pl$min: this input is not supported")
 }
 
 
@@ -594,7 +594,7 @@ pl$max = function(...) {
     pra = do.call(construct_ProtoExprArray, column)
     return(max_exprs(pra))
   }
-  stopf("pl$max: this input is not supported")
+  stop("pl$max: this input is not supported")
 }
 
 
@@ -648,7 +648,7 @@ pl$std = function(column, ddof = 1) {
   if (is.numeric(column)) {
     return(pl$lit(column)$std(ddof))
   }
-  stopf("pl$std: this input is not supported")
+  stop("pl$std: this input is not supported")
 }
 
 
@@ -667,7 +667,7 @@ pl$var = function(column, ddof = 1) {
   if (is.numeric(column)) {
     return(pl$lit(column)$var(ddof))
   }
-  stopf("pl$var: this input is not supported")
+  stop("pl$var: this input is not supported")
 }
 
 

@@ -49,10 +49,10 @@ ExprBin_ends_with = function(sub) {
 #' @return binary array with values encoded using provided encoding
 ExprBin_encode = function(encoding) {
   pcase(
-    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$bin_encode_hex(self),
     encoding == "base64", .pr$Expr$bin_encode_base64(self),
-    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
 }
 
@@ -68,9 +68,9 @@ ExprBin_encode = function(encoding) {
 #' @return binary array with values decoded using provided encoding
 ExprBin_decode = function(encoding, strict = TRUE) {
   pcase(
-    !is_string(encoding), stopf("encoding must be a string, it was: %s", str_string(encoding)),
+    !is_string(encoding), stop("encoding must be a string, it was: %s", str_string(encoding)),
     encoding == "hex", .pr$Expr$bin_decode_hex(self, strict),
     encoding == "base64", .pr$Expr$bin_decode_base64(self, strict),
-    or_else = stopf("encoding must be one of 'hex' or 'base64', got %s", encoding)
+    or_else = stop("encoding must be one of 'hex' or 'base64', got %s", encoding)
   )
 }

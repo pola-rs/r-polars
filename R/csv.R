@@ -135,7 +135,7 @@ pl$scan_csv = function(
         return(RNullValues$new_named(unlist(null_values)))
       }
 
-      stopf("null_values arg must be a string OR unamed char vec OR named char vec")
+      stop("null_values arg must be a string OR unamed char vec OR named char vec")
     })()
 
     args$null_values = RNullValues
@@ -288,7 +288,7 @@ check_is_link = function(path, reuse_downloaded) {
 
 list_to_datatype_vector = function(x) {
   if (!is.list(x) || !is_named(x)) {
-    stopf("could not interpret dtypes, must be a named list of DataTypes")
+    stop("could not interpret dtypes, must be a named list of DataTypes")
   }
   datatype_vector = DataTypeVector$new() # mutable
   mapply(
@@ -300,7 +300,7 @@ list_to_datatype_vector = function(x) {
         type = DataType$new(type)
       }
       if (!inherits(type, "RPolarsDataType")) {
-        stopf("arg dtypes must be a named list of dtypes or dtype names")
+        stop("arg dtypes must be a named list of dtypes or dtype names")
       }
       datatype_vector$push(name, type)
     }
