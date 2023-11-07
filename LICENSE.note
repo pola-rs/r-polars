@@ -353,13 +353,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        errno-dragonfly
-Repository:  https://github.com/mneumann/errno-dragonfly-rs
-Authors:     Michael Neumann
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        ethnum
 Repository:  https://github.com/nlordell/ethnum-rs
 Authors:     Nicholas Rodrigues Lordello
@@ -374,16 +367,9 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        extendr-engine
-Repository:  https://github.com/extendr/extendr
-Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov
-License:     MIT
-
--------------------------------------------------------------
-
 Name:        extendr-macros
 Repository:  https://github.com/extendr/extendr
-Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov
+Authors:     andy-thomason, Thomas Down, Mossa Merhi Reimert, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
 License:     MIT
 
 -------------------------------------------------------------
@@ -1382,27 +1368,6 @@ License:     MIT
 
 -------------------------------------------------------------
 
-Name:        signal-hook
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Thomas Himmelstoss
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        signal-hook-mio
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Thomas Himmelstoss
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
-Name:        signal-hook-registry
-Repository:  https://github.com/vorner/signal-hook
-Authors:     Michal 'vorner' Vaner, Masaki Hara
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
 Name:        simd-json
 Repository:  https://github.com/simd-lite/simd-json
 Authors:     Heinz N. Gies, Sunny Gleason
@@ -1509,13 +1474,6 @@ License:     Apache-2.0 OR MIT
 -------------------------------------------------------------
 
 Name:        strum
-Repository:  https://github.com/Peternator7/strum
-Authors:     Peter Glotfelty
-License:     MIT
-
--------------------------------------------------------------
-
-Name:        strum_macros
 Repository:  https://github.com/Peternator7/strum
 Authors:     Peter Glotfelty
 License:     MIT
@@ -1740,6 +1698,13 @@ License:     Apache-2.0 OR MIT
 -------------------------------------------------------------
 
 Name:        windows
+Repository:  https://github.com/microsoft/windows-rs
+Authors:     Microsoft
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        windows-core
 Repository:  https://github.com/microsoft/windows-rs
 Authors:     Microsoft
 License:     Apache-2.0 OR MIT

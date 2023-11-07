@@ -987,7 +987,7 @@ LazyFrame_join = function(
   } else if (inherits(other, "DataFrame")) {
     other = other
   } else {
-    stopf(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+    stop(paste("Expected a `LazyFrame` as join table, got ", class(other)))
   }
 
   how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
@@ -1001,7 +1001,7 @@ LazyFrame_join = function(
     rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
   } else if (how != "cross") {
-    stopf("must specify `on` OR (  `left_on` AND `right_on` ) ")
+    stop("must specify `on` OR (  `left_on` AND `right_on` ) ")
   } else {
     rexprs_left = do.call(construct_ProtoExprArray, as.list(self$columns))
     rexprs_right = do.call(construct_ProtoExprArray, as.list(other$columns))
@@ -1492,12 +1492,12 @@ LazyFrame_profile = function(
 #' # explode a single column, append others
 #' df$explode("numbers")$collect()
 #'
-#' # it doesn't change anything if the input is not a list-column
-#' df$explode("letters")$collect()
+#' # it is also possible to explode a character column to have one letter per row
+#' df$explode("letters")
 #'
 #' # explode two columns of same nesting structure, by names or the common dtype
 #' # "List(Float64)"
-#' df$explode(c("numbers", "numbers_2"))$collect()
+#' df$explode("numbers", "numbers_2")$collect()
 #' df$explode(pl$col(pl$List(pl$Float64)))$collect()
 LazyFrame_explode = function(...) {
   dotdotdot_args = unpack_list(...)

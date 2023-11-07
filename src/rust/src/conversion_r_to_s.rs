@@ -77,7 +77,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                     .iter()
                     .map(|x| {
                         //if x.is_na() { None } else { Some(x.0) }
-                        let x = x.0.to_bits() as i64;
+                        let x = x.inner().to_bits() as i64;
                         if x == crate::utils::BIT64_NA_ECODING {
                             None
                         } else {
@@ -99,7 +99,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
             } else {
                 let mut s: pl::Series = rdouble //convert R NAs to rust options
                     .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
+                    .map(|x| if x.is_na() { None } else { Some(x.inner()) })
                     .collect();
                 s.rename(name);
                 Ok(SeriesTree::Series(s))
@@ -139,7 +139,7 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
                 //convert R NAs to rust options
                 let mut s: pl::Series = rints
                     .iter()
-                    .map(|x| if x.is_na() { None } else { Some(x.0) })
+                    .map(|x| if x.is_na() { None } else { Some(x.inner()) })
                     .collect();
                 s.rename(name);
                 s

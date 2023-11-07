@@ -221,7 +221,7 @@ local({
       return(character())
   
     if (!is.function(headers))
-      stopf("'renv.download.headers' is not a function")
+      stop("'renv.download.headers' is not a function")
   
     headers <- headers(url)
     if (length(headers) == 0L)
