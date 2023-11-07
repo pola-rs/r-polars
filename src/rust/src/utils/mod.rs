@@ -8,16 +8,19 @@ use crate::lazy::dsl::Expr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use crate::series::Series;
-use extendr_api::prelude::list;
+
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
 use crate::rdataframe::{DataFrame, LazyFrame};
 use extendr_api::eval_string_with_params;
+use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
+use extendr_api::CanBeNA;
 use extendr_api::ExternalPtr;
 use extendr_api::Result as ExtendrResult;
 use extendr_api::R;
+
 use polars::prelude as pl;
 
 //macro to translate polars NULLs and  emulate R NA value of any type
@@ -531,6 +534,37 @@ pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> RResult<&'a str> {
     }
 }
 
+// This conversion assists conversion of R choice char vec e.g. c("a", "b")
+// Only the first element "a" will passed on as String
+// conversion error if not a char vec with none-zero length.
+// NA is not allowed
+// other conversions will use it e.g. robj_to_join_type() or robj_to_closed_window()
+pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
+    let robj = unpack_r_result_list(robj)?;
+    let robj_clone = robj.clone();
+    let s_res: EResult<Strings> = robj.try_into();
+    let opt_str = s_res.map(|s| s.iter().next().map(|rstr| rstr.clone()));
+    match opt_str {
+        // NA_CHARACTER not allowed as first element return error
+        Ok(Some(rstr)) if rstr.is_na() => {
+            Err(RPolarsErr::new().notachoice("NA_character is not allowed".into()))
+        }
+
+        // At least one string, return first string
+        Ok(Some(rstr)) => Ok(rstr.to_string()),
+
+        // Not character vector, return Error
+        Err(_extendr_err) => {
+            //let rpolars_err: RPolarsErr = _extendr_err.into(); extendr error not that helpful
+            Err(RPolarsErr::new().notachoice("input is not a character vector".into()))
+        }
+
+        // An empty chr vec, return Error
+        Ok(None) => Err(RPolarsErr::new().notachoice("character vector has zero length".into())),
+    }
+    .map_err(|err| err.bad_robj(robj_clone))
+}
+
 pub fn robj_to_usize(robj: extendr_api::Robj) -> RResult<usize> {
     robj_to_u64(robj).and_then(try_u64_into_usize)
 }
@@ -930,8 +964,8 @@ macro_rules! robj_to_inner {
     (timeunit, $a:ident) => {
         $crate::rdatatype::robj_to_timeunit($a)
     };
-    (new_closed_window, $a:ident) => {
-        $crate::rdatatype::new_closed_window($a)
+    (ClosedWindow, $a:ident) => {
+        $crate::rdatatype::robj_to_closed_window($a)
     };
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
@@ -1014,6 +1048,10 @@ macro_rules! robj_to_inner {
 
     (QuoteStyle, $a:ident) => {
         $crate::utils::robj_to_quote_style($a)
+    };
+
+    (JoinType, $a:ident) => {
+        $crate::rdatatype::robj_to_join_type($a)
     };
 
     (RArrow_schema, $a:ident) => {

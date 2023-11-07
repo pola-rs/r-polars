@@ -26,7 +26,7 @@
 #' )
 pl$from_arrow = function(data, rechunk = TRUE, schema = NULL, schema_overrides = NULL) {
   if (!requireNamespace("arrow", quietly = TRUE)) {
-    stopf("in pl$from_arrow: cannot import from arrow without R package arrow installed")
+    stop("in pl$from_arrow: cannot import from arrow without R package arrow installed")
   }
 
   ## dispatch conversion on data class
@@ -49,7 +49,7 @@ pl$from_arrow = function(data, rechunk = TRUE, schema = NULL, schema_overrides =
     }
 
     # 0 no suitable method found, raise error
-    stopf("arg [data] given class is not yet supported: %s", str_string(class(data)))
+    stop("arg [data] given class is not yet supported: %s", str_string(class(data)))
   })
 
   # add context to any errors

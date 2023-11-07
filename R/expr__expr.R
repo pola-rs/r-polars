@@ -1521,7 +1521,7 @@ Expr_sort = function(descending = FALSE, nulls_last = FALSE) { # param reverse n
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k) {
-  if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
+  if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self, k) |>
     unwrap("in $top_k():")
 }
@@ -1543,7 +1543,7 @@ Expr_top_k = function(k) {
 #'   a = c(6, 1, 0, NA, Inf, NaN)
 #' ))$select(pl$col("a")$bottom_k(5))
 Expr_bottom_k = function(k) {
-  if (!is.numeric(k) || k < 0) stopf("k must be numeric and positive, prefereably integerish")
+  if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
   .pr$Expr$bottom_k(self, k) |>
     unwrap("in $bottom_k():")
 }
@@ -1794,9 +1794,9 @@ Expr_shift_and_fill = function(periods, fill_value) {
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
     # the wrong stuff
-    is.null(value) && is.null(strategy), stopf("must specify either value or strategy"),
-    !is.null(value) && !is.null(strategy), stopf("cannot specify both value and strategy"),
-    !is.null(strategy) && !strategy %in% c("forward", "backward") && !is.null(limit), stopf(
+    is.null(value) && is.null(strategy), stop("must specify either value or strategy"),
+    !is.null(value) && !is.null(strategy), stop("cannot specify both value and strategy"),
+    !is.null(strategy) && !strategy %in% c("forward", "backward") && !is.null(limit), stop(
       "can only specify 'limit' when strategy is set to 'backward' or 'forward'"
     ),
 
@@ -1805,7 +1805,7 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self, strategy, limit)),
 
     # catch failed any match
-    or_else = stopf("Internal: failed to handle user inputs")
+    or_else = stop("Internal: failed to handle user inputs")
   )
 }
 
@@ -2087,7 +2087,7 @@ Expr_arg_unique = "use_extendr_wrapper"
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
 Expr_unique = function(maintain_order = FALSE) {
-  if (!is_bool(maintain_order)) stopf("param maintain_order must be a bool")
+  if (!is_bool(maintain_order)) stop("param maintain_order must be a bool")
   if (maintain_order) {
     .pr$Expr$unique_stable(self)
   } else {
@@ -2401,7 +2401,7 @@ Expr_tail = function(n = 10) {
 #' # get 3 first elements
 #' pl$DataFrame(list(x = 1:11))$select(pl$col("x")$limit(3))
 Expr_limit = function(n = 10) {
-  if (!is.numeric(n)) stopf("limit: n must be numeric")
+  if (!is.numeric(n)) stop("limit: n must be numeric")
   unwrap(.pr$Expr$head(self, n = n))
 }
 
@@ -2471,7 +2471,7 @@ Expr_is_in = function(other) {
 #' df = pl$DataFrame(list(a = c("x", "y", "z"), n = c(0:2)))
 #' df$select(pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
-  if (is.numeric(by) && any(by < 0)) stopf("In repeat_by: any value less than zero is not allowed")
+  if (is.numeric(by) && any(by < 0)) stop("In repeat_by: any value less than zero is not allowed")
   .pr$Expr$repeat_by(self, wrap_e(by, FALSE))
 }
 
@@ -2507,7 +2507,7 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
       !is.logical(include_bounds) ||
       any(is.na(include_bounds))
   ) {
-    stopf("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
+    stop("in is_between: inlcude_bounds must be boolean of length 1 or 2, with no NAs")
   }
 
   # prepare args
@@ -2567,7 +2567,7 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 #' df = pl$DataFrame(iris)
 #' df$select(pl$all()$head(2)$hash(1, 2, 3, 4)$reinterpret())$to_data_frame()
 Expr_reinterpret = function(signed = TRUE) {
-  if (!is_bool(signed)) stopf("in reinterpret() : arg signed must be a bool")
+  if (!is_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self, signed)
 }
 
@@ -2588,11 +2588,11 @@ Expr_reinterpret = function(signed = TRUE) {
 #' )$head(2))
 Expr_inspect = function(fmt = "{}") {
   # check fmt and create something to print before and after printing Series.
-  if (!is_string(fmt)) stopf("Inspect: arg fmt is not a string (length=1)")
+  if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if (identical(strs, "")) strs <- c("", "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
-    result(stopf(paste0(
+    result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
       " a string containing the two consecutive chars `{}` once. \n",
       "a valid string is e.g. `hello{}world`"
@@ -3785,7 +3785,7 @@ prepare_alpha = function(
     pstop(err = "One of 'com', 'span', 'half_life', or 'alpha' must be set")
   }
 
-  stopf("Internal: it seems a input scenario was not handled properly")
+  stop("Internal: it seems a input scenario was not handled properly")
 }
 
 
@@ -3979,7 +3979,7 @@ Expr_to_r = function(df = NULL, i = 0) {
     pl$select(self)$to_series(i)$to_r()
   } else {
     if (!inherits(df, c("DataFrame"))) {
-      stopf("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
+      stop("Expr_to_r: input is not NULL or a DataFrame/Lazyframe")
     }
     df$select(self)$to_series(i)$to_r()
   }
