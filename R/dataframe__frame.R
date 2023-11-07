@@ -167,7 +167,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
       if (make_names_unique) {
         keys = make.unique(keys, sep = "_")
       } else {
-        stopf(
+        stop(
           paste(
             "conflicting column names not allowed:",
             paste(unique(keys[duplicated(keys)]), collapse = ", ")
@@ -487,10 +487,10 @@ DataFrame_schema = method_as_property(function() {
 
 #
 DataFrameCompareToOtherDF = function(self, other, op) {
-  stopf("not done yet")
+  stop("not done yet")
   #    """Compare a DataFrame with another DataFrame."""
-  if (!identical(self$columns, other$columns)) stopf("DataFrame columns do not match")
-  if (!identical(self$shape, other$shape)) stopf("DataFrame dimensions do not match")
+  if (!identical(self$columns, other$columns)) stop("DataFrame columns do not match")
+  if (!identical(self$shape, other$shape)) stop("DataFrame dimensions do not match")
 
   suffix = "__POLARS_CMP_OTHER"
   other_renamed = other$select(pl$all()$suffix(suffix))
