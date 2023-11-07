@@ -157,7 +157,7 @@ if (build_debug_print) cat("\nadd syntax check to: ")
 for (i_class in env_class_names) {
   if (build_debug_print) cat(i_class, ", ", sep = "")
   if (!exists(paste0("$.", i_class))) {
-    stopf("internal assertion failed, env class without a dollarsign method")
+    stop("internal assertion failed, env class without a dollarsign method")
   }
   macro_add_syntax_check_to_class(i_class)
 }

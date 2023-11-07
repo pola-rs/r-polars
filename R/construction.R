@@ -7,7 +7,7 @@ arrow_to_rdf = function(at, schema = NULL, schema_overrides = NULL, rechunk = TR
   )
   col_names = names(new_schema)
 
-  if (length(col_names) != at$num_columns) stopf("schema length does not match arrow table")
+  if (length(col_names) != at$num_columns) stop("schema length does not match arrow table")
 
 
   # store special translated columns here
@@ -91,7 +91,7 @@ unpack_schema = function(
   # check for unknown columns
   if (!all(names(schema_overides) %in% names(schema))) {
     unknowns = names(schema_overides)[!names(schema_overides) %in% schema]
-    stopf("schema_overrides cannot override missing unknown column(s): %s", str_string(unknowns))
+    stop("schema_overrides cannot override missing unknown column(s): %s", str_string(unknowns))
   }
 
   # inject overriding definitions
