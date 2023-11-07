@@ -43,7 +43,7 @@ Suggests:
 Remotes:
     r-lib/testthat
 Config/Needs/website:
-    etiennebacher/altdoc,
+    altdoc (>= 0.2.2),
     here,
     magrittr,
     pkgload,
