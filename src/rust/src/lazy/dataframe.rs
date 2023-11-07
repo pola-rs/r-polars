@@ -7,8 +7,8 @@ use crate::lazy::dsl::*;
 
 use crate::rdataframe::DataFrame as RDF;
 use crate::rdatatype::{
-    new_asof_strategy, new_ipc_compression, new_join_type, new_parquet_compression,
-    new_unique_keep_strategy, RPolarsDataType,
+    new_asof_strategy, new_ipc_compression, new_parquet_compression, new_unique_keep_strategy,
+    RPolarsDataType,
 };
 use crate::robj_to;
 use crate::rpolarserr::{polars_to_rpolars_err, RResult, Rctx, WithRctx};
@@ -406,31 +406,27 @@ impl LazyFrame {
     #[allow(clippy::too_many_arguments)]
     fn join(
         &self,
-        other: &LazyFrame,
-        left_on: &ProtoExprArray,
-        right_on: &ProtoExprArray,
-        how: &str,
-        suffix: &str,
-        allow_parallel: bool,
-        force_parallel: bool,
-    ) -> LazyFrame {
-        let ldf = self.0.clone();
-        let other = other.0.clone();
-        let left_on = pra_to_vec(left_on, "select");
-        let right_on = pra_to_vec(right_on, "select");
-        let how = new_join_type(how);
-
-        LazyFrame(
-            ldf.join_builder()
-                .with(other)
-                .left_on(left_on)
-                .right_on(right_on)
-                .allow_parallel(allow_parallel)
-                .force_parallel(force_parallel)
-                .how(how)
-                .suffix(suffix)
+        other: Robj,
+        left_on: Robj,
+        right_on: Robj,
+        how: Robj,
+        suffix: Robj,
+        allow_parallel: Robj,
+        force_parallel: Robj,
+    ) -> RResult<LazyFrame> {
+        Ok(LazyFrame(
+            self.0
+                .clone()
+                .join_builder()
+                .with(robj_to!(PLLazyFrame, other)?)
+                .left_on(robj_to!(VecPLExprCol, left_on)?)
+                .right_on(robj_to!(VecPLExprCol, right_on)?)
+                .allow_parallel(robj_to!(bool, allow_parallel)?)
+                .force_parallel(robj_to!(bool, force_parallel)?)
+                .how(robj_to!(JoinType, how)?)
+                .suffix(robj_to!(str, suffix)?)
                 .finish(),
-        )
+        ))
     }
 
     pub fn sort_by_exprs(

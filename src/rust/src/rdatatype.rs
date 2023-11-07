@@ -14,6 +14,8 @@ pub struct RField(pub pl::Field);
 use pl::UniqueKeepStrategy;
 use polars::prelude::AsofStrategy;
 
+use crate::utils::robj_to_rchoice;
+
 #[extendr]
 impl RField {
     fn new(name: String, datatype: &RPolarsDataType) -> RField {
@@ -245,18 +247,6 @@ impl DataTypeVector {
     }
 }
 
-pub fn new_join_type(s: &str) -> pl::JoinType {
-    match s {
-        "cross" => pl::JoinType::Cross,
-        "inner" => pl::JoinType::Inner,
-        "left" => pl::JoinType::Left,
-        "outer" => pl::JoinType::Outer,
-        "semi" => pl::JoinType::Semi,
-        "anti" => pl::JoinType::Anti,
-        _ => panic!("polars internal error: jointype not recognized"),
-    }
-}
-
 pub fn new_asof_strategy(s: &str) -> Result<AsofStrategy, String> {
     match s {
         "forward" => Ok(AsofStrategy::Forward),
@@ -292,20 +282,6 @@ pub fn new_quantile_interpolation_option(robj: Robj) -> RResult<QuantileInterpol
         "linear" => Ok(Linear),
         _ => rerr()
             .bad_val("interpolation choice is not any of 'nearest', 'higher', 'lower', 'midpoint', 'linear'")
-            .bad_robj(&robj),
-    }
-}
-
-pub fn new_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
-    let s = robj_to_string(robj.clone())?;
-    use pl::ClosedWindow as CW;
-    match s.as_str() {
-        "both" => Ok(CW::Both),
-        "left" => Ok(CW::Left),
-        "none" => Ok(CW::None),
-        "right" => Ok(CW::Right),
-        _ => rerr()
-            .bad_val("ClosedWindow choice: [{}] is not any of 'both', 'left', 'none' or 'right'")
             .bad_robj(&robj),
     }
 }
@@ -510,6 +486,34 @@ pub fn new_rolling_cov_options(
         min_periods: robj_to!(u32, min_periods)?,
         ddof: robj_to!(u8, ddof)?,
     })
+}
+
+pub fn robj_to_join_type(robj: Robj) -> RResult<pl::JoinType> {
+    let s = robj_to_rchoice(robj)?;
+    match s.as_str() {
+        "cross" => Ok(pl::JoinType::Cross),
+        "inner" => Ok(pl::JoinType::Inner),
+        "left" => Ok(pl::JoinType::Left),
+        "outer" => Ok(pl::JoinType::Outer),
+        "semi" => Ok(pl::JoinType::Semi),
+        "anti" => Ok(pl::JoinType::Anti),
+        s => rerr().bad_val(format!(
+            "JoinType choice ['{s}'] should be one of 'cross', 'inner', 'left', 'outer', 'semi', 'anti'"
+        )),
+    }
+}
+
+pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
+    use pl::ClosedWindow as CW;
+    match robj_to_rchoice(robj)?.as_str() {
+        "both" => Ok(CW::Both),
+        "left" => Ok(CW::Left),
+        "none" => Ok(CW::None),
+        "right" => Ok(CW::Right),
+        s => rerr().bad_val(format!(
+            "ClosedWindow choice ['{s}'] should be one of 'both', 'left', 'none', 'right'"
+        )),
+    }
 }
 
 extendr_module! {

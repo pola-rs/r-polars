@@ -982,35 +982,30 @@ LazyFrame_join = function(
     suffix = "_right",
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-  if (inherits(other, "LazyFrame")) {
-    # nothing
-  } else if (inherits(other, "DataFrame")) {
-    other = other
-  } else {
-    stop(paste("Expected a `LazyFrame` as join table, got ", class(other)))
+
+  uw = \(res) unwrap(res, "in $join():")
+
+  if (inherits(other, "DataFrame")) {
+    other = other$lazy()
   }
 
-  how_opts = c("inner", "left", "outer", "semi", "anti", "cross")
-  how = match.arg(how[1L], how_opts)
-
   if (!is.null(on)) {
-    rexprs = do.call(construct_ProtoExprArray, as.list(on))
-    rexprs_left = rexprs
-    rexprs_right = rexprs
+    rexprs_right = rexprs_left = as.list(on)
   } else if ((!is.null(left_on) && !is.null(right_on))) {
-    rexprs_left = do.call(construct_ProtoExprArray, as.list(left_on))
-    rexprs_right = do.call(construct_ProtoExprArray, as.list(right_on))
+    rexprs_left = as.list(left_on)
+    rexprs_right = as.list(right_on)
   } else if (how != "cross") {
-    stop("must specify `on` OR (  `left_on` AND `right_on` ) ")
+    Err_plain("must specify `on` OR (  `left_on` AND `right_on` ) ") |> uw()
   } else {
-    rexprs_left = do.call(construct_ProtoExprArray, as.list(self$columns))
-    rexprs_right = do.call(construct_ProtoExprArray, as.list(other$columns))
+    rexprs_left = as.list(self$columns)
+    rexprs_right = as.list(other$columns)
   }
 
   .pr$LazyFrame$join(
     self, other, rexprs_left, rexprs_right,
     how, suffix, allow_parallel, force_parallel
-  )
+  ) |>
+    uw()
 }
 
 

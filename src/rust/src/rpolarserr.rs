@@ -25,6 +25,8 @@ pub enum Rctx {
     Mistyped(String),
     #[error("Expected a value that {0}")]
     Misvalued(String),
+    #[error("Not a valid R choice because {0}")]
+    NotAChoice(String),
     #[error("{0}")]
     Plain(String),
     #[error("Encountered the following error in Rust-Polars:\n\t{0}")]
@@ -51,6 +53,7 @@ pub trait WithRctx<T> {
     fn hint(self, cause: impl Into<String>) -> RResult<T>;
     fn mistyped(self, ty: impl Into<String>) -> RResult<T>;
     fn misvalued(self, scope: impl Into<String>) -> RResult<T>;
+    fn notachoice(self, scope: impl Into<String>) -> RResult<T>;
     fn plain(self, msg: impl Into<String>) -> RResult<T>;
     fn when(self, env: impl Into<String>) -> RResult<T>;
 }
@@ -96,6 +99,10 @@ impl<T, E: Into<RPolarsErr>> WithRctx<T> for core::result::Result<T, E> {
         self.ctx(Rctx::Misvalued(scope.into()))
     }
 
+    fn notachoice(self, scope: impl Into<String>) -> RResult<T> {
+        self.ctx(Rctx::NotAChoice(scope.into()))
+    }
+
     fn plain(self, msg: impl Into<String>) -> RResult<T> {
         self.ctx(Rctx::Plain(msg.into()))
     }
@@ -129,6 +136,7 @@ impl RPolarsErr {
                         Hint(msg) => ("Hint", msg),
                         Mistyped(ty) => ("TypeMismatch", ty),
                         Misvalued(scope) => ("ValueOutOfScope", scope),
+                        NotAChoice(err) => ("NotAChoice", err),
                         Plain(msg) => ("PlainErrorMessage", msg),
                         Polars(err) => ("PolarsError", err),
                         When(target) => ("When", target),
@@ -164,6 +172,10 @@ impl RPolarsErr {
 
     pub fn misvalued(&self, s: String) -> Self {
         self.push_back_rctx(Rctx::Misvalued(s))
+    }
+
+    pub fn notachoice(&self, s: String) -> Self {
+        self.push_back_rctx(Rctx::NotAChoice(s))
     }
 
     pub fn plain(&self, s: String) -> Self {
