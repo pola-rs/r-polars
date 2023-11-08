@@ -1547,3 +1547,37 @@ LazyFrame_unnest = function(names = NULL) {
   }
   unwrap(.pr$LazyFrame$unnest(self, names), "in $unnest():")
 }
+
+#' Add an external context to the computation graph
+#'
+#' This allows expressions to also access columns from DataFrames or LazyFrames
+#' that are not part of this one.
+#'
+#' @param other Data/LazyFrame to have access to. This can be a list of DataFrames
+#' and LazyFrames.
+#' @return A LazyFrame
+#'
+#' @examples
+#' lf = pl$LazyFrame(a = c(1, 2, 3), b = c("a", "c", NA))
+#' lf_other = pl$LazyFrame(c = c("foo", "ham"))
+#'
+#' lf$with_context(lf_other)$select(
+#'   pl$col("b") + pl$col("c")$first()
+#' )$collect()
+#'
+#' # Fill nulls with the median from another lazyframe:
+#' train_lf = pl$LazyFrame(
+#'   feature_0 = c(-1.0, 0, 1), feature_1 = c(-1.0, 0, 1)
+#' )
+#' test_lf = pl$LazyFrame(
+#'   feature_0 = c(-1.0, NA, 1), feature_1 = c(-1.0, 0, 1)
+#' )
+#'
+#' test_lf$with_context(train_lf$select(pl$all()$name$suffix("_train")))$select(
+#'   pl$col("feature_0")$fill_null(pl$col("feature_0_train")$median())
+#' )$collect()
+
+LazyFrame_with_context = function(other) {
+  .pr$LazyFrame$with_context(self, other) |>
+    unwrap("in with_context():")
+}

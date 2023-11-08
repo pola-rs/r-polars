@@ -166,3 +166,14 @@ test_that("multiple files errors if different schema", {
   )
 })
 
+test_that("bad paths", {
+  ctx = pl$read_csv(character()) |> get_err_ctx()
+  expect_identical(
+    c(ctx$BadArgument, ctx$PlainErrorMessage),
+    c("path", "path cannot have zero length")
+  )
+  expect_error(
+    pl$read_csv("not a valid path"),
+    "failed to locate file"
+  )
+})

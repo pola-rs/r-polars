@@ -58,7 +58,7 @@ pl$scan_ndjson = function(
   ## call low level function with args
   check_no_missing_args(new_from_ndjson, args)
   do.call(new_from_ndjson, args) |>
-    unwrap("in pl$scan_ndjson")
+    unwrap("in pl$scan_ndjson():")
 }
 
 #' New DataFrame from NDJSON

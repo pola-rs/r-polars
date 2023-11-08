@@ -38,6 +38,8 @@
 - New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
   an Expr (#462).
 - New methods `$read_ndjson()` and `$scan_ndjson()` (#471).
+- New method `$with_context()` for `LazyFrame` to have access to columns from 
+  other Data/LazyFrames during the computation.
 
 # polars 0.9.0
 
