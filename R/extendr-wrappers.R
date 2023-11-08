@@ -77,7 +77,7 @@ concat_df_horizontal <- function(l) .Call(wrap__concat_df_horizontal, l)
 
 concat_series <- function(l, rechunk, to_supertypes) .Call(wrap__concat_series, l, rechunk, to_supertypes)
 
-new_from_csv <- function(path, paths, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, paths, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
+new_from_csv <- function(path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines) .Call(wrap__new_from_csv, path, has_header, separator, comment_char, quote_char, skip_rows, dtypes, null_values, ignore_errors, cache, infer_schema_length, n_rows, encoding, low_memory, rechunk, skip_rows_after_header, row_count_name, row_count_offset, try_parse_dates, eol_char, raise_if_empty, truncate_ragged_lines)
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 
