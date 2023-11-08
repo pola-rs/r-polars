@@ -24,12 +24,12 @@
 ## Breaking changes
 
 - `$scan_csv()` and `$read_csv()` now match more closely the Python-Polars API (#455):
-  - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`, 
+  - `sep` is renamed `separator`, `overwrite_dtypes` is renamed `dtypes`,
     `parse_dates` is renamed `try_parse_dates`.
   - new arguments `rechunk`, `eol_char`, `raise_if_empty`, `truncate_ragged_lines`
-  - `path` can now be a vector of characters indicating several paths to CSV files. 
+  - `path` can now be a vector of characters indicating several paths to CSV files.
     This only works if all CSV files have the same schema.
-    
+
 ## What's changed
 
 - New class `RPolarsSQLContext` and its methods to perform SQL queries on DataFrame-
@@ -38,7 +38,7 @@
 - New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
   an Expr (#462).
 - New methods `$read_ndjson()` and `$scan_ndjson()` (#471).
-- New method `$with_context()` for `LazyFrame` to have access to columns from 
+- New method `$with_context()` for `LazyFrame` to have access to columns from
   other Data/LazyFrames during the computation.
 
 # polars 0.9.0
