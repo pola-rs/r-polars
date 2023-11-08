@@ -20,7 +20,8 @@
 #' the given name into the DataFrame.
 #' @param row_count_offset Offset to start the row_count column (only used if
 #' the name is set).
-#'
+#' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
+#' downloaded files in session for an easy reuse.
 #' @return A LazyFrame
 #' @examples
 #' ndjson_filename = tempfile()
@@ -34,28 +35,25 @@ pl$scan_ndjson = function(
     low_memory = FALSE,
     rechunk = TRUE,
     row_count_name = NULL,
-    row_count_offset = 0) {
+    row_count_offset = 0,
+    reuse_downloaded = TRUE
+    ) {
 
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
-  # single path and vector of paths are handled separately on the Rust side
-  if (length(path) > 1) {
-    args = append(args, list(paths = path), after = 1)
-    args["path"] = list(NULL)
-  } else {
-    args[["path"]] = check_is_link(args[["path"]], reuse_downloaded = reuse_downloaded)
-    args = append(args, list(paths = NULL), after = 1)
-  }
-  args[["reuse_downloaded"]] = NULL
+  # check if url link and predownload, wrap in result, robj_to! can unpack R-result
+  args[['path']] = lapply(
+    path, check_is_link, reuse_downloaded = reuse_downloaded, raise_error = TRUE
+  ) |>
+    result()
 
-  if (is.null(row_count_name) && !is.null(row_count_offset)) {
-    args["row_count_offset"] = list(NULL)
-  }
+  args[['reuse_downloaded']] = NULL
 
   ## call low level function with args
   check_no_missing_args(new_from_ndjson, args)
-  unwrap(do.call(new_from_ndjson, args))
+  do.call(new_from_ndjson, args) |>
+    unwrap("in pl$scan_ndjson")
 }
 
 #' New DataFrame from NDJSON

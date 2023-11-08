@@ -26,6 +26,9 @@ the given name into the DataFrame.}
 
 \item{row_count_offset}{Offset to start the row_count column (only used if
 the name is set).}
+
+\item{reuse_downloaded}{If \code{TRUE}(default) and a URL was provided, cache the
+downloaded files in session for an easy reuse.}
 }
 \value{
 A LazyFrame

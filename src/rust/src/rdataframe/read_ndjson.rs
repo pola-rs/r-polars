@@ -4,7 +4,6 @@ use crate::lazy::dataframe::LazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
 use polars::io::RowCount;
-use std::path::PathBuf;
 
 //use crate::utils::wrappers::*;
 use extendr_api::{extendr, prelude::*, Rinternals};
@@ -16,7 +15,6 @@ use std::result::Result;
 #[extendr]
 pub fn new_from_ndjson(
     path: Robj,
-    paths: Robj,
     infer_schema_length: Robj,
     batch_size: Robj,
     n_rows: Robj,
@@ -25,47 +23,27 @@ pub fn new_from_ndjson(
     row_count_name: Robj,
     row_count_offset: Robj,
 ) -> RResult<LazyFrame> {
-    let infer_schema_length = robj_to!(Option, usize, infer_schema_length)?;
-    let batch_size = robj_to!(Option, usize, batch_size)?;
-    let n_rows = robj_to!(Option, usize, n_rows)?;
-    let low_memory = robj_to!(bool, low_memory)?;
-    let rechunk = robj_to!(bool, rechunk)?;
+    let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
+    let opt_rowcount =
+        robj_to!(Option, String, row_count_name)?.map(|name| RowCount { name, offset });
 
-    //construct paths, depending on whether one or multiple paths were provided
-    let path = robj_to!(Option, String, path)?;
-    let r = if path.is_some() {
-        let path = PathBuf::from(path.unwrap());
-        pl::LazyJsonLineReader::new(&path)
-    } else {
-        let paths: Vec<PathBuf> = robj_to!(Vec, String, paths)?
-            .iter()
-            .map(PathBuf::from)
-            .collect();
-        pl::LazyJsonLineReader::new_paths(paths.into())
-    };
+    let vec_pathbuf = robj_to!(Vec, PathBuf, path)?;
+    let linereader = match vec_pathbuf.len() {
+        2.. => Ok(pl::LazyJsonLineReader::new_paths(vec_pathbuf.into())),
+        1 => Ok(pl::LazyJsonLineReader::new(&vec_pathbuf[0])),
+        _ => rerr().plain("path cannot have zero length").bad_arg("path"),
+    }?;
 
-    //construct optional RowCount parameter
-    let row_count_name = robj_to!(Option, String, row_count_name)?;
-    let r = if row_count_name.is_some() {
-        let row_count = Some((
-            row_count_name.unwrap(),
-            robj_to!(Option, u32, row_count_offset)?.unwrap_or(0),
-        ))
-        .map(|(name, offset)| RowCount { name, offset });
-
-        r.with_row_count(row_count)
-    } else {
-        r
-    };
-
-    let r = r
-        .with_infer_schema_length(infer_schema_length)
-        .with_batch_size(batch_size)
-        .with_n_rows(n_rows)
-        .low_memory(low_memory)
-        .with_rechunk(rechunk);
-
-    r.finish().map_err(polars_to_rpolars_err).map(LazyFrame)
+    linereader
+        .with_infer_schema_length(robj_to!(Option, usize, infer_schema_length)?)
+        .with_batch_size(robj_to!(Option, usize, batch_size)?)
+        .with_n_rows(robj_to!(Option, usize, n_rows)?)
+        .low_memory(robj_to!(bool, low_memory)?)
+        .with_row_count(opt_rowcount)
+        .with_rechunk(robj_to!(bool, rechunk)?)
+        .finish()
+        .map_err(polars_to_rpolars_err)
+        .map(LazyFrame)
 }
 
 extendr_module! {
