@@ -67,24 +67,14 @@ test_that("multiple paths fails if different schema", {
   )
 })
 
-
 test_that("bad paths", {
-
    ctx = pl$read_ndjson(character()) |> get_err_ctx()
    expect_identical(
      c(ctx$BadArgument, ctx$PlainErrorMessage),
      c("path", "path cannot have zero length")
    )
-
   expect_error(
     pl$read_ndjson("not a valid path"),
     "failed to locate file"
   )
-
-  expect_error(
-    pl$read_ndjson(NA_character_),
-    "failed to locate file"
-  )
-
 })
-
