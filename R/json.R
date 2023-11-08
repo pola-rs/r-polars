@@ -31,7 +31,6 @@
 #'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
 #'   pl$scan_ndjson(ndjson_filename)$collect()
 #' }
-
 pl$scan_ndjson = function(
     path,
     infer_schema_length = 100,
@@ -41,19 +40,18 @@ pl$scan_ndjson = function(
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0,
-    reuse_downloaded = TRUE
-    ) {
-
+    reuse_downloaded = TRUE) {
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
   # check if url link and predownload, wrap in result, robj_to! can unpack R-result
-  args[['path']] = lapply(
-    path, check_is_link, reuse_downloaded = reuse_downloaded, raise_error = TRUE
+  args[["path"]] = lapply(
+    path, check_is_link,
+    reuse_downloaded = reuse_downloaded, raise_error = TRUE
   ) |>
     result()
 
-  args[['reuse_downloaded']] = NULL
+  args[["reuse_downloaded"]] = NULL
 
   ## call low level function with args
   check_no_missing_args(new_from_ndjson, args)
@@ -106,4 +104,3 @@ pl$read_ndjson = function(
   mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_ndjson
   eval.parent(mc)$collect()
 }
-

@@ -982,7 +982,6 @@ LazyFrame_join = function(
     suffix = "_right",
     allow_parallel = TRUE,
     force_parallel = FALSE) {
-
   uw = \(res) unwrap(res, "in $join():")
 
   if (inherits(other, "DataFrame")) {
@@ -1576,7 +1575,6 @@ LazyFrame_unnest = function(names = NULL) {
 #' test_lf$with_context(train_lf$select(pl$all()$name$suffix("_train")))$select(
 #'   pl$col("feature_0")$fill_null(pl$col("feature_0_train")$median())
 #' )$collect()
-
 LazyFrame_with_context = function(other) {
   .pr$LazyFrame$with_context(self, other) |>
     unwrap("in with_context():")

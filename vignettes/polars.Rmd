@@ -477,7 +477,7 @@ write_dataset(airquality, "airquality-ds", partitioning = "Month")
 # Use pattern globbing to scan all parquet files in the folder
 aq2 = pl$scan_parquet("airquality-ds/*/*.parquet")
 
-# Just print the first two rows. 
+# Just print the first two rows.
 aq2$limit(2)$collect()
 ```
 

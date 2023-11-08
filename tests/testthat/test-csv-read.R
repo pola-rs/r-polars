@@ -108,12 +108,16 @@ test_that("arg null_values works", {
   writeLines("a,b,c\n1.5,a,2\n2,,", tmpf)
 
   out = pl$read_csv(tmpf, null_values = c("a", 2))$to_list()
-  expect_identical(out, list(a = c(1.5, NA), b = c(NA_character_, NA_character_),
-                             c = c(NA_character_, NA_character_)))
+  expect_identical(out, list(
+    a = c(1.5, NA), b = c(NA_character_, NA_character_),
+    c = c(NA_character_, NA_character_)
+  ))
 
   out = pl$read_csv(tmpf, null_values = list(b = "a", c = 2))$to_list()
-  expect_identical(out, list(a = c(1.5, 2), b = c(NA_character_, NA_character_),
-                             c = c(NA_character_, NA_character_)))
+  expect_identical(out, list(
+    a = c(1.5, 2), b = c(NA_character_, NA_character_),
+    c = c(NA_character_, NA_character_)
+  ))
 })
 
 test_that("args row_count_ work", {
