@@ -97,16 +97,16 @@ pl$scan_csv = function(
     raise_if_empty = TRUE,
     truncate_ragged_lines = FALSE,
     reuse_downloaded = TRUE) {
-
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
-  args[['path']] = lapply(
-    path, check_is_link, reuse_downloaded = reuse_downloaded, raise_error = TRUE
+  args[["path"]] = lapply(
+    path, check_is_link,
+    reuse_downloaded = reuse_downloaded, raise_error = TRUE
   ) |>
     result()
 
-  args[['reuse_downloaded']] = NULL
+  args[["reuse_downloaded"]] = NULL
 
   # dtypes: convert named list of DataType's to DataTypeVector obj
   if (!is.null(args$dtypes)) {
@@ -279,7 +279,6 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
 
       path = tmp_file # redirect path to tmp downloaded file
     } else {
-
       if (raise_error) {
         stop("failed to locate file at path/url: ", path)
       }

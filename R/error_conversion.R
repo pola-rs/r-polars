@@ -153,12 +153,12 @@ raw_result = function(expr) {
 #' )
 check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
   if (!pl$polars_info()$features[[feature_name]]) {
-  Err_plain(
- "\nFeature '", feature_name, "' is not enabled.\n",
- "Please check the documentation about installation\n",
- "and re-install with the feature enabled.\n"
- ) |>
- unwrap(context, call)
+    Err_plain(
+      "\nFeature '", feature_name, "' is not enabled.\n",
+      "Please check the documentation about installation\n",
+      "and re-install with the feature enabled.\n"
+    ) |>
+      unwrap(context, call)
   }
 
   invisible(TRUE)
