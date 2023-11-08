@@ -8,7 +8,7 @@ test_that("robj_to_rchoice", {
 
     # NA chr not allowed as first element
     ctx = test_robj_to_rchoice(NA_character_)$err$contexts()
-    expect_identical(ctx$NotAChoice,  "NA_character is not allowed")
+    expect_identical(ctx$NotAChoice,  "NA_character_ is not allowed")
 
     # empty chr vec not allowed as first element
     ctx = test_robj_to_rchoice(character())$err$contexts()

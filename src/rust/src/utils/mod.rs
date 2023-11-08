@@ -551,7 +551,7 @@ pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
     match opt_str {
         // NA_CHARACTER not allowed as first element return error
         Ok(Some(rstr)) if rstr.is_na() => {
-            Err(RPolarsErr::new().notachoice("NA_character is not allowed".into()))
+            Err(RPolarsErr::new().notachoice("NA_character_ is not allowed".into()))
         }
 
         // At least one string, return first string
