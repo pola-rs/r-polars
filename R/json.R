@@ -23,10 +23,15 @@
 #' @param reuse_downloaded If `TRUE`(default) and a URL was provided, cache the
 #' downloaded files in session for an easy reuse.
 #' @return A LazyFrame
+#'
+# we should use @examplesIf but altdoc doesn't know how to parse it yet
 #' @examples
-#' ndjson_filename = tempfile()
-#' jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
-#' pl$scan_ndjson(ndjson_filename)$collect()
+#' if (require("jsonlite", quietly = TRUE)) {
+#'   ndjson_filename = tempfile()
+#'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
+#'   pl$scan_ndjson(ndjson_filename)$collect()
+#' }
+
 pl$scan_ndjson = function(
     path,
     infer_schema_length = 100,
@@ -80,10 +85,14 @@ pl$scan_ndjson = function(
 #' the name is set).
 #'
 #' @return A DataFrame
+#'
+# we should use @examplesIf but altdoc doesn't know how to parse it yet
 #' @examples
-#' ndjson_filename = tempfile()
-#' jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
-#' pl$read_ndjson(ndjson_filename)
+#' if (require("jsonlite", quietly = TRUE)) {
+#'   ndjson_filename = tempfile()
+#'   jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
+#'   pl$read_ndjson(ndjson_filename)
+#' }
 pl$read_ndjson = function(
     path,
     infer_schema_length = 100,

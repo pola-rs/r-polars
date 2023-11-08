@@ -34,7 +34,9 @@ A DataFrame
 Read a file from path into a polars DataFrame.
 }
 \examples{
-ndjson_filename = tempfile()
-jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
-pl$read_ndjson(ndjson_filename)
+if (require("jsonlite", quietly = TRUE)) {
+  ndjson_filename = tempfile()
+  jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
+  pl$read_ndjson(ndjson_filename)
+}
 }

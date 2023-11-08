@@ -37,7 +37,9 @@ A LazyFrame
 Read a file from path into a polars LazyFrame.
 }
 \examples{
-ndjson_filename = tempfile()
-jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
-pl$scan_ndjson(ndjson_filename)$collect()
+if (require("jsonlite", quietly = TRUE)) {
+  ndjson_filename = tempfile()
+  jsonlite::stream_out(iris, file(ndjson_filename), verbose = FALSE)
+  pl$scan_ndjson(ndjson_filename)$collect()
+}
 }
