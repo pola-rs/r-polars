@@ -36,7 +36,8 @@
   like objects. To use this feature, needs to build Rust library with full features
   (#457).
 - New methods `$peak_min()` and `$peak_max()` to find local minima and maxima in
-  a Series (#462).
+  an Expr (#462).
+- New methods `$read_ndjson()` and `$scan_ndjson()` (#471).
 
 # polars 0.9.0
 

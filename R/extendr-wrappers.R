@@ -81,6 +81,8 @@ new_from_csv <- function(path, paths, has_header, separator, comment_char, quote
 
 import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, memmap) .Call(wrap__import_arrow_ipc, path, n_rows, cache, rechunk, row_name, row_count, memmap)
 
+new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset)
+
 new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
