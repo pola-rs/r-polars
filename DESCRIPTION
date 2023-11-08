@@ -28,6 +28,7 @@ Suggests:
     curl,
     data.table,
     ggplot2,
+    jsonlite,
     knitr,
     lubridate,
     nanoarrow,
@@ -92,6 +93,7 @@ Collate:
     'group_by.R'
     'info.R'
     'ipc.R'
+    'json.R'
     'lazyframe__group_by.R'
     'lazyframe__lazy.R'
     'namespace.R'

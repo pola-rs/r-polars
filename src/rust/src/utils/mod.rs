@@ -525,6 +525,10 @@ pub fn robj_to_string(robj: extendr_api::Robj) -> RResult<String> {
     }
 }
 
+pub fn robj_to_pathbuf(robj: extendr_api::Robj) -> RResult<std::path::PathBuf> {
+    Ok(std::path::PathBuf::from(robj_to_string(robj)?))
+}
+
 pub fn robj_to_str<'a>(robj: extendr_api::Robj) -> RResult<&'a str> {
     let robj = unpack_r_result_list(robj)?;
     use extendr_api::Length;
@@ -1052,6 +1056,10 @@ macro_rules! robj_to_inner {
 
     (JoinType, $a:ident) => {
         $crate::rdatatype::robj_to_join_type($a)
+    };
+
+    (PathBuf, $a:ident) => {
+        $crate::utils::robj_to_pathbuf($a)
     };
 
     (RArrow_schema, $a:ident) => {

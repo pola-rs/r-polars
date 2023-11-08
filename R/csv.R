@@ -247,7 +247,7 @@ pl$read_csv = function(
 }
 
 
-check_is_link = function(path, reuse_downloaded) {
+check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
   if (!file.exists(path)) {
     con = NULL
 
@@ -277,6 +277,10 @@ check_is_link = function(path, reuse_downloaded) {
 
       path = tmp_file # redirect path to tmp downloaded file
     } else {
+
+      if(raise_error) {
+        stop("failed to locate file at path/url: ", path)
+      }
       # do nothing let path fail on rust side
       path = NULL
     }
