@@ -1756,11 +1756,9 @@ DataFrame_transpose = function(
 #' * `"non_numeric"`: This puts quotes around all fields that are non-numeric.
 #'   Namely, when writing a field that does not parse as a valid float or integer,
 #'   then quotes will be used even if they aren`t strictly necessary.
-
-# TODO: include "never" when bumping rust-polars to 0.34
-# * `"never"`: This never puts quotes around fields, even if that results in
-#   invalid CSV data (e.g.: by not quoting strings containing the separator).
-
+#' * `"never"`: This never puts quotes around fields, even if that results in
+#'   invalid CSV data (e.g. by not quoting strings containing the separator).
+#'
 #' @return
 #' This doesn't return anything but creates a CSV file.
 #'
