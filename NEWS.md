@@ -4,6 +4,8 @@
 
 - The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take 
   the value `"never"` (#483).
+- `pl$DataFrame()` now errors if the variables specified in `schema` do not exist
+  in the data (#486).
 
 # polars 0.10.0
 
