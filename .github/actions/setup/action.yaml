@@ -11,25 +11,6 @@ inputs:
 runs:
   using: composite
   steps:
-      - name: Install ubuntu SYSTEM REQUIREMENTS
-        if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          sudo apt-get update \
-          && sudo apt-get install -y \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libfribidi-dev \
-            libharfbuzz-dev \
-            libcurl4-openssl-dev \
-            libgit2-dev \
-            libicu-dev \
-            libjpeg-dev \
-            libpng-dev \
-            libtiff-dev \
-            libxml2-dev \
-            libssl-dev
-
       - name: Update Rust
         if: inputs.rust-nightly != 'true' && env.RPOLARS_FULL_FEATURES != 'true'
         shell: bash
