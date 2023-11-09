@@ -63,8 +63,6 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: dev
-        env:
-          CI: false
 
       - name: Build lib
         if: matrix.config.target == ''
