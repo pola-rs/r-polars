@@ -90,8 +90,7 @@ pl$read_parquet = function(
     row_count_offset = 0L,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE,
-    hive_partitioning = TRUE
-) {
+    hive_partitioning = TRUE) {
   mc = match.call()
   mc[[1]] = pl$scan_parquet
   result(eval(mc)$collect()) |>
