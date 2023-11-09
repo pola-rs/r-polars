@@ -99,12 +99,12 @@ test_that("sink_csv: separator works", {
 })
 
 test_that("sink_csv: quote_style and quote works", {
-  dat_pl2 = pl$LazyFrame(iris)
+  dat_pl2 = pl$LazyFrame(head(iris))
 
   # wrong quote_style
   ctx = dat_pl2$sink_csv(temp_out, quote_style = "foo") |> get_err_ctx()
   expect_identical(ctx$BadArgument, "quote_style")
-  expect_identical(ctx$Plain, "a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+  expect_identical(ctx$Plain, "`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.")
 
   # wrong quote_style type
   ctx = dat_pl2$sink_csv(temp_out, quote_style = 42) |> get_err_ctx()
@@ -116,6 +116,10 @@ test_that("sink_csv: quote_style and quote works", {
 
   # ok also
   ctx = dat_pl2$sink_csv(temp_out, quote_style = "non_numeric", quote = "+")
+  expect_snapshot_file(temp_out)
+
+  # ok also
+  ctx = dat_pl2$sink_csv(temp_out, quote_style = "never", quote = "+")
   expect_snapshot_file(temp_out)
 
   # zero byte quote
