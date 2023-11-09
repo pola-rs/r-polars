@@ -1059,6 +1059,10 @@ macro_rules! robj_to_inner {
         $crate::rdatatype::robj_to_join_type($a)
     };
 
+    (ParallelStrategy, $a:ident) => {
+        $crate::rdatatype::robj_to_parallel_strategy($a)
+    };
+
     (PathBuf, $a:ident) => {
         $crate::utils::robj_to_pathbuf($a)
     };

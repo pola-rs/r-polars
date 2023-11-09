@@ -516,6 +516,20 @@ pub fn robj_to_closed_window(robj: Robj) -> RResult<pl::ClosedWindow> {
     }
 }
 
+pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::ParallelStrategy> {
+    use pl::ParallelStrategy as PS;
+    match robj_to_rchoice(robj)?.to_lowercase().as_str() {
+        //accept also lowercase as normal for most other enums
+        "auto" => Ok(PS::Auto),
+        "none" => Ok(PS::Auto),
+        "columns" => Ok(PS::Auto),
+        "rowgroups" => Ok(PS::Auto),
+        s => rerr().bad_val(format!(
+            "ParallelStrategy choice ['{s}'] should be one of 'Auto', 'None', 'Columns', 'RowGroups'"
+        )),
+    }
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;

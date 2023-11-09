@@ -32,28 +32,23 @@
 #'   file.path(temp_dir, "**/*.parquet")
 #' )$collect()
 pl$scan_parquet = function(
-    file, # : str | Path,
-    n_rows = NULL, # : int | None = None,
-    cache = TRUE, # : bool = True,
+    file,
+    n_rows = NULL,
+    cache = TRUE,
     parallel = c(
       "Auto", # default
       "None",
-      "Columns", # Parallelize over the row groups
-      "RowGroups" # Parallelize over the columns
-    ), # Automatically determine over which unit to parallelize, This will choose the most occurring unit.
-    rechunk = TRUE, # : bool = True,
-    row_count_name = NULL, # : str | None = None,
-    row_count_offset = 0L, # : int = 0,
+      "Columns",
+      "RowGroups"
+    ),
+    rechunk = TRUE,
+    row_count_name = NULL,
+    row_count_offset = 0L,
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
-    low_memory = FALSE, # : bool = False,
+    low_memory = FALSE,
     hive_partitioning = TRUE) { #-> LazyFrame
 
-  parallel = parallel[1L]
-  if (!parallel %in% c("None", "Columns", "RowGroups", "Auto")) {
-    stop("unknown parallel strategy")
-  }
-
-  result_lf = new_from_parquet(
+  new_from_parquet(
     path = file,
     n_rows = n_rows,
     cache = cache,
@@ -63,9 +58,8 @@ pl$scan_parquet = function(
     row_count = row_count_offset,
     low_memory = low_memory,
     hive_partitioning = hive_partitioning
-  )
-
-  unwrap(result_lf)
+  ) |>
+    unwrap("in pl$scan_parquet(): ")
 }
 
 
@@ -85,14 +79,23 @@ pl$read_parquet = function(
     file,
     n_rows = NULL,
     cache = TRUE,
-    parallel = c("Auto", "None", "Columns", "RowGroups"),
+    parallel = c(
+      "Auto", # default
+      "None",
+      "Columns",
+      "RowGroups"
+    ),
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0L,
-    low_memory = FALSE) {
+    # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
+    low_memory = FALSE,
+    hive_partitioning = TRUE
+) {
   mc = match.call()
-  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_parquet
-  eval.parent(mc)$collect()
+  mc[[1]] = pl$scan_parquet
+  result(eval(mc)$collect()) |>
+    unwrap("in pl$read_parquet(): ")
 }
 
 
