@@ -1,5 +1,10 @@
 # polars (development version)
 
+## What's changed
+
+- The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take 
+  the value `"never"` (#483).
+
 # polars 0.10.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
