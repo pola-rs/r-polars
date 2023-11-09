@@ -142,9 +142,10 @@ the Rust toolchain (Rust `r RcppTOML::parseTOML("src/rust/Cargo.toml")$package$"
 Please check the <https://github.com/r-rust/hellorust> repository for about Rust code in R packages.
 
 ```{r, include = FALSE}
-rust_toolchain_version = brio::read_file("Makefile") |>
-  stringr::str_extract(r"((?<=RUST_TOOLCHAIN_VERSION).*nightly.*(?=\n))") |>
-  stringr::str_extract(r"(nightly.*)")
+rust_toolchain_version = read.dcf(
+  "DESCRIPTION",
+  fields = "Config/polars/RustToolchainVersion", all = TRUE
+)[1, 1]
 ```
 
 During source installation, some environment variables can be set to enable Rust features and profile changes.

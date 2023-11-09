@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 VENV := .venv
 
-RUST_TOOLCHAIN_VERSION := nightly-2023-10-12
+RUST_TOOLCHAIN_VERSION := $(shell Rscript -e 'read.dcf("DESCRIPTION", fields = "Config/polars/RustToolchainVersion", all = TRUE)[1, 1] |> cat()')
 
 MANIFEST_PATH := src/rust/Cargo.toml
 
