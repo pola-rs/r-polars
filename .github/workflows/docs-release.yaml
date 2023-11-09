@@ -1,0 +1,86 @@
+# This workflow is a mix of:
+# - https://github.com/pola-rs/r-polars/blob/main/.github/workflows/check.yaml
+# - https://github.com/r-lib/actions/blob/v2-branch/examples/pkgdown.yaml
+# - https://squidfunk.github.io/mkdocs-material/publishing-your-site/?h=deploy#material-for-mkdocs
+
+name: Build/Publish Latest Release Docs
+
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      docs_key: ${{ secrets.DEPLOY_DOCS }}
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set rust target
+        id: rust-target
+        run: |
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+          else
+            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+          fi
+
+      - uses: ./.github/actions/setup
+        with:
+          target: "${{ steps.rust-target.outputs.TARGET }}"
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+          Ncpus: 2
+
+      - name: Get requirements
+        run: |
+          make requirements-r
+          make requirements-py
+
+      - name: Build docs
+        run: |
+          mike deploy --push --update-aliases ${{ github.event.release.tag_name }} latest
+
+      - uses: webfactory/ssh-agent@v0.6.0
+        env:
+          DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
+        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_DOCS }}
+
+        # https://www.mkdocs.org/user-guide/deploying-your-docs/
+      - name: Build site and deploy to GitHub pages
+        env:
+          DEPLOY_DOCS: ${{ secrets.DEPLOY_DOCS  }}
+        if: ${{ (github.event_name != 'pull_request') && (github.repository_owner == 'pola-rs') }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          clean: true
+          branch: main
+          folder: docs/site
+          repository-name: rpolars/rpolars.github.io
+          ssh-key: true
+          clean-exclude: |
+            .nojekyll

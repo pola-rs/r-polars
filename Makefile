@@ -35,6 +35,7 @@ requirements-r:
 requirements-py: .venv
 	$(VENV_BIN)/python -m pip install --upgrade pip
 	$(VENV_BIN)/pip install --upgrade mkdocs-material
+	$(VENV_BIN)/pip install --upgrade mike
 
 .PHONY: requirements-rs
 requirements-rs:
@@ -67,7 +68,7 @@ all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -
 docs: build install README.md docs/docs/reference_home.md ## Generate docs
 	cp docs/mkdocs.orig.yml docs/mkdocs.yml
 	Rscript -e 'altdoc::update_docs(custom_reference = "docs/make-docs.R")'
-	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
+	cd docs && ../$(VENV_BIN)/python3 -m mike deploy develop
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
