@@ -1,5 +1,10 @@
 # polars (development version)
 
+## What's changed
+
+- `pl$DataFrame()` now errors if the variables specified in `schema` do not exist
+  in the data.
+
 # polars 0.10.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE

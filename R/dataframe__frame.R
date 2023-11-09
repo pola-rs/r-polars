@@ -136,6 +136,13 @@ DataFrame
 pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   largs = unpack_list(...)
 
+  uw = \(res) unwrap(res, "in $DataFrame():")
+
+  if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
+    Err_plain("Some columns in `schema` are not in the DataFrame.") |>
+      uw()
+  }
+
   # no args crete empty DataFrame
   if (length(largs) == 0L) {
     return(.pr$DataFrame$default())
@@ -188,7 +195,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     }) |>
       do.call(what = pl$select)
   }) |>
-    unwrap("in pl$DataFrame()")
+    uw()
 }
 
 
