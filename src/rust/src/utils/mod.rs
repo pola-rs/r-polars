@@ -590,7 +590,9 @@ pub fn robj_to_quote_style(robj: Robj) -> RResult<pl::QuoteStyle> {
         "non_numeric" => Ok(pl::QuoteStyle::NonNumeric),
         "never" => Ok(pl::QuoteStyle::Never),
         _ => rerr()
-            .plain("`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.")
+            .plain(
+                "`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.",
+            )
             .bad_robj(&robj),
     }
 }

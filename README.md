@@ -108,15 +108,6 @@ install.packages(
 
 ### Build from source
 
-For source installation, pre-built Rust libraries may be available if
-the environment variable `NOT_CRAN` is set to `"true"`. (Or, set
-`LIBR_POLARS_BUILD` to `"false"`)
-
-``` r
-Sys.setenv(NOT_CRAN = "true")
-install.packages("polars", repos = "https://rpolars.r-universe.dev")
-```
-
 Otherwise, the Rust library will be built from source. the Rust
 toolchain (Rust 1.73 or later) must be configured.
 

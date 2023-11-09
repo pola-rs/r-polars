@@ -42,45 +42,6 @@
       15.2|8.0|275.8|180.0|3.07|3.78|18.0|0.0|0.0|3.0|3.0
       10.4|8.0|472.0|205.0|2.93|5.25|17.98|0.0|0.0|3.0|4.0
 
-# sink_csv: quote_style and quote works
-
-    Code
-      cat(readLines(path), sep = "\n")
-    Output
-      +Sepal.Length+,+Sepal.Width+,+Petal.Length+,+Petal.Width+,+Species+
-      +5.1+,+3.5+,+1.4+,+0.2+,+setosa+
-      +4.9+,+3.0+,+1.4+,+0.2+,+setosa+
-      +4.7+,+3.2+,+1.3+,+0.2+,+setosa+
-      +4.6+,+3.1+,+1.5+,+0.2+,+setosa+
-      +5.0+,+3.6+,+1.4+,+0.2+,+setosa+
-      +5.4+,+3.9+,+1.7+,+0.4+,+setosa+
-
----
-
-    Code
-      cat(readLines(path), sep = "\n")
-    Output
-      +Sepal.Length+,+Sepal.Width+,+Petal.Length+,+Petal.Width+,+Species+
-      5.1,3.5,1.4,0.2,+setosa+
-      4.9,3.0,1.4,0.2,+setosa+
-      4.7,3.2,1.3,0.2,+setosa+
-      4.6,3.1,1.5,0.2,+setosa+
-      5.0,3.6,1.4,0.2,+setosa+
-      5.4,3.9,1.7,0.4,+setosa+
-
----
-
-    Code
-      cat(readLines(path), sep = "\n")
-    Output
-      Sepal.Length,Sepal.Width,Petal.Length,Petal.Width,Species
-      5.1,3.5,1.4,0.2,setosa
-      4.9,3.0,1.4,0.2,setosa
-      4.7,3.2,1.3,0.2,setosa
-      4.6,3.1,1.5,0.2,setosa
-      5.0,3.6,1.4,0.2,setosa
-      5.4,3.9,1.7,0.4,setosa
-
 # sink_csv: quote_style quote_style=necessary
 
     Code
@@ -107,6 +68,15 @@
       "a","b","c"
       """foo""",1,"a"
       "bar",2,"b"
+
+# sink_csv: quote_style quote_style=never
+
+    Code
+      cat(readLines(path), sep = "\n")
+    Output
+      a,b,c
+      "foo",1,a
+      bar,2,b
 
 # sink_csv: date_format works
 
