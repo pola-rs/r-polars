@@ -4,10 +4,12 @@
 \alias{as.vector.Series}
 \title{Convert to a vector}
 \usage{
-\method{as.vector}{Series}(x)
+\method{as.vector}{Series}(x, mode)
 }
 \arguments{
 \item{x}{A Polars Series}
+
+\item{mode}{Not used.}
 }
 \description{
 Convert to a vector

@@ -297,10 +297,10 @@ sum.Series = function(x, ...) x$sum()
 #' Convert to a vector
 #'
 #' @param x A Polars Series
-#'
+#' @param mode Not used.
 #' @export
 #' @rdname S3_as.vector
-as.vector.Series = function(x) x$to_vector()
+as.vector.Series = function(x, mode) x$to_vector()
 
 
 #' Convert to a character vector
