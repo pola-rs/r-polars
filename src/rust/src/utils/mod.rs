@@ -551,7 +551,7 @@ pub fn robj_to_rchoice(robj: extendr_api::Robj) -> RResult<String> {
     match opt_str {
         // NA_CHARACTER not allowed as first element return error
         Ok(Some(rstr)) if rstr.is_na() => {
-            Err(RPolarsErr::new().notachoice("NA_character is not allowed".into()))
+            Err(RPolarsErr::new().notachoice("NA_character_ is not allowed".into()))
         }
 
         // At least one string, return first string
@@ -588,10 +588,11 @@ pub fn robj_to_quote_style(robj: Robj) -> RResult<pl::QuoteStyle> {
         "always" => Ok(pl::QuoteStyle::Always),
         "necessary" => Ok(pl::QuoteStyle::Necessary),
         "non_numeric" => Ok(pl::QuoteStyle::NonNumeric),
-        // "never" is available in rust-polars devel only for now (will be added in 0.34)
-        // "never" => Ok(QuoteStyle::Never),
+        "never" => Ok(pl::QuoteStyle::Never),
         _ => rerr()
-            .plain("a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+            .plain(
+                "`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.",
+            )
             .bad_robj(&robj),
     }
 }
@@ -823,7 +824,7 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
                 Ok(lf)
             }
             _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
                 let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
                 Ok(extptr_df.lazy())
             }
@@ -851,7 +852,7 @@ pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
                 Ok(extptr_df.0.clone())
             }
             _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
                 let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
                 Ok(extptr_df.0.clone())
             }

@@ -52,7 +52,7 @@ test_that("RPolarsStringCacheHolder", {
   token$release()
   expect_false(pl$using_string_cache())
 
-  #hold and release token via garbage collection leads to drop
+  # hold and release token via garbage collection leads to drop
   token = .pr$RPolarsStringCacheHolder$hold()
   expect_true(pl$using_string_cache())
   rm(token)

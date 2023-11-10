@@ -160,15 +160,18 @@ test_that("DataFrame, custom schema", {
   expect_no_error(
     pl$DataFrame(list(schema = 1), schema = list(schema = pl$Float32))
   )
-  # errors if incorrect datatype
+  # incorrect datatype
   expect_error(pl$DataFrame(x = 1, schema = list(schema = foo)))
   expect_error(
     pl$DataFrame(x = 1, schema = list(x = "foo")),
     "expected RPolarsDataType"
   )
 
-  # TODO: why doesn't this error?
-  # expect_error(pl$DataFrame(x = 1, schema = list(schema = pl$foo)))
+  # wrong variable name in schema
+  expect_error(
+    pl$DataFrame(x = 1, schema = list(schema = pl$Float32)),
+    "Some columns in `schema` are not in the DataFrame"
+  )
 })
 
 

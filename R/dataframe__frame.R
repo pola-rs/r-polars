@@ -136,6 +136,13 @@ DataFrame
 pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   largs = unpack_list(...)
 
+  uw = \(res) unwrap(res, "in $DataFrame():")
+
+  if (!is.null(schema) && !all(names(schema) %in% names(largs))) {
+    Err_plain("Some columns in `schema` are not in the DataFrame.") |>
+      uw()
+  }
+
   # no args crete empty DataFrame
   if (length(largs) == 0L) {
     return(.pr$DataFrame$default())
@@ -188,7 +195,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
     }) |>
       do.call(what = pl$select)
   }) |>
-    unwrap("in pl$DataFrame()")
+    uw()
 }
 
 
@@ -885,19 +892,6 @@ DataFrame_to_data_frame = function(...) {
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
-# #' @rdname DataFrame_to_data_frame
-# #' @description to_data_frame is an alias
-# #' @keywords DataFrame
-# DataFrame_to_data_frame = DataFrame_to_data_frame
-
-#' @rdname DataFrame_to_data_frame
-#' @param x A DataFrame
-#'
-#' @return data.frame
-#' @export
-as.data.frame.DataFrame = function(x, ...) {
-  x$to_data_frame(...)
-}
 
 #' Return Polars DataFrame as a list of vectors
 #'
@@ -1749,11 +1743,9 @@ DataFrame_transpose = function(
 #' * `"non_numeric"`: This puts quotes around all fields that are non-numeric.
 #'   Namely, when writing a field that does not parse as a valid float or integer,
 #'   then quotes will be used even if they aren`t strictly necessary.
-
-# TODO: include "never" when bumping rust-polars to 0.34
-# * `"never"`: This never puts quotes around fields, even if that results in
-#   invalid CSV data (e.g.: by not quoting strings containing the separator).
-
+#' * `"never"`: This never puts quotes around fields, even if that results in
+#'   invalid CSV data (e.g. by not quoting strings containing the separator).
+#'
 #' @return
 #' This doesn't return anything but creates a CSV file.
 #'

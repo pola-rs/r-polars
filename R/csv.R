@@ -97,18 +97,15 @@ pl$scan_csv = function(
     raise_if_empty = TRUE,
     truncate_ragged_lines = FALSE,
     reuse_downloaded = TRUE) {
-
   # capture all args and modify some to match lower level function
   args = as.list(environment())
 
-  # single path and vector of paths are handled separately on the Rust side
-  if (length(path) > 1) {
-    args = append(args, list(paths = path), after = 1)
-    args["path"] = list(NULL)
-  } else {
-    args[["path"]] = check_is_link(args[["path"]], reuse_downloaded = reuse_downloaded)
-    args = append(args, list(paths = NULL), after = 1)
-  }
+  args[["path"]] = lapply(
+    path, check_is_link,
+    reuse_downloaded = reuse_downloaded, raise_error = TRUE
+  ) |>
+    result()
+
   args[["reuse_downloaded"]] = NULL
 
   # dtypes: convert named list of DataType's to DataTypeVector obj
@@ -147,7 +144,8 @@ pl$scan_csv = function(
 
   ## call low level function with args
   check_no_missing_args(new_from_csv, args)
-  unwrap(do.call(new_from_csv, args))
+  do.call(new_from_csv, args) |>
+    unwrap("in pl$scan_csv():")
 }
 
 #' New DataFrame from CSV
@@ -248,6 +246,10 @@ pl$read_csv = function(
 
 
 check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
+  # do nothing let path fail on rust side
+  if (is.na(path)) {
+    return(NULL)
+  }
   if (!file.exists(path)) {
     con = NULL
 
@@ -277,8 +279,7 @@ check_is_link = function(path, reuse_downloaded, raise_error = FALSE) {
 
       path = tmp_file # redirect path to tmp downloaded file
     } else {
-
-      if(raise_error) {
+      if (raise_error) {
         stop("failed to locate file at path/url: ", path)
       }
       # do nothing let path fail on rust side

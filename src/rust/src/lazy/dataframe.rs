@@ -566,6 +566,14 @@ impl LazyFrame {
     pub fn clone_see_me_macro(&self) -> LazyFrame {
         self.clone()
     }
+
+    pub fn with_context(&self, contexts: Robj) -> RResult<Self> {
+        let contexts = robj_to!(Vec, LazyFrame, contexts)?
+            .into_iter()
+            .map(|ldf| ldf.0)
+            .collect::<Vec<_>>();
+        Ok(self.0.clone().with_context(contexts).into())
+    }
 }
 
 #[derive(Clone)]

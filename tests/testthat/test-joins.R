@@ -30,14 +30,12 @@ test_that("lazyframe join examples", {
   )
 
   # error on unknown how choice
-  ctx =  df$join(other_df, on = "ham", how = "not a choice") |> get_err_ctx()
-  expect_true(startsWith(ctx$BadValue,  "JoinType choice ['not a choice'] should be one of"))
+  ctx = df$join(other_df, on = "ham", how = "not a choice") |> get_err_ctx()
+  expect_true(startsWith(ctx$BadValue, "JoinType choice ['not a choice'] should be one of"))
 
   # error on invalid choice
-  ctx =  df$join(other_df, on = "ham", how = 42) |> get_err_ctx()
+  ctx = df$join(other_df, on = "ham", how = 42) |> get_err_ctx()
   expect_true("NotAChoice" %in% names(ctx))
-
-
 })
 
 
@@ -127,5 +125,4 @@ test_that("cross join, DataFrame", {
       x_right = rep(letters[1:3], 3)
     )
   )
-
 })

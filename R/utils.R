@@ -630,12 +630,12 @@ make_profile_plot = function(data, truncate_nodes) {
   total_timing = max(timings$end)
   if (total_timing > 10000000) {
     unit = "s"
-    total_timing = paste0(total_timing/1000000, "s")
+    total_timing = paste0(total_timing / 1000000, "s")
     timings$start = timings$start / 1000000
     timings$end = timings$end / 1000000
   } else if (total_timing > 10000) {
     unit = "ms"
-    total_timing = paste0(total_timing/1000, "ms")
+    total_timing = paste0(total_timing / 1000, "ms")
     timings$start = timings$start / 1000
     timings$end = timings$end / 1000
   } else {
@@ -648,8 +648,11 @@ make_profile_plot = function(data, truncate_nodes) {
 
   plot = ggplot2::ggplot(
     timings,
-    ggplot2::aes(x = .data[["start"]], xend = .data[["end"]],
-                 y = .data[["node"]], yend = .data[["node"]])) +
+    ggplot2::aes(
+      x = .data[["start"]], xend = .data[["end"]],
+      y = .data[["node"]], yend = .data[["node"]]
+    )
+  ) +
     ggplot2::geom_segment(linewidth = 6) +
     ggplot2::xlab(
       paste0("Node duration in ", unit, ". Total duration: ", total_timing)

@@ -6,7 +6,6 @@ use crate::lazy::dataframe::LazyFrame;
 use crate::robj_to;
 use crate::rpolarserr::*;
 use polars::io::RowCount;
-use std::path::PathBuf;
 
 //use crate::utils::wrappers::*;
 use crate::utils::wrappers::{null_to_opt, Wrap};
@@ -48,7 +47,6 @@ impl From<Wrap<Nullable<&RNullValues>>> for Option<pl::NullValues> {
 #[extendr]
 pub fn new_from_csv(
     path: Robj,
-    paths: Robj,
     has_header: Robj,
     separator: Robj,
     comment_char: Robj,
@@ -72,24 +70,16 @@ pub fn new_from_csv(
     raise_if_empty: Robj,
     truncate_ragged_lines: Robj,
 ) -> RResult<LazyFrame> {
-    let separator = robj_to!(Utf8Byte, separator)?;
-    let has_header = robj_to!(bool, has_header)?;
-    let ignore_errors = robj_to!(bool, ignore_errors)?;
-    let quote_char = robj_to!(Option, Utf8Byte, quote_char)?;
-    let comment_char = robj_to!(Option, Utf8Byte, comment_char)?;
-    let eol_char = robj_to!(Utf8Byte, eol_char)?;
-    let skip_rows = robj_to!(usize, skip_rows)?;
-    let skip_rows_after_header = robj_to!(usize, skip_rows_after_header)?;
-    let cache = robj_to!(bool, cache)?;
-    let infer_schema_length = robj_to!(Option, usize, infer_schema_length)?;
-    let n_rows = robj_to!(Option, usize, n_rows)?;
-    let low_memory = robj_to!(bool, low_memory)?;
-    // let missing_utf8_is_empty_string = robj_to!(bool, missing_utf8_is_empty_string)?;
-    let rechunk = robj_to!(bool, rechunk)?;
-    let try_parse_dates = robj_to!(bool, try_parse_dates)?;
-    let raise_if_empty = robj_to!(bool, raise_if_empty)?;
-    let truncate_ragged_lines = robj_to!(bool, truncate_ragged_lines)?;
+    let offset = robj_to!(Option, u32, row_count_offset)?.unwrap_or(0);
+    let opt_rowcount =
+        robj_to!(Option, String, row_count_name)?.map(|name| RowCount { name, offset });
 
+    let vec_pathbuf = robj_to!(Vec, PathBuf, path)?;
+    let linereader = match vec_pathbuf.len() {
+        2.. => Ok(pl::LazyCsvReader::new_paths(vec_pathbuf.into())),
+        1 => Ok(pl::LazyCsvReader::new(&vec_pathbuf[0])),
+        _ => rerr().plain("path cannot have zero length").bad_arg("path"),
+    }?;
     //construct encoding parameter
     let encoding = match encoding {
         "utf8" => Ok(pl::CsvEncoding::Utf8),
@@ -110,56 +100,31 @@ pub fn new_from_csv(
         pl::Schema::from_iter(fields)
     });
 
-    //construct paths, depending on whether one or multiple paths were provided
-    let path = robj_to!(Option, String, path)?;
-    let r = if path.is_some() {
-        let path = PathBuf::from(path.unwrap());
-        pl::LazyCsvReader::new(&path)
-    } else {
-        let paths: Vec<PathBuf> = robj_to!(Vec, String, paths)?
-            .iter()
-            .map(PathBuf::from)
-            .collect();
-        pl::LazyCsvReader::new_paths(paths.into())
-    };
-
-    //construct optional RowCount parameter
-    let row_count_name = robj_to!(Option, String, row_count_name)?;
-    let r = if row_count_name.is_some() {
-        let row_count = Some((
-            row_count_name.unwrap(),
-            robj_to!(Option, u32, row_count_offset)?.unwrap_or(0),
-        ))
-        .map(|(name, offset)| RowCount { name, offset });
-
-        r.with_row_count(row_count)
-    } else {
-        r
-    };
-
-    let r = r
-        .with_infer_schema_length(infer_schema_length)
-        .with_separator(separator)
-        .has_header(has_header)
-        .with_ignore_errors(ignore_errors)
-        .with_skip_rows(skip_rows)
-        .with_n_rows(n_rows)
-        .with_cache(cache)
+    linereader
+        .with_infer_schema_length(robj_to!(Option, usize, infer_schema_length)?)
+        .with_separator(robj_to!(Utf8Byte, separator)?)
+        .has_header(robj_to!(bool, has_header)?)
+        .with_ignore_errors(robj_to!(bool, ignore_errors)?)
+        .with_skip_rows(robj_to!(usize, skip_rows)?)
+        .with_n_rows(robj_to!(Option, usize, n_rows)?)
+        .with_cache(robj_to!(bool, cache)?)
         .with_dtype_overwrite(schema.as_ref())
-        .low_memory(low_memory)
-        .with_comment_char(comment_char)
-        .with_quote_char(quote_char)
-        .with_end_of_line_char(eol_char)
-        .with_rechunk(rechunk)
-        .with_skip_rows_after_header(skip_rows_after_header)
+        .low_memory(robj_to!(bool, low_memory)?)
+        .with_comment_char(robj_to!(Option, Utf8Byte, comment_char)?)
+        .with_quote_char(robj_to!(Option, Utf8Byte, quote_char)?)
+        .with_end_of_line_char(robj_to!(Utf8Byte, eol_char)?)
+        .with_rechunk(robj_to!(bool, rechunk)?)
+        .with_skip_rows_after_header(robj_to!(usize, skip_rows_after_header)?)
         .with_encoding(encoding)
-        .with_try_parse_dates(try_parse_dates)
+        .with_try_parse_dates(robj_to!(bool, try_parse_dates)?)
         .with_null_values(Wrap(null_values).into())
-        // .with_missing_is_null(!missing_utf8_is_empty_string)
-        .truncate_ragged_lines(truncate_ragged_lines)
-        .raise_if_empty(raise_if_empty);
-
-    r.finish().map_err(polars_to_rpolars_err).map(LazyFrame)
+        // .with_missing_is_null(!robj_to!(bool, missing_utf8_is_empty_string)?)
+        .with_row_count(opt_rowcount)
+        .truncate_ragged_lines(robj_to!(bool, truncate_ragged_lines)?)
+        .raise_if_empty(robj_to!(bool, raise_if_empty)?)
+        .finish()
+        .map_err(polars_to_rpolars_err)
+        .map(LazyFrame)
 }
 
 extendr_module! {

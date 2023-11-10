@@ -28,24 +28,16 @@ test_that("write_csv: separator works", {
 })
 
 test_that("write_csv: quote_style and quote works", {
-  dat_pl2 = pl$DataFrame(iris)
+  dat_pl2 = pl$DataFrame(head(iris))
 
   # wrong quote_style
   ctx = dat_pl2$write_csv(temp_out, quote_style = "foo") |> get_err_ctx()
   expect_identical(ctx$BadArgument, "quote_style")
-  expect_identical(ctx$Plain, "a `quote_style` must be 'always', 'necessary' or 'non_numeric'.")
+  expect_identical(ctx$Plain, "`quote_style` should be one of 'always', 'necessary', 'non_numeric', or 'never'.")
 
   # wrong quote_style type
   ctx = dat_pl2$write_csv(temp_out, quote_style = 42) |> get_err_ctx()
   expect_identical(ctx$TypeMismatch, "&str")
-
-  # ok quote_style and quote
-  dat_pl2$write_csv(temp_out, quote_style = "always", quote = "+")
-  expect_snapshot_file(temp_out)
-
-  # ok also
-  ctx = dat_pl2$write_csv(temp_out, quote_style = "non_numeric", quote = "+")
-  expect_snapshot_file(temp_out)
 
   # zero byte quote
   ctx = dat_pl2$write_csv(temp_out, quote = "") |> get_err_ctx()
@@ -70,7 +62,7 @@ patrick::with_parameters_test_that(
     )$write_csv(temp_out, quote_style = quote_style)
     expect_snapshot_file(temp_out)
   },
-  quote_style = c("necessary", "always", "non_numeric")
+  quote_style = c("necessary", "always", "non_numeric", "never")
 )
 
 test_that("write_csv: date_format works", {

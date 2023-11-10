@@ -845,3 +845,29 @@ test_that("opt_toggles", {
   lf_new_opts$sink_ipc(tmpf, inherit_optimization = TRUE)
   expect_identical(pl$scan_ipc(tmpf, memmap = FALSE)$collect()$to_data_frame(), df_defaults)
 })
+
+test_that("with_context works", {
+  lf = pl$LazyFrame(a = c(1, 2, 3), b = c("a", "c", NA))
+  lf_other = pl$LazyFrame(c = c("foo", "ham"))
+
+  expect_identical(
+    lf$with_context(lf_other)$select(
+      pl$col("b") + pl$col("c")$first()
+    )$collect()$to_data_frame(),
+    data.frame(b = c("afoo", "cfoo", NA))
+  )
+
+  train_lf = pl$LazyFrame(
+    feature_0 = c(-1.0, 0, 1), feature_1 = c(-1.0, 0, 1)
+  )
+  test_lf = pl$LazyFrame(
+    feature_0 = c(-1.0, NA, 1), feature_1 = c(-1.0, 0, 1)
+  )
+
+  expect_identical(
+    test_lf$with_context(train_lf$select(pl$all()$name$suffix("_train")))$select(
+      pl$col("feature_0")$fill_null(pl$col("feature_0_train")$median())
+    )$collect()$to_data_frame(),
+    data.frame(feature_0 = c(-1, 0, 1))
+  )
+})
