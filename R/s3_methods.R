@@ -1,6 +1,6 @@
 #' Take a subset of rows and columns
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param i Rows to select
 #' @param j Columns to select, either by index or by name.
 #' @param ... Not used.
@@ -93,7 +93,7 @@
 
 #' Take the first n rows
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param n Number of rows
 #' @param ... Not used
 #'
@@ -107,7 +107,7 @@ head.LazyFrame = head.DataFrame
 
 #' Take the last n rows
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param n Number of rows
 #' @param ... Not used
 #'
@@ -121,7 +121,7 @@ tail.LazyFrame = tail.DataFrame
 
 #' Get the dimensions
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #'
 #' @export
 #' @rdname S3_dim
@@ -133,7 +133,8 @@ dim.LazyFrame = function(x) c(NA, x$width)
 
 #' Get the length
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #'
 #' @export
 #' @rdname S3_length
@@ -149,7 +150,7 @@ length.Series = function(x) x$len()
 
 #' Get the column names
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #'
 #' @export
 #' @rdname S3_names
@@ -169,7 +170,7 @@ row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
 
 #' Get the row and column names
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #'
 #' @export
 #' @rdname S3_dimnames
@@ -181,8 +182,8 @@ dimnames.LazyFrame = function(x) list(NULL, names(x))
 
 #' Convert to a data.frame
 #'
-#' @param x A Polars DataFrame or LazyFrame
-#' @param ... Any arguments passed to `data.frame()`.
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
+#' @param ... Any arguments passed to [data.frame()].
 #'
 #' @export
 #' @rdname S3_as.data.frame
@@ -195,7 +196,7 @@ as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' Convert to a matrix
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -208,7 +209,8 @@ as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
 
 #' Compute the mean
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -225,7 +227,8 @@ mean.Series = function(x, ...) x$mean()
 
 #' Compute the median
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -245,7 +248,8 @@ median.Series = function(x, ...) x$median()
 
 #' Compute the minimum value
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -262,7 +266,8 @@ min.Series = function(x, ...) x$min()
 
 #' Compute the maximum value
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -279,7 +284,8 @@ max.Series = function(x, ...) x$max()
 
 #' Compute the sum
 #'
-#' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or
+#' [Series][Series_class]
 #' @param ... Not used.
 #'
 #' @export
@@ -374,7 +380,7 @@ c.Series = \(x, ...) {
 
 #' Drop missing values
 #'
-#' @param object A Polars DataFrame or LazyFrame
+#' @param object A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param subset Character vector of column names to drop missing values from.
 #' @param ... Not used.
 #'
@@ -404,7 +410,7 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
 
 #' Drop duplicated rows
 #'
-#' @param x A Polars DataFrame or LazyFrame
+#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param subset Character vector of column names to drop duplicated values from.
 #' @param keep Either `"first"`, `"last"`, or `"none"`.
 #' @param incomparables Not used.

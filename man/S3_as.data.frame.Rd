@@ -10,9 +10,9 @@
 \method{as.data.frame}{LazyFrame}(x, ...)
 }
 \arguments{
-\item{x}{A Polars DataFrame or LazyFrame}
+\item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
 
-\item{...}{Any arguments passed to \code{data.frame()}.}
+\item{...}{Any arguments passed to \code{\link[=data.frame]{data.frame()}}.}
 }
 \description{
 Convert to a data.frame

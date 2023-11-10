@@ -10,7 +10,7 @@
 \method{na.omit}{DataFrame}(object, subset = NULL, ...)
 }
 \arguments{
-\item{object}{A Polars DataFrame or LazyFrame}
+\item{object}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
 
 \item{subset}{Character vector of column names to drop missing values from.}
 

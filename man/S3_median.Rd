@@ -13,7 +13,8 @@
 \method{median}{Series}(x, ...)
 }
 \arguments{
-\item{x}{A Polars DataFrame, LazyFrame, or Series}
+\item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or
+\link[=Series_class]{Series}}
 
 \item{...}{Not used.}
 }

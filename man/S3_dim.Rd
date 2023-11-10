@@ -10,7 +10,7 @@
 \method{dim}{LazyFrame}(x)
 }
 \arguments{
-\item{x}{A Polars DataFrame or LazyFrame}
+\item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
 }
 \description{
 Get the dimensions
