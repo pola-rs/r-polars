@@ -1780,3 +1780,34 @@ DataFrame_write_csv = function(
     unwrap("in $write_csv():") |>
     invisible()
 }
+
+
+#' Write to JSON file
+#'
+#' @param file File path to which the result should be written. If set to `NULL`
+#' (default), the output is returned as a string instead.
+#' @param pretty Pretty serialize JSON.
+#' @param row_oriented Write to row-oriented JSON. This is slower, but more
+#' common.
+#'
+#' @return
+#' Returns a string if `file = NULL`, doesn't return anything otherwise.
+#'
+#' @rdname IO_write_json
+#'
+#' @examples
+#' dat = pl$DataFrame(mtcars)
+#'
+#' destination = tempfile(fileext = ".json")
+#' dat$select(pl$col("drat", "mpg"))$write_json(destination)
+#'
+#' pl$read_ndjson(destination)
+DataFrame_write_json = function(
+    file = NULL,
+    pretty = FALSE,
+    row_oriented = FALSE
+  ) {
+  .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
+    unwrap("in $write_json():") |>
+    invisible()
+}

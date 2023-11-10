@@ -487,6 +487,25 @@ impl DataFrame {
             .finish(&mut self.0.clone())
             .map_err(polars_to_rpolars_err)
     }
+
+    pub fn write_json(&mut self, file: Robj, pretty: Robj, row_oriented: Robj) -> RResult<()> {
+        let file = robj_to!(str, file)?;
+        let f = std::fs::File::create(file)?;
+        let r = match (robj_to!(bool, pretty)?, robj_to!(bool, row_oriented)?) {
+            (_, true) => pl::JsonWriter::new(f)
+                .with_json_format(pl::JsonFormat::Json)
+                .finish(&mut self.0)
+                .map_err(polars_to_rpolars_err),
+            (true, _) => serde_json::to_writer_pretty(f, &self.0)
+                .map_err(|e| pl::polars_err!(ComputeError: "{e}"))
+                .map_err(polars_to_rpolars_err),
+            (false, _) => serde_json::to_writer(f, &self.0)
+                .map_err(|e| pl::polars_err!(ComputeError: "{e}"))
+                .map_err(polars_to_rpolars_err),
+        };
+        r;
+        Ok(())
+    }
 }
 
 impl DataFrame {
