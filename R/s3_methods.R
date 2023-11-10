@@ -1,5 +1,13 @@
+#' Take a subset of rows and columns
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#' @param i Rows to select
+#' @param j Columns to select, either by index or by name.
+#' @param ... Not used.
+#' @param drop Convert to a Polars Series if only one column is selected.
+#'
 #' @export
-#' @noRd
+#' @rdname S3_subset
 `[.DataFrame` = function(x, i, j, ..., drop = TRUE) {
   # selecting `j` is usually faster, so we start here.
   if (!missing(j)) {
@@ -80,15 +88,21 @@
 }
 
 #' @export
-#' @noRd
+#' @rdname S3_subset
 `[.LazyFrame` = `[.DataFrame`
 
+#' Take the first n rows of a DataFrame or LazyFrame
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#' @param n Number of rows
+#' @param ... Not used
+#'
 #' @export
-#' @noRd
+#' @rdname S3_head
 head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
 
 #' @export
-#' @noRd
+#' @rdname S3_head
 head.LazyFrame = head.DataFrame
 
 #' @export
@@ -291,12 +305,13 @@ sum.LazyFrame = function(x, ...) x$sum()
 sum.Series = function(x, ...) x$sum()
 
 # Drop nulls from a LazyFrame
-#' @export
-#' @noRd
+#
 #' @param object LazyFrame
 #' @param subset Character vector of column names to drop nulls from
-#' @param ... Additional arguments are ignored.
+#'
 #' @importFrom stats na.omit
+#' @export
+#' @noRd
 #' @examples
 # 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 #' na.omit(df)

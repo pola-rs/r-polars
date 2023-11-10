@@ -64,7 +64,7 @@ rd2md = function(src) {
   for (i in seq_along(chunks)) {
     if (any(grepl("<h3>Usage</h3>", chunks[[i]], fixed = TRUE))) {
       # order is important
-      for (cl in c("DataFrame_", "Series_", "Expr_", "LazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_", "SQLContext_")) {
+      for (cl in c("DataFrame_", "Series_", "Expr_", "LazyFrame_", "LazyGroupBy_", "GroupBy_", "RField_", "SQLContext_", "S3_")) {
         chunks[[i]] = gsub(cl, paste0("&lt", sub("_$", "", cl), "&gt$"), chunks[[i]])
       }
     }
@@ -136,13 +136,14 @@ make_doc_hierarchy = function() {
     "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
     "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
     "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
-    "Expr", "IO", "RThreadHandle", "SQLContext"
+    "Expr", "IO", "RThreadHandle", "SQLContext", "S3"
   )
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)
     tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
     cl_label = ifelse(cl == "pl", "Polars", cl)
     cl_label = ifelse(cl == "IO", "Input/Output", cl_label)
+    cl_label = ifelse(cl == "S3", "S3 Methods", cl_label)
     out = append(out, setNames(list(tmp), cl_label))
     other = setdiff(other, files)
   }
