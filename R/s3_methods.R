@@ -181,8 +181,14 @@ dimnames.LazyFrame = function(x) list(NULL, names(x))
 
 #' Convert to a data.frame
 #'
-#' @param x A Polars LazyFrame
+#' @param x A Polars DataFrame or LazyFrame
+#' @param ... Any arguments passed to `data.frame()`.
 #'
+#' @export
+#' @rdname S3_as.data.frame
+as.data.frame.DataFrame = function(x, ...) x$to_data_frame(...)
+
+
 #' @export
 #' @rdname S3_as.data.frame
 as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
@@ -190,6 +196,7 @@ as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 #' Convert to a matrix
 #'
 #' @param x A Polars DataFrame or LazyFrame
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_as.matrix
@@ -202,6 +209,7 @@ as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
 #' Compute the mean
 #'
 #' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_mean
@@ -218,6 +226,7 @@ mean.Series = function(x, ...) x$mean()
 #' Compute the median
 #'
 #' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_median
@@ -237,6 +246,7 @@ median.Series = function(x, ...) x$median()
 #' Compute the minimum value
 #'
 #' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_min
@@ -253,6 +263,7 @@ min.Series = function(x, ...) x$min()
 #' Compute the maximum value
 #'
 #' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_max
@@ -269,6 +280,7 @@ max.Series = function(x, ...) x$max()
 #' Compute the sum
 #'
 #' @param x A Polars DataFrame, LazyFrame, or Series
+#' @param ... Not used.
 #'
 #' @export
 #' @rdname S3_sum
@@ -288,7 +300,7 @@ sum.Series = function(x, ...) x$sum()
 #'
 #' @export
 #' @rdname S3_as.vector
-as.vector.Series = function(x, mode) x$to_vector()
+as.vector.Series = function(x) x$to_vector()
 
 
 #' Convert to a character vector

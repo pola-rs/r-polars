@@ -892,19 +892,6 @@ DataFrame_to_data_frame = function(...) {
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
-# #' @rdname DataFrame_to_data_frame
-# #' @description to_data_frame is an alias
-# #' @keywords DataFrame
-# DataFrame_to_data_frame = DataFrame_to_data_frame
-
-#' @rdname DataFrame_to_data_frame
-#' @param x A DataFrame
-#'
-#' @return data.frame
-#' @export
-as.data.frame.DataFrame = function(x, ...) {
-  x$to_data_frame(...)
-}
 
 #' Return Polars DataFrame as a list of vectors
 #'

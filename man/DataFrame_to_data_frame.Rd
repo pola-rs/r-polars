@@ -2,22 +2,15 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{DataFrame_to_data_frame}
 \alias{DataFrame_to_data_frame}
-\alias{as.data.frame.DataFrame}
 \title{Return Polars DataFrame as R data.frame}
 \usage{
 DataFrame_to_data_frame(...)
-
-\method{as.data.frame}{DataFrame}(x, ...)
 }
 \arguments{
 \item{...}{Any args pased to \code{as.data.frame()}.}
-
-\item{x}{A DataFrame}
 }
 \value{
 An R data.frame
-
-data.frame
 }
 \description{
 Return Polars DataFrame as R data.frame

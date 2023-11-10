@@ -4,7 +4,7 @@
 \alias{as.vector.Series}
 \title{Convert to a vector}
 \usage{
-\method{as.vector}{Series}(x, mode)
+\method{as.vector}{Series}(x)
 }
 \arguments{
 \item{x}{A Polars Series}

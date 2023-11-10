@@ -11,6 +11,8 @@
 }
 \arguments{
 \item{x}{A Polars DataFrame or LazyFrame}
+
+\item{...}{Not used.}
 }
 \description{
 Convert to a matrix

@@ -14,6 +14,8 @@
 }
 \arguments{
 \item{x}{A Polars DataFrame, LazyFrame, or Series}
+
+\item{...}{Not used.}
 }
 \description{
 Compute the sum
