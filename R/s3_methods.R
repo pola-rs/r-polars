@@ -91,7 +91,7 @@
 #' @rdname S3_subset
 `[.LazyFrame` = `[.DataFrame`
 
-#' Take the first n rows of a DataFrame or LazyFrame
+#' Take the first n rows
 #'
 #' @param x A Polars DataFrame or LazyFrame
 #' @param n Number of rows
@@ -105,120 +105,201 @@ head.DataFrame = function(x, n = 6L, ...) x$limit(n = n)
 #' @rdname S3_head
 head.LazyFrame = head.DataFrame
 
+#' Take the last n rows
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#' @param n Number of rows
+#' @param ... Not used
+#'
 #' @export
-#' @noRd
+#' @rdname S3_tail
 tail.DataFrame = function(x, n = 6L, ...) x$tail(n = n)
 
 #' @export
-#' @noRd
+#' @rdname S3_tail
 tail.LazyFrame = tail.DataFrame
 
+#' Get the dimensions
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_dim
 dim.DataFrame = function(x) x$shape
 
 #' @export
-#' @noRd
+#' @rdname S3_dim
 dim.LazyFrame = function(x) c(NA, x$width)
 
+#' Get the length
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
 #' @export
-#' @noRd
+#' @rdname S3_length
 length.DataFrame = function(x) x$width
 
 #' @export
-#' @noRd
+#' @rdname S3_length
 length.LazyFrame = length.DataFrame
 
 #' @export
-#' @noRd
+#' @rdname S3_length
 length.Series = function(x) x$len()
 
+#' Get the column names
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_names
 names.DataFrame = function(x) x$columns
 
 #' @export
-#' @noRd
+#' @rdname S3_names
 names.LazyFrame = function(x) x$columns
 
+#' Get the row names
+#'
+#' @param x A Polars DataFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_rownames
 row.names.DataFrame = function(x) as.character(seq_len(nrow(x)))
 
+#' Get the row and column names
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_dimnames
 dimnames.DataFrame = function(x) list(row.names(x), names(x))
 
 #' @export
-#' @noRd
+#' @rdname S3_dimnames
 dimnames.LazyFrame = function(x) list(NULL, names(x))
 
+#' Convert to a data.frame
+#'
+#' @param x A Polars LazyFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_as.data.frame
 as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
+#' Convert to a matrix
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#'
 #' @export
-#' @noRd
+#' @rdname S3_as.matrix
 as.matrix.DataFrame = function(x, ...) as.matrix(x$to_data_frame(...))
 
 #' @export
-#' @noRd
+#' @rdname S3_as.matrix
 as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
 
+#' Compute the mean
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
 #' @export
-#' @noRd
+#' @rdname S3_mean
 mean.DataFrame = function(x, ...) x$mean()
 
 #' @export
-#' @noRd
+#' @rdname S3_mean
 mean.LazyFrame = function(x, ...) x$mean()
 
 #' @export
+#' @rdname S3_mean
+mean.Series = function(x, ...) x$mean()
+
+#' Compute the median
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
+#' @export
+#' @rdname S3_median
 #' @importFrom stats median
-#' @noRd
 median.DataFrame = function(x, ...) x$median()
 
 #' @export
 #' @importFrom stats median
-#' @noRd
+#' @rdname S3_median
 median.LazyFrame = function(x, ...) x$median()
 
 #' @export
-#' @noRd
+#' @importFrom stats median
+#' @rdname S3_median
+median.Series = function(x, ...) x$median()
+
+#' Compute the minimum value
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
+#' @export
+#' @rdname S3_min
 min.DataFrame = function(x, ...) x$min()
 
 #' @export
-#' @noRd
+#' @rdname S3_min
 min.LazyFrame = function(x, ...) x$min()
 
 #' @export
-#' @noRd
+#' @rdname S3_min
 min.Series = function(x, ...) x$min()
 
+#' Compute the maximum value
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
 #' @export
-#' @noRd
+#' @rdname S3_max
 max.DataFrame = function(x, ...) x$max()
 
 #' @export
-#' @noRd
+#' @rdname S3_max
 max.LazyFrame = function(x, ...) x$max()
 
 #' @export
-#' @noRd
+#' @rdname S3_max
+max.Series = function(x, ...) x$max()
+
+#' Compute the sum
+#'
+#' @param x A Polars DataFrame, LazyFrame, or Series
+#'
+#' @export
+#' @rdname S3_sum
+sum.DataFrame = function(x, ...) x$sum()
+
+#' @export
+#' @rdname S3_sum
+sum.LazyFrame = function(x, ...) x$sum()
+
+#' @export
+#' @rdname S3_sum
+sum.Series = function(x, ...) x$sum()
+
+#' Convert to a vector
+#'
+#' @param x A Polars Series
+#'
+#' @export
+#' @rdname S3_as.vector
 as.vector.Series = function(x, mode) x$to_vector()
 
 
-#' as.character for polars Series
-#' @param x Series
-#' @param ... Additional arguments are ignored.
-#' @param str_length an integer. If specified,
-#' utf8 or categorical type Series will be formatted to a string of this length.
-#' @return character vector
-#' @examples
-#' s = pl$Series(c("foo", "barbaz"))
-#' as.character(s)
-#' as.character(s, str_length = 3)
+#' Convert to a character vector
+#'
+#' @param x A Polars Series
+#' @param ... Not used.
+#' @param str_length An integer. If specified, utf8 or categorical type Series
+#' will be formatted to a string of this length.
+#'
 #' @export
+#' @rdname S3_as.character
 as.character.Series = function(x, ..., str_length = NULL) {
   if (is.numeric(str_length) && str_length > 0) {
     .pr$Series$to_fmt_char(x, str_length = str_length)
@@ -228,26 +309,23 @@ as.character.Series = function(x, ..., str_length = NULL) {
   }
 }
 
-
-#' Print Series
-#' @export
-#' @param x Series
-#' @param ... not used
-#' @keywords internal
-#' @name Series_print
-#' @noRd
+#' Print values
 #'
-#' @return invisible(self)
-#' @examples print(pl$Series(1:3))
+#' @param x A Polars Series
+#' @param ... Not used
+#'
+#' @rdname S3_print
+#' @export
 print.Series = function(x, ...) {
   cat("polars Series: ")
   x$print()
   invisible(x)
 }
 
-
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
+#' Auto complete $-access into a polars object
+#'
+#' Called by the interactive R session internally.
+#'
 #' @param x Series
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
@@ -259,17 +337,20 @@ print.Series = function(x, ...) {
   get_method_usages(Series, pattern = pattern)
 }
 
-#' Immutable combine series
-#' @param x a Series
-#' @param ... Series(s) or any object into Series meaning `pl$Series(object)` returns a series
+#' Combine to a Series
+#'
+#' @param x A Polars Series
+#' @param ... Series(s) or any object that can be converted to a Series.
+#'
 #' @return a combined Series
-#' @details append datatypes has to match. Combine does not rechunk.
-#' Read more about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
+#' @details
+#' All objects must have the same datatype. Combining does not rechunk. Read more
+#' about R vectors, Series and chunks in \code{\link[polars]{docs_translations}}:
 #' @examples
 #' s = c(pl$Series(1:5), 3:1, NA_integer_)
 #' s$chunk_lengths() # the series contain three unmerged chunks
 #' @export
-#' @noRd
+#' @rdname S3_c
 c.Series = \(x, ...) {
   l = list2(...)
   x = x$clone() # clone to retain an immutable api, append_mut is not immutable
@@ -279,41 +360,17 @@ c.Series = \(x, ...) {
   x
 }
 
-#' Length of series
-#' @param x a Series
-#' @return the length as a double
-#' @export
-#' @noRd
-length.Series = \(x) x$len()
-
-
-
-#' @export
-#' @noRd
-max.Series = function(x, ...) x$max()
-
-#' @export
-#' @noRd
-sum.DataFrame = function(x, ...) x$sum()
-
-#' @export
-#' @noRd
-sum.LazyFrame = function(x, ...) x$sum()
-
-#' @export
-#' @noRd
-sum.Series = function(x, ...) x$sum()
-
-# Drop nulls from a LazyFrame
-#
-#' @param object LazyFrame
-#' @param subset Character vector of column names to drop nulls from
+#' Drop missing values
+#'
+#' @param object A Polars DataFrame or LazyFrame
+#' @param subset Character vector of column names to drop missing values from.
+#' @param ... Not used.
 #'
 #' @importFrom stats na.omit
 #' @export
-#' @noRd
+#' @rdname S3_na.omit
 #' @examples
-# 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
+#' df = pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))$lazy()
 #' na.omit(df)
 #' na.omit(df, subset = "a")
 #' na.omit(df, subset = c("a", "b"))
@@ -324,18 +381,8 @@ na.omit.LazyFrame = function(object, subset = NULL, ...) {
   object$drop_nulls(subset)
 }
 
-#' Drop nulls from a DataFrame
 #' @export
-#' @noRd
-#' @param object DataFrame
-#' @param subset Character vector of column names to drop nulls from
-#' @param ... Additional arguments are ignored.
-#' @importFrom stats na.omit
-#' @examples
-# 'df <- pl$DataFrame(data.frame(a = c(NA, 2:10), b = c(1, NA, 3:10)))
-#' na.omit(df)
-#' na.omit(df, subset = "a")
-#' na.omit(df, subset = c("a", "b"))
+#' @rdname S3_na.omit
 na.omit.DataFrame = function(object, subset = NULL, ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
@@ -343,15 +390,16 @@ na.omit.DataFrame = function(object, subset = NULL, ...) {
   object$drop_nulls(subset)
 }
 
-
-#' Drop duplicate rows from this dataframe.
+#' Drop duplicated rows
+#'
+#' @param x A Polars DataFrame or LazyFrame
+#' @param subset Character vector of column names to drop duplicated values from.
+#' @param keep Either `"first"`, `"last"`, or `"none"`.
+#' @param incomparables Not used.
+#' @param ... Not used.
+#'
 #' @export
-#' @noRd
-#' @param x DataFrame
-#' @param subset Character vector of column names to drop nulls from
-#' @param keep string: "first", "last", or "none".
-#' @param incomparables: Not used. Here for S3 method consistency.
-#' @param ... Additional arguments are ignored.
+#' @rdname S3_unique
 #' @examples
 #' df = pl$DataFrame(
 #'   x = as.numeric(c(1, 1:5)),
@@ -366,22 +414,8 @@ unique.DataFrame = function(x, incomparables = FALSE, subset = NULL, keep = "fir
   x$unique(subset = subset, keep = keep)
 }
 
-
-#' Drop duplicate rows from this dataframe.
 #' @export
-#' @noRd
-#' @param x LazyFrame
-#' @param subset Character vector of column names to drop nulls from
-#' @param keep string: "first", "last", or "none".
-#' @param incomparables: Not used. Here for S3 method consistency.
-#' @param ... Additional arguments are ignored.
-#' @examples
-#' df = pl$DataFrame(
-#'   x = as.numeric(c(1, 1:5)),
-#'   y = as.numeric(c(1, 1:5)),
-#'   z = as.numeric(c(1, 1, 1:4))
-#' )$lazy()
-#' unique(df)$collect()
+#' @rdname S3_unique
 unique.LazyFrame = function(x, incomparables = FALSE, subset = NULL, keep = "first", ...) {
   if (!is.null(subset) && !is.atomic(subset) && !is.character(subset)) {
     stop("subset must be NULL, a string, or a character vector")
