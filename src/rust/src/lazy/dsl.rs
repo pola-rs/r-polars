@@ -1,6 +1,6 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_closed_window_opts, new_null_behavior, new_rank_method,
+    literal_to_any_value, new_null_behavior, new_rank_method,
     new_rolling_cov_options, robj_to_timeunit, DataTypeVector, RPolarsDataType,
 };
 use crate::robj_to;
@@ -2380,7 +2380,7 @@ impl Expr {
         let index_column = robj_to!(String, index_column)?.into();
         let period = Duration::parse(robj_to!(str, period)?);
         let offset = Duration::parse(robj_to!(str, offset)?);
-        let closed_window = new_closed_window_opts(closed)?;
+        let closed_window = robj_to!(ClosedWindow, closed)?;
         let check_sorted = robj_to!(bool, check_sorted)?;
 
         let options = RollingGroupOptions {
