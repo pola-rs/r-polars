@@ -493,15 +493,14 @@ impl DataFrame {
         match (robj_to!(bool, pretty)?, robj_to!(bool, row_oriented)?) {
             (_, true) => pl::JsonWriter::new(f)
                 .with_json_format(pl::JsonFormat::Json)
-                .finish(&mut self.0)
-                .map_err(polars_to_rpolars_err),
+                .finish(&mut self.0),
             (true, _) => serde_json::to_writer_pretty(f, &self.0)
-                .map_err(|e| pl::polars_err!(ComputeError: "{e}"))
-                .map_err(polars_to_rpolars_err),
-            (false, _) => serde_json::to_writer(f, &self.0)
-                .map_err(|e| pl::polars_err!(ComputeError: "{e}"))
-                .map_err(polars_to_rpolars_err),
+                .map_err(|e| pl::polars_err!(ComputeError: "{e}")),
+            (false, _) => {
+                serde_json::to_writer(f, &self.0).map_err(|e| pl::polars_err!(ComputeError: "{e}"))
+            }
         }
+        .map_err(polars_to_rpolars_err)
     }
 
     pub fn write_ndjson(&mut self, file: Robj) -> RResult<()> {
