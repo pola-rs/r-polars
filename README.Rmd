@@ -126,7 +126,6 @@ install.packages(
 
 ### Build from source
 
-````{asis, echo = file.exists("tools/lib-sums.tsv")}
 For source installation, pre-built Rust libraries may be available
 if the environment variable `NOT_CRAN` is set to `"true"`. (Or, set `LIBR_POLARS_BUILD` to `"false"`)
 
@@ -134,7 +133,6 @@ if the environment variable `NOT_CRAN` is set to `"true"`. (Or, set `LIBR_POLARS
 Sys.setenv(NOT_CRAN = "true")
 install.packages("polars", repos = "https://rpolars.r-universe.dev")
 ```
-````
 
 Otherwise, the Rust library will be built from source.
 the Rust toolchain (Rust `r RcppTOML::parseTOML("src/rust/Cargo.toml")$package$"rust-version"` or later) must be configured.
