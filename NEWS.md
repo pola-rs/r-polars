@@ -2,10 +2,12 @@
 
 ## What's changed
 
-- The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take 
+- The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take
   the value `"never"` (#483).
 - `pl$DataFrame()` now errors if the variables specified in `schema` do not exist
   in the data (#486).
+- S3 methods for base R functions are well documented (#494).
+- A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
 
 # polars 0.10.0
 
@@ -48,7 +50,7 @@
   an Expr (#462).
 - New methods `$read_ndjson()` and `$scan_ndjson()` (#471).
 - New method `$with_context()` for `LazyFrame` to have access to columns from
-  other Data/LazyFrames during the computation.
+  other Data/LazyFrames during the computation (#475).
 
 # polars 0.9.0
 
