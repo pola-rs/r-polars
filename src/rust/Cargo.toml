@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.34.1"
+version = "0.34.2"
 edition = "2021"
 rust-version = "1.73"
 publish = false
