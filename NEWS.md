@@ -6,6 +6,7 @@
   the value `"never"` (#483).
 - `pl$DataFrame()` now errors if the variables specified in `schema` do not exist
   in the data (#486).
+- New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 
 # polars 0.10.0
 

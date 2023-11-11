@@ -1784,30 +1784,56 @@ DataFrame_write_csv = function(
 
 #' Write to JSON file
 #'
-#' @param file File path to which the result should be written. If set to `NULL`
-#' (default), the output is returned as a string instead.
+#' @param file File path to which the result should be written.
 #' @param pretty Pretty serialize JSON.
 #' @param row_oriented Write to row-oriented JSON. This is slower, but more
 #' common.
 #'
 #' @return
-#' Returns a string if `file = NULL`, doesn't return anything otherwise.
+#' This doesn't return anything.
 #'
 #' @rdname IO_write_json
 #'
 #' @examples
-#' dat = pl$DataFrame(mtcars)
+#' if (require("jsonlite", quiet = TRUE)) {
+#'   dat = pl$DataFrame(head(mtcars))
+#'   destination = tempfile()
 #'
-#' destination = tempfile(fileext = ".json")
-#' dat$select(pl$col("drat", "mpg"))$write_json(destination)
+#'   dat$select(pl$col("drat", "mpg"))$write_json(destination)
+#'   jsonlite::fromJSON(destination)
 #'
-#' pl$read_ndjson(destination)
+#'   dat$select(pl$col("drat", "mpg"))$write_json(destination, row_oriented = TRUE)
+#'   jsonlite::fromJSON(destination)
+#' }
+
 DataFrame_write_json = function(
-    file = NULL,
+    file,
     pretty = FALSE,
     row_oriented = FALSE
   ) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
     unwrap("in $write_json():") |>
+    invisible()
+}
+
+#' Write to NDJSON file
+#'
+#' @inheritParams DataFrame_write_json
+#'
+#' @return
+#' This doesn't return anything.
+#'
+#' @rdname IO_write_ndjson
+#'
+#' @examples
+#' dat = pl$DataFrame(head(mtcars))
+#'
+#' destination = tempfile()
+#' dat$select(pl$col("drat", "mpg"))$write_ndjson(destination)
+#'
+#' pl$read_ndjson(destination)
+DataFrame_write_ndjson = function(file) {
+  .pr$DataFrame$write_ndjson(self, file) |>
+    unwrap("in $write_ndjson():") |>
     invisible()
 }

@@ -197,6 +197,8 @@ DataFrame$write_csv <- function(path, has_header, separator, line_terminator, qu
 
 DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__DataFrame__write_json, self, file, pretty, row_oriented)
 
+DataFrame$write_ndjson <- function(file) .Call(wrap__DataFrame__write_ndjson, self, file)
+
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
