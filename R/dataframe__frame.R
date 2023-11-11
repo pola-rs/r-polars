@@ -1805,7 +1805,6 @@ DataFrame_write_csv = function(
 #'   dat$select(pl$col("drat", "mpg"))$write_json(destination, row_oriented = TRUE)
 #'   jsonlite::fromJSON(destination)
 #' }
-
 DataFrame_write_json = function(
     file,
     pretty = FALSE,
