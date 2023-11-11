@@ -1,5 +1,7 @@
 # polars (development version)
 
+# polars 0.10.1
+
 ## What's changed
 
 - The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take
