@@ -16,7 +16,7 @@ pre.r-example {
 }
 
 .md-typeset code {
-  font-size: 0.8rem;
+  font-size: inherit;
 }
 
 .md-typeset h2 > code {
