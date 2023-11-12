@@ -71,7 +71,7 @@ pl$concat = function(
     unwrap("in pl$concat()")
 
   first = l[[1L]]
-  eager = inherits(first, "DataFrame")
+  eager = !inherits(first, "LazyFrame")
   args_modified = names(as.list(sys.call()[-1L]))
 
   # check not using any mixing of types which could lead to implicit collect
