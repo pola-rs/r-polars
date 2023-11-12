@@ -60,23 +60,18 @@ pl$concat = function(
     how = c("vertical", "horizontal", "diagonal"),
     parallel = TRUE,
     to_supertypes = FALSE) {
-  # unpack arg list
   l = unpack_list(..., skip_classes = "data.frame")
 
-  # nothing becomes NULL
   if (length(l) == 0L) {
     return(NULL)
   }
-
-  ## Check inputs
-  how_args = c("vertical", "horizontal", "diagonal") # , "vertical_relaxed", "diangonal_relaxed")
-
+  how_args = c("vertical", "horizontal", "diagonal")
   how = match.arg(how[1L], how_args) |>
     result() |>
     unwrap("in pl$concat()")
 
   first = l[[1L]]
-  eager = !inherits(first, "LazyFrame")
+  eager = inherits(first, "DataFrame")
   args_modified = names(as.list(sys.call()[-1L]))
 
   # check not using any mixing of types which could lead to implicit collect
@@ -149,35 +144,36 @@ pl$concat = function(
 }
 
 
-#' new date_range
+#' New date range
 #' @name pl_date_range
 #' @param start POSIXt or Date preferably with time_zone or double or integer
-#' @param end POSIXt or Date preferably with time_zone or double or integer. If end is and
-#' interval are missing, then single datetime is constructed.
-#' @param interval string pl_duration or R difftime. Can be missing if end is missing also.
-#' @param eager  bool, if FALSE (default) return `Expr` else evaluate `Expr` to `Series`
-#' @param closed option one of 'both'(default), 'left', 'none' or 'right'
-#' @param name name of series
-#' @param time_unit option string ("ns" "us" "ms") duration of one int64 value on polars side
-#' @param time_zone optional string describing a timezone.
-#' @param explode if TRUE (default) all created ranges will be "unlisted" into on column, if FALSE
-#' output will be a list of ranges.
+#' @param end POSIXt or Date preferably with time_zone or double or integer. If
+#' `end` and `interval` are missing, then a single datetime is constructed.
+#' @param interval String, a Polars `duration` or R [difftime()]. Can be missing
+#' if `end` is missing also.
+#' @param eager If `FALSE` (default), return an `Expr`. Otherwise, returns a
+#' `Series`.
+#' @param closed One of `"both"` (default), `"left"`, `"none"` or `"right"`.
+#' @param time_unit String (`"ns"`, `"us"`, `"ms"`) or integer.
+#' @param time_zone String describing a timezone. If `NULL` (default), `"GMT` is
+#' used.
+#' @param explode If `TRUE` (default), all created ranges will be "unlisted"
+#' into a column. Otherwise, output will be a list of ranges.
 #'
 #' @details
-#' If param time_zone is not defined the Series will have no time zone.
+#' If param `time_zone` is not defined the Series will have no time zone.
 #'
-#' NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
-#' intuitive in R. It is recommended to always set the timezone of start and end. If not output will
-#' vary between local machine timezone, R and polars.
+#' Note that R POSIXt without defined timezones (tzone/tz), so-called naive
+#' datetimes, are counter intuitive in R. It is recommended to always set the
+#' timezone of start and end. If not output will vary between local machine
+#' timezone, R and polars.
 #'
-#' In R/r-polars it is perfectly fine to mix timezones of params time_zone, start and end.
+#' In R/r-polars it is perfectly fine to mix timezones of params `time_zone`,
+#' `start` and `end`.
 #'
-#'
-#' @return a datetime
-#' @keywords functions ExprDT
+#' @return A datetime
 #'
 #' @examples
-#'
 #' # All in GMT, straight forward, no mental confusion
 #' s_gmt = pl$date_range(
 #'   as.POSIXct("2022-01-01", tz = "GMT"),
@@ -185,16 +181,16 @@ pl$concat = function(
 #'   interval = "6h", time_unit = "ms", time_zone = "GMT"
 #' )
 #' s_gmt
-#' s_gmt$to_r() # printed same way in R and polars becuase tagged with a time_zone/tzone
+#' s_gmt$to_r()
 #'
-#' # polars assumes any input in GMT if time_zone = NULL, set GMT on start end to see same print
+#' # polars uses "GMT" if time_zone = NULL
 #' s_null = pl$date_range(
 #'   as.POSIXct("2022-01-01", tz = "GMT"),
 #'   as.POSIXct("2022-01-02", tz = "GMT"),
 #'   interval = "6h", time_unit = "ms", time_zone = NULL
 #' )
-#' s_null$to_r() # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
-#'
+#' # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone
+#' s_null$to_r()
 #'
 #' # use of ISOdate
 #' t1 = ISOdate(2022, 1, 1, 0) # preset GMT
@@ -202,22 +198,18 @@ pl$concat = function(
 #' pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
 #'
 pl$date_range = function(
-    start, # : date | datetime |# for lazy  pli.Expr | str,
-    end, # : date | datetime | pli.Expr | str,
-    interval, # : str | timedelta,
-    eager = FALSE, # : Literal[True],
-    closed = "both", # : ClosedInterval = "both",
-    name = NULL, # : str | None = None,
+    start,
+    end,
+    interval,
+    eager = FALSE,
+    closed = "both",
     time_unit = "us",
-    time_zone = NULL, # : str | None = None
+    time_zone = NULL,
     explode = TRUE) {
   if (missing(end)) {
     end = start
     interval = "1h"
   }
-
-  if (!is.null(name)) warning("arg name is deprecated use $alias() instead")
-  name = name %||% ""
 
   f_eager_eval = \(lit) {
     if (isTRUE(eager)) {
@@ -276,26 +268,27 @@ difftime_to_pl_duration = function(dft) {
 
 #' Polars raw list
 #' @description
-#' create an "rpolars_raw_list", which is an R list where all elements must be an R raw or NULL.
+#' Create an "rpolars_raw_list", which is an R list where all elements must be
+#' an R raw or `NULL`.
 #' @name pl_raw_list
-#' @param ... elements
+#' @param ... Elements
 #' @details
-#' In R raw can contain a binary sequence of bytes, and the length is the number of bytes.
-#' In polars a Series of DataType [Binary][pl_dtypes] is more like a vector of vectors of bytes and missings
-#' 'Nulls' is allowed, similar to R NAs in vectors.
+#' In R, raw can contain a binary sequence of bytes, and the length is the number
+#' of bytes. In polars a Series of DataType [Binary][pl_dtypes] is more like a
+#' vector of vectors of bytes where missing values are allowed, similar to how
+#' `NA`s can be present in vectors.
 #'
-#' To ensure correct round-trip conversion r-polars uses an R list where any elements must be
-#' raw or NULL(encodes missing), and the S3 class is c("rpolars_raw_list","list").
+#' To ensure correct round-trip conversion, r-polars uses an R list where any
+#' elements must be raw or `NULL` (encoded as missing), and the S3 class is
+#' `c("rpolars_raw_list","list")`.
 #'
-#' @return an R list where any elements must be raw, and the S3 class is
-#' c("rpolars_raw_list","list").
+#' @return An R list where any elements must be raw, and the S3 class is
+#' `c("rpolars_raw_list","list")`.
 #' @keywords functions
 #'
 #' @examples
-#'
-#' # craete a rpolars_raw_list
+#' # create a rpolars_raw_list
 #' raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
-#'
 #'
 #' # pass it to Series or lit
 #' pl$Series(raw_list)
@@ -305,12 +298,12 @@ difftime_to_pl_duration = function(dft) {
 #' pl$Series(raw_list)$to_r()
 #'
 #'
-#' # NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
+#' # NB: a plain list of raws yield a polars Series of DateType [list[Binary]]
+#' # which is not the same
 #' pl$Series(list(raw(1), raw(2)))
 #'
 #' # to regular list, use as.list or unclass
 #' as.list(raw_list)
-#'
 pl$raw_list = function(...) {
   l = list2(...)
   if (any(!sapply(l, is.raw) & !sapply(l, is.null))) {
@@ -322,11 +315,11 @@ pl$raw_list = function(...) {
 }
 
 
-#' subset polars raw list
+#' Subset polars raw list
 #' @rdname pl_raw_list
+#' @param x A `rpolars_raw_list` object created with `pl$raw_list()`
+#' @param index Elements to select
 #' @export
-#' @param x rpolars_raw_list list
-#' @param index elements to get subset
 #' @examples
 #' # subsetting preserves class
 #' pl$raw_list(NULL, raw(2), raw(3))[1:2]
@@ -336,11 +329,10 @@ pl$raw_list = function(...) {
   x
 }
 
-#' coerce polars raw list to list
+#' Coerce polars raw list to R list
 #' @rdname pl_raw_list
+#' @param x A `rpolars_raw_list` object created with `pl$raw_list()`
 #' @export
-#' @details the same as unclass(x)
-#' @param x rpolars_raw_list list
 #' @examples
 #' # to regular list, use as.list or unclass
 #' pl$raw_list(NULL, raw(2), raw(3)) |> as.list()

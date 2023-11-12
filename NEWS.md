@@ -3,6 +3,7 @@
 ## What's changed
 
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
+- Removed argument `name` in `pl$date_range()`, which was deprecated for a while.
 
 # polars 0.10.1
 
