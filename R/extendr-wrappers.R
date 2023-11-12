@@ -129,6 +129,8 @@ DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
 DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
 
+DataFrame$drop_all_in_place <- function() invisible(.Call(wrap__DataFrame__drop_all_in_place, self))
+
 DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_with_capacity, capacity)
 
 DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__set_column_from_robj, self, robj, name)
