@@ -493,38 +493,6 @@ DataFrame_schema = method_as_property(function() {
 })
 
 
-
-#
-DataFrameCompareToOtherDF = function(self, other, op) {
-  stop("not done yet")
-  #    """Compare a DataFrame with another DataFrame."""
-  if (!identical(self$columns, other$columns)) stop("DataFrame columns do not match")
-  if (!identical(self$shape, other$shape)) stop("DataFrame dimensions do not match")
-
-  suffix = "__POLARS_CMP_OTHER"
-  other_renamed = other$select(pl$all()$suffix(suffix))
-  # combined = concat([self, other_renamed], how="horizontal")
-
-  # if op == "eq":
-  #   expr = [pli.col(n) == pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "neq":
-  #   expr = [pli.col(n) != pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "gt":
-  #   expr = [pli.col(n) > pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "lt":
-  #   expr = [pli.col(n) < pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "gt_eq":
-  #   expr = [pli.col(n) >= pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "lt_eq":
-  #   expr = [pli.col(n) <= pli.col(f"{n}{suffix}") for n in self.columns]
-  # else:
-  #   raise ValueError(f"got unexpected comparison operator: {op}")
-  #
-  # return combined.select(expr)
-}
-
-
-
 #' Convert an existing DataFrame to a LazyFrame
 #' @name DataFrame_lazy
 #' @description Start a new lazy query from a DataFrame.
