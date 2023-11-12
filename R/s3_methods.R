@@ -318,6 +318,10 @@ as.vector.Series = function(x, mode) x$to_vector()
 #'
 #' @export
 #' @rdname S3_as.character
+#' @examples
+#' s = pl$Series(c("foo", "barbaz"))
+#' as.character(s)
+#' as.character(s, str_length = 3)
 as.character.Series = function(x, ..., str_length = NULL) {
   if (is.numeric(str_length) && str_length > 0) {
     .pr$Series$to_fmt_char(x, str_length = str_length)
