@@ -1,7 +1,7 @@
 # sink_csv: null_values works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       mpg,cyl,disp,hp,drat,wt,qsec,vs,am,gear,carb
       21.0,6.0,hello,hello,hello,2.62,16.46,0.0,1.0,4.0,4.0
@@ -23,7 +23,7 @@
 # sink_csv: separator works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       mpg|cyl|disp|hp|drat|wt|qsec|vs|am|gear|carb
       21.0|6.0||||2.62|16.46|0.0|1.0|4.0|4.0
@@ -45,7 +45,7 @@
 # sink_csv: quote_style quote_style=necessary
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       a,b,c
       """foo""",1,a
@@ -54,7 +54,7 @@
 # sink_csv: quote_style quote_style=always
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       "a","b","c"
       """foo""","1","a"
@@ -63,7 +63,7 @@
 # sink_csv: quote_style quote_style=non_numeric
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       "a","b","c"
       """foo""",1,"a"
@@ -72,7 +72,7 @@
 # sink_csv: quote_style quote_style=never
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       a,b,c
       "foo",1,a
@@ -81,7 +81,7 @@
 # sink_csv: date_format works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       date
       2020
@@ -92,7 +92,7 @@
 ---
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       date
       01/01/2020
@@ -103,7 +103,7 @@
 # sink_csv: datetime_format works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       date
       00h00m - 01/01/2020
@@ -115,7 +115,7 @@
 # sink_csv: time_format works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       date
       00h00m00s
@@ -126,7 +126,7 @@
 # sink_csv: float_precision works
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       x
       1.2
@@ -135,7 +135,7 @@
 ---
 
     Code
-      cat(readLines(path), sep = "\n")
+      cat(readLines(path, warn = FALSE), sep = "\n")
     Output
       x
       1.234

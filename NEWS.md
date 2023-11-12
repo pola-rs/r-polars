@@ -1,5 +1,9 @@
 # polars (development version)
 
+## What's changed
+
+- New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
+
 # polars 0.10.1
 
 ## What's changed
