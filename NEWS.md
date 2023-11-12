@@ -1,5 +1,9 @@
 # polars (development version)
 
+## What's changed
+
+- New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
+
 # polars 0.10.1
 
 ## What's changed
@@ -10,7 +14,6 @@
   in the data (#486).
 - S3 methods for base R functions are well documented (#494).
 - A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
-- New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 
 # polars 0.10.0
 
