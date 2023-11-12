@@ -2,45 +2,47 @@
 % Please edit documentation in R/functions__eager.R
 \name{pl_date_range}
 \alias{pl_date_range}
-\title{new date_range}
+\title{New date range}
 \arguments{
 \item{start}{POSIXt or Date preferably with time_zone or double or integer}
 
-\item{end}{POSIXt or Date preferably with time_zone or double or integer. If end is and
-interval are missing, then single datetime is constructed.}
+\item{end}{POSIXt or Date preferably with time_zone or double or integer. If
+\code{end} and \code{interval} are missing, then a single datetime is constructed.}
 
-\item{interval}{string pl_duration or R difftime. Can be missing if end is missing also.}
+\item{interval}{String, a Polars \code{duration} or R \code{\link[=difftime]{difftime()}}. Can be missing
+if \code{end} is missing also.}
 
-\item{eager}{bool, if FALSE (default) return \code{Expr} else evaluate \code{Expr} to \code{Series}}
+\item{eager}{If \code{FALSE} (default), return an \code{Expr}. Otherwise, returns a
+\code{Series}.}
 
-\item{closed}{option one of 'both'(default), 'left', 'none' or 'right'}
+\item{closed}{One of \code{"both"} (default), \code{"left"}, \code{"none"} or \code{"right"}.}
 
-\item{name}{name of series}
+\item{time_unit}{String (\code{"ns"}, \code{"us"}, \code{"ms"}) or integer.}
 
-\item{time_unit}{option string ("ns" "us" "ms") duration of one int64 value on polars side}
+\item{time_zone}{String describing a timezone. If \code{NULL} (default), \verb{"GMT} is
+used.}
 
-\item{time_zone}{optional string describing a timezone.}
-
-\item{explode}{if TRUE (default) all created ranges will be "unlisted" into on column, if FALSE
-output will be a list of ranges.}
+\item{explode}{If \code{TRUE} (default), all created ranges will be "unlisted"
+into a column. Otherwise, output will be a list of ranges.}
 }
 \value{
-a datetime
+A datetime
 }
 \description{
-new date_range
+New date range
 }
 \details{
-If param time_zone is not defined the Series will have no time zone.
+If param \code{time_zone} is not defined the Series will have no time zone.
 
-NOTICE: R POSIXt without defined timezones(tzone/tz), so called naive datetimes, are counter
-intuitive in R. It is recommended to always set the timezone of start and end. If not output will
-vary between local machine timezone, R and polars.
+Note that R POSIXt without defined timezones (tzone/tz), so-called naive
+datetimes, are counter intuitive in R. It is recommended to always set the
+timezone of start and end. If not output will vary between local machine
+timezone, R and polars.
 
-In R/r-polars it is perfectly fine to mix timezones of params time_zone, start and end.
+In R/r-polars it is perfectly fine to mix timezones of params \code{time_zone},
+\code{start} and \code{end}.
 }
 \examples{
-
 # All in GMT, straight forward, no mental confusion
 s_gmt = pl$date_range(
   as.POSIXct("2022-01-01", tz = "GMT"),
@@ -48,16 +50,16 @@ s_gmt = pl$date_range(
   interval = "6h", time_unit = "ms", time_zone = "GMT"
 )
 s_gmt
-s_gmt$to_r() # printed same way in R and polars becuase tagged with a time_zone/tzone
+s_gmt$to_r()
 
-# polars assumes any input in GMT if time_zone = NULL, set GMT on start end to see same print
+# polars uses "GMT" if time_zone = NULL
 s_null = pl$date_range(
   as.POSIXct("2022-01-01", tz = "GMT"),
   as.POSIXct("2022-01-02", tz = "GMT"),
   interval = "6h", time_unit = "ms", time_zone = NULL
 )
-s_null$to_r() # back to R POSIXct. R prints non tzone tagged POSIXct in local timezone.
-
+# back to R POSIXct. R prints non tzone tagged POSIXct in local timezone
+s_null$to_r()
 
 # use of ISOdate
 t1 = ISOdate(2022, 1, 1, 0) # preset GMT
@@ -65,5 +67,3 @@ t2 = ISOdate(2022, 1, 2, 0) # preset GMT
 pl$date_range(t1, t2, interval = "4h", time_unit = "ms", time_zone = "GMT")$to_r()
 
 }
-\keyword{ExprDT}
-\keyword{functions}
