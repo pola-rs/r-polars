@@ -92,7 +92,7 @@ pl$read_parquet = function(
     low_memory = FALSE,
     hive_partitioning = TRUE) {
   mc = match.call()
-  mc[[1]] = pl$scan_parquet
+  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_parquet
   result(eval(mc)$collect()) |>
     unwrap("in pl$read_parquet(): ")
 }
