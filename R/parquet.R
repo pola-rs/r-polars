@@ -62,7 +62,6 @@ pl$scan_parquet = function(
     unwrap("in pl$scan_parquet(): ")
 }
 
-
 #' Read a parquet file
 #' @rdname IO_read_parquet
 #' @param file string filepath
@@ -91,19 +90,10 @@ pl$read_parquet = function(
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE,
     hive_partitioning = TRUE) {
-  mc = match.call()
-  mc[[1]] = get("pl", envir = asNamespace("polars"))$scan_parquet
-  result(eval(mc)$collect()) |>
+
+  args = as.list(environment())
+  result({
+    do.call(pl$scan_parquet, args)$collect()
+  }) |>
     unwrap("in pl$read_parquet(): ")
 }
-
-
-#
-# def _prepare_row_count_args(
-#   row_count_name: str | None = None,
-#   row_count_offset: int = 0,
-# ) -> tuple[str, int] | None:
-#   if row_count_name is not None:
-#   return (row_count_name, row_count_offset)
-# else:
-#   return None

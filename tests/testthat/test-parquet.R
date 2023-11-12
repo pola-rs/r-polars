@@ -1,10 +1,13 @@
-tmpf = tempfile()
-on.exit(unlink(tmpf))
-lf_exp = pl$LazyFrame(mtcars)
-lf_exp$sink_parquet(tmpf, compression = "snappy")
-df_exp = lf_exp$collect()$to_data_frame()
+
 
 test_that("scan read parquet", {
+
+  tmpf = tempfile()
+  on.exit(unlink(tmpf))
+  lf_exp = pl$LazyFrame(mtcars)
+  lf_exp$sink_parquet(tmpf, compression = "snappy")
+  df_exp = lf_exp$collect()$to_data_frame()
+
   # simple scan
   expect_identical(
     pl$scan_parquet(tmpf)$collect()$to_data_frame(),
