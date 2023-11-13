@@ -11,34 +11,33 @@
 \method{as.list}{rpolars_raw_list}(x, ...)
 }
 \arguments{
-\item{x}{rpolars_raw_list list}
+\item{x}{A \code{rpolars_raw_list} object created with \code{pl$raw_list()}}
 
-\item{index}{elements to get subset}
+\item{index}{Elements to select}
 
-\item{...}{elements}
+\item{...}{Elements}
 }
 \value{
-an R list where any elements must be raw, and the S3 class is
-c("rpolars_raw_list","list").
+An R list where any elements must be raw, and the S3 class is
+\code{c("rpolars_raw_list","list")}.
 }
 \description{
-create an "rpolars_raw_list", which is an R list where all elements must be an R raw or NULL.
+Create an "rpolars_raw_list", which is an R list where all elements must be
+an R raw or \code{NULL}.
 }
 \details{
-In R raw can contain a binary sequence of bytes, and the length is the number of bytes.
-In polars a Series of DataType \link[=pl_dtypes]{Binary} is more like a vector of vectors of bytes and missings
-'Nulls' is allowed, similar to R NAs in vectors.
+In R, raw can contain a binary sequence of bytes, and the length is the number
+of bytes. In polars a Series of DataType \link[=pl_dtypes]{Binary} is more like a
+vector of vectors of bytes where missing values are allowed, similar to how
+\code{NA}s can be present in vectors.
 
-To ensure correct round-trip conversion r-polars uses an R list where any elements must be
-raw or NULL(encodes missing), and the S3 class is c("rpolars_raw_list","list").
-
-the same as unclass(x)
+To ensure correct round-trip conversion, r-polars uses an R list where any
+elements must be raw or \code{NULL} (encoded as missing), and the S3 class is
+\code{c("rpolars_raw_list","list")}.
 }
 \examples{
-
-# craete a rpolars_raw_list
+# create a rpolars_raw_list
 raw_list = pl$raw_list(raw(1), raw(3), charToRaw("alice"), NULL)
-
 
 # pass it to Series or lit
 pl$Series(raw_list)
@@ -48,12 +47,12 @@ pl$lit(raw_list)
 pl$Series(raw_list)$to_r()
 
 
-# NB a plain list of raws yield a polars Series of DateType [list[Binary]] which is not the same
+# NB: a plain list of raws yield a polars Series of DateType [list[Binary]]
+# which is not the same
 pl$Series(list(raw(1), raw(2)))
 
 # to regular list, use as.list or unclass
 as.list(raw_list)
-
 # subsetting preserves class
 pl$raw_list(NULL, raw(2), raw(3))[1:2]
 # to regular list, use as.list or unclass
