@@ -2,22 +2,21 @@
 % Please edit documentation in R/Field.R
 \name{print.RField}
 \alias{print.RField}
-\title{Print a polars Field}
+\title{S3 method to print a Field}
 \usage{
 \method{print}{RField}(x, ...)
 }
 \arguments{
-\item{x}{DataType}
+\item{x}{An object of type \code{"RField"}}
 
-\item{...}{not used}
+\item{...}{Not used.}
 }
 \value{
-self
+No value returned, it prints in the console.
 }
 \description{
-Print a polars Field
+S3 method to print a Field
 }
 \examples{
 print(pl$Field("foo", pl$List(pl$UInt64)))
 }
-\keyword{internal}

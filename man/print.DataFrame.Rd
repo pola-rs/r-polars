@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataframe__frame.R
 \name{print.DataFrame}
 \alias{print.DataFrame}
-\title{s3 method print DataFrame}
+\title{S3 method to print a DataFrame}
 \usage{
 \method{print}{DataFrame}(x, ...)
 }
@@ -15,7 +15,7 @@
 self
 }
 \description{
-s3 method print DataFrame
+S3 method to print a DataFrame
 }
 \examples{
 pl$DataFrame(iris)
