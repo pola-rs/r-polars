@@ -2,23 +2,20 @@
 % Please edit documentation in R/s3_methods.R
 \name{as.character.Series}
 \alias{as.character.Series}
-\title{as.character for polars Series}
+\title{Convert to a character vector}
 \usage{
 \method{as.character}{Series}(x, ..., str_length = NULL)
 }
 \arguments{
-\item{x}{Series}
+\item{x}{A Polars Series}
 
-\item{...}{Additional arguments are ignored.}
+\item{...}{Not used.}
 
-\item{str_length}{an integer. If specified,
-utf8 or categorical type Series will be formatted to a string of this length.}
-}
-\value{
-character vector
+\item{str_length}{An integer. If specified, utf8 or categorical type Series
+will be formatted to a string of this length.}
 }
 \description{
-as.character for polars Series
+Convert to a character vector
 }
 \examples{
 s = pl$Series(c("foo", "barbaz"))

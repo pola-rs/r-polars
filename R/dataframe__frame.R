@@ -1,30 +1,37 @@
 #' @title Inner workings of the DataFrame-class
 #'
 #' @name DataFrame_class
-#' @description The `DataFrame`-class is simply two environments of respectively
-#' the public and private methods/function calls to the polars rust side. The instantiated
-#' `DataFrame`-object is an `externalptr` to a lowlevel rust polars DataFrame  object.
-#' The pointer address is the only statefullness of the DataFrame object on the R side.
-#' Any other state resides on the rust side. The S3 method `.DollarNames.DataFrame`
-#' exposes all public `$foobar()`-methods which are callable onto the object. Most methods return
-#' another `DataFrame`-class instance or similar which allows for method chaining.
-#' This class system in lack of a better name could be called "environment classes"
-#' and is the same class system extendr provides, except here there is
-#' both a public and private set of methods. For implementation reasons, the private methods are
-#' external and must be called from `.pr$DataFrame$methodname()`, also all private methods
-#' must take any self as an argument, thus they are pure functions. Having the private methods
-#' as pure functions solved/simplified self-referential complications.
+#' @description
+#' The `DataFrame`-class is simply two environments of respectively the public
+#' and private methods/function calls to the polars Rust side. The instantiated
+#' `DataFrame`-object is an `externalptr` to a low-level Rust polars DataFrame
+#' object.
 #'
-#' @details Check out the source code in R/dataframe_frame.R how public methods are derived from
-#' private methods. Check out  extendr-wrappers.R to see the extendr-auto-generated methods. These
-#' are moved to .pr and converted into pure external functions in after-wrappers.R. In zzz.R (named
-#' zzz to be last file sourced) the extendr-methods are removed and replaced by any function
-#' prefixed `DataFrame_`.
+#' The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods
+#' which are callable onto the object. Most methods return another `DataFrame`-
+#' class instance or similar which allows for method chaining. This class system
+#' could be called "environment classes" (in lack of a better name) and is the
+#' same class system `extendr` provides, except here there are both a public and
+#' private set of methods. For implementation reasons, the private methods are
+#' external and must be called from `.pr$DataFrame$methodname()`. Also, all
+#' private methods must take any `self` as an argument, thus they are pure
+#' functions. Having the private methods as pure functions solved/simplified
+#' self-referential complications.
+#'
+#' @details
+#' Check out the source code in [R/dataframe_frame.R](https://github.com/pola-rs/r-polars/blob/main/R/dataframe__frame.R)
+#' to see how public methods are derived from private methods. Check out
+#' [extendr-wrappers.R](https://github.com/pola-rs/r-polars/blob/main/R/extendr-wrappers.R)
+#' to see the `extendr`-auto-generated methods. These are moved to `.pr` and
+#' converted into pure external functions in [after-wrappers.R](https://github.com/pola-rs/r-polars/blob/main/R/after-wrappers.R). In [zzz.R](https://github.com/pola-rs/r-polars/blob/main/R/zzz.R)
+#' (named `zzz` to be last file sourced) the `extendr`-methods are removed and
+#' replaced by any function prefixed `DataFrame_`.
 #'
 #' @keywords DataFrame
-#' @return not applicable
+#' @return Not applicable
 #' @examples
-#' # see all public exported method names (normally accessed via a class instance with $)
+#' # see all public exported method names (normally accessed via a class
+#' # instance with $)
 #' ls(.pr$env$DataFrame)
 #'
 #' # see all private methods (not intended for regular use)
@@ -38,31 +45,33 @@
 #' # use a public method/property
 #' df$shape
 #' df2 = df
+#'
 #' # use a private method, which has mutability
 #' result = .pr$DataFrame$set_column_from_robj(df, 150:1, "some_ints")
 #'
-#' # column exists in both dataframes-objects now, as they are just pointers to the same object
-#' # there are no public methods with mutability
+#' # Column exists in both dataframes-objects now, as they are just pointers to
+#' # the same object
+#' # There are no public methods with mutability.
 #' df$columns
 #' df2$columns
 #'
-#' # set_column_from_robj-method is fallible and returned a result which could be ok or an err.
+#' # set_column_from_robj-method is fallible and returned a result which could
+#' # be "ok" or an error.
 #' # No public method or function will ever return a result.
-#' # The `result` is very close to the same as output from functions decorated with purrr::safely.
-#' # To use results on R side, these must be unwrapped first such that
-#' # potentially errors can be thrown. unwrap(result) is a way to
-#' # bridge rust not throwing errors with R. Extendr default behavior is to use panic!(s) which
-#' # would case some unneccesary confusing and  some very verbose error messages on the inner
-#' # workings of rust. unwrap(result) #in this case no error, just a NULL because this mutable
+#' # The `result` is very close to the same as output from functions decorated
+#' # with purrr::safely.
+#' # To use results on the R side, these must be unwrapped first such that
+#' # potentially errors can be thrown. `unwrap(result)` is a way to communicate
+#' # errors happening on the Rust side to the R side. `Extendr` default behavior
+#' # is to use `panic!`(s) which would cause some unnecessarily confusing and
+#' # some very verbose error messages on the inner workings of rust.
+#' # `unwrap(result)` in this case no error, just a NULL because this mutable
 #' # method does not return any ok-value.
 #'
-#' # try unwrapping an error from polars due to unmatching column lengths
+#' # Try unwrapping an error from polars due to unmatching column lengths
 #' err_result = .pr$DataFrame$set_column_from_robj(df, 1:10000, "wrong_length")
 #' tryCatch(unwrap(err_result, call = NULL), error = \(e) cat(as.character(e)))
 DataFrame
-
-
-
 
 
 #' @title auto complete $-access into a polars object
@@ -225,14 +234,8 @@ DataFrame_print = function() {
   invisible(self)
 }
 
-## "Class methods"
-
-# "properties"
-
 ## internal bookkeeping of methods which should behave as properties
 DataFrame.property_setters = new.env(parent = emptyenv())
-
-
 
 #' generic setter method
 #' @noRd
@@ -288,7 +291,6 @@ DataFrame.property_setters = new.env(parent = emptyenv())
     pstop(err = paste("no setter method for", name))
   }
 
-  # if(is.null(func)) pstop(err= paste("no setter method for",name)))
   if (polars_optenv$strictly_immutable) self <- self$clone()
   func = DataFrame.property_setters[[name]]
   func(self, value)
@@ -489,38 +491,6 @@ DataFrame_dtype_strings = "use_extendr_wrapper"
 DataFrame_schema = method_as_property(function() {
   .pr$DataFrame$schema(self)
 })
-
-
-
-#
-DataFrameCompareToOtherDF = function(self, other, op) {
-  stop("not done yet")
-  #    """Compare a DataFrame with another DataFrame."""
-  if (!identical(self$columns, other$columns)) stop("DataFrame columns do not match")
-  if (!identical(self$shape, other$shape)) stop("DataFrame dimensions do not match")
-
-  suffix = "__POLARS_CMP_OTHER"
-  other_renamed = other$select(pl$all()$suffix(suffix))
-  # combined = concat([self, other_renamed], how="horizontal")
-
-  # if op == "eq":
-  #   expr = [pli.col(n) == pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "neq":
-  #   expr = [pli.col(n) != pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "gt":
-  #   expr = [pli.col(n) > pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "lt":
-  #   expr = [pli.col(n) < pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "gt_eq":
-  #   expr = [pli.col(n) >= pli.col(f"{n}{suffix}") for n in self.columns]
-  # elif op == "lt_eq":
-  #   expr = [pli.col(n) <= pli.col(f"{n}{suffix}") for n in self.columns]
-  # else:
-  #   raise ValueError(f"got unexpected comparison operator: {op}")
-  #
-  # return combined.select(expr)
-}
-
 
 
 #' Convert an existing DataFrame to a LazyFrame
@@ -892,19 +862,6 @@ DataFrame_to_data_frame = function(...) {
 #' @noRd
 DataFrame_as_data_frame = DataFrame_to_data_frame
 
-# #' @rdname DataFrame_to_data_frame
-# #' @description to_data_frame is an alias
-# #' @keywords DataFrame
-# DataFrame_to_data_frame = DataFrame_to_data_frame
-
-#' @rdname DataFrame_to_data_frame
-#' @param x A DataFrame
-#'
-#' @return data.frame
-#' @export
-as.data.frame.DataFrame = function(x, ...) {
-  x$to_data_frame(...)
-}
 
 #' Return Polars DataFrame as a list of vectors
 #'
@@ -1791,5 +1748,61 @@ DataFrame_write_csv = function(
     null_values, quote_style
   ) |>
     unwrap("in $write_csv():") |>
+    invisible()
+}
+
+
+#' Write to JSON file
+#'
+#' @param file File path to which the result should be written.
+#' @param pretty Pretty serialize JSON.
+#' @param row_oriented Write to row-oriented JSON. This is slower, but more
+#' common.
+#'
+#' @return
+#' This doesn't return anything.
+#'
+#' @rdname IO_write_json
+#'
+#' @examples
+#' if (require("jsonlite", quiet = TRUE)) {
+#'   dat = pl$DataFrame(head(mtcars))
+#'   destination = tempfile()
+#'
+#'   dat$select(pl$col("drat", "mpg"))$write_json(destination)
+#'   jsonlite::fromJSON(destination)
+#'
+#'   dat$select(pl$col("drat", "mpg"))$write_json(destination, row_oriented = TRUE)
+#'   jsonlite::fromJSON(destination)
+#' }
+DataFrame_write_json = function(
+    file,
+    pretty = FALSE,
+    row_oriented = FALSE
+  ) {
+  .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
+    unwrap("in $write_json():") |>
+    invisible()
+}
+
+#' Write to NDJSON file
+#'
+#' @inheritParams DataFrame_write_json
+#'
+#' @return
+#' This doesn't return anything.
+#'
+#' @rdname IO_write_ndjson
+#'
+#' @examples
+#' dat = pl$DataFrame(head(mtcars))
+#'
+#' destination = tempfile()
+#' dat$select(pl$col("drat", "mpg"))$write_ndjson(destination)
+#'
+#' pl$read_ndjson(destination)
+DataFrame_write_ndjson = function(file) {
+  .pr$DataFrame$write_ndjson(self, file) |>
+    unwrap("in $write_ndjson():") |>
     invisible()
 }
