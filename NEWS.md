@@ -5,6 +5,11 @@
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 - Removed argument `name` in `pl$date_range()`, which was deprecated for a while
   (#503).
+- The rowwise computation when several columns are passed to `pl$min()` and 
+  `pl$max()` is deprecated and will be removed in 0.12.0. Use `pl$min_horizontal()`
+  `pl$max_horizontal()` instead.
+- New functions `pl$min_horizontal()`, `pl$max_horizontal()`,`pl$sum_horizontal()`,
+  `pl$all_horizontal()`, `pl$any_horizontal()`.
 
 # polars 0.10.1
 

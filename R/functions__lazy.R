@@ -530,7 +530,6 @@ pl$sum = function(...) {
 #' df$with_columns(
 #'   pl$min("a", "b", "c", 99.9)$alias("d")
 #' )
-#'
 pl$min = function(...) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -544,8 +543,9 @@ pl$min = function(...) {
     return(pl$lit(column)$min())
   }
   if (is.list(column)) {
+    warning("This usage of `pl$min()` is deprecated. To find the minimum value rowwise, use `pl$min_horizontal()` instead. This will be removed in 0.12.0.")
     pra = do.call(construct_ProtoExprArray, column)
-    return(min_exprs(pra))
+    return(min_horizontal(pra))
   }
   stop("pl$min: this input is not supported")
 }
@@ -591,6 +591,7 @@ pl$max = function(...) {
     return(pl$lit(column)$max())
   }
   if (is.list(column)) {
+    warning("This usage of `pl$max()` is deprecated. To find the maximum value rowwise, use `pl$max_horizontal()` instead. This will be removed in 0.12.0.")
     pra = do.call(construct_ProtoExprArray, column)
     return(max_exprs(pra))
   }
@@ -940,4 +941,114 @@ pl$fold = function(acc, lambda, exprs) {
 pl$reduce = function(lambda, exprs) {
   reduce(lambda, exprs) |>
     unwrap("in pl$reduce():")
+}
+
+#' Get the minimum value rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @name pl_min_horizontal
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(2:1, NA_real_, NA_real_),
+#'   c = c(1:2, NA_real_, -Inf)
+#' )
+#' df$with_columns(
+#'   pl$min_horizontal("a", "b", "c", 99.9)$alias("min")
+#' )
+pl$min_horizontal <- function(...) {
+  min_horizontal(list2(...)) |>
+    unwrap("in $min_horizontal():")
+}
+
+#' Get the maximum value rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @name pl_max_horizontal
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(2:1, NA_real_, NA_real_),
+#'   c = c(1:2, NA_real_, Inf)
+#' )
+#' df$with_columns(
+#'   pl$max_horizontal("a", "b", "c", 99.9)$alias("max")
+#' )
+pl$max_horizontal <- function(...) {
+  max_horizontal(list2(...)) |>
+    unwrap("in $max_horizontal():")
+}
+
+#' Apply the AND logical rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @name pl_all_horizontal
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(TRUE, FALSE, NA, NA),
+#'   b = c(TRUE, FALSE, NA, NA),
+#'   c = c(TRUE, FALSE, NA, TRUE)
+#' )
+#' df$with_columns(
+#'   pl$all_horizontal("a", "b", "c")$alias("all")
+#' )
+pl$all_horizontal <- function(...) {
+  all_horizontal(list2(...)) |>
+    unwrap("in $all_horizontal():")
+}
+
+#' Apply the OR logical rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @name pl_any_horizontal
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = c(FALSE, FALSE, NA, NA),
+#'   b = c(TRUE, FALSE, NA, NA),
+#'   c = c(TRUE, FALSE, NA, TRUE)
+#' )
+#' df$with_columns(
+#'   pl$any_horizontal("a", "b", "c")$alias("any")
+#' )
+pl$any_horizontal <- function(...) {
+  any_horizontal(list2(...)) |>
+    unwrap("in $any_horizontal():")
+}
+
+#' Compute the sum rowwise
+#'
+#' @param ... Columns to concatenate into a single string column. Accepts
+#' expressions. Strings are parsed as column names, other non-expression inputs
+#' are parsed as literals.
+#' @name pl_sum_horizontal
+#' @return Expr
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   a = NA_real_,
+#'   b = c(3:4, NA_real_, NA_real_),
+#'   c = c(1:2, NA_real_, -Inf)
+#' )
+#' df$with_columns(
+#'   pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
+#' )
+pl$sum_horizontal <- function(...) {
+  sum_horizontal(list2(...)) |>
+    unwrap("in $sum_horizontal():")
 }
