@@ -1,33 +1,32 @@
 #' Create Field
-#' @include after-wrappers.R
-#' @name pl_Field
-#' @param name string name
+#'
+#' A Field is composed of a name and a DataType. Fields are used in Structs-
+#' datatypes and Schemas to represent everything of the Series/Column except the
+#' raw values.
+#'
+#' @name RField_class
+#'
+#' @param name Field name
 #' @param datatype DataType
-#' @keywords pl
-#' @details A Field is not a DataType but a name + DataType
-#' Fields are used in Structs-datatypes and Schemas to represent
-#' everything of the Series/Column except the raw values.
 #'
-#' @return a list DataType with an inner DataType
+#' @include after-wrappers.R
+#' @return A object of with DataType `"RField"` containing its name and its
+#' DataType.
 #' @examples
-#' # make a struct
 #' pl$Field("city_names", pl$Utf8)
-#'
-#' # find any DataType bundled pl$dtypes
-#' print(pl$dtypes)
-#'
 pl$Field = function(name, datatype) {
   .pr$RField$new(name, datatype)
 }
 
 
-#' Print a polars Field
-#' @param x DataType
-#' @param ... not used
+#' S3 method to print a Field
 #'
-#' @return self
+#' @param x An object of type `"RField"`
+#' @param ... Not used.
+#'
+#' @return No value returned, it prints in the console.
 #' @export
-#' @keywords internal
+#' @rdname Field_print
 #'
 #' @examples
 #' print(pl$Field("foo", pl$List(pl$UInt64)))
@@ -37,12 +36,14 @@ print.RField = function(x, ...) {
 }
 
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x string name of an RField
-#' @param pattern code-stump as string to auto-complete
+#' Auto complete $-access into a polars object
+#'
+#' Called by the interactive R session internally
+#'
+#' @param x Name of a `"RField"` object
+#' @param pattern String used to auto-complete
+#'
 #' @export
-#' @inherit .DollarNames.DataFrame return
 #' @keywords internal
 .DollarNames.RField = function(x, pattern = "") {
   get_method_usages(RField, pattern = pattern)
@@ -62,48 +63,37 @@ RField_print = function() {
 }
 
 
-# "properties"
-
 ## internal bookkeeping of methods which should behave as properties
 RField.property_setters = new.env(parent = emptyenv())
 
 
-#' get/set Field name
-#' @description get/set Field name
+#' Get/set Field name
 #'
-#' @return name
-#' @keywords DataType
-#'
-#' @noRd
+#' @rdname RField_name
 #' @examples
 #' field = pl$Field("Cities", pl$Utf8)
-#'
-#' # get name / datatype
 #' field$name
-#' field$datatype
 #'
-#' # set + get values
 #' field$name = "CityPoPulations" #<- is fine too
-#'
-#' print(field)
+#' field
 RField_name = method_as_property(function() {
   .pr$RField$get_name(self)
 }, setter = TRUE)
+
 RField.property_setters$name = function(self, value) {
   .pr$RField$set_name_mut(self, value)
 }
 
 #' Get/set Field datatype
+#'
 #' @rdname RField_datatype
 #'
-#' @return char vec of column names
 #' @keywords DataFrame
-#' @noRd
 #' @examples
 #' field = pl$Field("Cities", pl$Utf8)
 #' field$datatype
 #'
-#' field$datatype = pl$Categorical
+#' field$datatype = pl$Categorical #<- is fine too
 #' field$datatype
 RField_datatype = method_as_property(function() {
   .pr$RField$get_datatype(self)

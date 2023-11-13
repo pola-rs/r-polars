@@ -2,21 +2,16 @@
 % Please edit documentation in R/Field.R
 \name{.DollarNames.RField}
 \alias{.DollarNames.RField}
-\title{auto complete $-access into a polars object}
+\title{Auto complete $-access into a polars object}
 \usage{
 \method{.DollarNames}{RField}(x, pattern = "")
 }
 \arguments{
-\item{x}{string name of an RField}
+\item{x}{Name of a \code{"RField"} object}
 
-\item{pattern}{code-stump as string to auto-complete}
-}
-\value{
-char vec
-
-Doesn't return a value. This is used for autocompletion in RStudio.
+\item{pattern}{String used to auto-complete}
 }
 \description{
-called by the interactive R session internally
+Called by the interactive R session internally
 }
 \keyword{internal}

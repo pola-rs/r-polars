@@ -208,7 +208,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 }
 
 
-#' s3 method print DataFrame
+#' S3 method to print a DataFrame
 #'
 #' @keywords internal
 #' @param x DataFrame
