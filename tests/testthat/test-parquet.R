@@ -1,7 +1,4 @@
-
-
 test_that("scan read parquet", {
-
   tmpf = tempfile()
   on.exit(unlink(tmpf))
   lf_exp = pl$LazyFrame(mtcars)

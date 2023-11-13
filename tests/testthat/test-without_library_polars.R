@@ -20,15 +20,12 @@ test_that("without library(polars)", {
   # Positive-Negative control
   # This works because library(polars) puts polars in search()
   expect_true(polars:::test_wrong_call_pl_lit(42) |> polars:::is_ok())
-
-
 })
 
 
 
 
 test_that("scan read parquet from other process", {
-
   skip_if_not_installed("callr")
 
   tmpf = tempfile()
@@ -39,15 +36,13 @@ test_that("scan read parquet from other process", {
 
   # simple scan
   expect_identical(
-    callr::r(\(tmpf) polars::pl$scan_parquet(tmpf)$collect()$to_data_frame(), args = list(tmpf=tmpf)),
+    callr::r(\(tmpf) polars::pl$scan_parquet(tmpf)$collect()$to_data_frame(), args = list(tmpf = tmpf)),
     df_exp
   )
 
   # simple read
   expect_identical(
-    callr::r(\(tmpf) polars::pl$read_parquet(tmpf)$to_data_frame(), args = list(tmpf=tmpf)),
+    callr::r(\(tmpf) polars::pl$read_parquet(tmpf)$to_data_frame(), args = list(tmpf = tmpf)),
     df_exp
   )
-
 })
-

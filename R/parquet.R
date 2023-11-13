@@ -90,7 +90,6 @@ pl$read_parquet = function(
     # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE,
     hive_partitioning = TRUE) {
-
   args = as.list(environment())
   result({
     do.call(pl$scan_parquet, args)$collect()
