@@ -84,7 +84,6 @@ RField.property_setters = new.env(parent = emptyenv())
 #'
 #' # set + get values
 #' field$name = "CityPoPulations" #<- is fine too
-#' field$datatype = pl$UInt32
 #'
 #' print(field)
 RField_name = method_as_property(function() {
@@ -94,26 +93,22 @@ RField.property_setters$name = function(self, value) {
   .pr$RField$set_name_mut(self, value)
 }
 
-#' get/set columns (the names columns)
-#' @description get/set column names of DataFrame object
-#' @name DataFrame_columns
-#' @rdname DataFrame_columns
+#' Get/set Field datatype
+#' @rdname RField_datatype
 #'
 #' @return char vec of column names
 #' @keywords DataFrame
-#'
+#' @noRd
 #' @examples
-#' df = pl$DataFrame(iris)
+#' field = pl$Field("Cities", pl$Utf8)
+#' field$datatype
 #'
-#' # get values
-#' df$columns
-#'
-#' # set + get values
-#' df$columns = letters[1:5] #<- is fine too
-#' df$columns
+#' field$datatype = pl$Categorical
+#' field$datatype
 RField_datatype = method_as_property(function() {
   .pr$RField$get_datatype(self)
 }, setter = TRUE)
+
 RField.property_setters$datatype = function(self, value) {
   .pr$RField$set_datatype_mut(self, value)
 }
