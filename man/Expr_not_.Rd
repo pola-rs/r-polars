@@ -5,7 +5,7 @@
 \alias{!.Expr}
 \title{Not !}
 \usage{
-Expr_is_not(other)
+Expr_not_(other)
 
 \method{!}{Expr}(x)
 }

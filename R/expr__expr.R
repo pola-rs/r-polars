@@ -250,7 +250,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @keywords Expr Expr_operators
 #' @param other literal or Robj which can become a literal
 #' @return Exprs
-#' @usage Expr_is_not(other)
+#' @usage Expr_not_(other)
 #' @docType NULL
 #' @format NULL
 #' @examples
