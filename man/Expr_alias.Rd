@@ -7,7 +7,7 @@
 Expr_alias(name)
 }
 \arguments{
-\item{name}{string new name of output}
+\item{name}{New name of output}
 }
 \value{
 Expr
@@ -18,4 +18,4 @@ Rename the output of an expression.
 \examples{
 pl$col("bob")$alias("alice")
 }
-\keyword{Expr}
+\keyword{datasets}

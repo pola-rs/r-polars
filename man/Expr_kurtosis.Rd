@@ -35,4 +35,3 @@ df$select(pl$col("a")$kurtosis())
 \references{
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kurtosis.html?highlight=kurtosis
 }
-\keyword{Expr}

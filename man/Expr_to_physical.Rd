@@ -3,7 +3,7 @@
 \name{Expr_to_physical}
 \alias{Expr_to_physical}
 \alias{to_physical}
-\title{To physical representation}
+\title{Cast an Expr to its physical representation}
 \usage{
 Expr_to_physical
 }
@@ -11,11 +11,20 @@ Expr_to_physical
 Expr
 }
 \description{
-expression request underlying physical base representation
+The following DataTypes will be converted:
+\itemize{
+\item Date -> Int32
+\item Datetime -> Int64
+\item Time -> Int64
+\item Duration -> Int64
+\item Categorical -> UInt32
+\item List(inner) -> List(physical of inner)
+Other data types will be left unchanged.
+}
 }
 \examples{
 pl$DataFrame(
-  list(vals = c("a", "x", NA, "a"))
+  list(vals = c("a", "x", NA, "a", "b"))
 )$with_columns(
   pl$col("vals")$cast(pl$Categorical),
   pl$col("vals")
@@ -24,4 +33,4 @@ pl$DataFrame(
   $alias("vals_physical")
 )
 }
-\keyword{Expr}
+\keyword{datasets}

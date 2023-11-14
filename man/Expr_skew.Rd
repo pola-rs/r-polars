@@ -50,4 +50,3 @@ df$select(pl$col("a")$skew())
 \references{
 https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.skew.html?highlight=skew#scipy.stats.skew
 }
-\keyword{Expr}

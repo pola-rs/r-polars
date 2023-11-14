@@ -46,4 +46,3 @@ df$select(pl$col("a")$rank())
 df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
 df$select(pl$col("a")$rank("ordinal"))
 }
-\keyword{Expr}

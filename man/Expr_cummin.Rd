@@ -44,4 +44,3 @@ pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cummax(reverse = TRUE)$alias("cummax_reversed")
 )
 }
-\keyword{Expr}

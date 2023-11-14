@@ -16,4 +16,4 @@ This is done using the HyperLogLog++ algorithm for cardinality estimation.
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$approx_n_unique())
 }
-\keyword{Expr}
+\keyword{datasets}

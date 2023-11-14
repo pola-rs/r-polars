@@ -37,4 +37,3 @@ df$select(pl$col("num")$is_between(2, 4, c(FALSE, TRUE)))
 # start end can be a vector/expr with same length as column
 df$select(pl$col("num")$is_between(c(0, 2, 3, 3, 3), 6))
 }
-\keyword{Expr}

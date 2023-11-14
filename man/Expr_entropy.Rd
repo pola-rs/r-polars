@@ -23,4 +23,3 @@ Return Null if input is not values
 \examples{
 pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$unique_counts()$entropy(base = 2))
 }
-\keyword{Expr}

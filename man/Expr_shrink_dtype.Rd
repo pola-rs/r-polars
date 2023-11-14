@@ -26,4 +26,4 @@ pl$DataFrame(
   h = c(TRUE, NA, FALSE)
 )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
 }
-\keyword{Expr}
+\keyword{datasets}

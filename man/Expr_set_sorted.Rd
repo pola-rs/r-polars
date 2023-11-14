@@ -25,4 +25,3 @@ s$flags # see flags
 s2 = pl$select(pl$lit(c(1, 3, 2, 4))$set_sorted()$alias("a"))$get_column("a")
 s2$sort() # sorting skipped, although not actually sorted
 }
-\keyword{Expr}

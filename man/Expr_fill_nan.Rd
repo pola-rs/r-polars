@@ -16,9 +16,6 @@ Expr
 \description{
 Fill missing values with last seen values.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
 l = list(a = c(1, NaN, NaN, 3))
 pl$DataFrame(l)$select(
@@ -28,4 +25,3 @@ pl$DataFrame(l)$select(
   pl$col("a")$fill_nan("hej")$alias("fill_str") # implicit cast to Utf8
 )$to_list()
 }
-\keyword{Expr}

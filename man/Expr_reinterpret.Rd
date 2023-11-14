@@ -22,4 +22,3 @@ you can safely use that cast operation.
 df = pl$DataFrame(iris)
 df$select(pl$all()$head(2)$hash(1, 2, 3, 4)$reinterpret())$to_data_frame()
 }
-\keyword{Expr}

@@ -33,4 +33,3 @@ df$group_by("group_col")$agg(
   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
 )
 }
-\keyword{Expr}

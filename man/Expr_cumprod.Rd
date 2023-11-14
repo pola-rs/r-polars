@@ -26,4 +26,3 @@ pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod_reversed")
 )
 }
-\keyword{Expr}

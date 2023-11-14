@@ -17,4 +17,4 @@ Similar to R length(unique(x))
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
 }
-\keyword{Expr}
+\keyword{datasets}

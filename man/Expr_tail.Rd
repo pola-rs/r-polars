@@ -21,4 +21,3 @@ Similar to R tail(x)
 # get 3 last elements
 pl$DataFrame(list(x = 1:11))$select(pl$col("x")$tail(3))
 }
-\keyword{Expr}

@@ -27,4 +27,3 @@ pl$DataFrame(list())$select(pl$lit(42)$append(42L))
 pl$DataFrame(list())$select(pl$lit(42)$append(FALSE))
 pl$DataFrame(list())$select(pl$lit("Bob")$append(FALSE))
 }
-\keyword{Expr}

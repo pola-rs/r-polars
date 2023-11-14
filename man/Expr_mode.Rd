@@ -19,4 +19,4 @@ df$select(pl$col("a")$mode())
 df$select(pl$col("b")$mode())
 df$select(pl$col("c")$mode())
 }
-\keyword{Expr}
+\keyword{datasets}

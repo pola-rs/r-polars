@@ -12,10 +12,7 @@ Expr
 \description{
 Get minimum value.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$min() == 1) # is true
 }
-\keyword{Expr}
+\keyword{datasets}

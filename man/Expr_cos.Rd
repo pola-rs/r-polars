@@ -19,4 +19,4 @@ Evaluated Series has dtype Float64
 \examples{
 pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$cos())
 }
-\keyword{Expr}
+\keyword{datasets}

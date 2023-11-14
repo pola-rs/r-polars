@@ -2,21 +2,13 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_xor}
 \alias{Expr_xor}
-\title{Xor}
+\title{Apply logical XOR on two expressions}
 \usage{
 Expr_xor(other)
 }
-\arguments{
-\item{other}{literal or Robj which can become a literal}
-}
-\value{
-Expr
-}
 \description{
-combine to boolean expressions with XOR
+Combine two boolean expressions with XOR.
 }
 \examples{
 pl$lit(TRUE)$xor(pl$lit(FALSE))
 }
-\keyword{Expr}
-\keyword{Expr_operators}

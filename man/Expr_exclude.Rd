@@ -38,4 +38,3 @@ df$select(pl$all()$exclude(list(pl$Categorical, pl$Float64)))
 df$select(pl$all()$exclude("^Sepal.*$"))
 
 }
-\keyword{Expr}

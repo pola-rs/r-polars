@@ -37,4 +37,3 @@ df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
 df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
 df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
 }
-\keyword{Expr}

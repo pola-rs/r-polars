@@ -67,4 +67,3 @@ computation.
 \examples{
 pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_sum(window_size = 2))
 }
-\keyword{Expr}

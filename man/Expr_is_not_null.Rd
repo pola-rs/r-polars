@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_not_null}
 \alias{Expr_is_not_null}
-\title{is_not_null}
+\title{Find which elements are not NULL}
 \usage{
 Expr_is_not_null
 }
@@ -10,14 +10,9 @@ Expr_is_not_null
 Expr
 }
 \description{
-Returns a boolean Series indicating which values are not null.
-Similar to R syntax !is.na(x)
-null polars about the same as R NA
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Syntactic sugar for \verb{$is_null()$not_()}.
 }
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 }
-\keyword{Expr}
+\keyword{datasets}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_drop_nans}
 \alias{Expr_drop_nans}
-\title{Drop NaN(s)}
+\title{Drop NaN}
 \usage{
 Expr_drop_nans
 }
@@ -10,16 +10,16 @@ Expr_drop_nans
 Expr
 }
 \description{
-Drop floating point NaN values.
-Similar to R syntax \code{x[!is.nan(x)]}
+Drop NaN
 }
 \details{
-Note that NaN values are not null values! (null corresponds to R NA, not R NULL)
-To drop null values, use method \code{drop_nulls}.
-
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Note that \code{NaN} values are not \code{null} values. Null values correspond to NA
+in R.
 }
 \examples{
 pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 }
-\keyword{Expr}
+\seealso{
+\code{drop_nulls()}
+}
+\keyword{datasets}

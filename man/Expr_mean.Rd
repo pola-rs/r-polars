@@ -15,4 +15,4 @@ Get mean value.
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$mean() == 2) # is true
 }
-\keyword{Expr}
+\keyword{datasets}

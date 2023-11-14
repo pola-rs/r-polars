@@ -33,4 +33,3 @@ for operations that visit all elements.
 \examples{
 pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
 }
-\keyword{Expr}

@@ -16,9 +16,6 @@ Expr
 \description{
 Fill missing values with the next to be seen values.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
 l = list(a = c(1L, rep(NA_integer_, 3L), 10))
 pl$DataFrame(l)$select(
@@ -27,4 +24,3 @@ pl$DataFrame(l)$select(
   pl$col("a")$backward_fill(limit = 1)$alias("bf_l1")
 )$to_list()
 }
-\keyword{Expr}

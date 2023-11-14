@@ -109,4 +109,3 @@ pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com = 1))
 pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
 pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
 }
-\keyword{Expr}

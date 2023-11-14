@@ -24,4 +24,3 @@ collect an expression based on literals into a Series
   $lit_to_s()
 )
 }
-\keyword{Expr}

@@ -16,4 +16,4 @@ Compute the base 10 logarithm of the input array, element-wise.
 \examples{
 pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
 }
-\keyword{Expr}
+\keyword{datasets}

@@ -18,4 +18,3 @@ Get Variance
 \examples{
 pl$select(pl$lit(1:5)$var())
 }
-\keyword{Expr}

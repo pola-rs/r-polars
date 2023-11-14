@@ -24,4 +24,3 @@ This function is a bit under documented in py-polars.
 \examples{
 pl$DataFrame(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
 }
-\keyword{Expr}

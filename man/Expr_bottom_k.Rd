@@ -26,4 +26,3 @@ pl$DataFrame(list(
   a = c(6, 1, 0, NA, Inf, NaN)
 ))$select(pl$col("a")$bottom_k(5))
 }
-\keyword{Expr}

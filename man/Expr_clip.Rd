@@ -37,4 +37,3 @@ df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
 df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
 df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
 }
-\keyword{Expr}

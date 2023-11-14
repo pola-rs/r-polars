@@ -20,4 +20,4 @@ pl$DataFrame(list(
   pl$col("a")$ceil()
 )
 }
-\keyword{Expr}
+\keyword{datasets}

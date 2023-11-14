@@ -23,4 +23,3 @@ S3 method to print an Expr
 \examples{
 print(pl$col("some_column")$sum())
 }
-\keyword{Expr}

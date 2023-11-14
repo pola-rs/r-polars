@@ -35,4 +35,3 @@ pl$DataFrame(
   pl$col("val")$count()$over(over_vars)
 )
 }
-\keyword{Expr}

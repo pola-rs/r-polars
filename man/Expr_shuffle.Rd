@@ -21,4 +21,3 @@ Shuffle the contents of this expr.
 \examples{
 pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
 }
-\keyword{Expr}

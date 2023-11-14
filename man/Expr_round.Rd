@@ -23,4 +23,3 @@ pl$DataFrame(list(
   pl$col("a")$round(0)
 )
 }
-\keyword{Expr}

@@ -26,4 +26,3 @@ For linear interpolation \code{NaN} poisons \code{Inf}, that poisons any other v
 \examples{
 pl$select(pl$lit(-5:5)$quantile(.5))
 }
-\keyword{Expr}

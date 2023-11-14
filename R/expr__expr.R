@@ -26,7 +26,6 @@ NULL
 #'
 #' @param x Expr
 #' @param ... Not used.
-#' @keywords Expr
 #'
 #' @return No value returned, it prints in the console.
 #' @export
@@ -371,10 +370,10 @@ Expr_agg_groups = "use_extendr_wrapper"
 
 
 #' Rename Expr output
-#' @keywords Expr
-#' @description
+#'
 #' Rename the output of an expression.
-#' @param name string new name of output
+#'
+#' @param name New name of output
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -382,25 +381,23 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
 
-#' All, is true
-#' @keywords Expr
-#' @description
-#' Check if all boolean values in a Boolean column are `TRUE`.
-#' This method is an expression - not to be confused with
-#' `pl$all` which is a function to select all columns.
-#' @aliases Expr_all
+#' Apply logical AND on a column
+#'
+#' Check if all boolean values in a Boolean column are `TRUE`. This method is an
+#' expression - not to be confused with `pl$all()` which is a function to select
+#' all columns.
 #' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
 #' @docType NULL
 #' @format NULL
-#' @details  last `all()` in example is this Expr method, the first `pl$all()` refers
-#' to "all-columns" and is an expression constructor
 #' @examples
 #' pl$DataFrame(
 #'   all = c(TRUE, TRUE),
 #'   any = c(TRUE, FALSE),
 #'   none = c(FALSE, FALSE)
 #' )$select(
+#'   # the first $all() selects all columns, the second one applies the AND
+#'   # logical on the values
 #'   pl$all()$all()
 #' )
 Expr_all = function(drop_nulls = TRUE) {
@@ -408,9 +405,8 @@ Expr_all = function(drop_nulls = TRUE) {
     unwrap("in $all()")
 }
 
-#' Any (is true)
-#' @keywords Expr
-#' @description
+#' Apply logical OR on a column
+#'
 #' Check if any boolean value in a Boolean column is `TRUE`.
 #' @param drop_nulls Boolean. Default TRUE, as name says.
 #' @return Boolean literal
@@ -429,14 +425,11 @@ Expr_any = function(drop_nulls = TRUE) {
     unwrap("in $all()")
 }
 
-
-
-#' Count values (len is a alias)
-#' @keywords Expr
-#' @name Expr_count
-#' @description
-#' Count the number of values in this expression.
-#' Similar to R length()
+#' Count elements
+#'
+#' Count the number of elements in this expression. Note that `NULL` values are
+#' also counted. `$len()` is an alias.
+#' @rdname Expr_count
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -450,51 +443,28 @@ Expr_any = function(drop_nulls = TRUE) {
 #' )
 Expr_count = "use_extendr_wrapper"
 
-#' Count values (len is a alias)
-#' @keywords Expr
 #' @rdname Expr_count
-#' @return Expr
-#' @docType NULL
-#' @format NULL
-#' @examples
-#' pl$DataFrame(
-#'   all = c(TRUE, TRUE),
-#'   any = c(TRUE, FALSE),
-#'   none = c(FALSE, FALSE)
-#' )$select(
-#'   pl$all()$len(),
-#'   pl$col("all")$first()$len()$alias("all_first")
-#' )
 Expr_len = "use_extendr_wrapper"
 
-
-
-#' Drop null(s)
-#' @keywords Expr
-#' @description
-#' Drop null values.
-#' Similar to R syntax `x[!(is.na(x) & !is.nan(x))]`
+#' Drop missing values
+#'
+#' @seealso
+#' `drop_nans()`
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 Expr_drop_nulls = "use_extendr_wrapper"
 
-#' Drop NaN(s)
-#' @keywords Expr
-#' @description
-#' Drop floating point NaN values.
-#' Similar to R syntax `x[!is.nan(x)]`
+#' Drop NaN
+#'
 #' @details
+#' Note that `NaN` values are not `null` values. Null values correspond to NA
+#' in R.
 #'
-#'  Note that NaN values are not null values! (null corresponds to R NA, not R NULL)
-#'  To drop null values, use method `drop_nulls`.
-#'
-#'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+#' @seealso
+#' `drop_nulls()`
 #'
 #' @return Expr
 #' @docType NULL
@@ -503,43 +473,25 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = "use_extendr_wrapper"
 
-
-
-
-
-#' is_null
-#' @keywords Expr
-#' @description
+#' Find which elements are NULL
+#'
 #' Returns a boolean Series indicating which values are null.
-#' Similar to R syntax is.na(x)
-#' null polars about the same as R NA
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 Expr_is_null = "use_extendr_wrapper"
 
-#' is_not_null
-#' @keywords Expr
-#' @description
-#' Returns a boolean Series indicating which values are not null.
-#' Similar to R syntax !is.na(x)
-#' null polars about the same as R NA
+#' Find which elements are not NULL
+#'
+#' Syntactic sugar for `$is_null()$not_()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
 Expr_is_not_null = "use_extendr_wrapper"
-
-
-
-
 
 
 # TODO move this function in to rust with input list of args
@@ -613,20 +565,19 @@ construct_ProtoExprArray = function(...) {
 # over lambda. However lambda is still in examples.
 ## TODO Better explain aggregate list
 
-#' Map an expression with an R function.
-#' @keywords Expr
+#' Map an expression with an R function
 #'
 #' @param f a function to map with
 #' @param output_type `NULL` or a type available in `names(pl$dtypes)`. If `NULL`
-#' (default), the output datatype will match is the input datatype. This is used
+#' (default), the output datatype will match the input datatype. This is used
 #' to inform schema of the actual return type of the R function. Setting this wrong
 #' could theoretically have some downstream implications to the query.
-#' @param agg_list Aggregate list. Map from vector to group in groupby context.
+#' @param agg_list Aggregate list. Map from vector to group in group_by context.
 #' @param in_background Boolean. Whether to execute the map in a background R
 #' process. Combined with setting e.g. `pl$set_options(rpool_cap = 4)` it can speed
 #' up some slow R functions as they can run in parallel R sessions. The
 #' communication speed between processes is quite slower than between threads.
-#' This will likely only give a speed-up in a "low IO - high CPU" usecase.
+#' This will likely only give a speed-up in a "low IO - high CPU" use case.
 #' If there are multiple `$map(in_background = TRUE)` calls in the query, they
 #' will be run in parallel.
 #'
@@ -696,7 +647,6 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 }
 
 #' Expr_apply
-#' @keywords Expr
 #'
 #' @description
 #' Apply a custom/user-defined function (UDF) in a GroupBy or Projection context.
@@ -853,13 +803,12 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 }
 
 
-#' Return an expression representing a literal value
+#' Create a literal value
 #'
-#' @param x An R Scalar, or R vector/list (via Series)
+#' @param x A vector of any length
 #'
 #' @return Expr
 #'
-#' @aliases lit
 #' @details
 #' `pl$lit(NULL)` translates into a polars `null`.
 #'
@@ -883,15 +832,12 @@ Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE, allow_fa
 #' # vectors to literal implicitly
 #' (pl$lit(2) + 1:4) / 4:1
 Expr_lit = function(x) {
-  # use .call reduces eval from 22us to 15us, not a bottle-next anyways
   .Call(wrap__Expr__lit, x) |>
     unwrap("in $lit()")
 }
 
-#' polars reverse
-#' @keywords Expr
+#' Reverse a variable
 #' @return Expr
-#' @aliases reverse
 #' @name Expr_reverse
 #' @examples
 #' pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
@@ -901,12 +847,10 @@ Expr_reverse = function() {
 
 
 
-#' And
-#' @name Expr_and
-#' @description combine to boolean expressions with AND
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Expr
+#' Apply logical AND on two expressions
+#'
+#' Combine two boolean expressions with AND.
+#' @inherit Expr_add params return
 #' @docType NULL
 #' @format NULL
 #' @usage Expr_and(other)
@@ -920,15 +864,13 @@ Expr_and = function(other) {
 "&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
-#' Or
-#' @name Expr_or
-#' @description combine to boolean expressions with OR
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Expr
+#' Apply logical OR on two expressions
+#'
+#' Combine two boolean expressions with OR.
+#'
+#' @inherit Expr_add params return
 #' @docType NULL
 #' @format NULL
-#' @param other Expr or into Expr
 #' @usage Expr_or(other)
 #' @examples
 #' pl$lit(TRUE) | FALSE
@@ -940,12 +882,9 @@ Expr_or = function(other) {
 "|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
-#' Xor
-#' @name Expr_xor
-#' @description combine to boolean expressions with XOR
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Expr
+#' Apply logical XOR on two expressions
+#'
+#' Combine two boolean expressions with XOR.
 #' @docType NULL
 #' @format NULL
 #' @usage Expr_xor(other)
@@ -955,11 +894,16 @@ Expr_xor = function(other) {
   .pr$Expr$xor(self, other) |> unwrap("in $xor()")
 }
 
-
-
-#' To physical representation
-#' @description expression request underlying physical base representation
-#' @keywords Expr
+#' Cast an Expr to its physical representation
+#'
+#' The following DataTypes will be converted:
+#' * Date -> Int32
+#' * Datetime -> Int64
+#' * Time -> Int64
+#' * Duration -> Int64
+#' * Categorical -> UInt32
+#' * List(inner) -> List(physical of inner)
+#' Other data types will be left unchanged.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -967,7 +911,7 @@ Expr_xor = function(other) {
 #' @name Expr_to_physical
 #' @examples
 #' pl$DataFrame(
-#'   list(vals = c("a", "x", NA, "a"))
+#'   list(vals = c("a", "x", NA, "a", "b"))
 #' )$with_columns(
 #'   pl$col("vals")$cast(pl$Categorical),
 #'   pl$col("vals")
@@ -978,17 +922,15 @@ Expr_xor = function(other) {
 Expr_to_physical = "use_extendr_wrapper"
 
 
-#' Cast between DataType(s)
-#' @keywords Expr
+#' Cast between DataType
+#'
 #' @param dtype DataType to cast to.
-#' @param strict bool if true an error will be thrown if cast failed at resolve time.
+#' @param strict If `TRUE` (default), an error will be thrown if cast failed at
+#' resolve time.
 #' @return Expr
-#' @aliases cast
-#' @name Expr_cast
-#' @aliases cast
 #' @examples
 #' df = pl$DataFrame(a = 1:3, b = c(1, 2, 3))
-#' df$print()$with_columns(
+#' df$with_columns(
 #'   pl$col("a")$cast(pl$dtypes$Float64),
 #'   pl$col("b")$cast(pl$dtypes$Int32)
 #' )
@@ -996,50 +938,32 @@ Expr_to_physical = "use_extendr_wrapper"
 #' # strict FALSE, inserts null for any cast failure
 #' pl$lit(c(100, 200, 300))$cast(pl$dtypes$UInt8, strict = FALSE)$lit_to_s()
 #'
-#'
 #' # strict TRUE, raise any failure as an error when query is executed.
 #' tryCatch(
 #'   {
 #'     pl$lit("a")$cast(pl$dtypes$Float64, strict = TRUE)$lit_to_s()
 #'   },
-#'   error = as.character
+#'   error = function(e) e
 #' )
 Expr_cast = function(dtype, strict = TRUE) {
   .pr$Expr$cast(self, dtype, strict)
 }
 
-
-
-#' Square root
-#' @description  Compute the square root of the elements.
-#' @keywords Expr
+#' Compute the square root of the elements
+#'
 #' @return Expr
-#' @aliases sqrt
-#' @name Expr_sqrt
 #' @examples
-#' pl$DataFrame(list(a = -1:3))$select(pl$col("a")$sqrt())
+#' pl$DataFrame(a = -1:3)$with_columns(a_sqrt = pl$col("a")$sqrt())
 Expr_sqrt = function() {
   self$pow(0.5)
 }
 
-
-
-
-
-#' Compute the exponential, element-wise.
-#' @keywords Expr
+#' Compute the exponential of the elements
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases exp
-#' @name Expr_exp
-#' @format NULL
 #' @examples
-#' log10123 = suppressWarnings(log(-1:3))
-#' all.equal(
-#'   pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
-#'   exp(1)^log10123
-#' )
+#' pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
 Expr_exp = "use_extendr_wrapper"
 
 
@@ -1051,7 +975,6 @@ Expr_exp = "use_extendr_wrapper"
 #'  - DataType: Exclude any of this DataType
 #'  - List(DataType): Exclude any of these DataType(s)
 #'
-#' @keywords Expr
 #' @return Expr
 #' @aliases exclude
 #' @name Expr_exclude
@@ -1092,15 +1015,12 @@ Expr_exclude = function(columns) {
 #' Are elements finite
 #' @description Returns a boolean output indicating which values are finite.
 #'
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @aliases is_finite
 #' @name Expr_is_finite
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_finite())
 Expr_is_finite = "use_extendr_wrapper"
@@ -1108,9 +1028,6 @@ Expr_is_finite = "use_extendr_wrapper"
 
 #' Are elements infinite
 #' @description Returns a boolean output indicating which values are infinite.
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1130,7 +1047,6 @@ Expr_is_infinite = "use_extendr_wrapper"
 #' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
 #'  NA_real_(R).
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1147,13 +1063,10 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @description Returns a boolean Series indicating which values are not NaN.
 #' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
 #'  NA_real_(R).
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @aliases is_not_nan
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_is_not_nan
 #' @format NULL
 #' @examples
@@ -1168,7 +1081,6 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #' negative value indicate starting (one-indexed) from back
 #' @param length how many elements should slice contain, default NULL is max length
 #'
-#' @keywords Expr
 #' @return Expr
 #' @aliases slice
 #' @name Expr_slice
@@ -1199,7 +1111,6 @@ Expr_slice = function(offset, length = NULL) {
 #' @param other Expr, into Expr
 #' @param upcast bool upcast to, if any supertype of two non equal datatypes.
 #'
-#' @keywords Expr
 #' @return Expr
 #' @aliases Expr_append
 #' @name Expr_append
@@ -1220,7 +1131,6 @@ Expr_append = function(other, upcast = TRUE) {
 
 #' Rechunk memory layout
 #' @description Create a single chunk of memory for this Series.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1240,7 +1150,6 @@ Expr_rechunk = "use_extendr_wrapper"
 
 #' Cumulative sum
 #' @description  Get an array with the cumulative sum computed at every element.
-#' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases Expr_cumsum
@@ -1261,7 +1170,6 @@ Expr_cumsum = function(reverse = FALSE) {
 
 #' Cumulative product
 #' @description Get an array with the cumulative product computed at every element.
-#' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases cumprod
@@ -1282,7 +1190,6 @@ Expr_cumprod = function(reverse = FALSE) {
 
 #' Cumulative minimum
 #' @description  Get an array with the cumulative min computed at every element.
-#' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases cummin
@@ -1304,7 +1211,6 @@ Expr_cummin = function(reverse = FALSE) {
 
 #' Cumulative maximum
 #' @description Get an array with the cumulative max computed at every element.
-#' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases cummin
@@ -1327,7 +1233,6 @@ Expr_cummax = function(reverse = FALSE) {
 #' Cumulative count
 #' @description Get an array with the cumulative count computed at every element.
 #'  Counting from 0 to len
-#' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases cumcount
@@ -1352,7 +1257,6 @@ Expr_cumcount = function(reverse = FALSE) {
 #' Floor
 #' @description Rounds down to the nearest integer value.
 #' Only works on floating point Series.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1370,7 +1274,6 @@ Expr_floor = "use_extendr_wrapper"
 #' Ceiling
 #' @description Rounds up to the nearest integer value.
 #' Only works on floating point Series.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1387,7 +1290,6 @@ Expr_ceil = "use_extendr_wrapper"
 
 #' round
 #' @description Round underlying floating point data by `decimals` digits.
-#' @keywords Expr
 #' @param decimals  integer Number of decimals to round by.
 #' @return Expr
 #' @aliases round
@@ -1407,7 +1309,6 @@ Expr_round = function(decimals) {
 # TODO contribute polars, dot product unwraps if datatypes, pass Result instead
 #' Dot product
 #' @description Compute the dot/inner product between two Expressions.
-#' @keywords Expr
 #' @param other Expr to compute dot product with.
 #' @return Expr
 #' @aliases dot
@@ -1427,7 +1328,6 @@ Expr_dot = function(other) {
 
 #' Mode
 #' @description Compute the most occurring value(s). Can return multiple Values.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1445,14 +1345,11 @@ Expr_mode = "use_extendr_wrapper"
 #' Expr_sort
 #' @description Sort this column. In projection/ selection context the whole column is sorted.
 #' If used in a groupby context, the groups are sorted.
-#' @keywords Expr
 #' @param descending Sort in descending order. When sorting by multiple columns,
 #' can be specified per column by passing a sequence of booleans.
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases sort
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_sort
 #' @format NULL
 #' @examples
@@ -1470,7 +1367,6 @@ Expr_sort = function(descending = FALSE, nulls_last = FALSE) { # param reverse n
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @keywords Expr
 #' @param k numeric k top values to get
 #' @return Expr
 #' @aliases top_k
@@ -1492,7 +1388,6 @@ Expr_top_k = function(k) {
 #' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
 #' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @keywords Expr
 #' @param k numeric k bottom values to get
 #' @return Expr
 #' @aliases bottom_k
@@ -1512,14 +1407,11 @@ Expr_bottom_k = function(k) {
 #' Index of a sort
 #' @description Get the index values that would sort this column.
 #' If 'reverse=True` the smallest elements will be given.
-#' @keywords Expr
 #' @param descending Sort in descending order. When sorting by multiple columns,
 #' can be specified per column by passing a sequence of booleans.
 #' @param nulls_last bool, default FALSE, place Nulls last
 #' @return Expr
 #' @aliases arg_sort
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_sort
 #' @format NULL
 #' @examples
@@ -1533,12 +1425,9 @@ Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) { # param rever
 
 #' Index of min value
 #' @description  Get the index of the minimal value.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_min
 #' @format NULL
 #' @examples
@@ -1549,13 +1438,10 @@ Expr_arg_min = "use_extendr_wrapper"
 
 #' Index of min value
 #' @description  Get the index of the minimal value.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @aliases Expr_arg_max
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @name Expr_arg_max
 #' @format NULL
 #' @examples
@@ -1572,7 +1458,6 @@ Expr_arg_max = "use_extendr_wrapper"
 #' Where to inject element(s) to maintain sorting
 #'
 #' @description  Find indices in self where elements should be inserted into to maintain order.
-#' @keywords Expr
 #' @param element a R value into literal or an expression of an element
 #' @return Expr
 #' @aliases search_sorted
@@ -1595,7 +1480,6 @@ Expr_search_sorted = function(element) {
 #' @param descending Sort in descending order. When sorting by multiple columns,
 #' can be specified per column by passing a sequence of booleans.
 #' @return Expr
-#' @keywords Expr
 #' @aliases sort_by
 #' @name Expr_sort_by
 #' @details
@@ -1674,7 +1558,6 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' Take values by index.
 #' @param indices R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
 #' @return Expr
-#' @keywords Expr
 #' @aliases take
 #' @name Expr_take
 #' @details
@@ -1693,12 +1576,9 @@ Expr_take = function(indices) {
 #' Shift values
 #' @param periods numeric number of periods to shift, may be negative.
 #' @return Expr
-#' @keywords Expr
 #' @aliases shift
 #' @name Expr_shift
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @usage Expr_shift(periods)
 #' @examples
 #' pl$select(
@@ -1715,12 +1595,9 @@ Expr_shift = function(periods = 1) {
 #' @param periods numeric number of periods to shift, may be negative.
 #' @param fill_value Fill None values with the result of this expression.
 #' @return Expr
-#' @keywords Expr
 #' @aliases shift_and_fill
 #' @name Expr_shift_and_fill
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$select(
 #'   pl$lit(0:3),
@@ -1739,12 +1616,9 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' @param strategy default NULL else 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'
 #' @param limit Number of consecutive null values to fill when using the 'forward' or 'backward' strategy.
 #' @return Expr
-#' @keywords Expr
 #' @aliases fill_null
 #' @name Expr_fill_null
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' pl$select(
@@ -1775,12 +1649,9 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
 #'
 #' @param limit Expr or `Into<Expr>`  The number of consecutive null values to backward fill.
 #' @return Expr
-#' @keywords Expr
 #' @aliases backward_fill
 #' @name Expr_backward_fill
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' l = list(a = c(1L, rep(NA_integer_, 3L), 10))
@@ -1798,12 +1669,9 @@ Expr_backward_fill = function(limit = NULL) {
 #'
 #' @param limit Expr or `Into<Expr>`  The number of consecutive null values to forward fill.
 #' @return Expr
-#' @keywords Expr
 #' @aliases forward_fill
 #' @name Expr_forward_fill
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #'
 #' @examples
 #' l = list(a = c(1L, rep(NA_integer_, 3L), 10))
@@ -1824,12 +1692,9 @@ Expr_forward_fill = function(limit = NULL) {
 #' @description Fill missing values with last seen values.
 #'
 #' @return Expr
-#' @keywords Expr
 #' @aliases fill_nan
 #' @name Expr_fill_nan
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' l = list(a = c(1, NaN, NaN, 3))
 #' pl$DataFrame(l)$select(
@@ -1847,7 +1712,6 @@ Expr_fill_nan = function(expr = NULL) {
 #'
 #' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
-#' @keywords Expr
 #' @name Expr_std
 #' @format NULL
 #'
@@ -1861,7 +1725,6 @@ Expr_std = function(ddof = 1) {
 #'
 #' @param ddof integer in range `[0;255]` degrees of freedom
 #' @return Expr (f64 scalar)
-#' @keywords Expr
 #' @name Expr_var
 #' @format NULL
 #'
@@ -1873,29 +1736,23 @@ Expr_var = function(ddof = 1) {
 
 
 #' max
-#' @keywords Expr
 #' @description
 #' Get maximum value.
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$max() == 3) # is true
 Expr_max = "use_extendr_wrapper"
 
 #' min
-#' @keywords Expr
 #' @description
 #' Get minimum value.
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$min() == 1) # is true
 Expr_min = "use_extendr_wrapper"
@@ -1907,27 +1764,21 @@ Expr_min = "use_extendr_wrapper"
 # then NaN.
 
 #' max
-#' @keywords Expr
 #' @description Get maximum value, but propagate/poison encountered `NaN` values.
 #' Get maximum value.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NaN, Inf, 3)))$select(pl$col("x")$nan_max()$is_nan()) # is true
 Expr_nan_max = "use_extendr_wrapper"
 
 #' min propagate NaN
 #'
-#' @keywords Expr
 #' @description Get minimum value, but propagate/poison encountered `NaN` values.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 #' @examples
 #' pl$DataFrame(list(x = c(1, NaN, -Inf, 3)))$select(pl$col("x")$nan_min()$is_nan()) # is true
 Expr_nan_min = "use_extendr_wrapper"
@@ -1935,7 +1786,6 @@ Expr_nan_min = "use_extendr_wrapper"
 
 
 #' sum
-#' @keywords Expr
 #' @description
 #' Get sum value
 #'
@@ -1953,7 +1803,6 @@ Expr_sum = "use_extendr_wrapper"
 
 
 #' mean
-#' @keywords Expr
 #' @description
 #' Get mean value.
 #'
@@ -1965,7 +1814,6 @@ Expr_sum = "use_extendr_wrapper"
 Expr_mean = "use_extendr_wrapper"
 
 #' median
-#' @keywords Expr
 #' @description
 #' Get median value.
 #'
@@ -1979,7 +1827,6 @@ Expr_median = "use_extendr_wrapper"
 ## TODO contribute polars: product does not support in rust i32
 
 #' Product
-#' @keywords Expr
 #' @description Compute the product of an expression.
 #' @aliases  Product
 #' @return Expr
@@ -1992,7 +1839,6 @@ Expr_product = "use_extendr_wrapper"
 
 
 #' Count number of unique values
-#' @keywords Expr
 #' @description
 #' Count number of unique values.
 #' Similar to R length(unique(x))
@@ -2005,7 +1851,6 @@ Expr_product = "use_extendr_wrapper"
 Expr_n_unique = "use_extendr_wrapper"
 
 #'  Approx count unique values
-#' @keywords Expr
 #' @description
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
 #' @aliases approx_n_unique
@@ -2017,7 +1862,6 @@ Expr_n_unique = "use_extendr_wrapper"
 Expr_approx_n_unique = "use_extendr_wrapper"
 
 #' Count `Nulls`
-#' @keywords Expr
 #' @aliases null_count
 #' @return Expr
 #' @docType NULL
@@ -2027,7 +1871,6 @@ Expr_approx_n_unique = "use_extendr_wrapper"
 Expr_null_count = "use_extendr_wrapper"
 
 #' Index of First Unique Value.
-#' @keywords Expr
 #' @aliases arg_unique
 #' @return Expr
 #' @docType NULL
@@ -2038,7 +1881,6 @@ Expr_arg_unique = "use_extendr_wrapper"
 
 
 #' get unique values
-#' @keywords Expr
 #' @description
 #'  Get unique values of this expression.
 #' Similar to R unique()
@@ -2056,7 +1898,6 @@ Expr_unique = function(maintain_order = FALSE) {
 }
 
 #' First
-#' @keywords Expr
 #' @description
 #' Get the first value.
 #' Similar to R head(x,1)
@@ -2068,7 +1909,6 @@ Expr_unique = function(maintain_order = FALSE) {
 Expr_first = "use_extendr_wrapper"
 
 #' Last
-#' @keywords Expr
 #' @description
 #' Get the lastvalue.
 #' Similar to R syntax tail(x,1)
@@ -2082,7 +1922,6 @@ Expr_last = "use_extendr_wrapper"
 
 
 #' over
-#' @keywords Expr
 #' @description
 #' Apply window function over a subgroup.
 #' This is similar to a groupby + aggregation + self join.
@@ -2122,7 +1961,6 @@ Expr_over = function(...) {
 #' @return Expr (boolean)
 #' @docType NULL
 #' @format NULL
-#' @keywords Expr
 #' @name Expr_is_unique
 #' @format NULL
 #'
@@ -2149,7 +1987,6 @@ Expr_is_unique = "use_extendr_wrapper"
 #' @return Expr (boolean)
 #' @docType NULL
 #' @format NULL
-#' @keywords Expr
 #' @name Expr_is_first
 #' @format NULL
 #'
@@ -2177,7 +2014,6 @@ Expr_is_first = "use_extendr_wrapper"
 #' @return Expr (boolean)
 #' @docType NULL
 #' @format NULL
-#' @keywords Expr
 #' @aliases is_duplicated
 #' @name Expr_is_duplicated
 #' @format NULL
@@ -2210,7 +2046,6 @@ Expr_is_duplicated = "use_extendr_wrapper"
 #' @param interpolation string value from choices "nearest", "higher",
 #' "lower", "midpoint", "linear"
 #' @return Expr
-#' @keywords Expr
 #' @aliases quantile
 #' @name Expr_quantile
 #' @format NULL
@@ -2233,7 +2068,6 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
 #'
 #' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
 #' @return Expr
-#' @keywords Expr
 #' @aliases Expr_filter
 #' @format NULL
 #'
@@ -2271,7 +2105,6 @@ Expr_where = Expr_filter
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @keywords Expr
 #' @aliases explode
 #' @format NULL
 #'
@@ -2291,7 +2124,6 @@ Expr_explode = "use_extendr_wrapper"
 
 #' @description
 #' ( flatten is an alias for explode )
-#' @keywords Expr
 #' @aliases flatten
 #' @docType NULL
 #' @format NULL
@@ -2307,7 +2139,6 @@ Expr_flatten = "use_extendr_wrapper"
 #' @param n positive integerish value
 #'
 #' @return Expr
-#' @keywords Expr
 #' @aliases take_every
 #' @format NULL
 #'
@@ -2319,7 +2150,6 @@ Expr_take_every = function(n) {
 
 
 #' Head
-#' @keywords Expr
 #' @description
 #' Get the head n elements.
 #' Similar to R head(x)
@@ -2334,7 +2164,6 @@ Expr_head = function(n = 10) {
 }
 
 #' Tail
-#' @keywords Expr
 #' @description
 #' Get the tail n elements.
 #' Similar to R tail(x)
@@ -2350,7 +2179,6 @@ Expr_tail = function(n = 10) {
 
 
 #' Limit
-#' @keywords Expr
 #' @description
 #' Alias for Head
 #' Get the head n elements.
@@ -2369,7 +2197,6 @@ Expr_limit = function(n = 10) {
 
 #' Exponentiation
 #' @description Raise expression to the power of exponent.
-#' @keywords Expr
 #' @param exponent exponent
 #' @details The R interpreter will replace the `**` with `^`, such that `**` means `^` (except in
 #' strings e.g. "**"). Read further at `?"**"`. In py-polars python `^` is the XOR operator and
@@ -2419,7 +2246,6 @@ Expr_is_in = function(other) {
 
 ## TODO contribute polars, do not panic on by pointing to non positive values
 #' Repeat by
-#' @keywords Expr
 #' @description
 #' Repeat the elements in this Series as specified in the given expression.
 #' The repeated elements are expanded into a `List`.
@@ -2438,7 +2264,6 @@ Expr_repeat_by = function(by) {
 
 
 #' is in between
-#' @keywords Expr
 #' @description
 #' Check if this expression is between start and end.
 #' @param start Lower bound as primitive or datetime
@@ -2486,7 +2311,6 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
 
 
 #' hash
-#' @keywords Expr
 #' @description
 #' Hash the elements in the selection.
 #' The hash value is of type `UInt64`.
@@ -2515,7 +2339,6 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
 
 
 #' reinterpret bits
-#' @keywords Expr
 #' @description
 #' Reinterpret the underlying bits as a signed/unsigned integer.
 #' This operation is only allowed for 64bit integers. For lower bits integers,
@@ -2533,7 +2356,6 @@ Expr_reinterpret = function(signed = TRUE) {
 
 
 #' Inspect evaluated Series
-#' @keywords Expr
 #' @description
 #' Print the value that this expression evaluates to and pass on the value.
 #' The printing will happen when the expression evaluates, not when it is formed.
@@ -2575,7 +2397,6 @@ Expr_inspect = function(fmt = "{}") {
 
 
 #' Interpolate `Nulls`
-#' @keywords Expr
 #' @param method string 'linear' or 'nearest', default "linear"
 #' @description
 #' Fill nulls with linear interpolation over missing values.
@@ -2622,7 +2443,6 @@ prepare_rolling_window_args = function(
 
 
 #' Rolling Min
-#' @keywords Expr
 #' @description
 #' Apply a rolling min (moving min) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -2688,7 +2508,6 @@ Expr_rolling_min = function(
 }
 
 #' Rolling max
-#' @keywords Expr
 #' @description
 #' Apply a rolling max (moving max) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -2754,7 +2573,6 @@ Expr_rolling_max = function(
 }
 
 #' Rolling mean
-#' @keywords Expr
 #' @description
 #' Apply a rolling mean (moving mean) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -2821,7 +2639,6 @@ Expr_rolling_mean = function(
 
 
 #' Rolling sum
-#' @keywords Expr
 #' @description
 #' Apply a rolling sum (moving sum) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -2887,7 +2704,6 @@ Expr_rolling_sum = function(
 
 
 #' Rolling std
-#' @keywords Expr
 #' @description
 #' Apply a rolling std (moving std) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -2953,7 +2769,6 @@ Expr_rolling_std = function(
 }
 
 #' Rolling var
-#' @keywords Expr
 #' @description
 #' Apply a rolling var (moving var) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -3019,7 +2834,6 @@ Expr_rolling_var = function(
 }
 
 #' Rolling median
-#' @keywords Expr
 #' @description
 #' Apply a rolling median (moving median) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -3086,7 +2900,6 @@ Expr_rolling_median = function(
 
 ## TODO contribute polars arg center only allows center + right alignment, also implement left
 #' Rolling quantile
-#' @keywords Expr
 #' @description
 #' Apply a rolling quantile (moving quantile) over the values in this array.
 #' A window of length `window_size` will traverse the array. The values that fill
@@ -3166,7 +2979,6 @@ Expr_rolling_quantile = function(
 #' @param window_size integerish, Size of the rolling window
 #' @param bias bool default = TRUE,  If False, then the calculations are corrected for statistical bias.
 #'
-#' @keywords Expr
 #' @description
 #' Compute a rolling skew.
 #' @return Expr
@@ -3191,7 +3003,6 @@ Expr_rolling_skew = function(window_size, bias = TRUE) {
 
 #' Abs
 #' @description Compute absolute values
-#' @keywords Expr
 #' @return Exprs abs
 #' @docType NULL
 #' @format NULL
@@ -3204,7 +3015,6 @@ Expr_abs = "use_extendr_wrapper"
 #' @description argsort is a alias for arg_sort
 #' @rdname Expr_arg_sort
 #' @aliases argsort
-#' @keywords Expr
 Expr_argsort = Expr_arg_sort
 
 
@@ -3233,7 +3043,6 @@ Expr_argsort = Expr_arg_sort
 #' @param descending Rank in descending order.
 #' @return  Expr
 #' @aliases rank
-#' @keywords Expr
 #' @examples
 #' #  The 'average' method:
 #' df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
@@ -3254,7 +3063,6 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #' @param null_behavior option default 'ignore', else 'drop'
 #' @return  Expr
 #' @aliases diff
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(list(a = c(20L, 10L, 30L, 40L)))$select(
 #'   pl$col("a")$diff()$alias("diff_default"),
@@ -3276,7 +3084,6 @@ Expr_diff = function(n = 1, null_behavior = "ignore") {
 #' @param n  periods to shift for forming percent change.
 #' @return  Expr
 #' @aliases pct_change
-#' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
 #' df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
@@ -3292,7 +3099,6 @@ Expr_pct_change = function(n = 1) {
 #' @param bias If False, then the calculations are corrected for statistical bias.
 #' @return  Expr
 #' @aliases skew
-#' @keywords Expr
 #' @details
 #' For normally distributed data, the skewness should be about zero. For
 #' unimodal continuous distributions, a skewness value greater than zero means
@@ -3337,7 +3143,6 @@ Expr_skew = function(bias = TRUE) {
 #'
 #' @return  Expr
 #' @aliases kurtosis
-#' @keywords Expr
 #' @details
 #' Kurtosis is the fourth central moment divided by the square of the
 #' variance. If Fisher's definition is used, then 3.0 is subtracted from
@@ -3366,7 +3171,6 @@ Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
 #' @param max Maximum Value, ints and floats or any literal expression of ints and floats
 #' @return  Expr
 #' @aliases clip
-#' @keywords Expr
 #' @details
 #' Only works for numerical types.
 #' If you want to clip other dtypes, consider writing a "when, then, otherwise"
@@ -3382,7 +3186,6 @@ Expr_clip = function(min, max) {
 #' Clip min
 #' @rdname Expr_clip
 #' @aliases clip_min
-#' @keywords Expr
 #' @examples
 #' df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
 Expr_clip_min = function(min) {
@@ -3392,7 +3195,6 @@ Expr_clip_min = function(min) {
 #' Clip max
 #' @rdname Expr_clip
 #' @aliases clip_max
-#' @keywords Expr
 #' @examples
 #' df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
 Expr_clip_max = function(max) {
@@ -3413,7 +3215,6 @@ Expr_clip_max = function(max) {
 #' @format NULL
 #' @aliases upper_bound
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(i32 = 1L, f64 = 1)$select(pl$all()$upper_bound())
 Expr_upper_bound = "use_extendr_wrapper"
@@ -3423,7 +3224,6 @@ Expr_upper_bound = "use_extendr_wrapper"
 #' @rdname Expr_upper_lower_bound
 #' @aliases lower_bound
 #' @format NULL
-#' @keywords Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
@@ -3440,7 +3240,6 @@ Expr_lower_bound = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases sign
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(.9, -0, 0, 4, NA_real_))$select(pl$col("a")$sign())
 Expr_sign = "use_extendr_wrapper"
@@ -3455,7 +3254,6 @@ Expr_sign = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases sin
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$sin())
 Expr_sin = "use_extendr_wrapper"
@@ -3470,7 +3268,6 @@ Expr_sin = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases cos
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$cos())
 Expr_cos = "use_extendr_wrapper"
@@ -3485,7 +3282,6 @@ Expr_cos = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases Tan
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$tan())
 Expr_tan = "use_extendr_wrapper"
@@ -3499,7 +3295,6 @@ Expr_tan = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arcsin
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsin())
 Expr_arcsin = "use_extendr_wrapper"
@@ -3513,7 +3308,6 @@ Expr_arcsin = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arccos
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccos())
 Expr_arccos = "use_extendr_wrapper"
@@ -3528,7 +3322,6 @@ Expr_arccos = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arctan
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctan())
 Expr_arctan = "use_extendr_wrapper"
@@ -3544,7 +3337,6 @@ Expr_arctan = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases sinh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$sinh())
 Expr_sinh = "use_extendr_wrapper"
@@ -3558,7 +3350,6 @@ Expr_sinh = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases cosh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, acosh(1.5), 0, 1, NA_real_))$select(pl$col("a")$cosh())
 Expr_cosh = "use_extendr_wrapper"
@@ -3572,7 +3363,6 @@ Expr_cosh = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases tanh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$tanh())
 Expr_tanh = "use_extendr_wrapper"
@@ -3586,7 +3376,6 @@ Expr_tanh = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arcsinh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsinh())
 Expr_arcsinh = "use_extendr_wrapper"
@@ -3600,7 +3389,6 @@ Expr_arcsinh = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arccosh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccosh())
 Expr_arccosh = "use_extendr_wrapper"
@@ -3614,7 +3402,6 @@ Expr_arccosh = "use_extendr_wrapper"
 #' @format NULL
 #' @aliases arctanh
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctanh())
 Expr_arctanh = "use_extendr_wrapper"
@@ -3629,7 +3416,6 @@ Expr_arctanh = "use_extendr_wrapper"
 #' @return  Expr
 #' @aliases reshape
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$select(pl$lit(1:12)$reshape(c(3, 4)))
 #' pl$select(pl$lit(1:12)$reshape(c(3, -1)))
@@ -3649,7 +3435,6 @@ Expr_reshape = function(dims) {
 #' @return  Expr
 #' @aliases shuffle
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
 Expr_shuffle = function(seed = NULL) {
@@ -3674,7 +3459,6 @@ Expr_shuffle = function(seed = NULL) {
 #' @return  Expr
 #' @aliases sample
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(a = 1:3)
 #' df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
@@ -3800,7 +3584,6 @@ prepare_alpha = function(
 #' @return Expr
 #' @aliases ewm_mean
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com = 1))
 #'
@@ -3816,7 +3599,6 @@ Expr_ewm_mean = function(
 #' @rdname Expr_ewm_mean_std_var
 #' @param bias  When bias=FALSE`, apply a correction to make the estimate statistically unbiased.
 #' @aliases ewm_std
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
 Expr_ewm_std = function(
@@ -3829,7 +3611,6 @@ Expr_ewm_std = function(
 #' Ewm_var
 #' @rdname Expr_ewm_mean_std_var
 #' @aliases ewm_var
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
 Expr_ewm_var = function(
@@ -3850,7 +3631,6 @@ Expr_ewm_var = function(
 #' @return  Expr
 #' @aliases extend_constant
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$select(
 #'   pl$lit(c("5", "Bob_is_not_a_number"))
@@ -3884,7 +3664,6 @@ Expr_extend_constant = function(value, n) {
 #' if self$len() > 1 , then the expression instructs the series to append onto
 #' itself n time and rewrite memory
 #'
-#' @keywords Expr
 #' @examples
 #'
 #' pl$select(
@@ -3911,7 +3690,6 @@ Expr_rep = function(n, rechunk = TRUE) {
 #' throw error.
 #' @return  Expr
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$select(pl$lit(c(1, 2, 3))$rep_extend(1:3, n = 5))
 Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
@@ -3929,7 +3707,6 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
 #' columns
 #' @return  R object
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$lit(1:3)$to_r()
 #' pl$expr_to_r(pl$lit(1:3))
@@ -3961,7 +3738,6 @@ pl$expr_to_r = function(expr, df = NULL, i = 0) {
 #' @param parallel Better to turn this off in the aggregation context, as it can
 #' lead to contention.
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' df = pl$DataFrame(iris)$select(pl$col("Species")$value_counts())
 #' df
@@ -3980,7 +3756,6 @@ Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
 #' @format NULL
 #' @aliases unique_counts
 #' @format NULL
-#' @keywords Expr
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
 Expr_unique_counts = "use_extendr_wrapper"
@@ -3990,7 +3765,6 @@ Expr_unique_counts = "use_extendr_wrapper"
 #' @param base numeric base value for log, default base::exp(1)
 #'
 #' @description  Compute the base x logarithm of the input array, element-wise.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -4004,7 +3778,6 @@ Expr_log = function(base = base::exp(1)) {
 
 #' 10-base log
 #' @description Compute the base 10 logarithm of the input array, element-wise.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -4024,7 +3797,6 @@ Expr_log10 = "use_extendr_wrapper"
 #' Return Null if input is not values
 #' @param base  Given exponential base, defaults to `e`
 #' @param normalize Normalize pk if it doesn't sum to 1.
-#' @keywords Expr
 #' @return Expr
 #' @aliases entropy
 #' @examples
@@ -4048,7 +3820,6 @@ Expr_entropy = function(base = base::exp(1), normalize = TRUE) {
 #' breaking change.
 #' This can be really slow as it can have `O(n^2)` complexity. Don't use this
 #'         for operations that visit all elements.
-#' @keywords Expr
 #' @return Expr
 #' @aliases cumulative_eval
 #' @examples
@@ -4063,7 +3834,6 @@ Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
 #' @description  Flags the expression as 'sorted'.
 #* Enables downstream code to user fast paths for sorted arrays.
 #' @param descending Sort the columns in descending order.
-#' @keywords Expr
 #' @return Expr
 #' @aliases set_sorted
 #' @examples
@@ -4084,7 +3854,6 @@ Expr_set_sorted = function(descending = FALSE) {
 
 #' Wrap column in list
 #' @description  Aggregate values into a list.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -4106,7 +3875,6 @@ Expr_implode = "use_extendr_wrapper"
 #' @description
 #' Shrink to the dtype needed to fit the extrema of this `[Series]`.
 #' This can be used to reduce memory pressure.
-#' @keywords Expr
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -4130,7 +3898,6 @@ Expr_shrink_dtype = "use_extendr_wrapper"
 #' @description
 #' Create an object namespace of all list related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases list_ns
 #' @examples
@@ -4155,7 +3922,6 @@ Expr_list = method_as_property(function() {
 #' @description
 #' Create an object namespace of all string related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases str_ns
 #' @examples
@@ -4171,7 +3937,6 @@ Expr_str = method_as_property(function() {
 #' @description
 #' Create an object namespace of all binary related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases bin_ns
 #' @examples
@@ -4186,7 +3951,6 @@ Expr_bin = method_as_property(function() {
 #' @description
 #' Create an object namespace of all datetime related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases dt_ns
 #' @examples
@@ -4201,7 +3965,6 @@ Expr_dt = method_as_property(function() {
 #' @description
 #' Create an object namespace of all meta related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases meta_ns
 #' @examples
@@ -4216,7 +3979,6 @@ Expr_meta = method_as_property(function() {
 #' @description
 #' Create an object namespace of all name related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases name_ns
 #' @examples
@@ -4231,7 +3993,6 @@ Expr_name = method_as_property(function() {
 #' @description
 #' Create an object namespace of all cat related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases cat_ns
 #' @examples
@@ -4246,7 +4007,6 @@ Expr_cat = method_as_property(function() {
 #' @description
 #' Create an object namespace of all struct related methods.
 #' See the individual method pages for full details
-#' @keywords Expr
 #' @return Expr
 #' @aliases struct_ns
 #' @examples
@@ -4259,10 +4019,8 @@ Expr_struct = method_as_property(function() {
 
 #' to_struct
 #' @description pass expr to pl$struct
-#' @keywords Expr
 #' @return Expr
 #' @aliases expr_to_struct
-#' @keywords Expr
 #' @examples
 #' e = pl$all()$to_struct()$alias("my_struct")
 #' print(e)
@@ -4275,7 +4033,6 @@ Expr_to_struct = function() {
 #' Literal to Series
 #' @description
 #' collect an expression based on literals into a Series
-#' @keywords Expr
 #' @return Series
 #' @aliases lit_to_s
 #' @examples
@@ -4295,7 +4052,6 @@ Expr_lit_to_s = function() {
 #' Literal to DataFrame
 #' @description
 #' collect an expression based on literals into a DataFrame
-#' @keywords Expr
 #' @return Series
 #' @aliases lit_to_df
 #' @examples

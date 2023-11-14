@@ -15,4 +15,4 @@ Get median value.
 \examples{
 pl$DataFrame(list(x = c(1, NA, 2)))$select(pl$col("x")$median() == 1.5) # is true
 }
-\keyword{Expr}
+\keyword{datasets}

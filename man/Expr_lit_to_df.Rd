@@ -24,4 +24,3 @@ collect an expression based on literals into a DataFrame
   $lit_to_df()
 )
 }
-\keyword{Expr}

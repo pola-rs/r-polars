@@ -24,4 +24,3 @@ pl$DataFrame(list(a = c(20L, 10L, 30L, 40L)))$select(
   pl$col("a")$diff(2, "ignore")$alias("diff_2_ignore")
 )
 }
-\keyword{Expr}

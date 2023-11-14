@@ -19,4 +19,3 @@ Take every nth value in the Series and return as a new Series.
 \examples{
 pl$DataFrame(list(a = 0:24))$select(pl$col("a")$take_every(6))
 }
-\keyword{Expr}

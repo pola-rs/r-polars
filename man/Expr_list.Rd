@@ -28,4 +28,3 @@ df_with_list$with_columns(
   pl$col("value")$list$lengths()$alias("group_size")
 )
 }
-\keyword{Expr}

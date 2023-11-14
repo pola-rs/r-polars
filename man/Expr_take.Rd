@@ -23,4 +23,3 @@ exceeding
 \examples{
 pl$select(pl$lit(0:10)$take(c(1, 8, 0, 7)))
 }
-\keyword{Expr}

@@ -18,9 +18,6 @@ Expr
 \description{
 Shift the values by a given period and fill the resulting null values.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
 pl$select(
   pl$lit(0:3),
@@ -28,4 +25,3 @@ pl$select(
   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
 )
 }
-\keyword{Expr}

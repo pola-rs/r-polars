@@ -20,4 +20,4 @@ pl$DataFrame(list(
   pl$col("a")$floor()
 )
 }
-\keyword{Expr}
+\keyword{datasets}

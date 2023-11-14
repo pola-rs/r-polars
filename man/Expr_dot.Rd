@@ -24,4 +24,3 @@ pl$DataFrame(
   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 )
 }
-\keyword{Expr}

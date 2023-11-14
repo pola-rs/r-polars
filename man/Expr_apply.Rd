@@ -156,4 +156,3 @@ pl$LazyFrame(iris)$group_by("Species")$agg(
 )$collect() |> system.time()
 
 }
-\keyword{Expr}

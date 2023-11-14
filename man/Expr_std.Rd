@@ -18,4 +18,3 @@ Get Standard Deviation
 \examples{
 pl$select(pl$lit(1:5)$std())
 }
-\keyword{Expr}

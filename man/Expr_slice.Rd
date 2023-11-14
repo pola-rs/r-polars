@@ -35,4 +35,3 @@ pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(80)
 )
 }
-\keyword{Expr}

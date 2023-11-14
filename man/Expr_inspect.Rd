@@ -24,4 +24,3 @@ pl$select(pl$lit(1:5)$inspect(
   "before dropping half the column it was:{}and not it is dropped"
 )$head(2))
 }
-\keyword{Expr}

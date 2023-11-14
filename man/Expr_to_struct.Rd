@@ -18,4 +18,3 @@ e = pl$all()$to_struct()$alias("my_struct")
 print(e)
 pl$DataFrame(iris)$select(e)
 }
-\keyword{Expr}

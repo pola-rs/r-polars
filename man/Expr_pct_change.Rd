@@ -23,4 +23,3 @@ Computes the change from the previous row by default.
 df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
 df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
 }
-\keyword{Expr}

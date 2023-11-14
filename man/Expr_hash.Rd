@@ -33,4 +33,3 @@ Possibly a bug in upstream rust-polars project.
 df = pl$DataFrame(iris)
 df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
 }
-\keyword{Expr}

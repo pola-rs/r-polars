@@ -25,4 +25,3 @@ pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum_reversed")
 )
 }
-\keyword{Expr}

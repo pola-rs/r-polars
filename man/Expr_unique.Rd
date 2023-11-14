@@ -19,4 +19,3 @@ Similar to R unique()
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$unique())
 }
-\keyword{Expr}

@@ -75,4 +75,3 @@ pl$DataFrame(list(a = 1:6))$select(
   pl$col("a")$rolling_quantile(window_size = 2, quantile = .5)
 )
 }
-\keyword{Expr}

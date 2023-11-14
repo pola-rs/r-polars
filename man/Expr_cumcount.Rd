@@ -29,4 +29,3 @@ pl$DataFrame(list(a = 1:4))$select(
   pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
 )
 }
-\keyword{Expr}

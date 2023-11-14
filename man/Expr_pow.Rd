@@ -35,4 +35,3 @@ get("^")(2, pl$lit(2)) |> safe_chr()
 get("**")(2, pl$lit(2)) |> safe_chr()
 get("**")(2, 2) |> safe_chr()
 }
-\keyword{Expr}

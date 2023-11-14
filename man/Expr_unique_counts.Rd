@@ -18,4 +18,4 @@ values, only the counts and might be faster
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
 }
-\keyword{Expr}
+\keyword{datasets}

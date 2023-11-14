@@ -2,22 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_and}
 \alias{Expr_and}
-\title{And}
+\title{Apply logical AND on two expressions}
 \usage{
 Expr_and(other)
 }
 \arguments{
-\item{other}{literal or Robj which can become a literal}
+\item{other}{Literal or object that can be converted to a literal}
 }
 \value{
 Expr
 }
 \description{
-combine to boolean expressions with AND
+Combine two boolean expressions with AND.
 }
 \examples{
 pl$lit(TRUE) & TRUE
 pl$lit(TRUE)$and(pl$lit(TRUE))
 }
-\keyword{Expr}
-\keyword{Expr_operators}

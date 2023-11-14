@@ -19,4 +19,3 @@ Compute the base x logarithm of the input array, element-wise.
 \examples{
 pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
 }
-\keyword{Expr}

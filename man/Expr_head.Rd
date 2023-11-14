@@ -21,4 +21,3 @@ Similar to R head(x)
 # get 3 first elements
 pl$DataFrame(list(x = 1:11))$select(pl$col("x")$head(3))
 }
-\keyword{Expr}

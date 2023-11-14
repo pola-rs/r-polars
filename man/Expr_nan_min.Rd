@@ -12,10 +12,7 @@ Expr
 \description{
 Get minimum value, but propagate/poison encountered \code{NaN} values.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
 pl$DataFrame(list(x = c(1, NaN, -Inf, 3)))$select(pl$col("x")$nan_min()$is_nan()) # is true
 }
-\keyword{Expr}
+\keyword{datasets}

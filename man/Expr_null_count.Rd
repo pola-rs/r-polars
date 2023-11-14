@@ -16,4 +16,4 @@ Count \code{Nulls}
 \examples{
 pl$select(pl$lit(c(NA, "a", NA, "b"))$null_count())
 }
-\keyword{Expr}
+\keyword{datasets}
