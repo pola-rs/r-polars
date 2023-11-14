@@ -11,9 +11,15 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-min_exprs <- function(exprs) .Call(wrap__min_exprs, exprs)
+min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
-max_exprs <- function(exprs) .Call(wrap__max_exprs, exprs)
+max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
+
+all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
+
+any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
+
+sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 

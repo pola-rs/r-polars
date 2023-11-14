@@ -2377,3 +2377,73 @@ test_that("peak_min, peak_max", {
     data.frame(peak_max = c(rep(FALSE, 2), TRUE, rep(FALSE, 3), TRUE, FALSE))
   )
 })
+
+test_that("pl$any_horizontal works", {
+  df = pl$DataFrame(
+    a = c(FALSE, FALSE, NA, NA),
+    b = c(TRUE, FALSE, NA, NA),
+    c = c(TRUE, FALSE, NA, TRUE)
+  )
+  expect_identical(
+    df$select(
+      pl$any_horizontal("a", "b", "c")$alias("any")
+    )$to_list(),
+    list(any = c(TRUE, FALSE, NA, TRUE))
+  )
+})
+
+test_that("pl$all_horizontal works", {
+  df = pl$DataFrame(
+    a = c(TRUE, TRUE, NA, NA),
+    b = c(TRUE, FALSE, NA, NA),
+    c = c(TRUE, FALSE, NA, TRUE)
+  )
+  expect_identical(
+    df$select(
+      pl$all_horizontal("a", "b", "c")$alias("all")
+    )$to_list(),
+    list(all = c(TRUE, FALSE, NA, NA))
+  )
+})
+
+test_that("pl$sum_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
+    )$to_list(),
+    list(sum = c(6, 8, 2, -Inf))
+  )
+})
+
+test_that("pl$max_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$max_horizontal("a", "b", "c", 2)$alias("max")
+    )$to_list(),
+    list(max = c(3, 4, 2, 2))
+  )
+})
+
+test_that("pl$min_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$min_horizontal("a", "b", "c", 2)$alias("min")
+    )$to_list(),
+    list(min = c(1, 2, 2, -Inf))
+  )
+})
