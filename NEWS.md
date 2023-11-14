@@ -7,7 +7,6 @@
   columns to these functions will now compute the min/max/sum in each column 
   separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and 
   `pl$sum_horizontal()` instead for rowwise computation (#508).
-  
 - `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
   (#511).
 
