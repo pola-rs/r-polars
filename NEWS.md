@@ -2,7 +2,7 @@
 
 ## Breaking changes
 
-- The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`
+- The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
   and `pl$sum()` is deprecated and will be removed in 0.12.0. Passing several 
   columns to these functions will now compute the min/max/sum in each column 
   separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and 
@@ -13,7 +13,7 @@
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 - Removed argument `name` in `pl$date_range()`, which was deprecated for a while
   (#503).
-- New functions `pl$min_horizontal()`, `pl$max_horizontal()`,`pl$sum_horizontal()`,
+- New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
 
 # polars 0.10.1
