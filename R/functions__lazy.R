@@ -23,9 +23,6 @@ pl$all = function(name = NULL) {
 }
 
 
-
-
-
 #' Start Expression with a column
 #' @name pl_col
 #' @description

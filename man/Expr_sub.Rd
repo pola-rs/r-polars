@@ -3,31 +3,29 @@
 \name{Expr_sub}
 \alias{Expr_sub}
 \alias{-.Expr}
-\title{Sub}
+\title{Substract two expressions}
 \usage{
 Expr_sub(other)
 
 \method{-}{Expr}(e1, e2)
 }
 \arguments{
-\item{other}{literal or Robj which can become a literal}
+\item{other}{Literal or object that can be converted to a literal}
 
-\item{e1}{lhs Expr}
+\item{e1}{Expr only}
 
-\item{e2}{rhs Expr or anything which can become a literal Expression}
+\item{e2}{Expr or anything that can be converted to a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-Substract
+The RHS can either be an Expr or an object that can be converted to a literal
+(e.g an integer).
 }
 \examples{
-# three syntaxes same result
 pl$lit(5) - 10
 pl$lit(5) - pl$lit(10)
 pl$lit(5)$sub(pl$lit(10))
 -pl$lit(5)
 }
-\keyword{Expr}
-\keyword{Expr_operators}

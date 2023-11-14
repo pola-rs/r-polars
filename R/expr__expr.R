@@ -1,10 +1,8 @@
-#' @title Polars Expressions
+#' Polars Expressions
 #'
-#' @name Expr_class
-#' @return not applicable
-#' @description Expressions are all the functions and methods that are applicable
-#' to a Polars DataFrame. They can be split into the following categories (following
-#' the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
+#' Expressions are all the functions and methods that are applicable to a Polars
+#' DataFrame or LazyFrame. They can be split into the following categories
+#' (following the [Py-Polars classification](https://pola-rs.github.io/polars/py-polars/html/reference/expressions/)):
 #'  * Aggregate
 #'  * Binary
 #'  * Categorical
@@ -17,60 +15,58 @@
 #'  * Struct
 #'  * Temporal
 #'
+#' @name Expr_class
+#' @rdname Expr_class
+#'
+#' @return not applicable
 NULL
 
 
-#' Print expr
+#' S3 method to print an Expr
 #'
 #' @param x Expr
-#' @param ... not used
+#' @param ... Not used.
 #' @keywords Expr
 #'
-#' @return self
+#' @return No value returned, it prints in the console.
 #' @export
-#' @keywords internal
-#' @noRd
+#' @rdname Expr_print
 #'
 #' @examples
-#' pl$col("some_column")$sum()$over("some_other_column")
+#' print(pl$col("some_column")$sum())
 print.Expr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)
 }
 
-#' internal method print Expr
-#' @name Expr_print
-#' @keywords Expr
-#' @examples
-#' pl$col("some_column")$sum()$over("some_other_column")$print()
-#' @return invisible self
-#' @examples pl$DataFrame(iris)
+#' @rdname Expr_print
 Expr_print = function() {
   .pr$Expr$print(self)
   invisible(self)
 }
 
-#' @title auto complete $-access into a polars object
-#' @description called by the interactive R session internally
-#' @param x Expr
-#' @param pattern code-stump as string to auto-complete
+#' Auto complete $-access into a polars object
+#'
+#' Called by the interactive R session internally
+#'
+#' @param x Name of an `Expr` object
+#' @param pattern String used to auto-complete
 #' @inherit .DollarNames.DataFrame return
 #' @export
-#' @noRd
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
   paste0(ls(Expr, pattern = pattern), "()")
 }
 
-#' @title as.list Expr
-#' @description wraps an Expr in a list
+#' S3 method to convert an Expr to a list
+#'
 #' @param x Expr
-#' @param ... not used
+#' @param ... Not used.
+#'
 #' @return One Expr wrapped in a list
-#' @noRd
 #' @export
-#' @keywords Expr
+#' @keywords internal
 as.list.Expr = function(x, ...) {
   list(x)
 }
@@ -156,13 +152,14 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 }
 
 
-#' Add
-#' @description Addition
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Add two expressions
+#'
+#' The RHS can either be an Expr or an object that can be converted to a literal
+#' (e.g an integer).
+#'
+#' @param other Literal or object that can be converted to a literal
+#' @return Expr
 #' @examples
-#' # three syntaxes same result
 #' pl$lit(5) + 10
 #' pl$lit(5) + pl$lit(10)
 #' pl$lit(5)$add(pl$lit(10))
@@ -170,10 +167,11 @@ wrap_elist_result = function(elist, str_to_lit = TRUE) {
 Expr_add = function(other) {
   .pr$Expr$add(self, other) |> unwrap("in $add()")
 }
+
 #' @export
 #' @rdname Expr_add
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @param e1 Expr only
+#' @param e2 Expr or anything that can be converted to a literal
 "+.Expr" = function(e1, e2) {
   if (missing(e2)) {
     return(e1)
@@ -181,13 +179,11 @@ Expr_add = function(other) {
   result(wrap_e(e1)$add(e2)) |> unwrap("using the '+'-operator")
 }
 
-#' Div
-#' @description Divide
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Divide two expressions
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' # three syntaxes same result
 #' pl$lit(5) / 10
 #' pl$lit(5) / pl$lit(10)
 #' pl$lit(5)$div(pl$lit(10))
@@ -196,17 +192,14 @@ Expr_div = function(other) {
 }
 #' @export
 #' @rdname Expr_div
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 "/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
-#' Sub
-#' @description Substract
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Substract two expressions
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' # three syntaxes same result
 #' pl$lit(5) - 10
 #' pl$lit(5) - pl$lit(10)
 #' pl$lit(5)$sub(pl$lit(10))
@@ -216,21 +209,18 @@ Expr_sub = function(other) {
 }
 #' @export
 #' @rdname Expr_sub
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 "-.Expr" = function(e1, e2) {
   result(
     if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
   ) |> unwrap("using the '-'-operator")
 }
 
-#' Mul *
-#' @description Multiplication
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Multiply two expressions
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' # three syntaxes same result
 #' pl$lit(5) * 10
 #' pl$lit(5) * pl$lit(10)
 #' pl$lit(5)$mul(pl$lit(10))
@@ -240,17 +230,13 @@ Expr_mul = Expr_mul = function(other) {
 
 #' @export
 #' @rdname Expr_mul
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 "*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
-#' Not !
-#' @description not method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
-#' @usage Expr_is_not(other)
+#' Negate a boolean expression
+#'
+#' @inherit Expr_add description return
 #' @docType NULL
 #' @format NULL
 #' @examples
@@ -263,13 +249,11 @@ Expr_is_not = "use_extendr_wrapper"
 #' @param x Expr
 "!.Expr" = function(x) x$is_not()
 
-#' Less Than <
-#' @description lt method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check strictly lower inequality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(5) < 10
 #' pl$lit(5) < pl$lit(10)
 #' pl$lit(5)$lt(pl$lit(10))
@@ -277,20 +261,15 @@ Expr_lt = function(other) {
   .pr$Expr$lt(self, other) |> unwrap("in $lt()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_lt
 "<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
-#' GreaterThan <
-#' @description gt method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check strictly greater inequality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(2) > 1
 #' pl$lit(2) > pl$lit(1)
 #' pl$lit(2)$gt(pl$lit(1))
@@ -298,20 +277,15 @@ Expr_gt = function(other) {
   .pr$Expr$gt(self, other) |> unwrap("in $gt()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_gt
 ">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
-#' Equal ==
-#' @description eq method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check equality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(2) == 2
 #' pl$lit(2) == pl$lit(2)
 #' pl$lit(2)$eq(pl$lit(2))
@@ -319,21 +293,16 @@ Expr_eq = function(other) {
   .pr$Expr$eq(self, other) |> unwrap("in $eq()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_eq
 "==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 
-#' Not Equal !=
-#' @description neq method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check inequality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(1) != 2
 #' pl$lit(1) != pl$lit(2)
 #' pl$lit(1)$neq(pl$lit(2))
@@ -341,20 +310,15 @@ Expr_neq = function(other) {
   .pr$Expr$neq(self, other) |> unwrap("in $neq()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_neq
 "!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
-#' Less Than Or Equal <=
-#' @description lt_eq method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check lower or equal inequality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(2) <= 2
 #' pl$lit(2) <= pl$lit(2)
 #' pl$lit(2)$lt_eq(pl$lit(2))
@@ -362,21 +326,16 @@ Expr_lt_eq = function(other) {
   .pr$Expr$lt_eq(self, other) |> unwrap("in $lt_eq()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_lt_eq
 "<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
-#' Greater Than Or Equal <=
-#' @description gt_eq method and operator
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
-#' @return Exprs
+#' Check greater or equal inequality
+#'
+#' @inherit Expr_add description params return
+#'
 #' @examples
-#' #' #three syntaxes same result
 #' pl$lit(2) >= 2
 #' pl$lit(2) >= pl$lit(2)
 #' pl$lit(2)$gt_eq(pl$lit(2))
@@ -384,10 +343,7 @@ Expr_gt_eq = function(other) {
   .pr$Expr$gt_eq(self, other) |> unwrap("in $gt_eq()")
 }
 #' @export
-#' @details
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param e1 lhs Expr
-#' @param e2 rhs Expr or anything which can become a literal Expression
+#' @inheritParams Expr_add
 #' @rdname Expr_gt_eq
 ">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
@@ -847,7 +803,7 @@ Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FAL
 #'   r_vec * 2L
 #' })
 #'
-#' #' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+#' # R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 #'
 #' # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
 #' pl$LazyFrame(iris)$group_by("Species")$agg(
