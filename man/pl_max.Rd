@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_max}
 \alias{pl_max}
-\title{max across expressions / literals / Series}
+\title{Find maximum value in one or several columns}
 \arguments{
 \item{...}{is a:
 If one arg:
@@ -14,23 +14,26 @@ If one arg:
 }
 
 If several args, then wrapped in a list and handled as above.}
+
+\item{verbose}{Show the deprecation message when several columns or Expr are
+passed in \code{...}. Will be removed in 0.12.0.}
 }
 \value{
 Expr
 }
 \description{
-Folds the expressions from left to right, keeping the first non-null value.
+This is syntactic sugar for \code{pl$col(...)$max()}.
 }
 \examples{
 df = pl$DataFrame(
   a = NA_real_,
   b = c(1:2, NA_real_, NA_real_),
-  c = c(1:3, NA_real_)
+  c = c(1:4)
 )
-# use coalesce to get first non Null value for each row, otherwise insert 99.9
-df$with_columns(
-  pl$coalesce("a", "b", "c", 99.9)$alias("d")
-)
+df
 
+df$with_columns(
+  pl$max("a", "b", "c")
+)
 }
 \keyword{Expr_new}

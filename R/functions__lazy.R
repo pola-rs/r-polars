@@ -453,9 +453,11 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 }
 
 
-#' sum across expressions / literals / Series
-#' @description  syntactic sugar for starting a expression with sum
+#' Compute sum in one or several columns
+#'
+#' This is syntactic sugar for `pl$col(...)$sum()`.
 #' @name pl_sum
+#'
 #' @param ...  is a:
 #' If one arg:
 #'  - Series or Expr, same as `column$sum()`
@@ -464,6 +466,9 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
+#' @param verbose Show the deprecation message when several columns or Expr are
+#' passed in `...`. Will be removed in 0.12.0.
+#'
 #' @return Expr
 #' @keywords Expr_new
 #' @examples
@@ -473,20 +478,12 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' # column as Expr (prefer pl$col("Petal.Width")$sum())
 #' pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
 #'
-#' # column as numeric
-#' pl$DataFrame()$select(pl$sum(1:5))
-#'
-#'
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
-#' # column as list
-#' df$with_columns(pl$sum(list("a", "c")))
-#' df$with_columns(pl$sum(list("a", "c", 42L)))
-#'
-#' # two eqivalent lines
-#' df$with_columns(pl$sum(list(pl$col("a") + pl$col("b"), "c")))
-#' df$with_columns(pl$sum(list("*")))
-pl$sum = function(...) {
+#' # Compute sum in several columns
+#' df$with_columns(pl$sum("a", "c"))
+#' df$with_columns(pl$sum("*"))
+pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -499,15 +496,18 @@ pl$sum = function(...) {
     return(pl$lit(column)$sum())
   }
   if (is.list(column)) {
-    pra = do.call(construct_ProtoExprArray, column)
-    return(sum_exprs(pra))
+    if (verbose) {
+      warning("This usage of `pl$sum()` used to compute the sum rowwise. This is now deprecated, use `pl$sum_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
+    }
+    return(pl$col(column)$sum())
   }
   stop("pl$sum: this input is not supported")
 }
 
 
-#' min across expressions / literals / Series
-#' @description Folds the expressions from left to right, keeping the first non-null value.
+#' Find minimum value in one or several columns
+#'
+#' This is syntactic sugar for `pl$col(...)$min()`.
 #' @name pl_min
 #' @param ...  is a:
 #' If one arg:
@@ -515,22 +515,24 @@ pl$sum = function(...) {
 #'  - string, same as `pl$col(column)$sum()`
 #'  - numeric, same as `pl$lit(column)$sum()`
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
-#'
 #' If several args, then wrapped in a list and handled as above.
+#' @param verbose Show the deprecation message when several columns or Expr are
+#' passed in `...`. Will be removed in 0.12.0.
+#'
 #' @return Expr
 #' @keywords Expr_new
 #' @examples
 #' df = pl$DataFrame(
 #'   a = NA_real_,
-#'   b = c(2:1, NA_real_, NA_real_),
-#'   c = c(1:3, NA_real_),
-#'   d = c(1:2, NA_real_, -Inf)
+#'   b = c(1:2, NA_real_, NA_real_),
+#'   c = c(1:4)
 #' )
-#' # use min to get first non Null value for each row, otherwise insert 99.9
+#' df
+#'
 #' df$with_columns(
-#'   pl$min("a", "b", "c", 99.9)$alias("d")
+#'   pl$min("a", "b", "c")
 #' )
-pl$min = function(...) {
+pl$min = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -543,9 +545,10 @@ pl$min = function(...) {
     return(pl$lit(column)$min())
   }
   if (is.list(column)) {
-    warning("This usage of `pl$min()` is deprecated. To find the minimum value rowwise, use `pl$min_horizontal()` instead. This will be removed in 0.12.0.")
-    pra = do.call(construct_ProtoExprArray, column)
-    return(min_horizontal(pra))
+    if (verbose) {
+      warning("This usage of `pl$min()` used to find the minimum value rowwise. This is now deprecated, use `pl$min_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
+    }
+    return(pl$col(column)$min())
   }
   stop("pl$min: this input is not supported")
 }
@@ -554,8 +557,9 @@ pl$min = function(...) {
 
 
 
-#' max across expressions / literals / Series
-#' @description Folds the expressions from left to right, keeping the first non-null value.
+#' Find maximum value in one or several columns
+#'
+#' This is syntactic sugar for `pl$col(...)$max()`.
 #' @name pl_max
 #' @param ...  is a:
 #' If one arg:
@@ -565,20 +569,23 @@ pl$min = function(...) {
 #'  - list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
 #'
 #' If several args, then wrapped in a list and handled as above.
+#' @param verbose Show the deprecation message when several columns or Expr are
+#' passed in `...`. Will be removed in 0.12.0.
+#'
 #' @return Expr
 #' @keywords Expr_new
 #' @examples
 #' df = pl$DataFrame(
 #'   a = NA_real_,
 #'   b = c(1:2, NA_real_, NA_real_),
-#'   c = c(1:3, NA_real_)
+#'   c = c(1:4)
 #' )
-#' # use coalesce to get first non Null value for each row, otherwise insert 99.9
-#' df$with_columns(
-#'   pl$coalesce("a", "b", "c", 99.9)$alias("d")
-#' )
+#' df
 #'
-pl$max = function(...) {
+#' df$with_columns(
+#'   pl$max("a", "b", "c")
+#' )
+pl$max = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
   if (inherits(column, "Series") || inherits(column, "Expr")) {
@@ -591,9 +598,10 @@ pl$max = function(...) {
     return(pl$lit(column)$max())
   }
   if (is.list(column)) {
-    warning("This usage of `pl$max()` is deprecated. To find the maximum value rowwise, use `pl$max_horizontal()` instead. This will be removed in 0.12.0.")
-    pra = do.call(construct_ProtoExprArray, column)
-    return(max_exprs(pra))
+    if (verbose) {
+      warning("This usage of `pl$max()` used to find the maximum value rowwise. This is now deprecated, use `pl$max_horizontal()` instead. This message will be removed in 0.12.0. Set `verbose = FALSE` to remove this message.")
+    }
+    return(pl$col(column)$max())
   }
   stop("pl$max: this input is not supported")
 }

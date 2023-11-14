@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions__lazy.R
 \name{pl_min}
 \alias{pl_min}
-\title{min across expressions / literals / Series}
+\title{Find minimum value in one or several columns}
 \arguments{
 \item{...}{is a:
 If one arg:
@@ -11,26 +11,28 @@ If one arg:
 \item string, same as \code{pl$col(column)$sum()}
 \item numeric, same as \code{pl$lit(column)$sum()}
 \item list of strings(column names) or expressions to add up as expr1 + expr2 + expr3 + ...
-}
+If several args, then wrapped in a list and handled as above.
+}}
 
-If several args, then wrapped in a list and handled as above.}
+\item{verbose}{Show the deprecation message when several columns or Expr are
+passed in \code{...}. Will be removed in 0.12.0.}
 }
 \value{
 Expr
 }
 \description{
-Folds the expressions from left to right, keeping the first non-null value.
+This is syntactic sugar for \code{pl$col(...)$min()}.
 }
 \examples{
 df = pl$DataFrame(
   a = NA_real_,
-  b = c(2:1, NA_real_, NA_real_),
-  c = c(1:3, NA_real_),
-  d = c(1:2, NA_real_, -Inf)
+  b = c(1:2, NA_real_, NA_real_),
+  c = c(1:4)
 )
-# use min to get first non Null value for each row, otherwise insert 99.9
+df
+
 df$with_columns(
-  pl$min("a", "b", "c", 99.9)$alias("d")
+  pl$min("a", "b", "c")
 )
 }
 \keyword{Expr_new}
