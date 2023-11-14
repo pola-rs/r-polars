@@ -255,13 +255,18 @@ Expr_mul = Expr_mul = function(other) {
 #' @format NULL
 #' @examples
 #' # two syntaxes same result
-#' pl$lit(TRUE)$is_not()
+#' pl$lit(TRUE)$not_()
 #' !pl$lit(TRUE)
-Expr_is_not = "use_extendr_wrapper"
+Expr_not_ = "use_extendr_wrapper"
 #' @export
-#' @rdname Expr_is_not
+#' @rdname Expr_not_
 #' @param x Expr
-"!.Expr" = function(x) x$is_not()
+"!.Expr" = function(x) x$not_()
+
+Expr_is_not = function() {
+  warning("`$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead.")
+  .pr$Expr$not_(self)
+}
 
 #' Less Than <
 #' @description lt method and operator
@@ -2173,7 +2178,7 @@ Expr_over = function(...) {
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
+#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -2200,7 +2205,7 @@ Expr_is_unique = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
+#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
@@ -2222,7 +2227,7 @@ Expr_is_first = "use_extendr_wrapper"
 #' @name Expr_is_duplicated
 #' @format NULL
 #' @details  is_duplicated is the opposite of `is_unique()`
-#'  Looking for R like `duplicated()`?, use  `some_expr$is_first()$is_not()`
+#'  Looking for R like `duplicated()`?, use  `some_expr$is_first()$not_()`
 #'
 #' @examples
 #' v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
@@ -2231,7 +2236,7 @@ Expr_is_first = "use_extendr_wrapper"
 #'     pl$lit(v)$is_unique()$alias("is_unique"),
 #'     pl$lit(v)$is_first()$alias("is_first"),
 #'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
+#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
 #'   )$to_list(),
 #'   list(
 #'     is_unique = !v %in% v[duplicated(v)],
