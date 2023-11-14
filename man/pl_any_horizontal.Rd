@@ -20,7 +20,15 @@ df = pl$DataFrame(
   b = c(TRUE, FALSE, NA, NA),
   c = c(TRUE, FALSE, NA, TRUE)
 )
+df
+
 df$with_columns(
   pl$any_horizontal("a", "b", "c")$alias("any")
+)
+
+# drop rows that only have missing values == keep rows that have at least one
+# non-missing value
+df$filter(
+  pl$any_horizontal(pl$all()$is_not_null())
 )
 }
