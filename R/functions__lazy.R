@@ -1009,8 +1009,16 @@ pl$max_horizontal <- function(...) {
 #'   b = c(TRUE, FALSE, NA, NA),
 #'   c = c(TRUE, FALSE, NA, TRUE)
 #' )
+#' df
+#'
 #' df$with_columns(
 #'   pl$all_horizontal("a", "b", "c")$alias("all")
+#' )
+#'
+#' # drop rows that have at least one missing value
+#' # == keep rows that only have non-missing values
+#' df$filter(
+#'   pl$all_horizontal(pl$all()$is_not_null())
 #' )
 pl$all_horizontal <- function(...) {
   all_horizontal(list2(...)) |>
