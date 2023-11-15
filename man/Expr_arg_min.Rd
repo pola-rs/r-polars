@@ -13,8 +13,8 @@ Expr
 Get the index of the minimal value.
 }
 \examples{
-pl$DataFrame(list(
+pl$DataFrame(
   a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$arg_min())
+)$with_columns(arg_min = pl$col("a")$arg_min())
 }
 \keyword{datasets}

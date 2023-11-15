@@ -2,26 +2,23 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sort}
 \alias{Expr_sort}
-\alias{sort}
-\title{Expr_sort}
+\title{Sort an Expr}
 \usage{
 Expr_sort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order. When sorting by multiple columns,
-can be specified per column by passing a sequence of booleans.}
+can be specified per column by passing a vector of booleans.}
 
-\item{nulls_last}{bool, default FALSE, place Nulls last}
+\item{nulls_last}{If \code{TRUE}, place nulls values last.}
 }
 \value{
 Expr
 }
 \description{
-Sort this column. In projection/ selection context the whole column is sorted.
-If used in a groupby context, the groups are sorted.
+Sort this column. If used in a groupby context, the groups are sorted.
 }
 \examples{
-pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$sort())
+pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$
+  with_columns(sorted = pl$col("a")$sort())
 }

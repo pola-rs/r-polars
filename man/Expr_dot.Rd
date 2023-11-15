@@ -2,13 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_dot}
 \alias{Expr_dot}
-\alias{dot}
 \title{Dot product}
 \usage{
 Expr_dot(other)
 }
 \arguments{
-\item{other}{Expr to compute dot product with.}
+\item{other}{Literal or object that can be converted to a literal}
 }
 \value{
 Expr
@@ -18,8 +17,8 @@ Compute the dot/inner product between two Expressions.
 }
 \examples{
 pl$DataFrame(
-  a = 1:4, b = c(1, 2, 3, 4), c = "bob"
-)$select(
+  a = 1:4, b = c(1, 2, 3, 4)
+)$with_columns(
   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 )

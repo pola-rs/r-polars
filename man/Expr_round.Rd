@@ -2,13 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_round}
 \alias{Expr_round}
-\alias{round}
-\title{round}
+\title{Round}
 \usage{
 Expr_round(decimals)
 }
 \arguments{
-\item{decimals}{integer Number of decimals to round by.}
+\item{decimals}{Number of decimals to round by.}
 }
 \value{
 Expr
@@ -17,9 +16,7 @@ Expr
 Round underlying floating point data by \code{decimals} digits.
 }
 \examples{
-pl$DataFrame(list(
-  a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf)
-))$select(
-  pl$col("a")$round(0)
+pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
+  round = pl$col("a")$round(1)
 )
 }

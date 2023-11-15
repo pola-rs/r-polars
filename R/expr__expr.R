@@ -1234,51 +1234,37 @@ Expr_cumcount = function(reverse = FALSE) {
 
 
 #' Floor
-#' @description Rounds down to the nearest integer value.
-#' Only works on floating point Series.
+#'
+#' Rounds down to the nearest integer value. Only works on floating point Series.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases Expr_floor
-#' @name Expr_floor
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf)
-#' ))$select(
-#'   pl$col("a")$floor()
+#' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
+#'   floor = pl$col("a")$floor()
 #' )
 Expr_floor = "use_extendr_wrapper"
 
 #' Ceiling
-#' @description Rounds up to the nearest integer value.
-#' Only works on floating point Series.
+#'
+#' Rounds up to the nearest integer value. Only works on floating point Series.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases Expr_ceil
-#' @name Expr_ceil
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf)
-#' ))$select(
-#'   pl$col("a")$ceil()
+#' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
+#'   ceiling = pl$col("a")$ceil()
 #' )
 Expr_ceil = "use_extendr_wrapper"
 
-#' round
-#' @description Round underlying floating point data by `decimals` digits.
-#' @param decimals  integer Number of decimals to round by.
+#' Round
+#'
+#' Round underlying floating point data by `decimals` digits.
+#' @param decimals Number of decimals to round by.
 #' @return Expr
-#' @aliases round
-#' @name Expr_round
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf)
-#' ))$select(
-#'   pl$col("a")$round(0)
+#' pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
+#'   round = pl$col("a")$round(1)
 #' )
 Expr_round = function(decimals) {
   unwrap(.pr$Expr$round(self, decimals))
@@ -1286,17 +1272,16 @@ Expr_round = function(decimals) {
 
 
 # TODO contribute polars, dot product unwraps if datatypes, pass Result instead
+
 #' Dot product
-#' @description Compute the dot/inner product between two Expressions.
-#' @param other Expr to compute dot product with.
-#' @return Expr
-#' @aliases dot
-#' @name Expr_dot
-#' @format NULL
+#'
+#' Compute the dot/inner product between two Expressions.
+#'
+#' @inherit Expr_add params return
 #' @examples
 #' pl$DataFrame(
-#'   a = 1:4, b = c(1, 2, 3, 4), c = "bob"
-#' )$select(
+#'   a = 1:4, b = c(1, 2, 3, 4)
+#' )$with_columns(
 #'   pl$col("a")$dot(pl$col("b"))$alias("a dot b"),
 #'   pl$col("a")$dot(pl$col("a"))$alias("a dot a")
 #' )
@@ -1306,55 +1291,48 @@ Expr_dot = function(other) {
 
 
 #' Mode
-#' @description Compute the most occurring value(s). Can return multiple Values.
+#'
+#' Compute the most occurring value(s). Can return multiple values if there are
+#' ties.
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases mode
-#' @name Expr_mode
-#' @format NULL
 #' @examples
-#' df = pl$DataFrame(list(a = 1:6, b = c(1L, 1L, 3L, 3L, 5L, 6L), c = c(1L, 1L, 2L, 2L, 3L, 3L)))
+#' df = pl$DataFrame(a = 1:6, b = c(1L, 1L, 3L, 3L, 5L, 6L), c = c(1L, 1L, 2L, 2L, 3L, 3L))
 #' df$select(pl$col("a")$mode())
 #' df$select(pl$col("b")$mode())
 #' df$select(pl$col("c")$mode())
 Expr_mode = "use_extendr_wrapper"
 
 
-#' Expr_sort
-#' @description Sort this column. In projection/ selection context the whole column is sorted.
-#' If used in a groupby context, the groups are sorted.
+#' Sort an Expr
+#'
+#' Sort this column. If used in a groupby context, the groups are sorted.
+#'
 #' @param descending Sort in descending order. When sorting by multiple columns,
-#' can be specified per column by passing a sequence of booleans.
-#' @param nulls_last bool, default FALSE, place Nulls last
+#' can be specified per column by passing a vector of booleans.
+#' @param nulls_last If `TRUE`, place nulls values last.
 #' @return Expr
-#' @aliases sort
-#' @name Expr_sort
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$sort())
-Expr_sort = function(descending = FALSE, nulls_last = FALSE) { # param reverse named descending on rust side
+#' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$
+#'   with_columns(sorted = pl$col("a")$sort())
+Expr_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$sort(self, descending, nulls_last)
 }
 
 
 # TODO contribute polars, add arguments for Null/NaN/inf last/first, top_k unwraps k> len column
+
 #' Top k values
-#' @description  Return the `k` largest elements.
-#' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param k numeric k top values to get
+#' Return the `k` largest elements. This has time complexity: \eqn{ O(n + k
+#' \\log{}n - \frac{k}{2}) }
+#'
+#' @param k Number of top values to get
 #' @return Expr
-#' @aliases top_k
-#' @name Expr_top_k
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$top_k(5))
+#' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
 Expr_top_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
   .pr$Expr$top_k(self, k) |>
@@ -1362,20 +1340,15 @@ Expr_top_k = function(k) {
 }
 
 # TODO contribute polars, add arguments for Null/NaN/inf last/first, bottom_k unwraps k> len column
+
 #' Bottom k values
-#' @description  Return the `k` smallest elements.
-#' @details  This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @param k numeric k bottom values to get
-#' @return Expr
-#' @aliases bottom_k
-#' @name Expr_bottom_k
-#' @format NULL
+#' Return the `k` smallest elements. This has time complexity: \eqn{ O(n + k
+#' \\log{}n - \frac{k}{2}) }
+#'
+#' @inherit Expr_top_k params return
 #' @examples
-#' pl$DataFrame(list(
-#'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$bottom_k(5))
+#' pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$bottom_k(5))
 Expr_bottom_k = function(k) {
   if (!is.numeric(k) || k < 0) stop("k must be numeric and positive, prefereably integerish")
   .pr$Expr$bottom_k(self, k) |>
@@ -1384,74 +1357,66 @@ Expr_bottom_k = function(k) {
 
 
 #' Index of a sort
-#' @description Get the index values that would sort this column.
-#' If 'reverse=True` the smallest elements will be given.
-#' @param descending Sort in descending order. When sorting by multiple columns,
-#' can be specified per column by passing a sequence of booleans.
-#' @param nulls_last bool, default FALSE, place Nulls last
-#' @return Expr
-#' @aliases arg_sort
-#' @name Expr_arg_sort
-#' @format NULL
+#'
+#' Get the index values that would sort this column.
+#'
+#' @inherit Expr_sort params return
 #' @examples
-#' pl$DataFrame(list(
+#' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$arg_sort())
-Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) { # param reverse named descending on rust side
+#' )$with_columns(arg_sorted = pl$col("a")$arg_sort())
+Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
 
 #' Index of min value
-#' @description  Get the index of the minimal value.
+#'
+#' Get the index of the minimal value.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @name Expr_arg_min
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
+#' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$arg_min())
+#' )$with_columns(arg_min = pl$col("a")$arg_min())
 Expr_arg_min = "use_extendr_wrapper"
 
-#' Index of min value
-#' @description  Get the index of the minimal value.
+#' Index of max value
+#'
+#' Get the index of the maximal value.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases Expr_arg_max
-#' @name Expr_arg_max
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(
+#' pl$DataFrame(
 #'   a = c(6, 1, 0, NA, Inf, NaN)
-#' ))$select(pl$col("a")$arg_max())
+#' )$with_columns(arg_max = pl$col("a")$arg_max())
 Expr_arg_max = "use_extendr_wrapper"
 
 
-
-
-
 # TODO contribute pypolars search_sorted behavior is under-documented, does multiple elements work?
+
 #' Where to inject element(s) to maintain sorting
 #'
-#' @description  Find indices in self where elements should be inserted into to maintain order.
-#' @param element a R value into literal or an expression of an element
+#' Find the index in self where the element should be inserted so that it doesn't
+#' break sortedness.
+#' @param element Expr or scalar value.
 #' @return Expr
-#' @aliases search_sorted
-#' @name Expr_search_sorted
-#' @details This function look up where to insert element if to keep self column sorted.
-#' It is assumed the self column is already sorted ascending, otherwise wrongs answers.
-#' This function is a bit under documented in py-polars.
-#' @format NULL
+#' @details
+#' This function looks up where to insert element to keep self column sorted.
+#' It is assumed the self column is already sorted in ascending order (otherwise
+#' this leads to wrong results).
 #' @examples
-#' pl$DataFrame(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
+#' df = pl$DataFrame(a = c(1, 3, 4, 4, 6))
+#' df
+#'
+#' # in which row should 5 be inserted in order to not break the sort?
+#' # (value is 0-indexed)
+#' df$select(pl$col("a")$search_sorted(5))
 Expr_search_sorted = function(element) {
   .pr$Expr$search_sorted(self, wrap_e(element))
 }
-
-
 
 #' sort column by order of others
 #' @description Sort this column by the ordering of another column, or multiple other columns.

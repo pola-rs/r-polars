@@ -2,27 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_top_k}
 \alias{Expr_top_k}
-\alias{top_k}
 \title{Top k values}
 \usage{
 Expr_top_k(k)
 }
 \arguments{
-\item{k}{numeric k top values to get}
+\item{k}{Number of top values to get}
 }
 \value{
 Expr
 }
 \description{
-Return the \code{k} largest elements.
-}
-\details{
-This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
-
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Return the \code{k} largest elements. This has time complexity: \eqn{ O(n + k
+\\log{}n - \frac{k}{2}) }
 }
 \examples{
-pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$top_k(5))
+pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$top_k(5))
 }
