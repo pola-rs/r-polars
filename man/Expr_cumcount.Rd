@@ -2,29 +2,27 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_cumcount}
 \alias{Expr_cumcount}
-\alias{cumcount}
 \title{Cumulative count}
 \usage{
 Expr_cumcount(reverse = FALSE)
 }
 \arguments{
-\item{reverse}{bool, default FALSE, if true roll over vector from back to forth}
+\item{reverse}{If \code{TRUE}, reverse the count.}
 }
 \value{
 Expr
 }
 \description{
-Get an array with the cumulative count computed at every element.
-Counting from 0 to len
+Get an array with the cumulative count (zero-indexed) computed at every element.
 }
 \details{
-The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-Int64 before summing to prevent overflow issues.
+The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+prevent overflow issues.
 
-cumcount does not seem to count within lists.
+\verb{$cumcount()} does not seem to count within lists.
 }
 \examples{
-pl$DataFrame(list(a = 1:4))$select(
+pl$DataFrame(a = 1:4)$with_columns(
   pl$col("a")$cumcount()$alias("cumcount"),
   pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
 )

@@ -3,7 +3,7 @@
 \name{Expr_is_infinite}
 \alias{Expr_is_infinite}
 \alias{is_infinite}
-\title{Are elements infinite}
+\title{Check if elements are infinite}
 \usage{
 Expr_is_infinite
 }
@@ -11,9 +11,10 @@ Expr_is_infinite
 Expr
 }
 \description{
-Returns a boolean output indicating which values are infinite.
+Returns a boolean Series indicating which values are infinite.
 }
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_infinite())
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+  with_columns(infinite = pl$col("alice")$is_infinite())
 }
 \keyword{datasets}

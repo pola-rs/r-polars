@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rechunk}
 \alias{Expr_rechunk}
-\alias{rechunk}
 \title{Rechunk memory layout}
 \usage{
 Expr_rechunk
@@ -14,7 +13,7 @@ Expr
 Create a single chunk of memory for this Series.
 }
 \details{
-See rechunk() explained here \code{\link[polars]{docs_translations}}
+See rechunk() explained here \code{\link[polars]{docs_translations}}.
 }
 \examples{
 # get chunked lengths with/without rechunk

@@ -3,21 +3,24 @@
 \name{Expr_slice}
 \alias{Expr_slice}
 \alias{slice}
-\title{Get a slice of this expression.}
+\title{Get a slice of an Expr}
 \usage{
 Expr_slice(offset, length = NULL)
 }
 \arguments{
-\item{offset}{numeric or expression, zero-indexed where to start slice
-negative value indicate starting (one-indexed) from back}
+\item{offset}{Numeric or expression, zero-indexed. Indicates where to start
+the slice. A negative value is one-indexed and starts from the end.}
 
-\item{length}{how many elements should slice contain, default NULL is max length}
+\item{length}{Maximum number of elements contained in the slice. Default is
+full data.}
 }
 \value{
 Expr
 }
 \description{
-Get a slice of this expression.
+Performing a slice of length 1 on a subset of columns will recycle this value
+in those columns but will not change the number of rows in the data. See
+examples.
 }
 \examples{
 
@@ -34,4 +37,7 @@ pl$DataFrame(list(a = 0:100))$select(
 pl$DataFrame(list(a = 0:100))$select(
   pl$all()$slice(80)
 )
+
+# recycling
+pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1))
 }

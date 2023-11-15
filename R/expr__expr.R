@@ -473,7 +473,7 @@ Expr_drop_nulls = "use_extendr_wrapper"
 #' pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nans())
 Expr_drop_nans = "use_extendr_wrapper"
 
-#' Find which elements are NULL
+#' Check if elements are NULL
 #'
 #' Returns a boolean Series indicating which values are null.
 #' @return Expr
@@ -483,9 +483,10 @@ Expr_drop_nans = "use_extendr_wrapper"
 #' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_null())
 Expr_is_null = "use_extendr_wrapper"
 
-#' Find which elements are not NULL
+#' Check if elements are not NULL
 #'
-#' Syntactic sugar for `$is_null()$not_()`.
+#' Returns a boolean Series indicating which values are not null. Syntactic sugar
+#' for `$is_null()$not_()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -555,9 +556,6 @@ construct_ProtoExprArray = function(...) {
 
   pra
 }
-
-
-
 
 
 ## TODO allow list to be formed from recursive R lists
@@ -967,10 +965,10 @@ Expr_sqrt = function() {
 Expr_exp = "use_extendr_wrapper"
 
 
-#' Exclude certain columns from a wildcard/regex selection.
-#' @description You may also use regexes in the exclude list. They must start with `^` and end with `$`.
-#' @param columns given param type:
-#'  - string: exclude name of column or exclude regex starting with ^and ending with$
+#' Exclude certain columns from selection
+#'
+#' @param columns Given param type:
+#'  - string: single column name or regex starting with `^` and ending with `$`
 #'  - character vector: exclude all these column names, no regex allowed
 #'  - DataType: Exclude any of this DataType
 #'  - List(DataType): Exclude any of these DataType(s)
@@ -994,7 +992,6 @@ Expr_exp = "use_extendr_wrapper"
 #' df$select(pl$all()$exclude("^Sepal.*$"))
 #'
 Expr_exclude = function(columns) {
-  # handle lists
   if (is.list(columns)) {
     columns = pcase(
       all(sapply(columns, inherits, "RPolarsDataType")), unwrap(.pr$DataTypeVector$from_rlist(columns)),
@@ -1003,7 +1000,6 @@ Expr_exclude = function(columns) {
     )
   }
 
-  # dispatch exclude call on types
   pcase(
     is.character(columns), .pr$Expr$exclude(self, columns),
     inherits(columns, "DataTypeVector"), .pr$Expr$exclude_dtype(self, columns),
@@ -1012,22 +1008,21 @@ Expr_exclude = function(columns) {
   )
 }
 
-#' Are elements finite
-#' @description Returns a boolean output indicating which values are finite.
+#' Check if elements are finite
 #'
+#' Returns a boolean Series indicating which values are finite.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases is_finite
-#' @name Expr_is_finite
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_finite())
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#'   with_columns(finite = pl$col("alice")$is_finite())
 Expr_is_finite = "use_extendr_wrapper"
 
 
-#' Are elements infinite
-#' @description Returns a boolean output indicating which values are infinite.
+#' Check if elements are infinite
+#'
+#' Returns a boolean Series indicating which values are infinite.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1035,18 +1030,14 @@ Expr_is_finite = "use_extendr_wrapper"
 #' @name Expr_is_infinite
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_infinite())
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#'   with_columns(infinite = pl$col("alice")$is_infinite())
 Expr_is_infinite = "use_extendr_wrapper"
 
 
-
-
-
-#' Are elements NaN's
-#' @description Returns a boolean Series indicating which values are NaN.
-#' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
-#'  NA_real_(R).
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+#' Check if elements are NaN
+#'
+#' Returns a boolean Series indicating which values are NaN.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1055,14 +1046,15 @@ Expr_is_infinite = "use_extendr_wrapper"
 #'
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_nan())
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#'   with_columns(nan = pl$col("alice")$is_nan())
 Expr_is_nan = "use_extendr_wrapper"
 
 
-#' Are elements not NaN's
-#' @description Returns a boolean Series indicating which values are not NaN.
-#' @details  Floating point NaN's are a different flag from Null(polars) which is the same as
-#'  NA_real_(R).
+#' Check if elements are not NaN
+#'
+#' Returns a boolean Series indicating which values are not NaN. Syntactic sugar
+#' for `$is_nan()$not_()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1070,16 +1062,20 @@ Expr_is_nan = "use_extendr_wrapper"
 #' @name Expr_is_not_nan
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_not_nan())
+#' pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+#'   with_columns(not_nan = pl$col("alice")$is_not_nan())
 Expr_is_not_nan = "use_extendr_wrapper"
 
-
-
-#' Get a slice of this expression.
+#' Get a slice of an Expr
 #'
-#' @param offset numeric or expression, zero-indexed where to start slice
-#' negative value indicate starting (one-indexed) from back
-#' @param length how many elements should slice contain, default NULL is max length
+#' Performing a slice of length 1 on a subset of columns will recycle this value
+#' in those columns but will not change the number of rows in the data. See
+#' examples.
+#'
+#' @param offset Numeric or expression, zero-indexed. Indicates where to start
+#' the slice. A negative value is one-indexed and starts from the end.
+#' @param length Maximum number of elements contained in the slice. Default is
+#' full data.
 #'
 #' @return Expr
 #' @aliases slice
@@ -1100,21 +1096,23 @@ Expr_is_not_nan = "use_extendr_wrapper"
 #' pl$DataFrame(list(a = 0:100))$select(
 #'   pl$all()$slice(80)
 #' )
+#'
+#' # recycling
+#' pl$DataFrame(mtcars)$with_columns(pl$col("mpg")$slice(0, 1))
 Expr_slice = function(offset, length = NULL) {
   .pr$Expr$slice(self, wrap_e(offset), wrap_e(length))
 }
 
 
 #' Append expressions
-#' @description This is done by adding the chunks of `other` to this `output`.
 #'
-#' @param other Expr, into Expr
-#' @param upcast bool upcast to, if any supertype of two non equal datatypes.
+#' This is done by adding the chunks of `other` to this `output`.
+#'
+#' @param other Expr or something coercible to an Expr.
+#' @param upcast Cast both Expr to a common supertype if they have one.
 #'
 #' @return Expr
-#' @aliases Expr_append
 #' @name Expr_append
-#' @format NULL
 #' @examples
 #' # append bottom to to row
 #' df = pl$DataFrame(list(a = 1:3, b = c(NA_real_, 4, 5)))
@@ -1130,15 +1128,14 @@ Expr_append = function(other, upcast = TRUE) {
 
 
 #' Rechunk memory layout
-#' @description Create a single chunk of memory for this Series.
+#'
+#' Create a single chunk of memory for this Series.
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases rechunk
-#' @name Expr_rechunk
-#' @format NULL
 #' @details
-#' See rechunk() explained here \code{\link[polars]{docs_translations}}
+#' See rechunk() explained here \code{\link[polars]{docs_translations}}.
 #' @examples
 #' # get chunked lengths with/without rechunk
 #' series_list = pl$DataFrame(list(a = 1:3, b = 4:6))$select(
@@ -1149,17 +1146,17 @@ Expr_append = function(other, upcast = TRUE) {
 Expr_rechunk = "use_extendr_wrapper"
 
 #' Cumulative sum
-#' @description  Get an array with the cumulative sum computed at every element.
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#'
+#' Get an array with the cumulative sum computed at every element.
+#'
+#' @param reverse If `TRUE`, start with the total sum of elements and substract
+#' each row one by one.
 #' @return Expr
-#' @aliases Expr_cumsum
-#' @name Expr_cumsum
 #' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
-#' @format NULL
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+#' prevent overflow issues.
 #' @examples
-#' pl$DataFrame(list(a = 1:4))$select(
+#' pl$DataFrame(a = 1:4)$with_columns(
 #'   pl$col("a")$cumsum()$alias("cumsum"),
 #'   pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum_reversed")
 #' )
@@ -1169,18 +1166,14 @@ Expr_cumsum = function(reverse = FALSE) {
 
 
 #' Cumulative product
-#' @description Get an array with the cumulative product computed at every element.
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
-#' @return Expr
-#' @aliases cumprod
-#' @name Expr_cumprod
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
 #'
-#' @format NULL
+#' Get an array with the cumulative product computed at every element.
+#'
+#' @param reverse If `TRUE`, start with the total product of elements and divide
+#' each row one by one.
+#' @inherit Expr_cumsum return details
 #' @examples
-#' pl$DataFrame(list(a = 1:4))$select(
+#' pl$DataFrame(a = 1:4)$with_columns(
 #'   pl$col("a")$cumprod()$alias("cumprod"),
 #'   pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod_reversed")
 #' )
@@ -1189,19 +1182,13 @@ Expr_cumprod = function(reverse = FALSE) {
 }
 
 #' Cumulative minimum
-#' @description  Get an array with the cumulative min computed at every element.
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
-#' @return Expr
-#' @aliases cummin
-#' @name Expr_cummin
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @format NULL
+#' Get an array with the cumulative min computed at every element.
+#'
+#' @param reverse If `TRUE`, start from the last value.
+#' @inherit Expr_cumsum return details
 #' @examples
-#' pl$DataFrame(list(a = 1:4))$select(
+#' pl$DataFrame(a = c(1:4, 2L))$with_columns(
 #'   pl$col("a")$cummin()$alias("cummin"),
 #'   pl$col("a")$cummin(reverse = TRUE)$alias("cummin_reversed")
 #' )
@@ -1210,19 +1197,13 @@ Expr_cummin = function(reverse = FALSE) {
 }
 
 #' Cumulative maximum
-#' @description Get an array with the cumulative max computed at every element.
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
-#' @return Expr
-#' @aliases cummin
-#' @name Expr_cummin
-#' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @format NULL
+#' Get an array with the cumulative max computed at every element.
+#'
+#' @param reverse If `TRUE`, start from the last value.
+#' @inherit Expr_cumsum return details
 #' @examples
-#' pl$DataFrame(list(a = 1:4))$select(
+#' pl$DataFrame(a = c(1:4, 2L))$with_columns(
 #'   pl$col("a")$cummax()$alias("cummux"),
 #'   pl$col("a")$cummax(reverse = TRUE)$alias("cummax_reversed")
 #' )
@@ -1231,21 +1212,19 @@ Expr_cummax = function(reverse = FALSE) {
 }
 
 #' Cumulative count
-#' @description Get an array with the cumulative count computed at every element.
-#'  Counting from 0 to len
-#' @param reverse bool, default FALSE, if true roll over vector from back to forth
+#'
+#' Get an array with the cumulative count (zero-indexed) computed at every element.
+#'
+#' @param reverse If `TRUE`, reverse the count.
 #' @return Expr
-#' @aliases cumcount
-#' @name Expr_cumcount
 #' @details
-#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
+#' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+#' prevent overflow issues.
 #'
-#' cumcount does not seem to count within lists.
+#' `$cumcount()` does not seem to count within lists.
 #'
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(a = 1:4))$select(
+#' pl$DataFrame(a = 1:4)$with_columns(
 #'   pl$col("a")$cumcount()$alias("cumcount"),
 #'   pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
 #' )

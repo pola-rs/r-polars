@@ -3,7 +3,7 @@
 \name{Expr_is_nan}
 \alias{Expr_is_nan}
 \alias{is_nan}
-\title{Are elements NaN's}
+\title{Check if elements are NaN}
 \usage{
 Expr_is_nan
 }
@@ -13,12 +13,8 @@ Expr
 \description{
 Returns a boolean Series indicating which values are NaN.
 }
-\details{
-Floating point NaN's are a different flag from Null(polars) which is the same as
-NA_real_(R).
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_nan())
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+  with_columns(nan = pl$col("alice")$is_nan())
 }
 \keyword{datasets}

@@ -3,7 +3,7 @@
 \name{Expr_is_not_nan}
 \alias{Expr_is_not_nan}
 \alias{is_not_nan}
-\title{Are elements not NaN's}
+\title{Check if elements are not NaN}
 \usage{
 Expr_is_not_nan
 }
@@ -11,13 +11,11 @@ Expr_is_not_nan
 Expr
 }
 \description{
-Returns a boolean Series indicating which values are not NaN.
-}
-\details{
-Floating point NaN's are a different flag from Null(polars) which is the same as
-NA_real_(R).
+Returns a boolean Series indicating which values are not NaN. Syntactic sugar
+for \verb{$is_nan()$not_()}.
 }
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_not_nan())
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+  with_columns(not_nan = pl$col("alice")$is_not_nan())
 }
 \keyword{datasets}

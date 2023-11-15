@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_not_null}
 \alias{Expr_is_not_null}
-\title{Find which elements are not NULL}
+\title{Check if elements are not NULL}
 \usage{
 Expr_is_not_null
 }
@@ -10,7 +10,8 @@ Expr_is_not_null
 Expr
 }
 \description{
-Syntactic sugar for \verb{$is_null()$not_()}.
+Returns a boolean Series indicating which values are not null. Syntactic sugar
+for \verb{$is_null()$not_()}.
 }
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())

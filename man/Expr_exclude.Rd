@@ -3,14 +3,14 @@
 \name{Expr_exclude}
 \alias{Expr_exclude}
 \alias{exclude}
-\title{Exclude certain columns from a wildcard/regex selection.}
+\title{Exclude certain columns from selection}
 \usage{
 Expr_exclude(columns)
 }
 \arguments{
-\item{columns}{given param type:
+\item{columns}{Given param type:
 \itemize{
-\item string: exclude name of column or exclude regex starting with ^and ending with$
+\item string: single column name or regex starting with \code{^} and ending with \code{$}
 \item character vector: exclude all these column names, no regex allowed
 \item DataType: Exclude any of this DataType
 \item List(DataType): Exclude any of these DataType(s)
@@ -20,7 +20,7 @@ Expr_exclude(columns)
 Expr
 }
 \description{
-You may also use regexes in the exclude list. They must start with \code{^} and end with \code{$}.
+Exclude certain columns from selection
 }
 \examples{
 

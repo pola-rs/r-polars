@@ -7,9 +7,9 @@
 Expr_append(other, upcast = TRUE)
 }
 \arguments{
-\item{other}{Expr, into Expr}
+\item{other}{Expr or something coercible to an Expr.}
 
-\item{upcast}{bool upcast to, if any supertype of two non equal datatypes.}
+\item{upcast}{Cast both Expr to a common supertype if they have one.}
 }
 \value{
 Expr

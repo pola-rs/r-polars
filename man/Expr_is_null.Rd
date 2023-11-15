@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_null}
 \alias{Expr_is_null}
-\title{Find which elements are NULL}
+\title{Check if elements are NULL}
 \usage{
 Expr_is_null
 }
