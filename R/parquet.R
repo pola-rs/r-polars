@@ -1,18 +1,22 @@
 #' Scan a parquet file
-#' @keywords LazyFrame_new
 #'
-#' @param file string filepath
-#' @param n_rows limit rows to scan
-#' @param cache Boolean use cache
-#' @param parallel String either Auto, None, Columns or RowGroups. The way to parallelized the scan.
-#' @param rechunk Boolean rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.
-#' @param row_count_name NULL or string, if a string add a rowcount column named by this string
-#' @param row_count_offset integer, the rowcount column can be offset by this value
-#' @param low_memory Boolean, try reduce memory footprint
+#' @param file Path to a file. You can use globbing with `*` to scan/read multiple
+#' files in the same directory (see examples).
+#' @param n_rows Maximum number of rows to read.
+#' @param cache Cache the result after reading.
+#' @param parallel This determines the direction of parallelism. `"auto"` will
+#' try to determine the optimal direction.
+#' @param rechunk In case of reading multiple files via a glob pattern, rechunk
+#' the final DataFrame into contiguous memory chunks.
+#' @param row_count_name If not `NULL`, this will insert a row count column with
+#' the given name into the DataFrame.
+#' @param row_count_offset Offset to start the row_count column (only used if
+#' the name is set).
+#' @param low_memory Reduce memory usage (will yield a lower performance).
 #' @param hive_partitioning Infer statistics and schema from hive partitioned URL
 #' and use them to prune reads.
-#' @param use_statistics Boolean, if TRUE use statistics in the parquet to determine if pages can be
-#'  skipped from reading.
+#' @param use_statistics Use statistics in the parquet file to determine if pages
+#' can be skipped from reading.
 #'
 #' @return LazyFrame
 #' @name scan_parquet
@@ -49,7 +53,7 @@ pl$scan_parquet = function(
     low_memory = FALSE,
     use_statistics = TRUE,
     hive_partitioning = TRUE
-  ) { #-> LazyFrame
+  ) {
 
   new_from_parquet(
     path = file,
@@ -70,7 +74,7 @@ pl$scan_parquet = function(
 #' Read a parquet file
 #' @rdname IO_read_parquet
 #' @inheritParams scan_parquet
-#' @return DataFrames
+#' @return DataFrame
 read_parquet = function( # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
   file,
   n_rows = NULL,
