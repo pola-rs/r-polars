@@ -1215,7 +1215,7 @@ test_that("drop_all_in_place", {
   df_copy = df = polars::pl$DataFrame(mtcars)
   df_clone = df$clone()
   s = df$get_column("cyl")
-  .pr$DataFrame$drop_all_in_place(df) # we make this method and instead drop in place - level 3-5
+  .pr$DataFrame$drop_all_in_place(df)
   expect_identical(df$shape, c(0,0))
   expect_identical(df_copy$shape, c(0,0))
   expect_identical(df_clone$shape, c(32,11))
