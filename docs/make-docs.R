@@ -136,7 +136,7 @@ make_doc_hierarchy = function() {
     "pl", "Series", "DataFrame", "LazyFrame", "GroupBy",
     "LazyGroupBy", "ExprList", "ExprBin", "ExprCat", "ExprDT",
     "ExprMeta", "ExprName", "ExprStr", "ExprStruct",
-    "Expr", "IO", "RThreadHandle", "SQLContext", "S3"
+    "Expr", "IO", "RField", "RThreadHandle", "SQLContext", "S3"
   )
   for (cl in classes) {
     files = grep(paste0("^", cl, "_"), other, value = TRUE)

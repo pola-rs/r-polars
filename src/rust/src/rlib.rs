@@ -13,15 +13,28 @@ use polars::prelude as pl;
 use std::result::Result;
 
 #[extendr]
-fn min_exprs(exprs: &ProtoExprArray) -> Expr {
-    let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::min_horizontal(exprs).into()
+fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+    Ok(polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
 }
 
 #[extendr]
-fn max_exprs(exprs: &ProtoExprArray) -> Expr {
-    let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::max_horizontal(exprs).into()
+fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+    Ok(polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+}
+
+#[extendr]
+fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+    Ok(polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+}
+
+#[extendr]
+fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+    Ok(polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+}
+
+#[extendr]
+fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+    Ok(polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
 }
 
 #[extendr]
@@ -266,8 +279,11 @@ fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
 extendr_module! {
     mod rlib;
 
-    fn min_exprs;
-    fn max_exprs;
+    fn all_horizontal;
+    fn any_horizontal;
+    fn min_horizontal;
+    fn max_horizontal;
+    fn sum_horizontal;
     fn coalesce_exprs;
     fn sum_exprs;
 

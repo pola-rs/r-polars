@@ -15,7 +15,7 @@ Get mask of duplicated values.
 }
 \details{
 is_duplicated is the opposite of \code{is_unique()}
-Looking for R like \code{duplicated()}?, use  \code{some_expr$is_first()$is_not()}
+Looking for R like \code{duplicated()}?, use  \code{some_expr$is_first()$not_()}
 }
 \examples{
 v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
@@ -24,7 +24,7 @@ all.equal(
     pl$lit(v)$is_unique()$alias("is_unique"),
     pl$lit(v)$is_first()$alias("is_first"),
     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-    pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
+    pl$lit(v)$is_first()$not_()$alias("R_duplicated")
   )$to_list(),
   list(
     is_unique = !v \%in\% v[duplicated(v)],
