@@ -18,6 +18,8 @@ Fill NaN
 \examples{
 pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
   with_columns(
-    literal = pl$col("a")$fill_nan(999)
+    literal = pl$col("a")$fill_nan(999),
+    # implicit coercion to string
+    string = pl$col("a")$fill_nan("invalid")
   )
 }

@@ -1582,7 +1582,9 @@ Expr_forward_fill = function(limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
 #'   with_columns(
-#'     literal = pl$col("a")$fill_nan(999)
+#'     literal = pl$col("a")$fill_nan(999),
+#'     # implicit coercion to string
+#'     string = pl$col("a")$fill_nan("invalid")
 #'   )
 Expr_fill_nan = function(expr = NULL) {
   .pr$Expr$fill_nan(self, wrap_e(expr))
