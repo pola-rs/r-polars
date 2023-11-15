@@ -13,20 +13,20 @@ test_that("expression boolean operators", {
 
   cmp_operators_df = pl$DataFrame(list())$with_columns(
     (pl$lit(1) < 2)$alias("1 lt 2"),
-    (pl$lit(1) < 1)$alias("1 lt 1 not")$is_not(),
+    (pl$lit(1) < 1)$alias("1 lt 1 not")$not_(),
     (pl$lit(2) > 1)$alias("2 gt 1"),
-    (pl$lit(1) > 1)$alias("1 gt 1 not")$is_not(),
+    (pl$lit(1) > 1)$alias("1 gt 1 not")$not_(),
     (pl$lit(1) == 1)$alias("1 eq 1"),
-    (pl$lit(1) == 2)$alias("1 eq 2 not")$is_not(),
+    (pl$lit(1) == 2)$alias("1 eq 2 not")$not_(),
     (pl$lit(1) <= 1)$alias("1 lt_eq 1"),
-    (pl$lit(2) <= 1)$alias("2 lt_eq 1 not")$is_not(),
+    (pl$lit(2) <= 1)$alias("2 lt_eq 1 not")$not_(),
     (pl$lit(2) >= 2)$alias("2 gt_eq 2"),
-    (pl$lit(1) >= 2)$alias("1 gt_eq 2 not")$is_not(),
+    (pl$lit(1) >= 2)$alias("1 gt_eq 2 not")$not_(),
     (pl$lit(2) != 1)$alias("2 not eq 1"),
-    (pl$lit(2) != 2)$alias("2 not eq 1 not")$is_not(),
-    (pl$lit(TRUE)$is_not() == pl$lit(FALSE))$alias("not true == false"),
+    (pl$lit(2) != 2)$alias("2 not eq 1 not")$not_(),
+    (pl$lit(TRUE)$not_() == pl$lit(FALSE))$alias("not true == false"),
     (pl$lit(TRUE) != pl$lit(FALSE))$alias("true != false"),
-    (pl$lit(TRUE)$is_not() == FALSE)$alias("not true == false wrap"),
+    (pl$lit(TRUE)$not_() == FALSE)$alias("not true == false wrap"),
     (pl$lit(TRUE) != FALSE)$alias("true != false wrap")
   )
 
@@ -248,7 +248,7 @@ test_that("is_null", {
 
   expect_equal(
     df$with_columns(pl$all()$is_not_null()$name$suffix("_isnull"))$to_data_frame(),
-    df$with_columns(pl$all()$is_null()$is_not()$name$suffix("_isnull"))$to_data_frame()
+    df$with_columns(pl$all()$is_null()$not_()$name$suffix("_isnull"))$to_data_frame()
   )
 })
 
@@ -466,7 +466,7 @@ test_that("and or is_in xor", {
       pl$lit(NA_real_)$is_in(pl$lit(NULL))$alias("NULL typed is in NULL")
 
       # anymore from rust-polars 0.30-0.32
-      # pl$lit(NULL)$is_in(pl$lit(NULL))$is_not()$alias("NULL is in NULL, NOY")
+      # pl$lit(NULL)$is_in(pl$lit(NULL))$not_()$alias("NULL is in NULL, NOY")
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
@@ -1269,7 +1269,7 @@ test_that("is_unique is_first is_duplicated", {
       pl$lit(v)$is_unique()$alias("is_unique"),
       pl$lit(v)$is_first()$alias("is_first"),
       pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-      pl$lit(v)$is_first()$is_not()$alias("R_duplicated")
+      pl$lit(v)$is_first()$not_()$alias("R_duplicated")
     )$to_list(),
     list(
       is_unique = !v %in% v[duplicated(v)],
@@ -2378,7 +2378,77 @@ test_that("peak_min, peak_max", {
   )
 })
 
-test_that("rolling, basic", {
+test_that("pl$any_horizontal works", {
+  df = pl$DataFrame(
+    a = c(FALSE, FALSE, NA, NA),
+    b = c(TRUE, FALSE, NA, NA),
+    c = c(TRUE, FALSE, NA, TRUE)
+  )
+  expect_identical(
+    df$select(
+      pl$any_horizontal("a", "b", "c")$alias("any")
+    )$to_list(),
+    list(any = c(TRUE, FALSE, NA, TRUE))
+  )
+})
+
+test_that("pl$all_horizontal works", {
+  df = pl$DataFrame(
+    a = c(TRUE, TRUE, NA, NA),
+    b = c(TRUE, FALSE, NA, NA),
+    c = c(TRUE, FALSE, NA, TRUE)
+  )
+  expect_identical(
+    df$select(
+      pl$all_horizontal("a", "b", "c")$alias("all")
+    )$to_list(),
+    list(all = c(TRUE, FALSE, NA, NA))
+  )
+})
+
+test_that("pl$sum_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
+    )$to_list(),
+    list(sum = c(6, 8, 2, -Inf))
+  )
+})
+
+test_that("pl$max_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$max_horizontal("a", "b", "c", 2)$alias("max")
+    )$to_list(),
+    list(max = c(3, 4, 2, 2))
+  )
+})
+
+test_that("pl$min_horizontal works", {
+  df = pl$DataFrame(
+    a = NA_real_,
+    b = c(3:4, NA_real_, NA_real_),
+    c = c(1:2, NA_real_, -Inf)
+  )
+  expect_identical(
+    df$select(
+      pl$min_horizontal("a", "b", "c", 2)$alias("min")
+    )$to_list(),
+    list(min = c(1, 2, 2, -Inf))
+  )
+})
+
+    test_that("rolling, basic", {
   dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
             "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
 
@@ -2429,5 +2499,3 @@ test_that("rolling, arg closed", {
       sum_a_none = c(0, 3, 10, 15, 9, 0),
       sum_a_null = c(3, 10, 15, 24, 11, 1)
     )
-  )
-})

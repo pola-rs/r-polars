@@ -11,9 +11,15 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-min_exprs <- function(exprs) .Call(wrap__min_exprs, exprs)
+min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
-max_exprs <- function(exprs) .Call(wrap__max_exprs, exprs)
+max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
+
+all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
+
+any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
+
+sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
@@ -83,7 +89,7 @@ import_arrow_ipc <- function(path, n_rows, cache, rechunk, row_name, row_count, 
 
 new_from_ndjson <- function(path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset) .Call(wrap__new_from_ndjson, path, infer_schema_length, batch_size, n_rows, low_memory, rechunk, row_count_name, row_count_offset)
 
-new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, low_memory, hive_partitioning)
+new_from_parquet <- function(path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning) .Call(wrap__new_from_parquet, path, n_rows, cache, parallel, rechunk, row_name, row_count, use_statistics, low_memory, hive_partitioning)
 
 test_rpolarserr <- function() .Call(wrap__test_rpolarserr)
 
@@ -128,6 +134,8 @@ DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_m
 DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
 DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
+
+DataFrame$drop_all_in_place <- function() invisible(.Call(wrap__DataFrame__drop_all_in_place, self))
 
 DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_with_capacity, capacity)
 
@@ -194,6 +202,10 @@ DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(w
 DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
 
 DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+
+DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__DataFrame__write_json, self, file, pretty, row_oriented)
+
+DataFrame$write_ndjson <- function(file) .Call(wrap__DataFrame__write_ndjson, self, file)
 
 #' @export
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
@@ -813,7 +825,7 @@ Expr$mul <- function(other) .Call(wrap__Expr__mul, self, other)
 
 Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 
-Expr$is_not <- function() .Call(wrap__Expr__is_not, self)
+Expr$not_ <- function() .Call(wrap__Expr__not_, self)
 
 Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 

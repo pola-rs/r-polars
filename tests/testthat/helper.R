@@ -86,5 +86,5 @@ expect_rpolarserr = function(expr, ctxs) {
 }
 
 expect_snapshot_file = function(path, ...) {
-  expect_snapshot(readLines(path) |> cat(sep = "\n"), ...)
+  expect_snapshot(readLines(path, warn = FALSE) |> cat(sep = "\n"), ...)
 }

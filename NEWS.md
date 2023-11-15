@@ -1,11 +1,37 @@
 # polars (development version)
 
+## Breaking changes
+
+- The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
+  and `pl$sum()` is deprecated and will be removed in 0.12.0. Passing several 
+  columns to these functions will now compute the min/max/sum in each column 
+  separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and 
+  `pl$sum_horizontal()` instead for rowwise computation (#508).
+- `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
+  (#511).
+
 ## What's changed
 
-- The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take 
+- New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
+- Removed argument `name` in `pl$date_range()`, which was deprecated for a while
+  (#503).
+- New private method `.pr$DataFrame$drop_all_in_place(df)` to drop `DataFrame` in-place,
+ to release memory without invoking gc(). However, if there are other strong references to any of
+ the underlying Series or arrow arrays, that memory will specifically not be released. This method
+ is aimed for r-polars extensions, and will be kept stable as much as possible (#504).
+- New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
+  `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
+
+# polars 0.10.1
+
+## What's changed
+
+- The argument `quote_style` in `$write_csv()` and `$sink_csv()` can now take
   the value `"never"` (#483).
 - `pl$DataFrame()` now errors if the variables specified in `schema` do not exist
   in the data (#486).
+- S3 methods for base R functions are well documented (#494).
+- A bug that failing `pl$SQLContext()$register()` without load the package was fixed (#496).
 
 # polars 0.10.0
 
@@ -48,7 +74,7 @@
   an Expr (#462).
 - New methods `$read_ndjson()` and `$scan_ndjson()` (#471).
 - New method `$with_context()` for `LazyFrame` to have access to columns from
-  other Data/LazyFrames during the computation.
+  other Data/LazyFrames during the computation (#475).
 
 # polars 0.9.0
 

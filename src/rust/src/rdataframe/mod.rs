@@ -124,6 +124,11 @@ impl DataFrame {
         LazyFrame(self.0.clone().lazy())
     }
 
+    //internal use only
+    pub fn drop_all_in_place(&mut self) {
+        *self = Self::new_with_capacity(0);
+    }
+
     //internal use
     pub fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
@@ -485,6 +490,29 @@ impl DataFrame {
             .with_null_value(robj_to!(String, null_value)?)
             .with_quote_style(robj_to!(QuoteStyle, quote_style)?)
             .finish(&mut self.0.clone())
+            .map_err(polars_to_rpolars_err)
+    }
+
+    pub fn write_json(&mut self, file: Robj, pretty: Robj, row_oriented: Robj) -> RResult<()> {
+        let f = std::fs::File::create(robj_to!(str, file)?)?;
+        match (robj_to!(bool, pretty)?, robj_to!(bool, row_oriented)?) {
+            (_, true) => pl::JsonWriter::new(f)
+                .with_json_format(pl::JsonFormat::Json)
+                .finish(&mut self.0),
+            (true, _) => serde_json::to_writer_pretty(f, &self.0)
+                .map_err(|e| pl::polars_err!(ComputeError: "{e}")),
+            (false, _) => {
+                serde_json::to_writer(f, &self.0).map_err(|e| pl::polars_err!(ComputeError: "{e}"))
+            }
+        }
+        .map_err(polars_to_rpolars_err)
+    }
+
+    pub fn write_ndjson(&mut self, file: Robj) -> RResult<()> {
+        let f = std::fs::File::create(robj_to!(str, file)?)?;
+        pl::JsonWriter::new(f)
+            .with_json_format(pl::JsonFormat::JsonLines)
+            .finish(&mut self.0)
             .map_err(polars_to_rpolars_err)
     }
 }

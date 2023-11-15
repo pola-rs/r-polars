@@ -17,3 +17,8 @@ will be formatted to a string of this length.}
 \description{
 Convert to a character vector
 }
+\examples{
+s = pl$Series(c("foo", "barbaz"))
+as.character(s)
+as.character(s, str_length = 3)
+}
