@@ -11,9 +11,15 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-min_exprs <- function(exprs) .Call(wrap__min_exprs, exprs)
+min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
 
-max_exprs <- function(exprs) .Call(wrap__max_exprs, exprs)
+max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
+
+all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
+
+any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
+
+sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
@@ -128,6 +134,8 @@ DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_m
 DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
 DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
+
+DataFrame$drop_all_in_place <- function() invisible(.Call(wrap__DataFrame__drop_all_in_place, self))
 
 DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_with_capacity, capacity)
 
@@ -815,7 +823,7 @@ Expr$mul <- function(other) .Call(wrap__Expr__mul, self, other)
 
 Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 
-Expr$is_not <- function() .Call(wrap__Expr__is_not, self)
+Expr$not_ <- function() .Call(wrap__Expr__not_, self)
 
 Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 

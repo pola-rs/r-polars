@@ -1,10 +1,26 @@
 # polars (development version)
 
+## Breaking changes
+
+- The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
+  and `pl$sum()` is deprecated and will be removed in 0.12.0. Passing several 
+  columns to these functions will now compute the min/max/sum in each column 
+  separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and 
+  `pl$sum_horizontal()` instead for rowwise computation (#508).
+- `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
+  (#511).
+
 ## What's changed
 
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 - Removed argument `name` in `pl$date_range()`, which was deprecated for a while
   (#503).
+- New private method `.pr$DataFrame$drop_all_in_place(df)` to drop `DataFrame` in-place,
+ to release memory without invoking gc(). However, if there are other strong references to any of
+ the underlying Series or arrow arrays, that memory will specifically not be released. This method
+ is aimed for r-polars extensions, and will be kept stable as much as possible (#504).
+- New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
+  `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
 
 # polars 0.10.1
 

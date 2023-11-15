@@ -124,6 +124,11 @@ impl DataFrame {
         LazyFrame(self.0.clone().lazy())
     }
 
+    //internal use only
+    pub fn drop_all_in_place(&mut self) {
+        *self = Self::new_with_capacity(0);
+    }
+
     //internal use
     pub fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
