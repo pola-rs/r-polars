@@ -3,22 +3,48 @@
 \name{read_parquet}
 \alias{read_parquet}
 \title{Read a parquet file}
+\usage{
+read_parquet(
+  file,
+  n_rows = NULL,
+  cache = TRUE,
+  parallel = c("Auto", "None", "Columns", "RowGroups"),
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0L,
+  low_memory = FALSE,
+  use_statistics = TRUE,
+  hive_partitioning = TRUE
+)
+}
 \arguments{
-\item{file}{string filepath}
+\item{file}{Path to a file. You can use globbing with \code{*} to scan/read multiple
+files in the same directory (see examples).}
 
-\item{n_rows}{limit rows to scan}
+\item{n_rows}{Maximum number of rows to read.}
 
-\item{cache}{bool use cache}
+\item{cache}{Cache the result after reading.}
 
-\item{parallel}{String either Auto, None, Columns or RowGroups. The way to parallelized the scan.}
+\item{parallel}{This determines the direction of parallelism. \code{"auto"} will
+try to determine the optimal direction. Can be \code{"auto"}, \code{"none"}, \code{"columns"},
+or \code{"rowgroups"},}
 
-\item{rechunk}{bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
+\item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
+the final DataFrame into contiguous memory chunks.}
 
-\item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
+\item{row_count_name}{If not \code{NULL}, this will insert a row count column with
+the given name into the DataFrame.}
 
-\item{row_count_offset}{integer, the rowcount column can be offset by this value}
+\item{row_count_offset}{Offset to start the row_count column (only used if
+the name is set).}
 
-\item{low_memory}{bool, try reduce memory footprint}
+\item{low_memory}{Reduce memory usage (will yield a lower performance).}
+
+\item{use_statistics}{Use statistics in the parquet file to determine if pages
+can be skipped from reading.}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
 }
 \value{
 DataFrame
