@@ -5,7 +5,8 @@
 #' @param n_rows Maximum number of rows to read.
 #' @param cache Cache the result after reading.
 #' @param parallel This determines the direction of parallelism. `"auto"` will
-#' try to determine the optimal direction.
+#' try to determine the optimal direction. Can be `"auto"`, `"none"`, `"columns"`,
+#' or `"rowgroups"`,
 #' @param rechunk In case of reading multiple files via a glob pattern, rechunk
 #' the final DataFrame into contiguous memory chunks.
 #' @param row_count_name If not `NULL`, this will insert a row count column with

@@ -26,7 +26,8 @@ files in the same directory (see examples).}
 \item{cache}{Cache the result after reading.}
 
 \item{parallel}{This determines the direction of parallelism. \code{"auto"} will
-try to determine the optimal direction.}
+try to determine the optimal direction. Can be \code{"auto"}, \code{"none"}, \code{"columns"},
+or \code{"rowgroups"},}
 
 \item{rechunk}{In case of reading multiple files via a glob pattern, rechunk
 the final DataFrame into contiguous memory chunks.}
