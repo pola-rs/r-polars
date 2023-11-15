@@ -15,6 +15,10 @@
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 - Removed argument `name` in `pl$date_range()`, which was deprecated for a while
   (#503).
+- New private method `.pr$DataFrame$drop_all_in_place(df)` to drop `DataFrame` in-place,
+ to release memory without invoking gc(). However, if there are other strong references to any of
+ the underlying Series or arrow arrays, that memory will specifically not be released. This method
+ is aimed for r-polars extensions, and will be kept stable as much as possible (#504).
 - New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
 

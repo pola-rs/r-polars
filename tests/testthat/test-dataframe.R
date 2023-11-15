@@ -1206,3 +1206,19 @@ test_that("transpose", {
     df_expected
   )
 })
+
+test_that("drop_all_in_place", {
+
+  # this test verifies internal function in_place drop all Series in DataFrame
+  # will not affect a fully cloned DataFrame df_clone
+
+  df_copy = df = polars::pl$DataFrame(mtcars)
+  df_clone = df$clone()
+  s = df$get_column("cyl")
+  .pr$DataFrame$drop_all_in_place(df)
+  expect_identical(df$shape, c(0,0))
+  expect_identical(df_copy$shape, c(0,0))
+  expect_identical(df_clone$shape, c(32,11))
+  expect_identical(s$len(), 32)
+})
+

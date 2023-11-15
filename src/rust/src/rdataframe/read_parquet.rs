@@ -1,55 +1,44 @@
-use crate::utils::r_result_list;
-
 use crate::lazy::dataframe::LazyFrame;
+use crate::robj_to;
+use crate::rpolarserr::{polars_to_rpolars_err, RResult};
 
-//use crate::utils::wrappers::*;
-use crate::utils::wrappers::null_to_opt;
-use extendr_api::{extendr, prelude::*};
+use extendr_api::Rinternals;
+use extendr_api::{extendr, extendr_module, Robj};
+use polars::io::RowCount;
 use polars::prelude::{self as pl};
-//this function is derived from  polars/py-polars/src/lazy/DataFrame.rs new_from_csv
-
 #[allow(clippy::too_many_arguments)]
 #[extendr]
 pub fn new_from_parquet(
-    path: String,
-    n_rows: Nullable<i32>,
-    cache: bool,
-    parallel: String, //Wrap<ParallelStrategy>,
-    rechunk: bool,
-    row_name: Nullable<String>,
-    row_count: u32,
-    low_memory: bool,
-    hive_partitioning: bool,
-) -> List {
-    let parallel_strategy = match parallel {
-        x if x == "Auto" => pl::ParallelStrategy::Auto,
-        _ => panic!("not implemented"),
-    };
-
-    let row_name = null_to_opt(row_name);
-
-    let row_count = row_name.map(|name| polars::io::RowCount {
-        name,
-        offset: row_count,
-    });
-    let n_rows = null_to_opt(n_rows);
-
+    path: Robj,
+    n_rows: Robj,
+    cache: Robj,
+    parallel: Robj,
+    rechunk: Robj,
+    row_name: Robj,
+    row_count: Robj,
+    //storage_options: Robj, // not supported yet, add provide features e.g. aws
+    use_statistics: Robj,
+    low_memory: Robj,
+    hive_partitioning: Robj,
+    //retries: Robj // not supported yet, with CloudOptions
+) -> RResult<LazyFrame> {
+    let offset = robj_to!(Option, u32, row_count)?.unwrap_or(0);
+    let opt_rowcount = robj_to!(Option, String, row_name)?.map(|name| RowCount { name, offset });
     let args = pl::ScanArgsParquet {
-        n_rows: n_rows.map(|x| x as usize),
-        cache,
-        parallel: parallel_strategy,
-        rechunk,
-        row_count,
-        low_memory,
-        cloud_options: None,  //TODO implement cloud options
-        use_statistics: true, //TODO expose use statistics
-        hive_partitioning,
+        n_rows: robj_to!(Option, usize, n_rows)?,
+        cache: robj_to!(bool, cache)?,
+        parallel: robj_to!(ParallelStrategy, parallel)?,
+        rechunk: robj_to!(bool, rechunk)?,
+        row_count: opt_rowcount,
+        low_memory: robj_to!(bool, low_memory)?,
+        cloud_options: None,
+        use_statistics: robj_to!(bool, use_statistics)?,
+        hive_partitioning: robj_to!(bool, hive_partitioning)?,
     };
 
-    let lf_result = pl::LazyFrame::scan_parquet(path, args)
-        .map_err(|x| x.to_string())
-        .map(LazyFrame);
-    r_result_list(lf_result)
+    pl::LazyFrame::scan_parquet(robj_to!(String, path)?, args)
+        .map_err(polars_to_rpolars_err)
+        .map(LazyFrame)
 }
 
 extendr_module! {
