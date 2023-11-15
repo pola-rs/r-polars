@@ -8,20 +8,23 @@
 
 \item{n_rows}{limit rows to scan}
 
-\item{cache}{bool use cache}
+\item{cache}{Boolean use cache}
 
 \item{parallel}{String either Auto, None, Columns or RowGroups. The way to parallelized the scan.}
 
-\item{rechunk}{bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
+\item{rechunk}{Boolean rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
 
 \item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
 
 \item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
-\item{low_memory}{bool, try reduce memory footprint}
+\item{low_memory}{Boolean, try reduce memory footprint}
 
 \item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
 and use them to prune reads.}
+
+\item{use_statistics}{Boolean, if TRUE use statistics in the parquet to determine if pages can be
+skipped from reading.}
 }
 \value{
 LazyFrame

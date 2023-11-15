@@ -3,14 +3,16 @@
 #'
 #' @param file string filepath
 #' @param n_rows limit rows to scan
-#' @param cache bool use cache
+#' @param cache Boolean use cache
 #' @param parallel String either Auto, None, Columns or RowGroups. The way to parallelized the scan.
-#' @param rechunk bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.
+#' @param rechunk Boolean rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.
 #' @param row_count_name NULL or string, if a string add a rowcount column named by this string
 #' @param row_count_offset integer, the rowcount column can be offset by this value
-#' @param low_memory bool, try reduce memory footprint
+#' @param low_memory Boolean, try reduce memory footprint
 #' @param hive_partitioning Infer statistics and schema from hive partitioned URL
 #' and use them to prune reads.
+#' @param use_statistics Boolean, if TRUE use statistics in the parquet to determine if pages can be
+#'  skipped from reading.
 #'
 #' @return LazyFrame
 #' @name scan_parquet
@@ -44,9 +46,10 @@ pl$scan_parquet = function(
     rechunk = TRUE,
     row_count_name = NULL,
     row_count_offset = 0L,
-    # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
     low_memory = FALSE,
-    hive_partitioning = TRUE) { #-> LazyFrame
+    use_statistics = TRUE,
+    hive_partitioning = TRUE
+  ) { #-> LazyFrame
 
   new_from_parquet(
     path = file,
@@ -56,7 +59,9 @@ pl$scan_parquet = function(
     rechunk = rechunk,
     row_name = row_count_name,
     row_count = row_count_offset,
+    #storage_options = storage_options, # not supported yet
     low_memory = low_memory,
+    use_statistics = use_statistics,
     hive_partitioning = hive_partitioning
   ) |>
     unwrap("in pl$scan_parquet(): ")
@@ -64,32 +69,24 @@ pl$scan_parquet = function(
 
 #' Read a parquet file
 #' @rdname IO_read_parquet
-#' @param file string filepath
-#' @param n_rows limit rows to scan
-#' @param cache bool use cache
-#' @param parallel String either Auto, None, Columns or RowGroups. The way to parallelized the scan.
-#' @param rechunk bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.
-#' @param row_count_name NULL or string, if a string add a rowcount column named by this string
-#' @param row_count_offset integer, the rowcount column can be offset by this value
-#' @param low_memory bool, try reduce memory footprint
+#' @inheritParams scan_parquet
 #' @return DataFrame
-#' @name read_parquet
-pl$read_parquet = function(
-    file,
-    n_rows = NULL,
-    cache = TRUE,
-    parallel = c(
-      "Auto", # default
-      "None",
-      "Columns",
-      "RowGroups"
-    ),
-    rechunk = TRUE,
-    row_count_name = NULL,
-    row_count_offset = 0L,
-    # storage_options,#: dict[str, object] | None = None, #seems fsspec specific
-    low_memory = FALSE,
-    hive_partitioning = TRUE) {
+read_parquet = function( # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
+  file,
+  n_rows = NULL,
+  cache = TRUE,
+  parallel = c(
+    "Auto", # default
+    "None",
+    "Columns",
+    "RowGroups"
+  ),
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0L,
+  low_memory = FALSE,
+  use_statistics = TRUE,
+  hive_partitioning = TRUE) {
 
   args = as.list(environment())
   result({
@@ -97,3 +94,4 @@ pl$read_parquet = function(
   }) |>
     unwrap("in pl$read_parquet(): ")
 }
+pl$read_parquet = read_parquet

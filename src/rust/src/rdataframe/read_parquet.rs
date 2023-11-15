@@ -16,8 +16,11 @@ pub fn new_from_parquet(
     rechunk: Robj,
     row_name: Robj,
     row_count: Robj,
+    //storage_options: Robj, // not supported yet, add provide features e.g. aws
+    use_statistics: Robj,
     low_memory: Robj,
     hive_partitioning: Robj,
+    //retries: Robj // not supported yet, with CloudOptions
 ) -> RResult<LazyFrame> {
     let offset = robj_to!(Option, u32, row_count)?.unwrap_or(0);
     let opt_rowcount = robj_to!(Option, String, row_name)?.map(|name| RowCount { name, offset });
@@ -28,8 +31,8 @@ pub fn new_from_parquet(
         rechunk: robj_to!(bool, rechunk)?,
         row_count: opt_rowcount,
         low_memory: robj_to!(bool, low_memory)?,
-        cloud_options: None,  //TODO implement cloud options
-        use_statistics: true, //TODO expose use statistics
+        cloud_options: None,
+        use_statistics: robj_to!(bool, use_statistics)?,
         hive_partitioning: robj_to!(bool, hive_partitioning)?,
     };
 

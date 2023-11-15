@@ -3,22 +3,42 @@
 \name{read_parquet}
 \alias{read_parquet}
 \title{Read a parquet file}
+\usage{
+read_parquet(
+  file,
+  n_rows = NULL,
+  cache = TRUE,
+  parallel = c("Auto", "None", "Columns", "RowGroups"),
+  rechunk = TRUE,
+  row_count_name = NULL,
+  row_count_offset = 0L,
+  low_memory = FALSE,
+  use_statistics = TRUE,
+  hive_partitioning = TRUE
+)
+}
 \arguments{
 \item{file}{string filepath}
 
 \item{n_rows}{limit rows to scan}
 
-\item{cache}{bool use cache}
+\item{cache}{Boolean use cache}
 
 \item{parallel}{String either Auto, None, Columns or RowGroups. The way to parallelized the scan.}
 
-\item{rechunk}{bool rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
+\item{rechunk}{Boolean rechunk reorganize memory layout, potentially make future operations faster , however perform reallocation now.}
 
 \item{row_count_name}{NULL or string, if a string add a rowcount column named by this string}
 
 \item{row_count_offset}{integer, the rowcount column can be offset by this value}
 
-\item{low_memory}{bool, try reduce memory footprint}
+\item{low_memory}{Boolean, try reduce memory footprint}
+
+\item{use_statistics}{Boolean, if TRUE use statistics in the parquet to determine if pages can be
+skipped from reading.}
+
+\item{hive_partitioning}{Infer statistics and schema from hive partitioned URL
+and use them to prune reads.}
 }
 \value{
 DataFrame
