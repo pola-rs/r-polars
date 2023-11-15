@@ -1418,72 +1418,38 @@ Expr_search_sorted = function(element) {
   .pr$Expr$search_sorted(self, wrap_e(element))
 }
 
-#' sort column by order of others
-#' @description Sort this column by the ordering of another column, or multiple other columns.
-#' @param by one expression or list expressions and/or strings(interpreted as column names)
-#' @param descending Sort in descending order. When sorting by multiple columns,
-#' can be specified per column by passing a sequence of booleans.
-#' @return Expr
-#' @aliases sort_by
-#' @name Expr_sort_by
-#' @details
-#' In projection/ selection context the whole column is sorted.
+#' Sort Expr by order of others
+#'
+#' Sort this column by the ordering of another column, or multiple other columns.
 #' If used in a groupby context, the groups are sorted.
 #'
-#' See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-#' @format NULL
+#' @param by One expression or a list of expressions and/or strings (interpreted
+#'  as column names).
+#' @inheritParams Expr_sort
+#' @return Expr
 #' @examples
-#' df = pl$DataFrame(list(
+#' df = pl$DataFrame(
 #'   group = c("a", "a", "a", "b", "b", "b"),
 #'   value1 = c(98, 1, 3, 2, 99, 100),
 #'   value2 = c("d", "f", "b", "e", "c", "a")
-#' ))
+#' )
 #'
 #' # by one column/expression
-#' df$select(
-#'   pl$col("group")$sort_by("value1")
+#' df$with_columns(
+#'   sorted = pl$col("group")$sort_by("value1")
 #' )
 #'
 #' # by two columns/expressions
-#' df$select(
-#'   pl$col("group")$sort_by(list("value2", pl$col("value1")), descending = c(TRUE, FALSE))
+#' df$with_columns(
+#'   sorted = pl$col("group")$sort_by(
+#'     list("value2", pl$col("value1")),
+#'     descending = c(TRUE, FALSE)
+#'   )
 #' )
-#'
 #'
 #' # by some expression
-#' df$select(
-#'   pl$col("group")$sort_by(pl$col("value1")$sort(descending = TRUE))
-#' )
-#'
-#' # quite similar usecase as R function `order()`
-#' l = list(
-#'   ab = c(rep("a", 6), rep("b", 6)),
-#'   v4 = rep(1:4, 3),
-#'   v3 = rep(1:3, 4),
-#'   v2 = rep(1:2, 6),
-#'   v1 = 1:12
-#' )
-#' df = pl$DataFrame(l)
-#'
-#'
-#' # examples of order versus sort_by
-#' all.equal(
-#'   df$select(
-#'     pl$col("ab")$sort_by("v4")$alias("ab4"),
-#'     pl$col("ab")$sort_by("v3")$alias("ab3"),
-#'     pl$col("ab")$sort_by("v2")$alias("ab2"),
-#'     pl$col("ab")$sort_by("v1")$alias("ab1"),
-#'     pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = c(FALSE, TRUE))$alias("ab13FT"),
-#'     pl$col("ab")$sort_by(list("v3", pl$col("v1")), descending = TRUE)$alias("ab13T")
-#'   )$to_list(),
-#'   list(
-#'     ab4 = l$ab[order(l$v4)],
-#'     ab3 = l$ab[order(l$v3)],
-#'     ab2 = l$ab[order(l$v2)],
-#'     ab1 = l$ab[order(l$v1)],
-#'     ab13FT = l$ab[order(l$v3, rev(l$v1))],
-#'     ab13T = l$ab[order(l$v3, l$v1, decreasing = TRUE)]
-#'   )
+#' df$with_columns(
+#'   sorted = pl$col("group")$sort_by(pl$col("value1")$sort(descending = TRUE))
 #' )
 Expr_sort_by = function(by, descending = FALSE) {
   .pr$Expr$sort_by(
@@ -1493,82 +1459,70 @@ Expr_sort_by = function(by, descending = FALSE) {
   ) |> unwrap("in $sort_by:")
 }
 
-
 # TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
 # either it should be error or Null.
 # pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
 # pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
 # pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
-#' Take values by index.
-#' @param indices R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.
-#' @return Expr
-#' @aliases take
-#' @name Expr_take
-#' @details
-#' similar to R indexing syntax e.g. `letters[c(1,3,5)]`, however as an expression, not as eager computation
-#' exceeding
+
+#' Take values by index
 #'
-#' @format NULL
+#' @param indices R scalar/vector or Series, or Expr that leads to a Series of
+#' dtype UInt32.
+#' @return Expr
 #' @examples
-#' pl$select(pl$lit(0:10)$take(c(1, 8, 0, 7)))
+#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$take(c(0, 2, 4)))
 Expr_take = function(indices) {
   .pr$Expr$take(self, pl$lit(indices))
 }
 
-
-
 #' Shift values
-#' @param periods numeric number of periods to shift, may be negative.
+#'
+#' @param periods Number of periods to shift, may be negative.
 #' @return Expr
-#' @aliases shift
-#' @name Expr_shift
-#' @format NULL
-#' @usage Expr_shift(periods)
 #' @examples
-#' pl$select(
-#'   pl$lit(0:3)$shift(-2)$alias("shift-2"),
-#'   pl$lit(0:3)$shift(2)$alias("shift+2")
-#' )
+#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
+#'   with_columns(
+#'     pl$col("a")$shift(-2)$alias("shift-2"),
+#'     pl$col("a")$shift(2)$alias("shift+2")
+#'   )
 Expr_shift = function(periods = 1) {
   .pr$Expr$shift(self, periods)
 }
 
 #' Shift and fill values
-#' @description Shift the values by a given period and fill the resulting null values.
 #'
-#' @param periods numeric number of periods to shift, may be negative.
-#' @param fill_value Fill None values with the result of this expression.
+#' Shift the values by a given period and fill the resulting null values.
+#'
+#' @inheritParams Expr_shift
+#' @param fill_value Fill null values with the result of this expression.
 #' @return Expr
-#' @aliases shift_and_fill
-#' @name Expr_shift_and_fill
-#' @format NULL
 #' @examples
-#' pl$select(
-#'   pl$lit(0:3),
-#'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-#'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
-#' )
+#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
+#'   with_columns(
+#'     pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+#'     pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
+#'   )
 Expr_shift_and_fill = function(periods, fill_value) {
   .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value))
 }
 
-
-#' Fill Nulls with a value or strategy.
-#' @description Shift the values by value or as strategy.
+#' Fill null values with a value or strategy
 #'
-#' @param value Expr or `Into<Expr>` to fill Null values with
-#' @param strategy default NULL else 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'
-#' @param limit Number of consecutive null values to fill when using the 'forward' or 'backward' strategy.
+#' @param value Expr or something coercible in an Expr
+#' @param strategy Possible choice are `NULL` (default, requires a non-null
+#' `value`), `"forward"`, `"backward"`, `"min"`, `"max"`, `"mean"`, `"zero"`,
+#' `"one"`.
+#' @param limit Number of consecutive null values to fill when using the
+#' `"forward"` or `"backward"` strategy.
 #' @return Expr
-#' @aliases fill_null
-#' @name Expr_fill_null
-#' @format NULL
-#'
 #' @examples
-#' pl$select(
-#'   pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-#'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
-#' )
+#' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+#'   with_columns(
+#'     value = pl$col("a")$fill_null(999),
+#'     backward = pl$col("a")$fill_null(strategy = "backward"),
+#'     mean = pl$col("a")$fill_null(strategy = "mean")
+#'   )
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
     # the wrong stuff
@@ -1588,65 +1542,48 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
 }
 
 
-#' Fill Nulls Backward
-#' @description Fill missing values with the next to be seen values.
+#' Fill null values backward
 #'
-#' @param limit Expr or `Into<Expr>`  The number of consecutive null values to backward fill.
+#' Fill missing values with the next to be seen values. Syntactic sugar for
+#' `$fill_null(strategy = "backward")`.
+#'
+#' @inheritParams Expr_fill_null
 #' @return Expr
-#' @aliases backward_fill
-#' @name Expr_backward_fill
-#' @format NULL
-#'
 #' @examples
-#' l = list(a = c(1L, rep(NA_integer_, 3L), 10))
-#' pl$DataFrame(l)$select(
-#'   pl$col("a")$backward_fill()$alias("bf_null"),
-#'   pl$col("a")$backward_fill(limit = 0)$alias("bf_l0"),
-#'   pl$col("a")$backward_fill(limit = 1)$alias("bf_l1")
-#' )$to_list()
+#' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+#'   with_columns(
+#'     backward = pl$col("a")$backward_fill()
+#'   )
 Expr_backward_fill = function(limit = NULL) {
   .pr$Expr$backward_fill(self, limit)
 }
 
-#' Fill Nulls Forward
-#' @description Fill missing values with last seen values.
+#' Fill null values forward
 #'
-#' @param limit Expr or `Into<Expr>`  The number of consecutive null values to forward fill.
+#' Fill missing values with the last seen values. Syntactic sugar for
+#' `$fill_null(strategy = "forward")`.
+#'
+#' @inheritParams Expr_fill_null
 #' @return Expr
-#' @aliases forward_fill
-#' @name Expr_forward_fill
-#' @format NULL
-#'
 #' @examples
-#' l = list(a = c(1L, rep(NA_integer_, 3L), 10))
-#' pl$DataFrame(l)$select(
-#'   pl$col("a")$forward_fill()$alias("ff_null"),
-#'   pl$col("a")$forward_fill(limit = 0)$alias("ff_l0"),
-#'   pl$col("a")$forward_fill(limit = 1)$alias("ff_l1")
-#' )$to_list()
+#' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+#'   with_columns(
+#'     backward = pl$col("a")$forward_fill()
+#'   )
 Expr_forward_fill = function(limit = NULL) {
   .pr$Expr$forward_fill(self, limit)
 }
 
 
-#' Fill Nulls Forward
+#' Fill NaN
 #'
-#' @param expr Expr or into Expr, value to fill NaNs with
-#'
-#' @description Fill missing values with last seen values.
-#'
+#' @param expr Expr or something coercible in an Expr
 #' @return Expr
-#' @aliases fill_nan
-#' @name Expr_fill_nan
-#' @format NULL
 #' @examples
-#' l = list(a = c(1, NaN, NaN, 3))
-#' pl$DataFrame(l)$select(
-#'   pl$col("a")$fill_nan()$alias("fill_default"),
-#'   pl$col("a")$fill_nan(pl$lit(NA))$alias("fill_NA"), # same as default
-#'   pl$col("a")$fill_nan(2)$alias("fill_float2"),
-#'   pl$col("a")$fill_nan("hej")$alias("fill_str") # implicit cast to Utf8
-#' )$to_list()
+#' pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
+#'   with_columns(
+#'     literal = pl$col("a")$fill_nan(999)
+#'   )
 Expr_fill_nan = function(expr = NULL) {
   .pr$Expr$fill_nan(self, wrap_e(expr))
 }

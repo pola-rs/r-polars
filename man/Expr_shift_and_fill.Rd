@@ -2,15 +2,14 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_shift_and_fill}
 \alias{Expr_shift_and_fill}
-\alias{shift_and_fill}
 \title{Shift and fill values}
 \usage{
 Expr_shift_and_fill(periods, fill_value)
 }
 \arguments{
-\item{periods}{numeric number of periods to shift, may be negative.}
+\item{periods}{Number of periods to shift, may be negative.}
 
-\item{fill_value}{Fill None values with the result of this expression.}
+\item{fill_value}{Fill null values with the result of this expression.}
 }
 \value{
 Expr
@@ -19,9 +18,9 @@ Expr
 Shift the values by a given period and fill the resulting null values.
 }
 \examples{
-pl$select(
-  pl$lit(0:3),
-  pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
-)
+pl$DataFrame(a = c(1, 2, 4, 5, 8))$
+  with_columns(
+    pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+    pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
+  )
 }

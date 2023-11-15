@@ -2,24 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_take}
 \alias{Expr_take}
-\alias{take}
-\title{Take values by index.}
+\title{Take values by index}
 \usage{
 Expr_take(indices)
 }
 \arguments{
-\item{indices}{R scalar/vector or Series, or Expr that leads to a UInt32 dtyped Series.}
+\item{indices}{R scalar/vector or Series, or Expr that leads to a Series of
+dtype UInt32.}
 }
 \value{
 Expr
 }
 \description{
-Take values by index.
-}
-\details{
-similar to R indexing syntax e.g. \code{letters[c(1,3,5)]}, however as an expression, not as eager computation
-exceeding
+Take values by index
 }
 \examples{
-pl$select(pl$lit(0:10)$take(c(1, 8, 0, 7)))
+pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$take(c(0, 2, 4)))
 }

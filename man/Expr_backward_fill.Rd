@@ -2,25 +2,24 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_backward_fill}
 \alias{Expr_backward_fill}
-\alias{backward_fill}
-\title{Fill Nulls Backward}
+\title{Fill null values backward}
 \usage{
 Expr_backward_fill(limit = NULL)
 }
 \arguments{
-\item{limit}{Expr or \verb{Into<Expr>}  The number of consecutive null values to backward fill.}
+\item{limit}{Number of consecutive null values to fill when using the
+\code{"forward"} or \code{"backward"} strategy.}
 }
 \value{
 Expr
 }
 \description{
-Fill missing values with the next to be seen values.
+Fill missing values with the next to be seen values. Syntactic sugar for
+\verb{$fill_null(strategy = "backward")}.
 }
 \examples{
-l = list(a = c(1L, rep(NA_integer_, 3L), 10))
-pl$DataFrame(l)$select(
-  pl$col("a")$backward_fill()$alias("bf_null"),
-  pl$col("a")$backward_fill(limit = 0)$alias("bf_l0"),
-  pl$col("a")$backward_fill(limit = 1)$alias("bf_l1")
-)$to_list()
+pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+  with_columns(
+    backward = pl$col("a")$backward_fill()
+  )
 }

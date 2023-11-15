@@ -2,26 +2,22 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_fill_nan}
 \alias{Expr_fill_nan}
-\alias{fill_nan}
-\title{Fill Nulls Forward}
+\title{Fill NaN}
 \usage{
 Expr_fill_nan(expr = NULL)
 }
 \arguments{
-\item{expr}{Expr or into Expr, value to fill NaNs with}
+\item{expr}{Expr or something coercible in an Expr}
 }
 \value{
 Expr
 }
 \description{
-Fill missing values with last seen values.
+Fill NaN
 }
 \examples{
-l = list(a = c(1, NaN, NaN, 3))
-pl$DataFrame(l)$select(
-  pl$col("a")$fill_nan()$alias("fill_default"),
-  pl$col("a")$fill_nan(pl$lit(NA))$alias("fill_NA"), # same as default
-  pl$col("a")$fill_nan(2)$alias("fill_float2"),
-  pl$col("a")$fill_nan("hej")$alias("fill_str") # implicit cast to Utf8
-)$to_list()
+pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
+  with_columns(
+    literal = pl$col("a")$fill_nan(999)
+  )
 }
