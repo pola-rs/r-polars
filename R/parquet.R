@@ -70,7 +70,7 @@ pl$scan_parquet = function(
 #' Read a parquet file
 #' @rdname IO_read_parquet
 #' @inheritParams scan_parquet
-#' @return DataFrame
+#' @return DataFrames
 read_parquet = function( # remapped to pl$read_parquet, a hack to support roxygen2 @inheritsParams
   file,
   n_rows = NULL,

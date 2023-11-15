@@ -824,7 +824,7 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
                 Ok(lf)
             }
             _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
                 let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
                 Ok(extptr_df.lazy())
             }
@@ -852,7 +852,7 @@ pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
                 Ok(extptr_df.0.clone())
             }
             _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(pl$DataFrame({{robj}}))"))?;
+                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
                 let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
                 Ok(extptr_df.0.clone())
             }
