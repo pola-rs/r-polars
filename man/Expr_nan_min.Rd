@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_nan_min}
 \alias{Expr_nan_min}
-\title{min propagate NaN}
+\title{Get minimum value with NaN}
 \usage{
 Expr_nan_min
 }
@@ -10,9 +10,10 @@ Expr_nan_min
 Expr
 }
 \description{
-Get minimum value, but propagate/poison encountered \code{NaN} values.
+Get minimum value, but returns \code{NaN} if there are any.
 }
 \examples{
-pl$DataFrame(list(x = c(1, NaN, -Inf, 3)))$select(pl$col("x")$nan_min()$is_nan()) # is true
+pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
+  with_columns(nan_min = pl$col("x")$nan_min())
 }
 \keyword{datasets}

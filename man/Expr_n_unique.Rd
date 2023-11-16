@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_n_unique}
 \alias{Expr_n_unique}
-\alias{n_unique}
 \title{Count number of unique values}
 \usage{
 Expr_n_unique
@@ -11,10 +10,9 @@ Expr_n_unique
 Expr
 }
 \description{
-Count number of unique values.
-Similar to R length(unique(x))
+Count number of unique values
 }
 \examples{
-pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
+pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 }
 \keyword{datasets}

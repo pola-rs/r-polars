@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sum}
 \alias{Expr_sum}
-\title{sum}
+\title{Get sum value}
 \usage{
 Expr_sum
 }
@@ -13,10 +13,11 @@ Expr
 Get sum value
 }
 \details{
-The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-Int64 before summing to prevent overflow issues.
+The dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+prevent overflow issues.
 }
 \examples{
-pl$DataFrame(list(x = c(1L, NA, 2L)))$select(pl$col("x")$sum()) # is i32 3 (Int32 not casted)
+pl$DataFrame(x = c(1L, NA, 2L))$
+  with_columns(sum = pl$col("x")$sum())
 }
 \keyword{datasets}

@@ -2,31 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_first}
 \alias{Expr_is_first}
-\title{Get a mask of the first unique value.}
+\title{Check whether each value is the first occurrence}
 \usage{
 Expr_is_first
 }
 \value{
-Expr (boolean)
+Expr
 }
 \description{
-Get a mask of the first unique value.
+Check whether each value is the first occurrence
 }
 \examples{
-v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
-all.equal(
-  pl$select(
-    pl$lit(v)$is_unique()$alias("is_unique"),
-    pl$lit(v)$is_first()$alias("is_first"),
-    pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-    pl$lit(v)$is_first()$not_()$alias("R_duplicated")
-  )$to_list(),
-  list(
-    is_unique = !v \%in\% v[duplicated(v)],
-    is_first = !duplicated(v),
-    is_duplicated = v \%in\% v[duplicated(v)],
-    R_duplicated = duplicated(v)
-  )
-)
+pl$DataFrame(head(mtcars[, 1:2]))$
+  with_columns(is_ufirst = pl$col("mpg")$is_first())
 }
 \keyword{datasets}

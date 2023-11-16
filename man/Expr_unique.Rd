@@ -2,19 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_unique}
 \alias{Expr_unique}
-\title{get unique values}
+\title{Get unique values}
 \usage{
 Expr_unique(maintain_order = FALSE)
 }
 \arguments{
-\item{maintain_order}{bool, if TRUE guaranteed same order, if FALSE maybe}
+\item{maintain_order}{If \code{TRUE}, the unique values are returned in order of
+appearance.}
 }
 \value{
 Expr
 }
 \description{
-Get unique values of this expression.
-Similar to R unique()
+Get unique values
 }
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$unique())

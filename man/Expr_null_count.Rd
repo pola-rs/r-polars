@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_null_count}
 \alias{Expr_null_count}
-\alias{null_count}
-\title{Count \code{Nulls}}
+\title{Count missing values}
 \usage{
 Expr_null_count
 }
@@ -11,9 +10,10 @@ Expr_null_count
 Expr
 }
 \description{
-Count \code{Nulls}
+Count missing values
 }
 \examples{
-pl$select(pl$lit(c(NA, "a", NA, "b"))$null_count())
+pl$DataFrame(x = c(NA, "a", NA, "b"))$
+  with_columns(n_missing = pl$col("x")$null_count())
 }
 \keyword{datasets}

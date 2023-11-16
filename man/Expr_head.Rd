@@ -2,22 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_head}
 \alias{Expr_head}
-\alias{head}
-\title{Head}
+\title{Get the first n elements}
 \usage{
 Expr_head(n = 10)
 }
 \arguments{
-\item{n}{numeric number of elements to select from head}
+\item{n}{Number of elements to take.}
 }
 \value{
 Expr
 }
 \description{
-Get the head n elements.
-Similar to R head(x)
+Get the first n elements
 }
 \examples{
-# get 3 first elements
-pl$DataFrame(list(x = 1:11))$select(pl$col("x")$head(3))
+pl$DataFrame(x = 1:11)$select(pl$col("x")$head(3))
 }

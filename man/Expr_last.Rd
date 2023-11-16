@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_last}
 \alias{Expr_last}
-\title{Last}
+\title{Get the last value}
 \usage{
 Expr_last
 }
@@ -10,10 +10,9 @@ Expr_last
 Expr
 }
 \description{
-Get the lastvalue.
-Similar to R syntax tail(x,1)
+Get the last value
 }
 \examples{
-pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$last())
+pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
 }
 \keyword{datasets}

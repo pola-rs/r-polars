@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_first}
 \alias{Expr_first}
-\title{First}
+\title{Get the first value.}
 \usage{
 Expr_first
 }
@@ -11,9 +11,8 @@ Expr
 }
 \description{
 Get the first value.
-Similar to R head(x,1)
 }
 \examples{
-pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$first())
+pl$DataFrame(x = 3:1)$with_columns(first = pl$col("x")$first())
 }
 \keyword{datasets}

@@ -1591,12 +1591,10 @@ Expr_fill_nan = function(expr = NULL) {
 }
 
 
-#' Get Standard Deviation
+#' Get standard deviation
 #'
-#' @param ddof integer in range `[0;255]` degrees of freedom
-#' @return Expr (f64 scalar)
-#' @name Expr_std
-#' @format NULL
+#' @param ddof Degrees of freedom, must be an integer between 0 and 255
+#' @return Expr
 #'
 #' @examples
 #' pl$select(pl$lit(1:5)$std())
@@ -1604,12 +1602,9 @@ Expr_std = function(ddof = 1) {
   unwrap(.pr$Expr$std(self, ddof))
 }
 
-#' Get Variance
+#' Get variance
 #'
-#' @param ddof integer in range `[0;255]` degrees of freedom
-#' @return Expr (f64 scalar)
-#' @name Expr_var
-#' @format NULL
+#' @inherit Expr_std params return
 #'
 #' @examples
 #' pl$select(pl$lit(1:5)$var())
@@ -1617,27 +1612,24 @@ Expr_var = function(ddof = 1) {
   unwrap(.pr$Expr$var(self, ddof))
 }
 
-
-#' max
-#' @description
-#' Get maximum value.
+#' Get maximum value
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$max() == 3) # is true
+#' pl$DataFrame(x = c(1, NA, 3))$
+#'   with_columns(max = pl$col("x")$max())
 Expr_max = "use_extendr_wrapper"
 
-#' min
-#' @description
-#' Get minimum value.
+#' Get minimum value
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$min() == 1) # is true
+#' pl$DataFrame(x = c(1, NA, 3))$
+#'   with_columns(min = pl$col("x")$min())
 Expr_min = "use_extendr_wrapper"
 
 
@@ -1646,114 +1638,106 @@ Expr_min = "use_extendr_wrapper"
 # In R both NA and NaN poisons, but NA has priority which is meaningful, as NA is even less information
 # then NaN.
 
-#' max
-#' @description Get maximum value, but propagate/poison encountered `NaN` values.
-#' Get maximum value.
+#' Get maximum value with NaN
+#'
+#' Get maximum value, but returns `NaN` if there are any.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NaN, Inf, 3)))$select(pl$col("x")$nan_max()$is_nan()) # is true
+#' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
+#'   with_columns(nan_max = pl$col("x")$nan_max())
 Expr_nan_max = "use_extendr_wrapper"
 
-#' min propagate NaN
+#' Get minimum value with NaN
 #'
-#' @description Get minimum value, but propagate/poison encountered `NaN` values.
+#' Get minimum value, but returns `NaN` if there are any.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NaN, -Inf, 3)))$select(pl$col("x")$nan_min()$is_nan()) # is true
+#' pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
+#'   with_columns(nan_min = pl$col("x")$nan_min())
 Expr_nan_min = "use_extendr_wrapper"
 
-
-
-#' sum
-#' @description
 #' Get sum value
 #'
 #' @details
-#'  The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-#' Int64 before summing to prevent overflow issues.
+#' The dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+#' prevent overflow issues.
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1L, NA, 2L)))$select(pl$col("x")$sum()) # is i32 3 (Int32 not casted)
+#' pl$DataFrame(x = c(1L, NA, 2L))$
+#'   with_columns(sum = pl$col("x")$sum())
 Expr_sum = "use_extendr_wrapper"
 
-
-
-#' mean
-#' @description
-#' Get mean value.
+#' Get mean value
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$mean() == 2) # is true
+#' pl$DataFrame(x = c(1L, NA, 2L))$
+#'   with_columns(mean = pl$col("x")$mean())
 Expr_mean = "use_extendr_wrapper"
 
-#' median
-#' @description
-#' Get median value.
+#' Get median value
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, NA, 2)))$select(pl$col("x")$median() == 1.5) # is true
+#' pl$DataFrame(x = c(1L, NA, 2L))$
+#'   with_columns(median = pl$col("x")$median())
 Expr_median = "use_extendr_wrapper"
 
-## TODO contribute polars: product does not support in rust i32
-
 #' Product
-#' @description Compute the product of an expression.
-#' @aliases  Product
+#'
+#' Compute the product of an expression.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @details does not support integer32 currently, .cast() to f64 or i64 first.
 #' @examples
-#' pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$product() == 6) # is true
+#' pl$DataFrame(x = c(2L, NA, 2L))$
+#'   with_columns(product = pl$col("x")$product())
 Expr_product = "use_extendr_wrapper"
 
-
 #' Count number of unique values
-#' @description
-#' Count number of unique values.
-#' Similar to R length(unique(x))
-#' @aliases n_unique
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$n_unique())
+#' pl$DataFrame(iris[, 4:5])$with_columns(count = pl$col("Species")$n_unique())
 Expr_n_unique = "use_extendr_wrapper"
 
-#'  Approx count unique values
-#' @description
+#' Approx count unique values
+#'
 #' This is done using the HyperLogLog++ algorithm for cardinality estimation.
-#' @aliases approx_n_unique
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(iris)$select(pl$col("Species")$approx_n_unique())
+#' pl$DataFrame(iris[, 4:5])$
+#'   with_columns(count = pl$col("Species")$approx_n_unique())
 Expr_approx_n_unique = "use_extendr_wrapper"
 
-#' Count `Nulls`
-#' @aliases null_count
+#' Count missing values
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$select(pl$lit(c(NA, "a", NA, "b"))$null_count())
+#' pl$DataFrame(x = c(NA, "a", NA, "b"))$
+#'   with_columns(n_missing = pl$col("x")$null_count())
 Expr_null_count = "use_extendr_wrapper"
 
-#' Index of First Unique Value.
+#' Index of first unique values
+#'
+#' This finds the position of first occurrence of each unique value.
 #' @aliases arg_unique
 #' @return Expr
 #' @docType NULL
@@ -1762,12 +1746,10 @@ Expr_null_count = "use_extendr_wrapper"
 #' pl$select(pl$lit(c(1:2, 1:3))$arg_unique())
 Expr_arg_unique = "use_extendr_wrapper"
 
-
-#' get unique values
-#' @description
-#'  Get unique values of this expression.
-#' Similar to R unique()
-#' @param maintain_order bool, if TRUE guaranteed same order, if FALSE maybe
+#' Get unique values
+#'
+#' @param maintain_order If `TRUE`, the unique values are returned in order of
+#' appearance.
 #' @return Expr
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique())
@@ -1780,37 +1762,30 @@ Expr_unique = function(maintain_order = FALSE) {
   }
 }
 
-#' First
-#' @description
 #' Get the first value.
-#' Similar to R head(x,1)
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$first())
+#' pl$DataFrame(x = 3:1)$with_columns(first = pl$col("x")$first())
 Expr_first = "use_extendr_wrapper"
 
-#' Last
-#' @description
-#' Get the lastvalue.
-#' Similar to R syntax tail(x,1)
+#' Get the last value
+#'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$last())
+#' pl$DataFrame(x = 3:1)$with_columns(last = pl$col("x")$last())
 Expr_last = "use_extendr_wrapper"
 
-
-
-#' over
-#' @description
-#' Apply window function over a subgroup.
-#' This is similar to a groupby + aggregation + self join.
-#' Or similar to `window functions in Postgres
-#' <https://www.postgresql.org/docs/current/tutorial-window.html>`_.
-#' @param ... of strings or columns to group by
+#' Apply window function over a subgroup
+#'
+#' This applies an expression on groups and returns the same number of rows as
+#' the input (contrarily to `$group_by()` + `$agg()`).
+#'
+#' @param ... Character vector indicating the columns to group by.
 #'
 #' @return Expr
 #' @examples
@@ -1818,8 +1793,8 @@ Expr_last = "use_extendr_wrapper"
 #'   val = 1:5,
 #'   a = c("+", "+", "-", "-", "+"),
 #'   b = c("+", "-", "+", "-", "+")
-#' )$select(
-#'   pl$col("val")$count()$over("a", "b")
+#' )$with_columns(
+#'   count = pl$col("val")$count()$over("a", "b")
 #' )
 #'
 #' over_vars = c("a", "b")
@@ -1827,113 +1802,63 @@ Expr_last = "use_extendr_wrapper"
 #'   val = 1:5,
 #'   a = c("+", "+", "-", "-", "+"),
 #'   b = c("+", "-", "+", "-", "+")
-#' )$select(
-#'   pl$col("val")$count()$over(over_vars)
+#' )$with_columns(
+#'   count = pl$col("val")$count()$over(over_vars)
 #' )
 Expr_over = function(...) {
-  # combine arguments in proto expression array
   pra = construct_ProtoExprArray(...)
-
-  # pass to over
   .pr$Expr$over(self, pra)
 }
 
-
-#' Get mask of unique values
+#' Check whether each value is unique
 #'
-#' @return Expr (boolean)
+#' @return Expr
 #' @docType NULL
-#' @format NULL
-#' @name Expr_is_unique
 #' @format NULL
 #'
 #' @examples
-#' v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
-#' all.equal(
-#'   pl$select(
-#'     pl$lit(v)$is_unique()$alias("is_unique"),
-#'     pl$lit(v)$is_first()$alias("is_first"),
-#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
-#'   )$to_list(),
-#'   list(
-#'     is_unique = !v %in% v[duplicated(v)],
-#'     is_first = !duplicated(v),
-#'     is_duplicated = v %in% v[duplicated(v)],
-#'     R_duplicated = duplicated(v)
-#'   )
-#' )
+#' pl$DataFrame(head(mtcars[, 1:2]))$
+#'   with_columns(is_unique = pl$col("mpg")$is_unique())
 Expr_is_unique = "use_extendr_wrapper"
 
-#' Get a mask of the first unique value.
+#' Check whether each value is the first occurrence
 #'
-#' @return Expr (boolean)
+#' @return Expr
 #' @docType NULL
-#' @format NULL
-#' @name Expr_is_first
 #' @format NULL
 #'
 #' @examples
-#' v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
-#' all.equal(
-#'   pl$select(
-#'     pl$lit(v)$is_unique()$alias("is_unique"),
-#'     pl$lit(v)$is_first()$alias("is_first"),
-#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
-#'   )$to_list(),
-#'   list(
-#'     is_unique = !v %in% v[duplicated(v)],
-#'     is_first = !duplicated(v),
-#'     is_duplicated = v %in% v[duplicated(v)],
-#'     R_duplicated = duplicated(v)
-#'   )
-#' )
+#' pl$DataFrame(head(mtcars[, 1:2]))$
+#'   with_columns(is_ufirst = pl$col("mpg")$is_first())
 Expr_is_first = "use_extendr_wrapper"
 
 
-#' Get mask of duplicated values.
+#' Check whether each value is duplicated
 #'
-#' @return Expr (boolean)
+#' This is syntactic sugar for `$is_unique()$not_()`.
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases is_duplicated
-#' @name Expr_is_duplicated
-#' @format NULL
-#' @details  is_duplicated is the opposite of `is_unique()`
-#'  Looking for R like `duplicated()`?, use  `some_expr$is_first()$not_()`
 #'
 #' @examples
-#' v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
-#' all.equal(
-#'   pl$select(
-#'     pl$lit(v)$is_unique()$alias("is_unique"),
-#'     pl$lit(v)$is_first()$alias("is_first"),
-#'     pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-#'     pl$lit(v)$is_first()$not_()$alias("R_duplicated")
-#'   )$to_list(),
-#'   list(
-#'     is_unique = !v %in% v[duplicated(v)],
-#'     is_first = !duplicated(v),
-#'     is_duplicated = v %in% v[duplicated(v)],
-#'     R_duplicated = duplicated(v)
-#'   )
-#' )
+#' pl$DataFrame(head(mtcars[, 1:2]))$
+#'   with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 Expr_is_duplicated = "use_extendr_wrapper"
 
 
 # TODO contribute polars, example of where NA/Null is omitted and the smallest value
+
 #' Get quantile value.
 #'
-#' @param quantile numeric/Expression 0.0 to 1.0
-#' @param interpolation string value from choices "nearest", "higher",
-#' "lower", "midpoint", "linear"
-#' @return Expr
-#' @aliases quantile
-#' @name Expr_quantile
-#' @format NULL
+#' @param quantile Either a numeric value or an Expr whose value must be
+#' between 0 and 1.
+#' @param interpolation One of `"nearest"`, `"higher"`, `"lower"`,
+#' `"midpoint"`, or `"linear"`.
 #'
-#' @details `Nulls` are ignored and `NaNs` are ranked as the largest value.
+#' @return Expr
+#'
+#' @details
+#' Null values are ignored and `NaN`s are ranked as the largest value.
 #' For linear interpolation `NaN` poisons `Inf`, that poisons any other value.
 #'
 #' @examples
@@ -1942,135 +1867,123 @@ Expr_quantile = function(quantile, interpolation = "nearest") {
   unwrap(.pr$Expr$quantile(self, wrap_e(quantile), interpolation))
 }
 
-
-
 #' Filter a single column.
-#' @description
-#' Mostly useful in an aggregation context. If you want to filter on a DataFrame
-#' level, use `LazyFrame.filter`.
 #'
-#' @param predicate Expr or something `Into<Expr>`. Should be a boolean expression.
+#' Mostly useful in an aggregation context. If you want to filter on a
+#' DataFrame level, use `DataFrame$filter()` (or `LazyFrame$filter()`).
+#'
+#' @param predicate An Expr or something coercible to an Expr. Must return a
+#' boolean.
 #' @return Expr
-#' @aliases Expr_filter
-#' @format NULL
 #'
 #' @examples
-#' df = pl$DataFrame(list(
+#' df = pl$DataFrame(
 #'   group_col = c("g1", "g1", "g2"),
 #'   b = c(1, 2, 3)
-#' ))
+#' )
+#' df
 #'
 #' df$group_by("group_col")$agg(
-#'   pl$col("b")$filter(pl$col("b") < 2)$sum()$alias("lt"),
-#'   pl$col("b")$filter(pl$col("b") >= 2)$sum()$alias("gte")
+#'   lt = pl$col("b")$filter(pl$col("b") < 2),
+#'   gte = pl$col("b")$filter(pl$col("b") >= 2)
 #' )
 Expr_filter = function(predicate) {
   .pr$Expr$filter(self, wrap_e(predicate))
 }
 
-#' Where: Filter a single column.
-#' @rdname Expr_filter
-#' @description
-#' where() is an alias for pl$filter
+#' @inherit Expr_filter title params return
 #'
-#' @aliases where
+#' @description
+#' This is an alias for `<Expr>$filter()`.
+#'
+#'
+#' @examples
+#' df = pl$DataFrame(
+#'   group_col = c("g1", "g1", "g2"),
+#'   b = c(1, 2, 3)
+#' )
+#' df
+#'
+#' df$group_by("group_col")$agg(
+#'   lt = pl$col("b")$where(pl$col("b") < 2),
+#'   gte = pl$col("b")$where(pl$col("b") >= 2)
+#' )
 Expr_where = Expr_filter
 
 
-
-
-
-
-#' Explode a list or utf8 Series.
-#' @description
+#' Explode a list or Utf8 Series
+#'
 #' This means that every item is expanded to a new row.
 #'
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases explode
-#' @format NULL
 #'
 #' @details
-#' explode/flatten does not support categorical
+#' Categorical values are not supported.
 #'
 #' @examples
-#' pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$take(0:5))
+#' df = pl$DataFrame(x = c("abc", "ab"), y = c(list(1:3), list(3:5)))
+#' df
 #'
-#' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$group_by("Species")$agg(pl$all())
-#' print(listed_group_df)
-#' vectors_df = listed_group_df$select(
-#'   pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
-#' )
-#' print(vectors_df)
+#' df$select(pl$col("y")$explode())
 Expr_explode = "use_extendr_wrapper"
 
+#' @inherit Expr_explode title return
+#'
 #' @description
-#' ( flatten is an alias for explode )
-#' @aliases flatten
-#' @docType NULL
-#' @format NULL
-#' @format NULL
-#' @name Expr_flatten
-#' @rdname Expr_explode
+#' This is an alias for `<Expr>$explode()`.
+#'
+#' @examples
+#' df = pl$DataFrame(x = c("abc", "ab"), y = c(list(1:3), list(3:5)))
+#' df
+#'
+#' df$select(pl$col("y")$flatten())
 Expr_flatten = "use_extendr_wrapper"
 
 
-#' Take every n'th element
-#' @description
+#' Take every nth element
+#'
 #' Take every nth value in the Series and return as a new Series.
-#' @param n positive integerish value
+#' @param n Positive integer.
 #'
 #' @return Expr
-#' @aliases take_every
-#' @format NULL
 #'
 #' @examples
-#' pl$DataFrame(list(a = 0:24))$select(pl$col("a")$take_every(6))
+#' pl$DataFrame(a = 0:24)$select(pl$col("a")$take_every(6))
 Expr_take_every = function(n) {
   unwrap(.pr$Expr$take_every(self, n))
 }
 
-
-#' Head
-#' @description
-#' Get the head n elements.
-#' Similar to R head(x)
-#' @param n numeric number of elements to select from head
+#' Get the first n elements
+#'
+#' @param n Number of elements to take.
 #' @return Expr
-#' @aliases head
 #' @examples
-#' # get 3 first elements
-#' pl$DataFrame(list(x = 1:11))$select(pl$col("x")$head(3))
+#' pl$DataFrame(x = 1:11)$select(pl$col("x")$head(3))
 Expr_head = function(n = 10) {
   unwrap(.pr$Expr$head(self, n = n), "in $head():")
 }
 
-#' Tail
-#' @description
-#' Get the tail n elements.
-#' Similar to R tail(x)
-#' @param n numeric number of elements to select from tail
+#' Get the last n elements
+#'
+#' @inheritParams Expr_head
 #' @return Expr
-#' @aliases tail
+#'
 #' @examples
-#' # get 3 last elements
-#' pl$DataFrame(list(x = 1:11))$select(pl$col("x")$tail(3))
+#' pl$DataFrame(x = 1:11)$select(pl$col("x")$tail(3))
 Expr_tail = function(n = 10) {
   unwrap(.pr$Expr$tail(self, n = n), "in $tail():")
 }
 
 
-#' Limit
+#' @inherit Expr_head title params return
+#'
 #' @description
-#' Alias for Head
-#' Get the head n elements.
-#' Similar to R head(x)
-#' @param n numeric number of elements to select from head
-#' @return Expr
+#' This is an alias for `<Expr>$head()`.
+#'
 #' @examples
-#' # get 3 first elements
-#' pl$DataFrame(list(x = 1:11))$select(pl$col("x")$limit(3))
+#' pl$DataFrame(x = 1:11)$select(pl$col("x")$limit(3))
 Expr_limit = function(n = 10) {
   if (!is.numeric(n)) stop("limit: n must be numeric")
   unwrap(.pr$Expr$head(self, n = n))

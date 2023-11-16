@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_max}
 \alias{Expr_max}
-\title{max}
+\title{Get maximum value}
 \usage{
 Expr_max
 }
@@ -10,9 +10,10 @@ Expr_max
 Expr
 }
 \description{
-Get maximum value.
+Get maximum value
 }
 \examples{
-pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$max() == 3) # is true
+pl$DataFrame(x = c(1, NA, 3))$
+  with_columns(max = pl$col("x")$max())
 }
 \keyword{datasets}

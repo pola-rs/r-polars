@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_nan_max}
 \alias{Expr_nan_max}
-\title{max}
+\title{Get maximum value with NaN}
 \usage{
 Expr_nan_max
 }
@@ -10,10 +10,10 @@ Expr_nan_max
 Expr
 }
 \description{
-Get maximum value, but propagate/poison encountered \code{NaN} values.
-Get maximum value.
+Get maximum value, but returns \code{NaN} if there are any.
 }
 \examples{
-pl$DataFrame(list(x = c(1, NaN, Inf, 3)))$select(pl$col("x")$nan_max()$is_nan()) # is true
+pl$DataFrame(x = c(1, NA, 3, NaN, Inf))$
+  with_columns(nan_max = pl$col("x")$nan_max())
 }
 \keyword{datasets}

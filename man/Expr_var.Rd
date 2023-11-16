@@ -2,18 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_var}
 \alias{Expr_var}
-\title{Get Variance}
+\title{Get variance}
 \usage{
 Expr_var(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer in range \verb{[0;255]} degrees of freedom}
+\item{ddof}{Degrees of freedom, must be an integer between 0 and 255}
 }
 \value{
-Expr (f64 scalar)
+Expr
 }
 \description{
-Get Variance
+Get variance
 }
 \examples{
 pl$select(pl$lit(1:5)$var())
