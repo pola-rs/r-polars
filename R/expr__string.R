@@ -320,7 +320,7 @@ ExprStr_zfill = function(alignment) {
 #' df$select(pl$col("a")$str$pad_end(8, "*"))
 ExprStr_pad_end = function(width, fillchar = " ") {
   .pr$Expr$str_pad_end(self, width, fillchar) |>
-    unwrap("in str$ljust(): ")
+    unwrap("in str$pad_end(): ")
 }
 
 
@@ -336,7 +336,7 @@ ExprStr_pad_end = function(width, fillchar = " ") {
 #' df$select(pl$col("a")$str$pad_start(8, "*"))
 ExprStr_pad_start = function(width, fillchar = " ") {
   .pr$Expr$str_pad_start(self, width, fillchar) |>
-    unwrap("in str$rjust(): ")
+    unwrap("in str$pad_start(): ")
 }
 
 

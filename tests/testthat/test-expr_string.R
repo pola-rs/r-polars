@@ -218,7 +218,7 @@ test_that("zfill", {
 })
 
 # patrick package could be justified here
-test_that("str$ljust str$rjust", {
+test_that("str$pad_start str$pad_start", {
   # ljust
   df = pl$DataFrame(a = c("cow", "monkey", NA, "hippopotamus"))
   expect_identical(
