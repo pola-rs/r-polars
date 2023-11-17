@@ -119,7 +119,8 @@ impl LazyFrame {
     fn sink_csv(
         &self,
         path: Robj,
-        has_header: Robj,
+        include_bom: bool,
+        include_header: Robj,
         separator: Robj,
         line_terminator: Robj,
         quote: Robj,
@@ -142,7 +143,7 @@ impl LazyFrame {
         let null_value = robj_to!(String, null_value)?;
         let line_terminator = robj_to!(String, line_terminator)?;
         let quote_style = robj_to!(QuoteStyle, quote_style)?;
-        let has_header = robj_to!(bool, has_header)?;
+        let include_header = robj_to!(bool, include_header)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let batch_size = robj_to!(usize, batch_size)?;
 
@@ -159,9 +160,10 @@ impl LazyFrame {
         };
 
         let options = CsvWriterOptions {
-            has_header,
-            maintain_order,
+            include_bom,
+            include_header,
             batch_size,
+            maintain_order,
             serialize_options,
         };
 
@@ -226,7 +228,7 @@ impl LazyFrame {
         Ok(self
             .clone()
             .0
-            .shift_and_fill(robj_to!(i64, periods)?, robj_to!(Expr, fill_value)?.0)
+            .shift_and_fill(robj_to!(Expr, periods)?, robj_to!(Expr, fill_value)?)
             .into())
     }
 

@@ -490,8 +490,8 @@ impl Series {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cumsum(&self, reverse: bool) -> RResult<Series> {
-        pl::cumsum(&self.0, reverse)
+    pub fn cum_sum(&self, reverse: bool) -> RResult<Series> {
+        pl::cum_sum(&self.0, reverse)
             .map_err(polars_to_rpolars_err)
             .map(Series)
     }

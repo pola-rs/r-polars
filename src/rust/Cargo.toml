@@ -1,6 +1,6 @@
 [package]
 name = "r-polars"
-version = "0.34.2"
+version = "0.35.0"
 edition = "2021"
 rust-version = "1.73"
 publish = false
@@ -49,8 +49,8 @@ serde_json = "*"
 smartstring = "1.0.1"
 state = "0.6.0"
 thiserror = "1.0.40"
-polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "7a215bfefb88f44b35681114b36ba9bef00fc017", default-features = false }
-polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "7a215bfefb88f44b35681114b36ba9bef00fc017", default-features = false }
+polars-core = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
+polars-lazy = { git = "https://github.com/pola-rs/polars.git", rev = "b13afbecac039205dacbaca766ecca4bf441b347", default-features = false }
 either = "1"
 #features copied from node-polars
 
@@ -61,8 +61,9 @@ features = [
   "arg_where",
   "asof_join",
   "avro",
-  "binary_encoding", 
+  "binary_encoding",
   "concat_str",
+  "cov",
   "cross_join",
   "cse",
   "cum_agg",
@@ -96,7 +97,7 @@ features = [
   "lazy_regex",
   #"list",
   "list_eval",
-  "list_take",
+  "list_gather",
   "list_to_struct",
   "log",
   "meta",
@@ -127,8 +128,8 @@ features = [
   "sign",
   "strings",
   "string_encoding",
-  "string_from_radix",
   "string_pad",
+  "string_to_integer",
   "temporal",
   "timezones",
   "to_dummies",
@@ -136,7 +137,7 @@ features = [
   "trigonometry",
   "true_div",
   "unique_counts",
-  "zip_with", 
+  "zip_with",
 ]
 git = "https://github.com/pola-rs/polars.git"
-rev = "7a215bfefb88f44b35681114b36ba9bef00fc017"
+rev = "b13afbecac039205dacbaca766ecca4bf441b347"

@@ -288,7 +288,7 @@ impl Expr {
     }
 
     pub fn take(&self, idx: &Expr) -> Self {
-        self.clone().0.take(idx.0.clone()).into()
+        self.clone().0.gather(idx.0.clone()).into()
     }
 
     pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<Expr> {
@@ -309,19 +309,20 @@ impl Expr {
         self.clone().0.forward_fill(lmt).into()
     }
 
-    pub fn shift(&self, periods: f64) -> Self {
-        self.clone().0.shift(periods as i64).into()
+    pub fn shift(&self, periods: Robj) -> RResult<Self> {
+        Ok(self.clone().0.shift(robj_to!(PLExpr, periods)?).into())
     }
 
-    pub fn shift_and_fill(&self, periods: f64, fill_value: &Expr) -> Self {
-        self.0
+    pub fn shift_and_fill(&self, periods: Robj, fill_value: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
-            .shift_and_fill(periods as i64, fill_value.0.clone())
-            .into()
+            .shift_and_fill(robj_to!(PLExpr, periods)?, robj_to!(PLExpr, fill_value)?)
+            .into())
     }
 
-    pub fn fill_null(&self, expr: &Expr) -> Self {
-        self.0.clone().fill_null(expr.0.clone()).into()
+    pub fn fill_null(&self, expr: Robj) -> RResult<Self> {
+        Ok(self.0.clone().fill_null(robj_to!(PLExpr, expr)?).into())
     }
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
@@ -432,20 +433,20 @@ impl Expr {
         self.clone().0.explode().into()
     }
 
-    pub fn take_every(&self, n: f64) -> List {
+    pub fn gather_every(&self, n: f64) -> List {
         use pl::*; //dunno what set of traits needed just take all
 
         let result = try_f64_into_usize_no_zero(n)
-            .map_err(|err| format!("Invalid n argument in take_every: {}", err))
+            .map_err(|err| format!("Invalid n argument in gather_every: {}", err))
             .map(|n| {
                 Expr(
                     self.clone()
                         .0
                         .map(
-                            move |s: Series| Ok(Some(s.take_every(n))),
+                            move |s: Series| Ok(Some(s.gather_every(n))),
                             pl::GetOutput::same_type(),
                         )
-                        .with_fmt("take_every"),
+                        .with_fmt("gather_every"),
                 )
             });
 
@@ -1263,7 +1264,7 @@ impl Expr {
 
     //end list/arr methods
 
-    pub fn dt_truncate(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
+    pub fn dt_truncate(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1271,12 +1272,11 @@ impl Expr {
             .truncate(
                 robj_to!(PLExpr, every)?,
                 robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
-                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
 
-    pub fn dt_round(&self, every: Robj, offset: Robj, ambiguous: Robj) -> RResult<Self> {
+    pub fn dt_round(&self, every: Robj, offset: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1284,7 +1284,6 @@ impl Expr {
             .round(
                 robj_to!(pl_duration_string, every)?,
                 robj_to!(Option, pl_duration_string, offset)?.unwrap_or_else(|| "0ns".into()),
-                robj_to!(PLExpr, ambiguous)?,
             )
             .into())
     }
@@ -1534,24 +1533,24 @@ impl Expr {
         self.0.clone().drop_nans().into()
     }
 
-    pub fn cumsum(&self, reverse: bool) -> Self {
-        self.0.clone().cumsum(reverse).into()
+    pub fn cum_sum(&self, reverse: bool) -> Self {
+        self.0.clone().cum_sum(reverse).into()
     }
 
-    pub fn cumprod(&self, reverse: bool) -> Self {
-        self.0.clone().cumprod(reverse).into()
+    pub fn cum_prod(&self, reverse: bool) -> Self {
+        self.0.clone().cum_prod(reverse).into()
     }
 
-    pub fn cummin(&self, reverse: bool) -> Self {
-        self.0.clone().cummin(reverse).into()
+    pub fn cum_min(&self, reverse: bool) -> Self {
+        self.0.clone().cum_min(reverse).into()
     }
 
-    pub fn cummax(&self, reverse: bool) -> Self {
-        self.0.clone().cummax(reverse).into()
+    pub fn cum_max(&self, reverse: bool) -> Self {
+        self.0.clone().cum_max(reverse).into()
     }
 
-    pub fn cumcount(&self, reverse: bool) -> Self {
-        self.0.clone().cumcount(reverse).into()
+    pub fn cum_count(&self, reverse: bool) -> Self {
+        self.0.clone().cum_count(reverse).into()
     }
 
     pub fn floor(&self) -> Self {
@@ -1864,8 +1863,12 @@ impl Expr {
             .into()
     }
 
-    pub fn str_concat(&self, delimiter: &str) -> Self {
-        self.0.clone().str().concat(delimiter).into()
+    pub fn str_concat(&self, delimiter: &str, ignore_nulls: Robj) -> Self {
+        self.0
+            .clone()
+            .str()
+            .concat(delimiter, robj_to!(bool, ignore_nulls))
+            .into()
     }
 
     pub fn str_to_uppercase(&self) -> Self {
@@ -2136,7 +2139,7 @@ impl Expr {
             .0
             .clone()
             .str()
-            .from_radix(robj_to!(u32, radix)?, robj_to!(bool, strict)?)
+            .to_integer(robj_to!(u32, radix)?, robj_to!(bool, strict)?)
             .with_fmt("str.parse_int")
             .into())
     }
@@ -2319,8 +2322,13 @@ impl Expr {
         dsl::last().into()
     }
 
-    pub fn cov(a: Robj, b: Robj) -> RResult<Expr> {
-        Ok(pl::cov(robj_to!(PLExprCol, a)?, robj_to!(PLExprCol, b)?).into())
+    pub fn cov(a: Robj, b: Robj, ddof: Robj) -> RResult<Expr> {
+        Ok(pl::cov(
+            robj_to!(PLExprCol, a)?,
+            robj_to!(PLExprCol, b)?,
+            robj_to!(u8, ddof)?,
+        )
+        .into())
     }
 
     pub fn rolling_cov(

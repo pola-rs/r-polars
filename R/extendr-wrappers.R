@@ -23,8 +23,6 @@ sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
 
-sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
-
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
