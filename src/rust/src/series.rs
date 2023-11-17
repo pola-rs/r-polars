@@ -256,7 +256,7 @@ impl Series {
             .map(Series)
     }
 
-        pub fn alias(&self, name: &str) -> Series {
+    pub fn alias(&self, name: &str) -> Series {
         let mut s = self.0.clone();
         s.rename(name);
         Series(s)

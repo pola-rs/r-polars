@@ -5,6 +5,7 @@
 - rust-polars is updated to 0.35 (2023-11-17) (#515)
   - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
     `include_header` and there's a new argument `include_bom`.
+  - `pl$cov()` gains a `ddof` argument.
 
 ## Breaking changes
 

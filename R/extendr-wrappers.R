@@ -955,7 +955,7 @@ Expr$new_first <- function() .Call(wrap__Expr__new_first)
 
 Expr$new_last <- function() .Call(wrap__Expr__new_last)
 
-Expr$cov <- function(a, b) .Call(wrap__Expr__cov, a, b)
+Expr$cov <- function(a, b, ddof) .Call(wrap__Expr__cov, a, b, ddof)
 
 Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_cov, a, b, window_size, min_periods, ddof)
 
