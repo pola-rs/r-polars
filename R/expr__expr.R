@@ -1355,7 +1355,6 @@ Expr_bottom_k = function(k) {
     unwrap("in $bottom_k():")
 }
 
-
 #' Index of a sort
 #'
 #' Get the index values that would sort this column.
@@ -1369,6 +1368,9 @@ Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
+#' @inherit Expr_arg_sort title examples
+#' @description argsort is a alias for arg_sort
+Expr_argsort = Expr_arg_sort
 
 #' Index of min value
 #'
@@ -1992,27 +1994,17 @@ Expr_limit = function(n = 10) {
 
 
 #' Exponentiation
-#' @description Raise expression to the power of exponent.
-#' @param exponent exponent
-#' @details The R interpreter will replace the `**` with `^`, such that `**` means `^` (except in
-#' strings e.g. "**"). Read further at `?"**"`. In py-polars python `^` is the XOR operator and
-#' `**` is the exponentiation operator.
+#'
+#' Raise expression to the power of exponent.
+#'
+#' @param exponent Exponent value.
 #' @return Expr
-#' @name Expr_pow
-#' @aliases pow
 #' @examples
 #' # use via `pow`-method and the `^`-operator
-#' pl$DataFrame(a = -1:3)$select(
-#'   pl$lit(2)$pow(pl$col("a"))$alias("with $pow()"),
-#'   2^pl$lit(-2:2), # brief use
-#'   pl$lit(2)$alias("left hand side name")^pl$lit(-3:1)$alias("right hand side name dropped")
+#' pl$DataFrame(a = -1:3, b = 2:6)$with_columns(
+#'   x = pl$col("a")$pow(2),
+#'   y = pl$col("a")^3
 #' )
-#'
-#' # exotic case where '**' will not work, but "^" will
-#' safe_chr = \(...) tryCatch(..., error = as.character)
-#' get("^")(2, pl$lit(2)) |> safe_chr()
-#' get("**")(2, pl$lit(2)) |> safe_chr()
-#' get("**")(2, 2) |> safe_chr()
 Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
@@ -2020,69 +2012,72 @@ Expr_pow = function(exponent) {
 "^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
-#' is_in
-#' @name Expr_is_in
-#' @description combine to boolean expressions with similar to `%in%`
-#' @keywords Expr Expr_operators
-#' @param other literal or Robj which can become a literal
+#' Check whether a value is in a vector
+#'
+#' Notice that to check whether a factor value is in a vector of strings, you
+#' need to use the string cache, either with `pl$enable_string_cache()` or
+#' with `pl$with_string_cache()`. See examples.
+#'
+#' @inheritParams Expr_add
 #' @return Expr
-#' @docType NULL
-#' @format NULL
-#' @usage Expr_is_in(other)
 #' @examples
+#' pl$DataFrame(a = c(1:4, NA_integer_))$with_columns(
+#'   in_1_3 = pl$col("a")$is_in(c(1, 3)),
+#'   in_NA = pl$col("a")$is_in(pl$lit(NA_real_))
+#' )
 #'
-#' # R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-#' pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
-#'   pl$col("a")$is_in(pl$lit(NA_real_))
-#' )$to_data_frame()[[1L]]
+#' # this fails because we can't compare factors to strings
+#' pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+#'   in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+#' )
 #'
+#' # need to use the string cache for this
+#' pl$with_string_cache({
+#'   pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+#'     in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+#'   )
+#' })
 Expr_is_in = function(other) {
-  .pr$Expr$is_in(self, other) |> unwrap("in $is_in()")
+  .pr$Expr$is_in(self, other) |> unwrap("in $is_in():")
 }
 
 ## TODO contribute polars, do not panic on by pointing to non positive values
-#' Repeat by
-#' @description
+
+#' Repeat values
+#'
 #' Repeat the elements in this Series as specified in the given expression.
 #' The repeated elements are expanded into a `List`.
-#' @param by Expr Numeric column that determines how often the values will be repeated.
-#' The column will be coerced to UInt32. Give this dtype to make the coercion a
-#' no-op.
+#' @param by Expr that determines how often the values will be repeated. The
+#' column will be coerced to UInt32.
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(list(a = c("x", "y", "z"), n = c(0:2)))
-#' df$select(pl$col("a")$repeat_by("n"))
+#' df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+#' df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 Expr_repeat_by = function(by) {
   if (is.numeric(by) && any(by < 0)) stop("In repeat_by: any value less than zero is not allowed")
   .pr$Expr$repeat_by(self, wrap_e(by, FALSE))
 }
 
-
-
-#' is in between
-#' @description
-#' Check if this expression is between start and end.
-#' @param start Lower bound as primitive or datetime
-#' @param end Lower bound as primitive or datetime
-#' @param include_bounds bool vector or scalar:
-#' FALSE:           Exclude both start and end (default).
-#' TRUE:            Include both start and end.
-#' c(FALSE, FALSE):  Exclude start and exclude end.
-#' c(TRUE, TRUE):    Include start and include end.
-#' c(FALSE, TRUE):   Exclude start and include end.
-#' c(TRUE, FALSE):   Include start and exclude end.
-#' @details alias the column to 'in_between'
-#' This function is equivalent to a combination of < <= >= and the &-and operator.
+#' Check whether a value is between two values
+#'
+#' This is syntactic sugar for `x > start & x < end` (or `x >= start & x <=
+#' end`).
+#' @param start Lower bound, an Expr that is either numeric or datetime.
+#' @param end Upper bound, an Expr that is either numeric or datetime.
+#' @param include_bounds If `FALSE` (default), exclude start and end. This can
+#' also be a vector of two booleans indicating whether to include the start
+#' and/or the end.
+#'
 #' @return Expr
 #' @examples
-#' df = pl$DataFrame(list(num = 1:5))
-#' df$select(pl$col("num")$is_between(2, 4))
-#' df$select(pl$col("num")$is_between(2, 4, TRUE))
-#' df$select(pl$col("num")$is_between(2, 4, c(FALSE, TRUE)))
-#' # start end can be a vector/expr with same length as column
-#' df$select(pl$col("num")$is_between(c(0, 2, 3, 3, 3), 6))
+#' df = pl$DataFrame(num = 1:5, y = c(0, 2, 3, 3, 3))
+#' df$with_columns(
+#'   bet_2_4_no_bounds = pl$col("num")$is_between(2, 4),
+#'   bet_2_4_with_bounds = pl$col("num")$is_between(2, 4, TRUE),
+#'   bet_2_4_upper_bound = pl$col("num")$is_between(2, 4, c(FALSE, TRUE)),
+#'   between_y_4 = pl$col("num")$is_between(pl$col("y"), 6)
+#' )
 Expr_is_between = function(start, end, include_bounds = FALSE) {
-  # check
   if (
     !length(include_bounds) %in% 1:2 ||
       !is.logical(include_bounds) ||
@@ -2097,34 +2092,25 @@ Expr_is_between = function(start, end, include_bounds = FALSE) {
   with_start = include_bounds[1L]
   with_end = if (length(include_bounds) == 1) include_bounds else include_bounds[2]
 
-
   # build and return boolean expression
   within_start_e = if (with_start) self >= start_e else self > start_e
   within_end_e = if (with_end) self <= end_e else self < end_e
   (within_start_e & within_end_e)$alias("is_between")
 }
 
-
-
-#' hash
-#' @description
-#' Hash the elements in the selection.
-#' The hash value is of type `UInt64`.
-#' @param seed Random seed parameter. Defaults to 0.
-#' @param seed_1 Random seed parameter. Defaults to arg seed.
-#' @param seed_2 Random seed parameter. Defaults to arg seed.
-#' @param seed_3 Random seed parameter. Defaults to arg seed.
-#' The column will be coerced to UInt32. Give this dtype to make the coercion a
-#' no-op.
+#' Hash elements
 #'
-#' @details WARNING in this version of r-polars seed / seed_x takes no effect.
-#' Possibly a bug in upstream rust-polars project.
+#' The hash value is of type `UInt64`.
+#' @param seed Random seed parameter. Defaults to 0. Doesn't have any effect
+#' for now.
+#' @param seed_1,seed_2,seed_3 Random seed parameter. Defaults to arg seed.
+#' The column will be coerced to UInt32.
 #'
 #' @return Expr
 #' @aliases hash
 #' @examples
-#' df = pl$DataFrame(iris)
-#' df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
+#' df = pl$DataFrame(iris[1:3, c(1, 2)])
+#' df$with_columns(pl$all()$hash(1234)$name$suffix("_hash"))
 Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
   k0 = seed
   k1 = seed_1 %||% seed
@@ -2133,18 +2119,17 @@ Expr_hash = function(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL) {
   unwrap(.pr$Expr$hash(self, k0, k1, k2, k3), "in $hash()")
 }
 
-
-#' reinterpret bits
-#' @description
-#' Reinterpret the underlying bits as a signed/unsigned integer.
-#' This operation is only allowed for 64bit integers. For lower bits integers,
-#' you can safely use that cast operation.
-#' @param signed bool reinterpret into Int64 else UInt64
+#' Reinterpret bits
+#'
+#' Reinterpret the underlying bits as a signed/unsigned integer. This
+#' operation is only allowed for Int64. For lower bits integers, you can
+#' safely use the cast operation.
+#' @param signed If `TRUE` (default), reinterpret into Int64. Otherwise, it
+#' will be reinterpreted in UInt64.
 #' @return Expr
-#' @aliases reinterpret
 #' @examples
-#' df = pl$DataFrame(iris)
-#' df$select(pl$all()$head(2)$hash(1, 2, 3, 4)$reinterpret())$to_data_frame()
+#' df = pl$DataFrame(x = 1:5, schema = list(x = pl$Int64))
+#' df$select(pl$all()$reinterpret())
 Expr_reinterpret = function(signed = TRUE) {
   if (!is_bool(signed)) stop("in reinterpret() : arg signed must be a bool")
   .pr$Expr$reinterpret(self, signed)
@@ -2152,23 +2137,23 @@ Expr_reinterpret = function(signed = TRUE) {
 
 
 #' Inspect evaluated Series
-#' @description
+#'
 #' Print the value that this expression evaluates to and pass on the value.
 #' The printing will happen when the expression evaluates, not when it is formed.
-#' @param fmt format string, should contain one set of `{}` where object will be printed
-#' This formatting mimics python "string".format() use in pypolars. The string can
-#' contain any thing but should have exactly one set of curly bracket `{}`.
+#'
+#' @param fmt format string, should contain one set of `{}` where object will be
+#' printed. This formatting mimics python "string".format() use in py-polars.
 #' @return Expr
-#' @aliases inspect
 #' @examples
 #' pl$select(pl$lit(1:5)$inspect(
-#'   "before dropping half the column it was:{}and not it is dropped"
+#'   "Here's what the Series looked like before keeping the first two values: {}"
 #' )$head(2))
 Expr_inspect = function(fmt = "{}") {
   # check fmt and create something to print before and after printing Series.
   if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if (identical(strs, "")) strs <- c("", "")
+  if (length(strs) == 1) strs <- c(strs, "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
     result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
@@ -2190,24 +2175,28 @@ Expr_inspect = function(fmt = "{}") {
     unwrap("in $inspect()")
 }
 
-
-
-#' Interpolate `Nulls`
-#' @param method string 'linear' or 'nearest', default "linear"
-#' @description
-#' Fill nulls with linear interpolation over missing values.
-#' Can also be used to regrid data to a new grid - see examples below.
+#' Interpolate null values
+#'
+#' Fill nulls with linear interpolation using non-missing values. Can also be
+#' used to regrid data to a new grid - see examples below.
+#'
+#' @param method String, either `"linear"` (default) or `"nearest"`.
 #' @return Expr
-#' @aliases interpolate
 #' @examples
-#' pl$select(pl$lit(c(1, NA, 4, NA, 100, NaN, 150))$interpolate())
+#' pl$DataFrame(x = c(1, NA, 4, NA, 100, NaN, 150))$
+#'   with_columns(
+#'    interp_lin = pl$col("x")$interpolate(),
+#'    interp_near = pl$col("x")$interpolate("nearest")
+#'   )
 #'
 #' # x, y interpolation over a grid
-#' df_original_grid = pl$DataFrame(list(
+#' df_original_grid = pl$DataFrame(
 #'   grid_points = c(1, 3, 10),
 #'   values = c(2.0, 6.0, 20.0)
-#' ))
-#' df_new_grid = pl$DataFrame(list(grid_points = (1:10) * 1.0))
+#' )
+#' df_original_grid
+#' df_new_grid = pl$DataFrame(grid_points = (1:10) * 1.0)
+#' df_new_grid
 #'
 #' # Interpolate from this to the new grid
 #' df_new_grid$join(
@@ -2238,12 +2227,11 @@ prepare_rolling_window_args = function(
 ## and check if it wont mess up optimzation (maybe it is tested for).
 
 
-#' Rolling Min
-#' @description
-#' Apply a rolling min (moving min) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
+#' Rolling minimum
+#'
+#' Compute the rolling (= moving) min over the values in this array. A window of
+#' length `window_size` will traverse the array. The values that fill this window
+#' will (optionally) be multiplied with the weights given by the `weight` vector.
 #'
 #' @param window_size
 #' The length of the window. Can be a fixed integer size, or a dynamic temporal
@@ -2261,33 +2249,25 @@ prepare_rolling_window_args = function(
 #' - 1i    (1 index count)
 #' If the dynamic string language is used, the `by` and `closed` arguments must
 #' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
-#'
+#' @param weights An optional slice with the same length as the window that will
+#' be multiplied elementwise with the values in the window.
+#' @param min_periods The number of values in the window that should be non-null
+#' before computing a result. If `NULL`, it will be set equal to window size.
+#' @param center Set the labels at the center of the window
+#' @param by If the `window_size` is temporal for instance `"5h"` or `"3s"`, you
+#' must set the column that will be used to determine the windows. This column
+#' must be of DataType Date or DateTime.
+#' @param closed String, one of `"left"`, `"right"`, `"both"`, `"none"`. Defines
+#' whether the temporal window interval is closed or not.
 #'
 #' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
 #' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
+#' window, consider using `$rolling()` this method can cache the window size
 #' computation.
 #' @return Expr
-#' @aliases Expr_rolling_min
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_min(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_min = pl$col("a")$rolling_min(window_size = 2))
 Expr_rolling_min = function(
     window_size,
     weights = NULL,
@@ -2303,56 +2283,16 @@ Expr_rolling_min = function(
     unwrap("in $rolling_min():")
 }
 
-#' Rolling max
-#' @description
-#' Apply a rolling max (moving max) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
+#' Rolling maximum
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
+#' Compute the rolling (= moving) max over the values in this array. A window of
+#' length `window_size` will traverse the array. The values that fill this window
+#' will (optionally) be multiplied with the weights given by the `weight` vector.
 #'
-#'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_max
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_max(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_max = pl$col("a")$rolling_max(window_size = 2))
 Expr_rolling_max = function(
     window_size,
     weights = NULL,
@@ -2369,54 +2309,15 @@ Expr_rolling_max = function(
 }
 
 #' Rolling mean
-#' @description
-#' Apply a rolling mean (moving mean) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
+#' Compute the rolling (= moving) mean over the values in this array. A window of
+#' length `window_size` will traverse the array. The values that fill this window
+#' will (optionally) be multiplied with the weights given by the `weight` vector.
 #'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_mean
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_mean(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_mean = pl$col("a")$rolling_mean(window_size = 2))
 Expr_rolling_mean = function(
     window_size,
     weights = NULL,
@@ -2432,57 +2333,16 @@ Expr_rolling_mean = function(
     unwrap("in $rolling_mean():")
 }
 
-
-
 #' Rolling sum
-#' @description
-#' Apply a rolling sum (moving sum) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
+#' Compute the rolling (= moving) sum over the values in this array. A window of
+#' length `window_size` will traverse the array. The values that fill this window
+#' will (optionally) be multiplied with the weights given by the `weight` vector.
 #'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_sum
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_sum(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_sum = pl$col("a")$rolling_sum(window_size = 2))
 Expr_rolling_sum = function(
     window_size,
     weights = NULL,
@@ -2499,56 +2359,17 @@ Expr_rolling_sum = function(
 }
 
 
-#' Rolling std
-#' @description
-#' Apply a rolling std (moving std) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
+#' Rolling standard deviation
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
+#' Compute the rolling (= moving) standard deviation over the values in this
+#' array. A window of length `window_size` will traverse the array. The values
+#' that fill this window will (optionally) be multiplied with the weights given
+#' by the `weight` vector.
 #'
-#'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_std
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_std(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_std = pl$col("a")$rolling_std(window_size = 2))
 Expr_rolling_std = function(
     window_size,
     weights = NULL,
@@ -2564,56 +2385,17 @@ Expr_rolling_std = function(
     unwrap("in $rolling_std(): ")
 }
 
-#' Rolling var
-#' @description
-#' Apply a rolling var (moving var) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
+#' Rolling variance
+#'
+#' Compute the rolling (= moving) variance over the values in this array. A
+#' window of length `window_size` will traverse the array. The values that fill
 #' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
+#' `weight` vector.
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
-#'
-#'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_var
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_var(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_var = pl$col("a")$rolling_var(window_size = 2))
 Expr_rolling_var = function(
     window_size,
     weights = NULL,
@@ -2630,55 +2412,16 @@ Expr_rolling_var = function(
 }
 
 #' Rolling median
-#' @description
-#' Apply a rolling median (moving median) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
-#' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
 #'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#' - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
+#' Compute the rolling (= moving) median over the values in this array. A window
+#' of length `window_size` will traverse the array. The values that fill this
+#' window will (optionally) be multiplied with the weights given by the `weight`
+#' vector.
 #'
-#'
-#' @details
-#' This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_median
+#' @inherit Expr_rolling_min params details return
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_median(window_size = 2))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_median = pl$col("a")$rolling_median(window_size = 2))
 Expr_rolling_median = function(
     window_size,
     weights = NULL,
@@ -2695,63 +2438,20 @@ Expr_rolling_median = function(
 
 
 ## TODO contribute polars arg center only allows center + right alignment, also implement left
+
 #' Rolling quantile
-#' @description
-#' Apply a rolling quantile (moving quantile) over the values in this array.
-#' A window of length `window_size` will traverse the array. The values that fill
+#'
+#' Compute the rolling (= moving) quantile over the values in this array. A
+#' window of length `window_size` will traverse the array. The values that fill
 #' this window will (optionally) be multiplied with the weights given by the
-#' `weight` vector. The resulting values will be aggregated to their sum.
+#' `weight` vector.
 #'
-#' @param quantile Quantile between 0.0 and 1.0.
-#' @param  interpolation choice c('nearest', 'higher', 'lower', 'midpoint', 'linear')
-#'
-#' @param window_size
-#' The length of the window. Can be a fixed integer size, or a dynamic temporal
-#' size indicated by the following string language:
-#'   - 1ns   (1 nanosecond)
-#' - 1us   (1 microsecond)
-#' - 1ms   (1 millisecond)
-#' - 1s    (1 second)
-#' - 1m    (1 minute)
-#' - 1h    (1 hour)
-#' - 1d    (1 day)
-#' - 1w    (1 week)
-#' - 1mo   (1 calendar month)
-#' - 1y    (1 calendar year)
-#' - 1i    (1 index count)
-#' If the dynamic string language is used, the `by` and `closed` arguments must
-#' also be set.
-#' @param weights
-#' An optional slice with the same length as the window that will be multiplied
-#' elementwise with the values in the window.
-#' @param min_periods
-#' The number of values in the window that should be non-null before computing
-#' a result. If None, it will be set equal to window size.
-#' @param center
-#' Set the labels at the center of the window
-#' @param by
-#' If the `window_size` is temporal for instance `"5h"` or `"3s"`, you must
-#' set the column that will be used to determine the windows. This column must
-#' be of DataType: Date or DateTime.
-#' @param closed string option `c("left", "right", "both", "none")`.
-#' Define whether the temporal window interval is closed or not.
-#'
-#'
-#' @details
-#'
-#'
-#'   This functionality is experimental and may change without it being considered a
-#' breaking change.
-#' Notes:
-#' If you want to compute multiple aggregation statistics over the same dynamic
-#' window, consider using `groupby_rolling` this method can cache the window size
-#' computation.
-#' @return Expr
-#' @aliases Expr_rolling_quantile
+#' @inherit Expr_rolling_min params details return
+#' @param interpolation String, one of `"nearest"`, `"higher"`, `"lower"`,
+#' `"midpoint"`, `"linear"`.
 #' @examples
-#' pl$DataFrame(list(a = 1:6))$select(
-#'   pl$col("a")$rolling_quantile(window_size = 2, quantile = .5)
-#' )
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_quantile = pl$col("a")$rolling_quantile(window_size = 2))
 Expr_rolling_quantile = function(
     quantile,
     interpolation = "nearest",
@@ -2772,163 +2472,112 @@ Expr_rolling_quantile = function(
 
 #' Rolling skew
 #'
-#' @param window_size integerish, Size of the rolling window
-#' @param bias bool default = TRUE,  If False, then the calculations are corrected for statistical bias.
+#' Compute the rolling (= moving) skewness over the values in this array. A
+#' window of length `window_size` will traverse the array.
 #'
-#' @description
-#' Compute a rolling skew.
-#' @return Expr
-#' @aliases rolling_skew
+#' @inherit Expr_rolling_min params return
+#' @param bias If `FALSE`, the calculations are corrected for statistical bias.
+
 #' @details
-#' Extra comments copied from rust-polars_0.25.1
-#' Compute the sample skewness of a data set.
-#'
 #' For normally distributed data, the skewness should be about zero. For
 #' uni-modal continuous distributions, a skewness value greater than zero means
-#' that there is more weight in the right tail of the distribution. The
-#' function `skewtest` can be used to determine if the skewness value
-#' is close enough to zero, statistically speaking.
-#' see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
+#' that there is more weight in the right tail of the distribution.
 #'
 #' @examples
-#' pl$DataFrame(list(a = iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4)$head(10))
+#' pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+#'   with_columns(roll_skew = pl$col("a")$rolling_skew(window_size = 2))
 Expr_rolling_skew = function(window_size, bias = TRUE) {
   unwrap(.pr$Expr$rolling_skew(self, window_size, bias))
 }
 
-
-#' Abs
-#' @description Compute absolute values
-#' @return Exprs abs
+#' Compute the absolute values
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(list(a = -1:1))$select(pl$col("a"), pl$col("a")$abs()$alias("abs"))
+#' pl$DataFrame(a = -1:1)$
+#'   with_columns(abs = pl$col("a")$abs())
 Expr_abs = "use_extendr_wrapper"
 
-
-#' Arg Sort
-#' @description argsort is a alias for arg_sort
-#' @rdname Expr_arg_sort
-#' @aliases argsort
-Expr_argsort = Expr_arg_sort
-
-
-
-#' Rank
-#' @description  Assign ranks to data, dealing with ties appropriately.
-#' @param method string option 'average', 'min', 'max', 'dense', 'ordinal', 'random'
+#' Rank elements
 #'
-#' #' The method used to assign ranks to tied elements.
-#' The following methods are available (default is 'average'):
-#'   - 'average' : The average of the ranks that would have been assigned to
-#' all the tied values is assigned to each value.
-#' - 'min' : The minimum of the ranks that would have been assigned to all
-#' the tied values is assigned to each value. (This is also referred to
-#'                                             as "competition" ranking.)
-#' - 'max' : The maximum of the ranks that would have been assigned to all
-#' the tied values is assigned to each value.
-#' - 'dense' : Like 'min', but the rank of the next highest element is
-#' assigned the rank immediately after those assigned to the tied
-#' elements.
-#' - 'ordinal' : All values are given a distinct rank, corresponding to
-#' the order that the values occur in the Series.
-#' - 'random' : Like 'ordinal', but the rank for ties is not dependent
-#' on the order that the values occur in the Series.
+#' Assign ranks to data, dealing with ties appropriately.
 #'
+#' @param method String, one of `"average"` (default), `"min"`, `"max"`,
+#' `"dense"`, `"ordinal"`, `"random"`. The method used to assign ranks to tied
+#' elements:
+#' - `"average"`: The average of the ranks that would have been assigned to
+#'   all the tied values is assigned to each value.
+#' - `"min"`: The minimum of the ranks that would have been assigned to all
+#'   the tied values is assigned to each value. (This is also referred to
+#'   as "competition" ranking.)
+#' - `"max"` : The maximum of the ranks that would have been assigned to all
+#'   the tied values is assigned to each value.
+#' - `"dense"`: Like 'min', but the rank of the next highest element is assigned
+#'   the rank immediately after those assigned to the tied elements.
+#' - `"ordinal"` : All values are given a distinct rank, corresponding to the
+#'   order that the values occur in the Series.
+#' - `"random"` : Like 'ordinal', but the rank for ties is not dependent on the
+#'   order that the values occur in the Series.
 #' @param descending Rank in descending order.
 #' @return  Expr
-#' @aliases rank
 #' @examples
 #' #  The 'average' method:
-#' df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
-#' df$select(pl$col("a")$rank())
+#' pl$DataFrame(a = c(3, 6, 1, 1, 6))$
+#'   with_columns(rank = pl$col("a")$rank())
 #'
 #' #  The 'ordinal' method:
-#' df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
-#' df$select(pl$col("a")$rank("ordinal"))
+#' pl$DataFrame(a = c(3, 6, 1, 1, 6))$
+#'   with_columns(rank = pl$col("a")$rank("ordinal"))
 Expr_rank = function(method = "average", descending = FALSE) {
   unwrap(.pr$Expr$rank(self, method, descending))
 }
 
-
-
-#' Diff
-#' @description  Calculate the n-th discrete difference.
-#' @param n  Integerish Number of slots to shift.
-#' @param null_behavior option default 'ignore', else 'drop'
-#' @return  Expr
-#' @aliases diff
+#' Difference
+#'
+#' Calculate the n-th discrete difference.
+#'
+#' @param n Number of slots to shift.
+#' @param null_behavior String, either `"ignore"` (default), else `"drop"`.
+#' @return Expr
 #' @examples
-#' pl$DataFrame(list(a = c(20L, 10L, 30L, 40L)))$select(
-#'   pl$col("a")$diff()$alias("diff_default"),
-#'   pl$col("a")$diff(2, "ignore")$alias("diff_2_ignore")
+#' pl$DataFrame(a = c(20L, 10L, 30L, 40L))$with_columns(
+#'   diff_default = pl$col("a")$diff(),
+#'   diff_2_ignore = pl$col("a")$diff(2, "ignore")
 #' )
 Expr_diff = function(n = 1, null_behavior = "ignore") {
   unwrap(.pr$Expr$diff(self, n, null_behavior))
 }
 
-
-
-
-#' Pct change
-#' @description
-#' Computes percentage change between values.
-#' Percentage change (as fraction) between current element and most-recent
-#' non-null element at least ``n`` period(s) before the current element.
+#' Percentage change
+#'
+#' Computes percentage change (as fraction) between current element and most-
+#' recent non-null element at least `n` period(s) before the current element.
 #' Computes the change from the previous row by default.
-#' @param n  periods to shift for forming percent change.
-#' @return  Expr
-#' @aliases pct_change
+#'
+#' @param n Periods to shift for computing percent change.
+#' @return Expr
 #' @examples
-#' df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
-#' df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
+#' pl$DataFrame(a = c(10L, 11L, 12L, NA_integer_, 12L))$
+#'   with_columns(pct_change = pl$col("a")$pct_change())
 Expr_pct_change = function(n = 1) {
   unwrap(.pr$Expr$pct_change(self, n))
 }
 
-
-
 #' Skewness
-#' @description
+#'
 #' Compute the sample skewness of a data set.
-#' @param bias If False, then the calculations are corrected for statistical bias.
-#' @return  Expr
-#' @aliases skew
-#' @details
-#' For normally distributed data, the skewness should be about zero. For
-#' unimodal continuous distributions, a skewness value greater than zero means
-#' that there is more weight in the right tail of the distribution. The
-#' function `skewtest` can be used to determine if the skewness value
-#' is close enough to zero, statistically speaking.
-#'
-#' See scipy.stats for more information.
-#'
-#' Notes
-#' -----
-#'   The sample skewness is computed as the Fisher-Pearson coefficient
-#' of skewness, i.e.
-#'
-#' \eqn{ g_1=\frac{m_3}{m_2^{3/2}}}
-#'
-#' where
-#'
-#' \eqn{ m_i=\frac{1}{N}\sum_{n=1}^N(x[n]-\bar{x})^i}
-#'
-#' is the biased sample :math:`i\texttt{th}` central moment, and \eqn{\bar{x}} is
-#' the sample mean.  If ``bias`` is False, the calculations are
-#' corrected for bias and the value computed is the adjusted
-#' Fisher-Pearson standardized moment coefficient, i.e.
-#'
-#' \eqn{ G_1 = \frac{k_3}{k_2^{3/2}} = \frac{\sqrt{N(N-1)}}{N-2}\frac{m_3}{m_2^{3/2}}}
-#' @references https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.skew.html?highlight=skew#scipy.stats.skew
+#' @param bias If `FALSE`, then the calculations are corrected for statistical
+#' bias.
+#' @return Expr
+#' @inherit Expr_rolling_skew details
 #' @examples
 #' df = pl$DataFrame(list(a = c(1:3, 2:1)))
 #' df$select(pl$col("a")$skew())
 Expr_skew = function(bias = TRUE) {
   .pr$Expr$skew(self, bias)
 }
-
 
 #' Kurtosis
 #' @description

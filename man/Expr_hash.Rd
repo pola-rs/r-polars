@@ -3,33 +3,24 @@
 \name{Expr_hash}
 \alias{Expr_hash}
 \alias{hash}
-\title{hash}
+\title{Hash elements}
 \usage{
 Expr_hash(seed = 0, seed_1 = NULL, seed_2 = NULL, seed_3 = NULL)
 }
 \arguments{
-\item{seed}{Random seed parameter. Defaults to 0.}
+\item{seed}{Random seed parameter. Defaults to 0. Doesn't have any effect
+for now.}
 
-\item{seed_1}{Random seed parameter. Defaults to arg seed.}
-
-\item{seed_2}{Random seed parameter. Defaults to arg seed.}
-
-\item{seed_3}{Random seed parameter. Defaults to arg seed.
-The column will be coerced to UInt32. Give this dtype to make the coercion a
-no-op.}
+\item{seed_1, seed_2, seed_3}{Random seed parameter. Defaults to arg seed.
+The column will be coerced to UInt32.}
 }
 \value{
 Expr
 }
 \description{
-Hash the elements in the selection.
 The hash value is of type \code{UInt64}.
 }
-\details{
-WARNING in this version of r-polars seed / seed_x takes no effect.
-Possibly a bug in upstream rust-polars project.
-}
 \examples{
-df = pl$DataFrame(iris)
-df$select(pl$all()$head(2)$hash(1234)$cast(pl$Utf8))$to_list()
+df = pl$DataFrame(iris[1:3, c(1, 2)])
+df$with_columns(pl$all()$hash(1234)$name$suffix("_hash"))
 }

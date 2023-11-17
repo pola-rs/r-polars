@@ -2,14 +2,13 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_repeat_by}
 \alias{Expr_repeat_by}
-\title{Repeat by}
+\title{Repeat values}
 \usage{
 Expr_repeat_by(by)
 }
 \arguments{
-\item{by}{Expr Numeric column that determines how often the values will be repeated.
-The column will be coerced to UInt32. Give this dtype to make the coercion a
-no-op.}
+\item{by}{Expr that determines how often the values will be repeated. The
+column will be coerced to UInt32.}
 }
 \value{
 Expr
@@ -19,6 +18,6 @@ Repeat the elements in this Series as specified in the given expression.
 The repeated elements are expanded into a \code{List}.
 }
 \examples{
-df = pl$DataFrame(list(a = c("x", "y", "z"), n = c(0:2)))
-df$select(pl$col("a")$repeat_by("n"))
+df = pl$DataFrame(a = c("x", "y", "z"), n = c(0:2))
+df$with_columns(repeated = pl$col("a")$repeat_by("n"))
 }

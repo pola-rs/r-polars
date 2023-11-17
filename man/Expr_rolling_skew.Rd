@@ -2,33 +2,44 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_skew}
 \alias{Expr_rolling_skew}
-\alias{rolling_skew}
 \title{Rolling skew}
 \usage{
 Expr_rolling_skew(window_size, bias = TRUE)
 }
 \arguments{
-\item{window_size}{integerish, Size of the rolling window}
+\item{window_size}{The length of the window. Can be a fixed integer size, or a dynamic temporal
+size indicated by the following string language:
+\itemize{
+\item 1ns   (1 nanosecond)
+\item 1us   (1 microsecond)
+\item 1ms   (1 millisecond)
+\item 1s    (1 second)
+\item 1m    (1 minute)
+\item 1h    (1 hour)
+\item 1d    (1 day)
+\item 1w    (1 week)
+\item 1mo   (1 calendar month)
+\item 1y    (1 calendar year)
+\item 1i    (1 index count)
+If the dynamic string language is used, the \code{by} and \code{closed} arguments must
+also be set.
+}}
 
-\item{bias}{bool default = TRUE,  If False, then the calculations are corrected for statistical bias.}
+\item{bias}{If \code{FALSE}, the calculations are corrected for statistical bias.}
 }
 \value{
 Expr
 }
 \description{
-Compute a rolling skew.
+Compute the rolling (= moving) skewness over the values in this array. A
+window of length \code{window_size} will traverse the array.
 }
 \details{
-Extra comments copied from rust-polars_0.25.1
-Compute the sample skewness of a data set.
-
 For normally distributed data, the skewness should be about zero. For
 uni-modal continuous distributions, a skewness value greater than zero means
-that there is more weight in the right tail of the distribution. The
-function \code{skewtest} can be used to determine if the skewness value
-is close enough to zero, statistically speaking.
-see: https://github.com/scipy/scipy/blob/47bb6febaa10658c72962b9615d5d5aa2513fa3a/scipy/stats/stats.py#L1024
+that there is more weight in the right tail of the distribution.
 }
 \examples{
-pl$DataFrame(list(a = iris$Sepal.Length))$select(pl$col("a")$rolling_skew(window_size = 4)$head(10))
+pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+  with_columns(roll_skew = pl$col("a")$rolling_skew(window_size = 2))
 }

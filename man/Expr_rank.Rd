@@ -2,31 +2,28 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rank}
 \alias{Expr_rank}
-\alias{rank}
-\title{Rank}
+\title{Rank elements}
 \usage{
 Expr_rank(method = "average", descending = FALSE)
 }
 \arguments{
-\item{method}{string option 'average', 'min', 'max', 'dense', 'ordinal', 'random'
-
-#' The method used to assign ranks to tied elements.
-The following methods are available (default is 'average'):
+\item{method}{String, one of \code{"average"} (default), \code{"min"}, \code{"max"},
+\code{"dense"}, \code{"ordinal"}, \code{"random"}. The method used to assign ranks to tied
+elements:
 \itemize{
-\item 'average' : The average of the ranks that would have been assigned to
+\item \code{"average"}: The average of the ranks that would have been assigned to
 all the tied values is assigned to each value.
-\item 'min' : The minimum of the ranks that would have been assigned to all
+\item \code{"min"}: The minimum of the ranks that would have been assigned to all
 the tied values is assigned to each value. (This is also referred to
 as "competition" ranking.)
-\item 'max' : The maximum of the ranks that would have been assigned to all
+\item \code{"max"} : The maximum of the ranks that would have been assigned to all
 the tied values is assigned to each value.
-\item 'dense' : Like 'min', but the rank of the next highest element is
-assigned the rank immediately after those assigned to the tied
-elements.
-\item 'ordinal' : All values are given a distinct rank, corresponding to
-the order that the values occur in the Series.
-\item 'random' : Like 'ordinal', but the rank for ties is not dependent
-on the order that the values occur in the Series.
+\item \code{"dense"}: Like 'min', but the rank of the next highest element is assigned
+the rank immediately after those assigned to the tied elements.
+\item \code{"ordinal"} : All values are given a distinct rank, corresponding to the
+order that the values occur in the Series.
+\item \code{"random"} : Like 'ordinal', but the rank for ties is not dependent on the
+order that the values occur in the Series.
 }}
 
 \item{descending}{Rank in descending order.}
@@ -39,10 +36,10 @@ Assign ranks to data, dealing with ties appropriately.
 }
 \examples{
 #  The 'average' method:
-df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
-df$select(pl$col("a")$rank())
+pl$DataFrame(a = c(3, 6, 1, 1, 6))$
+  with_columns(rank = pl$col("a")$rank())
 
 #  The 'ordinal' method:
-df = pl$DataFrame(list(a = c(3, 6, 1, 1, 6)))
-df$select(pl$col("a")$rank("ordinal"))
+pl$DataFrame(a = c(3, 6, 1, 1, 6))$
+  with_columns(rank = pl$col("a")$rank("ordinal"))
 }

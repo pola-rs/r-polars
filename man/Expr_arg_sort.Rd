@@ -2,13 +2,9 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arg_sort}
 \alias{Expr_arg_sort}
-\alias{Expr_argsort}
-\alias{argsort}
 \title{Index of a sort}
 \usage{
 Expr_arg_sort(descending = FALSE, nulls_last = FALSE)
-
-Expr_argsort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order. When sorting by multiple columns,
@@ -21,8 +17,6 @@ Expr
 }
 \description{
 Get the index values that would sort this column.
-
-argsort is a alias for arg_sort
 }
 \examples{
 pl$DataFrame(

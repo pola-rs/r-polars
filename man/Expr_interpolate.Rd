@@ -2,30 +2,35 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_interpolate}
 \alias{Expr_interpolate}
-\alias{interpolate}
-\title{Interpolate \code{Nulls}}
+\title{Interpolate null values}
 \usage{
 Expr_interpolate(method = "linear")
 }
 \arguments{
-\item{method}{string 'linear' or 'nearest', default "linear"}
+\item{method}{String, either \code{"linear"} (default) or \code{"nearest"}.}
 }
 \value{
 Expr
 }
 \description{
-Fill nulls with linear interpolation over missing values.
-Can also be used to regrid data to a new grid - see examples below.
+Fill nulls with linear interpolation using non-missing values. Can also be
+used to regrid data to a new grid - see examples below.
 }
 \examples{
-pl$select(pl$lit(c(1, NA, 4, NA, 100, NaN, 150))$interpolate())
+pl$DataFrame(x = c(1, NA, 4, NA, 100, NaN, 150))$
+  with_columns(
+   interp_lin = pl$col("x")$interpolate(),
+   interp_near = pl$col("x")$interpolate("nearest")
+  )
 
 # x, y interpolation over a grid
-df_original_grid = pl$DataFrame(list(
+df_original_grid = pl$DataFrame(
   grid_points = c(1, 3, 10),
   values = c(2.0, 6.0, 20.0)
-))
-df_new_grid = pl$DataFrame(list(grid_points = (1:10) * 1.0))
+)
+df_original_grid
+df_new_grid = pl$DataFrame(grid_points = (1:10) * 1.0)
+df_new_grid
 
 # Interpolate from this to the new grid
 df_new_grid$join(

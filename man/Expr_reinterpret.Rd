@@ -2,23 +2,23 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reinterpret}
 \alias{Expr_reinterpret}
-\alias{reinterpret}
-\title{reinterpret bits}
+\title{Reinterpret bits}
 \usage{
 Expr_reinterpret(signed = TRUE)
 }
 \arguments{
-\item{signed}{bool reinterpret into Int64 else UInt64}
+\item{signed}{If \code{TRUE} (default), reinterpret into Int64. Otherwise, it
+will be reinterpreted in UInt64.}
 }
 \value{
 Expr
 }
 \description{
-Reinterpret the underlying bits as a signed/unsigned integer.
-This operation is only allowed for 64bit integers. For lower bits integers,
-you can safely use that cast operation.
+Reinterpret the underlying bits as a signed/unsigned integer. This
+operation is only allowed for Int64. For lower bits integers, you can
+safely use the cast operation.
 }
 \examples{
-df = pl$DataFrame(iris)
-df$select(pl$all()$head(2)$hash(1, 2, 3, 4)$reinterpret())$to_data_frame()
+df = pl$DataFrame(x = 1:5, schema = list(x = pl$Int64))
+df$select(pl$all()$reinterpret())
 }

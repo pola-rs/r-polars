@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rolling_max}
 \alias{Expr_rolling_max}
-\title{Rolling max}
+\title{Rolling maximum}
 \usage{
 Expr_rolling_max(
   window_size,
@@ -32,38 +32,35 @@ If the dynamic string language is used, the \code{by} and \code{closed} argument
 also be set.
 }}
 
-\item{weights}{An optional slice with the same length as the window that will be multiplied
-elementwise with the values in the window.}
+\item{weights}{An optional slice with the same length as the window that will
+be multiplied elementwise with the values in the window.}
 
-\item{min_periods}{The number of values in the window that should be non-null before computing
-a result. If None, it will be set equal to window size.}
+\item{min_periods}{The number of values in the window that should be non-null
+before computing a result. If \code{NULL}, it will be set equal to window size.}
 
 \item{center}{Set the labels at the center of the window}
 
-\item{by}{If the \code{window_size} is temporal for instance \code{"5h"} or \code{"3s"}, you must
-set the column that will be used to determine the windows. This column must
-be of DataType: Date or DateTime.}
+\item{by}{If the \code{window_size} is temporal for instance \code{"5h"} or \code{"3s"}, you
+must set the column that will be used to determine the windows. This column
+must be of DataType Date or DateTime.}
 
-\item{closed}{string option \code{c("left", "right", "both", "none")}.
-Define whether the temporal window interval is closed or not.}
+\item{closed}{String, one of \code{"left"}, \code{"right"}, \code{"both"}, \code{"none"}. Defines
+whether the temporal window interval is closed or not.}
 }
 \value{
 Expr
 }
 \description{
-Apply a rolling max (moving max) over the values in this array.
-A window of length \code{window_size} will traverse the array. The values that fill
-this window will (optionally) be multiplied with the weights given by the
-\code{weight} vector. The resulting values will be aggregated to their sum.
+Compute the rolling (= moving) max over the values in this array. A window of
+length \code{window_size} will traverse the array. The values that fill this window
+will (optionally) be multiplied with the weights given by the \code{weight} vector.
 }
 \details{
-This functionality is experimental and may change without it being considered a
-breaking change.
-Notes:
 If you want to compute multiple aggregation statistics over the same dynamic
-window, consider using \code{groupby_rolling} this method can cache the window size
+window, consider using \verb{$rolling()} this method can cache the window size
 computation.
 }
 \examples{
-pl$DataFrame(list(a = 1:6))$select(pl$col("a")$rolling_max(window_size = 2))
+pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
+  with_columns(roll_max = pl$col("a")$rolling_max(window_size = 2))
 }

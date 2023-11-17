@@ -2,26 +2,36 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_in}
 \alias{Expr_is_in}
-\title{is_in}
+\title{Check whether a value is in a vector}
 \usage{
 Expr_is_in(other)
 }
 \arguments{
-\item{other}{literal or Robj which can become a literal}
+\item{other}{Literal or object that can be converted to a literal}
 }
 \value{
 Expr
 }
 \description{
-combine to boolean expressions with similar to \code{\%in\%}
+Notice that to check whether a factor value is in a vector of strings, you
+need to use the string cache, either with \code{pl$enable_string_cache()} or
+with \code{pl$with_string_cache()}. See examples.
 }
 \examples{
+pl$DataFrame(a = c(1:4, NA_integer_))$with_columns(
+  in_1_3 = pl$col("a")$is_in(c(1, 3)),
+  in_NA = pl$col("a")$is_in(pl$lit(NA_real_))
+)
 
-# R Na_integer -> polars Null(Int32) is in polars Null(Int32)
-pl$DataFrame(list(a = c(1:4, NA_integer_)))$select(
-  pl$col("a")$is_in(pl$lit(NA_real_))
-)$to_data_frame()[[1L]]
+# this fails because we can't compare factors to strings
+pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+  in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+)
 
+# need to use the string cache for this
+pl$with_string_cache({
+  pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+    in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+  )
+})
 }
-\keyword{Expr}
-\keyword{Expr_operators}

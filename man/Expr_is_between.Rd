@@ -2,38 +2,31 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_between}
 \alias{Expr_is_between}
-\title{is in between}
+\title{Check whether a value is between two values}
 \usage{
 Expr_is_between(start, end, include_bounds = FALSE)
 }
 \arguments{
-\item{start}{Lower bound as primitive or datetime}
+\item{start}{Lower bound, an Expr that is either numeric or datetime.}
 
-\item{end}{Lower bound as primitive or datetime}
+\item{end}{Upper bound, an Expr that is either numeric or datetime.}
 
-\item{include_bounds}{bool vector or scalar:
-FALSE:           Exclude both start and end (default).
-TRUE:            Include both start and end.
-c(FALSE, FALSE):  Exclude start and exclude end.
-c(TRUE, TRUE):    Include start and include end.
-c(FALSE, TRUE):   Exclude start and include end.
-c(TRUE, FALSE):   Include start and exclude end.}
+\item{include_bounds}{If \code{FALSE} (default), exclude start and end. This can
+also be a vector of two booleans indicating whether to include the start
+and/or the end.}
 }
 \value{
 Expr
 }
 \description{
-Check if this expression is between start and end.
-}
-\details{
-alias the column to 'in_between'
-This function is equivalent to a combination of < <= >= and the &-and operator.
+This is syntactic sugar for \code{x > start & x < end} (or \code{x >= start & x <= end}).
 }
 \examples{
-df = pl$DataFrame(list(num = 1:5))
-df$select(pl$col("num")$is_between(2, 4))
-df$select(pl$col("num")$is_between(2, 4, TRUE))
-df$select(pl$col("num")$is_between(2, 4, c(FALSE, TRUE)))
-# start end can be a vector/expr with same length as column
-df$select(pl$col("num")$is_between(c(0, 2, 3, 3, 3), 6))
+df = pl$DataFrame(num = 1:5, y = c(0, 2, 3, 3, 3))
+df$with_columns(
+  bet_2_4_no_bounds = pl$col("num")$is_between(2, 4),
+  bet_2_4_with_bounds = pl$col("num")$is_between(2, 4, TRUE),
+  bet_2_4_upper_bound = pl$col("num")$is_between(2, 4, c(FALSE, TRUE)),
+  between_y_4 = pl$col("num")$is_between(pl$col("y"), 6)
+)
 }
