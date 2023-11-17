@@ -970,7 +970,7 @@ test_that("arg_min arg_max arg_sort", {
     list(arg_min = 4, arg_max = 3, arg_sort_head_1 = 6, argsort_head_1 = 6, arg_sort_tail_1 = 5)
   )
 
-  l_actual = pl$DataFrame(l)$with_columns(
+  l_actual = pl$DataFrame(l)$select(
     pl$col("a")$arg_sort()$alias("arg_sort default"),
     pl$col("a")$arg_sort(descending = TRUE)$alias("arg_sort rev"),
     pl$col("a")$arg_sort(descending = TRUE, nulls_last = TRUE)$alias("arg_sort rev nulls_last")
@@ -1052,7 +1052,6 @@ test_that("gather that", {
   expect_error(
     pl$select(pl$lit(0:10)$gather(11))$to_list()[[1L]]
   )
-
 
   expect_error(
     pl$select(pl$lit(0:10)$gather(-5))$to_list()[[1L]]

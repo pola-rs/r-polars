@@ -459,7 +459,7 @@ Expr$arg_min <- function() .Call(wrap__Expr__arg_min, self)
 
 Expr$search_sorted <- function(element) .Call(wrap__Expr__search_sorted, self, element)
 
-Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
+Expr$gather <- function(idx) .Call(wrap__Expr__gather, self, idx)
 
 Expr$sort_by <- function(by, descending) .Call(wrap__Expr__sort_by, self, by, descending)
 
@@ -641,7 +641,7 @@ Expr$list_reverse <- function() .Call(wrap__Expr__list_reverse, self)
 
 Expr$list_unique <- function() .Call(wrap__Expr__list_unique, self)
 
-Expr$list_take <- function(index, null_on_oob) .Call(wrap__Expr__list_take, self, index, null_on_oob)
+Expr$list_gather <- function(index, null_on_oob) .Call(wrap__Expr__list_gather, self, index, null_on_oob)
 
 Expr$list_get <- function(index) .Call(wrap__Expr__list_get, self, index)
 

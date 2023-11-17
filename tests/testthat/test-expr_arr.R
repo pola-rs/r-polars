@@ -137,7 +137,7 @@ test_that("list$get", {
   }
 })
 
-test_that("take", {
+test_that("gather", {
   l = list(1:3, 1:2, 1:1)
   l_roundtrip = pl$lit(l)$list$gather(lapply(l, "-", 1L))$to_r()
   expect_identical(l_roundtrip, l)

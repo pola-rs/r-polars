@@ -287,7 +287,7 @@ impl Expr {
             .into()
     }
 
-    pub fn take(&self, idx: &Expr) -> Self {
+    pub fn gather(&self, idx: &Expr) -> Self {
         self.clone().0.gather(idx.0.clone()).into()
     }
 
@@ -1066,7 +1066,7 @@ impl Expr {
             .into()
     }
 
-    fn list_take(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
+    fn list_gather(&self, index: Robj, null_on_oob: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -1074,7 +1074,7 @@ impl Expr {
             .take(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
             .into())
     }
-
+    
     fn list_get(&self, index: &Expr) -> Self {
         self.0.clone().list().get(index.clone().0).into()
     }
