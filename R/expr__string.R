@@ -135,18 +135,22 @@ ExprStr_len_chars = function() {
 #' @description Vertically concatenate the values in the Series to a single
 #' string value.
 #' @param delimiter The delimiter to insert between consecutive string values.
+#' @param ignore_nulls Ignore null values. If `FALSE`, null values will be
+#' propagated: if the column contains any null values, the output is null.
 #' @keywords ExprStr
 #' @return Expr of Utf8 concatenated
 #' @examples
 #' # concatenate a Series of strings to a single string
 #' df = pl$DataFrame(foo = c("1", NA, 2))
 #' df$select(pl$col("foo")$str$concat("-"))
+#' df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
 #'
 #' # Series list of strings to Series of concatenated strings
 #' df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
 #' df$select(pl$col("bar")$list$eval(pl$col()$str$concat())$list$first())
-ExprStr_concat = function(delimiter = "-") {
-  .pr$Expr$str_concat(self, delimiter)
+ExprStr_concat = function(delimiter = "-", ignore_nulls = TRUE) {
+  .pr$Expr$str_concat(self, delimiter, ignore_nulls) |>
+    unwrap("in $concat():")
 }
 
 #' Convert a string to uppercase

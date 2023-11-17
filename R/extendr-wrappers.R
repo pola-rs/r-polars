@@ -515,7 +515,7 @@ Expr$explode <- function() .Call(wrap__Expr__explode, self)
 
 Expr$flatten <- function() .Call(wrap__Expr__flatten, self)
 
-Expr$take_every <- function(n) .Call(wrap__Expr__take_every, self, n)
+Expr$gather_every <- function(n) .Call(wrap__Expr__gather_every, self, n)
 
 Expr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__Expr__hash, self, seed, seed_1, seed_2, seed_3)
 
@@ -667,9 +667,9 @@ Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, ca
 
 Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, ambiguous)
 
-Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
+Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
-Expr$dt_round <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_round, self, every, offset, ambiguous)
+Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
 Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
 
@@ -851,7 +851,7 @@ Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)
 
 Expr$str_len_chars <- function() .Call(wrap__Expr__str_len_chars, self)
 
-Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
+Expr$str_concat <- function(delimiter, ignore_nulls) .Call(wrap__Expr__str_concat, self, delimiter, ignore_nulls)
 
 Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
 

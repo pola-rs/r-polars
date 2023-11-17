@@ -6,13 +6,15 @@
   - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
     `include_header` and there's a new argument `include_bom`.
   - `pl$cov()` gains a `ddof` argument.
-  - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()`,  are
+  - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()`  are
     renamed `$cum_sum()`, `$cum_prod()`, `$cum_min()`, `$cum_max()`, 
     `$cum_count()`.
   - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
   - `$shift()` and `$shift_and_fill()` now accept Expr as input.
   - when `reverse = TRUE`, `$arg_sort()` now places null values in the first
     positions.
+  - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
+  - `$str$concat()` gains an argument `ignore_nulls`.
 
 ## Breaking changes
 

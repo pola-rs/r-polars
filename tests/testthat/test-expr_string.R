@@ -7,7 +7,7 @@ test_that("str$strptime datetime", {
 
   expect_error(
     pl$lit(txt_datetimes)$str$strptime(pl$Datetime(), format = "%Y-%m-%d %H:%M:%S")$lit_to_s(),
-    "strict datetime"
+    "Conversion .* failed"
   )
 
   expect_identical(
@@ -35,7 +35,7 @@ test_that("str$strptime date", {
 
   expect_grepl_error(
     pl$lit(txt_dates)$str$strptime(pl$Date, format = "%Y-%m-%d")$lit_to_s(),
-    "strict date parsing failed"
+    "Conversion from `str` to `date` failed"
   )
 
   expect_identical(
@@ -69,7 +69,7 @@ test_that("str$strptime time", {
 
   expect_grepl_error(
     pl$lit(txt_times)$str$strptime(pl$Time, format = "%H:%M:%S %z")$lit_to_s(),
-    "strict time parsing failed"
+    "Conversion from `str` to `time` failed"
   )
 
   expect_equal(
@@ -80,10 +80,6 @@ test_that("str$strptime time", {
     pl$PTime(txt_times, tu = "ns")
   )
 })
-
-
-
-
 
 test_that("str$len_bytes str$len_chars", {
   test_str = c("Café", NA, "345", "東京") |> enc2utf8()
@@ -623,23 +619,22 @@ test_that("str$str_explode", {
 
 test_that("str$parse_int", {
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int(2)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$parse_int(2)$shrink_dtype()$to_r(),
     c(6L, 5L, 2L)
   )
 
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int()$to_r(),
+    pl$lit(c("110", "101", "010"))$str$parse_int()$shrink_dtype()$to_r(),
     c(6L, 5L, 2L)
   )
 
-
   expect_identical(
-    pl$lit(c("110", "101", "010"))$str$parse_int(10)$to_r(),
+    pl$lit(c("110", "101", "010"))$str$parse_int(10)$shrink_dtype()$to_r(),
     c(110L, 101L, 10L)
   )
 
   expect_identical(
-    pl$lit(c("110", "101", "hej"))$str$parse_int(10, FALSE)$to_r(),
+    pl$lit(c("110", "101", "hej"))$str$parse_int(10, FALSE)$shrink_dtype()$to_r(),
     c(110L, 101L, NA)
   )
 

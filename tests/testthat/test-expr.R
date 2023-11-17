@@ -1485,7 +1485,7 @@ test_that("Expr explode/flatten", {
 })
 
 
-test_that("take_every", {
+test_that("gather_every", {
   df = pl$DataFrame(list(a = 0:24))$select(pl$col("a")$gather_every(6))
   expect_identical(
     df$to_list()[[1L]],

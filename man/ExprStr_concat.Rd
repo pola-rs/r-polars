@@ -5,6 +5,9 @@
 \title{Vertically concatenate values of a Series}
 \arguments{
 \item{delimiter}{The delimiter to insert between consecutive string values.}
+
+\item{ignore_nulls}{Ignore null values. If \code{FALSE}, null values will be
+propagated: if the column contains any null values, the output is null.}
 }
 \value{
 Expr of Utf8 concatenated
@@ -17,6 +20,7 @@ string value.
 # concatenate a Series of strings to a single string
 df = pl$DataFrame(foo = c("1", NA, 2))
 df$select(pl$col("foo")$str$concat("-"))
+df$select(pl$col("foo")$str$concat("-", ignore_nulls = FALSE))
 
 # Series list of strings to Series of concatenated strings
 df = pl$DataFrame(list(bar = list(c("a", "b", "c"), c("1", "2", NA))))
