@@ -9,6 +9,8 @@
   - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()`,  are
     renamed `$cum_sum()`, `$cum_prod()`, `$cum_min()`, `$cum_max()`, 
     `$cum_count()`.
+  - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
+  - `$shift()` and `$shift_and_fill()` now accept Expr as input.
 
 ## Breaking changes
 

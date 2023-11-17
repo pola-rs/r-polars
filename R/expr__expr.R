@@ -1721,16 +1721,16 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' @return Expr
 #' @keywords Expr
 #' @aliases take
-#' @name Expr_take
+#' @name Expr_gather
 #' @details
 #' similar to R indexing syntax e.g. `letters[c(1,3,5)]`, however as an expression, not as eager computation
 #' exceeding
 #'
 #' @format NULL
 #' @examples
-#' pl$select(pl$lit(0:10)$take(c(1, 8, 0, 7)))
-Expr_take = function(indices) {
-  .pr$Expr$take(self, pl$lit(indices))
+#' pl$select(pl$lit(0:10)$gather(c(1, 8, 0, 7)))
+Expr_gather = function(indices) {
+  .pr$Expr$gather(self, pl$lit(indices))
 }
 
 
@@ -1751,7 +1751,8 @@ Expr_take = function(indices) {
 #'   pl$lit(0:3)$shift(2)$alias("shift+2")
 #' )
 Expr_shift = function(periods = 1) {
-  .pr$Expr$shift(self, periods)
+  .pr$Expr$shift(self, periods) |>
+    unwrap("in $shift():")
 }
 
 #' Shift and fill values
@@ -1773,7 +1774,8 @@ Expr_shift = function(periods = 1) {
 #'   pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
 #' )
 Expr_shift_and_fill = function(periods, fill_value) {
-  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value))
+  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value)) |>
+    unwrap("in $shift_and_fill():")
 }
 
 
@@ -1806,7 +1808,7 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
     ),
 
     # the two use cases
-    !is.null(value), .pr$Expr$fill_null(self, pl$lit(value)),
+    !is.null(value), unwrap(.pr$Expr$fill_null(self, value)),
     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self, strategy, limit)),
 
     # catch failed any match
@@ -2324,7 +2326,7 @@ Expr_where = Expr_filter
 #' explode/flatten does not support categorical
 #'
 #' @examples
-#' pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$take(0:5))
+#' pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$gather(0:5))
 #'
 #' listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$group_by("Species")$agg(pl$all())
 #' print(listed_group_df)
@@ -2357,9 +2359,9 @@ Expr_flatten = "use_extendr_wrapper"
 #' @format NULL
 #'
 #' @examples
-#' pl$DataFrame(list(a = 0:24))$select(pl$col("a")$take_every(6))
-Expr_take_every = function(n) {
-  unwrap(.pr$Expr$take_every(self, n))
+#' pl$DataFrame(list(a = 0:24))$select(pl$col("a")$gather_every(6))
+Expr_gather_every = function(n) {
+  unwrap(.pr$Expr$gather_every(self, n))
 }
 
 

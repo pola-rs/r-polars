@@ -139,19 +139,20 @@ test_that("list$get", {
 
 test_that("take", {
   l = list(1:3, 1:2, 1:1)
-  l_roundtrip = pl$lit(l)$list$take(lapply(l, "-", 1L))$to_r()
+  l_roundtrip = pl$lit(l)$list$gather(lapply(l, "-", 1L))$to_r()
   expect_identical(l_roundtrip, l)
 
 
   l = list(1:3, 4:5, 6L)
   expect_identical(
-    pl$lit(l)$list$take(list(c(0:3), 0L, 0L), null_on_oob = TRUE)$to_r(),
+    pl$lit(l)$list$gather(list(c(0:3), 0L, 0L), null_on_oob = TRUE)$to_r(),
     list(c(1:3, NA), 4L, 6L)
   )
 
-
-  expected_err = "Take indices are out of bounds."
-  expect_grepl_error(pl$lit(l)$list$take(list(c(0:3), 0L, 0L))$to_r(), expected_err)
+  expect_error(
+    pl$lit(l)$list$gather(list(c(0:3), 0L, 0L))$to_r(),
+    "gather indices are out of bounds"
+  )
 })
 
 test_that("first last head tail", {
