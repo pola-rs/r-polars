@@ -1863,12 +1863,14 @@ impl Expr {
             .into()
     }
 
-    pub fn str_concat(&self, delimiter: &str, ignore_nulls: Robj) -> Self {
-        self.0
+    pub fn str_concat(&self, delimiter: &str, ignore_nulls: Robj) -> RResult<Self> {
+        Ok(
+            self.0
             .clone()
             .str()
-            .concat(delimiter, robj_to!(bool, ignore_nulls))
+            .concat(delimiter, robj_to!(bool, ignore_nulls)?)
             .into()
+        )
     }
 
     pub fn str_to_uppercase(&self) -> Self {
