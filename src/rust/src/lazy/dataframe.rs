@@ -225,11 +225,11 @@ impl LazyFrame {
         Ok(self.clone().0.shift(robj_to!(i64, periods)?).into())
     }
 
-    fn shift_and_fill(&self, fill_value: Robj, periods: Robj) -> Result<Self, String> {
+    fn shift_and_fill(&self, fill_value: Robj, periods: Robj) -> RResult<Self> {
         Ok(self
             .clone()
             .0
-            .shift_and_fill(robj_to!(Expr, periods)?, robj_to!(Expr, fill_value)?)
+            .shift_and_fill(robj_to!(PLExpr, periods)?, robj_to!(PLExpr, fill_value)?)
             .into())
     }
 
