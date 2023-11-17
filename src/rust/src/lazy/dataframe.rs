@@ -119,7 +119,7 @@ impl LazyFrame {
     fn sink_csv(
         &self,
         path: Robj,
-        include_bom: bool,
+        include_bom: Robj,
         include_header: Robj,
         separator: Robj,
         line_terminator: Robj,
@@ -144,6 +144,7 @@ impl LazyFrame {
         let line_terminator = robj_to!(String, line_terminator)?;
         let quote_style = robj_to!(QuoteStyle, quote_style)?;
         let include_header = robj_to!(bool, include_header)?;
+        let include_bom = robj_to!(bool, include_bom)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let batch_size = robj_to!(usize, batch_size)?;
 

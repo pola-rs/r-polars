@@ -250,17 +250,13 @@ impl Series {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
 
-    pub fn abs(&self) -> list::List {
-        let x = self
-            .0
-            .clone()
-            .abs()
+    pub fn abs(&self) -> RResult<Series> {
+        pl::abs(&self.0)
+            .map_err(polars_to_rpolars_err)
             .map(Series)
-            .map_err(|err| format!("{:?}", err));
-        r_result_list(x)
     }
 
-    pub fn alias(&self, name: &str) -> Series {
+        pub fn alias(&self, name: &str) -> Series {
         let mut s = self.0.clone();
         s.rename(name);
         Series(s)
