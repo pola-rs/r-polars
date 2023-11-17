@@ -14,9 +14,7 @@ use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::parse_fill_null_strategy;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
-use crate::utils::{
-    try_f64_into_i64, try_f64_into_u32, try_f64_into_usize, try_f64_into_usize_no_zero,
-};
+use crate::utils::{try_f64_into_i64, try_f64_into_u32, try_f64_into_usize};
 use crate::CONFIG;
 use extendr_api::{extendr, prelude::*, rprintln, Deref, DerefMut, Rinternals};
 use pl::PolarsError as pl_error;
@@ -287,8 +285,8 @@ impl Expr {
             .into()
     }
 
-    pub fn gather(&self, idx: &Expr) -> Self {
-        self.clone().0.gather(idx.0.clone()).into()
+    pub fn gather(&self, idx: Robj) -> RResult<Self> {
+        Ok(self.clone().0.gather(robj_to!(PLExpr, idx)?).into())
     }
 
     pub fn sort_by(&self, by: Robj, descending: Robj) -> RResult<Expr> {
@@ -433,24 +431,20 @@ impl Expr {
         self.clone().0.explode().into()
     }
 
-    pub fn gather_every(&self, n: f64) -> List {
-        use pl::*; //dunno what set of traits needed just take all
-
-        let result = try_f64_into_usize_no_zero(n)
-            .map_err(|err| format!("Invalid n argument in gather_every: {}", err))
-            .map(|n| {
-                Expr(
-                    self.clone()
-                        .0
-                        .map(
-                            move |s: Series| Ok(Some(s.gather_every(n))),
-                            pl::GetOutput::same_type(),
-                        )
-                        .with_fmt("gather_every"),
-                )
-            });
-
-        r_result_list(result)
+    pub fn gather_every(&self, n: Robj) -> RResult<Expr> {
+        let n = robj_to!(usize, n).and_then(|n| match n {
+            0 => rerr().bad_arg("n").bad_val("n can't be zero"),
+            _ => Ok(n),
+        })?;
+        Ok(self
+            .0
+            .clone()
+            .map(
+                move |s: pl::Series| Ok(Some(s.gather_every(n))),
+                pl::GetOutput::same_type(),
+            )
+            .with_fmt("gather_every")
+            .into())
     }
 
     pub fn hash(
@@ -1074,7 +1068,7 @@ impl Expr {
             .take(robj_to!(PLExprCol, index)?, robj_to!(bool, null_on_oob)?)
             .into())
     }
-    
+
     fn list_get(&self, index: &Expr) -> Self {
         self.0.clone().list().get(index.clone().0).into()
     }
@@ -1533,24 +1527,24 @@ impl Expr {
         self.0.clone().drop_nans().into()
     }
 
-    pub fn cum_sum(&self, reverse: bool) -> Self {
-        self.0.clone().cum_sum(reverse).into()
+    pub fn cum_sum(&self, reverse: Robj) -> RResult<Self> {
+        Ok(self.0.clone().cum_sum(robj_to!(bool, reverse)?).into())
     }
 
-    pub fn cum_prod(&self, reverse: bool) -> Self {
-        self.0.clone().cum_prod(reverse).into()
+    pub fn cum_prod(&self, reverse: Robj) -> RResult<Self> {
+        Ok(self.0.clone().cum_prod(robj_to!(bool, reverse)?).into())
     }
 
-    pub fn cum_min(&self, reverse: bool) -> Self {
-        self.0.clone().cum_min(reverse).into()
+    pub fn cum_min(&self, reverse: Robj) -> RResult<Self> {
+        Ok(self.0.clone().cum_min(robj_to!(bool, reverse)?).into())
     }
 
-    pub fn cum_max(&self, reverse: bool) -> Self {
-        self.0.clone().cum_max(reverse).into()
+    pub fn cum_max(&self, reverse: Robj) -> RResult<Self> {
+        Ok(self.0.clone().cum_max(robj_to!(bool, reverse)?).into())
     }
 
-    pub fn cum_count(&self, reverse: bool) -> Self {
-        self.0.clone().cum_count(reverse).into()
+    pub fn cum_count(&self, reverse: Robj) -> RResult<Self> {
+        Ok(self.0.clone().cum_count(robj_to!(bool, reverse)?).into())
     }
 
     pub fn floor(&self) -> Self {
@@ -1863,14 +1857,13 @@ impl Expr {
             .into()
     }
 
-    pub fn str_concat(&self, delimiter: &str, ignore_nulls: Robj) -> RResult<Self> {
-        Ok(
-            self.0
+    pub fn str_concat(&self, delimiter: Robj, ignore_nulls: Robj) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .str()
-            .concat(delimiter, robj_to!(bool, ignore_nulls)?)
-            .into()
-        )
+            .concat(robj_to!(str, delimiter)?, robj_to!(bool, ignore_nulls)?)
+            .into())
     }
 
     pub fn str_to_uppercase(&self) -> Self {
@@ -2136,7 +2129,7 @@ impl Expr {
         Ok(self.0.clone().str().explode().into())
     }
 
-    pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> Result<Expr, String> {
+    pub fn str_parse_int(&self, radix: Robj, strict: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()
@@ -2146,7 +2139,7 @@ impl Expr {
             .into())
     }
 
-    pub fn bin_contains(&self, lit: Robj) -> Result<Self, String> {
+    pub fn bin_contains(&self, lit: Robj) -> RResult<Self> {
         Ok(self
             .0
             .clone()

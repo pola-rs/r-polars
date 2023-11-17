@@ -463,7 +463,7 @@ impl DataFrame {
     pub fn write_csv(
         &self,
         path: Robj,
-        include_bom: bool,
+        include_bom: Robj,
         include_header: Robj,
         separator: Robj,
         line_terminator: Robj,
@@ -479,7 +479,7 @@ impl DataFrame {
         let path = robj_to!(str, path)?;
         let f = std::fs::File::create(path)?;
         pl::CsvWriter::new(f)
-            .include_bom(include_bom)
+            .include_bom(robj_to!(bool, include_bom)?)
             .include_header(robj_to!(bool, include_header)?)
             .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)

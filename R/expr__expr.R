@@ -1300,7 +1300,8 @@ Expr_rechunk = "use_extendr_wrapper"
 #'   pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum_reversed")
 #' )
 Expr_cum_sum = function(reverse = FALSE) {
-  .pr$Expr$cum_sum(self, reverse)
+  .pr$Expr$cum_sum(self, reverse) |>
+    unwrap("in cum_sum():")
 }
 
 
@@ -1322,7 +1323,8 @@ Expr_cum_sum = function(reverse = FALSE) {
 #'   pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod_reversed")
 #' )
 Expr_cum_prod = function(reverse = FALSE) {
-  .pr$Expr$cum_prod(self, reverse)
+  .pr$Expr$cum_prod(self, reverse) |>
+    unwrap("in cum_prod():")
 }
 
 #' Cumulative minimum
@@ -1344,7 +1346,8 @@ Expr_cum_prod = function(reverse = FALSE) {
 #'   pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min_reversed")
 #' )
 Expr_cum_min = function(reverse = FALSE) {
-  .pr$Expr$cum_min(self, reverse)
+  .pr$Expr$cum_min(self, reverse) |>
+    unwrap("in cum_min():")
 }
 
 #' Cumulative maximum
@@ -1366,7 +1369,8 @@ Expr_cum_min = function(reverse = FALSE) {
 #'   pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max_reversed")
 #' )
 Expr_cum_max = function(reverse = FALSE) {
-  .pr$Expr$cum_max(self, reverse)
+  .pr$Expr$cum_max(self, reverse) |>
+    unwrap("in cum_max():")
 }
 
 #' Cumulative count
@@ -1390,7 +1394,8 @@ Expr_cum_max = function(reverse = FALSE) {
 #'   pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count_reversed")
 #' )
 Expr_cum_count = function(reverse = FALSE) {
-  .pr$Expr$cum_count(self, reverse)
+  .pr$Expr$cum_count(self, reverse) |>
+    unwrap("in cum_count():")
 }
 
 
@@ -1730,7 +1735,8 @@ Expr_sort_by = function(by, descending = FALSE) {
 #' @examples
 #' pl$select(pl$lit(0:10)$gather(c(1, 8, 0, 7)))
 Expr_gather = function(indices) {
-  .pr$Expr$gather(self, pl$lit(indices))
+  .pr$Expr$gather(self, pl$lit(indices)) |>
+    unwrap("in $gather():")
 }
 
 
