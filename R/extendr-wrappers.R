@@ -199,7 +199,7 @@ DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(w
 
 DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
 
-DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+DataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
 DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__DataFrame__write_json, self, file, pretty, row_oriented)
 
@@ -1003,7 +1003,7 @@ LazyFrame$sink_parquet <- function(path, compression_method, compression_level, 
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
+LazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 

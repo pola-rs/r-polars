@@ -1,5 +1,11 @@
 # polars (development version)
 
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 0.35 (2023-11-17) (#515)
+  - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
+    `include_header` and there's a new argument `include_bom`.
+
 ## Breaking changes
 
 - The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
