@@ -985,7 +985,7 @@ test_that("arg_min arg_max arg_sort", {
     l_actual,
     list(
       `arg_sort default` = c(6, 4, 2, 1, 0, 3, 5),
-      `arg_sort rev` = c(5, 3, 0, 1, 2, 4, 6),
+      `arg_sort rev` = c(6, 5, 3, 0, 1, 2, 4),
       `arg_sort rev nulls_last` = c(5, 3, 0, 1, 2, 4, 6)
     )
   )

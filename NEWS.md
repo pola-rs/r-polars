@@ -11,6 +11,8 @@
     `$cum_count()`.
   - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
   - `$shift()` and `$shift_and_fill()` now accept Expr as input.
+  - when `reverse = TRUE`, `$arg_sort()` now places null values in the first
+    positions.
 
 ## Breaking changes
 
