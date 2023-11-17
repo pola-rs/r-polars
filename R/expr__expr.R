@@ -1289,18 +1289,18 @@ Expr_rechunk = "use_extendr_wrapper"
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases Expr_cumsum
-#' @name Expr_cumsum
+#' @name Expr_cum_sum
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(a = 1:4))$select(
-#'   pl$col("a")$cumsum()$alias("cumsum"),
-#'   pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum_reversed")
+#'   pl$col("a")$cum_sum()$alias("cum_sum"),
+#'   pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum_reversed")
 #' )
-Expr_cumsum = function(reverse = FALSE) {
-  .pr$Expr$cumsum(self, reverse)
+Expr_cum_sum = function(reverse = FALSE) {
+  .pr$Expr$cum_sum(self, reverse)
 }
 
 
@@ -1309,8 +1309,8 @@ Expr_cumsum = function(reverse = FALSE) {
 #' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
-#' @aliases cumprod
-#' @name Expr_cumprod
+#' @aliases cum_prod
+#' @name Expr_cum_prod
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
@@ -1318,11 +1318,11 @@ Expr_cumsum = function(reverse = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(a = 1:4))$select(
-#'   pl$col("a")$cumprod()$alias("cumprod"),
-#'   pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod_reversed")
+#'   pl$col("a")$cum_prod()$alias("cum_prod"),
+#'   pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod_reversed")
 #' )
-Expr_cumprod = function(reverse = FALSE) {
-  .pr$Expr$cumprod(self, reverse)
+Expr_cum_prod = function(reverse = FALSE) {
+  .pr$Expr$cum_prod(self, reverse)
 }
 
 #' Cumulative minimum
@@ -1330,8 +1330,8 @@ Expr_cumprod = function(reverse = FALSE) {
 #' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
-#' @aliases cummin
-#' @name Expr_cummin
+#' @aliases cum_min
+#' @name Expr_cum_min
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
@@ -1340,11 +1340,11 @@ Expr_cumprod = function(reverse = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(a = 1:4))$select(
-#'   pl$col("a")$cummin()$alias("cummin"),
-#'   pl$col("a")$cummin(reverse = TRUE)$alias("cummin_reversed")
+#'   pl$col("a")$cum_min()$alias("cum_min"),
+#'   pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min_reversed")
 #' )
-Expr_cummin = function(reverse = FALSE) {
-  .pr$Expr$cummin(self, reverse)
+Expr_cum_min = function(reverse = FALSE) {
+  .pr$Expr$cum_min(self, reverse)
 }
 
 #' Cumulative maximum
@@ -1353,7 +1353,7 @@ Expr_cummin = function(reverse = FALSE) {
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
 #' @aliases cummin
-#' @name Expr_cummin
+#' @name Expr_cum_max
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
@@ -1362,11 +1362,11 @@ Expr_cummin = function(reverse = FALSE) {
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(a = 1:4))$select(
-#'   pl$col("a")$cummax()$alias("cummux"),
-#'   pl$col("a")$cummax(reverse = TRUE)$alias("cummax_reversed")
+#'   pl$col("a")$cum_max()$alias("cummux"),
+#'   pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max_reversed")
 #' )
-Expr_cummax = function(reverse = FALSE) {
-  .pr$Expr$cummax(self, reverse)
+Expr_cum_max = function(reverse = FALSE) {
+  .pr$Expr$cum_max(self, reverse)
 }
 
 #' Cumulative count
@@ -1375,22 +1375,22 @@ Expr_cummax = function(reverse = FALSE) {
 #' @keywords Expr
 #' @param reverse bool, default FALSE, if true roll over vector from back to forth
 #' @return Expr
-#' @aliases cumcount
-#' @name Expr_cumcount
+#' @aliases cum_count
+#' @name Expr_cum_count
 #' @details
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #'
-#' cumcount does not seem to count within lists.
+#' cum_count does not seem to count within lists.
 #'
 #' @format NULL
 #' @examples
 #' pl$DataFrame(list(a = 1:4))$select(
-#'   pl$col("a")$cumcount()$alias("cumcount"),
-#'   pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
+#'   pl$col("a")$cum_count()$alias("cum_count"),
+#'   pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count_reversed")
 #' )
-Expr_cumcount = function(reverse = FALSE) {
-  .pr$Expr$cumcount(self, reverse)
+Expr_cum_count = function(reverse = FALSE) {
+  .pr$Expr$cum_count(self, reverse)
 }
 
 

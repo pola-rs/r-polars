@@ -765,15 +765,15 @@ Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
 
 Expr$drop_nans <- function() .Call(wrap__Expr__drop_nans, self)
 
-Expr$cumsum <- function(reverse) .Call(wrap__Expr__cumsum, self, reverse)
+Expr$cum_sum <- function(reverse) .Call(wrap__Expr__cum_sum, self, reverse)
 
-Expr$cumprod <- function(reverse) .Call(wrap__Expr__cumprod, self, reverse)
+Expr$cum_prod <- function(reverse) .Call(wrap__Expr__cum_prod, self, reverse)
 
-Expr$cummin <- function(reverse) .Call(wrap__Expr__cummin, self, reverse)
+Expr$cum_min <- function(reverse) .Call(wrap__Expr__cum_min, self, reverse)
 
-Expr$cummax <- function(reverse) .Call(wrap__Expr__cummax, self, reverse)
+Expr$cum_max <- function(reverse) .Call(wrap__Expr__cum_max, self, reverse)
 
-Expr$cumcount <- function(reverse) .Call(wrap__Expr__cumcount, self, reverse)
+Expr$cum_count <- function(reverse) .Call(wrap__Expr__cum_count, self, reverse)
 
 Expr$floor <- function() .Call(wrap__Expr__floor, self)
 

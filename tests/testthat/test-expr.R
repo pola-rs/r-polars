@@ -757,41 +757,41 @@ test_that("Expr_rechunk Series_chunk_lengths", {
   )
 })
 
-test_that("cumsum cumprod cummin cummax cumcount", {
+test_that("cum_sum cum_prod cum_min cum_max cum_count", {
   l_actual = pl$DataFrame(list(a = 1:4))$select(
-    pl$col("a")$cumsum()$alias("cumsum"),
-    pl$col("a")$cumprod()$alias("cumprod")$cast(pl$dtypes$Float64),
-    pl$col("a")$cummin()$alias("cummin"),
-    pl$col("a")$cummax()$alias("cummax"),
-    pl$col("a")$cumcount()$alias("cumcount")$cast(pl$Float64)
+    pl$col("a")$cum_sum()$alias("cum_sum"),
+    pl$col("a")$cum_prod()$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_min()$alias("cum_min"),
+    pl$col("a")$cum_max()$alias("cum_max"),
+    pl$col("a")$cum_count()$alias("cum_count")$cast(pl$Float64)
   )$to_list()
   l_reference = list(
-    cumsum = cumsum(1:4),
-    cumprod = cumprod(1:4),
-    cummin = cummin(1:4),
-    cummax = cummax(1:4),
-    cumcount = seq_along(1:4) - 1
+    cum_sum = cumsum(1:4),
+    cum_prod = cumprod(1:4),
+    cum_min = cummin(1:4),
+    cum_max = cummax(1:4),
+    cum_count = seq_along(1:4) - 1
   )
   expect_identical(
     l_actual, l_reference
   )
 
   l_actual_rev = pl$DataFrame(list(a = 1:4))$select(
-    pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum"),
-    pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod")$cast(pl$dtypes$Float64),
-    pl$col("a")$cummin(reverse = TRUE)$alias("cummin"),
-    pl$col("a")$cummax(reverse = TRUE)$alias("cummax"),
-    pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount")$cast(pl$Float64)
+    pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum"),
+    pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod")$cast(pl$dtypes$Float64),
+    pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min"),
+    pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max"),
+    pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count")$cast(pl$Float64)
   )$to_list()
 
   expect_identical(
     l_actual_rev,
     list(
-      cumsum = rev(cumsum(4:1)),
-      cumprod = rev(cumprod(4:1)),
-      cummin = rev(cummin(4:1)),
-      cummax = rev(cummax(4:1)),
-      cumcount = rev(seq_along(4:1)) - 1
+      cum_sum = rev(cumsum(4:1)),
+      cum_prod = rev(cumprod(4:1)),
+      cum_min = rev(cummin(4:1)),
+      cum_max = rev(cummax(4:1)),
+      cum_count = rev(seq_along(4:1)) - 1
     )
   )
 })

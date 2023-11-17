@@ -2,10 +2,13 @@
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
-- rust-polars is updated to 0.35 (2023-11-17) (#515)
+- rust-polars is updated to 0.35.0 (2023-11-17) (#515)
   - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
     `include_header` and there's a new argument `include_bom`.
   - `pl$cov()` gains a `ddof` argument.
+  - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()`,  are
+    renamed `$cum_sum()`, `$cum_prod()`, `$cum_min()`, `$cum_max()`, 
+    `$cum_count()`.
 
 ## Breaking changes
 
