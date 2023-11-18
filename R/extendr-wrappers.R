@@ -11,13 +11,13 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
-
-max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
-
 all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
+
+min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
+
+max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
 
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 

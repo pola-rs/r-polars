@@ -530,6 +530,24 @@ pub fn robj_to_parallel_strategy(robj: extendr_api::Robj) -> RResult<pl::Paralle
     }
 }
 
+pub fn parse_fill_null_strategy(
+    strategy: &str,
+    limit: Option<u32>,
+) -> RResult<pl::FillNullStrategy> {
+    use pl::FillNullStrategy::*;
+    let parsed = match strategy {
+        "forward" => Forward(limit),
+        "backward" => Backward(limit),
+        "min" => Min,
+        "max" => Max,
+        "mean" => Mean,
+        "zero" => Zero,
+        "one" => One,
+        e => return rerr().plain("FillNullStrategy is not known").bad_val(e),
+    };
+    Ok(parsed)
+}
+
 extendr_module! {
     mod rdatatype;
     impl RPolarsDataType;

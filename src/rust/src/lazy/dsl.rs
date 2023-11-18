@@ -3,6 +3,7 @@ use crate::rdatatype::literal_to_any_value;
 use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::new_rolling_cov_options;
+use crate::rdatatype::parse_fill_null_strategy;
 use crate::rdatatype::robj_to_timeunit;
 use crate::rdatatype::{DataTypeVector, RPolarsDataType};
 use crate::robj_to;
@@ -11,7 +12,7 @@ use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
 use crate::series::Series;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
-use crate::utils::parse_fill_null_strategy;
+use crate::utils::robj_to_rchoice;
 use crate::utils::wrappers::null_to_opt;
 use crate::utils::{r_error_list, r_ok_list, r_result_list, robj_to_binary_vec};
 use crate::utils::{
@@ -324,25 +325,21 @@ impl Expr {
         self.0.clone().fill_null(expr.0.clone()).into()
     }
 
-    pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let res = || -> Result<Expr, String> {
-            let limit = null_to_opt(limit).map(try_f64_into_usize).transpose()?;
-            let limit: pl::FillNullLimit = limit.map(|x| x as u32);
+    pub fn fill_null_with_strategy(&self, strategy: Robj, limit: Robj) -> RResult<Self> {
+        let strat = parse_fill_null_strategy(
+            robj_to_rchoice(strategy)?.as_str(),
+            robj_to!(Option, u32, limit)?,
+        )?;
+        let expr: pl::Expr = self
+            .0
+            .clone()
+            .apply(
+                move |s| s.fill_null(strat).map(Some),
+                pl::GetOutput::same_type(),
+            )
+            .with_fmt("fill_null_with_strategy");
 
-            let strat = parse_fill_null_strategy(strategy, limit)
-                .map_err(|err| format!("this happe4nd {:?}", err))?;
-            let expr: pl::Expr = self
-                .0
-                .clone()
-                .apply(
-                    move |s| s.fill_null(strat).map(Some),
-                    pl::GetOutput::same_type(),
-                )
-                .with_fmt("fill_null_with_strategy");
-
-            Ok(Expr(expr))
-        }();
-        r_result_list(res)
+        Ok(Expr(expr))
     }
 
     pub fn fill_nan(&self, expr: &Expr) -> Self {
