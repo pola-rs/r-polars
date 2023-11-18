@@ -32,3 +32,33 @@ print.polars_info = function(x, ...) {
   cat("\n")
   print_key_values("Features", unlist(x$features))
 }
+
+#' Check Rust feature flag
+#'
+#' Raise error if the feature is not enabled
+#' @noRd
+#' @param feature_name name of feature to check
+#' @inheritParams unwrap
+#' @return TRUE invisibly if the feature is enabled
+#' @keywords internal
+#' @examples
+#' tryCatch(
+#'   check_feature("simd", "in example"),
+#'   error = \(e) cat(as.character(e))
+#' )
+#' tryCatch(
+#'   check_feature("rpolars_debug_print", "in example"),
+#'   error = \(e) cat(as.character(e))
+#' )
+check_feature = function(feature_name, context = NULL, call = sys.call(1L)) {
+  if (!pl$polars_info()$features[[feature_name]]) {
+    Err_plain(
+      "\nFeature '", feature_name, "' is not enabled.\n",
+      "Please check the documentation about installation\n",
+      "and re-install with the feature enabled.\n"
+    ) |>
+      unwrap(context, call)
+  }
+
+  invisible(TRUE)
+}
