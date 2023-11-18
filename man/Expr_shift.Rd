@@ -2,13 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_shift}
 \alias{Expr_shift}
-\alias{shift}
 \title{Shift values}
 \usage{
-Expr_shift(periods)
+Expr_shift(periods = 1)
 }
 \arguments{
-\item{periods}{numeric number of periods to shift, may be negative.}
+\item{periods}{Number of periods to shift, may be negative.}
 }
 \value{
 Expr
@@ -16,13 +15,10 @@ Expr
 \description{
 Shift values
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
-pl$select(
-  pl$lit(0:3)$shift(-2)$alias("shift-2"),
-  pl$lit(0:3)$shift(2)$alias("shift+2")
-)
+pl$DataFrame(a = c(1, 2, 4, 5, 8))$
+  with_columns(
+    pl$col("a")$shift(-2)$alias("shift-2"),
+    pl$col("a")$shift(2)$alias("shift+2")
+  )
 }
-\keyword{Expr}

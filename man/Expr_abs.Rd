@@ -2,17 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_abs}
 \alias{Expr_abs}
-\title{Abs}
+\title{Compute the absolute values}
 \usage{
 Expr_abs
 }
 \value{
-Exprs abs
+Expr
 }
 \description{
-Compute absolute values
+Compute the absolute values
 }
 \examples{
-pl$DataFrame(list(a = -1:1))$select(pl$col("a"), pl$col("a")$abs()$alias("abs"))
+pl$DataFrame(a = -1:1)$
+  with_columns(abs = pl$col("a")$abs())
 }
-\keyword{Expr}
+\keyword{datasets}

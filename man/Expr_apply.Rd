@@ -125,7 +125,7 @@ system.time({
   r_vec * 2L
 })
 
-#' #R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
+# R parallel process example, use Sys.sleep() to imitate some CPU expensive computation.
 
 # use apply over each Species-group in each column equal to 12 sequential runs ~1.2 sec.
 pl$LazyFrame(iris)$group_by("Species")$agg(
@@ -156,4 +156,3 @@ pl$LazyFrame(iris)$group_by("Species")$agg(
 )$collect() |> system.time()
 
 }
-\keyword{Expr}

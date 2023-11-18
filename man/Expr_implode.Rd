@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_implode}
 \alias{Expr_implode}
-\alias{list}
 \title{Wrap column in list}
 \usage{
 Expr_implode
@@ -14,8 +13,7 @@ Expr
 Aggregate values into a list.
 }
 \details{
-use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
-as list() .
+Use \verb{$to_struct()} to wrap a DataFrame.
 }
 \examples{
 df = pl$DataFrame(
@@ -24,4 +22,4 @@ df = pl$DataFrame(
 )
 df$select(pl$all()$implode())
 }
-\keyword{Expr}
+\keyword{datasets}

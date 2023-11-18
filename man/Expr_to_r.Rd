@@ -2,26 +2,24 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_to_r}
 \alias{Expr_to_r}
-\alias{pl_expr_to_r}
-\title{to_r: for debuging an expression}
+\title{Convert an Expr to R output}
 \usage{
 Expr_to_r(df = NULL, i = 0)
 }
 \arguments{
-\item{df}{otherwise a DataFrame to evaluate in, default NULL is an empty DataFrame}
+\item{df}{If \code{NULL} (default), it evaluates the Expr in an empty DataFrame.
+Otherwise, provide a DataFrame that the Expr should be evaluated in.}
 
-\item{i}{numeric column to extract zero index default first, expression could generate multiple
-columns}
+\item{i}{Numeric column to extract. Default is zero (which gives the first
+column).}
 }
 \value{
 R object
 }
 \description{
-debug an expression by evaluating in empty DataFrame and return first series to R
+This is mostly useful to debug an expression. It evaluates the Expr in an
+empty DataFrame and return the first Series to R.
 }
 \examples{
 pl$lit(1:3)$to_r()
-pl$expr_to_r(pl$lit(1:3))
-pl$expr_to_r(1:3)
 }
-\keyword{Expr}

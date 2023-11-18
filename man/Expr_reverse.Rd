@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reverse}
 \alias{Expr_reverse}
-\alias{reverse}
-\title{polars reverse}
+\title{Reverse a variable}
 \usage{
 Expr_reverse()
 }
@@ -11,9 +10,8 @@ Expr_reverse()
 Expr
 }
 \description{
-polars reverse
+Reverse a variable
 }
 \examples{
 pl$DataFrame(list(a = 1:5))$select(pl$col("a")$reverse())
 }
-\keyword{Expr}

@@ -2,34 +2,23 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_explode}
 \alias{Expr_explode}
-\alias{explode}
-\alias{Expr_flatten}
-\alias{flatten}
-\title{Explode a list or utf8 Series.}
+\title{Explode a list or Utf8 Series}
 \usage{
 Expr_explode
-
-Expr_flatten
 }
 \value{
 Expr
 }
 \description{
 This means that every item is expanded to a new row.
-
-( flatten is an alias for explode )
 }
 \details{
-explode/flatten does not support categorical
+Categorical values are not supported.
 }
 \examples{
-pl$DataFrame(list(a = letters))$select(pl$col("a")$explode()$gather(0:5))
+df = pl$DataFrame(x = c("abc", "ab"), y = c(list(1:3), list(3:5)))
+df
 
-listed_group_df = pl$DataFrame(iris[c(1:3, 51:53), ])$group_by("Species")$agg(pl$all())
-print(listed_group_df)
-vectors_df = listed_group_df$select(
-  pl$col(c("Sepal.Width", "Sepal.Length"))$explode()
-)
-print(vectors_df)
+df$select(pl$col("y")$explode())
 }
-\keyword{Expr}
+\keyword{datasets}

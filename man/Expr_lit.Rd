@@ -2,19 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_lit}
 \alias{Expr_lit}
-\alias{lit}
-\title{Return an expression representing a literal value}
+\title{Create a literal value}
 \usage{
 Expr_lit(x)
 }
 \arguments{
-\item{x}{An R Scalar, or R vector/list (via Series)}
+\item{x}{A vector of any length}
 }
 \value{
 Expr
 }
 \description{
-Return an expression representing a literal value
+Create a literal value
 }
 \details{
 \code{pl$lit(NULL)} translates into a polars \code{null}.

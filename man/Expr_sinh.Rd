@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sinh}
 \alias{Expr_sinh}
-\alias{sinh}
-\title{Sinh}
+\title{Compute hyperbolic sine}
 \usage{
 Expr_sinh
 }
@@ -11,12 +10,10 @@ Expr_sinh
 Expr
 }
 \description{
-Compute the element-wise value for the hyperbolic sine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute hyperbolic sine
 }
 \examples{
-pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$sinh())
+pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
+  with_columns(sinh = pl$col("a")$sinh())
 }
-\keyword{Expr}
+\keyword{datasets}

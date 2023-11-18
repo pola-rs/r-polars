@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_tan}
 \alias{Expr_tan}
-\alias{Tan}
-\title{Tan}
+\title{Compute tangent}
 \usage{
 Expr_tan
 }
@@ -11,12 +10,10 @@ Expr_tan
 Expr
 }
 \description{
-Compute the element-wise value for the tangent.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute tangent
 }
 \examples{
-pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$tan())
+pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
+  with_columns(tangent = pl$col("a")$tan())
 }
-\keyword{Expr}
+\keyword{datasets}

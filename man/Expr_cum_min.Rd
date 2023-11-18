@@ -2,13 +2,12 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_cum_min}
 \alias{Expr_cum_min}
-\alias{cum_min}
 \title{Cumulative minimum}
 \usage{
 Expr_cum_min(reverse = FALSE)
 }
 \arguments{
-\item{reverse}{bool, default FALSE, if true roll over vector from back to forth}
+\item{reverse}{If \code{TRUE}, start from the last value.}
 }
 \value{
 Expr
@@ -17,15 +16,12 @@ Expr
 Get an array with the cumulative min computed at every element.
 }
 \details{
-The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
-Int64 before summing to prevent overflow issues.
-
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
+prevent overflow issues.
 }
 \examples{
-pl$DataFrame(list(a = 1:4))$select(
+pl$DataFrame(a = c(1:4, 2L))$with_columns(
   pl$col("a")$cum_min()$alias("cum_min"),
   pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min_reversed")
 )
 }
-\keyword{Expr}

@@ -2,22 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_or}
 \alias{Expr_or}
-\title{Or}
+\title{Apply logical OR on two expressions}
 \usage{
 Expr_or(other)
 }
 \arguments{
-\item{other}{Expr or into Expr}
+\item{other}{Literal or object that can be converted to a literal}
 }
 \value{
 Expr
 }
 \description{
-combine to boolean expressions with OR
+Combine two boolean expressions with OR.
 }
 \examples{
 pl$lit(TRUE) | FALSE
 pl$lit(TRUE)$or(pl$lit(TRUE))
 }
-\keyword{Expr}
-\keyword{Expr_operators}

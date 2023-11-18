@@ -2,35 +2,32 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_cumulative_eval}
 \alias{Expr_cumulative_eval}
-\alias{cumulative_eval}
-\title{Cumulative eval}
+\title{Cumulative evaluation of expressions}
 \usage{
 Expr_cumulative_eval(expr, min_periods = 1L, parallel = FALSE)
 }
 \arguments{
-\item{expr}{Expression to evaluate}
+\item{expr}{Expression to evaluate.}
 
-\item{min_periods}{Number of valid values there should be in the window before the expression
-is evaluated. valid values = \code{length - null_count}}
+\item{min_periods}{Number of valid (non-null) values there should be in the
+window before the expression is evaluated.}
 
-\item{parallel}{Run in parallel. Don't do this in a groupby or another operation that
-already has much parallelization.}
+\item{parallel}{Run in parallel. Don't do this in a groupby or another
+operation that already has much parallelization.}
 }
 \value{
 Expr
 }
 \description{
-Run an expression over a sliding window that increases \code{1} slot every iteration.
+Run an expression over a sliding window that increases by \code{1} slot every
+iteration.
 }
 \details{
-Warnings
-
-This functionality is experimental and may change without it being considered a
-breaking change.
 This can be really slow as it can have \code{O(n^2)} complexity. Don't use this
 for operations that visit all elements.
 }
 \examples{
-pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
+pl$lit(1:5)$cumulative_eval(
+  pl$element()$first() - pl$element()$last()^2
+)$to_r()
 }
-\keyword{Expr}

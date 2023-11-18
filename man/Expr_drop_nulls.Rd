@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_drop_nulls}
 \alias{Expr_drop_nulls}
-\title{Drop null(s)}
+\title{Drop missing values}
 \usage{
 Expr_drop_nulls
 }
@@ -10,13 +10,12 @@ Expr_drop_nulls
 Expr
 }
 \description{
-Drop null values.
-Similar to R syntax \code{x[!(is.na(x) & !is.nan(x))]}
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Drop missing values
 }
 \examples{
 pl$DataFrame(list(x = c(1, 2, NaN, NA)))$select(pl$col("x")$drop_nulls())
 }
-\keyword{Expr}
+\seealso{
+\code{drop_nans()}
+}
+\keyword{datasets}
