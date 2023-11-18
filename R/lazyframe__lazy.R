@@ -638,7 +638,8 @@ LazyFrame_sink_ipc = function(
 #' pl$scan_csv(tmpf2)$collect()
 LazyFrame_sink_csv = function(
     path,
-    has_header = TRUE,
+    include_bom = FALSE,
+    include_header = TRUE,
     separator = ",",
     line_terminator = "\n",
     quote = '"',
@@ -681,7 +682,8 @@ LazyFrame_sink_csv = function(
   lf |>
     .pr$LazyFrame$sink_csv(
       path,
-      has_header,
+      include_bom,
+      include_header,
       separator,
       line_terminator,
       quote,

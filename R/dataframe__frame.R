@@ -1686,7 +1686,9 @@ DataFrame_transpose = function(
 #' Write to comma-separated values (CSV) file
 #'
 #' @param path File path to which the result should be written.
-#' @param has_header Whether to include header in the CSV output.
+#' @param include_bom Whether to include UTF-8 BOM (byte order mark) in the CSV
+#' output.
+#' @param include_header Whether to include header in the CSV output.
 #' @param separator Separate CSV fields with this symbol.
 #' @param line_terminator String used to end each row.
 #' @param quote Byte to use as quoting character.
@@ -1730,7 +1732,8 @@ DataFrame_transpose = function(
 #' pl$read_csv(destination)
 DataFrame_write_csv = function(
     path,
-    has_header = TRUE,
+    include_bom = FALSE,
+    include_header = TRUE,
     separator = ",",
     line_terminator = "\n",
     quote = '"',
@@ -1743,8 +1746,8 @@ DataFrame_write_csv = function(
     quote_style = "necessary") {
   .pr$DataFrame$write_csv(
     self,
-    path, has_header, separator, line_terminator, quote, batch_size,
-    datetime_format, date_format, time_format, float_precision,
+    path, include_bom, include_header, separator, line_terminator, quote,
+    batch_size, datetime_format, date_format, time_format, float_precision,
     null_values, quote_style
   ) |>
     unwrap("in $write_csv():") |>
@@ -1778,8 +1781,7 @@ DataFrame_write_csv = function(
 DataFrame_write_json = function(
     file,
     pretty = FALSE,
-    row_oriented = FALSE
-  ) {
+    row_oriented = FALSE) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
     unwrap("in $write_json():") |>
     invisible()

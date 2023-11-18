@@ -575,10 +575,10 @@ Series_clone = "use_extendr_wrapper"
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 #' Int64 before summing to prevent overflow issues.
 #' @examples
-#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
-#' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
-Series_cumsum = function(reverse = FALSE) {
-  .pr$Series$cumsum(self, reverse) |> unwrap("in $cumsum()")
+#' pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cum_sum()
+#' pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cum_sum()
+Series_cum_sum = function(reverse = FALSE) {
+  .pr$Series$cum_sum(self, reverse) |> unwrap("in $cum_sum()")
 }
 
 #' Sum

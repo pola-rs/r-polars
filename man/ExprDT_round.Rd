@@ -11,13 +11,6 @@ function
 \item{every}{string encoding duration see details.}
 
 \item{ofset}{optional string encoding duration see details.}
-
-\item{ambiguous}{Determine how to deal with ambiguous datetimes:
-\itemize{
-\item \code{"raise"} (default): raise
-\item \code{"earliest"}: use the earliest datetime
-\item \code{"latest"}: use the latest datetime
-}}
 }
 \value{
 Date/Datetime expr

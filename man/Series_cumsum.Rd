@@ -2,9 +2,10 @@
 % Please edit documentation in R/series__series.R
 \name{Series_cumsum}
 \alias{Series_cumsum}
+\alias{Series_cum_sum}
 \title{Cumulative sum}
 \usage{
-Series_cumsum(reverse = FALSE)
+Series_cum_sum(reverse = FALSE)
 }
 \arguments{
 \item{reverse}{bool, default FALSE, if true roll over vector from back to forth}
@@ -20,7 +21,7 @@ The Dtypes Int8, UInt8, Int16 and UInt16 are cast to
 Int64 before summing to prevent overflow issues.
 }
 \examples{
-pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cumsum()
-pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cumsum()
+pl$Series(c(1:2, NA, 3, NaN, 4, Inf))$cum_sum()
+pl$Series(c(1:2, NA, 3, Inf, 4, -Inf, 5))$cum_sum()
 }
 \keyword{Series}
