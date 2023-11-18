@@ -124,7 +124,7 @@ as_polars_df.RecordBatchReader = as_polars_df.ArrowTabular
 #'
 #' [as_polars_lf()] is a generic function that converts an R object to a
 #' polars LazyFrame. It is basically a shortcut for [as_polars_df(x, ...)][as_polars_df] with the
-#' [$lazy()][LazyFrame_lazy] method.
+#' [$lazy()][DataFrame_lazy] method.
 #' @rdname as_polars_lf
 #' @inheritParams as_polars_df
 #' @examples
