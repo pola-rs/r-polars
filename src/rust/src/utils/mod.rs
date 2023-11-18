@@ -812,28 +812,9 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<LazyFrame> {
 
     // closure to allow ?-convert extendr::Result to RResult
     let res = || -> RResult<LazyFrame> {
-        match () {
-            // allow input as a DataFrame
-            _ if robj.inherits("DataFrame") => {
-                let extptr_df: ExternalPtr<DataFrame> = robj.try_into()?;
-                Ok(extptr_df.lazy())
-            }
-            _ if robj.inherits("LazyFrame") => {
-                let lf: ExternalPtr<LazyFrame> = robj.try_into()?;
-                let lf = LazyFrame(lf.0.clone());
-                Ok(lf)
-            }
-            _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
-                let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
-                Ok(extptr_df.lazy())
-            }
-            _ => Ok(DataFrame::new_with_capacity(1)
-                .lazy()
-                .0
-                .select(&[robj_to_rexpr(robj, true)?.0]))
-            .map(LazyFrame),
-        }
+        let lf: ExternalPtr<LazyFrame> =
+            (unpack_r_eval(R!("polars:::result(polars::as_polars_lf({{robj}}))"))?).try_into()?;
+        Ok(LazyFrame(lf.0.clone()))
     }();
 
     res.bad_val(rv).mistyped(tn::<LazyFrame>())
@@ -845,25 +826,9 @@ pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
 
     // closure to allow ?-convert extendr::Result to RResult
     let res = || -> RResult<DataFrame> {
-        match () {
-            // allow input as a DataFrame
-            _ if robj.inherits("DataFrame") => {
-                let extptr_df: ExternalPtr<DataFrame> = robj.try_into()?;
-                Ok(extptr_df.0.clone())
-            }
-            _ if robj.inherits("data.frame") => {
-                let df = unpack_r_eval(R!("polars:::result(polars::pl$DataFrame({{robj}}))"))?;
-                let extptr_df: ExternalPtr<DataFrame> = df.try_into()?;
-                Ok(extptr_df.0.clone())
-            }
-            _ => DataFrame::new_with_capacity(1)
-                .lazy()
-                .0
-                .select(&[robj_to_rexpr(robj, true)?.0])
-                .collect(),
-        }
-        .map(DataFrame)
-        .map_err(polars_to_rpolars_err)
+        let df: ExternalPtr<DataFrame> =
+            (unpack_r_eval(R!("polars:::result(polars::as_polars_df({{robj}}))"))?).try_into()?;
+        Ok(DataFrame(df.0.clone()))
     }();
 
     res.bad_val(rdbg(robj_clone))

@@ -66,6 +66,7 @@ Collate:
     'after-wrappers.R'
     'Field.R'
     'PTime.R'
+    'as_polars.R'
     'autocompletion.R'
     'construction.R'
     'convert.R'

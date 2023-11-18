@@ -338,6 +338,7 @@ LazyFrame_set_optimization_toggle = function(
 #' @description `$collect()` performs the query on the LazyFrame. It returns a
 #' DataFrame
 #' @inheritParams LazyFrame_set_optimization_toggle
+#' @param ... Ignored.
 #' @param no_optimization  Boolean. Sets the following parameters to `FALSE`:
 #'  `predicate_pushdown`, `projection_pushdown`, `slice_pushdown`,
 #'  `comm_subplan_elim`, `comm_subexpr_elim`.
@@ -364,6 +365,7 @@ LazyFrame_set_optimization_toggle = function(
 #'  - [`$sink_ipc()`][LazyFrame_sink_ipc()] streams query to a arrow file.
 
 LazyFrame_collect = function(
+    ...,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
@@ -1311,6 +1313,7 @@ LazyFrame_dtypes = method_as_property(function() {
 #'   fetch(3)
 LazyFrame_fetch = function(
     n_rows = 500,
+    ...,
     type_coercion = TRUE,
     predicate_pushdown = TRUE,
     projection_pushdown = TRUE,
