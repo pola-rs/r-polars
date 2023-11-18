@@ -10,6 +10,7 @@ make_cases = function() {
     ~.test_name, ~x,
     "data.frame", test_df,
     "plsf", pl$LazyFrame(test_df),
+    "plgroupby", pl$DataFrame(test_df)$group_by("col_int"),
     "arrow Table", arrow::as_arrow_table(test_df)
   )
 }
