@@ -64,12 +64,6 @@ fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
 }
 
 #[extendr]
-fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
-    let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::sum_horizontal(exprs).into()
-}
-
-#[extendr]
 fn concat_list(exprs: Robj) -> RResult<Expr> {
     pl::concat_list(robj_to!(VecPLExprCol, exprs)?)
         .map_err(polars_to_rpolars_err)
