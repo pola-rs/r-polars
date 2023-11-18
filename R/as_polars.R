@@ -101,6 +101,13 @@ as_polars_df.LazyFrame = function(
 
 
 #' @rdname as_polars_df
+#' @export
+as_polars_df.LazyGroupBy = function(x, ...) {
+  as_polars_df.LazyFrame(x$ungroup(), ...)
+}
+
+
+#' @rdname as_polars_df
 #' @inheritParams pl_from_arrow
 #' @export
 as_polars_df.ArrowTabular = function(
@@ -153,4 +160,11 @@ as_polars_lf.default = function(x, ...) {
 #' @export
 as_polars_lf.LazyFrame = function(x, ...) {
   x
+}
+
+
+#' @rdname as_polars_lf
+#' @export
+as_polars_lf.LazyGroupBy = function(x, ...) {
+  x$ungroup()
 }
