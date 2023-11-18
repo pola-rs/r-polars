@@ -175,8 +175,6 @@ jobs:
             r: devel
           - os: macos-latest
             r: oldrel-1
-          - os: windows-latest
-            r: oldrel-1
 
     env:
       NOT_CRAN: "true"
