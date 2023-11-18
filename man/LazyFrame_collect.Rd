@@ -5,6 +5,7 @@
 \title{Collect a query into a DataFrame}
 \usage{
 LazyFrame_collect(
+  ...,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
@@ -19,6 +20,8 @@ LazyFrame_collect(
 )
 }
 \arguments{
+\item{...}{Ignored.}
+
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
 
