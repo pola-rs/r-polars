@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sign}
 \alias{Expr_sign}
-\alias{sign}
-\title{Sign}
+\title{Get the sign of elements}
 \usage{
 Expr_sign
 }
@@ -11,9 +10,10 @@ Expr_sign
 Expr
 }
 \description{
-Compute the element-wise indication of the sign.
+Get the sign of elements
 }
 \examples{
-pl$DataFrame(a = c(.9, -0, 0, 4, NA_real_))$select(pl$col("a")$sign())
+pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
+  with_columns(sign = pl$col("a")$sign())
 }
 \keyword{datasets}

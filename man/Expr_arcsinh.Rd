@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arcsinh}
 \alias{Expr_arcsinh}
-\alias{arcsinh}
-\title{Arcsinh}
+\title{Compute inverse hyperbolic sine}
 \usage{
 Expr_arcsinh
 }
@@ -11,12 +10,10 @@ Expr_arcsinh
 Expr
 }
 \description{
-Compute the element-wise value for the inverse hyperbolic sine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse hyperbolic sine
 }
 \examples{
-pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsinh())
+pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
+  with_columns(arcsinh = pl$col("a")$arcsinh())
 }
 \keyword{datasets}

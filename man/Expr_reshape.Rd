@@ -2,20 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_reshape}
 \alias{Expr_reshape}
-\alias{reshape}
 \title{Reshape}
 \usage{
 Expr_reshape(dims)
 }
 \arguments{
-\item{dims}{numeric vec of the dimension sizes. If a -1 is used in any of the dimensions, that
-dimension is inferred.}
+\item{dims}{Numeric vec of the dimension sizes. If a -1 is used in any of the
+dimensions, that dimension is inferred.}
 }
 \value{
 Expr
 }
 \description{
-Reshape this Expr to a flat Series or a Series of Lists.
+Reshape an Expr to a flat Series or a Series of Lists.
 }
 \examples{
 pl$select(pl$lit(1:12)$reshape(c(3, 4)))

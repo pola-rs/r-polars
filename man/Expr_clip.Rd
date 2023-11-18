@@ -2,38 +2,23 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_clip}
 \alias{Expr_clip}
-\alias{clip}
-\alias{Expr_clip_min}
-\alias{clip_min}
-\alias{Expr_clip_max}
-\alias{clip_max}
-\title{Clip}
+\title{Clip elements}
 \usage{
 Expr_clip(min, max)
-
-Expr_clip_min(min)
-
-Expr_clip_max(max)
 }
 \arguments{
-\item{min}{Minimum Value, ints and floats or any literal expression of ints and floats}
+\item{min}{Minimum value, Expr returning a numeric.}
 
-\item{max}{Maximum Value, ints and floats or any literal expression of ints and floats}
+\item{max}{Maximum value, Expr returning a numeric.}
 }
 \value{
 Expr
 }
 \description{
-Clip (limit) the values in an array to a \code{min} and \code{max} boundary.
-}
-\details{
-Only works for numerical types.
-If you want to clip other dtypes, consider writing a "when, then, otherwise"
-expression. See :func:\code{when} for more information.
+Clip (limit) the values in an array to a \code{min} and \code{max} boundary. This only
+works for numerical types.
 }
 \examples{
-df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))
-df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
-df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
-df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
+  with_columns(clipped = pl$col("foo")$clip(1, 10))
 }

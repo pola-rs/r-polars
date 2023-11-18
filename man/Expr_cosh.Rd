@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_cosh}
 \alias{Expr_cosh}
-\alias{cosh}
-\title{Cosh}
+\title{Compute hyperbolic cosine}
 \usage{
 Expr_cosh
 }
@@ -11,12 +10,10 @@ Expr_cosh
 Expr
 }
 \description{
-Compute the element-wise value for the hyperbolic cosine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute hyperbolic cosine
 }
 \examples{
-pl$DataFrame(a = c(-1, acosh(1.5), 0, 1, NA_real_))$select(pl$col("a")$cosh())
+pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
+  with_columns(cosh = pl$col("a")$cosh())
 }
 \keyword{datasets}

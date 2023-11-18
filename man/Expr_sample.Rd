@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sample}
 \alias{Expr_sample}
-\alias{sample}
-\title{Sample}
+\title{Take a sample}
 \usage{
 Expr_sample(
   frac = NULL,
@@ -14,14 +13,17 @@ Expr_sample(
 )
 }
 \arguments{
-\item{frac}{Fraction of items to return. Cannot be used with \code{n}.}
+\item{frac}{Fraction of items to return (can be higher than 1). Cannot be
+used with \code{n}.}
 
-\item{with_replacement}{Allow values to be sampled more than once.}
+\item{with_replacement}{If \code{TRUE} (default), allow values to be sampled more
+than once.}
 
-\item{shuffle}{Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)}
+\item{shuffle}{Shuffle the order of sampled data points (implicitly \code{TRUE} if
+\code{with_replacement = TRUE}).}
 
-\item{seed}{Seed for the random number generator. If set to None (default), a random
-seed is used.}
+\item{seed}{numeric value of 0 to 2^52 Seed for the random number generator.
+If \code{NULL} (default), a random seed value between 0 and 10000 is picked.}
 
 \item{n}{Number of items to return. Cannot be used with \code{frac}.}
 }
@@ -29,10 +31,10 @@ seed is used.}
 Expr
 }
 \description{
-#' Sample from this expression.
+Take a sample
 }
 \examples{
-df = pl$DataFrame(a = 1:3)
+df = pl$DataFrame(a = 1:4)
 df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
 df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
 df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))

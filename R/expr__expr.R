@@ -2588,287 +2588,227 @@ Expr_skew = function(bias = TRUE) {
 }
 
 #' Kurtosis
-#' @description
+#'
 #' Compute the kurtosis (Fisher or Pearson) of a dataset.
 #'
-#' @param fisher bool se details
-#' @param bias bool, If FALSE, then the calculations are corrected for statistical bias.
+#' @param fisher If `TRUE` (default), Fisher’s definition is used (normal,
+#' centered at 0). Otherwise, Pearson’s definition is used (normal, centered at
+#' 3).
+#' @inheritParams Expr_rolling_skew
 #'
-#' @return  Expr
-#' @aliases kurtosis
+#' @return Expr
 #' @details
-#' Kurtosis is the fourth central moment divided by the square of the
-#' variance. If Fisher's definition is used, then 3.0 is subtracted from
-#'         the result to give 0.0 for a normal distribution.
-#'         If bias is False then the kurtosis is calculated using k statistics to
-#'         eliminate bias coming from biased moment estimators
-#'         See scipy.stats for more information
+#' Kurtosis is the fourth central moment divided by the square of the variance.
+#' If Fisher's definition is used, then 3 is subtracted from the result to
+#' give 0 for a normal distribution.
 #'
-#' #' See scipy.stats for more information.
-#'
-#' @references https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kurtosis.html?highlight=kurtosis
+#' If bias is `FALSE`, then the kurtosis is calculated using `k` statistics to
+#' eliminate bias coming from biased moment estimators.
 #'
 #' @examples
-#' df = pl$DataFrame(list(a = c(1:3, 2:1)))
-#' df$select(pl$col("a")$kurtosis())
+#' pl$DataFrame(a = c(1:3, 2:1))$
+#'   with_columns(kurt = pl$col("a")$kurtosis())
 Expr_kurtosis = function(fisher = TRUE, bias = TRUE) {
   .pr$Expr$kurtosis(self, fisher, bias)
 }
 
-
-
-#' Clip
-#' @description
-#' Clip (limit) the values in an array to a `min` and `max` boundary.
-#' @param min Minimum Value, ints and floats or any literal expression of ints and floats
-#' @param max Maximum Value, ints and floats or any literal expression of ints and floats
-#' @return  Expr
-#' @aliases clip
-#' @details
-#' Only works for numerical types.
-#' If you want to clip other dtypes, consider writing a "when, then, otherwise"
-#' expression. See :func:`when` for more information.
+#' Clip elements
+#'
+#' Clip (limit) the values in an array to a `min` and `max` boundary. This only
+#' works for numerical types.
+#' @param min Minimum value, Expr returning a numeric.
+#' @param max Maximum value, Expr returning a numeric.
+#' @return Expr
 #'
 #' @examples
-#' df = pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))
-#' df$with_columns(pl$col("foo")$clip(1L, 10L)$alias("foo_clipped"))
+#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
+#'   with_columns(clipped = pl$col("foo")$clip(1, 10))
 Expr_clip = function(min, max) {
   unwrap(.pr$Expr$clip(self, wrap_e(min), wrap_e(max)))
 }
 
-#' Clip min
-#' @rdname Expr_clip
-#' @aliases clip_min
+#' Clip elements below minimum value
+#'
+#' Replace all values below a minimum value by this minimum value.
+#' @inheritParams Expr_clip
+#'
 #' @examples
-#' df$with_columns(pl$col("foo")$clip_min(1L)$alias("foo_clipped"))
+#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
+#'   with_columns(clipped = pl$col("foo")$clip_min(1))
 Expr_clip_min = function(min) {
   unwrap(.pr$Expr$clip_min(self, wrap_e(min)))
 }
 
-#' Clip max
-#' @rdname Expr_clip
-#' @aliases clip_max
+#' Clip elements above maximum value
+#'
+#' Replace all values above a maximum value by this maximum value.
+#' @inheritParams Expr_clip
+#'
 #' @examples
-#' df$with_columns(pl$col("foo")$clip_max(10L)$alias("foo_clipped"))
+#' pl$DataFrame(foo = c(-50L, 5L, NA_integer_, 50L))$
+#'   with_columns(clipped = pl$col("foo")$clip_max(10))
 Expr_clip_max = function(max) {
   unwrap(.pr$Expr$clip_max(self, wrap_e(max)))
 }
 
-
-#' Upper bound
-#' @name Expr_upper_lower_bound
-#' @description
-#' Calculate the upper/lower bound.
-#' Returns a unit Series with the highest value possible for the dtype of this
-#' expression.
-#' @details
-#' Notice lower bound i32 exported to R is NA_integer_ for now
-#' @return  Expr
+#' Find the upper bound of a DataType
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases upper_bound
-#' @format NULL
 #' @examples
-#' pl$DataFrame(i32 = 1L, f64 = 1)$select(pl$all()$upper_bound())
+#' pl$DataFrame(x = c(1, 2, 3), y = -2:0,
+#'              schema = list(x = pl$Float64, y = pl$Int32))$
+#'  select(pl$all()$upper_bound())
 Expr_upper_bound = "use_extendr_wrapper"
 
-
-#' Lower bound
-#' @rdname Expr_upper_lower_bound
-#' @aliases lower_bound
-#' @format NULL
+#' Find the lower bound of a DataType
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(i32 = 1L, f64 = 1)$select(pl$all()$lower_bound())
+#' pl$DataFrame(x = 1:3, y = 1:3,
+#'              schema = list(x = pl$UInt32, y = pl$Int32))$
+#'  select(pl$all()$lower_bound())
 Expr_lower_bound = "use_extendr_wrapper"
 
-
-
-#' Sign
-#' @description
-#' Compute the element-wise indication of the sign.
-#' @return  Expr
+#' Get the sign of elements
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases sign
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(.9, -0, 0, 4, NA_real_))$select(pl$col("a")$sign())
+#' pl$DataFrame(a = c(.9, -3, -0, 0, 4, NA_real_))$
+#'   with_columns(sign = pl$col("a")$sign())
 Expr_sign = "use_extendr_wrapper"
 
-
-#' Sin
-#' @description
-#' Compute the element-wise value for the sine.
-#' @details Evaluated Series has dtype Float64
+#' Compute sine
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases sin
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$sin())
+#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
+#'   with_columns(sine = pl$col("a")$sin())
 Expr_sin = "use_extendr_wrapper"
 
-
-#' Cos
-#' @description
-#' Compute the element-wise value for the cosine.
-#' @details Evaluated Series has dtype Float64
+#' Compute cosine
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases cos
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$cos())
+#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
+#'   with_columns(cosine = pl$col("a")$cos())
 Expr_cos = "use_extendr_wrapper"
 
-
-#' Tan
-#' @description
-#' Compute the element-wise value for the tangent.
-#' @details Evaluated Series has dtype Float64
+#' Compute tangent
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases Tan
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$tan())
+#' pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
+#'   with_columns(tangent = pl$col("a")$tan())
 Expr_tan = "use_extendr_wrapper"
 
-#' Arcsin
-#' @description
-#' Compute the element-wise value for the inverse sine.
-#' @details Evaluated Series has dtype Float64
+#' Compute inverse sine
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arcsin
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsin())
+#' pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
+#'   with_columns(arcsin = pl$col("a")$arcsin())
 Expr_arcsin = "use_extendr_wrapper"
 
-#' Arccos
-#' @description
-#' Compute the element-wise value for the inverse cosine.
-#' @details Evaluated Series has dtype Float64
+#' Compute inverse cosine
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arccos
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccos())
+#' pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
+#'   with_columns(arccos = pl$col("a")$arccos())
 Expr_arccos = "use_extendr_wrapper"
 
-
-#' Arctan
-#' @description
-#' Compute the element-wise value for the inverse tangent.
-#' @details Evaluated Series has dtype Float64
+#' Compute inverse tangent
+#'
 #' @return  Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arctan
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctan())
+#' pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
+#'   with_columns(arctan = pl$col("a")$arctan())
 Expr_arctan = "use_extendr_wrapper"
 
-
-
-#' Sinh
-#' @description
-#' Compute the element-wise value for the hyperbolic sine.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute hyperbolic sine
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases sinh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$sinh())
+#' pl$DataFrame(a = c(-1, asinh(0.5), 0, 1, NA_real_))$
+#'   with_columns(sinh = pl$col("a")$sinh())
 Expr_sinh = "use_extendr_wrapper"
 
-#' Cosh
-#' @description
-#' Compute the element-wise value for the hyperbolic cosine.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute hyperbolic cosine
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases cosh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, acosh(1.5), 0, 1, NA_real_))$select(pl$col("a")$cosh())
+#' pl$DataFrame(a = c(-1, acosh(0.5), 0, 1, NA_real_))$
+#'   with_columns(cosh = pl$col("a")$cosh())
 Expr_cosh = "use_extendr_wrapper"
 
-#' Tanh
-#' @description
-#' Compute the element-wise value for the hyperbolic tangent.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute hyperbolic tangent
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases tanh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$tanh())
+#' pl$DataFrame(a = c(-1, atanh(0.5), 0, 1, NA_real_))$
+#'   with_columns(tanh = pl$col("a")$tanh())
 Expr_tanh = "use_extendr_wrapper"
 
-#' Arcsinh
-#' @description
-#' Compute the element-wise value for the inverse hyperbolic sine.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute inverse hyperbolic sine
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arcsinh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsinh())
+#' pl$DataFrame(a = c(-1, sinh(0.5), 0, 1, NA_real_))$
+#'   with_columns(arcsinh = pl$col("a")$arcsinh())
 Expr_arcsinh = "use_extendr_wrapper"
 
-#' Arccosh
-#' @description
-#' Compute the element-wise value for the inverse hyperbolic cosine.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute inverse hyperbolic cosine
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arccosh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccosh())
+#' pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
+#'   with_columns(arccosh = pl$col("a")$arccosh())
 Expr_arccosh = "use_extendr_wrapper"
 
-#' Arctanh
-#' @description
-#' Compute the element-wise value for the inverse hyperbolic tangent.
-#' @details Evaluated Series has dtype Float64
-#' @return  Expr
+#' Compute inverse hyperbolic tangent
+#'
+#' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases arctanh
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctanh())
+#' pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
+#'   with_columns(arctanh = pl$col("a")$arctanh())
 Expr_arctanh = "use_extendr_wrapper"
 
-
 #' Reshape
-#' @description
-#' Reshape this Expr to a flat Series or a Series of Lists.
-#' @param dims
-#' numeric vec of the dimension sizes. If a -1 is used in any of the dimensions, that
-#' dimension is inferred.
-#' @return  Expr
-#' @aliases reshape
-#' @format NULL
+#'
+#' Reshape an Expr to a flat Series or a Series of Lists.
+#' @param dims Numeric vec of the dimension sizes. If a -1 is used in any of the
+#' dimensions, that dimension is inferred.
+#' @return Expr
 #' @examples
 #' pl$select(pl$lit(1:12)$reshape(c(3, 4)))
 #' pl$select(pl$lit(1:12)$reshape(c(3, -1)))
@@ -2878,42 +2818,30 @@ Expr_reshape = function(dims) {
   unwrap(.pr$Expr$reshape(self, as.numeric(dims)))
 }
 
-
-#' Shuffle
-#' @description
-#' Shuffle the contents of this expr.
-#' @param seed numeric value of 0 to 2^52
-#' Seed for the random number generator. If set to Null (default), a random
-#' seed value integerish value between 0 and 10000 is picked
-#' @return  Expr
-#' @aliases shuffle
-#' @format NULL
+#' Shuffle values
+#'
+#' @param seed numeric value of 0 to 2^52 Seed for the random number generator.
+#' If `NULL` (default), a random seed value between 0 and 10000 is picked.
+#' @return Expr
 #' @examples
-#' pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
+#' pl$DataFrame(a = 1:4)$with_columns(shuff = pl$col("a")$shuffle(seed = 1))
 Expr_shuffle = function(seed = NULL) {
   .pr$Expr$shuffle(self, seed) |> unwrap("in $shuffle()")
 }
 
-
-#' Sample
-#' @description
-#' #' Sample from this expression.
-#' @param frac
-#' Fraction of items to return. Cannot be used with `n`.
-#' @param  with_replacement
-#' Allow values to be sampled more than once.
-#' @param shuffle
-#' Shuffle the order of sampled data points. (implicitly TRUE if, with_replacement = TRUE)
-#' @param  seed
-#' Seed for the random number generator. If set to None (default), a random
-#' seed is used.
-#' @param n
-#' Number of items to return. Cannot be used with `frac`.
-#' @return  Expr
-#' @aliases sample
-#' @format NULL
+#' Take a sample
+#'
+#' @param frac Fraction of items to return (can be higher than 1). Cannot be
+#' used with `n`.
+#' @param with_replacement If `TRUE` (default), allow values to be sampled more
+#' than once.
+#' @param shuffle Shuffle the order of sampled data points (implicitly `TRUE` if
+#' `with_replacement = TRUE`).
+#' @inheritParams Expr_shuffle
+#' @param n Number of items to return. Cannot be used with `frac`.
+#' @return Expr
 #' @examples
-#' df = pl$DataFrame(a = 1:3)
+#' df = pl$DataFrame(a = 1:4)
 #' df$select(pl$col("a")$sample(frac = 1, with_replacement = TRUE, seed = 1L))
 #' df$select(pl$col("a")$sample(frac = 2, with_replacement = TRUE, seed = 1L))
 #' df$select(pl$col("a")$sample(n = 2, with_replacement = FALSE, seed = 1L))
@@ -2932,16 +2860,14 @@ Expr_sample = function(
     unwrap("in $sample()")
 }
 
-
-
-#' prepare alpha
-#' @description  internal function for emw_x expressions
+#' Internal function for emw_x expressions
 #' @param com numeric or NULL
 #' @param span numeric or NULL
 #' @param half_life numeric or NULL
 #' @param alpha numeric or NULL
 #' @keywords internal
 #' @return numeric
+#' @noRd
 prepare_alpha = function(
     com = NULL,
     span = NULL,
@@ -2985,61 +2911,44 @@ prepare_alpha = function(
   stop("Internal: it seems a input scenario was not handled properly")
 }
 
-
-
-
-#' Exponentially-weighted moving average/std/var.
-#' @name Expr_ewm_mean_std_var
-#' @param com
-#' Specify decay in terms of center of mass, \eqn{\gamma}, with
+#' Exponentially-weighted moving average
+#'
+#' @param com Specify decay in terms of center of mass, \eqn{\gamma}, with
 #' \eqn{
 #'   \alpha = \frac{1}{1 + \gamma} \; \forall \; \gamma \geq 0
 #'   }
-#' @param span
-#' Specify decay in terms of span,  \eqn{\theta}, with
+#' @param span Specify decay in terms of span,  \eqn{\theta}, with
 #' \eqn{\alpha = \frac{2}{\theta + 1} \; \forall \; \theta \geq 1 }
-#' @param half_life
-#' Specify decay in terms of half-life, :math:`\lambda`, with
+#' @param half_life Specify decay in terms of half-life, :math:`\lambda`, with
 #' \eqn{ \alpha = 1 - \exp \left\{ \frac{ -\ln(2) }{ \lambda } \right\} }
 #' \eqn{ \forall \; \lambda > 0}
-#' @param alpha
-#' Specify smoothing factor alpha directly, \eqn{0 < \alpha \leq 1}.
-#' @param adjust
-#' Divide by decaying adjustment factor in beginning periods to account for
-#' imbalance in relative weightings
-#' - When ``adjust=TRUE`` the EW function is calculated
-#' using weights \eqn{w_i = (1 - \alpha)^i  }
-#' - When ``adjust=FALSE`` the EW function is calculated
-#' recursively by
-#' \eqn{
-#'   y_0 = x_0 \\
-#'   y_t = (1 - \alpha)y_{t - 1} + \alpha x_t
-#' }
-#' @param min_periods
-#' Minimum number of observations in window required to have a value
-#' (otherwise result is null).
-#'
-#' @param ignore_nulls  ignore_nulls
-#' Ignore missing values when calculating weights.
-#'  - When ``ignore_nulls=FALSE`` (default), weights are based on absolute
-#'    positions.
-#'    For example, the weights of :math:`x_0` and :math:`x_2` used in
-#'    calculating the final weighted average of
-#'    `[` \eqn{x_0}, None,  \eqn{x_2}\\`]` are
-#'      \eqn{1-\alpha)^2} and  \eqn{1} if ``adjust=TRUE``, and
-#'      \eqn{(1-\alpha)^2} and  \eqn{\alpha} if `adjust=FALSE`.
-#'  - When ``ignore_nulls=TRUE``, weights are based
-#'    on relative positions. For example, the weights of
-#'     \eqn{x_0} and  \eqn{x_2} used in calculating the final weighted
-#'    average of `[` \eqn{x_0}, None,  \eqn{x_2}`]` are
-#'     \eqn{1-\alpha} and  \eqn{1} if `adjust=TRUE`,
-#'    and  \eqn{1-\alpha} and  \eqn{\alpha} if `adjust=FALSE`.
+#' @param alpha Specify smoothing factor alpha directly, \eqn{0 < \alpha \leq 1}.
+#' @param adjust Divide by decaying adjustment factor in beginning periods to
+#' account for imbalance in relative weightings:
+#' - When ``adjust=TRUE`` the EW function is calculatedusing weights
+#'   \eqn{w_i = (1 - \alpha)^i  }
+#' - When ``adjust=FALSE`` the EW function is calculated recursively by
+#'   \eqn{
+#'     y_0 = x_0 \\
+#'     y_t = (1 - \alpha)y_{t - 1} + \alpha x_t
+#'   }
+#' @param min_periods Minimum number of observations in window required to have
+#' a value (otherwise result is null).
+#' @param ignore_nulls Ignore missing values when calculating weights:
+#'  - When `TRUE` (default), weights are based on relative positions. For example,
+#'    the weights of \eqn{x_0} and  \eqn{x_2} used in calculating the final
+#'    weighted average of `[` \eqn{x_0}, None,  \eqn{x_2}`]` are
+#'    \eqn{1-\alpha} and  \eqn{1} if `adjust=TRUE`, and  \eqn{1-\alpha} and
+#'    \eqn{\alpha} if `adjust=FALSE`.
+#'  - When `FALSE`, weights are based on absolute positions. For example, the
+#'    weights of :math:`x_0` and :math:`x_2` used in calculating the final
+#'    weighted average of `[` \eqn{x_0}, None,  \eqn{x_2}\\`]` are
+#'    \eqn{1-\alpha)^2} and  \eqn{1} if ``adjust=TRUE``, and \eqn{(1-\alpha)^2}
+#'    and  \eqn{\alpha} if `adjust=FALSE`.
 #' @return Expr
-#' @aliases ewm_mean
-#' @format NULL
 #' @examples
-#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_mean(com = 1))
-#'
+#' pl$DataFrame(a = 1:3)$
+#'   with_columns(ewm_mean = pl$col("a")$ewm_mean(com = 1))
 Expr_ewm_mean = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE) {
@@ -3047,13 +2956,14 @@ Expr_ewm_mean = function(
   unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
 }
 
-
-#' Ewm_std
-#' @rdname Expr_ewm_mean_std_var
-#' @param bias  When bias=FALSE`, apply a correction to make the estimate statistically unbiased.
-#' @aliases ewm_std
+#' Exponentially-weighted moving standard deviation
+#'
+#' @inheritParams Expr_ewm_mean
+#' @inheritParams Expr_rolling_skew
+#' @return Expr
 #' @examples
-#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
+#' pl$DataFrame(a = 1:3)$
+#'   with_columns(ewm_std = pl$col("a")$ewm_std(com = 1))
 Expr_ewm_std = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
@@ -3061,19 +2971,20 @@ Expr_ewm_std = function(
   unwrap(.pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls))
 }
 
-#' Ewm_var
-#' @rdname Expr_ewm_mean_std_var
-#' @aliases ewm_var
+#' Exponentially-weighted moving variance
+#'
+#' @inheritParams Expr_ewm_mean
+#' @inheritParams Expr_rolling_skew
+#' @return Expr
 #' @examples
-#' pl$DataFrame(a = 1:3)$select(pl$col("a")$ewm_std(com = 1))
+#' pl$DataFrame(a = 1:3)$
+#'   with_columns(ewm_var = pl$col("a")$ewm_var(com = 1))
 Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
   unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
 }
-
-
 
 #' Extend_constant
 #' @description
