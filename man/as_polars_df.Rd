@@ -103,12 +103,16 @@ For \link[=LazyFrame_class]{LazyFrame} objects, this function is a shortcut for
 whether the number of rows to fetch is infinite or not.
 }
 \examples{
-# Convert a data.frame to a polars LazyFrame
-lf = as_polars_df(mtcars)$lazy()
+\dontshow{if (requireNamespace("arrow", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+at = arrow::as_arrow_table(mtcars)
+
+# Convert an arrow Table to a polars LazyFrame
+lf = as_polars_df(at)$lazy()
 
 # Collect all rows
 as_polars_df(lf)
 
 # Fetch 5 rows
 as_polars_df(lf, 5)
+\dontshow{\}) # examplesIf}
 }

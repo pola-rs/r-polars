@@ -11,9 +11,11 @@
 #' @rdname as_polars_df
 #' @param x Object to convert to a polars DataFrame.
 #' @param ... Additional arguments passed to methods.
-#' @examples
-#' # Convert a data.frame to a polars LazyFrame
-#' lf = as_polars_df(mtcars)$lazy()
+#' @examplesIf requireNamespace("arrow", quietly = TRUE)
+#' at = arrow::as_arrow_table(mtcars)
+#'
+#' # Convert an arrow Table to a polars LazyFrame
+#' lf = as_polars_df(at)$lazy()
 #'
 #' # Collect all rows
 #' as_polars_df(lf)
@@ -48,9 +50,8 @@ as_polars_df.DataFrame = function(x, ...) {
 
 
 #' @rdname as_polars_df
-#' @param n_rows Integer or `Inf`
-#' @inheritParams LazyFrame_collect
 #' @param n_rows Number of rows to fetch. Defaults to `Inf`, meaning all rows.
+#' @inheritParams LazyFrame_collect
 #' @export
 as_polars_df.LazyFrame = function(
     x,
