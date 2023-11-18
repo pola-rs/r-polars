@@ -34,7 +34,6 @@ pl$DataFrame(iris)$select(pl$sum(pl$col("Petal.Width")))
 df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 
 # Compute sum in several columns
-df$with_columns(pl$sum("a", "c"))
 df$with_columns(pl$sum("*"))
 }
 \keyword{Expr_new}

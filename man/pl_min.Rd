@@ -31,8 +31,5 @@ df = pl$DataFrame(
 )
 df
 
-df$with_columns(
-  pl$min("a", "b", "c")
-)
 }
 \keyword{Expr_new}

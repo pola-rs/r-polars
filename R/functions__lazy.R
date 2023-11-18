@@ -481,7 +481,6 @@ pl$approx_n_unique = function(column) { #-> int or Expr
 #' df = pl$DataFrame(a = 1:2, b = 3:4, c = 5:6)
 #'
 #' # Compute sum in several columns
-#' df$with_columns(pl$sum("a", "c"))
 #' df$with_columns(pl$sum("*"))
 pl$sum = function(..., verbose = TRUE) {
   column = list2(...)
@@ -529,9 +528,6 @@ pl$sum = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$min("a", "b", "c")
-#' )
 pl$min = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
@@ -582,9 +578,6 @@ pl$min = function(..., verbose = TRUE) {
 #' )
 #' df
 #'
-#' df$with_columns(
-#'   pl$max("a", "b", "c")
-#' )
 pl$max = function(..., verbose = TRUE) {
   column = list2(...)
   if (length(column) == 1L) column <- column[[1L]]
