@@ -1157,11 +1157,12 @@ Expr_rechunk = "use_extendr_wrapper"
 #' prevent overflow issues.
 #' @examples
 #' pl$DataFrame(a = 1:4)$with_columns(
-#'   pl$col("a")$cumsum()$alias("cumsum"),
-#'   pl$col("a")$cumsum(reverse = TRUE)$alias("cumsum_reversed")
+#'   pl$col("a")$cum_sum()$alias("cum_sum"),
+#'   pl$col("a")$cum_sum(reverse = TRUE)$alias("cum_sum_reversed")
 #' )
-Expr_cumsum = function(reverse = FALSE) {
-  .pr$Expr$cumsum(self, reverse)
+Expr_cum_sum = function(reverse = FALSE) {
+  .pr$Expr$cum_sum(self, reverse) |>
+    unwrap("in cum_sum():")
 }
 
 
@@ -1171,14 +1172,15 @@ Expr_cumsum = function(reverse = FALSE) {
 #'
 #' @param reverse If `TRUE`, start with the total product of elements and divide
 #' each row one by one.
-#' @inherit Expr_cumsum return details
+#' @inherit Expr_cum_sum return details
 #' @examples
 #' pl$DataFrame(a = 1:4)$with_columns(
-#'   pl$col("a")$cumprod()$alias("cumprod"),
-#'   pl$col("a")$cumprod(reverse = TRUE)$alias("cumprod_reversed")
+#'   pl$col("a")$cum_prod()$alias("cum_prod"),
+#'   pl$col("a")$cum_prod(reverse = TRUE)$alias("cum_prod_reversed")
 #' )
-Expr_cumprod = function(reverse = FALSE) {
-  .pr$Expr$cumprod(self, reverse)
+Expr_cum_prod = function(reverse = FALSE) {
+  .pr$Expr$cum_prod(self, reverse) |>
+    unwrap("in cum_prod():")
 }
 
 #' Cumulative minimum
@@ -1186,14 +1188,15 @@ Expr_cumprod = function(reverse = FALSE) {
 #' Get an array with the cumulative min computed at every element.
 #'
 #' @param reverse If `TRUE`, start from the last value.
-#' @inherit Expr_cumsum return details
+#' @inherit Expr_cum_sum return details
 #' @examples
 #' pl$DataFrame(a = c(1:4, 2L))$with_columns(
-#'   pl$col("a")$cummin()$alias("cummin"),
-#'   pl$col("a")$cummin(reverse = TRUE)$alias("cummin_reversed")
+#'   pl$col("a")$cum_min()$alias("cum_min"),
+#'   pl$col("a")$cum_min(reverse = TRUE)$alias("cum_min_reversed")
 #' )
-Expr_cummin = function(reverse = FALSE) {
-  .pr$Expr$cummin(self, reverse)
+Expr_cum_min = function(reverse = FALSE) {
+  .pr$Expr$cum_min(self, reverse) |>
+    unwrap("in cum_min():")
 }
 
 #' Cumulative maximum
@@ -1201,14 +1204,15 @@ Expr_cummin = function(reverse = FALSE) {
 #' Get an array with the cumulative max computed at every element.
 #'
 #' @param reverse If `TRUE`, start from the last value.
-#' @inherit Expr_cumsum return details
+#' @inherit Expr_cum_sum return details
 #' @examples
 #' pl$DataFrame(a = c(1:4, 2L))$with_columns(
-#'   pl$col("a")$cummax()$alias("cummux"),
-#'   pl$col("a")$cummax(reverse = TRUE)$alias("cummax_reversed")
+#'   pl$col("a")$cum_max()$alias("cummux"),
+#'   pl$col("a")$cum_max(reverse = TRUE)$alias("cum_max_reversed")
 #' )
-Expr_cummax = function(reverse = FALSE) {
-  .pr$Expr$cummax(self, reverse)
+Expr_cum_max = function(reverse = FALSE) {
+  .pr$Expr$cum_max(self, reverse) |>
+    unwrap("in cum_max():")
 }
 
 #' Cumulative count
@@ -1221,15 +1225,16 @@ Expr_cummax = function(reverse = FALSE) {
 #' The Dtypes Int8, UInt8, Int16 and UInt16 are cast to Int64 before summing to
 #' prevent overflow issues.
 #'
-#' `$cumcount()` does not seem to count within lists.
+#' `$cum_count()` does not seem to count within lists.
 #'
 #' @examples
 #' pl$DataFrame(a = 1:4)$with_columns(
-#'   pl$col("a")$cumcount()$alias("cumcount"),
-#'   pl$col("a")$cumcount(reverse = TRUE)$alias("cumcount_reversed")
+#'   pl$col("a")$cum_count()$alias("cum_count"),
+#'   pl$col("a")$cum_count(reverse = TRUE)$alias("cum_count_reversed")
 #' )
-Expr_cumcount = function(reverse = FALSE) {
-  .pr$Expr$cumcount(self, reverse)
+Expr_cum_count = function(reverse = FALSE) {
+  .pr$Expr$cum_count(self, reverse) |>
+    unwrap("in cum_count():")
 }
 
 
@@ -1467,15 +1472,16 @@ Expr_sort_by = function(by, descending = FALSE) {
 # pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
 # pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 
-#' Take values by index
+#' Gather values by index
 #'
 #' @param indices R scalar/vector or Series, or Expr that leads to a Series of
 #' dtype UInt32.
 #' @return Expr
 #' @examples
-#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$take(c(0, 2, 4)))
-Expr_take = function(indices) {
-  .pr$Expr$take(self, pl$lit(indices))
+#' pl$DataFrame(a = c(1, 2, 4, 5, 8))$select(pl$col("a")$gather(c(0, 2, 4)))
+Expr_gather = function(indices) {
+  .pr$Expr$gather(self, pl$lit(indices)) |>
+    unwrap("in $gather():")
 }
 
 #' Shift values
@@ -1489,7 +1495,8 @@ Expr_take = function(indices) {
 #'     pl$col("a")$shift(2)$alias("shift+2")
 #'   )
 Expr_shift = function(periods = 1) {
-  .pr$Expr$shift(self, periods)
+  .pr$Expr$shift(self, periods) |>
+    unwrap("in $shift():")
 }
 
 #' Shift and fill values
@@ -1506,7 +1513,8 @@ Expr_shift = function(periods = 1) {
 #'     pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
 #'   )
 Expr_shift_and_fill = function(periods, fill_value) {
-  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value))
+  .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value)) |>
+    unwrap("in $shift_and_fill():")
 }
 
 #' Fill null values with a value or strategy
@@ -1535,7 +1543,7 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
     ),
 
     # the two use cases
-    !is.null(value), .pr$Expr$fill_null(self, pl$lit(value)),
+    !is.null(value), unwrap(.pr$Expr$fill_null(self, value)),
     is.null(value), unwrap(.pr$Expr$fill_null_with_strategy(self, strategy, limit)),
 
     # catch failed any match
@@ -1944,17 +1952,17 @@ Expr_explode = "use_extendr_wrapper"
 Expr_flatten = "use_extendr_wrapper"
 
 
-#' Take every nth element
+#' Gather every nth element
 #'
-#' Take every nth value in the Series and return as a new Series.
+#' Gather every nth value in the Series and return as a new Series.
 #' @param n Positive integer.
 #'
 #' @return Expr
 #'
 #' @examples
-#' pl$DataFrame(a = 0:24)$select(pl$col("a")$take_every(6))
+#' pl$DataFrame(a = 0:24)$select(pl$col("a")$gather_every(6))
 Expr_take_every = function(n) {
-  unwrap(.pr$Expr$take_every(self, n))
+  unwrap(.pr$Expr$gather_every(self, n))
 }
 
 #' Get the first n elements

@@ -165,28 +165,28 @@ ExprList_get = function(index) .pr$Expr$list_get(self, wrap_e(index, str_to_lit 
 
 
 #' take in sublists
-#' @name ExprList_take
+#' @name ExprList_gather
 #' @description Get the take value of the sublists.
 #' @keywords ExprList
 #' @param index R list of integers for each sub-element or Expr or Series of type `List[usize]`
 #' @param null_on_oob boolean
 #' @format function
 #' @return Expr
-#' @aliases list_take
+#' @aliases list_gather
 #' @examples
 #' df = pl$DataFrame(list(a = list(c(3, 2, 1), 1, c(1, 2)))) #
 #' idx = pl$Series(list(0:1, integer(), c(1L, 999L)))
-#' df$select(pl$col("a")$list$take(pl$lit(idx), null_on_oob = TRUE))
+#' df$select(pl$col("a")$list$gather(pl$lit(idx), null_on_oob = TRUE))
 #'
 #' # with implicit conversion to Expr
-#' df$select(pl$col("a")$list$take(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
+#' df$select(pl$col("a")$list$gather(list(0:1, integer(), c(1L, 999L)), null_on_oob = TRUE))
 #'
 #' # by some column name, must cast to an Int/Uint type to work
-#' df$select(pl$col("a")$list$take(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
-ExprList_take = function(index, null_on_oob = FALSE) {
+#' df$select(pl$col("a")$list$gather(pl$col("a")$cast(pl$List(pl$UInt64)), null_on_oob = TRUE))
+ExprList_gather = function(index, null_on_oob = FALSE) {
   expr = wrap_e(index, str_to_lit = FALSE)
-  .pr$Expr$list_take(self, expr, null_on_oob) |>
-    unwrap("in $take()")
+  .pr$Expr$list_gather(self, expr, null_on_oob) |>
+    unwrap("in $gather()")
 }
 
 #' First in sublists

@@ -14,39 +14,53 @@ use std::result::Result;
 
 #[extendr]
 fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
-    Ok(polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+    Ok(
+        polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
-    Ok(polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+    Ok(
+        polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
-    Ok(polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+    Ok(
+        polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
-    Ok(polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+    Ok(
+        polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
-    Ok(polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?).into())
+    Ok(
+        polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
+            .map_err(polars_to_rpolars_err)?
+            .into(),
+    )
 }
 
 #[extendr]
 fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
     let exprs: Vec<pl::Expr> = exprs.to_vec("select");
     pl::coalesce(exprs.as_slice()).into()
-}
-
-#[extendr]
-fn sum_exprs(exprs: &ProtoExprArray) -> Expr {
-    let exprs = exprs.to_vec("select");
-    polars::lazy::dsl::sum_horizontal(exprs).into()
 }
 
 #[extendr]
@@ -285,7 +299,6 @@ extendr_module! {
     fn max_horizontal;
     fn sum_horizontal;
     fn coalesce_exprs;
-    fn sum_exprs;
 
     fn concat_list;
     fn concat_str;

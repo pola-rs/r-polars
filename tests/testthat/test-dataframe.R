@@ -617,9 +617,9 @@ test_that("drop_nulls", {
   expect_equal(pl$DataFrame(tmp)$drop_nulls("hp")$height, 32, ignore_attr = TRUE)
   expect_equal(pl$DataFrame(tmp)$drop_nulls(c("mpg", "hp"))$height, 29, ignore_attr = TRUE)
 
-  expect_identical(
-    result(pl$DataFrame(mtcars)$drop_nulls("bad column name")$height)$err$contexts(),
-    list(PolarsError = "not found: bad column name")
+  expect_error(
+    pl$DataFrame(mtcars)$drop_nulls("bad column name")$height,
+    "not found: unable to find column \"bad column name\""
   )
 })
 
@@ -1208,7 +1208,6 @@ test_that("transpose", {
 })
 
 test_that("drop_all_in_place", {
-
   # this test verifies internal function in_place drop all Series in DataFrame
   # will not affect a fully cloned DataFrame df_clone
 
@@ -1216,9 +1215,8 @@ test_that("drop_all_in_place", {
   df_clone = df$clone()
   s = df$get_column("cyl")
   .pr$DataFrame$drop_all_in_place(df)
-  expect_identical(df$shape, c(0,0))
-  expect_identical(df_copy$shape, c(0,0))
-  expect_identical(df_clone$shape, c(32,11))
+  expect_identical(df$shape, c(0, 0))
+  expect_identical(df_copy$shape, c(0, 0))
+  expect_identical(df_clone$shape, c(32, 11))
   expect_identical(s$len(), 32)
 })
-
