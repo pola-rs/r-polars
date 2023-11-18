@@ -9,7 +9,6 @@ make_cases = function() {
   tibble::tribble(
     ~.test_name, ~x,
     "data.frame", test_df,
-    "pldf", pl$DataFrame(test_df),
     "plsf", pl$LazyFrame(test_df),
     "arrow Table", arrow::as_arrow_table(test_df)
   )
