@@ -410,7 +410,7 @@ ExprList_to_struct = function(
 #' @return Expr
 #' @aliases list_eval
 #' @examples
-#' df = pl$DataFrame(a = list(c(1, 8, 3), b = c(4, 5, 2)))
+#' df = pl$DataFrame(a = c(1, 8, 3), b = c(4, 5, 2))
 #' df$select(pl$all()$cast(pl$dtypes$Int64))$with_columns(
 #'   pl$concat_list(c("a", "b"))$list$eval(pl$element()$rank())$alias("rank")
 #' )
