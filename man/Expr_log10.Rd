@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_log10}
 \alias{Expr_log10}
-\alias{log10}
-\title{10-base log}
+\title{Compute the base-10 logarithm of elements}
 \usage{
 Expr_log10
 }
@@ -11,9 +10,10 @@ Expr_log10
 Expr
 }
 \description{
-Compute the base 10 logarithm of the input array, element-wise.
+Compute the base-10 logarithm of elements
 }
 \examples{
-pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
+pl$DataFrame(a = c(1, 2, 3, exp(1)))$
+  with_columns(log10 = pl$col("a")$log10())
 }
 \keyword{datasets}

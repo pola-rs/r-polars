@@ -2,36 +2,26 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rep}
 \alias{Expr_rep}
-\title{expression: repeat series}
+\title{Repeat a Series}
 \usage{
 Expr_rep(n, rechunk = TRUE)
 }
 \arguments{
-\item{n}{Numeric the number of times to repeat, must be non-negative and finite}
+\item{n}{The number of times to repeat, must be non-negative and finite.}
 
-\item{rechunk}{bool default = TRUE, if true memory layout will be rewritten}
+\item{rechunk}{If \code{TRUE} (default), memory layout will be rewritten.}
 }
 \value{
 Expr
 }
 \description{
-This expression takes input and repeats it n times and append chunk
+This expression takes input and repeats it n times and append chunk.
 }
 \details{
-if self$len() == 1 , has a special faster implementation,  Here rechunk is not
-necessary, and takes no effect.
-
-if self$len() > 1 , then the expression instructs the series to append onto
-itself n time and rewrite memory
+If the input has length 1, this uses a special faster implementation that
+doesn't require rechunking (so \code{rechunk = TRUE} has no effect).
 }
 \examples{
-
-pl$select(
-  pl$lit("alice")$rep(n = 3)
-)
-
-pl$select(
-  pl$lit(1:3)$rep(n = 2)
-)
-
+pl$select(pl$lit("alice")$rep(n = 3))
+pl$select(pl$lit(1:3)$rep(n = 2))
 }

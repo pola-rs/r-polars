@@ -2,8 +2,10 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_shrink_dtype}
 \alias{Expr_shrink_dtype}
-\alias{shrink_dtype}
-\title{Shrink numeric columns to the minimal required datatype.}
+\title{Shrink numeric columns to the minimal required datatype}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 Expr_shrink_dtype
 }
@@ -11,19 +13,16 @@ Expr_shrink_dtype
 Expr
 }
 \description{
-Shrink to the dtype needed to fit the extrema of this \verb{[Series]}.
-This can be used to reduce memory pressure.
+Shrink to the dtype needed to fit the extrema of this Series. This can be
+used to reduce memory pressure.
 }
 \examples{
-pl$DataFrame(
-  a = c(1L, 2L, 3L),
-  b = c(1L, 2L, bitwShiftL(2L, 29)),
-  c = c(-1L, 2L, bitwShiftL(1L, 15)),
-  d = c(-112L, 2L, 112L),
-  e = c(-112L, 2L, 129L),
-  f = c("a", "b", "c"),
-  g = c(0.1, 1.32, 0.12),
-  h = c(TRUE, NA, FALSE)
-)$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+df = pl$DataFrame(
+  a = 1:3,
+  b = c(1, 2, 3)
+)
+df
+
+df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 }
 \keyword{datasets}

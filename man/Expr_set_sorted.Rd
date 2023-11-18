@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_set_sorted}
 \alias{Expr_set_sorted}
-\alias{set_sorted}
-\title{Set_sorted}
+\title{Flag an Expr as "sorted"}
 \usage{
 Expr_set_sorted(descending = FALSE)
 }
@@ -14,14 +13,17 @@ Expr_set_sorted(descending = FALSE)
 Expr
 }
 \description{
-Flags the expression as 'sorted'.
+This enables downstream code to use fast paths for sorted arrays. WARNING:
+this doesn't check whether the data is actually sorted, you have to ensure of
+that yourself.
 }
 \examples{
 # correct use flag something correctly as ascendingly sorted
 s = pl$select(pl$lit(1:4)$set_sorted()$alias("a"))$get_column("a")
-s$flags # see flags
+s$flags
 
-# incorrect use, flag somthing as not sorted ascendingly
+# incorrect use, flag something as not sorted ascendingly
 s2 = pl$select(pl$lit(c(1, 3, 2, 4))$set_sorted()$alias("a"))$get_column("a")
-s2$sort() # sorting skipped, although not actually sorted
+s2$sort()
+s2$flags # returns TRUE while it's not actually sorted
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_to_struct}
 \alias{Expr_to_struct}
-\alias{expr_to_struct}
-\title{to_struct}
+\title{Convert an Expr to a Struct}
 \usage{
 Expr_to_struct()
 }
@@ -11,10 +10,10 @@ Expr_to_struct()
 Expr
 }
 \description{
-pass expr to pl$struct
+Convert an Expr to a Struct
 }
 \examples{
-e = pl$all()$to_struct()$alias("my_struct")
-print(e)
-pl$DataFrame(iris)$select(e)
+pl$DataFrame(iris[, 3:5])$with_columns(
+  my_struct = pl$all()$to_struct()
+)
 }

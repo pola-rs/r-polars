@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_unique_counts}
 \alias{Expr_unique_counts}
-\alias{unique_counts}
-\title{Value counts}
+\title{Count unique values}
 \usage{
 Expr_unique_counts
 }
@@ -11,9 +10,9 @@ Expr_unique_counts
 Expr
 }
 \description{
-Return a count of the unique values in the order of appearance.
-This method differs from \code{value_counts} in that it does not return the
-values, only the counts and might be faster
+Return a count of the unique values in the order of appearance. This method
+differs from \verb{$value_counts()} in that it does not return the values, only
+the counts and it might be faster.
 }
 \examples{
 pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())

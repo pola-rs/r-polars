@@ -1961,7 +1961,7 @@ Expr_flatten = "use_extendr_wrapper"
 #'
 #' @examples
 #' pl$DataFrame(a = 0:24)$select(pl$col("a")$gather_every(6))
-Expr_take_every = function(n) {
+Expr_gather_every = function(n) {
   unwrap(.pr$Expr$gather_every(self, n))
 }
 
@@ -2161,7 +2161,7 @@ Expr_inspect = function(fmt = "{}") {
   if (!is_string(fmt)) stop("Inspect: arg fmt is not a string (length=1)")
   strs = strsplit(fmt, split = "\\{\\}")[[1L]]
   if (identical(strs, "")) strs <- c("", "")
-  if (length(strs) == 1) strs <- c(strs, "")
+  if (length(strs) == 1 && grepl("\\{\\}$", fmt)) strs <- c(strs, "")
   if (length(strs) != 2L || length(gregexpr("\\{\\}", fmt)[[1L]]) != 1L) {
     result(stop(paste0(
       "Inspect: failed to parse arg fmt [", fmt, "] ",
@@ -2986,74 +2986,46 @@ Expr_ewm_var = function(
   unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
 }
 
-#' Extend_constant
-#' @description
-#' Extend the Series with given number of values.
-#' @param value The value to extend the Series with.
-#' This value may be None to fill with nulls.
-#' @param n The number of values to extend.
-#' @return  Expr
-#' @aliases extend_constant
-#' @format NULL
-#' @examples
-#' pl$select(
-#'   pl$lit(c("5", "Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$UInt64, strict = FALSE)
-#'   $extend_constant(10.1, 2)
-#' )
+#' Extend Series with a constant
 #'
-#' pl$select(
-#'   pl$lit(c("5", "Bob_is_not_a_number"))
-#'   $cast(pl$dtypes$Utf8, strict = FALSE)
-#'   $extend_constant("chuchu", 2)
-#' )
+#' Extend the Series with given number of values.
+#' @param value The value to extend the Series with. This value may be `NULL` to
+#' fill with nulls.
+#' @param n The number of values to extend.
+#' @return Expr
+#' @examples
+#' pl$select(pl$lit(1:4)$extend_constant(10.1, 2))
+#' pl$select(pl$lit(1:4)$extend_constant(NULL, 2))
 Expr_extend_constant = function(value, n) {
   unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
 }
 
-
-#' expression: repeat series
-#' @description
-#' This expression takes input and repeats it n times and append chunk
-#' @param n  Numeric the number of times to repeat, must be non-negative and finite
-#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
+#' Repeat a Series
 #'
-#' @return  Expr
-#' @aliases Expr_rep
-#' @format NULL
+#' This expression takes input and repeats it n times and append chunk.
+#' @param n The number of times to repeat, must be non-negative and finite.
+#' @param rechunk If `TRUE` (default), memory layout will be rewritten.
+#'
+#' @return Expr
 #' @details
-#' if self$len() == 1 , has a special faster implementation,  Here rechunk is not
-#' necessary, and takes no effect.
-#'
-#' if self$len() > 1 , then the expression instructs the series to append onto
-#' itself n time and rewrite memory
+#' If the input has length 1, this uses a special faster implementation that
+#' doesn't require rechunking (so `rechunk = TRUE` has no effect).
 #'
 #' @examples
-#'
-#' pl$select(
-#'   pl$lit("alice")$rep(n = 3)
-#' )
-#'
-#' pl$select(
-#'   pl$lit(1:3)$rep(n = 2)
-#' )
-#'
+#' pl$select(pl$lit("alice")$rep(n = 3))
+#' pl$select(pl$lit(1:3)$rep(n = 2))
 Expr_rep = function(n, rechunk = TRUE) {
   unwrap(.pr$Expr$rep(self, n, rechunk))
 }
 
-
-#' extend series with repeated series
-#' @description
-#' Extend a series with a repeated series or value.
-#' @param expr Expr or into Expr
-#' @param n  Numeric the number of times to repeat, must be non-negative and finite
-#' @param rechunk bool default = TRUE, if true memory layout will be rewritten
-#' @param upcast bool default = TRUE, passed to self$append(), if TRUE non identical types
-#' will be casted to common super type if any. If FALSE or no common super type
-#' throw error.
-#' @return  Expr
-#' @format NULL
+#' Extend a Series by repeating values
+#'
+#' @param expr Expr or something coercible to an Expr.
+#' @inheritParams Expr_rep
+#' @param upcast If `TRUE` (default), non identical types will be cast to common
+#' supertype if there is any. If `FALSE` or no common super type, having
+#' different types will throw an error.
+#' @return Expr
 #' @examples
 #' pl$select(pl$lit(c(1, 2, 3))$rep_extend(1:3, n = 5))
 Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
@@ -3062,19 +3034,17 @@ Expr_rep_extend = function(expr, n, rechunk = TRUE, upcast = TRUE) {
   if (rechunk) new$rechunk() else new
 }
 
-
-#' to_r: for debuging an expression
-#' @description
-#' debug an expression by evaluating in empty DataFrame and return first series to R
-#' @param df otherwise a DataFrame to evaluate in, default NULL is an empty DataFrame
-#' @param i numeric column to extract zero index default first, expression could generate multiple
-#' columns
-#' @return  R object
-#' @format NULL
+#' Convert an Expr to R output
+#'
+#' This is mostly useful to debug an expression. It evaluates the Expr in an
+#' empty DataFrame and return the first Series to R.
+#' @param df If `NULL` (default), it evaluates the Expr in an empty DataFrame.
+#' Otherwise, provide a DataFrame that the Expr should be evaluated in.
+#' @param i Numeric column to extract. Default is zero (which gives the first
+#' column).
+#' @return R object
 #' @examples
 #' pl$lit(1:3)$to_r()
-#' pl$expr_to_r(pl$lit(1:3))
-#' pl$expr_to_r(1:3)
 Expr_to_r = function(df = NULL, i = 0) {
   if (is.null(df)) {
     pl$select(self)$to_series(i)$to_r()
@@ -3086,13 +3056,22 @@ Expr_to_r = function(df = NULL, i = 0) {
   }
 }
 
-
+#' Convert an Expr to R output
+#'
+#' This is mostly useful to debug an expression. It evaluates the Expr in an
+#' empty DataFrame and return the first Series to R. This is an alias for
+#' `$to_r()`.
+#' @param df If `NULL` (default), it evaluates the Expr in an empty DataFrame.
+#' Otherwise, provide a DataFrame that the Expr should be evaluated in.
+#' @param i Numeric column to extract. Default is zero (which gives the first
+#' column).
 #' @name pl_expr_to_r
-#' @rdname Expr_to_r
+#' @return R object
+#' @examples
+#' pl$expr_to_r(pl$lit(1:3))
 pl$expr_to_r = function(expr, df = NULL, i = 0) {
   wrap_e(expr)$to_r(df, i)
 }
-
 
 #' Value counts
 #' @description
@@ -3110,104 +3089,91 @@ Expr_value_counts = function(sort = FALSE, parallel = FALSE) {
   .pr$Expr$value_counts(self, sort, parallel)
 }
 
-#' Value counts
-#' @description
-#' Return a count of the unique values in the order of appearance.
-#' This method differs from `value_counts` in that it does not return the
-#' values, only the counts and might be faster
+#' Count unique values
+#'
+#' Return a count of the unique values in the order of appearance. This method
+#' differs from `$value_counts()` in that it does not return the values, only
+#' the counts and it might be faster.
 #' @return  Expr
 #' @docType NULL
-#' @format NULL
-#' @aliases unique_counts
 #' @format NULL
 #' @examples
 #' pl$DataFrame(iris)$select(pl$col("Species")$unique_counts())
 Expr_unique_counts = "use_extendr_wrapper"
 
-#' Natural Log
+#' Compute the logarithm of elements
 #'
-#' @param base numeric base value for log, default base::exp(1)
-#'
-#' @description  Compute the base x logarithm of the input array, element-wise.
+#' @param base Numeric base value for logarithm, default is `exp(1)`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases log
-#' @name Expr_log
 #' @examples
-#' pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
+#' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
+#'   with_columns(log = pl$col("a")$log())
 Expr_log = function(base = base::exp(1)) {
   .pr$Expr$log(self, base)
 }
 
-#' 10-base log
-#' @description Compute the base 10 logarithm of the input array, element-wise.
+#' Compute the base-10 logarithm of elements
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases log10
-#' @name Expr_log10
-#' @format NULL
 #' @examples
-#' pl$DataFrame(list(a = 10^(-1:3)))$select(pl$col("a")$log10())
+#' pl$DataFrame(a = c(1, 2, 3, exp(1)))$
+#'   with_columns(log10 = pl$col("a")$log10())
 Expr_log10 = "use_extendr_wrapper"
 
-
-
-
 #' Entropy
-#' @description  Computes the entropy.
-#' Uses the formula `-sum(pk * log(pk))` where `pk` are discrete probabilities.
-#' Return Null if input is not values
-#' @param base  Given exponential base, defaults to `e`
-#' @param normalize Normalize pk if it doesn't sum to 1.
+#'
+#' The entropy is measured with the formula `-sum(pk * log(pk))` where `pk` are
+#' discrete probabilities.
+#' @param base Given exponential base, defaults to `exp(1)`.
+#' @param normalize Normalize `pk` if it doesn't sum to 1.
 #' @return Expr
-#' @aliases entropy
 #' @examples
-#' pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$unique_counts()$entropy(base = 2))
+#' pl$DataFrame(x = c(1, 2, 3, 2))$
+#'   with_columns(entropy = pl$col("x")$entropy(base = 2))
 Expr_entropy = function(base = base::exp(1), normalize = TRUE) {
   .pr$Expr$entropy(self, base, normalize)
 }
 
-#' Cumulative eval
-#' @description  Run an expression over a sliding window that increases `1` slot every iteration.
-#' @param expr Expression to evaluate
-#' @param min_periods Number of valid values there should be in the window before the expression
-#' is evaluated. valid values = `length - null_count`
-#' @param parallel Run in parallel. Don't do this in a groupby or another operation that
-#' already has much parallelization.
+#' Cumulative evaluation of expressions
+#'
+#' Run an expression over a sliding window that increases by `1` slot every
+#' iteration.
+#' @param expr Expression to evaluate.
+#' @param min_periods Number of valid (non-null) values there should be in the
+#' window before the expression is evaluated.
+#' @param parallel Run in parallel. Don't do this in a groupby or another
+#' operation that already has much parallelization.
 #' @details
-#'
-#' Warnings
-#'
-#'   This functionality is experimental and may change without it being considered a
-#' breaking change.
 #' This can be really slow as it can have `O(n^2)` complexity. Don't use this
-#'         for operations that visit all elements.
+#' for operations that visit all elements.
 #' @return Expr
-#' @aliases cumulative_eval
 #' @examples
-#' pl$lit(1:5)$cumulative_eval(pl$element()$first() - pl$element()$last()**2)$to_r()
+#' pl$lit(1:5)$cumulative_eval(
+#'   pl$element()$first() - pl$element()$last()^2
+#' )$to_r()
 Expr_cumulative_eval = function(expr, min_periods = 1L, parallel = FALSE) {
   unwrap(.pr$Expr$cumulative_eval(self, expr, min_periods, parallel))
 }
 
-
-
-#' Set_sorted
-#' @description  Flags the expression as 'sorted'.
-#* Enables downstream code to user fast paths for sorted arrays.
+#' Flag an Expr as "sorted"
+#'
+#' This enables downstream code to use fast paths for sorted arrays. WARNING:
+#' this doesn't check whether the data is actually sorted, you have to ensure of
+#' that yourself.
 #' @param descending Sort the columns in descending order.
 #' @return Expr
-#' @aliases set_sorted
 #' @examples
 #' # correct use flag something correctly as ascendingly sorted
 #' s = pl$select(pl$lit(1:4)$set_sorted()$alias("a"))$get_column("a")
-#' s$flags # see flags
+#' s$flags
 #'
-#' # incorrect use, flag somthing as not sorted ascendingly
+#' # incorrect use, flag something as not sorted ascendingly
 #' s2 = pl$select(pl$lit(c(1, 3, 2, 4))$set_sorted()$alias("a"))$get_column("a")
-#' s2$sort() # sorting skipped, although not actually sorted
+#' s2$sort()
+#' s2$flags # returns TRUE while it's not actually sorted
 Expr_set_sorted = function(descending = FALSE) {
   self$map(\(s) {
     .pr$Series$set_sorted_mut(s, descending) # use private to bypass mut protection
@@ -3215,16 +3181,14 @@ Expr_set_sorted = function(descending = FALSE) {
   })
 }
 
-
 #' Wrap column in list
-#' @description  Aggregate values into a list.
+#'
+#' Aggregate values into a list.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @aliases list
-#' @details use to_struct to wrap a DataFrame. Notice implode() is sometimes referred to
-#' as list() .
-#' @format NULL
+#' @details
+#' Use `$to_struct()` to wrap a DataFrame.
 #' @examples
 #' df = pl$DataFrame(
 #'   a = 1:3,
@@ -3233,201 +3197,129 @@ Expr_set_sorted = function(descending = FALSE) {
 #' df$select(pl$all()$implode())
 Expr_implode = "use_extendr_wrapper"
 
-
-
-#' Shrink numeric columns to the minimal required datatype.
-#' @description
-#' Shrink to the dtype needed to fit the extrema of this `[Series]`.
-#' This can be used to reduce memory pressure.
+#' Shrink numeric columns to the minimal required datatype
+#'
+#' Shrink to the dtype needed to fit the extrema of this Series. This can be
+#' used to reduce memory pressure.
 #' @return Expr
 #' @docType NULL
-#' @format NULL
-#' @aliases shrink_dtype
 #' @examples
-#' pl$DataFrame(
-#'   a = c(1L, 2L, 3L),
-#'   b = c(1L, 2L, bitwShiftL(2L, 29)),
-#'   c = c(-1L, 2L, bitwShiftL(1L, 15)),
-#'   d = c(-112L, 2L, 112L),
-#'   e = c(-112L, 2L, 129L),
-#'   f = c("a", "b", "c"),
-#'   g = c(0.1, 1.32, 0.12),
-#'   h = c(TRUE, NA, FALSE)
-#' )$with_columns(pl$col("b")$cast(pl$Int64) * 32L)$select(pl$all()$shrink_dtype())
+#' df = pl$DataFrame(
+#'   a = 1:3,
+#'   b = c(1, 2, 3)
+#' )
+#' df
+#'
+#' df$with_columns(pl$all()$shrink_dtype()$name$suffix("_shrunk"))
 Expr_shrink_dtype = "use_extendr_wrapper"
 
-
-
-#' list: list related methods
-#' @description
-#' Create an object namespace of all list related methods.
-#' See the individual method pages for full details
+#' List related methods
+#'
+#' Create an object namespace of all list related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases list_ns
-#' @examples
-#' df_with_list = pl$DataFrame(
-#'   group = c(1, 1, 2, 2, 3),
-#'   value = c(1:5)
-#' )$group_by(
-#'   "group",
-#'   maintain_order = TRUE
-#' )$agg(
-#'   pl$col("value") * 3L
-#' )
-#' df_with_list$with_columns(
-#'   pl$col("value")$list$lengths()$alias("group_size")
-#' )
+#' @noRd
 Expr_list = method_as_property(function() {
   expr_list_make_sub_ns(self)
 })
 
-
-#' str: string related methods
-#' @description
-#' Create an object namespace of all string related methods.
-#' See the individual method pages for full details
+#' String related methods
+#'
+#' Create an object namespace of all string related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases str_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_str = method_as_property(function() {
   expr_str_make_sub_ns(self)
 })
 
 
-#' bin: binary related methods
-#' @description
-#' Create an object namespace of all binary related methods.
-#' See the individual method pages for full details
+#' Binary related methods
+#'
+#' Create an object namespace of all binary related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases bin_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_bin = method_as_property(function() {
   expr_bin_make_sub_ns(self)
 })
 
-#' dt: datetime related methods
-#' @description
-#' Create an object namespace of all datetime related methods.
-#' See the individual method pages for full details
+#' Datetime related methods
+#'
+#' Create an object namespace of all datetime related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases dt_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_dt = method_as_property(function() {
   expr_dt_make_sub_ns(self)
 })
 
-#' meta: related methods
-#' @description
-#' Create an object namespace of all meta related methods.
-#' See the individual method pages for full details
+#' Meta related methods
+#'
+#' Create an object namespace of all meta related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases meta_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_meta = method_as_property(function() {
   expr_meta_make_sub_ns(self)
 })
 
-#' name: related methods
-#' @description
-#' Create an object namespace of all name related methods.
-#' See the individual method pages for full details
+#' Name related methods
+#'
+#' Create an object namespace of all name related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases name_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_name = method_as_property(function() {
   expr_name_make_sub_ns(self)
 })
 
-#' cat: related methods
-#' @description
-#' Create an object namespace of all cat related methods.
-#' See the individual method pages for full details
+#' Categorical related methods
+#'
+#' Create an object namespace of all categorical related methods. See the
+#' individual method pages for full details.
 #' @return Expr
-#' @aliases cat_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_cat = method_as_property(function() {
   expr_cat_make_sub_ns(self)
 })
 
-#' struct: related methods
-#' @description
-#' Create an object namespace of all struct related methods.
-#' See the individual method pages for full details
+#' Struct related methods
+#'
+#' Create an object namespace of all struct related methods. See the individual
+#' method pages for full details.
 #' @return Expr
-#' @aliases struct_ns
-#' @examples
-#'
-#' # missing
-#'
+#' @noRd
 Expr_struct = method_as_property(function() {
   expr_struct_make_sub_ns(self)
 })
 
-#' to_struct
-#' @description pass expr to pl$struct
+#' Convert an Expr to a Struct
 #' @return Expr
-#' @aliases expr_to_struct
 #' @examples
-#' e = pl$all()$to_struct()$alias("my_struct")
-#' print(e)
-#' pl$DataFrame(iris)$select(e)
+#' pl$DataFrame(iris[, 3:5])$with_columns(
+#'   my_struct = pl$all()$to_struct()
+#' )
 Expr_to_struct = function() {
   pl$struct(self)
 }
 
-
-#' Literal to Series
-#' @description
-#' collect an expression based on literals into a Series
+#' Convert Literal to Series
+#'
+#' Collect an expression based on literals into a Series.
 #' @return Series
-#' @aliases lit_to_s
 #' @examples
-#' (
-#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
-#'   $print()
-#'   $to_lit()
-#'   $list$lengths()
-#'   $sum()
-#'   $cast(pl$dtypes$Int8)
-#'   $lit_to_s()
-#' )
+#' pl$lit(1:5)$lit_to_s()
 Expr_lit_to_s = function() {
   pl$select(self)$to_series(0)
 }
 
-#' Literal to DataFrame
-#' @description
-#' collect an expression based on literals into a DataFrame
+#' Convert Literal to DataFrame
+#'
+#' Collect an expression based on literals into a DataFrame.
 #' @return Series
-#' @aliases lit_to_df
 #' @examples
-#' (
-#'   pl$Series(list(1:1, 1:2, 1:3, 1:4))
-#'   $print()
-#'   $to_lit()
-#'   $list$lengths()
-#'   $sum()
-#'   $cast(pl$dtypes$Int8)
-#'   $lit_to_df()
-#' )
+#' pl$lit(1:5)$lit_to_df()
 Expr_lit_to_df = function() {
   pl$select(self)
 }

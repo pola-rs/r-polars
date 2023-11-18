@@ -2,26 +2,26 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_rep_extend}
 \alias{Expr_rep_extend}
-\title{extend series with repeated series}
+\title{Extend a Series by repeating values}
 \usage{
 Expr_rep_extend(expr, n, rechunk = TRUE, upcast = TRUE)
 }
 \arguments{
-\item{expr}{Expr or into Expr}
+\item{expr}{Expr or something coercible to an Expr.}
 
-\item{n}{Numeric the number of times to repeat, must be non-negative and finite}
+\item{n}{The number of times to repeat, must be non-negative and finite.}
 
-\item{rechunk}{bool default = TRUE, if true memory layout will be rewritten}
+\item{rechunk}{If \code{TRUE} (default), memory layout will be rewritten.}
 
-\item{upcast}{bool default = TRUE, passed to self$append(), if TRUE non identical types
-will be casted to common super type if any. If FALSE or no common super type
-throw error.}
+\item{upcast}{If \code{TRUE} (default), non identical types will be cast to common
+supertype if there is any. If \code{FALSE} or no common super type, having
+different types will throw an error.}
 }
 \value{
 Expr
 }
 \description{
-Extend a series with a repeated series or value.
+Extend a Series by repeating values
 }
 \examples{
 pl$select(pl$lit(c(1, 2, 3))$rep_extend(1:3, n = 5))
