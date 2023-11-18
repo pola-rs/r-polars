@@ -39,6 +39,7 @@
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
 - New generic functions `as_polars_df()` and `as_polars_lf()` to create polars DataFrames
   and LazyFrames (#519).
+- New method `$ungroup()` for `GroupBy` and `LazyGroupBy` (#522).
 
 # polars 0.10.1
 
