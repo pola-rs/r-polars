@@ -25,3 +25,10 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
   },
   .cases = make_cases()
 )
+
+
+test_that("as_polars_lf S3 method", {
+  skip_if_not_installed("arrow")
+  at = arrow::as_arrow_table(test_df)
+  expect_s3_class(as_polars_lf(at), "LazyFrame")
+})

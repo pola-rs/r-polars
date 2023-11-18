@@ -108,3 +108,35 @@ as_polars_df.ArrowTabular = function(
 #' @rdname as_polars_df
 #' @export
 as_polars_df.RecordBatchReader = as_polars_df.ArrowTabular
+
+
+# TODO: as_polars_df.nanoarrow_array_stream
+
+
+#' To polars LazyFrame
+#'
+#' [as_polars_lf()] is a generic function that converts an R object to a
+#' polars LazyFrame. It is basically a shortcut for [as_polars_df(x, ...)][as_polars_df] with the
+#' [$lazy()][LazyFrame_lazy] method.
+#' @rdname as_polars_lf
+#' @inheritParams as_polars_df
+#' @examples
+#' as_polars_lf(mtcars)
+#' @export
+as_polars_lf = function(x, ...) {
+  UseMethod("as_polars_lf")
+}
+
+
+#' @rdname as_polars_lf
+#' @export
+as_polars_lf.default = function(x, ...) {
+  as_polars_df(x, ...)$lazy()
+}
+
+
+#' @rdname as_polars_lf
+#' @export
+as_polars_lf.LazyFrame = function(x, ...) {
+  x
+}
