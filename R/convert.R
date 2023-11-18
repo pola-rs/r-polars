@@ -2,6 +2,7 @@
 #' @description import Arrow Table or Array
 #' @name pl_from_arrow
 #' @param data arrow Table or Array or ChunkedArray
+#' @param ... Ignored.
 #' @param rechunk bool rewrite in one array per column, Implemented for ChunkedArray
 #' Array is already contiguous. Not implemented for Table. C
 #' @param schema named list of DataTypes or char vec of names. Same length as arrow table.
@@ -24,7 +25,12 @@
 #'   data = arrow::arrow_table(iris),
 #'   schema = char_schema
 #' )
-pl$from_arrow = function(data, rechunk = TRUE, schema = NULL, schema_overrides = NULL) {
+pl$from_arrow = function(
+    data,
+    ...,
+    rechunk = TRUE,
+    schema = NULL,
+    schema_overrides = NULL) {
   if (!requireNamespace("arrow", quietly = TRUE)) {
     stop("in pl$from_arrow: cannot import from arrow without R package arrow installed")
   }

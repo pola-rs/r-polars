@@ -1,5 +1,21 @@
 # polars (development version)
 
+## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
+
+- rust-polars is updated to 0.35.0 (2023-11-17) (#515)
+  - changes in `$write_csv()` and `sink_csv()`: `has_header` is renamed
+    `include_header` and there's a new argument `include_bom`.
+  - `pl$cov()` gains a `ddof` argument.
+  - `$cumsum()`, `$cumprod()`, `$cummin()`, `$cummax()`, `$cumcount()`  are
+    renamed `$cum_sum()`, `$cum_prod()`, `$cum_min()`, `$cum_max()`, 
+    `$cum_count()`.
+  - `take()` and `take_every()` are renamed `$gather()` and `gather_every()`.
+  - `$shift()` and `$shift_and_fill()` now accept Expr as input.
+  - when `reverse = TRUE`, `$arg_sort()` now places null values in the first
+    positions.
+  - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
+  - `$str$concat()` gains an argument `ignore_nulls`.
+
 ## Breaking changes
 
 - The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
@@ -23,6 +39,8 @@
  is aimed for r-polars extensions, and will be kept stable as much as possible (#504).
 - New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
+- New generic functions `as_polars_df()` and `as_polars_lf()` to create polars DataFrames
+  and LazyFrames (#519).
 
 # polars 0.10.1
 

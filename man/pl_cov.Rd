@@ -7,6 +7,8 @@
 \item{a}{One column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
 
 \item{b}{Another column name or Expr or anything convertible Into\if{html}{\out{<Expr>}} via \code{pl$col()}.}
+
+\item{ddof}{integer Delta Degrees of Freedom: the divisor used in the calculation is N - ddof, where N represents the number of elements. By default ddof is 1.}
 }
 \value{
 Expr for the computed covariance

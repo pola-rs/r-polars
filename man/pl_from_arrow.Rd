@@ -7,6 +7,8 @@
 \arguments{
 \item{data}{arrow Table or Array or ChunkedArray}
 
+\item{...}{Ignored.}
+
 \item{rechunk}{bool rewrite in one array per column, Implemented for ChunkedArray
 Array is already contiguous. Not implemented for Table. C}
 
