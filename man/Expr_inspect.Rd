@@ -2,15 +2,13 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_inspect}
 \alias{Expr_inspect}
-\alias{inspect}
 \title{Inspect evaluated Series}
 \usage{
 Expr_inspect(fmt = "{}")
 }
 \arguments{
-\item{fmt}{format string, should contain one set of \code{{}} where object will be printed
-This formatting mimics python "string".format() use in pypolars. The string can
-contain any thing but should have exactly one set of curly bracket \code{{}}.}
+\item{fmt}{format string, should contain one set of \code{{}} where object will be
+printed. This formatting mimics python "string".format() use in py-polars.}
 }
 \value{
 Expr
@@ -21,7 +19,6 @@ The printing will happen when the expression evaluates, not when it is formed.
 }
 \examples{
 pl$select(pl$lit(1:5)$inspect(
-  "before dropping half the column it was:{}and not it is dropped"
+  "Here's what the Series looked like before keeping the first two values: {}"
 )$head(2))
 }
-\keyword{Expr}

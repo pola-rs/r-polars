@@ -2,25 +2,22 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_pct_change}
 \alias{Expr_pct_change}
-\alias{pct_change}
-\title{Pct change}
+\title{Percentage change}
 \usage{
 Expr_pct_change(n = 1)
 }
 \arguments{
-\item{n}{periods to shift for forming percent change.}
+\item{n}{Periods to shift for computing percent change.}
 }
 \value{
 Expr
 }
 \description{
-Computes percentage change between values.
-Percentage change (as fraction) between current element and most-recent
-non-null element at least \code{n} period(s) before the current element.
+Computes percentage change (as fraction) between current element and most-
+recent non-null element at least \code{n} period(s) before the current element.
 Computes the change from the previous row by default.
 }
 \examples{
-df = pl$DataFrame(list(a = c(10L, 11L, 12L, NA_integer_, 12L)))
-df$with_columns(pl$col("a")$pct_change()$alias("pct_change"))
+pl$DataFrame(a = c(10L, 11L, 12L, NA_integer_, 12L))$
+  with_columns(pct_change = pl$col("a")$pct_change())
 }
-\keyword{Expr}

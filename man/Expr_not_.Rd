@@ -3,27 +3,25 @@
 \name{Expr_not_}
 \alias{Expr_not_}
 \alias{!.Expr}
-\title{Not !}
+\title{Negate a boolean expression}
 \usage{
-Expr_not_(other)
+Expr_not_
 
 \method{!}{Expr}(x)
 }
 \arguments{
 \item{x}{Expr}
-
-\item{other}{literal or Robj which can become a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-not method and operator
+The RHS can either be an Expr or an object that can be converted to a literal
+(e.g an integer).
 }
 \examples{
 # two syntaxes same result
 pl$lit(TRUE)$not_()
 !pl$lit(TRUE)
 }
-\keyword{Expr}
-\keyword{Expr_operators}
+\keyword{datasets}

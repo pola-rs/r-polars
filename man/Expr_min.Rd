@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_min}
 \alias{Expr_min}
-\title{min}
+\title{Get minimum value}
 \usage{
 Expr_min
 }
@@ -10,12 +10,10 @@ Expr_min
 Expr
 }
 \description{
-Get minimum value.
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Get minimum value
 }
 \examples{
-pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$min() == 1) # is true
+pl$DataFrame(x = c(1, NA, 3))$
+  with_columns(min = pl$col("x")$min())
 }
-\keyword{Expr}
+\keyword{datasets}

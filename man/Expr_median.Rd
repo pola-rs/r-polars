@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_median}
 \alias{Expr_median}
-\title{median}
+\title{Get median value}
 \usage{
 Expr_median
 }
@@ -10,9 +10,10 @@ Expr_median
 Expr
 }
 \description{
-Get median value.
+Get median value
 }
 \examples{
-pl$DataFrame(list(x = c(1, NA, 2)))$select(pl$col("x")$median() == 1.5) # is true
+pl$DataFrame(x = c(1L, NA, 2L))$
+  with_columns(median = pl$col("x")$median())
 }
-\keyword{Expr}
+\keyword{datasets}

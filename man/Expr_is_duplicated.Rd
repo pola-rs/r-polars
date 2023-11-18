@@ -2,36 +2,18 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_duplicated}
 \alias{Expr_is_duplicated}
-\alias{is_duplicated}
-\title{Get mask of duplicated values.}
+\title{Check whether each value is duplicated}
 \usage{
 Expr_is_duplicated
 }
 \value{
-Expr (boolean)
+Expr
 }
 \description{
-Get mask of duplicated values.
-}
-\details{
-is_duplicated is the opposite of \code{is_unique()}
-Looking for R like \code{duplicated()}?, use  \code{some_expr$is_first()$not_()}
+This is syntactic sugar for \verb{$is_unique()$not_()}.
 }
 \examples{
-v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
-all.equal(
-  pl$select(
-    pl$lit(v)$is_unique()$alias("is_unique"),
-    pl$lit(v)$is_first()$alias("is_first"),
-    pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-    pl$lit(v)$is_first()$not_()$alias("R_duplicated")
-  )$to_list(),
-  list(
-    is_unique = !v \%in\% v[duplicated(v)],
-    is_first = !duplicated(v),
-    is_duplicated = v \%in\% v[duplicated(v)],
-    R_duplicated = duplicated(v)
-  )
-)
+pl$DataFrame(head(mtcars[, 1:2]))$
+  with_columns(is_duplicated = pl$col("mpg")$is_duplicated())
 }
-\keyword{Expr}
+\keyword{datasets}

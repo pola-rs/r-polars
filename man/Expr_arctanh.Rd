@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arctanh}
 \alias{Expr_arctanh}
-\alias{arctanh}
-\title{Arctanh}
+\title{Compute inverse hyperbolic tangent}
 \usage{
 Expr_arctanh
 }
@@ -11,12 +10,10 @@ Expr_arctanh
 Expr
 }
 \description{
-Compute the element-wise value for the inverse hyperbolic tangent.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse hyperbolic tangent
 }
 \examples{
-pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctanh())
+pl$DataFrame(a = c(-1, tanh(0.5), 0, 1, NA_real_))$
+  with_columns(arctanh = pl$col("a")$arctanh())
 }
-\keyword{Expr}
+\keyword{datasets}

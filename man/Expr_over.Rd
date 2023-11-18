@@ -2,28 +2,27 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_over}
 \alias{Expr_over}
-\title{over}
+\title{Apply window function over a subgroup}
 \usage{
 Expr_over(...)
 }
 \arguments{
-\item{...}{of strings or columns to group by}
+\item{...}{Character vector indicating the columns to group by.}
 }
 \value{
 Expr
 }
 \description{
-Apply window function over a subgroup.
-This is similar to a groupby + aggregation + self join.
-Or similar to \verb{window functions in Postgres <https://www.postgresql.org/docs/current/tutorial-window.html>}_.
+This applies an expression on groups and returns the same number of rows as
+the input (contrarily to \verb{$group_by()} + \verb{$agg()}).
 }
 \examples{
 pl$DataFrame(
   val = 1:5,
   a = c("+", "+", "-", "-", "+"),
   b = c("+", "-", "+", "-", "+")
-)$select(
-  pl$col("val")$count()$over("a", "b")
+)$with_columns(
+  count = pl$col("val")$count()$over("a", "b")
 )
 
 over_vars = c("a", "b")
@@ -31,8 +30,7 @@ pl$DataFrame(
   val = 1:5,
   a = c("+", "+", "-", "-", "+"),
   b = c("+", "-", "+", "-", "+")
-)$select(
-  pl$col("val")$count()$over(over_vars)
+)$with_columns(
+  count = pl$col("val")$count()$over(over_vars)
 )
 }
-\keyword{Expr}

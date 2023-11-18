@@ -2,23 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_tail}
 \alias{Expr_tail}
-\alias{tail}
-\title{Tail}
+\title{Get the last n elements}
 \usage{
 Expr_tail(n = 10)
 }
 \arguments{
-\item{n}{numeric number of elements to select from tail}
+\item{n}{Number of elements to take.}
 }
 \value{
 Expr
 }
 \description{
-Get the tail n elements.
-Similar to R tail(x)
+Get the last n elements
 }
 \examples{
-# get 3 last elements
-pl$DataFrame(list(x = 1:11))$select(pl$col("x")$tail(3))
+pl$DataFrame(x = 1:11)$select(pl$col("x")$tail(3))
 }
-\keyword{Expr}

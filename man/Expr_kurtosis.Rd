@@ -2,15 +2,16 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_kurtosis}
 \alias{Expr_kurtosis}
-\alias{kurtosis}
 \title{Kurtosis}
 \usage{
 Expr_kurtosis(fisher = TRUE, bias = TRUE)
 }
 \arguments{
-\item{fisher}{bool se details}
+\item{fisher}{If \code{TRUE} (default), Fisher’s definition is used (normal,
+centered at 0). Otherwise, Pearson’s definition is used (normal, centered at
+3).}
 
-\item{bias}{bool, If FALSE, then the calculations are corrected for statistical bias.}
+\item{bias}{If \code{FALSE}, the calculations are corrected for statistical bias.}
 }
 \value{
 Expr
@@ -19,20 +20,14 @@ Expr
 Compute the kurtosis (Fisher or Pearson) of a dataset.
 }
 \details{
-Kurtosis is the fourth central moment divided by the square of the
-variance. If Fisher's definition is used, then 3.0 is subtracted from
-the result to give 0.0 for a normal distribution.
-If bias is False then the kurtosis is calculated using k statistics to
-eliminate bias coming from biased moment estimators
-See scipy.stats for more information
+Kurtosis is the fourth central moment divided by the square of the variance.
+If Fisher's definition is used, then 3 is subtracted from the result to
+give 0 for a normal distribution.
 
-#' See scipy.stats for more information.
+If bias is \code{FALSE}, then the kurtosis is calculated using \code{k} statistics to
+eliminate bias coming from biased moment estimators.
 }
 \examples{
-df = pl$DataFrame(list(a = c(1:3, 2:1)))
-df$select(pl$col("a")$kurtosis())
+pl$DataFrame(a = c(1:3, 2:1))$
+  with_columns(kurt = pl$col("a")$kurtosis())
 }
-\references{
-https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kurtosis.html?highlight=kurtosis
-}
-\keyword{Expr}

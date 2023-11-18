@@ -2,36 +2,24 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arg_sort}
 \alias{Expr_arg_sort}
-\alias{arg_sort}
-\alias{Expr_argsort}
-\alias{argsort}
 \title{Index of a sort}
 \usage{
 Expr_arg_sort(descending = FALSE, nulls_last = FALSE)
-
-Expr_argsort(descending = FALSE, nulls_last = FALSE)
 }
 \arguments{
 \item{descending}{Sort in descending order. When sorting by multiple columns,
-can be specified per column by passing a sequence of booleans.}
+can be specified per column by passing a vector of booleans.}
 
-\item{nulls_last}{bool, default FALSE, place Nulls last}
+\item{nulls_last}{If \code{TRUE}, place nulls values last.}
 }
 \value{
 Expr
 }
 \description{
 Get the index values that would sort this column.
-If 'reverse=True` the smallest elements will be given.
-
-argsort is a alias for arg_sort
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
 }
 \examples{
-pl$DataFrame(list(
+pl$DataFrame(
   a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$arg_sort())
+)$with_columns(arg_sorted = pl$col("a")$arg_sort())
 }
-\keyword{Expr}

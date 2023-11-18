@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_all}
 \alias{Expr_all}
-\title{All, is true}
+\title{Apply logical AND on a column}
 \usage{
 Expr_all(drop_nulls = TRUE)
 }
@@ -13,13 +13,9 @@ Expr_all(drop_nulls = TRUE)
 Boolean literal
 }
 \description{
-Check if all boolean values in a Boolean column are \code{TRUE}.
-This method is an expression - not to be confused with
-\code{pl$all} which is a function to select all columns.
-}
-\details{
-last \code{all()} in example is this Expr method, the first \code{pl$all()} refers
-to "all-columns" and is an expression constructor
+Check if all boolean values in a Boolean column are \code{TRUE}. This method is an
+expression - not to be confused with \code{pl$all()} which is a function to select
+all columns.
 }
 \examples{
 pl$DataFrame(
@@ -27,7 +23,8 @@ pl$DataFrame(
   any = c(TRUE, FALSE),
   none = c(FALSE, FALSE)
 )$select(
+  # the first $all() selects all columns, the second one applies the AND
+  # logical on the values
   pl$all()$all()
 )
 }
-\keyword{Expr}

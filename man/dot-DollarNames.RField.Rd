@@ -7,7 +7,7 @@
 \method{.DollarNames}{RField}(x, pattern = "")
 }
 \arguments{
-\item{x}{Name of a \code{"RField"} object}
+\item{x}{Name of a \code{RField} object}
 
 \item{pattern}{String used to auto-complete}
 }

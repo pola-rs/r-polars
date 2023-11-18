@@ -2,23 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_limit}
 \alias{Expr_limit}
-\title{Limit}
+\title{Get the first n elements}
 \usage{
 Expr_limit(n = 10)
 }
 \arguments{
-\item{n}{numeric number of elements to select from head}
+\item{n}{Number of elements to take.}
 }
 \value{
 Expr
 }
 \description{
-Alias for Head
-Get the head n elements.
-Similar to R head(x)
+This is an alias for \verb{<Expr>$head()}.
 }
 \examples{
-# get 3 first elements
-pl$DataFrame(list(x = 1:11))$select(pl$col("x")$limit(3))
+pl$DataFrame(x = 1:11)$select(pl$col("x")$limit(3))
 }
-\keyword{Expr}

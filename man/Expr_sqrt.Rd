@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sqrt}
 \alias{Expr_sqrt}
-\alias{sqrt}
-\title{Square root}
+\title{Compute the square root of the elements}
 \usage{
 Expr_sqrt()
 }
@@ -11,9 +10,8 @@ Expr_sqrt()
 Expr
 }
 \description{
-Compute the square root of the elements.
+Compute the square root of the elements
 }
 \examples{
-pl$DataFrame(list(a = -1:3))$select(pl$col("a")$sqrt())
+pl$DataFrame(a = -1:3)$with_columns(a_sqrt = pl$col("a")$sqrt())
 }
-\keyword{Expr}

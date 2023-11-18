@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arccos}
 \alias{Expr_arccos}
-\alias{arccos}
-\title{Arccos}
+\title{Compute inverse cosine}
 \usage{
 Expr_arccos
 }
@@ -11,12 +10,10 @@ Expr_arccos
 Expr
 }
 \description{
-Compute the element-wise value for the inverse cosine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse cosine
 }
 \examples{
-pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccos())
+pl$DataFrame(a = c(-1, cos(0.5), 0, 1, NA_real_))$
+  with_columns(arccos = pl$col("a")$arccos())
 }
-\keyword{Expr}
+\keyword{datasets}
