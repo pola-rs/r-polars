@@ -4,7 +4,7 @@
 \alias{Expr_alias}
 \title{Rename Expr output}
 \usage{
-Expr_alias
+Expr_alias(name)
 }
 \arguments{
 \item{name}{New name of output}

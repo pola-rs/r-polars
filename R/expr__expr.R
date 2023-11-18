@@ -377,6 +377,7 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' @return Expr
 #' @docType NULL
 #' @format NULL
+#' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
 
