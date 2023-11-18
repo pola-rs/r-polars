@@ -52,7 +52,7 @@ as_polars_df.DataFrame = function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.GroupBy = function(x, ...) {
-  x$to_data_frame()
+  x$ungroup()
 }
 
 

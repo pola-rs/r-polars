@@ -19,7 +19,10 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
   {
     skip_if_not_installed("arrow")
 
-    actual = as.data.frame(as_polars_df(x))
+    pl_df = as_polars_df(x)
+    expect_s3_class(pl_df, "DataFrame")
+
+    actual = as.data.frame(pl_df)
     expected = as.data.frame(pl$DataFrame(test_df))
 
     expect_equal(actual, expected)

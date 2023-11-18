@@ -107,3 +107,17 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
   }
   pl$set_options(maintain_order = FALSE)
 })
+
+
+test_that("LazyGroupBy ungroup", {
+  lf = pl$LazyFrame(mtcars)
+
+  expect_equal(
+    lf$group_by("cyl")$ungroup()$collect()$to_data_frame(),
+    lf$collect()$to_data_frame()
+  )
+  expect_equal(
+    lf$collect()$group_by("cyl")$ungroup()$to_data_frame(),
+    lf$collect()$to_data_frame()
+  )
+})

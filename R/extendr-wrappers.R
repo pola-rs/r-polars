@@ -1097,6 +1097,8 @@ LazyGroupBy <- new.env(parent = emptyenv())
 
 LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
 
+LazyGroupBy$ungroup <- function() .Call(wrap__LazyGroupBy__ungroup, self)
+
 LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
 
 LazyGroupBy$head <- function(n) .Call(wrap__LazyGroupBy__head, self, n)

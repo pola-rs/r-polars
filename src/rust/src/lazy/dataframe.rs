@@ -327,9 +327,15 @@ impl LazyFrame {
         let expr_vec = robj_to!(VecPLExprCol, exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
         if maintain_order {
-            Ok(LazyGroupBy(self.0.clone().group_by_stable(expr_vec)))
+            Ok(LazyGroupBy {
+                lgb: self.0.clone().group_by_stable(expr_vec),
+                opt_state: self.0.get_current_optimizations(),
+            })
         } else {
-            Ok(LazyGroupBy(self.0.clone().group_by(expr_vec)))
+            Ok(LazyGroupBy {
+                lgb: self.0.clone().group_by(expr_vec),
+                opt_state: self.0.get_current_optimizations(),
+            })
         }
     }
 
@@ -580,7 +586,10 @@ impl LazyFrame {
 }
 
 #[derive(Clone)]
-pub struct LazyGroupBy(pub pl::LazyGroupBy);
+pub struct LazyGroupBy {
+    pub lgb: pl::LazyGroupBy,
+    opt_state: pl::OptState,
+}
 
 #[extendr]
 impl LazyGroupBy {
@@ -588,16 +597,23 @@ impl LazyGroupBy {
         rprintln!("LazyGroupBy (internals are opaque)");
     }
 
+    fn ungroup(&self) -> LazyFrame {
+        LazyFrame(
+            pl::LazyFrame::from(self.lgb.logical_plan.clone())
+                .with_optimizations(self.opt_state.clone()),
+        )
+    }
+
     fn agg(&self, exprs: Robj) -> Result<LazyFrame, String> {
         Ok(LazyFrame(
-            self.0.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
+            self.lgb.clone().agg(robj_to!(VecPLExprColNamed, exprs)?),
         ))
     }
 
     fn head(&self, n: f64) -> List {
         r_result_list(
             try_f64_into_usize(n)
-                .map(|n| LazyFrame(self.0.clone().head(Some(n))))
+                .map(|n| LazyFrame(self.lgb.clone().head(Some(n))))
                 .map_err(|err| format!("head: {}", err)),
         )
     }
@@ -605,7 +621,7 @@ impl LazyGroupBy {
     fn tail(&self, n: f64) -> List {
         r_result_list(
             try_f64_into_usize(n)
-                .map(|n| LazyFrame(self.0.clone().tail(Some(n))))
+                .map(|n| LazyFrame(self.lgb.clone().tail(Some(n))))
                 .map_err(|err| format!("tail: {}", err)),
         )
     }

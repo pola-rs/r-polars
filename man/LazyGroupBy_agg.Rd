@@ -24,11 +24,10 @@ lgb = pl$DataFrame(
   lazy()$
   group_by("foo")
 
-#
+
 print(lgb)
 
 lgb$
-
   agg(
   pl$col("bar")$sum()$name$suffix("_sum"),
   pl$col("bar")$mean()$alias("bar_tail_sum")
