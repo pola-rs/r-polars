@@ -50,6 +50,13 @@ as_polars_df.DataFrame = function(x, ...) {
 
 
 #' @rdname as_polars_df
+#' @export
+as_polars_df.Series = function(x, ...) {
+  pl$DataFrame(x)
+}
+
+
+#' @rdname as_polars_df
 #' @param n_rows Number of rows to fetch. Defaults to `Inf`, meaning all rows.
 #' @inheritParams LazyFrame_collect
 #' @export

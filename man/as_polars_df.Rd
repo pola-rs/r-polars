@@ -5,6 +5,7 @@
 \alias{as_polars_df.default}
 \alias{as_polars_df.data.frame}
 \alias{as_polars_df.DataFrame}
+\alias{as_polars_df.Series}
 \alias{as_polars_df.LazyFrame}
 \alias{as_polars_df.ArrowTabular}
 \alias{as_polars_df.RecordBatchReader}
@@ -17,6 +18,8 @@ as_polars_df(x, ...)
 \method{as_polars_df}{data.frame}(x, ...)
 
 \method{as_polars_df}{DataFrame}(x, ...)
+
+\method{as_polars_df}{Series}(x, ...)
 
 \method{as_polars_df}{LazyFrame}(
   x,
