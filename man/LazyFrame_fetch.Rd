@@ -6,6 +6,7 @@
 \usage{
 LazyFrame_fetch(
   n_rows = 500,
+  ...,
   type_coercion = TRUE,
   predicate_pushdown = TRUE,
   projection_pushdown = TRUE,
@@ -20,6 +21,8 @@ LazyFrame_fetch(
 }
 \arguments{
 \item{n_rows}{Integer. Maximum number of rows to fetch.}
+
+\item{...}{Ignored.}
 
 \item{type_coercion}{Boolean. Coerce types such that operations succeed and
 run on minimal required memory.}
