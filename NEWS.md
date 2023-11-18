@@ -37,6 +37,8 @@
  is aimed for r-polars extensions, and will be kept stable as much as possible (#504).
 - New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
+- New generic functions `as_polars_df()` and `as_polars_lf` to create polars DataFrames
+  and LazyFrames (#519).
 
 # polars 0.10.1
 
