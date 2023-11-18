@@ -6,6 +6,12 @@
 \usage{
 Expr_xor(other)
 }
+\arguments{
+\item{other}{Literal or object that can be converted to a literal}
+}
+\value{
+Expr
+}
 \description{
 Combine two boolean expressions with XOR.
 }

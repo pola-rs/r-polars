@@ -24,9 +24,9 @@ pl$DataFrame(a = c(1:4, NA_integer_))$with_columns(
 )
 
 # this fails because we can't compare factors to strings
-pl$DataFrame(a = factor(letters[1:5]))$with_columns(
-  in_abc = pl$col("a")$is_in(c("a", "b", "c"))
-)
+# pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+#   in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+# )
 
 # need to use the string cache for this
 pl$with_string_cache({

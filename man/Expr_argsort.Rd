@@ -6,6 +6,12 @@
 \usage{
 Expr_argsort(descending = FALSE, nulls_last = FALSE)
 }
+\arguments{
+\item{descending}{Sort in descending order. When sorting by multiple columns,
+can be specified per column by passing a vector of booleans.}
+
+\item{nulls_last}{If \code{TRUE}, place nulls values last.}
+}
 \description{
 argsort is a alias for arg_sort
 }

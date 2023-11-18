@@ -377,7 +377,6 @@ Expr_agg_groups = "use_extendr_wrapper"
 #' @return Expr
 #' @docType NULL
 #' @format NULL
-#' @usage Expr_alias(name)
 #' @examples pl$col("bob")$alias("alice")
 Expr_alias = "use_extendr_wrapper"
 
@@ -851,7 +850,6 @@ Expr_reverse = function() {
 #' @inherit Expr_add params return
 #' @docType NULL
 #' @format NULL
-#' @usage Expr_and(other)
 #' @examples
 #' pl$lit(TRUE) & TRUE
 #' pl$lit(TRUE)$and(pl$lit(TRUE))
@@ -869,7 +867,6 @@ Expr_and = function(other) {
 #' @inherit Expr_add params return
 #' @docType NULL
 #' @format NULL
-#' @usage Expr_or(other)
 #' @examples
 #' pl$lit(TRUE) | FALSE
 #' pl$lit(TRUE)$or(pl$lit(TRUE))
@@ -883,9 +880,9 @@ Expr_or = function(other) {
 #' Apply logical XOR on two expressions
 #'
 #' Combine two boolean expressions with XOR.
+#' @inherit Expr_add params return
 #' @docType NULL
 #' @format NULL
-#' @usage Expr_xor(other)
 #' @examples
 #' pl$lit(TRUE)$xor(pl$lit(FALSE))
 Expr_xor = function(other) {
@@ -1373,7 +1370,7 @@ Expr_arg_sort = function(descending = FALSE, nulls_last = FALSE) {
   .pr$Expr$arg_sort(self, descending, nulls_last)
 }
 
-#' @inherit Expr_arg_sort title examples
+#' @inherit Expr_arg_sort title params examples
 #' @description argsort is a alias for arg_sort
 Expr_argsort = Expr_arg_sort
 
@@ -2035,9 +2032,9 @@ Expr_pow = function(exponent) {
 #' )
 #'
 #' # this fails because we can't compare factors to strings
-#' pl$DataFrame(a = factor(letters[1:5]))$with_columns(
-#'   in_abc = pl$col("a")$is_in(c("a", "b", "c"))
-#' )
+#' # pl$DataFrame(a = factor(letters[1:5]))$with_columns(
+#' #   in_abc = pl$col("a")$is_in(c("a", "b", "c"))
+#' # )
 #'
 #' # need to use the string cache for this
 #' pl$with_string_cache({
@@ -2455,6 +2452,7 @@ Expr_rolling_median = function(
 #' `weight` vector.
 #'
 #' @inherit Expr_rolling_min params details return
+#' @param quantile Quantile between 0 and 1.
 #' @param interpolation String, one of `"nearest"`, `"higher"`, `"lower"`,
 #' `"midpoint"`, `"linear"`.
 #' @examples

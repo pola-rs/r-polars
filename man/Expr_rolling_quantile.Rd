@@ -16,6 +16,8 @@ Expr_rolling_quantile(
 )
 }
 \arguments{
+\item{quantile}{Quantile between 0 and 1.}
+
 \item{interpolation}{String, one of \code{"nearest"}, \code{"higher"}, \code{"lower"},
 \code{"midpoint"}, \code{"linear"}.}
 
