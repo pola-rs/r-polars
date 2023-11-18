@@ -1,6 +1,5 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::literal_to_any_value;
-use crate::rdatatype::new_null_behavior;
 use crate::rdatatype::new_rank_method;
 use crate::rdatatype::new_rolling_cov_options;
 use crate::rdatatype::parse_fill_null_strategy;
@@ -26,6 +25,7 @@ use polars::prelude::SortOptions;
 use std::ops::{Add, Div, Mul, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
+use crate::rdatatype::robjs_to_ewm_options;
 use crate::utils::r_expr_to_rust_expr;
 use crate::utils::unpack_r_eval;
 #[derive(Clone, Debug)]
@@ -444,13 +444,7 @@ impl Expr {
             .into())
     }
 
-    pub fn hash(
-        &self,
-        seed: Robj,
-        seed_1: Robj,
-        seed_2: Robj,
-        seed_3: Robj,
-    ) -> Result<Expr, String> {
+    pub fn hash(&self, seed: Robj, seed_1: Robj, seed_2: Robj, seed_3: Robj) -> RResult<Self> {
         Ok(Expr(self.0.clone().hash(
             robj_to!(u64, seed)?,
             robj_to!(u64, seed_1)?,
@@ -701,15 +695,11 @@ impl Expr {
         r_result_list(expr_res)
     }
 
-    fn diff(&self, n_float: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().diff(
-                try_f64_into_i64(n_float)?,
-                new_null_behavior(null_behavior)?,
-            )))
-        }()
-        .map_err(|err| format!("diff: {}", err));
-        r_result_list(expr_res)
+    fn diff(&self, n_float: Robj, null_behavior: Robj) -> RResult<Expr> {
+        Ok(Expr(self.0.clone().diff(
+            robj_to!(i64, n_float)?,
+            robj_to!(new_null_behavior, null_behavior)?,
+        )))
     }
 
     fn pct_change(&self, n_float: Robj) -> RResult<Self> {
@@ -854,63 +844,39 @@ impl Expr {
             .into())
     }
 
-    pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias: false,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_mean(options).into())
-        }();
-        r_result_list(expr_result)
+    pub fn ewm_mean(
+        &self,
+        alpha: Robj,
+        adjust: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, r!(false), min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_mean(options).into())
     }
 
     pub fn ewm_std(
         &self,
-        alpha: f64,
-        adjust: bool,
-        bias: bool,
-        min_periods: f64,
-        ignore_nulls: bool,
-    ) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_std(options).into())
-        }();
-        r_result_list(expr_result)
+        alpha: Robj,
+        adjust: Robj,
+        bias: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, bias, min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_std(options).into())
     }
 
     pub fn ewm_var(
         &self,
-        alpha: f64,
-        adjust: bool,
-        bias: bool,
-        min_periods: f64,
-        ignore_nulls: bool,
-    ) -> List {
-        let expr_result = || -> Result<Expr, String> {
-            let min_periods = try_f64_into_usize(min_periods)?;
-            let options = pl::EWMOptions {
-                alpha,
-                adjust,
-                bias,
-                min_periods,
-                ignore_nulls,
-            };
-            Ok(self.0.clone().ewm_var(options).into())
-        }();
-        r_result_list(expr_result)
+        alpha: Robj,
+        adjust: Robj,
+        bias: Robj,
+        min_periods: Robj,
+        ignore_nulls: Robj,
+    ) -> RResult<Self> {
+        let options = robjs_to_ewm_options(alpha, adjust, bias, min_periods, ignore_nulls)?;
+        Ok(self.0.clone().ewm_var(options).into())
     }
 
     pub fn extend_constant(&self, value: &Expr, n: f64) -> List {
@@ -1087,15 +1053,11 @@ impl Expr {
         self.0.clone().list().arg_max().into()
     }
 
-    fn list_diff(&self, n: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<Expr, String> {
-            Ok(Expr(self.0.clone().list().diff(
-                try_f64_into_i64(n)?,
-                new_null_behavior(null_behavior)?,
-            )))
-        }()
-        .map_err(|err| format!("list.diff: {}", err));
-        r_result_list(expr_res)
+    fn list_diff(&self, n: Robj, null_behavior: Robj) -> RResult<Self> {
+        Ok(Expr(self.0.clone().list().diff(
+            robj_to!(i64, n)?,
+            robj_to!(new_null_behavior, null_behavior)?,
+        )))
     }
 
     fn list_shift(&self, periods: Robj) -> List {

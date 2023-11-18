@@ -5,12 +5,12 @@
 \alias{diff}
 \title{Diff}
 \usage{
-Expr_diff(n = 1, null_behavior = "ignore")
+Expr_diff(n = 1, null_behavior = c("ignore", "drop"))
 }
 \arguments{
-\item{n}{Integerish Number of slots to shift.}
+\item{n}{Number of slots to shift.}
 
-\item{null_behavior}{option default 'ignore', else 'drop'}
+\item{null_behavior}{choice default 'ignore', else 'drop'.}
 }
 \value{
 Expr

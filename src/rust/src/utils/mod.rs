@@ -940,6 +940,9 @@ macro_rules! robj_to_inner {
     (new_quantile_interpolation_option, $a:ident) => {
         $crate::rdatatype::new_quantile_interpolation_option($a)
     };
+    (new_null_behavior, $a:ident) => {
+        $crate::rdatatype::robj_new_null_behavior($a)
+    };
 
     (bool, $a:ident) => {
         $crate::utils::robj_to_bool($a)

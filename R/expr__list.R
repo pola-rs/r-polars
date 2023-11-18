@@ -283,9 +283,10 @@ ExprList_arg_max = function() .pr$Expr$list_arg_max(self)
 #' @aliases Expr_list_diff
 #' @examples
 #' df = pl$DataFrame(list(s = list(1:4, c(10L, 2L, 1L))))
-#' df$select(pl$col("s")$list$diff())
-ExprList_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$list_diff(self, n, null_behavior))
+#' df$select(pl$col("s")$list$diff(1))
+ExprList_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$list_diff(self, n, null_behavior) |>
+    unwrap("in $list$diff()")
 }
 
 #' Shift sublists

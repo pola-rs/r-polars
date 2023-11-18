@@ -3303,8 +3303,8 @@ Expr_rank = function(method = "average", descending = FALSE) {
 
 #' Diff
 #' @description  Calculate the n-th discrete difference.
-#' @param n  Integerish Number of slots to shift.
-#' @param null_behavior option default 'ignore', else 'drop'
+#' @param n  Number of slots to shift.
+#' @param null_behavior choice default 'ignore', else 'drop'.
 #' @return  Expr
 #' @aliases diff
 #' @keywords Expr
@@ -3313,8 +3313,9 @@ Expr_rank = function(method = "average", descending = FALSE) {
 #'   pl$col("a")$diff()$alias("diff_default"),
 #'   pl$col("a")$diff(2, "ignore")$alias("diff_2_ignore")
 #' )
-Expr_diff = function(n = 1, null_behavior = "ignore") {
-  unwrap(.pr$Expr$diff(self, n, null_behavior))
+  Expr_diff = function(n = 1, null_behavior = c("ignore", "drop")) {
+  .pr$Expr$diff(self, n, null_behavior) |>
+    unwrap("in $diff():")
 }
 
 
@@ -3861,7 +3862,8 @@ Expr_ewm_mean = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls))
+  .pr$Expr$ewm_mean(self, alpha, adjust, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_mean()")
 }
 
 
@@ -3876,7 +3878,8 @@ Expr_ewm_std = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_std(self, alpha, adjust, bias, min_periods, ignore_nulls) |>
+    unwrap("in $ewm_std()")
 }
 
 #' Ewm_var
@@ -3889,7 +3892,8 @@ Expr_ewm_var = function(
     com = NULL, span = NULL, half_life = NULL, alpha = NULL,
     adjust = TRUE, bias = FALSE, min_periods = 1L, ignore_nulls = TRUE) {
   alpha = prepare_alpha(com, span, half_life, alpha)
-  unwrap(.pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls))
+  .pr$Expr$ewm_var(self, alpha, adjust, bias, min_periods, ignore_nulls)  |>
+    unwrap("in $ewm_var()")
 }
 
 
@@ -3917,7 +3921,8 @@ Expr_ewm_var = function(
 #'   $extend_constant("chuchu", 2)
 #' )
 Expr_extend_constant = function(value, n) {
-  unwrap(.pr$Expr$extend_constant(self, wrap_e(value), n))
+  .pr$Expr$extend_constant(self, wrap_e(value), n) |>
+    unwrap("in $extend_constant()")
 }
 
 
@@ -3949,7 +3954,8 @@ Expr_extend_constant = function(value, n) {
 #' )
 #'
 Expr_rep = function(n, rechunk = TRUE) {
-  unwrap(.pr$Expr$rep(self, n, rechunk))
+  .pr$Expr$rep(self, n, rechunk)  |>
+    unwrap("in $rep()")
 }
 
 
