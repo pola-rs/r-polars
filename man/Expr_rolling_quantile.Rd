@@ -70,5 +70,5 @@ computation.
 }
 \examples{
 pl$DataFrame(a = c(1, 3, 2, 4, 5, 6))$
-  with_columns(roll_quantile = pl$col("a")$rolling_quantile(window_size = 2))
+  with_columns(roll_quant = pl$col("a")$rolling_quantile(0.3, window_size = 2))
 }
