@@ -2,15 +2,14 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_diff}
 \alias{Expr_diff}
-\alias{diff}
-\title{Diff}
+\title{Difference}
 \usage{
 Expr_diff(n = 1, null_behavior = "ignore")
 }
 \arguments{
-\item{n}{Integerish Number of slots to shift.}
+\item{n}{Number of slots to shift.}
 
-\item{null_behavior}{option default 'ignore', else 'drop'}
+\item{null_behavior}{String, either \code{"ignore"} (default), else \code{"drop"}.}
 }
 \value{
 Expr
@@ -19,9 +18,8 @@ Expr
 Calculate the n-th discrete difference.
 }
 \examples{
-pl$DataFrame(list(a = c(20L, 10L, 30L, 40L)))$select(
-  pl$col("a")$diff()$alias("diff_default"),
-  pl$col("a")$diff(2, "ignore")$alias("diff_2_ignore")
+pl$DataFrame(a = c(20L, 10L, 30L, 40L))$with_columns(
+  diff_default = pl$col("a")$diff(),
+  diff_2_ignore = pl$col("a")$diff(2, "ignore")
 )
 }
-\keyword{Expr}

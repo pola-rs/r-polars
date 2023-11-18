@@ -2,28 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_bottom_k}
 \alias{Expr_bottom_k}
-\alias{bottom_k}
 \title{Bottom k values}
 \usage{
 Expr_bottom_k(k)
 }
 \arguments{
-\item{k}{numeric k bottom values to get}
+\item{k}{Number of top values to get}
 }
 \value{
 Expr
 }
 \description{
-Return the \code{k} smallest elements.
-}
-\details{
-This has time complexity: \eqn{ O(n + k \\log{}n - \frac{k}{2}) }
-
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Return the \code{k} smallest elements. This has time complexity: \eqn{ O(n + k
+\\log{}n - \frac{k}{2}) }
 }
 \examples{
-pl$DataFrame(list(
-  a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$bottom_k(5))
+pl$DataFrame(a = c(6, 1, 0, NA, Inf, NaN))$select(pl$col("a")$bottom_k(5))
 }
-\keyword{Expr}

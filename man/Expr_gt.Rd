@@ -3,33 +3,28 @@
 \name{Expr_gt}
 \alias{Expr_gt}
 \alias{>.Expr}
-\title{GreaterThan <}
+\title{Check strictly greater inequality}
 \usage{
 Expr_gt(other)
 
 \method{>}{Expr}(e1, e2)
 }
 \arguments{
-\item{other}{literal or Robj which can become a literal}
+\item{other}{Literal or object that can be converted to a literal}
 
-\item{e1}{lhs Expr}
+\item{e1}{Expr only}
 
-\item{e2}{rhs Expr or anything which can become a literal Expression}
+\item{e2}{Expr or anything that can be converted to a literal}
 }
 \value{
-Exprs
+Expr
 }
 \description{
-gt method and operator
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+The RHS can either be an Expr or an object that can be converted to a literal
+(e.g an integer).
 }
 \examples{
-#' #three syntaxes same result
 pl$lit(2) > 1
 pl$lit(2) > pl$lit(1)
 pl$lit(2)$gt(pl$lit(1))
 }
-\keyword{Expr}
-\keyword{Expr_operators}

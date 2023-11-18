@@ -7,9 +7,9 @@
 not applicable
 }
 \description{
-Expressions are all the functions and methods that are applicable
-to a Polars DataFrame. They can be split into the following categories (following
-the \href{https://pola-rs.github.io/polars/py-polars/html/reference/expressions/}{Py-Polars classification}):
+Expressions are all the functions and methods that are applicable to a Polars
+DataFrame or LazyFrame. They can be split into the following categories
+(following the \href{https://pola-rs.github.io/polars/py-polars/html/reference/expressions/}{Py-Polars classification}):
 \itemize{
 \item Aggregate
 \item Binary

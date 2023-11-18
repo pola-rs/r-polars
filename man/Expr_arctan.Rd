@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arctan}
 \alias{Expr_arctan}
-\alias{arctan}
-\title{Arctan}
+\title{Compute inverse tangent}
 \usage{
 Expr_arctan
 }
@@ -11,12 +10,10 @@ Expr_arctan
 Expr
 }
 \description{
-Compute the element-wise value for the inverse tangent.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse tangent
 }
 \examples{
-pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$select(pl$col("a")$arctan())
+pl$DataFrame(a = c(-1, tan(0.5), 0, 1, NA_real_))$
+  with_columns(arctan = pl$col("a")$arctan())
 }
-\keyword{Expr}
+\keyword{datasets}

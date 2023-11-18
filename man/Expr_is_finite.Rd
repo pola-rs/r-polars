@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_is_finite}
 \alias{Expr_is_finite}
-\alias{is_finite}
-\title{Are elements finite}
+\title{Check if elements are finite}
 \usage{
 Expr_is_finite
 }
@@ -11,12 +10,10 @@ Expr_is_finite
 Expr
 }
 \description{
-Returns a boolean output indicating which values are finite.
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Returns a boolean Series indicating which values are finite.
 }
 \examples{
-pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$select(pl$col("alice")$is_finite())
+pl$DataFrame(list(alice = c(0, NaN, NA, Inf, -Inf)))$
+  with_columns(finite = pl$col("alice")$is_finite())
 }
-\keyword{Expr}
+\keyword{datasets}

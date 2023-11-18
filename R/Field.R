@@ -40,7 +40,7 @@ print.RField = function(x, ...) {
 #'
 #' Called by the interactive R session internally
 #'
-#' @param x Name of a `"RField"` object
+#' @param x Name of a `RField` object
 #' @param pattern String used to auto-complete
 #'
 #' @export

@@ -2,31 +2,31 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_fill_null}
 \alias{Expr_fill_null}
-\alias{fill_null}
-\title{Fill Nulls with a value or strategy.}
+\title{Fill null values with a value or strategy}
 \usage{
 Expr_fill_null(value = NULL, strategy = NULL, limit = NULL)
 }
 \arguments{
-\item{value}{Expr or \verb{Into<Expr>} to fill Null values with}
+\item{value}{Expr or something coercible in an Expr}
 
-\item{strategy}{default NULL else 'forward', 'backward', 'min', 'max', 'mean', 'zero', 'one'}
+\item{strategy}{Possible choice are \code{NULL} (default, requires a non-null
+\code{value}), \code{"forward"}, \code{"backward"}, \code{"min"}, \code{"max"}, \code{"mean"}, \code{"zero"},
+\code{"one"}.}
 
-\item{limit}{Number of consecutive null values to fill when using the 'forward' or 'backward' strategy.}
+\item{limit}{Number of consecutive null values to fill when using the
+\code{"forward"} or \code{"backward"} strategy.}
 }
 \value{
 Expr
 }
 \description{
-Shift the values by value or as strategy.
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Fill null values with a value or strategy
 }
 \examples{
-pl$select(
-  pl$lit(0:3)$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-  pl$lit(0:3)$shift_and_fill(2, fill_value = pl$lit(42) / 2)$alias("shift+2")
-)
+pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+  with_columns(
+    value = pl$col("a")$fill_null(999),
+    backward = pl$col("a")$fill_null(strategy = "backward"),
+    mean = pl$col("a")$fill_null(strategy = "mean")
+  )
 }
-\keyword{Expr}

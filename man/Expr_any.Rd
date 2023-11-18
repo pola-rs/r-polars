@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_any}
 \alias{Expr_any}
-\title{Any (is true)}
+\title{Apply logical OR on a column}
 \usage{
 Expr_any(drop_nulls = TRUE)
 }
@@ -24,4 +24,3 @@ pl$DataFrame(
   pl$all()$any()
 )
 }
-\keyword{Expr}

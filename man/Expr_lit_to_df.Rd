@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_lit_to_df}
 \alias{Expr_lit_to_df}
-\alias{lit_to_df}
-\title{Literal to DataFrame}
+\title{Convert Literal to DataFrame}
 \usage{
 Expr_lit_to_df()
 }
@@ -11,17 +10,8 @@ Expr_lit_to_df()
 Series
 }
 \description{
-collect an expression based on literals into a DataFrame
+Collect an expression based on literals into a DataFrame.
 }
 \examples{
-(
-  pl$Series(list(1:1, 1:2, 1:3, 1:4))
-  $print()
-  $to_lit()
-  $list$lengths()
-  $sum()
-  $cast(pl$dtypes$Int8)
-  $lit_to_df()
-)
+pl$lit(1:5)$lit_to_df()
 }
-\keyword{Expr}

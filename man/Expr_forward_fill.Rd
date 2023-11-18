@@ -2,29 +2,24 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_forward_fill}
 \alias{Expr_forward_fill}
-\alias{forward_fill}
-\title{Fill Nulls Forward}
+\title{Fill null values forward}
 \usage{
 Expr_forward_fill(limit = NULL)
 }
 \arguments{
-\item{limit}{Expr or \verb{Into<Expr>}  The number of consecutive null values to forward fill.}
+\item{limit}{Number of consecutive null values to fill when using the
+\code{"forward"} or \code{"backward"} strategy.}
 }
 \value{
 Expr
 }
 \description{
-Fill missing values with last seen values.
-}
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
+Fill missing values with the last seen values. Syntactic sugar for
+\verb{$fill_null(strategy = "forward")}.
 }
 \examples{
-l = list(a = c(1L, rep(NA_integer_, 3L), 10))
-pl$DataFrame(l)$select(
-  pl$col("a")$forward_fill()$alias("ff_null"),
-  pl$col("a")$forward_fill(limit = 0)$alias("ff_l0"),
-  pl$col("a")$forward_fill(limit = 1)$alias("ff_l1")
-)$to_list()
+pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
+  with_columns(
+    backward = pl$col("a")$forward_fill()
+  )
 }
-\keyword{Expr}

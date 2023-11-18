@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arcsin}
 \alias{Expr_arcsin}
-\alias{arcsin}
-\title{Arcsin}
+\title{Compute inverse sine}
 \usage{
 Expr_arcsin
 }
@@ -11,12 +10,10 @@ Expr_arcsin
 Expr
 }
 \description{
-Compute the element-wise value for the inverse sine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse sine
 }
 \examples{
-pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$select(pl$col("a")$arcsin())
+pl$DataFrame(a = c(-1, sin(0.5), 0, 1, NA_real_))$
+  with_columns(arcsin = pl$col("a")$arcsin())
 }
-\keyword{Expr}
+\keyword{datasets}

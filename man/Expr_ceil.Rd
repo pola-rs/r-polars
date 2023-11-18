@@ -10,14 +10,11 @@ Expr_ceil
 Expr
 }
 \description{
-Rounds up to the nearest integer value.
-Only works on floating point Series.
+Rounds up to the nearest integer value. Only works on floating point Series.
 }
 \examples{
-pl$DataFrame(list(
-  a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf)
-))$select(
-  pl$col("a")$ceil()
+pl$DataFrame(a = c(0.33, 0.5, 1.02, 1.5, NaN, NA, Inf, -Inf))$with_columns(
+  ceiling = pl$col("a")$ceil()
 )
 }
-\keyword{Expr}
+\keyword{datasets}
