@@ -1781,8 +1781,7 @@ DataFrame_write_csv = function(
 DataFrame_write_json = function(
     file,
     pretty = FALSE,
-    row_oriented = FALSE
-  ) {
+    row_oriented = FALSE) {
   .pr$DataFrame$write_json(self, file, pretty, row_oriented) |>
     unwrap("in $write_json():") |>
     invisible()

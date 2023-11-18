@@ -970,7 +970,7 @@ pl$reduce = function(lambda, exprs) {
 #' df$with_columns(
 #'   pl$min_horizontal("a", "b", "c", 99.9)$alias("min")
 #' )
-pl$min_horizontal <- function(...) {
+pl$min_horizontal = function(...) {
   min_horizontal(list2(...)) |>
     unwrap("in $min_horizontal():")
 }
@@ -992,7 +992,7 @@ pl$min_horizontal <- function(...) {
 #' df$with_columns(
 #'   pl$max_horizontal("a", "b", "c", 99.9)$alias("max")
 #' )
-pl$max_horizontal <- function(...) {
+pl$max_horizontal = function(...) {
   max_horizontal(list2(...)) |>
     unwrap("in $max_horizontal():")
 }
@@ -1022,7 +1022,7 @@ pl$max_horizontal <- function(...) {
 #' df$filter(
 #'   pl$all_horizontal(pl$all()$is_not_null())
 #' )
-pl$all_horizontal <- function(...) {
+pl$all_horizontal = function(...) {
   all_horizontal(list2(...)) |>
     unwrap("in $all_horizontal():")
 }
@@ -1052,7 +1052,7 @@ pl$all_horizontal <- function(...) {
 #' df$filter(
 #'   pl$any_horizontal(pl$all()$is_not_null())
 #' )
-pl$any_horizontal <- function(...) {
+pl$any_horizontal = function(...) {
   any_horizontal(list2(...)) |>
     unwrap("in $any_horizontal():")
 }
@@ -1074,7 +1074,7 @@ pl$any_horizontal <- function(...) {
 #' df$with_columns(
 #'   pl$sum_horizontal("a", "b", "c", 2)$alias("sum")
 #' )
-pl$sum_horizontal <- function(...) {
+pl$sum_horizontal = function(...) {
   sum_horizontal(list2(...)) |>
     unwrap("in $sum_horizontal():")
 }

@@ -251,9 +251,7 @@ impl Series {
     }
 
     pub fn abs(&self) -> RResult<Series> {
-        pl::abs(&self.0)
-            .map_err(polars_to_rpolars_err)
-            .map(Series)
+        pl::abs(&self.0).map_err(polars_to_rpolars_err).map(Series)
     }
 
     pub fn alias(&self, name: &str) -> Series {
