@@ -127,7 +127,7 @@ DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, 
 
 DataFrame$rechunk <- function() .Call(wrap__DataFrame__rechunk, self)
 
-DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
+DataFrame$clone_in_rust <- function() .Call(wrap__DataFrame__clone_in_rust, self)
 
 DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
@@ -1083,7 +1083,7 @@ LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
 LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
 
-LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
+LazyFrame$clone_in_rust <- function() .Call(wrap__LazyFrame__clone_in_rust, self)
 
 LazyFrame$with_context <- function(contexts) .Call(wrap__LazyFrame__with_context, self, contexts)
 
@@ -1096,6 +1096,8 @@ LazyFrame$with_context <- function(contexts) .Call(wrap__LazyFrame__with_context
 LazyGroupBy <- new.env(parent = emptyenv())
 
 LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$clone_in_rust <- function() .Call(wrap__LazyGroupBy__clone_in_rust, self)
 
 LazyGroupBy$ungroup <- function() .Call(wrap__LazyGroupBy__ungroup, self)
 

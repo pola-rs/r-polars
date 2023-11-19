@@ -572,7 +572,7 @@ impl LazyFrame {
             .into())
     }
 
-    pub fn clone_see_me_macro(&self) -> LazyFrame {
+    pub fn clone_in_rust(&self) -> LazyFrame {
         self.clone()
     }
 
@@ -595,6 +595,10 @@ pub struct LazyGroupBy {
 impl LazyGroupBy {
     fn print(&self) {
         rprintln!("LazyGroupBy (internals are opaque)");
+    }
+
+    fn clone_in_rust(&self) -> Self {
+        self.clone()
     }
 
     fn ungroup(&self) -> LazyFrame {

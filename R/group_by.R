@@ -315,6 +315,8 @@ GroupBy_as_data_frame = GroupBy_to_data_frame
 #' gb$ungroup()
 #' @export
 GroupBy_ungroup = function() {
+  self = .pr$DataFrame$clone_in_rust(self)
   class(self) = "DataFrame"
+  attr(self, "private") = NULL
   self
 }
