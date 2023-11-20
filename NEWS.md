@@ -38,8 +38,9 @@
   and will be kept stable as much as possible (#504).
 - New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
-- New generic functions `as_polars_df()` and `as_polars_lf()` to create polars 
-  DataFrames and LazyFrames (#519).
+- New generic functions `as_polars_df()` and `as_polars_lf()` to create polars DataFrames
+  and LazyFrames (#519).
+- New method `$ungroup()` for `GroupBy` and `LazyGroupBy` (#522).
 - New method `$rolling()` to apply an Expr over a rolling window based on 
   date/datetime/numeric indices (#470).
 

@@ -28,11 +28,10 @@ print.LazyGroupBy = function(x, ...) {
 #'   lazy()$
 #'   group_by("foo")
 #'
-#' #
+#'
 #' print(lgb)
 #'
 #' lgb$
-#'
 #'   agg(
 #'   pl$col("bar")$sum()$name$suffix("_sum"),
 #'   pl$col("bar")$mean()$alias("bar_tail_sum")
@@ -78,4 +77,22 @@ LazyGroupBy_tail = function(n = 1L) {
 LazyGroupBy_print = function() {
   .pr$LazyGroupBy$print(self)
   invisible(self)
+}
+
+
+#' LazyGroupBy_ungroup
+#'
+#' Revert the group by operation.
+#' @inherit LazyGroupBy_agg return
+#' @examples
+#' lf = pl$LazyFrame(mtcars)
+#' lf
+#'
+#' lgb = lf$group_by("cyl")
+#' lgb
+#'
+#' lgb$ungroup()
+#' @export
+LazyGroupBy_ungroup = function() {
+  .pr$LazyGroupBy$ungroup(self)
 }

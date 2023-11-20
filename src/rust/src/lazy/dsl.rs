@@ -1,7 +1,7 @@
 use crate::concurrent::RFnSignature;
 use crate::rdatatype::{
-    literal_to_any_value, new_null_behavior, new_rank_method,
-    new_rolling_cov_options, robj_to_timeunit, DataTypeVector, RPolarsDataType,
+    literal_to_any_value, new_null_behavior, new_rank_method, new_rolling_cov_options,
+    robj_to_timeunit, DataTypeVector, RPolarsDataType,
 };
 use crate::robj_to;
 use crate::rpolarserr::polars_to_rpolars_err;
