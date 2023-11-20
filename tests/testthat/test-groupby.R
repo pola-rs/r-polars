@@ -110,7 +110,6 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
 
 
 test_that("LazyGroupBy ungroup", {
-
   lf = pl$LazyFrame(mtcars)
   lgb = lf$group_by("cyl")
 
@@ -128,7 +127,6 @@ test_that("LazyGroupBy ungroup", {
     attributes(lgb$ungroup()),
     attributes(lf)
   )
-
 })
 
 test_that("GroupBy ungroup", {
@@ -149,7 +147,6 @@ test_that("GroupBy ungroup", {
     attributes(gb$ungroup()),
     attributes(df)
   )
-
 })
 
 test_that("LazyGroupBy clone", {
