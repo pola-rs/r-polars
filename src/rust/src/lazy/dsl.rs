@@ -23,7 +23,7 @@ use pl::{
 use polars::lazy::dsl;
 use polars::prelude as pl;
 use polars::prelude::SortOptions;
-use std::ops::{Add, Div, Mul, Sub};
+use std::ops::{Add, Div, Mul, Rem, Sub};
 use std::result::Result;
 pub type NameGenerator = pl::Arc<dyn Fn(usize) -> String + Send + Sync>;
 use crate::utils::r_expr_to_rust_expr;
@@ -174,7 +174,7 @@ impl Expr {
         .when("constructing polars literal from Robj")
     }
 
-    //expr binary comparisons
+    //comparison
     pub fn gt(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().gt(robj_to!(PLExpr, other)?).into())
     }
@@ -195,11 +195,19 @@ impl Expr {
         Ok(self.0.clone().neq(robj_to!(PLExpr, other)?).into())
     }
 
+    pub fn neq_missing(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().neq_missing(robj_to!(PLExpr, other)?).into())
+    }
+
     pub fn eq(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().eq(robj_to!(PLExpr, other)?).into())
     }
 
-    //logical operators
+    pub fn eq_missing(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().eq_missing(robj_to!(PLExpr, other)?).into())
+    }
+
+    //conjunction
     fn and(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().and(robj_to!(PLExpr, other)?).into())
     }
@@ -208,12 +216,9 @@ impl Expr {
         Ok(self.0.clone().or(robj_to!(PLExpr, other)?).into())
     }
 
+    //binary
     fn xor(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().xor(robj_to!(PLExpr, other)?).into())
-    }
-
-    fn is_in(&self, other: Robj) -> RResult<Self> {
-        Ok(self.0.clone().is_in(robj_to!(PLExpr, other)?).into())
     }
 
     //any not translated expr from expr/expr.py
@@ -403,10 +408,6 @@ impl Expr {
 
     pub fn arg_unique(&self) -> Self {
         self.clone().0.arg_unique().into()
-    }
-
-    pub fn is_duplicated(&self) -> Self {
-        self.clone().0.is_duplicated().into()
     }
 
     pub fn quantile(&self, quantile: Robj, interpolation: Robj) -> RResult<Self> {
@@ -1460,10 +1461,6 @@ impl Expr {
         Ok(self.clone().0.dt().offset_by(robj_to!(PLExpr, by)?).into())
     }
 
-    pub fn pow(&self, exponent: Robj) -> RResult<Self> {
-        Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
-    }
-
     pub fn repeat_by(&self, by: &Expr) -> Self {
         self.clone().0.repeat_by(by.0.clone()).into()
     }
@@ -1494,30 +1491,6 @@ impl Expr {
 
     pub fn alias(&self, s: &str) -> Self {
         self.0.clone().alias(s).into()
-    }
-
-    pub fn is_null(&self) -> Self {
-        self.0.clone().is_null().into()
-    }
-
-    pub fn is_not_null(&self) -> Self {
-        self.0.clone().is_not_null().into()
-    }
-
-    pub fn is_finite(&self) -> Self {
-        self.0.clone().is_finite().into()
-    }
-
-    pub fn is_infinite(&self) -> Self {
-        self.0.clone().is_infinite().into()
-    }
-
-    pub fn is_nan(&self) -> Self {
-        self.0.clone().is_nan().into()
-    }
-
-    pub fn is_not_nan(&self) -> Self {
-        self.0.clone().is_not_nan().into()
     }
 
     pub fn drop_nulls(&self) -> Self {
@@ -1601,11 +1574,59 @@ impl Expr {
         self.0.clone().agg_groups().into()
     }
 
+    // boolean
+
     pub fn all(&self, drop_nulls: Robj) -> RResult<Self> {
         Ok(self.0.clone().all(robj_to!(bool, drop_nulls)?).into())
     }
     pub fn any(&self, drop_nulls: Robj) -> RResult<Self> {
         Ok(self.0.clone().any(robj_to!(bool, drop_nulls)?).into())
+    }
+
+    // TODO: is_between
+
+    pub fn is_duplicated(&self) -> Self {
+        self.clone().0.is_duplicated().into()
+    }
+
+    pub fn is_finite(&self) -> Self {
+        self.0.clone().is_finite().into()
+    }
+
+    // TODO: rename to is_first_distinct
+    pub fn is_first(&self) -> Self {
+        self.clone().0.is_first_distinct().into()
+    }
+
+    fn is_in(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().is_in(robj_to!(PLExpr, other)?).into())
+    }
+
+    pub fn is_infinite(&self) -> Self {
+        self.0.clone().is_infinite().into()
+    }
+
+    // TODO: is_last_distinct
+
+    pub fn is_nan(&self) -> Self {
+        self.0.clone().is_nan().into()
+    }
+    pub fn is_not_null(&self) -> Self {
+        self.0.clone().is_not_null().into()
+    }
+
+    pub fn is_not_nan(&self) -> Self {
+        self.0.clone().is_not_nan().into()
+    }
+    pub fn is_null(&self) -> Self {
+        self.0.clone().is_null().into()
+    }
+
+    pub fn is_unique(&self) -> Self {
+        self.0.clone().is_unique().into()
+    }
+    pub fn not_(&self) -> Self {
+        self.0.clone().not().into()
     }
 
     pub fn count(&self) -> Self {
@@ -1635,27 +1656,34 @@ impl Expr {
             .into()
     }
 
-    //binary arithmetic expressions
+    //numeric
+
     pub fn add(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().add(robj_to!(PLExpr, other)?).into())
     }
 
-    //binary arithmetic expressions
-    pub fn sub(&self, other: Robj) -> RResult<Self> {
-        Ok(self.0.clone().sub(robj_to!(PLExpr, other)?).into())
+    pub fn floor_div(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().floor_div(robj_to!(PLExpr, other)?).into())
+    }
+
+    pub fn rem(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().rem(robj_to!(PLExpr, other)?).into())
     }
 
     pub fn mul(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().mul(robj_to!(PLExpr, other)?).into())
     }
 
+    pub fn sub(&self, other: Robj) -> RResult<Self> {
+        Ok(self.0.clone().sub(robj_to!(PLExpr, other)?).into())
+    }
+
     pub fn div(&self, other: Robj) -> RResult<Self> {
         Ok(self.0.clone().div(robj_to!(PLExpr, other)?).into())
     }
 
-    //unary
-    pub fn not_(&self) -> Self {
-        self.0.clone().not().into()
+    pub fn pow(&self, exponent: Robj) -> RResult<Self> {
+        Ok(self.0.clone().pow(robj_to!(PLExpr, exponent)?).into())
     }
 
     //expr      "funnies"
@@ -1756,16 +1784,8 @@ impl Expr {
         self.0.clone().apply(rbgfunc, output_map).into()
     }
 
-    pub fn is_unique(&self) -> Self {
-        self.0.clone().is_unique().into()
-    }
-
     pub fn approx_n_unique(&self) -> Self {
         self.clone().0.approx_n_unique().into()
-    }
-
-    pub fn is_first(&self) -> Self {
-        self.clone().0.is_first_distinct().into()
     }
 
     // name methods

@@ -28,3 +28,6 @@ pl$lit(2) == 2
 pl$lit(2) == pl$lit(2)
 pl$lit(2)$eq(pl$lit(2))
 }
+\seealso{
+\link{Expr_eq_missing}
+}

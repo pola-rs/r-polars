@@ -189,10 +189,54 @@ Expr_add = function(other) {
 Expr_div = function(other) {
   .pr$Expr$div(self, other) |> unwrap("in $div()")
 }
+
 #' @export
 #' @rdname Expr_div
 #' @inheritParams Expr_add
 "/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
+
+#' Floor divide two expressions
+#'
+#' @inherit Expr_add description params return
+#'
+#' @examples
+#' pl$lit(5) %/% 10
+#' pl$lit(5) %/% pl$lit(10)
+#' pl$lit(5)$floor_div(pl$lit(10))
+Expr_floor_div = function(other) {
+  .pr$Expr$floor_div(self, other) |> unwrap("in $floor_div()")
+}
+
+#' @export
+#' @rdname Expr_floor_div
+#' @inheritParams Expr_add
+"%/%.Expr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
+
+#' Modulo two expressions
+#'
+#' @inherit Expr_add description params return
+#'
+#' @details Currently, the modulo operator behaves differently than in R,
+#' and not guaranteed `x == (x %% y) + y * (x %/% y)`.
+#' @examples
+#' pl$select(pl$lit(-1:12) %% 3)$to_series()$to_vector()
+#'
+#' # The example is **NOT** equivalent to the followings:
+#' -1:12 %% 3
+#' pl$select(-1:12 %% 3)$to_series()$to_vector()
+#'
+#' # Not guaranteed `x == (x %% y) + y * (x %/% y)`
+#' x = pl$lit(-1:12)
+#' y = pl$lit(3)
+#' pl$select(x == (x %% y) + y * (x %/% y))
+Expr_mod = function(other) {
+  .pr$Expr$rem(self, other) |> unwrap("in $mod()")
+}
+
+#' @export
+#' @rdname Expr_mod
+#' @inheritParams Expr_add
+"%%.Expr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
 
 #' Substract two expressions
 #'
@@ -206,6 +250,7 @@ Expr_div = function(other) {
 Expr_sub = function(other) {
   .pr$Expr$sub(self, other) |> unwrap("in $sub()")
 }
+
 #' @export
 #' @rdname Expr_sub
 #' @inheritParams Expr_add
@@ -289,6 +334,7 @@ Expr_gt = function(other) {
 #'
 #' @inherit Expr_add description params return
 #'
+#' @seealso [Expr_eq_missing]
 #' @examples
 #' pl$lit(2) == 2
 #' pl$lit(2) == pl$lit(2)
@@ -296,16 +342,32 @@ Expr_gt = function(other) {
 Expr_eq = function(other) {
   .pr$Expr$eq(self, other) |> unwrap("in $eq()")
 }
+
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_eq
 "==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
+#' Check equality without `null` propagation
+#'
+#' @inherit Expr_add description params return
+#'
+#' @seealso [Expr_eq]
+#' @examples
+#' df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
+#' df$with_columns(
+#'   eq = pl$col("x")$eq("y"),
+#'   eq_missing = pl$col("x")$eq_missing("y")
+#' )
+Expr_eq_missing = function(other) {
+  .pr$Expr$eq_missing(self, other) |> unwrap("in $eq_missing()")
+}
 
 #' Check inequality
 #'
 #' @inherit Expr_add description params return
 #'
+#' @seealso [Expr_neq_missing]
 #' @examples
 #' pl$lit(1) != 2
 #' pl$lit(1) != pl$lit(2)
@@ -313,10 +375,26 @@ Expr_eq = function(other) {
 Expr_neq = function(other) {
   .pr$Expr$neq(self, other) |> unwrap("in $neq()")
 }
+
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_neq
 "!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
+
+#' Check inequality without `null` propagation
+#'
+#' @inherit Expr_add description params return
+#'
+#' @seealso [Expr_neq]
+#' @examples
+#' df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
+#' df$with_columns(
+#'  neq = pl$col("x")$neq("y"),
+#' neq_missing = pl$col("x")$neq_missing("y")
+#' )
+Expr_neq_missing = function(other) {
+  .pr$Expr$neq_missing(self, other) |> unwrap("in $neq_missing()")
+}
 
 #' Check lower or equal inequality
 #'
