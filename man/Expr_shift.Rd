@@ -18,7 +18,7 @@ Shift values
 \examples{
 pl$DataFrame(a = c(1, 2, 4, 5, 8))$
   with_columns(
-    pl$col("a")$shift(-2)$alias("shift-2"),
-    pl$col("a")$shift(2)$alias("shift+2")
-  )
+  pl$col("a")$shift(-2)$alias("shift-2"),
+  pl$col("a")$shift(2)$alias("shift+2")
+)
 }

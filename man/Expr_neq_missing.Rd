@@ -19,8 +19,8 @@ The RHS can either be an Expr or an object that can be converted to a literal
 \examples{
 df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
 df$with_columns(
- neq = pl$col("x")$neq("y"),
-neq_missing = pl$col("x")$neq_missing("y")
+  neq = pl$col("x")$neq("y"),
+  neq_missing = pl$col("x")$neq_missing("y")
 )
 }
 \seealso{

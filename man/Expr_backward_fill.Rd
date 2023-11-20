@@ -20,6 +20,6 @@ Fill missing values with the next to be seen values. Syntactic sugar for
 \examples{
 pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
   with_columns(
-    backward = pl$col("a")$backward_fill()
-  )
+  backward = pl$col("a")$backward_fill()
+)
 }

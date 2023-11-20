@@ -13,8 +13,10 @@ Expr
 Find the upper bound of a DataType
 }
 \examples{
-pl$DataFrame(x = c(1, 2, 3), y = -2:0,
-             schema = list(x = pl$Float64, y = pl$Int32))$
- select(pl$all()$upper_bound())
+pl$DataFrame(
+  x = c(1, 2, 3), y = -2:0,
+  schema = list(x = pl$Float64, y = pl$Int32)
+)$
+  select(pl$all()$upper_bound())
 }
 \keyword{datasets}
