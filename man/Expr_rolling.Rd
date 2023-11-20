@@ -35,7 +35,53 @@ will lead to incorrect output.}
 Expr
 }
 \description{
-Create rolling groups based on a time or numeric column
+If you have a time series \verb{<t_0, t_1, ..., t_n>}, then by default the windows
+created will be:
+\itemize{
+\item (t_0 - period, t_0]
+\item (t_1 - period, t_1]
+\item …
+\item (t_n - period, t_n]
+}
+
+whereas if you pass a non-default offset, then the windows will be:
+\itemize{
+\item (t_0 + offset, t_0 + offset + period]
+\item (t_1 + offset, t_1 + offset + period]
+\item …
+\item (t_n + offset, t_n + offset + period]
+}
+}
+\details{
+The period and offset arguments are created either from a timedelta, or by
+using the following string language:
+\itemize{
+\item 1ns (1 nanosecond)
+\item 1us (1 microsecond)
+\item 1ms (1 millisecond)
+\item 1s (1 second)
+\item 1m (1 minute)
+\item 1h (1 hour)
+\item 1d (1 calendar day)
+\item 1w (1 calendar week)
+\item 1mo (1 calendar month)
+\item 1q (1 calendar quarter)
+\item 1y (1 calendar year)
+\item 1i (1 index count)
+}
+
+Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+
+By "calendar day", we mean the corresponding time on the next day (which may
+not be 24 hours, due to daylight savings). Similarly for "calendar week",
+"calendar month", "calendar quarter", and "calendar year".
+
+In case of a rolling operation on an integer column, the windows are defined
+by:
+\itemize{
+\item "1i" # length 1
+\item "10i" # length 10
+}
 }
 \examples{
 # create a DataFrame with a Datetime column and an f64 column
@@ -57,7 +103,6 @@ df$with_columns(
 # offset = "1d", we start the window one day after the value in "dt", and
 # then we add a 2-day window relative to the window start.
 df$with_columns(
-  sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d"),
-  sum_a_offset2 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "2d")
+  sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 )
 }
