@@ -389,8 +389,8 @@ Expr_neq = function(other) {
 #' @examples
 #' df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
 #' df$with_columns(
-#'  neq = pl$col("x")$neq("y"),
-#' neq_missing = pl$col("x")$neq_missing("y")
+#'   neq = pl$col("x")$neq("y"),
+#'   neq_missing = pl$col("x")$neq_missing("y")
 #' )
 Expr_neq_missing = function(other) {
   .pr$Expr$neq_missing(self, other) |> unwrap("in $neq_missing()")
@@ -1567,9 +1567,9 @@ Expr_gather = function(indices) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
 #'   with_columns(
-#'     pl$col("a")$shift(-2)$alias("shift-2"),
-#'     pl$col("a")$shift(2)$alias("shift+2")
-#'   )
+#'   pl$col("a")$shift(-2)$alias("shift-2"),
+#'   pl$col("a")$shift(2)$alias("shift+2")
+#' )
 Expr_shift = function(periods = 1) {
   .pr$Expr$shift(self, periods) |>
     unwrap("in $shift():")
@@ -1585,9 +1585,9 @@ Expr_shift = function(periods = 1) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
 #'   with_columns(
-#'     pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-#'     pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
-#'   )
+#'   pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+#'   pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
+#' )
 Expr_shift_and_fill = function(periods, fill_value) {
   .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value)) |>
     unwrap("in $shift_and_fill():")
@@ -1605,10 +1605,10 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     value = pl$col("a")$fill_null(999),
-#'     backward = pl$col("a")$fill_null(strategy = "backward"),
-#'     mean = pl$col("a")$fill_null(strategy = "mean")
-#'   )
+#'   value = pl$col("a")$fill_null(999),
+#'   backward = pl$col("a")$fill_null(strategy = "backward"),
+#'   mean = pl$col("a")$fill_null(strategy = "mean")
+#' )
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
     # the wrong stuff
@@ -1638,8 +1638,8 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     backward = pl$col("a")$backward_fill()
-#'   )
+#'   backward = pl$col("a")$backward_fill()
+#' )
 Expr_backward_fill = function(limit = NULL) {
   .pr$Expr$backward_fill(self, limit)
 }
@@ -1654,8 +1654,8 @@ Expr_backward_fill = function(limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     backward = pl$col("a")$forward_fill()
-#'   )
+#'   backward = pl$col("a")$forward_fill()
+#' )
 Expr_forward_fill = function(limit = NULL) {
   .pr$Expr$forward_fill(self, limit)
 }
@@ -1668,10 +1668,10 @@ Expr_forward_fill = function(limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
 #'   with_columns(
-#'     literal = pl$col("a")$fill_nan(999),
-#'     # implicit coercion to string
-#'     string = pl$col("a")$fill_nan("invalid")
-#'   )
+#'   literal = pl$col("a")$fill_nan(999),
+#'   # implicit coercion to string
+#'   string = pl$col("a")$fill_nan("invalid")
+#' )
 Expr_fill_nan = function(expr = NULL) {
   .pr$Expr$fill_nan(self, wrap_e(expr))
 }
@@ -2269,9 +2269,9 @@ Expr_inspect = function(fmt = "{}") {
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 4, NA, 100, NaN, 150))$
 #'   with_columns(
-#'    interp_lin = pl$col("x")$interpolate(),
-#'    interp_near = pl$col("x")$interpolate("nearest")
-#'   )
+#'   interp_lin = pl$col("x")$interpolate(),
+#'   interp_near = pl$col("x")$interpolate("nearest")
+#' )
 #'
 #' # x, y interpolation over a grid
 #' df_original_grid = pl$DataFrame(
@@ -2734,9 +2734,11 @@ Expr_clip_max = function(max) {
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(x = c(1, 2, 3), y = -2:0,
-#'              schema = list(x = pl$Float64, y = pl$Int32))$
-#'  select(pl$all()$upper_bound())
+#' pl$DataFrame(
+#'   x = c(1, 2, 3), y = -2:0,
+#'   schema = list(x = pl$Float64, y = pl$Int32)
+#' )$
+#'   select(pl$all()$upper_bound())
 Expr_upper_bound = "use_extendr_wrapper"
 
 #' Find the lower bound of a DataType
@@ -2745,9 +2747,11 @@ Expr_upper_bound = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(x = 1:3, y = 1:3,
-#'              schema = list(x = pl$UInt32, y = pl$Int32))$
-#'  select(pl$all()$lower_bound())
+#' pl$DataFrame(
+#'   x = 1:3, y = 1:3,
+#'   schema = list(x = pl$UInt32, y = pl$Int32)
+#' )$
+#'   select(pl$all()$lower_bound())
 Expr_lower_bound = "use_extendr_wrapper"
 
 #' Get the sign of elements
@@ -3498,18 +3502,20 @@ Expr_peak_max = function() {
 #'
 #' @examples
 #' # create a DataFrame with a Datetime column and an f64 column
-#' dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-#'           "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+#' dates = c(
+#'   "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+#'   "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+#' )
 #'
 #' df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
 #'   with_columns(
-#'     pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-#'   )
+#'   pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+#' )
 #'
 #' df$with_columns(
-#'   sum_a=pl$sum("a")$rolling(index_column="dt", period="2d"),
-#'   min_a=pl$min("a")$rolling(index_column="dt", period="2d"),
-#'   max_a=pl$max("a")$rolling(index_column="dt", period="2d")
+#'   sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
+#'   min_a = pl$min("a")$rolling(index_column = "dt", period = "2d"),
+#'   max_a = pl$max("a")$rolling(index_column = "dt", period = "2d")
 #' )
 #'
 #' # we can use "offset" to change the start of the window period. Here, with
@@ -3519,7 +3525,7 @@ Expr_peak_max = function() {
 #'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
 #' )
 Expr_rolling = function(index_column, period, offset = NULL,
-                        closed = "right", check_sorted = TRUE) {
+                         closed = "right", check_sorted = TRUE) {
   if (is.null(offset)) {
     offset = paste0("-", period)
   }

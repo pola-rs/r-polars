@@ -58,19 +58,19 @@ test_that("expression Arithmetics", {
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~fn,
-    "mul",       "*",
-    "add",       "+",
-    "sub",       "-",
-    "div",       "/",
-    "floor_div",       "%/%",
-    "mod",       "%%",
-    "gt",        ">",
-    "gte",       ">=",
-    "lt",        "<",
-    "lte",       "<=",
-    "eq",        "==",
-    "neq",       "!=",
-    "pow",       "^",
+    "mul", "*",
+    "add", "+",
+    "sub", "-",
+    "div", "/",
+    "floor_div", "%/%",
+    "mod", "%%",
+    "gt", ">",
+    "gte", ">=",
+    "lt", "<",
+    "lte", "<=",
+    "eq", "==",
+    "neq", "!=",
+    "pow", "^",
   )
 }
 
@@ -2451,13 +2451,15 @@ test_that("pl$min_horizontal works", {
 })
 
 test_that("rolling, basic", {
-  dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-            "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
 
   out = df$with_columns(
     sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
@@ -2478,13 +2480,15 @@ test_that("rolling, basic", {
 })
 
 test_that("rolling, arg closed", {
-  dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-            "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
 
   out = df$with_columns(
     sum_a_left = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "left"),
@@ -2505,13 +2509,15 @@ test_that("rolling, arg closed", {
 })
 
 test_that("rolling, arg offset", {
-  dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-            "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
-    )
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
 
   # with offset = "1d", we start the window at one or two days after the value
   # in "dt", and then we add a 2-day window relative to the window start.
@@ -2530,13 +2536,15 @@ test_that("rolling, arg offset", {
 })
 
 test_that("rolling, arg check_sorted", {
-  dates = c("2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",
-            "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09")
+  dates = c(
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09"
+  )
 
   df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
     with_columns(
-      pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")
-    )
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")
+  )
 
   expect_error(
     df$with_columns(
@@ -2548,8 +2556,10 @@ test_that("rolling, arg check_sorted", {
   # no error message but wrong output
   expect_no_error(
     df$with_columns(pl$col("dt")$set_sorted())$with_columns(
-      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d",
-                                          check_sorted = FALSE)
+      sum_a_offset1 = pl$sum("a")$rolling(
+        index_column = "dt", period = "2d",
+        check_sorted = FALSE
+      )
     )
   )
 })
