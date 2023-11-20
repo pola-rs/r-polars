@@ -27,9 +27,9 @@ column.}
 (inclusive). This can be either \code{"left"}, \code{"right"}, \code{"both"} or \code{"none"}.}
 
 \item{check_sorted}{Check whether data is actually sorted. Checking it is
-expensive so if you are sure the data within the by groups is sorted, you can
-set this to \code{FALSE} but note that if the data is unsorted, it will lead
-to incorrect output.}
+expensive so if you are sure the data within the \code{index_column} is sorted, you
+can set this to \code{FALSE} but note that if the data actually is unsorted, it
+will lead to incorrect output.}
 }
 \value{
 Expr
@@ -51,5 +51,13 @@ df$with_columns(
   sum_a=pl$sum("a")$rolling(index_column="dt", period="2d"),
   min_a=pl$min("a")$rolling(index_column="dt", period="2d"),
   max_a=pl$max("a")$rolling(index_column="dt", period="2d")
+)
+
+# we can use "offset" to change the start of the window period. Here, with
+# offset = "1d", we start the window one day after the value in "dt", and
+# then we add a 2-day window relative to the window start.
+df$with_columns(
+  sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d"),
+  sum_a_offset2 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "2d")
 )
 }
