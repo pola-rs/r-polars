@@ -38,9 +38,9 @@ test_that("concat dataframe", {
   df_ver_2 = pl$concat(l_ver[[1L]], l_ver[[2L]], l_ver[[3L]], how = "vertical")
   expect_identical(df_ver$to_list(), df_ver_2$to_list())
 
-  # use supertypes
+  # use "_relaxed"
   expect_identical(
-    pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical", to_supertypes = TRUE)$to_list(),
+    pl$concat(l_ver[[1L]], pl$DataFrame(a = 2, b = 42L), how = "vertical_relaxed")$to_list(),
     pl$DataFrame(rbind(data.frame(a = 1:5, b = letters[1:5]), data.frame(a = 2, b = 42L)))$to_list()
   )
 

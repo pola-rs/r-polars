@@ -6,22 +6,22 @@
 #' is lazy, a LazyFrame is returned; otherwise, a DataFrame is returned (note
 #' that if the first element is eager, all other elements have to be eager to
 #' avoid implicit collect).
-#' @param rechunk Perform a rechunk at last.
 #' @param how Bind direction. Can be "vertical" (like `rbind()`), "horizontal"
-#' (like `cbind()`), or "diagonal".
+#' (like `cbind()`), or "diagonal". For `"vertical"` and `"diagonal"`, adding
+#' the suffix `"_relaxed"` will cast columns to their shared supertypes. For
+#' example, if we try to vertically concatenate two columns of types `i32` and
+#' `f64`, using `how = "vertical_relaxed"` will cast the column of type `i32`
+#' to `f64` beforehand.
+#' @param rechunk Perform a rechunk at last.
 #' @param parallel Only used for LazyFrames. If `TRUE` (default), lazy
 #' computations may be executed in parallel.
-#' @param to_supertypes If `TRUE` (default), cast columns shared super types, if
-#' any. For example, if we try to vertically concatenate two columns of types `i32`
-#' and `f64`, the column of type `i32` will be cast to `f64` beforehand. This
-#' argument is equivalent to the "_relaxed" operations in Python polars.
 #'
 #' @details
 #' Categorical columns/Series must have been constructed while global string
 #' cache enabled. See [`pl$enable_string_cache()`][pl_enable_string_cache].
 #'
 #'
-#' @return DataFrame, or Series, LazyFrame or Expr
+#' @return DataFrame, Series, LazyFrame or Expr
 #'
 #' @examples
 #' # vertical
@@ -49,23 +49,24 @@
 #' pl$concat(l_hor, how = "diagonal")
 #'
 #' # if two columns don't share the same type, concat() will error unless we use
-#' # `to_supertypes = TRUE`:
+#' # `how = "vertical_relaxed"`:
 #' test = pl$DataFrame(x = 1L) # i32
 #' test2 = pl$DataFrame(x = 1.0) # f64
 #'
-#' pl$concat(test, test2, to_supertypes = TRUE)
+#' pl$concat(test, test2, how = "vertical_relaxed")
 pl$concat = function(
-    ..., # list of DataFrames or Series or lazyFrames or expr
+    ...,
+    how = c("vertical", "vertical_relaxed", "horizontal",
+            "diagonal", "diagonal_relaxed"),
     rechunk = TRUE,
-    how = c("vertical", "horizontal", "diagonal"),
-    parallel = TRUE,
-    to_supertypes = FALSE) {
+    parallel = TRUE) {
   l = unpack_list(..., skip_classes = "data.frame")
 
   if (length(l) == 0L) {
     return(NULL)
   }
-  how_args = c("vertical", "horizontal", "diagonal")
+  how_args = c("vertical", "vertical_relaxed", "horizontal",
+               "diagonal", "diagonal_relaxed")
   how = match.arg(how[1L], how_args) |>
     result() |>
     unwrap("in pl$concat()")
@@ -99,12 +100,26 @@ pl$concat = function(
           call. = FALSE
         )
       }
-      concat_series(l, rechunk, to_supertypes)
+      concat_series(l, rechunk, to_supertypes = FALSE)
+    },
+    how == "vertical_relaxed" && (inherits(first, "Series") || is.vector(first)),
+    {
+      if (any(args_modified %in% c("parallel"))) {
+        warning(
+          "in pl$concat(): argument `parallel` is not used when concatenating Series",
+          call. = FALSE
+        )
+      }
+      concat_series(l, rechunk, to_supertypes = TRUE)
     },
     how == "vertical",
-    concat_lf(l, rechunk, parallel, to_supertypes),
+    concat_lf(l, rechunk, parallel, to_supertypes = FALSE),
+    how == "vertical_relaxed",
+    concat_lf(l, rechunk, parallel, to_supertypes = TRUE),
     how == "diagonal",
-    concat_lf_diagonal(l, rechunk, parallel, to_supertypes),
+    concat_lf_diagonal(l, rechunk, parallel, to_supertypes = FALSE),
+    how == "diagonal_relaxed",
+    concat_lf_diagonal(l, rechunk, parallel, to_supertypes = TRUE),
     how == "horizontal" && !eager,
     {
       Err_plain(
@@ -115,9 +130,9 @@ pl$concat = function(
     },
     how == "horizontal",
     {
-      if (any(args_modified %in% c("parallel", "to_supertypes"))) {
+      if (any(args_modified %in% c("parallel"))) {
         warning(
-          "Arguments `parallel`, `rechunk`, `eager` and `to_supertypes` are not used when how=='horizontal'",
+          "Arguments `parallel`, `rechunk`, and `eager` are not used when how=='horizontal'",
           call. = FALSE
         )
       }

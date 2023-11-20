@@ -25,6 +25,9 @@
   `pl$sum_horizontal()` instead for rowwise computation (#508).
 - `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
   (#511).
+- In `pl$concat()`, the argument `to_supertypes` is removed. Use the suffix 
+  `"_relaxed"` in the `how` argument to cast columns to their shared supertypes
+  (#523).
 
 ## What's changed
 
