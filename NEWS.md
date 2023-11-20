@@ -44,7 +44,7 @@
 - New method `$rolling()` to apply an Expr over a rolling window based on 
   date/datetime/numeric indices (#470).
 - New methods `$name$to_lowercase()` and `$name$to_uppercase()` to transform 
-  variable names.
+  variable names (#529).
 
 # polars 0.10.1
 
