@@ -3358,3 +3358,93 @@ Expr_peak_min = function() {
 Expr_peak_max = function() {
   .pr$Expr$peak_max(self)
 }
+
+#' Create rolling groups based on a time or numeric column
+#'
+#' @description
+#' If you have a time series `<t_0, t_1, ..., t_n>`, then by default the windows
+#' created will be:
+#' * (t_0 - period, t_0]
+#' * (t_1 - period, t_1]
+#' * …
+#' * (t_n - period, t_n]
+#'
+#' whereas if you pass a non-default offset, then the windows will be:
+#' * (t_0 + offset, t_0 + offset + period]
+#' * (t_1 + offset, t_1 + offset + period]
+#' * …
+#' * (t_n + offset, t_n + offset + period]
+#'
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order. If this
+#' column represents an index, it has to be either Int32 or Int64. Note that
+#' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
+#' column.
+#' @param period Length of the window, must be non-negative.
+#' @param offset Offset of the window. Default is `-period`.
+#' @param closed Define which sides of the temporal interval are closed
+#' (inclusive). This can be either `"left"`, `"right"`, `"both"` or `"none"`.
+#' @param check_sorted Check whether data is actually sorted. Checking it is
+#' expensive so if you are sure the data within the `index_column` is sorted, you
+#' can set this to `FALSE` but note that if the data actually is unsorted, it
+#' will lead to incorrect output.
+#'
+#' @details
+#' The period and offset arguments are created either from a timedelta, or by
+#' using the following string language:
+#' * 1ns (1 nanosecond)
+#' * 1us (1 microsecond)
+#' * 1ms (1 millisecond)
+#' * 1s (1 second)
+#' * 1m (1 minute)
+#' * 1h (1 hour)
+#' * 1d (1 calendar day)
+#' * 1w (1 calendar week)
+#' * 1mo (1 calendar month)
+#' * 1q (1 calendar quarter)
+#' * 1y (1 calendar year)
+#' * 1i (1 index count)
+#'
+#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+#'
+#' By "calendar day", we mean the corresponding time on the next day (which may
+#' not be 24 hours, due to daylight savings). Similarly for "calendar week",
+#' "calendar month", "calendar quarter", and "calendar year".
+#'
+#' In case of a rolling operation on an integer column, the windows are defined
+#' by:
+#' * "1i" # length 1
+#' * "10i" # length 10
+#'
+#' @return Expr
+#'
+#' @examples
+#' # create a DataFrame with a Datetime column and an f64 column
+#' dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+#'           "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+#'
+#' df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+#'   with_columns(
+#'     pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+#'   )
+#'
+#' df$with_columns(
+#'   sum_a=pl$sum("a")$rolling(index_column="dt", period="2d"),
+#'   min_a=pl$min("a")$rolling(index_column="dt", period="2d"),
+#'   max_a=pl$max("a")$rolling(index_column="dt", period="2d")
+#' )
+#'
+#' # we can use "offset" to change the start of the window period. Here, with
+#' # offset = "1d", we start the window one day after the value in "dt", and
+#' # then we add a 2-day window relative to the window start.
+#' df$with_columns(
+#'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
+#' )
+Expr_rolling = function(index_column, period, offset = NULL,
+                        closed = "right", check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
+    unwrap("in $rolling():")
+}

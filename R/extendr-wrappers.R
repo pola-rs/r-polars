@@ -127,7 +127,7 @@ DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, 
 
 DataFrame$rechunk <- function() .Call(wrap__DataFrame__rechunk, self)
 
-DataFrame$clone_see_me_macro <- function() .Call(wrap__DataFrame__clone_see_me_macro, self)
+DataFrame$clone_in_rust <- function() .Call(wrap__DataFrame__clone_in_rust, self)
 
 DataFrame$default <- function() .Call(wrap__DataFrame__default)
 
@@ -540,6 +540,8 @@ Expr$rolling_median <- function(window_size, weights, min_periods, center, by_nu
 Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__Expr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
 
 Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
+
+Expr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__Expr__rolling, self, index_column, period, offset, closed, check_sorted)
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
@@ -1083,7 +1085,7 @@ LazyFrame$profile <- function() .Call(wrap__LazyFrame__profile, self)
 
 LazyFrame$explode <- function(dotdotdot) .Call(wrap__LazyFrame__explode, self, dotdotdot)
 
-LazyFrame$clone_see_me_macro <- function() .Call(wrap__LazyFrame__clone_see_me_macro, self)
+LazyFrame$clone_in_rust <- function() .Call(wrap__LazyFrame__clone_in_rust, self)
 
 LazyFrame$with_context <- function(contexts) .Call(wrap__LazyFrame__with_context, self, contexts)
 
@@ -1096,6 +1098,10 @@ LazyFrame$with_context <- function(contexts) .Call(wrap__LazyFrame__with_context
 LazyGroupBy <- new.env(parent = emptyenv())
 
 LazyGroupBy$print <- function() invisible(.Call(wrap__LazyGroupBy__print, self))
+
+LazyGroupBy$clone_in_rust <- function() .Call(wrap__LazyGroupBy__clone_in_rust, self)
+
+LazyGroupBy$ungroup <- function() .Call(wrap__LazyGroupBy__ungroup, self)
 
 LazyGroupBy$agg <- function(exprs) .Call(wrap__LazyGroupBy__agg, self, exprs)
 

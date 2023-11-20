@@ -107,3 +107,53 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
   }
   pl$set_options(maintain_order = FALSE)
 })
+
+
+test_that("LazyGroupBy ungroup", {
+  lf = pl$LazyFrame(mtcars)
+  lgb = lf$group_by("cyl")
+
+  # tests $ungroup() only changed the class of output, not input (lgb).
+  lgb_ug = lgb$ungroup()
+  expect_identical(class(lgb_ug), "LazyFrame")
+  expect_identical(class(lgb), "LazyGroupBy")
+
+  expect_equal(
+    lgb$ungroup()$collect()$to_data_frame(),
+    lf$collect()$to_data_frame()
+  )
+
+  expect_identical(
+    attributes(lgb$ungroup()),
+    attributes(lf)
+  )
+})
+
+test_that("GroupBy ungroup", {
+  df = pl$DataFrame(mtcars)
+  gb = df$group_by("cyl")
+
+  # tests $ungroup() only changed the class of output, not input (lgb).
+  gb_ug = gb$ungroup()
+  expect_identical(class(gb_ug), "DataFrame")
+  expect_identical(class(gb), "GroupBy")
+
+  expect_equal(
+    gb$ungroup()$to_data_frame(),
+    df$to_data_frame()
+  )
+
+  expect_identical(
+    attributes(gb$ungroup()),
+    attributes(df)
+  )
+})
+
+test_that("LazyGroupBy clone", {
+  lgb = pl$LazyFrame(a = 1:3)$group_by("a")
+  lgb_copy = lgb
+  lgb_clone = .pr$LazyGroupBy$clone_in_rust(lgb)
+  expect_identical(class(lgb_clone), class(lgb))
+  expect_true(mem_address(lgb) != mem_address(lgb_clone))
+  expect_true(mem_address(lgb) == mem_address(lgb_copy))
+})

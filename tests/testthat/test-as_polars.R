@@ -9,8 +9,9 @@ make_cases = function() {
   tibble::tribble(
     ~.test_name, ~x,
     "data.frame", test_df,
-    "plsf", pl$LazyFrame(test_df),
-    "plgroupby", pl$DataFrame(test_df)$group_by("col_int"),
+    "polars_lf", pl$LazyFrame(test_df),
+    "polars_group_by", pl$DataFrame(test_df)$group_by("col_int"),
+    "polars_lazy_group_by", pl$LazyFrame(test_df)$group_by("col_int"),
     "arrow Table", arrow::as_arrow_table(test_df)
   )
 }
@@ -19,7 +20,10 @@ patrick::with_parameters_test_that("as_polars_df S3 methods",
   {
     skip_if_not_installed("arrow")
 
-    actual = as.data.frame(as_polars_df(x))
+    pl_df = as_polars_df(x)
+    expect_s3_class(pl_df, "DataFrame")
+
+    actual = as.data.frame(pl_df)
     expected = as.data.frame(pl$DataFrame(test_df))
 
     expect_equal(actual, expected)
