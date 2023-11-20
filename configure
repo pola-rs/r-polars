@@ -98,9 +98,17 @@ check_bin_lib() {
   fi
 }
 
+check_darwin() {
+  ADDITIONAL_PKG_LIBS_FLAG="-lrt"
+  if [ $(uname) = "Darwin" ] ; then
+    ADDITIONAL_PKG_LIBS_FLAG=""
+  fi
+}
+
 check_bin_lib
 check_cargo
+check_darwin
 
-sed -e "s|@RUST_TARGET@|$(rustc -vV | grep host | cut -d' ' -f2)|" src/Makevars.in >src/Makevars
+sed -e "s|@RUST_TARGET@|$(rustc -vV | grep host | cut -d' ' -f2)|" -e "s|@ADDITIONAL_PKG_LIBS_FLAG@|${ADDITIONAL_PKG_LIBS_FLAG}|" src/Makevars.in >src/Makevars
 
 exit 0
