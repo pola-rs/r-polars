@@ -7,7 +7,7 @@ LIBNAME = libr_polars.a
 TARGET_DIR = $(CURDIR)/rust/target
 LIBDIR = $(TARGET_DIR)/$(TARGET)/$(RPOLARS_PROFILE)
 STATLIB = $(LIBDIR)/$(LIBNAME)
-PKG_LIBS = -L$(LIBDIR) -lr_polars
+PKG_LIBS = -L$(LIBDIR) -lr_polars -lrt
 RPOLARS_RUST_SOURCE ?= ./rust
 
 rpolars_ext_binary = $(RPOLARS_RUST_SOURCE)/target/$(TARGET)/$(RPOLARS_PROFILE)/$(LIBNAME)
