@@ -13,8 +13,10 @@ Expr
 Find the lower bound of a DataType
 }
 \examples{
-pl$DataFrame(x = 1:3, y = 1:3,
-             schema = list(x = pl$UInt32, y = pl$Int32))$
- select(pl$all()$lower_bound())
+pl$DataFrame(
+  x = 1:3, y = 1:3,
+  schema = list(x = pl$UInt32, y = pl$Int32)
+)$
+  select(pl$all()$lower_bound())
 }
 \keyword{datasets}

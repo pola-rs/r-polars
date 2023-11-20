@@ -20,7 +20,7 @@ Shift the values by a given period and fill the resulting null values.
 \examples{
 pl$DataFrame(a = c(1, 2, 4, 5, 8))$
   with_columns(
-    pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-    pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
-  )
+  pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+  pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
+)
 }

@@ -25,8 +25,8 @@ Fill null values with a value or strategy
 \examples{
 pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
   with_columns(
-    value = pl$col("a")$fill_null(999),
-    backward = pl$col("a")$fill_null(strategy = "backward"),
-    mean = pl$col("a")$fill_null(strategy = "mean")
-  )
+  value = pl$col("a")$fill_null(999),
+  backward = pl$col("a")$fill_null(strategy = "backward"),
+  mean = pl$col("a")$fill_null(strategy = "mean")
+)
 }

@@ -85,18 +85,20 @@ by:
 }
 \examples{
 # create a DataFrame with a Datetime column and an f64 column
-dates = c("2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
-          "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43")
+dates = c(
+  "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+  "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+)
 
 df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
   with_columns(
-    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "\%Y-\%m-\%d \%H:\%M:\%S")$set_sorted()
-  )
+  pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "\%Y-\%m-\%d \%H:\%M:\%S")$set_sorted()
+)
 
 df$with_columns(
-  sum_a=pl$sum("a")$rolling(index_column="dt", period="2d"),
-  min_a=pl$min("a")$rolling(index_column="dt", period="2d"),
-  max_a=pl$max("a")$rolling(index_column="dt", period="2d")
+  sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
+  min_a = pl$min("a")$rolling(index_column = "dt", period = "2d"),
+  max_a = pl$max("a")$rolling(index_column = "dt", period = "2d")
 )
 
 # we can use "offset" to change the start of the window period. Here, with
