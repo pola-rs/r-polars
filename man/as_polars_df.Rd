@@ -8,6 +8,7 @@
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.Series}
 \alias{as_polars_df.LazyFrame}
+\alias{as_polars_df.LazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
 \alias{as_polars_df.RecordBatchReader}
 \title{To polars DataFrame}
@@ -40,6 +41,8 @@ as_polars_df(x, ...)
   inherit_optimization = FALSE,
   collect_in_background = FALSE
 )
+
+\method{as_polars_df}{LazyGroupBy}(x, ...)
 
 \method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
 
@@ -101,7 +104,7 @@ Takes not effect for Array or ChunkedArray}
 \code{\link[=as_polars_df]{as_polars_df()}} is a generic function that converts an R object to a
 polars DataFrame. It is basically a wrapper for \link[=pl_DataFrame]{pl$DataFrame()},
 but has special implementations for Apache Arrow-based objects such as
-polars \link[=LazyFrame_class]{LazyFrame} and \link[arrow:Table-class]{arrow::Table}.
+polars \link[=LazyFrame_class]{LazyFrame} and \link[arrow:Table]{arrow::Table}.
 }
 \details{
 For \link[=LazyFrame_class]{LazyFrame} objects, this function is a shortcut for
