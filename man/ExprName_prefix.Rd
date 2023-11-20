@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__name.R
 \name{ExprName_prefix}
 \alias{ExprName_prefix}
-\alias{prefix}
 \title{Add a prefix to a column name}
 \arguments{
 \item{prefix}{Prefix to be added to column name(s)}
@@ -25,4 +24,3 @@ dat$select(
 \seealso{
 \code{\link[=ExprName_suffix]{$suffix()}} to add a suffix
 }
-\keyword{Expr}

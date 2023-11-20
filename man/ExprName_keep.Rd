@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__name.R
 \name{ExprName_keep}
 \alias{ExprName_keep}
-\alias{keep_name}
 \title{Keep the original root name of the expression.}
 \value{
 Expr
@@ -13,4 +12,3 @@ Keep the original root name of the expression.
 \examples{
 pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 }
-\keyword{Expr}

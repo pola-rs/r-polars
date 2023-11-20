@@ -847,6 +847,10 @@ Expr$name_suffix <- function(suffix) .Call(wrap__Expr__name_suffix, self, suffix
 
 Expr$name_prefix <- function(prefix) .Call(wrap__Expr__name_prefix, self, prefix)
 
+Expr$name_to_lowercase <- function() .Call(wrap__Expr__name_to_lowercase, self)
+
+Expr$name_to_uppercase <- function() .Call(wrap__Expr__name_to_uppercase, self)
+
 Expr$name_map <- function(lambda) .Call(wrap__Expr__name_map, self, lambda)
 
 Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)

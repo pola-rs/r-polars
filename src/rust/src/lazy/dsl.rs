@@ -1769,19 +1769,27 @@ impl Expr {
     }
 
     // name methods
-    pub fn name_keep(&self) -> Self {
-        self.0.clone().name().keep().into()
+    pub fn name_keep(&self) -> RResult<Self> {
+        Ok(self.0.clone().name().keep().into())
     }
 
-    fn name_suffix(&self, suffix: String) -> Self {
-        self.0.clone().name().suffix(suffix.as_str()).into()
+    fn name_suffix(&self, suffix: String) -> RResult<Self> {
+        Ok(self.0.clone().name().suffix(suffix.as_str()).into())
     }
 
-    fn name_prefix(&self, prefix: String) -> Self {
-        self.0.clone().name().prefix(prefix.as_str()).into()
+    fn name_prefix(&self, prefix: String) -> RResult<Self> {
+        Ok(self.0.clone().name().prefix(prefix.as_str()).into())
     }
 
-    pub fn name_map(&self, lambda: Robj) -> Self {
+    fn name_to_lowercase(&self) -> RResult<Self> {
+        Ok(self.0.clone().name().to_lowercase().into())
+    }
+
+    fn name_to_uppercase(&self) -> RResult<Self> {
+        Ok(self.0.clone().name().to_uppercase().into())
+    }
+
+    pub fn name_map(&self, lambda: Robj) -> RResult<Self> {
         //find a way not to push lambda everytime to main thread handler
         //safety only accessed in main thread, can be temp owned by other threads
         let probj = ParRObj(lambda);
@@ -1828,8 +1836,8 @@ impl Expr {
                 })
                 .map(|str| str.to_string())
         };
-
-        self.clone().0.name().map(f).into()
+        
+        Ok(self.clone().0.name().map(f).into())
     }
 
     //string methods
