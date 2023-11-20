@@ -2485,8 +2485,8 @@ test_that("rolling, arg closed", {
     sum_a_left = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "left"),
     sum_a_both = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "both"),
     sum_a_none = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "none"),
-    sum_a_null = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "right")
-  )$select("sum_a_left", "sum_a_both", "sum_a_none", "sum_a_null")$to_data_frame()
+    sum_a_right = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "right")
+  )$select("sum_a_left", "sum_a_both", "sum_a_none", "sum_a_right")$to_data_frame()
 
   expect_identical(
     out,
@@ -2494,7 +2494,7 @@ test_that("rolling, arg closed", {
       sum_a_left = c(0, 3, 10, 15, 9, 0),
       sum_a_both = c(3, 10, 15, 24, 11, 1),
       sum_a_none = c(0, 3, 10, 15, 9, 0),
-      sum_a_null = c(3, 10, 15, 24, 11, 1)
+      sum_a_right = c(3, 10, 15, 24, 11, 1)
     )
   )
 })
