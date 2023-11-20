@@ -250,14 +250,8 @@ impl Series {
         self.0.chunk_lengths().map(|val| val as f64).collect()
     }
 
-    pub fn abs(&self) -> list::List {
-        let x = self
-            .0
-            .clone()
-            .abs()
-            .map(Series)
-            .map_err(|err| format!("{:?}", err));
-        r_result_list(x)
+    pub fn abs(&self) -> RResult<Series> {
+        pl::abs(&self.0).map_err(polars_to_rpolars_err).map(Series)
     }
 
     pub fn alias(&self, name: &str) -> Series {
@@ -490,8 +484,8 @@ impl Series {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn cumsum(&self, reverse: bool) -> RResult<Series> {
-        pl::cumsum(&self.0, reverse)
+    pub fn cum_sum(&self, reverse: bool) -> RResult<Series> {
+        pl::cum_sum(&self.0, reverse)
             .map_err(polars_to_rpolars_err)
             .map(Series)
     }

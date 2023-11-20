@@ -11,19 +11,17 @@
 #' @useDynLib polars, .registration = TRUE
 NULL
 
-min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
-
-max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
-
 all_horizontal <- function(dotdotdot) .Call(wrap__all_horizontal, dotdotdot)
 
 any_horizontal <- function(dotdotdot) .Call(wrap__any_horizontal, dotdotdot)
 
+min_horizontal <- function(dotdotdot) .Call(wrap__min_horizontal, dotdotdot)
+
+max_horizontal <- function(dotdotdot) .Call(wrap__max_horizontal, dotdotdot)
+
 sum_horizontal <- function(dotdotdot) .Call(wrap__sum_horizontal, dotdotdot)
 
 coalesce_exprs <- function(exprs) .Call(wrap__coalesce_exprs, exprs)
-
-sum_exprs <- function(exprs) .Call(wrap__sum_exprs, exprs)
 
 concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
@@ -201,7 +199,7 @@ DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(w
 
 DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
 
-DataFrame$write_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+DataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
 DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__DataFrame__write_json, self, file, pretty, row_oriented)
 
@@ -461,7 +459,7 @@ Expr$arg_min <- function() .Call(wrap__Expr__arg_min, self)
 
 Expr$search_sorted <- function(element) .Call(wrap__Expr__search_sorted, self, element)
 
-Expr$take <- function(idx) .Call(wrap__Expr__take, self, idx)
+Expr$gather <- function(idx) .Call(wrap__Expr__gather, self, idx)
 
 Expr$sort_by <- function(by, descending) .Call(wrap__Expr__sort_by, self, by, descending)
 
@@ -517,7 +515,7 @@ Expr$explode <- function() .Call(wrap__Expr__explode, self)
 
 Expr$flatten <- function() .Call(wrap__Expr__flatten, self)
 
-Expr$take_every <- function(n) .Call(wrap__Expr__take_every, self, n)
+Expr$gather_every <- function(n) .Call(wrap__Expr__gather_every, self, n)
 
 Expr$hash <- function(seed, seed_1, seed_2, seed_3) .Call(wrap__Expr__hash, self, seed, seed_1, seed_2, seed_3)
 
@@ -645,7 +643,7 @@ Expr$list_reverse <- function() .Call(wrap__Expr__list_reverse, self)
 
 Expr$list_unique <- function() .Call(wrap__Expr__list_unique, self)
 
-Expr$list_take <- function(index, null_on_oob) .Call(wrap__Expr__list_take, self, index, null_on_oob)
+Expr$list_gather <- function(index, null_on_oob) .Call(wrap__Expr__list_gather, self, index, null_on_oob)
 
 Expr$list_get <- function(index) .Call(wrap__Expr__list_get, self, index)
 
@@ -671,9 +669,9 @@ Expr$str_to_datetime <- function(format, time_unit, time_zone, strict, exact, ca
 
 Expr$str_to_time <- function(format, strict, exact, cache, ambiguous) .Call(wrap__Expr__str_to_time, self, format, strict, exact, cache, ambiguous)
 
-Expr$dt_truncate <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_truncate, self, every, offset, ambiguous)
+Expr$dt_truncate <- function(every, offset) .Call(wrap__Expr__dt_truncate, self, every, offset)
 
-Expr$dt_round <- function(every, offset, ambiguous) .Call(wrap__Expr__dt_round, self, every, offset, ambiguous)
+Expr$dt_round <- function(every, offset) .Call(wrap__Expr__dt_round, self, every, offset)
 
 Expr$dt_time <- function() .Call(wrap__Expr__dt_time, self)
 
@@ -769,15 +767,15 @@ Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
 
 Expr$drop_nans <- function() .Call(wrap__Expr__drop_nans, self)
 
-Expr$cumsum <- function(reverse) .Call(wrap__Expr__cumsum, self, reverse)
+Expr$cum_sum <- function(reverse) .Call(wrap__Expr__cum_sum, self, reverse)
 
-Expr$cumprod <- function(reverse) .Call(wrap__Expr__cumprod, self, reverse)
+Expr$cum_prod <- function(reverse) .Call(wrap__Expr__cum_prod, self, reverse)
 
-Expr$cummin <- function(reverse) .Call(wrap__Expr__cummin, self, reverse)
+Expr$cum_min <- function(reverse) .Call(wrap__Expr__cum_min, self, reverse)
 
-Expr$cummax <- function(reverse) .Call(wrap__Expr__cummax, self, reverse)
+Expr$cum_max <- function(reverse) .Call(wrap__Expr__cum_max, self, reverse)
 
-Expr$cumcount <- function(reverse) .Call(wrap__Expr__cumcount, self, reverse)
+Expr$cum_count <- function(reverse) .Call(wrap__Expr__cum_count, self, reverse)
 
 Expr$floor <- function() .Call(wrap__Expr__floor, self)
 
@@ -855,7 +853,7 @@ Expr$str_len_bytes <- function() .Call(wrap__Expr__str_len_bytes, self)
 
 Expr$str_len_chars <- function() .Call(wrap__Expr__str_len_chars, self)
 
-Expr$str_concat <- function(delimiter) .Call(wrap__Expr__str_concat, self, delimiter)
+Expr$str_concat <- function(delimiter, ignore_nulls) .Call(wrap__Expr__str_concat, self, delimiter, ignore_nulls)
 
 Expr$str_to_uppercase <- function() .Call(wrap__Expr__str_to_uppercase, self)
 
@@ -959,7 +957,7 @@ Expr$new_first <- function() .Call(wrap__Expr__new_first)
 
 Expr$new_last <- function() .Call(wrap__Expr__new_last)
 
-Expr$cov <- function(a, b) .Call(wrap__Expr__cov, a, b)
+Expr$cov <- function(a, b, ddof) .Call(wrap__Expr__cov, a, b, ddof)
 
 Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_cov, a, b, window_size, min_periods, ddof)
 
@@ -1007,7 +1005,7 @@ LazyFrame$sink_parquet <- function(path, compression_method, compression_level, 
 
 LazyFrame$sink_ipc <- function(path, compression_method, maintain_order) .Call(wrap__LazyFrame__sink_ipc, self, path, compression_method, maintain_order)
 
-LazyFrame$sink_csv <- function(path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, has_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
+LazyFrame$sink_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order) .Call(wrap__LazyFrame__sink_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style, maintain_order)
 
 LazyFrame$first <- function() .Call(wrap__LazyFrame__first, self)
 
@@ -1205,7 +1203,7 @@ Series$floor <- function() .Call(wrap__Series__floor, self)
 
 Series$print <- function() invisible(.Call(wrap__Series__print, self))
 
-Series$cumsum <- function(reverse) .Call(wrap__Series__cumsum, self, reverse)
+Series$cum_sum <- function(reverse) .Call(wrap__Series__cum_sum, self, reverse)
 
 Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
 

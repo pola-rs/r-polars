@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_lit_to_s}
 \alias{Expr_lit_to_s}
-\alias{lit_to_s}
-\title{Literal to Series}
+\title{Convert Literal to Series}
 \usage{
 Expr_lit_to_s()
 }
@@ -11,17 +10,8 @@ Expr_lit_to_s()
 Series
 }
 \description{
-collect an expression based on literals into a Series
+Collect an expression based on literals into a Series.
 }
 \examples{
-(
-  pl$Series(list(1:1, 1:2, 1:3, 1:4))
-  $print()
-  $to_lit()
-  $list$lengths()
-  $sum()
-  $cast(pl$dtypes$Int8)
-  $lit_to_s()
-)
+pl$lit(1:5)$lit_to_s()
 }
-\keyword{Expr}

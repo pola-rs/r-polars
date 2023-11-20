@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_exp}
 \alias{Expr_exp}
-\alias{exp}
-\title{Compute the exponential, element-wise.}
+\title{Compute the exponential of the elements}
 \usage{
 Expr_exp
 }
@@ -11,13 +10,9 @@ Expr_exp
 Expr
 }
 \description{
-Compute the exponential, element-wise.
+Compute the exponential of the elements
 }
 \examples{
-log10123 = suppressWarnings(log(-1:3))
-all.equal(
-  pl$DataFrame(list(a = log10123))$select(pl$col("a")$exp())$to_data_frame()$a,
-  exp(1)^log10123
-)
+pl$DataFrame(a = -1:3)$with_columns(a_exp = pl$col("a")$exp())
 }
-\keyword{Expr}
+\keyword{datasets}

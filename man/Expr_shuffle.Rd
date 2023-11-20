@@ -2,23 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_shuffle}
 \alias{Expr_shuffle}
-\alias{shuffle}
-\title{Shuffle}
+\title{Shuffle values}
 \usage{
 Expr_shuffle(seed = NULL)
 }
 \arguments{
-\item{seed}{numeric value of 0 to 2^52
-Seed for the random number generator. If set to Null (default), a random
-seed value integerish value between 0 and 10000 is picked}
+\item{seed}{numeric value of 0 to 2^52 Seed for the random number generator.
+If \code{NULL} (default), a random seed value between 0 and 10000 is picked.}
 }
 \value{
 Expr
 }
 \description{
-Shuffle the contents of this expr.
+Shuffle values
 }
 \examples{
-pl$DataFrame(a = 1:3)$select(pl$col("a")$shuffle(seed = 1))
+pl$DataFrame(a = 1:4)$with_columns(shuff = pl$col("a")$shuffle(seed = 1))
 }
-\keyword{Expr}

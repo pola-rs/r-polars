@@ -2,26 +2,30 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_search_sorted}
 \alias{Expr_search_sorted}
-\alias{search_sorted}
 \title{Where to inject element(s) to maintain sorting}
 \usage{
 Expr_search_sorted(element)
 }
 \arguments{
-\item{element}{a R value into literal or an expression of an element}
+\item{element}{Expr or scalar value.}
 }
 \value{
 Expr
 }
 \description{
-Find indices in self where elements should be inserted into to maintain order.
+Find the index in self where the element should be inserted so that it doesn't
+break sortedness.
 }
 \details{
-This function look up where to insert element if to keep self column sorted.
-It is assumed the self column is already sorted ascending, otherwise wrongs answers.
-This function is a bit under documented in py-polars.
+This function looks up where to insert element to keep self column sorted.
+It is assumed the self column is already sorted in ascending order (otherwise
+this leads to wrong results).
 }
 \examples{
-pl$DataFrame(list(a = 0:100))$select(pl$col("a")$search_sorted(pl$lit(42L)))
+df = pl$DataFrame(a = c(1, 3, 4, 4, 6))
+df
+
+# in which row should 5 be inserted in order to not break the sort?
+# (value is 0-indexed)
+df$select(pl$col("a")$search_sorted(5))
 }
-\keyword{Expr}

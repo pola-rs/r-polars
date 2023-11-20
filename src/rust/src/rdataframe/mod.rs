@@ -17,7 +17,7 @@ pub use lazy::dataframe::*;
 use crate::conversion_s_to_r::pl_series_to_list;
 pub use crate::series::*;
 
-use arrow::datatypes::DataType;
+use arrow::datatypes::ArrowDataType;
 use polars::prelude::ArrowField;
 use polars_core::error::PolarsError;
 use polars_core::utils::arrow;
@@ -30,7 +30,7 @@ use polars::prelude::pivot::{pivot, pivot_stable};
 
 pub struct OwnedDataFrameIterator {
     columns: Vec<polars::series::Series>,
-    data_type: arrow::datatypes::DataType,
+    data_type: arrow::datatypes::ArrowDataType,
     idx: usize,
     n_chunks: usize,
 }
@@ -38,7 +38,7 @@ pub struct OwnedDataFrameIterator {
 impl OwnedDataFrameIterator {
     pub fn new(df: polars::frame::DataFrame) -> Self {
         let schema = df.schema().to_arrow();
-        let data_type = DataType::Struct(schema.fields);
+        let data_type = ArrowDataType::Struct(schema.fields);
         let vs = df.get_columns().to_vec();
         Self {
             columns: vs,
@@ -334,7 +334,7 @@ impl DataFrame {
 
     pub fn export_stream(&self, stream_ptr: &str) {
         let schema = self.0.schema().to_arrow();
-        let data_type = DataType::Struct(schema.fields);
+        let data_type = ArrowDataType::Struct(schema.fields);
         let field = ArrowField::new("", data_type, false);
 
         let iter_boxed = Box::new(OwnedDataFrameIterator::new(self.0.clone()));
@@ -463,7 +463,8 @@ impl DataFrame {
     pub fn write_csv(
         &self,
         path: Robj,
-        has_header: Robj,
+        include_bom: Robj,
+        include_header: Robj,
         separator: Robj,
         line_terminator: Robj,
         quote: Robj,
@@ -478,7 +479,8 @@ impl DataFrame {
         let path = robj_to!(str, path)?;
         let f = std::fs::File::create(path)?;
         pl::CsvWriter::new(f)
-            .has_header(robj_to!(bool, has_header)?)
+            .include_bom(robj_to!(bool, include_bom)?)
+            .include_header(robj_to!(bool, include_header)?)
             .with_separator(robj_to!(Utf8Byte, separator)?)
             .with_line_terminator(robj_to!(String, line_terminator)?)
             .with_quote_char(robj_to!(Utf8Byte, quote)?)

@@ -12,12 +12,9 @@ Expr
 \description{
 Get the index of the minimal value.
 }
-\details{
-See Inf,NaN,NULL,Null/NA translations here \code{\link[polars]{docs_translations}}
-}
 \examples{
-pl$DataFrame(list(
+pl$DataFrame(
   a = c(6, 1, 0, NA, Inf, NaN)
-))$select(pl$col("a")$arg_min())
+)$with_columns(arg_min = pl$col("a")$arg_min())
 }
-\keyword{Expr}
+\keyword{datasets}

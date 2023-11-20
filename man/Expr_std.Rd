@@ -2,20 +2,19 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_std}
 \alias{Expr_std}
-\title{Get Standard Deviation}
+\title{Get standard deviation}
 \usage{
 Expr_std(ddof = 1)
 }
 \arguments{
-\item{ddof}{integer in range \verb{[0;255]} degrees of freedom}
+\item{ddof}{Degrees of freedom, must be an integer between 0 and 255}
 }
 \value{
-Expr (f64 scalar)
+Expr
 }
 \description{
-Get Standard Deviation
+Get standard deviation
 }
 \examples{
 pl$select(pl$lit(1:5)$std())
 }
-\keyword{Expr}

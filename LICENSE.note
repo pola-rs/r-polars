@@ -122,6 +122,13 @@ License:     MIT
 
 -------------------------------------------------------------
 
+Name:        atoi_simd
+Repository:  https://github.com/RoDmitry/atoi_simd
+Authors:     Dmitry Rodionov
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
 Name:        avro-schema
 Repository:  https://github.com/DataEngineeringLabs/avro-schema
 Authors:     Jorge C. Leitao
@@ -682,13 +689,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        lexical
-Repository:  https://github.com/Alexhuszagh/rust-lexical
-Authors:     Alex Huszagh
-License:     Apache-2.0 OR MIT
-
--------------------------------------------------------------
-
 Name:        lexical-core
 Repository:  https://github.com/Alexhuszagh/rust-lexical
 Authors:     Alex Huszagh
@@ -1018,13 +1018,6 @@ License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
-Name:        parquet2
-Repository:  https://github.com/jorgecarleitao/parquet2
-Authors:     Jorge C. Leitao
-License:     Apache-2.0
-
--------------------------------------------------------------
-
 Name:        paste
 Repository:  https://github.com/dtolnay/paste
 Authors:     David Tolnay
@@ -1127,6 +1120,13 @@ Name:        polars-ops
 Repository:  https://github.com/pola-rs/polars
 Authors:     Ritchie Vink
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        polars-parquet
+Repository:  https://github.com/pola-rs/polars
+Authors:     Jorge C. Leitao, Apache Arrow, Ritchie Vink
+License:     
 
 -------------------------------------------------------------
 
@@ -1246,6 +1246,20 @@ Name:        redox_syscall
 Repository:  https://gitlab.redox-os.org/redox-os/syscall
 Authors:     Jeremy Soller
 License:     MIT
+
+-------------------------------------------------------------
+
+Name:        ref-cast
+Repository:  https://github.com/dtolnay/ref-cast
+Authors:     David Tolnay
+License:     Apache-2.0 OR MIT
+
+-------------------------------------------------------------
+
+Name:        ref-cast-impl
+Repository:  https://github.com/dtolnay/ref-cast
+Authors:     David Tolnay
+License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 
@@ -1806,20 +1820,6 @@ Name:        zstd
 Repository:  https://github.com/gyscos/zstd-rs
 Authors:     Alexandre Bury
 License:     MIT
-
--------------------------------------------------------------
-
-Name:        zstd
-Repository:  https://github.com/gyscos/zstd-rs
-Authors:     Alexandre Bury
-License:     MIT
-
--------------------------------------------------------------
-
-Name:        zstd-safe
-Repository:  https://github.com/gyscos/zstd-rs
-Authors:     Alexandre Bury
-License:     Apache-2.0 OR MIT
 
 -------------------------------------------------------------
 

@@ -2,16 +2,16 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_agg_groups}
 \alias{Expr_agg_groups}
-\title{aggregate groups}
+\title{Aggregate groups}
 \usage{
 Expr_agg_groups
 }
 \value{
-Exprs
+Expr
 }
 \description{
-Get the group indexes of the group by operation.
-Should be used in aggregation context only.
+Get the group indexes of the group by operation. Should be used in aggregation
+context only.
 }
 \examples{
 df = pl$DataFrame(list(
@@ -20,4 +20,4 @@ df = pl$DataFrame(list(
 ))
 df$group_by("group", maintain_order = TRUE)$agg(pl$col("value")$agg_groups())
 }
-\keyword{Expr}
+\keyword{datasets}

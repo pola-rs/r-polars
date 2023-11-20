@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_mean}
 \alias{Expr_mean}
-\title{mean}
+\title{Get mean value}
 \usage{
 Expr_mean
 }
@@ -10,9 +10,10 @@ Expr_mean
 Expr
 }
 \description{
-Get mean value.
+Get mean value
 }
 \examples{
-pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$mean() == 2) # is true
+pl$DataFrame(x = c(1L, NA, 2L))$
+  with_columns(mean = pl$col("x")$mean())
 }
-\keyword{Expr}
+\keyword{datasets}

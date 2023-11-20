@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_arccosh}
 \alias{Expr_arccosh}
-\alias{arccosh}
-\title{Arccosh}
+\title{Compute inverse hyperbolic cosine}
 \usage{
 Expr_arccosh
 }
@@ -11,12 +10,10 @@ Expr_arccosh
 Expr
 }
 \description{
-Compute the element-wise value for the inverse hyperbolic cosine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute inverse hyperbolic cosine
 }
 \examples{
-pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$select(pl$col("a")$arccosh())
+pl$DataFrame(a = c(-1, cosh(0.5), 0, 1, NA_real_))$
+  with_columns(arccosh = pl$col("a")$arccosh())
 }
-\keyword{Expr}
+\keyword{datasets}

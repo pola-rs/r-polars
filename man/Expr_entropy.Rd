@@ -2,25 +2,23 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_entropy}
 \alias{Expr_entropy}
-\alias{entropy}
 \title{Entropy}
 \usage{
 Expr_entropy(base = base::exp(1), normalize = TRUE)
 }
 \arguments{
-\item{base}{Given exponential base, defaults to \code{e}}
+\item{base}{Given exponential base, defaults to \code{exp(1)}.}
 
-\item{normalize}{Normalize pk if it doesn't sum to 1.}
+\item{normalize}{Normalize \code{pk} if it doesn't sum to 1.}
 }
 \value{
 Expr
 }
 \description{
-Computes the entropy.
-Uses the formula \code{-sum(pk * log(pk))} where \code{pk} are discrete probabilities.
-Return Null if input is not values
+The entropy is measured with the formula \code{-sum(pk * log(pk))} where \code{pk} are
+discrete probabilities.
 }
 \examples{
-pl$select(pl$lit(c("a", "b", "b", "c", "c", "c"))$unique_counts()$entropy(base = 2))
+pl$DataFrame(x = c(1, 2, 3, 2))$
+  with_columns(entropy = pl$col("x")$entropy(base = 2))
 }
-\keyword{Expr}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_sin}
 \alias{Expr_sin}
-\alias{sin}
-\title{Sin}
+\title{Compute sine}
 \usage{
 Expr_sin
 }
@@ -11,12 +10,10 @@ Expr_sin
 Expr
 }
 \description{
-Compute the element-wise value for the sine.
-}
-\details{
-Evaluated Series has dtype Float64
+Compute sine
 }
 \examples{
-pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$select(pl$col("a")$sin())
+pl$DataFrame(a = c(0, pi / 2, pi, NA_real_))$
+  with_columns(sine = pl$col("a")$sin())
 }
-\keyword{Expr}
+\keyword{datasets}

@@ -2,7 +2,6 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_product}
 \alias{Expr_product}
-\alias{Product}
 \title{Product}
 \usage{
 Expr_product
@@ -13,10 +12,8 @@ Expr
 \description{
 Compute the product of an expression.
 }
-\details{
-does not support integer32 currently, .cast() to f64 or i64 first.
-}
 \examples{
-pl$DataFrame(list(x = c(1, 2, 3)))$select(pl$col("x")$product() == 6) # is true
+pl$DataFrame(x = c(2L, NA, 2L))$
+  with_columns(product = pl$col("x")$product())
 }
-\keyword{Expr}
+\keyword{datasets}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/expr__list.R
 \name{ExprList_sort}
 \alias{ExprList_sort}
-\title{Expr_sort}
+\title{Sort an Expr}
 \arguments{
 \item{descending}{Sort values in descending order}
 }
@@ -10,6 +10,5 @@
 Expr
 }
 \description{
-Sort this column. In projection/ selection context the whole column is sorted.
-If used in a groupby context, the groups are sorted.
+Sort this column. If used in a groupby context, the groups are sorted.
 }

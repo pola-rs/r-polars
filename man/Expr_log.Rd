@@ -2,21 +2,20 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_log}
 \alias{Expr_log}
-\alias{log}
-\title{Natural Log}
+\title{Compute the logarithm of elements}
 \usage{
 Expr_log(base = base::exp(1))
 }
 \arguments{
-\item{base}{numeric base value for log, default base::exp(1)}
+\item{base}{Numeric base value for logarithm, default is \code{exp(1)}.}
 }
 \value{
 Expr
 }
 \description{
-Compute the base x logarithm of the input array, element-wise.
+Compute the logarithm of elements
 }
 \examples{
-pl$DataFrame(list(a = exp(1)^(-1:3)))$select(pl$col("a")$log())
+pl$DataFrame(a = c(1, 2, 3, exp(1)))$
+  with_columns(log = pl$col("a")$log())
 }
-\keyword{Expr}
