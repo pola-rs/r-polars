@@ -42,6 +42,9 @@ test_that("expression Arithmetics", {
     (pl$lit(1) * 2 == (1 * 2))$alias("1 *2 == (1*2)"),
     (pl$lit(1) - 2 == (1 - 2))$alias("1 -2 == (1-2)"),
     (pl$lit(1)$div(pl$lit(2)) == (1 / 2))$alias("1$div(2) == (1/2)"),
+    (pl$lit(1)$floor_div(pl$lit(2)) == (1 %/% 2))$alias("1$floor_div(2) == (1%/%2)"),
+    (pl$lit(1)$mod(pl$lit(2)) == (1 %% 2))$alias("1$mod(2) == (1%%2)"),
+    (pl$lit(1)$mod(pl$lit(-2)) != (1 %% -2))$alias("1$mod(2) != (1%%-2)"), # https://github.com/pola-rs/polars/issues/10570
     (pl$lit(1)$add(pl$lit(2)) == (1 + 2))$alias("1$add(2) == (1+2)"),
     (pl$lit(1)$mul(pl$lit(2)) == (1 * 2))$alias("1$mul(2) == (1*2)"),
     (pl$lit(1)$sub(pl$lit(2)) == (1 - 2))$alias("1$sub(2) == (1-2)")
@@ -59,6 +62,8 @@ make_cases = function() {
     "add",       "+",
     "sub",       "-",
     "div",       "/",
+    "floor_div",       "%/%",
+    "mod",       "%%",
     "gt",        ">",
     "gte",       ">=",
     "lt",        "<",
@@ -2545,6 +2550,21 @@ test_that("rolling, arg check_sorted", {
     df$with_columns(pl$col("dt")$set_sorted())$with_columns(
       sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d",
                                           check_sorted = FALSE)
+    )
+  )
+})
+
+test_that("eq_missing and ne_missing", {
+  x = c(rep(TRUE, 3), rep(FALSE, 3), rep(NA, 3))
+  y = c(rep(c(TRUE, FALSE, NA), 3))
+  expect_identical(
+    pl$DataFrame(x = x, y = y)$select(
+      pl$col("x")$eq_missing(pl$col("y"))$alias("eq_missing"),
+      pl$col("x")$neq_missing(pl$col("y"))$alias("neq_missing")
+    )$to_list(),
+    list(
+      eq_missing = c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE),
+      neq_missing = c(FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
     )
   )
 })
