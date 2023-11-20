@@ -525,7 +525,7 @@ DataFrame_lazy = "use_extendr_wrapper"
 #' # ... but simply assigning df1 to df3 change the address anyway
 #' pl$mem_address(df1) == pl$mem_address(df3)
 DataFrame_clone = function() {
-  .pr$DataFrame$clone_see_me_macro(self)
+  .pr$DataFrame$clone_in_rust(self)
 }
 
 #' Get columns (as Series)

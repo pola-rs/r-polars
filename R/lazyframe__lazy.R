@@ -1519,7 +1519,7 @@ LazyFrame_explode = function(...) {
 #' # ... but simply assigning df1 to df3 change the address anyway
 #' pl$mem_address(df1) == pl$mem_address(df3)
 LazyFrame_clone = function() {
-  .pr$LazyFrame$clone_see_me_macro(self)
+  .pr$LazyFrame$clone_in_rust(self)
 }
 
 

@@ -52,7 +52,7 @@ as_polars_df.DataFrame = function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.GroupBy = function(x, ...) {
-  x$to_data_frame()
+  x$ungroup()
 }
 
 
@@ -97,6 +97,13 @@ as_polars_df.LazyFrame = function(
   args$x = NULL
   check_no_missing_args(.fn, args)
   do.call(.fn, args)
+}
+
+
+#' @rdname as_polars_df
+#' @export
+as_polars_df.LazyGroupBy = function(x, ...) {
+  as_polars_df.LazyFrame(x$ungroup(), ...)
 }
 
 
@@ -153,4 +160,11 @@ as_polars_lf.default = function(x, ...) {
 #' @export
 as_polars_lf.LazyFrame = function(x, ...) {
   x
+}
+
+
+#' @rdname as_polars_lf
+#' @export
+as_polars_lf.LazyGroupBy = function(x, ...) {
+  x$ungroup()
 }
