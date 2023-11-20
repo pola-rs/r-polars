@@ -40,7 +40,7 @@
 - New generic functions `as_polars_df()` and `as_polars_lf()` to create polars DataFrames
   and LazyFrames (#519).
 - New method `$rolling()` for Expr to apply a function over a rolling window 
-  based on date or datetime indices (#470).
+  based on date/datetime/numeric indices (#470).
 
 # polars 0.10.1
 
