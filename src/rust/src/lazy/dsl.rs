@@ -1863,7 +1863,7 @@ impl Expr {
                 })
                 .map(|str| str.to_string())
         };
-        
+
         Ok(self.clone().0.name().map(f).into())
     }
 
