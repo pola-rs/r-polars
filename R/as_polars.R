@@ -126,11 +126,6 @@ as_polars_df.ArrowTabular = function(
 }
 
 
-#' @rdname as_polars_df
-#' @export
-as_polars_df.RecordBatchReader = as_polars_df.ArrowTabular
-
-
 # TODO: as_polars_df.nanoarrow_array_stream
 
 
