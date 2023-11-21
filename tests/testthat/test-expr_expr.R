@@ -1266,18 +1266,18 @@ test_that("std var", {
 })
 
 
-test_that("is_unique is_first is_duplicated", {
+test_that("is_unique is_first_distinct is_duplicated", {
   v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
   expect_identical(
     pl$select(
       pl$lit(v)$is_unique()$alias("is_unique"),
-      pl$lit(v)$is_first()$alias("is_first"),
+      pl$lit(v)$is_first_distinct()$alias("is_first_distinct"),
       pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-      pl$lit(v)$is_first()$not()$alias("R_duplicated")
+      pl$lit(v)$is_first_distinct()$not()$alias("R_duplicated")
     )$to_list(),
     list(
       is_unique = !v %in% v[duplicated(v)],
-      is_first = !duplicated(v),
+      is_first_distinct = !duplicated(v),
       is_duplicated = v %in% v[duplicated(v)],
       R_duplicated = duplicated(v)
     )

@@ -793,7 +793,7 @@ Expr$is_duplicated <- function() .Call(wrap__Expr__is_duplicated, self)
 
 Expr$is_finite <- function() .Call(wrap__Expr__is_finite, self)
 
-Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+Expr$is_first_distinct <- function() .Call(wrap__Expr__is_first_distinct, self)
 
 Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
 

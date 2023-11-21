@@ -1915,9 +1915,13 @@ Expr_is_unique = "use_extendr_wrapper"
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
-#'   with_columns(is_ufirst = pl$col("mpg")$is_first())
-Expr_is_first = "use_extendr_wrapper"
+#'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
+Expr_is_first_distinct = "use_extendr_wrapper"
 
+Expr_is_first = function() {
+  warning("`$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()` instead.")
+  .pr$Expr$is_first_distinct(self)
+}
 
 #' Check whether each value is duplicated
 #'
