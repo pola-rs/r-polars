@@ -34,6 +34,10 @@
   `milliseconds()`, `microseconds()`, `nanoseconds()`) are renamed, for example 
   from `$dt$days()` to `$dt$total_days()`. The old usage is deprecated and will
   be removed in 0.12.0.
+- DataFrame methods `$as_data_frame()` is removed in favor of `$to_data_frame()` (#533).
+- GroupBy methods `$as_data_frame()` and `$to_data_frame()` which were used to
+  convert GroupBy objects to R data frames are removed.
+  Use `$ungroup()` method and the `as.data.frame()` function instead (#533).
 
 ## What's changed
 

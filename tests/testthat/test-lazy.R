@@ -199,11 +199,11 @@ test_that("tail", {
 
 
 test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$shift(2)$limit(3)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$limit(3)$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$shift_and_fill(0., 2.)$limit(3)$collect()$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }
@@ -211,22 +211,22 @@ test_that("shift   _and_fill", {
 
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$lazy()$quantile(1)$collect()$as_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$max()$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$quantile(1)$collect()$to_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$max()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$quantile(0, "midpoint")$collect()$as_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$min()$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$quantile(0, "midpoint")$collect()$to_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$min()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$lazy()$quantile(0.5, "midpoint")$collect()$as_data_frame()
-  b = pl$DataFrame(mtcars)$lazy()$median()$collect()$as_data_frame()
+  a = pl$DataFrame(mtcars)$lazy()$quantile(0.5, "midpoint")$collect()$to_data_frame()
+  b = pl$DataFrame(mtcars)$lazy()$median()$collect()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
 test_that("fill_nan", {
   a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))$lazy()
-  a = a$fill_nan(99)$collect()$as_data_frame()
+  a = a$fill_nan(99)$collect()$to_data_frame()
   expect_equal(sum(a[[1]] == 99), 1)
   expect_equal(sum(a[[2]] == 99), 2)
 })
@@ -261,7 +261,7 @@ test_that("fill_nulls", {
   df = pl$DataFrame(
     a = c(1.5, 2, NA, 4),
     b = c(1.5, NA, NA, 4)
-  )$lazy()$fill_null(99)$collect()$as_data_frame()
+  )$lazy()$fill_null(99)$collect()$to_data_frame()
   expect_equal(sum(df$a == 99), 1)
   expect_equal(sum(df$b == 99), 2)
 })
