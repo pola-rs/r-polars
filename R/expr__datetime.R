@@ -781,14 +781,17 @@ ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
 }
 
 
+
+duration_total_depr_warning = function(x) {
+  warning(
+    paste0("$dt$", x, "() is deprecated and will be removed in 0.12.0. Use $dt$total_", x, "() instead."),
+    call. = FALSE)
+}
+
 #' Days
 #' @description Extract the days from a Duration type.
-#' @name ExprDT_days
+#' @name ExprDT_total_days
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$days
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -800,20 +803,23 @@ ExprDT_replace_time_zone = function(tz, ambiguous = "raise") {
 #' )
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$days()$alias("days_diff")
+#'   diff_days = pl$col("date")$diff()$dt$total_days()
 #' )
+ExprDT_total_days = function() {
+  .pr$Expr$dt_total_days(self) |>
+    unwrap("in $dt$total_days():")
+}
+
 ExprDT_days = function() {
-  .pr$Expr$duration_days(self)
+  duration_total_depr_warning("days")
+  .pr$Expr$dt_total_days(self) |>
+    unwrap("in $dt$days():")
 }
 
 #' Hours
 #' @description Extract the hours from a Duration type.
-#' @name ExprDT_hours
+#' @name ExprDT_total_hours
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$hours
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -825,20 +831,23 @@ ExprDT_days = function() {
 #' )
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$hours()$alias("hours_diff")
+#'   diff_hours = pl$col("date")$diff()$dt$total_hours()
 #' )
+ExprDT_total_hours = function() {
+  .pr$Expr$dt_total_hours(self) |>
+    unwrap("in $dt$total_hours():")
+}
+
 ExprDT_hours = function() {
-  .pr$Expr$duration_hours(self)
+  duration_total_depr_warning("hours")
+  .pr$Expr$dt_total_hours(self) |>
+    unwrap("in $dt$hours():")
 }
 
 #' Minutes
 #' @description Extract the minutes from a Duration type.
-#' @name ExprDT_minutes
+#' @name ExprDT_total_minutes
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$minutes
 #' @examples
 #' df = pl$DataFrame(
 #'   date = pl$date_range(
@@ -850,21 +859,23 @@ ExprDT_hours = function() {
 #' )
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$minutes()$alias("minutes_diff")
+#'   diff_minutes = pl$col("date")$diff()$dt$total_minutes()
 #' )
-ExprDT_minutes = function() {
-  .pr$Expr$duration_minutes(self)
+ExprDT_total_minutes = function() {
+  .pr$Expr$dt_total_minutes(self) |>
+    unwrap("in $dt$total_minutes():")
 }
 
+ExprDT_minutes = function() {
+  duration_total_depr_warning("minutes")
+  .pr$Expr$dt_total_minutes(self) |>
+    unwrap("in $dt$minutes():")
+}
 
 #' Seconds
 #' @description Extract the seconds from a Duration type.
-#' @name ExprDT_seconds
+#' @name ExprDT_total_seconds
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$seconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -874,20 +885,23 @@ ExprDT_minutes = function() {
 #' ))
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$seconds()$alias("seconds_diff")
+#'   diff_sec = pl$col("date")$diff()$dt$total_seconds()
 #' )
+ExprDT_total_seconds = function() {
+  .pr$Expr$dt_total_seconds(self) |>
+    unwrap("in $dt$total_seconds():")
+}
+
 ExprDT_seconds = function() {
-  .pr$Expr$duration_seconds(self)
+  duration_total_depr_warning("seconds")
+  .pr$Expr$dt_total_seconds(self) |>
+    unwrap("in $dt$seconds():")
 }
 
 #' milliseconds
 #' @description Extract the milliseconds from a Duration type.
-#' @name ExprDT_milliseconds
+#' @name ExprDT_total_milliseconds
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$milliseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -897,20 +911,23 @@ ExprDT_seconds = function() {
 #' ))
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$milliseconds()$alias("seconds_diff")
+#'   diff_millisec = pl$col("date")$diff()$dt$total_milliseconds()
 #' )
+ExprDT_total_milliseconds = function() {
+  .pr$Expr$dt_total_milliseconds(self) |>
+    unwrap("in $dt$total_milliseconds():")
+}
+
 ExprDT_milliseconds = function() {
-  .pr$Expr$duration_milliseconds(self)
+  duration_total_depr_warning("milliseconds")
+  .pr$Expr$dt_total_milliseconds(self) |>
+    unwrap("in $dt$milliseconds():")
 }
 
 #' microseconds
 #' @description Extract the microseconds from a Duration type.
-#' @name ExprDT_microseconds
+#' @name ExprDT_total_microseconds
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$microseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -920,20 +937,23 @@ ExprDT_milliseconds = function() {
 #' ))
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$microseconds()$alias("seconds_diff")
+#'   diff_microsec = pl$col("date")$diff()$dt$total_microseconds()
 #' )
+ExprDT_total_microseconds = function() {
+  .pr$Expr$dt_total_microseconds(self) |>
+    unwrap("in $dt$total_microseconds():")
+}
+
 ExprDT_microseconds = function() {
-  .pr$Expr$duration_microseconds(self)
+  duration_total_depr_warning("microseconds")
+  .pr$Expr$dt_total_microseconds(self) |>
+    unwrap("in $dt$microseconds():")
 }
 
 #' nanoseconds
 #' @description Extract the nanoseconds from a Duration type.
-#' @name ExprDT_nanoseconds
+#' @name ExprDT_total_nanoseconds
 #' @return Expr of i64
-#' @keywords ExprDT
-#' @format function
-#' @usage NULL
-#' @aliases (Expr)$dt$nanoseconds
 #' @examples
 #' df = pl$DataFrame(date = pl$date_range(
 #'   start = as.POSIXct("2020-1-1", tz = "GMT"),
@@ -943,12 +963,18 @@ ExprDT_microseconds = function() {
 #' ))
 #' df$select(
 #'   pl$col("date"),
-#'   pl$col("date")$diff()$dt$nanoseconds()$alias("seconds_diff")
+#'   diff_nanosec = pl$col("date")$diff()$dt$total_nanoseconds()
 #' )
-ExprDT_nanoseconds = function() {
-  .pr$Expr$duration_nanoseconds(self)
+ExprDT_total_nanoseconds = function() {
+  .pr$Expr$dt_total_nanoseconds(self) |>
+    unwrap("in $dt$total_nanoseconds():")
 }
 
+ExprDT_nanoseconds = function() {
+  duration_total_depr_warning("nanoseconds")
+  .pr$Expr$dt_total_nanoseconds(self) |>
+    unwrap("in $dt$nanoseconds():")
+}
 
 #' Offset By
 #' @description  Offset this date by a relative time offset.

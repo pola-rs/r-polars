@@ -16,7 +16,7 @@
   - Removed argument `ambiguous` in `$dt$truncate()` and `$dt$round()`.
   - `$str$concat()` gains an argument `ignore_nulls`.
 
-## Breaking changes
+## Breaking changes and deprecations
 
 - The rowwise computation when several columns are passed to `pl$min()`, `pl$max()`,
   and `pl$sum()` is deprecated and will be removed in 0.12.0. Passing several 
@@ -25,6 +25,10 @@
   `pl$sum_horizontal()` instead for rowwise computation (#508).
 - `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
   (#511).
+- All duration methods (`days()`, `hours()`, `minutes()`, `seconds()`, 
+  `milliseconds()`, `microseconds()`, `nanoseconds()`) are renamed, for example 
+  from `$dt$days()` to `$dt$total_days()`. The old usage is deprecated and will
+  be removed in 0.12.0.
 
 ## What's changed
 
@@ -38,8 +42,8 @@
   and will be kept stable as much as possible (#504).
 - New functions `pl$min_horizontal()`, `pl$max_horizontal()`, `pl$sum_horizontal()`,
   `pl$all_horizontal()`, `pl$any_horizontal()` (#508).
-- New generic functions `as_polars_df()` and `as_polars_lf()` to create polars DataFrames
-  and LazyFrames (#519).
+- New generic functions `as_polars_df()` and `as_polars_lf()` to create polars 
+  DataFrames and LazyFrames (#519).
 - New method `$ungroup()` for `GroupBy` and `LazyGroupBy` (#522).
 - New method `$rolling()` to apply an Expr over a rolling window based on 
   date/datetime/numeric indices (#470).
