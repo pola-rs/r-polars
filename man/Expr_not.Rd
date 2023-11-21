@@ -2,9 +2,15 @@
 % Please edit documentation in R/expr__expr.R
 \name{Expr_not}
 \alias{Expr_not}
+\alias{!.Expr}
 \title{Negate a boolean expression}
 \usage{
 Expr_not
+
+\method{!}{Expr}(x)
+}
+\arguments{
+\item{x}{Expr}
 }
 \value{
 Expr

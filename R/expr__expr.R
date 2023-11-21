@@ -289,7 +289,7 @@ Expr_mul = Expr_mul = function(other) {
 #' !pl$lit(TRUE)
 Expr_not = "use_extendr_wrapper"
 #' @export
-#' @rdname Expr_not_
+#' @rdname Expr_not
 #' @param x Expr
 "!.Expr" = function(x) x$not()
 
