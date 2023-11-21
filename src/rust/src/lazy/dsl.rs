@@ -1632,7 +1632,7 @@ impl Expr {
     pub fn is_unique(&self) -> Self {
         self.0.clone().is_unique().into()
     }
-    pub fn not_(&self) -> Self {
+    pub fn not(&self) -> Self {
         self.0.clone().not().into()
     }
 

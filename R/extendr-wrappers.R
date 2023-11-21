@@ -725,11 +725,11 @@ Expr$dt_total_minutes <- function() .Call(wrap__Expr__dt_total_minutes, self)
 
 Expr$dt_total_seconds <- function() .Call(wrap__Expr__dt_total_seconds, self)
 
-Expr$dt_total_nanoseconds <- function() .Call(wrap__Expr__dt_total_nanoseconds, self)
+Expr$dt_total_milliseconds <- function() .Call(wrap__Expr__dt_total_milliseconds, self)
 
 Expr$dt_total_microseconds <- function() .Call(wrap__Expr__dt_total_microseconds, self)
 
-Expr$dt_total_milliseconds <- function() .Call(wrap__Expr__dt_total_milliseconds, self)
+Expr$dt_total_nanoseconds <- function() .Call(wrap__Expr__dt_total_nanoseconds, self)
 
 Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
@@ -809,7 +809,7 @@ Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
 
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
-Expr$not_ <- function() .Call(wrap__Expr__not_, self)
+Expr$not <- function() .Call(wrap__Expr__not, self)
 
 Expr$count <- function() .Call(wrap__Expr__count, self)
 
