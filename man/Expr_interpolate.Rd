@@ -19,9 +19,9 @@ used to regrid data to a new grid - see examples below.
 \examples{
 pl$DataFrame(x = c(1, NA, 4, NA, 100, NaN, 150))$
   with_columns(
-   interp_lin = pl$col("x")$interpolate(),
-   interp_near = pl$col("x")$interpolate("nearest")
-  )
+  interp_lin = pl$col("x")$interpolate(),
+  interp_near = pl$col("x")$interpolate("nearest")
+)
 
 # x, y interpolation over a grid
 df_original_grid = pl$DataFrame(
