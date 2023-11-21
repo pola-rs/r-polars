@@ -31,9 +31,13 @@
 - All duration methods (`days()`, `hours()`, `minutes()`, `seconds()`, 
   `milliseconds()`, `microseconds()`, `nanoseconds()`) are renamed, for example 
   from `$dt$days()` to `$dt$total_days()`. The old usage is deprecated and will
-  be removed in 0.12.0.
+  be removed in 0.12.0 (#530).
+- DataFrame methods `$as_data_frame()` is removed in favor of `$to_data_frame()` (#533).
+- GroupBy methods `$as_data_frame()` and `$to_data_frame()` which were used to
+  convert GroupBy objects to R data frames are removed.
+  Use `$ungroup()` method and the `as.data.frame()` function instead (#533).
 - `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
-  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.12.0.
+  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.12.0 (#534).
 
 ## What's changed
 

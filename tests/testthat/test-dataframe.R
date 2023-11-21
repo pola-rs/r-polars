@@ -574,11 +574,11 @@ test_that("drop_in_place", {
 
 
 test_that("shift   _and_fill", {
-  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$as_data_frame()
+  a = pl$DataFrame(mtcars)$shift(2)$limit(3)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(is.na(a[[i]]), c(TRUE, TRUE, FALSE))
   }
-  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$limit(3)$as_data_frame()
+  a = pl$DataFrame(mtcars)$shift_and_fill(0., 2.)$limit(3)$to_data_frame()
   for (i in seq_along(a)) {
     expect_equal(a[[i]], c(0, 0, mtcars[[i]][1]))
   }
@@ -594,22 +594,22 @@ test_that("frame_equal", {
 
 test_that("fill_nan", {
   a = pl$DataFrame(a = c(NaN, 1:2), b = c(1, NaN, NaN))
-  a = a$fill_nan(99)$as_data_frame()
+  a = a$fill_nan(99)$to_data_frame()
   expect_equal(sum(a[[1]] == 99), 1)
   expect_equal(sum(a[[2]] == 99), 2)
 })
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$max()$as_data_frame()
+  a = pl$DataFrame(mtcars)$quantile(1, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$max()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$quantile(0, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$min()$as_data_frame()
+  a = pl$DataFrame(mtcars)$quantile(0, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$min()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$median()$as_data_frame()
+  a = pl$DataFrame(mtcars)$quantile(0.5, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$median()$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
 })
 
@@ -645,7 +645,7 @@ test_that("fill_nulls", {
   df = pl$DataFrame(
     a = c(1.5, 2, NA, 4),
     b = c(1.5, NA, NA, 4)
-  )$fill_null(99)$as_data_frame()
+  )$fill_null(99)$to_data_frame()
   expect_equal(sum(df$a == 99), 1)
   expect_equal(sum(df$b == 99), 2)
 })
@@ -685,7 +685,7 @@ test_that("unique, maintain_order", {
 
 test_that("as_data_frame (backward compatibility)", {
   w = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
-  x = as.data.frame(pl$DataFrame(mtcars)$as_data_frame())
+  x = as.data.frame(pl$DataFrame(mtcars)$to_data_frame())
   y = mtcars
   expect_equal(w, x, ignore_attr = TRUE)
   expect_equal(w, y, ignore_attr = TRUE)

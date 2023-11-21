@@ -285,24 +285,6 @@ GroupBy_null_count = function() {
   self$agg(pl$all()$null_count())
 }
 
-#' convert to data.frame
-#'
-#' @param ... not used
-#'
-#' @return R data.frame
-#'
-#' @examples pl$DataFrame(iris)$to_data_frame() # R-polars back and forth
-GroupBy_to_data_frame = function(...) {
-  class(self) = "DataFrame"
-  self$to_data_frame(...)
-}
-
-# TODO REMOVE_AT_BREAKING_CHANGE
-#' Alias to GroupBy_to_data_frame (backward compatibility)
-#' @return R data.frame
-#' @noRd
-GroupBy_as_data_frame = GroupBy_to_data_frame
-
 
 #' GroupBy_ungroup
 #'

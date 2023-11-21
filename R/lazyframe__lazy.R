@@ -858,7 +858,7 @@ LazyFrame_shift = function(periods = 1) {
 #' the total number of rows of the LazyFrame doesn't change.
 #' @inheritParams DataFrame_shift_and_fill
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$as_data_frame()
+#' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$to_data_frame()
 LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
   unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
