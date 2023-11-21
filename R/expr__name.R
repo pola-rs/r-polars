@@ -1,13 +1,10 @@
 #' Add a suffix to a column name
-#' @keywords Expr
 #'
 #' @param suffix Suffix to be added to column name(s)
-#' @name ExprName_suffix
-#' @rdname ExprName_suffix
 #' @return Expr
-#' @aliases suffix
 #' @seealso
 #' [`$prefix()`][ExprName_prefix] to add a prefix
+#' @name ExprName_suffix
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
@@ -17,19 +14,17 @@
 #'   pl$col("cyl", "drat")$name$suffix("_bar")
 #' )
 ExprName_suffix = function(suffix) {
-  .pr$Expr$name_suffix(self, suffix)
+  .pr$Expr$name_suffix(self, suffix) |>
+    unwrap("in $name$suffix():")
 }
 
 #' Add a prefix to a column name
-#' @keywords Expr
 #'
 #' @param prefix Prefix to be added to column name(s)
-#' @name ExprName_prefix
-#' @rdname ExprName_prefix
 #' @return Expr
-#' @aliases prefix
 #' @seealso
 #' [`$suffix()`][ExprName_suffix] to add a suffix
+#' @name ExprName_prefix
 #' @examples
 #' dat = pl$DataFrame(mtcars)
 #'
@@ -39,32 +34,30 @@ ExprName_suffix = function(suffix) {
 #'   pl$col("cyl", "drat")$name$prefix("bar_")
 #' )
 ExprName_prefix = function(prefix) {
-  .pr$Expr$name_prefix(self, prefix)
+  .pr$Expr$name_prefix(self, prefix) |>
+    unwrap("in $name$prefix():")
 }
 
 # TODO contribute pypolars keep_name example does not showcase an example where the name changes
+
 #' Keep the original root name of the expression.
 #'
-#' @keywords Expr
 #' @return Expr
-#' @aliases keep_name
 #' @name ExprName_keep
-#' @docType NULL
-#' @format NULL
-#' @format NULL
 #' @examples
 #' pl$DataFrame(list(alice = 1:3))$select(pl$col("alice")$alias("bob")$name$keep())
 ExprName_keep = function() {
-  .pr$Expr$name_keep(self)
+  .pr$Expr$name_keep(self) |>
+    unwrap("in $name$keep():")
 }
 
 # TODO contribute polars, $name$map unwrap user function errors instead of passing them back
+
 #' Map alias of expression with an R function
 #'
-#' @param fun an R function which takes a string as input and return a string
+#' Rename the output of an expression by mapping a function over the root name.
 #'
-#' @description Rename the output of an expression by mapping a function over the root name.
-#' @keywords Expr
+#' @param fun an R function which takes a string as input and return a string
 #' @return Expr
 #' @name ExprName_map
 #' @examples
@@ -83,5 +76,34 @@ ExprName_map = function(fun) {
   }
   if (!is.function(fun)) pstop(err = "$name$map() fun must be a function")
   if (length(formals(fun)) == 0) pstop(err = "$name$map() fun must take at least one parameter")
-  .pr$Expr$name_map(self, fun)
+  .pr$Expr$name_map(self, fun) |>
+    unwrap("in $name$map():")
+}
+
+
+#' Make the root column name lowercase
+#'
+#' Due to implementation constraints, this method can only be called as the last
+#' expression in a chain.
+#'
+#' @return Expr
+#' @name ExprName_to_lowercase
+#' @examples
+#' pl$DataFrame(Alice = 1:3)$with_columns(pl$col("Alice")$name$to_lowercase())
+ExprName_to_lowercase = function() {
+  .pr$Expr$name_to_lowercase(self) |>
+    unwrap("in $name$to_lowercase():")
+}
+
+#' Make the root column name uppercase
+#'
+#' @inherit ExprName_to_lowercase description
+#'
+#' @return Expr
+#' @name ExprName_to_uppercase
+#' @examples
+#' pl$DataFrame(Alice = 1:3)$with_columns(pl$col("Alice")$name$to_uppercase())
+ExprName_to_uppercase = function() {
+  .pr$Expr$name_to_uppercase(self) |>
+    unwrap("in $name$to_uppercase():")
 }

@@ -50,6 +50,8 @@
 - New method `$ungroup()` for `GroupBy` and `LazyGroupBy` (#522).
 - New method `$rolling()` to apply an Expr over a rolling window based on 
   date/datetime/numeric indices (#470).
+- New methods `$name$to_lowercase()` and `$name$to_uppercase()` to transform 
+  variable names (#529).
 - New methods of the Expressions class, `$floor_div()`, `$mod()`, `$eq_missing()`
   and `$neq_missing()`. The base R operators `%/%` and `%%` for Expressions are
   now translated to `$floor_div()` and `$mod()` (#523).
