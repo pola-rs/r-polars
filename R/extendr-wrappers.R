@@ -717,19 +717,19 @@ Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone
 
 Expr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__Expr__dt_replace_time_zone, self, tz, ambiguous)
 
-Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
+Expr$dt_total_days <- function() .Call(wrap__Expr__dt_total_days, self)
 
-Expr$duration_hours <- function() .Call(wrap__Expr__duration_hours, self)
+Expr$dt_total_hours <- function() .Call(wrap__Expr__dt_total_hours, self)
 
-Expr$duration_minutes <- function() .Call(wrap__Expr__duration_minutes, self)
+Expr$dt_total_minutes <- function() .Call(wrap__Expr__dt_total_minutes, self)
 
-Expr$duration_seconds <- function() .Call(wrap__Expr__duration_seconds, self)
+Expr$dt_total_seconds <- function() .Call(wrap__Expr__dt_total_seconds, self)
 
-Expr$duration_nanoseconds <- function() .Call(wrap__Expr__duration_nanoseconds, self)
+Expr$dt_total_nanoseconds <- function() .Call(wrap__Expr__dt_total_nanoseconds, self)
 
-Expr$duration_microseconds <- function() .Call(wrap__Expr__duration_microseconds, self)
+Expr$dt_total_microseconds <- function() .Call(wrap__Expr__dt_total_microseconds, self)
 
-Expr$duration_milliseconds <- function() .Call(wrap__Expr__duration_milliseconds, self)
+Expr$dt_total_milliseconds <- function() .Call(wrap__Expr__dt_total_milliseconds, self)
 
 Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
 
