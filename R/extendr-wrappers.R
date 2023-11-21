@@ -431,15 +431,17 @@ Expr$lt_eq <- function(other) .Call(wrap__Expr__lt_eq, self, other)
 
 Expr$neq <- function(other) .Call(wrap__Expr__neq, self, other)
 
+Expr$neq_missing <- function(other) .Call(wrap__Expr__neq_missing, self, other)
+
 Expr$eq <- function(other) .Call(wrap__Expr__eq, self, other)
+
+Expr$eq_missing <- function(other) .Call(wrap__Expr__eq_missing, self, other)
 
 Expr$and <- function(other) .Call(wrap__Expr__and, self, other)
 
 Expr$or <- function(other) .Call(wrap__Expr__or, self, other)
 
 Expr$xor <- function(other) .Call(wrap__Expr__xor, self, other)
-
-Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
 
 Expr$to_physical <- function() .Call(wrap__Expr__to_physical, self)
 
@@ -505,8 +507,6 @@ Expr$null_count <- function() .Call(wrap__Expr__null_count, self)
 
 Expr$arg_unique <- function() .Call(wrap__Expr__arg_unique, self)
 
-Expr$is_duplicated <- function() .Call(wrap__Expr__is_duplicated, self)
-
 Expr$quantile <- function(quantile, interpolation) .Call(wrap__Expr__quantile, self, quantile, interpolation)
 
 Expr$filter <- function(predicate) .Call(wrap__Expr__filter, self, predicate)
@@ -540,8 +540,6 @@ Expr$rolling_median <- function(window_size, weights, min_periods, center, by_nu
 Expr$rolling_quantile <- function(quantile, interpolation, window_size, weights, min_periods, center, by, closed) .Call(wrap__Expr__rolling_quantile, self, quantile, interpolation, window_size, weights, min_periods, center, by, closed)
 
 Expr$rolling_skew <- function(window_size_f, bias) .Call(wrap__Expr__rolling_skew, self, window_size_f, bias)
-
-Expr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__Expr__rolling, self, index_column, period, offset, closed, check_sorted)
 
 Expr$abs <- function() .Call(wrap__Expr__abs, self)
 
@@ -719,23 +717,21 @@ Expr$dt_convert_time_zone <- function(tz) .Call(wrap__Expr__dt_convert_time_zone
 
 Expr$dt_replace_time_zone <- function(tz, ambiguous) .Call(wrap__Expr__dt_replace_time_zone, self, tz, ambiguous)
 
-Expr$duration_days <- function() .Call(wrap__Expr__duration_days, self)
+Expr$dt_total_days <- function() .Call(wrap__Expr__dt_total_days, self)
 
-Expr$duration_hours <- function() .Call(wrap__Expr__duration_hours, self)
+Expr$dt_total_hours <- function() .Call(wrap__Expr__dt_total_hours, self)
 
-Expr$duration_minutes <- function() .Call(wrap__Expr__duration_minutes, self)
+Expr$dt_total_minutes <- function() .Call(wrap__Expr__dt_total_minutes, self)
 
-Expr$duration_seconds <- function() .Call(wrap__Expr__duration_seconds, self)
+Expr$dt_total_seconds <- function() .Call(wrap__Expr__dt_total_seconds, self)
 
-Expr$duration_nanoseconds <- function() .Call(wrap__Expr__duration_nanoseconds, self)
+Expr$dt_total_nanoseconds <- function() .Call(wrap__Expr__dt_total_nanoseconds, self)
 
-Expr$duration_microseconds <- function() .Call(wrap__Expr__duration_microseconds, self)
+Expr$dt_total_microseconds <- function() .Call(wrap__Expr__dt_total_microseconds, self)
 
-Expr$duration_milliseconds <- function() .Call(wrap__Expr__duration_milliseconds, self)
+Expr$dt_total_milliseconds <- function() .Call(wrap__Expr__dt_total_milliseconds, self)
 
 Expr$dt_offset_by <- function(by) .Call(wrap__Expr__dt_offset_by, self, by)
-
-Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$repeat_by <- function(by) .Call(wrap__Expr__repeat_by, self, by)
 
@@ -750,18 +746,6 @@ Expr$exclude <- function(columns) .Call(wrap__Expr__exclude, self, columns)
 Expr$exclude_dtype <- function(columns) .Call(wrap__Expr__exclude_dtype, self, columns)
 
 Expr$alias <- function(s) .Call(wrap__Expr__alias, self, s)
-
-Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
-
-Expr$is_not_null <- function() .Call(wrap__Expr__is_not_null, self)
-
-Expr$is_finite <- function() .Call(wrap__Expr__is_finite, self)
-
-Expr$is_infinite <- function() .Call(wrap__Expr__is_infinite, self)
-
-Expr$is_nan <- function() .Call(wrap__Expr__is_nan, self)
-
-Expr$is_not_nan <- function() .Call(wrap__Expr__is_not_nan, self)
 
 Expr$drop_nulls <- function() .Call(wrap__Expr__drop_nulls, self)
 
@@ -805,6 +789,28 @@ Expr$all <- function(drop_nulls) .Call(wrap__Expr__all, self, drop_nulls)
 
 Expr$any <- function(drop_nulls) .Call(wrap__Expr__any, self, drop_nulls)
 
+Expr$is_duplicated <- function() .Call(wrap__Expr__is_duplicated, self)
+
+Expr$is_finite <- function() .Call(wrap__Expr__is_finite, self)
+
+Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+
+Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
+
+Expr$is_infinite <- function() .Call(wrap__Expr__is_infinite, self)
+
+Expr$is_nan <- function() .Call(wrap__Expr__is_nan, self)
+
+Expr$is_not_null <- function() .Call(wrap__Expr__is_not_null, self)
+
+Expr$is_not_nan <- function() .Call(wrap__Expr__is_not_nan, self)
+
+Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
+
+Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
+
+Expr$not_ <- function() .Call(wrap__Expr__not_, self)
+
 Expr$count <- function() .Call(wrap__Expr__count, self)
 
 Expr$len <- function() .Call(wrap__Expr__len, self)
@@ -817,13 +823,17 @@ Expr$rechunk <- function() .Call(wrap__Expr__rechunk, self)
 
 Expr$add <- function(other) .Call(wrap__Expr__add, self, other)
 
-Expr$sub <- function(other) .Call(wrap__Expr__sub, self, other)
+Expr$floor_div <- function(other) .Call(wrap__Expr__floor_div, self, other)
+
+Expr$rem <- function(other) .Call(wrap__Expr__rem, self, other)
 
 Expr$mul <- function(other) .Call(wrap__Expr__mul, self, other)
 
+Expr$sub <- function(other) .Call(wrap__Expr__sub, self, other)
+
 Expr$div <- function(other) .Call(wrap__Expr__div, self, other)
 
-Expr$not_ <- function() .Call(wrap__Expr__not_, self)
+Expr$pow <- function(exponent) .Call(wrap__Expr__pow, self, exponent)
 
 Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 
@@ -835,11 +845,7 @@ Expr$map_in_background <- function(lambda, output_type, agg_list) .Call(wrap__Ex
 
 Expr$apply_in_background <- function(lambda, output_type) .Call(wrap__Expr__apply_in_background, self, lambda, output_type)
 
-Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
-
 Expr$approx_n_unique <- function() .Call(wrap__Expr__approx_n_unique, self)
-
-Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
 
 Expr$name_keep <- function() .Call(wrap__Expr__name_keep, self)
 
@@ -968,6 +974,8 @@ Expr$rolling_cov <- function(a, b, window_size, min_periods, ddof) .Call(wrap__E
 Expr$corr <- function(a, b, method, ddof, propagate_nans) .Call(wrap__Expr__corr, a, b, method, ddof, propagate_nans)
 
 Expr$rolling_corr <- function(a, b, window_size, min_periods, ddof) .Call(wrap__Expr__rolling_corr, a, b, window_size, min_periods, ddof)
+
+Expr$rolling <- function(index_column, period, offset, closed, check_sorted) .Call(wrap__Expr__rolling, self, index_column, period, offset, closed, check_sorted)
 
 #' @export
 `$.Expr` <- function (self, name) { func <- Expr[[name]]; environment(func) <- environment(); func }

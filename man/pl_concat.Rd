@@ -11,21 +11,20 @@ is lazy, a LazyFrame is returned; otherwise, a DataFrame is returned (note
 that if the first element is eager, all other elements have to be eager to
 avoid implicit collect).}
 
-\item{rechunk}{Perform a rechunk at last.}
-
 \item{how}{Bind direction. Can be "vertical" (like \code{rbind()}), "horizontal"
-(like \code{cbind()}), or "diagonal".}
+(like \code{cbind()}), or "diagonal". For \code{"vertical"} and \code{"diagonal"}, adding
+the suffix \code{"_relaxed"} will cast columns to their shared supertypes. For
+example, if we try to vertically concatenate two columns of types \code{i32} and
+\code{f64}, using \code{how = "vertical_relaxed"} will cast the column of type \code{i32}
+to \code{f64} beforehand.}
+
+\item{rechunk}{Perform a rechunk at last.}
 
 \item{parallel}{Only used for LazyFrames. If \code{TRUE} (default), lazy
 computations may be executed in parallel.}
-
-\item{to_supertypes}{If \code{TRUE} (default), cast columns shared super types, if
-any. For example, if we try to vertically concatenate two columns of types \code{i32}
-and \code{f64}, the column of type \code{i32} will be cast to \code{f64} beforehand. This
-argument is equivalent to the "_relaxed" operations in Python polars.}
 }
 \value{
-DataFrame, or Series, LazyFrame or Expr
+DataFrame, Series, LazyFrame or Expr
 }
 \description{
 Concat polars objects
@@ -60,9 +59,9 @@ pl$concat(l_hor, how = "horizontal")
 pl$concat(l_hor, how = "diagonal")
 
 # if two columns don't share the same type, concat() will error unless we use
-# `to_supertypes = TRUE`:
+# `how = "vertical_relaxed"`:
 test = pl$DataFrame(x = 1L) # i32
 test2 = pl$DataFrame(x = 1.0) # f64
 
-pl$concat(test, test2, to_supertypes = TRUE)
+pl$concat(test, test2, how = "vertical_relaxed")
 }
