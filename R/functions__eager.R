@@ -56,8 +56,10 @@
 #' pl$concat(test, test2, how = "vertical_relaxed")
 pl$concat = function(
     ...,
-    how = c("vertical", "vertical_relaxed", "horizontal",
-            "diagonal", "diagonal_relaxed"),
+    how = c(
+      "vertical", "vertical_relaxed", "horizontal",
+      "diagonal", "diagonal_relaxed"
+    ),
     rechunk = TRUE,
     parallel = TRUE) {
   l = unpack_list(..., skip_classes = "data.frame")
@@ -65,8 +67,10 @@ pl$concat = function(
   if (length(l) == 0L) {
     return(NULL)
   }
-  how_args = c("vertical", "vertical_relaxed", "horizontal",
-               "diagonal", "diagonal_relaxed")
+  how_args = c(
+    "vertical", "vertical_relaxed", "horizontal",
+    "diagonal", "diagonal_relaxed"
+  )
   how = match.arg(how[1L], how_args) |>
     result() |>
     unwrap("in pl$concat()")
