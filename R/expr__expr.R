@@ -1923,6 +1923,19 @@ Expr_is_first = function() {
   .pr$Expr$is_first_distinct(self)
 }
 
+
+#' Check whether each value is the last occurrence
+#'
+#' @return Expr
+#' @docType NULL
+#' @format NULL
+#'
+#' @examples
+#' pl$DataFrame(head(mtcars[, 1:2]))$
+#'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
+Expr_is_last_distinct = "use_extendr_wrapper"
+
+
 #' Check whether each value is duplicated
 #'
 #' This is syntactic sugar for `$is_unique()$not()`.

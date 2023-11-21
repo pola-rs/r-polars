@@ -799,6 +799,8 @@ Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
 
 Expr$is_infinite <- function() .Call(wrap__Expr__is_infinite, self)
 
+Expr$is_last_distinct <- function() .Call(wrap__Expr__is_last_distinct, self)
+
 Expr$is_nan <- function() .Call(wrap__Expr__is_nan, self)
 
 Expr$is_not_null <- function() .Call(wrap__Expr__is_not_null, self)
