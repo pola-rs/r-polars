@@ -98,7 +98,7 @@ r_func = \(s) {
 pl$LazyFrame(iris)$
   sort("Sepal.Length")$
   group_by("Species", maintain_order = TRUE)$
-  agg(pl$col(pl$Float64)$apply(r_func))$
+  agg(pl$col(pl$Float64)$map_elements(r_func))$
   profile()
 }
 \seealso{

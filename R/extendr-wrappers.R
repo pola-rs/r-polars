@@ -839,11 +839,11 @@ Expr$over <- function(proto_exprs) .Call(wrap__Expr__over, self, proto_exprs)
 
 Expr$print <- function() invisible(.Call(wrap__Expr__print, self))
 
-Expr$map <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map, self, lambda, output_type, agg_list)
+Expr$map_batches <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map_batches, self, lambda, output_type, agg_list)
 
-Expr$map_in_background <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map_in_background, self, lambda, output_type, agg_list)
+Expr$map_batches_in_background <- function(lambda, output_type, agg_list) .Call(wrap__Expr__map_batches_in_background, self, lambda, output_type, agg_list)
 
-Expr$apply_in_background <- function(lambda, output_type) .Call(wrap__Expr__apply_in_background, self, lambda, output_type)
+Expr$map_elements_in_background <- function(lambda, output_type) .Call(wrap__Expr__map_elements_in_background, self, lambda, output_type)
 
 Expr$approx_n_unique <- function() .Call(wrap__Expr__approx_n_unique, self)
 
@@ -1197,7 +1197,7 @@ Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
 
 Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
 
-Series$apply <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__apply, self, robj, rdatatype, strict, allow_fail_eval)
+Series$map_elements <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
 
 Series$mean <- function() .Call(wrap__Series__mean, self)
 

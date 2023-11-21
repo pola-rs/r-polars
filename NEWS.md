@@ -32,6 +32,8 @@
   `milliseconds()`, `microseconds()`, `nanoseconds()`) are renamed, for example 
   from `$dt$days()` to `$dt$total_days()`. The old usage is deprecated and will
   be removed in 0.12.0.
+- `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
+  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.12.0.
 
 ## What's changed
 

@@ -13,7 +13,7 @@ processes. \code{pl$options$rpool_active} is the number of R sessions are alread
 in the pool. \code{rpool_cap} is the limit of new R sessions to spawn. Anytime a polars
 thread worker needs a background R session specifically to run R code embedded
 in a query via \verb{$map(..., in_background = TRUE)} or
-\verb{$apply(..., in_background = TRUE)}, it will obtain any R session idling in
+\verb{$map_elements(..., in_background = TRUE)}, it will obtain any R session idling in
 rpool, or spawn a new R session (process) if \code{capacity}
 is not already reached. If \code{capacity} is already reached, the thread worker
 will sleep and in a R job queue until an R session is idle.

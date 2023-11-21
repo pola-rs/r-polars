@@ -1,17 +1,17 @@
-test_that("Expr_apply works", {
+test_that("Expr_map_elements works", {
   df = pl$DataFrame(list(
     a = c(1:3, 5L, NA_integer_, 50, 100),
     b = c("a", "b", "c", "c", "d", NA_character_, NA_character_)
   ))
 
   df$group_by("b")$agg(pl$col("a")$sum())
-  # df$group_by("b")$agg(pl$col("a")$apply(function(s) {print("hej");(s*2)}))
+  # df$group_by("b")$agg(pl$col("a")$map_elements(function(s) {print("hej");(s*2)}))
   rdf = df$group_by("b", maintain_order = TRUE)$agg(
-    pl$col("a")$apply(function(s) {
+    pl$col("a")$map_elements(function(s) {
       v = (s * 2)$to_r()
       which.max(v)
     })$alias("a_which_max"),
-    pl$col("a")$apply(function(s) s$len())$alias("a_count")
+    pl$col("a")$map_elements(function(s) s$len())$alias("a_count")
   )
 
   expect_equal(
@@ -36,7 +36,7 @@ test_that("Expr_apply works", {
   edf$count = c(rep(1, 9), 2)
   expect_identical(
     df$group_by("a", "b", maintain_order = TRUE)$agg(
-      pl$col("val1")$apply(function(s) {
+      pl$col("val1")$map_elements(function(s) {
         s$len()
       })$alias("count")
     )$to_data_frame(),
@@ -47,10 +47,10 @@ test_that("Expr_apply works", {
   # in select context
   expect_identical(
     df$select(
-      pl$col("val1")$apply(function(x) {
+      pl$col("val1")$map_elements(function(x) {
         x + 5L
       })$alias("val1_add5"),
-      pl$col("b")$apply(function(x) {
+      pl$col("b")$map_elements(function(x) {
         toupper(x)
       })$alias("b_toupper")
     )$to_data_frame(),
@@ -64,10 +64,10 @@ test_that("Expr_apply works", {
   # iwith columns context
   expect_identical(
     df$with_columns(
-      pl$col("val1")$apply(function(x) {
+      pl$col("val1")$map_elements(function(x) {
         x + 5L
       })$alias("val1_add5"),
-      pl$col("b")$apply(function(x) {
+      pl$col("b")$map_elements(function(x) {
         toupper(x)
       })$alias("b_toupper")
     )$to_data_frame(),

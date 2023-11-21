@@ -26,7 +26,7 @@ test_that("<LazyFrame>$profile", {
   p2 = pl$LazyFrame(iris)$
     sort("Sepal.Length")$ # for no specific reason
     group_by("Species", maintain_order = TRUE)$
-    agg(pl$col(pl$Float64)$apply(r_func))$
+    agg(pl$col(pl$Float64)$map_elements(r_func))$
     profile()
 
   # map each Species-group with native polars, takes ~120us better

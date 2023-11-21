@@ -2,20 +2,20 @@ test_that("pl$Series_apply", {
   # non strict casting just yields null for wrong type
   expect_identical(
     pl$Series(1:3, "integers")$
-      apply(function(x) "wrong type", NULL, strict = FALSE)$
+      map_elements(function(x) "wrong type", NULL, strict = FALSE)$
       to_r(),
     rep(NA_integer_, 3)
   )
 
   # strict type casting, throws an error
   expect_error(
-    pl$Series(1:3, "integers")$apply(function(x) "wrong type", NULL, strict = TRUE)
+    pl$Series(1:3, "integers")$map_elements(function(x) "wrong type", NULL, strict = TRUE)
   )
 
   # handle na int
   expect_identical(
     pl$Series(c(1:3, NA_integer_), "integers")
-    $apply(function(x) x, NULL, TRUE)
+    $map_elements(function(x) x, NULL, TRUE)
     $to_vector(),
     c(1:3, NA)
   )
