@@ -857,11 +857,6 @@ DataFrame_to_data_frame = function(...) {
   df
 }
 
-#' Alias for to_data_frame (backward compatibility)
-#' @return An R data.frame
-#' @noRd
-DataFrame_as_data_frame = DataFrame_to_data_frame
-
 
 #' Return Polars DataFrame as a list of vectors
 #'

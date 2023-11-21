@@ -22,5 +22,5 @@ rows will be discarded. Vice-versa if the period is negative. In the end,
 the total number of rows of the LazyFrame doesn't change.
 }
 \examples{
-pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$as_data_frame()
+pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$to_data_frame()
 }
