@@ -1393,68 +1393,75 @@ impl Expr {
         ))
     }
 
-    pub fn duration_days(&self) -> Self {
-        self.0
+    pub fn dt_total_days(&self) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.days().into_series())),
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
-            .into()
+            .into())
     }
-    pub fn duration_hours(&self) -> Self {
-        self.0
+    pub fn dt_total_hours(&self) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.hours().into_series())),
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
-            .into()
+            .into())
     }
-    pub fn duration_minutes(&self) -> Self {
-        self.0
+    pub fn dt_total_minutes(&self) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.minutes().into_series())),
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
-            .into()
+            .into())
     }
-    pub fn duration_seconds(&self) -> Self {
-        self.0
+    pub fn dt_total_seconds(&self) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.seconds().into_series())),
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
-            .into()
+            .into())
     }
-    pub fn duration_nanoseconds(&self) -> Self {
-        self.0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into()
-    }
-    pub fn duration_microseconds(&self) -> Self {
-        self.0
-            .clone()
-            .map(
-                |s| Ok(Some(s.duration()?.microseconds().into_series())),
-                pl::GetOutput::from_type(pl::DataType::Int64),
-            )
-            .into()
-    }
-    pub fn duration_milliseconds(&self) -> Self {
-        self.0
+    pub fn dt_total_milliseconds(&self) -> RResult<Self> {
+        Ok(self
+            .0
             .clone()
             .map(
                 |s| Ok(Some(s.duration()?.milliseconds().into_series())),
                 pl::GetOutput::from_type(pl::DataType::Int64),
             )
-            .into()
+            .into())
+    }
+    pub fn dt_total_microseconds(&self) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .map(
+                |s| Ok(Some(s.duration()?.microseconds().into_series())),
+                pl::GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into())
+    }
+    pub fn dt_total_nanoseconds(&self) -> RResult<Self> {
+        Ok(self
+            .0
+            .clone()
+            .map(
+                |s| Ok(Some(s.duration()?.nanoseconds().into_series())),
+                pl::GetOutput::from_type(pl::DataType::Int64),
+            )
+            .into())
     }
 
     pub fn dt_offset_by(&self, by: Robj) -> RResult<Self> {
