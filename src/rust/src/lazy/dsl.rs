@@ -1600,8 +1600,7 @@ impl Expr {
         self.0.clone().is_finite().into()
     }
 
-    // TODO: rename to is_first_distinct
-    pub fn is_first(&self) -> Self {
+    pub fn is_first_distinct(&self) -> Self {
         self.clone().0.is_first_distinct().into()
     }
 
@@ -1613,7 +1612,9 @@ impl Expr {
         self.0.clone().is_infinite().into()
     }
 
-    // TODO: is_last_distinct
+    pub fn is_last_distinct(&self) -> Self {
+        self.clone().0.is_last_distinct().into()
+    }
 
     pub fn is_nan(&self) -> Self {
         self.0.clone().is_nan().into()
@@ -1632,7 +1633,7 @@ impl Expr {
     pub fn is_unique(&self) -> Self {
         self.0.clone().is_unique().into()
     }
-    pub fn not_(&self) -> Self {
+    pub fn not(&self) -> Self {
         self.0.clone().not().into()
     }
 

@@ -13,20 +13,20 @@ test_that("expression boolean operators", {
 
   cmp_operators_df = pl$DataFrame(list())$with_columns(
     (pl$lit(1) < 2)$alias("1 lt 2"),
-    (pl$lit(1) < 1)$alias("1 lt 1 not")$not_(),
+    (pl$lit(1) < 1)$alias("1 lt 1 not")$not(),
     (pl$lit(2) > 1)$alias("2 gt 1"),
-    (pl$lit(1) > 1)$alias("1 gt 1 not")$not_(),
+    (pl$lit(1) > 1)$alias("1 gt 1 not")$not(),
     (pl$lit(1) == 1)$alias("1 eq 1"),
-    (pl$lit(1) == 2)$alias("1 eq 2 not")$not_(),
+    (pl$lit(1) == 2)$alias("1 eq 2 not")$not(),
     (pl$lit(1) <= 1)$alias("1 lt_eq 1"),
-    (pl$lit(2) <= 1)$alias("2 lt_eq 1 not")$not_(),
+    (pl$lit(2) <= 1)$alias("2 lt_eq 1 not")$not(),
     (pl$lit(2) >= 2)$alias("2 gt_eq 2"),
-    (pl$lit(1) >= 2)$alias("1 gt_eq 2 not")$not_(),
+    (pl$lit(1) >= 2)$alias("1 gt_eq 2 not")$not(),
     (pl$lit(2) != 1)$alias("2 not eq 1"),
-    (pl$lit(2) != 2)$alias("2 not eq 1 not")$not_(),
-    (pl$lit(TRUE)$not_() == pl$lit(FALSE))$alias("not true == false"),
+    (pl$lit(2) != 2)$alias("2 not eq 1 not")$not(),
+    (pl$lit(TRUE)$not() == pl$lit(FALSE))$alias("not true == false"),
     (pl$lit(TRUE) != pl$lit(FALSE))$alias("true != false"),
-    (pl$lit(TRUE)$not_() == FALSE)$alias("not true == false wrap"),
+    (pl$lit(TRUE)$not() == FALSE)$alias("not true == false wrap"),
     (pl$lit(TRUE) != FALSE)$alias("true != false wrap")
   )
 
@@ -253,7 +253,7 @@ test_that("is_null", {
 
   expect_equal(
     df$with_columns(pl$all()$is_not_null()$name$suffix("_isnull"))$to_data_frame(),
-    df$with_columns(pl$all()$is_null()$not_()$name$suffix("_isnull"))$to_data_frame()
+    df$with_columns(pl$all()$is_null()$not()$name$suffix("_isnull"))$to_data_frame()
   )
 })
 
@@ -471,7 +471,7 @@ test_that("and or is_in xor", {
       pl$lit(NA_real_)$is_in(pl$lit(NULL))$alias("NULL typed is in NULL")
 
       # anymore from rust-polars 0.30-0.32
-      # pl$lit(NULL)$is_in(pl$lit(NULL))$not_()$alias("NULL is in NULL, NOY")
+      # pl$lit(NULL)$is_in(pl$lit(NULL))$not()$alias("NULL is in NULL, NOY")
     )$to_data_frame() |> unlist() |> all(na.rm = TRUE)
   )
 })
@@ -1266,18 +1266,20 @@ test_that("std var", {
 })
 
 
-test_that("is_unique is_first is_duplicated", {
+test_that("is_unique is_first_distinct is_last_distinct is_duplicated", {
   v = c(1, 1, 2, 2, 3, NA, NaN, Inf)
   expect_identical(
     pl$select(
       pl$lit(v)$is_unique()$alias("is_unique"),
-      pl$lit(v)$is_first()$alias("is_first"),
+      pl$lit(v)$is_first_distinct()$alias("is_first_distinct"),
+      pl$lit(v)$is_last_distinct()$alias("is_last_distinct"),
       pl$lit(v)$is_duplicated()$alias("is_duplicated"),
-      pl$lit(v)$is_first()$not_()$alias("R_duplicated")
+      pl$lit(v)$is_first_distinct()$not()$alias("R_duplicated")
     )$to_list(),
     list(
       is_unique = !v %in% v[duplicated(v)],
-      is_first = !duplicated(v),
+      is_first_distinct = !duplicated(v),
+      is_last_distinct = !xor(v %in% v[duplicated(v)], duplicated(v)),
       is_duplicated = v %in% v[duplicated(v)],
       R_duplicated = duplicated(v)
     )

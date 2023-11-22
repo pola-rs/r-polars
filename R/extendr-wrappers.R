@@ -793,11 +793,13 @@ Expr$is_duplicated <- function() .Call(wrap__Expr__is_duplicated, self)
 
 Expr$is_finite <- function() .Call(wrap__Expr__is_finite, self)
 
-Expr$is_first <- function() .Call(wrap__Expr__is_first, self)
+Expr$is_first_distinct <- function() .Call(wrap__Expr__is_first_distinct, self)
 
 Expr$is_in <- function(other) .Call(wrap__Expr__is_in, self, other)
 
 Expr$is_infinite <- function() .Call(wrap__Expr__is_infinite, self)
+
+Expr$is_last_distinct <- function() .Call(wrap__Expr__is_last_distinct, self)
 
 Expr$is_nan <- function() .Call(wrap__Expr__is_nan, self)
 
@@ -809,7 +811,7 @@ Expr$is_null <- function() .Call(wrap__Expr__is_null, self)
 
 Expr$is_unique <- function() .Call(wrap__Expr__is_unique, self)
 
-Expr$not_ <- function() .Call(wrap__Expr__not_, self)
+Expr$not <- function() .Call(wrap__Expr__not, self)
 
 Expr$count <- function() .Call(wrap__Expr__count, self)
 

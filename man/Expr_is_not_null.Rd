@@ -11,7 +11,7 @@ Expr
 }
 \description{
 Returns a boolean Series indicating which values are not null. Syntactic sugar
-for \verb{$is_null()$not_()}.
+for \verb{$is_null()$not()}.
 }
 \examples{
 pl$DataFrame(list(x = c(1, NA, 3)))$select(pl$col("x")$is_not_null())
