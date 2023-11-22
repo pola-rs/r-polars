@@ -41,6 +41,7 @@
 
 ## What's changed
 
+- Fix the installation issue on Ubuntu 20.04 (#528, thanks @brownag).
 - New methods `$write_json()` and `$write_ndjson()` for DataFrame (#502).
 - Removed argument `name` in `pl$date_range()`, which was deprecated for a while
   (#503).
