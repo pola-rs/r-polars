@@ -285,17 +285,17 @@ Expr_mul = Expr_mul = function(other) {
 #' @format NULL
 #' @examples
 #' # two syntaxes same result
-#' pl$lit(TRUE)$not_()
+#' pl$lit(TRUE)$not()
 #' !pl$lit(TRUE)
-Expr_not_ = "use_extendr_wrapper"
+Expr_not = "use_extendr_wrapper"
 #' @export
-#' @rdname Expr_not_
+#' @rdname Expr_not
 #' @param x Expr
-"!.Expr" = function(x) x$not_()
+"!.Expr" = function(x) x$not()
 
 Expr_is_not = function() {
-  warning("`$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead.")
-  .pr$Expr$not_(self)
+  warning("`$is_not()` is deprecated and will be removed in 0.12.0. Use `$not()` instead.")
+  .pr$Expr$not(self)
 }
 
 #' Check strictly lower inequality
@@ -564,7 +564,7 @@ Expr_is_null = "use_extendr_wrapper"
 #' Check if elements are not NULL
 #'
 #' Returns a boolean Series indicating which values are not null. Syntactic sugar
-#' for `$is_null()$not_()`.
+#' for `$is_null()$not()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1130,7 +1130,7 @@ Expr_is_nan = "use_extendr_wrapper"
 #' Check if elements are not NaN
 #'
 #' Returns a boolean Series indicating which values are not NaN. Syntactic sugar
-#' for `$is_nan()$not_()`.
+#' for `$is_nan()$not()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
@@ -1915,13 +1915,30 @@ Expr_is_unique = "use_extendr_wrapper"
 #'
 #' @examples
 #' pl$DataFrame(head(mtcars[, 1:2]))$
-#'   with_columns(is_ufirst = pl$col("mpg")$is_first())
-Expr_is_first = "use_extendr_wrapper"
+#'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
+Expr_is_first_distinct = "use_extendr_wrapper"
+
+Expr_is_first = function() {
+  warning("`$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()` instead.")
+  .pr$Expr$is_first_distinct(self)
+}
+
+
+#' Check whether each value is the last occurrence
+#'
+#' @return Expr
+#' @docType NULL
+#' @format NULL
+#'
+#' @examples
+#' pl$DataFrame(head(mtcars[, 1:2]))$
+#'   with_columns(is_ulast = pl$col("mpg")$is_last_distinct())
+Expr_is_last_distinct = "use_extendr_wrapper"
 
 
 #' Check whether each value is duplicated
 #'
-#' This is syntactic sugar for `$is_unique()$not_()`.
+#' This is syntactic sugar for `$is_unique()$not()`.
 #' @return Expr
 #' @docType NULL
 #' @format NULL
