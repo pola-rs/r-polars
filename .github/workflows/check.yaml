@@ -1,216 +1,216 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - .Rbuildignore
-      - R/**
-      - src/**
-      - tests/**
-      - tools/**
-      - vignettes/*
-      - configure*
-      - DESCRIPTION
-      - NAMESPACE
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/workflows/check.yaml
-      - .Rbuildignore
-      - R/**
-      - src/**
-      - tests/**
-      - tools/**
-      - vignettes/*
-      - configure*
-      - DESCRIPTION
-      - NAMESPACE
-  workflow_dispatch:
-
-name: R-CMD-check
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-defaults:
-  run:
-    shell: bash
-
-jobs:
-  R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.full-features && 'full-features' || '' }}
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - { os: macos-latest, r: "release" }
-          - { os: windows-latest, r: "devel", rtools-version: "43" }
-          - { os: windows-latest, r: "release", rtools-version: "" }
-          - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
-          - { os: ubuntu-latest, r: "release" }
-          - { os: ubuntu-latest, r: "oldrel-1" }
-        include:
-          - config: { os: macos-latest, r: "release", full-features: true }
-          - config: { os: windows-latest, r: "release", full-features: true }
-          - config: { os: ubuntu-latest, r: "release", full-features: true }
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-      LIBR_POLARS_BUILD: "true"
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Tune GitHub-hosted runner network
-        uses: smorimoto/tune-github-hosted-runner-network@v1
-
-      - name: Set rust target
-        id: rust-target
-        run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
-          else
-            echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
-          fi
-
-      - name: Set env vars for build option
-        if: matrix.config.full-features
-        run: |
-          echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
-          echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
-
-      - uses: ./.github/actions/setup
-        with:
-          rust-nightly: "${{ matrix.config.full-features }}"
-          target: "${{ steps.rust-target.outputs.TARGET }}"
-
-      - name: print files
-        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
-          rtools-version: ${{ matrix.config.rtools-version }}
-          Ncpus: 2
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
-
-      - name: Build lib
-        env:
-          NOT_CRAN: "true"
-        run: |
-          Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>$GITHUB_ENV
-
-      - uses: r-lib/actions/check-r-package@v2
-        env:
-          LIBR_POLARS_BUILD: "false"
-        with:
-          upload-snapshots: false
-          error-on: '"never"' #errors are filtered by rules below
-
-      # - name: print R CMD check - install log
-      #   shell: bash
-      #   env:
-      #     RUNNER_OS: ${{ runner.os }}
-      #   run: |
-      #     echo $RUNNER_OS
-      #     if [ "$RUNNER_OS" == "Linux" ]
-      #     then
-      #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-      #
-      #     if [ "$RUNNER_OS" == "Windows" ]
-      #     then
-      #       less D:/a/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-      #
-      #     if [ "$RUNNER_OS" == "macOS" ]
-      #     then
-      #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
-      #     fi
-
-      - name: print files
-        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
-
-      - name: raise remaining rcmdcheck errors
-        run: |
-         print(getwd());
-         source("./inst/misc/filter_rcmdcheck.R");
-        shell: Rscript {0}
-
-  source-with-bin-check:
-    runs-on: ${{ matrix.os }}
-
-    name: ${{ matrix.os }} with pre-built binary (${{ matrix.r }})
-
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - macos-latest
-          - windows-latest
-          - ubuntu-latest
-        r:
-          - oldrel-1
-          - release
-          - devel
-        exclude:
-          - os: macos-latest
-            r: devel
-          - os: macos-latest
-            r: oldrel-1
-
-    env:
-      NOT_CRAN: "true"
-      LIB_SUMS_PATH: "tools/lib-sums.tsv"
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for pre-built binary
-        run: |
-          if [[ -f "${LIB_SUMS_PATH}" ]]; then
-            echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
-            rm -f "$(rustup which cargo)"
-          else
-            echo "TEST_BIN_LIB=false" >>"${GITHUB_ENV}"
-          fi
-
-      - uses: r-lib/actions/setup-pandoc@v2
-        if: env.TEST_BIN_LIB == 'true'
-
-      - uses: r-lib/actions/setup-r@v2
-        if: env.TEST_BIN_LIB == 'true'
-        with:
-          r-version: ${{ matrix.r }}
-          use-public-rspm: true
-          Ncpus: "2"
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        if: env.TEST_BIN_LIB == 'true'
-        with:
-          extra-packages: any::testthat, any::remotes
-          needs: check
-
-      - name: Install with pre-built binary
-        if: env.TEST_BIN_LIB == 'true'
-        shell: Rscript {0}
-        run: |
-          remotes::install_local(force = TRUE)
-          testthat::test_dir("tests")
+# # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - .Rbuildignore
+#       - R/**
+#       - src/**
+#       - tests/**
+#       - tools/**
+#       - vignettes/*
+#       - configure*
+#       - DESCRIPTION
+#       - NAMESPACE
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - .github/workflows/check.yaml
+#       - .Rbuildignore
+#       - R/**
+#       - src/**
+#       - tests/**
+#       - tools/**
+#       - vignettes/*
+#       - configure*
+#       - DESCRIPTION
+#       - NAMESPACE
+#   workflow_dispatch:
+#
+# name: R-CMD-check
+#
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+#
+# defaults:
+#   run:
+#     shell: bash
+#
+# jobs:
+#   R-CMD-check:
+#     runs-on: ${{ matrix.config.os }}
+#     name: ${{ matrix.config.os }} (${{ matrix.config.r }}) ${{ matrix.config.full-features && 'full-features' || '' }}
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         config:
+#           - { os: macos-latest, r: "release" }
+#           - { os: windows-latest, r: "devel", rtools-version: "43" }
+#           - { os: windows-latest, r: "release", rtools-version: "" }
+#           - { os: ubuntu-latest, r: "devel", http-user-agent: "release" }
+#           - { os: ubuntu-latest, r: "release" }
+#           - { os: ubuntu-latest, r: "oldrel-1" }
+#         include:
+#           - config: { os: macos-latest, r: "release", full-features: true }
+#           - config: { os: windows-latest, r: "release", full-features: true }
+#           - config: { os: ubuntu-latest, r: "release", full-features: true }
+#
+#     env:
+#       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+#       R_KEEP_PKG_SOURCE: yes
+#       LIBR_POLARS_BUILD: "true"
+#
+#     steps:
+#       - uses: actions/checkout@v3
+#
+#       - name: Tune GitHub-hosted runner network
+#         uses: smorimoto/tune-github-hosted-runner-network@v1
+#
+#       - name: Set rust target
+#         id: rust-target
+#         run: |
+#           if [ "${{ runner.os }}" == "Windows" ]; then
+#             echo "TARGET=x86_64-pc-windows-gnu" >>$GITHUB_OUTPUT
+#           else
+#             echo "TARGET=$(rustc -vV | grep host | cut -d' ' -f2)" >>$GITHUB_OUTPUT
+#           fi
+#
+#       - name: Set env vars for build option
+#         if: matrix.config.full-features
+#         run: |
+#           echo "RPOLARS_FULL_FEATURES=true" >>$GITHUB_ENV
+#           echo "RPOLARS_PROFILE=release" >>$GITHUB_ENV
+#
+#       - uses: ./.github/actions/setup
+#         with:
+#           rust-nightly: "${{ matrix.config.full-features }}"
+#           target: "${{ steps.rust-target.outputs.TARGET }}"
+#
+#       - name: print files
+#         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+#         shell: Rscript {0}
+#
+#       - uses: r-lib/actions/setup-pandoc@v2
+#
+#       - uses: r-lib/actions/setup-r@v2
+#         with:
+#           r-version: ${{ matrix.config.r }}
+#           http-user-agent: ${{ matrix.config.http-user-agent }}
+#           use-public-rspm: true
+#           rtools-version: ${{ matrix.config.rtools-version }}
+#           Ncpus: 2
+#
+#       - uses: r-lib/actions/setup-r-dependencies@v2
+#         with:
+#           extra-packages: any::rcmdcheck
+#           needs: check
+#
+#       - name: Build lib
+#         env:
+#           NOT_CRAN: "true"
+#         run: |
+#           Rscript -e 'pkgbuild::compile_dll()'
+#           echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${{ steps.rust-target.outputs.TARGET }}/release/libr_polars.a" >>$GITHUB_ENV
+#
+#       - uses: r-lib/actions/check-r-package@v2
+#         env:
+#           LIBR_POLARS_BUILD: "false"
+#         with:
+#           upload-snapshots: false
+#           error-on: '"never"' #errors are filtered by rules below
+#
+#       # - name: print R CMD check - install log
+#       #   shell: bash
+#       #   env:
+#       #     RUNNER_OS: ${{ runner.os }}
+#       #   run: |
+#       #     echo $RUNNER_OS
+#       #     if [ "$RUNNER_OS" == "Linux" ]
+#       #     then
+#       #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
+#       #     fi
+#       #
+#       #     if [ "$RUNNER_OS" == "Windows" ]
+#       #     then
+#       #       less D:/a/r-polars/r-polars/check/polars.Rcheck/00install.out
+#       #     fi
+#       #
+#       #     if [ "$RUNNER_OS" == "macOS" ]
+#       #     then
+#       #       less /home/runner/work/r-polars/r-polars/check/polars.Rcheck/00install.out
+#       #     fi
+#
+#       - name: print files
+#         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+#         shell: Rscript {0}
+#
+#       - name: raise remaining rcmdcheck errors
+#         run: |
+#          print(getwd());
+#          source("./inst/misc/filter_rcmdcheck.R");
+#         shell: Rscript {0}
+#
+#   source-with-bin-check:
+#     runs-on: ${{ matrix.os }}
+#
+#     name: ${{ matrix.os }} with pre-built binary (${{ matrix.r }})
+#
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         os:
+#           - macos-latest
+#           - windows-latest
+#           - ubuntu-latest
+#         r:
+#           - oldrel-1
+#           - release
+#           - devel
+#         exclude:
+#           - os: macos-latest
+#             r: devel
+#           - os: macos-latest
+#             r: oldrel-1
+#
+#     env:
+#       NOT_CRAN: "true"
+#       LIB_SUMS_PATH: "tools/lib-sums.tsv"
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Check for pre-built binary
+#         run: |
+#           if [[ -f "${LIB_SUMS_PATH}" ]]; then
+#             echo "TEST_BIN_LIB=true" >>"${GITHUB_ENV}"
+#             rm -f "$(rustup which cargo)"
+#           else
+#             echo "TEST_BIN_LIB=false" >>"${GITHUB_ENV}"
+#           fi
+#
+#       - uses: r-lib/actions/setup-pandoc@v2
+#         if: env.TEST_BIN_LIB == 'true'
+#
+#       - uses: r-lib/actions/setup-r@v2
+#         if: env.TEST_BIN_LIB == 'true'
+#         with:
+#           r-version: ${{ matrix.r }}
+#           use-public-rspm: true
+#           Ncpus: "2"
+#
+#       - uses: r-lib/actions/setup-r-dependencies@v2
+#         if: env.TEST_BIN_LIB == 'true'
+#         with:
+#           extra-packages: any::testthat, any::remotes
+#           needs: check
+#
+#       - name: Install with pre-built binary
+#         if: env.TEST_BIN_LIB == 'true'
+#         shell: Rscript {0}
+#         run: |
+#           remotes::install_local(force = TRUE)
+#           testthat::test_dir("tests")

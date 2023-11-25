@@ -66,7 +66,7 @@ all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -
 .PHONY: docs
 docs: build install README.md docs/docs/reference_home.md ## Generate docs
 	cp docs/mkdocs.orig.yml docs/mkdocs.yml
-	Rscript -e 'altdoc::update_docs(custom_reference = "docs/make-docs.R")'
+	Rscript -e 'source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
 	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
 
 .PHONY: docs-preview

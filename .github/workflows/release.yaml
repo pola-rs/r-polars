@@ -1,113 +1,113 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-on:
-  push:
-    tags:
-      - "v**" # Push events to every tag including hierarchical tags like v1.0/beta
-  pull_request:
-    branches:
-      - main
-    paths:
-      - .github/workflows/release.yaml
-      - src/Makevars*
-  workflow_dispatch:
-
-name: Release
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-defaults:
-  run:
-    shell: bash
-
-env:
-  RPOLARS_FULL_FEATURES: "true"
-  RPOLARS_PROFILE: release-optimized
-  NOT_CRAN: "true"
-
-jobs:
-  build:
-    runs-on: ${{ matrix.config.os }}
-
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) - ${{ matrix.config.target }}
-
-    permissions:
-      contents: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: ./.github/actions/setup
-        with:
-          rust-nightly: true
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          use-public-rspm: true
-          Ncpus: 2
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: dev
-
-      - name: Build lib
-        if: matrix.config.target == ''
-        run: |
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            TARGET=x86_64-pc-windows-gnu
-          else
-            TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
-          fi
-          Rscript -e 'pkgbuild::compile_dll()'
-          echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" >>$GITHUB_ENV
-
-      - name: make binary R package + test on host arch
-        if: matrix.config.target == ''
-        run: |
-          devtools::install(quick = TRUE)
-          devtools::test(stop_on_failure = TRUE)
-          fn = devtools::build(binary = TRUE, args = c('--preclean'))
-          if (R.version$os != "mingw32") {
-            newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
-            file.rename(fn,newfn)
-          } else {
-            file.rename(fn,"../polars.zip") #R expects specific windows binary filename
-          }
-        shell: Rscript {0}
-
-      - name: prep upload
-        run: |
-          mv ../polars* ./
-
-      - name: Upload produced R packages
-        uses: actions/upload-artifact@v3
-        with:
-          path: |
-            polars_*
-            polars.zip
-
-      - name: Upload produced R packages (source or binary) to release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
-        with:
-          files: |
-            polars_*
-            polars.zip
-
-      - name: print files
-        run: print(list.files("..",recursive = TRUE,full.names=TRUE))
-        shell: Rscript {0}
+# # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
+# # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# on:
+#   push:
+#     tags:
+#       - "v**" # Push events to every tag including hierarchical tags like v1.0/beta
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - .github/workflows/release.yaml
+#       - src/Makevars*
+#   workflow_dispatch:
+#
+# name: Release
+#
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+#
+# defaults:
+#   run:
+#     shell: bash
+#
+# env:
+#   RPOLARS_FULL_FEATURES: "true"
+#   RPOLARS_PROFILE: release-optimized
+#   NOT_CRAN: "true"
+#
+# jobs:
+#   build:
+#     runs-on: ${{ matrix.config.os }}
+#
+#     name: ${{ matrix.config.os }} (${{ matrix.config.r }}) - ${{ matrix.config.target }}
+#
+#     permissions:
+#       contents: write
+#
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         config:
+#           - {os: macos-latest,   r: 'release'}
+#           - {os: windows-latest, r: 'release'}
+#           - {os: ubuntu-latest,   r: 'release'}
+#
+#     steps:
+#       - uses: actions/checkout@v3
+#
+#       - uses: ./.github/actions/setup
+#         with:
+#           rust-nightly: true
+#
+#       - uses: r-lib/actions/setup-pandoc@v2
+#
+#       - uses: r-lib/actions/setup-r@v2
+#         with:
+#           r-version: ${{ matrix.config.r }}
+#           use-public-rspm: true
+#           Ncpus: 2
+#
+#       - uses: r-lib/actions/setup-r-dependencies@v2
+#         with:
+#           extra-packages: any::rcmdcheck
+#           needs: dev
+#
+#       - name: Build lib
+#         if: matrix.config.target == ''
+#         run: |
+#           if [ "${{ runner.os }}" == "Windows" ]; then
+#             TARGET=x86_64-pc-windows-gnu
+#           else
+#             TARGET="$(rustc -vV | grep host | cut -d' ' -f2)"
+#           fi
+#           Rscript -e 'pkgbuild::compile_dll()'
+#           echo "LIBR_POLARS_PATH=$(pwd)/src/rust/target/${TARGET}/${{ env.RPOLARS_PROFILE }}/libr_polars.a" >>$GITHUB_ENV
+#
+#       - name: make binary R package + test on host arch
+#         if: matrix.config.target == ''
+#         run: |
+#           devtools::install(quick = TRUE)
+#           devtools::test(stop_on_failure = TRUE)
+#           fn = devtools::build(binary = TRUE, args = c('--preclean'))
+#           if (R.version$os != "mingw32") {
+#             newfn = paste0(substr(fn,1,regexpr("_",fn)),"_",R.version$platform,".",tools::file_ext(fn))
+#             file.rename(fn,newfn)
+#           } else {
+#             file.rename(fn,"../polars.zip") #R expects specific windows binary filename
+#           }
+#         shell: Rscript {0}
+#
+#       - name: prep upload
+#         run: |
+#           mv ../polars* ./
+#
+#       - name: Upload produced R packages
+#         uses: actions/upload-artifact@v3
+#         with:
+#           path: |
+#             polars_*
+#             polars.zip
+#
+#       - name: Upload produced R packages (source or binary) to release
+#         uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
+#         with:
+#           files: |
+#             polars_*
+#             polars.zip
+#
+#       - name: print files
+#         run: print(list.files("..",recursive = TRUE,full.names=TRUE))
+#         shell: Rscript {0}

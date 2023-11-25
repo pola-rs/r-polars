@@ -1,0 +1,637 @@
+site_name: Polars R Package
+repo_url: $ALTDOC_PACKAGE_URL
+repo_name: $ALTDOC_PACKAGE_NAME
+plugins:
+  - search
+theme:
+  name: material
+  logo: polars-logo.png
+  favicon: polars-logo.png
+  font:
+    text: Roboto
+  palette:
+    - media: '(prefers-color-scheme: light)'
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - media: '(prefers-color-scheme: dark)'
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+markdown_extensions:
+  - footnotes
+  - toc:
+      baselevel: 1
+      toc_depth: 3
+  - pymdownx.highlight:
+      anchor_linenums: yes
+  - pymdownx.superfences
+extra_css:
+  - stylesheets/extra.css
+nav:
+  - Home: README.md
+  - Articles:
+      - Get started: articles/polars.md
+      - Polars User Guide: articles/userguide.md
+      - Optimize `polars` performance: articles/performance.md
+  - Reference:
+      Reference: reference_home.md
+      Polars:
+        - all: reference/pl_all.md
+        - all_horizontal: reference/pl_all_horizontal.md
+        - any_horizontal: reference/pl_any_horizontal.md
+        - approx_n_unique: reference/pl_approx_n_unique.md
+        - coalesce: reference/pl_coalesce.md
+        - col: reference/pl_col.md
+        - concat: reference/pl_concat.md
+        - concat_list: reference/pl_concat_list.md
+        - concat_str: reference/pl_concat_str.md
+        - corr: reference/pl_corr.md
+        - count: reference/pl_count.md
+        - cov: reference/pl_cov.md
+        - DataFrame: reference/pl_DataFrame.md
+        - date_range: reference/pl_date_range.md
+        - Datetime: reference/pl_Datetime.md
+        - disable_string_cache: reference/pl_disable_string_cache.md
+        - dtypes: reference/pl_dtypes.md
+        - element: reference/pl_element.md
+        - enable_string_cache: reference/pl_enable_string_cache.md
+        - expr_to_r: reference/pl_expr_to_r.md
+        - first: reference/pl_first.md
+        - fold_reduce: reference/pl_fold_reduce.md
+        - from_arrow: reference/pl_from_arrow.md
+        - head: reference/pl_head.md
+        - implode: reference/pl_implode.md
+        - last: reference/pl_last.md
+        - LazyFrame: reference/pl_LazyFrame.md
+        - List: reference/pl_List.md
+        - max: reference/pl_max.md
+        - max_horizontal: reference/pl_max_horizontal.md
+        - mean: reference/pl_mean.md
+        - median: reference/pl_median.md
+        - mem_address: reference/pl_mem_address.md
+        - min: reference/pl_min.md
+        - min_horizontal: reference/pl_min_horizontal.md
+        - n_unique: reference/pl_n_unique.md
+        - pl: reference/pl_pl.md
+        - PTime: reference/pl_PTime.md
+        - raw_list: reference/pl_raw_list.md
+        - rolling_corr: reference/pl_rolling_corr.md
+        - rolling_cov: reference/pl_rolling_cov.md
+        - select: reference/pl_select.md
+        - Series: reference/pl_Series.md
+        - SQLContext: reference/pl_SQLContext.md
+        - std: reference/pl_std.md
+        - struct: reference/pl_struct.md
+        - Struct_datatype: reference/pl_Struct_datatype.md
+        - sum: reference/pl_sum.md
+        - sum_horizontal: reference/pl_sum_horizontal.md
+        - tail: reference/pl_tail.md
+        - using_string_cache: reference/pl_using_string_cache.md
+        - var: reference/pl_var.md
+        - with_string_cache: reference/pl_with_string_cache.md
+      Series:
+        - abs: reference/Series_abs.md
+        - add: reference/Series_add.md
+        - alias: reference/Series_alias.md
+        - all: reference/Series_all.md
+        - any: reference/Series_any.md
+        - append: reference/Series_append.md
+        - apply: reference/Series_apply.md
+        - arg_max: reference/Series_arg_max.md
+        - arg_min: reference/Series_arg_min.md
+        - ceil: reference/Series_ceil.md
+        - chunk_lengths: reference/Series_chunk_lengths.md
+        - class: reference/Series_class.md
+        - clone: reference/Series_clone.md
+        - compare: reference/Series_compare.md
+        - cumsum: reference/Series_cumsum.md
+        - div: reference/Series_div.md
+        - dtype: reference/Series_dtype.md
+        - expr: reference/Series_expr.md
+        - flags: reference/Series_flags.md
+        - floor: reference/Series_floor.md
+        - is_numeric: reference/Series_is_numeric.md
+        - is_sorted: reference/Series_is_sorted.md
+        - len: reference/Series_len.md
+        - list: reference/Series_list.md
+        - max: reference/Series_max.md
+        - mean: reference/Series_mean.md
+        - median: reference/Series_median.md
+        - min: reference/Series_min.md
+        - mul: reference/Series_mul.md
+        - n_unique: reference/Series_n_unique.md
+        - name: reference/Series_name.md
+        - print: reference/Series_print.md
+        - rem: reference/Series_rem.md
+        - rename: reference/Series_rename.md
+        - rep: reference/Series_rep.md
+        - series_equal: reference/Series_series_equal.md
+        - set_sorted: reference/Series_set_sorted.md
+        - shape: reference/Series_shape.md
+        - sort: reference/Series_sort.md
+        - std: reference/Series_std.md
+        - sub: reference/Series_sub.md
+        - sum: reference/Series_sum.md
+        - to_frames: reference/Series_to_frames.md
+        - to_lit: reference/Series_to_lit.md
+        - to_r: reference/Series_to_r.md
+        - value_count: reference/Series_value_count.md
+        - var: reference/Series_var.md
+      DataFrame:
+        - class: reference/DataFrame_class.md
+        - clone: reference/DataFrame_clone.md
+        - columns: reference/DataFrame_columns.md
+        - describe: reference/DataFrame_describe.md
+        - drop: reference/DataFrame_drop.md
+        - drop_in_place: reference/DataFrame_drop_in_place.md
+        - drop_nulls: reference/DataFrame_drop_nulls.md
+        - dtype_strings: reference/DataFrame_dtype_strings.md
+        - dtypes: reference/DataFrame_dtypes.md
+        - estimated_size: reference/DataFrame_estimated_size.md
+        - explode: reference/DataFrame_explode.md
+        - fill_nan: reference/DataFrame_fill_nan.md
+        - fill_null: reference/DataFrame_fill_null.md
+        - filter: reference/DataFrame_filter.md
+        - first: reference/DataFrame_first.md
+        - frame_equal: reference/DataFrame_frame_equal.md
+        - get_column: reference/DataFrame_get_column.md
+        - get_columns: reference/DataFrame_get_columns.md
+        - glimpse: reference/DataFrame_glimpse.md
+        - group_by: reference/DataFrame_group_by.md
+        - head: reference/DataFrame_head.md
+        - height: reference/DataFrame_height.md
+        - join: reference/DataFrame_join.md
+        - join_asof: reference/DataFrame_join_asof.md
+        - last: reference/DataFrame_last.md
+        - lazy: reference/DataFrame_lazy.md
+        - limit: reference/DataFrame_limit.md
+        - max: reference/DataFrame_max.md
+        - mean: reference/DataFrame_mean.md
+        - median: reference/DataFrame_median.md
+        - melt: reference/DataFrame_melt.md
+        - min: reference/DataFrame_min.md
+        - n_chunks: reference/DataFrame_n_chunks.md
+        - null_count: reference/DataFrame_null_count.md
+        - pivot: reference/DataFrame_pivot.md
+        - quantile: reference/DataFrame_quantile.md
+        - rechunk: reference/DataFrame_rechunk.md
+        - rename: reference/DataFrame_rename.md
+        - reverse: reference/DataFrame_reverse.md
+        - sample: reference/DataFrame_sample.md
+        - select: reference/DataFrame_select.md
+        - shape: reference/DataFrame_shape.md
+        - shift: reference/DataFrame_shift.md
+        - shift_and_fill: reference/DataFrame_shift_and_fill.md
+        - slice: reference/DataFrame_slice.md
+        - sort: reference/DataFrame_sort.md
+        - std: reference/DataFrame_std.md
+        - sum: reference/DataFrame_sum.md
+        - tail: reference/DataFrame_tail.md
+        - to_data_frame: reference/DataFrame_to_data_frame.md
+        - to_series: reference/DataFrame_to_series.md
+        - to_struct: reference/DataFrame_to_struct.md
+        - transpose: reference/DataFrame_transpose.md
+        - unique: reference/DataFrame_unique.md
+        - unnest: reference/DataFrame_unnest.md
+        - var: reference/DataFrame_var.md
+        - width: reference/DataFrame_width.md
+        - with_columns: reference/DataFrame_with_columns.md
+        - with_row_count: reference/DataFrame_with_row_count.md
+      LazyFrame:
+        - class: reference/LazyFrame_class.md
+        - clone: reference/LazyFrame_clone.md
+        - collect: reference/LazyFrame_collect.md
+        - collect_in_background: reference/LazyFrame_collect_in_background.md
+        - columns: reference/LazyFrame_columns.md
+        - describe_plan: reference/LazyFrame_describe_plan.md
+        - drop: reference/LazyFrame_drop.md
+        - drop_nulls: reference/LazyFrame_drop_nulls.md
+        - dtypes: reference/LazyFrame_dtypes.md
+        - explode: reference/LazyFrame_explode.md
+        - fetch: reference/LazyFrame_fetch.md
+        - fill_nan: reference/LazyFrame_fill_nan.md
+        - fill_null: reference/LazyFrame_fill_null.md
+        - filter: reference/LazyFrame_filter.md
+        - first: reference/LazyFrame_first.md
+        - get_optimization_toggle: reference/LazyFrame_get_optimization_toggle.md
+        - group_by: reference/LazyFrame_group_by.md
+        - head: reference/LazyFrame_head.md
+        - join: reference/LazyFrame_join.md
+        - join_asof: reference/LazyFrame_join_asof.md
+        - last: reference/LazyFrame_last.md
+        - limit: reference/LazyFrame_limit.md
+        - max: reference/LazyFrame_max.md
+        - mean: reference/LazyFrame_mean.md
+        - median: reference/LazyFrame_median.md
+        - melt: reference/LazyFrame_melt.md
+        - min: reference/LazyFrame_min.md
+        - print: reference/LazyFrame_print.md
+        - profile: reference/LazyFrame_profile.md
+        - quantile: reference/LazyFrame_quantile.md
+        - rename: reference/LazyFrame_rename.md
+        - reverse: reference/LazyFrame_reverse.md
+        - select: reference/LazyFrame_select.md
+        - set_optimization_toggle: reference/LazyFrame_set_optimization_toggle.md
+        - shift: reference/LazyFrame_shift.md
+        - shift_and_fill: reference/LazyFrame_shift_and_fill.md
+        - slice: reference/LazyFrame_slice.md
+        - sort: reference/LazyFrame_sort.md
+        - std: reference/LazyFrame_std.md
+        - sum: reference/LazyFrame_sum.md
+        - tail: reference/LazyFrame_tail.md
+        - unique: reference/LazyFrame_unique.md
+        - unnest: reference/LazyFrame_unnest.md
+        - var: reference/LazyFrame_var.md
+        - width: reference/LazyFrame_width.md
+        - with_columns: reference/LazyFrame_with_columns.md
+        - with_context: reference/LazyFrame_with_context.md
+        - with_row_count: reference/LazyFrame_with_row_count.md
+      GroupBy:
+        - agg: reference/GroupBy_agg.md
+        - class: reference/GroupBy_class.md
+        - first: reference/GroupBy_first.md
+        - last: reference/GroupBy_last.md
+        - max: reference/GroupBy_max.md
+        - mean: reference/GroupBy_mean.md
+        - median: reference/GroupBy_median.md
+        - min: reference/GroupBy_min.md
+        - null_count: reference/GroupBy_null_count.md
+        - quantile: reference/GroupBy_quantile.md
+        - shift: reference/GroupBy_shift.md
+        - shift_and_fill: reference/GroupBy_shift_and_fill.md
+        - std: reference/GroupBy_std.md
+        - sum: reference/GroupBy_sum.md
+        - ungroup: reference/GroupBy_ungroup.md
+        - var: reference/GroupBy_var.md
+      LazyGroupBy:
+        - agg: reference/LazyGroupBy_agg.md
+        - apply: reference/LazyGroupBy_apply.md
+        - head: reference/LazyGroupBy_head.md
+        - print: reference/LazyGroupBy_print.md
+        - tail: reference/LazyGroupBy_tail.md
+        - ungroup: reference/LazyGroupBy_ungroup.md
+      Input/Output:
+        - read_csv: reference/IO_read_csv.md
+        - read_ndjson: reference/IO_read_ndjson.md
+        - read_parquet: reference/IO_read_parquet.md
+        - scan_csv: reference/IO_scan_csv.md
+        - scan_ipc: reference/IO_scan_ipc.md
+        - scan_ndjson: reference/IO_scan_ndjson.md
+        - scan_parquet: reference/IO_scan_parquet.md
+        - sink_csv: reference/IO_sink_csv.md
+        - sink_ipc: reference/IO_sink_ipc.md
+        - sink_parquet: reference/IO_sink_parquet.md
+        - write_csv: reference/IO_write_csv.md
+        - write_json: reference/IO_write_json.md
+        - write_ndjson: reference/IO_write_ndjson.md
+      RField:
+        - class: reference/RField_class.md
+        - datatype: reference/RField_datatype.md
+        - name: reference/RField_name.md
+      RThreadHandle:
+        - is_finished: reference/RThreadHandle_is_finished.md
+        - join: reference/RThreadHandle_join.md
+        - RThreadHandle_class: reference/RThreadHandle_RThreadHandle_class.md
+      SQLContext:
+        - class: reference/SQLContext_class.md
+        - execute: reference/SQLContext_execute.md
+        - register: reference/SQLContext_register.md
+        - register_many: reference/SQLContext_register_many.md
+        - tables: reference/SQLContext_tables.md
+        - unregister: reference/SQLContext_unregister.md
+      S3 Methods:
+        - as.character: reference/S3_as.character.md
+        - as.data.frame: reference/S3_as.data.frame.md
+        - as.matrix: reference/S3_as.matrix.md
+        - as.vector: reference/S3_as.vector.md
+        - c: reference/S3_c.md
+        - dim: reference/S3_dim.md
+        - dimnames: reference/S3_dimnames.md
+        - head: reference/S3_head.md
+        - length: reference/S3_length.md
+        - max: reference/S3_max.md
+        - mean: reference/S3_mean.md
+        - median: reference/S3_median.md
+        - min: reference/S3_min.md
+        - na.omit: reference/S3_na.omit.md
+        - names: reference/S3_names.md
+        - print: reference/S3_print.md
+        - rownames: reference/S3_rownames.md
+        - subset: reference/S3_subset.md
+        - sum: reference/S3_sum.md
+        - tail: reference/S3_tail.md
+        - unique: reference/S3_unique.md
+      Expressions:
+        - All others:
+            - abs: reference/Expr_abs.md
+            - add: reference/Expr_add.md
+            - agg_groups: reference/Expr_agg_groups.md
+            - alias: reference/Expr_alias.md
+            - all: reference/Expr_all.md
+            - and: reference/Expr_and.md
+            - any: reference/Expr_any.md
+            - append: reference/Expr_append.md
+            - apply: reference/Expr_apply.md
+            - approx_n_unique: reference/Expr_approx_n_unique.md
+            - arccos: reference/Expr_arccos.md
+            - arccosh: reference/Expr_arccosh.md
+            - arcsin: reference/Expr_arcsin.md
+            - arcsinh: reference/Expr_arcsinh.md
+            - arctan: reference/Expr_arctan.md
+            - arctanh: reference/Expr_arctanh.md
+            - arg_max: reference/Expr_arg_max.md
+            - arg_min: reference/Expr_arg_min.md
+            - arg_sort: reference/Expr_arg_sort.md
+            - arg_unique: reference/Expr_arg_unique.md
+            - argsort: reference/Expr_argsort.md
+            - backward_fill: reference/Expr_backward_fill.md
+            - bottom_k: reference/Expr_bottom_k.md
+            - cast: reference/Expr_cast.md
+            - ceil: reference/Expr_ceil.md
+            - class: reference/Expr_class.md
+            - clip: reference/Expr_clip.md
+            - clip_max: reference/Expr_clip_max.md
+            - clip_min: reference/Expr_clip_min.md
+            - cos: reference/Expr_cos.md
+            - cosh: reference/Expr_cosh.md
+            - count: reference/Expr_count.md
+            - cum_count: reference/Expr_cum_count.md
+            - cum_max: reference/Expr_cum_max.md
+            - cum_min: reference/Expr_cum_min.md
+            - cum_prod: reference/Expr_cum_prod.md
+            - cum_sum: reference/Expr_cum_sum.md
+            - cumulative_eval: reference/Expr_cumulative_eval.md
+            - diff: reference/Expr_diff.md
+            - div: reference/Expr_div.md
+            - dot: reference/Expr_dot.md
+            - drop_nans: reference/Expr_drop_nans.md
+            - drop_nulls: reference/Expr_drop_nulls.md
+            - entropy: reference/Expr_entropy.md
+            - eq: reference/Expr_eq.md
+            - eq_missing: reference/Expr_eq_missing.md
+            - ewm_mean: reference/Expr_ewm_mean.md
+            - ewm_std: reference/Expr_ewm_std.md
+            - ewm_var: reference/Expr_ewm_var.md
+            - exclude: reference/Expr_exclude.md
+            - exp: reference/Expr_exp.md
+            - explode: reference/Expr_explode.md
+            - extend_constant: reference/Expr_extend_constant.md
+            - fill_nan: reference/Expr_fill_nan.md
+            - fill_null: reference/Expr_fill_null.md
+            - filter: reference/Expr_filter.md
+            - first: reference/Expr_first.md
+            - flatten: reference/Expr_flatten.md
+            - floor: reference/Expr_floor.md
+            - floor_div: reference/Expr_floor_div.md
+            - forward_fill: reference/Expr_forward_fill.md
+            - gather: reference/Expr_gather.md
+            - gather_every: reference/Expr_gather_every.md
+            - gt: reference/Expr_gt.md
+            - gt_eq: reference/Expr_gt_eq.md
+            - hash: reference/Expr_hash.md
+            - head: reference/Expr_head.md
+            - implode: reference/Expr_implode.md
+            - inspect: reference/Expr_inspect.md
+            - interpolate: reference/Expr_interpolate.md
+            - is_between: reference/Expr_is_between.md
+            - is_duplicated: reference/Expr_is_duplicated.md
+            - is_finite: reference/Expr_is_finite.md
+            - is_first_distinct: reference/Expr_is_first_distinct.md
+            - is_in: reference/Expr_is_in.md
+            - is_infinite: reference/Expr_is_infinite.md
+            - is_last_distinct: reference/Expr_is_last_distinct.md
+            - is_nan: reference/Expr_is_nan.md
+            - is_not_nan: reference/Expr_is_not_nan.md
+            - is_not_null: reference/Expr_is_not_null.md
+            - is_null: reference/Expr_is_null.md
+            - is_unique: reference/Expr_is_unique.md
+            - kurtosis: reference/Expr_kurtosis.md
+            - last: reference/Expr_last.md
+            - limit: reference/Expr_limit.md
+            - lit: reference/Expr_lit.md
+            - lit_to_df: reference/Expr_lit_to_df.md
+            - lit_to_s: reference/Expr_lit_to_s.md
+            - log: reference/Expr_log.md
+            - log10: reference/Expr_log10.md
+            - lower_bound: reference/Expr_lower_bound.md
+            - lt: reference/Expr_lt.md
+            - lt_eq: reference/Expr_lt_eq.md
+            - map: reference/Expr_map.md
+            - max: reference/Expr_max.md
+            - mean: reference/Expr_mean.md
+            - median: reference/Expr_median.md
+            - min: reference/Expr_min.md
+            - mod: reference/Expr_mod.md
+            - mode: reference/Expr_mode.md
+            - mul: reference/Expr_mul.md
+            - n_unique: reference/Expr_n_unique.md
+            - nan_max: reference/Expr_nan_max.md
+            - nan_min: reference/Expr_nan_min.md
+            - neq: reference/Expr_neq.md
+            - neq_missing: reference/Expr_neq_missing.md
+            - not: reference/Expr_not.md
+            - null_count: reference/Expr_null_count.md
+            - or: reference/Expr_or.md
+            - over: reference/Expr_over.md
+            - pct_change: reference/Expr_pct_change.md
+            - peak_max: reference/Expr_peak_max.md
+            - peak_min: reference/Expr_peak_min.md
+            - pow: reference/Expr_pow.md
+            - print: reference/Expr_print.md
+            - product: reference/Expr_product.md
+            - quantile: reference/Expr_quantile.md
+            - rank: reference/Expr_rank.md
+            - rechunk: reference/Expr_rechunk.md
+            - reinterpret: reference/Expr_reinterpret.md
+            - rep: reference/Expr_rep.md
+            - rep_extend: reference/Expr_rep_extend.md
+            - repeat_by: reference/Expr_repeat_by.md
+            - reshape: reference/Expr_reshape.md
+            - reverse: reference/Expr_reverse.md
+            - rolling: reference/Expr_rolling.md
+            - rolling_max: reference/Expr_rolling_max.md
+            - rolling_mean: reference/Expr_rolling_mean.md
+            - rolling_median: reference/Expr_rolling_median.md
+            - rolling_min: reference/Expr_rolling_min.md
+            - rolling_quantile: reference/Expr_rolling_quantile.md
+            - rolling_skew: reference/Expr_rolling_skew.md
+            - rolling_std: reference/Expr_rolling_std.md
+            - rolling_sum: reference/Expr_rolling_sum.md
+            - rolling_var: reference/Expr_rolling_var.md
+            - round: reference/Expr_round.md
+            - sample: reference/Expr_sample.md
+            - search_sorted: reference/Expr_search_sorted.md
+            - set_sorted: reference/Expr_set_sorted.md
+            - shift: reference/Expr_shift.md
+            - shift_and_fill: reference/Expr_shift_and_fill.md
+            - shrink_dtype: reference/Expr_shrink_dtype.md
+            - shuffle: reference/Expr_shuffle.md
+            - sign: reference/Expr_sign.md
+            - sin: reference/Expr_sin.md
+            - sinh: reference/Expr_sinh.md
+            - skew: reference/Expr_skew.md
+            - slice: reference/Expr_slice.md
+            - sort: reference/Expr_sort.md
+            - sort_by: reference/Expr_sort_by.md
+            - sqrt: reference/Expr_sqrt.md
+            - std: reference/Expr_std.md
+            - sub: reference/Expr_sub.md
+            - sum: reference/Expr_sum.md
+            - tail: reference/Expr_tail.md
+            - tan: reference/Expr_tan.md
+            - tanh: reference/Expr_tanh.md
+            - to_physical: reference/Expr_to_physical.md
+            - to_r: reference/Expr_to_r.md
+            - to_struct: reference/Expr_to_struct.md
+            - top_k: reference/Expr_top_k.md
+            - unique: reference/Expr_unique.md
+            - unique_counts: reference/Expr_unique_counts.md
+            - upper_bound: reference/Expr_upper_bound.md
+            - value_counts: reference/Expr_value_counts.md
+            - var: reference/Expr_var.md
+            - when_then_otherwise: reference/Expr_when_then_otherwise.md
+            - where: reference/Expr_where.md
+            - xor: reference/Expr_xor.md
+        - List:
+            - arg_max: reference/ExprList_arg_max.md
+            - arg_min: reference/ExprList_arg_min.md
+            - concat: reference/ExprList_concat.md
+            - contains: reference/ExprList_contains.md
+            - diff: reference/ExprList_diff.md
+            - eval: reference/ExprList_eval.md
+            - first: reference/ExprList_first.md
+            - gather: reference/ExprList_gather.md
+            - get: reference/ExprList_get.md
+            - head: reference/ExprList_head.md
+            - join: reference/ExprList_join.md
+            - last: reference/ExprList_last.md
+            - lengths: reference/ExprList_lengths.md
+            - max: reference/ExprList_max.md
+            - mean: reference/ExprList_mean.md
+            - min: reference/ExprList_min.md
+            - reverse: reference/ExprList_reverse.md
+            - shift: reference/ExprList_shift.md
+            - slice: reference/ExprList_slice.md
+            - sort: reference/ExprList_sort.md
+            - sum: reference/ExprList_sum.md
+            - tail: reference/ExprList_tail.md
+            - to_struct: reference/ExprList_to_struct.md
+            - unique: reference/ExprList_unique.md
+        - Binary:
+            - contains: reference/ExprBin_contains.md
+            - decode: reference/ExprBin_decode.md
+            - encode: reference/ExprBin_encode.md
+            - ends_with: reference/ExprBin_ends_with.md
+            - starts_with: reference/ExprBin_starts_with.md
+        - Categorical:
+            - get_categories: reference/ExprCat_get_categories.md
+            - set_ordering: reference/ExprCat_set_ordering.md
+        - DateTime:
+            - cast_time_unit: reference/ExprDT_cast_time_unit.md
+            - combine: reference/ExprDT_combine.md
+            - convert_time_zone: reference/ExprDT_convert_time_zone.md
+            - day: reference/ExprDT_day.md
+            - epoch: reference/ExprDT_epoch.md
+            - hour: reference/ExprDT_hour.md
+            - iso_year: reference/ExprDT_iso_year.md
+            - microsecond: reference/ExprDT_microsecond.md
+            - millisecond: reference/ExprDT_millisecond.md
+            - minute: reference/ExprDT_minute.md
+            - month: reference/ExprDT_month.md
+            - nanosecond: reference/ExprDT_nanosecond.md
+            - offset_by: reference/ExprDT_offset_by.md
+            - ordinal_day: reference/ExprDT_ordinal_day.md
+            - quarter: reference/ExprDT_quarter.md
+            - replace_time_zone: reference/ExprDT_replace_time_zone.md
+            - round: reference/ExprDT_round.md
+            - second: reference/ExprDT_second.md
+            - strftime: reference/ExprDT_strftime.md
+            - time: reference/ExprDT_time.md
+            - timestamp: reference/ExprDT_timestamp.md
+            - total_days: reference/ExprDT_total_days.md
+            - total_hours: reference/ExprDT_total_hours.md
+            - total_microseconds: reference/ExprDT_total_microseconds.md
+            - total_milliseconds: reference/ExprDT_total_milliseconds.md
+            - total_minutes: reference/ExprDT_total_minutes.md
+            - total_nanoseconds: reference/ExprDT_total_nanoseconds.md
+            - total_seconds: reference/ExprDT_total_seconds.md
+            - truncate: reference/ExprDT_truncate.md
+            - week: reference/ExprDT_week.md
+            - weekday: reference/ExprDT_weekday.md
+            - with_time_unit: reference/ExprDT_with_time_unit.md
+            - year: reference/ExprDT_year.md
+        - Meta:
+            - eq: reference/ExprMeta_eq.md
+            - has_multiple_outputs: reference/ExprMeta_has_multiple_outputs.md
+            - is_regex_projection: reference/ExprMeta_is_regex_projection.md
+            - neq: reference/ExprMeta_neq.md
+            - output_name: reference/ExprMeta_output_name.md
+            - pop: reference/ExprMeta_pop.md
+            - root_names: reference/ExprMeta_root_names.md
+            - tree_format: reference/ExprMeta_tree_format.md
+            - undo_aliases: reference/ExprMeta_undo_aliases.md
+        - Name:
+            - keep: reference/ExprName_keep.md
+            - map: reference/ExprName_map.md
+            - prefix: reference/ExprName_prefix.md
+            - suffix: reference/ExprName_suffix.md
+            - to_lowercase: reference/ExprName_to_lowercase.md
+            - to_uppercase: reference/ExprName_to_uppercase.md
+        - String:
+            - concat: reference/ExprStr_concat.md
+            - contains: reference/ExprStr_contains.md
+            - count_matches: reference/ExprStr_count_matches.md
+            - decode: reference/ExprStr_decode.md
+            - encode: reference/ExprStr_encode.md
+            - ends_with: reference/ExprStr_ends_with.md
+            - explode: reference/ExprStr_explode.md
+            - extract: reference/ExprStr_extract.md
+            - extract_all: reference/ExprStr_extract_all.md
+            - json_extract: reference/ExprStr_json_extract.md
+            - json_path_match: reference/ExprStr_json_path_match.md
+            - len_bytes: reference/ExprStr_len_bytes.md
+            - len_chars: reference/ExprStr_len_chars.md
+            - pad_end: reference/ExprStr_pad_end.md
+            - pad_start: reference/ExprStr_pad_start.md
+            - parse_int: reference/ExprStr_parse_int.md
+            - replace: reference/ExprStr_replace.md
+            - replace_all: reference/ExprStr_replace_all.md
+            - slice: reference/ExprStr_slice.md
+            - split: reference/ExprStr_split.md
+            - split_exact: reference/ExprStr_split_exact.md
+            - splitn: reference/ExprStr_splitn.md
+            - starts_with: reference/ExprStr_starts_with.md
+            - strip_chars: reference/ExprStr_strip_chars.md
+            - strip_chars_end: reference/ExprStr_strip_chars_end.md
+            - strip_chars_start: reference/ExprStr_strip_chars_start.md
+            - strptime: reference/ExprStr_strptime.md
+            - to_lowercase: reference/ExprStr_to_lowercase.md
+            - to_titlecase: reference/ExprStr_to_titlecase.md
+            - to_uppercase: reference/ExprStr_to_uppercase.md
+            - zfill: reference/ExprStr_zfill.md
+        - Struct:
+            - field: reference/ExprStruct_field.md
+            - rename_fields: reference/ExprStruct_rename_fields.md
+      Other:
+        - as_polars_df: reference/as_polars_df.md
+        - as_polars_lf: reference/as_polars_lf.md
+        - Field_print: reference/Field_print.md
+        - global_rpool_cap: reference/global_rpool_cap.md
+        - is_schema: reference/is_schema.md
+        - knit_print.DataFrame: reference/knit_print.DataFrame.md
+        - nanoarrow: reference/nanoarrow.md
+        - polars_class_object: reference/polars_class_object.md
+        - polars_info: reference/polars_info.md
+        - polars_options: reference/polars_options.md
+        - show_all_public_functions: reference/show_all_public_functions.md
+        - show_all_public_methods: reference/show_all_public_methods.md
+        - to_list: reference/to_list.md
+  - About: about.md
+  - Changelog: NEWS.md

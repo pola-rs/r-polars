@@ -7,8 +7,12 @@ library(yaml)
 library(here)
 library(pkgload)
 
-# use latest version of polars
-pkgload::load_all(quiet = TRUE)
+##############
+## Render the reference homepage ##
+##############
+
+pkgload::load_all(".")
+rmarkdown::render("altdoc/reference_home.Rmd")
 
 
 yml <- read_yaml("altdoc/mkdocs_static.yml")
@@ -44,7 +48,7 @@ classes = c(
 )
 for (cl in classes) {
   files = grep(paste0("^", cl, "_"), other, value = TRUE)
-  tmp = sprintf("%s: reference/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
+  tmp = sprintf("%s: man/%s", sub("\\.md", "", sub("[^_]*_", "", files)), files)
   cl_label = ifelse(cl == "pl", "Polars", cl)
   cl_label = ifelse(cl == "IO", "Input/Output", cl_label)
   cl_label = ifelse(cl == "S3", "S3 Methods", cl_label)
@@ -68,7 +72,7 @@ tmp = lapply(names(nam), \(n) setNames(list(out[[n]]), nam[n]))
 out = out[!names(out) %in% names(nam)]
 out[["Expressions"]] = tmp
 # other
-tmp = sprintf("%s: reference/%s", sub("\\.md$", "", other), other)
+tmp = sprintf("%s: man/%s", sub("\\.md$", "", other), other)
 hierarchy = append(out, setNames(list(tmp), "Other"))
 
 

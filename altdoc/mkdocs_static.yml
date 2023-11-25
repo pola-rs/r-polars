@@ -1,6 +1,15 @@
-# yaml-language-server: $schema=https://json.schemastore.org/mkdocs-1.0.json
-
+### Basic information
 site_name: Polars R Package
+
+### Repo information
+repo_url: $ALTDOC_PACKAGE_URL
+repo_name: $ALTDOC_PACKAGE_NAME
+
+### Plugins
+plugins:
+  - search
+
+### Theming
 theme:
   name: material
   logo: polars-logo.png
@@ -22,6 +31,7 @@ theme:
     - navigation.top
     - content.code.copy
     - toc.follow
+
 markdown_extensions:
   - footnotes
   - toc:
@@ -30,18 +40,17 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: yes
   - pymdownx.superfences
-repo_url: https://github.com/pola-rs/r-polars
-repo_name: r-polars
-plugins:
-  - search
+
 extra_css:
   - stylesheets/extra.css
+
+### Navigation tree
 nav:
   - Home: README.md
   - Articles:
     - Get started: articles/polars.md
     - Polars User Guide: articles/userguide.md
     - Optimize `polars` performance: articles/performance.md
-  - Reference: # Auto updated by altdoc
+  - Reference: $ALTDOC_MAN_BLOCK
   - About: about.md
   - Changelog: NEWS.md
