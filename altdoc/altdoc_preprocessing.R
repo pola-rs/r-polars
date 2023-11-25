@@ -7,13 +7,7 @@ library(yaml)
 library(here)
 library(pkgload)
 
-##############
-## Render the reference homepage ##
-##############
-
 pkgload::load_all(".")
-rmarkdown::render("altdoc/reference_home.Rmd")
-
 
 yml <- read_yaml("altdoc/mkdocs_static.yml")
 

@@ -45,6 +45,7 @@ Remotes:
     r-lib/testthat
 Config/Needs/website:
     etiennebacher/altdoc,
+    future.apply,
     here,
     magrittr,
     pkgload,
