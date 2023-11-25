@@ -33,8 +33,9 @@ requirements-r:
 
 .PHONY: requirements-py
 requirements-py: .venv
-	$(VENV_BIN)/python -m pip install --upgrade pip
-	$(VENV_BIN)/pip install --upgrade mkdocs-material
+	python -m pip install --upgrade pip
+	pip install --upgrade mkdocs
+	pip install --upgrade mkdocs-material
 
 .PHONY: requirements-rs
 requirements-rs:
