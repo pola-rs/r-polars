@@ -42,10 +42,9 @@ Suggests:
     tools,
     withr
 Remotes:
-    etiennebacher/altdoc,
     r-lib/testthat
 Config/Needs/website:
-    altdoc,
+    etiennebacher/altdoc,
     here,
     magrittr,
     pkgload,
