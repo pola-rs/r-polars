@@ -64,10 +64,8 @@ install: ## Install the R package
 all: fmt tools/lib-sums.tsv build test README.md LICENSE.note ## build -> test -> Update README.md, LICENSE.note
 
 .PHONY: docs
-docs: build install README.md docs/docs/reference_home.md ## Generate docs
-	cp docs/mkdocs.orig.yml docs/mkdocs.yml
+docs: build install README.md altdoc/reference_home.md ## Generate docs
 	Rscript -e 'source("altdoc/altdoc_preprocessing.R"); altdoc::render_docs(freeze = FALSE, parallel = TRUE)'
-	cd docs && ../$(VENV_BIN)/python3 -m mkdocs build
 
 .PHONY: docs-preview
 docs-preview: ## Preview docs on local server. Needs `make docs`
@@ -76,8 +74,8 @@ docs-preview: ## Preview docs on local server. Needs `make docs`
 README.md: README.Rmd build ## Update README.md
 	Rscript -e 'devtools::load_all(); rmarkdown::render("README.Rmd")'
 
-docs/docs/reference_home.md: docs/docs/reference_home.Rmd build ## Update the reference home page source
-	Rscript -e 'devtools::load_all(); rmarkdown::render("docs/docs/reference_home.Rmd")'
+altdoc/reference_home.md: altdoc/reference_home.Rmd build ## Update the reference home page source
+	Rscript -e 'devtools::load_all(); rmarkdown::render("altdoc/reference_home.Rmd")'
 
 LICENSE.note: src/rust/Cargo.lock ## Update LICENSE.note
 	Rscript -e 'rextendr::write_license_note(force = TRUE)'
