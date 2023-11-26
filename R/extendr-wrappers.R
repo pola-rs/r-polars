@@ -27,6 +27,8 @@ concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
 
+fast_roll_mean_f64 <- function(s, width) .Call(wrap__fast_roll_mean_f64, s, width)
+
 fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
 reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
