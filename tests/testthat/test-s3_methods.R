@@ -207,6 +207,7 @@ test_that("brackets", {
   expect_equal(df["cyl"]$to_data_frame(), mtcars["cyl"], ignore_attr = TRUE)
   expect_equal(df[1:3]$to_data_frame(), mtcars[1:3], ignore_attr = TRUE)
   expect_equal(df[NULL, ]$to_data_frame(), mtcars[NULL, ], ignore_attr = TRUE)
+  expect_equal(df[pl$col("cyl") >= 8, ]$to_data_frame(), mtcars[mtcars$cyl >= 8, ], ignore_attr = TRUE)
 
   df = pl$DataFrame(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
