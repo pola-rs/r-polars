@@ -1,35 +1,58 @@
-#' Take a subset of rows and columns
+#' Extract Parts of a Polars Object
 #'
+#' Mimics the behavior of [`x[i, j, drop = TRUE]`][Extract] for [data.frame] or R vector.
+#'
+#' `<Series>[i]` is equivalent to `pl$select(<Series>)[i, , drop = TRUE]`.
+#' @rdname S3_extract
 #' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param i Rows to select
 #' @param j Columns to select, either by index or by name.
-#' @param ... Not used.
 #' @param drop Convert to a Polars Series if only one column is selected.
+#' @seealso
+#' [`<DataFrame>$select()`][DataFrame_select],
+#' [`<LazyFrame>$select()`][LazyFrame_select],
+#' [`<DataFrame>$filter()`][DataFrame_filter],
+#' [`<LazyFrame>$filter()`][LazyFrame_filter]
+#' @examples
+#' df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
 #'
+#' df[1, ]
+#' df[1]
+#' df[, "b"]
+#' df[pl$col("a") >= 2, ]
 #' @export
-#' @rdname S3_subset
-`[.DataFrame` = function(x, i, j, ..., drop = TRUE) {
+`[.DataFrame` = function(x, i, j, drop = TRUE) {
+  uw = \(res) unwrap(res, "in `[` (Extract):")
+
+  # Special case for only `i` being specified
+  only_i = ((nargs() - !missing(drop)) == 2)
+  if (only_i) {
+    j = i
+    i = NULL
+    drop = !missing(drop) && drop
+  }
+
   # selecting `j` is usually faster, so we start here.
   if (!missing(j)) {
     if (is.atomic(j) && is.vector(j)) {
       if (is.logical(j)) {
         if (length(j) != ncol(x)) {
-          stop(sprintf("`j` must be of length %s.", ncol(x)), call. = FALSE)
+          Err_plain(sprintf("`j` must be of length %s.", ncol(x))) |> uw()
         }
         cols = x$columns[j]
       } else if (is.character(j)) {
         if (!all(j %in% x$columns)) {
-          stop("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", "), call. = FALSE)
+          Err_plain("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", ")) |> uw()
         }
         cols = j
       } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
         if (max(abs(j)) > ncol(x)) {
-          stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
+          Err_plain("Elements of `j` must be less than or equal to the number of columns.") |> uw()
         }
         negative = any(j < 0)
         if (isTRUE(negative)) {
           if (any(j > 0)) {
-            stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+            Err_plain("Elements of `j` must be all postive or all negative.") |> uw()
           }
           cols = x$columns[!seq_along(x$columns) %in% abs(j)]
         } else {
@@ -37,15 +60,21 @@
         }
       }
       x = do.call(x$select, lapply(cols, pl$col))
+    } else if (identical(class(j), "Expr")) {
+      x = x$select(j)
     } else {
-      stop("`j` must be an atomic vector of class logical, character, or integer.", call. = FALSE)
+      Err_plain("`j` must be an Expr or an atomic vector of class logical, character, or integer.") |> uw()
     }
   }
 
-  if (!missing(i)) {
+  if (!missing(i) && !isTRUE(only_i)) {
     if (inherits(x, "LazyFrame")) {
-      stop("Row selection using brackets is not supported for LazyFrames.", call. = FALSE)
+      Err_plain("Row selection using brackets is not supported for LazyFrames.") |> uw()
     }
+
+    # `i == NULL` means return 0 rows
+    i = i %||% 0
+
     if (is.atomic(i) && is.vector(i)) {
       if (is.logical(i)) {
         # nrow() not available for LazyFrame
@@ -57,29 +86,30 @@
         negative = any(i < 0)
         if (isTRUE(negative)) {
           if (any(i > 0)) {
-            stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+            Err_plain("Elements of `i` must be all postive or all negative.") |> uw()
           }
           idx = !seq_len(x$height) %in% abs(i)
         } else {
           if (any(diff(i) < 0)) {
-            stop("Elements of `i` must be in increasing order.", call. = FALSE)
+            Err_plain("Elements of `i` must be in increasing order.") |> uw()
           }
           idx = seq_len(x$height) %in% i
         }
       }
       x = x$filter(pl$lit(idx))
+    } else if (identical(class(i), "Expr")) {
+      x = x$filter(i)
     } else {
-      stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
+      Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
     }
   }
 
   if (drop && x$width == 1L) {
     if (inherits(x, "LazyFrame")) {
-      stop(
+      Err_plain(
         "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
-        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets.",
-        call. = FALSE
-      )
+        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets."
+      ) |> uw()
     }
     x = x$to_series()
   }
@@ -88,8 +118,14 @@
 }
 
 #' @export
-#' @rdname S3_subset
+#' @rdname S3_extract
 `[.LazyFrame` = `[.DataFrame`
+
+#' @export
+#' @rdname S3_extract
+`[.Series` = function(x, i) {
+  pl$select(x)[i, , drop = TRUE]
+}
 
 #' Take the first n rows
 #'

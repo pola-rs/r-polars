@@ -66,6 +66,7 @@
   - Note that `$mod()` of Polars is different from the R operator `%%`, which is
     not guaranteed `x == (x %% y) + y * (x %/% y)`.
     Please check the upstream issue [pola-rs/polars#10570](https://github.com/pola-rs/polars/issues/10570).
+- The extract function (`[`) for polars objects now behave more like for base R objects (#543).
 
 # polars 0.10.1
 
