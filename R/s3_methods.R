@@ -22,6 +22,8 @@
 #' df[pl$col("a") >= 2, ]
 #' @export
 `[.DataFrame` = function(x, i, j, drop = TRUE) {
+  uw = \(res) unwrap(res, "in `[` (Extract):")
+
   # Special case for only `i` being specified
   only_i = ((nargs() - !missing(drop)) == 2)
   if (only_i) {
@@ -35,22 +37,22 @@
     if (is.atomic(j) && is.vector(j)) {
       if (is.logical(j)) {
         if (length(j) != ncol(x)) {
-          stop(sprintf("`j` must be of length %s.", ncol(x)), call. = FALSE)
+          Err_plain(sprintf("`j` must be of length %s.", ncol(x))) |> uw()
         }
         cols = x$columns[j]
       } else if (is.character(j)) {
         if (!all(j %in% x$columns)) {
-          stop("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", "), call. = FALSE)
+          Err_plain("Column(s) not found: ", paste(j[!j %in% x$columns], collapse = ", ")) |> uw()
         }
         cols = j
       } else if (is.integer(j) || (is.numeric(j) && all(j %% 1 == 0))) {
         if (max(abs(j)) > ncol(x)) {
-          stop("Elements of `j` must be less than or equal to the number of columns.", call. = FALSE)
+          Err_plain("Elements of `j` must be less than or equal to the number of columns.") |> uw()
         }
         negative = any(j < 0)
         if (isTRUE(negative)) {
           if (any(j > 0)) {
-            stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+            Err_plain("Elements of `j` must be all postive or all negative.") |> uw()
           }
           cols = x$columns[!seq_along(x$columns) %in% abs(j)]
         } else {
@@ -61,13 +63,13 @@
     } else if (identical(class(j), "Expr")) {
       x = x$select(j)
     } else {
-      stop("`j` must be an Expr or an atomic vector of class logical, character, or integer.", call. = FALSE)
+      Err_plain("`j` must be an Expr or an atomic vector of class logical, character, or integer.") |> uw()
     }
   }
 
   if (!missing(i) && !isTRUE(only_i)) {
     if (inherits(x, "LazyFrame")) {
-      stop("Row selection using brackets is not supported for LazyFrames.", call. = FALSE)
+      Err_plain("Row selection using brackets is not supported for LazyFrames.") |> uw()
     }
 
     # `i == NULL` means return 0 rows
@@ -84,12 +86,12 @@
         negative = any(i < 0)
         if (isTRUE(negative)) {
           if (any(i > 0)) {
-            stop("Elements of `j` must be all postive or all negative.", call. = FALSE)
+            Err_plain("Elements of `i` must be all postive or all negative.") |> uw()
           }
           idx = !seq_len(x$height) %in% abs(i)
         } else {
           if (any(diff(i) < 0)) {
-            stop("Elements of `i` must be in increasing order.", call. = FALSE)
+            Err_plain("Elements of `i` must be in increasing order.") |> uw()
           }
           idx = seq_len(x$height) %in% i
         }
@@ -98,17 +100,16 @@
     } else if (identical(class(i), "Expr")) {
       x = x$filter(i)
     } else {
-      stop("`i` must be an Expr or an atomic vector of class logical or integer.", call. = FALSE)
+      Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
     }
   }
 
   if (drop && x$width == 1L) {
     if (inherits(x, "LazyFrame")) {
-      stop(
+      Err_plain(
         "Single column conversion to a Series using brackets is not supported for LazyFrames.\n",
-        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets.",
-        call. = FALSE
-      )
+        "Please set `drop = FALSE` to prevent conversion or use $collect() before using brackets."
+      ) |> uw()
     }
     x = x$to_series()
   }
