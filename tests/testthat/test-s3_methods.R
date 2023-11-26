@@ -204,12 +204,13 @@ test_that("brackets", {
   expect_equal(df[1:5, 1]$to_vector(), mtcars[1:5, 1])
 
   expect_equal(df[, "cyl", drop = FALSE]$to_data_frame(), mtcars[, "cyl", drop = FALSE], ignore_attr = TRUE)
+  expect_equal(df["cyl"]$to_data_frame(), mtcars["cyl"], ignore_attr = TRUE)
+  expect_equal(df[1:3]$to_data_frame(), mtcars[1:3], ignore_attr = TRUE)
 
   df = pl$DataFrame(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
   b = df[-(1:2), -c(1, 3, 6, 9)]$to_data_frame()
   expect_equal(a, b, ignore_attr = TRUE)
-
 
   # lazy
   lf = pl$DataFrame(mtcars)$lazy()
@@ -220,6 +221,10 @@ test_that("brackets", {
 
   a = lf[, c("hp", "mpg")]$collect()$to_data_frame()
   b = mtcars[, c("hp", "mpg")]
+  expect_equal(a, b, ignore_attr = TRUE)
+
+  a = lf[c("hp", "mpg")]$collect()$to_data_frame()
+  b = mtcars[c("hp", "mpg")]
   expect_equal(a, b, ignore_attr = TRUE)
 
   idx = rep(FALSE, ncol(mtcars))
@@ -242,4 +247,8 @@ test_that("brackets", {
     mtcars[, "cyl", drop = FALSE],
     ignore_attr = TRUE
   )
+
+  # Series
+  expect_equal(pl$Series(letters)[1:5]$to_vector(), letters[1:5])
+  expect_equal(pl$Series(letters)[-5]$to_vector(), letters[-5])
 })

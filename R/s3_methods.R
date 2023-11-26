@@ -1,14 +1,35 @@
-#' Take a subset of rows and columns
+#' Extract Parts of a Polars Object
 #'
+#' Mimics the behavior of [`x[i, j, drop = TRUE]`][Extract] for [data.frame] or R vector.
+#'
+#' `<Series>[i]` is equivalent to `pl$select(<Series>)[i, , drop = TRUE]`.
+#' @rdname S3_extract
 #' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
 #' @param i Rows to select
 #' @param j Columns to select, either by index or by name.
-#' @param ... Not used.
 #' @param drop Convert to a Polars Series if only one column is selected.
+#' @seealso
+#' [`<DataFrame>$select()`][DataFrame_select],
+#' [`<LazyFrame>$select()`][LazyFrame_select],
+#' [`<DataFrame>$filter()`][DataFrame_filter],
+#' [`<LazyFrame>$filter()`][LazyFrame_filter]
+#' @examples
+#' df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
 #'
+#' df[1, ]
+#' df[1]
+#' df[, "b"]
+#' df[pl$col("a") >= 2, ]
 #' @export
-#' @rdname S3_subset
-`[.DataFrame` = function(x, i, j, ..., drop = TRUE) {
+`[.DataFrame` = function(x, i, j, drop = TRUE) {
+  # Special case for only `i` being specified
+  only_i = ((nargs() - !missing(drop)) == 2)
+  if (only_i) {
+    j = i
+    i = NULL
+    drop = !missing(drop) && drop
+  }
+
   # selecting `j` is usually faster, so we start here.
   if (!missing(j)) {
     if (is.atomic(j) && is.vector(j)) {
@@ -37,15 +58,21 @@
         }
       }
       x = do.call(x$select, lapply(cols, pl$col))
+    } else if (identical(class(j), "Expr")) {
+      x = x$select(j)
     } else {
-      stop("`j` must be an atomic vector of class logical, character, or integer.", call. = FALSE)
+      stop("`j` must be an Expr or an atomic vector of class logical, character, or integer.", call. = FALSE)
     }
   }
 
-  if (!missing(i)) {
+  if (!missing(i) && !isTRUE(only_i)) {
     if (inherits(x, "LazyFrame")) {
       stop("Row selection using brackets is not supported for LazyFrames.", call. = FALSE)
     }
+
+    # `i == NULL` means return 0 rows
+    i = i %||% 0
+
     if (is.atomic(i) && is.vector(i)) {
       if (is.logical(i)) {
         # nrow() not available for LazyFrame
@@ -68,8 +95,10 @@
         }
       }
       x = x$filter(pl$lit(idx))
+    } else if (identical(class(i), "Expr")) {
+      x = x$filter(i)
     } else {
-      stop("`i` must be an atomic vector of class logical or integer.", call. = FALSE)
+      stop("`i` must be an Expr or an atomic vector of class logical or integer.", call. = FALSE)
     }
   }
 
@@ -88,8 +117,14 @@
 }
 
 #' @export
-#' @rdname S3_subset
+#' @rdname S3_extract
 `[.LazyFrame` = `[.DataFrame`
+
+#' @export
+#' @rdname S3_extract
+`[.Series` = function(x, i) {
+  pl$select(x)[i, , drop = TRUE]
+}
 
 #' Take the first n rows
 #'
