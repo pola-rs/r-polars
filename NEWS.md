@@ -1,5 +1,7 @@
 # polars (development version)
 
+# polars 0.11.0
+
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
 
 - rust-polars is updated to 0.35.0 (2023-11-17) (#515)
