@@ -365,11 +365,11 @@ Series_map_elements = function(
   ) |> unwrap("in $map_elements():")
 }
 
-Series_apply = function(f, return_type = NULL, strict_return_type = TRUE,
-                      allow_fail_eval = FALSE, in_background = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.12.0. Use $map_elements() instead.")
-  Series_map_elements(f, return_type = return_type, strict_return_type = strict_return_type,
-                    allow_fail_eval = allow_fail_eval, in_background = in_background)
+Series_apply = function(f, datatype = NULL, strict_return_type = TRUE,
+                        allow_fail_eval = FALSE) {
+  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.")
+  Series_map_elements(f, datatype = datatype, strict_return_type = strict_return_type,
+                      allow_fail_eval = allow_fail_eval)
 }
 
 #' Series_len

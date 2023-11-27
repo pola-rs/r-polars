@@ -1,5 +1,10 @@
 # polars (development version)
 
+## Breaking changes and deprecations
+
+- `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
+  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
+
 # polars 0.11.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
@@ -40,8 +45,6 @@
 - GroupBy methods `$as_data_frame()` and `$to_data_frame()` which were used to
   convert GroupBy objects to R data frames are removed.
   Use `$ungroup()` method and the `as.data.frame()` function instead (#533).
-- `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
-  is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.12.0 (#534).
 
 ## What's changed
 

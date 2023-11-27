@@ -724,7 +724,7 @@ Expr_map_batches = function(f, output_type = NULL, agg_list = FALSE, in_backgrou
 }
 
 Expr_map = function(f, output_type = NULL, agg_list = FALSE, in_background = FALSE) {
-  warning("$map() is deprecated and will be removed in 0.12.0. Use $map_batches() instead.", call. = FALSE)
+  warning("$map() is deprecated and will be removed in 0.13.0. Use $map_batches() instead.", call. = FALSE)
   if (isTRUE(in_background)) {
     out = .pr$Expr$map_batches_in_background(self, f, output_type, agg_list)
   } else {
@@ -896,7 +896,7 @@ Expr_map_elements = function(f, return_type = NULL, strict_return_type = TRUE, a
 
 Expr_apply = function(f, return_type = NULL, strict_return_type = TRUE,
                       allow_fail_eval = FALSE, in_background = FALSE) {
-  warning("$apply() is deprecated and will be removed in 0.12.0. Use $map_elements() instead.", call. = FALSE)
+  warning("$apply() is deprecated and will be removed in 0.13.0. Use $map_elements() instead.", call. = FALSE)
   if (in_background) {
     return(.pr$Expr$map_elements_in_background(self, f, return_type))
   }
