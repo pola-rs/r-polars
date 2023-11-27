@@ -12,7 +12,7 @@
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
 
-\item{...}{Not used.}
+\item{...}{Any arguments passed to \code{\link[=data.frame]{data.frame()}}.}
 }
 \description{
 Convert to a matrix
