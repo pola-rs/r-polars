@@ -5,9 +5,11 @@
 #' `<Series>[i]` is equivalent to `pl$select(<Series>)[i, , drop = TRUE]`.
 #' @rdname S3_extract
 #' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or [Series][Series_class]
-#' @param i Rows to select
-#' @param j Columns to select, either by index or by name.
+#' @param i Rows to select. Integer vector, logical vector, or an [Expression][Expr_class].
+#' @param j Columns to select. Integer vector, logical vector, character vector, or an [Expression][Expr_class].
+#' For LazyFrames, only an Expression can be used.
 #' @param drop Convert to a Polars Series if only one column is selected.
+#' For LazyFrames, if the result has one column and `drop = TRUE`, an error will occur.
 #' @seealso
 #' [`<DataFrame>$select()`][DataFrame_select],
 #' [`<LazyFrame>$select()`][LazyFrame_select],
@@ -17,10 +19,14 @@
 #' df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
 #' lf = df$lazy()
 #'
+#' # Select a row
 #' df[1, ]
 #'
+#' # If only `i` is specified, it is treated as `j`
+#' # Select a column
 #' df[1]
 #'
+#' # Select a column by name (and convert to a Series)
 #' df[, "b"]
 #'
 #' # Can use Expression for filtering and column selection

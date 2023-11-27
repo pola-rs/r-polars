@@ -15,11 +15,13 @@
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or \link[=Series_class]{Series}}
 
-\item{i}{Rows to select}
+\item{i}{Rows to select. Integer vector, logical vector, or an \link[=Expr_class]{Expression}.}
 
-\item{j}{Columns to select, either by index or by name.}
+\item{j}{Columns to select. Integer vector, logical vector, character vector, or an \link[=Expr_class]{Expression}.
+For LazyFrames, only an Expression can be used.}
 
-\item{drop}{Convert to a Polars Series if only one column is selected.}
+\item{drop}{Convert to a Polars Series if only one column is selected.
+For LazyFrames, if the result has one column and \code{drop = TRUE}, an error will occur.}
 }
 \description{
 Mimics the behavior of [\code{x[i, j, drop = TRUE]}][Extract] for \link{data.frame} or R vector.
@@ -31,10 +33,14 @@ Mimics the behavior of [\code{x[i, j, drop = TRUE]}][Extract] for \link{data.fra
 df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
 lf = df$lazy()
 
+# Select a row
 df[1, ]
 
+# If only `i` is specified, it is treated as `j`
+# Select a column
 df[1]
 
+# Select a column by name (and convert to a Series)
 df[, "b"]
 
 # Can use Expression for filtering and column selection
