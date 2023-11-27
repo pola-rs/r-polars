@@ -13,7 +13,7 @@
 \method{[}{Series}(x, i)
 }
 \arguments{
-\item{x}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}
+\item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or \link[=Series_class]{Series}}
 
 \item{i}{Rows to select}
 
@@ -29,11 +29,17 @@ Mimics the behavior of [\code{x[i, j, drop = TRUE]}][Extract] for \link{data.fra
 }
 \examples{
 df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
+lf = df$lazy()
 
 df[1, ]
+
 df[1]
+
 df[, "b"]
-df[pl$col("a") >= 2, ]
+
+# Can use Expression for filtering and column selection
+lf[pl$col("a") >= 2, pl$col("b")$alias("new"), drop = FALSE] |>
+  as.data.frame()
 }
 \seealso{
 \code{\link[=DataFrame_select]{<DataFrame>$select()}},
