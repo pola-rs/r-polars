@@ -232,16 +232,15 @@ as.data.frame.LazyFrame = function(x, ...) x$collect()$to_data_frame(...)
 
 #' Convert to a matrix
 #'
-#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
-#' @param ... Not used.
+#' @inheritParams as.data.frame.DataFrame
 #'
 #' @export
 #' @rdname S3_as.matrix
-as.matrix.DataFrame = function(x, ...) as.matrix(x$to_data_frame(...))
+as.matrix.DataFrame = function(x, ...) as.matrix(as.data.frame(x, ...))
 
 #' @export
 #' @rdname S3_as.matrix
-as.matrix.LazyFrame = function(x, ...) as.matrix(x$collect()$to_data_frame(...))
+as.matrix.LazyFrame = as.matrix.DataFrame
 
 #' Compute the mean
 #'
