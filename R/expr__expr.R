@@ -293,11 +293,6 @@ Expr_not = "use_extendr_wrapper"
 #' @param x Expr
 "!.Expr" = function(x) x$not()
 
-Expr_is_not = function() {
-  warning("`$is_not()` is deprecated and will be removed in 0.12.0. Use `$not()` instead.")
-  .pr$Expr$not(self)
-}
-
 #' Check strictly lower inequality
 #'
 #' @inherit Expr_add description params return
@@ -1917,12 +1912,6 @@ Expr_is_unique = "use_extendr_wrapper"
 #' pl$DataFrame(head(mtcars[, 1:2]))$
 #'   with_columns(is_ufirst = pl$col("mpg")$is_first_distinct())
 Expr_is_first_distinct = "use_extendr_wrapper"
-
-Expr_is_first = function() {
-  warning("`$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()` instead.")
-  .pr$Expr$is_first_distinct(self)
-}
-
 
 #' Check whether each value is the last occurrence
 #'

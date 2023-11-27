@@ -1,5 +1,10 @@
 # polars (development version)
 
+## Breaking changes and deprecations
+
+- Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
+  `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0.
+
 # polars 0.11.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
