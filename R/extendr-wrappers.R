@@ -27,8 +27,6 @@ concat_list <- function(exprs) .Call(wrap__concat_list, exprs)
 
 concat_str <- function(dotdotdot, separator) .Call(wrap__concat_str, dotdotdot, separator)
 
-fast_roll_mean_f64 <- function(s, width) .Call(wrap__fast_roll_mean_f64, s, width)
-
 fold <- function(acc, lambda, exprs) .Call(wrap__fold, acc, lambda, exprs)
 
 reduce <- function(lambda, exprs) .Call(wrap__reduce, lambda, exprs)
@@ -120,6 +118,20 @@ enable_string_cache <- function() .Call(wrap__enable_string_cache)
 disable_string_cache <- function() .Call(wrap__disable_string_cache)
 
 using_string_cache <- function() .Call(wrap__using_string_cache)
+
+fast_roll_sum_f64 <- function(s, width) .Call(wrap__fast_roll_sum_f64, s, width)
+
+fast_roll_mean_f64 <- function(s, width) .Call(wrap__fast_roll_mean_f64, s, width)
+
+fast_roll_mean_f32 <- function(s, width) .Call(wrap__fast_roll_mean_f32, s, width)
+
+fast_roll_sum_i64 <- function(s, width) .Call(wrap__fast_roll_sum_i64, s, width)
+
+fast_roll_mean_i64 <- function(s, width) .Call(wrap__fast_roll_mean_i64, s, width)
+
+fast_roll_mean_i32 <- function(s, width) .Call(wrap__fast_roll_mean_i32, s, width)
+
+fast_roll_mean_f64_non_macro <- function(s, width) .Call(wrap__fast_roll_mean_f64_non_macro, s, width)
 
 DataFrame <- new.env(parent = emptyenv())
 

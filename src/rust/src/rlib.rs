@@ -9,7 +9,6 @@ use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
 use crate::CONFIG;
 use extendr_api::prelude::*;
-use pl::IntoSeries;
 use polars::prelude as pl;
 use std::result::Result;
 
@@ -77,74 +76,6 @@ fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
         robj_to!(str, separator)?,
     )
     .into())
-}
-
-#[extendr]
-fn fast_roll_mean_f64(s: Robj, width: Robj) -> RResult<Series> {
-    let s = robj_to!(Series, s)?;
-    let width = robj_to!(usize, width)?;
-
-    let ca = s.0.f64().map_err(polars_to_rpolars_err)?;
-    let ca_cloned = ca.clone();
-    let mut v_out: Vec<f64> = Vec::with_capacity(s.0.len());
-
-    let mut ca_iter_front = ca.into_iter();
-    let mut ca_iter_back = ca_cloned.into_iter();
-    let mut rsum: f64 = 0.0;
-    let mut ncount: u64 = 0;
-
-    //dbg!(&ca);
-    // fill up window with first ´width`` elements
-    for _i in 0..(width - 1) {
-        //dbg!(&_i);
-        match ca_iter_front.next().flatten() {
-            None => ncount += 1,
-            Some(value) => rsum += value,
-        }
-    }
-
-    //dbg!(&ca);
-    // safety: no out of bounds can happen
-    // ca_inter_front() has less or equal elements left than the capacity of v_out
-    unsafe {
-        let mut ptr_out = v_out.as_mut_ptr();
-        let ptr_start = ptr_out as usize;
-        let mut safe_stop = 0;
-        while let Some(nullable_val) = ca_iter_front.next() {
-            //dbg!(&nullable_val);
-            safe_stop += 1;
-            if safe_stop > 100 {
-                //dbg!(safe_stop);
-                break;
-            }
-            match nullable_val {
-                None => ncount += 1,
-                Some(value) => rsum += value,
-            }
-            if ncount == 0 {
-                std::ptr::write(ptr_out, rsum / width as f64);
-            } else {
-                std::ptr::write(ptr_out, -42.0);
-            }
-            ptr_out = ptr_out.wrapping_add(1);
-
-            let nullable_val2 = ca_iter_back
-                .next()
-                .expect("iter_back cannot deplete before iter_front()");
-            match nullable_val2 {
-                None => ncount -= 1,
-                Some(value) => rsum -= value,
-            }
-            //dbg!(ptr_out as usize, &ptr_start, ptr_out as usize - ptr_start);
-        }
-
-        v_out.set_len((ptr_out as usize - ptr_start) / std::mem::size_of::<f64>())
-    }
-
-    let ca_out: pl::ChunkedArray<pl::Float64Type> =
-        polars::chunked_array::ChunkedArray::from_vec("roll!", v_out);
-
-    Ok(Series(ca_out.into_series()))
 }
 
 #[extendr]
@@ -374,7 +305,7 @@ extendr_module! {
     fn concat_list;
     fn concat_str;
 
-    fn fast_roll_mean_f64;
+
 
     fn fold;
     fn reduce;
