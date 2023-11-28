@@ -48,11 +48,11 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #'
 #' NOTICE:
 #' The background thread cannot use the main R session, but can access the pool of extra R sessions
-#' to process R code embedded in polars query via `$map(...,background = TRUE)` or
-#' `$apply(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
+#' to process R code embedded in polars query via `$map_batches(..., background = TRUE)` or
+#' `$map_elements(background=TRUE)`. Use [`pl$set_options(rpool_cap = XX)`][set_options] to limit number of
 #'  parallel R sessions.
 #' Starting polars  [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background] with
-#' e.g. some `$map(...,background = FALSE)` will raise an Error as the main R session is not
+#' e.g. some `$map_batches(..., background = FALSE)` will raise an Error as the main R session is not
 #' available to process the R part of the polars query. Native polars query does not need any R
 #' session.
 #' @return see methods:
@@ -61,8 +61,8 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' @keywords RThreadHandle
 #' @seealso
 #' [`<LazyFrame>$collect_in_background()`][LazyFrame_collect_in_background]
-#' [`<Expr>$map()`][Expr_map]
-#' [`<Expr>$apply()`][Expr_apply]
+#' [`<Expr>$map_batches()`][Expr_map_batches]
+#' [`<Expr>$map_elements()`][Expr_map_elements]
 #' @examples
 #' prexpr = pl$col("mpg")$map(\(x) {
 #'   Sys.sleep(.1)

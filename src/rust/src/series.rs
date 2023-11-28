@@ -327,7 +327,7 @@ impl Series {
         )
     }
 
-    pub fn apply(
+    pub fn map_elements(
         &self,
         robj: Robj,
         rdatatype: Nullable<&RPolarsDataType>,
