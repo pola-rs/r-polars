@@ -4,6 +4,8 @@
 
 - `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
+- Removed `$days()`, `$hours()`, `$minutes()`, `$seconds()`, `$milliseconds()`,
+  `$microseconds()`, `$nanoseconds()`. Those were deprecated in 0.11.0 (#550).
 
 ## What's changed
 
