@@ -738,7 +738,7 @@ test_that("fetch", {
 
   # supports use of R functions in fetch
   expect_identical(
-    lf$select(pl$col("a")$map(\(s) s * 2L))$fetch(5)$to_list(),
+    lf$select(pl$col("a")$map_batches(\(s) s * 2L))$fetch(5)$to_list(),
     lf$select(pl$col("a") * 2L)$fetch(5)$to_list()
   )
 

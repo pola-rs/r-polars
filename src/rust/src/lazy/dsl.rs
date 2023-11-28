@@ -1704,7 +1704,7 @@ impl Expr {
         rprintln!("{:#?}", self.0);
     }
 
-    pub fn map(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
+    pub fn map_batches(&self, lambda: Robj, output_type: Robj, agg_list: Robj) -> RResult<Self> {
         // define closure how to request R code evaluated in main thread from a some polars sub thread
         let par_fn = ParRObj(lambda);
         let f = move |s: pl::Series| {
@@ -1733,7 +1733,7 @@ impl Expr {
             .map(Expr)
     }
 
-    pub fn map_in_background(
+    pub fn map_batches_in_background(
         &self,
         lambda: Robj,
         output_type: Robj,
@@ -1767,7 +1767,7 @@ impl Expr {
             .map(Expr)
     }
 
-    pub fn apply_in_background(
+    pub fn map_elements_in_background(
         &self,
         lambda: Robj,
         output_type: Nullable<&RPolarsDataType>,

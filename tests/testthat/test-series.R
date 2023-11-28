@@ -2,20 +2,20 @@ test_that("pl$Series_apply", {
   # non strict casting just yields null for wrong type
   expect_identical(
     pl$Series(1:3, "integers")$
-      apply(function(x) "wrong type", NULL, strict = FALSE)$
+      map_elements(function(x) "wrong type", NULL, strict = FALSE)$
       to_r(),
     rep(NA_integer_, 3)
   )
 
   # strict type casting, throws an error
   expect_error(
-    pl$Series(1:3, "integers")$apply(function(x) "wrong type", NULL, strict = TRUE)
+    pl$Series(1:3, "integers")$map_elements(function(x) "wrong type", NULL, strict = TRUE)
   )
 
   # handle na int
   expect_identical(
     pl$Series(c(1:3, NA_integer_), "integers")
-    $apply(function(x) x, NULL, TRUE)
+    $map_elements(function(x) x, NULL, TRUE)
     $to_vector(),
     c(1:3, NA)
   )
@@ -23,7 +23,7 @@ test_that("pl$Series_apply", {
   # handle na nan double
   expect_identical(
     pl$Series(c(1, 2, NA_real_, NaN), "doubles")$
-      apply(function(x) x, NULL, TRUE)$
+      map_elements(function(x) x, NULL, TRUE)$
       to_vector(),
     c(1, 2, NA, NaN) * 1.0
   )
@@ -31,7 +31,7 @@ test_that("pl$Series_apply", {
   # handle na logical
   expect_identical(
     pl$Series(c(TRUE, FALSE, NA), "boolean")$
-      apply(function(x) x, NULL, FALSE)$
+      map_elements(function(x) x, NULL, FALSE)$
       to_vector(),
     c(TRUE, FALSE, NA)
   )
@@ -39,7 +39,7 @@ test_that("pl$Series_apply", {
   # handle na character
   expect_identical(
     pl$Series(c("A", "B", NA_character_), "strings")$
-      apply(function(x) {
+      map_elements(function(x) {
       if (isTRUE(x == "B")) 2 else x
     }, NULL, FALSE)$
       to_vector(),
@@ -50,7 +50,7 @@ test_that("pl$Series_apply", {
   # Int32 -> Float64
   expect_identical(
     pl$Series(c(1:3, NA_integer_), "integers")$
-      apply(
+      map_elements(
       function(x) {
         if (is.na(x)) NA_real_ else as.double(x)
       },
@@ -65,7 +65,7 @@ test_that("pl$Series_apply", {
   # Float64 -> Int32
   expect_identical(
     pl$Series(c(1, 2, 3, NA_real_), "integers")$
-      apply(function(x) {
+      map_elements(function(x) {
       if (is.na(x)) 42L else as.integer(x)
     }, datatype = pl$dtypes$Int32)$
       to_vector(),
@@ -77,7 +77,7 @@ test_that("pl$Series_apply", {
   global_var = 0L
   expect_identical(
     pl$Series(c(1:3, NA), "name")$
-      apply(\(x) {
+      map_elements(\(x) {
       global_var <<- global_var + 1L
       x + global_var
     }, NULL, TRUE)$

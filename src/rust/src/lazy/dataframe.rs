@@ -629,10 +629,6 @@ impl LazyGroupBy {
                 .map_err(|err| format!("tail: {}", err)),
         )
     }
-
-    // fn apply(&self, robj: Robj, val: f64) -> Robj {
-    //     todo!("not done");
-    // }
 }
 
 extendr_module! {
