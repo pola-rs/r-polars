@@ -4,10 +4,12 @@
 #'
 #' `<Series>[i]` is equivalent to `pl$select(<Series>)[i, , drop = TRUE]`.
 #' @rdname S3_extract
-#' @param x A [DataFrame][DataFrame_class] or [LazyFrame][LazyFrame_class]
-#' @param i Rows to select
-#' @param j Columns to select, either by index or by name.
+#' @param x A [DataFrame][DataFrame_class], [LazyFrame][LazyFrame_class], or [Series][Series_class]
+#' @param i Rows to select. Integer vector, logical vector, or an [Expression][Expr_class].
+#' @param j Columns to select. Integer vector, logical vector, character vector, or an [Expression][Expr_class].
+#' For LazyFrames, only an Expression can be used.
 #' @param drop Convert to a Polars Series if only one column is selected.
+#' For LazyFrames, if the result has one column and `drop = TRUE`, an error will occur.
 #' @seealso
 #' [`<DataFrame>$select()`][DataFrame_select],
 #' [`<LazyFrame>$select()`][LazyFrame_select],
@@ -15,11 +17,21 @@
 #' [`<LazyFrame>$filter()`][LazyFrame_filter]
 #' @examples
 #' df = pl$DataFrame(data.frame(a = 1:3, b = letters[1:3]))
+#' lf = df$lazy()
 #'
+#' # Select a row
 #' df[1, ]
+#'
+#' # If only `i` is specified, it is treated as `j`
+#' # Select a column
 #' df[1]
+#'
+#' # Select a column by name (and convert to a Series)
 #' df[, "b"]
-#' df[pl$col("a") >= 2, ]
+#'
+#' # Can use Expression for filtering and column selection
+#' lf[pl$col("a") >= 2, pl$col("b")$alias("new"), drop = FALSE] |>
+#'   as.data.frame()
 #' @export
 `[.DataFrame` = function(x, i, j, drop = TRUE) {
   uw = \(res) unwrap(res, "in `[` (Extract):")
@@ -32,7 +44,43 @@
     drop = !missing(drop) && drop
   }
 
-  # selecting `j` is usually faster, so we start here.
+  if (!missing(i) && !isTRUE(only_i)) {
+    # `i == NULL` means return 0 rows
+    i = i %||% 0
+
+    if (is.atomic(i) && is.vector(i)) {
+      if (inherits(x, "LazyFrame")) {
+        Err_plain("Row selection using vector is not supported for LazyFrames.") |> uw()
+      }
+
+      if (is.logical(i)) {
+        # nrow() not available for LazyFrame
+        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
+          stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
+        }
+        idx = i
+      } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
+        negative = any(i < 0)
+        if (isTRUE(negative)) {
+          if (any(i > 0)) {
+            Err_plain("Elements of `i` must be all postive or all negative.") |> uw()
+          }
+          idx = !seq_len(x$height) %in% abs(i)
+        } else {
+          if (any(diff(i) < 0)) {
+            Err_plain("Elements of `i` must be in increasing order.") |> uw()
+          }
+          idx = seq_len(x$height) %in% i
+        }
+      }
+      x = x$filter(pl$lit(idx))
+    } else if (identical(class(i), "Expr")) {
+      x = x$filter(i)
+    } else {
+      Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
+    }
+  }
+
   if (!missing(j)) {
     if (is.atomic(j) && is.vector(j)) {
       if (is.logical(j)) {
@@ -64,43 +112,6 @@
       x = x$select(j)
     } else {
       Err_plain("`j` must be an Expr or an atomic vector of class logical, character, or integer.") |> uw()
-    }
-  }
-
-  if (!missing(i) && !isTRUE(only_i)) {
-    if (inherits(x, "LazyFrame")) {
-      Err_plain("Row selection using brackets is not supported for LazyFrames.") |> uw()
-    }
-
-    # `i == NULL` means return 0 rows
-    i = i %||% 0
-
-    if (is.atomic(i) && is.vector(i)) {
-      if (is.logical(i)) {
-        # nrow() not available for LazyFrame
-        if (inherits(x, "DataFrame") && length(i) != nrow(x)) {
-          stop(sprintf("`i` must be of length %s.", nrow(x)), call. = FALSE)
-        }
-        idx = i
-      } else if (is.integer(i) || (is.numeric(i) && all(i %% 1 == 0))) {
-        negative = any(i < 0)
-        if (isTRUE(negative)) {
-          if (any(i > 0)) {
-            Err_plain("Elements of `i` must be all postive or all negative.") |> uw()
-          }
-          idx = !seq_len(x$height) %in% abs(i)
-        } else {
-          if (any(diff(i) < 0)) {
-            Err_plain("Elements of `i` must be in increasing order.") |> uw()
-          }
-          idx = seq_len(x$height) %in% i
-        }
-      }
-      x = x$filter(pl$lit(idx))
-    } else if (identical(class(i), "Expr")) {
-      x = x$filter(i)
-    } else {
-      Err_plain("`i` must be an Expr or an atomic vector of class logical or integer.") |> uw()
     }
   }
 
