@@ -207,7 +207,11 @@ test_that("brackets", {
   expect_equal(df["cyl"]$to_data_frame(), mtcars["cyl"], ignore_attr = TRUE)
   expect_equal(df[1:3]$to_data_frame(), mtcars[1:3], ignore_attr = TRUE)
   expect_equal(df[NULL, ]$to_data_frame(), mtcars[NULL, ], ignore_attr = TRUE)
-  expect_equal(df[pl$col("cyl") >= 8, ]$to_data_frame(), mtcars[mtcars$cyl >= 8, ], ignore_attr = TRUE)
+  expect_equal(
+    df[pl$col("cyl") >= 8, c("disp", "mpg")]$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   df = pl$DataFrame(mtcars)
   a = mtcars[-(1:2), -c(1, 3, 6, 9)]
@@ -238,6 +242,12 @@ test_that("brackets", {
   a = lf[, c(1, 4, 2)]$collect()$to_data_frame()
   b = mtcars[, c(1, 4, 2)]
   expect_equal(a, b, ignore_attr = TRUE)
+
+  expect_equal(
+    lf[pl$col("cyl") >= 8, c("disp", "mpg")]$collect()$to_data_frame(),
+    mtcars[mtcars$cyl >= 8, c("disp", "mpg")],
+    ignore_attr = TRUE
+  )
 
   # Not supported for lazy
   expect_error(lf[1:3, ], "not supported")
