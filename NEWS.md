@@ -5,6 +5,12 @@
 - `$apply()` on an Expr or a Series is renamed `$map_elements()`, and `$map()` 
   is renamed `$map_batches()`. `$map()` and `$apply()` will be removed in 0.13.0 (#534).
 
+## What's changed
+
+- The Extract function (`[`) for DataFrame can use columns not included in the
+  result for filtering (#547).
+- The Extract function (`[`) for LazyFrame can filter rows with Expressions (#547).
+
 # polars 0.11.0
 
 ## BREAKING CHANGES DUE TO RUST-POLARS UPDATE
