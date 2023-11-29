@@ -94,7 +94,7 @@ test_that("pl$Series_abs", {
     c(42, 42, NA_real_)
   )
 
-  expect_s3_class(s$abs(), "Series")
+  expect_s3_class(s$abs(), "RPolarsSeries")
 
   s_int = pl$Series(c(-42L, 42L, NA_integer_))
   expect_identical(
@@ -155,7 +155,7 @@ test_that("pl$Series_combine_c", {
     s2$to_vector(),
     s3$to_vector()
   )
-  expect_s3_class(s2, "Series")
+  expect_s3_class(s2, "RPolarsSeries")
 })
 
 
@@ -521,7 +521,7 @@ patrick::with_parameters_test_that("mean, median, std, var",
     s = pl$Series(rnorm(100))
     a = s[[.test_name]]()
     # upstream .std_as_series() does not appear to return Series
-    if (inherits(a, "Series")) a <- a$to_vector()
+    if (inherits(a, "RPolarsSeries")) a <- a$to_vector()
     b = base(s$to_vector())
     expect_equal(a, b)
   },

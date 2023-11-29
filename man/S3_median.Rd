@@ -3,14 +3,14 @@
 \name{median.RPolarsDataFrame}
 \alias{median.RPolarsDataFrame}
 \alias{median.RPolarsLazyFrame}
-\alias{median.Series}
+\alias{median.RPolarsSeries}
 \title{Compute the median}
 \usage{
 \method{median}{RPolarsDataFrame}(x, ...)
 
 \method{median}{RPolarsLazyFrame}(x, ...)
 
-\method{median}{Series}(x, ...)
+\method{median}{RPolarsSeries}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

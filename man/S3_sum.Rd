@@ -3,14 +3,14 @@
 \name{sum.RPolarsDataFrame}
 \alias{sum.RPolarsDataFrame}
 \alias{sum.RPolarsLazyFrame}
-\alias{sum.Series}
+\alias{sum.RPolarsSeries}
 \title{Compute the sum}
 \usage{
 \method{sum}{RPolarsDataFrame}(x, ...)
 
 \method{sum}{RPolarsLazyFrame}(x, ...)
 
-\method{sum}{Series}(x, ...)
+\method{sum}{RPolarsSeries}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

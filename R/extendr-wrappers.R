@@ -1149,108 +1149,114 @@ LazyGroupBy$tail <- function(n) .Call(wrap__LazyGroupBy__tail, self, n)
 
 Series <- new.env(parent = emptyenv())
 
-Series$new <- function(x, name) .Call(wrap__Series__new, x, name)
+Series$new <- function(x, name) .Call(wrap__RPolarsSeries__new, x, name)
 
-Series$clone <- function() .Call(wrap__Series__clone, self)
+Series$clone <- function() .Call(wrap__RPolarsSeries__clone, self)
 
-Series$sleep <- function(millis) .Call(wrap__Series__sleep, self, millis)
+Series$sleep <- function(millis) .Call(wrap__RPolarsSeries__sleep, self, millis)
 
-Series$panic <- function() .Call(wrap__Series__panic, self)
+Series$panic <- function() .Call(wrap__RPolarsSeries__panic, self)
 
-Series$to_r <- function() .Call(wrap__Series__to_r, self)
+Series$to_r <- function() .Call(wrap__RPolarsSeries__to_r, self)
 
-Series$rename_mut <- function(name) invisible(.Call(wrap__Series__rename_mut, self, name))
+Series$rename_mut <- function(name) invisible(.Call(wrap__RPolarsSeries__rename_mut, self, name))
 
-Series$dtype <- function() .Call(wrap__Series__dtype, self)
+Series$dtype <- function() .Call(wrap__RPolarsSeries__dtype, self)
 
-Series$n_unique <- function() .Call(wrap__Series__n_unique, self)
+Series$n_unique <- function() .Call(wrap__RPolarsSeries__n_unique, self)
 
-Series$name <- function() .Call(wrap__Series__name, self)
+Series$name <- function() .Call(wrap__RPolarsSeries__name, self)
 
-Series$sort_mut <- function(descending) .Call(wrap__Series__sort_mut, self, descending)
+Series$sort_mut <- function(descending) .Call(wrap__RPolarsSeries__sort_mut, self, descending)
 
-Series$value_counts <- function(sort, parallel) .Call(wrap__Series__value_counts, self, sort, parallel)
+Series$value_counts <- function(sort, parallel) .Call(wrap__RPolarsSeries__value_counts, self, sort, parallel)
 
-Series$arg_min <- function() .Call(wrap__Series__arg_min, self)
+Series$arg_min <- function() .Call(wrap__RPolarsSeries__arg_min, self)
 
-Series$arg_max <- function() .Call(wrap__Series__arg_max, self)
+Series$arg_max <- function() .Call(wrap__RPolarsSeries__arg_max, self)
 
-Series$is_sorted_flag <- function() .Call(wrap__Series__is_sorted_flag, self)
+Series$is_sorted_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_flag, self)
 
-Series$is_sorted_reverse_flag <- function() .Call(wrap__Series__is_sorted_reverse_flag, self)
+Series$is_sorted_reverse_flag <- function() .Call(wrap__RPolarsSeries__is_sorted_reverse_flag, self)
 
-Series$is_sorted <- function(descending) .Call(wrap__Series__is_sorted, self, descending)
+Series$is_sorted <- function(descending) .Call(wrap__RPolarsSeries__is_sorted, self, descending)
 
-Series$series_equal <- function(other, null_equal, strict) .Call(wrap__Series__series_equal, self, other, null_equal, strict)
+Series$series_equal <- function(other, null_equal, strict) .Call(wrap__RPolarsSeries__series_equal, self, other, null_equal, strict)
 
-Series$get_fmt <- function(index, str_length) .Call(wrap__Series__get_fmt, self, index, str_length)
+Series$get_fmt <- function(index, str_length) .Call(wrap__RPolarsSeries__get_fmt, self, index, str_length)
 
-Series$to_fmt_char <- function(str_length) .Call(wrap__Series__to_fmt_char, self, str_length)
+Series$to_fmt_char <- function(str_length) .Call(wrap__RPolarsSeries__to_fmt_char, self, str_length)
 
-Series$compare <- function(other, op) .Call(wrap__Series__compare, self, other, op)
+Series$compare <- function(other, op) .Call(wrap__RPolarsSeries__compare, self, other, op)
 
-Series$rep <- function(n, rechunk) .Call(wrap__Series__rep, self, n, rechunk)
+Series$rep <- function(n, rechunk) .Call(wrap__RPolarsSeries__rep, self, n, rechunk)
 
-Series$shape <- function() .Call(wrap__Series__shape, self)
+Series$shape <- function() .Call(wrap__RPolarsSeries__shape, self)
 
-Series$len <- function() .Call(wrap__Series__len, self)
+Series$len <- function() .Call(wrap__RPolarsSeries__len, self)
 
-Series$chunk_lengths <- function() .Call(wrap__Series__chunk_lengths, self)
+Series$chunk_lengths <- function() .Call(wrap__RPolarsSeries__chunk_lengths, self)
 
-Series$abs <- function() .Call(wrap__Series__abs, self)
+Series$abs <- function() .Call(wrap__RPolarsSeries__abs, self)
 
-Series$alias <- function(name) .Call(wrap__Series__alias, self, name)
+Series$alias <- function(name) .Call(wrap__RPolarsSeries__alias, self, name)
 
-Series$all <- function() .Call(wrap__Series__all, self)
+Series$all <- function() .Call(wrap__RPolarsSeries__all, self)
 
-Series$any <- function() .Call(wrap__Series__any, self)
+Series$any <- function() .Call(wrap__RPolarsSeries__any, self)
 
-Series$add <- function(other) .Call(wrap__Series__add, self, other)
+Series$add <- function(other) .Call(wrap__RPolarsSeries__add, self, other)
 
-Series$sub <- function(other) .Call(wrap__Series__sub, self, other)
+Series$sub <- function(other) .Call(wrap__RPolarsSeries__sub, self, other)
 
-Series$mul <- function(other) .Call(wrap__Series__mul, self, other)
+Series$mul <- function(other) .Call(wrap__RPolarsSeries__mul, self, other)
 
-Series$div <- function(other) .Call(wrap__Series__div, self, other)
+Series$div <- function(other) .Call(wrap__RPolarsSeries__div, self, other)
 
-Series$rem <- function(other) .Call(wrap__Series__rem, self, other)
+Series$rem <- function(other) .Call(wrap__RPolarsSeries__rem, self, other)
 
-Series$append_mut <- function(other) .Call(wrap__Series__append_mut, self, other)
+Series$append_mut <- function(other) .Call(wrap__RPolarsSeries__append_mut, self, other)
 
-Series$map_elements <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__Series__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
+Series$map_elements <- function(robj, rdatatype, strict, allow_fail_eval) .Call(wrap__RPolarsSeries__map_elements, self, robj, rdatatype, strict, allow_fail_eval)
 
-Series$mean <- function() .Call(wrap__Series__mean, self)
+Series$mean <- function() .Call(wrap__RPolarsSeries__mean, self)
 
-Series$median <- function() .Call(wrap__Series__median, self)
+Series$median <- function() .Call(wrap__RPolarsSeries__median, self)
 
-Series$min <- function() .Call(wrap__Series__min, self)
+Series$min <- function() .Call(wrap__RPolarsSeries__min, self)
 
-Series$max <- function() .Call(wrap__Series__max, self)
+Series$max <- function() .Call(wrap__RPolarsSeries__max, self)
 
-Series$sum <- function() .Call(wrap__Series__sum, self)
+Series$sum <- function() .Call(wrap__RPolarsSeries__sum, self)
 
-Series$std <- function(ddof) .Call(wrap__Series__std, self, ddof)
+Series$std <- function(ddof) .Call(wrap__RPolarsSeries__std, self, ddof)
 
-Series$var <- function(ddof) .Call(wrap__Series__var, self, ddof)
+Series$var <- function(ddof) .Call(wrap__RPolarsSeries__var, self, ddof)
 
-Series$ceil <- function() .Call(wrap__Series__ceil, self)
+Series$ceil <- function() .Call(wrap__RPolarsSeries__ceil, self)
 
-Series$floor <- function() .Call(wrap__Series__floor, self)
+Series$floor <- function() .Call(wrap__RPolarsSeries__floor, self)
 
-Series$print <- function() invisible(.Call(wrap__Series__print, self))
+Series$print <- function() invisible(.Call(wrap__RPolarsSeries__print, self))
 
-Series$cum_sum <- function(reverse) .Call(wrap__Series__cum_sum, self, reverse)
+Series$cum_sum <- function(reverse) .Call(wrap__RPolarsSeries__cum_sum, self, reverse)
 
-Series$to_frame <- function() .Call(wrap__Series__to_frame, self)
+Series$to_frame <- function() .Call(wrap__RPolarsSeries__to_frame, self)
 
-Series$set_sorted_mut <- function(descending) invisible(.Call(wrap__Series__set_sorted_mut, self, descending))
+Series$set_sorted_mut <- function(descending) invisible(.Call(wrap__RPolarsSeries__set_sorted_mut, self, descending))
 
-Series$from_arrow <- function(name, array) .Call(wrap__Series__from_arrow, name, array)
+Series$from_arrow <- function(name, array) .Call(wrap__RPolarsSeries__from_arrow, name, array)
+
+RPolarsSeries <- Series
 
 #' @export
+`$.RPolarsSeries` <- function (self, name) { func <- RPolarsSeries[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsSeries` <- `$.RPolarsSeries`
+
 `$.Series` <- function (self, name) { func <- Series[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.Series` <- `$.Series`
 
 RPolarsSQLContext <- new.env(parent = emptyenv())

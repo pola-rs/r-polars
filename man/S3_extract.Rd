@@ -3,14 +3,14 @@
 \name{[.RPolarsDataFrame}
 \alias{[.RPolarsDataFrame}
 \alias{[.RPolarsLazyFrame}
-\alias{[.Series}
+\alias{[.RPolarsSeries}
 \title{Extract Parts of a Polars Object}
 \usage{
 \method{[}{RPolarsDataFrame}(x, i, j, drop = TRUE)
 
 \method{[}{RPolarsLazyFrame}(x, i, j, drop = TRUE)
 
-\method{[}{Series}(x, i)
+\method{[}{RPolarsSeries}(x, i)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or \link[=Series_class]{Series}}

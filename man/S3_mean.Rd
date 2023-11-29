@@ -3,14 +3,14 @@
 \name{mean.RPolarsDataFrame}
 \alias{mean.RPolarsDataFrame}
 \alias{mean.RPolarsLazyFrame}
-\alias{mean.Series}
+\alias{mean.RPolarsSeries}
 \title{Compute the mean}
 \usage{
 \method{mean}{RPolarsDataFrame}(x, ...)
 
 \method{mean}{RPolarsLazyFrame}(x, ...)
 
-\method{mean}{Series}(x, ...)
+\method{mean}{RPolarsSeries}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

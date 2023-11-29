@@ -96,7 +96,7 @@ pl$concat = function(
 
   # dispatch on item class and how
   Result_out = pcase(
-    how == "vertical" && (inherits(first, "Series") || is.vector(first)),
+    how == "vertical" && (inherits(first, "RPolarsSeries") || is.vector(first)),
     {
       if (any(args_modified %in% c("parallel"))) {
         warning(
@@ -106,7 +106,7 @@ pl$concat = function(
       }
       concat_series(l, rechunk, to_supertypes = FALSE)
     },
-    how == "vertical_relaxed" && (inherits(first, "Series") || is.vector(first)),
+    how == "vertical_relaxed" && (inherits(first, "RPolarsSeries") || is.vector(first)),
     {
       if (any(args_modified %in% c("parallel"))) {
         warning(

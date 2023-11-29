@@ -134,7 +134,7 @@
 
 #' @export
 #' @rdname S3_extract
-`[.Series` = function(x, i) {
+`[.RPolarsSeries` = function(x, i) {
   pl$select(x)[i, , drop = TRUE]
 }
 
@@ -193,7 +193,7 @@ length.RPolarsLazyFrame = length.RPolarsDataFrame
 
 #' @export
 #' @rdname S3_length
-length.Series = function(x) x$len()
+length.RPolarsSeries = function(x) x$len()
 
 #' Get the column names
 #'
@@ -269,7 +269,7 @@ mean.RPolarsLazyFrame = function(x, ...) x$mean()
 
 #' @export
 #' @rdname S3_mean
-mean.Series = function(x, ...) x$mean()
+mean.RPolarsSeries = function(x, ...) x$mean()
 
 #' Compute the median
 #'
@@ -290,7 +290,7 @@ median.RPolarsLazyFrame = function(x, ...) x$median()
 #' @export
 #' @importFrom stats median
 #' @rdname S3_median
-median.Series = function(x, ...) x$median()
+median.RPolarsSeries = function(x, ...) x$median()
 
 #' Compute the minimum value
 #'
@@ -308,7 +308,7 @@ min.RPolarsLazyFrame = function(x, ...) x$min()
 
 #' @export
 #' @rdname S3_min
-min.Series = function(x, ...) x$min()
+min.RPolarsSeries = function(x, ...) x$min()
 
 #' Compute the maximum value
 #'
@@ -326,7 +326,7 @@ max.RPolarsLazyFrame = function(x, ...) x$max()
 
 #' @export
 #' @rdname S3_max
-max.Series = function(x, ...) x$max()
+max.RPolarsSeries = function(x, ...) x$max()
 
 #' Compute the sum
 #'
@@ -344,7 +344,7 @@ sum.RPolarsLazyFrame = function(x, ...) x$sum()
 
 #' @export
 #' @rdname S3_sum
-sum.Series = function(x, ...) x$sum()
+sum.RPolarsSeries = function(x, ...) x$sum()
 
 #' Convert to a vector
 #'
@@ -352,7 +352,7 @@ sum.Series = function(x, ...) x$sum()
 #' @param mode Not used.
 #' @export
 #' @rdname S3_as.vector
-as.vector.Series = function(x, mode) x$to_vector()
+as.vector.RPolarsSeries = function(x, mode) x$to_vector()
 
 
 #' Convert to a character vector
@@ -368,7 +368,7 @@ as.vector.Series = function(x, mode) x$to_vector()
 #' s = pl$Series(c("foo", "barbaz"))
 #' as.character(s)
 #' as.character(s, str_length = 3)
-as.character.Series = function(x, ..., str_length = NULL) {
+as.character.RPolarsSeries = function(x, ..., str_length = NULL) {
   if (is.numeric(str_length) && str_length > 0) {
     .pr$Series$to_fmt_char(x, str_length = str_length)
   } else {
@@ -384,7 +384,7 @@ as.character.Series = function(x, ..., str_length = NULL) {
 #'
 #' @rdname S3_print
 #' @export
-print.Series = function(x, ...) {
+print.RPolarsSeries = function(x, ...) {
   cat("polars Series: ")
   x$print()
   invisible(x)
@@ -401,7 +401,7 @@ print.Series = function(x, ...) {
 #' @noRd
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
-.DollarNames.Series = function(x, pattern = "") {
+.DollarNames.RPolarsSeries = function(x, pattern = "") {
   get_method_usages(Series, pattern = pattern)
 }
 
@@ -419,7 +419,7 @@ print.Series = function(x, ...) {
 #' s$chunk_lengths() # the series contain three unmerged chunks
 #' @export
 #' @rdname S3_c
-c.Series = \(x, ...) {
+c.RPolarsSeries = \(x, ...) {
   l = list2(...)
   x = x$clone() # clone to retain an immutable api, append_mut is not immutable
   for (i in seq_along(l)) { # append each element of i being either Series or Into<Series>

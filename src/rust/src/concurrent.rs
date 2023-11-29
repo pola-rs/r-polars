@@ -5,7 +5,7 @@ use crate::utils::extendr_concurrent::{concurrent_handler, ThreadCom};
 use crate::CONFIG;
 use polars::prelude as pl;
 
-use crate::rdataframe::Series;
+use crate::rdataframe::RPolarsSeries;
 use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 use extendr_api::Conversions;
@@ -42,14 +42,14 @@ impl RFnSignature {
         match self {
             RFnSignature::FnSeriesToSeries(f, s) => {
                 let s = unpack_rfn(f)?
-                    .call(pairlist!(Series(s)))
-                    .map(Series::any_robj_to_pl_series_result)??;
+                    .call(pairlist!(RPolarsSeries(s)))
+                    .map(RPolarsSeries::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
             }
             RFnSignature::FnTwoSeriesToSeries(f, s1, s2) => {
                 let s = unpack_rfn(f)?
-                    .call(pairlist!(Series(s1), Series(s2)))
-                    .map(Series::any_robj_to_pl_series_result)??;
+                    .call(pairlist!(RPolarsSeries(s1), RPolarsSeries(s2)))
+                    .map(RPolarsSeries::any_robj_to_pl_series_result)??;
                 Ok(RFnOutput::Series(s))
             }
             RFnSignature::FnF64ToString(f, f64_val) => {

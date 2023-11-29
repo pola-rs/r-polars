@@ -3,14 +3,14 @@
 \name{length.RPolarsDataFrame}
 \alias{length.RPolarsDataFrame}
 \alias{length.RPolarsLazyFrame}
-\alias{length.Series}
+\alias{length.RPolarsSeries}
 \title{Get the length}
 \usage{
 \method{length}{RPolarsDataFrame}(x)
 
 \method{length}{RPolarsLazyFrame}(x)
 
-\method{length}{Series}(x)
+\method{length}{RPolarsSeries}(x)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

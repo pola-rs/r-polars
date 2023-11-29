@@ -6,7 +6,7 @@ use crate::rdatatype::{
 use crate::robj_to;
 use crate::rpolarserr::polars_to_rpolars_err;
 use crate::rpolarserr::{rerr, rpolars_to_polars_err, RResult, Rctx, WithRctx};
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::extendr_helpers::robj_inherits;
 use crate::utils::parse_fill_null_strategy;
@@ -79,7 +79,7 @@ impl RPolarsExpr {
         let rlen = robj.len();
 
         fn to_series_then_lit(robj: Robj) -> RResult<pl::Expr> {
-            Series::any_robj_to_pl_series_result(robj)
+            RPolarsSeries::any_robj_to_pl_series_result(robj)
                 .map_err(polars_to_rpolars_err)
                 .map(dsl::lit)
         }
@@ -144,8 +144,8 @@ impl RPolarsExpr {
                 }
             }
             (Rtype::ExternalPtr, 1) => match () {
-                _ if robj.inherits("Series") => {
-                    let s: Series = unsafe { &mut *robj.external_ptr_addr::<Series>() }.clone();
+                _ if robj.inherits("RPolarsSeries") => {
+                    let s: RPolarsSeries = unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
                     Ok(pl::lit(s.0))
                 }
 
@@ -957,7 +957,7 @@ impl RPolarsExpr {
                             if s.len() == 1 {
                                 Ok(Some(s.new_from_index(0, n)))
                             } else {
-                                Series(s).rep_impl(n, rechunk).map(|s| Some(s.0))
+                                RPolarsSeries(s).rep_impl(n, rechunk).map(|s| Some(s.0))
                             }
                         },
                         pl::GetOutput::same_type(),
@@ -2635,7 +2635,7 @@ pub fn robj_to_col(name: Robj, dotdotdot: Robj) -> RResult<RPolarsExpr> {
 
     || -> RResult<RPolarsExpr> {
         use crate::utils::unpack_r_eval;
-        let name = if name.inherits("Series") {
+        let name = if name.inherits("RPolarsSeries") {
             unpack_r_eval(R!("polars:::result({{name}}$to_vector())"))?
         } else {
             name

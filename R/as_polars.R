@@ -58,7 +58,7 @@ as_polars_df.GroupBy = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.Series = function(x, ...) {
+as_polars_df.RPolarsSeries = function(x, ...) {
   pl$DataFrame(x)
 }
 

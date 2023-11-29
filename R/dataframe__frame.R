@@ -167,7 +167,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
   if (length(keys) == 0) keys <- rep(NA_character_, length(largs))
   keys = mapply(largs, keys, FUN = function(column, key) {
     if (is.na(key) || nchar(key) == 0) {
-      if (inherits(column, "Series")) {
+      if (inherits(column, "RPolarsSeries")) {
         key = column$name
       } else {
         key = "new_column"

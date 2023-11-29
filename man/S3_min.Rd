@@ -3,14 +3,14 @@
 \name{min.RPolarsDataFrame}
 \alias{min.RPolarsDataFrame}
 \alias{min.RPolarsLazyFrame}
-\alias{min.Series}
+\alias{min.RPolarsSeries}
 \title{Compute the minimum value}
 \usage{
 \method{min}{RPolarsDataFrame}(x, ...)
 
 \method{min}{RPolarsLazyFrame}(x, ...)
 
-\method{min}{Series}(x, ...)
+\method{min}{RPolarsSeries}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

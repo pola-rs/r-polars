@@ -142,7 +142,7 @@ impl RPolarsDataFrame {
     }
 
     //internal use
-    pub fn set_column_from_series(&mut self, x: &Series) -> Result<(), String> {
+    pub fn set_column_from_series(&mut self, x: &RPolarsSeries) -> Result<(), String> {
         let s: pl::Series = x.into(); //implicit clone, cannot move R objects
         self.0
             .with_column(s)
@@ -186,13 +186,13 @@ impl RPolarsDataFrame {
         let res_series = self
             .0
             .select([name])
-            .map(|df| Series(df.iter().next().unwrap().clone()))
+            .map(|df| RPolarsSeries(df.iter().next().unwrap().clone()))
             .map_err(|err| format!("in get_column: {:?}", err));
         r_result_list(res_series)
     }
 
     pub fn get_columns(&self) -> List {
-        let mut l = List::from_values(self.0.get_columns().iter().map(|x| Series(x.clone())));
+        let mut l = List::from_values(self.0.get_columns().iter().map(|x| RPolarsSeries(x.clone())));
         l.set_names(self.0.get_column_names()).unwrap();
         l
     }
@@ -281,17 +281,17 @@ impl RPolarsDataFrame {
     }
 
     pub fn select_at_idx(&self, idx: i32) -> List {
-        let expr_result = || -> Result<Series, String> {
+        let expr_result = || -> Result<RPolarsSeries, String> {
             self.0
                 .select_at_idx(idx as usize)
-                .map(|s| Series(s.clone()))
+                .map(|s| RPolarsSeries(s.clone()))
                 .ok_or_else(|| format!("select_at_idx: no series found at idx {:?}", idx))
         }();
         r_result_list(expr_result)
     }
 
-    pub fn drop_in_place(&mut self, names: &str) -> Series {
-        Series(self.0.drop_in_place(names).unwrap())
+    pub fn drop_in_place(&mut self, names: &str) -> RPolarsSeries {
+        RPolarsSeries(self.0.drop_in_place(names).unwrap())
     }
 
     pub fn select(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
@@ -321,7 +321,7 @@ impl RPolarsDataFrame {
         RPolarsLazyFrame(lgb.agg(agg_exprs)).collect()
     }
 
-    pub fn to_struct(&self, name: &str) -> Series {
+    pub fn to_struct(&self, name: &str) -> RPolarsSeries {
         use pl::IntoSeries;
         let s = self.0.clone().into_struct(name);
         s.into_series().into()

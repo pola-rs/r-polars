@@ -3,14 +3,14 @@
 \name{max.RPolarsDataFrame}
 \alias{max.RPolarsDataFrame}
 \alias{max.RPolarsLazyFrame}
-\alias{max.Series}
+\alias{max.RPolarsSeries}
 \title{Compute the maximum value}
 \usage{
 \method{max}{RPolarsDataFrame}(x, ...)
 
 \method{max}{RPolarsLazyFrame}(x, ...)
 
-\method{max}{Series}(x, ...)
+\method{max}{RPolarsSeries}(x, ...)
 }
 \arguments{
 \item{x}{A \link[=DataFrame_class]{DataFrame}, \link[=LazyFrame_class]{LazyFrame}, or

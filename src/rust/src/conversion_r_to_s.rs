@@ -1,4 +1,4 @@
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::collect_hinted_result;
 use extendr_api::prelude::*;
 /// this file implements any conversion from Robject to polars::Series
@@ -58,8 +58,8 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     // handle any supported Robj
     let series_result = match rtype {
         Rtype::ExternalPtr => match () {
-            _ if x.inherits("Series") => {
-                let s: Series = unsafe { &mut *x.external_ptr_addr::<Series>() }.clone();
+            _ if x.inherits("RPolarsSeries") => {
+                let s: RPolarsSeries = unsafe { &mut *x.external_ptr_addr::<RPolarsSeries>() }.clone();
                 Ok(SeriesTree::Series(s.0))
             }
             _ => Err(pl::PolarsError::InvalidOperation(

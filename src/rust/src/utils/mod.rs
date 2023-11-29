@@ -7,7 +7,7 @@ use crate::conversion_r_to_s::robjname2series;
 use crate::lazy::dsl::RPolarsExpr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
@@ -222,7 +222,7 @@ macro_rules! apply_output {
             .collect::<extendr_api::Result<$ca_type>>()
             //if all ok collect into serias and rename
             .map(|ca| {
-                Series(ca.into_series())
+                RPolarsSeries(ca.into_series())
             })
     };
 }
@@ -835,11 +835,11 @@ pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<RPolarsDataFrame> {
         .plain("could not be converted into a DataFrame")
 }
 
-pub fn robj_to_series(robj: extendr_api::Robj) -> RResult<Series> {
+pub fn robj_to_series(robj: extendr_api::Robj) -> RResult<RPolarsSeries> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
     robjname2series(robj, "")
-        .map(Series)
+        .map(RPolarsSeries)
         .map_err(polars_to_rpolars_err)
         .bad_val(rdbg(robj_clone))
         .plain("could not be converted into a DataFrame")

@@ -28,7 +28,7 @@ available to process the R part of the polars query. Native polars query does no
 session.
 }
 \examples{
-prexpr = pl$col("mpg")$map(\(x) {
+prexpr = pl$col("mpg")$map_batches(\(x) {
   Sys.sleep(.1)
   x * 0.43
 }, in_background = TRUE)$alias("kml")

@@ -569,7 +569,7 @@ test_that("drop_in_place", {
   expect_true("Species" %in% dat$columns)
   x = dat$drop_in_place("Species")
   expect_false("Species" %in% dat$columns)
-  expect_s3_class(x, "Series")
+  expect_s3_class(x, "RPolarsSeries")
 })
 
 

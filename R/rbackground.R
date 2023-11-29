@@ -64,7 +64,7 @@ print.RThreadHandle = function(x, ...) as.character(x) |> cat("\n")
 #' [`<Expr>$map_batches()`][Expr_map_batches]
 #' [`<Expr>$map_elements()`][Expr_map_elements]
 #' @examples
-#' prexpr = pl$col("mpg")$map(\(x) {
+#' prexpr = pl$col("mpg")$map_batches(\(x) {
 #'   Sys.sleep(.1)
 #'   x * 0.43
 #' }, in_background = TRUE)$alias("kml")

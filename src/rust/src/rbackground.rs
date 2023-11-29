@@ -186,7 +186,7 @@ impl RIPCJob {
                 collector,
             } => {
                 let bits = || {
-                    use crate::series::Series as RSeries;
+                    use crate::series::RPolarsSeries;
                     let func_robj = deserialize_robj(raw_func)?;
                     let series = deserialize_series(&raw_series)?;
                     let func = func_robj
@@ -194,8 +194,8 @@ impl RIPCJob {
                         .ok_or(RPolarsErr::new())
                         .bad_val(rdbg(func_robj))
                         .mistyped("pure R function")?;
-                    let shared_memory = serialize_series(RSeries::any_robj_to_pl_series_result(
-                        func.call(pairlist!(RSeries(series)))?,
+                    let shared_memory = serialize_series(RPolarsSeries::any_robj_to_pl_series_result(
+                        func.call(pairlist!(RPolarsSeries(series)))?,
                     )?)?;
                     RResult::Ok(ipc::IpcSharedMemory::from_bytes(shared_memory.as_slice()))
                 };

@@ -1,7 +1,7 @@
 use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use crate::robj_to;
 use crate::rpolarserr::*;
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use extendr_api::prelude::*;
 use polars::lazy::dsl;
 use polars::prelude as pl;
@@ -53,7 +53,7 @@ pub fn concat_df_horizontal(l: Robj) -> RResult<RPolarsDataFrame> {
 }
 
 #[extendr]
-pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<Series> {
+pub fn concat_series(l: Robj, rechunk: Robj, to_supertypes: Robj) -> RResult<RPolarsSeries> {
     let to_supertypes = robj_to!(bool, to_supertypes)?;
     let mut s_vec = robj_to!(Vec, PLSeries, l)?;
 

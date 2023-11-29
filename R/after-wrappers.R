@@ -267,7 +267,7 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 # used for printing public environment
 pl_class_names = sort(
   c(
-    "RPolarsLazyFrame", "Series", "LazyGroupBy", "DataType", "RPolarsExpr",
+    "RPolarsLazyFrame", "RPolarsSeries", "LazyGroupBy", "DataType", "RPolarsExpr",
     "RPolarsDataFrame", "When", "Then", "ChainedWhen", "ChainedThen",
     "RPolarsSQLContext"
   )

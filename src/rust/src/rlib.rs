@@ -2,7 +2,7 @@ use crate::lazy::dsl::{RPolarsExpr, ProtoExprArray};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
-use crate::series::Series;
+use crate::series::RPolarsSeries;
 use crate::utils::extendr_concurrent::{ParRObj, ThreadCom};
 use crate::utils::robj_to_rchoice;
 use crate::RFnSignature;
@@ -156,7 +156,7 @@ fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
 #[extendr]
 fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
     let s = crate::arrow_interop::to_rust::arrow_stream_to_series_internal(robj_str)?;
-    Ok(Series(s).into_robj())
+    Ok(RPolarsSeries(s).into_robj())
 }
 
 #[extendr]
