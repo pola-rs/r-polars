@@ -251,7 +251,9 @@ impl RPolarsSeries {
     }
 
     pub fn abs(&self) -> RResult<RPolarsSeries> {
-        pl::abs(&self.0).map_err(polars_to_rpolars_err).map(RPolarsSeries)
+        pl::abs(&self.0)
+            .map_err(polars_to_rpolars_err)
+            .map(RPolarsSeries)
     }
 
     pub fn alias(&self, name: &str) -> RPolarsSeries {
@@ -539,7 +541,8 @@ impl RPolarsSeries {
 impl RPolarsSeries {
     pub fn inner_from_robj_clone(robj: &Robj) -> std::result::Result<Self, &'static str> {
         if robj.check_external_ptr_type::<RPolarsSeries>() {
-            let x: RPolarsSeries = unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
+            let x: RPolarsSeries =
+                unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
             Ok(x)
         } else {
             Err("expected Series")

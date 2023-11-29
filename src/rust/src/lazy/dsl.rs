@@ -145,12 +145,14 @@ impl RPolarsExpr {
             }
             (Rtype::ExternalPtr, 1) => match () {
                 _ if robj.inherits("RPolarsSeries") => {
-                    let s: RPolarsSeries = unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
+                    let s: RPolarsSeries =
+                        unsafe { &mut *robj.external_ptr_addr::<RPolarsSeries>() }.clone();
                     Ok(pl::lit(s.0))
                 }
 
                 _ if robj.inherits("RPolarsExpr") => {
-                    let expr: RPolarsExpr = unsafe { &mut *robj.external_ptr_addr::<RPolarsExpr>() }.clone();
+                    let expr: RPolarsExpr =
+                        unsafe { &mut *robj.external_ptr_addr::<RPolarsExpr>() }.clone();
                     Ok(expr.0)
                 }
 
@@ -330,7 +332,7 @@ impl RPolarsExpr {
     }
 
     pub fn fill_null_with_strategy(&self, strategy: &str, limit: Nullable<f64>) -> List {
-        let res = || -> Result<RPolarsExpr,String> {
+        let res = || -> Result<RPolarsExpr, String> {
             let limit = null_to_opt(limit).map(try_f64_into_usize).transpose()?;
             let limit: pl::FillNullLimit = limit.map(|x| x as u32);
 
@@ -455,7 +457,7 @@ impl RPolarsExpr {
         seed_1: Robj,
         seed_2: Robj,
         seed_3: Robj,
-    ) -> Result<RPolarsExpr,String> {
+    ) -> Result<RPolarsExpr, String> {
         Ok(RPolarsExpr(self.0.clone().hash(
             robj_to!(u64, seed)?,
             robj_to!(u64, seed_1)?,
@@ -707,7 +709,7 @@ impl RPolarsExpr {
     }
 
     fn diff(&self, n_float: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<RPolarsExpr,String> {
+        let expr_res = || -> Result<RPolarsExpr, String> {
             Ok(RPolarsExpr(self.0.clone().diff(
                 try_f64_into_i64(n_float)?,
                 new_null_behavior(null_behavior)?,
@@ -718,7 +720,9 @@ impl RPolarsExpr {
     }
 
     fn pct_change(&self, n_float: Robj) -> RResult<Self> {
-        Ok(RPolarsExpr(self.0.clone().pct_change(robj_to!(PLExpr, n_float)?)))
+        Ok(RPolarsExpr(
+            self.0.clone().pct_change(robj_to!(PLExpr, n_float)?),
+        ))
     }
 
     fn skew(&self, bias: bool) -> Self {
@@ -860,7 +864,7 @@ impl RPolarsExpr {
     }
 
     pub fn ewm_mean(&self, alpha: f64, adjust: bool, min_periods: f64, ignore_nulls: bool) -> List {
-        let expr_result = || -> Result<RPolarsExpr,String> {
+        let expr_result = || -> Result<RPolarsExpr, String> {
             let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
@@ -882,7 +886,7 @@ impl RPolarsExpr {
         min_periods: f64,
         ignore_nulls: bool,
     ) -> List {
-        let expr_result = || -> Result<RPolarsExpr,String> {
+        let expr_result = || -> Result<RPolarsExpr, String> {
             let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
@@ -904,7 +908,7 @@ impl RPolarsExpr {
         min_periods: f64,
         ignore_nulls: bool,
     ) -> List {
-        let expr_result = || -> Result<RPolarsExpr,String> {
+        let expr_result = || -> Result<RPolarsExpr, String> {
             let min_periods = try_f64_into_usize(min_periods)?;
             let options = pl::EWMOptions {
                 alpha,
@@ -919,7 +923,7 @@ impl RPolarsExpr {
     }
 
     pub fn extend_constant(&self, value: &RPolarsExpr, n: f64) -> List {
-        let expr_res = || -> Result<RPolarsExpr,String> {
+        let expr_res = || -> Result<RPolarsExpr, String> {
             let av = match value.clone().0 {
                 pl::Expr::Literal(ma) => literal_to_any_value(ma),
                 ma => Err(format!("value [{:?}] was not a literal:", ma)),
@@ -1093,7 +1097,7 @@ impl RPolarsExpr {
     }
 
     fn list_diff(&self, n: f64, null_behavior: &str) -> List {
-        let expr_res = || -> Result<RPolarsExpr,String> {
+        let expr_res = || -> Result<RPolarsExpr, String> {
             Ok(RPolarsExpr(self.0.clone().list().diff(
                 try_f64_into_i64(n)?,
                 new_null_behavior(null_behavior)?,
@@ -1104,7 +1108,7 @@ impl RPolarsExpr {
     }
 
     fn list_shift(&self, periods: Robj) -> List {
-        let expr_res = || -> Result<RPolarsExpr,String> {
+        let expr_res = || -> Result<RPolarsExpr, String> {
             Ok(RPolarsExpr(
                 self.0.clone().list().shift(robj_to!(PLExpr, periods)?),
             ))
@@ -1156,10 +1160,12 @@ impl RPolarsExpr {
         };
 
         //resolve usize from f64 and stategy from str
-        let res = || -> Result<RPolarsExpr,String> {
+        let res = || -> Result<RPolarsExpr, String> {
             let ub = try_f64_into_usize(upper_bound)?;
             let strat = new_width_strategy(width_strat)?;
-            Ok(RPolarsExpr(self.0.clone().list().to_struct(strat, name_gen, ub)))
+            Ok(RPolarsExpr(
+                self.0.clone().list().to_struct(strat, name_gen, ub),
+            ))
         }();
 
         let res = res.map_err(|err| format!("in to_struct: {}", err));
@@ -1985,7 +1991,7 @@ impl RPolarsExpr {
     }
 
     pub fn str_json_path_match(&self, pat: Robj) -> List {
-        let res = || -> Result<RPolarsExpr,String> {
+        let res = || -> Result<RPolarsExpr, String> {
             use pl::*;
             let pat: String = robj_to!(String, pat, "in str$json_path_match: {}")?;
             let function = move |s: Series| {
@@ -2068,7 +2074,7 @@ impl RPolarsExpr {
     }
 
     pub fn str_extract(&self, pattern: Robj, group_index: Robj) -> List {
-        let res = || -> Result<RPolarsExpr,String> {
+        let res = || -> Result<RPolarsExpr, String> {
             let pat = robj_to!(String, pattern)?;
             let gi = robj_to!(usize, group_index)?;
             Ok(self.0.clone().str().extract(pat.as_str(), gi).into())
@@ -2091,7 +2097,7 @@ impl RPolarsExpr {
     }
 
     //NOTE SHOW CASE all R side argument handling
-    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr,String> {
+    pub fn str_split(&self, by: Robj, inclusive: Robj) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let inclusive = robj_to!(bool, inclusive)?;
         if inclusive {
@@ -2103,7 +2109,12 @@ impl RPolarsExpr {
 
     //NOTE SHOW CASE all rust side argument handling, n is usize and had to be
     //handled on rust side anyways
-    pub fn str_split_exact(&self, by: Robj, n: Robj, inclusive: Robj) -> Result<RPolarsExpr,String> {
+    pub fn str_split_exact(
+        &self,
+        by: Robj,
+        n: Robj,
+        inclusive: Robj,
+    ) -> Result<RPolarsExpr, String> {
         let by = robj_to!(PLExpr, by)?;
         let n = robj_to!(usize, n)?;
         let inclusive = robj_to!(bool, inclusive)?;
@@ -2115,7 +2126,7 @@ impl RPolarsExpr {
         .into())
     }
 
-    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<RPolarsExpr,String> {
+    pub fn str_splitn(&self, by: Robj, n: Robj) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2124,7 +2135,12 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_replace(&self, pattern: Robj, value: Robj, literal: Robj) -> Result<RPolarsExpr,String> {
+    pub fn str_replace(
+        &self,
+        pattern: Robj,
+        value: Robj,
+        literal: Robj,
+    ) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2142,7 +2158,7 @@ impl RPolarsExpr {
         pattern: Robj,
         value: Robj,
         literal: Robj,
-    ) -> Result<RPolarsExpr,String> {
+    ) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2155,14 +2171,14 @@ impl RPolarsExpr {
             .into())
     }
 
-    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr,String> {
+    pub fn str_slice(&self, offset: Robj, length: Robj) -> Result<RPolarsExpr, String> {
         let offset = robj_to!(i64, offset)?;
         let length = robj_to!(Option, u64, length)?;
 
         Ok(self.clone().0.str().slice(offset, length).into())
     }
 
-    pub fn str_explode(&self) -> Result<RPolarsExpr,String> {
+    pub fn str_explode(&self) -> Result<RPolarsExpr, String> {
         Ok(self.0.clone().str().explode().into())
     }
 
@@ -2255,7 +2271,7 @@ impl RPolarsExpr {
             .into()
     }
 
-    pub fn struct_field_by_name(&self, name: Robj) -> Result<RPolarsExpr,String> {
+    pub fn struct_field_by_name(&self, name: Robj) -> Result<RPolarsExpr, String> {
         Ok(self
             .0
             .clone()
@@ -2268,7 +2284,7 @@ impl RPolarsExpr {
     //     self.0.clone().struct_().field_by_index(index).into()
     // }
 
-    pub fn struct_rename_fields(&self, names: Robj) -> Result<RPolarsExpr,String> {
+    pub fn struct_rename_fields(&self, names: Robj) -> Result<RPolarsExpr, String> {
         let string_vec: Vec<String> = robj_to!(Vec, String, names)?;
         Ok(self.0.clone().struct_().rename_fields(string_vec).into())
     }
@@ -2328,7 +2344,7 @@ impl RPolarsExpr {
         Ok(format!("{e}"))
     }
 
-    fn cat_set_ordering(&self, ordering: Robj) -> Result<RPolarsExpr,String> {
+    fn cat_set_ordering(&self, ordering: Robj) -> Result<RPolarsExpr, String> {
         let ordering = robj_to!(Map, str, ordering, |s| {
             Ok(crate::rdatatype::new_categorical_ordering(s).map_err(Rctx::Plain)?)
         })?;

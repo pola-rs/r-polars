@@ -126,7 +126,9 @@ pub fn collect_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<RPolarsDat
     Ok(RPolarsDataFrame(new_df?))
 }
 
-pub fn profile_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<(RPolarsDataFrame, RPolarsDataFrame)> {
+pub fn profile_with_r_func_support(
+    lazy_df: pl::LazyFrame,
+) -> RResult<(RPolarsDataFrame, RPolarsDataFrame)> {
     if ThreadCom::try_from_global(&CONFIG).is_ok() {
         lazy_df.profile()
     } else {
@@ -146,7 +148,10 @@ pub fn profile_with_r_func_support(lazy_df: pl::LazyFrame) -> RResult<(RPolarsDa
     .map(|(result_df, profile_df)| (RPolarsDataFrame(result_df), RPolarsDataFrame(profile_df)))
 }
 
-pub fn fetch_with_r_func_support(lazy_df: pl::LazyFrame, n_rows: usize) -> RResult<RPolarsDataFrame> {
+pub fn fetch_with_r_func_support(
+    lazy_df: pl::LazyFrame,
+    n_rows: usize,
+) -> RResult<RPolarsDataFrame> {
     if ThreadCom::try_from_global(&CONFIG).is_ok() {
         lazy_df.fetch(n_rows)
     } else {

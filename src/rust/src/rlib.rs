@@ -1,4 +1,4 @@
-use crate::lazy::dsl::{RPolarsExpr, ProtoExprArray};
+use crate::lazy::dsl::{ProtoExprArray, RPolarsExpr};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
@@ -63,9 +63,11 @@ fn coalesce_exprs(exprs: &ProtoExprArray) -> RPolarsExpr {
 }
 
 #[extendr]
-fn concat_list(exprs: &ProtoExprArray) -> Result<RPolarsExpr,String> {
+fn concat_list(exprs: &ProtoExprArray) -> Result<RPolarsExpr, String> {
     let exprs = exprs.to_vec("select");
-    Ok(RPolarsExpr(pl::concat_list(exprs).map_err(|err| err.to_string())?))
+    Ok(RPolarsExpr(
+        pl::concat_list(exprs).map_err(|err| err.to_string())?,
+    ))
 }
 
 #[extendr]
@@ -105,7 +107,7 @@ fn r_date_range_lazy(
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
 //for now just use inner directly
 #[extendr]
-fn as_struct(exprs: Robj) -> Result<RPolarsExpr,String> {
+fn as_struct(exprs: Robj) -> Result<RPolarsExpr, String> {
     Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?).into())
 }
 

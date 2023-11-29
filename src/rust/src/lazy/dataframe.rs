@@ -312,7 +312,12 @@ impl RPolarsLazyFrame {
         }
     }
 
-    fn unique(&self, subset: Robj, keep: Robj, maintain_order: Robj) -> Result<RPolarsLazyFrame, String> {
+    fn unique(
+        &self,
+        subset: Robj,
+        keep: Robj,
+        maintain_order: Robj,
+    ) -> Result<RPolarsLazyFrame, String> {
         let ke = new_unique_keep_strategy(robj_to!(str, keep)?)?;
         let maintain_order = robj_to!(bool, maintain_order)?;
         let subset = robj_to!(Option, Vec, String, subset)?;

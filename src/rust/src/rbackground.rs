@@ -194,9 +194,10 @@ impl RIPCJob {
                         .ok_or(RPolarsErr::new())
                         .bad_val(rdbg(func_robj))
                         .mistyped("pure R function")?;
-                    let shared_memory = serialize_series(RPolarsSeries::any_robj_to_pl_series_result(
-                        func.call(pairlist!(RPolarsSeries(series)))?,
-                    )?)?;
+                    let shared_memory =
+                        serialize_series(RPolarsSeries::any_robj_to_pl_series_result(
+                            func.call(pairlist!(RPolarsSeries(series)))?,
+                        )?)?;
                     RResult::Ok(ipc::IpcSharedMemory::from_bytes(shared_memory.as_slice()))
                 };
                 collector.send(bits().when(

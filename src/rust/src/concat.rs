@@ -10,7 +10,12 @@ use polars_core::functions as pl_functions;
 use std::result::Result;
 
 #[extendr]
-fn concat_lf(l: Robj, rechunk: bool, parallel: bool, to_supertypes: bool) -> RResult<RPolarsLazyFrame> {
+fn concat_lf(
+    l: Robj,
+    rechunk: bool,
+    parallel: bool,
+    to_supertypes: bool,
+) -> RResult<RPolarsLazyFrame> {
     let vlf = robj_to!(Vec, PLLazyFrame, l)?;
     dsl::concat(
         vlf,

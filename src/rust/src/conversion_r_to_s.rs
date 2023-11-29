@@ -59,7 +59,8 @@ fn recursive_robjname2series_tree(x: &Robj, name: &str) -> pl::PolarsResult<Seri
     let series_result = match rtype {
         Rtype::ExternalPtr => match () {
             _ if x.inherits("RPolarsSeries") => {
-                let s: RPolarsSeries = unsafe { &mut *x.external_ptr_addr::<RPolarsSeries>() }.clone();
+                let s: RPolarsSeries =
+                    unsafe { &mut *x.external_ptr_addr::<RPolarsSeries>() }.clone();
                 Ok(SeriesTree::Series(s.0))
             }
             _ => Err(pl::PolarsError::InvalidOperation(

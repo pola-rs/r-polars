@@ -192,7 +192,12 @@ impl RPolarsDataFrame {
     }
 
     pub fn get_columns(&self) -> List {
-        let mut l = List::from_values(self.0.get_columns().iter().map(|x| RPolarsSeries(x.clone())));
+        let mut l = List::from_values(
+            self.0
+                .get_columns()
+                .iter()
+                .map(|x| RPolarsSeries(x.clone())),
+        );
         l.set_names(self.0.get_column_names()).unwrap();
         l
     }
@@ -350,7 +355,9 @@ impl RPolarsDataFrame {
     }
 
     pub fn from_arrow_record_batches(rbr: Robj) -> Result<RPolarsDataFrame, String> {
-        Ok(RPolarsDataFrame(crate::arrow_interop::to_rust::to_rust_df(rbr)?))
+        Ok(RPolarsDataFrame(crate::arrow_interop::to_rust::to_rust_df(
+            rbr,
+        )?))
     }
 
     pub fn estimated_size(&self) -> f64 {
