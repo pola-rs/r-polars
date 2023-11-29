@@ -981,9 +981,9 @@ LazyFrame_group_by = function(..., maintain_order = pl$options$maintain_order) {
 #' df1$join(other = df2, how = "cross")
 LazyFrame_join = function(
     other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
     how = c("inner", "left", "outer", "semi", "anti", "cross"),
     suffix = "_right",
     allow_parallel = TRUE,

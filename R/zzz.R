@@ -28,7 +28,7 @@ replace_private_with_pub_methods(Expr, "^Expr_")
 
 # configure subnames spaces of Expr
 #' @export
-`$.ExprListNameSpace` = sub_name_space_accessor_function
+`$.RPolarsExprListNameSpace` = sub_name_space_accessor_function
 expr_list_make_sub_ns = macro_new_subnamespace("^ExprList_", "ExprListNameSpace")
 
 #' @export

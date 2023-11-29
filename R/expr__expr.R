@@ -33,7 +33,7 @@ NULL
 #'
 #' @examples
 #' print(pl$col("some_column")$sum())
-print.Expr = function(x, ...) {
+print.RPolarsExpr = function(x, ...) {
   cat("polars Expr: ")
   x$print()
   invisible(x)
@@ -54,7 +54,7 @@ Expr_print = function() {
 #' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
 #' @keywords internal
-.DollarNames.Expr = function(x, pattern = "") {
+.DollarNames.RPolarsExpr = function(x, pattern = "") {
   paste0(ls(Expr, pattern = pattern), "()")
 }
 
@@ -66,7 +66,7 @@ Expr_print = function() {
 #' @return One Expr wrapped in a list
 #' @export
 #' @keywords internal
-as.list.Expr = function(x, ...) {
+as.list.RPolarsExpr = function(x, ...) {
   list(x)
 }
 
@@ -171,7 +171,7 @@ Expr_add = function(other) {
 #' @rdname Expr_add
 #' @param e1 Expr only
 #' @param e2 Expr or anything that can be converted to a literal
-"+.Expr" = function(e1, e2) {
+"+.RPolarsExpr" = function(e1, e2) {
   if (missing(e2)) {
     return(e1)
   }
@@ -193,7 +193,7 @@ Expr_div = function(other) {
 #' @export
 #' @rdname Expr_div
 #' @inheritParams Expr_add
-"/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
+"/.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
 
 #' Floor divide two expressions
 #'
@@ -210,7 +210,7 @@ Expr_floor_div = function(other) {
 #' @export
 #' @rdname Expr_floor_div
 #' @inheritParams Expr_add
-"%/%.Expr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
+"%/%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
 
 #' Modulo two expressions
 #'
@@ -236,7 +236,7 @@ Expr_mod = function(other) {
 #' @export
 #' @rdname Expr_mod
 #' @inheritParams Expr_add
-"%%.Expr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
+"%%.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
 
 #' Substract two expressions
 #'
@@ -254,7 +254,7 @@ Expr_sub = function(other) {
 #' @export
 #' @rdname Expr_sub
 #' @inheritParams Expr_add
-"-.Expr" = function(e1, e2) {
+"-.RPolarsExpr" = function(e1, e2) {
   result(
     if (missing(e2)) wrap_e(0L)$sub(e1) else wrap_e(e1)$sub(e2)
   ) |> unwrap("using the '-'-operator")
@@ -275,7 +275,7 @@ Expr_mul = Expr_mul = function(other) {
 #' @export
 #' @rdname Expr_mul
 #' @inheritParams Expr_add
-"*.Expr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
+"*.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$mul(e2)) |> unwrap("using the '*'-operator")
 
 
 #' Negate a boolean expression
@@ -291,7 +291,7 @@ Expr_not = "use_extendr_wrapper"
 #' @export
 #' @rdname Expr_not
 #' @param x Expr
-"!.Expr" = function(x) x$not()
+"!.RPolarsExpr" = function(x) x$not()
 
 #' Check strictly lower inequality
 #'
@@ -307,7 +307,7 @@ Expr_lt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt
-"<.Expr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
+"<.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt(e2)) |> unwrap("using the '<'-operator")
 
 #' Check strictly greater inequality
 #'
@@ -323,7 +323,7 @@ Expr_gt = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt
-">.Expr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
+">.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt(e2)) |> unwrap("using the '>'-operator")
 
 #' Check equality
 #'
@@ -341,7 +341,7 @@ Expr_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_eq
-"==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
+"==.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
 #' Check equality without `null` propagation
 #'
@@ -374,7 +374,7 @@ Expr_neq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_neq
-"!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
+"!=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
 
 #' Check inequality without `null` propagation
 #'
@@ -405,7 +405,7 @@ Expr_lt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_lt_eq
-"<=.Expr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
+"<=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$lt_eq(e2)) |> unwrap("using the '<='-operator")
 
 
 #' Check greater or equal inequality
@@ -422,7 +422,7 @@ Expr_gt_eq = function(other) {
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_gt_eq
-">=.Expr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
+">=.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$gt_eq(e2)) |> unwrap("using the '>='-operator")
 
 
 
@@ -963,7 +963,7 @@ Expr_and = function(other) {
   .pr$Expr$and(self, other) |> unwrap("in $and()")
 }
 #' @export
-"&.Expr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
+"&.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$and(e2)) |> unwrap("using the '&'-operator")
 
 
 #' Apply logical OR on two expressions
@@ -980,7 +980,7 @@ Expr_or = function(other) {
   .pr$Expr$or(self, other) |> unwrap("in $or()")
 }
 #' @export
-"|.Expr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
+"|.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$or(e2)) |> unwrap("using the '|'-operator")
 
 
 #' Apply logical XOR on two expressions
@@ -2131,7 +2131,7 @@ Expr_pow = function(exponent) {
   .pr$Expr$pow(self, exponent) |> unwrap("in $pow()")
 }
 #' @export
-"^.Expr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
+"^.RPolarsExpr" = function(e1, e2) result(wrap_e(e1)$pow(e2)) |> unwrap("using '^'-operator")
 
 
 #' Check whether a value is in a vector

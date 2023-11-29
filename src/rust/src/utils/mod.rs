@@ -4,7 +4,7 @@ pub mod extendr_helpers;
 pub mod wrappers;
 
 use crate::conversion_r_to_s::robjname2series;
-use crate::lazy::dsl::Expr;
+use crate::lazy::dsl::RPolarsExpr;
 use crate::rdatatype::RPolarsDataType;
 use crate::rpolarserr::{polars_to_rpolars_err, rdbg, rerr, RPolarsErr, RResult, WithRctx};
 use crate::series::Series;
@@ -767,7 +767,7 @@ pub fn robj_to_pl_duration_string(robj: extendr_api::Robj) -> RResult<String> {
 
 //this function is used to convert and Rside Expr into rust side Expr
 // wrap_e allows to also convert any allowed non Exp
-pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<Expr> {
+pub fn robj_to_rexpr(robj: extendr_api::Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone(); //reserve shallowcopy for writing err msg
 
@@ -784,11 +784,11 @@ pub fn unpack_r_eval(res: extendr_api::Result<Robj>) -> RResult<Robj> {
     })?)
 }
 
-pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<Expr> {
-    let res: ExtendrResult<extendr_api::ExternalPtr<Expr>> = robj_expr.clone().try_into();
-    Ok(Expr(
+pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<RPolarsExpr> {
+    let res: ExtendrResult<extendr_api::ExternalPtr<RPolarsExpr>> = robj_expr.clone().try_into();
+    Ok(RPolarsExpr(
         res.bad_robj(&robj_expr)
-            .mistyped(tn::<Expr>())
+            .mistyped(tn::<RPolarsExpr>())
             .when("converting R extptr PolarsExpr to rust RExpr")
             .plain("internal error: could not convert R Expr (externalptr) to rust Expr")?
             .0
@@ -796,13 +796,13 @@ pub fn r_expr_to_rust_expr(robj_expr: Robj) -> RResult<Expr> {
     ))
 }
 
-fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<Expr> {
+fn internal_rust_wrap_e(robj: Robj, str_to_lit: bool) -> RResult<RPolarsExpr> {
     use extendr_api::*;
 
     if !str_to_lit && robj.rtype() == Rtype::Strings {
         robj_to_col(robj, extendr_api::NULL.into())
     } else {
-        Expr::lit(robj)
+        RPolarsExpr::lit(robj)
     }
 }
 
@@ -878,7 +878,7 @@ where
     T::IntoIter: ExactSizeIterator,
 {
     use extendr_api::prelude::*;
-    let iter = ite.into_iter().map(Expr);
+    let iter = ite.into_iter().map(RPolarsExpr);
     List::from_values(iter)
 }
 

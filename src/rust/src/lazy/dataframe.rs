@@ -3,6 +3,7 @@ use crate::concurrent::{
 };
 use crate::conversion::strings_to_smartstrings;
 
+use crate::lazy::dsl::RPolarsExpr;
 use crate::lazy::dsl::*;
 
 use crate::rdataframe::RPolarsDataFrame as RDF;
@@ -297,7 +298,7 @@ impl RPolarsLazyFrame {
         Ok(RPolarsLazyFrame(self.0.clone().tail(robj_to!(u32, n)?)))
     }
 
-    fn filter(&self, expr: &Expr) -> RPolarsLazyFrame {
+    fn filter(&self, expr: &RPolarsExpr) -> RPolarsLazyFrame {
         let new_df = self.clone().0.filter(expr.0.clone());
         RPolarsLazyFrame(new_df)
     }

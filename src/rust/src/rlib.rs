@@ -1,5 +1,4 @@
-use crate::lazy::dsl::Expr;
-use crate::lazy::dsl::ProtoExprArray;
+use crate::lazy::dsl::{RPolarsExpr, ProtoExprArray};
 use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
@@ -13,7 +12,7 @@ use polars::prelude as pl;
 use std::result::Result;
 
 #[extendr]
-fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn min_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::min_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -22,7 +21,7 @@ fn min_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn max_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::max_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -31,7 +30,7 @@ fn max_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn sum_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::sum_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -40,7 +39,7 @@ fn sum_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn all_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::all_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -49,7 +48,7 @@ fn all_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
+fn any_horizontal(dotdotdot: Robj) -> RResult<RPolarsExpr> {
     Ok(
         polars::lazy::dsl::any_horizontal(robj_to!(VecPLExprCol, dotdotdot)?)
             .map_err(polars_to_rpolars_err)?
@@ -58,19 +57,19 @@ fn any_horizontal(dotdotdot: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn coalesce_exprs(exprs: &ProtoExprArray) -> Expr {
+fn coalesce_exprs(exprs: &ProtoExprArray) -> RPolarsExpr {
     let exprs: Vec<pl::Expr> = exprs.to_vec("select");
     pl::coalesce(exprs.as_slice()).into()
 }
 
 #[extendr]
-fn concat_list(exprs: &ProtoExprArray) -> Result<Expr, String> {
+fn concat_list(exprs: &ProtoExprArray) -> Result<RPolarsExpr,String> {
     let exprs = exprs.to_vec("select");
-    Ok(Expr(pl::concat_list(exprs).map_err(|err| err.to_string())?))
+    Ok(RPolarsExpr(pl::concat_list(exprs).map_err(|err| err.to_string())?))
 }
 
 #[extendr]
-fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<Expr> {
+fn concat_str(dotdotdot: Robj, separator: Robj) -> RResult<RPolarsExpr> {
     Ok(pl::concat_str(
         robj_to!(VecPLExprCol, dotdotdot)?,
         robj_to!(str, separator)?,
@@ -87,7 +86,7 @@ fn r_date_range_lazy(
     time_unit: Robj,
     time_zone: Robj,
     explode: Robj,
-) -> RResult<Expr> {
+) -> RResult<RPolarsExpr> {
     let expr = polars::lazy::prelude::date_range(
         robj_to!(PLExprCol, start)?,
         robj_to!(PLExprCol, end)?,
@@ -97,16 +96,16 @@ fn r_date_range_lazy(
         robj_to!(Option, String, time_zone)?,
     );
     if robj_to!(bool, explode)? {
-        Ok(Expr(expr.explode()))
+        Ok(RPolarsExpr(expr.explode()))
     } else {
-        Ok(Expr(expr))
+        Ok(RPolarsExpr(expr))
     }
 }
 
 //TODO py-polars have some fancy transmute conversions TOExprs trait, maybe imple that too
 //for now just use inner directly
 #[extendr]
-fn as_struct(exprs: Robj) -> Result<Expr, String> {
+fn as_struct(exprs: Robj) -> Result<RPolarsExpr,String> {
     Ok(pl::as_struct(crate::utils::list_expr_to_vec_pl_expr(exprs, true, true)?).into())
 }
 
@@ -239,7 +238,7 @@ fn test_print_string(s: String) {
 }
 
 #[extendr]
-fn test_robj_to_expr(robj: Robj) -> RResult<Expr> {
+fn test_robj_to_expr(robj: Robj) -> RResult<RPolarsExpr> {
     robj_to!(Expr, robj)
 }
 
@@ -265,7 +264,7 @@ fn polars_features() -> List {
 }
 
 #[extendr]
-fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
+fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)
@@ -278,7 +277,7 @@ fn fold(acc: Robj, lambda: Robj, exprs: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-fn reduce(lambda: Robj, exprs: Robj) -> RResult<Expr> {
+fn reduce(lambda: Robj, exprs: Robj) -> RResult<RPolarsExpr> {
     let par_fn = ParRObj(lambda);
     let f = move |acc: pl::Series, x: pl::Series| {
         let thread_com = ThreadCom::try_from_global(&CONFIG)

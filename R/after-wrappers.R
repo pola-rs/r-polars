@@ -85,7 +85,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 .pr$DataType = extendr_method_to_pure_functions(RPolarsDataType)
 .pr$DataTypeVector = extendr_method_to_pure_functions(DataTypeVector)
 .pr$RField = extendr_method_to_pure_functions(RField)
-.pr$Expr = extendr_method_to_pure_functions(Expr)
+.pr$Expr = extendr_method_to_pure_functions(RPolarsExpr)
 .pr$ProtoExprArray = extendr_method_to_pure_functions(ProtoExprArray)
 .pr$When = extendr_method_to_pure_functions(When)
 .pr$Then = extendr_method_to_pure_functions(Then)
@@ -267,8 +267,9 @@ DataType = clone_env_one_level_deep(RPolarsDataType)
 # used for printing public environment
 pl_class_names = sort(
   c(
-    "RPolarsLazyFrame", "Series", "LazyGroupBy", "DataType", "Expr", "RPolarsDataFrame",
-    "When", "Then", "ChainedWhen", "ChainedThen", "RPolarsSQLContext"
+    "RPolarsLazyFrame", "Series", "LazyGroupBy", "DataType", "RPolarsExpr",
+    "RPolarsDataFrame", "When", "Then", "ChainedWhen", "ChainedThen",
+    "RPolarsSQLContext"
   )
 ) # TODO discover all public class automatically
 

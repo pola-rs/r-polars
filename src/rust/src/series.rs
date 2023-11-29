@@ -8,7 +8,7 @@ use crate::apply_output;
 use crate::conversion_r_to_s::robjname2series;
 use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
-use crate::lazy::dsl::Expr;
+use crate::lazy::dsl::RPolarsExpr;
 use crate::make_r_na_fun;
 use crate::rdataframe::RPolarsDataFrame;
 use crate::rdatatype::RPolarsDataType;
@@ -38,8 +38,8 @@ impl From<polars::prelude::Series> for Series {
     }
 }
 
-impl From<&Expr> for pl::PolarsResult<Series> {
-    fn from(expr: &Expr) -> Self {
+impl From<&RPolarsExpr> for pl::PolarsResult<Series> {
+    fn from(expr: &RPolarsExpr) -> Self {
         RPolarsDataFrame::default()
             .lazy()
             .0

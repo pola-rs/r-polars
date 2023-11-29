@@ -4,7 +4,7 @@ use crate::rpolarserr::*;
 use extendr_api::prelude::*;
 
 #[extendr]
-pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
+pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<RPolarsExpr> {
     if robj_to!(bool, str_to_lit)? {
         robj_to!(Expr, robj)
     } else {
@@ -13,7 +13,7 @@ pub fn internal_wrap_e(robj: Robj, str_to_lit: Robj) -> RResult<Expr> {
 }
 
 #[extendr]
-pub fn robj_to_col(name: Robj) -> RResult<Expr> {
+pub fn robj_to_col(name: Robj) -> RResult<RPolarsExpr> {
     let vs: Vec<String> = robj_to!(Vec, String, name)?;
     Ok(Expr::cols(vs))
 }

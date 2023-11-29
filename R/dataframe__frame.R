@@ -914,9 +914,9 @@ DataFrame_to_list = function(unnest_structs = TRUE) {
 #' df1$join(other = df2, how = "cross")
 DataFrame_join = function(
     other, # : LazyFrame or DataFrame,
-    left_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    right_on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
-    on = NULL, # : str | pli.Expr | Sequence[str | pli.Expr] | None = None,
+    left_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    right_on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
+    on = NULL, # : str | pli.RPolarsExpr | Sequence[str | pli.RPolarsExpr] | None = None,
     how = c("inner", "left", "outer", "semi", "anti", "cross"),
     suffix = "_right",
     allow_parallel = TRUE,
@@ -1409,7 +1409,7 @@ DataFrame_pivot = function(
     separator = "_") {
   pcase(
     # if string, call it on Expr-method of pl$element() and capture any Error as Result
-    is_string(aggregate_function), result(`$.Expr`(pl$element(), aggregate_function)()),
+    is_string(aggregate_function), result(`$.RPolarsExpr`(pl$element(), aggregate_function)()),
 
     # Expr or NULL pass as is
     is.null(aggregate_function) || inherits(aggregate_function, "Expr"), Ok(aggregate_function),

@@ -1,4 +1,4 @@
-use super::dsl::Expr;
+use crate::lazy::dsl::RPolarsExpr;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
 use extendr_api::prelude::*;
@@ -47,7 +47,7 @@ impl Then {
         })
     }
 
-    fn otherwise(&self, statement: Robj) -> RResult<Expr> {
+    fn otherwise(&self, statement: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .inner
             .clone()
@@ -73,7 +73,7 @@ impl ChainedThen {
         })
     }
 
-    fn otherwise(&self, statement: Robj) -> RResult<Expr> {
+    fn otherwise(&self, statement: Robj) -> RResult<RPolarsExpr> {
         Ok(self
             .inner
             .clone()
