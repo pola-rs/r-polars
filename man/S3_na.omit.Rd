@@ -2,12 +2,12 @@
 % Please edit documentation in R/s3_methods.R
 \name{na.omit.RPolarsLazyFrame}
 \alias{na.omit.RPolarsLazyFrame}
-\alias{na.omit.DataFrame}
+\alias{na.omit.RPolarsDataFrame}
 \title{Drop missing values}
 \usage{
 \method{na.omit}{RPolarsLazyFrame}(object, subset = NULL, ...)
 
-\method{na.omit}{DataFrame}(object, subset = NULL, ...)
+\method{na.omit}{RPolarsDataFrame}(object, subset = NULL, ...)
 }
 \arguments{
 \item{object}{A \link[=DataFrame_class]{DataFrame} or \link[=LazyFrame_class]{LazyFrame}}

@@ -1,7 +1,5 @@
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use crate::robj_to;
-
-use crate::rdataframe::RPolarsLazyFrame;
 use crate::rpolarserr::*;
 use crate::series::Series;
 use extendr_api::prelude::*;
@@ -47,11 +45,11 @@ fn concat_lf_diagonal(
 }
 
 #[extendr]
-pub fn concat_df_horizontal(l: Robj) -> RResult<DataFrame> {
+pub fn concat_df_horizontal(l: Robj) -> RResult<RPolarsDataFrame> {
     let df_vec = robj_to!(Vec, PLDataFrame, l)?;
     pl_functions::concat_df_horizontal(&df_vec)
         .map_err(polars_to_rpolars_err)
-        .map(DataFrame)
+        .map(RPolarsDataFrame)
 }
 
 #[extendr]

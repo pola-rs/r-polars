@@ -12,7 +12,7 @@ use crate::series::Series;
 use std::any::type_name as tn;
 //use std::intrinsics::read_via_copy;
 use crate::lazy::dsl::robj_to_col;
-use crate::rdataframe::{DataFrame, RPolarsLazyFrame};
+use crate::rdataframe::{RPolarsDataFrame, RPolarsLazyFrame};
 use extendr_api::eval_string_with_params;
 use extendr_api::prelude::{list, Result as EResult, Strings};
 use extendr_api::Attributes;
@@ -820,15 +820,15 @@ pub fn robj_to_lazyframe(robj: extendr_api::Robj) -> RResult<RPolarsLazyFrame> {
     res.bad_val(rv).mistyped(tn::<RPolarsLazyFrame>())
 }
 
-pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<DataFrame> {
+pub fn robj_to_dataframe(robj: extendr_api::Robj) -> RResult<RPolarsDataFrame> {
     let robj = unpack_r_result_list(robj)?;
     let robj_clone = robj.clone();
 
     // closure to allow ?-convert extendr::Result to RResult
-    let res = || -> RResult<DataFrame> {
-        let df: ExternalPtr<DataFrame> =
+    let res = || -> RResult<RPolarsDataFrame> {
+        let df: ExternalPtr<RPolarsDataFrame> =
             (unpack_r_eval(R!("polars:::result(polars::as_polars_df({{robj}}))"))?).try_into()?;
-        Ok(DataFrame(df.0.clone()))
+        Ok(RPolarsDataFrame(df.0.clone()))
     }();
 
     res.bad_val(rdbg(robj_clone))

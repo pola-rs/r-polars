@@ -72,7 +72,7 @@ replace_private_with_pub_methods(ChainedThen, "^ChainedThen_")
 #' @param x string, name of method in method_environment (sub-namespace)
 #' @param pattern code-stump as string to auto-complete
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.method_environment = function(x, pattern = "") {
   # I ponder why R chose to let attributes of environments be mutable also?!
@@ -137,11 +137,11 @@ pl$mem_address = mem_address
   move_env_elements(pl$dtypes, pl, names(pl$dtypes), remove = FALSE)
 
   # register S3 methods for packages in Suggests
-  s3_register("nanoarrow::as_nanoarrow_array_stream", "DataFrame")
-  s3_register("nanoarrow::infer_nanoarrow_schema", "DataFrame")
-  s3_register("arrow::as_record_batch_reader", "DataFrame")
-  s3_register("arrow::as_arrow_table", "DataFrame")
-  s3_register("knitr::knit_print", "DataFrame")
+  s3_register("nanoarrow::as_nanoarrow_array_stream", "RPolarsDataFrame")
+  s3_register("nanoarrow::infer_nanoarrow_schema", "RPolarsDataFrame")
+  s3_register("arrow::as_record_batch_reader", "RPolarsDataFrame")
+  s3_register("arrow::as_arrow_table", "RPolarsDataFrame")
+  s3_register("knitr::knit_print", "RPolarsDataFrame")
 
   pl$numeric_dtypes = pl$dtypes[substr(names(pl$dtypes), 1, 3) %in% c("Int", "Flo")]
 

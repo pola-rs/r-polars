@@ -51,7 +51,7 @@ Expr_print = function() {
 #'
 #' @param x Name of an `Expr` object
 #' @param pattern String used to auto-complete
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @export
 #' @keywords internal
 .DollarNames.Expr = function(x, pattern = "") {
@@ -1576,9 +1576,9 @@ Expr_sort_by = function(by, descending = FALSE) {
 
 # TODO coontribute pyPolars, if exceeding u32 return Null, if exceeding column return Error
 # either it should be error or Null.
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
-# pl.DataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(5294967296.0)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(-3)) #return Null
+# pl.RPolarsDataFrame({"a":[0,1,2,3,4],"b":[4,3,2,1,0]}).select(pl.col("a").take(7)) #return Error
 
 #' Gather values by index
 #'

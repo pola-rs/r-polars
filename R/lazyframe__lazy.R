@@ -105,7 +105,7 @@ LazyFrame
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 
 .DollarNames.RPolarsLazyFrame = function(x, pattern = "") {

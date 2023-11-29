@@ -10,7 +10,7 @@ use crate::conversion_s_to_r::pl_series_to_list;
 use crate::handle_type;
 use crate::lazy::dsl::Expr;
 use crate::make_r_na_fun;
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::RPolarsDataFrame;
 use crate::rdatatype::RPolarsDataType;
 use crate::robj_to;
 use crate::rpolarserr::RResult;
@@ -40,7 +40,7 @@ impl From<polars::prelude::Series> for Series {
 
 impl From<&Expr> for pl::PolarsResult<Series> {
     fn from(expr: &Expr) -> Self {
-        DataFrame::default()
+        RPolarsDataFrame::default()
             .lazy()
             .0
             .select(&[expr.0.clone()])
@@ -114,10 +114,10 @@ impl Series {
         &self,
         sort: bool,
         parallel: bool,
-    ) -> std::result::Result<DataFrame, String> {
+    ) -> std::result::Result<RPolarsDataFrame, String> {
         self.0
             .value_counts(sort, parallel)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
             .map_err(|err| format!("in value_counts: {:?}", err))
     }
 
@@ -490,8 +490,8 @@ impl Series {
             .map(Series)
     }
 
-    pub fn to_frame(&self) -> std::result::Result<DataFrame, String> {
-        let mut df = DataFrame::new_with_capacity(1);
+    pub fn to_frame(&self) -> std::result::Result<RPolarsDataFrame, String> {
+        let mut df = RPolarsDataFrame::new_with_capacity(1);
         df.set_column_from_series(self)?;
         Ok(df)
     }
@@ -574,8 +574,8 @@ impl Series {
         Ok(Series(s))
     }
 
-    pub fn into_frame(&self) -> DataFrame {
-        DataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
+    pub fn into_frame(&self) -> RPolarsDataFrame {
+        RPolarsDataFrame(pl::DataFrame::new_no_checks(vec![self.0.clone()]))
     }
 }
 

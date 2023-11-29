@@ -4,7 +4,7 @@
 \alias{as_polars_df}
 \alias{as_polars_df.default}
 \alias{as_polars_df.data.frame}
-\alias{as_polars_df.DataFrame}
+\alias{as_polars_df.RPolarsDataFrame}
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.Series}
 \alias{as_polars_df.RPolarsLazyFrame}
@@ -18,7 +18,7 @@ as_polars_df(x, ...)
 
 \method{as_polars_df}{data.frame}(x, ...)
 
-\method{as_polars_df}{DataFrame}(x, ...)
+\method{as_polars_df}{RPolarsDataFrame}(x, ...)
 
 \method{as_polars_df}{GroupBy}(x, ...)
 

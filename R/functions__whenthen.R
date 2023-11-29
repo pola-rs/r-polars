@@ -149,7 +149,7 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.When = function(x, pattern = "") {
   paste0(ls(When, pattern = pattern), "()")
@@ -161,7 +161,7 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.Then = function(x, pattern = "") {
   paste0(ls(Then, pattern = pattern), "()")
@@ -173,7 +173,7 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.ChainedThen = function(x, pattern = "") {
   paste0(ls(ChainedThen, pattern = pattern), "()")
@@ -185,7 +185,7 @@ print.ChainedThen = function(x, ...) {
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.ChainedWhen = function(x, pattern = "") {
   paste0(ls(ChainedWhen, pattern = pattern), "()")

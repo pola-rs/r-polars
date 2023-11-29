@@ -5,7 +5,7 @@ use crate::conversion::strings_to_smartstrings;
 
 use crate::lazy::dsl::*;
 
-use crate::rdataframe::DataFrame as RDF;
+use crate::rdataframe::RPolarsDataFrame as RDF;
 use crate::rdatatype::{
     new_asof_strategy, new_ipc_compression, new_parquet_compression, new_unique_keep_strategy,
     RPolarsDataType,

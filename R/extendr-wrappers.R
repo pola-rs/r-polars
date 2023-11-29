@@ -121,94 +121,100 @@ using_string_cache <- function() .Call(wrap__using_string_cache)
 
 DataFrame <- new.env(parent = emptyenv())
 
-DataFrame$shape <- function() .Call(wrap__DataFrame__shape, self)
+DataFrame$shape <- function() .Call(wrap__RPolarsDataFrame__shape, self)
 
-DataFrame$n_chunks <- function(strategy) .Call(wrap__DataFrame__n_chunks, self, strategy)
+DataFrame$n_chunks <- function(strategy) .Call(wrap__RPolarsDataFrame__n_chunks, self, strategy)
 
-DataFrame$rechunk <- function() .Call(wrap__DataFrame__rechunk, self)
+DataFrame$rechunk <- function() .Call(wrap__RPolarsDataFrame__rechunk, self)
 
-DataFrame$clone_in_rust <- function() .Call(wrap__DataFrame__clone_in_rust, self)
+DataFrame$clone_in_rust <- function() .Call(wrap__RPolarsDataFrame__clone_in_rust, self)
 
-DataFrame$default <- function() .Call(wrap__DataFrame__default)
+DataFrame$default <- function() .Call(wrap__RPolarsDataFrame__default)
 
-DataFrame$lazy <- function() .Call(wrap__DataFrame__lazy, self)
+DataFrame$lazy <- function() .Call(wrap__RPolarsDataFrame__lazy, self)
 
-DataFrame$drop_all_in_place <- function() invisible(.Call(wrap__DataFrame__drop_all_in_place, self))
+DataFrame$drop_all_in_place <- function() invisible(.Call(wrap__RPolarsDataFrame__drop_all_in_place, self))
 
-DataFrame$new_with_capacity <- function(capacity) .Call(wrap__DataFrame__new_with_capacity, capacity)
+DataFrame$new_with_capacity <- function(capacity) .Call(wrap__RPolarsDataFrame__new_with_capacity, capacity)
 
-DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__DataFrame__set_column_from_robj, self, robj, name)
+DataFrame$set_column_from_robj <- function(robj, name) .Call(wrap__RPolarsDataFrame__set_column_from_robj, self, robj, name)
 
-DataFrame$set_column_from_series <- function(x) .Call(wrap__DataFrame__set_column_from_series, self, x)
+DataFrame$set_column_from_series <- function(x) .Call(wrap__RPolarsDataFrame__set_column_from_series, self, x)
 
-DataFrame$with_row_count <- function(name, offset) .Call(wrap__DataFrame__with_row_count, self, name, offset)
+DataFrame$with_row_count <- function(name, offset) .Call(wrap__RPolarsDataFrame__with_row_count, self, name, offset)
 
-DataFrame$print <- function() .Call(wrap__DataFrame__print, self)
+DataFrame$print <- function() .Call(wrap__RPolarsDataFrame__print, self)
 
-DataFrame$columns <- function() .Call(wrap__DataFrame__columns, self)
+DataFrame$columns <- function() .Call(wrap__RPolarsDataFrame__columns, self)
 
-DataFrame$set_column_names_mut <- function(names) .Call(wrap__DataFrame__set_column_names_mut, self, names)
+DataFrame$set_column_names_mut <- function(names) .Call(wrap__RPolarsDataFrame__set_column_names_mut, self, names)
 
-DataFrame$get_column <- function(name) .Call(wrap__DataFrame__get_column, self, name)
+DataFrame$get_column <- function(name) .Call(wrap__RPolarsDataFrame__get_column, self, name)
 
-DataFrame$get_columns <- function() .Call(wrap__DataFrame__get_columns, self)
+DataFrame$get_columns <- function() .Call(wrap__RPolarsDataFrame__get_columns, self)
 
-DataFrame$dtypes <- function() .Call(wrap__DataFrame__dtypes, self)
+DataFrame$dtypes <- function() .Call(wrap__RPolarsDataFrame__dtypes, self)
 
-DataFrame$dtype_strings <- function() .Call(wrap__DataFrame__dtype_strings, self)
+DataFrame$dtype_strings <- function() .Call(wrap__RPolarsDataFrame__dtype_strings, self)
 
-DataFrame$schema <- function() .Call(wrap__DataFrame__schema, self)
+DataFrame$schema <- function() .Call(wrap__RPolarsDataFrame__schema, self)
 
-DataFrame$to_list <- function() .Call(wrap__DataFrame__to_list, self)
+DataFrame$to_list <- function() .Call(wrap__RPolarsDataFrame__to_list, self)
 
-DataFrame$to_list_unwind <- function() .Call(wrap__DataFrame__to_list_unwind, self)
+DataFrame$to_list_unwind <- function() .Call(wrap__RPolarsDataFrame__to_list_unwind, self)
 
-DataFrame$to_list_tag_structs <- function() .Call(wrap__DataFrame__to_list_tag_structs, self)
+DataFrame$to_list_tag_structs <- function() .Call(wrap__RPolarsDataFrame__to_list_tag_structs, self)
 
-DataFrame$frame_equal <- function(other) .Call(wrap__DataFrame__frame_equal, self, other)
+DataFrame$frame_equal <- function(other) .Call(wrap__RPolarsDataFrame__frame_equal, self, other)
 
-DataFrame$select_at_idx <- function(idx) .Call(wrap__DataFrame__select_at_idx, self, idx)
+DataFrame$select_at_idx <- function(idx) .Call(wrap__RPolarsDataFrame__select_at_idx, self, idx)
 
-DataFrame$drop_in_place <- function(names) .Call(wrap__DataFrame__drop_in_place, self, names)
+DataFrame$drop_in_place <- function(names) .Call(wrap__RPolarsDataFrame__drop_in_place, self, names)
 
-DataFrame$select <- function(exprs) .Call(wrap__DataFrame__select, self, exprs)
+DataFrame$select <- function(exprs) .Call(wrap__RPolarsDataFrame__select, self, exprs)
 
-DataFrame$with_columns <- function(exprs) .Call(wrap__DataFrame__with_columns, self, exprs)
+DataFrame$with_columns <- function(exprs) .Call(wrap__RPolarsDataFrame__with_columns, self, exprs)
 
-DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__DataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
+DataFrame$by_agg <- function(group_exprs, agg_exprs, maintain_order) .Call(wrap__RPolarsDataFrame__by_agg, self, group_exprs, agg_exprs, maintain_order)
 
-DataFrame$to_struct <- function(name) .Call(wrap__DataFrame__to_struct, self, name)
+DataFrame$to_struct <- function(name) .Call(wrap__RPolarsDataFrame__to_struct, self, name)
 
-DataFrame$unnest <- function(names) .Call(wrap__DataFrame__unnest, self, names)
+DataFrame$unnest <- function(names) .Call(wrap__RPolarsDataFrame__unnest, self, names)
 
-DataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__DataFrame__export_stream, self, stream_ptr))
+DataFrame$export_stream <- function(stream_ptr) invisible(.Call(wrap__RPolarsDataFrame__export_stream, self, stream_ptr))
 
-DataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__DataFrame__from_arrow_record_batches, rbr)
+DataFrame$from_arrow_record_batches <- function(rbr) .Call(wrap__RPolarsDataFrame__from_arrow_record_batches, rbr)
 
-DataFrame$estimated_size <- function() .Call(wrap__DataFrame__estimated_size, self)
+DataFrame$estimated_size <- function() .Call(wrap__RPolarsDataFrame__estimated_size, self)
 
-DataFrame$null_count <- function() .Call(wrap__DataFrame__null_count, self)
+DataFrame$null_count <- function() .Call(wrap__RPolarsDataFrame__null_count, self)
 
-DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__DataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
+DataFrame$melt <- function(id_vars, value_vars, value_name, variable_name) .Call(wrap__RPolarsDataFrame__melt, self, id_vars, value_vars, value_name, variable_name)
 
-DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__DataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
+DataFrame$pivot_expr <- function(values, index, columns, maintain_order, sort_columns, aggregate_expr, separator) .Call(wrap__RPolarsDataFrame__pivot_expr, self, values, index, columns, maintain_order, sort_columns, aggregate_expr, separator)
 
-DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_n, self, n, with_replacement, shuffle, seed)
+DataFrame$sample_n <- function(n, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_n, self, n, with_replacement, shuffle, seed)
 
-DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__DataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
+DataFrame$sample_frac <- function(frac, with_replacement, shuffle, seed) .Call(wrap__RPolarsDataFrame__sample_frac, self, frac, with_replacement, shuffle, seed)
 
-DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__DataFrame__transpose, self, keep_names_as, new_col_names)
+DataFrame$transpose <- function(keep_names_as, new_col_names) .Call(wrap__RPolarsDataFrame__transpose, self, keep_names_as, new_col_names)
 
-DataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__DataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
+DataFrame$write_csv <- function(path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style) .Call(wrap__RPolarsDataFrame__write_csv, self, path, include_bom, include_header, separator, line_terminator, quote, batch_size, datetime_format, date_format, time_format, float_precision, null_value, quote_style)
 
-DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__DataFrame__write_json, self, file, pretty, row_oriented)
+DataFrame$write_json <- function(file, pretty, row_oriented) .Call(wrap__RPolarsDataFrame__write_json, self, file, pretty, row_oriented)
 
-DataFrame$write_ndjson <- function(file) .Call(wrap__DataFrame__write_ndjson, self, file)
+DataFrame$write_ndjson <- function(file) .Call(wrap__RPolarsDataFrame__write_ndjson, self, file)
+
+RPolarsDataFrame <- DataFrame
 
 #' @export
+`$.RPolarsDataFrame` <- function (self, name) { func <- RPolarsDataFrame[[name]]; environment(func) <- environment(); func }
+
+#' @export
+`[[.RPolarsDataFrame` <- `$.RPolarsDataFrame`
+
 `$.DataFrame` <- function (self, name) { func <- DataFrame[[name]]; environment(func) <- environment(); func }
 
-#' @export
 `[[.DataFrame` <- `$.DataFrame`
 
 VecDataFrame <- new.env(parent = emptyenv())

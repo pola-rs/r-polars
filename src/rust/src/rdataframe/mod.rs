@@ -72,16 +72,16 @@ impl Iterator for OwnedDataFrameIterator {
 }
 
 #[derive(Debug, Clone)]
-pub struct DataFrame(pub pl::DataFrame);
+pub struct RPolarsDataFrame(pub pl::DataFrame);
 
-impl From<pl::DataFrame> for DataFrame {
+impl From<pl::DataFrame> for RPolarsDataFrame {
     fn from(item: pl::DataFrame) -> Self {
-        DataFrame(item)
+        RPolarsDataFrame(item)
     }
 }
 
 #[extendr]
-impl DataFrame {
+impl RPolarsDataFrame {
     pub fn shape(&self) -> Robj {
         let shp = self.0.shape();
         r!([shp.0, shp.1])
@@ -110,13 +110,13 @@ impl DataFrame {
         self.0.agg_chunks().into()
     }
 
-    pub fn clone_in_rust(&self) -> DataFrame {
+    pub fn clone_in_rust(&self) -> RPolarsDataFrame {
         self.clone()
     }
 
     #[allow(clippy::should_implement_trait)]
     pub fn default() -> Self {
-        DataFrame::new_with_capacity(0)
+        RPolarsDataFrame::new_with_capacity(0)
     }
 
     pub fn lazy(&self) -> RPolarsLazyFrame {
@@ -131,7 +131,7 @@ impl DataFrame {
     //internal use
     pub fn new_with_capacity(capacity: i32) -> Self {
         let empty_series: Vec<pl::Series> = Vec::with_capacity(capacity as usize);
-        DataFrame(pl::DataFrame::new(empty_series).unwrap())
+        RPolarsDataFrame(pl::DataFrame::new(empty_series).unwrap())
     }
 
     //internal use
@@ -276,7 +276,7 @@ impl DataFrame {
         r_result_list(robj_list_res)
     }
 
-    pub fn frame_equal(&self, other: &DataFrame) -> bool {
+    pub fn frame_equal(&self, other: &RPolarsDataFrame) -> bool {
         self.0.frame_equal(&other.0)
     }
 
@@ -294,11 +294,11 @@ impl DataFrame {
         Series(self.0.drop_in_place(names).unwrap())
     }
 
-    pub fn select(&self, exprs: Robj) -> RResult<DataFrame> {
+    pub fn select(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
         self.lazy().select(exprs)?.collect()
     }
 
-    pub fn with_columns(&self, exprs: Robj) -> RResult<DataFrame> {
+    pub fn with_columns(&self, exprs: Robj) -> RResult<RPolarsDataFrame> {
         self.lazy().with_columns(exprs)?.collect()
     }
 
@@ -308,7 +308,7 @@ impl DataFrame {
         group_exprs: Robj,
         agg_exprs: Robj,
         maintain_order: Robj,
-    ) -> RResult<DataFrame> {
+    ) -> RResult<RPolarsDataFrame> {
         let group_exprs: Vec<pl::Expr> = robj_to!(VecPLExprCol, group_exprs)?;
         let agg_exprs: Vec<pl::Expr> = robj_to!(VecPLExprColNamed, agg_exprs)?;
         let maintain_order = robj_to!(Option, bool, maintain_order)?.unwrap_or(false);
@@ -349,8 +349,8 @@ impl DataFrame {
         }
     }
 
-    pub fn from_arrow_record_batches(rbr: Robj) -> Result<DataFrame, String> {
-        Ok(DataFrame(crate::arrow_interop::to_rust::to_rust_df(rbr)?))
+    pub fn from_arrow_record_batches(rbr: Robj) -> Result<RPolarsDataFrame, String> {
+        Ok(RPolarsDataFrame(crate::arrow_interop::to_rust::to_rust_df(rbr)?))
     }
 
     pub fn estimated_size(&self) -> f64 {
@@ -379,7 +379,7 @@ impl DataFrame {
         self.0
             .melt2(args)
             .map_err(polars_to_rpolars_err)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
     }
 
     pub fn pivot_expr(
@@ -408,7 +408,7 @@ impl DataFrame {
             robj_to!(Option, str, separator)?,
         )
         .map_err(polars_to_rpolars_err)
-        .map(DataFrame)
+        .map(RPolarsDataFrame)
     }
 
     pub fn sample_n(
@@ -427,7 +427,7 @@ impl DataFrame {
                 robj_to!(Option, u64, seed)?,
             )
             .map_err(polars_to_rpolars_err)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
     }
 
     pub fn sample_frac(
@@ -446,7 +446,7 @@ impl DataFrame {
                 robj_to!(Option, u64, seed)?,
             )
             .map_err(polars_to_rpolars_err)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
     }
 
     pub fn transpose(&self, keep_names_as: Robj, new_col_names: Robj) -> RResult<Self> {
@@ -456,7 +456,7 @@ impl DataFrame {
         self.0
             .transpose(opt_s, opt_either_vec_s)
             .map_err(polars_to_rpolars_err)
-            .map(DataFrame)
+            .map(RPolarsDataFrame)
     }
 
     pub fn write_csv(
@@ -518,7 +518,7 @@ impl DataFrame {
     }
 }
 
-impl DataFrame {
+impl RPolarsDataFrame {
     pub fn to_list_result(&self) -> Result<Robj, pl::PolarsError> {
         //convert DataFrame to Result of to R vectors, error if DataType is not supported
         let robj_vec_res: Result<Vec<Robj>, _> = self
@@ -545,7 +545,7 @@ impl VecDataFrame {
         VecDataFrame(Vec::with_capacity(n as usize))
     }
 
-    pub fn push(&mut self, df: &DataFrame) {
+    pub fn push(&mut self, df: &RPolarsDataFrame) {
         self.0.push(df.0.clone());
     }
 
@@ -562,6 +562,6 @@ extendr_module! {
     use read_parquet;
     use rdatatype;
 
-    impl DataFrame;
+    impl RPolarsDataFrame;
     impl VecDataFrame;
 }

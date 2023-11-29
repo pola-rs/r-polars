@@ -44,7 +44,7 @@ as_polars_df.data.frame = function(x, ...) {
 
 #' @rdname as_polars_df
 #' @export
-as_polars_df.DataFrame = function(x, ...) {
+as_polars_df.RPolarsDataFrame = function(x, ...) {
   x
 }
 

@@ -10,13 +10,13 @@
 #'
 #' - `options(polars.df_print = "default")` for the default print method.
 #' - `options(polars.df_print = "html")` for the HTML table.
-#' @name knit_print.DataFrame
+#' @name knit_print.RPolarsDataFrame
 #' @param x a polars DataFrame to knit_print
 #' @param ... additional arguments, not used
 #' @return invisible x or NULL
 #' @keywords DataFrame
 #' @export
-knit_print.DataFrame = function(x, ...) {
+knit_print.RPolarsDataFrame = function(x, ...) {
   .print_opt = getOption("polars.df_print", "auto")
   .rmd_df_print = knitr::opts_knit$get("rmarkdown.df_print")
   if (isTRUE(.print_opt == "html") ||

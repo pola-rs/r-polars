@@ -7,7 +7,7 @@
 #' `DataFrame`-object is an `externalptr` to a low-level Rust polars DataFrame
 #' object.
 #'
-#' The S3 method `.DollarNames.DataFrame` exposes all public `$foobar()`-methods
+#' The S3 method `.DollarNames.RPolarsDataFrame` exposes all public `$foobar()`-methods
 #' which are callable onto the object. Most methods return another `DataFrame`-
 #' class instance or similar which allows for method chaining. This class system
 #' could be called "environment classes" (in lack of a better name) and is the
@@ -82,7 +82,7 @@ DataFrame
 #' @export
 #' @return Doesn't return a value. This is used for autocompletion in RStudio.
 #' @keywords internal
-.DollarNames.DataFrame = function(x, pattern = "") {
+.DollarNames.RPolarsDataFrame = function(x, pattern = "") {
   get_method_usages(DataFrame, pattern = pattern)
 }
 
@@ -93,7 +93,7 @@ DataFrame
 #' @param pattern code-stump as string to auto-complete
 #' @return char vec
 #' @export
-#' @inherit .DollarNames.DataFrame return
+#' @inherit .DollarNames.RPolarsDataFrame return
 #' @keywords internal
 .DollarNames.VecDataFrame = function(x, pattern = "") {
   get_method_usages(VecDataFrame, pattern = pattern)
@@ -218,7 +218,7 @@ pl$DataFrame = function(..., make_names_unique = TRUE, schema = NULL) {
 #' @export
 #'
 #' @examples pl$DataFrame(iris)
-print.DataFrame = function(x, ...) {
+print.RPolarsDataFrame = function(x, ...) {
   x$print()
   invisible(x)
 }
@@ -283,7 +283,7 @@ DataFrame.property_setters = new.env(parent = emptyenv())
 #' # to verify inside code of a property, use the [[]] syntax instead.
 #' df[["columns"]] # to see property code, .pr is the internal polars api into rust polars
 #' DataFrame.property_setters$columns # and even more obscure to see setter code
-"$<-.DataFrame" = function(self, name, value) {
+"$<-.RPolarsDataFrame" = function(self, name, value) {
   name = sub("<-$", "", name)
 
   # stop if method is not a setter

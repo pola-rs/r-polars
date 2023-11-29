@@ -1,6 +1,6 @@
 use crate::lazy::dsl::Expr;
 use crate::lazy::dsl::ProtoExprArray;
-use crate::rdataframe::DataFrame;
+use crate::rdataframe::RPolarsDataFrame;
 use crate::robj_to;
 use crate::rpolarserr::{rdbg, RResult};
 use crate::series::Series;
@@ -131,7 +131,7 @@ fn struct_(exprs: Robj, eager: Robj, schema: Robj) -> Result<Robj, String> {
             .select(&[struct_expr.0])
             .collect()
             .map_err(|err| format!("during eager evaluation of struct: {}", err))?;
-        Ok(crate::rdataframe::DataFrame(df).into())
+        Ok(crate::rdataframe::RPolarsDataFrame(df).into())
     } else {
         Ok(struct_expr.into())
     }
@@ -151,7 +151,7 @@ fn arrow_stream_to_df(robj_str: Robj) -> RResult<Robj> {
         .when("unpack struct from producer")
         .hint("producer exported a plain Series not a Struct series")?;
     let df: pl::DataFrame = ca.clone().into();
-    Ok(DataFrame(df).into_robj())
+    Ok(RPolarsDataFrame(df).into_robj())
 }
 
 #[extendr]
@@ -162,8 +162,8 @@ fn arrow_stream_to_series(robj_str: Robj) -> RResult<Robj> {
 
 #[extendr]
 unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Robj> {
-    let res: ExternalPtr<DataFrame> = robj_df.try_into()?;
-    let pl_df = DataFrame(res.0.clone()).0;
+    let res: ExternalPtr<RPolarsDataFrame> = robj_df.try_into()?;
+    let pl_df = RPolarsDataFrame(res.0.clone()).0;
     //safety robj_str must be ptr to a arrow2 stream ready to export into
     unsafe {
         crate::arrow_interop::to_rust::export_df_as_stream(pl_df, &robj_str)?;
@@ -172,7 +172,7 @@ unsafe fn export_df_to_arrow_stream(robj_df: Robj, robj_str: Robj) -> RResult<Ro
 }
 
 #[extendr]
-fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, String> {
+fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<RPolarsDataFrame, String> {
     let mut iter = r_batches.into_iter().map(|(_, robj)| {
         let robj = call!(r"\(x) x$columns", robj)?;
         let l = robj.as_list().ok_or_else(|| "not a list!?".to_string())?;
@@ -184,7 +184,7 @@ fn rb_list_to_df(r_batches: List, names: Vec<String>) -> Result<DataFrame, Strin
     for df in iter {
         df_acc.vstack_mut(&df?).map_err(|err| err.to_string())?;
     }
-    Ok(DataFrame(df_acc))
+    Ok(RPolarsDataFrame(df_acc))
 }
 
 #[extendr]
