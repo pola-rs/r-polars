@@ -832,19 +832,6 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
 })
 
-# TODO: remove when preparing 0.12.0
-test_that("$dt$days() and friends deprecation warning", {
-  expect_warning(
-    pl$DataFrame(date = pl$date_range(
-      start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo"
-    ))$select(
-      pl$col("date")$diff()$dt$days()
-    ),
-    "is deprecated and will be removed in 0.12.0."
-  )
-})
-
-
 test_that("$dt$time()", {
   df = pl$DataFrame(
     dates = pl$date_range(
