@@ -77,7 +77,7 @@ extendr_method_to_pure_functions = function(env, class_name = NULL) {
 #' # show all content of .pr
 #' .pr$print_env(.pr, ".pr the collection of private method calls to rust-polars")
 .pr = new.env(parent = emptyenv())
-.pr$Series = extendr_method_to_pure_functions(Series)
+.pr$Series = extendr_method_to_pure_functions(RPolarsSeries)
 .pr$DataFrame = extendr_method_to_pure_functions(RPolarsDataFrame)
 .pr$GroupBy = NULL # derived from DataFrame in R, has no rust calls
 .pr$LazyFrame = extendr_method_to_pure_functions(RPolarsLazyFrame)
