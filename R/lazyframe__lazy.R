@@ -858,7 +858,7 @@ LazyFrame_shift = function(periods = 1) {
 #' the total number of rows of the LazyFrame doesn't change.
 #' @inheritParams DataFrame_shift_and_fill
 #' @return LazyFrame
-#' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$as_data_frame()
+#' @examples pl$LazyFrame(mtcars)$shift_and_fill(0., 2.)$collect()$to_data_frame()
 LazyFrame_shift_and_fill = function(fill_value, periods = 1) {
   unwrap(.pr$LazyFrame$shift_and_fill(self, wrap_e(fill_value), periods), "in $shift_and_fill():")
 }
@@ -1519,7 +1519,7 @@ LazyFrame_explode = function(...) {
 #' # ... but simply assigning df1 to df3 change the address anyway
 #' pl$mem_address(df1) == pl$mem_address(df3)
 LazyFrame_clone = function() {
-  .pr$LazyFrame$clone_see_me_macro(self)
+  .pr$LazyFrame$clone_in_rust(self)
 }
 
 

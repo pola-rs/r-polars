@@ -31,8 +31,8 @@ test_that("<LazyFrame>$profile", {
 
   # map each Species-group with native polars, takes ~120us better
   expect_identical(
-    p2$result$as_data_frame(),
-    p1$result$as_data_frame()
+    p2$result$to_data_frame(),
+    p1$result$to_data_frame()
   )
 })
 

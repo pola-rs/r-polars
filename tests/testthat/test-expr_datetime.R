@@ -774,7 +774,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$days()$alias("diff")
+    pl$col("date")$diff()$dt$total_days()$alias("diff")
   )$to_list()
   expect_identical(df$diff, c(NA64, diffy(df$date, "days")))
 
@@ -782,7 +782,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$hours()$alias("diff")
+    pl$col("date")$diff()$dt$total_hours()$alias("diff")
   )$to_list()
   expect_identical(df$diff, c(NA64, diffy(df$date, "hours")))
 
@@ -790,7 +790,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
   df = pl$DataFrame(date = pl$date_range(
     start = as.Date("2020-1-1"), end = as.Date("2020-1-4"), interval = "1d", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$minutes()$alias("diff")
+    pl$col("date")$diff()$dt$total_minutes()$alias("diff")
   )$to_list()
   expect_identical(df$diff, c(NA64, diffy(df$date, "mins")))
 
@@ -799,7 +799,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$seconds()$alias("diff")
+    pl$col("date")$diff()$dt$total_seconds()$alias("diff")
   )$to_list()
   expect_identical(df$diff, c(NA64, diffy(df$date, "secs")))
 
@@ -809,7 +809,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$milliseconds()$alias("diff")
+    pl$col("date")$diff()$dt$total_milliseconds()$alias("diff")
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1000))
 
@@ -818,7 +818,7 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$microseconds()$alias("diff")
+    pl$col("date")$diff()$dt$total_microseconds()$alias("diff")
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E6))
 
@@ -827,9 +827,21 @@ test_that("dt$days, dt$hours, dt$mminutes, dt$seconds, + ms, us, ns", {
     start = as.Date("2020-1-1"), end = as.POSIXct("2020-1-1 00:04:00", tz = "GMT"),
     interval = "1m", eager = TRUE
   ))$with_columns(
-    pl$col("date")$diff()$dt$nanoseconds()$alias("diff")
+    pl$col("date")$diff()$dt$total_nanoseconds()$alias("diff")
   )$to_list()
   expect_identical(df$diff, bit64::as.integer64(c(NA, diffy2(df$date, "secs")) * 1E9))
+})
+
+# TODO: remove when preparing 0.12.0
+test_that("$dt$days() and friends deprecation warning", {
+  expect_warning(
+    pl$DataFrame(date = pl$date_range(
+      start = as.Date("2020-3-1"), end = as.Date("2020-5-1"), interval = "1mo"
+    ))$select(
+      pl$col("date")$diff()$dt$days()
+    ),
+    "is deprecated and will be removed in 0.12.0."
+  )
 })
 
 

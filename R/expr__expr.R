@@ -189,10 +189,54 @@ Expr_add = function(other) {
 Expr_div = function(other) {
   .pr$Expr$div(self, other) |> unwrap("in $div()")
 }
+
 #' @export
 #' @rdname Expr_div
 #' @inheritParams Expr_add
 "/.Expr" = function(e1, e2) result(wrap_e(e1)$div(e2)) |> unwrap("using the '/'-operator")
+
+#' Floor divide two expressions
+#'
+#' @inherit Expr_add description params return
+#'
+#' @examples
+#' pl$lit(5) %/% 10
+#' pl$lit(5) %/% pl$lit(10)
+#' pl$lit(5)$floor_div(pl$lit(10))
+Expr_floor_div = function(other) {
+  .pr$Expr$floor_div(self, other) |> unwrap("in $floor_div()")
+}
+
+#' @export
+#' @rdname Expr_floor_div
+#' @inheritParams Expr_add
+"%/%.Expr" = function(e1, e2) result(wrap_e(e1)$floor_div(e2)) |> unwrap("using the '%/%'-operator")
+
+#' Modulo two expressions
+#'
+#' @inherit Expr_add description params return
+#'
+#' @details Currently, the modulo operator behaves differently than in R,
+#' and not guaranteed `x == (x %% y) + y * (x %/% y)`.
+#' @examples
+#' pl$select(pl$lit(-1:12) %% 3)$to_series()$to_vector()
+#'
+#' # The example is **NOT** equivalent to the followings:
+#' -1:12 %% 3
+#' pl$select(-1:12 %% 3)$to_series()$to_vector()
+#'
+#' # Not guaranteed `x == (x %% y) + y * (x %/% y)`
+#' x = pl$lit(-1:12)
+#' y = pl$lit(3)
+#' pl$select(x == (x %% y) + y * (x %/% y))
+Expr_mod = function(other) {
+  .pr$Expr$rem(self, other) |> unwrap("in $mod()")
+}
+
+#' @export
+#' @rdname Expr_mod
+#' @inheritParams Expr_add
+"%%.Expr" = function(e1, e2) result(wrap_e(e1)$mod(e2)) |> unwrap("using the '%%'-operator")
 
 #' Substract two expressions
 #'
@@ -206,6 +250,7 @@ Expr_div = function(other) {
 Expr_sub = function(other) {
   .pr$Expr$sub(self, other) |> unwrap("in $sub()")
 }
+
 #' @export
 #' @rdname Expr_sub
 #' @inheritParams Expr_add
@@ -289,6 +334,7 @@ Expr_gt = function(other) {
 #'
 #' @inherit Expr_add description params return
 #'
+#' @seealso [Expr_eq_missing]
 #' @examples
 #' pl$lit(2) == 2
 #' pl$lit(2) == pl$lit(2)
@@ -296,16 +342,32 @@ Expr_gt = function(other) {
 Expr_eq = function(other) {
   .pr$Expr$eq(self, other) |> unwrap("in $eq()")
 }
+
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_eq
 "==.Expr" = function(e1, e2) result(wrap_e(e1)$eq(e2)) |> unwrap("using the '=='-operator")
 
+#' Check equality without `null` propagation
+#'
+#' @inherit Expr_add description params return
+#'
+#' @seealso [Expr_eq]
+#' @examples
+#' df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
+#' df$with_columns(
+#'   eq = pl$col("x")$eq("y"),
+#'   eq_missing = pl$col("x")$eq_missing("y")
+#' )
+Expr_eq_missing = function(other) {
+  .pr$Expr$eq_missing(self, other) |> unwrap("in $eq_missing()")
+}
 
 #' Check inequality
 #'
 #' @inherit Expr_add description params return
 #'
+#' @seealso [Expr_neq_missing]
 #' @examples
 #' pl$lit(1) != 2
 #' pl$lit(1) != pl$lit(2)
@@ -313,10 +375,26 @@ Expr_eq = function(other) {
 Expr_neq = function(other) {
   .pr$Expr$neq(self, other) |> unwrap("in $neq()")
 }
+
 #' @export
 #' @inheritParams Expr_add
 #' @rdname Expr_neq
 "!=.Expr" = function(e1, e2) result(wrap_e(e1)$neq(e2)) |> unwrap("using the '!='-operator")
+
+#' Check inequality without `null` propagation
+#'
+#' @inherit Expr_add description params return
+#'
+#' @seealso [Expr_neq]
+#' @examples
+#' df = pl$DataFrame(x = c(NA, FALSE, TRUE), y = c(TRUE, TRUE, TRUE))
+#' df$with_columns(
+#'   neq = pl$col("x")$neq("y"),
+#'   neq_missing = pl$col("x")$neq_missing("y")
+#' )
+Expr_neq_missing = function(other) {
+  .pr$Expr$neq_missing(self, other) |> unwrap("in $neq_missing()")
+}
 
 #' Check lower or equal inequality
 #'
@@ -1489,9 +1567,9 @@ Expr_gather = function(indices) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
 #'   with_columns(
-#'     pl$col("a")$shift(-2)$alias("shift-2"),
-#'     pl$col("a")$shift(2)$alias("shift+2")
-#'   )
+#'   pl$col("a")$shift(-2)$alias("shift-2"),
+#'   pl$col("a")$shift(2)$alias("shift+2")
+#' )
 Expr_shift = function(periods = 1) {
   .pr$Expr$shift(self, periods) |>
     unwrap("in $shift():")
@@ -1507,9 +1585,9 @@ Expr_shift = function(periods = 1) {
 #' @examples
 #' pl$DataFrame(a = c(1, 2, 4, 5, 8))$
 #'   with_columns(
-#'     pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
-#'     pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
-#'   )
+#'   pl$col("a")$shift_and_fill(-2, fill_value = 42)$alias("shift-2"),
+#'   pl$col("a")$shift_and_fill(2, fill_value = pl$col("a") / 2)$alias("shift+2")
+#' )
 Expr_shift_and_fill = function(periods, fill_value) {
   .pr$Expr$shift_and_fill(self, periods, pl$lit(fill_value)) |>
     unwrap("in $shift_and_fill():")
@@ -1527,10 +1605,10 @@ Expr_shift_and_fill = function(periods, fill_value) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     value = pl$col("a")$fill_null(999),
-#'     backward = pl$col("a")$fill_null(strategy = "backward"),
-#'     mean = pl$col("a")$fill_null(strategy = "mean")
-#'   )
+#'   value = pl$col("a")$fill_null(999),
+#'   backward = pl$col("a")$fill_null(strategy = "backward"),
+#'   mean = pl$col("a")$fill_null(strategy = "mean")
+#' )
 Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
   pcase(
     # the wrong stuff
@@ -1560,8 +1638,8 @@ Expr_fill_null = function(value = NULL, strategy = NULL, limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     backward = pl$col("a")$backward_fill()
-#'   )
+#'   backward = pl$col("a")$backward_fill()
+#' )
 Expr_backward_fill = function(limit = NULL) {
   .pr$Expr$backward_fill(self, limit)
 }
@@ -1576,8 +1654,8 @@ Expr_backward_fill = function(limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NA, 1, NA, 2, NA))$
 #'   with_columns(
-#'     backward = pl$col("a")$forward_fill()
-#'   )
+#'   backward = pl$col("a")$forward_fill()
+#' )
 Expr_forward_fill = function(limit = NULL) {
   .pr$Expr$forward_fill(self, limit)
 }
@@ -1590,10 +1668,10 @@ Expr_forward_fill = function(limit = NULL) {
 #' @examples
 #' pl$DataFrame(a = c(NaN, 1, NaN, 2, NA))$
 #'   with_columns(
-#'     literal = pl$col("a")$fill_nan(999),
-#'     # implicit coercion to string
-#'     string = pl$col("a")$fill_nan("invalid")
-#'   )
+#'   literal = pl$col("a")$fill_nan(999),
+#'   # implicit coercion to string
+#'   string = pl$col("a")$fill_nan("invalid")
+#' )
 Expr_fill_nan = function(expr = NULL) {
   .pr$Expr$fill_nan(self, wrap_e(expr))
 }
@@ -2191,9 +2269,9 @@ Expr_inspect = function(fmt = "{}") {
 #' @examples
 #' pl$DataFrame(x = c(1, NA, 4, NA, 100, NaN, 150))$
 #'   with_columns(
-#'    interp_lin = pl$col("x")$interpolate(),
-#'    interp_near = pl$col("x")$interpolate("nearest")
-#'   )
+#'   interp_lin = pl$col("x")$interpolate(),
+#'   interp_near = pl$col("x")$interpolate("nearest")
+#' )
 #'
 #' # x, y interpolation over a grid
 #' df_original_grid = pl$DataFrame(
@@ -2658,9 +2736,11 @@ Expr_clip_max = function(max) {
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(x = c(1, 2, 3), y = -2:0,
-#'              schema = list(x = pl$Float64, y = pl$Int32))$
-#'  select(pl$all()$upper_bound())
+#' pl$DataFrame(
+#'   x = c(1, 2, 3), y = -2:0,
+#'   schema = list(x = pl$Float64, y = pl$Int32)
+#' )$
+#'   select(pl$all()$upper_bound())
 Expr_upper_bound = "use_extendr_wrapper"
 
 #' Find the lower bound of a DataType
@@ -2669,9 +2749,11 @@ Expr_upper_bound = "use_extendr_wrapper"
 #' @docType NULL
 #' @format NULL
 #' @examples
-#' pl$DataFrame(x = 1:3, y = 1:3,
-#'              schema = list(x = pl$UInt32, y = pl$Int32))$
-#'  select(pl$all()$lower_bound())
+#' pl$DataFrame(
+#'   x = 1:3, y = 1:3,
+#'   schema = list(x = pl$UInt32, y = pl$Int32)
+#' )$
+#'   select(pl$all()$lower_bound())
 Expr_lower_bound = "use_extendr_wrapper"
 
 #' Get the sign of elements
@@ -3364,4 +3446,96 @@ Expr_peak_min = function() {
 #' df$with_columns(peak_max = pl$col("x")$peak_max())
 Expr_peak_max = function() {
   .pr$Expr$peak_max(self)
+}
+
+#' Create rolling groups based on a time or numeric column
+#'
+#' @description
+#' If you have a time series `<t_0, t_1, ..., t_n>`, then by default the windows
+#' created will be:
+#' * (t_0 - period, t_0]
+#' * (t_1 - period, t_1]
+#' * …
+#' * (t_n - period, t_n]
+#'
+#' whereas if you pass a non-default offset, then the windows will be:
+#' * (t_0 + offset, t_0 + offset + period]
+#' * (t_1 + offset, t_1 + offset + period]
+#' * …
+#' * (t_n + offset, t_n + offset + period]
+#'
+#' @param index_column Column used to group based on the time window. Often of
+#' type Date/Datetime. This column must be sorted in ascending order. If this
+#' column represents an index, it has to be either Int32 or Int64. Note that
+#' Int32 gets temporarily cast to Int64, so if performance matters use an Int64
+#' column.
+#' @param period Length of the window, must be non-negative.
+#' @param offset Offset of the window. Default is `-period`.
+#' @param closed Define which sides of the temporal interval are closed
+#' (inclusive). This can be either `"left"`, `"right"`, `"both"` or `"none"`.
+#' @param check_sorted Check whether data is actually sorted. Checking it is
+#' expensive so if you are sure the data within the `index_column` is sorted, you
+#' can set this to `FALSE` but note that if the data actually is unsorted, it
+#' will lead to incorrect output.
+#'
+#' @details
+#' The period and offset arguments are created either from a timedelta, or by
+#' using the following string language:
+#' * 1ns (1 nanosecond)
+#' * 1us (1 microsecond)
+#' * 1ms (1 millisecond)
+#' * 1s (1 second)
+#' * 1m (1 minute)
+#' * 1h (1 hour)
+#' * 1d (1 calendar day)
+#' * 1w (1 calendar week)
+#' * 1mo (1 calendar month)
+#' * 1q (1 calendar quarter)
+#' * 1y (1 calendar year)
+#' * 1i (1 index count)
+#'
+#' Or combine them: "3d12h4m25s" # 3 days, 12 hours, 4 minutes, and 25 seconds
+#'
+#' By "calendar day", we mean the corresponding time on the next day (which may
+#' not be 24 hours, due to daylight savings). Similarly for "calendar week",
+#' "calendar month", "calendar quarter", and "calendar year".
+#'
+#' In case of a rolling operation on an integer column, the windows are defined
+#' by:
+#' * "1i" # length 1
+#' * "10i" # length 10
+#'
+#' @return Expr
+#'
+#' @examples
+#' # create a DataFrame with a Datetime column and an f64 column
+#' dates = c(
+#'   "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+#'   "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+#' )
+#'
+#' df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+#'   with_columns(
+#'   pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+#' )
+#'
+#' df$with_columns(
+#'   sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
+#'   min_a = pl$min("a")$rolling(index_column = "dt", period = "2d"),
+#'   max_a = pl$max("a")$rolling(index_column = "dt", period = "2d")
+#' )
+#'
+#' # we can use "offset" to change the start of the window period. Here, with
+#' # offset = "1d", we start the window one day after the value in "dt", and
+#' # then we add a 2-day window relative to the window start.
+#' df$with_columns(
+#'   sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d")
+#' )
+Expr_rolling = function(index_column, period, offset = NULL,
+                         closed = "right", check_sorted = TRUE) {
+  if (is.null(offset)) {
+    offset = paste0("-", period)
+  }
+  .pr$Expr$rolling(self, index_column, period, offset, closed, check_sorted) |>
+    unwrap("in $rolling():")
 }

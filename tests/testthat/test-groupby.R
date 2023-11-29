@@ -57,23 +57,23 @@ patrick::with_parameters_test_that(
 )
 
 test_that("quantile", {
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$min()$as_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(0, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$min()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$max()$as_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(1, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$max()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 
-  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(.5, "midpoint")$as_data_frame()
-  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$median()$as_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$quantile(.5, "midpoint")$to_data_frame()
+  b = pl$DataFrame(mtcars)$group_by("cyl", maintain_order = FALSE)$median()$to_data_frame()
   expect_equal(a[order(a$cyl), ], b[order(b$cyl), ], ignore_attr = TRUE)
 })
 
 test_that("shift    _and_fill", {
-  a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2)$as_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl")$shift(2)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(NA_real_, NA_real_))
-  a = pl$DataFrame(mtcars)$group_by("cyl")$shift_and_fill(99, 2)$as_data_frame()
+  a = pl$DataFrame(mtcars)$group_by("cyl")$shift_and_fill(99, 2)$to_data_frame()
   expect_equal(a[["mpg"]][[1]][1:2], c(99, 99))
 })
 
@@ -106,4 +106,54 @@ test_that("agg, lazygroupby unpack + charvec same as list of strings", {
     expect_identical(df1 |> to_l(), df3 |> to_l())
   }
   pl$set_options(maintain_order = FALSE)
+})
+
+
+test_that("LazyGroupBy ungroup", {
+  lf = pl$LazyFrame(mtcars)
+  lgb = lf$group_by("cyl")
+
+  # tests $ungroup() only changed the class of output, not input (lgb).
+  lgb_ug = lgb$ungroup()
+  expect_identical(class(lgb_ug), "LazyFrame")
+  expect_identical(class(lgb), "LazyGroupBy")
+
+  expect_equal(
+    lgb$ungroup()$collect()$to_data_frame(),
+    lf$collect()$to_data_frame()
+  )
+
+  expect_identical(
+    attributes(lgb$ungroup()),
+    attributes(lf)
+  )
+})
+
+test_that("GroupBy ungroup", {
+  df = pl$DataFrame(mtcars)
+  gb = df$group_by("cyl")
+
+  # tests $ungroup() only changed the class of output, not input (lgb).
+  gb_ug = gb$ungroup()
+  expect_identical(class(gb_ug), "DataFrame")
+  expect_identical(class(gb), "GroupBy")
+
+  expect_equal(
+    gb$ungroup()$to_data_frame(),
+    df$to_data_frame()
+  )
+
+  expect_identical(
+    attributes(gb$ungroup()),
+    attributes(df)
+  )
+})
+
+test_that("LazyGroupBy clone", {
+  lgb = pl$LazyFrame(a = 1:3)$group_by("a")
+  lgb_copy = lgb
+  lgb_clone = .pr$LazyGroupBy$clone_in_rust(lgb)
+  expect_identical(class(lgb_clone), class(lgb))
+  expect_true(mem_address(lgb) != mem_address(lgb_clone))
+  expect_true(mem_address(lgb) == mem_address(lgb_copy))
 })

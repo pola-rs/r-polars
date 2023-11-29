@@ -42,6 +42,9 @@ test_that("expression Arithmetics", {
     (pl$lit(1) * 2 == (1 * 2))$alias("1 *2 == (1*2)"),
     (pl$lit(1) - 2 == (1 - 2))$alias("1 -2 == (1-2)"),
     (pl$lit(1)$div(pl$lit(2)) == (1 / 2))$alias("1$div(2) == (1/2)"),
+    (pl$lit(1)$floor_div(pl$lit(2)) == (1 %/% 2))$alias("1$floor_div(2) == (1%/%2)"),
+    (pl$lit(1)$mod(pl$lit(2)) == (1 %% 2))$alias("1$mod(2) == (1%%2)"),
+    (pl$lit(1)$mod(pl$lit(-2)) != (1 %% -2))$alias("1$mod(2) != (1%%-2)"), # https://github.com/pola-rs/polars/issues/10570
     (pl$lit(1)$add(pl$lit(2)) == (1 + 2))$alias("1$add(2) == (1+2)"),
     (pl$lit(1)$mul(pl$lit(2)) == (1 * 2))$alias("1$mul(2) == (1*2)"),
     (pl$lit(1)$sub(pl$lit(2)) == (1 - 2))$alias("1$sub(2) == (1-2)")
@@ -55,17 +58,19 @@ test_that("expression Arithmetics", {
 make_cases = function() {
   tibble::tribble(
     ~.test_name, ~fn,
-    "mul",       "*",
-    "add",       "+",
-    "sub",       "-",
-    "div",       "/",
-    "gt",        ">",
-    "gte",       ">=",
-    "lt",        "<",
-    "lte",       "<=",
-    "eq",        "==",
-    "neq",       "!=",
-    "pow",       "^",
+    "mul", "*",
+    "add", "+",
+    "sub", "-",
+    "div", "/",
+    "floor_div", "%/%",
+    "mod", "%%",
+    "gt", ">",
+    "gte", ">=",
+    "lt", "<",
+    "lte", "<=",
+    "eq", "==",
+    "neq", "!=",
+    "pow", "^",
   )
 }
 
@@ -2442,5 +2447,134 @@ test_that("pl$min_horizontal works", {
       pl$min_horizontal("a", "b", "c", 2)$alias("min")
     )$to_list(),
     list(min = c(1, 2, 2, -Inf))
+  )
+})
+
+test_that("rolling, basic", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
+
+  out = df$with_columns(
+    sum_a = pl$sum("a")$rolling(index_column = "dt", period = "2d"),
+    min_a = pl$min("a")$rolling(index_column = "dt", period = "2d"),
+    max_a = pl$max("a")$rolling(index_column = "dt", period = "2d"),
+    mean_a = pl$mean("a")$rolling(index_column = "dt", period = "2d")
+  )$select("sum_a", "min_a", "max_a", "mean_a")$to_data_frame()
+
+  expect_identical(
+    out,
+    data.frame(
+      sum_a = c(3, 10, 15, 24, 11, 1),
+      min_a = c(3, 3, 3, 3, 2, 1),
+      max_a = c(3, 7, 7, 9, 9, 1),
+      mean_a = c(3, 5, 5, 6, 5.5, 1)
+    )
+  )
+})
+
+test_that("rolling, arg closed", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
+
+  out = df$with_columns(
+    sum_a_left = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "left"),
+    sum_a_both = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "both"),
+    sum_a_none = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "none"),
+    sum_a_right = pl$sum("a")$rolling(index_column = "dt", period = "2d", closed = "right")
+  )$select("sum_a_left", "sum_a_both", "sum_a_none", "sum_a_right")$to_data_frame()
+
+  expect_identical(
+    out,
+    data.frame(
+      sum_a_left = c(0, 3, 10, 15, 9, 0),
+      sum_a_both = c(3, 10, 15, 24, 11, 1),
+      sum_a_none = c(0, 3, 10, 15, 9, 0),
+      sum_a_right = c(3, 10, 15, 24, 11, 1)
+    )
+  )
+})
+
+test_that("rolling, arg offset", {
+  dates = c(
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09",
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")$set_sorted()
+  )
+
+  # with offset = "1d", we start the window at one or two days after the value
+  # in "dt", and then we add a 2-day window relative to the window start.
+  out = df$with_columns(
+    sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "1d"),
+    sum_a_offset2 = pl$sum("a")$rolling(index_column = "dt", period = "2d", offset = "2d")
+  )$select("sum_a_offset1", "sum_a_offset2")$to_data_frame()
+
+  expect_identical(
+    out,
+    data.frame(
+      sum_a_offset1 = c(11, 11, 11, 2, NA, NA),
+      sum_a_offset2 = c(2, 2, 2, NA, NA, NA)
+    )
+  )
+})
+
+test_that("rolling, arg check_sorted", {
+  dates = c(
+    "2020-01-02 18:12:48", "2020-01-03 19:45:32", "2020-01-08 23:16:43",
+    "2020-01-01 13:45:48", "2020-01-01 16:42:13", "2020-01-01 16:45:09"
+  )
+
+  df = pl$DataFrame(dt = dates, a = c(3, 7, 5, 9, 2, 1))$
+    with_columns(
+    pl$col("dt")$str$strptime(pl$Datetime(tu = "us"), format = "%Y-%m-%d %H:%M:%S")
+  )
+
+  expect_error(
+    df$with_columns(
+      sum_a_offset1 = pl$sum("a")$rolling(index_column = "dt", period = "2d")
+    ),
+    "is not explicitly sorted"
+  )
+
+  # no error message but wrong output
+  expect_no_error(
+    df$with_columns(pl$col("dt")$set_sorted())$with_columns(
+      sum_a_offset1 = pl$sum("a")$rolling(
+        index_column = "dt", period = "2d",
+        check_sorted = FALSE
+      )
+    )
+  )
+})
+
+test_that("eq_missing and ne_missing", {
+  x = c(rep(TRUE, 3), rep(FALSE, 3), rep(NA, 3))
+  y = c(rep(c(TRUE, FALSE, NA), 3))
+  expect_identical(
+    pl$DataFrame(x = x, y = y)$select(
+      pl$col("x")$eq_missing(pl$col("y"))$alias("eq_missing"),
+      pl$col("x")$neq_missing(pl$col("y"))$alias("neq_missing")
+    )$to_list(),
+    list(
+      eq_missing = c(TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE),
+      neq_missing = c(FALSE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE)
+    )
   )
 })

@@ -8,8 +8,8 @@
 \alias{as_polars_df.GroupBy}
 \alias{as_polars_df.Series}
 \alias{as_polars_df.LazyFrame}
+\alias{as_polars_df.LazyGroupBy}
 \alias{as_polars_df.ArrowTabular}
-\alias{as_polars_df.RecordBatchReader}
 \title{To polars DataFrame}
 \usage{
 as_polars_df(x, ...)
@@ -41,9 +41,9 @@ as_polars_df(x, ...)
   collect_in_background = FALSE
 )
 
-\method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+\method{as_polars_df}{LazyGroupBy}(x, ...)
 
-\method{as_polars_df}{RecordBatchReader}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
+\method{as_polars_df}{ArrowTabular}(x, ..., rechunk = TRUE, schema = NULL, schema_overrides = NULL)
 }
 \arguments{
 \item{x}{Object to convert to a polars DataFrame.}

@@ -52,7 +52,7 @@ as_polars_df.DataFrame = function(x, ...) {
 #' @rdname as_polars_df
 #' @export
 as_polars_df.GroupBy = function(x, ...) {
-  x$to_data_frame()
+  x$ungroup()
 }
 
 
@@ -101,6 +101,13 @@ as_polars_df.LazyFrame = function(
 
 
 #' @rdname as_polars_df
+#' @export
+as_polars_df.LazyGroupBy = function(x, ...) {
+  as_polars_df.LazyFrame(x$ungroup(), ...)
+}
+
+
+#' @rdname as_polars_df
 #' @inheritParams pl_from_arrow
 #' @export
 as_polars_df.ArrowTabular = function(
@@ -117,11 +124,6 @@ as_polars_df.ArrowTabular = function(
     schema_overrides = schema_overrides
   )
 }
-
-
-#' @rdname as_polars_df
-#' @export
-as_polars_df.RecordBatchReader = as_polars_df.ArrowTabular
 
 
 # TODO: as_polars_df.nanoarrow_array_stream
@@ -153,4 +155,11 @@ as_polars_lf.default = function(x, ...) {
 #' @export
 as_polars_lf.LazyFrame = function(x, ...) {
   x
+}
+
+
+#' @rdname as_polars_lf
+#' @export
+as_polars_lf.LazyGroupBy = function(x, ...) {
+  x$ungroup()
 }

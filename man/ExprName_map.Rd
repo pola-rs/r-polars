@@ -17,4 +17,3 @@ pl$DataFrame(list(alice = 1:3))$select(
   pl$col("alice")$alias("joe_is_not_root")$name$map(\(x) paste0(x, "_and_bob"))
 )
 }
-\keyword{Expr}
