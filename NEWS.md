@@ -38,11 +38,8 @@
   columns to these functions will now compute the min/max/sum in each column
   separately. Use `pl$min_horizontal()` `pl$max_horizontal()`, and
   `pl$sum_horizontal()` instead for rowwise computation (#508).
-- `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not_()` instead 
-  (#511).
 - `pl$concat_list()`: elements being strings are now interpreted as column names. Use `pl$lit` to
   concat with a string.
-- In `pl$concat()`, the argument `to_supertypes` is removed. Use the suffix 
 - `$is_not()` is deprecated and will be removed in 0.12.0. Use `$not()` instead
   (#511, #531).
 - `$is_first()` is deprecated and will be removed in 0.12.0. Use `$is_first_distinct()`
